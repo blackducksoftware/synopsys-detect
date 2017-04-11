@@ -1,0 +1,41 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath('org.springframework.boot:spring-boot-gradle-plugin:1.5.2.RELEASE')
+    }
+}
+
+apply plugin: 'groovy'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+
+tasks.withType(JavaCompile) { options.encoding = 'UTF-8' }
+tasks.withType(GroovyCompile) { options.encoding = 'UTF-8' }
+
+group = 'com.blackducksoftware.integration'
+version = '0.0.1-SNAPSHOT'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    compile 'com.blackducksoftware.integration:hub-common:10.0.0'
+    compile 'org.springframework.boot:spring-boot-starter'
+    compile 'org.codehaus.groovy:groovy-all:2.4.10'
+
+    testCompile 'org.springframework.boot:spring-boot-starter-test'
+}
+
+springBoot { mainClass = 'com.blackducksoftware.integration.hub.artifactory.Application' }
+
+task produceFinalZip(type: Zip, dependsOn: build) {
+    from("${buildDir}/libs") { include '*.jar' into 'lib'}
+}
