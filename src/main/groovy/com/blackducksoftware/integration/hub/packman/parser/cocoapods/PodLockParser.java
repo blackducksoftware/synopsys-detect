@@ -59,36 +59,36 @@ public class PodLockParser extends StreamParser<PodLock> {
                     final Matcher podWithSubMatcher = POD_WITH_SUB_REGEX.matcher(line);
                     final Matcher subpodMatcher = SUBPOD_REGEX.matcher(line);
                     if (podWithSubMatcher.matches()) {
-                        final Package pod = packageFromString(line, POD_WITH_SUB_REGEX);
+                        final Package pod = Package.packageFromString(line, POD_WITH_SUB_REGEX, 1, 2);
                         if (pod != null) {
                             subsection = pod;
                             podLock.pods.add(pod);
                         }
                     } else if (subsection != null && subpodMatcher.matches()) {
-                        final Package subpod = packageFromString(line, SUBPOD_REGEX);
+                        final Package subpod = Package.packageFromString(line, SUBPOD_REGEX, 1, 2);
                         if (subpod != null) {
                             subsection.dependencies.add(subpod);
                         }
                     } else if (podMatcher.matches()) {
-                        final Package pod = packageFromString(line, POD_REGEX);
+                        final Package pod = Package.packageFromString(line, POD_REGEX, 1, 2);
                         if (pod != null) {
                             podLock.pods.add(pod);
                             subsection = null;
                         }
                     }
                 } else if (section == DEPENDENCIES_SECTION) {
-                    final Package dependency = packageFromString(line, DEPENDENCY_REGEX);
+                    final Package dependency = Package.packageFromString(line, DEPENDENCY_REGEX, 1, 2);
                     if (dependency != null) {
                         podLock.dependencies.add(dependency);
                     }
                 } else if (section == SPEC_CHECKSUMS_SECTION) {
-                    final Package dependency = packageFromString(line, SPEC_CHECKSUM_REGEX);
+                    final Package dependency = Package.packageFromString(line, SPEC_CHECKSUM_REGEX, 1, 2);
                     if (dependency != null) {
                         podLock.specChecsums.put(dependency.name, dependency.version);
                     }
                 } else {
                     // TODO: Log
-                    System.out.println("Couldn't find if statement for >" + line + "\n");
+                    System.out.println("PodLockParser: Couldn't find if statement for >" + line + "\n");
                 }
             }
         } catch (final IOException e) {
@@ -97,19 +97,5 @@ public class PodLockParser extends StreamParser<PodLock> {
             podLock = null;
         }
         return podLock;
-    }
-
-    private Package packageFromString(final String str, final Pattern regex) {
-        final Matcher matcher = regex.matcher(str);
-        if (matcher.matches()) {
-            try {
-                final Package dependency = new Package(matcher.group(1).trim(), matcher.group(2).trim());
-                return dependency;
-            } catch (final IndexOutOfBoundsException e) {
-                // TODO: Log
-                System.out.println("Couldn't regex match " + regex.toString() + " >" + str);
-            }
-        }
-        return null;
     }
 }

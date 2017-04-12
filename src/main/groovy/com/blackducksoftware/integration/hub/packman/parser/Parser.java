@@ -3,6 +3,7 @@ package com.blackducksoftware.integration.hub.packman.parser;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 
@@ -17,15 +18,15 @@ public class Parser {
     @PostConstruct
     public void init() {
         final String podlockFilePath = "/Users/jmathews/ruby/black-duck-swift-sample/Podfile.lock";
-        final String podfileFilePath = "/Users/jmathews/ruby/black-duck-swift-sample/Podfile.lock";
+        final String podfileFilePath = "/Users/jmathews/ruby/black-duck-swift-sample/Podfile";
 
         try {
             final InputStream podlockStream = new FileInputStream(podlockFilePath);
             final InputStream podfileStream = new FileInputStream(podfileFilePath);
             final CocoapodsPackager packager = new CocoapodsPackager(podfileStream, podlockStream);
-            final Package project = packager.makePackage();
+            final List<Package> projects = packager.makePackages();
 
-            System.out.println(project);
+            System.out.println(projects);
 
             // TODO: Send to generate bdio from project
         } catch (final FileNotFoundException e) {

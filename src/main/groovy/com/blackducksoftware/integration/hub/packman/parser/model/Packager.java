@@ -1,5 +1,7 @@
 package com.blackducksoftware.integration.hub.packman.parser.model;
 
+import java.util.List;
+
 public interface Packager {
-    public Package makePackage();
+    public List<Package> makePackages();
 }

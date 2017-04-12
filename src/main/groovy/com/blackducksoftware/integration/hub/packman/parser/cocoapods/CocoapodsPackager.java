@@ -22,21 +22,30 @@ public class CocoapodsPackager implements Packager {
     }
 
     @Override
-    public Package makePackage() {
-        final Package cocoapodsPackage = new Package();
-        cocoapodsPackage.name = "dummy-name";
-        cocoapodsPackage.version = "1.0.0";
+    public List<Package> makePackages() {
+        final List<Package> packages = new ArrayList<>();
+
+        final PodfileParser podfileParser = new PodfileParser();
+        final Podfile podfile = podfileParser.parse(podfileStream);
 
         final PodLockParser podLockParser = new PodLockParser();
         final PodLock podLock = podLockParser.parse(podlockStream);
-        cocoapodsPackage.dependencies = getDependencies(podLock);
 
-        return cocoapodsPackage;
+        final Map<String, Package> allPods = getDependencies(podLock);
+
+        for (final Package target : podfile.targets) {
+            final List<Package> targetDependencies = new ArrayList<>();
+            for (final Package dep : target.dependencies) {
+                targetDependencies.add(allPods.get(dep.name));
+            }
+            target.dependencies = targetDependencies;
+            packages.add(target);
+        }
+
+        return packages;
     }
 
-    public List<Package> getDependencies(final PodLock podLock) {
-        final List<Package> dependencies = new ArrayList<>();
-
+    public Map<String, Package> getDependencies(final PodLock podLock) {
         final Map<String, Package> allPods = new HashMap<>();
         for (final Package pod : podLock.pods) {
             allPods.put(pod.name, pod);
@@ -50,12 +59,7 @@ public class CocoapodsPackager implements Packager {
             }
             pod.getValue().dependencies = pod_deps;
         }
-
-        for (final Package declaredDependency : podLock.dependencies) {
-            final Package pod = allPods.get(declaredDependency.name);
-            dependencies.add(pod);
-        }
-        return dependencies;
+        return allPods;
     }
 
 }
