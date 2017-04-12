@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.blackducksoftware.integration.hub.packman.parser.Package;
 import com.blackducksoftware.integration.hub.packman.parser.StreamParser;
+import com.blackducksoftware.integration.hub.packman.parser.model.Package;
 
 public class PodLockParser extends StreamParser<PodLock> {
 
@@ -76,7 +76,7 @@ public class PodLockParser extends StreamParser<PodLock> {
 				} else if (section == SPEC_CHECKSUMS_SECTION) {
 					Package dependency = packageFromString(line, SPEC_CHECKSUM_REGEX);
 					if (dependency != null) {
-						podLock.specChecsums.put(dependency.packageName, dependency.packageVersion);
+						podLock.specChecsums.put(dependency.name, dependency.version);
 					}
 				} else {
 					// TODO: Log

@@ -8,23 +8,26 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.packman.parser.cocoapods.PodLock;
-import com.blackducksoftware.integration.hub.packman.parser.cocoapods.PodLockParser;
+import com.blackducksoftware.integration.hub.packman.parser.cocoapods.CocoapodsPackager;
+import com.blackducksoftware.integration.hub.packman.parser.model.Package;
 
 @Component
 public class Parser {
 
 	@PostConstruct
 	public void init() {
-		String filePath = "/Users/jmathews/ruby/black-duck-swift-sample/Podfile.lock";
+		String podlockFilePath = "/Users/jmathews/ruby/black-duck-swift-sample/Podfile.lock";
+		String podfileFilePath = "/Users/jmathews/ruby/black-duck-swift-sample/Podfile.lock";
 
 		try {
-			InputStream inputStream = new FileInputStream(filePath);
+			InputStream podlockStream = new FileInputStream(podlockFilePath);
+			InputStream podfileStream = new FileInputStream(podfileFilePath);
+			CocoapodsPackager packager = new CocoapodsPackager(podfileStream, podlockStream);
+			Package project = packager.makePackage();
 
-			PodLockParser parser = new PodLockParser();
-			PodLock podLock = parser.parse(inputStream);
+			System.out.println(project);
 
-			System.out.println(podLock);
+			// TODO: Send to generate bdio from project
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}

@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.blackducksoftware.integration.hub.packman.parser.Package;
+import com.blackducksoftware.integration.hub.packman.parser.model.Package;
 
 public class PodLock {
 
@@ -21,32 +21,32 @@ public class PodLock {
 		builder.append("PODS:\n");
 		for (Package p : pods) {
 			builder.append("  - ");
-			builder.append(p.packageName);
+			builder.append(p.name);
 			builder.append(" (");
-			builder.append(p.packageVersion);
+			builder.append(p.version);
 			builder.append(")\n");
 			for (Package dep : p.dependencies) {
 				builder.append("    - ");
-				builder.append(dep.packageName);
+				builder.append(dep.name);
 				builder.append(" (");
-				builder.append(dep.packageVersion);
+				builder.append(dep.version);
 				builder.append(")\n");
 			}
 		}
 		builder.append("\nDEPENDENCIES:\n");
 		for (Package p : dependencies) {
 			builder.append("  - ");
-			builder.append(p.packageName);
+			builder.append(p.name);
 			builder.append(" (");
-			builder.append(p.packageVersion);
+			builder.append(p.version);
 			builder.append(")\n");
 		}
 		builder.append("\nSPEC CHECKSUMS:\n");
 		for (Package p : dependencies) {
 			builder.append("  ");
-			builder.append(p.packageName);
+			builder.append(p.name);
 			builder.append(": ");
-			builder.append(specChecsums.get(p.packageName));
+			builder.append(specChecsums.get(p.name));
 			builder.append("\n");
 		}
 		builder.append("\nPODFILE CHECKSUM: " + podfileChecksum + "\n");
