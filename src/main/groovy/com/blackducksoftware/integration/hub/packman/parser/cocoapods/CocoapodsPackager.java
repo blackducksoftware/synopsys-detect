@@ -12,49 +12,50 @@ import com.blackducksoftware.integration.hub.packman.parser.model.Packager;
 
 public class CocoapodsPackager implements Packager {
 
-	private InputStream podfileStream;
-	private InputStream podlockStream;
+    private final InputStream podfileStream;
 
-	public CocoapodsPackager(InputStream podfileStream, InputStream podlockStream) {
-		this.podfileStream = podfileStream;
-		this.podlockStream = podlockStream;
-	}
+    private final InputStream podlockStream;
 
-	@Override
-	public Package makePackage() {
-		Package cocoapodsPackage = new Package();
-		cocoapodsPackage.name = "dummy-name";
-		cocoapodsPackage.version = "1.0.0";
+    public CocoapodsPackager(final InputStream podfileStream, final InputStream podlockStream) {
+        this.podfileStream = podfileStream;
+        this.podlockStream = podlockStream;
+    }
 
-		PodLockParser podLockParser = new PodLockParser();
-		PodLock podLock = podLockParser.parse(podlockStream);
-		cocoapodsPackage.dependencies = getDependencies(podLock);
+    @Override
+    public Package makePackage() {
+        final Package cocoapodsPackage = new Package();
+        cocoapodsPackage.name = "dummy-name";
+        cocoapodsPackage.version = "1.0.0";
 
-		return cocoapodsPackage;
-	}
+        final PodLockParser podLockParser = new PodLockParser();
+        final PodLock podLock = podLockParser.parse(podlockStream);
+        cocoapodsPackage.dependencies = getDependencies(podLock);
 
-	public List<Package> getDependencies(PodLock podLock) {
-		List<Package> dependencies = new ArrayList<Package>();
+        return cocoapodsPackage;
+    }
 
-		Map<String, Package> allPods = new HashMap<String, Package>();
-		for (Package pod : podLock.pods) {
-			allPods.put(pod.name, pod);
-		}
+    public List<Package> getDependencies(final PodLock podLock) {
+        final List<Package> dependencies = new ArrayList<>();
 
-		// Fix pods dependencies
-		for (Entry<String, Package> pod : allPods.entrySet()) {
-			List<Package> pod_deps = new ArrayList<Package>();
-			for (Package dependency : pod.getValue().dependencies) {
-				pod_deps.add(allPods.get(dependency.name));
-			}
-			pod.getValue().dependencies = pod_deps;
-		}
+        final Map<String, Package> allPods = new HashMap<>();
+        for (final Package pod : podLock.pods) {
+            allPods.put(pod.name, pod);
+        }
 
-		for (Package declaredDependency : podLock.dependencies) {
-			Package pod = allPods.get(declaredDependency.name);
-			dependencies.add(pod);
-		}
-		return dependencies;
-	}
+        // Fix pods dependencies
+        for (final Entry<String, Package> pod : allPods.entrySet()) {
+            final List<Package> pod_deps = new ArrayList<>();
+            for (final Package dependency : pod.getValue().dependencies) {
+                pod_deps.add(allPods.get(dependency.name));
+            }
+            pod.getValue().dependencies = pod_deps;
+        }
+
+        for (final Package declaredDependency : podLock.dependencies) {
+            final Package pod = allPods.get(declaredDependency.name);
+            dependencies.add(pod);
+        }
+        return dependencies;
+    }
 
 }

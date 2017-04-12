@@ -14,23 +14,23 @@ import com.blackducksoftware.integration.hub.packman.parser.model.Package;
 @Component
 public class Parser {
 
-	@PostConstruct
-	public void init() {
-		String podlockFilePath = "/Users/jmathews/ruby/black-duck-swift-sample/Podfile.lock";
-		String podfileFilePath = "/Users/jmathews/ruby/black-duck-swift-sample/Podfile.lock";
+    @PostConstruct
+    public void init() {
+        final String podlockFilePath = "/Users/jmathews/ruby/black-duck-swift-sample/Podfile.lock";
+        final String podfileFilePath = "/Users/jmathews/ruby/black-duck-swift-sample/Podfile.lock";
 
-		try {
-			InputStream podlockStream = new FileInputStream(podlockFilePath);
-			InputStream podfileStream = new FileInputStream(podfileFilePath);
-			CocoapodsPackager packager = new CocoapodsPackager(podfileStream, podlockStream);
-			Package project = packager.makePackage();
+        try {
+            final InputStream podlockStream = new FileInputStream(podlockFilePath);
+            final InputStream podfileStream = new FileInputStream(podfileFilePath);
+            final CocoapodsPackager packager = new CocoapodsPackager(podfileStream, podlockStream);
+            final Package project = packager.makePackage();
 
-			System.out.println(project);
+            System.out.println(project);
 
-			// TODO: Send to generate bdio from project
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-	}
+            // TODO: Send to generate bdio from project
+        } catch (final FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 
 }
