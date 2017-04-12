@@ -51,6 +51,9 @@ class CocoapodsParser {
 			while ((line = br.readLine()) != null) {
 				if (line.isEmpty()) {
 
+				} else if (line.contains(PodLock.COCOAPODS_SECTION)) {
+					section = PodLock.COCOAPODS_SECTION;
+					podLock.cococapodsVersion = line.split(":")[1].trim();
 				} else if (line.contains(PodLock.PODS_SECTION)) {
 					section = PodLock.PODS_SECTION;
 				} else if (line.contains(PodLock.DEPENDENCIES_SECTION)) {
@@ -60,12 +63,6 @@ class CocoapodsParser {
 				} else if (line.contains(PodLock.PODFILE_CHECKSUM_SECTION)) {
 					section = PodLock.PODFILE_CHECKSUM_SECTION;
 					podLock.podfileChecksum = line.split(":")[1].trim();
-				} else if (line.contains("COCOAPODS")) {
-					// TODO: This won't run.
-					System.out.println("----------------------------------------");
-					section = PodLock.COCOAPODS_SECTION;
-					podLock.cococapodsVersion = line.split(":")[1].trim();
-
 				} else if (section == PodLock.PODS_SECTION) {
 					Matcher podMatcher = POD_REGEX.matcher(line);
 					Matcher podWithSubMatcher = POD_WITH_SUB_REGEX.matcher(line);
