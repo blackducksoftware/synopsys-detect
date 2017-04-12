@@ -4,3 +4,4 @@ bin/
 .classpath
 .settings/
 build/
+.groovy/
