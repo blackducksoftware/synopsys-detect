@@ -1,4 +1,4 @@
-package com.blackducksoftware.integration.hub.packman.parser.podfile;
+package com.blackducksoftware.integration.hub.packman.parser.cocoapods;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,12 +8,6 @@ import java.util.Map;
 import com.blackducksoftware.integration.hub.packman.parser.Package;
 
 public class PodLock {
-
-	public final static String PODS_SECTION = "PODS:";
-	public final static String DEPENDENCIES_SECTION = "DEPENDENCIES:";
-	public final static String SPEC_CHECKSUMS_SECTION = "SPEC CHECKSUMS:";
-	public final static String PODFILE_CHECKSUM_SECTION = "PODFILE CHECKSUM:";
-	public final static String COCOAPODS_SECTION = "COCOAPODS:";
 
 	public List<Package> pods = new ArrayList<Package>();
 	public List<Package> dependencies = new ArrayList<Package>();

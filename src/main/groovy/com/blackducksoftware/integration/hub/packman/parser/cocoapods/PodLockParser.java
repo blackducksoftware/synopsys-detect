@@ -1,28 +1,20 @@
-package com.blackducksoftware.integration.hub.packman.parser;
+package com.blackducksoftware.integration.hub.packman.parser.cocoapods;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.annotation.PostConstruct;
+import com.blackducksoftware.integration.hub.packman.parser.Package;
+import com.blackducksoftware.integration.hub.packman.parser.StreamParser;
 
-import org.springframework.stereotype.Component;
+public class PodLockParser extends StreamParser<PodLock> {
 
-import com.blackducksoftware.integration.hub.packman.parser.podfile.PodLock;
-
-@Component
-class CocoapodsParser {
-
-	// TODO: Currently will throw null pointer if file is invalid.
-	// We should change that...
-
-	final String PODLOCK_FILE = "/Users/jmathews/ruby/black-duck-swift-sample/Podfile.lock";
+	final String PODS_SECTION = "PODS:";
+	final String DEPENDENCIES_SECTION = "DEPENDENCIES:";
+	final String SPEC_CHECKSUMS_SECTION = "SPEC CHECKSUMS:";
+	final String PODFILE_CHECKSUM_SECTION = "PODFILE CHECKSUM:";
+	final String COCOAPODS_SECTION = "COCOAPODS:";
 
 	final Pattern POD_REGEX = Pattern.compile("  - (.*)\\((.*)\\)");
 	final Pattern POD_WITH_SUB_REGEX = Pattern.compile("  - (.*)\\((.*)\\):");
@@ -30,40 +22,31 @@ class CocoapodsParser {
 	final Pattern DEPENDENCY_REGEX = Pattern.compile("  - (.*)\\((.*)\\)");
 	final Pattern SPEC_CHECKSUM_REGEX = Pattern.compile("  (.*):(.*)");
 
-	// TODO: Parse this info from podfile perhaps?
-	final String PROJECT_NAME = "black-duck-sample-project";
-	final String PROJECT_VERSION = "1.0.0";
-
-	@PostConstruct
-	void init() {
-		Package project = new Package(PROJECT_NAME, PROJECT_VERSION);
+	@Override
+	public PodLock parse(BufferedReader bufferedReader) {
 		PodLock podLock = new PodLock();
 
 		String section = null;
 		Package subsection = null;
 
 		String line;
-		try (
-			InputStream fis = new FileInputStream(PODLOCK_FILE);
-			InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8"));
-			BufferedReader br = new BufferedReader(isr);
-		) {
-			while ((line = br.readLine()) != null) {
+		try {
+			while ((line = bufferedReader.readLine()) != null) {
 				if (line.isEmpty()) {
 
-				} else if (line.contains(PodLock.COCOAPODS_SECTION)) {
-					section = PodLock.COCOAPODS_SECTION;
+				} else if (line.contains(COCOAPODS_SECTION)) {
+					section = COCOAPODS_SECTION;
 					podLock.cococapodsVersion = line.split(":")[1].trim();
-				} else if (line.contains(PodLock.PODS_SECTION)) {
-					section = PodLock.PODS_SECTION;
-				} else if (line.contains(PodLock.DEPENDENCIES_SECTION)) {
-					section = PodLock.DEPENDENCIES_SECTION;
-				} else if (line.contains(PodLock.SPEC_CHECKSUMS_SECTION)) {
-					section = PodLock.SPEC_CHECKSUMS_SECTION;
-				} else if (line.contains(PodLock.PODFILE_CHECKSUM_SECTION)) {
-					section = PodLock.PODFILE_CHECKSUM_SECTION;
+				} else if (line.contains(PODS_SECTION)) {
+					section = PODS_SECTION;
+				} else if (line.contains(DEPENDENCIES_SECTION)) {
+					section = DEPENDENCIES_SECTION;
+				} else if (line.contains(SPEC_CHECKSUMS_SECTION)) {
+					section = SPEC_CHECKSUMS_SECTION;
+				} else if (line.contains(PODFILE_CHECKSUM_SECTION)) {
+					section = PODFILE_CHECKSUM_SECTION;
 					podLock.podfileChecksum = line.split(":")[1].trim();
-				} else if (section == PodLock.PODS_SECTION) {
+				} else if (section == PODS_SECTION) {
 					Matcher podMatcher = POD_REGEX.matcher(line);
 					Matcher podWithSubMatcher = POD_WITH_SUB_REGEX.matcher(line);
 					Matcher subpodMatcher = SUBPOD_REGEX.matcher(line);
@@ -85,28 +68,27 @@ class CocoapodsParser {
 							subsection = null;
 						}
 					}
-				} else if (section == PodLock.DEPENDENCIES_SECTION) {
+				} else if (section == DEPENDENCIES_SECTION) {
 					Package dependency = packageFromString(line, DEPENDENCY_REGEX);
 					if (dependency != null) {
 						podLock.dependencies.add(dependency);
 					}
-				} else if (section == PodLock.SPEC_CHECKSUMS_SECTION) {
+				} else if (section == SPEC_CHECKSUMS_SECTION) {
 					Package dependency = packageFromString(line, SPEC_CHECKSUM_REGEX);
 					if (dependency != null) {
 						podLock.specChecsums.put(dependency.packageName, dependency.packageVersion);
 					}
 				} else {
-					// TODO: Log this
+					// TODO: Log
 					System.out.println("Couldn't find if statement for >" + line + "\n");
 				}
 			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
+			// TODO: Log
 			e.printStackTrace();
+			podLock = null;
 		}
-
-		System.out.println(podLock.toString());
+		return podLock;
 	}
 
 	private Package packageFromString(String str, Pattern regex) {
@@ -116,7 +98,7 @@ class CocoapodsParser {
 				Package dependency = new Package(matcher.group(1).trim(), matcher.group(2).trim());
 				return dependency;
 			} catch (IndexOutOfBoundsException e) {
-				// TODO: Grouping is invalid in regex. Log it
+				// TODO: Log
 				System.out.println("Couldn't regex match " + regex.toString() + " >" + str);
 			}
 		}
