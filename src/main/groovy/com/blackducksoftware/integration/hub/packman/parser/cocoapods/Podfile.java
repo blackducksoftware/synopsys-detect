@@ -21,13 +21,13 @@ public class Podfile {
         }
         for (final Package p : targets) {
             builder.append("target '");
-            builder.append(p.name);
+            builder.append(p.externalId.name);
             builder.append("' do\n");
             for (final Package dep : p.dependencies) {
                 builder.append("  pod '");
-                builder.append(dep.name);
+                builder.append(dep.externalId.name);
                 builder.append("', '");
-                builder.append(dep.version);
+                builder.append(dep.externalId.version);
                 builder.append("'\n");
             }
             builder.append("end\n\n");

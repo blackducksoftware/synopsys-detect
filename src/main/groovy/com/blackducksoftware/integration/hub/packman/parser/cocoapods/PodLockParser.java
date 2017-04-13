@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
 import com.blackducksoftware.integration.hub.packman.parser.StreamParser;
 import com.blackducksoftware.integration.hub.packman.parser.model.Package;
 
@@ -59,32 +60,32 @@ public class PodLockParser extends StreamParser<PodLock> {
                     final Matcher podWithSubMatcher = POD_WITH_SUB_REGEX.matcher(line);
                     final Matcher subpodMatcher = SUBPOD_REGEX.matcher(line);
                     if (podWithSubMatcher.matches()) {
-                        final Package pod = Package.packageFromString(line, POD_WITH_SUB_REGEX, 1, 2);
+                        final Package pod = Package.packageFromString(line, POD_WITH_SUB_REGEX, 1, 2, Forge.cocoapods);
                         if (pod != null) {
                             subsection = pod;
                             podLock.pods.add(pod);
                         }
                     } else if (subsection != null && subpodMatcher.matches()) {
-                        final Package subpod = Package.packageFromString(line, SUBPOD_REGEX, 1, 2);
+                        final Package subpod = Package.packageFromString(line, SUBPOD_REGEX, 1, 2, Forge.cocoapods);
                         if (subpod != null) {
                             subsection.dependencies.add(subpod);
                         }
                     } else if (podMatcher.matches()) {
-                        final Package pod = Package.packageFromString(line, POD_REGEX, 1, 2);
+                        final Package pod = Package.packageFromString(line, POD_REGEX, 1, 2, Forge.cocoapods);
                         if (pod != null) {
                             podLock.pods.add(pod);
                             subsection = null;
                         }
                     }
                 } else if (section == DEPENDENCIES_SECTION) {
-                    final Package dependency = Package.packageFromString(line, DEPENDENCY_REGEX, 1, 2);
+                    final Package dependency = Package.packageFromString(line, DEPENDENCY_REGEX, 1, 2, Forge.cocoapods);
                     if (dependency != null) {
                         podLock.dependencies.add(dependency);
                     }
                 } else if (section == SPEC_CHECKSUMS_SECTION) {
-                    final Package dependency = Package.packageFromString(line, SPEC_CHECKSUM_REGEX, 1, 2);
+                    final Package dependency = Package.packageFromString(line, SPEC_CHECKSUM_REGEX, 1, 2, Forge.cocoapods);
                     if (dependency != null) {
-                        podLock.specChecsums.put(dependency.name, dependency.version);
+                        podLock.specChecsums.put(dependency.externalId.name, dependency.externalId.version);
                     }
                 } else {
                     // TODO: Log
