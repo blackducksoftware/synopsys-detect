@@ -1,3 +1,14 @@
+/*
+ * Copyright (C) 2017 Black Duck Software Inc.
+ * http://www.blackducksoftware.com/
+ * All rights reserved.
+ *
+ * This software is the confidential and proprietary information of
+ * Black Duck Software ("Confidential Information"). You shall not
+ * disclose such Confidential Information and shall use it only in
+ * accordance with the terms of the license agreement you entered into
+ * with Black Duck Software.
+ */
 package com.blackducksoftware.integration.hub.packman.parser.cocoapods;
 
 import java.io.BufferedReader;
@@ -10,18 +21,8 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId;
-/*
- * Copyright (C) 2017 Black Duck Software Inc.
- * http://www.blackducksoftware.com/
- * All rights reserved.
- *
- * This software is the confidential and proprietary information of
- * Black Duck Software ("Confidential Information"). You shall not
- * disclose such Confidential Information and shall use it only in
- * accordance with the terms of the license agreement you entered into
- * with Black Duck Software.
- */
 import com.blackducksoftware.integration.hub.packman.parser.StreamParser;
+import com.blackducksoftware.integration.hub.packman.parser.cocoapods.model.Podfile;
 
 public class PodfileParser extends StreamParser<Podfile> {
 
@@ -40,7 +41,6 @@ public class PodfileParser extends StreamParser<Podfile> {
         Podfile podfile = new Podfile();
 
         DependencyNode currentTarget = null;
-        final String version = "1.0.0"; // TODO: This will come from somewhere else
 
         String line;
         try {
@@ -68,8 +68,8 @@ public class PodfileParser extends StreamParser<Podfile> {
                     currentTarget = null;
                 } else if (targetMatcher.matches()) {
                     final String targetName = targetMatcher.group(2);
-                    final ExternalId externalId = new NameVersionExternalId(Forge.cocoapods, targetName, version);
-                    final DependencyNode target = new DependencyNode(targetName, version, externalId, new ArrayList<DependencyNode>());
+                    final ExternalId externalId = new NameVersionExternalId(Forge.cocoapods, targetName, null);
+                    final DependencyNode target = new DependencyNode(targetName, null, externalId, new ArrayList<DependencyNode>());
                     currentTarget = target;
                     podfile.targets.add(currentTarget);
                 } else if (frameworksMatcher.matches()) {

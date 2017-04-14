@@ -20,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.packman.parser.StreamParser;
+import com.blackducksoftware.integration.hub.packman.parser.cocoapods.model.PodLock;
 
 public class PodLockParser extends StreamParser<PodLock> {
 

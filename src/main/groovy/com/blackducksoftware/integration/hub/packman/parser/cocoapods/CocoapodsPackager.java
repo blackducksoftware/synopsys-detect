@@ -24,21 +24,30 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId;
 import com.blackducksoftware.integration.hub.packman.parser.StreamParser;
+import com.blackducksoftware.integration.hub.packman.parser.cocoapods.model.PodLock;
+import com.blackducksoftware.integration.hub.packman.parser.cocoapods.model.Podfile;
+import com.blackducksoftware.integration.hub.packman.parser.cocoapods.model.WorkspaceProject;
 import com.blackducksoftware.integration.hub.packman.parser.model.Packager;
 
-public class CocoapodsPackager implements Packager {
+public class CocoapodsPackager extends Packager {
+
+    public static final String COMMENTS = "#";
 
     private final InputStream podfileStream;
 
     private final InputStream podlockStream;
 
-    public CocoapodsPackager(final InputStream podfileStream, final InputStream podlockStream) {
+    private final InputStream[] projectStreams;
+
+    public CocoapodsPackager(final InputStream podfileStream, final InputStream podlockStream, final InputStream[] projectStreams) {
         this.podfileStream = podfileStream;
         this.podlockStream = podlockStream;
+        this.projectStreams = projectStreams;
     }
 
     @Override
     public List<DependencyNode> makeDependencyNodes() {
+
         final List<DependencyNode> packages = new ArrayList<>();
 
         final StreamParser<Podfile> podfileParser = new PodfileParser();
@@ -46,6 +55,13 @@ public class CocoapodsPackager implements Packager {
 
         final StreamParser<PodLock> podLockParser = new PodLockParser();
         final PodLock podLock = podLockParser.parse(podlockStream);
+
+        final Map<String, String> workspaceProjects = new HashMap<>();
+        for (final InputStream projectStream : projectStreams) {
+            final StreamParser<WorkspaceProject> workspaceProjectParser = new WorkspaceProjectParser();
+            final WorkspaceProject workspaceProject = workspaceProjectParser.parse(projectStream);
+            workspaceProjects.put(workspaceProject.name, workspaceProject.version);
+        }
 
         final Map<String, DependencyNode> allPods = getDependencies(podLock);
 
@@ -56,6 +72,7 @@ public class CocoapodsPackager implements Packager {
             }
             target.children.clear();
             target.children.addAll(targetDependencies);
+            target.version = workspaceProjects.get(target.name);
             packages.add(target);
         }
 
@@ -94,5 +111,4 @@ public class CocoapodsPackager implements Packager {
         }
         return node;
     }
-
 }
