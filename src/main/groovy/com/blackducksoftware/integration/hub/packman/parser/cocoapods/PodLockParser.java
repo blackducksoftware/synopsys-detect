@@ -5,9 +5,10 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
+import org.apache.commons.lang3.StringUtils;
+
+import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.packman.parser.StreamParser;
-import com.blackducksoftware.integration.hub.packman.parser.model.Package;
 
 public class PodLockParser extends StreamParser<PodLock> {
 
@@ -27,7 +28,7 @@ public class PodLockParser extends StreamParser<PodLock> {
 
     final Pattern SUBPOD_REGEX = Pattern.compile("    - (.*)\\((.*)\\)");
 
-    final Pattern DEPENDENCY_REGEX = Pattern.compile("  - (.*)\\((.*)\\)");
+    final Pattern DEPENDENCY_REGEX = Pattern.compile("  *- *(.*)\\((.*)\\)");
 
     final Pattern SPEC_CHECKSUM_REGEX = Pattern.compile("  (.*):(.*)");
 
@@ -36,12 +37,21 @@ public class PodLockParser extends StreamParser<PodLock> {
         PodLock podLock = new PodLock();
 
         String section = null;
-        Package subsection = null;
+        DependencyNode subsection = null;
 
         String line;
+        int lineNumber = 0;
         try {
             while ((line = bufferedReader.readLine()) != null) {
-                if (line.isEmpty()) {
+                lineNumber++;
+
+                final Matcher podMatcher = POD_REGEX.matcher(line);
+                final Matcher podWithSubMatcher = POD_WITH_SUB_REGEX.matcher(line);
+                final Matcher subpodMatcher = SUBPOD_REGEX.matcher(line);
+                final Matcher dependencyMatcher = DEPENDENCY_REGEX.matcher(line);
+                final Matcher checksumMatcher = SPEC_CHECKSUM_REGEX.matcher(line);
+
+                if (StringUtils.isBlank(line)) {
 
                 } else if (line.contains(COCOAPODS_SECTION)) {
                     section = COCOAPODS_SECTION;
@@ -56,36 +66,36 @@ public class PodLockParser extends StreamParser<PodLock> {
                     section = PODFILE_CHECKSUM_SECTION;
                     podLock.podfileChecksum = line.split(":")[1].trim();
                 } else if (section == PODS_SECTION) {
-                    final Matcher podMatcher = POD_REGEX.matcher(line);
-                    final Matcher podWithSubMatcher = POD_WITH_SUB_REGEX.matcher(line);
-                    final Matcher subpodMatcher = SUBPOD_REGEX.matcher(line);
                     if (podWithSubMatcher.matches()) {
-                        final Package pod = Package.packageFromString(line, POD_WITH_SUB_REGEX, 1, 2, Forge.cocoapods);
+                        final DependencyNode pod = CocoapodsPackager.createPodNodeFromGroups(podWithSubMatcher, 1, 2);
                         if (pod != null) {
                             subsection = pod;
                             podLock.pods.add(pod);
                         }
                     } else if (subsection != null && subpodMatcher.matches()) {
-                        final Package subpod = Package.packageFromString(line, SUBPOD_REGEX, 1, 2, Forge.cocoapods);
+                        final DependencyNode subpod = CocoapodsPackager.createPodNodeFromGroups(subpodMatcher, 1, 2);
                         if (subpod != null) {
-                            subsection.dependencies.add(subpod);
+                            subsection.children.add(subpod);
                         }
                     } else if (podMatcher.matches()) {
-                        final Package pod = Package.packageFromString(line, POD_REGEX, 1, 2, Forge.cocoapods);
+                        final DependencyNode pod = CocoapodsPackager.createPodNodeFromGroups(podMatcher, 1, 2);
                         if (pod != null) {
                             podLock.pods.add(pod);
                             subsection = null;
                         }
                     }
-                } else if (section == DEPENDENCIES_SECTION) {
-                    final Package dependency = Package.packageFromString(line, DEPENDENCY_REGEX, 1, 2, Forge.cocoapods);
+                } else if (section == DEPENDENCIES_SECTION && dependencyMatcher.matches()) {
+                    final DependencyNode dependency = CocoapodsPackager.createPodNodeFromGroups(dependencyMatcher, 1, 2);
                     if (dependency != null) {
                         podLock.dependencies.add(dependency);
+                    } else {
+                        System.out.println("Couldn't find match with [" + dependencyMatcher.pattern().pattern() + "] >" + line);
                     }
                 } else if (section == SPEC_CHECKSUMS_SECTION) {
-                    final Package dependency = Package.packageFromString(line, SPEC_CHECKSUM_REGEX, 1, 2, Forge.cocoapods);
-                    if (dependency != null) {
-                        podLock.specChecsums.put(dependency.externalId.name, dependency.externalId.version);
+                    if (checksumMatcher.matches()) {
+                        final String podName = checksumMatcher.group(1);
+                        final String checksum = checksumMatcher.group(2);
+                        podLock.specChecsums.put(podName, checksum);
                     }
                 } else {
                     // TODO: Log

@@ -2,14 +2,15 @@ package com.blackducksoftware.integration.hub.packman.parser.cocoapods;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.joda.time.DateTime;
-
+import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId;
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId;
 import com.blackducksoftware.integration.hub.packman.parser.StreamParser;
-import com.blackducksoftware.integration.hub.packman.parser.model.Package;
 
 public class PodfileParser extends StreamParser<Podfile> {
 
@@ -27,8 +28,8 @@ public class PodfileParser extends StreamParser<Podfile> {
     public Podfile parse(final BufferedReader bufferedReader) {
         Podfile podfile = new Podfile();
 
-        Package currentTarget = null;
-        final String version = DateTime.now().toString("YYYY-MM-DD HH:mm");
+        DependencyNode currentTarget = null;
+        final String version = "1.0.0"; // TODO: This will come from somewhere else
 
         String line;
         try {
@@ -56,16 +57,15 @@ public class PodfileParser extends StreamParser<Podfile> {
                     currentTarget = null;
                 } else if (targetMatcher.matches()) {
                     final String targetName = targetMatcher.group(2);
-                    final Package target = new Package(targetName, version);
+                    final ExternalId externalId = new NameVersionExternalId(Forge.cocoapods, targetName, version);
+                    final DependencyNode target = new DependencyNode(targetName, version, externalId, new ArrayList<DependencyNode>());
                     currentTarget = target;
                     podfile.targets.add(currentTarget);
                 } else if (frameworksMatcher.matches()) {
                     podfile.useFramworks = frameworksMatcher.group();
                 } else if (podMatcher.matches() && currentTarget != null) {
-                    final Package dependency = Package.packageFromString(line, POD_REGEX, 2, 4, Forge.cocoapods);
-                    if (dependency != null) {
-                        currentTarget.dependencies.add(dependency);
-                    }
+                    final DependencyNode pod = CocoapodsPackager.createPodNodeFromGroups(podMatcher, 2, 4);
+                    currentTarget.children.add(pod);
                 } else if (targetEndMatcher.matches()) {
                     currentTarget = null;
                 } else {
