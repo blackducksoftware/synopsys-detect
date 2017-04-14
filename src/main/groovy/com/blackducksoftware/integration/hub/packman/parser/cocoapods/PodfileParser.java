@@ -10,6 +10,17 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId;
+/*
+ * Copyright (C) 2017 Black Duck Software Inc.
+ * http://www.blackducksoftware.com/
+ * All rights reserved.
+ *
+ * This software is the confidential and proprietary information of
+ * Black Duck Software ("Confidential Information"). You shall not
+ * disclose such Confidential Information and shall use it only in
+ * accordance with the terms of the license agreement you entered into
+ * with Black Duck Software.
+ */
 import com.blackducksoftware.integration.hub.packman.parser.StreamParser;
 
 public class PodfileParser extends StreamParser<Podfile> {
