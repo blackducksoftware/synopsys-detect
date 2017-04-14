@@ -25,32 +25,32 @@ public class PodLock {
         builder.append("PODS:\n");
         for (final Package p : pods) {
             builder.append("  - ");
-            builder.append(p.name);
+            builder.append(p.externalId.name);
             builder.append(" (");
-            builder.append(p.version);
+            builder.append(p.externalId.version);
             builder.append(")\n");
             for (final Package dep : p.dependencies) {
                 builder.append("    - ");
-                builder.append(dep.name);
+                builder.append(dep.externalId.name);
                 builder.append(" (");
-                builder.append(dep.version);
+                builder.append(dep.externalId.version);
                 builder.append(")\n");
             }
         }
         builder.append("\nDEPENDENCIES:\n");
         for (final Package p : dependencies) {
             builder.append("  - ");
-            builder.append(p.name);
+            builder.append(p.externalId.name);
             builder.append(" (");
-            builder.append(p.version);
+            builder.append(p.externalId.version);
             builder.append(")\n");
         }
         builder.append("\nSPEC CHECKSUMS:\n");
         for (final Package p : dependencies) {
             builder.append("  ");
-            builder.append(p.name);
+            builder.append(p.externalId.name);
             builder.append(": ");
-            builder.append(specChecsums.get(p.name));
+            builder.append(specChecsums.get(p.externalId.name));
             builder.append("\n");
         }
         builder.append("\nPODFILE CHECKSUM: " + podfileChecksum + "\n");

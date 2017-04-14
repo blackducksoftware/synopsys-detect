@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 import org.joda.time.DateTime;
 
+import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
 import com.blackducksoftware.integration.hub.packman.parser.StreamParser;
 import com.blackducksoftware.integration.hub.packman.parser.model.Package;
 
@@ -61,7 +62,7 @@ public class PodfileParser extends StreamParser<Podfile> {
                 } else if (frameworksMatcher.matches()) {
                     podfile.useFramworks = frameworksMatcher.group();
                 } else if (podMatcher.matches() && currentTarget != null) {
-                    final Package dependency = Package.packageFromString(line, POD_REGEX, 2, 4);
+                    final Package dependency = Package.packageFromString(line, POD_REGEX, 2, 4, Forge.cocoapods);
                     if (dependency != null) {
                         currentTarget.dependencies.add(dependency);
                     }

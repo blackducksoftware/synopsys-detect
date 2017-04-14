@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
 import com.blackducksoftware.integration.hub.packman.parser.model.Package;
 import com.blackducksoftware.integration.hub.packman.parser.model.Packager;
 
@@ -36,9 +37,10 @@ public class CocoapodsPackager implements Packager {
         for (final Package target : podfile.targets) {
             final List<Package> targetDependencies = new ArrayList<>();
             for (final Package dep : target.dependencies) {
-                targetDependencies.add(allPods.get(dep.name));
+                targetDependencies.add(allPods.get(dep.externalId.name));
             }
             target.dependencies = targetDependencies;
+            target.forge = Forge.cocoapods;
             packages.add(target);
         }
 
@@ -48,14 +50,14 @@ public class CocoapodsPackager implements Packager {
     public Map<String, Package> getDependencies(final PodLock podLock) {
         final Map<String, Package> allPods = new HashMap<>();
         for (final Package pod : podLock.pods) {
-            allPods.put(pod.name, pod);
+            allPods.put(pod.externalId.name, pod);
         }
 
         // Fix pods dependencies
         for (final Entry<String, Package> pod : allPods.entrySet()) {
             final List<Package> pod_deps = new ArrayList<>();
             for (final Package dependency : pod.getValue().dependencies) {
-                pod_deps.add(allPods.get(dependency.name));
+                pod_deps.add(allPods.get(dependency.externalId.name));
             }
             pod.getValue().dependencies = pod_deps;
         }
