@@ -41,13 +41,21 @@ public class Parser {
     public void init() throws IOException {
         final String podlockFilePath = "/Users/jmathews/ruby/black-duck-swift-sample/Podfile.lock";
         final String podfileFilePath = "/Users/jmathews/ruby/black-duck-swift-sample/Podfile";
+        final String podspecFilePath = "/Users/jmathews/ruby/black-duck-swift-sample/BlackDuckSwiftSample.podspec";
+        final String project1FilePath = "/Users/jmathews/ruby/black-duck-swift-sample/black-duck-swift-sample.xcodeproj/project.pbxproj";
+        final String project2FilePath = "/Users/jmathews/ruby/black-duck-swift-sample/swift-ios-test/swift-ios-test.xcodeproj/project.pbxproj";
+
         final String outputDirectoryPath = "/Users/jmathews/ruby/black-duck-swift-sample/bdio/";
 
         try (
                 final InputStream podlockStream = new FileInputStream(podlockFilePath);
                 final InputStream podfileStream = new FileInputStream(podfileFilePath);
+                final InputStream podspecStream = new FileInputStream(podspecFilePath);
+        // final InputStream project1Stream = new FileInputStream(project1FilePath);
+        // final InputStream project2Stream = new FileInputStream(project2FilePath);
         ) {
-            final CocoapodsPackager packager = new CocoapodsPackager(podfileStream, podlockStream);
+            // final InputStream[] projectStreams = { project1Stream, project2Stream };
+            final CocoapodsPackager packager = new CocoapodsPackager(podfileStream, podlockStream, podspecStream);
             final List<DependencyNode> projects = packager.makeDependencyNodes();
 
             final File outputDirectory = new File(outputDirectoryPath);

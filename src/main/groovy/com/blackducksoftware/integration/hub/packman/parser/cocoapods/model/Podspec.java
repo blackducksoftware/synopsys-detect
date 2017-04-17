@@ -9,13 +9,19 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.parser.model;
+package com.blackducksoftware.integration.hub.packman.parser.cocoapods.model;
 
-import java.util.List;
+public class Podspec {
+    public String name;
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
+    public String version;
 
-public abstract class Packager {
-    public abstract List<DependencyNode> makeDependencyNodes();
+    public Podspec() {
 
+    }
+
+    public Podspec(final String name, final String version) {
+        this.name = name;
+        this.version = version;
+    }
 }
