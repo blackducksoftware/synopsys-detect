@@ -27,7 +27,10 @@ repositories {
 }
 
 dependencies {
-    compile 'com.blackducksoftware.integration:hub-common:10.1.0-SNAPSHOT'
+    compile('com.blackducksoftware.integration:hub-common:10.0.0') {
+        exclude module: 'integration-bdio'
+    }
+    compile 'com.blackducksoftware.integration:integration-bdio:2.0.0-SNAPSHOT'
     compile 'org.springframework.boot:spring-boot-starter'
     compile 'org.codehaus.groovy:groovy-all:2.4.10'
 
