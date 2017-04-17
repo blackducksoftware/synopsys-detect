@@ -1,15 +1,3 @@
-package com.blackducksoftware.integration.hub.packman.parser.cocoapods;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId;
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId;
 /*
  * Copyright (C) 2017 Black Duck Software Inc.
  * http://www.blackducksoftware.com/
@@ -21,26 +9,42 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVe
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
+package com.blackducksoftware.integration.hub.packman.parser.cocoapods.parsers;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
+
+import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
+import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId;
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId;
 import com.blackducksoftware.integration.hub.packman.parser.StreamParser;
+import com.blackducksoftware.integration.hub.packman.parser.cocoapods.CocoapodsPackager;
+import com.blackducksoftware.integration.hub.packman.parser.cocoapods.model.Podfile;
 
 public class PodfileParser extends StreamParser<Podfile> {
 
-    final Pattern PLATFORM_REGEX = Pattern.compile("platform :(.*)\\s*");
+    final Pattern PLATFORM_REGEX = Pattern.compile("\\s*platform :(.*)\\s*");
 
-    final Pattern TARGET_REGEX = Pattern.compile("target *('|\")(.*)\\1 *do\\s*");
+    final Pattern TARGET_REGEX = Pattern.compile("\\s*target *('|\")(.*)\\1 *do\\s*");
 
-    final Pattern TARGET_END_REGEX = Pattern.compile("end\\s*");
+    final Pattern TARGET_END_REGEX = Pattern.compile("\\s*end\\s*");
 
     final Pattern FRAMEWORKS_REGEX = Pattern.compile(" *use_frameworks!");
 
-    final Pattern POD_REGEX = Pattern.compile("\\s*pod *('|\")(.*)\\1, *('|\")(.*)\\3\\s*");
+    final Pattern POD_REGEX = Pattern.compile("\\s*pod\\s*('|\")(.*)\\1,\\s*('|\")(.*)\\3\\s*");
 
     @Override
     public Podfile parse(final BufferedReader bufferedReader) {
         Podfile podfile = new Podfile();
 
         DependencyNode currentTarget = null;
-        final String version = "1.0.0"; // TODO: This will come from somewhere else
 
         String line;
         try {
@@ -61,20 +65,21 @@ public class PodfileParser extends StreamParser<Podfile> {
                     }
                 }
 
-                if (line.isEmpty()) {
+                if (StringUtils.isBlank(line)) {
 
                 } else if (platformMatcher.matches()) {
                     podfile.platform = platformMatcher.group(1);
                     currentTarget = null;
                 } else if (targetMatcher.matches()) {
                     final String targetName = targetMatcher.group(2);
-                    final ExternalId externalId = new NameVersionExternalId(Forge.cocoapods, targetName, version);
-                    final DependencyNode target = new DependencyNode(targetName, version, externalId, new ArrayList<DependencyNode>());
+                    final String targetVersion = DateTime.now().toString("MM/dd/YYYY_HH:mm:Z");
+                    final ExternalId externalId = new NameVersionExternalId(Forge.cocoapods, targetName, targetVersion);
+                    final DependencyNode target = new DependencyNode(targetName, targetVersion, externalId, new ArrayList<DependencyNode>());
                     currentTarget = target;
                     podfile.targets.add(currentTarget);
                 } else if (frameworksMatcher.matches()) {
                     podfile.useFramworks = frameworksMatcher.group();
-                } else if (podMatcher.matches() && currentTarget != null) {
+                } else if (podMatcher.find() && currentTarget != null) {
                     final DependencyNode pod = CocoapodsPackager.createPodNodeFromGroups(podMatcher, 2, 4);
                     currentTarget.children.add(pod);
                 } else if (targetEndMatcher.matches()) {

@@ -42,8 +42,8 @@ public class Parser {
 
     @PostConstruct
     public void init() throws IOException {
-        final String[] sourcePaths = new String[] { "/Users/jmathews/ruby/black-duck-swift-sample" };
-        final String outputDirectoryPath = "";
+        final String[] sourcePaths = new String[] { "/Users/ekerwin/Documents/source/integration/hub-packman/src/test/resources" };
+        final String outputDirectoryPath = "/Users/ekerwin/Documents/working/output";
 
         for (final PackageManagerSearcher packageManagerSearcher : packageManagerSearchers) {
             for (final String sourcePath : sourcePaths) {
@@ -63,7 +63,8 @@ public class Parser {
 
         for (final DependencyNode project : projectNodes) {
             final String filename = String.format("%s_%s_%s_bdio.jsonld", packageManager.toString(), project.name, project.version);
-            try (final BdioWriter bdioWriter = new BdioWriter(gson, new FileOutputStream(filename))) {
+            final File outputFile = new File(outputDirectory, filename);
+            try (final BdioWriter bdioWriter = new BdioWriter(gson, new FileOutputStream(outputFile))) {
                 final SimpleBdioDocument bdioDocument = dependencyNodeTransformer.transformDependencyNode(project);
                 bdioWriter.writeSimpleBdioDocument(bdioDocument);
             } catch (final IOException e) {

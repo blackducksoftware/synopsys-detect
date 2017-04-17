@@ -17,7 +17,7 @@ import java.util.List;
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.packman.parser.model.Packager;
 
-public class GradlePackager implements Packager {
+public class GradlePackager extends Packager {
     GradlePackager(final String sourcePath) {
 
     }

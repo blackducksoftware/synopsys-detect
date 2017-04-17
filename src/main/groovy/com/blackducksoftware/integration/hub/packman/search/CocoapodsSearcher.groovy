@@ -9,8 +9,9 @@ import com.blackducksoftware.integration.hub.packman.parser.cocoapods.CocoapodsP
 
 @Component
 class CocoapodsSearcher extends PackageManagerSearcher {
-    public static final String PODFILE_LOCK_FILENAME = 'Podfile.lock';
-    public static final String PODFILE_FILENAME = 'Podfile';
+    public static final String PODFILE_LOCK_FILENAME = 'Podfile.lock'
+    public static final String PODFILE_FILENAME = 'Podfile'
+    public static final String PODSPEC_FILENAME_EXTENSION = '.podspec'
 
     PackageManager getPackageManager() {
         return PackageManager.COCOAPODS
@@ -21,7 +22,8 @@ class CocoapodsSearcher extends PackageManagerSearcher {
         if (sourcePath && sourceDirectory.isDirectory()) {
             File podfileLockFile = new File(sourceDirectory, PODFILE_LOCK_FILENAME)
             File podfileFile = new File(sourceDirectory, PODFILE_FILENAME)
-            return podfileLockFile.isFile() && podfileFile.isFile()
+            File podspecFile = findPodspecFile(sourceDirectory)
+            return podfileLockFile.isFile() && podfileFile.isFile() && podspecFile != null && podspecFile.isFile()
         }
 
         false
@@ -31,14 +33,28 @@ class CocoapodsSearcher extends PackageManagerSearcher {
         File sourceDirectory = new File(sourcePath)
         File podfileLockFile = new File(sourceDirectory, PODFILE_LOCK_FILENAME)
         File podfileFile = new File(sourceDirectory, PODFILE_FILENAME)
-        final InputStream podfileLockStream = new FileInputStream(podfileLockFile)
-        final InputStream podfileStream = new FileInputStream(podfileFile)
+        File podspecFile = findPodspecFile(sourceDirectory)
+        final InputStream podfileLockStream
+        final InputStream podfileStream
+        final InputStream podspecStream
         try {
-            def cocoaPodsPackager = new CocoapodsPackager(podfileStream, podfileLockStream)
+            podfileLockStream = new FileInputStream(podfileLockFile)
+            podfileStream = new FileInputStream(podfileFile)
+            podspecStream = new FileInputStream(podspecFile)
+
+            def cocoaPodsPackager = new CocoapodsPackager(podfileStream, podfileLockStream, podspecStream)
             def projects = cocoaPodsPackager.makeDependencyNodes()
+            return projects
         } finally {
-            IOUtils.closeQuietly(podfileLockFile)
-            IOUtils.closeQuietly(podfileFile)
+            IOUtils.closeQuietly(podfileLockStream)
+            IOUtils.closeQuietly(podfileStream)
+            IOUtils.closeQuietly(podspecStream)
+        }
+    }
+
+    private File findPodspecFile(File sourceDirectory) {
+        sourceDirectory.listFiles().find {
+            it.name.endsWith(PODSPEC_FILENAME_EXTENSION)
         }
     }
 }

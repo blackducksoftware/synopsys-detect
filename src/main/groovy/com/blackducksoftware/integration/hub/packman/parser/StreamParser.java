@@ -34,4 +34,15 @@ public abstract class StreamParser<T> {
 
     public abstract T parse(BufferedReader bufferedReader);
 
+    public String processSingleLineComments(String line, final String comment) {
+        if (line.contains(comment)) {
+            final String[] sections = line.split("#");
+            if (sections.length > 0) {
+                line = sections[0].trim();
+            } else {
+                line = "";
+            }
+        }
+        return line;
+    }
 }
