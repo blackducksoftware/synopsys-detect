@@ -9,7 +9,7 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.parser.cocoapods;
+package com.blackducksoftware.integration.hub.packman.parser.cocoapods.parsers;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,13 +17,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.blackducksoftware.integration.hub.packman.parser.StreamParser;
+import com.blackducksoftware.integration.hub.packman.parser.cocoapods.CocoapodsPackager;
 import com.blackducksoftware.integration.hub.packman.parser.cocoapods.model.Podspec;
 
 public class PodspecParser extends StreamParser<Podspec> {
 
-    final Pattern NAME_REGEX = Pattern.compile(".name\\s*=\\s*('|\")(.*)\\1*");
+    final Pattern NAME_REGEX = Pattern.compile(".*\\.name\\s*=\\s*('|\")(.*)\\1.*");
 
-    final Pattern VERSION_REGEX = Pattern.compile(".version\\s*=\\s*('|\")(.*)\\1");
+    final Pattern VERSION_REGEX = Pattern.compile(".*\\.version\\s*=\\s*('|\")(.*)\\1.*");
 
     @Override
     public Podspec parse(final BufferedReader bufferedReader) {

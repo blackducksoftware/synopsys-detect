@@ -9,22 +9,21 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.parser.cocoapods;
+package com.blackducksoftware.integration.hub.packman.parser.cocoapods.parsers;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.commons.lang3.StringUtils;
 
 import com.blackducksoftware.integration.hub.packman.parser.StreamParser;
 import com.blackducksoftware.integration.hub.packman.parser.cocoapods.model.WorkspaceProject;
 
 public class WorkspaceProjectParser extends StreamParser<WorkspaceProject> {
 
-    final Pattern NAME_REGEX = Pattern.compile("\\{[\\s\\S]*productName\\s*=\\s*('|\")(.*)\\1;");
+    final Pattern NAME_REGEX = Pattern.compile("\\s*productName\\s*=\\s*('|\")(.*)\\1\\s*;");
 
-    final Pattern VERSION_REGEX = Pattern.compile("buildSettings\\s*=\\s*\\{[\\s\\S]*CURRENT_PROJECT_VERSION\\s*=\\s*(.*);");
+    final Pattern VERSION_REGEX = Pattern.compile("\\s*CURRENT_PROJECT_VERSION\\s*=\\s*(.*);");
 
     @Override
     public WorkspaceProject parse(final BufferedReader bufferedReader) {
@@ -33,17 +32,22 @@ public class WorkspaceProjectParser extends StreamParser<WorkspaceProject> {
         String name = null;
         String version = null;
 
-        final String proejctText = StringUtils.join(bufferedReader.lines(), "\n");
+        try {
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                final Matcher nameMathcer = NAME_REGEX.matcher(line);
+                final Matcher versionMatcher = VERSION_REGEX.matcher(line);
 
-        final Matcher nameMathcer = NAME_REGEX.matcher(proejctText);
-        final Matcher versionMatcher = VERSION_REGEX.matcher(proejctText);
+                if (name == null && nameMathcer.matches()) {
+                    name = nameMathcer.group(2).trim();
+                } else if (version == null && versionMatcher.matches()) {
+                    version = versionMatcher.group(1).trim();
+                }
+            }
+        } catch (final IOException e) {
+            e.printStackTrace();
+        }
 
-        if (name == null && nameMathcer.matches()) {
-            name = nameMathcer.group(2).trim();
-        }
-        if (version == null && versionMatcher.matches()) {
-            version = versionMatcher.group(1).trim();
-        }
         workspaceProject = new WorkspaceProject(name, version);
         return workspaceProject;
     }

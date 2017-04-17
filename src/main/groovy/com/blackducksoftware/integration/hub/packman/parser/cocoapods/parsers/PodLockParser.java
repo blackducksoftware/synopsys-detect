@@ -9,7 +9,7 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.parser.cocoapods;
+package com.blackducksoftware.integration.hub.packman.parser.cocoapods.parsers;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.packman.parser.StreamParser;
+import com.blackducksoftware.integration.hub.packman.parser.cocoapods.CocoapodsPackager;
 import com.blackducksoftware.integration.hub.packman.parser.cocoapods.model.PodLock;
 
 public class PodLockParser extends StreamParser<PodLock> {
