@@ -29,11 +29,9 @@ import com.blackducksoftware.integration.hub.packman.parser.StreamParser;
 import com.blackducksoftware.integration.hub.packman.parser.cocoapods.model.PodLock;
 import com.blackducksoftware.integration.hub.packman.parser.cocoapods.model.Podfile;
 import com.blackducksoftware.integration.hub.packman.parser.cocoapods.model.Podspec;
-import com.blackducksoftware.integration.hub.packman.parser.cocoapods.model.WorkspaceProject;
 import com.blackducksoftware.integration.hub.packman.parser.cocoapods.parsers.PodLockParser;
 import com.blackducksoftware.integration.hub.packman.parser.cocoapods.parsers.PodfileParser;
 import com.blackducksoftware.integration.hub.packman.parser.cocoapods.parsers.PodspecParser;
-import com.blackducksoftware.integration.hub.packman.parser.cocoapods.parsers.WorkspaceProjectParser;
 import com.blackducksoftware.integration.hub.packman.parser.model.Packager;
 
 public class CocoapodsPackager extends Packager {
@@ -45,25 +43,16 @@ public class CocoapodsPackager extends Packager {
 
     private final InputStream podspecStream;
 
-    private final InputStream[] projectStreams;
-
-    public CocoapodsPackager(final InputStream podfileStream, final InputStream podlockStream, final InputStream[] projectStreams) {
-        this.podfileStream = podfileStream;
-        this.podlockStream = podlockStream;
-        this.projectStreams = projectStreams;
-        this.podspecStream = null;
-    }
-
     public CocoapodsPackager(final InputStream podfileStream, final InputStream podlockStream, final InputStream podspecStream) {
         this.podfileStream = podfileStream;
         this.podlockStream = podlockStream;
         this.podspecStream = podspecStream;
-        this.projectStreams = null;
     }
 
     @Override
     public List<DependencyNode> makeDependencyNodes() {
         final List<DependencyNode> packages = new ArrayList<>();
+        final Map<String, String> workspaceProjects = new HashMap<>();
 
         final StreamParser<Podfile> podfileParser = new PodfileParser();
         final Podfile podfile = podfileParser.parse(podfileStream);
@@ -72,20 +61,9 @@ public class CocoapodsPackager extends Packager {
         final PodLock podLock = podLockParser.parse(podlockStream);
 
         final StreamParser<Podspec> podspecParser = new PodspecParser();
-        final Podspec podspec = podspecParser.parse(podspecStream);
-
-        final Map<String, String> workspaceProjects = new HashMap<>();
-
-        // Attempt to resolve versions from project parser
-        if (projectStreams != null) {
-            for (final InputStream projectStream : projectStreams) {
-                final StreamParser<WorkspaceProject> workspaceProjectParser = new WorkspaceProjectParser();
-                final WorkspaceProject workspaceProject = workspaceProjectParser.parse(projectStream);
-                workspaceProjects.put(workspaceProject.name, workspaceProject.version);
-            }
-        }
-
-        if (podspec != null) {
+        Podspec podspec = null;
+        if (podspecStream != null) {
+            podspec = podspecParser.parse(podspecStream);
             for (final DependencyNode target : podfile.targets) {
                 workspaceProjects.put(target.name, podspec.version);
             }
@@ -133,15 +111,17 @@ public class CocoapodsPackager extends Packager {
 
     public static DependencyNode createPodNodeFromGroups(final Matcher regexMatcher, final int nameGroup, final int versionGroup) {
         DependencyNode node = null;
-        try {
-            final String name = regexMatcher.group(nameGroup).trim();
-            final String version = regexMatcher.group(versionGroup).trim();
-            final ExternalId externalId = new NameVersionExternalId(Forge.cocoapods, name, version);
-            node = new DependencyNode(name, version, externalId, new ArrayList<DependencyNode>());
-        } catch (final IllegalStateException e) {
-            e.printStackTrace();
-        } catch (final IndexOutOfBoundsException e) {
-            e.printStackTrace();
+        if (regexMatcher.matches()) {
+            try {
+                final String name = regexMatcher.group(nameGroup).trim();
+                final String version = regexMatcher.group(versionGroup).trim();
+                final ExternalId externalId = new NameVersionExternalId(Forge.cocoapods, name, version);
+                node = new DependencyNode(name, version, externalId, new ArrayList<DependencyNode>());
+            } catch (final IllegalStateException e) {
+                e.printStackTrace();
+            } catch (final IndexOutOfBoundsException e) {
+                e.printStackTrace();
+            }
         }
         return node;
     }

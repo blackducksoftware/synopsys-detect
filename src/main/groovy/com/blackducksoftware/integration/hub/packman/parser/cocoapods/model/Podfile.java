@@ -20,16 +20,9 @@ public class Podfile {
 
     public List<DependencyNode> targets = new ArrayList<>();
 
-    public String platform;
-
-    public String useFramworks;
-
     @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder();
-        if (platform != null) {
-            builder.append("platform :" + platform + "\n\n");
-        }
         for (final DependencyNode p : targets) {
             builder.append("target '");
             builder.append(p.name);
