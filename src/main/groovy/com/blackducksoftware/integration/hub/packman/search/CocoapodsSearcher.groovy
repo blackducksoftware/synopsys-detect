@@ -22,8 +22,7 @@ class CocoapodsSearcher extends PackageManagerSearcher {
         if (sourcePath && sourceDirectory.isDirectory()) {
             File podfileLockFile = new File(sourceDirectory, PODFILE_LOCK_FILENAME)
             File podfileFile = new File(sourceDirectory, PODFILE_FILENAME)
-            File podspecFile = findPodspecFile(sourceDirectory)
-            return podfileLockFile.isFile() && podfileFile.isFile() && podspecFile != null && podspecFile.isFile()
+            return podfileLockFile.isFile() && podfileFile.isFile()
         }
 
         false
