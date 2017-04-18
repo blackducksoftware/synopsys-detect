@@ -16,8 +16,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -40,11 +38,7 @@ public class Parser {
     @Autowired
     private DependencyNodeTransformer dependencyNodeTransformer;
 
-    @PostConstruct
-    public void init() throws IOException {
-        final String[] sourcePaths = new String[] { "/Users/ekerwin/Documents/source/integration/hub-packman/src/test/resources" };
-        final String outputDirectoryPath = "/Users/ekerwin/Documents/working/output";
-
+    public void parseSourcePaths(final String[] sourcePaths, final String outputDirectoryPath) throws IOException {
         for (final PackageManagerSearcher packageManagerSearcher : packageManagerSearchers) {
             for (final String sourcePath : sourcePaths) {
                 if (packageManagerSearcher.isPackageManagerApplicable(sourcePath)) {

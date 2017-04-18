@@ -16,6 +16,7 @@ import javax.annotation.PostConstruct
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.builder.SpringApplicationBuilder
 import org.springframework.context.annotation.Bean
@@ -23,6 +24,7 @@ import org.springframework.context.annotation.Bean
 import com.blackducksoftware.integration.hub.bdio.simple.BdioNodeFactory
 import com.blackducksoftware.integration.hub.bdio.simple.BdioPropertyHelper
 import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeTransformer
+import com.blackducksoftware.integration.hub.packman.parser.Parser
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
@@ -36,12 +38,22 @@ class Application {
     @Autowired
     BdioNodeFactory bdioNodeFactory
 
+    @Autowired
+    Parser parser
+
+    @Value('${packman.source.paths}')
+    String[] sourcePaths
+
+    @Value('${packman.output.path}')
+    String outputDirectoryPath
+
     static void main(final String[] args) {
         new SpringApplicationBuilder(Application.class).logStartupInfo(true).run(args)
     }
 
     @PostConstruct
     void init() {
+        parser.parseSourcePaths(sourcePaths, outputDirectoryPath)
     }
 
     @Bean
@@ -61,6 +73,6 @@ class Application {
 
     @Bean
     DependencyNodeTransformer dependencyNodeTransformer() {
-        return new DependencyNodeTransformer(bdioNodeFactory, bdioPropertyHelper)
+        new DependencyNodeTransformer(bdioNodeFactory, bdioPropertyHelper)
     }
 }
