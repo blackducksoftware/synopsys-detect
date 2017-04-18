@@ -39,7 +39,7 @@ class CocoapodsSearcher extends PackageManagerSearcher {
         try {
             podfileLockStream = new FileInputStream(podfileLockFile)
             podfileStream = new FileInputStream(podfileFile)
-            podspecStream = new FileInputStream(podspecFile)
+            podspecStream = podspecFile != null ? new FileInputStream(podspecFile) : null
 
             def cocoaPodsPackager = new CocoapodsPackager(podfileStream, podfileLockStream, podspecStream)
             def projects = cocoaPodsPackager.makeDependencyNodes()
