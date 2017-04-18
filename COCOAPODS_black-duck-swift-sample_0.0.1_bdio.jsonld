@@ -1,0 +1,82 @@
+[
+  {
+    "specVersion": "1.1.0",
+    "spdx:name": "black-duck-swift-sample/0.0.1 Black Duck I/O Export",
+    "@id": "uuid:123f481c-9c70-4da7-8377-67fd4d768f2e",
+    "@type": "BillOfMaterials",
+    "relationship": []
+  },
+  {
+    "name": "black-duck-swift-sample",
+    "revision": "0.0.1",
+    "@id": "data:cocoapods/black-duck-swift-sample/0.0.1",
+    "@type": "Project",
+    "externalIdentifier": {
+      "externalSystemTypeId": "cocoapods",
+      "externalId": "black-duck-swift-sample:0.0.1"
+    },
+    "relationship": [
+      {
+        "related": "data:cocoapods/Allihoopa-macOS/1.1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "data:cocoapods/Mapbox-macOS-SDK/0.4.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "data:cocoapods/RepliesSDK-macOS/0.2.22",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "Allihoopa-macOS",
+    "revision": "1.1.0",
+    "@id": "data:cocoapods/Allihoopa-macOS/1.1.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "cocoapods",
+      "externalId": "Allihoopa-macOS:1.1.0"
+    },
+    "relationship": [
+      {
+        "related": "data:cocoapods/AllihoopaCore/1.1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "AllihoopaCore",
+    "revision": "1.1.0",
+    "@id": "data:cocoapods/AllihoopaCore/1.1.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "cocoapods",
+      "externalId": "AllihoopaCore:1.1.0"
+    },
+    "relationship": []
+  },
+  {
+    "name": "Mapbox-macOS-SDK",
+    "revision": "0.4.1",
+    "@id": "data:cocoapods/Mapbox-macOS-SDK/0.4.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "cocoapods",
+      "externalId": "Mapbox-macOS-SDK:0.4.1"
+    },
+    "relationship": []
+  },
+  {
+    "name": "RepliesSDK-macOS",
+    "revision": "0.2.22",
+    "@id": "data:cocoapods/RepliesSDK-macOS/0.2.22",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "cocoapods",
+      "externalId": "RepliesSDK-macOS:0.2.22"
+    },
+    "relationship": []
+  }
+]

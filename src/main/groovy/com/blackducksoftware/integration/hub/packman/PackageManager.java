@@ -1,9 +1,10 @@
 package com.blackducksoftware.integration.hub.packman;
 
-public enum BuildTool {
+public enum PackageManager {
     MAVEN,
     GRADLE,
     SBT,
-    MSBUILD,
-    COCOAPODS;
+    NUGET,
+    COCOAPODS,
+    PIP;
 }

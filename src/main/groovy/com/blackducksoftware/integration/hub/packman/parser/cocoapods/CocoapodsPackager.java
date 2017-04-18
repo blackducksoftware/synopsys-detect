@@ -37,7 +37,6 @@ import com.blackducksoftware.integration.hub.packman.parser.cocoapods.parsers.Wo
 import com.blackducksoftware.integration.hub.packman.parser.model.Packager;
 
 public class CocoapodsPackager extends Packager {
-
     public static final String COMMENTS = "#";
 
     private final InputStream podfileStream;
@@ -64,7 +63,6 @@ public class CocoapodsPackager extends Packager {
 
     @Override
     public List<DependencyNode> makeDependencyNodes() {
-
         final List<DependencyNode> packages = new ArrayList<>();
 
         final StreamParser<Podfile> podfileParser = new PodfileParser();
@@ -147,4 +145,5 @@ public class CocoapodsPackager extends Packager {
         }
         return node;
     }
+
 }
