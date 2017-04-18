@@ -30,6 +30,10 @@ public class PodspecParser extends StreamParser<Podspec> {
     public Podspec parse(final BufferedReader bufferedReader) {
         Podspec podspec = null;
 
+        if (bufferedReader == null) {
+            return podspec;
+        }
+
         String name = null;
         String version = null;
 
