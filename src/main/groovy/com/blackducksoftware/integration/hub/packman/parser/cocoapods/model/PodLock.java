@@ -29,7 +29,9 @@ public class PodLock {
 
     public Map<String, String> specChecsums = new HashMap<>();
 
-    public Map<String, String> externalSources = new HashMap<>();
+    public Map<String, Pod> externalSources = new HashMap<>();
+
+    public Map<String, Pod> checkoutOptions = new HashMap<>();
 
     public String podfileChecksum;
 

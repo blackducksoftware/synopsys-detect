@@ -17,13 +17,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.packman.parser.StreamParser;
 import com.blackducksoftware.integration.hub.packman.parser.cocoapods.CocoapodsPackager;
+import com.blackducksoftware.integration.hub.packman.parser.cocoapods.model.Pod;
 import com.blackducksoftware.integration.hub.packman.parser.cocoapods.model.PodLock;
 
 public class PodLockParser2 extends StreamParser<PodLock> {
+    private final Logger logger = LoggerFactory.getLogger(PodLockParser2.class);
 
     final Pattern PODS_SECTION = Pattern.compile("PODS:\\s*");
 
@@ -47,11 +51,15 @@ public class PodLockParser2 extends StreamParser<PodLock> {
 
     final Pattern DEPENDENCY_REGEX = Pattern.compile("  *- *(.*)\\s+(.*)");
 
-    final Pattern EXTERNAL_SOURCES_START_REGEX = Pattern.compile("  (.*):(.*)");
+    final Pattern POD_START_REGEX = Pattern.compile("  (.*):\\s*");
 
-    final Pattern BRANCH_REGEX = Pattern.compile("  (.*):(.*)");
+    final Pattern BRANCH_REGEX = Pattern.compile("    :branch:\\s*(.*)");
 
-    final Pattern GIT_REGEX = Pattern.compile("  (.*):(.*)");
+    final Pattern GIT_REGEX = Pattern.compile("    :git:\\s*(.*)");
+
+    final Pattern TAG_REGEX = Pattern.compile("    :tag:\\s*(.*)");
+
+    final Pattern COMMIT_REGEX = Pattern.compile("    :commit:\\s*(.*)");
 
     @Override
     public PodLock parse(final BufferedReader bufferedReader) {
@@ -59,13 +67,11 @@ public class PodLockParser2 extends StreamParser<PodLock> {
 
         String section = null;
         DependencyNode subsection = null;
+        Pod currentPod = null;
 
         String line;
-        int lineNumber = 0;
         try {
             while ((line = bufferedReader.readLine()) != null) {
-                lineNumber++;
-
                 final Matcher podsSectionMatcher = PODS_SECTION.matcher(line);
                 final Matcher dependenciesSectionMatcher = DEPENDENCIES_SECTION.matcher(line);
                 final Matcher specChecksumSectionMatcher = SPEC_CHECKSUMS_SECTION.matcher(line);
@@ -88,6 +94,10 @@ public class PodLockParser2 extends StreamParser<PodLock> {
                 } else if (podfileChecksumSectionMatcher.matches()) {
                     section = PODFILE_CHECKSUM_SECTION.pattern();
                     podLock.podfileChecksum = line.split(":")[1].trim();
+                } else if (externalSourcesSectionMatcher.matches()) {
+                    section = EXTERNAL_SOURCES_SECTION.pattern();
+                } else if (checkoutSectionMatcher.matches()) {
+                    section = CHECKOUT_OPTIONS_SECTION.pattern();
                 } else if (section == PODS_SECTION.pattern()) {
                     final Matcher podMatcher = POD_REGEX.matcher(line);
                     final Matcher podWithSubMatcher = POD_WITH_SUB_REGEX.matcher(line);
@@ -117,7 +127,39 @@ public class PodLockParser2 extends StreamParser<PodLock> {
                     if (dependency != null) {
                         podLock.dependencies.add(dependency);
                     } else {
-                        System.out.println("Couldn't find match with [" + dependencyMatcher.pattern().pattern() + "] >" + line);
+                        logger.debug("Couldn't find match with [" + dependencyMatcher.pattern().pattern() + "] >" + line);
+                    }
+                } else if (section == SPEC_CHECKSUMS_SECTION.pattern()) {
+                    final Matcher checksumMatcher = SPEC_CHECKSUMS_SECTION.matcher(line);
+                    if (checksumMatcher.matches()) {
+                        final String podName = checksumMatcher.group(1);
+                        final String checksum = checksumMatcher.group(2);
+                        podLock.specChecsums.put(podName, checksum);
+                    }
+                } else if (section == EXTERNAL_SOURCES_SECTION.pattern() || section == CHECKOUT_OPTIONS_SECTION.pattern()) {
+                    final Matcher nameMatcher = POD_START_REGEX.matcher(line);
+                    final Matcher commitMatcher = COMMIT_REGEX.matcher(line);
+                    final Matcher urlMatcher = GIT_REGEX.matcher(line);
+                    final Matcher branchMatcher = BRANCH_REGEX.matcher(line);
+                    final Matcher tagMatcher = TAG_REGEX.matcher(line);
+
+                    if (nameMatcher.matches()) {
+                        final String podName = nameMatcher.group(1);
+                        final Pod pod = new Pod(podName);
+                        currentPod = pod;
+                        if (section == EXTERNAL_SOURCES_SECTION.pattern()) {
+                            podLock.externalSources.put(podName, pod);
+                        } else {
+                            podLock.checkoutOptions.put(podName, pod);
+                        }
+                    } else if (commitMatcher.matches()) {
+                        currentPod.gitCommit = commitMatcher.group(1);
+                    } else if (urlMatcher.matches()) {
+                        currentPod.gitUrl = urlMatcher.group(1);
+                    } else if (branchMatcher.matches()) {
+                        currentPod.gitBranch = branchMatcher.group(1);
+                    } else if (tagMatcher.matches()) {
+                        currentPod.gitTag = tagMatcher.group(1);
                     }
                 } else if (section == SPEC_CHECKSUMS_SECTION.pattern()) {
                     final Matcher checksumMatcher = SPEC_CHECKSUMS_SECTION.matcher(line);
@@ -127,13 +169,11 @@ public class PodLockParser2 extends StreamParser<PodLock> {
                         podLock.specChecsums.put(podName, checksum);
                     }
                 } else {
-                    // TODO: Log
-                    System.out.println("PodLockParser: Couldn't find if statement for >" + line + "\n");
+                    logger.debug("PodLockParser: Couldn't find if statement for >" + line + "\n");
                 }
             }
         } catch (final IOException e) {
-            // TODO: Log
-            e.printStackTrace();
+            logger.debug("IOException when parsing Podfile.lock:" + e.getMessage());
             podLock = null;
         }
         return podLock;

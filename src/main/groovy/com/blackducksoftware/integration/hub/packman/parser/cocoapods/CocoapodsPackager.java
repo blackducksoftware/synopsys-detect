@@ -103,8 +103,7 @@ public class CocoapodsPackager extends Packager {
             for (final DependencyNode dependency : pod.getValue().children) {
                 pod_deps.add(allPods.get(dependency.name));
             }
-            pod.getValue().children.clear();
-            pod.getValue().children.addAll(pod_deps);
+            pod.getValue().children = pod_deps;
         }
         return allPods;
     }
