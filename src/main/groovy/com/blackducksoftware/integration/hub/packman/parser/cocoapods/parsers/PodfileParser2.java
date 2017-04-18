@@ -20,8 +20,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
+import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId;
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId;
 import com.blackducksoftware.integration.hub.packman.parser.StreamParser;
 import com.blackducksoftware.integration.hub.packman.parser.cocoapods.CocoapodsPackager;
 import com.blackducksoftware.integration.hub.packman.parser.cocoapods.model.Pod;
@@ -81,29 +85,43 @@ public class PodfileParser2 extends StreamParser<Podfile> {
                     }
                 }
             }
+
+            for (final PodfileTarget target : targets) {
+                final String targetName = target.name;
+                final String targetVersion = DateTime.now().toString("MM-dd-YYYY_HH:mm:Z");
+                final ExternalId targetExternalId = new NameVersionExternalId(Forge.cocoapods, targetName, targetVersion);
+                final DependencyNode project = new DependencyNode(targetName, targetVersion, targetExternalId, new ArrayList<>());
+
+                final List<Pod> targetPods = getPods(target);
+                project.children = convertPodsToNodes(targetPods);
+                podfile.targets.add(project);
+            }
         } catch (final IOException e) {
             e.printStackTrace();
             podfile = null;
         } catch (final NullPointerException e) {
+            e.printStackTrace();
             podfile = null;
         }
-
-        for (final PodfileTarget target : targets) {
-            final List<Pod> targetPods = getPods(target);
-
-            final String name = "";
-            final DependencyNode project = new DependencyNode(name, null, null, new ArrayList<>());
-
-        }
-
         return podfile;
     }
 
     private List<Pod> getPods(final PodfileTarget target) {
         final List<Pod> pods = new ArrayList<>();
+        pods.addAll(target.pods);
         if (target.parent != null) {
             pods.addAll(getPods(target.parent));
         }
         return pods;
+    }
+
+    private List<DependencyNode> convertPodsToNodes(final List<Pod> pods) {
+        final List<DependencyNode> nodes = new ArrayList<>();
+        for (final Pod pod : pods) {
+            final String nodeName = pod.name;
+            final DependencyNode node = new DependencyNode(nodeName, null, null, new ArrayList<>());
+            nodes.add(node);
+        }
+        return nodes;
     }
 }

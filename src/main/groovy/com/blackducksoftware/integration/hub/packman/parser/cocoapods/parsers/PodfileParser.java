@@ -34,7 +34,7 @@ public class PodfileParser extends StreamParser<Podfile> {
 
     final Pattern TARGET_END_REGEX = Pattern.compile("\\s*end\\s*");
 
-    final Pattern POD_REGEX = Pattern.compile("\\s*pod\\s*('|\")(.*)\\1,\\s*('|\")(.*)\\3\\s*");
+    final Pattern POD_REGEX = Pattern.compile("\\s*pod\\s*('|\")(.*)\\1");
 
     @Override
     public Podfile parse(final BufferedReader bufferedReader) {
@@ -63,7 +63,7 @@ public class PodfileParser extends StreamParser<Podfile> {
 
                 } else if (targetMatcher.matches()) {
                     final String targetName = targetMatcher.group(2);
-                    final String targetVersion = DateTime.now().toString("MM/dd/YYYY_HH:mm:Z");
+                    final String targetVersion = DateTime.now().toString("MM_dd_YYYY_HH:mm:Z");
                     final ExternalId externalId = new NameVersionExternalId(Forge.cocoapods, targetName, targetVersion);
                     final DependencyNode target = new DependencyNode(targetName, targetVersion, externalId, new ArrayList<DependencyNode>());
                     currentTarget = target;

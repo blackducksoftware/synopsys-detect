@@ -11,12 +11,13 @@
  */
 package com.blackducksoftware.integration.hub.packman.parser.cocoapods.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PodfileTarget {
     final public String name;
 
-    public List<Pod> pods;
+    public List<Pod> pods = new ArrayList<>();
 
     public PodfileTarget parent;
 
