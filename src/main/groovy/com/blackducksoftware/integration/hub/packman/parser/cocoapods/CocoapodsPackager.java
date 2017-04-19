@@ -29,7 +29,7 @@ import com.blackducksoftware.integration.hub.packman.parser.StreamParser;
 import com.blackducksoftware.integration.hub.packman.parser.cocoapods.model.PodLock;
 import com.blackducksoftware.integration.hub.packman.parser.cocoapods.model.Podfile;
 import com.blackducksoftware.integration.hub.packman.parser.cocoapods.model.Podspec;
-import com.blackducksoftware.integration.hub.packman.parser.cocoapods.parsers.PodLockParser2;
+import com.blackducksoftware.integration.hub.packman.parser.cocoapods.parsers.PodLockParser;
 import com.blackducksoftware.integration.hub.packman.parser.cocoapods.parsers.PodfileParser;
 import com.blackducksoftware.integration.hub.packman.parser.cocoapods.parsers.PodspecParser;
 import com.blackducksoftware.integration.hub.packman.parser.model.Packager;
@@ -57,7 +57,7 @@ public class CocoapodsPackager extends Packager {
         final StreamParser<Podfile> podfileParser = new PodfileParser();
         final Podfile podfile = podfileParser.parse(podfileStream);
 
-        final StreamParser<PodLock> podLockParser = new PodLockParser2();
+        final StreamParser<PodLock> podLockParser = new PodLockParser();
         final PodLock podLock = podLockParser.parse(podlockStream);
 
         final StreamParser<Podspec> podspecParser = new PodspecParser();
