@@ -11,4 +11,4 @@ In dev.
 
 ## Documentation 
 
-All documentation for hub-packman located on our public [Black Duck Confluence](https://blackducksoftware.atlassian.net/wiki/display/INTDOCS/)
+All documentation is located on our public [Black Duck Confluence](https://blackducksoftware.atlassian.net/wiki/display/INTDOCS/)
