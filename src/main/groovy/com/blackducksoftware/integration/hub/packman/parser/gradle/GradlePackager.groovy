@@ -14,7 +14,7 @@ package com.blackducksoftware.integration.hub.packman.parser.gradle
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenExternalId
-import com.blackducksoftware.integration.hub.packman.parser.model.Packager
+import com.blackducksoftware.integration.hub.packman.parser.Packager
 
 class GradlePackager extends Packager {
     GradlePackager(final String pathContainingBuildGradle) {
