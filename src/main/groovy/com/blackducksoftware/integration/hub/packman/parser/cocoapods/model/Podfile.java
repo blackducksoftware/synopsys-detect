@@ -17,25 +17,5 @@ import java.util.List;
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 
 public class Podfile {
-
     public List<DependencyNode> targets = new ArrayList<>();
-
-    @Override
-    public String toString() {
-        final StringBuilder builder = new StringBuilder();
-        for (final DependencyNode p : targets) {
-            builder.append("target '");
-            builder.append(p.name);
-            builder.append("' do\n");
-            for (final DependencyNode dep : p.children) {
-                builder.append("  pod '");
-                builder.append(dep.name);
-                builder.append("', '");
-                builder.append(dep.version);
-                builder.append("'\n");
-            }
-            builder.append("end\n\n");
-        }
-        return builder.toString();
-    }
 }

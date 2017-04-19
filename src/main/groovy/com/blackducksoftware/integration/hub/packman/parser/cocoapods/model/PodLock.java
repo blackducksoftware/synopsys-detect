@@ -16,10 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
-import com.google.gson.Gson;
 
 public class PodLock {
 
@@ -36,12 +33,4 @@ public class PodLock {
     public String podfileChecksum;
 
     public String cococapodsVersion;
-
-    @Autowired
-    public Gson gson;
-
-    @Override
-    public String toString() {
-        return gson.toJson(this);
-    }
 }

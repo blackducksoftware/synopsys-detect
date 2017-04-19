@@ -21,6 +21,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.junit.Test;
@@ -39,31 +40,62 @@ public class CocoapodsPackagerTest {
     public Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     @Test
-    public void testEverything() throws JSONException {
-        try (
-                final InputStream complexPodfile = this.getClass().getResourceAsStream("/cocoapods/complex/Podfile");
-                final InputStream complexPodlock = this.getClass().getResourceAsStream("/cocoapods/complex/Podfile.lock");
-                final InputStream complexJson = this.getClass().getResourceAsStream("/cocoapods/complex/Complex.json");
-        ) {
-            final CocoapodsPackager packager = new CocoapodsPackager(complexPodfile, complexPodlock, null);
+    public void complexTest() throws JSONException, IOException {
+        final String podfilePath = "/cocoapods/complex/Podfile";
+        final String podlockPath = "/cocoapods/complex/Podfile.lock";
+        final String expectedJsonPath = "/cocoapods/complex/Complex.json";
+        testPackagerWithFiles(podfilePath, podlockPath, null, expectedJsonPath, true);
+    }
+
+    @Test
+    public void simpleTest() throws JSONException, IOException {
+        final String podfilePath = "/cocoapods/simple/Podfile";
+        final String podlockPath = "/cocoapods/simple/Podfile.lock";
+        final String podspecPath = "/cocoapods/simple/BlackDuckSwiftSample.podspec";
+        final String expectedJsonPath = "/cocoapods/simple/Simple.json";
+        testPackagerWithFiles(podfilePath, podlockPath, podspecPath, expectedJsonPath, false);
+    }
+
+    private void testPackagerWithFiles(final String podfilePath, final String podlockPath, final String podspecPath, final String expectedJsonPath,
+            final boolean fixVersion)
+            throws JSONException, IOException {
+
+        InputStream podfileStream = null;
+        InputStream podlockStream = null;
+        InputStream expectedJsonStream = null;
+        InputStream podspecStream = null;
+        try {
+            podfileStream = this.getClass().getResourceAsStream(podfilePath);
+            podlockStream = this.getClass().getResourceAsStream(podlockPath);
+            if (StringUtils.isNotBlank(podspecPath)) {
+                podspecStream = this.getClass().getResourceAsStream(podspecPath);
+            }
+            expectedJsonStream = this.getClass().getResourceAsStream(expectedJsonPath);
+
+            final CocoapodsPackager packager = new CocoapodsPackager(podfileStream, podlockStream, podspecStream);
             final List<DependencyNode> targets = packager.makeDependencyNodes();
 
-            for (final DependencyNode target : targets) {
-                assertNotNull(target);
-                assertNotNull(target.version);
-                target.version = "1.0.0";
-                target.externalId = new NameVersionExternalId(Forge.cocoapods, target.name, target.version);
+            if (fixVersion) {
+                for (final DependencyNode target : targets) {
+                    assertNotNull(target);
+                    assertNotNull(target.version);
+                    target.version = "1.0.0";
+                    target.externalId = new NameVersionExternalId(Forge.cocoapods, target.name, target.version);
+                }
             }
 
-            final String expectedJson = streamToString(complexJson);
+            final String expectedJson = streamToString(expectedJsonStream);
             final String actualJson = gson.toJson(targets);
 
             verifyJsonArraysEqual(expectedJson, actualJson);
-
-        } catch (final IOException e) {
-            throw new RuntimeException(e);
+        } finally {
+            podfileStream.close();
+            podlockStream.close();
+            if (podspecStream != null) {
+                podspecStream.close();
+            }
+            expectedJsonStream.close();
         }
-
     }
 
     public String streamToString(final InputStream stream) {
