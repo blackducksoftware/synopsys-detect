@@ -16,6 +16,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,6 +31,8 @@ import com.google.gson.Gson;
 
 @Component
 public class Parser {
+    private final Logger logger = LoggerFactory.getLogger(Parser.class);
+
     @Autowired
     private List<PackageManagerSearcher> packageManagerSearchers;
 
@@ -41,6 +45,7 @@ public class Parser {
     public void parseSourcePaths(final String[] sourcePaths, final String outputDirectoryPath) throws IOException {
         for (final PackageManagerSearcher packageManagerSearcher : packageManagerSearchers) {
             for (final String sourcePath : sourcePaths) {
+                logger.info(String.format("searching source path: %s", sourcePath));
                 if (packageManagerSearcher.isPackageManagerApplicable(sourcePath)) {
                     final List<DependencyNode> projectNodes = packageManagerSearcher.extractDependencyNodes(sourcePath);
                     if (projectNodes != null && projectNodes.size() > 0) {
