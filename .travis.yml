@@ -4,7 +4,7 @@ jdk:
 install: true
 
 script:
-  - ./gradlew clean build
+  - gradle clean build
   
 after_success:
-  - ./gradlew test jacocoTestReport coveralls
+  - gradle test jacocoTestReport coveralls
