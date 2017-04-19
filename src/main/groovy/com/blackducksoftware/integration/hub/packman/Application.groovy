@@ -24,7 +24,7 @@ import org.springframework.context.annotation.Bean
 import com.blackducksoftware.integration.hub.bdio.simple.BdioNodeFactory
 import com.blackducksoftware.integration.hub.bdio.simple.BdioPropertyHelper
 import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeTransformer
-import com.blackducksoftware.integration.hub.packman.parser.Parser
+import com.blackducksoftware.integration.hub.packman.parser.ParserManager
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
@@ -39,7 +39,7 @@ class Application {
     BdioNodeFactory bdioNodeFactory
 
     @Autowired
-    Parser parser
+    ParserManager parser
 
     @Value('${packman.source.paths}')
     String[] sourcePaths

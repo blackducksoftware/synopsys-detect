@@ -86,6 +86,7 @@ public class PodfileParser extends StreamParser<Podfile> {
                 }
             }
 
+            // Convert PodfileTargets into DependencyNodes
             for (final PodfileTarget target : targets) {
                 final String targetName = target.name;
                 final String targetVersion = DateTime.now().toString("MM-dd-YYYY_HH:mm:Z");

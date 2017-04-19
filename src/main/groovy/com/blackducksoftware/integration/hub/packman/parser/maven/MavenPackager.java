@@ -9,13 +9,19 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.parser.model;
+package com.blackducksoftware.integration.hub.packman.parser.maven;
 
 import java.util.List;
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
+import com.blackducksoftware.integration.hub.packman.parser.Packager;
 
-public abstract class Packager {
-    public abstract List<DependencyNode> makeDependencyNodes();
+public class MavenPackager extends Packager {
+
+    @Override
+    public List<DependencyNode> makeDependencyNodes() {
+
+        return null;
+    }
 
 }

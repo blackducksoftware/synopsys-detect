@@ -1,0 +1,2249 @@
+[
+  {
+    "name": "Artsy Tests",
+    "version": "1.0.0",
+    "externalId": {
+      "name": "Artsy Tests",
+      "version": "1.0.0",
+      "forge": "cocoapods"
+    },
+    "children": [
+      {
+        "name": "FBSnapshotTestCase",
+        "version": "2.1.4",
+        "externalId": {
+          "name": "FBSnapshotTestCase",
+          "version": "2.1.4",
+          "forge": "cocoapods"
+        },
+        "children": [
+          {
+            "name": "FBSnapshotTestCase/SwiftSupport",
+            "version": "2.1.4",
+            "externalId": {
+              "name": "FBSnapshotTestCase/SwiftSupport",
+              "version": "2.1.4",
+              "forge": "cocoapods"
+            },
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "Expecta+Snapshots",
+        "version": "3.0.0",
+        "externalId": {
+          "name": "Expecta+Snapshots",
+          "version": "3.0.0",
+          "forge": "cocoapods"
+        },
+        "children": [
+          {
+            "name": "Expecta",
+            "version": "1.0.5",
+            "externalId": {
+              "name": "Expecta",
+              "version": "1.0.5",
+              "forge": "cocoapods"
+            },
+            "children": []
+          },
+          {
+            "name": "FBSnapshotTestCase/Core",
+            "version": "2.1.4",
+            "externalId": {
+              "name": "FBSnapshotTestCase/Core",
+              "version": "2.1.4",
+              "forge": "cocoapods"
+            },
+            "children": []
+          },
+          {
+            "name": "Specta",
+            "version": "1.0.5",
+            "externalId": {
+              "name": "Specta",
+              "version": "1.0.5",
+              "forge": "cocoapods"
+            },
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "OHHTTPStubs",
+        "version": "3.1.2",
+        "externalId": {
+          "name": "OHHTTPStubs",
+          "version": "3.1.2",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "XCTest+OHHTTPStubSuiteCleanUp",
+        "version": "1.0.0",
+        "externalId": {
+          "name": "XCTest+OHHTTPStubSuiteCleanUp",
+          "version": "1.0.0",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "Specta",
+        "version": "1.0.5",
+        "externalId": {
+          "name": "Specta",
+          "version": "1.0.5",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "Expecta",
+        "version": "1.0.5",
+        "externalId": {
+          "name": "Expecta",
+          "version": "1.0.5",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "OCMock",
+        "version": "2.2.4",
+        "externalId": {
+          "name": "OCMock",
+          "version": "2.2.4",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "Forgeries/Mocks",
+        "version": "1.0.0",
+        "externalId": {
+          "name": "Forgeries/Mocks",
+          "version": "1.0.0",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "Quick",
+        "version": "0.10.0",
+        "externalId": {
+          "name": "Quick",
+          "version": "0.10.0",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "Nimble",
+        "version": "5.1.1",
+        "externalId": {
+          "name": "Nimble",
+          "version": "5.1.1",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "Nimble-Snapshots",
+        "version": "4.3.0",
+        "externalId": {
+          "name": "Nimble-Snapshots",
+          "version": "4.3.0",
+          "forge": "cocoapods"
+        },
+        "children": [
+          {
+            "name": "Nimble-Snapshots/Core",
+            "version": "4.3.0",
+            "externalId": {
+              "name": "Nimble-Snapshots/Core",
+              "version": "4.3.0",
+              "forge": "cocoapods"
+            },
+            "children": [
+              {
+                "name": "FBSnapshotTestCase",
+                "version": "2.1.4",
+                "externalId": {
+                  "name": "FBSnapshotTestCase",
+                  "version": "2.1.4",
+                  "forge": "cocoapods"
+                },
+                "children": [
+                  {
+                    "name": "FBSnapshotTestCase/SwiftSupport",
+                    "version": "2.1.4",
+                    "externalId": {
+                      "name": "FBSnapshotTestCase/SwiftSupport",
+                      "version": "2.1.4",
+                      "forge": "cocoapods"
+                    },
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "AFNetworking",
+        "version": "2.5.4",
+        "externalId": {
+          "name": "AFNetworking",
+          "version": "2.5.4",
+          "forge": "cocoapods"
+        },
+        "children": [
+          {
+            "name": "AFNetworking/NSURLConnection",
+            "version": "2.5.4",
+            "externalId": {
+              "name": "AFNetworking/NSURLConnection",
+              "version": "2.5.4",
+              "forge": "cocoapods"
+            },
+            "children": []
+          },
+          {
+            "name": "AFNetworking/NSURLSession",
+            "version": "2.5.4",
+            "externalId": {
+              "name": "AFNetworking/NSURLSession",
+              "version": "2.5.4",
+              "forge": "cocoapods"
+            },
+            "children": []
+          },
+          {
+            "name": "AFNetworking/Reachability",
+            "version": "2.5.4",
+            "externalId": {
+              "name": "AFNetworking/Reachability",
+              "version": "2.5.4",
+              "forge": "cocoapods"
+            },
+            "children": []
+          },
+          {
+            "name": "AFNetworking/Security",
+            "version": "2.5.4",
+            "externalId": {
+              "name": "AFNetworking/Security",
+              "version": "2.5.4",
+              "forge": "cocoapods"
+            },
+            "children": []
+          },
+          {
+            "name": "AFNetworking/Serialization",
+            "version": "2.5.4",
+            "externalId": {
+              "name": "AFNetworking/Serialization",
+              "version": "2.5.4",
+              "forge": "cocoapods"
+            },
+            "children": []
+          },
+          {
+            "name": "AFNetworking/UIKit",
+            "version": "2.5.4",
+            "externalId": {
+              "name": "AFNetworking/UIKit",
+              "version": "2.5.4",
+              "forge": "cocoapods"
+            },
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "AFOAuth1Client",
+        "version": "0.4.0",
+        "externalId": {
+          "name": "AFOAuth1Client",
+          "version": "0.4.0",
+          "forge": "cocoapods"
+        },
+        "children": [
+          {
+            "name": "AFNetworking",
+            "version": "2.5.4",
+            "externalId": {
+              "name": "AFNetworking",
+              "version": "2.5.4",
+              "forge": "cocoapods"
+            },
+            "children": [
+              {
+                "name": "AFNetworking/NSURLConnection",
+                "version": "2.5.4",
+                "externalId": {
+                  "name": "AFNetworking/NSURLConnection",
+                  "version": "2.5.4",
+                  "forge": "cocoapods"
+                },
+                "children": []
+              },
+              {
+                "name": "AFNetworking/NSURLSession",
+                "version": "2.5.4",
+                "externalId": {
+                  "name": "AFNetworking/NSURLSession",
+                  "version": "2.5.4",
+                  "forge": "cocoapods"
+                },
+                "children": []
+              },
+              {
+                "name": "AFNetworking/Reachability",
+                "version": "2.5.4",
+                "externalId": {
+                  "name": "AFNetworking/Reachability",
+                  "version": "2.5.4",
+                  "forge": "cocoapods"
+                },
+                "children": []
+              },
+              {
+                "name": "AFNetworking/Security",
+                "version": "2.5.4",
+                "externalId": {
+                  "name": "AFNetworking/Security",
+                  "version": "2.5.4",
+                  "forge": "cocoapods"
+                },
+                "children": []
+              },
+              {
+                "name": "AFNetworking/Serialization",
+                "version": "2.5.4",
+                "externalId": {
+                  "name": "AFNetworking/Serialization",
+                  "version": "2.5.4",
+                  "forge": "cocoapods"
+                },
+                "children": []
+              },
+              {
+                "name": "AFNetworking/UIKit",
+                "version": "2.5.4",
+                "externalId": {
+                  "name": "AFNetworking/UIKit",
+                  "version": "2.5.4",
+                  "forge": "cocoapods"
+                },
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "AFNetworkActivityLogger",
+        "version": "2.0.4",
+        "externalId": {
+          "name": "AFNetworkActivityLogger",
+          "version": "2.0.4",
+          "forge": "cocoapods"
+        },
+        "children": [
+          {
+            "name": "AFNetworking/NSURLConnection",
+            "version": "2.5.4",
+            "externalId": {
+              "name": "AFNetworking/NSURLConnection",
+              "version": "2.5.4",
+              "forge": "cocoapods"
+            },
+            "children": []
+          },
+          {
+            "name": "AFNetworking/NSURLSession",
+            "version": "2.5.4",
+            "externalId": {
+              "name": "AFNetworking/NSURLSession",
+              "version": "2.5.4",
+              "forge": "cocoapods"
+            },
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "SDWebImage",
+        "version": "3.7.3",
+        "externalId": {
+          "name": "SDWebImage",
+          "version": "3.7.3",
+          "forge": "cocoapods"
+        },
+        "children": [
+          {
+            "name": "SDWebImage/Core",
+            "version": "3.7.3",
+            "externalId": {
+              "name": "SDWebImage/Core",
+              "version": "3.7.3",
+              "forge": "cocoapods"
+            },
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "ALPValidator",
+        "version": "0.0.3",
+        "externalId": {
+          "name": "ALPValidator",
+          "version": "0.0.3",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "ARGenericTableViewController",
+        "version": "1.0.2",
+        "externalId": {
+          "name": "ARGenericTableViewController",
+          "version": "1.0.2",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "CocoaLumberjack",
+        "version": "2.0.1",
+        "externalId": {
+          "name": "CocoaLumberjack",
+          "version": "2.0.1",
+          "forge": "cocoapods"
+        },
+        "children": [
+          {
+            "name": "CocoaLumberjack/Default",
+            "version": "2.0.1",
+            "externalId": {
+              "name": "CocoaLumberjack/Default",
+              "version": "2.0.1",
+              "forge": "cocoapods"
+            },
+            "children": []
+          },
+          {
+            "name": "CocoaLumberjack/Extensions",
+            "version": "2.0.1",
+            "externalId": {
+              "name": "CocoaLumberjack/Extensions",
+              "version": "2.0.1",
+              "forge": "cocoapods"
+            },
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "FLKAutoLayout",
+        "version": "1.0.0",
+        "externalId": {
+          "name": "FLKAutoLayout",
+          "version": "1.0.0",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "FXBlurView",
+        "version": "1.6.1",
+        "externalId": {
+          "name": "FXBlurView",
+          "version": "1.6.1",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "iRate",
+        "version": "1.10.2",
+        "externalId": {
+          "name": "iRate",
+          "version": "1.10.2",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "ISO8601DateFormatter",
+        "version": "0.7.1",
+        "externalId": {
+          "name": "ISO8601DateFormatter",
+          "version": "0.7.1",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "JLRoutes",
+        "version": "2.0.0",
+        "externalId": {
+          "name": "JLRoutes",
+          "version": "2.0.0",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "JSBadgeView",
+        "version": "1.4.1",
+        "externalId": {
+          "name": "JSBadgeView",
+          "version": "1.4.1",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "JSDecoupledAppDelegate",
+        "version": "1.2.0",
+        "externalId": {
+          "name": "JSDecoupledAppDelegate",
+          "version": "1.2.0",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "Mantle",
+        "version": "1.5.6",
+        "externalId": {
+          "name": "Mantle",
+          "version": "1.5.6",
+          "forge": "cocoapods"
+        },
+        "children": [
+          {
+            "name": "Mantle/extobjc",
+            "version": "1.5.6",
+            "externalId": {
+              "name": "Mantle/extobjc",
+              "version": "1.5.6",
+              "forge": "cocoapods"
+            },
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "MMMarkdown",
+        "version": "0.4",
+        "externalId": {
+          "name": "MMMarkdown",
+          "version": "0.4",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "NPKeyboardLayoutGuide",
+        "version": "1.0.0",
+        "externalId": {
+          "name": "NPKeyboardLayoutGuide",
+          "version": "1.0.0",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "ReactiveCocoa",
+        "version": "2.5",
+        "externalId": {
+          "name": "ReactiveCocoa",
+          "version": "2.5",
+          "forge": "cocoapods"
+        },
+        "children": [
+          {
+            "name": "ReactiveCocoa/UI",
+            "version": "2.5",
+            "externalId": {
+              "name": "ReactiveCocoa/UI",
+              "version": "2.5",
+              "forge": "cocoapods"
+            },
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "UICKeyChainStore",
+        "version": "1.0.5",
+        "externalId": {
+          "name": "UICKeyChainStore",
+          "version": "1.0.5",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "MARKRangeSlider",
+        "version": "1.0.1",
+        "externalId": {
+          "name": "MARKRangeSlider",
+          "version": "1.0.1",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "EDColor",
+        "version": "1.0.0",
+        "externalId": {
+          "name": "EDColor",
+          "version": "1.0.0",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "SSFadingScrollView",
+        "version": "1.1.0",
+        "externalId": {
+          "name": "SSFadingScrollView",
+          "version": "1.1.0",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "ARTiledImageView",
+        "version": "1.2.0",
+        "externalId": {
+          "name": "ARTiledImageView",
+          "version": "1.2.0",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "ORStackView",
+        "version": "2.0.3",
+        "externalId": {
+          "name": "ORStackView",
+          "version": "2.0.3",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "UIView+BooleanAnimations",
+        "version": "1.0.2",
+        "externalId": {
+          "name": "UIView+BooleanAnimations",
+          "version": "1.0.2",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "NAMapKit",
+        "version": "3.2.0",
+        "externalId": {
+          "name": "NAMapKit",
+          "version": "3.2.0",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "Aerodramus",
+        "version": "0.3.1",
+        "externalId": {
+          "name": "Aerodramus",
+          "version": "0.3.1",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "ARCollectionViewMasonryLayout",
+        "version": "2.1.2",
+        "externalId": {
+          "name": "ARCollectionViewMasonryLayout",
+          "version": "2.1.2",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "UIAlertView+Blocks",
+        "version": "0.8",
+        "externalId": {
+          "name": "UIAlertView+Blocks",
+          "version": "0.8",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "KSDeferred",
+        "version": "0.2.0",
+        "externalId": {
+          "name": "KSDeferred",
+          "version": "0.2.0",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "MultiDelegate",
+        "version": "0.0.2",
+        "externalId": {
+          "name": "MultiDelegate",
+          "version": "0.0.2",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "ObjectiveSugar",
+        "version": "1.1.0",
+        "externalId": {
+          "name": "ObjectiveSugar",
+          "version": "1.1.0",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "Artsy+UIFonts",
+        "version": "3.1.1",
+        "externalId": {
+          "name": "Artsy+UIFonts",
+          "version": "3.1.1",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "Artsy-UIButtons",
+        "version": "2.1.0",
+        "externalId": {
+          "name": "Artsy-UIButtons",
+          "version": "2.1.0",
+          "forge": "cocoapods"
+        },
+        "children": [
+          {
+            "name": "Artsy+UIColors",
+            "version": "3.1.0",
+            "externalId": {
+              "name": "Artsy+UIColors",
+              "version": "3.1.0",
+              "forge": "cocoapods"
+            },
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "Artsy+UIColors",
+        "version": "3.1.0",
+        "externalId": {
+          "name": "Artsy+UIColors",
+          "version": "3.1.0",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "Artsy+UILabels",
+        "version": "2.2.0",
+        "externalId": {
+          "name": "Artsy+UILabels",
+          "version": "2.2.0",
+          "forge": "cocoapods"
+        },
+        "children": [
+          {
+            "name": "Artsy+UIColors",
+            "version": "3.1.0",
+            "externalId": {
+              "name": "Artsy+UIColors",
+              "version": "3.1.0",
+              "forge": "cocoapods"
+            },
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "Extraction",
+        "version": "1.2.3",
+        "externalId": {
+          "name": "Extraction",
+          "version": "1.2.3",
+          "forge": "cocoapods"
+        },
+        "children": [
+          {
+            "name": "Extraction/ARAnimationContinuation",
+            "version": "1.2.3",
+            "externalId": {
+              "name": "Extraction/ARAnimationContinuation",
+              "version": "1.2.3",
+              "forge": "cocoapods"
+            },
+            "children": []
+          },
+          {
+            "name": "Extraction/ARLoadFailureView",
+            "version": "1.2.3",
+            "externalId": {
+              "name": "Extraction/ARLoadFailureView",
+              "version": "1.2.3",
+              "forge": "cocoapods"
+            },
+            "children": [
+              {
+                "name": "ORStackView",
+                "version": "2.0.3",
+                "externalId": {
+                  "name": "ORStackView",
+                  "version": "2.0.3",
+                  "forge": "cocoapods"
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "name": "Extraction/ARSpinner",
+            "version": "1.2.3",
+            "externalId": {
+              "name": "Extraction/ARSpinner",
+              "version": "1.2.3",
+              "forge": "cocoapods"
+            },
+            "children": []
+          },
+          {
+            "name": "Extraction/ARSwitchView",
+            "version": "1.2.3",
+            "externalId": {
+              "name": "Extraction/ARSwitchView",
+              "version": "1.2.3",
+              "forge": "cocoapods"
+            },
+            "children": [
+              {
+                "name": "Artsy+UIFonts",
+                "version": "3.1.1",
+                "externalId": {
+                  "name": "Artsy+UIFonts",
+                  "version": "3.1.1",
+                  "forge": "cocoapods"
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "name": "Extraction/UILabel+Typography",
+            "version": "1.2.3",
+            "externalId": {
+              "name": "Extraction/UILabel+Typography",
+              "version": "1.2.3",
+              "forge": "cocoapods"
+            },
+            "children": []
+          },
+          {
+            "name": "Extraction/UIView+ARSpinner",
+            "version": "1.2.3",
+            "externalId": {
+              "name": "Extraction/UIView+ARSpinner",
+              "version": "1.2.3",
+              "forge": "cocoapods"
+            },
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "Emission",
+        "version": "1.2.3",
+        "externalId": {
+          "name": "Emission",
+          "version": "1.2.3",
+          "forge": "cocoapods"
+        },
+        "children": [
+          {
+            "name": "Artsy+UIFonts",
+            "version": "3.1.1",
+            "externalId": {
+              "name": "Artsy+UIFonts",
+              "version": "3.1.1",
+              "forge": "cocoapods"
+            },
+            "children": []
+          },
+          {
+            "name": "Extraction",
+            "version": "1.2.3",
+            "externalId": {
+              "name": "Extraction",
+              "version": "1.2.3",
+              "forge": "cocoapods"
+            },
+            "children": [
+              {
+                "name": "Extraction/ARAnimationContinuation",
+                "version": "1.2.3",
+                "externalId": {
+                  "name": "Extraction/ARAnimationContinuation",
+                  "version": "1.2.3",
+                  "forge": "cocoapods"
+                },
+                "children": []
+              },
+              {
+                "name": "Extraction/ARLoadFailureView",
+                "version": "1.2.3",
+                "externalId": {
+                  "name": "Extraction/ARLoadFailureView",
+                  "version": "1.2.3",
+                  "forge": "cocoapods"
+                },
+                "children": [
+                  {
+                    "name": "ORStackView",
+                    "version": "2.0.3",
+                    "externalId": {
+                      "name": "ORStackView",
+                      "version": "2.0.3",
+                      "forge": "cocoapods"
+                    },
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "name": "Extraction/ARSpinner",
+                "version": "1.2.3",
+                "externalId": {
+                  "name": "Extraction/ARSpinner",
+                  "version": "1.2.3",
+                  "forge": "cocoapods"
+                },
+                "children": []
+              },
+              {
+                "name": "Extraction/ARSwitchView",
+                "version": "1.2.3",
+                "externalId": {
+                  "name": "Extraction/ARSwitchView",
+                  "version": "1.2.3",
+                  "forge": "cocoapods"
+                },
+                "children": [
+                  {
+                    "name": "Artsy+UIFonts",
+                    "version": "3.1.1",
+                    "externalId": {
+                      "name": "Artsy+UIFonts",
+                      "version": "3.1.1",
+                      "forge": "cocoapods"
+                    },
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "name": "Extraction/UILabel+Typography",
+                "version": "1.2.3",
+                "externalId": {
+                  "name": "Extraction/UILabel+Typography",
+                  "version": "1.2.3",
+                  "forge": "cocoapods"
+                },
+                "children": []
+              },
+              {
+                "name": "Extraction/UIView+ARSpinner",
+                "version": "1.2.3",
+                "externalId": {
+                  "name": "Extraction/UIView+ARSpinner",
+                  "version": "1.2.3",
+                  "forge": "cocoapods"
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "name": "React/Core",
+            "version": "0.34.1",
+            "externalId": {
+              "name": "React/Core",
+              "version": "0.34.1",
+              "forge": "cocoapods"
+            },
+            "children": []
+          },
+          {
+            "name": "React/RCTImage",
+            "version": "0.34.1",
+            "externalId": {
+              "name": "React/RCTImage",
+              "version": "0.34.1",
+              "forge": "cocoapods"
+            },
+            "children": []
+          },
+          {
+            "name": "React/RCTNetwork",
+            "version": "0.34.1",
+            "externalId": {
+              "name": "React/RCTNetwork",
+              "version": "0.34.1",
+              "forge": "cocoapods"
+            },
+            "children": []
+          },
+          {
+            "name": "React/RCTText",
+            "version": "0.34.1",
+            "externalId": {
+              "name": "React/RCTText",
+              "version": "0.34.1",
+              "forge": "cocoapods"
+            },
+            "children": []
+          },
+          {
+            "name": "SDWebImage",
+            "version": "3.7.3",
+            "externalId": {
+              "name": "SDWebImage",
+              "version": "3.7.3",
+              "forge": "cocoapods"
+            },
+            "children": [
+              {
+                "name": "SDWebImage/Core",
+                "version": "3.7.3",
+                "externalId": {
+                  "name": "SDWebImage/Core",
+                  "version": "3.7.3",
+                  "forge": "cocoapods"
+                },
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "React/Core",
+        "version": "0.34.1",
+        "externalId": {
+          "name": "React/Core",
+          "version": "0.34.1",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "FBSDKCoreKit",
+        "version": "4.10.1",
+        "externalId": {
+          "name": "FBSDKCoreKit",
+          "version": "4.10.1",
+          "forge": "cocoapods"
+        },
+        "children": [
+          {
+            "name": "Bolts",
+            "version": "1.7.0",
+            "externalId": {
+              "name": "Bolts",
+              "version": "1.7.0",
+              "forge": "cocoapods"
+            },
+            "children": [
+              {
+                "name": "Bolts/AppLinks",
+                "version": "1.7.0",
+                "externalId": {
+                  "name": "Bolts/AppLinks",
+                  "version": "1.7.0",
+                  "forge": "cocoapods"
+                },
+                "children": []
+              },
+              {
+                "name": "Bolts/Tasks",
+                "version": "1.7.0",
+                "externalId": {
+                  "name": "Bolts/Tasks",
+                  "version": "1.7.0",
+                  "forge": "cocoapods"
+                },
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "FBSDKLoginKit",
+        "version": "4.10.1",
+        "externalId": {
+          "name": "FBSDKLoginKit",
+          "version": "4.10.1",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "Analytics",
+        "version": "3.0.7",
+        "externalId": {
+          "name": "Analytics",
+          "version": "3.0.7",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "DHCShakeNotifier",
+        "version": "0.2.0",
+        "externalId": {
+          "name": "DHCShakeNotifier",
+          "version": "0.2.0",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "ORKeyboardReactingApplication",
+        "version": "0.5.3",
+        "externalId": {
+          "name": "ORKeyboardReactingApplication",
+          "version": "0.5.3",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "VCRURLConnection",
+        "version": "0.2.0",
+        "externalId": {
+          "name": "VCRURLConnection",
+          "version": "0.2.0",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "Then",
+        "version": "2.1.0",
+        "externalId": {
+          "name": "Then",
+          "version": "2.1.0",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "Interstellar/Core",
+        "version": "2.0.0",
+        "externalId": {
+          "name": "Interstellar/Core",
+          "version": "2.0.0",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "Starscream",
+        "version": "2.0.2",
+        "externalId": {
+          "name": "Starscream",
+          "version": "2.0.2",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "SwiftyJSON",
+        "version": "3.1.4",
+        "externalId": {
+          "name": "SwiftyJSON",
+          "version": "3.1.4",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "JWTDecode",
+        "version": "2.0.0",
+        "externalId": {
+          "name": "JWTDecode",
+          "version": "2.0.0",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "AppHub",
+        "version": "0.5.1",
+        "externalId": {
+          "name": "AppHub",
+          "version": "0.5.1",
+          "forge": "cocoapods"
+        },
+        "children": []
+      }
+    ]
+  },
+  {
+    "name": "Artsy",
+    "version": "1.0.0",
+    "externalId": {
+      "name": "Artsy",
+      "version": "1.0.0",
+      "forge": "cocoapods"
+    },
+    "children": [
+      {
+        "name": "AFNetworking",
+        "version": "2.5.4",
+        "externalId": {
+          "name": "AFNetworking",
+          "version": "2.5.4",
+          "forge": "cocoapods"
+        },
+        "children": [
+          {
+            "name": "AFNetworking/NSURLConnection",
+            "version": "2.5.4",
+            "externalId": {
+              "name": "AFNetworking/NSURLConnection",
+              "version": "2.5.4",
+              "forge": "cocoapods"
+            },
+            "children": []
+          },
+          {
+            "name": "AFNetworking/NSURLSession",
+            "version": "2.5.4",
+            "externalId": {
+              "name": "AFNetworking/NSURLSession",
+              "version": "2.5.4",
+              "forge": "cocoapods"
+            },
+            "children": []
+          },
+          {
+            "name": "AFNetworking/Reachability",
+            "version": "2.5.4",
+            "externalId": {
+              "name": "AFNetworking/Reachability",
+              "version": "2.5.4",
+              "forge": "cocoapods"
+            },
+            "children": []
+          },
+          {
+            "name": "AFNetworking/Security",
+            "version": "2.5.4",
+            "externalId": {
+              "name": "AFNetworking/Security",
+              "version": "2.5.4",
+              "forge": "cocoapods"
+            },
+            "children": []
+          },
+          {
+            "name": "AFNetworking/Serialization",
+            "version": "2.5.4",
+            "externalId": {
+              "name": "AFNetworking/Serialization",
+              "version": "2.5.4",
+              "forge": "cocoapods"
+            },
+            "children": []
+          },
+          {
+            "name": "AFNetworking/UIKit",
+            "version": "2.5.4",
+            "externalId": {
+              "name": "AFNetworking/UIKit",
+              "version": "2.5.4",
+              "forge": "cocoapods"
+            },
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "AFOAuth1Client",
+        "version": "0.4.0",
+        "externalId": {
+          "name": "AFOAuth1Client",
+          "version": "0.4.0",
+          "forge": "cocoapods"
+        },
+        "children": [
+          {
+            "name": "AFNetworking",
+            "version": "2.5.4",
+            "externalId": {
+              "name": "AFNetworking",
+              "version": "2.5.4",
+              "forge": "cocoapods"
+            },
+            "children": [
+              {
+                "name": "AFNetworking/NSURLConnection",
+                "version": "2.5.4",
+                "externalId": {
+                  "name": "AFNetworking/NSURLConnection",
+                  "version": "2.5.4",
+                  "forge": "cocoapods"
+                },
+                "children": []
+              },
+              {
+                "name": "AFNetworking/NSURLSession",
+                "version": "2.5.4",
+                "externalId": {
+                  "name": "AFNetworking/NSURLSession",
+                  "version": "2.5.4",
+                  "forge": "cocoapods"
+                },
+                "children": []
+              },
+              {
+                "name": "AFNetworking/Reachability",
+                "version": "2.5.4",
+                "externalId": {
+                  "name": "AFNetworking/Reachability",
+                  "version": "2.5.4",
+                  "forge": "cocoapods"
+                },
+                "children": []
+              },
+              {
+                "name": "AFNetworking/Security",
+                "version": "2.5.4",
+                "externalId": {
+                  "name": "AFNetworking/Security",
+                  "version": "2.5.4",
+                  "forge": "cocoapods"
+                },
+                "children": []
+              },
+              {
+                "name": "AFNetworking/Serialization",
+                "version": "2.5.4",
+                "externalId": {
+                  "name": "AFNetworking/Serialization",
+                  "version": "2.5.4",
+                  "forge": "cocoapods"
+                },
+                "children": []
+              },
+              {
+                "name": "AFNetworking/UIKit",
+                "version": "2.5.4",
+                "externalId": {
+                  "name": "AFNetworking/UIKit",
+                  "version": "2.5.4",
+                  "forge": "cocoapods"
+                },
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "AFNetworkActivityLogger",
+        "version": "2.0.4",
+        "externalId": {
+          "name": "AFNetworkActivityLogger",
+          "version": "2.0.4",
+          "forge": "cocoapods"
+        },
+        "children": [
+          {
+            "name": "AFNetworking/NSURLConnection",
+            "version": "2.5.4",
+            "externalId": {
+              "name": "AFNetworking/NSURLConnection",
+              "version": "2.5.4",
+              "forge": "cocoapods"
+            },
+            "children": []
+          },
+          {
+            "name": "AFNetworking/NSURLSession",
+            "version": "2.5.4",
+            "externalId": {
+              "name": "AFNetworking/NSURLSession",
+              "version": "2.5.4",
+              "forge": "cocoapods"
+            },
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "SDWebImage",
+        "version": "3.7.3",
+        "externalId": {
+          "name": "SDWebImage",
+          "version": "3.7.3",
+          "forge": "cocoapods"
+        },
+        "children": [
+          {
+            "name": "SDWebImage/Core",
+            "version": "3.7.3",
+            "externalId": {
+              "name": "SDWebImage/Core",
+              "version": "3.7.3",
+              "forge": "cocoapods"
+            },
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "ALPValidator",
+        "version": "0.0.3",
+        "externalId": {
+          "name": "ALPValidator",
+          "version": "0.0.3",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "ARGenericTableViewController",
+        "version": "1.0.2",
+        "externalId": {
+          "name": "ARGenericTableViewController",
+          "version": "1.0.2",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "CocoaLumberjack",
+        "version": "2.0.1",
+        "externalId": {
+          "name": "CocoaLumberjack",
+          "version": "2.0.1",
+          "forge": "cocoapods"
+        },
+        "children": [
+          {
+            "name": "CocoaLumberjack/Default",
+            "version": "2.0.1",
+            "externalId": {
+              "name": "CocoaLumberjack/Default",
+              "version": "2.0.1",
+              "forge": "cocoapods"
+            },
+            "children": []
+          },
+          {
+            "name": "CocoaLumberjack/Extensions",
+            "version": "2.0.1",
+            "externalId": {
+              "name": "CocoaLumberjack/Extensions",
+              "version": "2.0.1",
+              "forge": "cocoapods"
+            },
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "FLKAutoLayout",
+        "version": "1.0.0",
+        "externalId": {
+          "name": "FLKAutoLayout",
+          "version": "1.0.0",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "FXBlurView",
+        "version": "1.6.1",
+        "externalId": {
+          "name": "FXBlurView",
+          "version": "1.6.1",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "iRate",
+        "version": "1.10.2",
+        "externalId": {
+          "name": "iRate",
+          "version": "1.10.2",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "ISO8601DateFormatter",
+        "version": "0.7.1",
+        "externalId": {
+          "name": "ISO8601DateFormatter",
+          "version": "0.7.1",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "JLRoutes",
+        "version": "2.0.0",
+        "externalId": {
+          "name": "JLRoutes",
+          "version": "2.0.0",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "JSBadgeView",
+        "version": "1.4.1",
+        "externalId": {
+          "name": "JSBadgeView",
+          "version": "1.4.1",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "JSDecoupledAppDelegate",
+        "version": "1.2.0",
+        "externalId": {
+          "name": "JSDecoupledAppDelegate",
+          "version": "1.2.0",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "Mantle",
+        "version": "1.5.6",
+        "externalId": {
+          "name": "Mantle",
+          "version": "1.5.6",
+          "forge": "cocoapods"
+        },
+        "children": [
+          {
+            "name": "Mantle/extobjc",
+            "version": "1.5.6",
+            "externalId": {
+              "name": "Mantle/extobjc",
+              "version": "1.5.6",
+              "forge": "cocoapods"
+            },
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "MMMarkdown",
+        "version": "0.4",
+        "externalId": {
+          "name": "MMMarkdown",
+          "version": "0.4",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "NPKeyboardLayoutGuide",
+        "version": "1.0.0",
+        "externalId": {
+          "name": "NPKeyboardLayoutGuide",
+          "version": "1.0.0",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "ReactiveCocoa",
+        "version": "2.5",
+        "externalId": {
+          "name": "ReactiveCocoa",
+          "version": "2.5",
+          "forge": "cocoapods"
+        },
+        "children": [
+          {
+            "name": "ReactiveCocoa/UI",
+            "version": "2.5",
+            "externalId": {
+              "name": "ReactiveCocoa/UI",
+              "version": "2.5",
+              "forge": "cocoapods"
+            },
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "UICKeyChainStore",
+        "version": "1.0.5",
+        "externalId": {
+          "name": "UICKeyChainStore",
+          "version": "1.0.5",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "MARKRangeSlider",
+        "version": "1.0.1",
+        "externalId": {
+          "name": "MARKRangeSlider",
+          "version": "1.0.1",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "EDColor",
+        "version": "1.0.0",
+        "externalId": {
+          "name": "EDColor",
+          "version": "1.0.0",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "SSFadingScrollView",
+        "version": "1.1.0",
+        "externalId": {
+          "name": "SSFadingScrollView",
+          "version": "1.1.0",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "ARTiledImageView",
+        "version": "1.2.0",
+        "externalId": {
+          "name": "ARTiledImageView",
+          "version": "1.2.0",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "ORStackView",
+        "version": "2.0.3",
+        "externalId": {
+          "name": "ORStackView",
+          "version": "2.0.3",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "UIView+BooleanAnimations",
+        "version": "1.0.2",
+        "externalId": {
+          "name": "UIView+BooleanAnimations",
+          "version": "1.0.2",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "NAMapKit",
+        "version": "3.2.0",
+        "externalId": {
+          "name": "NAMapKit",
+          "version": "3.2.0",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "Aerodramus",
+        "version": "0.3.1",
+        "externalId": {
+          "name": "Aerodramus",
+          "version": "0.3.1",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "ARCollectionViewMasonryLayout",
+        "version": "2.1.2",
+        "externalId": {
+          "name": "ARCollectionViewMasonryLayout",
+          "version": "2.1.2",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "UIAlertView+Blocks",
+        "version": "0.8",
+        "externalId": {
+          "name": "UIAlertView+Blocks",
+          "version": "0.8",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "KSDeferred",
+        "version": "0.2.0",
+        "externalId": {
+          "name": "KSDeferred",
+          "version": "0.2.0",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "MultiDelegate",
+        "version": "0.0.2",
+        "externalId": {
+          "name": "MultiDelegate",
+          "version": "0.0.2",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "ObjectiveSugar",
+        "version": "1.1.0",
+        "externalId": {
+          "name": "ObjectiveSugar",
+          "version": "1.1.0",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "Artsy+UIFonts",
+        "version": "3.1.1",
+        "externalId": {
+          "name": "Artsy+UIFonts",
+          "version": "3.1.1",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "Artsy-UIButtons",
+        "version": "2.1.0",
+        "externalId": {
+          "name": "Artsy-UIButtons",
+          "version": "2.1.0",
+          "forge": "cocoapods"
+        },
+        "children": [
+          {
+            "name": "Artsy+UIColors",
+            "version": "3.1.0",
+            "externalId": {
+              "name": "Artsy+UIColors",
+              "version": "3.1.0",
+              "forge": "cocoapods"
+            },
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "Artsy+UIColors",
+        "version": "3.1.0",
+        "externalId": {
+          "name": "Artsy+UIColors",
+          "version": "3.1.0",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "Artsy+UILabels",
+        "version": "2.2.0",
+        "externalId": {
+          "name": "Artsy+UILabels",
+          "version": "2.2.0",
+          "forge": "cocoapods"
+        },
+        "children": [
+          {
+            "name": "Artsy+UIColors",
+            "version": "3.1.0",
+            "externalId": {
+              "name": "Artsy+UIColors",
+              "version": "3.1.0",
+              "forge": "cocoapods"
+            },
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "Extraction",
+        "version": "1.2.3",
+        "externalId": {
+          "name": "Extraction",
+          "version": "1.2.3",
+          "forge": "cocoapods"
+        },
+        "children": [
+          {
+            "name": "Extraction/ARAnimationContinuation",
+            "version": "1.2.3",
+            "externalId": {
+              "name": "Extraction/ARAnimationContinuation",
+              "version": "1.2.3",
+              "forge": "cocoapods"
+            },
+            "children": []
+          },
+          {
+            "name": "Extraction/ARLoadFailureView",
+            "version": "1.2.3",
+            "externalId": {
+              "name": "Extraction/ARLoadFailureView",
+              "version": "1.2.3",
+              "forge": "cocoapods"
+            },
+            "children": [
+              {
+                "name": "ORStackView",
+                "version": "2.0.3",
+                "externalId": {
+                  "name": "ORStackView",
+                  "version": "2.0.3",
+                  "forge": "cocoapods"
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "name": "Extraction/ARSpinner",
+            "version": "1.2.3",
+            "externalId": {
+              "name": "Extraction/ARSpinner",
+              "version": "1.2.3",
+              "forge": "cocoapods"
+            },
+            "children": []
+          },
+          {
+            "name": "Extraction/ARSwitchView",
+            "version": "1.2.3",
+            "externalId": {
+              "name": "Extraction/ARSwitchView",
+              "version": "1.2.3",
+              "forge": "cocoapods"
+            },
+            "children": [
+              {
+                "name": "Artsy+UIFonts",
+                "version": "3.1.1",
+                "externalId": {
+                  "name": "Artsy+UIFonts",
+                  "version": "3.1.1",
+                  "forge": "cocoapods"
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "name": "Extraction/UILabel+Typography",
+            "version": "1.2.3",
+            "externalId": {
+              "name": "Extraction/UILabel+Typography",
+              "version": "1.2.3",
+              "forge": "cocoapods"
+            },
+            "children": []
+          },
+          {
+            "name": "Extraction/UIView+ARSpinner",
+            "version": "1.2.3",
+            "externalId": {
+              "name": "Extraction/UIView+ARSpinner",
+              "version": "1.2.3",
+              "forge": "cocoapods"
+            },
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "Emission",
+        "version": "1.2.3",
+        "externalId": {
+          "name": "Emission",
+          "version": "1.2.3",
+          "forge": "cocoapods"
+        },
+        "children": [
+          {
+            "name": "Artsy+UIFonts",
+            "version": "3.1.1",
+            "externalId": {
+              "name": "Artsy+UIFonts",
+              "version": "3.1.1",
+              "forge": "cocoapods"
+            },
+            "children": []
+          },
+          {
+            "name": "Extraction",
+            "version": "1.2.3",
+            "externalId": {
+              "name": "Extraction",
+              "version": "1.2.3",
+              "forge": "cocoapods"
+            },
+            "children": [
+              {
+                "name": "Extraction/ARAnimationContinuation",
+                "version": "1.2.3",
+                "externalId": {
+                  "name": "Extraction/ARAnimationContinuation",
+                  "version": "1.2.3",
+                  "forge": "cocoapods"
+                },
+                "children": []
+              },
+              {
+                "name": "Extraction/ARLoadFailureView",
+                "version": "1.2.3",
+                "externalId": {
+                  "name": "Extraction/ARLoadFailureView",
+                  "version": "1.2.3",
+                  "forge": "cocoapods"
+                },
+                "children": [
+                  {
+                    "name": "ORStackView",
+                    "version": "2.0.3",
+                    "externalId": {
+                      "name": "ORStackView",
+                      "version": "2.0.3",
+                      "forge": "cocoapods"
+                    },
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "name": "Extraction/ARSpinner",
+                "version": "1.2.3",
+                "externalId": {
+                  "name": "Extraction/ARSpinner",
+                  "version": "1.2.3",
+                  "forge": "cocoapods"
+                },
+                "children": []
+              },
+              {
+                "name": "Extraction/ARSwitchView",
+                "version": "1.2.3",
+                "externalId": {
+                  "name": "Extraction/ARSwitchView",
+                  "version": "1.2.3",
+                  "forge": "cocoapods"
+                },
+                "children": [
+                  {
+                    "name": "Artsy+UIFonts",
+                    "version": "3.1.1",
+                    "externalId": {
+                      "name": "Artsy+UIFonts",
+                      "version": "3.1.1",
+                      "forge": "cocoapods"
+                    },
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "name": "Extraction/UILabel+Typography",
+                "version": "1.2.3",
+                "externalId": {
+                  "name": "Extraction/UILabel+Typography",
+                  "version": "1.2.3",
+                  "forge": "cocoapods"
+                },
+                "children": []
+              },
+              {
+                "name": "Extraction/UIView+ARSpinner",
+                "version": "1.2.3",
+                "externalId": {
+                  "name": "Extraction/UIView+ARSpinner",
+                  "version": "1.2.3",
+                  "forge": "cocoapods"
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "name": "React/Core",
+            "version": "0.34.1",
+            "externalId": {
+              "name": "React/Core",
+              "version": "0.34.1",
+              "forge": "cocoapods"
+            },
+            "children": []
+          },
+          {
+            "name": "React/RCTImage",
+            "version": "0.34.1",
+            "externalId": {
+              "name": "React/RCTImage",
+              "version": "0.34.1",
+              "forge": "cocoapods"
+            },
+            "children": []
+          },
+          {
+            "name": "React/RCTNetwork",
+            "version": "0.34.1",
+            "externalId": {
+              "name": "React/RCTNetwork",
+              "version": "0.34.1",
+              "forge": "cocoapods"
+            },
+            "children": []
+          },
+          {
+            "name": "React/RCTText",
+            "version": "0.34.1",
+            "externalId": {
+              "name": "React/RCTText",
+              "version": "0.34.1",
+              "forge": "cocoapods"
+            },
+            "children": []
+          },
+          {
+            "name": "SDWebImage",
+            "version": "3.7.3",
+            "externalId": {
+              "name": "SDWebImage",
+              "version": "3.7.3",
+              "forge": "cocoapods"
+            },
+            "children": [
+              {
+                "name": "SDWebImage/Core",
+                "version": "3.7.3",
+                "externalId": {
+                  "name": "SDWebImage/Core",
+                  "version": "3.7.3",
+                  "forge": "cocoapods"
+                },
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "React/Core",
+        "version": "0.34.1",
+        "externalId": {
+          "name": "React/Core",
+          "version": "0.34.1",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "FBSDKCoreKit",
+        "version": "4.10.1",
+        "externalId": {
+          "name": "FBSDKCoreKit",
+          "version": "4.10.1",
+          "forge": "cocoapods"
+        },
+        "children": [
+          {
+            "name": "Bolts",
+            "version": "1.7.0",
+            "externalId": {
+              "name": "Bolts",
+              "version": "1.7.0",
+              "forge": "cocoapods"
+            },
+            "children": [
+              {
+                "name": "Bolts/AppLinks",
+                "version": "1.7.0",
+                "externalId": {
+                  "name": "Bolts/AppLinks",
+                  "version": "1.7.0",
+                  "forge": "cocoapods"
+                },
+                "children": []
+              },
+              {
+                "name": "Bolts/Tasks",
+                "version": "1.7.0",
+                "externalId": {
+                  "name": "Bolts/Tasks",
+                  "version": "1.7.0",
+                  "forge": "cocoapods"
+                },
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "FBSDKLoginKit",
+        "version": "4.10.1",
+        "externalId": {
+          "name": "FBSDKLoginKit",
+          "version": "4.10.1",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "Analytics",
+        "version": "3.0.7",
+        "externalId": {
+          "name": "Analytics",
+          "version": "3.0.7",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "DHCShakeNotifier",
+        "version": "0.2.0",
+        "externalId": {
+          "name": "DHCShakeNotifier",
+          "version": "0.2.0",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "ORKeyboardReactingApplication",
+        "version": "0.5.3",
+        "externalId": {
+          "name": "ORKeyboardReactingApplication",
+          "version": "0.5.3",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "VCRURLConnection",
+        "version": "0.2.0",
+        "externalId": {
+          "name": "VCRURLConnection",
+          "version": "0.2.0",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "Then",
+        "version": "2.1.0",
+        "externalId": {
+          "name": "Then",
+          "version": "2.1.0",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "Interstellar/Core",
+        "version": "2.0.0",
+        "externalId": {
+          "name": "Interstellar/Core",
+          "version": "2.0.0",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "Starscream",
+        "version": "2.0.2",
+        "externalId": {
+          "name": "Starscream",
+          "version": "2.0.2",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "SwiftyJSON",
+        "version": "3.1.4",
+        "externalId": {
+          "name": "SwiftyJSON",
+          "version": "3.1.4",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "JWTDecode",
+        "version": "2.0.0",
+        "externalId": {
+          "name": "JWTDecode",
+          "version": "2.0.0",
+          "forge": "cocoapods"
+        },
+        "children": []
+      },
+      {
+        "name": "AppHub",
+        "version": "0.5.1",
+        "externalId": {
+          "name": "AppHub",
+          "version": "0.5.1",
+          "forge": "cocoapods"
+        },
+        "children": []
+      }
+    ]
+  }
+]

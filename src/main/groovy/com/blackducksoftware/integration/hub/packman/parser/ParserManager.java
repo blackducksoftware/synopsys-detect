@@ -30,8 +30,8 @@ import com.blackducksoftware.integration.hub.packman.search.PackageManagerSearch
 import com.google.gson.Gson;
 
 @Component
-public class Parser {
-    private final Logger logger = LoggerFactory.getLogger(Parser.class);
+public class ParserManager {
+    private final Logger logger = LoggerFactory.getLogger(ParserManager.class);
 
     @Autowired
     private List<PackageManagerSearcher> packageManagerSearchers;

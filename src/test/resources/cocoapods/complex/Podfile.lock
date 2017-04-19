@@ -1,0 +1,415 @@
+PODS:
+  - Adjust (4.11.0):
+    - Adjust/Core (= 4.11.0)
+  - Adjust/Core (4.11.0)
+  - Aerodramus (0.3.1):
+    - ISO8601DateFormatter
+  - AFNetworkActivityLogger (2.0.4):
+    - AFNetworking/NSURLConnection (~> 2.0)
+    - AFNetworking/NSURLSession (~> 2.0)
+  - AFNetworking (2.5.4):
+    - AFNetworking/NSURLConnection (= 2.5.4)
+    - AFNetworking/NSURLSession (= 2.5.4)
+    - AFNetworking/Reachability (= 2.5.4)
+    - AFNetworking/Security (= 2.5.4)
+    - AFNetworking/Serialization (= 2.5.4)
+    - AFNetworking/UIKit (= 2.5.4)
+  - AFNetworking/NSURLConnection (2.5.4):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/NSURLSession (2.5.4):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/Reachability (2.5.4)
+  - AFNetworking/Security (2.5.4)
+  - AFNetworking/Serialization (2.5.4)
+  - AFNetworking/UIKit (2.5.4):
+    - AFNetworking/NSURLConnection
+    - AFNetworking/NSURLSession
+  - AFOAuth1Client (0.4.0):
+    - AFNetworking (~> 2.5)
+  - ALPValidator (0.0.3)
+  - Analytics (3.0.7)
+  - AppHub (0.5.1):
+    - React/Core
+  - ARAnalytics/Adjust (3.9.0):
+    - Adjust
+    - ARAnalytics/CoreIOS
+  - ARAnalytics/CoreIOS (3.9.0)
+  - ARAnalytics/DSL (3.9.0):
+    - ReactiveCocoa (~> 2.0)
+    - RSSwizzle (~> 0.1.0)
+  - ARAnalytics/HockeyApp (3.9.0):
+    - ARAnalytics/CoreIOS
+    - HockeySDK-Source
+  - ARAnalytics/Segmentio (3.9.0):
+    - Analytics (>= 3)
+    - ARAnalytics/CoreIOS
+  - ARCollectionViewMasonryLayout (2.1.2)
+  - ARGenericTableViewController (1.0.2)
+  - ARTiledImageView (1.2.0):
+    - SDWebImage/Core
+  - Artsy+UIColors (3.1.0)
+  - Artsy+UIFonts (3.1.1)
+  - Artsy+UILabels (2.2.0):
+    - Artsy+UIColors (~> 3.0)
+    - Artsy+UIFonts
+  - Artsy-UIButtons (2.1.0):
+    - Artsy+UIColors (~> 3.0)
+    - Artsy+UIFonts
+    - UIView+BooleanAnimations
+  - Bolts (1.7.0):
+    - Bolts/AppLinks (= 1.7.0)
+    - Bolts/Tasks (= 1.7.0)
+  - Bolts/AppLinks (1.7.0):
+    - Bolts/Tasks
+  - Bolts/Tasks (1.7.0)
+  - CocoaLumberjack (2.0.1):
+    - CocoaLumberjack/Default (= 2.0.1)
+    - CocoaLumberjack/Extensions (= 2.0.1)
+  - CocoaLumberjack/Core (2.0.1)
+  - CocoaLumberjack/Default (2.0.1):
+    - CocoaLumberjack/Core
+  - CocoaLumberjack/Extensions (2.0.1):
+    - CocoaLumberjack/Default
+  - DHCShakeNotifier (0.2.0)
+  - EDColor (1.0.0)
+  - Emission (1.2.3):
+    - Artsy+UIFonts (>= 3.0.0)
+    - Extraction (>= 1.2.1)
+    - React/Core (= 0.34.1)
+    - React/RCTImage (= 0.34.1)
+    - React/RCTNetwork (= 0.34.1)
+    - React/RCTText (= 0.34.1)
+    - SDWebImage (>= 3.7.2)
+  - Expecta (1.0.5)
+  - Expecta+Snapshots (3.0.0):
+    - Expecta (~> 1.0)
+    - FBSnapshotTestCase/Core (~> 2.0)
+    - Specta (~> 1.0)
+  - Extraction (1.2.3):
+    - Extraction/ARAnimationContinuation (= 1.2.3)
+    - Extraction/ARLoadFailureView (= 1.2.3)
+    - Extraction/ARSpinner (= 1.2.3)
+    - Extraction/ARSwitchView (= 1.2.3)
+    - Extraction/UILabel+Typography (= 1.2.3)
+    - Extraction/UIView+ARSpinner (= 1.2.3)
+  - Extraction/ARAnimationContinuation (1.2.3)
+  - Extraction/ARLoadFailureView (1.2.3):
+    - Artsy-UIButtons
+    - Extraction/UILabel+Typography
+    - ORStackView (< 3)
+  - Extraction/ARSpinner (1.2.3):
+    - Extraction/UIView+ARSpinner
+    - UIView+BooleanAnimations
+  - Extraction/ARSwitchView (1.2.3):
+    - Artsy+UIColors
+    - Artsy+UIFonts (>= 1.1.0)
+    - FLKAutoLayout
+    - UIView+BooleanAnimations
+  - Extraction/UILabel+Typography (1.2.3)
+  - Extraction/UIView+ARSpinner (1.2.3):
+    - Extraction/ARAnimationContinuation
+  - FBSDKCoreKit (4.10.1):
+    - Bolts (~> 1.5)
+  - FBSDKLoginKit (4.10.1):
+    - FBSDKCoreKit
+  - FBSnapshotTestCase (2.1.4):
+    - FBSnapshotTestCase/SwiftSupport (= 2.1.4)
+  - FBSnapshotTestCase/Core (2.1.4)
+  - FBSnapshotTestCase/SwiftSupport (2.1.4):
+    - FBSnapshotTestCase/Core
+  - FLKAutoLayout (1.0.0)
+  - Forgeries/Core (1.0.0)
+  - Forgeries/Mocks (1.0.0):
+    - Forgeries/Core
+    - OCMock
+  - FXBlurView (1.6.1)
+  - HockeySDK-Source (3.8.5)
+  - Interstellar/Core (2.0.0)
+  - iRate (1.10.2)
+  - ISO8601DateFormatter (0.7.1)
+  - JLRoutes (2.0.0)
+  - JSBadgeView (1.4.1)
+  - JSDecoupledAppDelegate (1.2.0)
+  - JWTDecode (2.0.0)
+  - KSDeferred (0.2.0)
+  - Mantle (1.5.6):
+    - Mantle/extobjc (= 1.5.6)
+  - Mantle/extobjc (1.5.6)
+  - MARKRangeSlider (1.0.1)
+  - MMMarkdown (0.4)
+  - MultiDelegate (0.0.2)
+  - NAMapKit (3.2.0):
+    - ARTiledImageView
+    - SDWebImage
+  - Nimble (5.1.1)
+  - Nimble-Snapshots (4.3.0):
+    - Nimble-Snapshots/Core (= 4.3.0)
+  - Nimble-Snapshots/Core (4.3.0):
+    - FBSnapshotTestCase (~> 2.0)
+    - Nimble
+    - Quick
+  - NPKeyboardLayoutGuide (1.0.0)
+  - ObjectiveSugar (1.1.0)
+  - OCMock (2.2.4)
+  - OHHTTPStubs (3.1.2)
+  - ORKeyboardReactingApplication (0.5.3)
+  - ORStackView (2.0.3):
+    - FLKAutoLayout
+  - Quick (0.10.0)
+  - React/Core (0.34.1)
+  - React/RCTImage (0.34.1):
+    - React/Core
+    - React/RCTNetwork
+  - React/RCTNetwork (0.34.1):
+    - React/Core
+  - React/RCTText (0.34.1):
+    - React/Core
+  - ReactiveCocoa (2.5):
+    - ReactiveCocoa/UI (= 2.5)
+  - ReactiveCocoa/Core (2.5):
+    - ReactiveCocoa/no-arc
+  - ReactiveCocoa/no-arc (2.5)
+  - ReactiveCocoa/UI (2.5):
+    - ReactiveCocoa/Core
+  - RSSwizzle (0.1.0)
+  - SDWebImage (3.7.3):
+    - SDWebImage/Core (= 3.7.3)
+  - SDWebImage/Core (3.7.3)
+  - Specta (1.0.5)
+  - SSFadingScrollView (1.1.0)
+  - Starscream (2.0.2)
+  - SwiftyJSON (3.1.4)
+  - Then (2.1.0)
+  - UIAlertView+Blocks (0.8)
+  - UICKeyChainStore (1.0.5)
+  - UIView+BooleanAnimations (1.0.2)
+  - VCRURLConnection (0.2.0)
+  - XCTest+OHHTTPStubSuiteCleanUp (1.0.0):
+    - OHHTTPStubs
+
+DEPENDENCIES:
+  - Aerodramus
+  - AFNetworkActivityLogger
+  - AFNetworking (~> 2.5)
+  - AFOAuth1Client (from `https://github.com/lxcid/AFOAuth1Client.git`, tag `0.4.0`)
+  - ALPValidator
+  - Analytics
+  - AppHub (from `https://github.com/orta/apphub.git`, branch `build_list`)
+  - ARAnalytics/Adjust (from `https://github.com/orta/ARAnalytics.git`, commit `6f31b5c7bcbd59d4dac7e92e215d3c2c22f3400e`)
+  - ARAnalytics/DSL (from `https://github.com/orta/ARAnalytics.git`, commit `6f31b5c7bcbd59d4dac7e92e215d3c2c22f3400e`)
+  - ARAnalytics/HockeyApp (from `https://github.com/orta/ARAnalytics.git`, commit `6f31b5c7bcbd59d4dac7e92e215d3c2c22f3400e`)
+  - ARAnalytics/Segmentio (from `https://github.com/orta/ARAnalytics.git`, commit `6f31b5c7bcbd59d4dac7e92e215d3c2c22f3400e`)
+  - ARCollectionViewMasonryLayout (from `https://github.com/ashfurrow/ARCollectionViewMasonryLayout`, branch `modern`)
+  - ARGenericTableViewController (from `https://github.com/orta/ARGenericTableViewController.git`)
+  - ARTiledImageView (from `https://github.com/dblock/ARTiledImageView`)
+  - Artsy+UIColors
+  - Artsy+UIFonts
+  - Artsy+UILabels
+  - Artsy-UIButtons
+  - CocoaLumberjack (from `https://github.com/CocoaLumberjack/CocoaLumberjack.git`)
+  - DHCShakeNotifier
+  - EDColor
+  - Emission
+  - Expecta
+  - Expecta+Snapshots
+  - Extraction
+  - FBSDKCoreKit (~> 4.9)
+  - FBSDKLoginKit (~> 4.9)
+  - FBSnapshotTestCase
+  - FLKAutoLayout (from `https://github.com/orta/FLKAutoLayout.git`, branch `v1`)
+  - Forgeries/Mocks
+  - FXBlurView
+  - Interstellar/Core (from `https://github.com/ashfurrow/Interstellar.git`, branch `observable-unsubscribe`)
+  - iRate
+  - ISO8601DateFormatter (from `https://github.com/orta/iso-8601-date-formatter`)
+  - JLRoutes (from `https://github.com/orta/JLRoutes.git`)
+  - JSBadgeView
+  - JSDecoupledAppDelegate
+  - JWTDecode
+  - KSDeferred
+  - Mantle (~> 1.5.6)
+  - MARKRangeSlider
+  - MMMarkdown
+  - MultiDelegate
+  - NAMapKit (from `https://github.com/neilang/NAMapKit`)
+  - Nimble
+  - Nimble-Snapshots
+  - NPKeyboardLayoutGuide
+  - ObjectiveSugar
+  - OCMock
+  - OHHTTPStubs
+  - ORKeyboardReactingApplication
+  - ORStackView (= 2.0.3)
+  - Quick
+  - React/Core (from `https://github.com/alloy/react-native.git`, branch `0.34.1-with-scrollview-fix`)
+  - ReactiveCocoa (< 3)
+  - SDWebImage (>= 3.7.2)
+  - Specta
+  - SSFadingScrollView (from `https://github.com/alloy/SSFadingScrollView.git`, branch `add-axial-support`)
+  - Starscream
+  - SwiftyJSON
+  - Then
+  - UIAlertView+Blocks
+  - UICKeyChainStore
+  - UIView+BooleanAnimations
+  - VCRURLConnection
+  - XCTest+OHHTTPStubSuiteCleanUp
+
+EXTERNAL SOURCES:
+  AFOAuth1Client:
+    :git: https://github.com/lxcid/AFOAuth1Client.git
+    :tag: 0.4.0
+  AppHub:
+    :branch: build_list
+    :git: https://github.com/orta/apphub.git
+  ARAnalytics:
+    :commit: 6f31b5c7bcbd59d4dac7e92e215d3c2c22f3400e
+    :git: https://github.com/orta/ARAnalytics.git
+  ARCollectionViewMasonryLayout:
+    :branch: modern
+    :git: https://github.com/ashfurrow/ARCollectionViewMasonryLayout
+  ARGenericTableViewController:
+    :git: https://github.com/orta/ARGenericTableViewController.git
+  ARTiledImageView:
+    :git: https://github.com/dblock/ARTiledImageView
+  CocoaLumberjack:
+    :git: https://github.com/CocoaLumberjack/CocoaLumberjack.git
+  FLKAutoLayout:
+    :branch: v1
+    :git: https://github.com/orta/FLKAutoLayout.git
+  Interstellar:
+    :branch: observable-unsubscribe
+    :git: https://github.com/ashfurrow/Interstellar.git
+  ISO8601DateFormatter:
+    :git: https://github.com/orta/iso-8601-date-formatter
+  JLRoutes:
+    :git: https://github.com/orta/JLRoutes.git
+  NAMapKit:
+    :git: https://github.com/neilang/NAMapKit
+  React:
+    :branch: 0.34.1-with-scrollview-fix
+    :git: https://github.com/alloy/react-native.git
+  SSFadingScrollView:
+    :branch: add-axial-support
+    :git: https://github.com/alloy/SSFadingScrollView.git
+
+CHECKOUT OPTIONS:
+  AFOAuth1Client:
+    :git: https://github.com/lxcid/AFOAuth1Client.git
+    :tag: 0.4.0
+  AppHub:
+    :commit: 58396c3deea06aced7fc9670b7e24a41c6155f6c
+    :git: https://github.com/orta/apphub.git
+  ARAnalytics:
+    :commit: 6f31b5c7bcbd59d4dac7e92e215d3c2c22f3400e
+    :git: https://github.com/orta/ARAnalytics.git
+  ARCollectionViewMasonryLayout:
+    :commit: a9dc52b13e32d064c49528ff9a3bd5aa65c02cd5
+    :git: https://github.com/ashfurrow/ARCollectionViewMasonryLayout
+  ARGenericTableViewController:
+    :commit: f4c9028754558e196ab9c5111dcd3a4229c5bedf
+    :git: https://github.com/orta/ARGenericTableViewController.git
+  ARTiledImageView:
+    :commit: 775bc29beb5953e381b2af64edbdfc310b90e074
+    :git: https://github.com/dblock/ARTiledImageView
+  CocoaLumberjack:
+    :commit: a09dd37888d9f51159c4926d4280794f915d726c
+    :git: https://github.com/CocoaLumberjack/CocoaLumberjack.git
+  FLKAutoLayout:
+    :commit: 4aa27fa1a9aba36d5465e6cd181ba4b78b0691d3
+    :git: https://github.com/orta/FLKAutoLayout.git
+  Interstellar:
+    :commit: 9ac6f95e19565af8a67324da4090dbfe17303c78
+    :git: https://github.com/ashfurrow/Interstellar.git
+  ISO8601DateFormatter:
+    :commit: 1a48b819c85903ded669e74e476aceffebf311fc
+    :git: https://github.com/orta/iso-8601-date-formatter
+  JLRoutes:
+    :commit: 5a6df1a795766a4d3e586508e86ec9271d3ef3d9
+    :git: https://github.com/orta/JLRoutes.git
+  NAMapKit:
+    :commit: 9a2b842a1067785cf8af18276d4de4f0e3f0a17c
+    :git: https://github.com/neilang/NAMapKit
+  React:
+    :commit: 73fa7b42b1a1384d9661fca4ddffd85a10ad94dc
+    :git: https://github.com/alloy/react-native.git
+  SSFadingScrollView:
+    :commit: 3920e3582e46c9fe23b0d1200e28614ebd66d801
+    :git: https://github.com/alloy/SSFadingScrollView.git
+
+SPEC CHECKSUMS:
+  Adjust: 87b3f066ea103f1dabfaa8e428a75b992bf7712e
+  Aerodramus: 648bab2c441eb6116db823e6301b1f2d4d2b61a0
+  AFNetworkActivityLogger: 121486778117d53b3ab1c61d264b88081d0c3eee
+  AFNetworking: 05edc0ac4c4c8cf57bcf4b84be5b0744b6d8e71e
+  AFOAuth1Client: 07ccc935ba06ac8d023c16d39a5bdf04bc6f92e1
+  ALPValidator: c74ea0d49bbbff0f8a4228f1eb6589b992255cfe
+  Analytics: b342fb4f43fa4f97ca6f4358b44d3295217ba294
+  AppHub: 03788112dd48c42b60d51321c0ffff4ef15a4432
+  ARAnalytics: 96e23ba7f54298f4914de9e1ac999db7a15f3fdd
+  ARCollectionViewMasonryLayout: 776730bdedd0c7570a5e904c370e4e120f98ea62
+  ARGenericTableViewController: 61a0897ba66c35111b5d1cc3b44884282bd3c1a5
+  ARTiledImageView: 2db7735f5d3fcb4c859c912834a6a1bf20716377
+  Artsy+UIColors: 31c03c4146f5e6618a9b950f37dfe02dd9ac09a6
+  Artsy+UIFonts: e66afb5c40100e2fc5bba28feb7487e252f2d06f
+  Artsy+UILabels: 7cb6e290a4f70dddba037b7dbeb21e90b49d7275
+  Artsy-UIButtons: cdcc3ccf4d0d31ee80f45c1d11ffd2d772695b74
+  Bolts: a0058fa3b331c5a1e4402d534f2dae36dbff31e4
+  CocoaLumberjack: 27ae9abcd376c3e4ee726ecd4adfd7b093ddef3f
+  DHCShakeNotifier: 64048427ecaa763f2472d0032f58bf7a10074eee
+  EDColor: c83f9a61f9f9b3c23d541f1feb561558e29cb088
+  Emission: 991e10156ec8f7210d94f5c8af3ff2869f8e898b
+  Expecta: e1c022fcd33910b6be89c291d2775b3fe27a89fe
+  Expecta+Snapshots: c343f410c7a6392f3e22e78f94c44b6c0749a516
+  Extraction: 612cf0866f74d4c0dd616677ff24146efa200958
+  FBSDKCoreKit: d2aaed5e9ab7d8d6301c533376a1fbff1cf3deb5
+  FBSDKLoginKit: 699ff169080e3072de4b9b0faca90bf23dc36deb
+  FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
+  FLKAutoLayout: 106b14dbae09d32c6730190f4e78a959759ba4a4
+  Forgeries: 64ced144ea8341d89a7eec9d1d7986f0f1366250
+  FXBlurView: 5121730176fd52bcf7bffd0bd8c1485e8aabc3cb
+  HockeySDK-Source: 85233ef10090148e5571f7a0a82deb8213b1691e
+  Interstellar: ab67502af03105f92100a043e178d188a1a437c9
+  iRate: 18fd2d3bd7d2ab01dcd801098cc2f5cbe9f25ffb
+  ISO8601DateFormatter: 8311a2d4e265b269b2fed7ab4db685dcb0a7ccb2
+  JLRoutes: 63d64c28b26bcdeb5f5b29e436f75b8358e8d6d1
+  JSBadgeView: 3861ddee41094284d9468e6d0af5107f703aaac5
+  JSDecoupledAppDelegate: 5905e144cbe6e0c889248eebbee6784510f315e1
+  JWTDecode: 178e47e5d28d3abcff778bacced8342858cd6cb5
+  KSDeferred: e72d005162986b2978e1e2eee17fbce1c6876cfe
+  Mantle: a197db93e0f1e36194b1fdbc078219a8492eaef2
+  MARKRangeSlider: dbf0878b03e921b52e4ef1e7766c1a8affb0c577
+  MMMarkdown: 44f1c5216cfcd70bc0e076b0f91876d6323a73b8
+  MultiDelegate: d224a4af1c098e1de280c3eaee2f16ebf8b046f4
+  NAMapKit: bdcb666fa84122eed344661b132e1d93dbafac71
+  Nimble: 415e3aa3267e7bc2c96b05fa814ddea7bb686a29
+  Nimble-Snapshots: 4ba722c35b73a680cbd856e4bc22076dfb8085d4
+  NPKeyboardLayoutGuide: fea27700582570c8825a97b5cb96579a57bf0b73
+  ObjectiveSugar: a6a25f23d657c19df0a0b972466d5b5ca9f5295c
+  OCMock: a6a7dc0e3997fb9f35d99f72528698ebf60d64f2
+  OHHTTPStubs: c93230597bc5c8b74bcfdb403cc8773515b8b08c
+  ORKeyboardReactingApplication: 05af5ead40af968d5423d54b6a0dc050858b0e82
+  ORStackView: b9507271cb41fb9e0b3eecc6414d831201e7cf7c
+  Quick: 5d290df1c69d5ee2f0729956dcf0fd9a30447eaa
+  React: fc15d22bec0ec10fe15c12749fbefdac37ddc541
+  ReactiveCocoa: e2db045570aa97c695e7aa97c2bcab222ae51f4a
+  RSSwizzle: d561958f595028bfcef98c7d55c318b3878a61c6
+  SDWebImage: 1d2b1a1efda1ade1b00b6f8498865f8ddedc8a84
+  Specta: ac94d110b865115fe60ff2c6d7281053c6f8e8a2
+  SSFadingScrollView: a2f142312afad23585e354a41a6ed337045e1aa3
+  Starscream: 6c135a34e0a6e60cedaa0b30db67a4c05cf7cd38
+  SwiftyJSON: c2842d878f95482ffceec5709abc3d05680c0220
+  Then: 8496793c8fcac95482b943909b440724c7d8d82c
+  UIAlertView+Blocks: 6b408d63507287b22c6e631a2b25ca26f96fb609
+  UICKeyChainStore: e81dc3b58d56ffaed61ab6669eb97071e53fc377
+  UIView+BooleanAnimations: a760be9a066036e55f298b7b7350a6cb14cfcd97
+  VCRURLConnection: accd771ebd4be11183a3e4d5a4403f180a9a235e
+  XCTest+OHHTTPStubSuiteCleanUp: 4469ec8863c6bc022c5089a9b94233eb3416c5ee
+
+PODFILE CHECKSUM: d741c161a89e2b1b8e6d2a04f1472fa53e792564
+
+COCOAPODS: 1.2.1
