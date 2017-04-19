@@ -14,13 +14,12 @@ package com.blackducksoftware.integration.hub.packman.parser.gradle;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -84,7 +83,7 @@ public class CocoapodsPackagerTest {
                 }
             }
 
-            final String expectedJson = streamToString(expectedJsonStream);
+            final String expectedJson = IOUtils.toString(expectedJsonStream, StandardCharsets.UTF_8);
             final String actualJson = gson.toJson(targets);
 
             verifyJsonArraysEqual(expectedJson, actualJson);
@@ -95,20 +94,6 @@ public class CocoapodsPackagerTest {
                 podspecStream.close();
             }
             expectedJsonStream.close();
-        }
-    }
-
-    public String streamToString(final InputStream stream) {
-        try (final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))) {
-            final StringBuilder json = new StringBuilder();
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                json.append(line);
-                json.append("\n");
-            }
-            return json.toString();
-        } catch (final IOException e) {
-            throw new RuntimeException(e);
         }
     }
 
