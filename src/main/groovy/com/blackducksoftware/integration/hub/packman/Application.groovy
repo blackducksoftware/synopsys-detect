@@ -53,6 +53,10 @@ class Application {
 
     @PostConstruct
     void init() {
+        sourcePaths = [
+            '/Users/jmathews/ruby/eigen/'
+        ]
+        outputDirectoryPath = '/Users/jmathews/working/'
         parser.parseSourcePaths(sourcePaths, outputDirectoryPath)
     }
 

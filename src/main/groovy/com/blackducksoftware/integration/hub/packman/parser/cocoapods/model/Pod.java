@@ -16,6 +16,14 @@ public class Pod {
 
     public String otherInfo;
 
+    public String gitUrl;
+
+    public String gitBranch;
+
+    public String gitCommit;
+
+    public String gitTag;
+
     public Pod(final String name) {
         this.name = name;
     }

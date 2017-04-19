@@ -16,7 +16,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
+import com.google.gson.Gson;
 
 public class PodLock {
 
@@ -26,46 +29,19 @@ public class PodLock {
 
     public Map<String, String> specChecsums = new HashMap<>();
 
+    public Map<String, Pod> externalSources = new HashMap<>();
+
+    public Map<String, Pod> checkoutOptions = new HashMap<>();
+
     public String podfileChecksum;
 
     public String cococapodsVersion;
 
+    @Autowired
+    public Gson gson;
+
     @Override
     public String toString() {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("PODS:\n");
-        for (final DependencyNode p : pods) {
-            builder.append("  - ");
-            builder.append(p.name);
-            builder.append(" (");
-            builder.append(p.version);
-            builder.append(")\n");
-            for (final DependencyNode dep : p.children) {
-                builder.append("    - ");
-                builder.append(dep.name);
-                builder.append(" (");
-                builder.append(dep.version);
-                builder.append(")\n");
-            }
-        }
-        builder.append("\nDEPENDENCIES:\n");
-        for (final DependencyNode p : dependencies) {
-            builder.append("  - ");
-            builder.append(p.name);
-            builder.append(" (");
-            builder.append(p.version);
-            builder.append(")\n");
-        }
-        builder.append("\nSPEC CHECKSUMS:\n");
-        for (final DependencyNode p : dependencies) {
-            builder.append("  ");
-            builder.append(p.name);
-            builder.append(": ");
-            builder.append(specChecsums.get(p.name));
-            builder.append("\n");
-        }
-        builder.append("\nPODFILE CHECKSUM: " + podfileChecksum + "\n");
-        builder.append("\nCOCOAPODS: " + cococapodsVersion + "\n");
-        return builder.toString();
+        return gson.toJson(this);
     }
 }
