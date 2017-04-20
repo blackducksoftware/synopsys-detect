@@ -36,6 +36,8 @@ dependencies {
     compile 'com.blackducksoftware.integration:integration-bdio:2.0.0-SNAPSHOT'
     compile 'org.springframework.boot:spring-boot-starter'
     compile 'org.codehaus.groovy:groovy-all:2.4.10'
+    compile group: 'org.apache.maven.shared', name: 'maven-invoker', version: '3.0.0'
+    
 
     testCompile 'org.springframework.boot:spring-boot-starter-test'
 }
