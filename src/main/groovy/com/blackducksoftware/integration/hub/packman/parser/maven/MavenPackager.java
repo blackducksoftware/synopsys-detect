@@ -20,24 +20,21 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.packman.parser.Packager;
 import com.blackducksoftware.integration.hub.packman.parser.maven.parsers.MavenOutputParser;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 public class MavenPackager extends Packager {
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    private final boolean aggregateBom;
 
-    String sourceDirectory;
+    private final String sourceDirectory;
 
-    public MavenPackager(final String sourceDirectory) {
+    public MavenPackager(final String sourceDirectory, final boolean aggregateBom) {
         this.sourceDirectory = sourceDirectory;
+        this.aggregateBom = aggregateBom;
     }
 
     @Override
@@ -68,6 +65,16 @@ public class MavenPackager extends Packager {
 
             logger.info("cleaning up tempory files");
             mavenOutputFile.delete();
+
+            if (aggregateBom && !projects.isEmpty()) {
+                final DependencyNode firstNode = projects.remove(0);
+                for (final DependencyNode subProject : projects) {
+                    firstNode.children.addAll(subProject.children);
+                }
+                projects.clear();
+                projects.add(firstNode);
+            }
+
             return projects;
         } catch (final IOException e) {
             throw new RuntimeException(e);

@@ -146,7 +146,7 @@ public class MavenOutputParser extends StreamParser<List<DependencyNode>> {
             final String artifact = gavMatcher.group(2);
             final String version = gavMatcher.group(4);
             final ExternalId externalId = new MavenExternalId(Forge.maven, group, artifact, version);
-            final DependencyNode node = new DependencyNode(group + ":" + artifact, version, externalId);
+            final DependencyNode node = new DependencyNode(artifact, version, externalId);
             return node;
         }
         return null;
