@@ -42,7 +42,7 @@ dependencies {
     testCompile 'org.springframework.boot:spring-boot-starter-test'
 }
 
-springBoot { mainClass = 'com.blackducksoftware.integration.hub.artifactory.Application' }
+springBoot { mainClass = 'com.blackducksoftware.integration.hub.packman.Application' }
 
 task produceFinalZip(type: Zip, dependsOn: build) {
     from("${buildDir}/libs") { include '*.jar' into 'lib'}
