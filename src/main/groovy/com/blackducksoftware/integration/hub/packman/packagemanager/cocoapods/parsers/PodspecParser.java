@@ -16,17 +16,21 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.blackducksoftware.integration.hub.packman.StreamParser;
+import com.blackducksoftware.integration.hub.packman.OutputCleaner;
 import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.CocoapodsPackager;
 import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.model.Podspec;
 
-public class PodspecParser extends StreamParser<Podspec> {
-
+public class PodspecParser {
     final Pattern NAME_REGEX = Pattern.compile(".*\\.name\\s*=\\s*('|\")(.*)\\1.*");
 
     final Pattern VERSION_REGEX = Pattern.compile(".*\\.version\\s*=\\s*('|\")(.*)\\1.*");
 
-    @Override
+    private final OutputCleaner outputCleaner;
+
+    public PodspecParser(final OutputCleaner outputCleaner) {
+        this.outputCleaner = outputCleaner;
+    }
+
     public Podspec parse(final BufferedReader bufferedReader) {
         Podspec podspec = null;
 
@@ -43,7 +47,7 @@ public class PodspecParser extends StreamParser<Podspec> {
                 final Matcher nameMathcer = NAME_REGEX.matcher(line);
                 final Matcher versionMatcher = VERSION_REGEX.matcher(line);
 
-                line = processSingleLineComments(line, CocoapodsPackager.COMMENTS);
+                line = outputCleaner.cleanLineComment(line, CocoapodsPackager.COMMENTS);
 
                 if (line.isEmpty()) {
 

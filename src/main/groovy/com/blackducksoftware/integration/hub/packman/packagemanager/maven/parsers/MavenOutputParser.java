@@ -27,10 +27,9 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenExternalId;
-import com.blackducksoftware.integration.hub.packman.StreamParser;
 
-public class MavenOutputParser extends StreamParser<List<DependencyNode>> {
-    Logger logger = LoggerFactory.getLogger(MavenOutputParser.class);
+public class MavenOutputParser {
+    private final Logger logger = LoggerFactory.getLogger(MavenOutputParser.class);
 
     private final Pattern beginProjectRegex = Pattern.compile("--- .*? ---");
 
@@ -46,7 +45,6 @@ public class MavenOutputParser extends StreamParser<List<DependencyNode>> {
 
     private final Pattern finishRegex = Pattern.compile("--------");
 
-    @Override
     public List<DependencyNode> parse(final BufferedReader bufferedReader) throws IOException {
         final List<DependencyNode> projects = new ArrayList<>();
 

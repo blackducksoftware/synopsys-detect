@@ -11,6 +11,7 @@
  */
 package com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,8 +26,9 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId;
+import com.blackducksoftware.integration.hub.packman.InputStreamConverter;
+import com.blackducksoftware.integration.hub.packman.OutputCleaner;
 import com.blackducksoftware.integration.hub.packman.Packager;
-import com.blackducksoftware.integration.hub.packman.StreamParser;
 import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.model.PodLock;
 import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.model.Podfile;
 import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.model.Podspec;
@@ -37,13 +39,20 @@ import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.pa
 public class CocoapodsPackager extends Packager {
     public static final String COMMENTS = "#";
 
+    private final InputStreamConverter inputStreamConverter;
+
+    private final OutputCleaner outputCleaner;
+
     private final InputStream podfileStream;
 
     private final InputStream podlockStream;
 
     private final InputStream podspecStream;
 
-    public CocoapodsPackager(final InputStream podfileStream, final InputStream podlockStream, final InputStream podspecStream) {
+    public CocoapodsPackager(final InputStreamConverter inputStreamConverter, final OutputCleaner outputCleaner, final InputStream podfileStream,
+            final InputStream podlockStream, final InputStream podspecStream) {
+        this.inputStreamConverter = inputStreamConverter;
+        this.outputCleaner = outputCleaner;
         this.podfileStream = podfileStream;
         this.podlockStream = podlockStream;
         this.podspecStream = podspecStream;
@@ -54,16 +63,19 @@ public class CocoapodsPackager extends Packager {
         final List<DependencyNode> packages = new ArrayList<>();
         final Map<String, String> workspaceProjects = new HashMap<>();
 
-        final StreamParser<Podfile> podfileParser = new PodfileParser();
-        final Podfile podfile = podfileParser.parse(podfileStream);
+        final PodfileParser podfileParser = new PodfileParser(outputCleaner);
+        final BufferedReader podfileBufferedReader = inputStreamConverter.convertToBufferedReader(podlockStream);
+        final Podfile podfile = podfileParser.parse(podfileBufferedReader);
 
-        final StreamParser<PodLock> podLockParser = new PodLockParser();
-        final PodLock podLock = podLockParser.parse(podlockStream);
+        final PodLockParser podLockParser = new PodLockParser();
+        final BufferedReader podLockBufferedReader = inputStreamConverter.convertToBufferedReader(podlockStream);
+        final PodLock podLock = podLockParser.parse(podLockBufferedReader);
 
-        final StreamParser<Podspec> podspecParser = new PodspecParser();
+        final PodspecParser podspecParser = new PodspecParser(outputCleaner);
         Podspec podspec = null;
         if (podspecStream != null) {
-            podspec = podspecParser.parse(podspecStream);
+            final BufferedReader podspecBufferedReader = inputStreamConverter.convertToBufferedReader(podspecStream);
+            podspec = podspecParser.parse(podspecBufferedReader);
             for (final DependencyNode target : podfile.targets) {
                 workspaceProjects.put(target.name, podspec.version);
             }

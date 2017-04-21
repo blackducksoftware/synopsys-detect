@@ -26,13 +26,14 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId;
-import com.blackducksoftware.integration.hub.packman.StreamParser;
+import com.blackducksoftware.integration.hub.packman.OutputCleaner;
 import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.CocoapodsPackager;
 import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.model.Pod;
 import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.model.Podfile;
 import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.model.PodfileTarget;
 
-public class PodfileParser extends StreamParser<Podfile> {
+public class PodfileParser {
+    private final OutputCleaner outputCleaner;
 
     final Pattern TARGET_REGEX = Pattern.compile("[ |\\t]*target[ |\\t]+('|\")(.*)\\1[ |\\t]*do.*");
 
@@ -42,7 +43,10 @@ public class PodfileParser extends StreamParser<Podfile> {
 
     final Pattern POD_REGEX = Pattern.compile("[ |\\t]*pod\\s*?('|\")(.*?)\\1(.*)");
 
-    @Override
+    public PodfileParser(final OutputCleaner outputCleaner) {
+        this.outputCleaner = outputCleaner;
+    }
+
     public Podfile parse(final BufferedReader bufferedReader) {
         Podfile podfile = new Podfile();
 
@@ -62,7 +66,7 @@ public class PodfileParser extends StreamParser<Podfile> {
                 final Matcher podMatcher = POD_REGEX.matcher(line);
                 final Matcher targetEndMatcher = TARGET_END_REGEX.matcher(line);
 
-                line = processSingleLineComments(line, CocoapodsPackager.COMMENTS);
+                line = outputCleaner.cleanLineComment(line, CocoapodsPackager.COMMENTS);
 
                 if (StringUtils.isBlank(line)) {
 

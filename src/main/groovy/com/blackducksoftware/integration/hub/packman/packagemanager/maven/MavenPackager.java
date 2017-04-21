@@ -22,13 +22,20 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
+import com.blackducksoftware.integration.hub.packman.InputStreamConverter;
 import com.blackducksoftware.integration.hub.packman.Packager;
 import com.blackducksoftware.integration.hub.packman.packagemanager.maven.parsers.MavenOutputParser;
 
+@Component
 public class MavenPackager extends Packager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    @Autowired
+    private InputStreamConverter inputStreamConverter;
 
     private final boolean aggregateBom;
 
@@ -73,7 +80,8 @@ public class MavenPackager extends Packager {
             logger.info("parsing maven's output stream");
             final MavenOutputParser mavenParser = new MavenOutputParser();
             mavenOutputFileStream = new FileInputStream(mavenOutputFile);
-            final List<DependencyNode> projects = mavenParser.parse(mavenOutputFileStream);
+            final BufferedReader bufferedReader = inputStreamConverter.convertToBufferedReader(mavenOutputFileStream);
+            final List<DependencyNode> projects = mavenParser.parse(bufferedReader);
 
             logger.info("cleaning up tempory files");
             mavenOutputFile.delete();

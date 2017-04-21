@@ -21,12 +21,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
-import com.blackducksoftware.integration.hub.packman.StreamParser;
 import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.CocoapodsPackager;
 import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.model.Pod;
 import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.model.PodLock;
 
-public class PodLockParser extends StreamParser<PodLock> {
+public class PodLockParser {
     private final Logger logger = LoggerFactory.getLogger(PodLockParser.class);
 
     final Pattern PODS_SECTION = Pattern.compile("PODS:\\s*");
@@ -61,7 +60,6 @@ public class PodLockParser extends StreamParser<PodLock> {
 
     final Pattern COMMIT_REGEX = Pattern.compile("    :commit:\\s*(.*)");
 
-    @Override
     public PodLock parse(final BufferedReader bufferedReader) {
         PodLock podLock = new PodLock();
 
