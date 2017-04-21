@@ -9,7 +9,7 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.parser.cocoapods;
+package com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -25,14 +25,14 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId;
-import com.blackducksoftware.integration.hub.packman.parser.Packager;
-import com.blackducksoftware.integration.hub.packman.parser.StreamParser;
-import com.blackducksoftware.integration.hub.packman.parser.cocoapods.model.PodLock;
-import com.blackducksoftware.integration.hub.packman.parser.cocoapods.model.Podfile;
-import com.blackducksoftware.integration.hub.packman.parser.cocoapods.model.Podspec;
-import com.blackducksoftware.integration.hub.packman.parser.cocoapods.parsers.PodLockParser;
-import com.blackducksoftware.integration.hub.packman.parser.cocoapods.parsers.PodfileParser;
-import com.blackducksoftware.integration.hub.packman.parser.cocoapods.parsers.PodspecParser;
+import com.blackducksoftware.integration.hub.packman.Packager;
+import com.blackducksoftware.integration.hub.packman.StreamParser;
+import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.model.PodLock;
+import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.model.Podfile;
+import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.model.Podspec;
+import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.parsers.PodLockParser;
+import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.parsers.PodfileParser;
+import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.parsers.PodspecParser;
 
 public class CocoapodsPackager extends Packager {
     public static final String COMMENTS = "#";

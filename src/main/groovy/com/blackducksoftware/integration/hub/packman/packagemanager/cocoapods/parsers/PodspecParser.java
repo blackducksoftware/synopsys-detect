@@ -9,16 +9,16 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.parser.cocoapods.parsers;
+package com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.parsers;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.blackducksoftware.integration.hub.packman.parser.StreamParser;
-import com.blackducksoftware.integration.hub.packman.parser.cocoapods.CocoapodsPackager;
-import com.blackducksoftware.integration.hub.packman.parser.cocoapods.model.Podspec;
+import com.blackducksoftware.integration.hub.packman.StreamParser;
+import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.CocoapodsPackager;
+import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.model.Podspec;
 
 public class PodspecParser extends StreamParser<Podspec> {
 

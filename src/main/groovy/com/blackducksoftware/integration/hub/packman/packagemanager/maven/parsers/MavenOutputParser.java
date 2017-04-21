@@ -9,7 +9,7 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.parser.maven.parsers;
+package com.blackducksoftware.integration.hub.packman.packagemanager.maven.parsers;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,7 +27,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenExternalId;
-import com.blackducksoftware.integration.hub.packman.parser.StreamParser;
+import com.blackducksoftware.integration.hub.packman.StreamParser;
 
 public class MavenOutputParser extends StreamParser<List<DependencyNode>> {
     Logger logger = LoggerFactory.getLogger(MavenOutputParser.class);

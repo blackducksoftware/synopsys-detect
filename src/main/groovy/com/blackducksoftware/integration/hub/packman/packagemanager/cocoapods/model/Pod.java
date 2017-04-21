@@ -9,19 +9,22 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.parser.cocoapods.model;
+package com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.model;
 
-public class Podspec {
-    public String name;
+public class Pod {
+    final public String name;
 
-    public String version;
+    public String otherInfo;
 
-    public Podspec() {
+    public String gitUrl;
 
-    }
+    public String gitBranch;
 
-    public Podspec(final String name, final String version) {
+    public String gitCommit;
+
+    public String gitTag;
+
+    public Pod(final String name) {
         this.name = name;
-        this.version = version;
     }
 }

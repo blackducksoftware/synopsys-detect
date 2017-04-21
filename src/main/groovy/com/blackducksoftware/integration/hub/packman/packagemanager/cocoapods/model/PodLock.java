@@ -9,7 +9,7 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.parser.cocoapods.model;
+package com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;

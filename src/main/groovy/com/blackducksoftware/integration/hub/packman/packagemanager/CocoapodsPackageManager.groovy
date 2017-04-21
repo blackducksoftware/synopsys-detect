@@ -1,20 +1,20 @@
-package com.blackducksoftware.integration.hub.packman.search
+package com.blackducksoftware.integration.hub.packman.packagemanager
 
 import org.apache.commons.io.IOUtils
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.packman.PackageManager
-import com.blackducksoftware.integration.hub.packman.parser.cocoapods.CocoapodsPackager
+import com.blackducksoftware.integration.hub.packman.PackageManagerType
+import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.CocoapodsPackager
 
 @Component
-class CocoapodsSearcher extends PackageManagerSearcher {
+class CocoapodsPackageManager extends PackageManager {
     public static final String PODFILE_LOCK_FILENAME = 'Podfile.lock'
     public static final String PODFILE_FILENAME = 'Podfile'
     public static final String PODSPEC_FILENAME_EXTENSION = '.podspec'
 
-    PackageManager getPackageManager() {
-        return PackageManager.COCOAPODS
+    PackageManagerType getPackageManagerType() {
+        return PackageManagerType.COCOAPODS
     }
 
     boolean isPackageManagerApplicable(String sourcePath) {

@@ -9,7 +9,7 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.parser.cocoapods.parsers;
+package com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.parsers;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,10 +21,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
-import com.blackducksoftware.integration.hub.packman.parser.StreamParser;
-import com.blackducksoftware.integration.hub.packman.parser.cocoapods.CocoapodsPackager;
-import com.blackducksoftware.integration.hub.packman.parser.cocoapods.model.Pod;
-import com.blackducksoftware.integration.hub.packman.parser.cocoapods.model.PodLock;
+import com.blackducksoftware.integration.hub.packman.StreamParser;
+import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.CocoapodsPackager;
+import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.model.Pod;
+import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.model.PodLock;
 
 public class PodLockParser extends StreamParser<PodLock> {
     private final Logger logger = LoggerFactory.getLogger(PodLockParser.class);

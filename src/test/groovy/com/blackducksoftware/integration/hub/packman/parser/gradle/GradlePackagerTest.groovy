@@ -6,16 +6,9 @@ import org.junit.Test
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenExternalId
+import com.blackducksoftware.integration.hub.packman.packagemanager.gradle.GradlePackager
 
 class GradlePackagerTest {
-    @Test
-    public void testGradlePackager() {
-        def sourcePath = '/Users/ekerwin/Documents/source/rest-backend/registration/registration.core'
-        def gradlePackager = new GradlePackager(sourcePath)
-        def dependencyNodes = gradlePackager.makeDependencyNodes()
-        dependencyNodes.each { println "${it.name}/${it.version}: ${it.externalId.createDataId()}: ${it.externalId.createExternalId()}" }
-    }
-
     @Test
     public void testParsingStandardLines() {
         def gradlePackager = new GradlePackager(null)

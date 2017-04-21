@@ -1,14 +1,14 @@
-package com.blackducksoftware.integration.hub.packman.search
+package com.blackducksoftware.integration.hub.packman.packagemanager
 
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.packman.PackageManager
+import com.blackducksoftware.integration.hub.packman.PackageManagerType
 
 @Component
-class GradleSearcher extends PackageManagerSearcher {
-    PackageManager getPackageManager() {
-        return PackageManager.GRADLE
+class GradlePackageManager extends PackageManager {
+    PackageManagerType getPackageManagerType() {
+        return PackageManagerType.GRADLE
     }
 
     boolean isPackageManagerApplicable(String sourcePath) {

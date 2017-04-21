@@ -9,7 +9,7 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.parser.gradle
+package com.blackducksoftware.integration.hub.packman.packagemanager.gradle
 
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
@@ -20,7 +20,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeBuilder
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenExternalId
-import com.blackducksoftware.integration.hub.packman.parser.Packager
+import com.blackducksoftware.integration.hub.packman.Packager
 
 class GradlePackager extends Packager {
     private final Logger logger = LoggerFactory.getLogger(GradlePackager.class)
@@ -59,8 +59,6 @@ class GradlePackager extends Packager {
         int treeLevel = 0
 
         for (String line : lines) {
-            printNodes(0, rootProject)
-
             DependencyNode lineNode = createDependencyNodeFromOutputLine(line)
             if (lineNode == null) {
                 continue

@@ -1,6 +1,6 @@
 package com.blackducksoftware.integration.hub.packman;
 
-public enum PackageManager {
+public enum PackageManagerType {
     MAVEN,
     GRADLE,
     SBT,

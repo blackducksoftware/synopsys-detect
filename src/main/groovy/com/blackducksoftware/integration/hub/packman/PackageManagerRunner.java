@@ -9,7 +9,7 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.parser;
+package com.blackducksoftware.integration.hub.packman;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -25,16 +25,15 @@ import com.blackducksoftware.integration.hub.bdio.simple.BdioWriter;
 import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeTransformer;
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.SimpleBdioDocument;
-import com.blackducksoftware.integration.hub.packman.PackageManager;
-import com.blackducksoftware.integration.hub.packman.search.PackageManagerSearcher;
+import com.blackducksoftware.integration.hub.packman.packagemanager.PackageManager;
 import com.google.gson.Gson;
 
 @Component
-public class ParserManager {
-    private final Logger logger = LoggerFactory.getLogger(ParserManager.class);
+public class PackageManagerRunner {
+    private final Logger logger = LoggerFactory.getLogger(PackageManagerRunner.class);
 
     @Autowired
-    private List<PackageManagerSearcher> packageManagerSearchers;
+    private List<PackageManager> packageManagers;
 
     @Autowired
     private Gson gson;
@@ -43,25 +42,25 @@ public class ParserManager {
     private DependencyNodeTransformer dependencyNodeTransformer;
 
     public void parseSourcePaths(final String[] sourcePaths, final String outputDirectoryPath) throws IOException {
-        for (final PackageManagerSearcher packageManagerSearcher : packageManagerSearchers) {
+        for (final PackageManager packageManager : packageManagers) {
             for (final String sourcePath : sourcePaths) {
                 logger.info(String.format("searching source path: %s", sourcePath));
-                if (packageManagerSearcher.isPackageManagerApplicable(sourcePath)) {
-                    final List<DependencyNode> projectNodes = packageManagerSearcher.extractDependencyNodes(sourcePath);
+                if (packageManager.isPackageManagerApplicable(sourcePath)) {
+                    final List<DependencyNode> projectNodes = packageManager.extractDependencyNodes(sourcePath);
                     if (projectNodes != null && projectNodes.size() > 0) {
-                        createOutput(outputDirectoryPath, packageManagerSearcher.getPackageManager(), projectNodes);
+                        createOutput(outputDirectoryPath, packageManager.getPackageManagerType(), projectNodes);
                     }
                 }
             }
         }
     }
 
-    private void createOutput(final String outputDirectoryPath, final PackageManager packageManager, final List<DependencyNode> projectNodes) {
+    private void createOutput(final String outputDirectoryPath, final PackageManagerType packageManagerType, final List<DependencyNode> projectNodes) {
         final File outputDirectory = new File(outputDirectoryPath);
         outputDirectory.mkdirs();
 
         for (final DependencyNode project : projectNodes) {
-            final String filename = String.format("%s_%s_%s_bdio.jsonld", packageManager.toString(), project.name, project.version);
+            final String filename = String.format("%s_%s_%s_bdio.jsonld", packageManagerType.toString(), project.name, project.version);
             final File outputFile = new File(outputDirectory, filename);
             try (final BdioWriter bdioWriter = new BdioWriter(gson, new FileOutputStream(outputFile))) {
                 final SimpleBdioDocument bdioDocument = dependencyNodeTransformer.transformDependencyNode(project);

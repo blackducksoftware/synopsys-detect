@@ -9,22 +9,13 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.parser.cocoapods.model;
+package com.blackducksoftware.integration.hub.packman;
 
-public class Pod {
-    final public String name;
+import java.util.List;
 
-    public String otherInfo;
+import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 
-    public String gitUrl;
+public abstract class Packager {
+    public abstract List<DependencyNode> makeDependencyNodes();
 
-    public String gitBranch;
-
-    public String gitCommit;
-
-    public String gitTag;
-
-    public Pod(final String name) {
-        this.name = name;
-    }
 }
