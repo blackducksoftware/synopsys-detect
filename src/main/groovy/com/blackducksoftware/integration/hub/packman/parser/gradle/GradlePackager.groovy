@@ -11,24 +11,98 @@
  */
 package com.blackducksoftware.integration.hub.packman.parser.gradle
 
+import org.apache.commons.lang3.StringUtils
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
+
+import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeBuilder
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenExternalId
 import com.blackducksoftware.integration.hub.packman.parser.Packager
 
 class GradlePackager extends Packager {
+    private final Logger logger = LoggerFactory.getLogger(GradlePackager.class)
+
+    public static final String COMPONENT_PREFIX = '--- '
+    public static final String SEEN_ELSEWHERE_SUFFIX = ' (*)'
+    public static final String WINNING_VERSION_INDICATOR = ' -> '
+
+    @Value('${packman.gradle.path}')
+    String gradlePath;
+
+    String buildFilePath;
+
     GradlePackager(final String pathContainingBuildGradle) {
+        this.buildFilePath = pathContainingBuildGradle
     }
 
     @Override
     List<DependencyNode> makeDependencyNodes() {
-        def packages = []
+        String output = "${gradlePath} dependencies".execute(null, buildFilePath).text
+        String[] lines = output.split('\n')
 
-        packages.add(new DependencyNode('testName', 'testVersion', new MavenExternalId(Forge.maven, 'testGroup', 'testName', 'testVersion')))
+        def projects = [
+            new DependencyNode('project', 'version', new MavenExternalId('group', 'project', 'version'))
+        ]
+        def children = createDependencyNodesFromOutputLines(projects[0], output.split('\n'))
 
-        return packages
+        projects
     }
 
-    List<DependencyNode> createDependencyNodesFromGradleOutput(String output) {
+    List<DependencyNode> createDependencyNodesFromOutputLines(DependencyNode rootProject, List<String> lines) {
+        DependencyNodeBuilder dependencyNodeBuilder = new DependencyNodeBuilder(rootProject)
+        def nodeStack = new Stack()
+        nodeStack.push(rootProject)
+        def previousNode = null
+        int treeLevel = 0
+
+        for (String line : lines) {
+            printNodes(0, rootProject)
+
+            DependencyNode lineNode = createDependencyNodeFromOutputLine(line)
+            if (lineNode == null) {
+                continue
+            }
+
+            int lineTreeLevel = StringUtils.countMatches(line, '    ')
+            if (lineTreeLevel == treeLevel + 1) {
+                nodeStack.push(previousNode)
+            } else if (lineTreeLevel < treeLevel) {
+                (treeLevel - lineTreeLevel).times { nodeStack.pop() }
+            } else if (lineTreeLevel != treeLevel) {
+                logger.error "The tree level (${treeLevel}) and this line (${line}) with count ${lineTreeLevel} can't be reconciled."
+            }
+            dependencyNodeBuilder.addChildNodeWithParents(lineNode, [nodeStack.peek()])
+            previousNode = lineNode
+            treeLevel = lineTreeLevel
+        }
+    }
+
+    DependencyNode createDependencyNodeFromOutputLine(String outputLine) {
+        if (StringUtils.isBlank(outputLine) || !outputLine.contains(COMPONENT_PREFIX)) {
+            logger.warn 'No input was provided.'
+            return null
+        }
+
+        String cleanedOutput = StringUtils.trimToEmpty(outputLine)
+        if (cleanedOutput.split(':').length != 3) {
+            logger.error "The line can not be reasonably split in to the neccessary parts: ${outputLine}"
+            return null
+        }
+
+        cleanedOutput = cleanedOutput.substring(cleanedOutput.indexOf(COMPONENT_PREFIX) + COMPONENT_PREFIX.length())
+        if (cleanedOutput.endsWith(SEEN_ELSEWHERE_SUFFIX)) {
+            cleanedOutput = cleanedOutput[0..(-1 * (SEEN_ELSEWHERE_SUFFIX.length() + 1))]
+        }
+
+        def (group, artifact, version) = cleanedOutput.split(':')
+        if (version.contains(WINNING_VERSION_INDICATOR)) {
+            int winningVersionIndex = version.indexOf(WINNING_VERSION_INDICATOR) + WINNING_VERSION_INDICATOR.length()
+            version = version[winningVersionIndex..-1]
+        }
+
+        new DependencyNode(artifact, version, new MavenExternalId(Forge.maven, group, artifact, version))
     }
 }
