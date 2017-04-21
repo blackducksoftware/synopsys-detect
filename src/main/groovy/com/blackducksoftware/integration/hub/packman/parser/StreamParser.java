@@ -16,7 +16,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public abstract class StreamParser<T> {
+    Logger logger = LoggerFactory.getLogger(StreamParser.class);
 
     public T parse(final InputStream inputStream) {
         return parse(new InputStreamReader(inputStream));
@@ -26,13 +30,12 @@ public abstract class StreamParser<T> {
         try (BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
             return parse(bufferedReader);
         } catch (final IOException e) {
-            // TODO: Log
-            e.printStackTrace();
+            logger.debug("Failed to parse the inputStreamReader", e);
         }
         return null;
     }
 
-    public abstract T parse(BufferedReader bufferedReader);
+    public abstract T parse(BufferedReader bufferedReader) throws IOException;
 
     public String processSingleLineComments(String line, final String comment) {
         if (line.contains(comment)) {

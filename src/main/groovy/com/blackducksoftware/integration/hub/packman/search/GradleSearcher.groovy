@@ -1,11 +1,9 @@
 package com.blackducksoftware.integration.hub.packman.search
 
-import org.apache.commons.io.IOUtils
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.packman.PackageManager
-import com.blackducksoftware.integration.hub.packman.parser.cocoapods.CocoapodsPackager
 
 @Component
 class GradleSearcher extends PackageManagerSearcher {
@@ -24,17 +22,18 @@ class GradleSearcher extends PackageManagerSearcher {
     }
 
     List<DependencyNode> extractDependencyNodes(String sourcePath) {
-        File sourceDirectory = new File(sourcePath)
-        File podfileLockFile = new File(sourceDirectory, PODFILE_LOCK_FILENAME)
-        File podfileFile = new File(sourceDirectory, PODFILE_FILENAME)
-        final InputStream podfileLockStream = new FileInputStream(podfileLockFile)
-        final InputStream podfileStream = new FileInputStream(podfileFile)
-        try {
-            def cocoaPodsPackager = new CocoapodsPackager(podfileStream, podfileLockStream)
-            def projects = cocoaPodsPackager.makeDependencyNodes()
-        } finally {
-            IOUtils.closeQuietly(podfileLockFile)
-            IOUtils.closeQuietly(podfileFile)
-        }
+        //        File sourceDirectory = new File(sourcePath)
+        //        File podfileLockFile = new File(sourceDirectory, PODFILE_LOCK_FILENAME)
+        //        File podfileFile = new File(sourceDirectory, PODFILE_FILENAME)
+        //        final InputStream podfileLockStream = new FileInputStream(podfileLockFile)
+        //        final InputStream podfileStream = new FileInputStream(podfileFile)
+        //        try {
+        //            def cocoaPodsPackager = new CocoapodsPackager(podfileStream, podfileLockStream)
+        //            def projects = cocoaPodsPackager.makeDependencyNodes()
+        //        } finally {
+        //            IOUtils.closeQuietly(podfileLockFile)
+        //            IOUtils.closeQuietly(podfileFile)
+        //        }
+        return null
     }
 }

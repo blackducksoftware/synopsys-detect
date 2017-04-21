@@ -5,12 +5,16 @@ buildscript {
 
     dependencies {
         classpath('org.springframework.boot:spring-boot-gradle-plugin:1.5.2.RELEASE')
+		classpath "org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.8.1"
+		  
     }
 }
 
 apply plugin: 'groovy'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'jacoco'
+apply plugin: 'com.github.kt3k.coveralls' 
 
 tasks.withType(JavaCompile) { options.encoding = 'UTF-8' }
 tasks.withType(GroovyCompile) { options.encoding = 'UTF-8' }
@@ -36,11 +40,17 @@ dependencies {
     compile 'com.blackducksoftware.integration:integration-bdio:2.0.0-SNAPSHOT'
     compile 'org.springframework.boot:spring-boot-starter'
     compile 'org.codehaus.groovy:groovy-all:2.4.10'
+    compile group: 'org.apache.maven.shared', name: 'maven-invoker', version: '3.0.0'
+    
 
     testCompile 'org.springframework.boot:spring-boot-starter-test'
 }
 
-springBoot { mainClass = 'com.blackducksoftware.integration.hub.artifactory.Application' }
+springBoot { mainClass = 'com.blackducksoftware.integration.hub.packman.Application' }
+
+jacocoTestReport {
+	reports { xml.enabled = true }
+}
 
 task produceFinalZip(type: Zip, dependsOn: build) {
     from("${buildDir}/libs") { include '*.jar' into 'lib'}
