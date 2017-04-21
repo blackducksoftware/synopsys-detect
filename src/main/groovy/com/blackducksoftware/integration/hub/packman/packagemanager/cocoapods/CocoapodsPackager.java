@@ -64,7 +64,7 @@ public class CocoapodsPackager extends Packager {
         final Map<String, String> workspaceProjects = new HashMap<>();
 
         final PodfileParser podfileParser = new PodfileParser(outputCleaner);
-        final BufferedReader podfileBufferedReader = inputStreamConverter.convertToBufferedReader(podlockStream);
+        final BufferedReader podfileBufferedReader = inputStreamConverter.convertToBufferedReader(podfileStream);
         final Podfile podfile = podfileParser.parse(podfileBufferedReader);
 
         final PodLockParser podLockParser = new PodLockParser();

@@ -1,9 +1,12 @@
 package com.blackducksoftware.integration.hub.packman.packagemanager
 
 import org.apache.commons.io.IOUtils
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.packman.InputStreamConverter
+import com.blackducksoftware.integration.hub.packman.OutputCleaner
 import com.blackducksoftware.integration.hub.packman.PackageManagerType
 import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.CocoapodsPackager
 
@@ -12,6 +15,12 @@ class CocoapodsPackageManager extends PackageManager {
     public static final String PODFILE_LOCK_FILENAME = 'Podfile.lock'
     public static final String PODFILE_FILENAME = 'Podfile'
     public static final String PODSPEC_FILENAME_EXTENSION = '.podspec'
+
+    @Autowired
+    InputStreamConverter inputStreamConverter;
+
+    @Autowired
+    OutputCleaner outputCleaner;
 
     PackageManagerType getPackageManagerType() {
         return PackageManagerType.COCOAPODS
@@ -41,7 +50,7 @@ class CocoapodsPackageManager extends PackageManager {
             podfileStream = new FileInputStream(podfileFile)
             podspecStream = podspecFile != null ? new FileInputStream(podspecFile) : null
 
-            def cocoaPodsPackager = new CocoapodsPackager(podfileStream, podfileLockStream, podspecStream)
+            def cocoaPodsPackager = new CocoapodsPackager(inputStreamConverter, outputCleaner, podfileStream, podfileLockStream, podspecStream)
             def projects = cocoaPodsPackager.makeDependencyNodes()
             return projects
         } finally {

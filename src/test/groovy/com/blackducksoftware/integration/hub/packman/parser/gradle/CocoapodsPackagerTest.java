@@ -30,6 +30,8 @@ import org.skyscreamer.jsonassert.JSONParser;
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId;
+import com.blackducksoftware.integration.hub.packman.InputStreamConverter;
+import com.blackducksoftware.integration.hub.packman.OutputCleaner;
 import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.CocoapodsPackager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -59,6 +61,8 @@ public class CocoapodsPackagerTest {
             final boolean fixVersion)
             throws JSONException, IOException {
 
+        final InputStreamConverter inputStreamConverter = new InputStreamConverter();
+        final OutputCleaner outputCleaner = new OutputCleaner();
         InputStream podfileStream = null;
         InputStream podlockStream = null;
         InputStream expectedJsonStream = null;
@@ -71,7 +75,7 @@ public class CocoapodsPackagerTest {
             }
             expectedJsonStream = this.getClass().getResourceAsStream(expectedJsonPath);
 
-            final CocoapodsPackager packager = new CocoapodsPackager(podfileStream, podlockStream, podspecStream);
+            final CocoapodsPackager packager = new CocoapodsPackager(inputStreamConverter, outputCleaner, podfileStream, podlockStream, podspecStream);
             final List<DependencyNode> targets = packager.makeDependencyNodes();
 
             if (fixVersion) {
