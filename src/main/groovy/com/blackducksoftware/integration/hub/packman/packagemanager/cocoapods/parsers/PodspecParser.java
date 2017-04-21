@@ -16,9 +16,9 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.blackducksoftware.integration.hub.packman.OutputCleaner;
 import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.CocoapodsPackager;
 import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.model.Podspec;
+import com.blackducksoftware.integration.hub.packman.util.OutputCleaner;
 
 public class PodspecParser {
     final Pattern NAME_REGEX = Pattern.compile(".*\\.name\\s*=\\s*('|\")(.*)\\1.*");

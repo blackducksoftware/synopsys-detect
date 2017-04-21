@@ -30,9 +30,9 @@ import org.skyscreamer.jsonassert.JSONParser;
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId;
-import com.blackducksoftware.integration.hub.packman.InputStreamConverter;
-import com.blackducksoftware.integration.hub.packman.OutputCleaner;
 import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.CocoapodsPackager;
+import com.blackducksoftware.integration.hub.packman.util.InputStreamConverter;
+import com.blackducksoftware.integration.hub.packman.util.OutputCleaner;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 

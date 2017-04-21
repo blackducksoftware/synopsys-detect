@@ -26,11 +26,11 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId;
-import com.blackducksoftware.integration.hub.packman.OutputCleaner;
 import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.CocoapodsPackager;
 import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.model.Pod;
 import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.model.Podfile;
 import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.model.PodfileTarget;
+import com.blackducksoftware.integration.hub.packman.util.OutputCleaner;
 
 public class PodfileParser {
     private final OutputCleaner outputCleaner;

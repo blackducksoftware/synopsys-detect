@@ -1,4 +1,4 @@
-package com.blackducksoftware.integration.hub.packman;
+package com.blackducksoftware.integration.hub.packman.util;
 
 import org.springframework.stereotype.Component;
 

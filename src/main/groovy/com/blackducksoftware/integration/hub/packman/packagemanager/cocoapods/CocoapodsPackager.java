@@ -26,8 +26,6 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId;
-import com.blackducksoftware.integration.hub.packman.InputStreamConverter;
-import com.blackducksoftware.integration.hub.packman.OutputCleaner;
 import com.blackducksoftware.integration.hub.packman.Packager;
 import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.model.PodLock;
 import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.model.Podfile;
@@ -35,6 +33,8 @@ import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.mo
 import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.parsers.PodLockParser;
 import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.parsers.PodfileParser;
 import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.parsers.PodspecParser;
+import com.blackducksoftware.integration.hub.packman.util.InputStreamConverter;
+import com.blackducksoftware.integration.hub.packman.util.OutputCleaner;
 
 public class CocoapodsPackager extends Packager {
     public static final String COMMENTS = "#";

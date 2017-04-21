@@ -26,9 +26,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
-import com.blackducksoftware.integration.hub.packman.InputStreamConverter;
 import com.blackducksoftware.integration.hub.packman.Packager;
 import com.blackducksoftware.integration.hub.packman.packagemanager.maven.parsers.MavenOutputParser;
+import com.blackducksoftware.integration.hub.packman.util.InputStreamConverter;
 
 @Component
 public class MavenPackager extends Packager {
