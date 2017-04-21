@@ -39,7 +39,7 @@ public abstract class StreamParser<T> {
 
     public String processSingleLineComments(String line, final String comment) {
         if (line.contains(comment)) {
-            final String[] sections = line.split("#");
+            final String[] sections = line.split(comment);
             if (sections.length > 0) {
                 line = sections[0].trim();
             } else {
