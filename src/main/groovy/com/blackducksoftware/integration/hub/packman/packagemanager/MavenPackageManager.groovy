@@ -1,10 +1,7 @@
 package com.blackducksoftware.integration.hub.packman.packagemanager
 
-<<<<<<< HEAD
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
-=======
->>>>>>> 15509789f3bfeee21592ddde61d3ce9dc233401d
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
