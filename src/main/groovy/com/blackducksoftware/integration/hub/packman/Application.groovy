@@ -57,7 +57,6 @@ class Application {
     @PostConstruct
     void init() {
         parser.parseSourcePaths(sourcePaths, outputDirectoryPath)
-        println executableFinder.findExecutable('mvn')
     }
 
     @Bean

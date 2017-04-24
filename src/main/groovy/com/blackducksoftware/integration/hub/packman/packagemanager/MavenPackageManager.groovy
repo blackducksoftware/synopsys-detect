@@ -14,7 +14,10 @@ class MavenPackageManager extends PackageManager {
     public static final String POM_FILENAME = 'pom.xml'
 
     @Autowired
-    InputStreamConverter inputStreamConverter;
+    InputStreamConverter inputStreamConverter
+
+    @Autowired
+    ExecutableFinder executableFinder
 
     @Value('${packman.bom.aggregate}')
     boolean aggregateBom
@@ -34,7 +37,7 @@ class MavenPackageManager extends PackageManager {
     }
 
     List<DependencyNode> extractDependencyNodes(String sourcePath) {
-        def mavenPackager = new MavenPackager(inputStreamConverter, sourcePath, aggregateBom)
+        def mavenPackager = new MavenPackager(inputStreamConverter, executableFinder, sourcePath, aggregateBom)
         def projects = mavenPackager.makeDependencyNodes()
         return projects
     }
