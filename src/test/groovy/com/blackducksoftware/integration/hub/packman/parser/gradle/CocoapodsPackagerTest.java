@@ -41,6 +41,23 @@ public class CocoapodsPackagerTest {
     public Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     @Test
+    public void nullStreamTest() {
+        final CocoapodsPackager packager = new CocoapodsPackager(null, null, null, null, null);
+        boolean failed = false;
+        try {
+            packager.makeDependencyNodes();
+        } catch (final IOException | NullPointerException e) {
+            failed = true;
+        }
+        assertEquals(true, failed);
+    }
+
+    @Test
+    public void invalidFilePathTest() {
+
+    }
+
+    @Test
     public void complexTest() throws JSONException, IOException {
         final String podfilePath = "/cocoapods/complex/Podfile";
         final String podlockPath = "/cocoapods/complex/Podfile.lock";
@@ -75,7 +92,7 @@ public class CocoapodsPackagerTest {
             }
             expectedJsonStream = this.getClass().getResourceAsStream(expectedJsonPath);
 
-            final CocoapodsPackager packager = new CocoapodsPackager(inputStreamConverter, outputCleaner, podfileStream, podlockStream, podspecStream);
+            final CocoapodsPackager packager = new CocoapodsPackager(inputStreamConverter, outputCleaner, podlockStream, podspecStream, "testName");
             final List<DependencyNode> targets = packager.makeDependencyNodes();
 
             if (fixVersion) {

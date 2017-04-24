@@ -1,6 +1,5 @@
 package com.blackducksoftware.integration.hub.packman.packagemanager
 
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
@@ -10,9 +9,6 @@ import com.blackducksoftware.integration.hub.packman.packagemanager.maven.MavenP
 @Component
 class MavenPackageManager extends PackageManager {
     public static final String POM_FILENAME = 'pom.xml'
-
-    @Value('${packman.bom.aggregate}')
-    boolean aggregateBom
 
     PackageManagerType getPackageManagerType() {
         return PackageManagerType.MAVEN
@@ -29,7 +25,7 @@ class MavenPackageManager extends PackageManager {
     }
 
     List<DependencyNode> extractDependencyNodes(String sourcePath) {
-        def mavenPackager = new MavenPackager(sourcePath, aggregateBom)
+        def mavenPackager = new MavenPackager(sourcePath)
         def projects = mavenPackager.makeDependencyNodes()
         return projects
     }

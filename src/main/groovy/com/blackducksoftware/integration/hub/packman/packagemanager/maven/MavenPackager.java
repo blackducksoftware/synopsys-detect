@@ -23,6 +23,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
@@ -37,13 +38,13 @@ public class MavenPackager extends Packager {
     @Autowired
     private InputStreamConverter inputStreamConverter;
 
-    private final boolean aggregateBom;
+    @Value("${packman.bom.aggregate}")
+    boolean aggregateBom;
 
     private final String sourceDirectory;
 
-    public MavenPackager(final String sourceDirectory, final boolean aggregateBom) {
+    public MavenPackager(final String sourceDirectory) {
         this.sourceDirectory = sourceDirectory;
-        this.aggregateBom = aggregateBom;
     }
 
     @Override
@@ -60,8 +61,9 @@ public class MavenPackager extends Packager {
             } catch (final Exception ignore) {
             }
 
-            if (mavenPath == null)
+            if (mavenPath == null) {
                 mavenPath = System.getenv("M2");
+            }
 
             final ProcessBuilder processBuilder = new ProcessBuilder(mavenPath, "dependency:tree");
 
@@ -132,8 +134,9 @@ public class MavenPackager extends Packager {
         } catch (final InterruptedException e) {
             throw new RuntimeException(e);
         }
-        if (path == null)
+        if (path == null) {
             throw new Exception("Unable to determine path for: " + executable);
+        }
         return path;
     }
 
