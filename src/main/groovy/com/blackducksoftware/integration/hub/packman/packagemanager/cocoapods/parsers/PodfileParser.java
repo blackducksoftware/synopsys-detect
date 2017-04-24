@@ -47,8 +47,8 @@ public class PodfileParser {
         this.outputCleaner = outputCleaner;
     }
 
-    public Podfile parse(final BufferedReader bufferedReader) {
-        Podfile podfile = new Podfile();
+    public Podfile parse(final BufferedReader bufferedReader) throws IOException {
+        final Podfile podfile = new Podfile();
 
         final Stack<PodfileTarget> targetStack = new Stack<>();
 
@@ -59,54 +59,45 @@ public class PodfileParser {
         final List<PodfileTarget> targets = new ArrayList<>();
 
         String line;
-        try {
-            while ((line = bufferedReader.readLine()) != null) {
-                final Matcher targetMatcher = TARGET_REGEX.matcher(line);
-                final Matcher abstractTargetMatcher = ABSTRACT_TARGET_REGEX.matcher(line);
-                final Matcher podMatcher = POD_REGEX.matcher(line);
-                final Matcher targetEndMatcher = TARGET_END_REGEX.matcher(line);
 
-                line = outputCleaner.cleanLineComment(line, CocoapodsPackager.COMMENTS);
+        while ((line = bufferedReader.readLine()) != null) {
+            final Matcher targetMatcher = TARGET_REGEX.matcher(line);
+            final Matcher abstractTargetMatcher = ABSTRACT_TARGET_REGEX.matcher(line);
+            final Matcher podMatcher = POD_REGEX.matcher(line);
+            final Matcher targetEndMatcher = TARGET_END_REGEX.matcher(line);
 
-                if (StringUtils.isBlank(line)) {
+            line = outputCleaner.cleanLineComment(line, CocoapodsPackager.COMMENTS);
 
-                } else if (targetMatcher.matches()) {
-                    final PodfileTarget target = new PodfileTarget(targetMatcher.group(2));
-                    targetStack.push(target);
-                } else if (abstractTargetMatcher.matches()) {
-                    final PodfileTarget target = new PodfileTarget(abstractTargetMatcher.group(2));
-                    target.isAbstract = true;
-                    targetStack.push(target);
-                } else if (podMatcher.matches()) {
-                    final Pod pod = new Pod(podMatcher.group(2));
-                    pod.otherInfo = podMatcher.group(3);
-                    targetStack.peek().pods.add(pod);
-                } else if (targetEndMatcher.matches() && targetStack.peek() != rootTarget) {
-                    final PodfileTarget target = targetStack.pop();
-                    target.parent = targetStack.peek();
-                    if (!target.isAbstract) {
-                        targets.add(target);
-                    }
-                }
+            if (StringUtils.isBlank(line)) {
+
+            } else if (targetMatcher.matches()) {
+                final PodfileTarget target = new PodfileTarget(targetMatcher.group(2));
+                targetStack.push(target);
+            } else if (abstractTargetMatcher.matches()) {
+                final PodfileTarget target = new PodfileTarget(abstractTargetMatcher.group(2));
+                target.isAbstract = true;
+                targetStack.push(target);
+            } else if (podMatcher.matches()) {
+                final Pod pod = new Pod(podMatcher.group(2));
+                pod.otherInfo = podMatcher.group(3);
+                targetStack.peek().pods.add(pod);
+            } else if (targetEndMatcher.matches() && targetStack.peek() != rootTarget) {
+                final PodfileTarget target = targetStack.pop();
+                target.parent = targetStack.peek();
+                targets.add(target);
             }
+        }
 
-            // Convert PodfileTargets into DependencyNodes
-            for (final PodfileTarget target : targets) {
-                final String targetName = target.name;
-                final String targetVersion = DateTime.now().toString("MM-dd-YYYY_HH:mm:Z");
-                final ExternalId targetExternalId = new NameVersionExternalId(Forge.cocoapods, targetName, targetVersion);
-                final DependencyNode project = new DependencyNode(targetName, targetVersion, targetExternalId, new ArrayList<>());
+        // Convert PodfileTargets into DependencyNodes
+        for (final PodfileTarget target : targets) {
+            final String targetName = target.getName();
+            final String targetVersion = DateTime.now().toString("MM-dd-YYYY_HH:mm:Z");
+            final ExternalId targetExternalId = new NameVersionExternalId(Forge.cocoapods, targetName, targetVersion);
+            final DependencyNode project = new DependencyNode(targetName, targetVersion, targetExternalId, new ArrayList<>());
 
-                final List<Pod> targetPods = getPods(target);
-                project.children = convertPodsToNodes(targetPods);
-                podfile.targets.add(project);
-            }
-        } catch (final IOException e) {
-            e.printStackTrace();
-            podfile = null;
-        } catch (final NullPointerException e) {
-            e.printStackTrace();
-            podfile = null;
+            final List<Pod> targetPods = getPods(target);
+            project.children = convertPodsToNodes(targetPods);
+            podfile.targets.add(project);
         }
         return podfile;
     }

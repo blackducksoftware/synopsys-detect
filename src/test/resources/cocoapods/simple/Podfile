@@ -14,3 +14,7 @@ end
 target "swift-ios-test" do
   pod 'PodioKit', '~> 2.0' #Testing
 end
+
+abstract_target "swift-ios-abstract" do
+  pod 'Bond'
+end

@@ -12,6 +12,7 @@
 package com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,6 +22,7 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
@@ -49,17 +51,51 @@ public class CocoapodsPackager extends Packager {
 
     private final InputStream podspecStream;
 
-    public CocoapodsPackager(final InputStreamConverter inputStreamConverter, final OutputCleaner outputCleaner, final InputStream podfileStream,
-            final InputStream podlockStream, final InputStream podspecStream) {
+    private final String potentialProjectName;
+
+    public CocoapodsPackager(final InputStreamConverter inputStreamConverter, final OutputCleaner outputCleaner, final InputStream podlockStream,
+            final InputStream podspecStream, final String potentialProjectName) {
         this.inputStreamConverter = inputStreamConverter;
         this.outputCleaner = outputCleaner;
-        this.podfileStream = podfileStream;
+        this.podfileStream = null;
         this.podlockStream = podlockStream;
         this.podspecStream = podspecStream;
+        this.potentialProjectName = potentialProjectName;
     }
 
     @Override
-    public List<DependencyNode> makeDependencyNodes() {
+    public List<DependencyNode> makeDependencyNodes() throws IOException, NullPointerException {
+        DependencyNode project = null;
+
+        final PodLockParser podLockParser = new PodLockParser();
+        final BufferedReader podLockBufferedReader = inputStreamConverter.convertToBufferedReader(podlockStream);
+        final PodLock podLock = podLockParser.parse(podLockBufferedReader);
+
+        final PodspecParser podspecParser = new PodspecParser(outputCleaner);
+        if (podspecStream != null) {
+            final BufferedReader podspecBufferedReader = inputStreamConverter.convertToBufferedReader(podspecStream);
+            final Podspec podspec = podspecParser.parse(podspecBufferedReader);
+            final ExternalId externalId = new NameVersionExternalId(Forge.cocoapods, podspec.name, podspec.version);
+            project = new DependencyNode(podspec.name, podspec.version, externalId);
+        } else {
+            final String name = potentialProjectName;
+            final String version = DateTime.now().toString("MM-dd-YYYY_HH:mm:Z");
+            final ExternalId externalId = new NameVersionExternalId(Forge.cocoapods, name, version);
+            project = new DependencyNode(name, version, externalId);
+        }
+
+        final Map<String, DependencyNode> allDependencies = getDependencies(podLock);
+        for (final DependencyNode dependency : podLock.dependencies) {
+            final DependencyNode dependencyNode = allDependencies.get(dependency.name);
+            project.children.add(dependencyNode);
+        }
+
+        final List<DependencyNode> dependencyNodes = new ArrayList<>();
+        dependencyNodes.add(project);
+        return dependencyNodes;
+    }
+
+    public List<DependencyNode> makeDependencyNodesWithPodfile() throws IOException, NullPointerException {
         final List<DependencyNode> packages = new ArrayList<>();
         final Map<String, String> workspaceProjects = new HashMap<>();
 
@@ -103,7 +139,7 @@ public class CocoapodsPackager extends Packager {
         return packages;
     }
 
-    public Map<String, DependencyNode> getDependencies(final PodLock podLock) {
+    private Map<String, DependencyNode> getDependencies(final PodLock podLock) {
         final Map<String, DependencyNode> allPods = new HashMap<>();
         for (final DependencyNode pod : podLock.pods) {
             allPods.put(pod.name, pod);

@@ -11,11 +11,12 @@
  */
 package com.blackducksoftware.integration.hub.packman;
 
+import java.io.IOException;
 import java.util.List;
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 
 public abstract class Packager {
-    public abstract List<DependencyNode> makeDependencyNodes();
+    public abstract List<DependencyNode> makeDependencyNodes() throws IOException;
 
 }

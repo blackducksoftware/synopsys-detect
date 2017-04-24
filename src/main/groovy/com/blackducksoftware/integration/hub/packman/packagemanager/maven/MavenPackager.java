@@ -39,8 +39,8 @@ public class MavenPackager extends Packager {
 
     public MavenPackager(final InputStreamConverter inputStreamConverter, final String sourceDirectory, final boolean aggregateBom) {
         this.inputStreamConverter = inputStreamConverter;
-        this.sourceDirectory = sourceDirectory;
         this.aggregateBom = aggregateBom;
+        this.sourceDirectory = sourceDirectory;
     }
 
     @Override
@@ -57,8 +57,9 @@ public class MavenPackager extends Packager {
             } catch (final Exception ignore) {
             }
 
-            if (mavenPath == null)
+            if (mavenPath == null) {
                 mavenPath = System.getenv("M2");
+            }
 
             final ProcessBuilder processBuilder = new ProcessBuilder(mavenPath, "dependency:tree");
 
@@ -129,8 +130,9 @@ public class MavenPackager extends Packager {
         } catch (final InterruptedException e) {
             throw new RuntimeException(e);
         }
-        if (path == null)
+        if (path == null) {
             throw new Exception("Unable to determine path for: " + executable);
+        }
         return path;
     }
 

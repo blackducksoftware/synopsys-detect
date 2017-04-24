@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PodfileTarget {
-    final public String name;
+    private final String name;
 
     public List<Pod> pods = new ArrayList<>();
 
@@ -25,5 +25,13 @@ public class PodfileTarget {
 
     public PodfileTarget(final String name) {
         this.name = name;
+    }
+
+    public String getName() {
+        String name = this.name;
+        if (isAbstract) {
+            name += "_abstract";
+        }
+        return name;
     }
 }

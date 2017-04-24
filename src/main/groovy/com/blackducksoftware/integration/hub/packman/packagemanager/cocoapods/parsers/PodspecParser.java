@@ -31,39 +31,32 @@ public class PodspecParser {
         this.outputCleaner = outputCleaner;
     }
 
-    public Podspec parse(final BufferedReader bufferedReader) {
+    public Podspec parse(final BufferedReader bufferedReader) throws IOException {
         Podspec podspec = null;
-
-        if (bufferedReader == null) {
-            return podspec;
-        }
 
         String name = null;
         String version = null;
 
         String line;
-        try {
-            while ((line = bufferedReader.readLine()) != null) {
-                final Matcher nameMathcer = NAME_REGEX.matcher(line);
-                final Matcher versionMatcher = VERSION_REGEX.matcher(line);
 
-                line = outputCleaner.cleanLineComment(line, CocoapodsPackager.COMMENTS);
+        while ((line = bufferedReader.readLine()) != null) {
+            final Matcher nameMathcer = NAME_REGEX.matcher(line);
+            final Matcher versionMatcher = VERSION_REGEX.matcher(line);
 
-                if (line.isEmpty()) {
+            line = outputCleaner.cleanLineComment(line, CocoapodsPackager.COMMENTS);
 
-                } else if (name == null && nameMathcer.matches()) {
-                    name = nameMathcer.group(2).trim();
-                } else if (version == null && versionMatcher.matches()) {
-                    version = versionMatcher.group(2).trim();
-                } else if (name != null && version != null) {
-                    break;
-                }
+            if (line.isEmpty()) {
+
+            } else if (name == null && nameMathcer.matches()) {
+                name = nameMathcer.group(2).trim();
+            } else if (version == null && versionMatcher.matches()) {
+                version = versionMatcher.group(2).trim();
+            } else if (name != null && version != null) {
+                break;
             }
-            podspec = new Podspec(name, version);
-        } catch (final IOException e) {
-            // TODO: Log
-            e.printStackTrace();
         }
+        podspec = new Podspec(name, version);
+
         return podspec;
     }
 }

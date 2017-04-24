@@ -49,8 +49,8 @@ class CocoapodsPackageManager extends PackageManager {
             podfileLockStream = new FileInputStream(podfileLockFile)
             podfileStream = new FileInputStream(podfileFile)
             podspecStream = podspecFile != null ? new FileInputStream(podspecFile) : null
-
-            def cocoaPodsPackager = new CocoapodsPackager(inputStreamConverter, outputCleaner, podfileStream, podfileLockStream, podspecStream)
+            String potentialProjectName = sourceDirectory.getName()
+            def cocoaPodsPackager = new CocoapodsPackager(inputStreamConverter, outputCleaner, podfileLockStream, podspecStream, potentialProjectName)
             def projects = cocoaPodsPackager.makeDependencyNodes()
             return projects
         } finally {

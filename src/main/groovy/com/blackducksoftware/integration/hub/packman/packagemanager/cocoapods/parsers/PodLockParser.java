@@ -36,19 +36,21 @@ public class PodLockParser {
 
     final Pattern PODFILE_CHECKSUM_SECTION = Pattern.compile("PODFILE CHECKSUM:\\s*");
 
-    final Pattern COCOAPODS_SECTION = Pattern.compile("COCOAPODS:\\s*");
+    final Pattern COCOAPODS_SECTION = Pattern.compile("COCOAPODS:\\s*(.*)");
 
     final Pattern EXTERNAL_SOURCES_SECTION = Pattern.compile("EXTERNAL SOURCES:\\s*");
 
     final Pattern CHECKOUT_OPTIONS_SECTION = Pattern.compile("CHECKOUT OPTIONS:\\s*");
 
-    final Pattern POD_REGEX = Pattern.compile("  - (.*)\\((.*)\\)");
+    final Pattern POD_REGEX = Pattern.compile("  - (.*) *\\((.*)\\)");
 
-    final Pattern POD_WITH_SUB_REGEX = Pattern.compile("  - (.*)\\((.*)\\):");
+    final Pattern POD_WITH_SUB_REGEX = Pattern.compile("  - (.*) *\\((.*)\\):");
 
-    final Pattern SUBPOD_REGEX = Pattern.compile("    - (.*)\\((.*)\\)");
+    final Pattern SUBPOD_REGEX = Pattern.compile("    - (.*) *\\((.*)\\)");
 
-    final Pattern DEPENDENCY_REGEX = Pattern.compile("  *- *(.*)\\s+(.*)");
+    final Pattern SUBPOD_REGEX2 = Pattern.compile("    - (.*)()");
+
+    final Pattern DEPENDENCY_REGEX = Pattern.compile("  - ([^ ]*)(( \\(.*\\))*)");
 
     final Pattern POD_START_REGEX = Pattern.compile("  (.*):\\s*");
 
@@ -100,6 +102,7 @@ public class PodLockParser {
                     final Matcher podMatcher = POD_REGEX.matcher(line);
                     final Matcher podWithSubMatcher = POD_WITH_SUB_REGEX.matcher(line);
                     final Matcher subpodMatcher = SUBPOD_REGEX.matcher(line);
+                    final Matcher subpodMatcher2 = SUBPOD_REGEX2.matcher(line);
 
                     if (podWithSubMatcher.matches()) {
                         final DependencyNode pod = CocoapodsPackager.createPodNodeFromGroups(podWithSubMatcher, 1, 2);
@@ -109,6 +112,11 @@ public class PodLockParser {
                         }
                     } else if (subsection != null && subpodMatcher.matches()) {
                         final DependencyNode subpod = CocoapodsPackager.createPodNodeFromGroups(subpodMatcher, 1, 2);
+                        if (subpod != null) {
+                            subsection.children.add(subpod);
+                        }
+                    } else if (subsection != null && subpodMatcher2.matches()) {
+                        final DependencyNode subpod = CocoapodsPackager.createPodNodeFromGroups(subpodMatcher2, 1, 2);
                         if (subpod != null) {
                             subsection.children.add(subpod);
                         }
