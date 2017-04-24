@@ -21,26 +21,40 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenExternalId
 import com.blackducksoftware.integration.hub.packman.Packager
+import com.blackducksoftware.integration.hub.packman.packagemanager.ExecutableFinder
 
 class GradlePackager extends Packager {
     private final Logger logger = LoggerFactory.getLogger(GradlePackager.class)
 
-    public static final String COMPONENT_PREFIX = '--- '
-    public static final String SEEN_ELSEWHERE_SUFFIX = ' (*)'
-    public static final String WINNING_VERSION_INDICATOR = ' -> '
+    static final String COMPONENT_PREFIX = '--- '
+    static final String SEEN_ELSEWHERE_SUFFIX = ' (*)'
+    static final String WINNING_VERSION_INDICATOR = ' -> '
 
     @Value('${packman.gradle.path}')
-    String gradlePath;
+    String gradlePath
 
-    String buildFilePath;
+    ExecutableFinder executableFinder
+    String buildFilePath
 
-    GradlePackager(final String pathContainingBuildGradle) {
+    GradlePackager(final ExecutableFinder executableFinder, final String pathContainingBuildGradle) {
+        this.executableFinder = executableFinder
         this.buildFilePath = pathContainingBuildGradle
     }
 
     @Override
     List<DependencyNode> makeDependencyNodes() {
-        String output = "${gradlePath} dependencies".execute(null, buildFilePath).text
+        if (!gradlePath) {
+            logger.info('packman.gradle.path not set in config - trying to find gradle on the PATH')
+            gradlePath = executableFinder.findExecutable('gradle')
+        }
+
+        if (!gradlePath) {
+            logger.info('Could not find gradle - trying a gradle wrapper')
+            gradlePath = 'gradlew'
+        }
+
+        
+                String output = "${gradlePath} dependencies".execute(null, buildFilePath).text
         String[] lines = output.split('\n')
 
         def projects = [

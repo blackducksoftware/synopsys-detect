@@ -24,6 +24,7 @@ import org.springframework.context.annotation.Bean
 import com.blackducksoftware.integration.hub.bdio.simple.BdioNodeFactory
 import com.blackducksoftware.integration.hub.bdio.simple.BdioPropertyHelper
 import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeTransformer
+import com.blackducksoftware.integration.hub.packman.packagemanager.ExecutableFinder
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
@@ -40,6 +41,9 @@ class Application {
     @Autowired
     PackageManagerRunner parser
 
+    @Autowired
+    ExecutableFinder executableFinder
+
     @Value('${packman.source.paths}')
     String[] sourcePaths
 
@@ -53,6 +57,7 @@ class Application {
     @PostConstruct
     void init() {
         parser.parseSourcePaths(sourcePaths, outputDirectoryPath)
+        println executableFinder.findExecutable('mvn')
     }
 
     @Bean

@@ -1,5 +1,6 @@
 package com.blackducksoftware.integration.hub.packman.packagemanager
 
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
@@ -7,6 +8,9 @@ import com.blackducksoftware.integration.hub.packman.PackageManagerType
 
 @Component
 class GradlePackageManager extends PackageManager {
+    @Autowired
+    ExecutableFinder executableFinder;
+
     PackageManagerType getPackageManagerType() {
         return PackageManagerType.GRADLE
     }
