@@ -40,8 +40,8 @@ dependencies {
     compile 'com.blackducksoftware.integration:integration-bdio:2.0.0-SNAPSHOT'
     compile 'org.springframework.boot:spring-boot-starter'
     compile 'org.codehaus.groovy:groovy-all:2.4.10'
-    compile group: 'org.apache.maven.shared', name: 'maven-invoker', version: '3.0.0'
-    
+    compile 'org.apache.maven.shared:maven-invoker:3.0.0'
+    compile gradleApi()
 
     testCompile 'org.springframework.boot:spring-boot-starter-test'
 }
