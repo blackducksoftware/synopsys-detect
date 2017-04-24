@@ -53,8 +53,7 @@ class GradlePackager extends Packager {
             gradlePath = 'gradlew'
         }
 
-        
-                String output = "${gradlePath} dependencies".execute(null, buildFilePath).text
+        String output = "${gradlePath} dependencies".execute(null, buildFilePath).text
         String[] lines = output.split('\n')
 
         def projects = [
