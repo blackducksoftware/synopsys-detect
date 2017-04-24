@@ -1,6 +1,7 @@
 package com.blackducksoftware.integration.hub.packman.parser.gradle
 
 import org.junit.Assert
+import org.junit.Ignore
 import org.junit.Test
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
@@ -8,6 +9,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenExternalId
 import com.blackducksoftware.integration.hub.packman.packagemanager.gradle.GradlePackager
 
+@Ignore
 class GradlePackagerTest {
     @Test
     public void testParsingStandardLines() {
