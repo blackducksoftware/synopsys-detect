@@ -9,7 +9,6 @@ DEPENDENCIES:
   - Allihoopa-macOS (~> 1.1)
   - Mapbox-macOS-SDK (~> 0.4)
   - RepliesSDK-macOS (~> 0.2)
-  - 
 
 SPEC CHECKSUMS:
   Allihoopa-macOS: 5c2fb29ed9d4266bc3ba0b3ec3ef7d937cd856f6

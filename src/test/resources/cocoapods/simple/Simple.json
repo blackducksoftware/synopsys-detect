@@ -1,9 +1,9 @@
 [
   {
-    "name": "black-duck-swift-sample",
+    "name": "BlackDuckSwiftSample",
     "version": "0.0.1",
     "externalId": {
-      "name": "black-duck-swift-sample",
+      "name": "BlackDuckSwiftSample",
       "version": "0.0.1",
       "forge": "cocoapods"
     },
@@ -50,25 +50,5 @@
         "children": []
       }
     ]
-  },
-  {
-    "name": "swift-ios-test",
-    "version": "0.0.1",
-    "externalId": {
-      "name": "swift-ios-test",
-      "version": "0.0.1",
-      "forge": "cocoapods"
-    },
-    "children": []
-  },
-  {
-    "name": "swift-ios-abstract_abstract",
-    "version": "0.0.1",
-    "externalId": {
-      "name": "swift-ios-abstract_abstract",
-      "version": "0.0.1",
-      "forge": "cocoapods"
-    },
-    "children": []
   }
 ]
