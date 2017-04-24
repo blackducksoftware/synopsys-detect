@@ -9,7 +9,7 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.parser.gradle;
+package com.blackducksoftware.integration.hub.packman.parser.maven;
 
 public class MavenPackagerTest {
 

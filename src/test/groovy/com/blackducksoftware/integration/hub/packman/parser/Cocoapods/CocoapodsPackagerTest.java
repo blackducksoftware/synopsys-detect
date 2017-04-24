@@ -9,11 +9,12 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.parser.gradle;
+package com.blackducksoftware.integration.hub.packman.parser.Cocoapods;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -53,46 +54,51 @@ public class CocoapodsPackagerTest {
     }
 
     @Test
-    public void invalidFilePathTest() {
-
+    public void invalidFilePathTest() throws JSONException, IOException {
+        final String podlockPath = "/invalid/path.lock";
+        final String expectedJsonPath = "/inavlid/path.json";
+        boolean failed = false;
+        try {
+            testPackagerWithFiles(podlockPath, null, expectedJsonPath, true);
+        } catch (final NullPointerException e) {
+            failed = true;
+        }
+        assertEquals(true, failed);
     }
 
     @Test
     public void complexTest() throws JSONException, IOException {
-        final String podfilePath = "/cocoapods/complex/Podfile";
         final String podlockPath = "/cocoapods/complex/Podfile.lock";
         final String expectedJsonPath = "/cocoapods/complex/Complex.json";
-        testPackagerWithFiles(podfilePath, podlockPath, null, expectedJsonPath, true);
+        testPackagerWithFiles(podlockPath, null, expectedJsonPath, true);
     }
 
     @Test
     public void simpleTest() throws JSONException, IOException {
-        final String podfilePath = "/cocoapods/simple/Podfile";
         final String podlockPath = "/cocoapods/simple/Podfile.lock";
         final String podspecPath = "/cocoapods/simple/BlackDuckSwiftSample.podspec";
         final String expectedJsonPath = "/cocoapods/simple/Simple.json";
-        testPackagerWithFiles(podfilePath, podlockPath, podspecPath, expectedJsonPath, false);
+        testPackagerWithFiles(podlockPath, podspecPath, expectedJsonPath, false);
     }
 
-    private void testPackagerWithFiles(final String podfilePath, final String podlockPath, final String podspecPath, final String expectedJsonPath,
+    private void testPackagerWithFiles(final String podlockPath, final String podspecPath, final String expectedJsonPath,
             final boolean fixVersion)
             throws JSONException, IOException {
 
         final InputStreamConverter inputStreamConverter = new InputStreamConverter();
         final OutputCleaner outputCleaner = new OutputCleaner();
-        InputStream podfileStream = null;
+
         InputStream podlockStream = null;
         InputStream expectedJsonStream = null;
         InputStream podspecStream = null;
         try {
-            podfileStream = this.getClass().getResourceAsStream(podfilePath);
             podlockStream = this.getClass().getResourceAsStream(podlockPath);
             if (StringUtils.isNotBlank(podspecPath)) {
                 podspecStream = this.getClass().getResourceAsStream(podspecPath);
             }
             expectedJsonStream = this.getClass().getResourceAsStream(expectedJsonPath);
 
-            final CocoapodsPackager packager = new CocoapodsPackager(inputStreamConverter, outputCleaner, podlockStream, podspecStream, "testName");
+            final CocoapodsPackager packager = new CocoapodsPackager(inputStreamConverter, outputCleaner, podlockStream, podspecStream, "BlackDuckSwiftSample");
             final List<DependencyNode> targets = packager.makeDependencyNodes();
 
             if (fixVersion) {
@@ -109,12 +115,19 @@ public class CocoapodsPackagerTest {
 
             verifyJsonArraysEqual(expectedJson, actualJson);
         } finally {
-            podfileStream.close();
-            podlockStream.close();
-            if (podspecStream != null) {
-                podspecStream.close();
+            tryClose(podlockStream);
+            tryClose(podspecStream);
+            tryClose(expectedJsonStream);
+        }
+    }
+
+    private void tryClose(final Closeable closeable) {
+        if (closeable != null) {
+            try {
+                closeable.close();
+            } catch (final IOException e) {
+                throw new RuntimeException(e);
             }
-            expectedJsonStream.close();
         }
     }
 
