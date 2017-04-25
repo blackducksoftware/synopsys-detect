@@ -44,7 +44,7 @@ public class PackageManagerRunner {
     public void parseSourcePaths(final String[] sourcePaths, final String outputDirectoryPath) throws IOException {
         for (final PackageManager packageManager : packageManagers) {
             for (final String sourcePath : sourcePaths) {
-                logger.info(String.format("searching source path: %s", sourcePath));
+                logger.info(String.format("searching source path for %s: %s", packageManager.getPackageManagerType(), sourcePath));
                 if (packageManager.isPackageManagerApplicable(sourcePath)) {
                     final List<DependencyNode> projectNodes = packageManager.extractDependencyNodes(sourcePath);
                     if (projectNodes != null && projectNodes.size() > 0) {
