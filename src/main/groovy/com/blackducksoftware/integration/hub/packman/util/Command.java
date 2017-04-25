@@ -26,7 +26,6 @@ import org.slf4j.Logger;
 import com.blackducksoftware.integration.hub.packman.packagemanager.ExecutableFinder;
 
 public class Command {
-
     private final Logger logger;
 
     private final ExecutableFinder executableFinder;
@@ -58,6 +57,7 @@ public class Command {
     }
 
     public String executeExactly(final String executable, final String... args) {
+        // We have to wrap Arrays.asList() because the supplied list does not support adding at an index
         final List<String> arguments = new ArrayList<>(Arrays.asList(args));
         if (executable != null) {
             arguments.add(0, executable);
@@ -70,7 +70,6 @@ public class Command {
         try {
             Process process;
             process = processBuilder.start();
-            // process.waitFor();
             final StringBuilder output = new StringBuilder();
             final String infoOutput = printStream(logger, process.getInputStream(), runQuietly, false);
             final String errorOutput = printStream(logger, process.getErrorStream(), runQuietly, true);
