@@ -55,18 +55,19 @@ public class MavenPackager extends Packager {
         try {
             final File mavenOutputFile = File.createTempFile("mavenOutputStream", ".tmp");
 
-            logger.info("writing maven outputsteram to " + mavenOutputFile.getAbsolutePath());
+            logger.debug(String.format("Writing outputStream to %s", mavenOutputFile.getAbsolutePath()));
             final File sourceDirectoryFile = new File(sourceDirectory);
 
             final String mvnCommand = executableFinder.findExecutable("mvn");
 
             if (StringUtils.isNotBlank(mvnCommand)) {
-                final ProcessBuilder processBuilder = new ProcessBuilder(mvnCommand, "dependency:tree");
+                final String[] command = { mvnCommand, "dependency:tree" };
+                final ProcessBuilder processBuilder = new ProcessBuilder(command);
 
                 processBuilder.directory(sourceDirectoryFile);
                 processBuilder.redirectOutput(Redirect.to(mavenOutputFile));
 
-                logger.info("running mvn dependency:tree");
+                logger.debug(String.format("Running command >%s", String.join(" ", command)));
                 final Process process = processBuilder.start();
 
                 try {
@@ -75,13 +76,12 @@ public class MavenPackager extends Packager {
                     throw new RuntimeException(e);
                 }
 
-                logger.info("parsing maven's output stream");
                 final MavenOutputParser mavenParser = new MavenOutputParser();
                 mavenOutputFileStream = new FileInputStream(mavenOutputFile);
                 final BufferedReader bufferedReader = inputStreamConverter.convertToBufferedReader(mavenOutputFileStream);
                 projects = mavenParser.parse(bufferedReader);
 
-                logger.info("cleaning up tempory files");
+                logger.debug("Cleaning up tempory files");
                 mavenOutputFile.delete();
 
                 if (aggregateBom && !projects.isEmpty()) {
