@@ -1,0 +1,9 @@
+Name: blackduck-sample-project
+Version: 0.0.9
+Summary: A sample project for using the hub-pip
+Home-page: https://github.com/blackducksoftware/hub_python_plugin
+Author: Black Duck Software
+Author-email: UNKNOWN
+License: Apache 2.0
+Location: /usr/local/lib/python2.7/site-packages
+Requires: Delorean, pynamodb

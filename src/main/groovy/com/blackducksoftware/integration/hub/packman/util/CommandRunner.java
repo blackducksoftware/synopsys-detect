@@ -76,6 +76,10 @@ public class CommandRunner {
             executable = executableFinder.findExecutable(executable);
         }
 
+        if (executable == null) {
+            throw new RuntimeException(String.format("Could not find executable >%s", command.getExecutableName(null)));
+        }
+
         return executeExactly(runQuietly, executable, command.getArgs());
     }
 
