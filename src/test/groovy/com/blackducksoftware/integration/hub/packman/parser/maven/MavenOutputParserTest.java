@@ -40,6 +40,18 @@ public class MavenOutputParserTest {
         assertMavenDependencyNodesEqual(getIntegationBdioDependencyNode(), projects.get(0));
     }
 
+    @Test
+    public void mavenParserBadEntryTest() throws IOException {
+        final MavenOutputParser mavenOutputParser = new MavenOutputParser();
+
+        final InputStreamConverter inputStreamConverter = new InputStreamConverter();
+        final InputStream inputStream = getClass().getResourceAsStream("/maven/mavenSampleOutputBad.txt");
+        final List<DependencyNode> projects = mavenOutputParser.parse(inputStreamConverter.convertToBufferedReader(inputStream));
+
+        assertEquals(1, projects.size());
+        assertMavenDependencyNodesEqual(getIntegationBdioDependencyNode(), projects.get(0));
+    }
+
     private DependencyNode getIntegationBdioDependencyNode() {
         final DependencyNode project = createMavenNode("com.blackducksoftware.integration", "integration-bdio", "2.0.0-SNAPSHOT");
         final DependencyNode junit = createMavenNode("junit", "junit", "4.12");

@@ -98,13 +98,13 @@ public class MavenOutputParser {
 
                 if (finished) {
 
-                } else if (level == previousLevel) {
+                } else if (level == previousLevel && lineIsValid(line)) {
                     final DependencyNode currentNode = projectStack.pop();
                     projectStack.peek().children.add(currentNode);
                     addToStack(line, projectStack);
-                } else if (level > previousLevel) {
+                } else if (level > previousLevel && lineIsValid(line)) {
                     addToStack(line, projectStack);
-                } else if (level < previousLevel) {
+                } else if (level < previousLevel && lineIsValid(line)) {
                     for (; previousLevel >= level; previousLevel--) {
                         final DependencyNode previousNode = projectStack.pop();
                         projectStack.peek().children.add(previousNode);
@@ -125,6 +125,10 @@ public class MavenOutputParser {
         }
 
         return projects;
+    }
+
+    private boolean lineIsValid(final String line) {
+        return componentToDependencyNode(line) != null;
     }
 
     private boolean addToStack(final String component, final Stack<DependencyNode> projectStack) {
