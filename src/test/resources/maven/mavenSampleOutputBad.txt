@@ -17,8 +17,9 @@
 [INFO] +- org.powermock:powermock-api-mockito:jar:1.6.6:test
 [INFO] |  +- org.mockito:mockito-core:jar:1.10.19:test
 [INFO] |  |  \- org.objenesis:objenesis:jar:2.1:test
-[INFO] |  \- org.powermock:powermock-api-mockito-common:jar:1.6.6:test
-[INFO] |     \- org.powermock:powermock-api-support:jar:1.6.6:test
+[INFO] |  |  org.powermock:powermock-api-mockito-common:jar:1.6.6:test
+[INFO] |  |  \- org.powermock:powermock-api-support:jar:1.6.6:test
+[INFO] |  \- IM INVALID
 [INFO] \- org.powermock:powermock-module-junit4:jar:1.6.6:test
 [INFO]    \- org.powermock:powermock-module-junit4-common:jar:1.6.6:test
 [INFO]       +- org.powermock:powermock-core:jar:1.6.6:test

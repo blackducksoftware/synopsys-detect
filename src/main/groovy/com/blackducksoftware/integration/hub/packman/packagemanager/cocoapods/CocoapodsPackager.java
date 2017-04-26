@@ -14,6 +14,7 @@ package com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 
+import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
@@ -62,8 +64,8 @@ public class CocoapodsPackager extends Packager {
         DependencyNode project = null;
 
         final PodLockParser podLockParser = new PodLockParser();
-        final BufferedReader podLockBufferedReader = inputStreamConverter.convertToBufferedReader(podlockStream);
-        final PodLock podLock = podLockParser.parse(podLockBufferedReader);
+        final String podLockText = IOUtils.toString(podlockStream, StandardCharsets.UTF_8);
+        final PodLock podLock = podLockParser.parse(podLockText);
 
         final PodspecParser podspecParser = new PodspecParser(outputCleaner);
         if (podspecStream != null) {
