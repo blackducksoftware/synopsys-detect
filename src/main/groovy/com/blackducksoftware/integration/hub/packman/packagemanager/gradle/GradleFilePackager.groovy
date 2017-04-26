@@ -23,20 +23,16 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenE
 import com.blackducksoftware.integration.hub.packman.Packager
 import com.blackducksoftware.integration.hub.packman.packagemanager.ExecutableFinder
 
-class GradlePackager extends Packager {
-    private final Logger logger = LoggerFactory.getLogger(GradlePackager.class)
-
-    static final String COMPONENT_PREFIX = '--- '
-    static final String SEEN_ELSEWHERE_SUFFIX = ' (*)'
-    static final String WINNING_VERSION_INDICATOR = ' -> '
+class GradleFilePackager extends Packager {
+    private final Logger logger = LoggerFactory.getLogger(GradleFilePackager.class)
 
     @Value('${packman.gradle.path}')
     String gradlePath
 
-    ExecutableFinder executableFinder
-    String buildFilePath
+    private ExecutableFinder executableFinder
+    private String buildFilePath
 
-    GradlePackager(final ExecutableFinder executableFinder, final String pathContainingBuildGradle) {
+    GradleFilePackager(final ExecutableFinder executableFinder, final String pathContainingBuildGradle) {
         this.executableFinder = executableFinder
         this.buildFilePath = pathContainingBuildGradle
     }
