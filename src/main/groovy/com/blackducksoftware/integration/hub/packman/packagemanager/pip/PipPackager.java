@@ -64,6 +64,12 @@ public class PipPackager extends Packager {
     public List<DependencyNode> makeDependencyNodes() throws IOException {
         final List<DependencyNode> projects = new ArrayList<>();
 
+        if (SystemUtils.IS_OS_WINDOWS) {
+            virtualEnvBin = windowsFileMap.get(virtualEnvBin);
+        } else {
+            windowsFileMap = null;
+        }
+
         final CommandRunner systemCommandRunner = new CommandRunner(logger, executableFinder, sourceDirectory, windowsFileMap);
         final CommandRunner pythonCommandRunner = getPythonCommandRunner(systemCommandRunner, createVirtualEnv);
 
@@ -116,12 +122,6 @@ public class PipPackager extends Packager {
     private CommandRunner getPythonCommandRunner(final CommandRunner systemCommandRunner, final boolean createVirtualEnvironment) {
         CommandRunner pythonCommandRunner = null;
         if (createVirtualEnv) {
-            if (SystemUtils.IS_OS_WINDOWS) {
-                virtualEnvBin = windowsFileMap.get(virtualEnvBin);
-            } else {
-                windowsFileMap = null;
-            }
-
             final File virtualEnvironmentPath = new File(outputDirectory, "blackduck_virtualenv");
             final File virtualEnvironmentBinPath = new File(virtualEnvironmentPath, virtualEnvBin);
 
