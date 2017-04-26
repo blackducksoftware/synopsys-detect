@@ -10,7 +10,7 @@ class ExecutableFinder {
         return findExecutable(executable, systemPath)
     }
 
-    String findExecutable(final String executable, String path) {
+    String findExecutable(final String executable, final String path) {
         for (String pathPiece : path.split(File.pathSeparator)) {
             def executableFile = new File(pathPiece).listFiles().find { fileInPath ->
                 fileInPath.name == executable && fileInPath.canExecute()

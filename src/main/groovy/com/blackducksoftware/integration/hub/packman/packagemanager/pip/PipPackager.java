@@ -13,8 +13,11 @@ package com.blackducksoftware.integration.hub.packman.packagemanager.pip;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,63 +25,71 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.packman.Packager;
 import com.blackducksoftware.integration.hub.packman.packagemanager.ExecutableFinder;
 import com.blackducksoftware.integration.hub.packman.util.Command;
-import com.blackducksoftware.integration.hub.packman.util.InputStreamConverter;
+import com.blackducksoftware.integration.hub.packman.util.CommandRunner;
 
 public class PipPackager extends Packager {
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	final InputStreamConverter inputStreamConverter;
+    private final ExecutableFinder executableFinder;
 
-	final ExecutableFinder executableFinder;
+    private final File sourceDirectory;
 
-	final File sourceDirectory;
+    private final File outputDirectory;
 
-	File outputDirectory;
+    boolean createVirtualEnv;
 
-	boolean createVirtualEnv;
+    public PipPackager(final ExecutableFinder executableFinder, final String sourceDirectory, final String outputDirectory, final boolean createVirtualEnv) {
+        this.executableFinder = executableFinder;
+        this.sourceDirectory = new File(sourceDirectory);
+        this.outputDirectory = new File(outputDirectory);
+        this.createVirtualEnv = createVirtualEnv;
+    }
 
-	public PipPackager(final InputStreamConverter inputStreamConverter, final ExecutableFinder executableFinder,
-			final String sourceDirectory, final String outputDirectory, final boolean createVirtualEnv) {
-		this.inputStreamConverter = inputStreamConverter;
-		this.executableFinder = executableFinder;
-		this.sourceDirectory = new File(sourceDirectory);
-		this.outputDirectory = new File(outputDirectory);
-		this.createVirtualEnv = createVirtualEnv;
-	}
+    @Override
+    public List<DependencyNode> makeDependencyNodes() throws IOException {
+        createVirtualEnvironment();
+        return null;
+    }
 
-	@Override
-	public List<DependencyNode> makeDependencyNodes() throws IOException {
-		createVirtualEnvironment();
-		return null;
-	}
+    private void createVirtualEnvironment() {
+        if (createVirtualEnv) {
+            String virtualEnvBin = "bin";
 
-	private void createVirtualEnvironment() {
-		String executionFolder = "bin";
-		String pipExecutable = "pip";
-		String pythonExecutable = "python";
-		if (createVirtualEnv) {
-			final File virtualEnvironmentPath = new File(outputDirectory, "blackduck_virtualenv");
+            Map<String, String> windowsFileMap = new HashMap<>();
+            windowsFileMap.put(virtualEnvBin, "Scripts");
+            windowsFileMap.put("pip", "pip.exe");
+            windowsFileMap.put("python", "python.exe");
 
-			if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-				executionFolder = "Scripts";
-				pipExecutable += ".exe";
-				pythonExecutable += ".exe";
-			}
-			final File virtualEnvironmentBinPath = new File(virtualEnvironmentPath, executionFolder);
-			final Command command = new Command(logger, executableFinder, sourceDirectory);
+            if (SystemUtils.IS_OS_WINDOWS) {
+                virtualEnvBin = windowsFileMap.get(virtualEnvBin);
+            } else {
+                windowsFileMap = null;
+            }
 
-			command.execute("pip", "install", "virtualenv");
-			command.execute("virtualenv", virtualEnvironmentPath.getAbsolutePath());
+            final File virtualEnvironmentPath = new File(outputDirectory, "blackduck_virtualenv");
+            final String virtualEnvironmentBinPath = new File(virtualEnvironmentPath, virtualEnvBin).getAbsolutePath();
+            final CommandRunner systemCommandRunner = new CommandRunner(logger, executableFinder, sourceDirectory, windowsFileMap);
+            final CommandRunner virtualenvCommandRunner = new CommandRunner(logger, executableFinder, sourceDirectory, windowsFileMap,
+                    virtualEnvironmentBinPath);
 
-			// TODO:  We needed to append the .exe, otherwise executables are picked up from global Windows path. No bueno.
-			command.execute(virtualEnvironmentBinPath, pipExecutable, "install", "hub-pip");
-			command.execute(virtualEnvironmentBinPath, pythonExecutable, "setup.py", "install");
-			command.execute(virtualEnvironmentBinPath, pythonExecutable, "setup.py", "hub_pip",
-					"--CreateTreeDependencyList=True", "--CreateHubBdio=False",
-					"--OutputDirectory=" + outputDirectory.getAbsolutePath());
+            final Command installVirtualenvPackage = new Command("pip", "install", "virtualenv");
+            final Command createVirtualEnvironement = new Command("virtualenv", virtualEnvironmentPath.getAbsolutePath());
+            final Command installHubPip = new Command("pip", "install", "hub-pip");
+            final Command installProject = new Command("pip", "install", ".");
+            final Command runHubPip = new Command("python", "setup.py", "hub_pip",
+                    "--CreateTreeDependencyList=True",
+                    "--CreateHubBdio=False",
+                    "--OutputDirectory=" + outputDirectory.getAbsolutePath());
 
-		}
-
-	}
-
+            if (!virtualEnvironmentPath.exists()) {
+                systemCommandRunner.execute(installVirtualenvPackage);
+                systemCommandRunner.execute(createVirtualEnvironement);
+            } else {
+                logger.info(String.format("Found virtual environment: %s", virtualEnvironmentPath.getAbsolutePath()));
+            }
+            systemCommandRunner.execute(installHubPip);
+            virtualenvCommandRunner.execute(installProject);
+            virtualenvCommandRunner.execute(runHubPip);
+        }
+    }
 }
