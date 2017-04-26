@@ -1,3 +1,5 @@
+This is not a god way to start a podfile
+
 PODS:
   - Adjust (4.11.0):
     - Adjust/Core (= 4.11.0)
