@@ -13,6 +13,7 @@ package com.blackducksoftware.integration.hub.packman.packagemanager.pip;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,8 +23,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
+import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId;
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId;
 import com.blackducksoftware.integration.hub.packman.Packager;
 import com.blackducksoftware.integration.hub.packman.packagemanager.ExecutableFinder;
+import com.blackducksoftware.integration.hub.packman.packagemanager.pip.model.PipPackage;
+import com.blackducksoftware.integration.hub.packman.packagemanager.pip.parsers.PipShowParser;
 import com.blackducksoftware.integration.hub.packman.util.Command;
 import com.blackducksoftware.integration.hub.packman.util.CommandRunner;
 
@@ -56,6 +62,7 @@ public class PipPackager extends Packager {
 
     @Override
     public List<DependencyNode> makeDependencyNodes() throws IOException {
+        final List<DependencyNode> projects = new ArrayList<>();
 
         final CommandRunner systemCommandRunner = new CommandRunner(logger, executableFinder, sourceDirectory, windowsFileMap);
         final CommandRunner pythonCommandRunner = getPythonCommandRunner(systemCommandRunner, createVirtualEnv);
@@ -65,13 +72,45 @@ public class PipPackager extends Packager {
 
         pythonCommandRunner.execute(installProject);
 
+        logger.info("Running PIP analysis");
         final String projectName = pythonCommandRunner.executeQuietly(getProjectName).trim();
         if (projectName.equals("UNKOWN")) {
             logger.error("Could not determine project name. Please make sure it is specified in your setup.py");
         } else {
-            pythonCommandRunner.execute(new Command("pip", "show", projectName));
+            final Map<String, DependencyNode> allNodes = new HashMap<>();
+            final PipShowParser pipShowParser = new PipShowParser();
+            final String pipProjectText = pythonCommandRunner.executeQuietly(new Command("pip", "show", projectName));
+            final PipPackage projectPackage = pipShowParser.parse(pipProjectText);
+            final DependencyNode projectNode = pipPackageToDependencyNode(pipShowParser, pythonCommandRunner, projectPackage, allNodes);
+            projects.add(projectNode);
         }
-        return null;
+
+        return projects;
+    }
+
+    private DependencyNode pipPackageToDependencyNode(final PipShowParser parser, final CommandRunner pythonCommandRunner, final PipPackage pipPackage,
+            final Map<String, DependencyNode> allNodes) {
+        final String name = pipPackage.name;
+        final String version = pipPackage.version;
+        final ExternalId externalId = new NameVersionExternalId(Forge.pypi, name, version);
+        final DependencyNode projectNode = new DependencyNode(name, version, externalId);
+
+        if (pipPackage.requires != null) {
+            for (final String dependency : pipPackage.requires) {
+                if (allNodes.containsKey(dependency.toLowerCase())) {
+                    final DependencyNode dependencyNode = allNodes.get(dependency.toLowerCase());
+                    projectNode.children.add(dependencyNode);
+                } else {
+                    final String pipProjectText = pythonCommandRunner.executeQuietly(new Command("pip", "show", dependency));
+                    final PipPackage dependencyPackage = parser.parse(pipProjectText);
+                    final DependencyNode dependencyNode = pipPackageToDependencyNode(parser, pythonCommandRunner, dependencyPackage, allNodes);
+                    allNodes.put(dependencyNode.name.toLowerCase(), dependencyNode);
+                    projectNode.children.add(dependencyNode);
+                }
+            }
+        }
+        allNodes.put(name.toLowerCase(), projectNode);
+        return projectNode;
     }
 
     private CommandRunner getPythonCommandRunner(final CommandRunner systemCommandRunner, final boolean createVirtualEnvironment) {
