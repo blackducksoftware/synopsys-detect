@@ -38,28 +38,45 @@ public class PipPackager extends Packager {
 
     boolean createVirtualEnv;
 
+    private Map<String, String> windowsFileMap;
+
+    private String virtualEnvBin = "bin";
+
     public PipPackager(final ExecutableFinder executableFinder, final String sourceDirectory, final String outputDirectory, final boolean createVirtualEnv) {
         this.executableFinder = executableFinder;
         this.sourceDirectory = new File(sourceDirectory);
         this.outputDirectory = new File(outputDirectory);
         this.createVirtualEnv = createVirtualEnv;
+
+        this.windowsFileMap = new HashMap<>();
+        windowsFileMap.put(virtualEnvBin, "Scripts");
+        windowsFileMap.put("pip", "pip.exe");
+        windowsFileMap.put("python", "python.exe");
     }
 
     @Override
     public List<DependencyNode> makeDependencyNodes() throws IOException {
-        createVirtualEnvironment();
+
+        final CommandRunner systemCommandRunner = new CommandRunner(logger, executableFinder, sourceDirectory, windowsFileMap);
+        final CommandRunner pythonCommandRunner = getPythonCommandRunner(systemCommandRunner, createVirtualEnv);
+
+        final Command installProject = new Command("pip", "install", ".");
+        final Command getProjectName = new Command("python", "setup.py", "--name");
+
+        pythonCommandRunner.execute(installProject);
+
+        final String projectName = pythonCommandRunner.executeQuietly(getProjectName).trim();
+        if (projectName.equals("UNKOWN")) {
+            logger.error("Could not determine project name. Please make sure it is specified in your setup.py");
+        } else {
+            pythonCommandRunner.execute(new Command("pip", "show", projectName));
+        }
         return null;
     }
 
-    private void createVirtualEnvironment() {
+    private CommandRunner getPythonCommandRunner(final CommandRunner systemCommandRunner, final boolean createVirtualEnvironment) {
+        CommandRunner pythonCommandRunner = null;
         if (createVirtualEnv) {
-            String virtualEnvBin = "bin";
-
-            Map<String, String> windowsFileMap = new HashMap<>();
-            windowsFileMap.put(virtualEnvBin, "Scripts");
-            windowsFileMap.put("pip", "pip.exe");
-            windowsFileMap.put("python", "python.exe");
-
             if (SystemUtils.IS_OS_WINDOWS) {
                 virtualEnvBin = windowsFileMap.get(virtualEnvBin);
             } else {
@@ -68,18 +85,11 @@ public class PipPackager extends Packager {
 
             final File virtualEnvironmentPath = new File(outputDirectory, "blackduck_virtualenv");
             final File virtualEnvironmentBinPath = new File(virtualEnvironmentPath, virtualEnvBin);
-            final CommandRunner systemCommandRunner = new CommandRunner(logger, executableFinder, sourceDirectory, windowsFileMap);
-            final CommandRunner virtualenvCommandRunner = new CommandRunner(logger, executableFinder, sourceDirectory, windowsFileMap,
-                    virtualEnvironmentBinPath.getAbsolutePath());
+
+            pythonCommandRunner = new CommandRunner(logger, executableFinder, sourceDirectory, windowsFileMap, virtualEnvironmentBinPath.getAbsolutePath());
 
             final Command installVirtualenvPackage = new Command("pip", "install", "virtualenv");
             final Command createVirtualEnvironement = new Command("virtualenv", virtualEnvironmentPath.getAbsolutePath());
-            final Command installHubPip = new Command("pip", "install", "hub-pip");
-            final Command installProject = new Command("pip", "install", ".");
-            final Command runHubPip = new Command("python", "setup.py", "hub_pip",
-                    "--CreateTreeDependencyList=True",
-                    "--CreateHubBdio=False",
-                    "--OutputDirectory=" + outputDirectory.getAbsolutePath());
 
             if (virtualEnvironmentPath.exists() && virtualEnvironmentBinPath.exists()) {
                 logger.info(String.format("Found virtual environment: %s", virtualEnvironmentPath.getAbsolutePath()));
@@ -87,9 +97,9 @@ public class PipPackager extends Packager {
                 systemCommandRunner.execute(installVirtualenvPackage);
                 systemCommandRunner.execute(createVirtualEnvironement);
             }
-            virtualenvCommandRunner.execute(installHubPip);
-            virtualenvCommandRunner.execute(installProject);
-            virtualenvCommandRunner.execute(runHubPip);
+        } else {
+            pythonCommandRunner = new CommandRunner(logger, executableFinder, sourceDirectory, windowsFileMap);
         }
+        return pythonCommandRunner;
     }
 }

@@ -37,8 +37,6 @@ public class CommandRunner {
 
     private final String providedPath;
 
-    public boolean runQuietly = false;
-
     public CommandRunner(final Logger logger, final ExecutableFinder executableFinder, final File workingDirectory,
             final Map<String, String> alternativeFileMap) {
         this.logger = logger;
@@ -58,7 +56,15 @@ public class CommandRunner {
         this.providedPath = path;
     }
 
+    public String executeQuietly(final Command command) {
+        return execute(command, true);
+    }
+
     public String execute(final Command command) {
+        return execute(command, false);
+    }
+
+    public String execute(final Command command, final boolean runQuietly) {
         String executable = command.getExecutableName(alternativeFileMap);
         if (alternativeFileMap != null && alternativeFileMap.containsKey(executable)) {
             executable = alternativeFileMap.get(executable);
@@ -70,10 +76,10 @@ public class CommandRunner {
             executable = executableFinder.findExecutable(executable);
         }
 
-        return executeExactly(executable, command.getArgs());
+        return executeExactly(runQuietly, executable, command.getArgs());
     }
 
-    private String executeExactly(final String executable, final String... args) {
+    private String executeExactly(final boolean runQuietly, final String executable, final String... args) {
         // We have to wrap Arrays.asList() because the supplied list does not support adding at an index
         final List<String> arguments = new ArrayList<>(Arrays.asList(args));
         if (executable != null) {
@@ -88,8 +94,8 @@ public class CommandRunner {
             Process process;
             process = processBuilder.start();
             final StringBuilder output = new StringBuilder();
-            final String infoOutput = printStream(process.getInputStream(), false);
-            final String errorOutput = printStream(process.getErrorStream(), true);
+            final String infoOutput = printStream(process.getInputStream(), runQuietly, false);
+            final String errorOutput = printStream(process.getErrorStream(), runQuietly, true);
             output.append(infoOutput);
             output.append("\n");
             output.append(errorOutput);
@@ -99,7 +105,7 @@ public class CommandRunner {
         }
     }
 
-    private String printStream(final InputStream inputStream, final boolean error) {
+    private String printStream(final InputStream inputStream, final boolean runQuietly, final boolean error) {
         final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
         final StringBuilder stringBuilder = new StringBuilder();
 
