@@ -9,8 +9,14 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.parser.maven;
+package com.blackducksoftware.integration.hub.packman.parser.pip;
 
-public class MavenPackagerTest {
+import java.io.IOException;
+import java.net.URISyntaxException;
 
+public class PipPackagerTest {
+
+    public void pipPackagerTest() throws IOException, URISyntaxException {
+
+    }
 }

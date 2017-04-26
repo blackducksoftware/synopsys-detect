@@ -1,0 +1,235 @@
+{
+  "name": "blackduck-sample-project",
+  "version": "0.0.9",
+  "externalId": {
+    "name": "blackduck-sample-project",
+    "version": "0.0.9",
+    "forge": "pypi"
+  },
+  "children": [{
+    "name": "Delorean",
+    "version": "0.6.0",
+    "externalId": {
+      "name": "Delorean",
+      "version": "0.6.0",
+      "forge": "pypi"
+    },
+    "children": [{
+      "name": "pytz",
+      "version": "2017.2",
+      "externalId": {
+        "name": "pytz",
+        "version": "2017.2",
+        "forge": "pypi"
+      },
+      "children": []
+    }, {
+      "name": "tzlocal",
+      "version": "1.4",
+      "externalId": {
+        "name": "tzlocal",
+        "version": "1.4",
+        "forge": "pypi"
+      },
+      "children": [{
+        "name": "pytz",
+        "version": "2017.2",
+        "externalId": {
+          "name": "pytz",
+          "version": "2017.2",
+          "forge": "pypi"
+        },
+        "children": []
+      }]
+    }, {
+      "name": "humanize",
+      "version": "0.5.1",
+      "externalId": {
+        "name": "humanize",
+        "version": "0.5.1",
+        "forge": "pypi"
+      },
+      "children": []
+    }, {
+      "name": "Babel",
+      "version": "2.4.0",
+      "externalId": {
+        "name": "Babel",
+        "version": "2.4.0",
+        "forge": "pypi"
+      },
+      "children": [{
+        "name": "pytz",
+        "version": "2017.2",
+        "externalId": {
+          "name": "pytz",
+          "version": "2017.2",
+          "forge": "pypi"
+        },
+        "children": []
+      }]
+    }, {
+      "name": "python-dateutil",
+      "version": "2.6.0",
+      "externalId": {
+        "name": "python-dateutil",
+        "version": "2.6.0",
+        "forge": "pypi"
+      },
+      "children": [{
+        "name": "six",
+        "version": "1.10.0",
+        "externalId": {
+          "name": "six",
+          "version": "1.10.0",
+          "forge": "pypi"
+        },
+        "children": []
+      }]
+    }]
+  }, {
+    "name": "pynamodb",
+    "version": "2.1.5",
+    "externalId": {
+      "name": "pynamodb",
+      "version": "2.1.5",
+      "forge": "pypi"
+    },
+    "children": [{
+      "name": "Delorean",
+      "version": "0.6.0",
+      "externalId": {
+        "name": "Delorean",
+        "version": "0.6.0",
+        "forge": "pypi"
+      },
+      "children": [{
+        "name": "pytz",
+        "version": "2017.2",
+        "externalId": {
+          "name": "pytz",
+          "version": "2017.2",
+          "forge": "pypi"
+        },
+        "children": []
+      }, {
+        "name": "tzlocal",
+        "version": "1.4",
+        "externalId": {
+          "name": "tzlocal",
+          "version": "1.4",
+          "forge": "pypi"
+        },
+        "children": [{
+          "name": "pytz",
+          "version": "2017.2",
+          "externalId": {
+            "name": "pytz",
+            "version": "2017.2",
+            "forge": "pypi"
+          },
+          "children": []
+        }]
+      }, {
+        "name": "humanize",
+        "version": "0.5.1",
+        "externalId": {
+          "name": "humanize",
+          "version": "0.5.1",
+          "forge": "pypi"
+        },
+        "children": []
+      }, {
+        "name": "Babel",
+        "version": "2.4.0",
+        "externalId": {
+          "name": "Babel",
+          "version": "2.4.0",
+          "forge": "pypi"
+        },
+        "children": [{
+          "name": "pytz",
+          "version": "2017.2",
+          "externalId": {
+            "name": "pytz",
+            "version": "2017.2",
+            "forge": "pypi"
+          },
+          "children": []
+        }]
+      }, {
+        "name": "python-dateutil",
+        "version": "2.6.0",
+        "externalId": {
+          "name": "python-dateutil",
+          "version": "2.6.0",
+          "forge": "pypi"
+        },
+        "children": [{
+          "name": "six",
+          "version": "1.10.0",
+          "externalId": {
+            "name": "six",
+            "version": "1.10.0",
+            "forge": "pypi"
+          },
+          "children": []
+        }]
+      }]
+    }, {
+      "name": "botocore",
+      "version": "1.5.44",
+      "externalId": {
+        "name": "botocore",
+        "version": "1.5.44",
+        "forge": "pypi"
+      },
+      "children": [{
+        "name": "docutils",
+        "version": "0.13.1",
+        "externalId": {
+          "name": "docutils",
+          "version": "0.13.1",
+          "forge": "pypi"
+        },
+        "children": []
+      }, {
+        "name": "jmespath",
+        "version": "0.9.2",
+        "externalId": {
+          "name": "jmespath",
+          "version": "0.9.2",
+          "forge": "pypi"
+        },
+        "children": []
+      }, {
+        "name": "python-dateutil",
+        "version": "2.6.0",
+        "externalId": {
+          "name": "python-dateutil",
+          "version": "2.6.0",
+          "forge": "pypi"
+        },
+        "children": [{
+          "name": "six",
+          "version": "1.10.0",
+          "externalId": {
+            "name": "six",
+            "version": "1.10.0",
+            "forge": "pypi"
+          },
+          "children": []
+        }]
+      }]
+    }, {
+      "name": "six",
+      "version": "1.10.0",
+      "externalId": {
+        "name": "six",
+        "version": "1.10.0",
+        "forge": "pypi"
+      },
+      "children": []
+    }]
+  }]
+}

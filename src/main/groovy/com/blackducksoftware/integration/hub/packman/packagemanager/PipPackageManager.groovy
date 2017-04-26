@@ -6,40 +6,38 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.packman.PackageManagerType
-import com.blackducksoftware.integration.hub.packman.packagemanager.maven.MavenPackager
-import com.blackducksoftware.integration.hub.packman.util.InputStreamConverter
+import com.blackducksoftware.integration.hub.packman.packagemanager.pip.PipPackager
 
 @Component
-class MavenPackageManager extends PackageManager {
-    public static final String POM_FILENAME = 'pom.xml'
-
-    @Autowired
-    InputStreamConverter inputStreamConverter
+class PipPackageManager extends PackageManager {
+    public static final String SETUP_FILENAME = 'setup.py'
 
     @Autowired
     ExecutableFinder executableFinder
 
-    @Value('${packman.bom.aggregate}')
-    boolean aggregateBom
+    @Value('${packman.pip.createVirtualEnv}')
+    boolean createVirtualEnv
+
+    @Value('${packman.output.path}')
+    String outputDirectory
 
     PackageManagerType getPackageManagerType() {
-        return PackageManagerType.MAVEN
+        return PackageManagerType.PIP
     }
 
     boolean isPackageManagerApplicable(String sourcePath) {
         File sourceDirectory = new File(sourcePath)
         if (sourcePath && sourceDirectory.isDirectory()) {
-            File pomFile = new File(sourceDirectory, POM_FILENAME)
-            return pomFile.isFile()
+            File setupFile = new File(sourceDirectory, SETUP_FILENAME)
+            return setupFile.isFile()
         }
 
         false
     }
 
     List<DependencyNode> extractDependencyNodes(String sourcePath) {
-        File sourceDirectory = new File(sourcePath)
-        def mavenPackager = new MavenPackager(inputStreamConverter, executableFinder, sourceDirectory, aggregateBom)
-        def projects = mavenPackager.makeDependencyNodes()
+        def pipPackager = new PipPackager(executableFinder, sourcePath, outputDirectory, createVirtualEnv)
+        def projects = pipPackager.makeDependencyNodes()
         return projects
     }
 }
