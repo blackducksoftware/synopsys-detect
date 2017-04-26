@@ -102,15 +102,22 @@ public class MavenOutputParser {
                     final DependencyNode currentNode = projectStack.pop();
                     projectStack.peek().children.add(currentNode);
                     addToStack(line, projectStack);
-                } else if (level > previousLevel && lineIsValid(line)) {
-                    addToStack(line, projectStack);
-                } else if (level < previousLevel && lineIsValid(line)) {
-                    for (; previousLevel >= level; previousLevel--) {
-                        final DependencyNode previousNode = projectStack.pop();
-                        projectStack.peek().children.add(previousNode);
-
+                } else if (level > previousLevel) {
+                    if (lineIsValid(line)) {
+                        addToStack(line, projectStack);
+                    } else {
+                        level = previousLevel;
                     }
-                    addToStack(line, projectStack);
+                } else if (level < previousLevel) {
+                    if (lineIsValid(line)) {
+                        for (; previousLevel >= level; previousLevel--) {
+                            final DependencyNode previousNode = projectStack.pop();
+                            projectStack.peek().children.add(previousNode);
+                        }
+                        addToStack(line, projectStack);
+                    } else {
+                        level = previousLevel;
+                    }
                 }
 
                 if (finished) {
