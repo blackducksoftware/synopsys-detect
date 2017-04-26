@@ -140,12 +140,11 @@ public class MavenOutputParser {
 
     private boolean addToStack(final String component, final Stack<DependencyNode> projectStack) {
         final DependencyNode node = componentToDependencyNode(component);
+        boolean valid = false;
         if (node != null) {
-            projectStack.push(node);
-            return true;
+            valid = projectStack.push(node) != null;
         }
-        logger.warn("Couldn't parse component >" + component);
-        return false;
+        return valid;
     }
 
     private DependencyNode componentToDependencyNode(final String component) {

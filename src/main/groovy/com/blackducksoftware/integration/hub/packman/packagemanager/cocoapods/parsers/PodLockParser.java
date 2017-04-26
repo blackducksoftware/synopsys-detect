@@ -34,7 +34,7 @@ public class PodLockParser {
 
     final Pattern SPEC_CHECKSUMS_SECTION = Pattern.compile("SPEC CHECKSUMS:\\s*");
 
-    final Pattern PODFILE_CHECKSUM_SECTION = Pattern.compile("PODFILE CHECKSUM:\\s*");
+    final Pattern PODFILE_CHECKSUM_SECTION = Pattern.compile("PODFILE CHECKSUM:(.*)");
 
     final Pattern COCOAPODS_SECTION = Pattern.compile("COCOAPODS:\\s*(.*)");
 
@@ -93,7 +93,7 @@ public class PodLockParser {
                     section = SPEC_CHECKSUMS_SECTION.pattern();
                 } else if (podfileChecksumSectionMatcher.matches()) {
                     section = PODFILE_CHECKSUM_SECTION.pattern();
-                    podLock.podfileChecksum = line.split(":")[1].trim();
+                    podLock.podfileChecksum = podfileChecksumSectionMatcher.group(1).trim();
                 } else if (externalSourcesSectionMatcher.matches()) {
                     section = EXTERNAL_SOURCES_SECTION.pattern();
                 } else if (checkoutSectionMatcher.matches()) {

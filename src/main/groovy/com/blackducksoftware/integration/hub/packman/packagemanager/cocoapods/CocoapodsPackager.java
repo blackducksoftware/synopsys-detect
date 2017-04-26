@@ -109,16 +109,10 @@ public class CocoapodsPackager extends Packager {
     public static DependencyNode createPodNodeFromGroups(final Matcher regexMatcher, final int nameGroup, final int versionGroup) {
         DependencyNode node = null;
         if (regexMatcher.matches()) {
-            try {
-                final String name = regexMatcher.group(nameGroup).trim();
-                final String version = regexMatcher.group(versionGroup).trim();
-                final ExternalId externalId = new NameVersionExternalId(Forge.cocoapods, name, version);
-                node = new DependencyNode(name, version, externalId, new ArrayList<DependencyNode>());
-            } catch (final IllegalStateException e) {
-                e.printStackTrace();
-            } catch (final IndexOutOfBoundsException e) {
-                e.printStackTrace();
-            }
+            final String name = regexMatcher.group(nameGroup).trim();
+            final String version = regexMatcher.group(versionGroup).trim();
+            final ExternalId externalId = new NameVersionExternalId(Forge.cocoapods, name, version);
+            node = new DependencyNode(name, version, externalId, new ArrayList<DependencyNode>());
         }
         return node;
     }
