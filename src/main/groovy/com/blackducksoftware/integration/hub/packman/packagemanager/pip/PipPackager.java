@@ -67,10 +67,10 @@ public class PipPackager extends Packager {
             }
 
             final File virtualEnvironmentPath = new File(outputDirectory, "blackduck_virtualenv");
-            final String virtualEnvironmentBinPath = new File(virtualEnvironmentPath, virtualEnvBin).getAbsolutePath();
+            final File virtualEnvironmentBinPath = new File(virtualEnvironmentPath, virtualEnvBin);
             final CommandRunner systemCommandRunner = new CommandRunner(logger, executableFinder, sourceDirectory, windowsFileMap);
             final CommandRunner virtualenvCommandRunner = new CommandRunner(logger, executableFinder, sourceDirectory, windowsFileMap,
-                    virtualEnvironmentBinPath);
+                    virtualEnvironmentBinPath.getAbsolutePath());
 
             final Command installVirtualenvPackage = new Command("pip", "install", "virtualenv");
             final Command createVirtualEnvironement = new Command("virtualenv", virtualEnvironmentPath.getAbsolutePath());
@@ -81,13 +81,13 @@ public class PipPackager extends Packager {
                     "--CreateHubBdio=False",
                     "--OutputDirectory=" + outputDirectory.getAbsolutePath());
 
-            if (!virtualEnvironmentPath.exists()) {
+            if (virtualEnvironmentPath.exists() && virtualEnvironmentBinPath.exists()) {
+                logger.info(String.format("Found virtual environment: %s", virtualEnvironmentPath.getAbsolutePath()));
+            } else {
                 systemCommandRunner.execute(installVirtualenvPackage);
                 systemCommandRunner.execute(createVirtualEnvironement);
-            } else {
-                logger.info(String.format("Found virtual environment: %s", virtualEnvironmentPath.getAbsolutePath()));
             }
-            systemCommandRunner.execute(installHubPip);
+            virtualenvCommandRunner.execute(installHubPip);
             virtualenvCommandRunner.execute(installProject);
             virtualenvCommandRunner.execute(runHubPip);
         }
