@@ -37,7 +37,8 @@ class MavenPackageManager extends PackageManager {
     }
 
     List<DependencyNode> extractDependencyNodes(String sourcePath) {
-        def mavenPackager = new MavenPackager(inputStreamConverter, executableFinder, sourcePath, aggregateBom)
+        File sourceDirectory = new File(sourcePath)
+        def mavenPackager = new MavenPackager(inputStreamConverter, executableFinder, sourceDirectory, aggregateBom)
         def projects = mavenPackager.makeDependencyNodes()
         return projects
     }

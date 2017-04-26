@@ -67,6 +67,7 @@ public class PackageManagerRunner {
             try (final BdioWriter bdioWriter = new BdioWriter(gson, new FileOutputStream(outputFile))) {
                 final SimpleBdioDocument bdioDocument = dependencyNodeTransformer.transformDependencyNode(project);
                 bdioWriter.writeSimpleBdioDocument(bdioDocument);
+                logger.info("BDIO Generated: " + outputFile.getAbsolutePath());
             } catch (final IOException e) {
                 throw new RuntimeException(e);
             }

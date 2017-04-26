@@ -12,14 +12,12 @@
 package com.blackducksoftware.integration.hub.packman.packagemanager.maven;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.ProcessBuilder.Redirect;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,6 +25,8 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.packman.Packager;
 import com.blackducksoftware.integration.hub.packman.packagemanager.ExecutableFinder;
 import com.blackducksoftware.integration.hub.packman.packagemanager.maven.parsers.MavenOutputParser;
+import com.blackducksoftware.integration.hub.packman.util.Command;
+import com.blackducksoftware.integration.hub.packman.util.CommandRunner;
 import com.blackducksoftware.integration.hub.packman.util.InputStreamConverter;
 
 public class MavenPackager extends Packager {
@@ -36,11 +36,11 @@ public class MavenPackager extends Packager {
 
     private final boolean aggregateBom;
 
-    private final String sourceDirectory;
+    private final File sourceDirectory;
 
     ExecutableFinder executableFinder;
 
-    public MavenPackager(final InputStreamConverter inputStreamConverter, final ExecutableFinder executableFinder, final String sourceDirectory,
+    public MavenPackager(final InputStreamConverter inputStreamConverter, final ExecutableFinder executableFinder, final File sourceDirectory,
             final boolean aggregateBom) {
         this.inputStreamConverter = inputStreamConverter;
         this.aggregateBom = aggregateBom;
@@ -50,62 +50,30 @@ public class MavenPackager extends Packager {
 
     @Override
     public List<DependencyNode> makeDependencyNodes() {
-        InputStream mavenOutputFileStream = null;
         List<DependencyNode> projects = null;
+
+        final CommandRunner commandRunner = new CommandRunner(logger, executableFinder, sourceDirectory, null);
+        final Command mvnCommand = new Command("mvn", "dependency:tree");
+
+        final String results = commandRunner.execute(mvnCommand);
+
+        final InputStream inputStream = new ByteArrayInputStream(results.getBytes());
+        final BufferedReader bufferedReader = inputStreamConverter.convertToBufferedReader(inputStream);
+        final MavenOutputParser mavenOutputParser = new MavenOutputParser();
         try {
-            final File mavenOutputFile = File.createTempFile("mavenOutputStream", ".tmp");
-
-            logger.debug(String.format("Writing outputStream to %s", mavenOutputFile.getAbsolutePath()));
-            final File sourceDirectoryFile = new File(sourceDirectory);
-
-            final String mvnCommand = executableFinder.findExecutable("mvn");
-
-            if (StringUtils.isNotBlank(mvnCommand)) {
-                final String[] command = { mvnCommand, "dependency:tree" };
-                final ProcessBuilder processBuilder = new ProcessBuilder(command);
-
-                processBuilder.directory(sourceDirectoryFile);
-                processBuilder.redirectOutput(Redirect.to(mavenOutputFile));
-
-                logger.debug(String.format("Running command >%s", String.join(" ", command)));
-                final Process process = processBuilder.start();
-
-                try {
-                    process.waitFor();
-                } catch (final InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-
-                final MavenOutputParser mavenParser = new MavenOutputParser();
-                mavenOutputFileStream = new FileInputStream(mavenOutputFile);
-                final BufferedReader bufferedReader = inputStreamConverter.convertToBufferedReader(mavenOutputFileStream);
-                projects = mavenParser.parse(bufferedReader);
-
-                logger.debug("Cleaning up tempory files");
-                mavenOutputFile.delete();
-
-                if (aggregateBom && !projects.isEmpty()) {
-                    final DependencyNode firstNode = projects.remove(0);
-                    for (final DependencyNode subProject : projects) {
-                        firstNode.children.addAll(subProject.children);
-                    }
-                    projects.clear();
-                    projects.add(firstNode);
-                }
-            } else {
-                logger.error("Failed to find a maven executable");
-
-            }
+            projects = mavenOutputParser.parse(bufferedReader);
         } catch (final IOException e) {
             throw new RuntimeException(e);
-        } finally {
-            if (mavenOutputFileStream != null) {
-                try {
-                    mavenOutputFileStream.close();
-                } catch (final IOException e) {
-                    throw new RuntimeException(e);
-                }
+        }
+
+        if (aggregateBom && !projects.isEmpty()) {
+            final DependencyNode firstNode = projects.remove(0);
+            for (final DependencyNode subProject : projects) {
+                firstNode.children.addAll(subProject.children);
             }
+            projects.clear();
+            projects.add(firstNode);
+
         }
 
         return projects;
