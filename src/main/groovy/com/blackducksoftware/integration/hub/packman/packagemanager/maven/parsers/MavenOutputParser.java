@@ -19,8 +19,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
@@ -28,11 +26,9 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.Extern
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenExternalId;
 
 public class MavenOutputParser {
-    private final Logger logger = LoggerFactory.getLogger(MavenOutputParser.class);
-
     private final Pattern beginProjectRegex = Pattern.compile("--- .*? ---");
 
-    private final Pattern gavRegex = Pattern.compile("(.*?):(.*?):(.*?):([^:\\n\\r]*).*");
+    private final Pattern gavRegex = Pattern.compile("(.*?):(.*?):(.*?):([^:\\n\\r]*)(:(.*))*");
 
     private final Pattern plusRegex = Pattern.compile("\\+- ");
 
@@ -43,6 +39,15 @@ public class MavenOutputParser {
     private final Pattern emptyRegex = Pattern.compile("   ");
 
     private final Pattern finishRegex = Pattern.compile("--------");
+
+    private final List<String> includedScopes;
+
+    public MavenOutputParser(final List<String> includedScopes) {
+        this.includedScopes = includedScopes;
+        if (includedScopes != null && includedScopes.contains("all")) {
+            includedScopes.clear();
+        }
+    }
 
     public List<DependencyNode> parse(final String mavenOutputText) throws IOException {
         final List<DependencyNode> projects = new ArrayList<>();
@@ -133,11 +138,11 @@ public class MavenOutputParser {
     }
 
     private boolean lineIsValid(final String line) {
-        return componentToDependencyNode(line) != null;
+        return textToDependencyNode(line) != null;
     }
 
-    private boolean addToStack(final String component, final Stack<DependencyNode> projectStack) {
-        final DependencyNode node = componentToDependencyNode(component);
+    private boolean addToStack(final String componentText, final Stack<DependencyNode> projectStack) {
+        final DependencyNode node = textToDependencyNode(componentText);
         boolean valid = false;
         if (node != null) {
             valid = projectStack.push(node) != null;
@@ -145,12 +150,22 @@ public class MavenOutputParser {
         return valid;
     }
 
-    private DependencyNode componentToDependencyNode(final String component) {
-        final Matcher gavMatcher = gavRegex.matcher(component);
+    private DependencyNode textToDependencyNode(final String componentText) {
+        final Matcher gavMatcher = gavRegex.matcher(componentText);
         if (gavMatcher.find()) {
             final String group = gavMatcher.group(1);
             final String artifact = gavMatcher.group(2);
             final String version = gavMatcher.group(4);
+            if (includedScopes != null && !includedScopes.isEmpty()) {
+                try {
+                    final String scope = gavMatcher.group(6);
+                    if (scope != null && !includedScopes.contains(scope.trim().toLowerCase())) {
+                        return null;
+                    }
+                } catch (final IndexOutOfBoundsException ignore) {
+
+                }
+            }
             final ExternalId externalId = new MavenExternalId(Forge.maven, group, artifact, version);
             final DependencyNode node = new DependencyNode(artifact, version, externalId);
             return node;

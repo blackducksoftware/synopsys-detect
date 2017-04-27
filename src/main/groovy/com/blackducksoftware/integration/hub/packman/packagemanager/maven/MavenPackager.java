@@ -13,6 +13,7 @@ package com.blackducksoftware.integration.hub.packman.packagemanager.maven;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -24,25 +25,27 @@ import com.blackducksoftware.integration.hub.packman.packagemanager.ExecutableFi
 import com.blackducksoftware.integration.hub.packman.packagemanager.maven.parsers.MavenOutputParser;
 import com.blackducksoftware.integration.hub.packman.util.Command;
 import com.blackducksoftware.integration.hub.packman.util.CommandRunner;
-import com.blackducksoftware.integration.hub.packman.util.InputStreamConverter;
 
 public class MavenPackager extends Packager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    private final InputStreamConverter inputStreamConverter;
 
     private final boolean aggregateBom;
 
     private final File sourceDirectory;
 
-    ExecutableFinder executableFinder;
+    private final ExecutableFinder executableFinder;
 
-    public MavenPackager(final InputStreamConverter inputStreamConverter, final ExecutableFinder executableFinder, final File sourceDirectory,
-            final boolean aggregateBom) {
-        this.inputStreamConverter = inputStreamConverter;
+    private final List<String> includedScopes;
+
+    public MavenPackager(final ExecutableFinder executableFinder, final File sourceDirectory,
+            final boolean aggregateBom, final String includedScopesString) {
         this.aggregateBom = aggregateBom;
         this.sourceDirectory = sourceDirectory;
         this.executableFinder = executableFinder;
+        this.includedScopes = new ArrayList<>();
+        for (final String scope : includedScopesString.split(",")) {
+            includedScopes.add(scope.trim().toLowerCase());
+        }
     }
 
     @Override
@@ -53,7 +56,7 @@ public class MavenPackager extends Packager {
         final Command mvnCommand = new Command("mvn", "dependency:tree");
         final String mvnOutput = commandRunner.execute(mvnCommand);
 
-        final MavenOutputParser mavenOutputParser = new MavenOutputParser();
+        final MavenOutputParser mavenOutputParser = new MavenOutputParser(includedScopes);
         try {
             projects = mavenOutputParser.parse(mvnOutput);
         } catch (final IOException e) {
