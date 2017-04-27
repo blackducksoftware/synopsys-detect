@@ -11,11 +11,8 @@
  */
 package com.blackducksoftware.integration.hub.packman.packagemanager.maven;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -54,14 +51,11 @@ public class MavenPackager extends Packager {
 
         final CommandRunner commandRunner = new CommandRunner(logger, executableFinder, sourceDirectory, null);
         final Command mvnCommand = new Command("mvn", "dependency:tree");
+        final String mvnOutput = commandRunner.execute(mvnCommand);
 
-        final String results = commandRunner.execute(mvnCommand);
-
-        final InputStream inputStream = new ByteArrayInputStream(results.getBytes());
-        final BufferedReader bufferedReader = inputStreamConverter.convertToBufferedReader(inputStream);
         final MavenOutputParser mavenOutputParser = new MavenOutputParser();
         try {
-            projects = mavenOutputParser.parse(bufferedReader);
+            projects = mavenOutputParser.parse(mvnOutput);
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }

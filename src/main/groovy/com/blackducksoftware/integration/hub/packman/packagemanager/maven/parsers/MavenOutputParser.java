@@ -11,7 +11,6 @@
  */
 package com.blackducksoftware.integration.hub.packman.packagemanager.maven.parsers;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,15 +44,14 @@ public class MavenOutputParser {
 
     private final Pattern finishRegex = Pattern.compile("--------");
 
-    public List<DependencyNode> parse(final BufferedReader bufferedReader) throws IOException {
+    public List<DependencyNode> parse(final String mavenOutputText) throws IOException {
         final List<DependencyNode> projects = new ArrayList<>();
 
         final Stack<DependencyNode> projectStack = new Stack<>();
 
         boolean projectReady = false;
-        String line;
         int level = 0;
-        while ((line = bufferedReader.readLine()) != null) {
+        for (String line : mavenOutputText.split("\n")) {
 
             line = line.replace("[INFO] ", "");
 

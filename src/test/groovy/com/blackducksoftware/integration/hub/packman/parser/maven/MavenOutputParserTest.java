@@ -14,9 +14,10 @@ package com.blackducksoftware.integration.hub.packman.parser.maven;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
@@ -24,17 +25,14 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenExternalId;
 import com.blackducksoftware.integration.hub.packman.packagemanager.maven.parsers.MavenOutputParser;
-import com.blackducksoftware.integration.hub.packman.util.InputStreamConverter;
 
 public class MavenOutputParserTest {
 
     @Test
     public void mavenParserTest() throws IOException {
         final MavenOutputParser mavenOutputParser = new MavenOutputParser();
-
-        final InputStreamConverter inputStreamConverter = new InputStreamConverter();
-        final InputStream inputStream = getClass().getResourceAsStream("/maven/mavenSampleOutput.txt");
-        final List<DependencyNode> projects = mavenOutputParser.parse(inputStreamConverter.convertToBufferedReader(inputStream));
+        final String mavenOutput = IOUtils.toString(getClass().getResourceAsStream("/maven/mavenSampleOutput.txt"), StandardCharsets.UTF_8);
+        final List<DependencyNode> projects = mavenOutputParser.parse(mavenOutput);
 
         assertEquals(1, projects.size());
         assertMavenDependencyNodesEqual(getIntegationBdioDependencyNode(), projects.get(0));
@@ -43,10 +41,8 @@ public class MavenOutputParserTest {
     @Test
     public void mavenParserBadEntryTest() throws IOException {
         final MavenOutputParser mavenOutputParser = new MavenOutputParser();
-
-        final InputStreamConverter inputStreamConverter = new InputStreamConverter();
-        final InputStream inputStream = getClass().getResourceAsStream("/maven/mavenSampleOutputBad.txt");
-        final List<DependencyNode> projects = mavenOutputParser.parse(inputStreamConverter.convertToBufferedReader(inputStream));
+        final String mavenOutput = IOUtils.toString(getClass().getResourceAsStream("/maven/mavenSampleOutput.txt"), StandardCharsets.UTF_8);
+        final List<DependencyNode> projects = mavenOutputParser.parse(mavenOutput);
 
         assertEquals(1, projects.size());
         assertMavenDependencyNodesEqual(getIntegationBdioDependencyNode(), projects.get(0));
