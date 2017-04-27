@@ -22,7 +22,7 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
-import com.blackducksoftware.integration.hub.packman.packagemanager.pip.model.PipPackage;
+import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.packman.packagemanager.pip.parsers.PipShowParser;
 
 public class PipShowParserTest {
@@ -31,7 +31,7 @@ public class PipShowParserTest {
     public void pipShowParserTest() throws IOException {
         final PipShowParser pipShowParser = new PipShowParser();
         final String sampleText = IOUtils.toString(getClass().getResourceAsStream("/pip/pipShowSample.txt"), StandardCharsets.UTF_8);
-        final PipPackage pipPackage = pipShowParser.parse(sampleText);
+        final DependencyNode pipPackage = pipShowParser.parse(sampleText);
 
         final List<String> expectedRequirements = new ArrayList<>();
         expectedRequirements.add("Delorean");
@@ -39,10 +39,10 @@ public class PipShowParserTest {
 
         assertEquals("blackduck-sample-project", pipPackage.name);
         assertEquals("0.0.9", pipPackage.version);
-        assertEquals(expectedRequirements.size(), pipPackage.requires.size());
+        assertEquals(expectedRequirements.size(), pipPackage.children.size());
 
-        for (final String requirement : pipPackage.requires) {
-            assertTrue(expectedRequirements.contains(requirement));
+        for (final DependencyNode requirement : pipPackage.children) {
+            assertTrue(expectedRequirements.contains(requirement.name));
         }
     }
 }

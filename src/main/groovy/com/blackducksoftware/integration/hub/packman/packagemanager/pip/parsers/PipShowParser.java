@@ -18,7 +18,10 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.blackducksoftware.integration.hub.packman.packagemanager.pip.model.PipPackage;
+import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
+import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId;
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId;
 
 public class PipShowParser {
     private final Pattern namePattern = Pattern.compile("Name: (.*)");
@@ -27,30 +30,36 @@ public class PipShowParser {
 
     private final Pattern requiresPattern = Pattern.compile("Requires: ([\\s\\S]*)");
 
-    public PipPackage parse(final String pipShowOutput) {
-        final PipPackage pipPackage = new PipPackage();
+    public DependencyNode parse(final String pipShowOutput) {
+        String name = null;
+        String version = null;
+        final List<DependencyNode> children = new ArrayList<>();
+
         final Matcher nameMatcher = namePattern.matcher(pipShowOutput);
         final Matcher versionMatcher = versionPattern.matcher(pipShowOutput);
         final Matcher requiresMatcher = requiresPattern.matcher(pipShowOutput);
 
         if (nameMatcher.find()) {
-            pipPackage.name = nameMatcher.group(1).trim();
+            name = nameMatcher.group(1).trim();
         }
         if (versionMatcher.find()) {
-            pipPackage.version = versionMatcher.group(1).trim();
+            version = versionMatcher.group(1).trim();
         }
         if (requiresMatcher.find()) {
             final String requiresText = requiresMatcher.group(1);
-            final List<String> requires = new ArrayList<>();
             for (final String required : requiresText.split(",")) {
                 final String requiredText = required.trim();
                 if (StringUtils.isNotBlank(requiredText)) {
-                    requires.add(requiredText);
+                    final String childName = requiredText;
+                    final String childVersion = null;
+                    final ExternalId externalId = new NameVersionExternalId(Forge.pypi, childName, childVersion);
+                    final DependencyNode childNode = new DependencyNode(childName, childVersion, externalId);
+                    children.add(childNode);
                 }
             }
-            pipPackage.requires = requires;
         }
-
-        return pipPackage;
+        final ExternalId externalId = new NameVersionExternalId(Forge.pypi, name, version);
+        final DependencyNode pipNode = new DependencyNode(name, version, externalId, children);
+        return pipNode;
     }
 }

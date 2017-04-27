@@ -22,13 +22,10 @@ import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeBuilder;
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId;
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId;
 import com.blackducksoftware.integration.hub.packman.Packager;
 import com.blackducksoftware.integration.hub.packman.packagemanager.ExecutableFinder;
-import com.blackducksoftware.integration.hub.packman.packagemanager.pip.model.PipPackage;
 import com.blackducksoftware.integration.hub.packman.packagemanager.pip.parsers.PipShowParser;
 import com.blackducksoftware.integration.hub.packman.util.Command;
 import com.blackducksoftware.integration.hub.packman.util.CommandRunner;
@@ -83,40 +80,35 @@ public class PipPackager extends Packager {
         if (projectName.equals("UNKOWN")) {
             logger.error("Could not determine project name. Please make sure it is specified in your setup.py");
         } else {
-            final Map<String, DependencyNode> allNodes = new HashMap<>();
             final PipShowParser pipShowParser = new PipShowParser();
             final String pipProjectText = pythonCommandRunner.executeQuietly(new Command("pip", "show", projectName));
-            final PipPackage projectPackage = pipShowParser.parse(pipProjectText);
-            final DependencyNode projectNode = pipPackageToDependencyNode(pipShowParser, pythonCommandRunner, projectPackage, allNodes);
-            projects.add(projectNode);
+            final DependencyNode projectNode = pipShowParser.parse(pipProjectText);
+            projectNode.children.clear();
+            final DependencyNodeBuilder nodeBuilder = new DependencyNodeBuilder(projectNode);
+            final Map<String, DependencyNode> allNodes = new HashMap<>();
+            dependencyNodeTransformer(pipShowParser, pythonCommandRunner, projectNode, nodeBuilder, allNodes);
+            projects.add(nodeBuilder.buildRootNode());
         }
-
         return projects;
     }
 
-    private DependencyNode pipPackageToDependencyNode(final PipShowParser parser, final CommandRunner pythonCommandRunner, final PipPackage pipPackage,
-            final Map<String, DependencyNode> allNodes) {
-        final String name = pipPackage.name;
-        final String version = pipPackage.version;
-        final ExternalId externalId = new NameVersionExternalId(Forge.pypi, name, version);
-        final DependencyNode projectNode = new DependencyNode(name, version, externalId);
-
-        if (pipPackage.requires != null) {
-            for (final String dependency : pipPackage.requires) {
-                if (allNodes.containsKey(dependency.toLowerCase())) {
-                    final DependencyNode dependencyNode = allNodes.get(dependency.toLowerCase());
-                    projectNode.children.add(dependencyNode);
-                } else {
-                    final String pipProjectText = pythonCommandRunner.executeQuietly(new Command("pip", "show", dependency));
-                    final PipPackage dependencyPackage = parser.parse(pipProjectText);
-                    final DependencyNode dependencyNode = pipPackageToDependencyNode(parser, pythonCommandRunner, dependencyPackage, allNodes);
-                    allNodes.put(dependencyNode.name.toLowerCase(), dependencyNode);
-                    projectNode.children.add(dependencyNode);
-                }
-            }
+    private DependencyNode dependencyNodeTransformer(final PipShowParser parser, final CommandRunner pythonCommandRunner,
+            final DependencyNode rawDependencyNode, final DependencyNodeBuilder nodeBuilder, final Map<String, DependencyNode> allNodes) {
+        if (allNodes.containsKey(rawDependencyNode.name.toLowerCase())) {
+            return allNodes.get(rawDependencyNode.name.toLowerCase());
         }
-        allNodes.put(name.toLowerCase(), projectNode);
-        return projectNode;
+
+        final String pipProjectText = pythonCommandRunner.executeQuietly(new Command("pip", "show", rawDependencyNode.name));
+        final DependencyNode dependencyNode = parser.parse(pipProjectText);
+
+        final List<DependencyNode> children = new ArrayList<>();
+        for (final DependencyNode rawChildNode : dependencyNode.children) {
+            children.add(dependencyNodeTransformer(parser, pythonCommandRunner, rawChildNode, nodeBuilder, allNodes));
+        }
+        dependencyNode.children.clear();
+        nodeBuilder.addParentNodeWithChildren(dependencyNode, children);
+        allNodes.put(dependencyNode.name.toLowerCase(), dependencyNode);
+        return dependencyNode;
     }
 
     private CommandRunner getPythonCommandRunner(final CommandRunner systemCommandRunner, final boolean createVirtualEnvironment) {
