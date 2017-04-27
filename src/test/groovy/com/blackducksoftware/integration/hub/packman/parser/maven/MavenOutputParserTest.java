@@ -40,16 +40,6 @@ public class MavenOutputParserTest {
     }
 
     @Test
-    public void mavenParserBadEntryTest() throws IOException {
-        final MavenOutputParser mavenOutputParser = new MavenOutputParser(null);
-        final String mavenOutput = IOUtils.toString(getClass().getResourceAsStream("/maven/mavenSampleOutput.txt"), StandardCharsets.UTF_8);
-        final List<DependencyNode> projects = mavenOutputParser.parse(mavenOutput);
-
-        assertEquals(1, projects.size());
-        assertMavenDependencyNodesEqual(getIntegationBdioDependencyNode(), projects.get(0));
-    }
-
-    @Test
     public void mavenParserScopeTest() throws IOException {
         final List<String> scopes = new ArrayList<>();
         scopes.add("compile");
@@ -140,7 +130,7 @@ public class MavenOutputParserTest {
         assertEquals(message, expected.version, actual.version);
         assertEquals(message, expected.externalId.forge, actual.externalId.forge);
         assertEquals(message, expected.externalId.createExternalId(), actual.externalId.createExternalId());
-        assertEquals(message, expected.children.size(), actual.children.size());
+        assertEquals(String.format("Number of children don't match. %s", message), expected.children.size(), actual.children.size());
         for (final DependencyNode expectedNode : expected.children) {
             boolean foundMatch = false;
             for (final DependencyNode actualNode : actual.children) {
@@ -150,7 +140,7 @@ public class MavenOutputParserTest {
                     break;
                 }
             }
-            assertEquals(message, true, foundMatch);
+            assertEquals(String.format("Expected node not found:\n%s", expectedNode), true, foundMatch);
         }
     }
 }

@@ -99,27 +99,21 @@ public class MavenOutputParser {
                 final Matcher finishMatcher = finishRegex.matcher(line);
                 final boolean finished = finishMatcher.find();
 
-                if (finished) {
+                if (lineIsValid(line)) {
+                    if (finished) {
 
-                } else if (level == previousLevel && lineIsValid(line)) {
-                    final DependencyNode currentNode = projectStack.pop();
-                    projectStack.peek().children.add(currentNode);
-                    addToStack(line, projectStack);
-                } else if (level > previousLevel) {
-                    if (lineIsValid(line)) {
+                    } else if (level == previousLevel) {
+                        final DependencyNode currentNode = projectStack.pop();
+                        projectStack.peek().children.add(currentNode);
                         addToStack(line, projectStack);
-                    } else {
-                        level = previousLevel;
-                    }
-                } else if (level < previousLevel) {
-                    if (lineIsValid(line)) {
+                    } else if (level > previousLevel) {
+                        addToStack(line, projectStack);
+                    } else if (level < previousLevel) {
                         for (; previousLevel >= level; previousLevel--) {
                             final DependencyNode previousNode = projectStack.pop();
                             projectStack.peek().children.add(previousNode);
                         }
                         addToStack(line, projectStack);
-                    } else {
-                        level = previousLevel;
                     }
                 }
 
