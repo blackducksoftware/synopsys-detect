@@ -151,13 +151,9 @@ public class MavenOutputParser {
             final String artifact = gavMatcher.group(2);
             final String version = gavMatcher.group(4);
             if (includedScopes != null && !includedScopes.isEmpty()) {
-                try {
-                    final String scope = gavMatcher.group(6);
-                    if (scope != null && !includedScopes.contains(scope.trim().toLowerCase())) {
-                        return null;
-                    }
-                } catch (final IndexOutOfBoundsException ignore) {
-
+                final String scope = gavMatcher.group(6);
+                if (scope != null && !includedScopes.contains(scope.trim().toLowerCase())) {
+                    return null;
                 }
             }
             final ExternalId externalId = new MavenExternalId(Forge.maven, group, artifact, version);
