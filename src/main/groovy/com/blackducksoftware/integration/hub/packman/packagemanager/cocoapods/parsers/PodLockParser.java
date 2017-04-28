@@ -25,31 +25,21 @@ import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.mo
 public class PodLockParser {
     private final Logger logger = LoggerFactory.getLogger(PodLockParser.class);
 
-    final Pattern PODS_SECTION = Pattern.compile("PODS:\\s*");
+    private final Pattern PODS_SECTION = Pattern.compile("PODS:\\s*");
 
-    final Pattern DEPENDENCIES_SECTION = Pattern.compile("DEPENDENCIES:\\s*");
+    private final Pattern DEPENDENCIES_SECTION = Pattern.compile("DEPENDENCIES:\\s*");
 
-    final Pattern COCOAPODS_SECTION = Pattern.compile("COCOAPODS:\\s*(.*)");
+    private final Pattern COCOAPODS_SECTION = Pattern.compile("COCOAPODS:\\s*(.*)");
 
-    final Pattern POD_REGEX = Pattern.compile("  - (.*) *\\((.*)\\)");
+    private final Pattern POD_REGEX = Pattern.compile("  - (.*) *\\((.*)\\)");
 
-    final Pattern POD_WITH_SUB_REGEX = Pattern.compile("  - (.*) *\\((.*)\\):");
+    private final Pattern POD_WITH_SUB_REGEX = Pattern.compile("  - (.*) *\\((.*)\\):");
 
-    final Pattern SUBPOD_REGEX = Pattern.compile("    - (.*) *\\((.*)\\)");
+    private final Pattern SUBPOD_REGEX = Pattern.compile("    - (.*) *\\((.*)\\)");
 
-    final Pattern SUBPOD_REGEX2 = Pattern.compile("    - (.*)()");
+    private final Pattern SUBPOD_REGEX2 = Pattern.compile("    - (.*)()");
 
-    final Pattern DEPENDENCY_REGEX = Pattern.compile("  - ([^ ]*)(( \\(.*\\))*)");
-
-    final Pattern POD_START_REGEX = Pattern.compile("  (.*):\\s*");
-
-    final Pattern BRANCH_REGEX = Pattern.compile("    :branch:\\s*(.*)");
-
-    final Pattern GIT_REGEX = Pattern.compile("    :git:\\s*(.*)");
-
-    final Pattern TAG_REGEX = Pattern.compile("    :tag:\\s*(.*)");
-
-    final Pattern COMMIT_REGEX = Pattern.compile("    :commit:\\s*(.*)");
+    private final Pattern DEPENDENCY_REGEX = Pattern.compile("  - ([^ ]*)(( \\(.*\\))*)");
 
     public PodLock parse(final String podlockText) {
         final PodLock podLock = new PodLock();
