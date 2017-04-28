@@ -11,8 +11,8 @@
  */
 package com.blackducksoftware.integration.hub.packman.packagemanager.pip.parsers;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,7 +33,7 @@ public class PipShowParser {
     public DependencyNode parse(final String pipShowOutput) {
         String name = null;
         String version = null;
-        final List<DependencyNode> children = new ArrayList<>();
+        final Set<DependencyNode> children = new HashSet<>();
 
         final Matcher nameMatcher = namePattern.matcher(pipShowOutput);
         final Matcher versionMatcher = versionPattern.matcher(pipShowOutput);
