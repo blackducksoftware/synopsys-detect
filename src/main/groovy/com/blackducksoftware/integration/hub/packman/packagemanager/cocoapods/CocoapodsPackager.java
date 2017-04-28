@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -117,7 +116,7 @@ public class CocoapodsPackager extends Packager {
             final String name = regexMatcher.group(nameGroup).trim();
             final String version = regexMatcher.group(versionGroup).trim();
             final ExternalId externalId = new NameVersionExternalId(Forge.cocoapods, name, version);
-            node = new DependencyNode(name, version, externalId, Collections.emptySet());
+            node = new DependencyNode(name, version, externalId);
         }
         return node;
     }
