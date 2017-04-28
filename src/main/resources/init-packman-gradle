@@ -29,15 +29,11 @@ addListener(
                     executed = true
                 }
 
-                def dependencyGatherer = new DependencyGatherer(null, null, null, null)
+                def dependencyGatherer = new DependencyGatherer()
                 DependencyNode rootProjectDependencyNode = dependencyGatherer.getFullyPopulatedRootNode(task.project)
                 File outputDirectory = new File(task.project.buildDir, 'blackduck')
                 outputDirectory.mkdirs()
                 File outputFile = new File(outputDirectory, 'dependencyNodes.json')
-                Gson gson = new Gson();
-                new JsonWriter(new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(outputFile)), StandardCharsets.UTF_8)).withCloseable { writer ->
-                    writer.setIndent("  ")
-                    gson.toJson(rootProjectDependencyNode, DependencyNode.class, writer);
-                }
+                outputFile << new Gson().toJson(rootProjectDependencyNode)
             }
         })

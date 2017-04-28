@@ -14,7 +14,6 @@ package com.blackducksoftware.integration.hub.packman.packagemanager.gradle
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Value
 
 import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeBuilder
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
@@ -24,20 +23,20 @@ import com.blackducksoftware.integration.hub.packman.Packager
 import com.blackducksoftware.integration.hub.packman.packagemanager.ExecutableFinder
 
 class GradleParsingPackager extends Packager {
-    private final Logger logger = LoggerFactory.getLogger(GradlePackager.class)
+    private final Logger logger = LoggerFactory.getLogger(GradleParsingPackager.class)
 
+    static final String FIRST_COMPONENT_OF_CONFIGURATION = '+---'
     static final String COMPONENT_PREFIX = '--- '
     static final String SEEN_ELSEWHERE_SUFFIX = ' (*)'
     static final String WINNING_VERSION_INDICATOR = ' -> '
 
-    @Value('${packman.gradle.path}')
-    String gradlePath
+    private ExecutableFinder executableFinder
+    private String gradlePath
+    private String buildFilePath
 
-    ExecutableFinder executableFinder
-    String buildFilePath
-
-    GradleParsingPackager(final ExecutableFinder executableFinder, final String pathContainingBuildGradle) {
+    GradleParsingPackager(final ExecutableFinder executableFinder, String gradlePath, final String pathContainingBuildGradle) {
         this.executableFinder = executableFinder
+        this.gradlePath = gradlePath
         this.buildFilePath = pathContainingBuildGradle
     }
 
@@ -53,7 +52,7 @@ class GradleParsingPackager extends Packager {
             gradlePath = 'gradlew'
         }
 
-        String output = "${gradlePath} dependencies".execute(null, buildFilePath).text
+        String output = "${gradlePath} dependencies".execute(null, new File(buildFilePath)).text
         String[] lines = output.split('\n')
 
         def projects = [
@@ -64,16 +63,40 @@ class GradleParsingPackager extends Packager {
         projects
     }
 
-    List<DependencyNode> createDependencyNodesFromOutputLines(DependencyNode rootProject, List<String> lines) {
+    void createDependencyNodesFromOutputLines(DependencyNode rootProject, String[] lines) {
         DependencyNodeBuilder dependencyNodeBuilder = new DependencyNodeBuilder(rootProject)
+        boolean processingConfiguration = false
+        String configurationName = null
+        String previousLine = null
         def nodeStack = new Stack()
         nodeStack.push(rootProject)
         def previousNode = null
         int treeLevel = 0
 
         for (String line : lines) {
+            if (StringUtils.isBlank(line)) {
+                processingConfiguration = false
+                configurationName = null
+                previousLine = null
+                nodeStack = new Stack()
+                nodeStack.push(rootProject)
+                previousNode = null
+                treeLevel = 0
+                continue
+            }
+            if (!processingConfiguration && line.startsWith(FIRST_COMPONENT_OF_CONFIGURATION)) {
+                processingConfiguration = true
+                configurationName = previousLine.substring(0, previousLine.indexOf(' - ')).trim()
+                logger.info("processing of configuration ${configurationName} started")
+            }
+            if (!processingConfiguration) {
+                previousLine = line
+                continue
+            }
+
             DependencyNode lineNode = createDependencyNodeFromOutputLine(line)
             if (lineNode == null) {
+                previousLine = line
                 continue
             }
 
@@ -88,6 +111,7 @@ class GradleParsingPackager extends Packager {
             dependencyNodeBuilder.addChildNodeWithParents(lineNode, [nodeStack.peek()])
             previousNode = lineNode
             treeLevel = lineTreeLevel
+            previousLine = line
         }
     }
 

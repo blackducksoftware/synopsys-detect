@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -101,7 +102,7 @@ public class CocoapodsPackager extends Packager {
             for (final DependencyNode dependency : pod.getValue().children) {
                 pod_deps.add(allPods.get(dependency.name));
             }
-            pod.getValue().children = pod_deps;
+            pod.getValue().children = new HashSet<DependencyNode>(pod_deps);
         }
         return allPods;
     }
@@ -113,7 +114,7 @@ public class CocoapodsPackager extends Packager {
                 final String name = regexMatcher.group(nameGroup).trim();
                 final String version = regexMatcher.group(versionGroup).trim();
                 final ExternalId externalId = new NameVersionExternalId(Forge.cocoapods, name, version);
-                node = new DependencyNode(name, version, externalId, new ArrayList<DependencyNode>());
+                node = new DependencyNode(name, version, externalId, new HashSet<DependencyNode>());
             } catch (final IllegalStateException e) {
                 e.printStackTrace();
             } catch (final IndexOutOfBoundsException e) {

@@ -61,6 +61,7 @@ public class PackageManagerRunner {
         final File outputDirectory = new File(outputDirectoryPath);
         outputDirectory.mkdirs();
 
+        logger.info("creating " + projectNodes.size() + " project nodes");
         for (final DependencyNode project : projectNodes) {
             final String filename = String.format("%s_%s_%s_bdio.jsonld", packageManagerType.toString(), project.name, project.version);
             final File outputFile = new File(outputDirectory, filename);

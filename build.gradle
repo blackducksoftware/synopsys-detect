@@ -44,7 +44,3 @@ springBoot { mainClass = 'com.blackducksoftware.integration.hub.packman.Applicat
 jacocoTestReport {
     reports { xml.enabled = true }
 }
-
-task produceFinalZip(type: Zip, dependsOn: build) {
-    from("${buildDir}/libs") { include '*.jar' into 'lib'}
-}
