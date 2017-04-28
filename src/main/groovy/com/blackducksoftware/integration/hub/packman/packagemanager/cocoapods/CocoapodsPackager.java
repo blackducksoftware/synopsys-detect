@@ -14,14 +14,18 @@ package com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.regex.Matcher;
 
+import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
@@ -63,8 +67,8 @@ public class CocoapodsPackager extends Packager {
         DependencyNode project = null;
 
         final PodLockParser podLockParser = new PodLockParser();
-        final BufferedReader podLockBufferedReader = inputStreamConverter.convertToBufferedReader(podlockStream);
-        final PodLock podLock = podLockParser.parse(podLockBufferedReader);
+        final String podLockText = IOUtils.toString(podlockStream, StandardCharsets.UTF_8);
+        final PodLock podLock = podLockParser.parse(podLockText);
 
         final PodspecParser podspecParser = new PodspecParser(outputCleaner);
         if (podspecStream != null) {
@@ -98,11 +102,11 @@ public class CocoapodsPackager extends Packager {
 
         // Fix pods dependencies
         for (final Entry<String, DependencyNode> pod : allPods.entrySet()) {
-            final List<DependencyNode> pod_deps = new ArrayList<>();
+            final Set<DependencyNode> pod_deps = new HashSet<>();
             for (final DependencyNode dependency : pod.getValue().children) {
                 pod_deps.add(allPods.get(dependency.name));
             }
-            pod.getValue().children = new HashSet<DependencyNode>(pod_deps);
+            pod.getValue().children = pod_deps;
         }
         return allPods;
     }
@@ -110,16 +114,10 @@ public class CocoapodsPackager extends Packager {
     public static DependencyNode createPodNodeFromGroups(final Matcher regexMatcher, final int nameGroup, final int versionGroup) {
         DependencyNode node = null;
         if (regexMatcher.matches()) {
-            try {
-                final String name = regexMatcher.group(nameGroup).trim();
-                final String version = regexMatcher.group(versionGroup).trim();
-                final ExternalId externalId = new NameVersionExternalId(Forge.cocoapods, name, version);
-                node = new DependencyNode(name, version, externalId, new HashSet<DependencyNode>());
-            } catch (final IllegalStateException e) {
-                e.printStackTrace();
-            } catch (final IndexOutOfBoundsException e) {
-                e.printStackTrace();
-            }
+            final String name = regexMatcher.group(nameGroup).trim();
+            final String version = regexMatcher.group(versionGroup).trim();
+            final ExternalId externalId = new NameVersionExternalId(Forge.cocoapods, name, version);
+            node = new DependencyNode(name, version, externalId, Collections.emptySet());
         }
         return node;
     }

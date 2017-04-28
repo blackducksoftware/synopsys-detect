@@ -16,10 +16,6 @@ public class Podspec {
 
     public String version;
 
-    public Podspec() {
-
-    }
-
     public Podspec(final String name, final String version) {
         this.name = name;
         this.version = version;

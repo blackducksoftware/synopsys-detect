@@ -7,7 +7,7 @@
 [INFO] --- maven-dependency-plugin:2.10:tree (default-cli) @ integration-bdio ---
 [INFO] com.blackducksoftware.integration:integration-bdio:bundle:2.0.0-SNAPSHOT
 [INFO] +- org.apache.commons:commons-lang3:jar:3.5:compile
-[INFO] +- com.google.code.gson:gson:jar:2.7:compile
+[INFO] +- com.google.code.gson:gson:jar:2.7:provided
 [INFO] +- org.skyscreamer:jsonassert:jar:1.4.0:test
 [INFO] |  \- com.vaadin.external.google:android-json:jar:0.0.20131108.vaadin1:test
 [INFO] +- junit:junit:jar:4.12:test

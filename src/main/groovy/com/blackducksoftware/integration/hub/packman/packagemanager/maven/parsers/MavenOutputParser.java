@@ -11,7 +11,6 @@
  */
 package com.blackducksoftware.integration.hub.packman.packagemanager.maven.parsers;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +19,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
@@ -29,11 +26,9 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.Extern
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenExternalId;
 
 public class MavenOutputParser {
-    private final Logger logger = LoggerFactory.getLogger(MavenOutputParser.class);
-
     private final Pattern beginProjectRegex = Pattern.compile("--- .*? ---");
 
-    private final Pattern gavRegex = Pattern.compile("(.*?):(.*?):(.*?):([^:\\n\\r]*).*");
+    private final Pattern gavRegex = Pattern.compile("(.*?):(.*?):(.*?):([^:\\n\\r]*)(:(.*))*");
 
     private final Pattern plusRegex = Pattern.compile("\\+- ");
 
@@ -45,15 +40,23 @@ public class MavenOutputParser {
 
     private final Pattern finishRegex = Pattern.compile("--------");
 
-    public List<DependencyNode> parse(final BufferedReader bufferedReader) throws IOException {
+    private final List<String> includedScopes;
+
+    public MavenOutputParser(final List<String> includedScopes) {
+        this.includedScopes = includedScopes;
+        if (includedScopes != null && includedScopes.contains("all")) {
+            includedScopes.clear();
+        }
+    }
+
+    public List<DependencyNode> parse(final String mavenOutputText) throws IOException {
         final List<DependencyNode> projects = new ArrayList<>();
 
         final Stack<DependencyNode> projectStack = new Stack<>();
 
         boolean projectReady = false;
-        String line;
         int level = 0;
-        while ((line = bufferedReader.readLine()) != null) {
+        for (String line : mavenOutputText.split("\n")) {
 
             line = line.replace("[INFO] ", "");
 
@@ -96,27 +99,21 @@ public class MavenOutputParser {
                 final Matcher finishMatcher = finishRegex.matcher(line);
                 final boolean finished = finishMatcher.find();
 
-                if (finished) {
+                if (lineIsValid(line)) {
+                    if (finished) {
 
-                } else if (level == previousLevel && lineIsValid(line)) {
-                    final DependencyNode currentNode = projectStack.pop();
-                    projectStack.peek().children.add(currentNode);
-                    addToStack(line, projectStack);
-                } else if (level > previousLevel) {
-                    if (lineIsValid(line)) {
+                    } else if (level == previousLevel) {
+                        final DependencyNode currentNode = projectStack.pop();
+                        projectStack.peek().children.add(currentNode);
                         addToStack(line, projectStack);
-                    } else {
-                        level = previousLevel;
-                    }
-                } else if (level < previousLevel) {
-                    if (lineIsValid(line)) {
+                    } else if (level > previousLevel) {
+                        addToStack(line, projectStack);
+                    } else if (level < previousLevel) {
                         for (; previousLevel >= level; previousLevel--) {
                             final DependencyNode previousNode = projectStack.pop();
                             projectStack.peek().children.add(previousNode);
                         }
                         addToStack(line, projectStack);
-                    } else {
-                        level = previousLevel;
                     }
                 }
 
@@ -135,25 +132,30 @@ public class MavenOutputParser {
     }
 
     private boolean lineIsValid(final String line) {
-        return componentToDependencyNode(line) != null;
+        return textToDependencyNode(line) != null;
     }
 
-    private boolean addToStack(final String component, final Stack<DependencyNode> projectStack) {
-        final DependencyNode node = componentToDependencyNode(component);
+    private boolean addToStack(final String componentText, final Stack<DependencyNode> projectStack) {
+        final DependencyNode node = textToDependencyNode(componentText);
+        boolean valid = false;
         if (node != null) {
-            projectStack.push(node);
-            return true;
+            valid = projectStack.push(node) != null;
         }
-        logger.warn("Couldn't parse component >" + component);
-        return false;
+        return valid;
     }
 
-    private DependencyNode componentToDependencyNode(final String component) {
-        final Matcher gavMatcher = gavRegex.matcher(component);
+    private DependencyNode textToDependencyNode(final String componentText) {
+        final Matcher gavMatcher = gavRegex.matcher(componentText);
         if (gavMatcher.find()) {
             final String group = gavMatcher.group(1);
             final String artifact = gavMatcher.group(2);
             final String version = gavMatcher.group(4);
+            if (includedScopes != null && !includedScopes.isEmpty()) {
+                final String scope = gavMatcher.group(6);
+                if (scope != null && !includedScopes.contains(scope.trim().toLowerCase())) {
+                    return null;
+                }
+            }
             final ExternalId externalId = new MavenExternalId(Forge.maven, group, artifact, version);
             final DependencyNode node = new DependencyNode(artifact, version, externalId);
             return node;

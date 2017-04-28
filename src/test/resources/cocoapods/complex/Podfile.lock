@@ -1,3 +1,5 @@
+This is not a god way to start a podfile
+
 PODS:
   - Adjust (4.11.0):
     - Adjust/Core (= 4.11.0)
@@ -193,6 +195,7 @@ PODS:
 
 DEPENDENCIES:
   - Aerodramus
+  IM AN INVALID ENTRY
   - AFNetworkActivityLogger
   - AFNetworking (~> 2.5)
   - AFOAuth1Client (from `https://github.com/lxcid/AFOAuth1Client.git`, tag `0.4.0`)
