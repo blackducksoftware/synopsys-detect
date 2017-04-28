@@ -7,13 +7,13 @@ import org.junit.Test
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenExternalId
-import com.blackducksoftware.integration.hub.packman.packagemanager.gradle.GradlePackager
+import com.blackducksoftware.integration.hub.packman.packagemanager.gradle.GradleParsingPackager
 
 @Ignore
-class GradlePackagerTest {
+class GradleParsingPackagerTest {
     @Test
     public void testParsingStandardLines() {
-        def gradlePackager = new GradlePackager(null)
+        def gradlePackager = new GradleParsingPackager(null)
         String outputLine = '|    |    +--- com.google.code.gson:gson:2.7'
         DependencyNode node = gradlePackager.createDependencyNodeFromOutputLine(outputLine)
         Assert.assertEquals('gson', node.name)
@@ -25,7 +25,7 @@ class GradlePackagerTest {
 
     @Test
     public void testWinningVersionLines() {
-        def gradlePackager = new GradlePackager(null)
+        def gradlePackager = new GradleParsingPackager(null)
         String outputLine = '|    |    |    \\--- org.slf4j:slf4j-api:1.7.21 -> 1.7.22'
         DependencyNode node = gradlePackager.createDependencyNodeFromOutputLine(outputLine)
         Assert.assertEquals('slf4j-api', node.name)
@@ -37,7 +37,7 @@ class GradlePackagerTest {
 
     @Test
     public void testParsingSeenElsewhereLines() {
-        def gradlePackager = new GradlePackager(null)
+        def gradlePackager = new GradleParsingPackager(null)
         String outputLine = '|    |         \\--- com.squareup.okhttp3:okhttp:3.4.2 (*)'
         DependencyNode standardDependencyNode = gradlePackager.createDependencyNodeFromOutputLine(outputLine)
         Assert.assertEquals('okhttp', standardDependencyNode.name)
@@ -49,7 +49,7 @@ class GradlePackagerTest {
 
     @Test
     public void testGradleOutput() {
-        def gradlePackager = new GradlePackager('/Users/ekerwin/Documents/source/integration/hub-artifactory')
+        def gradlePackager = new GradleParsingPackager('/Users/ekerwin/Documents/source/integration/hub-artifactory')
         DependencyNode root = new DependencyNode('project', 'version', new MavenExternalId(Forge.maven, 'root', 'project', 'version'))
         List<DependencyNode> nodes = gradlePackager.createDependencyNodesFromOutputLines(root, Arrays.asList(getTestOutput().split('\n')))
         printNodes(0, root)

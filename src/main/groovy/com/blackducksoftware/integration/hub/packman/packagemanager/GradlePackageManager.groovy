@@ -1,13 +1,22 @@
 package com.blackducksoftware.integration.hub.packman.packagemanager
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.packman.PackageManagerType
+import com.blackducksoftware.integration.hub.packman.packagemanager.gradle.GradleParsingPackager
+import com.google.gson.Gson
 
 @Component
 class GradlePackageManager extends PackageManager {
+    @Value('${packman.gradle.path}')
+    String gradlePath
+
+    @Autowired
+    Gson gson;
+
     @Autowired
     ExecutableFinder executableFinder;
 
@@ -26,18 +35,9 @@ class GradlePackageManager extends PackageManager {
     }
 
     List<DependencyNode> extractDependencyNodes(String sourcePath) {
-        //        File sourceDirectory = new File(sourcePath)
-        //        File podfileLockFile = new File(sourceDirectory, PODFILE_LOCK_FILENAME)
-        //        File podfileFile = new File(sourceDirectory, PODFILE_FILENAME)
-        //        final InputStream podfileLockStream = new FileInputStream(podfileLockFile)
-        //        final InputStream podfileStream = new FileInputStream(podfileFile)
-        //        try {
-        //            def cocoaPodsPackager = new CocoapodsPackager(podfileStream, podfileLockStream)
-        //            def projects = cocoaPodsPackager.makeDependencyNodes()
-        //        } finally {
-        //            IOUtils.closeQuietly(podfileLockFile)
-        //            IOUtils.closeQuietly(podfileFile)
-        //        }
-        return null
+        //        GradleFilePackager gradleFilePackager = new GradleFilePackager(gson, executableFinder, gradlePath, sourcePath)
+        //        gradleFilePackager.makeDependencyNodes()
+        GradleParsingPackager gradleParsingPackager = new GradleParsingPackager(executableFinder, gradlePath, sourcePath)
+        gradleParsingPackager.makeDependencyNodes()
     }
 }

@@ -4,8 +4,17 @@ import org.springframework.stereotype.Component
 
 @Component
 class ExecutableFinder {
-
     String findExecutable(final String executable) {
+        String command = "which"
+        if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+            command = "where"
+        }
+
+        def pathToExecutable = "${command} ${executable}".execute().text.trim()
+        if (pathToExecutable) {
+            return pathToExecutable
+        }
+
         String systemPath = System.getenv("PATH");
         return findExecutable(executable, systemPath)
     }

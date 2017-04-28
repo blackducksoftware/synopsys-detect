@@ -16,10 +16,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.regex.Matcher;
 
 import org.apache.commons.io.IOUtils;
@@ -99,7 +102,7 @@ public class CocoapodsPackager extends Packager {
 
         // Fix pods dependencies
         for (final Entry<String, DependencyNode> pod : allPods.entrySet()) {
-            final List<DependencyNode> pod_deps = new ArrayList<>();
+            final Set<DependencyNode> pod_deps = new HashSet<>();
             for (final DependencyNode dependency : pod.getValue().children) {
                 pod_deps.add(allPods.get(dependency.name));
             }
@@ -114,7 +117,7 @@ public class CocoapodsPackager extends Packager {
             final String name = regexMatcher.group(nameGroup).trim();
             final String version = regexMatcher.group(versionGroup).trim();
             final ExternalId externalId = new NameVersionExternalId(Forge.cocoapods, name, version);
-            node = new DependencyNode(name, version, externalId, new ArrayList<DependencyNode>());
+            node = new DependencyNode(name, version, externalId, Collections.emptySet());
         }
         return node;
     }
