@@ -16,7 +16,7 @@ class RubygemsPackageManager extends PackageManager {
     public static final String GEMFILE_FILENAME = 'Gemfile'
 
     PackageManagerType getPackageManagerType() {
-        return PackageManagerType.COCOAPODS
+        return PackageManagerType.RUBYGEMS
     }
 
     boolean isPackageManagerApplicable(String sourcePath) {
@@ -25,7 +25,7 @@ class RubygemsPackageManager extends PackageManager {
             File gemlockFile = new File(sourceDirectory, GEMFILELOCK_FILENAME)
             File gemspecFile = findGemspecFile(sourceDirectory)
             File gemfileFile = new File(sourceDirectory, GEMFILE_FILENAME)
-            return gemlockFile.isFile() && gemspecFile.isFile() && gemfileFile.isFile()
+            return gemlockFile.isFile() || gemspecFile.isFile() || gemfileFile.isFile()
         }
         false
     }

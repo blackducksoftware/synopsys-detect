@@ -41,7 +41,7 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter'
     compile 'org.codehaus.groovy:groovy-all:2.4.10'
     compile group: 'org.apache.maven.shared', name: 'maven-invoker', version: '3.0.0'
-    
+    compile group: 'com.esotericsoftware.yamlbeans', name: 'yamlbeans', version: '1.11'
 
     testCompile 'org.springframework.boot:spring-boot-starter-test'
 }
