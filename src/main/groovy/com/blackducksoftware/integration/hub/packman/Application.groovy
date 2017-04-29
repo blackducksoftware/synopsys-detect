@@ -42,6 +42,9 @@ class Application {
     PackageManagerRunner parser
 
     @Autowired
+    BdioUploader bdioUploader
+
+    @Autowired
     ExecutableFinder executableFinder
 
     @Value('${packman.source.paths}')
@@ -57,6 +60,7 @@ class Application {
     @PostConstruct
     void init() {
         parser.parseSourcePaths(sourcePaths, outputDirectoryPath)
+        bdioUploader.uploadBdioFiles()
     }
 
     @Bean

@@ -60,7 +60,7 @@ class GradleParsingPackagerTest {
 
         GradleParsingPackager gradleParsingPackager = new GradleParsingPackager(null, null, null)
         def actualDependencyNode = new DependencyNode('project', 'version', new MavenExternalId('group', 'project', 'version'))
-        gradleParsingPackager.createDependencyNodesFromOutputLines(actualDependencyNode, dependenciesContent.split('\n'))
+        gradleParsingPackager.populateDependencyNodeFromDependencies(actualDependencyNode, dependenciesContent)
 
         InputStream expectedInputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream('gradle/gradle-dependencies-hub-artifactory-expected.json')
         String expectedJson = expectedInputStream.getText(StandardCharsets.UTF_8.name())
@@ -78,5 +78,21 @@ class GradleParsingPackagerTest {
         dependencyNodeUtil.buildNodeString(actualStringBuilder, 0, actualDependencyNode)
 
         Assert.assertEquals(expectedStringBuilder.toString(), actualStringBuilder.toString())
+    }
+
+    @Test
+    public void testCreatingDependencyNodeFromProperties() {
+        InputStream propertiesInputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream('gradle/hub-rest-backend-properties')
+        String propertiesContent = propertiesInputStream.getText(StandardCharsets.UTF_8.name())
+
+        GradleParsingPackager gradleParsingPackager = new GradleParsingPackager(null, null, null)
+        DependencyNode dependencyNode = gradleParsingPackager.createProjectDependencyNodeFromProperties(propertiesContent)
+        Assert.assertEquals("rest-backend", dependencyNode.name)
+        Assert.assertEquals("3.7.0-SNAPSHOT", dependencyNode.version)
+        Assert.assertTrue(dependencyNode.children.empty)
+        Assert.assertEquals(Forge.maven, dependencyNode.externalId.forge)
+        Assert.assertEquals("com.blackducksoftware.hub", dependencyNode.externalId.group)
+        Assert.assertEquals("rest-backend", dependencyNode.externalId.name)
+        Assert.assertEquals("3.7.0-SNAPSHOT", dependencyNode.externalId.version)
     }
 }

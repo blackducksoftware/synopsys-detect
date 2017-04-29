@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory
 
 import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeBuilder
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenExternalId
 import com.blackducksoftware.integration.hub.packman.Packager
 import com.blackducksoftware.integration.hub.packman.packagemanager.ExecutableFinder
@@ -43,27 +42,25 @@ class GradleParsingPackager extends Packager {
     @Override
     List<DependencyNode> makeDependencyNodes() {
         if (!gradlePath) {
-            logger.info('packman.gradle.path not set in config - trying to find gradle on the PATH')
-            gradlePath = executableFinder.findExecutable('gradle')
+            logger.info('packman.gradle.path not set in config - first try to find the gradle wrapper')
+            gradlePath = executableFinder.findExecutable('gradlew', buildFilePath)
         }
 
         if (!gradlePath) {
-            logger.info('Could not find gradle - trying a gradle wrapper')
-            gradlePath = 'gradlew'
+            logger.info('gradle wrapper not found - trying to find gradle on the PATH')
+            gradlePath = executableFinder.findExecutable('gradle')
         }
 
-        String output = "${gradlePath} dependencies".execute(null, new File(buildFilePath)).text
-        String[] lines = output.split('\n')
+        String properties = "${gradlePath} properties".execute(null, new File(buildFilePath)).text
+        DependencyNode rootProjectDependencyNode = createProjectDependencyNodeFromProperties(properties)
 
-        def projects = [
-            new DependencyNode('project', 'version', new MavenExternalId('group', 'project', 'version'))
-        ]
-        def children = createDependencyNodesFromOutputLines(projects[0], output.split('\n'))
+        String dependencies = "${gradlePath} dependencies".execute(null, new File(buildFilePath)).text
+        populateDependencyNodeFromDependencies(rootProjectDependencyNode, dependencies)
 
-        projects
+        [rootProjectDependencyNode]
     }
 
-    void createDependencyNodesFromOutputLines(DependencyNode rootProject, String[] lines) {
+    void populateDependencyNodeFromDependencies(DependencyNode rootProject, String dependencies) {
         DependencyNodeBuilder dependencyNodeBuilder = new DependencyNodeBuilder(rootProject)
         boolean processingConfiguration = false
         String configurationName = null
@@ -73,6 +70,7 @@ class GradleParsingPackager extends Packager {
         def previousNode = null
         int treeLevel = 0
 
+        String[] lines = dependencies.split('\n')
         for (String line : lines) {
             if (StringUtils.isBlank(line)) {
                 processingConfiguration = false
@@ -138,6 +136,33 @@ class GradleParsingPackager extends Packager {
             version = version[winningVersionIndex..-1]
         }
 
-        new DependencyNode(artifact, version, new MavenExternalId(Forge.maven, group, artifact, version))
+        new DependencyNode(artifact, version, new MavenExternalId(group, artifact, version))
+    }
+
+    DependencyNode createProjectDependencyNodeFromProperties(String properties) {
+        String group
+        String name
+        String version
+        boolean processingProperties = false
+        properties.split('\n').each { line ->
+            if (line.startsWith(':properties')) {
+                processingProperties = true
+            }
+            if (processingProperties) {
+                if (line.startsWith('group: ') && !(group)) {
+                    group = line[7..-1]
+                } else if (line.startsWith('name: ') && !(name)) {
+                    name = line[6..-1]
+                } else if (line.startsWith('version: ') && !(version)) {
+                    version = line[9..-1]
+                }
+            }
+        }
+
+        if (group && name && version) {
+            return new DependencyNode(name, version, new MavenExternalId(group, name, version))
+        } else {
+            return null
+        }
     }
 }
