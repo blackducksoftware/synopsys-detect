@@ -66,7 +66,7 @@ public class CocoapodsPackager extends Packager {
         DependencyNode project = null;
 
         final PodLockParser podLockParser = new PodLockParser();
-        final String podLockText = IOUtils.toString(podlockStream, StandardCharsets.UTF_8);
+        final String podLockText = IOUtils.toString(podlockStream, StandardCharsets.UTF_8.name());
         final PodLock podLock = podLockParser.parse(podLockText);
 
         final PodspecParser podspecParser = new PodspecParser(outputCleaner);

@@ -35,6 +35,7 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter'
     compile 'org.apache.maven.shared:maven-invoker:3.0.0'
     compile gradleApi()
+    compile group: 'com.esotericsoftware.yamlbeans', name: 'yamlbeans', version: '1.11'
 
     testCompile 'org.springframework.boot:spring-boot-starter-test'
 }

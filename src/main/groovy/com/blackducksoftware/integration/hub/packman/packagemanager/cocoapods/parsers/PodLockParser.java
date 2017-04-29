@@ -11,107 +11,93 @@
  */
 package com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.parsers;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
-import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.CocoapodsPackager;
+import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId;
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId;
 import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.model.PodLock;
+import com.esotericsoftware.yamlbeans.YamlException;
+import com.esotericsoftware.yamlbeans.YamlReader;
 
 public class PodLockParser {
-    private final Logger logger = LoggerFactory.getLogger(PodLockParser.class);
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    final Pattern PODS_SECTION = Pattern.compile("PODS:\\s*");
-
-    final Pattern DEPENDENCIES_SECTION = Pattern.compile("DEPENDENCIES:\\s*");
-
-    final Pattern COCOAPODS_SECTION = Pattern.compile("COCOAPODS:\\s*(.*)");
-
-    final Pattern POD_REGEX = Pattern.compile("  - (.*) *\\((.*)\\)");
-
-    final Pattern POD_WITH_SUB_REGEX = Pattern.compile("  - (.*) *\\((.*)\\):");
-
-    final Pattern SUBPOD_REGEX = Pattern.compile("    - (.*) *\\((.*)\\)");
-
-    final Pattern SUBPOD_REGEX2 = Pattern.compile("    - (.*)()");
-
-    final Pattern DEPENDENCY_REGEX = Pattern.compile("  - ([^ ]*)(( \\(.*\\))*)");
-
-    final Pattern POD_START_REGEX = Pattern.compile("  (.*):\\s*");
-
-    final Pattern BRANCH_REGEX = Pattern.compile("    :branch:\\s*(.*)");
-
-    final Pattern GIT_REGEX = Pattern.compile("    :git:\\s*(.*)");
-
-    final Pattern TAG_REGEX = Pattern.compile("    :tag:\\s*(.*)");
-
-    final Pattern COMMIT_REGEX = Pattern.compile("    :commit:\\s*(.*)");
-
+    @SuppressWarnings("unchecked")
     public PodLock parse(final String podlockText) {
         final PodLock podLock = new PodLock();
 
-        String section = null;
-        DependencyNode subsection = null;
+        try {
+            final YamlReader fullReader = new YamlReader(podlockText);
+            final Object object = fullReader.read();
+            final Map<String, Object> map = (Map<String, Object>) object;
 
-        for (final String line : podlockText.split("\n")) {
-            final Matcher podsSectionMatcher = PODS_SECTION.matcher(line);
-            final Matcher dependenciesSectionMatcher = DEPENDENCIES_SECTION.matcher(line);
-            final Matcher cocoapodsSectionMatcher = COCOAPODS_SECTION.matcher(line);
+            // Extract dependencies
+            final List<String> dependencyNames = (List<String>) map.get("DEPENDENCIES");
 
-            if (StringUtils.isBlank(line)) {
-
-            } else if (cocoapodsSectionMatcher.matches()) {
-                section = COCOAPODS_SECTION.pattern();
-                podLock.cococapodsVersion = line.split(":")[1].trim();
-            } else if (podsSectionMatcher.matches()) {
-                section = PODS_SECTION.pattern();
-            } else if (dependenciesSectionMatcher.matches()) {
-                section = DEPENDENCIES_SECTION.pattern();
-            } else if (section == PODS_SECTION.pattern()) {
-                final Matcher podMatcher = POD_REGEX.matcher(line);
-                final Matcher podWithSubMatcher = POD_WITH_SUB_REGEX.matcher(line);
-                final Matcher subpodMatcher = SUBPOD_REGEX.matcher(line);
-                final Matcher subpodMatcher2 = SUBPOD_REGEX2.matcher(line);
-
-                if (podWithSubMatcher.matches()) {
-                    final DependencyNode pod = CocoapodsPackager.createPodNodeFromGroups(podWithSubMatcher, 1, 2);
-                    if (pod != null) {
-                        subsection = pod;
-                        podLock.pods.add(pod);
-                    }
-                } else if (subsection != null && subpodMatcher.matches()) {
-                    final DependencyNode subpod = CocoapodsPackager.createPodNodeFromGroups(subpodMatcher, 1, 2);
-                    if (subpod != null) {
-                        subsection.children.add(subpod);
-                    }
-                } else if (subsection != null && subpodMatcher2.matches()) {
-                    final DependencyNode subpod = CocoapodsPackager.createPodNodeFromGroups(subpodMatcher2, 1, 2);
-                    if (subpod != null) {
-                        subsection.children.add(subpod);
-                    }
-                } else if (podMatcher.matches()) {
-                    final DependencyNode pod = CocoapodsPackager.createPodNodeFromGroups(podMatcher, 1, 2);
-                    if (pod != null) {
-                        podLock.pods.add(pod);
-                        subsection = null;
-                    }
-                }
-            } else if (section == DEPENDENCIES_SECTION.pattern()) {
-                final Matcher dependencyMatcher = DEPENDENCY_REGEX.matcher(line);
-                final DependencyNode dependency = CocoapodsPackager.createPodNodeFromGroups(dependencyMatcher, 1, 2);
-                if (dependency != null) {
-                    podLock.dependencies.add(dependency);
-                } else {
-                    logger.debug("Couldn't find match with [" + dependencyMatcher.pattern().pattern() + "] >" + line);
-                }
-            } else {
-                logger.debug("PodLockParser: Couldn't find if statement for >" + line + "\n");
+            if (dependencyNames != null) {
+                dependencyNames.forEach(dependencyName -> {
+                    final DependencyNode node = podToDependencyNode(dependencyName);
+                    podLock.dependencies.add(node);
+                });
             }
+
+            // Extract pods
+            final List<Object> pods = (List<Object>) map.get("PODS");
+            pods.forEach(pod -> {
+                DependencyNode node = null;
+                if (pod instanceof HashMap<?, ?>) {
+                    // There should only be one parent node
+                    final List<DependencyNode> parentNodes = new ArrayList<>();
+                    final Map<String, ArrayList<String>> podMap = (Map<String, ArrayList<String>>) pod;
+                    podMap.entrySet().forEach(entry -> {
+                        final DependencyNode parent = podToDependencyNode(entry.getKey());
+                        entry.getValue().forEach(child -> {
+                            final DependencyNode childNode = podToDependencyNode(child);
+                            parent.children.add(childNode);
+                        });
+                        parentNodes.add(parent);
+                    });
+                    node = parentNodes.get(0);
+                } else {
+                    node = podToDependencyNode(pod.toString());
+                }
+
+                if (node != null) {
+                    podLock.pods.add(node);
+                } else {
+                    logger.info("Couldn't extract pod from text >" + pod.toString());
+                }
+            });
+        } catch (final YamlException ingore) {
+            logger.error("Cannot parse Podfile.lock. Invalid YAML file");
         }
+
         return podLock;
+    }
+
+    private DependencyNode podToDependencyNode(final String pod) {
+        final Matcher podMatcher = Pattern.compile("(.*) \\((.*)\\)").matcher(pod);
+        String name;
+        String version;
+        if (podMatcher.find()) {
+            name = podMatcher.group(1);
+            version = podMatcher.group(2);
+        } else {
+            name = pod.trim();
+            version = null;
+        }
+        final ExternalId externalId = new NameVersionExternalId(Forge.cocoapods, name, version);
+        final DependencyNode node = new DependencyNode(name, version, externalId);
+        return node;
     }
 }
