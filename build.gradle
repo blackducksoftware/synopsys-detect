@@ -34,8 +34,8 @@ dependencies {
     compile 'com.blackducksoftware.integration:integration-bdio:2.0.0-SNAPSHOT'
     compile 'org.springframework.boot:spring-boot-starter'
     compile 'org.apache.maven.shared:maven-invoker:3.0.0'
-    compile gradleApi()
-    compile group: 'com.esotericsoftware.yamlbeans', name: 'yamlbeans', version: '1.11'
+    compile 'com.esotericsoftware.yamlbeans:yamlbeans:1.11'
+    compile 'org.codehaus.groovy:groovy-all:2.4.10'
 
     testCompile 'org.springframework.boot:spring-boot-starter-test'
 }
