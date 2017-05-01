@@ -12,8 +12,6 @@ import com.blackducksoftware.integration.hub.packman.packagemanager.rubygems.Rub
 @Component
 class RubygemsPackageManager extends PackageManager {
     public static final String GEMFILELOCK_FILENAME = 'Gemfile.lock'
-    public static final String GEMSPEC_EXTENSION = '.gemspec'
-    public static final String GEMFILE_FILENAME = 'Gemfile'
 
     PackageManagerType getPackageManagerType() {
         return PackageManagerType.RUBYGEMS
@@ -23,9 +21,7 @@ class RubygemsPackageManager extends PackageManager {
         File sourceDirectory = new File(sourcePath)
         if (sourcePath && sourceDirectory.isDirectory()) {
             File gemlockFile = new File(sourceDirectory, GEMFILELOCK_FILENAME)
-            File gemspecFile = findGemspecFile(sourceDirectory)
-            File gemfileFile = new File(sourceDirectory, GEMFILE_FILENAME)
-            return gemlockFile.isFile() || gemspecFile.isFile() || gemfileFile.isFile()
+            return gemlockFile.isFile()
         }
         false
     }
@@ -33,24 +29,16 @@ class RubygemsPackageManager extends PackageManager {
     List<DependencyNode> extractDependencyNodes(String sourcePath) {
         File sourceDirectory = new File(sourcePath)
         File gemlockFile = new File(sourceDirectory, GEMFILELOCK_FILENAME)
-        File gemspecFile = findGemspecFile(sourceDirectory)
-        File gemfileFile = new File(sourceDirectory, GEMFILE_FILENAME)
 
         final InputStream gemlockStream
         try {
             gemlockStream = new FileInputStream(gemlockFile)
             String potentialProjectName = sourceDirectory.getName()
-            def rubygemsPackager = new RubygemsPackager(IOUtils.toString(gemlockStream, StandardCharsets.UTF_8), gemspecFile, gemfileFile)
+            def rubygemsPackager = new RubygemsPackager(IOUtils.toString(gemlockStream, StandardCharsets.UTF_8.name))
             def projects = rubygemsPackager.makeDependencyNodes()
             return projects
         } finally {
             IOUtils.closeQuietly(gemlockStream)
-        }
-    }
-
-    private File findGemspecFile(File sourceDirectory) {
-        sourceDirectory.listFiles().find {
-            it.name.endsWith(GEMSPEC_EXTENSION)
         }
     }
 }

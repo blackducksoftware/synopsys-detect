@@ -11,7 +11,6 @@
  */
 package com.blackducksoftware.integration.hub.packman.packagemanager.rubygems;
 
-import java.io.File;
 import java.util.List;
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
@@ -20,14 +19,8 @@ import com.blackducksoftware.integration.hub.packman.packagemanager.rubygems.par
 public class RubygemsPackager {
     private final String gemlock;
 
-    private final File gemspecFile;
-
-    private final File gemfile;
-
-    public RubygemsPackager(final String gemlock, final File gemspecFile, final File gemfileFile) {
+    public RubygemsPackager(final String gemlock) {
         this.gemlock = gemlock;
-        this.gemspecFile = gemspecFile;
-        this.gemfile = gemfileFile;
     }
 
     public List<DependencyNode> makeDependencyNodes() {
