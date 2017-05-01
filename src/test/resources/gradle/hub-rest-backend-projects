@@ -1,0 +1,152 @@
+To honour the JVM settings for this build a new JVM will be forked. Please consider using the daemon: https://docs.gradle.org/2.14.1/userguide/gradle_daemon.html.
+Processing the settings.gradle file!
+Version: 3.7.0-SNAPSHOT
+The Test.testSrcDirs property has been deprecated and is scheduled to be removed in Gradle 3.0. Support for TestNG Javadoc annotations will be removed in Gradle 3.0.
+
+****************************************************************************************************************
+WARNING:  Some projects in this build require Java Compatibility Configuration.  
+	Therefore, a compatible Java bootClasspath is expected.
+	It is recommended to set the variable JAVA_HOME_<version> in your $GRADLE_USER_HOME/gradle.properties file.
+	For more information, please see the Release Engineering Confluence page, 
+	or the README.md file in this repository.
+
+	Java Home was not set for Java version 1.7, it should be set as JAVA_HOME_1_7 in your properties.
+	Your current GRADLE_USER_HOME is /Users/ekerwin/.gradle
+****************************************************************************************************************
+
+/Library/Java/JavaVirtualMachines/jdk1.7.0_80.jdk/Contents/Home
+Defining custom 'clean' task when using the standard Gradle lifecycle plugins has been deprecated and is scheduled to be removed in Gradle 3.0
+/Users/ekerwin/Documents/source/rest-backend/scan/scan.cli/build/distributions/scan.cli.impl-3.7.0-SNAPSHOT-zip.zip
+Using proxy: tank:3128
+[buildinfo] Not using buildInfo properties file for this build.
+:projects
+
+------------------------------------------------------------
+Root project - Hub
+------------------------------------------------------------
+
+Root project 'rest-backend' - Hub
++--- Project ':activity' - Hub
+|    \--- Project ':activity:activity.stream' - Activity stream project - Provides an event stream that describes system activity
++--- Project ':appmgr' - Hub
+|    \--- Project ':appmgr:appmgr.artifactory' - AppMgr artifactory project - Artifactory integration functionality
++--- Project ':attachment' - Hub
+|    \--- Project ':attachment:attachment.main' - Main attachment project - Provides management of attachment content (often file-based) for entities
++--- Project ':audit' - Hub
+|    \--- Project ':audit:audit.main' - Audit Event Service
++--- Project ':bom' - Hub
+|    +--- Project ':bom:bom.aggregate' - Bill of materials aggregation project - Integrates other projects for building an bill of materials that aggregates manual BOM entries, automatic BOM entries, and related data
+|    \--- Project ':bom:bom.main' - Main bill of materials project - Provides core APIs for managing a bill of materials
++--- Project ':central' - Hub
+|    +--- Project ':central:central.integration' - Central integration project - Integration point for core domain model
+|    \--- Project ':central:central.main' - Main central project - Management for core domain model (contacts, logos, projects, releases, and urls)
++--- Project ':code' - Hub
+|    +--- Project ':code:code.format' - Hub
+|    +--- Project ':code:code.meta' - Code meta project - Provide code metadata analysis functionality
+|    \--- Project ':code:code.parser' - Code parser project - Parses content for code analysis
++--- Project ':codelocation' - Hub
+|    \--- Project ':codelocation:codelocation.main' - Main code location project - URL or path based code location data management
++--- Project ':commitanalysis' - Hub
+|    +--- Project ':commitanalysis:commitanalysis.main' - Main commit analysis project - Provides APIs for commit analysis, SCM metrics, and SLOC metrics
+|    +--- Project ':commitanalysis:commitanalysis.scm' - Source control management commit analysis project - SCM-related commit analysis data operations
+|    \--- Project ':commitanalysis:commitanalysis.sloc' - Source lines of code commit analysis project - Provides language and metrics information as it relates to a code location
++--- Project ':core' - Hub
+|    +--- Project ':core:core.api' - Core API Project project
+|    +--- Project ':core:core.base' - core base project - Common utilities, entity key management, event handling
+|    +--- Project ':core:core.db' - Core db project - Common utilities,base JPA object model, validation, and more
+|    +--- Project ':core:core.main' - Main core project - Common utilities, entity key management, event handling, base JPA object model, property management, authorization, validation, and more
+|    +--- Project ':core:core.regupdate' - Core registration update project - Registration-related APIs
+|    +--- Project ':core:core.rest' - Main core rest project
+|    +--- Project ':core:core.security' - Main core security project
+|    +--- Project ':core:core.tool' - Base classes for building interactive command line tools
+|    \--- Project ':core:core.zookeeper' - Main core zookeeper project - Zookeeper properties
++--- Project ':doc' - Hub
+|    \--- Project ':doc:doc.web' - Hub documentation web application
++--- Project ':docker' - Hub
+|    +--- Project ':docker:blackducksoftware' - Hub
+|    |    +--- Project ':docker:blackducksoftware:hub-cfssl' - Hub
+|    |    +--- Project ':docker:blackducksoftware:hub-jobrunner' - Hub
+|    |    +--- Project ':docker:blackducksoftware:hub-logstash' - Hub
+|    |    +--- Project ':docker:blackducksoftware:hub-nginx' - Hub
+|    |    +--- Project ':docker:blackducksoftware:hub-postgres' - Hub
+|    |    +--- Project ':docker:blackducksoftware:hub-registration' - Hub
+|    |    +--- Project ':docker:blackducksoftware:hub-solr' - Hub
+|    |    +--- Project ':docker:blackducksoftware:hub-squid' - Hub
+|    |    +--- Project ':docker:blackducksoftware:hub-tomcat' - Hub
+|    |    +--- Project ':docker:blackducksoftware:hub-webapp' - Hub
+|    |    \--- Project ':docker:blackducksoftware:hub-zookeeper' - Hub
+|    \--- Project ':docker:hub-docker' - Hub
++--- Project ':eventnotifier' - Hub
+|    \--- Project ':eventnotifier:eventnotifier.main' - Main event notification project - Provides APIs for event notifications for entity changes
++--- Project ':extensions' - Hub
+|    +--- Project ':extensions:extensions.helloworld' - Hello world extension - Example extension
+|    +--- Project ':extensions:extensions.newuserauth' - New user authentication extension - Example extension for adding newly created users to a user group
+|    +--- Project ':extensions:extensions.newusergreeter' - New user greeter extension - Example extension for sending an e-mail to a newly created user
+|    \--- Project ':extensions:extensions.replicator' - Replicator extension - Example extension for reading the activity stream
++--- Project ':hub' - Hub
+|    \--- Project ':hub:hub.test' - Hub project for functional and performance tests
++--- Project ':ikbcore' - Hub
+|    \--- Project ':ikbcore:ikbcore.servicecommon' - Common KnowledgeBase web service project - Provides a user authentication mechanism
++--- Project ':job' - Hub
+|    +--- Project ':job:job.core' - Core job project - Re-usable library for managing jobs
+|    +--- Project ':job:job.integration' - Integration job project - Integrates other projects for job management
+|    +--- Project ':job:job.main' - Main job project - Application-level implementation for the job engine and workers
+|    +--- Project ':job:job.standalone' - Job standalone project - Standalone worker for a distributed environment
+|    \--- Project ':job:job.standalone.onejar' - Hub
++--- Project ':kb' - Hub
+|    +--- Project ':kb:kb.integration' - KnowledgeBase gateway cache - API and JOBs to Kb request cache
+|    +--- Project ':kb:kb.main' - KnowledgeBase gateway project - Clients for retrieving entity detail or search information from the KnowledgeBase
+|    \--- Project ':kb:kb.match' - KnowledgeBase match project - Client for retrieving scan match information from the KnowledgeBase
++--- Project ':main' - Hub
+|    +--- Project ':main:hubapp.db' - Hub
+|    +--- Project ':main:main.integration' - Hub integration project - Integrates all Hub-related projects
+|    \--- Project ':main:main.web' - Hub web application
++--- Project ':notification' - Hub
+|    \--- Project ':notification:notification.main' - Main notification project - Entity watching and notification handling
++--- Project ':plugin' - Hub
+|    \--- Project ':plugin:plugin.main' - Main plugin project - Manages creation and registration of plugins
++--- Project ':policy' - Hub
+|    +--- Project ':policy:policy.main' - Main policy project - Provides management of generic or entity-based policy data
+|    \--- Project ':policy:policy.rule' - Policy rule project - Generic management of policy rules
++--- Project ':registration' - Hub
+|    +--- Project ':registration:registration.core' - Core registration project - Re-usable library for providing registration object model
+|    +--- Project ':registration:registration.main' - Main registration project - Hub registration client
+|    \--- Project ':registration:registration.web' - Registration web application
++--- Project ':report' - Hub
+|    +--- Project ':report:report.db' - Handles operations related to the external reporting database
+|    +--- Project ':report:report.integration' - Hub reporting integration project
+|    \--- Project ':report:report.main' - Main reporting project
++--- Project ':review' - Hub
+|    \--- Project ':review:review.main' - Main review project - Internal and KB review rating management
++--- Project ':risk' - Hub
+|    \--- Project ':risk:risk.main' - Main risk project - Generic management of risk-related data
++--- Project ':scan' - Hub
+|    +--- Project ':scan:scan.api' - Scan API Project project - Provides core API for communicating scan data
+|    +--- Project ':scan:scan.bom' - Scan bill of materials project - Integrates other projects for scan-related operations that associate to a bill of materials
+|    +--- Project ':scan:scan.cli' - Hub
+|    +--- Project ':scan:scan.cli.wrapper' - Hub
+|    +--- Project ':scan:scan.fsscanner' - Scanner and Signature Generation project - Provides core API definition and object model for a scan
+|    +--- Project ':scan:scan.protex' - Linked Data services
+|    +--- Project ':scan:scan.protex.cli' - A tool for exposing a Protex BOM to the Hub
+|    +--- Project ':scan:scan.siggen' - Scan Signature Generation project - Provides persistence-layer object model and implementation for capturing and processing a scan
+|    \--- Project ':scan:scan.siggen.api' - Scan Signature Generation api project - Provides signature generation integration api.
++--- Project ':search' - Hub
+|    +--- Project ':search:search.integration' - Integration search project - Integrates other projects for project and code search functionality
+|    +--- Project ':search:search.main' - Main search project - Generic management for search, auto-completion, and indexes
+|    \--- Project ':search:solr.web' - Solr search web application
++--- Project ':tag' - Hub
+|    \--- Project ':tag:tag.main' - Main tag project - Management of descriptive tags for entities
++--- Project ':usermgmt' - Hub
+|    +--- Project ':usermgmt:usermgmt.ldap' - User management LDAP project - Re-usable library for serving LDAP features
+|    +--- Project ':usermgmt:usermgmt.main' - Main user management project - Users, user groups, roles, permissions, and user datastores
+|    \--- Project ':usermgmt:usermgmt.plugin.ldap' - User management LDAP plugin project - Provides an integrated mechanism for user authentication via LDAP
+\--- Project ':vuln' - Hub
+     \--- Project ':vuln:vuln.main' - Main vulnerability project - Manages generic vulnerability data
+
+To see a list of the tasks of a project, run gradlew <project-path>:tasks
+For example, try running gradlew :activity:tasks
+
+BUILD SUCCESSFUL
+
+Total time: 12.623 secs
+Sat Apr 29 15:30:30 EDT 2017

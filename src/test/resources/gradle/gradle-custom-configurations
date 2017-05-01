@@ -1,0 +1,54 @@
+:dependencies
+
+------------------------------------------------------------
+Root project
+------------------------------------------------------------
+
+archives - Configuration for archive artifacts.
+No dependencies
+
+compile - Dependencies for source set 'main'.
++--- org.apache.commons:commons-lang3:3.4
+\--- commons-io:commons-io:2.5
+
+compileClasspath - Compile classpath for source set 'main'.
++--- org.apache.commons:commons-lang3:3.4
+\--- commons-io:commons-io:2.5
+
+compileOnly - Compile dependencies for source set 'main'.
++--- org.apache.commons:commons-lang3:3.4
+\--- commons-io:commons-io:2.5
+
+default - Configuration for default artifacts.
++--- org.apache.commons:commons-lang3:3.4
+\--- commons-io:commons-io:2.5
+
+runtime - Runtime dependencies for source set 'main'.
++--- org.apache.commons:commons-lang3:3.4
+\--- commons-io:commons-io:2.5
+
+testCompile - Dependencies for source set 'test'.
++--- org.apache.commons:commons-lang3:3.4
+\--- commons-io:commons-io:2.5
+
+testCompileClasspath - Compile classpath for source set 'test'.
++--- org.apache.commons:commons-lang3:3.4
+\--- commons-io:commons-io:2.5
+
+testCompileOnly - Compile dependencies for source set 'test'.
++--- org.apache.commons:commons-lang3:3.4
+\--- commons-io:commons-io:2.5
+
+testRuntime - Runtime dependencies for source set 'test'.
++--- org.apache.commons:commons-lang3:3.4
+\--- commons-io:commons-io:2.5
+
+totallyCustom
++--- commons-cli:commons-cli:1.3.1
+\--- com.google.code.gson:gson:2.7
+
+BUILD SUCCESSFUL
+
+Total time: 2.92 secs
+
+This build could be faster, please consider using the Gradle Daemon: https://docs.gradle.org/2.13/userguide/gradle_daemon.html
