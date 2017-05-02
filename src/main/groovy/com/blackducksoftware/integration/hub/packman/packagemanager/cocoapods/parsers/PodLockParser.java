@@ -30,7 +30,7 @@ import com.esotericsoftware.yamlbeans.YamlException;
 import com.esotericsoftware.yamlbeans.YamlReader;
 
 public class PodLockParser {
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(PodLockParser.class);
 
     @SuppressWarnings("unchecked")
     public PodLock parse(final String podlockText) {

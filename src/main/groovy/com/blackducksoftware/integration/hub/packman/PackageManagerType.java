@@ -6,5 +6,6 @@ public enum PackageManagerType {
     SBT,
     NUGET,
     COCOAPODS,
-    PIP;
+    PIP,
+    RUBYGEMS;
 }
