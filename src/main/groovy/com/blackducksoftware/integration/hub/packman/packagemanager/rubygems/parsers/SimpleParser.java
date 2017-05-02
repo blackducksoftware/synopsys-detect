@@ -12,8 +12,8 @@
 package com.blackducksoftware.integration.hub.packman.packagemanager.rubygems.parsers;
 
 import java.util.AbstractMap;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Stack;
 
 public class SimpleParser {
@@ -26,16 +26,16 @@ public class SimpleParser {
         this.objectIdenetifier = objectIdentifier;
     }
 
-    public Map<String, Map<String, Object>> parse(final String gemlockText) {
-        final Map<String, Map<String, Object>> map = new HashMap<>();
+    public ParserMap parse(final String gemlockText) {
+        final ParserMap map = new ParserMap();
 
-        final Stack<Map<String, Object>> mapStack = new Stack<>();
+        final Stack<ParserMap> mapStack = new Stack<>();
 
         int level = 0;
         for (final String line : gemlockText.split("\n")) {
             final int currentLevel = getCurrentLevel(line);
             if (org.apache.commons.lang3.StringUtils.isNotEmpty(line)) {
-                final Map.Entry<String, Map<String, Object>> entry = lineToEntry(line);
+                final Entry<String, ParserMap> entry = lineToEntry(line);
                 if (currentLevel == 0) {
                     for (; level < currentLevel; level--) {
                         mapStack.pop();
@@ -52,31 +52,32 @@ public class SimpleParser {
                     mapStack.peek().put(entry.getKey(), entry.getValue());
                     mapStack.push(entry.getValue());
                 } else {
-                    for (; level < currentLevel; level--) {
+                    for (int i = level; i >= currentLevel; i--) {
                         mapStack.pop();
                     }
                     mapStack.peek().put(entry.getKey(), entry.getValue());
                     mapStack.push(entry.getValue());
+                    level = currentLevel;
                 }
             }
         }
         return map;
     }
 
-    private Map.Entry<String, Map<String, Object>> lineToEntry(final String line) {
-        Map.Entry<String, Map<String, Object>> entry = null;
+    private Map.Entry<String, ParserMap> lineToEntry(final String line) {
+        Map.Entry<String, ParserMap> entry = null;
         if (line.contains(objectIdenetifier)) {
             final String[] lineSegments = line.split(objectIdenetifier);
             final String key = lineSegments[0].trim();
-            final Map<String, Object> subMap = new HashMap<>();
+            final ParserMap subMap = new ParserMap();
             if (lineSegments.length > 1) {
                 final String value = line.replace(key + ":", "");
-                subMap.put("value", value.trim());
+                subMap.put(value.trim(), null);
             }
             entry = new AbstractMap.SimpleEntry<>(key, subMap);
         } else {
             final String key = line.trim();
-            final Map<String, Object> subMap = new HashMap<>();
+            final ParserMap subMap = new ParserMap();
             entry = new AbstractMap.SimpleEntry<>(key, subMap);
         }
         return entry;
