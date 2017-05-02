@@ -74,11 +74,20 @@ class GradleParsingPackager {
             gradlePath = executableFinder.findExecutable('gradle')
         }
 
+        //first, get the project metadata
         String properties = "${gradlePath} properties".execute(null, new File(sourcePath)).text
         DependencyNode rootProjectDependencyNode = propertiesParser.createProjectDependencyNodeFromProperties(properties)
 
+        //next, get the root dependencies
         String dependencies = "${gradlePath} dependencies".execute(null, new File(sourcePath)).text
-        dependenciesParser.populateDependencyNodeFromDependencies(rootProjectDependencyNode, dependencies)
+        dependenciesParser.populateDependencyNodeFromDependencies(rootProjectDependencyNode, dependencies, configurationNamesFilter)
+
+        //now, if there are subprojects, collect those dependencies and add them to the rootProject
+        //while this may seem like bananas, it is the best way to add subproject dependencies to the Hub
+        GradleProjectName rootProjectName = new GradleProjectName()
+        rootProjectName.name = rootProjectDependencyNode.name
+        String projects = "${gradlePath} projects".execute(null, new File(sourcePath)).text
+        projectsParser.populateWithSubProjects(rootProjectName, projects, projectNamesFilter)
 
         rootProjectDependencyNode
     }
