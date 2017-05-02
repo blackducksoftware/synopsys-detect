@@ -12,19 +12,27 @@
 package com.blackducksoftware.integration.hub.packman.packagemanager.rubygems;
 
 import java.util.List;
+import java.util.Map;
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
-import com.blackducksoftware.integration.hub.packman.packagemanager.rubygems.parsers.GemlockParser;
+import com.blackducksoftware.integration.hub.packman.Packager;
+import com.blackducksoftware.integration.hub.packman.packagemanager.rubygems.parsers.SimpleParser;
 
-public class RubygemsPackager {
+public class RubygemsPackager extends Packager {
     private final String gemlock;
 
     public RubygemsPackager(final String gemlock) {
         this.gemlock = gemlock;
     }
 
+    @Override
     public List<DependencyNode> makeDependencyNodes() {
-        final GemlockParser gemlockParser = new GemlockParser();
-        return gemlockParser.parse(gemlock);
+        final SimpleParser gemlockParser = new SimpleParser("  ", ":");
+        final Map<String, Map<String, Object>> gemlockMap = gemlockParser.parse(gemlock);
+
+        gemlockMap.get("DEPENDENCIES").entrySet().forEach(entry -> {
+            entry.getKey();
+        });
+        return null;
     }
 }

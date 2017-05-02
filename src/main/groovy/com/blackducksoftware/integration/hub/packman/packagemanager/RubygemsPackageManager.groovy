@@ -34,7 +34,7 @@ class RubygemsPackageManager extends PackageManager {
         try {
             gemlockStream = new FileInputStream(gemlockFile)
             String potentialProjectName = sourceDirectory.getName()
-            def rubygemsPackager = new RubygemsPackager(IOUtils.toString(gemlockStream, StandardCharsets.UTF_8.name))
+            def rubygemsPackager = new RubygemsPackager(IOUtils.toString(gemlockStream, StandardCharsets.UTF_8))
             def projects = rubygemsPackager.makeDependencyNodes()
             return projects
         } finally {
