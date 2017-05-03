@@ -70,8 +70,8 @@ public class MavenPackager {
             projects.forEach(subProject -> firstNode.children.addAll(subProject.children));
             projects.clear();
             projects.add(firstNode);
-            firstNode.name = projectInfoGatherer.getProjectName(PackageManagerType.MAVEN, sourceDirectory.getAbsolutePath(), firstNode.name);
-            firstNode.version = projectInfoGatherer.getProjectVersion(firstNode.version);
+            firstNode.name = projectInfoGatherer.getDefaultProjectName(PackageManagerType.MAVEN, sourceDirectory.getAbsolutePath(), firstNode.name);
+            firstNode.version = projectInfoGatherer.getDefaultProjectVersionName(firstNode.version);
         }
 
         return projects;
