@@ -7,8 +7,6 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.packman.PackageManagerType
 import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.CocoapodsPackager
-import com.blackducksoftware.integration.hub.packman.util.InputStreamConverter
-import com.blackducksoftware.integration.hub.packman.util.OutputCleaner
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
 
 @Component
@@ -16,12 +14,6 @@ class CocoapodsPackageManager extends PackageManager {
     public static final String PODFILE_LOCK_FILENAME = 'Podfile.lock'
     public static final String PODFILE_FILENAME = 'Podfile'
     public static final String PODSPEC_FILENAME_EXTENSION = '.podspec'
-
-    @Autowired
-    InputStreamConverter inputStreamConverter
-
-    @Autowired
-    OutputCleaner outputCleaner
 
     @Autowired
     ProjectInfoGatherer projectInfoGatherer
@@ -53,7 +45,7 @@ class CocoapodsPackageManager extends PackageManager {
             podfileLockStream = new FileInputStream(podfileLockFile)
             podfileStream = new FileInputStream(podfileFile)
             podspecStream = podspecFile != null ? new FileInputStream(podspecFile) : null
-            def cocoaPodsPackager = new CocoapodsPackager(projectInfoGatherer, outputCleaner, podfileLockStream, podspecStream, sourcePath)
+            def cocoaPodsPackager = new CocoapodsPackager(projectInfoGatherer, podfileLockStream, sourcePath)
             def projects = cocoaPodsPackager.makeDependencyNodes()
             return projects
         } finally {
