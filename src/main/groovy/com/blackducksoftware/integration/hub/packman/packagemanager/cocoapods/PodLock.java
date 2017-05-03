@@ -9,15 +9,17 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.model;
+package com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods;
 
-public class Podspec {
-    public String name;
+import java.util.ArrayList;
+import java.util.List;
 
-    public String version;
+import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 
-    public Podspec(final String name, final String version) {
-        this.name = name;
-        this.version = version;
-    }
+public class PodLock {
+    public List<DependencyNode> pods = new ArrayList<>();
+
+    public List<DependencyNode> dependencies = new ArrayList<>();
+
+    public String cococapodsVersion;
 }
