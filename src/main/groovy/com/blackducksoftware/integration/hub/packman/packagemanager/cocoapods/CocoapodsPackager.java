@@ -11,8 +11,8 @@
  */
 package com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.FileUtils;
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
@@ -34,14 +34,14 @@ import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer;
 public class CocoapodsPackager {
     public static final String COMMENTS = "#";
 
-    private final InputStream podlockStream;
+    private final File podfileLock;
 
     private final ProjectInfoGatherer projectInfoGatherer;
 
     private final String sourcePath;
 
-    public CocoapodsPackager(final ProjectInfoGatherer projectInfoGatherer, final InputStream podlockStream, final String sourcePath) {
-        this.podlockStream = podlockStream;
+    public CocoapodsPackager(final ProjectInfoGatherer projectInfoGatherer, final File podfileLock, final String sourcePath) {
+        this.podfileLock = podfileLock;
         this.projectInfoGatherer = projectInfoGatherer;
         this.sourcePath = sourcePath;
     }
@@ -50,7 +50,7 @@ public class CocoapodsPackager {
         DependencyNode project = null;
 
         final PodLockParser podLockParser = new PodLockParser();
-        final String podLockText = IOUtils.toString(podlockStream, StandardCharsets.UTF_8.name());
+        final String podLockText = FileUtils.readFileToString(podfileLock, StandardCharsets.UTF_8);
         final PodLock podLock = podLockParser.parse(podLockText);
 
         final String name = projectInfoGatherer.getProjectName(PackageManagerType.COCOAPODS, sourcePath);

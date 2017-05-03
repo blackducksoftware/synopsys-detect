@@ -13,8 +13,9 @@ package com.blackducksoftware.integration.hub.packman.parser.cocoapods;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -35,39 +36,33 @@ public class CocoapodsPackagerTest {
     public Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     @Test
-    public void complexTest() throws JSONException, IOException {
+    public void complexTest() throws JSONException, IOException, URISyntaxException {
         final Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
         final ProjectInfoGatherer projectInfoGatherer = new ProjectInfoGatherer();
-        try (final InputStream podlockStream = getClass().getResourceAsStream("/cocoapods/complex/Podfile.lock")) {
-            final String sourcePath = "/cocoapods/complex/";
-            final String expected = IOUtils.toString(getClass().getResourceAsStream("/cocoapods/complex/Complex.json"), StandardCharsets.UTF_8);
-            final CocoapodsPackager cocoapodsPackager = new CocoapodsPackager(projectInfoGatherer, podlockStream, sourcePath);
-            final List<DependencyNode> projects = cocoapodsPackager.makeDependencyNodes();
-            assertEquals(1, projects.size());
-            fixVersion(projects.get(0), "1.0.0");
-            final String actual = gson.toJson(projects);
-            JSONAssert.assertEquals(expected, actual, false);
-        } catch (final Exception e) {
-            throw new RuntimeException(e);
-        }
+        final String sourcePath = "/cocoapods/complex/";
+        final String expected = IOUtils.toString(getClass().getResourceAsStream("/cocoapods/complex/Complex.json"), StandardCharsets.UTF_8);
+        final File podlockFile = new File(getClass().getResource("/cocoapods/complex/Podfile.lock").toURI());
+        final CocoapodsPackager cocoapodsPackager = new CocoapodsPackager(projectInfoGatherer, podlockFile, sourcePath);
+        final List<DependencyNode> projects = cocoapodsPackager.makeDependencyNodes();
+        assertEquals(1, projects.size());
+        fixVersion(projects.get(0), "1.0.0");
+        final String actual = gson.toJson(projects);
+        JSONAssert.assertEquals(expected, actual, false);
     }
 
     @Test
-    public void simpleTest() throws JSONException, IOException {
+    public void simpleTest() throws JSONException, IOException, URISyntaxException {
         final Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
         final ProjectInfoGatherer projectInfoGatherer = new ProjectInfoGatherer();
-        try (final InputStream podlockStream = getClass().getResourceAsStream("/cocoapods/simple/Podfile.lock")) {
-            final String sourcePath = "/cocoapods/simple/";
-            final String expected = IOUtils.toString(getClass().getResourceAsStream("/cocoapods/simple/Simple.json"), StandardCharsets.UTF_8);
-            final CocoapodsPackager cocoapodsPackager = new CocoapodsPackager(projectInfoGatherer, podlockStream, sourcePath);
-            final List<DependencyNode> projects = cocoapodsPackager.makeDependencyNodes();
-            assertEquals(1, projects.size());
-            fixVersion(projects.get(0), "0.0.1");
-            final String actual = gson.toJson(projects);
-            JSONAssert.assertEquals(expected, actual, false);
-        } catch (final Exception e) {
-            throw new RuntimeException(e);
-        }
+        final String sourcePath = "/cocoapods/simple/";
+        final String expected = IOUtils.toString(getClass().getResourceAsStream("/cocoapods/simple/Simple.json"), StandardCharsets.UTF_8);
+        final File podlockFile = new File(getClass().getResource("/cocoapods/simple/Podfile.lock").toURI());
+        final CocoapodsPackager cocoapodsPackager = new CocoapodsPackager(projectInfoGatherer, podlockFile, sourcePath);
+        final List<DependencyNode> projects = cocoapodsPackager.makeDependencyNodes();
+        assertEquals(1, projects.size());
+        fixVersion(projects.get(0), "0.0.1");
+        final String actual = gson.toJson(projects);
+        JSONAssert.assertEquals(expected, actual, false);
     }
 
     private void fixVersion(final DependencyNode node, final String newVersion) {
