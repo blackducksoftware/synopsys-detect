@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.regex.Matcher;
 
 import org.apache.commons.io.IOUtils;
 
@@ -113,16 +112,4 @@ public class CocoapodsPackager extends Packager {
         }
         return allPods;
     }
-
-    public static DependencyNode createPodNodeFromGroups(final Matcher regexMatcher, final int nameGroup, final int versionGroup) {
-        DependencyNode node = null;
-        if (regexMatcher.matches()) {
-            final String name = regexMatcher.group(nameGroup).trim();
-            final String version = regexMatcher.group(versionGroup).trim();
-            final ExternalId externalId = new NameVersionExternalId(Forge.cocoapods, name, version);
-            node = new DependencyNode(name, version, externalId);
-        }
-        return node;
-    }
-
 }

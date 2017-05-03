@@ -22,12 +22,13 @@ import com.blackducksoftware.integration.hub.packman.PackageManagerType;
 
 @Component
 public class ProjectInfoGatherer {
+    public static String DATE_FORMAT = "MM-dd-YYYY_HH:mm:Z";
 
     @Value("${packman.project.name}")
-    String projectName;
+    public String projectName;
 
     @Value("${packman.project.version}")
-    String projectVersion;
+    public String projectVersion;
 
     public String getRawProjectName() {
         return projectName;
@@ -61,7 +62,7 @@ public class ProjectInfoGatherer {
         } else if (StringUtils.isNotBlank(defaultVersion)) {
             projectVersion = defaultVersion;
         } else {
-            projectVersion = DateTime.now().toString("MM-dd-YYYY_HH:mm:Z");
+            projectVersion = DateTime.now().toString(DATE_FORMAT);
         }
         return projectVersion;
     }
