@@ -9,15 +9,10 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.model;
+package com.blackducksoftware.integration.hub.packman.packagemanager.rubygems;
 
-public class Podspec {
-    public String name;
+import java.util.HashMap;
 
-    public String version;
+public class ParserMap extends HashMap<String, ParserMap> {
 
-    public Podspec(final String name, final String version) {
-        this.name = name;
-        this.version = version;
-    }
 }

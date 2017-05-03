@@ -61,7 +61,7 @@ class Application {
     @PostConstruct
     void init() {
         parser.parseSourcePaths(sourcePaths, outputDirectoryPath)
-        bdioUploader.uploadBdioFiles()
+        //bdioUploader.uploadBdioFiles()
     }
 
     @Bean

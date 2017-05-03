@@ -20,11 +20,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
+import com.blackducksoftware.integration.hub.packman.PackageManagerType;
 import com.blackducksoftware.integration.hub.packman.Packager;
 import com.blackducksoftware.integration.hub.packman.packagemanager.ExecutableFinder;
-import com.blackducksoftware.integration.hub.packman.packagemanager.maven.parsers.MavenOutputParser;
 import com.blackducksoftware.integration.hub.packman.util.Command;
 import com.blackducksoftware.integration.hub.packman.util.CommandRunner;
+import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer;
 
 public class MavenPackager extends Packager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -37,8 +38,11 @@ public class MavenPackager extends Packager {
 
     private final List<String> includedScopes;
 
-    public MavenPackager(final ExecutableFinder executableFinder, final File sourceDirectory,
+    private final ProjectInfoGatherer projectInfoGatherer;
+
+    public MavenPackager(final ProjectInfoGatherer projectInfoGatherer, final ExecutableFinder executableFinder, final File sourceDirectory,
             final boolean aggregateBom, final String includedScopesString) {
+        this.projectInfoGatherer = projectInfoGatherer;
         this.aggregateBom = aggregateBom;
         this.sourceDirectory = sourceDirectory;
         this.executableFinder = executableFinder;
@@ -65,12 +69,11 @@ public class MavenPackager extends Packager {
 
         if (aggregateBom && !projects.isEmpty()) {
             final DependencyNode firstNode = projects.remove(0);
-            for (final DependencyNode subProject : projects) {
-                firstNode.children.addAll(subProject.children);
-            }
+            projects.forEach(subProject -> firstNode.children.addAll(subProject.children));
             projects.clear();
             projects.add(firstNode);
-
+            firstNode.name = projectInfoGatherer.getProjectName(PackageManagerType.MAVEN, sourceDirectory.getAbsolutePath(), firstNode.name);
+            firstNode.version = projectInfoGatherer.getProjectVersion(firstNode.version);
         }
 
         return projects;

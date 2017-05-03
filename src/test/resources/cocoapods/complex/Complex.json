@@ -1,9 +1,9 @@
     [
   {
-    "name": "BlackDuckSwiftSample",
+    "name": "complex_cocoapods",
     "version": "1.0.0",
     "externalId": {
-      "name": "BlackDuckSwiftSample",
+      "name": "complex_cocoapods",
       "version": "1.0.0",
       "forge": "cocoapods"
     },

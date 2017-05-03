@@ -25,7 +25,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenExternalId;
-import com.blackducksoftware.integration.hub.packman.packagemanager.maven.parsers.MavenOutputParser;
+import com.blackducksoftware.integration.hub.packman.packagemanager.maven.MavenOutputParser;
 
 public class MavenOutputParserTest {
 

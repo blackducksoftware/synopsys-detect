@@ -9,7 +9,7 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.parsers;
+package com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,17 +25,15 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId;
-import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.model.PodLock;
 import com.esotericsoftware.yamlbeans.YamlException;
 import com.esotericsoftware.yamlbeans.YamlReader;
 
 public class PodLockParser {
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(PodLockParser.class);
 
     @SuppressWarnings("unchecked")
     public PodLock parse(final String podlockText) {
         final PodLock podLock = new PodLock();
-
         try {
             final YamlReader fullReader = new YamlReader(podlockText);
             final Object object = fullReader.read();
@@ -44,12 +42,10 @@ public class PodLockParser {
             // Extract dependencies
             final List<String> dependencyNames = (List<String>) map.get("DEPENDENCIES");
 
-            if (dependencyNames != null) {
-                dependencyNames.forEach(dependencyName -> {
-                    final DependencyNode node = podToDependencyNode(dependencyName);
-                    podLock.dependencies.add(node);
-                });
-            }
+            dependencyNames.forEach(dependencyName -> {
+                final DependencyNode node = podToDependencyNode(dependencyName);
+                podLock.dependencies.add(node);
+            });
 
             // Extract pods
             final List<Object> pods = (List<Object>) map.get("PODS");
@@ -71,17 +67,12 @@ public class PodLockParser {
                 } else {
                     node = podToDependencyNode(pod.toString());
                 }
-
-                if (node != null) {
-                    podLock.pods.add(node);
-                } else {
-                    logger.info("Couldn't extract pod from text >" + pod.toString());
-                }
+                podLock.pods.add(node);
             });
         } catch (final YamlException ingore) {
             logger.error("Cannot parse Podfile.lock. Invalid YAML file");
+            return null;
         }
-
         return podLock;
     }
 

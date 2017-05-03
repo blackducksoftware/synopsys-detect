@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.packman.PackageManagerType
 import com.blackducksoftware.integration.hub.packman.packagemanager.maven.MavenPackager
+import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
 
 @Component
 class MavenPackageManager extends PackageManager {
@@ -15,7 +16,10 @@ class MavenPackageManager extends PackageManager {
     @Autowired
     ExecutableFinder executableFinder
 
-    @Value('${packman.bom.aggregate}')
+    @Autowired
+    ProjectInfoGatherer projectInfoGatherer
+
+    @Value('${packman.maven.aggregate}')
     boolean aggregateBom
 
     @Value('${packman.maven.includedscopes}')
@@ -37,7 +41,7 @@ class MavenPackageManager extends PackageManager {
 
     List<DependencyNode> extractDependencyNodes(String sourcePath) {
         File sourceDirectory = new File(sourcePath)
-        def mavenPackager = new MavenPackager(executableFinder, sourceDirectory, aggregateBom, includedScopes)
+        def mavenPackager = new MavenPackager(projectInfoGatherer, executableFinder, sourceDirectory, aggregateBom, includedScopes)
         def projects = mavenPackager.makeDependencyNodes()
         return projects
     }

@@ -23,7 +23,7 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
-import com.blackducksoftware.integration.hub.packman.packagemanager.pip.parsers.PipShowParser;
+import com.blackducksoftware.integration.hub.packman.packagemanager.pip.PipShowParser;
 
 public class PipShowParserTest {
 

@@ -9,7 +9,7 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.packagemanager.maven.parsers;
+package com.blackducksoftware.integration.hub.packman.packagemanager.maven;
 
 import java.io.IOException;
 import java.util.ArrayList;
