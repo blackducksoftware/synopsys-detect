@@ -24,10 +24,9 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId;
 import com.blackducksoftware.integration.hub.packman.PackageManagerType;
-import com.blackducksoftware.integration.hub.packman.Packager;
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer;
 
-public class RubygemsPackager extends Packager {
+public class RubygemsPackager {
     private final String gemlock;
 
     private final ProjectInfoGatherer projectInfoGatherer;
@@ -40,7 +39,6 @@ public class RubygemsPackager extends Packager {
         this.sourcePath = sourcePath;
     }
 
-    @Override
     public List<DependencyNode> makeDependencyNodes() {
         final String rootName = projectInfoGatherer.getProjectName(PackageManagerType.RUBYGEMS, sourcePath);
         final String rootVersion = projectInfoGatherer.getProjectVersion();
