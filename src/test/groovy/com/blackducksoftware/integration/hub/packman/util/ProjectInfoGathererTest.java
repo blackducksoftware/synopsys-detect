@@ -14,59 +14,35 @@ package com.blackducksoftware.integration.hub.packman.util;
 import static org.junit.Assert.assertEquals;
 
 import org.joda.time.DateTime;
-import org.junit.Before;
 import org.junit.Test;
 
 import com.blackducksoftware.integration.hub.packman.PackageManagerType;
 
 public class ProjectInfoGathererTest {
-
-    private ProjectInfoGatherer projectInfoGathererDefault;
-
-    private ProjectInfoGatherer projectInfoGathererAggregate;
-
     private final String testName = "Name";
 
     private final String testName2 = "Name2";
 
     private final String testVersion = "1.0.0";
 
-    private final String packageMangerName = PackageManagerType.MAVEN.toString().toLowerCase();
-
-    @Before
-    public void init() {
-        projectInfoGathererDefault = new ProjectInfoGatherer();
-        projectInfoGathererAggregate = new ProjectInfoGatherer();
-        projectInfoGathererAggregate.projectName = testName2;
-        projectInfoGathererAggregate.projectVersion = testVersion;
-    }
-
     @Test
     public void getProjectNameFromPath() {
-        final String projectName = projectInfoGathererDefault.getProjectName(PackageManagerType.MAVEN, "I/Am/A/Test/" + testName);
-        final String projectVersion = projectInfoGathererDefault.getProjectVersion();
+        final ProjectInfoGatherer projectInfoGatherer = new ProjectInfoGatherer();
+        final String projectName = projectInfoGatherer.getDefaultProjectName(PackageManagerType.MAVEN, "I/Am/A/Test/" + testName);
+        final String projectVersion = projectInfoGatherer.getDefaultProjectVersionName();
         assertEquals(testName + "_maven", projectName);
-        assertEquals(DateTime.now().toString(ProjectInfoGatherer.DATE_FORMAT), projectVersion);
+        final String aFewSecondsAfterTheValueWasCreated = DateTime.now().toString(ProjectInfoGatherer.DATE_FORMAT);
+
+        assertEquals(aFewSecondsAfterTheValueWasCreated.substring(0, 17), projectVersion.substring(0, 17));
     }
 
     @Test
     public void getProjectNameFromDefault() {
-        final String projectName = projectInfoGathererDefault.getProjectName(PackageManagerType.MAVEN, "I/Am/A/Test/" + testName, testName2);
-        final String projectVersion = projectInfoGathererDefault.getProjectVersion(testVersion);
+        final ProjectInfoGatherer projectInfoGatherer = new ProjectInfoGatherer();
+        final String projectName = projectInfoGatherer.getDefaultProjectName(PackageManagerType.MAVEN, "I/Am/A/Test/" + testName, testName2);
+        final String projectVersion = projectInfoGatherer.getDefaultProjectVersionName(testVersion);
         assertEquals(testName2, projectName);
         assertEquals(testVersion, projectVersion);
     }
 
-    @Test
-    public void getProjectNameFromPathAggregate() {
-        final String projectName = projectInfoGathererAggregate.getProjectName(PackageManagerType.MAVEN, "I/Am/A/Test/" + testName);
-        final String projectVersion = projectInfoGathererAggregate.getProjectVersion();
-        assertEquals(testName2, projectName);
-        assertEquals(testVersion, projectVersion);
-    }
-
-    @Test
-    public void getRawProjectNameAggregate() {
-        assertEquals(testName2, projectInfoGathererAggregate.getRawProjectName());
-    }
 }

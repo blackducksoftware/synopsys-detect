@@ -1,4 +1,4 @@
-package com.blackducksoftware.integration.hub.packman.testutils;
+package com.blackducksoftware.integration.hub.packman;
 
 import java.io.IOException;
 import java.util.EnumSet;

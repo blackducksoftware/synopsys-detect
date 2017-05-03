@@ -53,8 +53,8 @@ public class CocoapodsPackager {
         final String podLockText = FileUtils.readFileToString(podfileLock, StandardCharsets.UTF_8);
         final PodLock podLock = podLockParser.parse(podLockText);
 
-        final String name = projectInfoGatherer.getProjectName(PackageManagerType.COCOAPODS, sourcePath);
-        final String version = projectInfoGatherer.getProjectVersion();
+        final String name = projectInfoGatherer.getDefaultProjectName(PackageManagerType.COCOAPODS, sourcePath);
+        final String version = projectInfoGatherer.getDefaultProjectVersionName();
         final ExternalId externalId = new NameVersionExternalId(Forge.cocoapods, name, version);
         project = new DependencyNode(name, version, externalId);
 
