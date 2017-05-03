@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.packman.packagemanager.ExecutableFinder
+import com.blackducksoftware.integration.hub.packman.util.ExecutableFinder
 import com.google.gson.Gson
 
 @Component

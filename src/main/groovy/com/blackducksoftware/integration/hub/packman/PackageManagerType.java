@@ -7,5 +7,6 @@ public enum PackageManagerType {
     NUGET,
     COCOAPODS,
     PIP,
-    RUBYGEMS;
+    RUBYGEMS,
+    CARTHAGE;
 }

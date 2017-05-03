@@ -24,9 +24,9 @@ import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeBuilder;
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
-import com.blackducksoftware.integration.hub.packman.packagemanager.ExecutableFinder;
 import com.blackducksoftware.integration.hub.packman.util.Command;
 import com.blackducksoftware.integration.hub.packman.util.CommandRunner;
+import com.blackducksoftware.integration.hub.packman.util.ExecutableFinder;
 
 public class PipPackager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

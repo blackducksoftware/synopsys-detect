@@ -24,8 +24,6 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
-import com.blackducksoftware.integration.hub.packman.packagemanager.ExecutableFinder;
-
 public class CommandRunner {
     private final Logger logger;
 

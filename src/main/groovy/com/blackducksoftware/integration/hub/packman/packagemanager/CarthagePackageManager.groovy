@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.packman.PackageManagerType
 import com.blackducksoftware.integration.hub.packman.packagemanager.pip.PipPackager
+import com.blackducksoftware.integration.hub.packman.util.ExecutableFinder
 
 @Component
 class CarthagePackageManager extends PackageManager {
@@ -15,6 +16,8 @@ class CarthagePackageManager extends PackageManager {
     @Autowired
     ExecutableFinder executableFinder
 
+    @Autowired
+
     @Value('${packman.pip.createVirtualEnv}')
     boolean createVirtualEnv
 
@@ -22,7 +25,7 @@ class CarthagePackageManager extends PackageManager {
     String outputDirectory
 
     PackageManagerType getPackageManagerType() {
-        return PackageManagerType.PIP
+        return PackageManagerType.CARTHAGE
     }
 
     boolean isPackageManagerApplicable(String sourcePath) {

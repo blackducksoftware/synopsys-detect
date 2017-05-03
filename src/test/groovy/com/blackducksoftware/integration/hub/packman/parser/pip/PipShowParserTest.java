@@ -30,7 +30,7 @@ public class PipShowParserTest {
     @Test
     public void pipShowParserTest() throws IOException {
         final PipShowParser pipShowParser = new PipShowParser();
-        final String sampleText = IOUtils.toString(getClass().getResourceAsStream("/pip/pipShowSample.txt"), StandardCharsets.UTF_8);
+        final String sampleText = IOUtils.toString(getClass().getResourceAsStream("/pip/pipShowSample.txt"), StandardCharsets.UTF_8.name());
         final DependencyNode pipPackage = pipShowParser.parse(sampleText);
 
         final List<String> expectedRequirements = new ArrayList<>();

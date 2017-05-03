@@ -37,7 +37,7 @@ public class PackageManagerRunner {
     @Value("${packman.project.name}")
     private String projectName;
 
-    @Value("${packman.project.version.name}")
+    @Value("${packman.project.version}")
     private String projectVersionName;
 
     @Autowired

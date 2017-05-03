@@ -32,7 +32,7 @@ public class MavenOutputParserTest {
     @Test
     public void mavenParserTest() throws IOException {
         final MavenOutputParser mavenOutputParser = new MavenOutputParser(null);
-        final String mavenOutput = IOUtils.toString(getClass().getResourceAsStream("/maven/mavenSampleOutput.txt"), StandardCharsets.UTF_8);
+        final String mavenOutput = IOUtils.toString(getClass().getResourceAsStream("/maven/mavenSampleOutput.txt"), StandardCharsets.UTF_8.name());
         final List<DependencyNode> projects = mavenOutputParser.parse(mavenOutput);
 
         assertEquals(1, projects.size());
@@ -45,7 +45,7 @@ public class MavenOutputParserTest {
         scopes.add("compile");
         scopes.add("provided");
         final MavenOutputParser mavenOutputParser = new MavenOutputParser(scopes);
-        final String mavenOutput = IOUtils.toString(getClass().getResourceAsStream("/maven/mavenSampleOutput.txt"), StandardCharsets.UTF_8);
+        final String mavenOutput = IOUtils.toString(getClass().getResourceAsStream("/maven/mavenSampleOutput.txt"), StandardCharsets.UTF_8.name());
         final List<DependencyNode> projects = mavenOutputParser.parse(mavenOutput);
 
         assertEquals(1, projects.size());
@@ -58,7 +58,7 @@ public class MavenOutputParserTest {
         scopes.add("compile");
         scopes.add("all");
         final MavenOutputParser mavenOutputParser = new MavenOutputParser(scopes);
-        final String mavenOutput = IOUtils.toString(getClass().getResourceAsStream("/maven/mavenSampleOutput.txt"), StandardCharsets.UTF_8);
+        final String mavenOutput = IOUtils.toString(getClass().getResourceAsStream("/maven/mavenSampleOutput.txt"), StandardCharsets.UTF_8.name());
         final List<DependencyNode> projects = mavenOutputParser.parse(mavenOutput);
 
         assertEquals(1, projects.size());
