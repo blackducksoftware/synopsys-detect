@@ -25,12 +25,12 @@ import java.util.Set;
 import java.util.regex.Matcher;
 
 import org.apache.commons.io.IOUtils;
-import org.joda.time.DateTime;
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId;
+import com.blackducksoftware.integration.hub.packman.PackageManagerType;
 import com.blackducksoftware.integration.hub.packman.Packager;
 import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.model.PodLock;
 import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.model.Podspec;
@@ -38,6 +38,7 @@ import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.pa
 import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.parsers.PodspecParser;
 import com.blackducksoftware.integration.hub.packman.util.InputStreamConverter;
 import com.blackducksoftware.integration.hub.packman.util.OutputCleaner;
+import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer;
 
 public class CocoapodsPackager extends Packager {
     public static final String COMMENTS = "#";
@@ -50,15 +51,18 @@ public class CocoapodsPackager extends Packager {
 
     private final InputStream podspecStream;
 
-    private final String potentialProjectName;
+    private final ProjectInfoGatherer projectInfoGatherer;
 
-    public CocoapodsPackager(final InputStreamConverter inputStreamConverter, final OutputCleaner outputCleaner, final InputStream podlockStream,
-            final InputStream podspecStream, final String potentialProjectName) {
+    private final String sourcePath;
+
+    public CocoapodsPackager(final ProjectInfoGatherer projectInfoGatherer, final InputStreamConverter inputStreamConverter, final OutputCleaner outputCleaner,
+            final InputStream podlockStream, final InputStream podspecStream, final String sourcePath) {
         this.inputStreamConverter = inputStreamConverter;
         this.outputCleaner = outputCleaner;
         this.podlockStream = podlockStream;
         this.podspecStream = podspecStream;
-        this.potentialProjectName = potentialProjectName;
+        this.projectInfoGatherer = projectInfoGatherer;
+        this.sourcePath = sourcePath;
     }
 
     @Override
@@ -76,8 +80,8 @@ public class CocoapodsPackager extends Packager {
             final ExternalId externalId = new NameVersionExternalId(Forge.cocoapods, podspec.name, podspec.version);
             project = new DependencyNode(podspec.name, podspec.version, externalId);
         } else {
-            final String name = potentialProjectName;
-            final String version = DateTime.now().toString("MM-dd-YYYY_HH:mm:Z");
+            final String name = projectInfoGatherer.getProjectName(PackageManagerType.COCOAPODS, sourcePath);
+            final String version = projectInfoGatherer.getProjectVersion();
             final ExternalId externalId = new NameVersionExternalId(Forge.cocoapods, name, version);
             project = new DependencyNode(name, version, externalId);
         }

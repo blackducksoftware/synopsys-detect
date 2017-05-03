@@ -26,6 +26,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeTransform
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.SimpleBdioDocument;
 import com.blackducksoftware.integration.hub.packman.packagemanager.PackageManager;
+import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer;
 import com.google.gson.Gson;
 
 @Component
@@ -40,6 +41,9 @@ public class PackageManagerRunner {
 
     @Autowired
     private DependencyNodeTransformer dependencyNodeTransformer;
+
+    @Autowired
+    ProjectInfoGatherer projectInfoGatherer;
 
     public void parseSourcePaths(final String[] sourcePaths, final String outputDirectoryPath) throws IOException {
         for (final PackageManager packageManager : packageManagers) {
@@ -66,7 +70,15 @@ public class PackageManagerRunner {
             final String filename = String.format("%s_%s_%s_bdio.jsonld", packageManagerType.toString(), project.name, project.version);
             final File outputFile = new File(outputDirectory, filename);
             try (final BdioWriter bdioWriter = new BdioWriter(gson, new FileOutputStream(outputFile))) {
+                if (projectInfoGatherer.shouldAggregate()) {
+                    project.name = projectInfoGatherer.getRawProjectName();
+                    project.version = projectInfoGatherer.getProjectVersion();
+                }
                 final SimpleBdioDocument bdioDocument = dependencyNodeTransformer.transformDependencyNode(project);
+                if (projectInfoGatherer.shouldAggregate()) {
+                    bdioDocument.billOfMaterials.spdxName = String.format("%s/%s/%s Black Duck I/O Export", project.name, project.version,
+                            packageManagerType.toString());
+                }
                 bdioWriter.writeSimpleBdioDocument(bdioDocument);
                 logger.info("BDIO Generated: " + outputFile.getAbsolutePath());
             } catch (final IOException e) {

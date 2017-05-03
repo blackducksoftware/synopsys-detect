@@ -18,29 +18,34 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.joda.time.DateTime;
-
 import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeBuilder;
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId;
+import com.blackducksoftware.integration.hub.packman.PackageManagerType;
 import com.blackducksoftware.integration.hub.packman.Packager;
 import com.blackducksoftware.integration.hub.packman.packagemanager.rubygems.parsers.ParserMap;
 import com.blackducksoftware.integration.hub.packman.packagemanager.rubygems.parsers.SimpleParser;
-import com.google.gson.GsonBuilder;
+import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer;
 
 public class RubygemsPackager extends Packager {
     private final String gemlock;
 
-    public RubygemsPackager(final String gemlock) {
+    private final ProjectInfoGatherer projectInfoGatherer;
+
+    private final String sourcePath;
+
+    public RubygemsPackager(final ProjectInfoGatherer projectInfoGatherer, final String sourcePath, final String gemlock) {
         this.gemlock = gemlock;
+        this.projectInfoGatherer = projectInfoGatherer;
+        this.sourcePath = sourcePath;
     }
 
     @Override
     public List<DependencyNode> makeDependencyNodes() {
-        final String rootName = "TestName";
-        final String rootVersion = DateTime.now().toString("MM-dd-YYYY_HH:mm:Z");
+        final String rootName = projectInfoGatherer.getProjectName(PackageManagerType.RUBYGEMS, sourcePath);
+        final String rootVersion = projectInfoGatherer.getProjectVersion();
         final ExternalId rootExternalId = new NameVersionExternalId(Forge.rubygems, rootName, rootVersion);
         final DependencyNode root = new DependencyNode(rootName, rootVersion, rootExternalId);
 
@@ -50,7 +55,6 @@ public class RubygemsPackager extends Packager {
 
         final SimpleParser gemlockParser = new SimpleParser("  ", ":");
         final ParserMap gemlockMap = gemlockParser.parse(gemlock);
-        final String mapS = new GsonBuilder().setPrettyPrinting().create().toJson(gemlockMap.get("DEPENDENCIES"));
         final ParserMap specMap = gemlockMap.get("GEM").get("specs");
         gemlockMap.get("DEPENDENCIES").entrySet().forEach(dependencyEntry -> {
             final DependencyNode dependencyNode = entryToDependencyNode(specMap, dependencyEntry);

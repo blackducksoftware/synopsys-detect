@@ -15,7 +15,7 @@ class MavenPackageManager extends PackageManager {
     @Autowired
     ExecutableFinder executableFinder
 
-    @Value('${packman.bom.aggregate}')
+    @Value('${packman.maven.aggregate}')
     boolean aggregateBom
 
     @Value('${packman.maven.includedscopes}')

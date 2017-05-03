@@ -9,7 +9,7 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.parser.Cocoapods;
+package com.blackducksoftware.integration.hub.packman.parser.cocoapods;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -34,6 +34,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVe
 import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.CocoapodsPackager;
 import com.blackducksoftware.integration.hub.packman.util.InputStreamConverter;
 import com.blackducksoftware.integration.hub.packman.util.OutputCleaner;
+import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -42,7 +43,7 @@ public class CocoapodsPackagerTest {
 
     @Test
     public void nullStreamTest() {
-        final CocoapodsPackager packager = new CocoapodsPackager(null, null, null, null, null);
+        final CocoapodsPackager packager = new CocoapodsPackager(null, null, null, null, null, null);
         boolean failed = false;
         try {
             packager.makeDependencyNodes();
@@ -97,7 +98,9 @@ public class CocoapodsPackagerTest {
             }
             expectedJsonStream = this.getClass().getResourceAsStream(expectedJsonPath);
 
-            final CocoapodsPackager packager = new CocoapodsPackager(inputStreamConverter, outputCleaner, podlockStream, podspecStream, "BlackDuckSwiftSample");
+            final ProjectInfoGatherer projectInfoGatherer = new ProjectInfoGatherer();
+            final CocoapodsPackager packager = new CocoapodsPackager(projectInfoGatherer, inputStreamConverter, outputCleaner, podlockStream, podspecStream,
+                    "/cocoapods/simple");
             final List<DependencyNode> targets = packager.makeDependencyNodes();
 
             if (fixVersion) {
