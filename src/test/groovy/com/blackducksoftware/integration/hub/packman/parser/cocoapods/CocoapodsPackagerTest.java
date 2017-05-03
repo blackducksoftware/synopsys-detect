@@ -100,7 +100,7 @@ public class CocoapodsPackagerTest {
 
             final ProjectInfoGatherer projectInfoGatherer = new ProjectInfoGatherer();
             final CocoapodsPackager packager = new CocoapodsPackager(projectInfoGatherer, inputStreamConverter, outputCleaner, podlockStream, podspecStream,
-                    "/cocoapods/simple");
+                    "/cocoapods/complex");
             final List<DependencyNode> targets = packager.makeDependencyNodes();
 
             if (fixVersion) {
