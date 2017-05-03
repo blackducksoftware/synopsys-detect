@@ -34,13 +34,15 @@ public class ProjectInfoGatherer {
     }
 
     public String getProjectName(final PackageManagerType packageManagerType, final String sourcePath) {
+        return getProjectName(packageManagerType, sourcePath, null);
+    }
+
+    public String getProjectName(final PackageManagerType packageManagerType, final String sourcePath, final String defaultName) {
         String projectName;
-        if (StringUtils.isNotBlank(this.projectName)) {
-            if (!shouldAggregate()) {
-                projectName = this.projectName;
-            } else {
-                projectName = String.format("%s_%s", this.projectName, packageManagerType.toString().toLowerCase());
-            }
+        if (shouldAggregate()) {
+            projectName = this.projectName;
+        } else if (StringUtils.isNotBlank(defaultName)) {
+            projectName = defaultName;
         } else {
             final File sourcePathFile = new File(sourcePath);
             projectName = String.format("%s_%s", sourcePathFile.getName(), packageManagerType.toString().toLowerCase());
@@ -49,9 +51,15 @@ public class ProjectInfoGatherer {
     }
 
     public String getProjectVersion() {
+        return getProjectVersion(null);
+    }
+
+    public String getProjectVersion(final String defaultVersion) {
         String projectVersion;
         if (StringUtils.isNotBlank(this.projectVersion)) {
             projectVersion = this.projectVersion;
+        } else if (StringUtils.isNotBlank(defaultVersion)) {
+            projectVersion = defaultVersion;
         } else {
             projectVersion = DateTime.now().toString("MM-dd-YYYY_HH:mm:Z");
         }
@@ -59,6 +67,6 @@ public class ProjectInfoGatherer {
     }
 
     public boolean shouldAggregate() {
-        return StringUtils.isNotBlank(projectName) && StringUtils.isNotBlank(projectVersion);
+        return StringUtils.isNotBlank(projectName);
     }
 }
