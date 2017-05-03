@@ -25,8 +25,6 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.Extern
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId;
 import com.blackducksoftware.integration.hub.packman.PackageManagerType;
 import com.blackducksoftware.integration.hub.packman.Packager;
-import com.blackducksoftware.integration.hub.packman.packagemanager.rubygems.parsers.ParserMap;
-import com.blackducksoftware.integration.hub.packman.packagemanager.rubygems.parsers.SimpleParser;
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer;
 
 public class RubygemsPackager extends Packager {

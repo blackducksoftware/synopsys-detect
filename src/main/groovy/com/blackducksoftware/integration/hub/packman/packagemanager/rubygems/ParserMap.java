@@ -9,15 +9,10 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.packagemanager.carthage.parsers;
+package com.blackducksoftware.integration.hub.packman.packagemanager.rubygems;
 
-import java.util.List;
+import java.util.HashMap;
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
+public class ParserMap extends HashMap<String, ParserMap> {
 
-public class CartfileParser {
-    public List<DependencyNode> parse(final String cartfile) {
-
-        return null;
-    }
 }

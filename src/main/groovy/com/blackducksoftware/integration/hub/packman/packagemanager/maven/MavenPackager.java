@@ -23,7 +23,6 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.packman.PackageManagerType;
 import com.blackducksoftware.integration.hub.packman.Packager;
 import com.blackducksoftware.integration.hub.packman.packagemanager.ExecutableFinder;
-import com.blackducksoftware.integration.hub.packman.packagemanager.maven.parsers.MavenOutputParser;
 import com.blackducksoftware.integration.hub.packman.util.Command;
 import com.blackducksoftware.integration.hub.packman.util.CommandRunner;
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer;

@@ -9,7 +9,7 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.packagemanager.rubygems.parsers;
+package com.blackducksoftware.integration.hub.packman.packagemanager.rubygems;
 
 import java.util.AbstractMap;
 import java.util.Map;
