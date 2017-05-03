@@ -25,7 +25,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.BdioNodeFactory
 import com.blackducksoftware.integration.hub.bdio.simple.BdioPropertyHelper
 import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeTransformer
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.packman.packagemanager.ExecutableFinder
+import com.blackducksoftware.integration.hub.packman.util.ExecutableFinder
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 

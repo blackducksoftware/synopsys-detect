@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.packman.PackageManagerType
 import com.blackducksoftware.integration.hub.packman.packagemanager.maven.MavenPackager
+import com.blackducksoftware.integration.hub.packman.util.ExecutableFinder
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
 
 @Component

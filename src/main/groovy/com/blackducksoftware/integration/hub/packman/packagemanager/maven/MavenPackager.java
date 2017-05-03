@@ -21,9 +21,9 @@ import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.packman.PackageManagerType;
-import com.blackducksoftware.integration.hub.packman.packagemanager.ExecutableFinder;
 import com.blackducksoftware.integration.hub.packman.util.Command;
 import com.blackducksoftware.integration.hub.packman.util.CommandRunner;
+import com.blackducksoftware.integration.hub.packman.util.ExecutableFinder;
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer;
 
 public class MavenPackager {

@@ -4,6 +4,8 @@ import org.apache.commons.lang3.StringUtils
 import org.junit.Assert
 import org.junit.Test
 
+import com.blackducksoftware.integration.hub.packman.util.ExecutableFinder
+
 class ExecutableFinderTest {
     @Test
     public void testFindingMan() {
