@@ -7,12 +7,11 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.packman.PackageManagerType
 import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.CocoapodsPackager
 import com.blackducksoftware.integration.hub.packman.util.FileFinder
-import com.blackducksoftware.integration.hub.packman.util.PackageManagerFile
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
 
 @Component
 class CocoapodsPackageManager extends PackageManager {
-    def PODFILE = new PackageManagerFile('Podfile.lock', true)
+    def PODFILE = new File('Podfile.lock')
 
     @Autowired
     ProjectInfoGatherer projectInfoGatherer
@@ -25,11 +24,11 @@ class CocoapodsPackageManager extends PackageManager {
     }
 
     boolean isPackageManagerApplicable(String sourcePath) {
-        return fileFinder.containsFiles(sourcePath, PODFILE);
+        return fileFinder.containsAllFiles(sourcePath, PODFILE);
     }
 
     List<DependencyNode> extractDependencyNodes(String sourcePath) {
-        def cocoaPodsPackager = new CocoapodsPackager(projectInfoGatherer, fileFinder.findFile(sourcePath,PODFILE), sourcePath)
+        def cocoaPodsPackager = new CocoapodsPackager(projectInfoGatherer, fileFinder.findFile(sourcePath, PODFILE), sourcePath)
         return cocoaPodsPackager.makeDependencyNodes()
     }
 }

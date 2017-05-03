@@ -15,6 +15,8 @@ class CarthagePackageManager extends PackageManager {
     @Autowired
     ExecutableFinder executableFinder
 
+    @Autowired
+
     @Value('${packman.pip.createVirtualEnv}')
     boolean createVirtualEnv
 
@@ -22,7 +24,7 @@ class CarthagePackageManager extends PackageManager {
     String outputDirectory
 
     PackageManagerType getPackageManagerType() {
-        return PackageManagerType.PIP
+        return PackageManagerType.CARTHAGE
     }
 
     boolean isPackageManagerApplicable(String sourcePath) {

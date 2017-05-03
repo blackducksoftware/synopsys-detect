@@ -24,26 +24,23 @@ import org.springframework.stereotype.Component;
 public class FileFinder {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public boolean containsFiles(final String sourcePath, final PackageManagerFile... files) {
-        return containsFiles(sourcePath, Arrays.asList(files));
+    public boolean containsAllFiles(final String sourcePath, final File... files) {
+        return containsAllFiles(sourcePath, Arrays.asList(files));
     }
 
-    public boolean containsFiles(final String sourcePath, final List<PackageManagerFile> files) {
+    public boolean containsAllFiles(final String sourcePath, final List<File> files) {
         if (StringUtils.isBlank(sourcePath)) {
             return false;
         }
 
         final File sourceDirectory = new File(sourcePath);
-        boolean containsFiles = false;
+        boolean containsFiles = true;
         if (sourceDirectory.isDirectory()) {
-            for (final PackageManagerFile packageManagerFile : files) {
-                final String fileName = packageManagerFile.fileName;
-                final File file = findFile(sourceDirectory.getAbsolutePath(), packageManagerFile);
-                if (file != null) {
-                    containsFiles = true;
-                } else if (packageManagerFile.mandatory) {
+            for (final File file : files) {
+                final File foundFile = findFile(sourceDirectory.getAbsolutePath(), file);
+                if (foundFile == null) {
                     containsFiles = false;
-                    logger.debug("Couldn't find a neccesary file >" + fileName);
+                    logger.debug("Couldn't find a neccesary file >" + file.getPath());
                     break;
                 }
             }
@@ -51,21 +48,21 @@ public class FileFinder {
         return containsFiles;
     }
 
-    public File findFile(final String sourcePath, final PackageManagerFile packageManagerFile) {
+    public File findFile(final String sourcePath, final File file) {
         final File sourceDirectory = new File(sourcePath);
-        final String fileName = packageManagerFile.fileName;
-        File file = new File(sourceDirectory, fileName);
+        final String fileName = file.getPath();
+        File foundFile = new File(sourceDirectory, fileName);
         if (fileName.startsWith(".")) {
             for (final File fileFound : sourceDirectory.listFiles()) {
                 if (file.getName().endsWith(fileName)) {
-                    file = fileFound;
+                    foundFile = fileFound;
                     break;
                 }
             }
         }
-        if (!file.exists()) {
+        if (!foundFile.exists()) {
             return null;
         }
-        return file;
+        return foundFile;
     }
 }
