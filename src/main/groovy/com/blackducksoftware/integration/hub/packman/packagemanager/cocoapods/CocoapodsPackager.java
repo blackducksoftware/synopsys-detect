@@ -29,10 +29,9 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId;
 import com.blackducksoftware.integration.hub.packman.PackageManagerType;
-import com.blackducksoftware.integration.hub.packman.Packager;
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer;
 
-public class CocoapodsPackager extends Packager {
+public class CocoapodsPackager {
     public static final String COMMENTS = "#";
 
     private final InputStream podlockStream;
@@ -47,7 +46,6 @@ public class CocoapodsPackager extends Packager {
         this.sourcePath = sourcePath;
     }
 
-    @Override
     public List<DependencyNode> makeDependencyNodes() throws IOException, NullPointerException {
         DependencyNode project = null;
 
