@@ -32,7 +32,7 @@ public class MavenOutputParserTest {
     public void mavenParserTest() throws IOException {
         final ExcludedIncludedFilter excludedIncludedFilter = new ExcludedIncludedFilter(null, null);
         final MavenOutputParser mavenOutputParser = new MavenOutputParser(excludedIncludedFilter);
-        final String mavenOutput = IOUtils.toString(getClass().getResourceAsStream("/maven/mavenSampleOutput.txt"), StandardCharsets.UTF_8.name());
+        final String mavenOutput = IOUtils.toString(getClass().getResourceAsStream("/maven/mavenSampleOutput.txt"), StandardCharsets.UTF_8);
         final List<DependencyNode> projects = mavenOutputParser.parse(mavenOutput);
 
         assertEquals(1, projects.size());
@@ -43,7 +43,7 @@ public class MavenOutputParserTest {
     public void mavenParserScopeTest() throws IOException {
         final ExcludedIncludedFilter excludedIncludedFilter = new ExcludedIncludedFilter(null, "Compile,Provided".toLowerCase());
         final MavenOutputParser mavenOutputParser = new MavenOutputParser(excludedIncludedFilter);
-        final String mavenOutput = IOUtils.toString(getClass().getResourceAsStream("/maven/mavenSampleOutput.txt"), StandardCharsets.UTF_8.name());
+        final String mavenOutput = IOUtils.toString(getClass().getResourceAsStream("/maven/mavenSampleOutput.txt"), StandardCharsets.UTF_8);
         final List<DependencyNode> projects = mavenOutputParser.parse(mavenOutput);
 
         assertEquals(1, projects.size());

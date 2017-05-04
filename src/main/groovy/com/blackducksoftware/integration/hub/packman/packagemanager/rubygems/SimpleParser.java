@@ -17,9 +17,9 @@ import java.util.Map.Entry;
 import java.util.Stack;
 
 public class SimpleParser {
-    final String indentation;
+    private final String indentation;
 
-    final String objectIdenetifier;
+    private final String objectIdenetifier;
 
     public SimpleParser(final String indentation, final String objectIdentifier) {
         this.indentation = indentation;
@@ -64,14 +64,14 @@ public class SimpleParser {
         return map;
     }
 
-    private Map.Entry<String, ParserMap> lineToEntry(final String line) {
+    public Map.Entry<String, ParserMap> lineToEntry(final String line) {
         Map.Entry<String, ParserMap> entry = null;
         if (line.contains(objectIdenetifier)) {
             final String[] lineSegments = line.split(objectIdenetifier);
             final String key = lineSegments[0].trim();
             final ParserMap subMap = new ParserMap();
             if (lineSegments.length > 1) {
-                final String value = line.replace(key + ":", "");
+                final String value = line.replace(key + objectIdenetifier, "");
                 subMap.put(value.trim(), null);
             }
             entry = new AbstractMap.SimpleEntry<>(key, subMap);
@@ -83,7 +83,7 @@ public class SimpleParser {
         return entry;
     }
 
-    private int getCurrentLevel(String line) {
+    public int getCurrentLevel(String line) {
         int level = 0;
         while (line.startsWith(indentation)) {
             level++;
