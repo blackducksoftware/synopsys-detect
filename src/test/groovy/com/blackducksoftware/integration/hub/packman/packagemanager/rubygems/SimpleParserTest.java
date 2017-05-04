@@ -87,7 +87,7 @@ public class SimpleParserTest {
         final String gemlockText = IOUtils.toString(getClass().getResourceAsStream("/rubygems/Gemfile.lock"), StandardCharsets.UTF_8);
         final ParserMap parserMap = gemlockParser.parse(gemlockText);
         final String actual = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create().toJson(parserMap);
-        final String expected = IOUtils.toString(getClass().getResourceAsStream("/rubygems/expected.json"), StandardCharsets.UTF_8);
+        final String expected = IOUtils.toString(getClass().getResourceAsStream("/rubygems/expectedParser.json"), StandardCharsets.UTF_8);
         JSONAssert.assertEquals(expected, actual, false);
     }
 }

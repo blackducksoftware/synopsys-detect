@@ -11,6 +11,44 @@
  */
 package com.blackducksoftware.integration.hub.packman.packagemanager.rubygems;
 
-public class RubygemsPackagerTest {
+import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+
+import org.apache.commons.io.IOUtils;
+import org.json.JSONException;
+import org.junit.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
+
+import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
+import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId;
+import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+public class RubygemsPackagerTest {
+    @Test
+    public void packagerTest() throws JSONException, IOException, URISyntaxException {
+        final Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+        final ProjectInfoGatherer projectInfoGatherer = new ProjectInfoGatherer();
+        final String sourcePath = "/rubygems/";
+        final String expected = IOUtils.toString(getClass().getResourceAsStream("/rubygems/expectedPackager.json"), StandardCharsets.UTF_8);
+        final String actualText = IOUtils.toString(getClass().getResourceAsStream("/rubygems/Gemfile.lock"), StandardCharsets.UTF_8);
+        final RubygemsPackager rubygemsPackager = new RubygemsPackager(projectInfoGatherer, sourcePath, actualText);
+        final List<DependencyNode> projects = rubygemsPackager.makeDependencyNodes();
+        assertEquals(1, projects.size());
+        fixVersion(projects.get(0), "1.0.0");
+        final String actual = gson.toJson(projects);
+        System.out.println(actual);
+        JSONAssert.assertEquals(expected, actual, false);
+    }
+
+    private void fixVersion(final DependencyNode node, final String newVersion) {
+        node.version = newVersion;
+        node.externalId = new NameVersionExternalId(Forge.rubygems, node.name, newVersion);
+    }
 }
