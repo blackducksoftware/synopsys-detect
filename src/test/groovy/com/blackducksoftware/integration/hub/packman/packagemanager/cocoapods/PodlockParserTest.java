@@ -9,7 +9,7 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.parser.cocoapods;
+package com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -30,7 +30,7 @@ import com.google.gson.GsonBuilder;
 public class PodlockParserTest {
     @Test
     public void invalidPodlockParserTest() throws IOException {
-        final String invalid = IOUtils.toString(this.getClass().getResourceAsStream("/cocoapods/Invalid.lock"), StandardCharsets.UTF_8.name());
+        final String invalid = IOUtils.toString(this.getClass().getResourceAsStream("/cocoapods/Invalid.lock"), StandardCharsets.UTF_8);
         final PodLockParser parser = new PodLockParser();
         final PodLock podLock = parser.parse(invalid);
         assertNull(podLock);
@@ -41,12 +41,12 @@ public class PodlockParserTest {
         final PodLockParser parser = new PodLockParser();
         final Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
-        final String actualText = IOUtils.toString(this.getClass().getResourceAsStream("/cocoapods/simple/Podfile.lock"), StandardCharsets.UTF_8.name());
+        final String actualText = IOUtils.toString(this.getClass().getResourceAsStream("/cocoapods/simple/Podfile.lock"), StandardCharsets.UTF_8);
         final PodLock actualPodlock = parser.parse(actualText);
         assertNotNull(actualPodlock);
 
         final String expected = IOUtils.toString(this.getClass().getResourceAsStream("/cocoapods/simple/expected.json"),
-                StandardCharsets.UTF_8.name());
+                StandardCharsets.UTF_8);
         final String actual = gson.toJson(actualPodlock);
         JSONAssert.assertEquals(expected, actual, false);
     }
@@ -56,12 +56,12 @@ public class PodlockParserTest {
         final PodLockParser parser = new PodLockParser();
         final Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
-        final String actualText = IOUtils.toString(this.getClass().getResourceAsStream("/cocoapods/complex/Podfile.lock"), StandardCharsets.UTF_8.name());
+        final String actualText = IOUtils.toString(this.getClass().getResourceAsStream("/cocoapods/complex/Podfile.lock"), StandardCharsets.UTF_8);
         final PodLock actualPodlock = parser.parse(actualText);
         assertNotNull(actualPodlock);
 
         final String expected = IOUtils.toString(this.getClass().getResourceAsStream("/cocoapods/complex/expected.json"),
-                StandardCharsets.UTF_8.name());
+                StandardCharsets.UTF_8);
         final String actual = gson.toJson(actualPodlock);
         JSONAssert.assertEquals(expected, actual, false);
     }

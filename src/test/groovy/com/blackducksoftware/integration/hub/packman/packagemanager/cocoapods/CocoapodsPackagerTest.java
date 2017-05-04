@@ -9,7 +9,7 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.parser.cocoapods;
+package com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods;
 
 import static org.junit.Assert.assertEquals;
 
@@ -40,7 +40,7 @@ public class CocoapodsPackagerTest {
         final Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
         final ProjectInfoGatherer projectInfoGatherer = new ProjectInfoGatherer();
         final String sourcePath = "/cocoapods/complex/";
-        final String expected = IOUtils.toString(getClass().getResourceAsStream("/cocoapods/complex/Complex.json"), StandardCharsets.UTF_8.name());
+        final String expected = IOUtils.toString(getClass().getResourceAsStream("/cocoapods/complex/Complex.json"), StandardCharsets.UTF_8);
         final File podlockFile = new File(getClass().getResource("/cocoapods/complex/Podfile.lock").toURI());
         final CocoapodsPackager cocoapodsPackager = new CocoapodsPackager(projectInfoGatherer, podlockFile, sourcePath);
         final List<DependencyNode> projects = cocoapodsPackager.makeDependencyNodes();
@@ -55,7 +55,7 @@ public class CocoapodsPackagerTest {
         final Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
         final ProjectInfoGatherer projectInfoGatherer = new ProjectInfoGatherer();
         final String sourcePath = "/cocoapods/simple/";
-        final String expected = IOUtils.toString(getClass().getResourceAsStream("/cocoapods/simple/Simple.json"), StandardCharsets.UTF_8.name());
+        final String expected = IOUtils.toString(getClass().getResourceAsStream("/cocoapods/simple/Simple.json"), StandardCharsets.UTF_8);
         final File podlockFile = new File(getClass().getResource("/cocoapods/simple/Podfile.lock").toURI());
         final CocoapodsPackager cocoapodsPackager = new CocoapodsPackager(projectInfoGatherer, podlockFile, sourcePath);
         final List<DependencyNode> projects = cocoapodsPackager.makeDependencyNodes();

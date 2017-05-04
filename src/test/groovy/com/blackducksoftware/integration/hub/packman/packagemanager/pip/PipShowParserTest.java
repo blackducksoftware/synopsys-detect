@@ -9,7 +9,7 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.parser.pip;
+package com.blackducksoftware.integration.hub.packman.packagemanager.pip;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -30,7 +30,7 @@ public class PipShowParserTest {
     @Test
     public void pipShowParserTest() throws IOException {
         final PipShowParser pipShowParser = new PipShowParser();
-        final String sampleText = IOUtils.toString(getClass().getResourceAsStream("/pip/pipShowSample.txt"), StandardCharsets.UTF_8.name());
+        final String sampleText = IOUtils.toString(getClass().getResourceAsStream("/pip/pipShowSample.txt"), StandardCharsets.UTF_8);
         final DependencyNode pipPackage = pipShowParser.parse(sampleText);
 
         final List<String> expectedRequirements = new ArrayList<>();

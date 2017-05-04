@@ -53,7 +53,7 @@ class GradleInitScriptPackager {
 
         File initScriptFile = File.createTempFile('init-_packman', '.gradle')
         initScriptFile.deleteOnExit()
-        String initScriptContents = getClass().getResourceAsStream('/init-script-gradle').getText(StandardCharsets.UTF_8.name())
+        String initScriptContents = getClass().getResourceAsStream('/init-script-gradle').getText(StandardCharsets.UTF_8)
         initScriptContents = initScriptContents.replace('EXCLUDED_PROJECT_NAMES', excludedProjectNames)
         initScriptContents = initScriptContents.replace('INCLUDED_PROJECT_NAMES', includedProjectNames)
         initScriptContents = initScriptContents.replace('EXCLUDED_CONFIGURATION_NAMES', excludedConfigurationNames)
@@ -68,7 +68,7 @@ class GradleInitScriptPackager {
         File buildDirectory = new File(sourcePath, 'build')
         File blackduckDirectory = new File(buildDirectory, 'blackduck')
         File dependencyNodeFile = new File(blackduckDirectory, 'dependencyNodes.json')
-        String dependencyNodeJson = dependencyNodeFile.getText(StandardCharsets.UTF_8.name())
+        String dependencyNodeJson = dependencyNodeFile.getText(StandardCharsets.UTF_8)
         DependencyNode rootProjectDependencyNode = gson.fromJson(dependencyNodeJson, DependencyNode.class);
 
         blackduckDirectory.deleteDir()

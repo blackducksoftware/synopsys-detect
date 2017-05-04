@@ -24,6 +24,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenExternalId;
+import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
 
 public class MavenOutputParser {
     private final Pattern beginProjectRegex = Pattern.compile("--- .*? ---");
@@ -40,13 +41,10 @@ public class MavenOutputParser {
 
     private final Pattern finishRegex = Pattern.compile("--------");
 
-    private final List<String> includedScopes;
+    private final ExcludedIncludedFilter excludedIncludedFilter;
 
-    public MavenOutputParser(final List<String> includedScopes) {
-        this.includedScopes = includedScopes;
-        if (includedScopes != null && includedScopes.contains("all")) {
-            includedScopes.clear();
-        }
+    public MavenOutputParser(final ExcludedIncludedFilter excludedIncludedFilter) {
+        this.excludedIncludedFilter = excludedIncludedFilter;
     }
 
     public List<DependencyNode> parse(final String mavenOutputText) throws IOException {
@@ -150,12 +148,12 @@ public class MavenOutputParser {
             final String group = gavMatcher.group(1);
             final String artifact = gavMatcher.group(2);
             final String version = gavMatcher.group(4);
-            if (includedScopes != null && !includedScopes.isEmpty()) {
-                final String scope = gavMatcher.group(6);
-                if (scope != null && !includedScopes.contains(scope.trim().toLowerCase())) {
-                    return null;
-                }
+            final String scope = gavMatcher.group(6);
+
+            if (scope != null && !excludedIncludedFilter.shouldInclude(scope.toLowerCase())) {
+                return null;
             }
+
             final ExternalId externalId = new MavenExternalId(Forge.maven, group, artifact, version);
             final DependencyNode node = new DependencyNode(artifact, version, externalId);
             return node;
