@@ -78,7 +78,7 @@ class FileFinder {
             return pathToExecutable
         }
 
-        String systemPath = System.getenv("PATH");
+        String systemPath = System.getenv("PATH")
         return findExecutablePath(executable, systemPath)
     }
 
