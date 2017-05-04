@@ -61,7 +61,7 @@ public class RubygemsPackager {
         return dependencies;
     }
 
-    private DependencyNode keyToDependencyNode(final String line) {
+    public DependencyNode keyToDependencyNode(final String line) {
         final Matcher versionMatcher = Pattern.compile("(.*) \\((.*)\\)").matcher(line);
         String name;
         String version;
@@ -77,7 +77,7 @@ public class RubygemsPackager {
         return dependencyNode;
     }
 
-    private DependencyNode entryToDependencyNode(final ParserMap specMap, final Entry<String, ParserMap> entry) {
+    public DependencyNode entryToDependencyNode(final ParserMap specMap, final Entry<String, ParserMap> entry) {
         final String foundKey = findKeyInMap(entry.getKey(), specMap);
         final DependencyNode dependencyNode = keyToDependencyNode(foundKey);
         specMap.get(foundKey).entrySet().forEach(dependencyEntry -> {
@@ -87,7 +87,7 @@ public class RubygemsPackager {
         return dependencyNode;
     }
 
-    private String findKeyInMap(final String key, final Map<String, ?> map) {
+    public String findKeyInMap(final String key, final Map<String, ?> map) {
         final DependencyNode givenNode = keyToDependencyNode(key);
         for (final String currentKey : map.keySet()) {
             final DependencyNode actualNode = keyToDependencyNode(currentKey);

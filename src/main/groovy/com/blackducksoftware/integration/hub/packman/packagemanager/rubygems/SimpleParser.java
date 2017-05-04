@@ -37,7 +37,7 @@ public class SimpleParser {
             if (org.apache.commons.lang3.StringUtils.isNotEmpty(line)) {
                 final Entry<String, ParserMap> entry = lineToEntry(line);
                 if (currentLevel == 0) {
-                    for (; level < currentLevel; level--) {
+                    for (; level > currentLevel; level--) {
                         mapStack.pop();
                     }
                     map.put(entry.getKey(), entry.getValue());
