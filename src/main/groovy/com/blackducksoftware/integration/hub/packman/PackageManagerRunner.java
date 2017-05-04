@@ -56,6 +56,7 @@ public class PackageManagerRunner {
     public List<File> createBdioFiles() throws IOException {
         final String[] sourcePaths = packmanProperties.getSourcePaths();
         final List<File> createdBdioFiles = new ArrayList<>();
+        boolean foundSomePackageManagers = false;
         for (final PackageManager packageManager : packageManagers) {
             for (final String sourcePath : sourcePaths) {
                 final String packageManagerName = packageManager.getPackageManagerType().toString().toLowerCase();
@@ -64,10 +65,14 @@ public class PackageManagerRunner {
                     logger.info(String.format("Found files for %s", packageManagerName));
                     final List<DependencyNode> projectNodes = packageManager.extractDependencyNodes(sourcePath);
                     if (projectNodes != null && projectNodes.size() > 0) {
+                        foundSomePackageManagers = true;
                         createOutput(createdBdioFiles, packageManager.getPackageManagerType(), projectNodes);
                     }
                 }
             }
+        }
+        if (!foundSomePackageManagers) {
+            logger.info("Could not find any package managers");
         }
         return createdBdioFiles;
     }
