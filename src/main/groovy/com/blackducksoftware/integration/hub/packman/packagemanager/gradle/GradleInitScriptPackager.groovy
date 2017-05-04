@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.packman.util.ExecutableFinder
+import com.blackducksoftware.integration.hub.packman.util.FileFinder
 import com.google.gson.Gson
 
 @Component
@@ -38,17 +38,17 @@ class GradleInitScriptPackager {
     Gson gson
 
     @Autowired
-    ExecutableFinder executableFinder
+    FileFinder fileFinder
 
     DependencyNode extractRootProjectNode(String sourcePath) {
         if (!gradlePath) {
             logger.info('packman.gradle.path not set in config - first try to find the gradle wrapper')
-            gradlePath = executableFinder.findExecutable('gradlew', sourcePath)
+            gradlePath = fileFinder.findExecutablePath('gradlew', sourcePath)
         }
 
         if (!gradlePath) {
             logger.info('gradle wrapper not found - trying to find gradle on the PATH')
-            gradlePath = executableFinder.findExecutable('gradle')
+            gradlePath = fileFinder.findExecutablePath('gradle')
         }
 
         File initScriptFile = File.createTempFile('init-_packman', '.gradle')

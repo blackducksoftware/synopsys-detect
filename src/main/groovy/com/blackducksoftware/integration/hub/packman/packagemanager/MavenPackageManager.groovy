@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.packman.PackageManagerType
 import com.blackducksoftware.integration.hub.packman.packagemanager.maven.MavenPackager
-import com.blackducksoftware.integration.hub.packman.util.ExecutableFinder
+import com.blackducksoftware.integration.hub.packman.util.FileFinder
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter
 
@@ -16,7 +16,7 @@ class MavenPackageManager extends PackageManager {
     public static final String POM_FILENAME = 'pom.xml'
 
     @Autowired
-    ExecutableFinder executableFinder
+    FileFinder fileFinder
 
     @Autowired
     ProjectInfoGatherer projectInfoGatherer
@@ -47,7 +47,7 @@ class MavenPackageManager extends PackageManager {
     List<DependencyNode> extractDependencyNodes(String sourcePath) {
         File sourceDirectory = new File(sourcePath)
         ExcludedIncludedFilter excludedIncludedFilter = new ExcludedIncludedFilter(excludedScopes.toLowerCase(), includedScopes.toLowerCase())
-        def mavenPackager = new MavenPackager(excludedIncludedFilter, projectInfoGatherer, executableFinder, sourceDirectory, aggregateBom)
+        def mavenPackager = new MavenPackager(excludedIncludedFilter, projectInfoGatherer, fileFinder, sourceDirectory, aggregateBom)
         def projects = mavenPackager.makeDependencyNodes()
         return projects
     }

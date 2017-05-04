@@ -27,7 +27,7 @@ import org.slf4j.Logger;
 public class CommandRunner {
     private final Logger logger;
 
-    private final ExecutableFinder executableFinder;
+    private final FileFinder fileFinder;
 
     private final File workingDirectory;
 
@@ -35,20 +35,20 @@ public class CommandRunner {
 
     private final String providedPath;
 
-    public CommandRunner(final Logger logger, final ExecutableFinder executableFinder, final File workingDirectory,
+    public CommandRunner(final Logger logger, final FileFinder fileFinder, final File workingDirectory,
             final Map<String, String> alternativeFileMap) {
         this.logger = logger;
-        this.executableFinder = executableFinder;
+        this.fileFinder = fileFinder;
         this.workingDirectory = workingDirectory;
         this.alternativeFileMap = alternativeFileMap;
         this.providedPath = null;
     }
 
-    public CommandRunner(final Logger logger, final ExecutableFinder executableFinder, final File workingDirectory,
+    public CommandRunner(final Logger logger, final FileFinder fileFinder, final File workingDirectory,
             final Map<String, String> alternativeFileMap,
             final String path) {
         this.logger = logger;
-        this.executableFinder = executableFinder;
+        this.fileFinder = fileFinder;
         this.workingDirectory = workingDirectory;
         this.alternativeFileMap = alternativeFileMap;
         this.providedPath = path;
@@ -69,9 +69,9 @@ public class CommandRunner {
         }
 
         if (providedPath != null) {
-            executable = executableFinder.findExecutable(executable, providedPath);
+            executable = fileFinder.findExecutablePath(executable, providedPath);
         } else {
-            executable = executableFinder.findExecutable(executable);
+            executable = fileFinder.findExecutablePath(executable);
         }
 
         if (executable == null) {

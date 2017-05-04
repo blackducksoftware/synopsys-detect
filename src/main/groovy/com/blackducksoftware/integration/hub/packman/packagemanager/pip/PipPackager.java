@@ -26,12 +26,12 @@ import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeBuilder;
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.packman.util.Command;
 import com.blackducksoftware.integration.hub.packman.util.CommandRunner;
-import com.blackducksoftware.integration.hub.packman.util.ExecutableFinder;
+import com.blackducksoftware.integration.hub.packman.util.FileFinder;
 
 public class PipPackager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final ExecutableFinder executableFinder;
+    private final FileFinder fileFinder;
 
     private final File sourceDirectory;
 
@@ -43,8 +43,8 @@ public class PipPackager {
 
     private String virtualEnvBin = "bin";
 
-    public PipPackager(final ExecutableFinder executableFinder, final String sourceDirectory, final String outputDirectory, final boolean createVirtualEnv) {
-        this.executableFinder = executableFinder;
+    public PipPackager(final FileFinder fileFinder, final String sourceDirectory, final String outputDirectory, final boolean createVirtualEnv) {
+        this.fileFinder = fileFinder;
         this.sourceDirectory = new File(sourceDirectory);
         this.outputDirectory = new File(outputDirectory);
         this.createVirtualEnv = createVirtualEnv;
@@ -64,7 +64,7 @@ public class PipPackager {
             windowsFileMap = null;
         }
 
-        final CommandRunner systemCommandRunner = new CommandRunner(logger, executableFinder, sourceDirectory, windowsFileMap);
+        final CommandRunner systemCommandRunner = new CommandRunner(logger, fileFinder, sourceDirectory, windowsFileMap);
         final CommandRunner pythonCommandRunner = getPythonCommandRunner(systemCommandRunner, createVirtualEnv);
 
         final Command installProject = new Command("pip", "install", ".");
@@ -114,7 +114,7 @@ public class PipPackager {
             final File virtualEnvironmentPath = new File(outputDirectory, "blackduck_virtualenv");
             final File virtualEnvironmentBinPath = new File(virtualEnvironmentPath, virtualEnvBin);
 
-            pythonCommandRunner = new CommandRunner(logger, executableFinder, sourceDirectory, windowsFileMap, virtualEnvironmentBinPath.getAbsolutePath());
+            pythonCommandRunner = new CommandRunner(logger, fileFinder, sourceDirectory, windowsFileMap, virtualEnvironmentBinPath.getAbsolutePath());
 
             final Command installVirtualenvPackage = new Command("pip", "install", "virtualenv");
             final Command createVirtualEnvironement = new Command("virtualenv", virtualEnvironmentPath.getAbsolutePath());
@@ -126,7 +126,7 @@ public class PipPackager {
                 systemCommandRunner.execute(createVirtualEnvironement);
             }
         } else {
-            pythonCommandRunner = new CommandRunner(logger, executableFinder, sourceDirectory, windowsFileMap);
+            pythonCommandRunner = new CommandRunner(logger, fileFinder, sourceDirectory, windowsFileMap);
         }
         return pythonCommandRunner;
     }

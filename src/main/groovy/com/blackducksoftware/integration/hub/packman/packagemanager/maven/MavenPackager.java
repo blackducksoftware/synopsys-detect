@@ -22,7 +22,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.packman.PackageManagerType;
 import com.blackducksoftware.integration.hub.packman.util.Command;
 import com.blackducksoftware.integration.hub.packman.util.CommandRunner;
-import com.blackducksoftware.integration.hub.packman.util.ExecutableFinder;
+import com.blackducksoftware.integration.hub.packman.util.FileFinder;
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer;
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
 
@@ -33,26 +33,25 @@ public class MavenPackager {
 
     private final File sourceDirectory;
 
-    private final ExecutableFinder executableFinder;
+    private final FileFinder fileFinder;
 
     private final ExcludedIncludedFilter excludedIncludedFilter;
 
     private final ProjectInfoGatherer projectInfoGatherer;
 
     public MavenPackager(final ExcludedIncludedFilter excludedIncludedFilter, final ProjectInfoGatherer projectInfoGatherer,
-            final ExecutableFinder executableFinder, final File sourceDirectory,
-            final boolean aggregateBom) {
+            final FileFinder fileFinder, final File sourceDirectory, final boolean aggregateBom) {
         this.projectInfoGatherer = projectInfoGatherer;
         this.aggregateBom = aggregateBom;
         this.sourceDirectory = sourceDirectory;
-        this.executableFinder = executableFinder;
+        this.fileFinder = fileFinder;
         this.excludedIncludedFilter = excludedIncludedFilter;
     }
 
     public List<DependencyNode> makeDependencyNodes() {
         List<DependencyNode> projects = null;
 
-        final CommandRunner commandRunner = new CommandRunner(logger, executableFinder, sourceDirectory, null);
+        final CommandRunner commandRunner = new CommandRunner(logger, fileFinder, sourceDirectory, null);
         final Command mvnCommand = new Command("mvn", "dependency:tree");
         final String mvnOutput = commandRunner.execute(mvnCommand);
 

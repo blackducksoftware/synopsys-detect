@@ -20,7 +20,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.packman.util.ExecutableFinder
+import com.blackducksoftware.integration.hub.packman.util.FileFinder
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter
 
 @Component
@@ -43,7 +43,7 @@ class GradleParsingPackager {
     String includedProjectNames
 
     @Autowired
-    ExecutableFinder executableFinder
+    FileFinder fileFinder
 
     @Autowired
     DependenciesParser dependenciesParser
@@ -66,12 +66,12 @@ class GradleParsingPackager {
     DependencyNode extractRootProjectNode(String sourcePath) {
         if (!gradlePath) {
             logger.info('packman.gradle.path not set in config - first try to find the gradle wrapper')
-            gradlePath = executableFinder.findExecutable('gradlew', sourcePath)
+            gradlePath = fileFinder.findExecutablePath('gradlew', sourcePath)
         }
 
         if (!gradlePath) {
             logger.info('gradle wrapper not found - trying to find gradle on the PATH')
-            gradlePath = executableFinder.findExecutable('gradle')
+            gradlePath = fileFinder.findExecutablePath('gradle')
         }
 
         //first, get the project metadata
