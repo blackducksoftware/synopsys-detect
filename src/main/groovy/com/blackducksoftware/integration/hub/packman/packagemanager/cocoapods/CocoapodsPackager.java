@@ -23,32 +23,33 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId;
 import com.blackducksoftware.integration.hub.packman.PackageManagerType;
+import com.blackducksoftware.integration.hub.packman.packagemanager.CocoapodsPackageManager;
+import com.blackducksoftware.integration.hub.packman.util.FileFinder;
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer;
 
+@Component
 public class CocoapodsPackager {
     public static final String COMMENTS = "#";
 
-    private final File podfileLock;
+    @Autowired
+    ProjectInfoGatherer projectInfoGatherer;
 
-    private final ProjectInfoGatherer projectInfoGatherer;
+    @Autowired
+    FileFinder fileFinder;
 
-    private final String sourcePath;
-
-    public CocoapodsPackager(final ProjectInfoGatherer projectInfoGatherer, final File podfileLock, final String sourcePath) {
-        this.podfileLock = podfileLock;
-        this.projectInfoGatherer = projectInfoGatherer;
-        this.sourcePath = sourcePath;
-    }
-
-    public List<DependencyNode> makeDependencyNodes() throws IOException, NullPointerException {
+    public List<DependencyNode> makeDependencyNodes(final String sourcePath) throws IOException, NullPointerException {
         DependencyNode project = null;
 
+        final File sourceDirectory = new File(sourcePath);
+        final File podfileLock = fileFinder.findFile(sourceDirectory, CocoapodsPackageManager.PODFILE_NAME);
         final PodLockParser podLockParser = new PodLockParser();
         final String podLockText = FileUtils.readFileToString(podfileLock, StandardCharsets.UTF_8);
         final PodLock podLock = podLockParser.parse(podLockText);

@@ -27,7 +27,7 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId;
-import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.CocoapodsPackager;
+import com.blackducksoftware.integration.hub.packman.util.FileFinder;
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -38,12 +38,12 @@ public class CocoapodsPackagerTest {
     @Test
     public void complexTest() throws JSONException, IOException, URISyntaxException {
         final Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-        final ProjectInfoGatherer projectInfoGatherer = new ProjectInfoGatherer();
-        final String sourcePath = "/cocoapods/complex/";
         final String expected = IOUtils.toString(getClass().getResourceAsStream("/cocoapods/complex/Complex.json"), StandardCharsets.UTF_8);
         final File podlockFile = new File(getClass().getResource("/cocoapods/complex/Podfile.lock").toURI());
-        final CocoapodsPackager cocoapodsPackager = new CocoapodsPackager(projectInfoGatherer, podlockFile, sourcePath);
-        final List<DependencyNode> projects = cocoapodsPackager.makeDependencyNodes();
+        final CocoapodsPackager cocoapodsPackager = new CocoapodsPackager();
+        cocoapodsPackager.fileFinder = new FileFinder();
+        cocoapodsPackager.projectInfoGatherer = new ProjectInfoGatherer();
+        final List<DependencyNode> projects = cocoapodsPackager.makeDependencyNodes(podlockFile.getParentFile().getAbsolutePath());
         assertEquals(1, projects.size());
         fixVersion(projects.get(0), "1.0.0");
         final String actual = gson.toJson(projects);
@@ -53,12 +53,12 @@ public class CocoapodsPackagerTest {
     @Test
     public void simpleTest() throws JSONException, IOException, URISyntaxException {
         final Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-        final ProjectInfoGatherer projectInfoGatherer = new ProjectInfoGatherer();
-        final String sourcePath = "/cocoapods/simple/";
         final String expected = IOUtils.toString(getClass().getResourceAsStream("/cocoapods/simple/Simple.json"), StandardCharsets.UTF_8);
         final File podlockFile = new File(getClass().getResource("/cocoapods/simple/Podfile.lock").toURI());
-        final CocoapodsPackager cocoapodsPackager = new CocoapodsPackager(projectInfoGatherer, podlockFile, sourcePath);
-        final List<DependencyNode> projects = cocoapodsPackager.makeDependencyNodes();
+        final CocoapodsPackager cocoapodsPackager = new CocoapodsPackager();
+        cocoapodsPackager.fileFinder = new FileFinder();
+        cocoapodsPackager.projectInfoGatherer = new ProjectInfoGatherer();
+        final List<DependencyNode> projects = cocoapodsPackager.makeDependencyNodes(podlockFile.getParentFile().getAbsolutePath());
         assertEquals(1, projects.size());
         fixVersion(projects.get(0), "0.0.1");
         final String actual = gson.toJson(projects);
