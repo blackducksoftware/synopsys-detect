@@ -12,6 +12,7 @@
 package com.blackducksoftware.integration.hub.packman.packagemanager.rubygems;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -50,5 +51,25 @@ public class RubygemsPackagerTest {
     private void fixVersion(final DependencyNode node, final String newVersion) {
         node.version = newVersion;
         node.externalId = new NameVersionExternalId(Forge.rubygems, node.name, newVersion);
+    }
+
+    @Test
+    public void findKeyInMapTest() {
+        final ParserMap map = new ParserMap();
+        final String key = "lookForMe (These key's have versions)";
+        map.put(key, new ParserMap());
+        final RubygemsPackager rubygemsPackager = new RubygemsPackager(null, null, null);
+        final String foundKey = rubygemsPackager.findKeyInMap("lookForMe", map);
+        assertEquals(key, foundKey);
+    }
+
+    @Test
+    public void findKeyNotInMapTest() {
+        final ParserMap map = new ParserMap();
+        final String key = "lookForMe (These key's have versions)";
+        map.put(key, new ParserMap());
+        final RubygemsPackager rubygemsPackager = new RubygemsPackager(null, null, null);
+        final String foundKey = rubygemsPackager.findKeyInMap("i dont exist", map);
+        assertNull(foundKey);
     }
 }
