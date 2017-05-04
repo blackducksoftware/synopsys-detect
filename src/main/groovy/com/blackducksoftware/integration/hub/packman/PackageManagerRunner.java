@@ -14,6 +14,7 @@ package com.blackducksoftware.integration.hub.packman;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -49,7 +50,8 @@ public class PackageManagerRunner {
     @Autowired
     private DependencyNodeTransformer dependencyNodeTransformer;
 
-    public void parseSourcePaths(final String[] sourcePaths, final String outputDirectoryPath) throws IOException {
+    public List<File> createBdioFiles(final String[] sourcePaths, final String outputDirectoryPath) throws IOException {
+        final List<File> createdBdioFiles = new ArrayList<>();
         for (final PackageManager packageManager : packageManagers) {
             for (final String sourcePath : sourcePaths) {
                 final String packageManagerName = packageManager.getPackageManagerType().toString().toLowerCase();
@@ -58,14 +60,16 @@ public class PackageManagerRunner {
                     logger.info(String.format("Found files for %s", packageManagerName));
                     final List<DependencyNode> projectNodes = packageManager.extractDependencyNodes(sourcePath);
                     if (projectNodes != null && projectNodes.size() > 0) {
-                        createOutput(outputDirectoryPath, packageManager.getPackageManagerType(), projectNodes);
+                        createOutput(createdBdioFiles, outputDirectoryPath, packageManager.getPackageManagerType(), projectNodes);
                     }
                 }
             }
         }
+        return createdBdioFiles;
     }
 
-    private void createOutput(final String outputDirectoryPath, final PackageManagerType packageManagerType, final List<DependencyNode> projectNodes) {
+    private void createOutput(final List<File> createdBdioFiles, final String outputDirectoryPath, final PackageManagerType packageManagerType,
+            final List<DependencyNode> projectNodes) {
         final File outputDirectory = new File(outputDirectoryPath);
         outputDirectory.mkdirs();
 
@@ -73,6 +77,9 @@ public class PackageManagerRunner {
         for (final DependencyNode project : projectNodes) {
             final String filename = String.format("%s_%s_%s_bdio.jsonld", packageManagerType.toString(), project.name, project.version);
             final File outputFile = new File(outputDirectory, filename);
+            if (outputFile.exists()) {
+                outputFile.delete();
+            }
             try (final BdioWriter bdioWriter = new BdioWriter(gson, new FileOutputStream(outputFile))) {
                 if (StringUtils.isNotBlank(projectName)) {
                     project.name = projectName;
@@ -86,6 +93,7 @@ public class PackageManagerRunner {
                             packageManagerType.toString());
                 }
                 bdioWriter.writeSimpleBdioDocument(bdioDocument);
+                createdBdioFiles.add(outputFile);
                 logger.info("BDIO Generated: " + outputFile.getAbsolutePath());
             } catch (final IOException e) {
                 throw new RuntimeException(e);

@@ -20,6 +20,9 @@ class BdioUploader {
     @Value('${packman.output.path}')
     String outputDirectoryPath
 
+    @Value('${packman.cleanup.bdio.files}')
+    String cleanupBdioFiles
+
     @Value('${packman.hub.url}')
     String hubUrl
 
@@ -29,7 +32,7 @@ class BdioUploader {
     @Value('${packman.hub.password}')
     String hubPassword
 
-    void uploadBdioFiles() {
+    void uploadBdioFiles(List<File> createdBdioFiles) {
         HubServerConfigBuilder hubServerConfigBuilder = new HubServerConfigBuilder()
         hubServerConfigBuilder.hubUrl = hubUrl
         hubServerConfigBuilder.username = hubUsername
@@ -41,16 +44,14 @@ class BdioUploader {
 
         HubServicesFactory hubServicesFactory = new HubServicesFactory(restConnection);
 
-        FilenameFilter bdioFilenameFilter = new FilenameFilter() {
-                    boolean accept(File file, String name) {
-                        return name.endsWith("_bdio.jsonld")
-                    }
-                }
         BomImportRequestService bomImportRequestService = hubServicesFactory.createBomImportRequestService()
 
-        new File(outputDirectoryPath).listFiles(bdioFilenameFilter).each { file ->
+        createdBdioFiles.each { file ->
             logger.info("uploading ${file.name} to ${hubUrl}")
             bomImportRequestService.importBomFile(file, BuildToolConstants.BDIO_FILE_MEDIA_TYPE)
+            if (Boolean.valueOf(cleanupBdioFiles)) {
+                file.delete()
+            }
         }
     }
 }
