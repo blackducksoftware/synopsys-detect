@@ -15,7 +15,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
@@ -25,13 +24,14 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenExternalId;
-import com.blackducksoftware.integration.hub.packman.packagemanager.maven.MavenOutputParser;
+import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
 
 public class MavenOutputParserTest {
 
     @Test
     public void mavenParserTest() throws IOException {
-        final MavenOutputParser mavenOutputParser = new MavenOutputParser(null);
+        final ExcludedIncludedFilter excludedIncludedFilter = new ExcludedIncludedFilter(null, null);
+        final MavenOutputParser mavenOutputParser = new MavenOutputParser(excludedIncludedFilter);
         final String mavenOutput = IOUtils.toString(getClass().getResourceAsStream("/maven/mavenSampleOutput.txt"), StandardCharsets.UTF_8.name());
         final List<DependencyNode> projects = mavenOutputParser.parse(mavenOutput);
 
@@ -41,28 +41,13 @@ public class MavenOutputParserTest {
 
     @Test
     public void mavenParserScopeTest() throws IOException {
-        final List<String> scopes = new ArrayList<>();
-        scopes.add("compile");
-        scopes.add("provided");
-        final MavenOutputParser mavenOutputParser = new MavenOutputParser(scopes);
+        final ExcludedIncludedFilter excludedIncludedFilter = new ExcludedIncludedFilter(null, "Compile,Provided".toLowerCase());
+        final MavenOutputParser mavenOutputParser = new MavenOutputParser(excludedIncludedFilter);
         final String mavenOutput = IOUtils.toString(getClass().getResourceAsStream("/maven/mavenSampleOutput.txt"), StandardCharsets.UTF_8.name());
         final List<DependencyNode> projects = mavenOutputParser.parse(mavenOutput);
 
         assertEquals(1, projects.size());
         assertMavenDependencyNodesEqual(getScopedIntegationBdioDependencyNode(), projects.get(0));
-    }
-
-    @Test
-    public void mavenParserAllScopesTest() throws IOException {
-        final List<String> scopes = new ArrayList<>();
-        scopes.add("compile");
-        scopes.add("all");
-        final MavenOutputParser mavenOutputParser = new MavenOutputParser(scopes);
-        final String mavenOutput = IOUtils.toString(getClass().getResourceAsStream("/maven/mavenSampleOutput.txt"), StandardCharsets.UTF_8.name());
-        final List<DependencyNode> projects = mavenOutputParser.parse(mavenOutput);
-
-        assertEquals(1, projects.size());
-        assertMavenDependencyNodesEqual(getIntegationBdioDependencyNode(), projects.get(0));
     }
 
     private DependencyNode getScopedIntegationBdioDependencyNode() {

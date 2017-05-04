@@ -13,7 +13,6 @@ package com.blackducksoftware.integration.hub.packman.packagemanager.maven;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -25,6 +24,7 @@ import com.blackducksoftware.integration.hub.packman.util.Command;
 import com.blackducksoftware.integration.hub.packman.util.CommandRunner;
 import com.blackducksoftware.integration.hub.packman.util.ExecutableFinder;
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer;
+import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
 
 public class MavenPackager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -35,20 +35,18 @@ public class MavenPackager {
 
     private final ExecutableFinder executableFinder;
 
-    private final List<String> includedScopes;
+    private final ExcludedIncludedFilter excludedIncludedFilter;
 
     private final ProjectInfoGatherer projectInfoGatherer;
 
-    public MavenPackager(final ProjectInfoGatherer projectInfoGatherer, final ExecutableFinder executableFinder, final File sourceDirectory,
-            final boolean aggregateBom, final String includedScopesString) {
+    public MavenPackager(final ExcludedIncludedFilter excludedIncludedFilter, final ProjectInfoGatherer projectInfoGatherer,
+            final ExecutableFinder executableFinder, final File sourceDirectory,
+            final boolean aggregateBom) {
         this.projectInfoGatherer = projectInfoGatherer;
         this.aggregateBom = aggregateBom;
         this.sourceDirectory = sourceDirectory;
         this.executableFinder = executableFinder;
-        this.includedScopes = new ArrayList<>();
-        for (final String scope : includedScopesString.split(",")) {
-            includedScopes.add(scope.trim().toLowerCase());
-        }
+        this.excludedIncludedFilter = excludedIncludedFilter;
     }
 
     public List<DependencyNode> makeDependencyNodes() {
@@ -58,7 +56,7 @@ public class MavenPackager {
         final Command mvnCommand = new Command("mvn", "dependency:tree");
         final String mvnOutput = commandRunner.execute(mvnCommand);
 
-        final MavenOutputParser mavenOutputParser = new MavenOutputParser(includedScopes);
+        final MavenOutputParser mavenOutputParser = new MavenOutputParser(excludedIncludedFilter);
         try {
             projects = mavenOutputParser.parse(mvnOutput);
         } catch (final IOException e) {

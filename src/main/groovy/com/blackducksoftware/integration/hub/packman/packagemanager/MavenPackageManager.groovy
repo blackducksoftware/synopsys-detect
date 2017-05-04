@@ -9,6 +9,7 @@ import com.blackducksoftware.integration.hub.packman.PackageManagerType
 import com.blackducksoftware.integration.hub.packman.packagemanager.maven.MavenPackager
 import com.blackducksoftware.integration.hub.packman.util.ExecutableFinder
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
+import com.blackducksoftware.integration.util.ExcludedIncludedFilter
 
 @Component
 class MavenPackageManager extends PackageManager {
@@ -23,8 +24,11 @@ class MavenPackageManager extends PackageManager {
     @Value('${packman.maven.aggregate}')
     boolean aggregateBom
 
-    @Value('${packman.maven.includedscopes}')
+    @Value('${packman.maven.scopes.included}')
     String includedScopes
+
+    @Value('${packman.maven.scopes.excluded}')
+    String excludedScopes
 
     PackageManagerType getPackageManagerType() {
         return PackageManagerType.MAVEN
@@ -42,7 +46,8 @@ class MavenPackageManager extends PackageManager {
 
     List<DependencyNode> extractDependencyNodes(String sourcePath) {
         File sourceDirectory = new File(sourcePath)
-        def mavenPackager = new MavenPackager(projectInfoGatherer, executableFinder, sourceDirectory, aggregateBom, includedScopes)
+        ExcludedIncludedFilter excludedIncludedFilter = new ExcludedIncludedFilter(excludedScopes.toLowerCase(), includedScopes.toLowerCase())
+        def mavenPackager = new MavenPackager(excludedIncludedFilter, projectInfoGatherer, executableFinder, sourceDirectory, aggregateBom)
         def projects = mavenPackager.makeDependencyNodes()
         return projects
     }
