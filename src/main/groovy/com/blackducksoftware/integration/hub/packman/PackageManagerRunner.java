@@ -83,7 +83,7 @@ public class PackageManagerRunner {
 
         logger.info("Creating " + projectNodes.size() + " project nodes");
         for (final DependencyNode project : projectNodes) {
-            final String filename = String.format("%s_%s_%s_bdio.jsonld", packageManagerType.toString(), project.name, project.version);
+            final String filename = String.format("%s_%s_%s_bdio.jsonld", packageManagerType.toString(), project.name, project.version).replace(":", "_");
             final File outputFile = new File(outputDirectory, filename);
             if (outputFile.exists()) {
                 outputFile.delete();
