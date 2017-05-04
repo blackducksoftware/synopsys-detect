@@ -73,7 +73,7 @@ class FileFinder {
             command = "where"
         }
 
-        def pathToExecutable = "${command} ${executable}".execute().text.trim()
+        def pathToExecutable = "${command} ${executable}".execute().text.split("\n")[0].trim();
         if (pathToExecutable) {
             return pathToExecutable
         }
