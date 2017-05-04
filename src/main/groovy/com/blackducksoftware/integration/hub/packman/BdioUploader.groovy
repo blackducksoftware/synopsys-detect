@@ -49,7 +49,7 @@ class BdioUploader {
 
     void uploadBdioFiles(List<File> createdBdioFiles) {
         try {
-            HubServerConfig hubServerConfig = createBuilder.build()
+            HubServerConfig hubServerConfig = createBuilder().build()
             Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
             RestConnection restConnection = hubServerConfig.createCredentialsRestConnection(slf4jIntLogger)
 

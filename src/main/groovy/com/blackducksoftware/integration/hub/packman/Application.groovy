@@ -56,6 +56,11 @@ class Application {
 
     @PostConstruct
     void init() {
+        if (sourcePaths == null || sourcePaths.length == 0) {
+            sourcePaths = [
+                System.getProperty('user.dir')
+            ] as String[]
+        }
         List<File> createdBdioFiles = parser.createBdioFiles(sourcePaths, outputDirectoryPath)
         bdioUploader.uploadBdioFiles(createdBdioFiles)
     }
