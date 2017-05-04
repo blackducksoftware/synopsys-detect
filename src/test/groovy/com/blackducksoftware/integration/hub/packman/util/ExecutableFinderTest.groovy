@@ -1,4 +1,4 @@
-package com.blackducksoftware.integration.hub.packman.packagemanager
+package com.blackducksoftware.integration.hub.packman.util
 
 import org.apache.commons.lang3.StringUtils
 import org.junit.Assert

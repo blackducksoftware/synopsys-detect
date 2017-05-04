@@ -9,7 +9,7 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.parser.maven;
+package com.blackducksoftware.integration.hub.packman.packagemanager.maven;
 
 import static org.junit.Assert.assertEquals;
 

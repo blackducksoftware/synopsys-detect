@@ -9,7 +9,7 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.parser.pip;
+package com.blackducksoftware.integration.hub.packman.packagemanager.pip;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
