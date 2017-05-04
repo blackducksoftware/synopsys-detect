@@ -26,32 +26,61 @@ class BdioUploader {
     @Value('${packman.hub.url}')
     String hubUrl
 
+    @Value('${packman.hub.timeout}')
+    String hubTimeout
+
     @Value('${packman.hub.username}')
     String hubUsername
 
     @Value('${packman.hub.password}')
     String hubPassword
 
+    @Value('${packman.hub.proxy.host}')
+    String hubProxyHost
+
+    @Value('${packman.hub.proxy.port}')
+    String hubProxyPort
+
+    @Value('${packman.hub.proxy.username}')
+    String hubProxyUsername
+
+    @Value('${packman.hub.proxy.password}')
+    String hubProxyPassword
+
     void uploadBdioFiles(List<File> createdBdioFiles) {
-        HubServerConfigBuilder hubServerConfigBuilder = new HubServerConfigBuilder()
-        hubServerConfigBuilder.hubUrl = hubUrl
-        hubServerConfigBuilder.username = hubUsername
-        hubServerConfigBuilder.password = hubPassword
+        try {
+            HubServerConfig hubServerConfig = createBuilder.build()
+            Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
+            RestConnection restConnection = hubServerConfig.createCredentialsRestConnection(slf4jIntLogger)
 
-        HubServerConfig hubServerConfig = hubServerConfigBuilder.build()
-        Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
-        RestConnection restConnection = hubServerConfig.createCredentialsRestConnection(slf4jIntLogger)
+            HubServicesFactory hubServicesFactory = new HubServicesFactory(restConnection);
 
-        HubServicesFactory hubServicesFactory = new HubServicesFactory(restConnection);
+            BomImportRequestService bomImportRequestService = hubServicesFactory.createBomImportRequestService()
 
-        BomImportRequestService bomImportRequestService = hubServicesFactory.createBomImportRequestService()
-
-        createdBdioFiles.each { file ->
-            logger.info("uploading ${file.name} to ${hubUrl}")
-            bomImportRequestService.importBomFile(file, BuildToolConstants.BDIO_FILE_MEDIA_TYPE)
-            if (Boolean.valueOf(cleanupBdioFiles)) {
-                file.delete()
+            createdBdioFiles.each { file ->
+                logger.info("uploading ${file.name} to ${hubUrl}")
+                bomImportRequestService.importBomFile(file, BuildToolConstants.BDIO_FILE_MEDIA_TYPE)
+                if (Boolean.valueOf(cleanupBdioFiles)) {
+                    file.delete()
+                }
             }
+        } catch (Exception e) {
+            logger.error("Your Hub configuration is not valid: ${e.message}")
         }
+    }
+
+    private HubServerConfigBuilder createBuilder() {
+        HubServerConfigBuilder hubServerConfigBuilder = new HubServerConfigBuilder()
+        hubServerConfigBuilder.setHubUrl(hubUrl)
+        hubServerConfigBuilder.setTimeout(hubTimeout)
+        hubServerConfigBuilder.setUsername(hubUsername)
+        hubServerConfigBuilder.setPassword(hubPassword)
+
+        hubServerConfigBuilder.setProxyHost(hubProxyHost)
+        hubServerConfigBuilder.setProxyPort(hubProxyPort)
+        hubServerConfigBuilder.setProxyUsername(hubProxyUsername)
+        hubServerConfigBuilder.setProxyPassword(hubProxyPassword)
+
+        hubServerConfigBuilder
     }
 }
