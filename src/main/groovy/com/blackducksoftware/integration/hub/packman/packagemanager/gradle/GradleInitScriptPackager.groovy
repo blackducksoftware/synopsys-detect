@@ -42,15 +42,16 @@ class GradleInitScriptPackager {
     FileFinder fileFinder
 
     DependencyNode extractRootProjectNode(String sourcePath) {
+        def gradlewCommand = 'gradlew'
         def gradleCommand = 'gradle'
-
         if(SystemUtils.IS_OS_WINDOWS) {
+            gradlewCommand = "${gradlewCommand}.bat"
             gradleCommand = "${gradleCommand}.bat"
         }
 
         if (!gradlePath) {
             logger.info('packman.gradle.path not set in config - first try to find the gradle wrapper')
-            gradlePath = fileFinder.findExecutablePath('gradlew', sourcePath)
+            gradlePath = fileFinder.findExecutablePath(gradlewCommand, sourcePath)
         }
 
         if (!gradlePath) {
