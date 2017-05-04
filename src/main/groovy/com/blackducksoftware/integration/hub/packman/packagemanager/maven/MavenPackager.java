@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,8 +52,13 @@ public class MavenPackager {
     public List<DependencyNode> makeDependencyNodes() {
         List<DependencyNode> projects = null;
 
+        String command = "mvn";
+        if (SystemUtils.IS_OS_WINDOWS) {
+            command += ".cmd";
+        }
+
         final CommandRunner commandRunner = new CommandRunner(logger, fileFinder, sourceDirectory, null);
-        final Command mvnCommand = new Command("mvn", "dependency:tree");
+        final Command mvnCommand = new Command(command, "dependency:tree");
         final String mvnOutput = commandRunner.execute(mvnCommand);
 
         final MavenOutputParser mavenOutputParser = new MavenOutputParser(excludedIncludedFilter);

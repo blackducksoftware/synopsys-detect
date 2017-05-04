@@ -2,6 +2,7 @@ package com.blackducksoftware.integration.hub.packman.packagemanager.gradle
 
 import java.nio.charset.StandardCharsets
 
+import org.apache.commons.lang3.SystemUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -41,6 +42,12 @@ class GradleInitScriptPackager {
     FileFinder fileFinder
 
     DependencyNode extractRootProjectNode(String sourcePath) {
+        def gradleCommand = 'gradle'
+
+        if(SystemUtils.IS_OS_WINDOWS) {
+            gradleCommand = "${gradleCommand}.bat"
+        }
+
         if (!gradlePath) {
             logger.info('packman.gradle.path not set in config - first try to find the gradle wrapper')
             gradlePath = fileFinder.findExecutablePath('gradlew', sourcePath)
@@ -48,7 +55,7 @@ class GradleInitScriptPackager {
 
         if (!gradlePath) {
             logger.info('gradle wrapper not found - trying to find gradle on the PATH')
-            gradlePath = fileFinder.findExecutablePath('gradle')
+            gradlePath = fileFinder.findExecutablePath(gradleCommand)
         }
 
         File initScriptFile = File.createTempFile('init-_packman', '.gradle')
@@ -69,7 +76,7 @@ class GradleInitScriptPackager {
         File blackduckDirectory = new File(buildDirectory, 'blackduck')
         File dependencyNodeFile = new File(blackduckDirectory, 'dependencyNodes.json')
         String dependencyNodeJson = dependencyNodeFile.getText(StandardCharsets.UTF_8.name())
-        DependencyNode rootProjectDependencyNode = gson.fromJson(dependencyNodeJson, DependencyNode.class);
+        DependencyNode rootProjectDependencyNode = gson.fromJson(dependencyNodeJson, DependencyNode.class)
 
         blackduckDirectory.deleteDir()
 
