@@ -17,9 +17,6 @@ import com.blackducksoftware.integration.log.Slf4jIntLogger
 class BdioUploader {
     private final Logger logger = LoggerFactory.getLogger(BdioUploader.class)
 
-    @Value('${packman.output.path}')
-    String outputDirectoryPath
-
     @Value('${packman.cleanup.bdio.files}')
     String cleanupBdioFiles
 

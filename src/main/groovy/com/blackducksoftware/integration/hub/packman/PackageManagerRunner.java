@@ -42,6 +42,9 @@ public class PackageManagerRunner {
     private String projectVersionName;
 
     @Autowired
+    PackmanProperties packmanProperties;
+
+    @Autowired
     private List<PackageManager> packageManagers;
 
     @Autowired
@@ -50,7 +53,8 @@ public class PackageManagerRunner {
     @Autowired
     private DependencyNodeTransformer dependencyNodeTransformer;
 
-    public List<File> createBdioFiles(final String[] sourcePaths, final String outputDirectoryPath) throws IOException {
+    public List<File> createBdioFiles() throws IOException {
+        final String[] sourcePaths = packmanProperties.getSourcePaths();
         final List<File> createdBdioFiles = new ArrayList<>();
         for (final PackageManager packageManager : packageManagers) {
             for (final String sourcePath : sourcePaths) {
@@ -60,7 +64,7 @@ public class PackageManagerRunner {
                     logger.info(String.format("Found files for %s", packageManagerName));
                     final List<DependencyNode> projectNodes = packageManager.extractDependencyNodes(sourcePath);
                     if (projectNodes != null && projectNodes.size() > 0) {
-                        createOutput(createdBdioFiles, outputDirectoryPath, packageManager.getPackageManagerType(), projectNodes);
+                        createOutput(createdBdioFiles, packageManager.getPackageManagerType(), projectNodes);
                     }
                 }
             }
@@ -68,10 +72,9 @@ public class PackageManagerRunner {
         return createdBdioFiles;
     }
 
-    private void createOutput(final List<File> createdBdioFiles, final String outputDirectoryPath, final PackageManagerType packageManagerType,
+    private void createOutput(final List<File> createdBdioFiles, final PackageManagerType packageManagerType,
             final List<DependencyNode> projectNodes) {
-        final File outputDirectory = new File(outputDirectoryPath);
-        outputDirectory.mkdirs();
+        final File outputDirectory = new File(packmanProperties.getOutputDirectoryPath());
 
         logger.info("Creating " + projectNodes.size() + " project nodes");
         for (final DependencyNode project : projectNodes) {

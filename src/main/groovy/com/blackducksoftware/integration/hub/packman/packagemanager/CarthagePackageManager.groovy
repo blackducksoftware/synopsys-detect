@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.packman.PackageManagerType
+import com.blackducksoftware.integration.hub.packman.PackmanProperties
 import com.blackducksoftware.integration.hub.packman.packagemanager.pip.PipPackager
 import com.blackducksoftware.integration.hub.packman.util.FileFinder
 
@@ -21,8 +22,8 @@ class CarthagePackageManager extends PackageManager {
     @Value('${packman.pip.createVirtualEnv}')
     boolean createVirtualEnv
 
-    @Value('${packman.output.path}')
-    String outputDirectory
+    @Autowired
+    PackmanProperties packmanProperties
 
     PackageManagerType getPackageManagerType() {
         return PackageManagerType.CARTHAGE
@@ -39,7 +40,7 @@ class CarthagePackageManager extends PackageManager {
     }
 
     List<DependencyNode> extractDependencyNodes(String sourcePath) {
-        def pipPackager = new PipPackager(fileFinder, sourcePath, outputDirectory, createVirtualEnv)
+        def pipPackager = new PipPackager(fileFinder, sourcePath, packmanProperties.outputDirectoryPath, createVirtualEnv)
         def projects = pipPackager.makeDependencyNodes()
         return projects
     }

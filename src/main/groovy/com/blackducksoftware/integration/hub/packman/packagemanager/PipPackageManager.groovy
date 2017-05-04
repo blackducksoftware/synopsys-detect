@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.packman.PackageManagerType
+import com.blackducksoftware.integration.hub.packman.PackmanProperties
 import com.blackducksoftware.integration.hub.packman.packagemanager.pip.PipPackager
 import com.blackducksoftware.integration.hub.packman.util.FileFinder
 
@@ -16,11 +17,11 @@ class PipPackageManager extends PackageManager {
     @Autowired
     FileFinder fileFinder
 
+    @Autowired
+    PackmanProperties packmanProperties
+
     @Value('${packman.pip.createVirtualEnv}')
     boolean createVirtualEnv
-
-    @Value('${packman.output.path}')
-    String outputDirectory
 
     PackageManagerType getPackageManagerType() {
         return PackageManagerType.PIP
@@ -37,7 +38,7 @@ class PipPackageManager extends PackageManager {
     }
 
     List<DependencyNode> extractDependencyNodes(String sourcePath) {
-        def pipPackager = new PipPackager(fileFinder, sourcePath, outputDirectory, createVirtualEnv)
+        def pipPackager = new PipPackager(fileFinder, sourcePath, packmanProperties.outputDirectoryPath, createVirtualEnv)
         def projects = pipPackager.makeDependencyNodes()
         return projects
     }

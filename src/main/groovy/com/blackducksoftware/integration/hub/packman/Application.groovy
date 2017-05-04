@@ -16,7 +16,6 @@ import javax.annotation.PostConstruct
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.builder.SpringApplicationBuilder
 import org.springframework.context.annotation.Bean
@@ -44,24 +43,13 @@ class Application {
     @Autowired
     BdioUploader bdioUploader
 
-    @Value('${packman.source.paths}')
-    String[] sourcePaths
-
-    @Value('${packman.output.path}')
-    String outputDirectoryPath
-
     static void main(final String[] args) {
         new SpringApplicationBuilder(Application.class).logStartupInfo(true).run(args)
     }
 
     @PostConstruct
     void init() {
-        if (sourcePaths == null || sourcePaths.length == 0) {
-            sourcePaths = [
-                System.getProperty('user.dir')
-            ] as String[]
-        }
-        List<File> createdBdioFiles = parser.createBdioFiles(sourcePaths, outputDirectoryPath)
+        List<File> createdBdioFiles = parser.createBdioFiles()
         bdioUploader.uploadBdioFiles(createdBdioFiles)
     }
 
