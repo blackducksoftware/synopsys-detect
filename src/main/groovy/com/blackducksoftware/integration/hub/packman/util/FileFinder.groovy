@@ -68,16 +68,6 @@ class FileFinder {
     }
 
     String findExecutablePath(final String executable) {
-        String command = "which"
-        if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-            command = "where"
-        }
-
-        def pathToExecutable = "${command} ${executable}".execute().text.split("\n")[0].trim()
-        if (pathToExecutable) {
-            return pathToExecutable
-        }
-
         String systemPath = System.getenv("PATH")
         return findExecutablePath(executable, systemPath)
     }
