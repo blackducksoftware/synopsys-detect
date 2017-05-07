@@ -87,7 +87,7 @@ public class PipPackager {
             final DependencyNodeBuilder nodeBuilder = new DependencyNodeBuilder(projectNode);
             final Map<String, DependencyNode> allNodes = new HashMap<>();
             dependencyNodeTransformer(pipShowParser, pythonCommandRunner, projectNode, nodeBuilder, allNodes);
-            projects.add(nodeBuilder.buildRootNode());
+            projects.add(projectNode);
         }
         return projects;
     }
