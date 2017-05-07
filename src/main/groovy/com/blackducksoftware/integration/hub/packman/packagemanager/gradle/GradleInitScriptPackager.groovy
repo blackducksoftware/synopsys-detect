@@ -44,7 +44,7 @@ class GradleInitScriptPackager {
     DependencyNode extractRootProjectNode(String sourcePath) {
         def gradlewCommand = 'gradlew'
         def gradleCommand = 'gradle'
-        if(SystemUtils.IS_OS_WINDOWS) {
+        if (SystemUtils.IS_OS_WINDOWS) {
             gradlewCommand = "${gradlewCommand}.bat"
             gradleCommand = "${gradleCommand}.bat"
         }

@@ -34,7 +34,7 @@ dependencies {
         exclude module: 'integration-bdio'
         exclude module: 'integration-common'
     }
-    compile 'com.blackducksoftware.integration:integration-bdio:2.0.0-SNAPSHOT'
+    compile 'com.blackducksoftware.integration:integration-bdio:2.0.0'
     compile 'com.blackducksoftware.integration:integration-common:5.6.0'
     compile 'org.springframework.boot:spring-boot-starter'
     compile 'org.apache.maven.shared:maven-invoker:3.0.0'
