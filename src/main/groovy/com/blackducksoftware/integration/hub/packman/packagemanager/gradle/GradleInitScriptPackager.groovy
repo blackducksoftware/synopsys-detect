@@ -59,7 +59,7 @@ class GradleInitScriptPackager {
             gradlePath = fileFinder.findExecutablePath(gradleCommand)
         }
 
-        File initScriptFile = File.createTempFile('init-_packman', '.gradle')
+        File initScriptFile = File.createTempFile('init-packman', '.gradle')
         initScriptFile.deleteOnExit()
         String initScriptContents = getClass().getResourceAsStream('/init-script-gradle').getText(StandardCharsets.UTF_8.name())
         initScriptContents = initScriptContents.replace('EXCLUDED_PROJECT_NAMES', excludedProjectNames)
