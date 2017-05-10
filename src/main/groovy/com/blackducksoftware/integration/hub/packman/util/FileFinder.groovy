@@ -36,7 +36,7 @@ class FileFinder {
             final File foundFile = findFile(sourceDirectory, filenamePattern)
             if (foundFile == null) {
                 containsFiles = false
-                logger.warn("Couldn't find a neccesary file: ${filenamePattern} in ${sourcePath}")
+                logger.info("Couldn't find a neccesary file: ${filenamePattern} in ${sourcePath}")
                 break
             }
         }
@@ -61,7 +61,8 @@ class FileFinder {
         if (foundFiles.length == 0) {
             return null
         } else if (foundFiles.length > 1) {
-            logger.warn("Found multiple matches for ${filenamePattern} in ${sourceDirectory.absolutePath}")
+            logger.info("Found multiple matches for ${filenamePattern} in ${sourceDirectory.absolutePath}")
+            logger.info("Using ${foundFiles[0]}")
         }
 
         foundFiles[0]
