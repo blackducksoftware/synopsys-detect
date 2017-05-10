@@ -12,10 +12,11 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 
 initscript {
     repositories {
+        mavenLocal()
         mavenCentral()
     }
     dependencies {
-        classpath 'com.blackducksoftware.integration:integration-gradle-inspector:0.0.4'
+        classpath 'com.blackducksoftware.integration:integration-gradle-inspector:0.0.5'
         classpath 'com.google.code.gson:gson:2.7'
     }
 }
