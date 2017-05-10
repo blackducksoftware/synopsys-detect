@@ -62,8 +62,8 @@ public class PipPackager {
         }
         if (SystemUtils.IS_OS_WINDOWS) {
             virtualEnvBin = "Scripts";
-            pip += ".exe";
-            python += ".exe";
+            // pip += ".exe";
+            // python += ".exe";
         }
 
         final File sourceDirectory = new File(sourcePath);
