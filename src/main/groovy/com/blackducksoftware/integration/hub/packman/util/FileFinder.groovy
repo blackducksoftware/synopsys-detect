@@ -36,7 +36,7 @@ class FileFinder {
             final File foundFile = findFile(sourceDirectory, filenamePattern)
             if (foundFile == null) {
                 containsFiles = false
-                logger.warn("Couldn't find a neccesary file: ${filenamePattern} in ${sourcePath}")
+                logger.info("Couldn't find a neccesary file: ${filenamePattern} in ${sourcePath}")
                 break
             }
         }
