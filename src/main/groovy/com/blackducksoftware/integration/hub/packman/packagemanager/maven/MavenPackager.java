@@ -12,19 +12,20 @@
 package com.blackducksoftware.integration.hub.packman.packagemanager.maven;
 
 import java.io.File;
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.packman.PackageManagerType;
-import com.blackducksoftware.integration.hub.packman.util.Command;
-import com.blackducksoftware.integration.hub.packman.util.CommandRunner;
-import com.blackducksoftware.integration.hub.packman.util.FileFinder;
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer;
+import com.blackducksoftware.integration.hub.packman.util.commands.Command;
+import com.blackducksoftware.integration.hub.packman.util.commands.CommandOutput;
+import com.blackducksoftware.integration.hub.packman.util.commands.CommandRunner;
+import com.blackducksoftware.integration.hub.packman.util.commands.Executable;
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
 
 public class MavenPackager {
@@ -34,38 +35,34 @@ public class MavenPackager {
 
     private final File sourceDirectory;
 
-    private final FileFinder fileFinder;
-
     private final ExcludedIncludedFilter excludedIncludedFilter;
 
     private final ProjectInfoGatherer projectInfoGatherer;
 
-    public MavenPackager(final ExcludedIncludedFilter excludedIncludedFilter, final ProjectInfoGatherer projectInfoGatherer,
-            final FileFinder fileFinder, final File sourceDirectory, final boolean aggregateBom) {
+    private final Map<String, Executable> executables;
+
+    public MavenPackager(final ExcludedIncludedFilter excludedIncludedFilter, final ProjectInfoGatherer projectInfoGatherer, final File sourceDirectory,
+            final boolean aggregateBom, final Map<String, Executable> executables) {
         this.projectInfoGatherer = projectInfoGatherer;
         this.aggregateBom = aggregateBom;
         this.sourceDirectory = sourceDirectory;
-        this.fileFinder = fileFinder;
         this.excludedIncludedFilter = excludedIncludedFilter;
+        this.executables = executables;
     }
 
     public List<DependencyNode> makeDependencyNodes() {
-        List<DependencyNode> projects = null;
+        final List<DependencyNode> projects = new ArrayList<>();
 
-        String command = "mvn";
-        if (SystemUtils.IS_OS_WINDOWS) {
-            command += ".cmd";
-        }
-
-        final CommandRunner commandRunner = new CommandRunner(logger, fileFinder, sourceDirectory, null);
-        final Command mvnCommand = new Command(command, "dependency:tree");
-        final String mvnOutput = commandRunner.execute(mvnCommand);
+        final CommandRunner commandRunner = new CommandRunner(logger, sourceDirectory);
+        final Command mvnCommand = new Command(executables.get("mvn"), "dependency:tree");
+        final CommandOutput mvnOutput = commandRunner.execute(mvnCommand);
 
         final MavenOutputParser mavenOutputParser = new MavenOutputParser(excludedIncludedFilter);
-        try {
-            projects = mavenOutputParser.parse(mvnOutput);
-        } catch (final IOException e) {
-            throw new RuntimeException(e);
+
+        if (!mvnOutput.hasErrors()) {
+            projects.addAll(mavenOutputParser.parse(mvnOutput.getOutputStream()));
+        } else {
+            logger.warn(String.format("Executing %s", mvnCommand.getExecutable().getOriginal()));
         }
 
         if (aggregateBom && !projects.isEmpty()) {

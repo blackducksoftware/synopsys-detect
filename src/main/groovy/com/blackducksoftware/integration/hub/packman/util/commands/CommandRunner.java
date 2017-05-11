@@ -9,7 +9,7 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.util;
+package com.blackducksoftware.integration.hub.packman.util.commands;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -19,7 +19,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -27,65 +26,30 @@ import org.slf4j.Logger;
 public class CommandRunner {
     private final Logger logger;
 
-    private final FileFinder fileFinder;
-
     private final File workingDirectory;
 
-    private final Map<String, String> alternativeFileMap;
-
-    private final String providedPath;
-
-    public CommandRunner(final Logger logger, final FileFinder fileFinder, final File workingDirectory,
-            final Map<String, String> alternativeFileMap) {
+    public CommandRunner(final Logger logger, final File workingDirectory) {
         this.logger = logger;
-        this.fileFinder = fileFinder;
         this.workingDirectory = workingDirectory;
-        this.alternativeFileMap = alternativeFileMap;
-        this.providedPath = null;
     }
 
-    public CommandRunner(final Logger logger, final FileFinder fileFinder, final File workingDirectory,
-            final Map<String, String> alternativeFileMap,
-            final String path) {
-        this.logger = logger;
-        this.fileFinder = fileFinder;
-        this.workingDirectory = workingDirectory;
-        this.alternativeFileMap = alternativeFileMap;
-        this.providedPath = path;
-    }
-
-    public String executeQuietly(final Command command) {
+    public CommandOutput executeQuietly(final Command command) {
         return execute(command, true);
     }
 
-    public String execute(final Command command) {
+    public CommandOutput execute(final Command command) {
         return execute(command, false);
     }
 
-    public String execute(final Command command, final boolean runQuietly) {
-        String executable = command.getExecutableName(alternativeFileMap);
-        if (alternativeFileMap != null && alternativeFileMap.containsKey(executable)) {
-            executable = alternativeFileMap.get(executable);
-        }
-
-        if (providedPath != null) {
-            executable = fileFinder.findExecutablePath(executable, providedPath);
-        } else {
-            executable = fileFinder.findExecutablePath(executable);
-        }
-
-        if (executable == null) {
-            throw new RuntimeException(String.format("Could not find executable >%s", command.getExecutableName(null)));
-        }
-
-        return executeExactly(runQuietly, executable, command.getArgs());
+    public CommandOutput execute(final Command command, final boolean runQuietly) {
+        return executeExactly(runQuietly, command.getExecutable(), command.getArgs());
     }
 
-    private String executeExactly(final boolean runQuietly, final String executable, final String... args) {
+    private CommandOutput executeExactly(final boolean runQuietly, final Executable executable, final String... args) {
         // We have to wrap Arrays.asList() because the supplied list does not support adding at an index
         final List<String> arguments = new ArrayList<>(Arrays.asList(args));
         if (executable != null) {
-            arguments.add(0, executable);
+            arguments.add(0, executable.getFound());
         }
 
         final ProcessBuilder processBuilder = new ProcessBuilder(arguments);
@@ -95,13 +59,9 @@ public class CommandRunner {
         try {
             Process process;
             process = processBuilder.start();
-            final StringBuilder output = new StringBuilder();
             final String infoOutput = printStream(process.getInputStream(), runQuietly, false);
             final String errorOutput = printStream(process.getErrorStream(), runQuietly, true);
-            output.append(infoOutput);
-            output.append("\n");
-            output.append(errorOutput);
-            return output.toString();
+            return new CommandOutput(infoOutput, errorOutput);
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }

@@ -30,24 +30,22 @@ class MavenPackageManager extends PackageManager {
     @Value('${packman.maven.scopes.excluded}')
     String excludedScopes
 
+    def executables = [mvn: ["mvn.cmd", "mvn"]]
+
     PackageManagerType getPackageManagerType() {
         return PackageManagerType.MAVEN
     }
 
     boolean isPackageManagerApplicable(String sourcePath) {
-        File sourceDirectory = new File(sourcePath)
-        if (sourcePath && sourceDirectory.isDirectory()) {
-            File pomFile = new File(sourceDirectory, POM_FILENAME)
-            return pomFile.isFile()
-        }
-
-        false
+        def foundExectables = fileFinder.findExecutables(executables)
+        def foundFiles = fileFinder.findFile(sourcePath, POM_FILENAME)
+        return foundExectables && foundFiles
     }
 
     List<DependencyNode> extractDependencyNodes(String sourcePath) {
         File sourceDirectory = new File(sourcePath)
         ExcludedIncludedFilter excludedIncludedFilter = new ExcludedIncludedFilter(excludedScopes.toLowerCase(), includedScopes.toLowerCase())
-        def mavenPackager = new MavenPackager(excludedIncludedFilter, projectInfoGatherer, fileFinder, sourceDirectory, aggregateBom)
+        def mavenPackager = new MavenPackager(excludedIncludedFilter, projectInfoGatherer, sourceDirectory, aggregateBom, fileFinder.findExecutables(executables))
         def projects = mavenPackager.makeDependencyNodes()
         return projects
     }

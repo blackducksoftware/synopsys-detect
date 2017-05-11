@@ -85,9 +85,11 @@ public class SimpleParser {
 
     public int getCurrentLevel(String line) {
         int level = 0;
-        while (line.startsWith(indentation)) {
-            level++;
-            line = line.replaceFirst(indentation, "");
+        if (indentation != null) {
+            while (line.startsWith(indentation)) {
+                level++;
+                line = line.replaceFirst(indentation, "");
+            }
         }
         return level;
     }
