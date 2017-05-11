@@ -68,19 +68,19 @@ class PipPackageManager extends PackageManager {
         return pipPackager.makeDependencyNodes(sourcePath, foundExecutables)
     }
 
-    private  Map<String, Executable> setupEnvironment(String sourcePath, Map<String, List<String>> executables) {
-        File sourceDirectory = new File(sourcePath)
+    private Map<String, Executable> setupEnvironment(String sourcePath, Map<String, List<String>> executables) {
+        final File sourceDirectory = new File(sourcePath)
 
-        Map<String, String> foundExecutables = fileFinder.findExecutables(executables)
-        final String python = foundExecutables['python']
-        final String pip = foundExecutables['pip']
+        Map<String, Executable> foundExecutables = fileFinder.findExecutables(executables)
+        final Executable python = foundExecutables['python']
+        final Executable pip = foundExecutables['pip']
 
         CommandRunner commandRunner = new CommandRunner(logger, sourceDirectory)
         final Command installVirtualenvPackage = new Command(pip, 'install', 'virtualenv')
 
         if (createVirtualEnv) {
             final File virtualEnv = new File(packmanProperties.getOutputDirectoryPath(), 'blackduck_virtualenv')
-            final File virtualEnvBin = getVirtualEnvBin(virtualEnv)
+            final String virtualEnvBin = getVirtualEnvBin(virtualEnv)
 
             if (virtualEnvBin && virtualEnv.exists()) {
                 logger.info("Found virtual environment:${virtualEnv.getAbsolutePath()}")
@@ -90,7 +90,7 @@ class PipPackageManager extends PackageManager {
                 def createVirtualEnvCommand = new Command(python, "${virtualEnvPackage}/virtualenv.py", virtualEnv.getAbsolutePath())
                 commandRunner.execute(createVirtualEnvCommand)
             }
-            foundExecutables = fileFinder.findExecutables(executables, virtualEnvBin.getAbsolutePath())
+            foundExecutables = fileFinder.findExecutables(executables, getVirtualEnvBin(virtualEnv))
         }
         return foundExecutables
     }
@@ -98,19 +98,18 @@ class PipPackageManager extends PackageManager {
     private String getVirtualEnvBin(File virtualEnvironmentPath) {
         if(virtualEnvironmentPath.exists() && virtualEnvironmentPath.isDirectory()) {
             Map<String, String> folders = fileFinder.findFolders(this.folders, virtualEnvironmentPath.getAbsolutePath())
-            def folder = folders['bin']
             return folders['bin']
         }
         null
     }
 
     private String getPackageLocation(CommandRunner commandRunner, Executable pip, String packageName) {
-        def showVirtualenvPackage = new Command(pip, 'show', 'virtualenv')
+        def showVirtualenvPackage = new Command(pip, 'show', packageName)
         def pipShowResults = commandRunner.executeQuietly(showVirtualenvPackage)
         if(!pipShowResults.hasErrors()) {
-            def pipShowParser = new PipShowMapParser(":")
+            def pipShowParser = new PipShowMapParser()
             def map = pipShowParser.parse(pipShowResults.outputStream)
-            map['Location']
+            return map['Location']
         }
         logger.info("Failed to find the installed virtalenv package")
         null

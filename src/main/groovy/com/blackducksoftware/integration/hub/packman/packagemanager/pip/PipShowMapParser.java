@@ -20,11 +20,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class PipShowMapParser {
-    private final String objectIdenetifier;
-
-    public PipShowMapParser(final String objectIdentifier) {
-        this.objectIdenetifier = objectIdentifier;
-    }
 
     public Map<String, String> parse(final String gemlockText) {
         final Map<String, String> map = new HashMap<>();
@@ -39,6 +34,7 @@ public class PipShowMapParser {
 
     public Entry<String, String> lineToEntry(final String line) {
         Entry<String, String> entry = null;
+        final String objectIdenetifier = ":";
         if (line.contains(objectIdenetifier)) {
             final List<String> lineSegments = new ArrayList<>(Arrays.asList(line.split(objectIdenetifier)));
             final String key = lineSegments.remove(0).trim();
