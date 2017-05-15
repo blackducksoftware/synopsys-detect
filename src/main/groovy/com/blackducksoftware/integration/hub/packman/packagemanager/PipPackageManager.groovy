@@ -69,11 +69,7 @@ class PipPackageManager extends PackageManager {
             return pipPackager.makeDependencyNodes(sourcePath, foundExecutables)
         } catch (CommandRunnerException e) {
             def message = 'An error occured when trying to extract python dependencies'
-            if(logger.traceEnabled) {
-                logger.warn(message, e)
-            } else {
-                logger.warn(message, e.getMessage())
-            }
+            logger.warn(message, e)
         }
         return null
     }
