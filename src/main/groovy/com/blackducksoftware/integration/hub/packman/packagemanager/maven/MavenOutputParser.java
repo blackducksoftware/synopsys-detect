@@ -11,7 +11,6 @@
  */
 package com.blackducksoftware.integration.hub.packman.packagemanager.maven;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -47,7 +46,7 @@ public class MavenOutputParser {
         this.excludedIncludedFilter = excludedIncludedFilter;
     }
 
-    public List<DependencyNode> parse(final String mavenOutputText) throws IOException {
+    public List<DependencyNode> parse(final String mavenOutputText) {
         final List<DependencyNode> projects = new ArrayList<>();
 
         final Stack<DependencyNode> projectStack = new Stack<>();

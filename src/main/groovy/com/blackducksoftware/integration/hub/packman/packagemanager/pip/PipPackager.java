@@ -12,98 +12,75 @@
 package com.blackducksoftware.integration.hub.packman.packagemanager.pip;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.SystemUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeBuilder;
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
-import com.blackducksoftware.integration.hub.packman.PackmanProperties;
-import com.blackducksoftware.integration.hub.packman.util.Command;
-import com.blackducksoftware.integration.hub.packman.util.CommandRunner;
-import com.blackducksoftware.integration.hub.packman.util.FileFinder;
+import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId;
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId;
+import com.blackducksoftware.integration.hub.packman.util.commands.Command;
+import com.blackducksoftware.integration.hub.packman.util.commands.CommandRunner;
+import com.blackducksoftware.integration.hub.packman.util.commands.Executable;
 
 @Component
 public class PipPackager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-    FileFinder fileFinder;
+    private final PipShowMapParser pipShowMapParser;
 
-    @Autowired
-    PackmanProperties packmanProperties;
+    public PipPackager() {
+        pipShowMapParser = new PipShowMapParser();
+    }
 
-    @Value("${packman.pip.createVirtualEnv}")
-    boolean createVirtualEnv;
-
-    @Value("${packman.pip.pip3}")
-    boolean pipThreeOverride;
-
-    private String virtualEnvBin = "bin";
-
-    private String pip = "pip";
-
-    private String python = "python";
-
-    public List<DependencyNode> makeDependencyNodes(final String sourcePath) throws IOException {
+    public List<DependencyNode> makeDependencyNodes(final String sourcePath, final Map<String, Executable> executables) {
         final List<DependencyNode> projects = new ArrayList<>();
-        if (pipThreeOverride) {
-            pip += "3";
-            python += "3";
-        }
-        if (SystemUtils.IS_OS_WINDOWS) {
-            virtualEnvBin = "Scripts";
-            // pip += ".exe";
-            // python += ".exe";
-        }
 
         final File sourceDirectory = new File(sourcePath);
-        final CommandRunner systemCommandRunner = new CommandRunner(logger, fileFinder, sourceDirectory, null);
-        final CommandRunner pythonCommandRunner = getPythonCommandRunner(systemCommandRunner, sourceDirectory, virtualEnvBin);
+        final CommandRunner commandRunner = new CommandRunner(logger, sourceDirectory);
 
-        final Command installProject = new Command(pip, "install", ".");
-        final Command getProjectName = new Command(python, "setup.py", "--name");
+        final Command installProject = new Command(executables.get("pip"), "install", ".");
+        final Command getProjectName = new Command(executables.get("python"), "setup.py", "--name");
 
-        pythonCommandRunner.execute(installProject);
+        commandRunner.execute(installProject);
 
         logger.info("Running PIP analysis");
-        final String projectName = pythonCommandRunner.executeQuietly(getProjectName).trim();
+        final String projectName = commandRunner.executeQuietly(getProjectName).getOutputStream().trim();
         if (projectName.equals("UNKOWN")) {
             logger.error("Could not determine project name. Please make sure it is specified in your setup.py");
         } else {
-            final PipShowParser pipShowParser = new PipShowParser();
-            final String pipProjectText = pythonCommandRunner.executeQuietly(new Command(pip, "show", projectName));
-            final DependencyNode projectNode = pipShowParser.parse(pipProjectText);
+            final String pipProjectText = commandRunner.executeQuietly(new Command(executables.get("pip"), "show", projectName)).getOutputStream();
+            final Map<String, String> projectPipShowMap = pipShowMapParser.parse(pipProjectText);
+            final DependencyNode projectNode = pipShowMapToNode(projectPipShowMap);
             projectNode.children.clear();
             final DependencyNodeBuilder nodeBuilder = new DependencyNodeBuilder(projectNode);
             final Map<String, DependencyNode> allNodes = new HashMap<>();
-            dependencyNodeTransformer(pipShowParser, pythonCommandRunner, projectNode, nodeBuilder, allNodes);
+            dependencyNodeTransformer(commandRunner, projectNode, nodeBuilder, allNodes, executables);
             projects.add(projectNode);
         }
         return projects;
     }
 
-    private DependencyNode dependencyNodeTransformer(final PipShowParser parser, final CommandRunner pythonCommandRunner,
-            final DependencyNode rawDependencyNode, final DependencyNodeBuilder nodeBuilder, final Map<String, DependencyNode> allNodes) {
+    private DependencyNode dependencyNodeTransformer(final CommandRunner pythonCommandRunner, final DependencyNode rawDependencyNode,
+            final DependencyNodeBuilder nodeBuilder, final Map<String, DependencyNode> allNodes, final Map<String, Executable> executables) {
         if (allNodes.containsKey(rawDependencyNode.name.toLowerCase())) {
             return allNodes.get(rawDependencyNode.name.toLowerCase());
         }
 
-        final String pipProjectText = pythonCommandRunner.executeQuietly(new Command(pip, "show", rawDependencyNode.name));
-        final DependencyNode dependencyNode = parser.parse(pipProjectText);
+        final String pipProjectText = pythonCommandRunner.executeQuietly(new Command(executables.get("pip"), "show", rawDependencyNode.name)).getOutputStream();
+        final DependencyNode dependencyNode = pipShowMapToNode(pipShowMapParser.parse(pipProjectText));
 
         final List<DependencyNode> children = new ArrayList<>();
         for (final DependencyNode rawChildNode : dependencyNode.children) {
-            children.add(dependencyNodeTransformer(parser, pythonCommandRunner, rawChildNode, nodeBuilder, allNodes));
+            children.add(dependencyNodeTransformer(pythonCommandRunner, rawChildNode, nodeBuilder, allNodes, executables));
         }
         dependencyNode.children.clear();
         nodeBuilder.addParentNodeWithChildren(dependencyNode, children);
@@ -111,28 +88,18 @@ public class PipPackager {
         return dependencyNode;
     }
 
-    private CommandRunner getPythonCommandRunner(final CommandRunner systemCommandRunner, final File sourceDirectory, final String virtualEnvBin) {
-        CommandRunner pythonCommandRunner = null;
-        if (createVirtualEnv) {
-            final File virtualEnvironmentPath = new File(packmanProperties.getOutputDirectoryPath(), "blackduck_virtualenv");
-            final File virtualEnvironmentBinPath = new File(virtualEnvironmentPath, virtualEnvBin);
-
-            pythonCommandRunner = new CommandRunner(logger, fileFinder, sourceDirectory, null, virtualEnvironmentBinPath.getAbsolutePath());
-
-            final String pythonPath = fileFinder.findExecutablePath(python);
-            final Command installVirtualenvPackage = new Command(pip, "install", "virtualenv");
-            final Command createVirtualEnvironement = new Command("virtualenv", "-p", pythonPath, virtualEnvironmentPath.getAbsolutePath());
-
-            if (virtualEnvironmentPath.exists() && virtualEnvironmentBinPath.exists()
-                    && fileFinder.findExecutablePath(pip, virtualEnvironmentBinPath.getAbsolutePath()) != null) {
-                logger.info(String.format("Found virtual environment: %s", virtualEnvironmentPath.getAbsolutePath()));
-            } else {
-                systemCommandRunner.execute(installVirtualenvPackage);
-                systemCommandRunner.execute(createVirtualEnvironement);
+    private DependencyNode pipShowMapToNode(final Map<String, String> pipShowMap) {
+        final String name = pipShowMap.get("Name").trim();
+        final String version = pipShowMap.get("Version").trim();
+        final String[] requires = pipShowMap.get("Requires").split(",");
+        final ExternalId externalId = new NameVersionExternalId(Forge.pypi, name, version);
+        final DependencyNode node = new DependencyNode(name, version, externalId);
+        for (final String requirement : requires) {
+            if (StringUtils.isNotBlank(requirement)) {
+                final DependencyNode child = new DependencyNode(requirement.trim(), "", null);
+                node.children.add(child);
             }
-        } else {
-            pythonCommandRunner = new CommandRunner(logger, fileFinder, sourceDirectory, null);
         }
-        return pythonCommandRunner;
+        return node;
     }
 }

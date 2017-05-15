@@ -6,3 +6,5 @@ bin/
 build/
 .groovy/
 .DS_Store
+.idea
+classes/
