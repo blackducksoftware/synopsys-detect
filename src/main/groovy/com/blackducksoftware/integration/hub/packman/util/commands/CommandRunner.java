@@ -55,6 +55,7 @@ public class CommandRunner {
 
         final ProcessBuilder processBuilder = new ProcessBuilder(arguments);
         processBuilder.directory(workingDirectory);
+        processBuilder.environment().put("PYTHONIOENCODING", "UTF-8");
 
         logger.debug(String.format("Running command >%s", StringUtils.join(arguments, " ")));
         try {
