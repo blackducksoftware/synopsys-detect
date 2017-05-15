@@ -13,7 +13,9 @@ import com.blackducksoftware.integration.hub.packman.packagemanager.pip.PipPacka
 import com.blackducksoftware.integration.hub.packman.packagemanager.pip.PipShowMapParser
 import com.blackducksoftware.integration.hub.packman.util.FileFinder
 import com.blackducksoftware.integration.hub.packman.util.commands.Command
+import com.blackducksoftware.integration.hub.packman.util.commands.CommandOutput
 import com.blackducksoftware.integration.hub.packman.util.commands.CommandRunner
+import com.blackducksoftware.integration.hub.packman.util.commands.CommandRunnerException
 import com.blackducksoftware.integration.hub.packman.util.commands.Executable
 
 @Component
@@ -30,8 +32,6 @@ class PipPackageManager extends PackageManager {
 
     @Autowired
     PackmanProperties packmanProperties
-
-
 
     @Value('${packman.pip.createVirtualEnv}')
     boolean createVirtualEnv
@@ -64,11 +64,21 @@ class PipPackageManager extends PackageManager {
             executables['pip'] = executables['pip3'] + executables['pip']
             executables['python'] = executables['python3'] + executables['python']
         }
-        Map<String, Executable> foundExecutables = setupEnvironment(sourcePath, executables)
-        return pipPackager.makeDependencyNodes(sourcePath, foundExecutables)
+        try {
+            Map<String, Executable> foundExecutables = setupEnvironment(sourcePath, executables)
+            return pipPackager.makeDependencyNodes(sourcePath, foundExecutables)
+        } catch (CommandRunnerException e) {
+            def message = 'An error occured when trying to extract python dependencies'
+            if(logger.traceEnabled) {
+                logger.warn(message, e)
+            } else {
+                logger.warn(message, e.getMessage())
+            }
+        }
+        return null
     }
 
-    private Map<String, Executable> setupEnvironment(String sourcePath, Map<String, List<String>> executables) {
+    private Map<String, Executable> setupEnvironment(String sourcePath, Map<String, List<String>> executables) throws CommandRunnerException {
         final File sourceDirectory = new File(sourcePath)
 
         Map<String, Executable> foundExecutables = fileFinder.findExecutables(executables)
@@ -86,8 +96,8 @@ class PipPackageManager extends PackageManager {
                 logger.info("Found virtual environment:${virtualEnv.getAbsolutePath()}")
             } else {
                 commandRunner.execute(installVirtualenvPackage)
-                String virtualEnvPackage = getPackageLocation(commandRunner, pip, 'virtualenv')
-                def createVirtualEnvCommand = new Command(python, "${virtualEnvPackage}/virtualenv.py", virtualEnv.getAbsolutePath())
+                String showPackage = getPackageLocation(commandRunner, pip, 'virtualenv')
+                def createVirtualEnvCommand = new Command(python, "${showPackage}/virtualenv.py", virtualEnv.getAbsolutePath())
                 commandRunner.execute(createVirtualEnvCommand)
             }
             foundExecutables = fileFinder.findExecutables(executables, getVirtualEnvBin(virtualEnv))
@@ -103,15 +113,11 @@ class PipPackageManager extends PackageManager {
         null
     }
 
-    private String getPackageLocation(CommandRunner commandRunner, Executable pip, String packageName) {
-        def showVirtualenvPackage = new Command(pip, 'show', packageName)
-        def pipShowResults = commandRunner.executeQuietly(showVirtualenvPackage)
-        if(!pipShowResults.hasErrors()) {
-            def pipShowParser = new PipShowMapParser()
-            def map = pipShowParser.parse(pipShowResults.outputStream)
-            return map['Location']
-        }
-        logger.info("Failed to find the installed virtalenv package")
-        null
+    private String getPackageLocation(CommandRunner commandRunner, Executable pip, String packageName) throws CommandRunnerException {
+        def showPackage = new Command(pip, 'show', packageName)
+        CommandOutput pipShowResults = commandRunner.executeQuietly(showPackage)
+        def pipShowParser = new PipShowMapParser()
+        Map<String, String> map = pipShowParser.parse(pipShowResults.output)
+        return map['Location'].trim()
     }
 }

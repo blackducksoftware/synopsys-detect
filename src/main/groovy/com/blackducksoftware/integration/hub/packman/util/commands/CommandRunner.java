@@ -33,19 +33,19 @@ public class CommandRunner {
         this.workingDirectory = workingDirectory;
     }
 
-    public CommandOutput executeQuietly(final Command command) {
+    public CommandOutput executeQuietly(final Command command) throws CommandRunnerException {
         return execute(command, true);
     }
 
-    public CommandOutput execute(final Command command) {
+    public CommandOutput execute(final Command command) throws CommandRunnerException {
         return execute(command, false);
     }
 
-    public CommandOutput execute(final Command command, final boolean runQuietly) {
+    public CommandOutput execute(final Command command, final boolean runQuietly) throws CommandRunnerException {
         return executeExactly(runQuietly, command.getExecutable(), command.getArgs());
     }
 
-    private CommandOutput executeExactly(final boolean runQuietly, final Executable executable, final String... args) {
+    private CommandOutput executeExactly(final boolean runQuietly, final Executable executable, final String... args) throws CommandRunnerException {
         // We have to wrap Arrays.asList() because the supplied list does not support adding at an index
         final List<String> arguments = new ArrayList<>(Arrays.asList(args));
         if (executable != null) {
@@ -55,15 +55,19 @@ public class CommandRunner {
         final ProcessBuilder processBuilder = new ProcessBuilder(arguments);
         processBuilder.directory(workingDirectory);
 
-        logger.debug(String.format("Running command >%s", StringUtils.join(" ", arguments)));
+        logger.debug(String.format("Running command >%s", StringUtils.join(arguments, " ")));
         try {
             Process process;
             process = processBuilder.start();
             final String infoOutput = printStream(process.getInputStream(), runQuietly, false);
             final String errorOutput = printStream(process.getErrorStream(), runQuietly, true);
-            return new CommandOutput(infoOutput, errorOutput);
+            final CommandOutput output = new CommandOutput(infoOutput, errorOutput);
+            if (output.hasErrors()) {
+                throw new CommandRunnerException(output);
+            }
+            return output;
         } catch (final IOException e) {
-            throw new RuntimeException(e);
+            throw new CommandRunnerException(e);
         }
     }
 

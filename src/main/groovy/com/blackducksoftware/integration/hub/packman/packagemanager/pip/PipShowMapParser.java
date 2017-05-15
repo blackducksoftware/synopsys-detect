@@ -22,9 +22,9 @@ import java.util.Map.Entry;
 import org.apache.commons.lang3.StringUtils;
 
 public class PipShowMapParser {
-    public Map<String, String> parse(final String gemlockText) {
+    public Map<String, String> parse(final String pipShowText) {
         final Map<String, String> map = new HashMap<>();
-        for (final String line : gemlockText.split("\n")) {
+        for (final String line : pipShowText.split("\n")) {
             if (org.apache.commons.lang3.StringUtils.isNotEmpty(line)) {
                 final Entry<String, String> entry = lineToEntry(line);
                 map.put(entry.getKey(), entry.getValue());
@@ -39,7 +39,7 @@ public class PipShowMapParser {
         if (line.contains(objectIdenetifier)) {
             final List<String> lineSegments = new ArrayList<>(Arrays.asList(line.split(objectIdenetifier)));
             final String key = lineSegments.remove(0).trim();
-            final String value = StringUtils.join(objectIdenetifier, lineSegments).trim();
+            final String value = StringUtils.join(lineSegments, objectIdenetifier);
             entry = new AbstractMap.SimpleEntry<>(key, value);
         } else {
             final String key = line.trim();
