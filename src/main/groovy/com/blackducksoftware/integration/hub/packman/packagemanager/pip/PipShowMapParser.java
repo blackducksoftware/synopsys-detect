@@ -19,8 +19,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class PipShowMapParser {
+import org.apache.commons.lang3.StringUtils;
 
+public class PipShowMapParser {
     public Map<String, String> parse(final String gemlockText) {
         final Map<String, String> map = new HashMap<>();
         for (final String line : gemlockText.split("\n")) {
@@ -38,7 +39,7 @@ public class PipShowMapParser {
         if (line.contains(objectIdenetifier)) {
             final List<String> lineSegments = new ArrayList<>(Arrays.asList(line.split(objectIdenetifier)));
             final String key = lineSegments.remove(0).trim();
-            final String value = String.join(objectIdenetifier, lineSegments).trim();
+            final String value = StringUtils.join(objectIdenetifier, lineSegments).trim();
             entry = new AbstractMap.SimpleEntry<>(key, value);
         } else {
             final String key = line.trim();
