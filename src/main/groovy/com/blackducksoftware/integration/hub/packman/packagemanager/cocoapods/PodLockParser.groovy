@@ -11,10 +11,6 @@
  */
 package com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,8 +26,8 @@ import com.esotericsoftware.yamlbeans.YamlReader;
 
 public class PodLockParser {
     private final Logger logger = LoggerFactory.getLogger(PodLockParser.class);
+    private static final Pattern NAME_VERSION_PATTERN = Pattern.compile("(.*) \\((.*)\\)")
 
-    @SuppressWarnings("unchecked")
     public PodLock parse(final String podlockText) {
         final PodLock podLock = new PodLock();
         try {
@@ -42,33 +38,33 @@ public class PodLockParser {
             // Extract dependencies
             final List<String> dependencyNames = (List<String>) map.get("DEPENDENCIES");
 
-            dependencyNames.forEach(dependencyName -> {
+            dependencyNames.each { dependencyName ->
                 final DependencyNode node = podToDependencyNode(dependencyName);
                 podLock.dependencies.add(node);
-            });
+            }
 
             // Extract pods
             final List<Object> pods = (List<Object>) map.get("PODS");
-            pods.forEach(pod -> {
+            pods.each { pod ->
                 DependencyNode node = null;
                 if (pod instanceof HashMap<?, ?>) {
                     // There should only be one parent node
-                    final List<DependencyNode> parentNodes = new ArrayList<>();
-                    final Map<String, ArrayList<String>> podMap = (Map<String, ArrayList<String>>) pod;
-                    podMap.entrySet().forEach(entry -> {
-                        final DependencyNode parent = podToDependencyNode(entry.getKey());
-                        entry.getValue().forEach(child -> {
+                    final List<DependencyNode> parentNodes = []
+                    final Map<String, List<String>> podMap = (Map<String, ArrayList<String>>) pod;
+                    podMap.each { key, value ->
+                        final DependencyNode parent = podToDependencyNode(key);
+                        value.each { child ->
                             final DependencyNode childNode = podToDependencyNode(child);
                             parent.children.add(childNode);
-                        });
+                        }
                         parentNodes.add(parent);
-                    });
+                    }
                     node = parentNodes.get(0);
                 } else {
                     node = podToDependencyNode(pod.toString());
                 }
                 podLock.pods.add(node);
-            });
+            }
         } catch (final YamlException ingore) {
             logger.error("Cannot parse Podfile.lock. Invalid YAML file");
             return null;
@@ -77,7 +73,7 @@ public class PodLockParser {
     }
 
     private DependencyNode podToDependencyNode(final String pod) {
-        final Matcher podMatcher = Pattern.compile("(.*) \\((.*)\\)").matcher(pod);
+        final Matcher podMatcher = NAME_VERSION_PATTERN.matcher(pod);
         String name;
         String version;
         if (podMatcher.find()) {

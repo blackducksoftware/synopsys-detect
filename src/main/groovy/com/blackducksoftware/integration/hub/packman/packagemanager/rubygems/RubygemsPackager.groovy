@@ -11,19 +11,15 @@
  */
 package com.blackducksoftware.integration.hub.packman.packagemanager.rubygems;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeBuilder;
+import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeBuilder
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId;
-import com.blackducksoftware.integration.hub.packman.PackageManagerType;
+import com.blackducksoftware.integration.hub.packman.PackageManagerType
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer;
 
 public class RubygemsPackager {
@@ -52,12 +48,12 @@ public class RubygemsPackager {
         final SimpleParser gemlockParser = new SimpleParser("  ", ":");
         final ParserMap gemlockMap = gemlockParser.parse(gemlock);
         final ParserMap specMap = gemlockMap.get("GEM").get("specs");
-        gemlockMap.get("DEPENDENCIES").entrySet().forEach(dependencyEntry -> {
-            final DependencyNode dependencyNode = entryToDependencyNode(specMap, dependencyEntry);
+        gemlockMap.get("DEPENDENCIES").each { key, value ->
+            final DependencyNode dependencyNode = entryToDependencyNode(specMap, key, value);
             if (dependencyNode != null) {
                 dependencyNodeBuilder.addChildNodeWithParents(dependencyNode, dependencies);
             }
-        });
+        }
         return dependencies;
     }
 
@@ -77,13 +73,13 @@ public class RubygemsPackager {
         return dependencyNode;
     }
 
-    public DependencyNode entryToDependencyNode(final ParserMap specMap, final Entry<String, ParserMap> entry) {
-        final String foundKey = findKeyInMap(entry.getKey(), specMap);
+    public DependencyNode entryToDependencyNode(final ParserMap specMap, String key, ParserMap value) {
+        final String foundKey = findKeyInMap(key, specMap);
         final DependencyNode dependencyNode = keyToDependencyNode(foundKey);
-        specMap.get(foundKey).entrySet().forEach(dependencyEntry -> {
-            final DependencyNode transitive = entryToDependencyNode(specMap, dependencyEntry);
+        specMap.get(foundKey).each { mapKey, mapValue ->
+            final DependencyNode transitive = entryToDependencyNode(specMap, mapKey, mapValue);
             dependencyNode.children.add(transitive);
-        });
+        }
         return dependencyNode;
     }
 

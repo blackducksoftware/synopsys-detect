@@ -91,7 +91,7 @@ public class CommandRunner {
         final ProcessBuilder processBuilder = new ProcessBuilder(arguments);
         processBuilder.directory(workingDirectory);
 
-        logger.debug(String.format("Running command >%s", String.join(" ", arguments)));
+        logger.debug(String.format("Running command >%s", StringUtils.join(" ", arguments)));
         try {
             Process process;
             process = processBuilder.start();

@@ -11,10 +11,6 @@
  */
 package com.blackducksoftware.integration.hub.packman.packagemanager.maven;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-
 import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +37,7 @@ public class MavenPackager {
     private final ProjectInfoGatherer projectInfoGatherer;
 
     public MavenPackager(final ExcludedIncludedFilter excludedIncludedFilter, final ProjectInfoGatherer projectInfoGatherer,
-            final FileFinder fileFinder, final File sourceDirectory, final boolean aggregateBom) {
+    final FileFinder fileFinder, final File sourceDirectory, final boolean aggregateBom) {
         this.projectInfoGatherer = projectInfoGatherer;
         this.aggregateBom = aggregateBom;
         this.sourceDirectory = sourceDirectory;
@@ -70,7 +66,9 @@ public class MavenPackager {
 
         if (aggregateBom && !projects.isEmpty()) {
             final DependencyNode firstNode = projects.remove(0);
-            projects.forEach(subProject -> firstNode.children.addAll(subProject.children));
+            projects.each { subProject ->
+                firstNode.children.addAll(subProject.children)
+            }
             projects.clear();
             projects.add(firstNode);
             firstNode.name = projectInfoGatherer.getDefaultProjectName(PackageManagerType.MAVEN, sourceDirectory.getAbsolutePath(), firstNode.name);

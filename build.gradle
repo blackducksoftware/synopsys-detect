@@ -20,8 +20,8 @@ tasks.withType(GroovyCompile) { options.encoding = 'UTF-8' }
 group = 'com.blackducksoftware.integration'
 version = '0.0.1-SNAPSHOT'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
 
 repositories {
     mavenLocal()
