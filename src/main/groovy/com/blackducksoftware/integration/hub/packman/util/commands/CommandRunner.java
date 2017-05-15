@@ -19,7 +19,9 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -29,9 +31,18 @@ public class CommandRunner {
 
     private final File workingDirectory;
 
+    private final Map<String, String> environmentVariables;
+
     public CommandRunner(final Logger logger, final File workingDirectory) {
         this.logger = logger;
         this.workingDirectory = workingDirectory;
+        this.environmentVariables = new HashMap<>();
+    }
+
+    public CommandRunner(final Logger logger, final File workingDirectory, final Map<String, String> environmentVariables) {
+        this.logger = logger;
+        this.workingDirectory = workingDirectory;
+        this.environmentVariables = environmentVariables;
     }
 
     public CommandOutput executeQuietly(final Command command) throws CommandRunnerException {
@@ -55,7 +66,7 @@ public class CommandRunner {
 
         final ProcessBuilder processBuilder = new ProcessBuilder(arguments);
         processBuilder.directory(workingDirectory);
-        processBuilder.environment().put("PYTHONIOENCODING", "UTF-8");
+        processBuilder.environment().putAll(environmentVariables);
 
         logger.debug(String.format("Running command >%s", StringUtils.join(arguments, " ")));
         try {

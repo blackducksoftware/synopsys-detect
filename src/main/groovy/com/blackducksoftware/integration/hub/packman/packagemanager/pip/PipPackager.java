@@ -48,7 +48,9 @@ public class PipPackager {
 
         final File sourceDirectory = new File(sourcePath);
         final File setupFile = new File(sourcePath, "setup.py");
-        final CommandRunner commandRunner = new CommandRunner(logger, sourceDirectory);
+        final Map<String, String> environmentVariables = new HashMap<>();
+        environmentVariables.put("PYTHONIOENCODING", "UTF-8");
+        final CommandRunner commandRunner = new CommandRunner(logger, sourceDirectory, environmentVariables);
 
         final Command installProject = new Command(executables.get("pip"), "install", ".");
         final Command getProjectName = new Command(executables.get("python"), setupFile.getAbsolutePath(), "--name");

@@ -81,7 +81,7 @@ class PipPackageManager extends PackageManager {
         final Executable python = foundExecutables['python']
         final Executable pip = foundExecutables['pip']
 
-        CommandRunner commandRunner = new CommandRunner(logger, sourceDirectory)
+        CommandRunner commandRunner = new CommandRunner(logger, sourceDirectory, ["PYTHONIOENCODING":"UTF-8"])
         final Command installVirtualenvPackage = new Command(pip, 'install', 'virtualenv')
 
         if (createVirtualEnv) {
