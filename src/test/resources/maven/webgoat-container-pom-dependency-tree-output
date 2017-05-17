@@ -1,0 +1,117 @@
+[INFO] Scanning for projects...
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building webgoat-container 7.1-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[WARNING] The artifact axis:axis-saaj:jar:1.4 has been relocated to org.apache.axis:axis-saaj:jar:1.4
+[WARNING] The artifact axis:axis-jaxrpc:jar:1.4 has been relocated to org.apache.axis:axis-jaxrpc:jar:1.4
+[WARNING] The artifact axis:axis-ant:jar:1.4 has been relocated to org.apache.axis:axis-ant:jar:1.4
+[INFO] 
+[INFO] --- maven-dependency-plugin:2.8:tree (default-cli) @ webgoat-container ---
+[WARNING] The artifact axis:axis-saaj:jar:1.4 has been relocated to org.apache.axis:axis-saaj:jar:1.4
+[WARNING] The artifact axis:axis-jaxrpc:jar:1.4 has been relocated to org.apache.axis:axis-jaxrpc:jar:1.4
+[WARNING] The artifact axis:axis-ant:jar:1.4 has been relocated to org.apache.axis:axis-ant:jar:1.4
+[INFO] org.owasp.webgoat:webgoat-container:war:7.1-SNAPSHOT
+[INFO] +- javax.activation:activation:jar:1.1.1:compile
+[INFO] +- com.h2database:h2:jar:1.4.190:compile
+[INFO] +- axis:axis:jar:1.4:compile
+[INFO] |  \- axis:axis-wsdl4j:jar:1.5.1:runtime
+[INFO] +- org.apache.axis:axis-saaj:jar:1.4:compile
+[INFO] +- org.apache.axis:axis-jaxrpc:jar:1.4:compile
+[INFO] +- org.apache.axis:axis-ant:jar:1.4:compile
+[INFO] +- org.apache.commons:commons-lang3:jar:3.4:compile
+[INFO] +- commons-io:commons-io:jar:2.4:compile
+[INFO] +- commons-collections:commons-collections:jar:3.2.1:compile
+[INFO] +- commons-digester:commons-digester:jar:2.1:compile
+[INFO] |  \- commons-beanutils:commons-beanutils:jar:1.8.3:compile
+[INFO] +- commons-logging:commons-logging:jar:1.2:compile
+[INFO] +- org.slf4j:jcl-over-slf4j:jar:1.7.12:compile
+[INFO] +- commons-discovery:commons-discovery:jar:0.5:compile
+[INFO] +- javax.mail:javax.mail-api:jar:1.5.4:compile
+[INFO] +- hsqldb:hsqldb:jar:1.8.0.10:compile
+[INFO] +- wsdl4j:wsdl4j:jar:1.6.3:compile
+[INFO] +- java2html:j2h:jar:1.3.1:compile
+[INFO] +- ecs:ecs:jar:1.4.2:compile
+[INFO] +- javax.transaction:javax.transaction-api:jar:1.2:compile
+[INFO] +- net.sourceforge.jtds:jtds:jar:1.3.1:compile
+[INFO] +- org.apache.tomcat:tomcat-catalina:jar:7.0.65:provided
+[INFO] |  +- org.apache.tomcat:tomcat-servlet-api:jar:7.0.65:provided
+[INFO] |  +- org.apache.tomcat:tomcat-juli:jar:7.0.65:provided
+[INFO] |  +- org.apache.tomcat:tomcat-annotations-api:jar:7.0.65:provided
+[INFO] |  +- org.apache.tomcat:tomcat-api:jar:7.0.65:provided
+[INFO] |  \- org.apache.tomcat:tomcat-util:jar:7.0.65:provided
+[INFO] +- javax:javaee-api:jar:6.0:provided
+[INFO] +- org.springframework:spring-core:jar:3.2.4.RELEASE:compile
+[INFO] +- org.springframework:spring-aop:jar:3.2.4.RELEASE:compile
+[INFO] |  +- aopalliance:aopalliance:jar:1.0:compile
+[INFO] |  \- org.springframework:spring-beans:jar:3.2.4.RELEASE:compile
+[INFO] +- com.fasterxml.jackson.core:jackson-core:jar:2.6.3:compile
+[INFO] +- com.fasterxml.jackson.core:jackson-databind:jar:2.6.3:compile
+[INFO] |  \- com.fasterxml.jackson.core:jackson-annotations:jar:2.6.0:compile
+[INFO] +- org.springframework:spring-webmvc:jar:3.2.4.RELEASE:compile
+[INFO] |  +- org.springframework:spring-context:jar:3.2.4.RELEASE:compile
+[INFO] |  +- org.springframework:spring-expression:jar:3.2.4.RELEASE:compile
+[INFO] |  \- org.springframework:spring-web:jar:3.2.4.RELEASE:compile
+[INFO] +- org.springframework.security:spring-security-core:jar:3.2.4.RELEASE:compile
+[INFO] +- org.springframework.security:spring-security-config:jar:3.2.4.RELEASE:compile
+[INFO] +- org.springframework.security:spring-security-web:jar:3.2.4.RELEASE:compile
+[INFO] +- commons-fileupload:commons-fileupload:jar:1.3.1:compile
+[INFO] +- com.google.guava:guava:jar:18.0:compile
+[INFO] +- javax.servlet:jstl:jar:1.2:compile
+[INFO] +- taglibs:standard:jar:1.1.2:compile
+[INFO] +- log4j:log4j:jar:1.2.17:compile
+[INFO] +- org.apache.tiles:tiles-core:jar:3.0.5:compile
+[INFO] |  \- org.apache.tiles:tiles-api:jar:3.0.5:compile
+[INFO] |     \- org.apache.tiles:tiles-request-api:jar:1.0.6:compile
+[INFO] +- org.slf4j:slf4j-api:jar:1.7.12:compile
+[INFO] +- org.slf4j:slf4j-log4j12:jar:1.7.12:compile
+[INFO] +- junit:junit:jar:4.12:compile
+[INFO] |  \- org.hamcrest:hamcrest-core:jar:1.3:compile
+[INFO] +- org.seleniumhq.selenium:selenium-java:jar:2.48.2:compile
+[INFO] |  +- org.seleniumhq.selenium:selenium-chrome-driver:jar:2.48.2:compile
+[INFO] |  |  \- org.seleniumhq.selenium:selenium-remote-driver:jar:2.48.2:compile
+[INFO] |  |     +- cglib:cglib-nodep:jar:2.1_3:compile
+[INFO] |  |     +- com.google.code.gson:gson:jar:2.3.1:compile
+[INFO] |  |     \- org.seleniumhq.selenium:selenium-api:jar:2.48.2:compile
+[INFO] |  +- org.seleniumhq.selenium:selenium-edge-driver:jar:2.48.2:compile
+[INFO] |  |  \- org.apache.commons:commons-exec:jar:1.3:compile
+[INFO] |  +- org.seleniumhq.selenium:selenium-htmlunit-driver:jar:2.48.2:compile
+[INFO] |  |  +- net.sourceforge.htmlunit:htmlunit:jar:2.18:compile
+[INFO] |  |  |  +- xalan:xalan:jar:2.7.2:compile
+[INFO] |  |  |  |  \- xalan:serializer:jar:2.7.2:compile
+[INFO] |  |  |  +- org.apache.httpcomponents:httpmime:jar:4.5:compile
+[INFO] |  |  |  +- commons-codec:commons-codec:jar:1.10:compile
+[INFO] |  |  |  +- net.sourceforge.htmlunit:htmlunit-core-js:jar:2.17:compile
+[INFO] |  |  |  +- xerces:xercesImpl:jar:2.11.0:compile
+[INFO] |  |  |  |  \- xml-apis:xml-apis:jar:1.4.01:compile
+[INFO] |  |  |  +- net.sourceforge.nekohtml:nekohtml:jar:1.9.22:compile
+[INFO] |  |  |  +- net.sourceforge.cssparser:cssparser:jar:0.9.16:compile
+[INFO] |  |  |  |  \- org.w3c.css:sac:jar:1.3:compile
+[INFO] |  |  |  \- org.eclipse.jetty.websocket:websocket-client:jar:9.2.12.v20150709:compile
+[INFO] |  |  |     +- org.eclipse.jetty:jetty-util:jar:9.2.12.v20150709:compile
+[INFO] |  |  |     +- org.eclipse.jetty:jetty-io:jar:9.2.12.v20150709:compile
+[INFO] |  |  |     \- org.eclipse.jetty.websocket:websocket-common:jar:9.2.12.v20150709:compile
+[INFO] |  |  |        \- org.eclipse.jetty.websocket:websocket-api:jar:9.2.12.v20150709:compile
+[INFO] |  |  \- org.apache.httpcomponents:httpclient:jar:4.5.1:compile
+[INFO] |  |     \- org.apache.httpcomponents:httpcore:jar:4.4.3:compile
+[INFO] |  +- org.seleniumhq.selenium:selenium-firefox-driver:jar:2.48.2:compile
+[INFO] |  +- org.seleniumhq.selenium:selenium-ie-driver:jar:2.48.2:compile
+[INFO] |  |  +- net.java.dev.jna:jna:jar:4.1.0:compile
+[INFO] |  |  \- net.java.dev.jna:jna-platform:jar:4.1.0:compile
+[INFO] |  +- org.seleniumhq.selenium:selenium-safari-driver:jar:2.48.2:compile
+[INFO] |  +- org.seleniumhq.selenium:selenium-support:jar:2.48.2:compile
+[INFO] |  +- org.webbitserver:webbit:jar:0.4.14:compile
+[INFO] |  |  \- io.netty:netty:jar:3.5.2.Final:compile
+[INFO] |  \- org.seleniumhq.selenium:selenium-leg-rc:jar:2.48.2:compile
+[INFO] \- com.saucelabs:sauce_junit:jar:2.1.20:test
+[INFO]    +- com.saucelabs:sauce_java_common:jar:2.1.20:test
+[INFO]    \- com.saucelabs:saucerest:jar:1.0.22:test
+[INFO]       +- com.googlecode.json-simple:json-simple:jar:1.1:test
+[INFO]       \- org.json:json:jar:20090211:test
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 0.936 s
+[INFO] Finished at: 2017-05-17T14:31:17-04:00
+[INFO] Final Memory: 18M/309M
+[INFO] ------------------------------------------------------------------------

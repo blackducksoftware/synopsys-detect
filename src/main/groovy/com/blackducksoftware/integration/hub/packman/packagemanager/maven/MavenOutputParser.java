@@ -20,7 +20,6 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenExternalId;
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
@@ -40,10 +39,10 @@ public class MavenOutputParser {
 
     private final Pattern finishRegex = Pattern.compile("--------");
 
-    private final ExcludedIncludedFilter excludedIncludedFilter;
+    private final ExcludedIncludedFilter scopeFilter;
 
-    public MavenOutputParser(final ExcludedIncludedFilter excludedIncludedFilter) {
-        this.excludedIncludedFilter = excludedIncludedFilter;
+    public MavenOutputParser(final ExcludedIncludedFilter scopeFilter) {
+        this.scopeFilter = scopeFilter;
     }
 
     public List<DependencyNode> parse(final String mavenOutputText) {
@@ -54,74 +53,86 @@ public class MavenOutputParser {
         boolean projectReady = false;
         int level = 0;
         for (String line : mavenOutputText.split("\n")) {
+            if (!line.startsWith("[INFO]")) {
+                continue;
+            }
 
             line = line.replace("[INFO] ", "");
+            if (StringUtils.isBlank(line)) {
+                continue;
+            }
 
             final Matcher beginProjectMatcher = beginProjectRegex.matcher(line);
-
-            if (StringUtils.isBlank(line)) {
-
-            } else if (beginProjectMatcher.matches()) {
+            if (beginProjectMatcher.matches()) {
                 projectReady = true;
-            } else if (projectReady && projectStack.isEmpty()) {
+                continue;
+            }
+
+            if (!projectReady) {
+                continue;
+            }
+
+            if (projectStack.isEmpty()) {
                 addToStack(line, projectStack);
-            } else if (projectReady && !projectStack.isEmpty()) {
-                int previousLevel = level;
-                level = 0;
+                continue;
+            }
 
-                final Matcher plusMatcher = plusRegex.matcher(line);
-                if (plusMatcher.find()) {
-                    line = line.replace(plusMatcher.group(), "");
-                    level++;
-                }
+            // the project is ready and the stack is not empty
+            int previousLevel = level;
+            level = 0;
 
-                final Matcher pipeMatcher = pipeRegex.matcher(line);
-                while (pipeMatcher.find()) {
-                    line = line.replace(pipeMatcher.group(), "");
-                    level++;
-                }
+            final Matcher plusMatcher = plusRegex.matcher(line);
+            if (plusMatcher.find()) {
+                line = line.replace(plusMatcher.group(), "");
+                level++;
+            }
 
-                final Matcher endMatcher = endRegex.matcher(line);
-                if (endMatcher.find()) {
-                    line = line.replace(endMatcher.group(), "");
-                    level++;
-                }
+            final Matcher pipeMatcher = pipeRegex.matcher(line);
+            while (pipeMatcher.find()) {
+                line = line.replace(pipeMatcher.group(), "");
+                level++;
+            }
 
-                final Matcher emptyMatcher = emptyRegex.matcher(line);
-                while (emptyMatcher.find()) {
-                    line = line.replace(emptyMatcher.group(), "");
-                    level++;
-                }
+            final Matcher endMatcher = endRegex.matcher(line);
+            if (endMatcher.find()) {
+                line = line.replace(endMatcher.group(), "");
+                level++;
+            }
 
-                final Matcher finishMatcher = finishRegex.matcher(line);
-                final boolean finished = finishMatcher.find();
+            final Matcher emptyMatcher = emptyRegex.matcher(line);
+            while (emptyMatcher.find()) {
+                line = line.replace(emptyMatcher.group(), "");
+                level++;
+            }
 
-                if (lineIsValid(line)) {
-                    if (finished) {
+            final Matcher finishMatcher = finishRegex.matcher(line);
+            final boolean finished = finishMatcher.find();
 
-                    } else if (level == previousLevel) {
-                        final DependencyNode currentNode = projectStack.pop();
-                        projectStack.peek().children.add(currentNode);
-                        addToStack(line, projectStack);
-                    } else if (level > previousLevel) {
-                        addToStack(line, projectStack);
-                    } else if (level < previousLevel) {
-                        for (; previousLevel >= level; previousLevel--) {
-                            final DependencyNode previousNode = projectStack.pop();
-                            projectStack.peek().children.add(previousNode);
-                        }
-                        addToStack(line, projectStack);
-                    }
-                }
-
+            if (lineIsValid(line)) {
                 if (finished) {
-                    while (projectStack.size() > 1) {
-                        final DependencyNode node = projectStack.pop();
-                        projectStack.peek().children.add(node);
+
+                } else if (level == previousLevel) {
+                    final DependencyNode currentNode = projectStack.pop();
+                    projectStack.peek().children.add(currentNode);
+                    addToStack(line, projectStack);
+                } else if (level > previousLevel) {
+                    addToStack(line, projectStack);
+                } else if (level < previousLevel) {
+                    for (; previousLevel >= level; previousLevel--) {
+                        final DependencyNode previousNode = projectStack.pop();
+                        projectStack.peek().children.add(previousNode);
                     }
-                    projectReady = false;
-                    projects.add(projectStack.pop());
+                    addToStack(line, projectStack);
                 }
+            }
+
+            if (finished) {
+                while (projectStack.size() > 1) {
+                    final DependencyNode node = projectStack.pop();
+                    projectStack.peek().children.add(node);
+                }
+                projectReady = false;
+                projects.add(projectStack.pop());
             }
         }
 
@@ -143,20 +154,22 @@ public class MavenOutputParser {
 
     private DependencyNode textToDependencyNode(final String componentText) {
         final Matcher gavMatcher = gavRegex.matcher(componentText);
-        if (gavMatcher.find()) {
-            final String group = gavMatcher.group(1);
-            final String artifact = gavMatcher.group(2);
-            final String version = gavMatcher.group(4);
-            final String scope = gavMatcher.group(6);
-
-            if (scope != null && !excludedIncludedFilter.shouldInclude(scope.toLowerCase())) {
-                return null;
-            }
-
-            final ExternalId externalId = new MavenExternalId(Forge.maven, group, artifact, version);
-            final DependencyNode node = new DependencyNode(artifact, version, externalId);
-            return node;
+        if (!gavMatcher.find()) {
+            return null;
         }
-        return null;
+
+        final String group = gavMatcher.group(1);
+        final String artifact = gavMatcher.group(2);
+        final String version = gavMatcher.group(4);
+        final String scope = gavMatcher.group(6);
+
+        if (scope != null && !scopeFilter.shouldInclude(scope.toLowerCase())) {
+            return null;
+        }
+
+        final ExternalId externalId = new MavenExternalId(group, artifact, version);
+        final DependencyNode node = new DependencyNode(artifact, version, externalId);
+        return node;
     }
+
 }
