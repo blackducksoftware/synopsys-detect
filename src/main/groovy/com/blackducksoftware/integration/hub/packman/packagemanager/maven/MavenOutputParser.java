@@ -53,6 +53,10 @@ public class MavenOutputParser {
         boolean projectReady = false;
         int level = 0;
         for (String line : mavenOutputText.split("\n")) {
+            if (!line.startsWith("[INFO]")) {
+                continue;
+            }
+
             line = line.replace("[INFO] ", "");
             if (StringUtils.isBlank(line)) {
                 continue;
