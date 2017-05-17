@@ -1,5 +1,7 @@
 package com.blackducksoftware.integration.hub.packman.packagemanager
 
+import javax.annotation.PostConstruct
+
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -40,30 +42,38 @@ class PipPackageManager extends PackageManager {
     boolean pipThreeOverride
 
     def executables = [
-        pip: ['pip', 'pip.exe'],
-        pip3: ['pip3', 'pip3.exe'],
-        python: ['python', 'python.exe'],
-        python3: ['python3', 'python3.exe'],
-        virtualenv: ['virtualenv']]
+        pip: ['pip.exe', 'pip'],
+        python: ['python.exe', 'python']]
+
+    def py3Executables = [
+        pip: ['pip3.exe', 'pip3'],
+        python: ['python3.exe', 'python3']]
 
     def folders = [
-        bin: ['bin', 'Scripts']]
+        bin: ['Scripts', 'bin']]
+
+    @PostConstruct
+    void init() {
+        if(pipThreeOverride) {
+            executables['pip'] = py3Executables['pip'] + executables['pip']
+            executables['python'] = py3Executables['python'] + executables['python']
+        } else {
+            executables['pip'] =  executables['pip'] + py3Executables['pip']
+            executables['python'] = executables['python'] + py3Executables['python']
+        }
+    }
 
     PackageManagerType getPackageManagerType() {
         return PackageManagerType.PIP
     }
 
     boolean isPackageManagerApplicable(String sourcePath) {
-        def foundExectables = fileFinder.findExecutables(executables)
-        def foundFiles = fileFinder.findFile(sourcePath, SETUP_FILENAME)
+        def foundExectables = fileFinder.canFindAllExecutables(executables)
+        def foundFiles = fileFinder.containsAllFiles(sourcePath, SETUP_FILENAME)
         return foundExectables && foundFiles
     }
 
     List<DependencyNode> extractDependencyNodes(String sourcePath) {
-        if(pipThreeOverride) {
-            executables['pip'] = executables['pip3'] + executables['pip']
-            executables['python'] = executables['python3'] + executables['python']
-        }
         try {
             Map<String, Executable> foundExecutables = setupEnvironment(sourcePath, executables)
             return pipPackager.makeDependencyNodes(sourcePath, foundExecutables)

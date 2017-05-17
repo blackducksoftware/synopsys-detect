@@ -10,8 +10,6 @@ import com.blackducksoftware.integration.hub.packman.util.FileFinder
 
 @Component
 class CocoapodsPackageManager extends PackageManager {
-    public static final String PODFILE_NAME = 'Podfile.lock'
-
     @Autowired
     FileFinder fileFinder
 
@@ -23,7 +21,7 @@ class CocoapodsPackageManager extends PackageManager {
     }
 
     boolean isPackageManagerApplicable(String sourcePath) {
-        return fileFinder.containsAllFiles(sourcePath, PODFILE_NAME)
+        return fileFinder.containsAllFiles(sourcePath, 'Podfile.lock')
     }
 
     List<DependencyNode> extractDependencyNodes(String sourcePath) {

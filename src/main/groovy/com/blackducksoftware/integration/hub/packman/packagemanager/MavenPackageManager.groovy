@@ -1,5 +1,7 @@
 package com.blackducksoftware.integration.hub.packman.packagemanager
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
@@ -13,7 +15,9 @@ import com.blackducksoftware.integration.util.ExcludedIncludedFilter
 
 @Component
 class MavenPackageManager extends PackageManager {
-    public static final String POM_FILENAME = 'pom.xml'
+    Logger logger = LoggerFactory.getLogger(this.getClass())
+
+    final String POM_FILENAME = 'pom.xml'
 
     @Autowired
     FileFinder fileFinder
@@ -37,8 +41,8 @@ class MavenPackageManager extends PackageManager {
     }
 
     boolean isPackageManagerApplicable(String sourcePath) {
-        def foundExectables = fileFinder.findExecutables(executables)
-        def foundFiles = fileFinder.findFile(sourcePath, POM_FILENAME)
+        def foundExectables = fileFinder.canFindAllExecutables(executables)
+        def foundFiles = fileFinder.containsAllFiles(sourcePath, POM_FILENAME)
         return foundExectables && foundFiles
     }
 
