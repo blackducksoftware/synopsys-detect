@@ -28,7 +28,9 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId;
 import com.blackducksoftware.integration.hub.packman.util.commands.Command;
+import com.blackducksoftware.integration.hub.packman.util.commands.CommandOutput;
 import com.blackducksoftware.integration.hub.packman.util.commands.CommandRunner;
+import com.blackducksoftware.integration.hub.packman.util.commands.CommandRunnerException;
 import com.blackducksoftware.integration.hub.packman.util.commands.Executable;
 
 @Component
@@ -41,24 +43,27 @@ public class PipPackager {
         pipShowMapParser = new PipShowMapParser();
     }
 
-    public List<DependencyNode> makeDependencyNodes(final String sourcePath, final Map<String, Executable> executables) {
+    public List<DependencyNode> makeDependencyNodes(final String sourcePath, final Map<String, Executable> executables) throws CommandRunnerException {
         final List<DependencyNode> projects = new ArrayList<>();
 
         final File sourceDirectory = new File(sourcePath);
-        final CommandRunner commandRunner = new CommandRunner(logger, sourceDirectory);
+        final File setupFile = new File(sourcePath, "setup.py");
+        final Map<String, String> environmentVariables = new HashMap<>();
+        environmentVariables.put("PYTHONIOENCODING", "UTF-8");
+        final CommandRunner commandRunner = new CommandRunner(logger, sourceDirectory, environmentVariables);
 
         final Command installProject = new Command(executables.get("pip"), "install", ".");
-        final Command getProjectName = new Command(executables.get("python"), "setup.py", "--name");
+        final Command getProjectName = new Command(executables.get("python"), setupFile.getAbsolutePath(), "--name");
 
         commandRunner.execute(installProject);
 
         logger.info("Running PIP analysis");
-        final String projectName = commandRunner.executeQuietly(getProjectName).getOutputStream().trim();
+        final String projectName = commandRunner.executeQuietly(getProjectName).getOutput().trim();
         if (projectName.equals("UNKOWN")) {
             logger.error("Could not determine project name. Please make sure it is specified in your setup.py");
         } else {
-            final String pipProjectText = commandRunner.executeQuietly(new Command(executables.get("pip"), "show", projectName)).getOutputStream();
-            final Map<String, String> projectPipShowMap = pipShowMapParser.parse(pipProjectText);
+            final CommandOutput pipProjectOutput = commandRunner.executeQuietly(new Command(executables.get("pip"), "show", projectName));
+            final Map<String, String> projectPipShowMap = pipShowMapParser.parse(pipProjectOutput.getOutput());
             final DependencyNode projectNode = pipShowMapToNode(projectPipShowMap);
             projectNode.children.clear();
             final DependencyNodeBuilder nodeBuilder = new DependencyNodeBuilder(projectNode);
@@ -70,12 +75,13 @@ public class PipPackager {
     }
 
     private DependencyNode dependencyNodeTransformer(final CommandRunner pythonCommandRunner, final DependencyNode rawDependencyNode,
-            final DependencyNodeBuilder nodeBuilder, final Map<String, DependencyNode> allNodes, final Map<String, Executable> executables) {
+            final DependencyNodeBuilder nodeBuilder, final Map<String, DependencyNode> allNodes, final Map<String, Executable> executables)
+            throws CommandRunnerException {
         if (allNodes.containsKey(rawDependencyNode.name.toLowerCase())) {
             return allNodes.get(rawDependencyNode.name.toLowerCase());
         }
 
-        final String pipProjectText = pythonCommandRunner.executeQuietly(new Command(executables.get("pip"), "show", rawDependencyNode.name)).getOutputStream();
+        final String pipProjectText = pythonCommandRunner.executeQuietly(new Command(executables.get("pip"), "show", rawDependencyNode.name)).getOutput();
         final DependencyNode dependencyNode = pipShowMapToNode(pipShowMapParser.parse(pipProjectText));
 
         final List<DependencyNode> children = new ArrayList<>();

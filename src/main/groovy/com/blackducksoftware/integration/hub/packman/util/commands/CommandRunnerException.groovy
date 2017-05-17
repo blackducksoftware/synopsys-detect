@@ -11,16 +11,13 @@
  */
 package com.blackducksoftware.integration.hub.packman.util.commands
 
-class CommandOutput {
-    String output
-    String error
+class CommandRunnerException extends Exception {
 
-    public CommandOutput(String output, String error) {
-        this.output = output
-        this.error = error
+    CommandRunnerException(final Throwable innerException) {
+        super(innerException)
     }
 
-    boolean hasErrors() {
-        error?.trim()
+    CommandRunnerException(final CommandOutput commandOutput) {
+        super("${commandOutput.getOutput()}\n\n${commandOutput.getError()}")
     }
 }

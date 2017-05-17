@@ -16,9 +16,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -28,24 +31,33 @@ public class CommandRunner {
 
     private final File workingDirectory;
 
+    private final Map<String, String> environmentVariables;
+
     public CommandRunner(final Logger logger, final File workingDirectory) {
         this.logger = logger;
         this.workingDirectory = workingDirectory;
+        this.environmentVariables = new HashMap<>();
     }
 
-    public CommandOutput executeQuietly(final Command command) {
+    public CommandRunner(final Logger logger, final File workingDirectory, final Map<String, String> environmentVariables) {
+        this.logger = logger;
+        this.workingDirectory = workingDirectory;
+        this.environmentVariables = environmentVariables;
+    }
+
+    public CommandOutput executeQuietly(final Command command) throws CommandRunnerException {
         return execute(command, true);
     }
 
-    public CommandOutput execute(final Command command) {
+    public CommandOutput execute(final Command command) throws CommandRunnerException {
         return execute(command, false);
     }
 
-    public CommandOutput execute(final Command command, final boolean runQuietly) {
+    public CommandOutput execute(final Command command, final boolean runQuietly) throws CommandRunnerException {
         return executeExactly(runQuietly, command.getExecutable(), command.getArgs());
     }
 
-    private CommandOutput executeExactly(final boolean runQuietly, final Executable executable, final String... args) {
+    private CommandOutput executeExactly(final boolean runQuietly, final Executable executable, final String... args) throws CommandRunnerException {
         // We have to wrap Arrays.asList() because the supplied list does not support adding at an index
         final List<String> arguments = new ArrayList<>(Arrays.asList(args));
         if (executable != null) {
@@ -54,21 +66,26 @@ public class CommandRunner {
 
         final ProcessBuilder processBuilder = new ProcessBuilder(arguments);
         processBuilder.directory(workingDirectory);
+        processBuilder.environment().putAll(environmentVariables);
 
-        logger.debug(String.format("Running command >%s", StringUtils.join(" ", arguments)));
+        logger.debug(String.format("Running command >%s", StringUtils.join(arguments, " ")));
         try {
             Process process;
             process = processBuilder.start();
             final String infoOutput = printStream(process.getInputStream(), runQuietly, false);
             final String errorOutput = printStream(process.getErrorStream(), runQuietly, true);
-            return new CommandOutput(infoOutput, errorOutput);
+            final CommandOutput output = new CommandOutput(infoOutput, errorOutput);
+            if (output.hasErrors()) {
+                throw new CommandRunnerException(output);
+            }
+            return output;
         } catch (final IOException e) {
-            throw new RuntimeException(e);
+            throw new CommandRunnerException(e);
         }
     }
 
     private String printStream(final InputStream inputStream, final boolean runQuietly, final boolean error) {
-        final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+        final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
         final StringBuilder stringBuilder = new StringBuilder();
 
         String line;
