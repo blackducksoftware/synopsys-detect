@@ -27,7 +27,6 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenE
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
 
 public class MavenOutputParserTest {
-
     @Test
     public void mavenParserTest() throws IOException {
         final ExcludedIncludedFilter excludedIncludedFilter = new ExcludedIncludedFilter(null, null);
@@ -37,6 +36,17 @@ public class MavenOutputParserTest {
 
         assertEquals(1, projects.size());
         assertMavenDependencyNodesEqual(getIntegationBdioDependencyNode(), projects.get(0));
+    }
+
+    @Test
+    public void testParsingWebgoatContainer() throws IOException {
+        final ExcludedIncludedFilter excludedIncludedFilter = new ExcludedIncludedFilter(null, null);
+        final MavenOutputParser mavenOutputParser = new MavenOutputParser(excludedIncludedFilter);
+        final String mavenOutput = IOUtils.toString(getClass().getResourceAsStream("/maven/webgoat-container-pom-dependency-tree-output"),
+                StandardCharsets.UTF_8);
+        final List<DependencyNode> projects = mavenOutputParser.parse(mavenOutput);
+
+        assertEquals(1, projects.size());
     }
 
     @Test
