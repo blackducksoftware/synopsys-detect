@@ -12,7 +12,6 @@
 package com.blackducksoftware.integration.hub.packman.util
 
 import org.apache.commons.io.FilenameUtils
-import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -24,15 +23,11 @@ class FileFinder {
     private final Logger logger = LoggerFactory.getLogger(FileFinder.class)
 
     boolean containsAllFiles(final String sourcePath, final String... filenamePatterns) {
-        containsAllFiles(sourcePath, Arrays.asList(filenamePatterns))
-    }
-
-    boolean containsAllFiles(final String sourcePath, final List<String> filenamePatterns) {
-        if (StringUtils.isBlank(sourcePath)) {
+        final File sourceDirectory = new File(sourcePath)
+        if (!sourcePath || !sourceDirectory.isDirectory()) {
             return false
         }
 
-        final File sourceDirectory = new File(sourcePath)
         boolean containsFiles = true
         for (final String filenamePattern : filenamePatterns) {
             final File foundFile = findFile(sourceDirectory, filenamePattern)
@@ -43,6 +38,22 @@ class FileFinder {
             }
         }
         return containsFiles
+    }
+
+    boolean canFindAllExecutables(final Map<String, List<String>> executables) {
+        return canFindAllExecutables(executables, null)
+    }
+
+    boolean canFindAllExecutables(final Map<String, List<String>> executables, String path) {
+        Map<String, String> foundExecutables = findExecutables(executables, path)
+        def foundAll = true
+        executables.each { executable ->
+            if(!foundExecutables[executable.key]) {
+                logger.info("Could not find any of the executables ${executable.value}")
+                foundAll = false
+            }
+        }
+        return foundAll
     }
 
     File findFile(final String sourcePath, final String filenamePattern) {

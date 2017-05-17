@@ -9,31 +9,28 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.packman.PackageManagerType
 import com.blackducksoftware.integration.hub.packman.packagemanager.rubygems.RubygemsPackager
+import com.blackducksoftware.integration.hub.packman.util.FileFinder
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
 
 @Component
 class RubygemsPackageManager extends PackageManager {
-    public static final String GEMFILELOCK_FILENAME = 'Gemfile.lock'
+    @Autowired
+    ProjectInfoGatherer projectInfoGatherer
 
     @Autowired
-    ProjectInfoGatherer projectInfoGatherer;
+    FileFinder fileFinder
 
     PackageManagerType getPackageManagerType() {
         return PackageManagerType.RUBYGEMS
     }
 
     boolean isPackageManagerApplicable(String sourcePath) {
-        File sourceDirectory = new File(sourcePath)
-        if (sourcePath && sourceDirectory.isDirectory()) {
-            File gemlockFile = new File(sourceDirectory, GEMFILELOCK_FILENAME)
-            return gemlockFile.isFile()
-        }
-        false
+        fileFinder.containsAllFiles(sourcePath, 'Gemfile.lock')
     }
 
     List<DependencyNode> extractDependencyNodes(String sourcePath) {
         File sourceDirectory = new File(sourcePath)
-        File gemlockFile = new File(sourceDirectory, GEMFILELOCK_FILENAME)
+        File gemlockFile = new File(sourceDirectory, 'Gemfile.lock')
 
         final InputStream gemlockStream
         try {

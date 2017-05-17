@@ -10,8 +10,6 @@ import com.blackducksoftware.integration.hub.packman.util.FileFinder
 
 @Component
 class CarthagePackageManager extends PackageManager {
-    public static final String RESOLVED_FILENAME = 'Cartfiled.resolved'
-
     @Autowired
     FileFinder fileFinder
 
@@ -23,7 +21,7 @@ class CarthagePackageManager extends PackageManager {
     }
 
     boolean isPackageManagerApplicable(String sourcePath) {
-        return fileFinder.containsAllFiles(sourcePath, RESOLVED_FILENAME)
+        return fileFinder.containsAllFiles(sourcePath, 'Cartfiled.resolved')
     }
 
     List<DependencyNode> extractDependencyNodes(String sourcePath) {

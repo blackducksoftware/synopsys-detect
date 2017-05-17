@@ -31,7 +31,6 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId;
 import com.blackducksoftware.integration.hub.packman.PackageManagerType;
-import com.blackducksoftware.integration.hub.packman.packagemanager.CocoapodsPackageManager;
 import com.blackducksoftware.integration.hub.packman.util.FileFinder;
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer;
 
@@ -49,7 +48,7 @@ public class CocoapodsPackager {
         DependencyNode project = null;
 
         final File sourceDirectory = new File(sourcePath);
-        final File podfileLock = fileFinder.findFile(sourceDirectory, CocoapodsPackageManager.PODFILE_NAME);
+        final File podfileLock = fileFinder.findFile(sourceDirectory, "Podfile.lock");
         final PodLockParser podLockParser = new PodLockParser();
         final String podLockText = FileUtils.readFileToString(podfileLock, StandardCharsets.UTF_8);
         final PodLock podLock = podLockParser.parse(podLockText);
