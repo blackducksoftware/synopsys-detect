@@ -33,7 +33,7 @@ class FileFinder {
             final File foundFile = findFile(sourceDirectory, filenamePattern)
             if (foundFile == null) {
                 containsFiles = false
-                logger.info("Couldn't find a neccesary file: ${filenamePattern} in ${sourcePath}")
+                logger.info("No file detected: ${filenamePattern} in ${sourcePath}")
                 break
             }
         }
@@ -49,7 +49,7 @@ class FileFinder {
         def foundAll = true
         executables.each { executable ->
             if(!foundExecutables[executable.key]) {
-                logger.info("Could not find any of the executables ${executable.value}")
+                logger.info("No executable detected: ${executable.value}")
                 foundAll = false
             }
         }
