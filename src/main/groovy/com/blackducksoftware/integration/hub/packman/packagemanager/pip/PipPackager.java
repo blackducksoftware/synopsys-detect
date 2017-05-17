@@ -53,8 +53,10 @@ public class PipPackager {
         final CommandRunner commandRunner = new CommandRunner(logger, sourceDirectory, environmentVariables);
 
         final Command installProject = new Command(executables.get("pip"), "install", ".");
+        final Command upgradeSetuptools = new Command(executables.get("pip"), "install", "setuptools", "--upgrade");
         final Command getProjectName = new Command(executables.get("python"), setupFile.getAbsolutePath(), "--name");
 
+        commandRunner.execute(upgradeSetuptools);
         commandRunner.execute(installProject);
 
         logger.info("Running PIP analysis");
