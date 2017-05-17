@@ -85,8 +85,10 @@ public class PackageManagerRunner {
         logger.info("Creating " + projectNodes.size() + " project nodes");
         for (final DependencyNode project : projectNodes) {
             final IntegrationEscapeUtil escapeUtil = new IntegrationEscapeUtil();
-            final String safename = escapeUtil.escapeForUri(String.format("%s_%s_%s_bdio", packageManagerType.toString(), project.name, project.version));
-            final String filename = String.format("%s.jsonld", safename);
+            final String safeProjectName = escapeUtil.escapeForUri(project.name);
+            final String safeVersionName = escapeUtil.escapeForUri(project.version);
+            final String safeName = String.format("%s_%s_%s_bdio", packageManagerType.toString(), safeProjectName, safeVersionName);
+            final String filename = String.format("%s.jsonld", safeName);
             final File outputFile = new File(outputDirectory, filename);
             if (outputFile.exists()) {
                 outputFile.delete();
