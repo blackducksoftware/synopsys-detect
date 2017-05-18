@@ -28,28 +28,45 @@ run() {
 }
 
 get_packman() {
+  VERSION_FILE_DESTINATION="${PACKMAN_JAR_PATH}/version.txt"
+  CURRENT_VERSION=""
+  if [ -f $VERSION_FILE_DESTINATION ]; then
+    CURRENT_VERSION=$( <$VERSION_FILE_DESTINATION )
+  fi
+
+  curl -o $VERSION_FILE_DESTINATION https://blackducksoftware.github.io/hub-packman/version.txt
+  LATEST_VERSION=$( <$VERSION_FILE_DESTINATION )
+
+  if [ "$CURRENT_VERSION" = "$LATEST_VERSION" ]; then
+    echo "You have the latest version, the local file will be used."
+    USE_LOCAL=1
+  else
+    echo "You do not have the latest version, so a new file will be downloaded."
+    USE_LOCAL=0
+  fi
+
   if [ $PACKMAN_USE_SNAPSHOT -eq 1 ]; then
-    echo "will use latest ${PACKMAN_LATEST_SNAPSHOT} from remote"
+    echo "will look for snapshot: ${PACKMAN_LATEST_SNAPSHOT}"
     PACKMAN_DESTINATION="${PACKMAN_JAR_PATH}/${PACKMAN_LATEST_SNAPSHOT}"
     PACKMAN_SOURCE=$PACKMAN_LATEST_SNAPSHOT
   else
-    echo "will look for ${PACKMAN_LATEST_RELEASE}"
+    echo "will look for release: ${PACKMAN_LATEST_RELEASE}"
     PACKMAN_DESTINATION="${PACKMAN_JAR_PATH}/${PACKMAN_LATEST_RELEASE}"
     PACKMAN_SOURCE=$PACKMAN_LATEST_RELEASE
   fi
 
-  if [ $PACKMAN_USE_SNAPSHOT -eq 0 ] && [ -f $PACKMAN_DESTINATION ]; then
+  if [ $USE_LOCAL -eq 1 ] && [ -f $PACKMAN_DESTINATION ]; then
     echo "using local ${PACKMAN_DESTINATION}"
   else
     echo "getting ${PACKMAN_SOURCE} from remote"
     curl -o $PACKMAN_DESTINATION https://blackducksoftware.github.io/hub-packman/$PACKMAN_SOURCE
-    echo "saved ${PACKMAN_SOURCE} to ${PACKMAN_DESTINATION}
+    echo "saved ${PACKMAN_SOURCE} to ${PACKMAN_DESTINATION}"
   fi
 }
 
 run_packman() {
   echo "running packman: ${PACKMAN_DESTINATION} ${all_command_line_args}"
-  #java -jar $PACKMAN_DESTINATION $all_command_line_args
+  java -jar $PACKMAN_DESTINATION $all_command_line_args
 }
 
 run
