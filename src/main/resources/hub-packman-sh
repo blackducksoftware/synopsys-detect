@@ -1,0 +1,55 @@
+#!/bin/sh
+
+# These values should be automatically updated by the
+# build process of hub-packman.
+
+PACKMAN_LATEST_RELEASE=hub-packman-0.0.1.jar
+PACKMAN_LATEST_SNAPSHOT=hub-packman-0.0.2-SNAPSHOT.jar
+
+# If you would like to enable the shell script to use
+# the latest snapshot instead of the latest release,
+# specify PACKMAN_USE_SNAPSHOT=1 in your environment.
+# The default is to NOT use snapshots. If you enable
+# snapshots, the jar file will always be downloaded.
+
+PACKMAN_USE_SNAPSHOT=${PACKMAN_USE_SNAPSHOT:-0}
+
+# To override the default location of /tmp, specify
+# your own PACKMAN_JAR_PATH in your environment and
+# *that* location will be used.
+
+PACKMAN_JAR_PATH=${PACKMAN_JAR_PATH:-/tmp}
+
+all_command_line_args=$@
+
+run() {
+  get_packman
+  run_packman
+}
+
+get_packman() {
+  if [ $PACKMAN_USE_SNAPSHOT -eq 1 ]; then
+    echo "will use latest ${PACKMAN_LATEST_SNAPSHOT} from remote"
+    PACKMAN_DESTINATION="${PACKMAN_JAR_PATH}/${PACKMAN_LATEST_SNAPSHOT}"
+    PACKMAN_SOURCE=$PACKMAN_LATEST_SNAPSHOT
+  else
+    echo "will look for ${PACKMAN_LATEST_RELEASE}"
+    PACKMAN_DESTINATION="${PACKMAN_JAR_PATH}/${PACKMAN_LATEST_RELEASE}"
+    PACKMAN_SOURCE=$PACKMAN_LATEST_RELEASE
+  fi
+
+  if [ $PACKMAN_USE_SNAPSHOT -eq 0 ] && [ -f $PACKMAN_DESTINATION ]; then
+    echo "using local ${PACKMAN_DESTINATION}"
+  else
+    echo "getting ${PACKMAN_SOURCE} from remote"
+    curl -o $PACKMAN_DESTINATION https://blackducksoftware.github.io/hub-packman/$PACKMAN_SOURCE
+    echo "saved ${PACKMAN_SOURCE} to ${PACKMAN_DESTINATION}
+  fi
+}
+
+run_packman() {
+  echo "running packman: ${PACKMAN_DESTINATION} ${all_command_line_args}"
+  #java -jar $PACKMAN_DESTINATION $all_command_line_args
+}
+
+run
