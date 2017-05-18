@@ -55,10 +55,10 @@ class PipPackageManager extends PackageManager {
     @PostConstruct
     void init() {
         if(pipThreeOverride) {
-            executables['pip'] = py3Executables['pip'] + executables['pip']
-            executables['python'] = py3Executables['python'] + executables['python']
+            executables['pip'] = py3Executables['pip']
+            executables['python'] = py3Executables['python']
         } else {
-            executables['pip'] =  executables['pip'] + py3Executables['pip']
+            executables['pip'] = executables['pip'] + py3Executables['pip']
             executables['python'] = executables['python'] + py3Executables['python']
         }
     }
@@ -94,13 +94,17 @@ class PipPackageManager extends PackageManager {
         CommandRunner commandRunner = new CommandRunner(logger, sourceDirectory, ["PYTHONIOENCODING":"UTF-8"])
         final Command installVirtualenvPackage = new Command(pip, 'install', 'virtualenv')
 
-        if (createVirtualEnv) {
-            final File virtualEnv = new File(packmanProperties.getOutputDirectoryPath(), 'blackduck_virtualenv')
-            final String virtualEnvBin = getVirtualEnvBin(virtualEnv)
+        final File virtualEnv = new File(packmanProperties.getOutputDirectoryPath(), 'blackduck_virtualenv')
+        final String virtualEnvBin = getVirtualEnvBin(virtualEnv)
 
+        if (createVirtualEnv) {
+            Map<String, String> virtualEnvExecutables
             if (virtualEnvBin && virtualEnv.exists()) {
                 logger.info("Found virtual environment:${virtualEnv.getAbsolutePath()}")
-            } else {
+                virtualEnvExecutables = fileFinder.findExecutables(executables, virtualEnvBin)
+            }
+
+            if (!virtualEnvExecutables) {
                 commandRunner.execute(installVirtualenvPackage)
                 String showPackage = getPackageLocation(commandRunner, pip, 'virtualenv')
                 def createVirtualEnvCommand = new Command(python, "${showPackage}/virtualenv.py", virtualEnv.getAbsolutePath())
@@ -109,6 +113,9 @@ class PipPackageManager extends PackageManager {
             foundExecutables = fileFinder.findExecutables(executables, getVirtualEnvBin(virtualEnv))
         }
         return foundExecutables
+    }
+
+    private void installVirtualEnv() {
     }
 
     private String getVirtualEnvBin(File virtualEnvironmentPath) {

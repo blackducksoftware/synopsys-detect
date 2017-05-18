@@ -90,8 +90,9 @@ class FileFinder {
         executables.each { executableName, executableList ->
             for(String executable : executableList) {
                 Executable current = findExecutable(executable, path)
-                if(current != null) {
+                if(current) {
                     found[executableName] = current
+                    break
                 }
             }
         }
