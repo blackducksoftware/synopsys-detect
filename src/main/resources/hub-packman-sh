@@ -1,10 +1,15 @@
 #!/bin/sh
 
-# These values should be automatically updated by the
-# build process of hub-packman.
+# This value should not be updated - the Jenkins
+# build process will, for ANY snapshot build,
+# override the latest snapshot jar.
 
-PACKMAN_LATEST_RELEASE="**BUILD_SCRIPT_UPDATE_LATEST**"
-PACKMAN_LATEST_SNAPSHOT="**BUILD_SCRIPT_UPDATE_SNAPSHOT**"
+PACKMAN_LATEST_SNAPSHOT=hub-packman-latest-SNAPSHOT.jar
+
+# This value should be automatically updated by the
+# gradle build process for a non-snapshot build.
+PACKMAN_LATEST_RELEASE_VERSION="0.0.1"
+PACKMAN_LATEST_RELEASE="hub-packman-${PACKMAN_LATEST_RELEASE_VERSION}.jar"
 
 # If you would like to enable the shell script to use
 # the latest snapshot instead of the latest release,
@@ -28,22 +33,14 @@ run() {
 }
 
 get_packman() {
-  VERSION_FILE_DESTINATION="${PACKMAN_JAR_PATH}/hub-packman-version.txt"
+  VERSION_FILE_DESTINATION="${PACKMAN_JAR_PATH}/hub-packman-latest-commit-id.txt"
   CURRENT_VERSION=""
   if [ -f $VERSION_FILE_DESTINATION ]; then
     CURRENT_VERSION=$( <$VERSION_FILE_DESTINATION )
   fi
 
-  curl -o $VERSION_FILE_DESTINATION https://blackducksoftware.github.io/hub-packman/version.txt
+  curl -o $VERSION_FILE_DESTINATION https://blackducksoftware.github.io/hub-packman/latest-commit-id.txt
   LATEST_VERSION=$( <$VERSION_FILE_DESTINATION )
-
-  if [ "$CURRENT_VERSION" = "$LATEST_VERSION" ]; then
-    echo "You have the latest version, the local file will be used."
-    USE_LOCAL=1
-  else
-    echo "You do not have the latest version, so a new file will be downloaded."
-    USE_LOCAL=0
-  fi
 
   if [ $PACKMAN_USE_SNAPSHOT -eq 1 ]; then
     echo "will look for snapshot: ${PACKMAN_LATEST_SNAPSHOT}"
@@ -55,9 +52,17 @@ get_packman() {
     PACKMAN_SOURCE=$PACKMAN_LATEST_RELEASE
   fi
 
-  if [ $USE_LOCAL -eq 1 ] && [ -f $PACKMAN_DESTINATION ]; then
-    echo "using local ${PACKMAN_DESTINATION}"
+  USE_REMOTE=1
+  if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ] && [ $PACKMAN_USE_SNAPSHOT -eq 1 ]; then
+    echo "You don't have the latest snapshot, so the new snapshot will be downloaded."
+  elif [ ! -f $PACKMAN_DESTINATION ]; then
+    echo "You don't have the current file, so it will be downloaded."
   else
+    echo "You have already downloaded the latest file, so the local file will be used."
+    USE_REMOTE=0
+  fi
+
+  if [ $USE_REMOTE -eq 1 ]; then
     echo "getting ${PACKMAN_SOURCE} from remote"
     curl -o $PACKMAN_DESTINATION https://blackducksoftware.github.io/hub-packman/$PACKMAN_SOURCE
     echo "saved ${PACKMAN_SOURCE} to ${PACKMAN_DESTINATION}"
