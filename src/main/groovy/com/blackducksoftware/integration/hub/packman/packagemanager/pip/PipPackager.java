@@ -47,21 +47,22 @@ public class PipPackager {
         final List<DependencyNode> projects = new ArrayList<>();
 
         final File sourceDirectory = new File(sourcePath);
-        final File setupFile = new File(sourcePath, "setup.py");
         final Map<String, String> environmentVariables = new HashMap<>();
         environmentVariables.put("PYTHONIOENCODING", "UTF-8");
         final CommandRunner commandRunner = new CommandRunner(logger, sourceDirectory, environmentVariables);
 
-        final Command upgradeSetuptools = new Command(executables.get("pip"), "install", "setuptools", "--upgrade");
         final Command installProject = new Command(executables.get("pip"), "install", ".");
-        final Command getProjectName = new Command(executables.get("python"), setupFile.getAbsolutePath(), "--name");
 
-        commandRunner.execute(upgradeSetuptools);
-        commandRunner.execute(installProject);
+        final CommandOutput installOutput = commandRunner.execute(installProject);
+        String projectName = null;
+        for (final String line : installOutput.getOutput().split("\n")) {
+            if (line.contains("Successfully built")) {
+                projectName = line.replace("Successfully built", "").trim();
+            }
+        }
 
         logger.info("Running PIP analysis");
-        final String projectName = commandRunner.executeQuietly(getProjectName).getOutput().trim();
-        if (projectName.equals("UNKOWN")) {
+        if (StringUtils.isBlank(projectName)) {
             logger.error("Could not determine project name. Please make sure it is specified in your setup.py");
         } else {
             final CommandOutput pipProjectOutput = commandRunner.executeQuietly(new Command(executables.get("pip"), "show", projectName));

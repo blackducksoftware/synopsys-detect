@@ -98,18 +98,10 @@ class PipPackageManager extends PackageManager {
         final String virtualEnvBin = getVirtualEnvBin(virtualEnv)
 
         if (createVirtualEnv) {
-            Map<String, String> virtualEnvExecutables
-            if (virtualEnvBin && virtualEnv.exists()) {
-                logger.info("Found virtual environment:${virtualEnv.getAbsolutePath()}")
-                virtualEnvExecutables = fileFinder.findExecutables(executables, virtualEnvBin)
-            }
-
-            if (!virtualEnvExecutables) {
-                commandRunner.execute(installVirtualenvPackage)
-                String showPackage = getPackageLocation(commandRunner, pip, 'virtualenv')
-                def createVirtualEnvCommand = new Command(python, "${showPackage}/virtualenv.py", virtualEnv.getAbsolutePath())
-                commandRunner.execute(createVirtualEnvCommand)
-            }
+            commandRunner.execute(installVirtualenvPackage)
+            String showPackage = getPackageLocation(commandRunner, pip, 'virtualenv')
+            def createVirtualEnvCommand = new Command(python, "${showPackage}/virtualenv.py", virtualEnv.getAbsolutePath())
+            commandRunner.execute(createVirtualEnvCommand)
             foundExecutables = fileFinder.findExecutables(executables, getVirtualEnvBin(virtualEnv))
         }
         return foundExecutables
