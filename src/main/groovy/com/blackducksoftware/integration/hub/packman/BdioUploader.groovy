@@ -45,6 +45,10 @@ class BdioUploader {
     String hubProxyPassword
 
     void uploadBdioFiles(List<File> createdBdioFiles) {
+        if (!createdBdioFiles) {
+            return
+        }
+
         try {
             HubServerConfig hubServerConfig = createBuilder().build()
             Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
