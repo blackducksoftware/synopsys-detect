@@ -28,7 +28,7 @@ run() {
 }
 
 get_packman() {
-  VERSION_FILE_DESTINATION="${PACKMAN_JAR_PATH}/version.txt"
+  VERSION_FILE_DESTINATION="${PACKMAN_JAR_PATH}/hub-packman-version.txt"
   CURRENT_VERSION=""
   if [ -f $VERSION_FILE_DESTINATION ]; then
     CURRENT_VERSION=$( <$VERSION_FILE_DESTINATION )
