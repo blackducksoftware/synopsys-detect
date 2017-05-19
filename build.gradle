@@ -37,6 +37,7 @@ build {
         def shellScriptFile = new File("${buildDir}/hub-packman.sh")
         shellScriptFile.delete()
         shellScriptFile << shellScriptContents
+        shellScriptFile.setExecutable(true)
     }
 }
 
