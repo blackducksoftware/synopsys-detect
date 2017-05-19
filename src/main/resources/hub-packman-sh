@@ -3,8 +3,8 @@
 # These values should be automatically updated by the
 # build process of hub-packman.
 
-PACKMAN_LATEST_RELEASE=hub-packman-0.0.1.jar
-PACKMAN_LATEST_SNAPSHOT=hub-packman-0.0.2-SNAPSHOT.jar
+PACKMAN_LATEST_RELEASE="**BUILD_SCRIPT_UPDATE_LATEST**"
+PACKMAN_LATEST_SNAPSHOT="**BUILD_SCRIPT_UPDATE_SNAPSHOT**"
 
 # If you would like to enable the shell script to use
 # the latest snapshot instead of the latest release,

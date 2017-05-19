@@ -18,10 +18,27 @@ tasks.withType(JavaCompile) { options.encoding = 'UTF-8' }
 tasks.withType(GroovyCompile) { options.encoding = 'UTF-8' }
 
 group = 'com.blackducksoftware.integration'
+
+// When updating the version, please keep latestReleaseVersion and latestSnapshotVersion updated as well
+// these values will drive the update to the shell script so that consumers of the shell script will get
+// the correct version of the final hub-packman jar. ekerwin @ 2017-05-19
 version = '0.0.2-SNAPSHOT'
+def latestReleaseVersion = '0.0.1'
+def latestSnapshotVersion = '0.0.2-SNAPSHOT'
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
+
+build {
+    doLast {
+        def shellScriptContents = new File("${projectDir}/src/main/resources/hub-packman-sh").getText('UTF-8')
+        shellScriptContents = shellScriptContents.replace('**BUILD_SCRIPT_UPDATE_LATEST**', "hub-packman-${latestReleaseVersion}.jar")
+        shellScriptContents = shellScriptContents.replace('**BUILD_SCRIPT_UPDATE_SNAPSHOT**', "hub-packman-${latestSnapshotVersion}.jar")
+        def shellScriptFile = new File("${buildDir}/hub-packman.sh")
+        shellScriptFile.delete()
+        shellScriptFile << shellScriptContents
+    }
+}
 
 repositories {
     mavenLocal()
@@ -44,3 +61,4 @@ springBoot { mainClass = 'com.blackducksoftware.integration.hub.packman.Applicat
 jacocoTestReport {
     reports { xml.enabled = true }
 }
+
