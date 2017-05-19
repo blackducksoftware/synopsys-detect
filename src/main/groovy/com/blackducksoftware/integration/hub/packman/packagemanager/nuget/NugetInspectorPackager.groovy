@@ -87,7 +87,7 @@ class NugetInspectorPackager {
                 logger.info("Failed to download package from ${v1.toString()}")
             }
         }
-        return downloadFromUrl
+        downloadedFile
     }
 
 
