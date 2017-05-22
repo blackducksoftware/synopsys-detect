@@ -25,6 +25,7 @@ import com.blackducksoftware.integration.hub.packman.PackageManagerType
 import com.blackducksoftware.integration.hub.packman.packagemanager.nuget.NugetInspectorPackager
 import com.blackducksoftware.integration.hub.packman.util.FileFinder
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
+import com.blackducksoftware.integration.hub.packman.util.commands.Executable
 
 @Component
 class NugetPackageManager extends PackageManager {
@@ -49,7 +50,7 @@ class NugetPackageManager extends PackageManager {
     }
 
     boolean isPackageManagerApplicable(String sourcePath) {
-        boolean containsFiles = fileFinder.containsAllFiles(sourcePath, 'packages.config')
+        boolean containsFiles = fileFinder.containsAllFiles(sourcePath, '*.sln')
         boolean foundExectables = fileFinder.canFindAllExecutables(executables)
         boolean OSCompatable = SystemUtils.IS_OS_WINDOWS
         if(containsFiles && !OSCompatable) {
@@ -59,7 +60,8 @@ class NugetPackageManager extends PackageManager {
     }
 
     List<DependencyNode> extractDependencyNodes(String sourcePath) {
-        DependencyNode solution = nugetInspectorPackager.makeDependencyNode(sourcePath)
+        Executable nuget = fileFinder.findExecutables(executables)['nuget']
+        DependencyNode solution = nugetInspectorPackager.makeDependencyNode(sourcePath, nuget)
         if(!solution) {
             logger.info('Unable to extract any dependencies from nuget')
             return []
