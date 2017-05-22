@@ -31,6 +31,7 @@ class NugetNodeTransformer {
     DependencyNode parse(File dependencyNodeFile) {
         final String dependencyNodeJson = dependencyNodeFile.getText(StandardCharsets.UTF_8.name())
         final NugetNode solution = gson.fromJson(dependencyNodeJson, NugetNode.class)
+        nugetNodeTransformer(solution)
     }
 
     private DependencyNode nugetNodeTransformer(final NugetNode node) {
