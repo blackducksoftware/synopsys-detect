@@ -54,7 +54,6 @@ class NugetInspectorPackager {
 
     DependencyNode makeDependencyNode(String sourcePath, Executable nuget) {
         def outputDirectory = new File(packmanProperties.outputDirectoryPath)
-        def dependencyNodeFile = new File(outputDirectory, 'dependencyNodes.json')
         def nugetFolder = new File(outputDirectory, "/${inspectorPackageName}.${inspectorPackageVersion}/tools")
 
         Executable hubNugetInspector = findHubNugetInspector(outputDirectory, nugetFolder, nuget)
@@ -69,9 +68,11 @@ class NugetInspectorPackager {
             logger.info('Something went wrong when running HubNugetInspector')
             return null
         }
-        dependencyNodeFile.delete()
 
-        nugetNodeTransformer.parse(dependencyNodeFile)
+        def dependencyNodeFile = fileFinder.findFile(outputDirectory, '*_dependency_node.json')
+        DependencyNode node = nugetNodeTransformer.parse(dependencyNodeFile)
+        dependencyNodeFile.delete()
+        return node
     }
 
     Executable findHubNugetInspector(File outputDirectory, File nugetFolder, Executable nuget) {
