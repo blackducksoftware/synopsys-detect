@@ -11,20 +11,21 @@
  */
 package com.blackducksoftware.integration.hub.packman.packagemanager.nuget
 
-import java.nio.charset.StandardCharsets
+import javax.annotation.PostConstruct
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
 import com.blackducksoftware.integration.hub.packman.PackmanProperties
 import com.blackducksoftware.integration.hub.packman.util.FileFinder
-import com.google.gson.Gson
+import com.blackducksoftware.integration.hub.packman.util.commands.Command
+import com.blackducksoftware.integration.hub.packman.util.commands.CommandOutput
+import com.blackducksoftware.integration.hub.packman.util.commands.CommandRunner
+import com.blackducksoftware.integration.hub.packman.util.commands.Executable
 
 @Component
 class NugetInspectorPackager {
@@ -34,69 +35,61 @@ class NugetInspectorPackager {
     PackmanProperties packmanProperties
 
     @Autowired
-    Gson gson
-
-    @Autowired
     FileFinder fileFinder
 
-    DependencyNode makeDependencyNode(String sourcePath) {
+    @Autowired
+    NugetNodeTransformer nugetNodeTransformer
+
+    @Value('${packman.nuget.inspector.name}')
+    String inspectorPackageName
+
+    @Value('${packman.nuget.inspector.version}')
+    String inspectorPackageVersion
+
+    @PostConstruct
+    void init() {
+        inspectorPackageName = inspectorPackageName.trim()
+        inspectorPackageVersion = inspectorPackageVersion.trim()
+    }
+
+    DependencyNode makeDependencyNode(String sourcePath, Executable nuget) {
         def outputDirectory = new File(packmanProperties.outputDirectoryPath)
         def dependencyNodeFile = new File(outputDirectory, 'dependencyNodes.json')
-        def nugetInspectorExe = new File(getClass().getResource('nuget/HubNugetInspecter.exe').toURI())
+        def nugetFolder = new File(outputDirectory, "/${inspectorPackageName}.${inspectorPackageVersion}/tools")
 
-        File hubInspectorNupkg = fetchFromNuget(outputDirectory, 'HubNugetInspector')
-        if(hubInspectorNupkg) {
-            // TODO: We need to extract the executable from the nupkg file
-            // nugetInspectorExe = new File()
+        Executable hubNugetInspector = findHubNugetInspector(outputDirectory, nugetFolder, nuget)
+        if(!hubNugetInspector) {
+            return null
         }
 
-        String command = "${nugetInspectorExe.getAbsolutePath()} --target_path=${sourcePath} --output_directory=${outputDirectory.getAbsolutePath()}"
-        command.execute()
-        String dependencyNodeJson = dependencyNodeFile.getText(StandardCharsets.UTF_8.name())
-        NugetNode solution = gson.fromJson(dependencyNodeJson, NugetNode.class)
-
+        def commandRunner = new CommandRunner(logger, outputDirectory)
+        def hubNugetInspectorCommand = new Command(hubNugetInspector, "--target_path=${sourcePath}", "--output_directory=${outputDirectory.getAbsolutePath()}")
+        CommandOutput commandOutput = commandRunner.execute(hubNugetInspectorCommand)
+        if(commandOutput.hasErrors()) {
+            logger.info('Something went wrong when running HubNugetInspector')
+            return null
+        }
         dependencyNodeFile.delete()
-        nugetNodeTransformer(solution)
+
+        nugetNodeTransformer.parse(dependencyNodeFile)
     }
 
-    DependencyNode nugetNodeTransformer(NugetNode node) {
-        String name = node.artifact
-        String version = node.version
-        ExternalId externalId = new NameVersionExternalId(Forge.nuget, name, version)
-        DependencyNode dependencyNode = new DependencyNode(name, version, externalId)
-        node.children.each {
-            dependencyNode.children.add(nugetNodeTransformer(it))
+    Executable findHubNugetInspector(File outputDirectory, File nugetFolder, Executable nuget) {
+        if(!nugetFolder.exists() && fetchFromNuget(outputDirectory, nuget).hasErrors()) {
+            logger.info('Failed to install HubNugetInspector')
+        } else {
+            return fileFinder.findExecutable('IntegrationNugetInspector.exe', nugetFolder.getAbsolutePath())
         }
-        dependencyNode
+        null
     }
 
-    File fetchFromNuget(File outputDirectory, String nugetPackageName) {
-        def outputFile = new File(outputDirectory, "${nugetPackageName}.nupkg")
-        URL v1 = new URL("https://www.nuget.org/api/v1/package/${nugetPackageName}")
-        URL v2 = new URL("https://www.nuget.org/api/v2/package/${nugetPackageName}")
-        File downloadedFile
-        try{
-            downloadedFile = downloadFromUrl(outputFile, v2)
-        }catch (IOException e) {
-            logger.info("Failed to download package from ${v2.toString()}")
-        }
-        if(!downloadedFile) {
-            try{
-                downloadedFile = downloadFromUrl(outputFile, v1)
-            }catch (IOException e) {
-                logger.info("Failed to download package from ${v1.toString()}")
-            }
-        }
-        downloadedFile
-    }
-
-
-    void downloadFromUrl(File outputFile, URL url) throws IOException {
-        logger.info("Attempting to download file from ${url.toString()}")
-        InputStream fileStream = url.openStream()
-        def outputStream = new FileOutputStream(outputFile)
-        outputStream.write(fileStream.getBytes())
-        outputStream.close()
-        logger.info("Succesfully downloaded file from ${url.toString()} to ${outputFile.getAbsolutePath()}")
+    CommandOutput fetchFromNuget(File outputDirectory, Executable nuget) {
+        def commandRunner = new CommandRunner(logger, outputDirectory)
+        def installCommand = new Command(
+                nuget,
+                'install', inspectorPackageName,
+                '-Version', inspectorPackageVersion,
+                '-OutputDirectory', outputDirectory.getAbsolutePath())
+        commandRunner.execute(installCommand)
     }
 }

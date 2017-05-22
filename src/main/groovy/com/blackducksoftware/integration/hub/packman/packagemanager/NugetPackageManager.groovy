@@ -42,21 +42,29 @@ class NugetPackageManager extends PackageManager {
     @Value('${packman.nuget.aggregate}')
     boolean aggregateBom
 
+    def executables = [nuget: ["NuGet.exe"]]
+
     PackageManagerType getPackageManagerType() {
         return PackageManagerType.NUGET
     }
 
     boolean isPackageManagerApplicable(String sourcePath) {
         boolean containsFiles = fileFinder.containsAllFiles(sourcePath, 'packages.config')
+        boolean foundExectables = fileFinder.canFindAllExecutables(executables)
         boolean OSCompatable = SystemUtils.IS_OS_WINDOWS
         if(containsFiles && !OSCompatable) {
-            logger.info('Could not execute Nuget Inspector on a non-windows system')
+            logger.info('Can not execute HubNugetInspector on a non-windows system')
         }
-        containsFiles && OSCompatable
+        containsFiles && OSCompatable && foundExectables
     }
 
     List<DependencyNode> extractDependencyNodes(String sourcePath) {
         DependencyNode solution = nugetInspectorPackager.makeDependencyNode(sourcePath)
+        if(!solution) {
+            logger.info('Unable to extract any dependencies from nuget')
+            return []
+        }
+
         solution.name = projectInfoGatherer.getDefaultProjectName(PackageManagerType.NUGET, sourcePath, solution.name)
         solution.version = projectInfoGatherer.getDefaultProjectVersionName(solution.version)
         solution.externalId = new NameVersionExternalId(Forge.nuget, solution.name, solution.version)
