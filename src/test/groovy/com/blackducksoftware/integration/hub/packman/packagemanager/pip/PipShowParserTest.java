@@ -18,31 +18,37 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
-
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
-import com.blackducksoftware.integration.hub.packman.packagemanager.pip.PipShowParser;
 
 public class PipShowParserTest {
 
     @Test
     public void pipShowParserTest() throws IOException {
-        final PipShowParser pipShowParser = new PipShowParser();
-        final String sampleText = IOUtils.toString(getClass().getResourceAsStream("/pip/pipShowSample.txt"), StandardCharsets.UTF_8);
-        final DependencyNode pipPackage = pipShowParser.parse(sampleText);
+        final PipShowMapParser pipShowParser = new PipShowMapParser();
 
+        final String sampleText = IOUtils.toString(getClass().getResourceAsStream("/pip/pipShowSample.txt"), StandardCharsets.UTF_8);
+        final Map<String, String> pipPackage = pipShowParser.parse(sampleText);
         final List<String> expectedRequirements = new ArrayList<>();
         expectedRequirements.add("Delorean");
         expectedRequirements.add("pynamodb");
 
-        assertEquals("blackduck-sample-project", pipPackage.name);
-        assertEquals("0.0.9", pipPackage.version);
-        assertEquals(expectedRequirements.size(), pipPackage.children.size());
+        assertEquals("blackduck-sample-project", pipPackage.get("Name"));
+        assertEquals("0.0.9", pipPackage.get("Version"));
+        assertEquals("A sample project for using the hub-pip", pipPackage.get("Summary"));
+        assertEquals("https://github.com/blackducksoftware/hub_python_plugin", pipPackage.get("Home-page"));
+        assertEquals("Black Duck Software", pipPackage.get("Author"));
+        assertEquals("UNKNOWN", pipPackage.get("Author-email"));
+        assertEquals("Apache 2.0", pipPackage.get("License"));
+        assertEquals("/usr/local/lib/python2.7/site-packages", pipPackage.get("Location"));
+        assertEquals(9, pipPackage.size());
 
-        for (final DependencyNode requirement : pipPackage.children) {
-            assertTrue(expectedRequirements.contains(requirement.name));
+        final String[] requirements = pipPackage.get("Requires").split(",");
+        assertEquals(2, expectedRequirements.size());
+        for (final String requirement : requirements) {
+            assertTrue(expectedRequirements.contains(requirement.trim()));
         }
     }
 }

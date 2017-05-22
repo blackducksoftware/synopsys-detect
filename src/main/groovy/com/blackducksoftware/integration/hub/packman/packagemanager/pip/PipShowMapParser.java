@@ -39,7 +39,7 @@ public class PipShowMapParser {
         if (line.contains(objectIdenetifier)) {
             final List<String> lineSegments = new ArrayList<>(Arrays.asList(line.split(objectIdenetifier)));
             final String key = lineSegments.remove(0).trim();
-            final String value = StringUtils.join(lineSegments, objectIdenetifier);
+            final String value = StringUtils.join(lineSegments, objectIdenetifier).trim();
             entry = new AbstractMap.SimpleEntry<>(key, value);
         } else {
             final String key = line.trim();
