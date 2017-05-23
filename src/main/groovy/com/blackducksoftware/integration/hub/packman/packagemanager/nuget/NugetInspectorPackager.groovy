@@ -46,6 +46,12 @@ class NugetInspectorPackager {
     @Value('${packman.nuget.inspector.version}')
     String inspectorPackageVersion
 
+    @Value('${packman.nuget.excluded.modules}')
+    String inspectorExcludedModules
+
+    @Value('${packman.nuget.ingore.failure}')
+    boolean inspectorIgnoreFailure
+
     @PostConstruct
     void init() {
         inspectorPackageName = inspectorPackageName.trim()
@@ -61,8 +67,20 @@ class NugetInspectorPackager {
             return null
         }
 
+        String[] options =  [
+            "--target_path=${sourcePath}",
+            "--output_directory=${outputDirectory.getAbsolutePath()}",
+            "--ignore_failure=${inspectorIgnoreFailure}"
+        ]
+        if(inspectorExcludedModules) {
+            options += "--excluded_modules=${inspectorExcludedModules}"
+        }
+        if(logger.traceEnabled) {
+            options += "-v"
+        }
+
+        def hubNugetInspectorCommand = new Command(hubNugetInspector, options)
         def commandRunner = new CommandRunner(logger, outputDirectory)
-        def hubNugetInspectorCommand = new Command(hubNugetInspector, "--target_path=${sourcePath}", "--output_directory=${outputDirectory.getAbsolutePath()}")
         CommandOutput commandOutput = commandRunner.execute(hubNugetInspectorCommand)
         if(commandOutput.hasErrors()) {
             logger.info('Something went wrong when running HubNugetInspector')

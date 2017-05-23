@@ -20,4 +20,9 @@ class Command {
         this.executable = executable
         this.args = args
     }
+
+    Command(final Executable executable, final List<String> args) {
+        this.executable = executable
+        this.args = args.toArray()
+    }
 }
