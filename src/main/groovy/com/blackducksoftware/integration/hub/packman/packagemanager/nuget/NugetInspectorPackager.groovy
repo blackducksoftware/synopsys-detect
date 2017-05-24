@@ -49,7 +49,7 @@ class NugetInspectorPackager {
     @Value('${packman.nuget.excluded.modules}')
     String inspectorExcludedModules
 
-    @Value('${packman.nuget.ingore.failure}')
+    @Value('${packman.nuget.ignore.failure}')
     boolean inspectorIgnoreFailure
 
     @PostConstruct

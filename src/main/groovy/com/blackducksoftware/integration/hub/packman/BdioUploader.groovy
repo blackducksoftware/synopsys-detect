@@ -44,14 +44,18 @@ class BdioUploader {
     @Value('${packman.hub.proxy.password}')
     String hubProxyPassword
 
+    @Value('${packman.hub.insecure}')
+    String hubInsecure
+
+
     void uploadBdioFiles(List<File> createdBdioFiles) {
         if (!createdBdioFiles) {
             return
         }
 
         try {
-            HubServerConfig hubServerConfig = createBuilder().build()
             Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
+            HubServerConfig hubServerConfig = createBuilder(slf4jIntLogger).build()
             RestConnection restConnection = hubServerConfig.createCredentialsRestConnection(slf4jIntLogger)
 
             HubServicesFactory hubServicesFactory = new HubServicesFactory(restConnection);
@@ -70,7 +74,7 @@ class BdioUploader {
         }
     }
 
-    private HubServerConfigBuilder createBuilder() {
+    private HubServerConfigBuilder createBuilder(Slf4jIntLogger slf4jIntLogger) {
         HubServerConfigBuilder hubServerConfigBuilder = new HubServerConfigBuilder()
         hubServerConfigBuilder.setHubUrl(hubUrl)
         hubServerConfigBuilder.setTimeout(hubTimeout)
@@ -81,6 +85,9 @@ class BdioUploader {
         hubServerConfigBuilder.setProxyPort(hubProxyPort)
         hubServerConfigBuilder.setProxyUsername(hubProxyUsername)
         hubServerConfigBuilder.setProxyPassword(hubProxyPassword)
+
+        hubServerConfigBuilder.setAutoImportHttpsCertificates(Boolean.valueOf(hubInsecure))
+        hubServerConfigBuilder.setLogger(slf4jIntLogger)
 
         hubServerConfigBuilder
     }
