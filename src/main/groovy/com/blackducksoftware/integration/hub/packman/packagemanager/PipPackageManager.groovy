@@ -3,7 +3,6 @@ package com.blackducksoftware.integration.hub.packman.packagemanager
 import javax.annotation.PostConstruct
 
 import org.apache.commons.lang3.SystemUtils
-import org.apache.commons.lang3.reflect.MemberUtils.Executable
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -90,7 +89,7 @@ class PipPackageManager extends PackageManager {
 
     List<DependencyNode> extractDependencyNodes(String sourcePath) {
         try {
-            Map<String, Executable> foundExecutables = setupEnvironment(sourcePath)
+            setupEnvironment(sourcePath)
             return pipPackager.makeDependencyNodes(sourcePath, pipCommand, pythonCommand, envVariables)
         } catch (CommandRunnerException e) {
             def message = 'An error occured when trying to extract python dependencies'
@@ -99,10 +98,10 @@ class PipPackageManager extends PackageManager {
         return null
     }
 
-    private setupEnvironment(String sourcePath) throws CommandRunnerException {
+    private void setupEnvironment(String sourcePath) throws CommandRunnerException {
         File sourceDirectory = new File(sourcePath)
         CommandRunner commandRunner = new CommandRunner()
-        Command installVirtualenvPackage = new Command(sourceDirectory, pipCommand, 'install', 'virtualenv')
+        Command installVirtualenvPackage = new Command(sourceDirectory, pipCommand, Arrays.asList('install', 'virtualenv'))
 
         File virtualEnv = new File(packmanProperties.getOutputDirectoryPath(), 'blackduck_virtualenv')
         String virtualEnvBin = new File(virtualEnv, binFolderName).getAbsolutePath()
@@ -110,7 +109,11 @@ class PipPackageManager extends PackageManager {
         if (createVirtualEnv) {
             commandRunner.executeLoudly(installVirtualenvPackage)
             String virtualEnvLocation = getPackageLocation(sourceDirectory, 'virtualenv')
-            def createVirtualEnvCommand = new Command(sourceDirectory, pythonCommand, "${virtualEnvLocation}/virtualenv.py", virtualEnv.getAbsolutePath())
+            List<String> commandArgs = [
+                "${virtualEnvLocation}/virtualenv.py",
+                virtualEnv.absolutePath
+            ]
+            def createVirtualEnvCommand = new Command(sourceDirectory, pythonCommand, commandArgs)
             commandRunner.executeLoudly(createVirtualEnvCommand)
             pythonCommand = commandManager.getPathOfCommand(virtualEnvBin, pythonCommandType)
             pipCommand = commandManager.getPathOfCommand(virtualEnvBin, pipCommandType)
@@ -118,7 +121,7 @@ class PipPackageManager extends PackageManager {
     }
 
     String getPackageLocation(File sourceDirectory, String packageName) throws CommandRunnerException {
-        def showPackage = new Command(sourceDirectory, envVariables, pipCommand, 'show', packageName)
+        def showPackage = new Command(sourceDirectory, envVariables, pipCommand, Arrays.asList('show', packageName))
         CommandOutput pipShowResults = commandRunner.executeQuietly(showPackage)
         def pipShowParser = new PipShowMapParser()
         Map<String, String> map = pipShowParser.parse(pipShowResults.getStandardOutput())

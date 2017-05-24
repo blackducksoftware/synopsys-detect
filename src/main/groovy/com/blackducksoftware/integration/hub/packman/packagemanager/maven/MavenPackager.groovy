@@ -57,7 +57,7 @@ public class MavenPackager {
         final List<DependencyNode> projects = []
 
         File sourceDirectory = new File(sourcePath)
-        final Command mvnCommand = new Command(sourceDirectory, mavenCommand, "dependency:tree")
+        final Command mvnCommand = new Command(sourceDirectory, mavenCommand, ["dependency:tree"])
         final CommandOutput mvnOutput = commandRunner.execute(mvnCommand)
 
         final MavenOutputParser mavenOutputParser = new MavenOutputParser(excludedIncludedFilter)

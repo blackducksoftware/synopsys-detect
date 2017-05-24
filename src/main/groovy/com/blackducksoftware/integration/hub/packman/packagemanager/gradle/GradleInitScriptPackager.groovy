@@ -54,7 +54,10 @@ class GradleInitScriptPackager {
         initScriptFile << initScriptContents
         String initScriptPath = initScriptFile.absolutePath
         logger.info("using ${initScriptPath} as the path for the gradle init script")
-        Command command = new Command(new File(sourcePath), gradleCommand, gradleBuildCommand, "--init-script=${initScriptPath}")
+        Command command = new Command(new File(sourcePath), gradleCommand, [
+            gradleBuildCommand,
+            "--init-script=${initScriptPath}"
+        ])
         commandRunner.executeLoudly(command)
 
         File buildDirectory = new File(sourcePath, 'build')

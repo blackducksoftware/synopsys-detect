@@ -13,6 +13,7 @@ package com.blackducksoftware.integration.hub.packman.packagemanager.pip;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +54,7 @@ public class PipPackager {
         final List<DependencyNode> projects = new ArrayList<>();
 
         final File sourceDirectory = new File(sourcePath);
-        final Command installProject = new Command(sourceDirectory, environmentVariables, pipCommand, "install", ".");
+        final Command installProject = new Command(sourceDirectory, environmentVariables, pipCommand, Arrays.asList("install", "."));
 
         final CommandOutput installOutput = commandRunner.executeLoudly(installProject);
         String projectName = null;
@@ -67,7 +68,7 @@ public class PipPackager {
         if (StringUtils.isBlank(projectName)) {
             logger.error("Could not determine project name. Please make sure it is specified in your setup.py");
         } else {
-            final Command pipShowCommand = new Command(sourceDirectory, environmentVariables, pipCommand, "show", projectName);
+            final Command pipShowCommand = new Command(sourceDirectory, environmentVariables, pipCommand, Arrays.asList("show", projectName));
             final CommandOutput pipProjectOutput = commandRunner.executeQuietly(pipShowCommand);
             final Map<String, String> projectPipShowMap = pipShowMapParser.parse(pipProjectOutput.getStandardOutput());
             final DependencyNode projectNode = pipShowMapToNode(projectPipShowMap);
@@ -86,7 +87,7 @@ public class PipPackager {
         if (allNodes.containsKey(rawDependencyNode.name.toLowerCase())) {
             return allNodes.get(rawDependencyNode.name.toLowerCase());
         }
-        final Command pipShowCommand = new Command(sourceDirectory, environmentVariables, pipCommand, "show", rawDependencyNode.name);
+        final Command pipShowCommand = new Command(sourceDirectory, environmentVariables, pipCommand, Arrays.asList("show", rawDependencyNode.name));
         final String pipProjectText = commandRunner.executeQuietly(pipShowCommand).getStandardOutput();
         final DependencyNode dependencyNode = pipShowMapToNode(pipShowMapParser.parse(pipProjectText));
 
