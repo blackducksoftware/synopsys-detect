@@ -9,7 +9,7 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.util.commands
+package com.blackducksoftware.integration.hub.packman.util.command
 
 class CommandRunnerException extends Exception {
 

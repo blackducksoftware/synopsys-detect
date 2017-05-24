@@ -15,12 +15,12 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.packman.PackageManagerType
+import com.blackducksoftware.integration.hub.packman.type.PackageManagerType
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
-import com.blackducksoftware.integration.hub.packman.util.commands.Command
-import com.blackducksoftware.integration.hub.packman.util.commands.CommandOutput
-import com.blackducksoftware.integration.hub.packman.util.commands.CommandRunner
-import com.blackducksoftware.integration.hub.packman.util.commands.Executable
+import com.blackducksoftware.integration.hub.packman.util.command.Command
+import com.blackducksoftware.integration.hub.packman.util.command.CommandOutput
+import com.blackducksoftware.integration.hub.packman.util.command.CommandRunner
+import com.blackducksoftware.integration.hub.packman.util.command.Executable
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter
 
 public class MavenPackager {

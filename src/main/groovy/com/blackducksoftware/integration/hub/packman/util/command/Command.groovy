@@ -9,14 +9,20 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.util.commands
+package com.blackducksoftware.integration.hub.packman.util.command
 
-class Executable {
-    String original
-    String found
+class Command {
+    final Executable executable
 
-    public Executable(String original, String found){
-        this.original = original
-        this.found = found
+    final String[] args
+
+    Command(final Executable executable, final String... args) {
+        this.executable = executable
+        this.args = args
+    }
+
+    Command(final Executable executable, final List<String> args) {
+        this.executable = executable
+        this.args = args.toArray()
     }
 }

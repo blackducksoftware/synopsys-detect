@@ -30,6 +30,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeTransform
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.SimpleBdioDocument;
 import com.blackducksoftware.integration.hub.packman.packagemanager.PackageManager;
+import com.blackducksoftware.integration.hub.packman.type.PackageManagerType;
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
 import com.google.gson.Gson;
 

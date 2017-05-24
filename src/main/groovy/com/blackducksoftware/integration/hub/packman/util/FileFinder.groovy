@@ -16,8 +16,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.packman.util.commands.Executable
-
 @Component
 class FileFinder {
     private final Logger logger = LoggerFactory.getLogger(FileFinder.class)
@@ -79,57 +77,6 @@ class FileFinder {
         }
 
         foundFiles[0]
-    }
-
-    Map<String, Executable> findExecutables(final Map<String, List<String>> executables) {
-        findExecutables(executables, null)
-    }
-
-    Map<String, Executable> findExecutables(final Map<String, List<String>> executables, String path) {
-        Map<String, Executable> found = [:]
-        executables.each { executableName, executableList ->
-            for(String executable : executableList) {
-                Executable current = findExecutable(executable, path)
-                if(current) {
-                    found[executableName] = current
-                    break
-                }
-            }
-        }
-        found
-    }
-
-    Executable findExecutable(final String executable) {
-        def found = findExecutablePath(executable, null)
-    }
-
-    Executable findExecutable(final String executable, final String path) {
-        def found = null
-        if(path) {
-            found = findExecutablePath(executable, path)
-        } else {
-            found = findExecutablePath(executable)
-        }
-
-        if(found) {
-            return new Executable(executable, found)
-        }
-        null
-    }
-
-    String findExecutablePath(final String executable) {
-        String systemPath = System.getenv("PATH")
-        return findExecutablePath(executable, systemPath)
-    }
-
-    String findExecutablePath(final String executable, final String path) {
-        for (String pathPiece : path.split(File.pathSeparator)) {
-            File foundFile = findFile(pathPiece, executable)
-            if (foundFile && foundFile.canExecute()) {
-                return foundFile.absolutePath
-            }
-        }
-        null
     }
 
     Map<String, String> findFolders(Map<String, List<String>> folderMap, String path) {

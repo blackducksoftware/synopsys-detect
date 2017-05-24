@@ -2,7 +2,6 @@ package com.blackducksoftware.integration.hub.packman.packagemanager.gradle
 
 import java.nio.charset.StandardCharsets
 
-import org.apache.commons.lang3.SystemUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -10,7 +9,8 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.packman.util.FileFinder
+import com.blackducksoftware.integration.hub.packman.type.CommandType
+import com.blackducksoftware.integration.hub.packman.util.command.CommandManager
 import com.google.gson.Gson
 
 @Component
@@ -39,24 +39,17 @@ class GradleInitScriptPackager {
     Gson gson
 
     @Autowired
-    FileFinder fileFinder
+    CommandManager commandManager
 
     DependencyNode extractRootProjectNode(String sourcePath) {
-        def gradlewCommand = 'gradlew'
-        def gradleCommand = 'gradle'
-        if (SystemUtils.IS_OS_WINDOWS) {
-            gradlewCommand = "${gradlewCommand}.bat"
-            gradleCommand = "${gradleCommand}.bat"
-        }
-
         if (!gradlePath) {
             logger.info('packman.gradle.path not set in config - first try to find the gradle wrapper')
-            gradlePath = fileFinder.findExecutablePath(gradlewCommand, sourcePath)
+            gradlePath = commandManager.getPathOfCommand(sourcePath, CommandType.GRADLEW)
         }
 
         if (!gradlePath) {
             logger.info('gradle wrapper not found - trying to find gradle on the PATH')
-            gradlePath = fileFinder.findExecutablePath(gradleCommand)
+            gradlePath = commandManager.getPathOfCommand(CommandType.GRADLE)
         }
 
         File initScriptFile = File.createTempFile('init-packman', '.gradle')

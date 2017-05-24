@@ -27,11 +27,11 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId;
-import com.blackducksoftware.integration.hub.packman.util.commands.Command;
-import com.blackducksoftware.integration.hub.packman.util.commands.CommandOutput;
-import com.blackducksoftware.integration.hub.packman.util.commands.CommandRunner;
-import com.blackducksoftware.integration.hub.packman.util.commands.CommandRunnerException;
-import com.blackducksoftware.integration.hub.packman.util.commands.Executable;
+import com.blackducksoftware.integration.hub.packman.util.command.Command;
+import com.blackducksoftware.integration.hub.packman.util.command.CommandOutput;
+import com.blackducksoftware.integration.hub.packman.util.command.CommandRunner;
+import com.blackducksoftware.integration.hub.packman.util.command.CommandRunnerException;
+import com.blackducksoftware.integration.hub.packman.util.command.Executable;
 
 @Component
 public class PipPackager {

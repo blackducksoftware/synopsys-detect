@@ -22,10 +22,10 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.packman.PackmanProperties
 import com.blackducksoftware.integration.hub.packman.util.FileFinder
-import com.blackducksoftware.integration.hub.packman.util.commands.Command
-import com.blackducksoftware.integration.hub.packman.util.commands.CommandOutput
-import com.blackducksoftware.integration.hub.packman.util.commands.CommandRunner
-import com.blackducksoftware.integration.hub.packman.util.commands.Executable
+import com.blackducksoftware.integration.hub.packman.util.command.Command
+import com.blackducksoftware.integration.hub.packman.util.command.CommandOutput
+import com.blackducksoftware.integration.hub.packman.util.command.CommandRunner
+import com.blackducksoftware.integration.hub.packman.util.command.Executable
 
 @Component
 class NugetInspectorPackager {

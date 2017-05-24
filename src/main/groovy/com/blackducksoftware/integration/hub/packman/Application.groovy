@@ -32,13 +32,7 @@ class Application {
     private final Logger logger = LoggerFactory.getLogger(Application.class)
 
     @Autowired
-    BdioPropertyHelper bdioPropertyHelper
-
-    @Autowired
-    BdioNodeFactory bdioNodeFactory
-
-    @Autowired
-    PackageManagerRunner parser
+    PackageManagerRunner packageManagerRunner
 
     @Autowired
     BdioUploader bdioUploader
@@ -49,7 +43,7 @@ class Application {
 
     @PostConstruct
     void init() {
-        List<File> createdBdioFiles = parser.createBdioFiles()
+        List<File> createdBdioFiles = packageManagerRunner.createBdioFiles()
         bdioUploader.uploadBdioFiles(createdBdioFiles)
     }
 

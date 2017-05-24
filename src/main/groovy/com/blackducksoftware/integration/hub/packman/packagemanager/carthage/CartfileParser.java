@@ -17,7 +17,6 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 
 public class CartfileParser {
     public List<DependencyNode> parse(final String cartfile) {
-
         return null;
     }
 }

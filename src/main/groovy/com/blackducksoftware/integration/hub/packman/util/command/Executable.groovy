@@ -9,18 +9,14 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.util.commands
+package com.blackducksoftware.integration.hub.packman.util.command
 
-class CommandOutput {
-    String output
-    String error
+class Executable {
+    String original
+    String found
 
-    public CommandOutput(String output, String error) {
-        this.output = output
-        this.error = error
-    }
-
-    boolean hasErrors() {
-        error?.trim()
+    public Executable(String original, String found){
+        this.original = original
+        this.found = found
     }
 }
