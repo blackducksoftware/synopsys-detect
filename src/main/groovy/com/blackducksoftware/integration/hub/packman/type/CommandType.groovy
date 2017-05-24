@@ -16,7 +16,15 @@ enum CommandType {
         this.osToCommandMap.putAll(osToCommandMap)
     }
 
+    /**
+     * If an operating system specific command is not present, the linux command, which could itself not be present, will be returned.
+     */
     public String getCommand(OperatingSystemType operatingSystemType) {
-        osToCommandMap[operatingSystemType]
+        String osSpecificCommand = osToCommandMap[operatingSystemType]
+        if (osSpecificCommand) {
+            return osSpecificCommand
+        } else {
+            return osToCommandMap[OperatingSystemType.LINUX]
+        }
     }
 }
