@@ -68,13 +68,18 @@ public class PackageManagerRunner {
             for (final String sourcePath : sourcePaths) {
                 final String packageManagerName = packageManager.getPackageManagerType().toString().toLowerCase();
                 logger.info(String.format("Searching source path for %s: %s", packageManagerName, sourcePath));
-                if (packageManager.isPackageManagerApplicable(sourcePath)) {
-                    logger.info(String.format("Found files for %s", packageManagerName));
-                    final List<DependencyNode> projectNodes = packageManager.extractDependencyNodes(sourcePath);
-                    if (projectNodes != null && projectNodes.size() > 0) {
-                        foundSomePackageManagers = true;
-                        createOutput(createdBdioFiles, packageManager.getPackageManagerType(), projectNodes);
+                try {
+                    if (packageManager.isPackageManagerApplicable(sourcePath)) {
+                        logger.info(String.format("Found files for %s", packageManagerName));
+                        final List<DependencyNode> projectNodes = packageManager.extractDependencyNodes(sourcePath);
+                        if (projectNodes != null && projectNodes.size() > 0) {
+                            foundSomePackageManagers = true;
+                            createOutput(createdBdioFiles, packageManager.getPackageManagerType(), projectNodes);
+                        }
                     }
+                } catch (final Exception e) {
+                    logger.error(String.format("Error running package manager %s for sourcePath %s: %s", packageManager.getPackageManagerType().toString(),
+                            sourcePath, e.getMessage()));
                 }
             }
         }

@@ -1,26 +1,11 @@
-/*
- * Copyright (C) 2017 Black Duck Software Inc.
- * http://www.blackducksoftware.com/
- * All rights reserved.
- *
- * This software is the confidential and proprietary information of
- * Black Duck Software ("Confidential Information"). You shall not
- * disclose such Confidential Information and shall use it only in
- * accordance with the terms of the license agreement you entered into
- * with Black Duck Software.
- */
 package com.blackducksoftware.integration.hub.packman.util.command
 
 class CommandOutput {
-    String output
-    String error
+    final String standardOutput
+    final String errorOutput
 
-    public CommandOutput(String output, String error) {
-        this.output = output
-        this.error = error
-    }
-
-    boolean hasErrors() {
-        error?.trim()
+    public CommandOutput(final String standardOutput, final String errorOutput) {
+        this.standardOutput = standardOutput
+        this.errorOutput = errorOutput
     }
 }

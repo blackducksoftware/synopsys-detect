@@ -9,8 +9,9 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.packman.type.CommandType
+import com.blackducksoftware.integration.hub.packman.util.command.Command
 import com.blackducksoftware.integration.hub.packman.util.command.CommandManager
+import com.blackducksoftware.integration.hub.packman.util.command.CommandRunner
 import com.google.gson.Gson
 
 @Component
@@ -38,6 +39,9 @@ class GradleInitScriptPackager {
     @Autowired
     CommandManager commandManager
 
+    @Autowired
+    CommandRunner commandRunner
+
     DependencyNode extractRootProjectNode(String gradleCommand, String sourcePath) {
         File initScriptFile = File.createTempFile('init-packman', '.gradle')
         initScriptFile.deleteOnExit()
@@ -50,8 +54,8 @@ class GradleInitScriptPackager {
         initScriptFile << initScriptContents
         String initScriptPath = initScriptFile.absolutePath
         logger.info("using ${initScriptPath} as the path for the gradle init script")
-        String output = "${gradleCommand} ${gradleBuildCommand} --init-script=${initScriptPath}".execute(null, new File(sourcePath)).text
-        logger.debug(output)
+        Command command = new Command(new File(sourcePath), gradleCommand, gradleBuildCommand, "--init-script=${initScriptPath}")
+        commandRunner.executeLoudly(command)
 
         File buildDirectory = new File(sourcePath, 'build')
         File blackduckDirectory = new File(buildDirectory, 'blackduck')

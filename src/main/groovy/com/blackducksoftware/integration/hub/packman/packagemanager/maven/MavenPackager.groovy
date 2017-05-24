@@ -11,8 +11,13 @@
  */
 package com.blackducksoftware.integration.hub.packman.packagemanager.maven
 
+import javax.annotation.PostConstruct
+
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.packman.type.PackageManagerType
@@ -22,37 +27,41 @@ import com.blackducksoftware.integration.hub.packman.util.command.CommandOutput
 import com.blackducksoftware.integration.hub.packman.util.command.CommandRunner
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter
 
+@Component
 public class MavenPackager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass())
 
-    private final String mvnCommand
-    private final boolean aggregateBom
-    private final File sourceDirectory
-    private final ExcludedIncludedFilter excludedIncludedFilter
-    private final ProjectInfoGatherer projectInfoGatherer
+    @Autowired
+    ProjectInfoGatherer projectInfoGatherer
 
-    public MavenPackager(String mvnCommand, final ExcludedIncludedFilter excludedIncludedFilter, final ProjectInfoGatherer projectInfoGatherer, final File sourceDirectory, final boolean aggregateBom) {
-        this.projectInfoGatherer = projectInfoGatherer
-        this.aggregateBom = aggregateBom
-        this.sourceDirectory = sourceDirectory
-        this.excludedIncludedFilter = excludedIncludedFilter
-        this.mvnCommand = mvnCommand
+    @Autowired
+    CommandRunner commandRunner
+
+    @Value('${packman.maven.aggregate}')
+    boolean aggregateBom
+
+    @Value('${packman.maven.scopes.included}')
+    String includedScopes
+
+    @Value('${packman.maven.scopes.excluded}')
+    String excludedScopes
+
+    ExcludedIncludedFilter excludedIncludedFilter
+
+    @PostConstruct
+    void init() {
+        excludedIncludedFilter = new ExcludedIncludedFilter(excludedScopes.toLowerCase(), includedScopes.toLowerCase())
     }
 
-    public List<DependencyNode> makeDependencyNodes() {
+    public List<DependencyNode> makeDependencyNodes(String mavenCommand, String sourcePath) {
         final List<DependencyNode> projects = []
 
-        final CommandRunner commandRunner = new CommandRunner(logger, sourceDirectory)
-        final Command mvnCommand = new Command(mvnCommand, "dependency:tree")
+        File sourceDirectory = new File(sourcePath)
+        final Command mvnCommand = new Command(sourceDirectory, mavenCommand, "dependency:tree")
         final CommandOutput mvnOutput = commandRunner.execute(mvnCommand)
 
         final MavenOutputParser mavenOutputParser = new MavenOutputParser(excludedIncludedFilter)
-
-        if (!mvnOutput.hasErrors()) {
-            projects.addAll(mavenOutputParser.parse(mvnOutput.output))
-        } else {
-            logger.warn(String.format("Executing %s", mvnCommand.getExecutable().getOriginal()))
-        }
+        projects.addAll(mavenOutputParser.parse(mvnOutput.standardOutput))
 
         if (aggregateBom && !projects.isEmpty()) {
             final DependencyNode firstNode = projects.remove(0)
@@ -61,7 +70,7 @@ public class MavenPackager {
             }
             projects.clear()
             projects.add(firstNode)
-            firstNode.name = projectInfoGatherer.getDefaultProjectName(PackageManagerType.MAVEN, sourceDirectory.getAbsolutePath(), firstNode.name)
+            firstNode.name = projectInfoGatherer.getDefaultProjectName(PackageManagerType.MAVEN, sourcePath, firstNode.name)
             firstNode.version = projectInfoGatherer.getDefaultProjectVersionName(firstNode.version)
         }
 

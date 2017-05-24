@@ -1,27 +1,38 @@
-/*
- * Copyright (C) 2017 Black Duck Software Inc.
- * http://www.blackducksoftware.com/
- * All rights reserved.
- *
- * This software is the confidential and proprietary information of
- * Black Duck Software ("Confidential Information"). You shall not
- * disclose such Confidential Information and shall use it only in
- * accordance with the terms of the license agreement you entered into
- * with Black Duck Software.
- */
 package com.blackducksoftware.integration.hub.packman.util.command
 
-class Command {
-    final File executable
-    final String[] args
+import org.apache.commons.lang3.StringUtils
 
-    Command(final File executable, final String... args) {
-        this.executable = executable
-        this.args = args
+class Command {
+    File workingDirectory
+    Map<String, String> environmentVariables
+    String executablePath
+    def executableArguments = []
+
+    Command(File workingDirectory, final String executablePath, final String... executableArguments) {
+        this.workingDirectory = workingDirectory
+        this.executablePath = executablePath
+        this.executableArguments.addAll(executableArguments)
     }
 
-    Command(final File executable, final List<String> args) {
-        this.executable = executable
-        this.args = args.toArray()
+    Command(File workingDirectory, Map<String, String> environmentVariables, final String executablePath, final String... executableArguments) {
+        this.workingDirectory = workingDirectory
+        this.environmentVariables = environmentVariables
+        this.executablePath = executablePath
+        this.executableArguments.addAll(executableArguments)
+    }
+
+    ProcessBuilder createProcessBuilder() {
+        def processBuilderArguments = [executablePath]+ executableArguments
+        ProcessBuilder processBuilder = new ProcessBuilder(processBuilderArguments);
+        processBuilder.directory(workingDirectory)
+        if (environmentVariables) {
+            processBuilder.environment().putAll(environmentVariables)
+        }
+
+        processBuilder
+    }
+
+    String getCommandDescription() {
+        StringUtils.join([executablePath]+ executableArguments, ' ')
     }
 }

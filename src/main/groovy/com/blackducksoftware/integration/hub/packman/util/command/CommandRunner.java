@@ -12,69 +12,49 @@
 package com.blackducksoftware.integration.hub.packman.util.command;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CommandRunner {
-    private final Logger logger;
+    private final Logger logger = LoggerFactory.getLogger(CommandRunner.class);
 
-    private final File workingDirectory;
-
-    private final Map<String, String> environmentVariables;
-
-    public CommandRunner(final Logger logger, final File workingDirectory) {
-        this.logger = logger;
-        this.workingDirectory = workingDirectory;
-        this.environmentVariables = new HashMap<>();
-    }
-
-    public CommandRunner(final Logger logger, final File workingDirectory, final Map<String, String> environmentVariables) {
-        this.logger = logger;
-        this.workingDirectory = workingDirectory;
-        this.environmentVariables = environmentVariables;
-    }
-
+    /**
+     * The output of the command's execution will NOT be logged.
+     */
     public CommandOutput executeQuietly(final Command command) throws CommandRunnerException {
         return execute(command, true);
     }
 
-    public CommandOutput execute(final Command command) throws CommandRunnerException {
+    /**
+     * The standard output of the command's execution will be logged at DEBUG and any error output will be logged as
+     * ERROR.
+     */
+    public CommandOutput executeLoudly(final Command command) throws CommandRunnerException {
         return execute(command, false);
     }
 
+    /**
+     * If runQuietly == false, the standard output of the command's execution will be logged at DEBUG and any error
+     * output will be logged as
+     * ERROR. Otherwise, the output of the command's execution will NOT be logged.
+     */
     public CommandOutput execute(final Command command, final boolean runQuietly) throws CommandRunnerException {
-        return executeExactly(runQuietly, command.getExecutable(), command.getArgs());
-    }
-
-    private CommandOutput executeExactly(final boolean runQuietly, final File executable, final String... args) throws CommandRunnerException {
-        // We have to wrap Arrays.asList() because the supplied list does not support adding at an index
-        final ArrayList<String> arguments = new ArrayList<>(Arrays.asList(args));
-        if (executable != null) {
-            arguments.add(0, executable.getAbsolutePath());
-        }
-
-        final ProcessBuilder processBuilder = new ProcessBuilder(arguments);
-        processBuilder.directory(workingDirectory);
-        processBuilder.environment().putAll(environmentVariables);
-
-        logger.debug(String.format("Running command >%s", StringUtils.join(arguments, " ")));
+        logger.debug(String.format("Running command >%s", command.getCommandDescription()));
         try {
-            Process process;
-            process = processBuilder.start();
-            final String infoOutput = printStream(process.getInputStream(), runQuietly, false);
+            final ProcessBuilder processBuilder = command.createProcessBuilder();
+            final Process process = processBuilder.start();
+            final String standardOutput = printStream(process.getInputStream(), runQuietly, false);
             final String errorOutput = printStream(process.getErrorStream(), runQuietly, true);
-            final CommandOutput output = new CommandOutput(infoOutput, errorOutput);
-            if (output.hasErrors()) {
+            final CommandOutput output = new CommandOutput(standardOutput, errorOutput);
+            if (StringUtils.isNotBlank(errorOutput)) {
                 throw new CommandRunnerException(output);
             }
             return output;
@@ -83,24 +63,20 @@ public class CommandRunner {
         }
     }
 
-    private String printStream(final InputStream inputStream, final boolean runQuietly, final boolean error) {
+    private String printStream(final InputStream inputStream, final boolean runQuietly, final boolean error) throws IOException {
         final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
         final StringBuilder stringBuilder = new StringBuilder();
 
         String line;
-        try {
-            while ((line = bufferedReader.readLine()) != null) {
-                stringBuilder.append(line + "\n");
-                if (!runQuietly || logger.isTraceEnabled()) {
-                    if (error && StringUtils.isNotBlank(line)) {
-                        logger.error(line);
-                    } else {
-                        logger.info(line);
-                    }
+        while ((line = bufferedReader.readLine()) != null) {
+            stringBuilder.append(line + "\n");
+            if (!runQuietly) {
+                if (error && StringUtils.isNotBlank(line)) {
+                    logger.error(line);
+                } else {
+                    logger.debug(line);
                 }
             }
-        } catch (final IOException e) {
-            throw new RuntimeException(e);
         }
         return stringBuilder.toString();
     }

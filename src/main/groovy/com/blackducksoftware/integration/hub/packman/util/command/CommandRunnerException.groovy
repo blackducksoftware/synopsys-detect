@@ -12,12 +12,11 @@
 package com.blackducksoftware.integration.hub.packman.util.command
 
 class CommandRunnerException extends Exception {
-
     CommandRunnerException(final Throwable innerException) {
         super(innerException)
     }
 
     CommandRunnerException(final CommandOutput commandOutput) {
-        super("${commandOutput.getOutput()}\n\n${commandOutput.getError()}")
+        super("${commandOutput.standardOutput}\n\n${commandOutput.errorOutput}")
     }
 }
