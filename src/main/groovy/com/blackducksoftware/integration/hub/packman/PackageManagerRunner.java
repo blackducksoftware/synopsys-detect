@@ -80,6 +80,7 @@ public class PackageManagerRunner {
                 } catch (final Exception e) {
                     logger.error(String.format("Error running package manager %s for sourcePath %s: %s", packageManager.getPackageManagerType().toString(),
                             sourcePath, e.getMessage()));
+                    e.printStackTrace();
                 }
             }
         }

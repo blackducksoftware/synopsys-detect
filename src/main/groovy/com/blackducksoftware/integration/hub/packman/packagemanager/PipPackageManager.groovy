@@ -3,6 +3,7 @@ package com.blackducksoftware.integration.hub.packman.packagemanager
 import javax.annotation.PostConstruct
 
 import org.apache.commons.lang3.SystemUtils
+import org.apache.commons.lang3.reflect.MemberUtils.Executable
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,13 +22,13 @@ import com.blackducksoftware.integration.hub.packman.util.command.CommandManager
 import com.blackducksoftware.integration.hub.packman.util.command.CommandOutput
 import com.blackducksoftware.integration.hub.packman.util.command.CommandRunner
 import com.blackducksoftware.integration.hub.packman.util.command.CommandRunnerException
-import com.blackducksoftware.integration.hub.packman.util.command.Executable
 
 @Component
 class PipPackageManager extends PackageManager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass())
 
     static final String SETUP_FILENAME = 'setup.py'
+    static final Map<String, String> WINDOWS_ENV_VARIABLES = ["PYTHONIOENCODING":"utf8"]
 
     @Autowired
     PipPackager pipPackager
@@ -56,6 +57,7 @@ class PipPackageManager extends PackageManager {
     String pythonCommand
     String pipCommand
     String binFolderName
+    Map<String, String> envVariables = [:]
 
     @PostConstruct
     void init() {
@@ -70,6 +72,7 @@ class PipPackageManager extends PackageManager {
         pipCommand = commandManager.getPathOfCommand(pipCommandType)
         if(SystemUtils.IS_OS_WINDOWS) {
             binFolderName = 'Scripts'
+            envVariables.putAll(WINDOWS_ENV_VARIABLES)
         } else {
             binFolderName = 'bin'
         }
@@ -88,7 +91,7 @@ class PipPackageManager extends PackageManager {
     List<DependencyNode> extractDependencyNodes(String sourcePath) {
         try {
             Map<String, Executable> foundExecutables = setupEnvironment(sourcePath)
-            return pipPackager.makeDependencyNodes(sourcePath, foundExecutables)
+            return pipPackager.makeDependencyNodes(sourcePath, pipCommand, pythonCommand, envVariables)
         } catch (CommandRunnerException e) {
             def message = 'An error occured when trying to extract python dependencies'
             logger.warn(message, e)
@@ -98,17 +101,16 @@ class PipPackageManager extends PackageManager {
 
     private setupEnvironment(String sourcePath) throws CommandRunnerException {
         File sourceDirectory = new File(sourcePath)
-        def environmentVariables = ["PYTHONIOENCODING":"UTF-8"]
         CommandRunner commandRunner = new CommandRunner()
-        Command installVirtualenvPackage = new Command(sourceDirectory, environmentVariables, pipCommand, 'install', 'virtualenv')
+        Command installVirtualenvPackage = new Command(sourceDirectory, pipCommand, 'install', 'virtualenv')
 
         File virtualEnv = new File(packmanProperties.getOutputDirectoryPath(), 'blackduck_virtualenv')
         String virtualEnvBin = new File(virtualEnv, binFolderName).getAbsolutePath()
 
         if (createVirtualEnv) {
             commandRunner.executeLoudly(installVirtualenvPackage)
-            String virtualEnvLocation = getPackageLocation(commandRunner, pipCommand, 'virtualenv')
-            def createVirtualEnvCommand = new Command(pythonCommand, "${virtualEnvLocation}/virtualenv.py", virtualEnv.getAbsolutePath())
+            String virtualEnvLocation = getPackageLocation(sourceDirectory, 'virtualenv')
+            def createVirtualEnvCommand = new Command(sourceDirectory, pythonCommand, "${virtualEnvLocation}/virtualenv.py", virtualEnv.getAbsolutePath())
             commandRunner.executeLoudly(createVirtualEnvCommand)
             pythonCommand = commandManager.getPathOfCommand(virtualEnvBin, pythonCommandType)
             pipCommand = commandManager.getPathOfCommand(virtualEnvBin, pipCommandType)
@@ -116,7 +118,7 @@ class PipPackageManager extends PackageManager {
     }
 
     String getPackageLocation(File sourceDirectory, String packageName) throws CommandRunnerException {
-        def showPackage = new Command(sourceDirectory, pipCommand, 'show', packageName)
+        def showPackage = new Command(sourceDirectory, envVariables, pipCommand, 'show', packageName)
         CommandOutput pipShowResults = commandRunner.executeQuietly(showPackage)
         def pipShowParser = new PipShowMapParser()
         Map<String, String> map = pipShowParser.parse(pipShowResults.getStandardOutput())

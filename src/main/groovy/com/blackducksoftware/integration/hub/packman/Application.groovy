@@ -59,11 +59,13 @@ class Application {
 
     @Bean
     BdioNodeFactory bdioNodeFactory() {
-        new BdioNodeFactory(bdioPropertyHelper)
+        // TODO: Fix bean dependencies
+        new BdioNodeFactory(bdioPropertyHelper())
     }
 
     @Bean
     DependencyNodeTransformer dependencyNodeTransformer() {
-        new DependencyNodeTransformer(bdioNodeFactory, bdioPropertyHelper)
+        // TODO: Fix bean dependencies
+        new DependencyNodeTransformer(bdioNodeFactory(), bdioPropertyHelper())
     }
 }
