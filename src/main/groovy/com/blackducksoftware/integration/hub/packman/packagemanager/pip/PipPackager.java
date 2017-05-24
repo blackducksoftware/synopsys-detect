@@ -20,6 +20,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeBuilder;
@@ -27,7 +28,9 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId;
+import com.blackducksoftware.integration.hub.packman.type.CommandType;
 import com.blackducksoftware.integration.hub.packman.util.command.Command;
+import com.blackducksoftware.integration.hub.packman.util.command.CommandManager;
 import com.blackducksoftware.integration.hub.packman.util.command.CommandOutput;
 import com.blackducksoftware.integration.hub.packman.util.command.CommandRunner;
 import com.blackducksoftware.integration.hub.packman.util.command.CommandRunnerException;
@@ -37,25 +40,25 @@ import com.blackducksoftware.integration.hub.packman.util.command.Executable;
 public class PipPackager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final PipShowMapParser pipShowMapParser;
+    @Autowired
+    CommandManager commandManager;
 
-    public PipPackager() {
-        pipShowMapParser = new PipShowMapParser();
-    }
+    @Autowired
+    PipShowMapParser pipShowMapParser;
 
     public List<DependencyNode> makeDependencyNodes(final String sourcePath, final Map<String, Executable> executables) throws CommandRunnerException {
         final List<DependencyNode> projects = new ArrayList<>();
+        final String pipCommand = commandManager.getPathOfCommand(CommandType.PIP);
 
         final File sourceDirectory = new File(sourcePath);
         final Map<String, String> environmentVariables = new HashMap<>();
         environmentVariables.put("PYTHONIOENCODING", "UTF-8");
-        final CommandRunner commandRunner = new CommandRunner(logger, sourceDirectory, environmentVariables);
+        final CommandRunner commandRunner = new CommandRunner();
+        final Command installProject = new Command(sourceDirectory, pipCommand, "install", ".");
 
-        final Command installProject = new Command(executables.get("pip"), "install", ".");
-
-        final CommandOutput installOutput = commandRunner.execute(installProject);
+        final CommandOutput installOutput = commandRunner.executeLoudly(installProject);
         String projectName = null;
-        for (final String line : installOutput.getOutput().split("\n")) {
+        for (final String line : installOutput.getStandardOutput().split("\n")) {
             if (line.contains("Successfully built")) {
                 projectName = line.replace("Successfully built", "").trim();
             }
@@ -65,31 +68,34 @@ public class PipPackager {
         if (StringUtils.isBlank(projectName)) {
             logger.error("Could not determine project name. Please make sure it is specified in your setup.py");
         } else {
-            final CommandOutput pipProjectOutput = commandRunner.executeQuietly(new Command(executables.get("pip"), "show", projectName));
-            final Map<String, String> projectPipShowMap = pipShowMapParser.parse(pipProjectOutput.getOutput());
+            final Command pipShowCommand = new Command(sourceDirectory, pipCommand, "show", projectName);
+            final CommandOutput pipProjectOutput = commandRunner.executeQuietly(pipShowCommand);
+            final Map<String, String> projectPipShowMap = pipShowMapParser.parse(pipProjectOutput.getStandardOutput());
             final DependencyNode projectNode = pipShowMapToNode(projectPipShowMap);
             projectNode.children.clear();
             final DependencyNodeBuilder nodeBuilder = new DependencyNodeBuilder(projectNode);
             final Map<String, DependencyNode> allNodes = new HashMap<>();
-            dependencyNodeTransformer(commandRunner, projectNode, nodeBuilder, allNodes, executables);
+            dependencyNodeTransformer(sourceDirectory, commandRunner, projectNode, nodeBuilder, allNodes, executables);
             projects.add(projectNode);
         }
         return projects;
     }
 
-    private DependencyNode dependencyNodeTransformer(final CommandRunner pythonCommandRunner, final DependencyNode rawDependencyNode,
+    private DependencyNode dependencyNodeTransformer(final File sourceDirectory, final CommandRunner pythonCommandRunner,
+            final DependencyNode rawDependencyNode,
             final DependencyNodeBuilder nodeBuilder, final Map<String, DependencyNode> allNodes, final Map<String, Executable> executables)
             throws CommandRunnerException {
         if (allNodes.containsKey(rawDependencyNode.name.toLowerCase())) {
             return allNodes.get(rawDependencyNode.name.toLowerCase());
         }
-
-        final String pipProjectText = pythonCommandRunner.executeQuietly(new Command(executables.get("pip"), "show", rawDependencyNode.name)).getOutput();
+        final String pipCommand = commandManager.getPathOfCommand(CommandType.PIP);
+        final Command pipShowCommand = new Command(sourceDirectory, pipCommand, "show", rawDependencyNode.name);
+        final String pipProjectText = pythonCommandRunner.executeQuietly(pipShowCommand).getStandardOutput();
         final DependencyNode dependencyNode = pipShowMapToNode(pipShowMapParser.parse(pipProjectText));
 
         final List<DependencyNode> children = new ArrayList<>();
         for (final DependencyNode rawChildNode : dependencyNode.children) {
-            children.add(dependencyNodeTransformer(pythonCommandRunner, rawChildNode, nodeBuilder, allNodes, executables));
+            children.add(dependencyNodeTransformer(sourceDirectory, pythonCommandRunner, rawChildNode, nodeBuilder, allNodes, executables));
         }
         dependencyNode.children.clear();
         nodeBuilder.addParentNodeWithChildren(dependencyNode, children);

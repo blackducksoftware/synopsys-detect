@@ -78,19 +78,4 @@ class FileFinder {
 
         foundFiles[0]
     }
-
-    Map<String, String> findFolders(Map<String, List<String>> folderMap, String path) {
-        def newFolderMap = [:]
-        folderMap.each {
-            for(String folderName : it.value) {
-                def parentFolder = new File(path)
-                def folder = new File(parentFolder, folderName)
-                if (folder.exists() && folder.isDirectory()) {
-                    newFolderMap[it.key] = folder.getAbsolutePath()
-                    break
-                }
-            }
-        }
-        newFolderMap
-    }
 }

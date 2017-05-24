@@ -67,7 +67,7 @@ class CommandManager {
 
     private File findExecutableFile(final String command) {
         String systemPath = System.getenv("PATH")
-        return findExecutableFile(command, systemPath)
+        return findExecutableFile(systemPath, command)
     }
 
     private File findExecutableFile(final String path, String command) {

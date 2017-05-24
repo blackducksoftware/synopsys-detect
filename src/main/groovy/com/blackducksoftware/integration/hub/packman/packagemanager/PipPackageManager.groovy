@@ -2,6 +2,7 @@ package com.blackducksoftware.integration.hub.packman.packagemanager
 
 import javax.annotation.PostConstruct
 
+import org.apache.commons.lang3.SystemUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -12,9 +13,11 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.packman.PackmanProperties
 import com.blackducksoftware.integration.hub.packman.packagemanager.pip.PipPackager
 import com.blackducksoftware.integration.hub.packman.packagemanager.pip.PipShowMapParser
+import com.blackducksoftware.integration.hub.packman.type.CommandType
 import com.blackducksoftware.integration.hub.packman.type.PackageManagerType
 import com.blackducksoftware.integration.hub.packman.util.FileFinder
 import com.blackducksoftware.integration.hub.packman.util.command.Command
+import com.blackducksoftware.integration.hub.packman.util.command.CommandManager
 import com.blackducksoftware.integration.hub.packman.util.command.CommandOutput
 import com.blackducksoftware.integration.hub.packman.util.command.CommandRunner
 import com.blackducksoftware.integration.hub.packman.util.command.CommandRunnerException
@@ -30,6 +33,12 @@ class PipPackageManager extends PackageManager {
     PipPackager pipPackager
 
     @Autowired
+    CommandManager commandManager
+
+    @Autowired
+    CommandRunner commandRunner
+
+    @Autowired
     FileFinder fileFinder
 
     @Autowired
@@ -41,25 +50,28 @@ class PipPackageManager extends PackageManager {
     @Value('${packman.pip.pip3}')
     boolean pipThreeOverride
 
-    def executables = [
-        pip: ['pip.exe', 'pip'],
-        python: ['python.exe', 'python']]
+    CommandType pipCommandType
+    CommandType pythonCommandType
 
-    def py3Executables = [
-        pip: ['pip3.exe', 'pip3'],
-        python: ['python3.exe', 'python3']]
-
-    def folders = [
-        bin: ['Scripts', 'bin']]
+    String pythonCommand
+    String pipCommand
+    String binFolderName
 
     @PostConstruct
     void init() {
         if(pipThreeOverride) {
-            executables['pip'] = py3Executables['pip']
-            executables['python'] = py3Executables['python']
+            pythonCommandType = CommandType.PYTHON3
+            pipCommandType = CommandType.PIP3
         } else {
-            executables['pip'] = executables['pip'] + py3Executables['pip']
-            executables['python'] = executables['python'] + py3Executables['python']
+            pythonCommandType = CommandType.PYTHON
+            pipCommandType = CommandType.PIP
+        }
+        pythonCommand = commandManager.getPathOfCommand(pythonCommandType)
+        pipCommand = commandManager.getPathOfCommand(pipCommandType)
+        if(SystemUtils.IS_OS_WINDOWS) {
+            binFolderName = 'Scripts'
+        } else {
+            binFolderName = 'bin'
         }
     }
 
@@ -68,14 +80,14 @@ class PipPackageManager extends PackageManager {
     }
 
     boolean isPackageManagerApplicable(String sourcePath) {
-        def foundExectables = fileFinder.canFindAllExecutables(executables)
+        def foundExectables = pythonCommand && pipCommand
         def foundFiles = fileFinder.containsAllFiles(sourcePath, SETUP_FILENAME)
-        return foundExectables && foundFiles
+        foundExectables && foundFiles
     }
 
     List<DependencyNode> extractDependencyNodes(String sourcePath) {
         try {
-            Map<String, Executable> foundExecutables = setupEnvironment(sourcePath, executables)
+            Map<String, Executable> foundExecutables = setupEnvironment(sourcePath)
             return pipPackager.makeDependencyNodes(sourcePath, foundExecutables)
         } catch (CommandRunnerException e) {
             def message = 'An error occured when trying to extract python dependencies'
@@ -84,45 +96,30 @@ class PipPackageManager extends PackageManager {
         return null
     }
 
-    private Map<String, Executable> setupEnvironment(String sourcePath, Map<String, List<String>> executables) throws CommandRunnerException {
-        final File sourceDirectory = new File(sourcePath)
+    private setupEnvironment(String sourcePath) throws CommandRunnerException {
+        File sourceDirectory = new File(sourcePath)
+        def environmentVariables = ["PYTHONIOENCODING":"UTF-8"]
+        CommandRunner commandRunner = new CommandRunner()
+        Command installVirtualenvPackage = new Command(sourceDirectory, environmentVariables, pipCommand, 'install', 'virtualenv')
 
-        Map<String, Executable> foundExecutables = fileFinder.findExecutables(executables)
-        final Executable python = foundExecutables['python']
-        final Executable pip = foundExecutables['pip']
-
-        CommandRunner commandRunner = new CommandRunner(logger, sourceDirectory, ["PYTHONIOENCODING":"UTF-8"])
-        final Command installVirtualenvPackage = new Command(pip, 'install', 'virtualenv')
-
-        final File virtualEnv = new File(packmanProperties.getOutputDirectoryPath(), 'blackduck_virtualenv')
-        final String virtualEnvBin = getVirtualEnvBin(virtualEnv)
+        File virtualEnv = new File(packmanProperties.getOutputDirectoryPath(), 'blackduck_virtualenv')
+        String virtualEnvBin = new File(virtualEnv, binFolderName).getAbsolutePath()
 
         if (createVirtualEnv) {
-            commandRunner.execute(installVirtualenvPackage)
-            String showPackage = getPackageLocation(commandRunner, pip, 'virtualenv')
-            def createVirtualEnvCommand = new Command(python, "${showPackage}/virtualenv.py", virtualEnv.getAbsolutePath())
-            commandRunner.execute(createVirtualEnvCommand)
-            foundExecutables = fileFinder.findExecutables(executables, getVirtualEnvBin(virtualEnv))
+            commandRunner.executeLoudly(installVirtualenvPackage)
+            String virtualEnvLocation = getPackageLocation(commandRunner, pipCommand, 'virtualenv')
+            def createVirtualEnvCommand = new Command(pythonCommand, "${virtualEnvLocation}/virtualenv.py", virtualEnv.getAbsolutePath())
+            commandRunner.executeLoudly(createVirtualEnvCommand)
+            pythonCommand = commandManager.getPathOfCommand(virtualEnvBin, pythonCommandType)
+            pipCommand = commandManager.getPathOfCommand(virtualEnvBin, pipCommandType)
         }
-        return foundExecutables
     }
 
-    private void installVirtualEnv() {
-    }
-
-    private String getVirtualEnvBin(File virtualEnvironmentPath) {
-        if(virtualEnvironmentPath.exists() && virtualEnvironmentPath.isDirectory()) {
-            Map<String, String> folders = fileFinder.findFolders(this.folders, virtualEnvironmentPath.getAbsolutePath())
-            return folders['bin']
-        }
-        null
-    }
-
-    private String getPackageLocation(CommandRunner commandRunner, Executable pip, String packageName) throws CommandRunnerException {
-        def showPackage = new Command(pip, 'show', packageName)
+    String getPackageLocation(File sourceDirectory, String packageName) throws CommandRunnerException {
+        def showPackage = new Command(sourceDirectory, pipCommand, 'show', packageName)
         CommandOutput pipShowResults = commandRunner.executeQuietly(showPackage)
         def pipShowParser = new PipShowMapParser()
-        Map<String, String> map = pipShowParser.parse(pipShowResults.output)
+        Map<String, String> map = pipShowParser.parse(pipShowResults.getStandardOutput())
         return map['Location'].trim()
     }
 }
