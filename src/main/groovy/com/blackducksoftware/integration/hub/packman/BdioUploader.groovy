@@ -44,8 +44,8 @@ class BdioUploader {
     @Value('${packman.hub.proxy.password}')
     String hubProxyPassword
 
-    @Value('${packman.hub.insecure}')
-    String hubInsecure
+    @Value('${packman.hub.auto.import.cert}')
+    String hubImportCertificate
 
 
     void uploadBdioFiles(List<File> createdBdioFiles) {
@@ -86,7 +86,7 @@ class BdioUploader {
         hubServerConfigBuilder.setProxyUsername(hubProxyUsername)
         hubServerConfigBuilder.setProxyPassword(hubProxyPassword)
 
-        hubServerConfigBuilder.setAutoImportHttpsCertificates(Boolean.valueOf(hubInsecure))
+        hubServerConfigBuilder.setAutoImportHttpsCertificates(Boolean.valueOf(hubImportCertificate))
         hubServerConfigBuilder.setLogger(slf4jIntLogger)
 
         hubServerConfigBuilder
