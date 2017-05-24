@@ -20,36 +20,30 @@ import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
 import com.blackducksoftware.integration.hub.packman.util.command.Command
 import com.blackducksoftware.integration.hub.packman.util.command.CommandOutput
 import com.blackducksoftware.integration.hub.packman.util.command.CommandRunner
-import com.blackducksoftware.integration.hub.packman.util.command.Executable
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter
 
 public class MavenPackager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass())
 
+    private final String mvnCommand
     private final boolean aggregateBom
-
     private final File sourceDirectory
-
     private final ExcludedIncludedFilter excludedIncludedFilter
-
     private final ProjectInfoGatherer projectInfoGatherer
 
-    private final Map<String, Executable> executables
-
-    public MavenPackager(final ExcludedIncludedFilter excludedIncludedFilter, final ProjectInfoGatherer projectInfoGatherer, final File sourceDirectory,
-    final boolean aggregateBom, final Map<String, Executable> executables) {
+    public MavenPackager(String mvnCommand, final ExcludedIncludedFilter excludedIncludedFilter, final ProjectInfoGatherer projectInfoGatherer, final File sourceDirectory, final boolean aggregateBom) {
         this.projectInfoGatherer = projectInfoGatherer
         this.aggregateBom = aggregateBom
         this.sourceDirectory = sourceDirectory
         this.excludedIncludedFilter = excludedIncludedFilter
-        this.executables = executables
+        this.mvnCommand = mvnCommand
     }
 
     public List<DependencyNode> makeDependencyNodes() {
-        final List<DependencyNode> projects = new ArrayList<>()
+        final List<DependencyNode> projects = []
 
         final CommandRunner commandRunner = new CommandRunner(logger, sourceDirectory)
-        final Command mvnCommand = new Command(executables.get("mvn"), "dependency:tree")
+        final Command mvnCommand = new Command(mvnCommand, "dependency:tree")
         final CommandOutput mvnOutput = commandRunner.execute(mvnCommand)
 
         final MavenOutputParser mavenOutputParser = new MavenOutputParser(excludedIncludedFilter)

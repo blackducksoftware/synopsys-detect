@@ -20,7 +20,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -57,11 +56,11 @@ public class CommandRunner {
         return executeExactly(runQuietly, command.getExecutable(), command.getArgs());
     }
 
-    private CommandOutput executeExactly(final boolean runQuietly, final Executable executable, final String... args) throws CommandRunnerException {
+    private CommandOutput executeExactly(final boolean runQuietly, final File executable, final String... args) throws CommandRunnerException {
         // We have to wrap Arrays.asList() because the supplied list does not support adding at an index
-        final List<String> arguments = new ArrayList<>(Arrays.asList(args));
+        final ArrayList<String> arguments = new ArrayList<>(Arrays.asList(args));
         if (executable != null) {
-            arguments.add(0, executable.getFound());
+            arguments.add(0, executable.getAbsolutePath());
         }
 
         final ProcessBuilder processBuilder = new ProcessBuilder(arguments);

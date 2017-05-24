@@ -58,7 +58,7 @@ class NugetInspectorPackager {
         inspectorPackageVersion = inspectorPackageVersion.trim()
     }
 
-    DependencyNode makeDependencyNode(String sourcePath, Executable nuget) {
+    DependencyNode makeDependencyNode(String sourcePath, File nugetCommand) {
         def outputDirectory = new File(packmanProperties.outputDirectoryPath)
         def nugetFolder = new File(outputDirectory, "/${inspectorPackageName}.${inspectorPackageVersion}/tools")
 
@@ -93,8 +93,8 @@ class NugetInspectorPackager {
         return node
     }
 
-    Executable findHubNugetInspector(File outputDirectory, File nugetFolder, Executable nuget) {
-        if(!nugetFolder.exists() && fetchFromNuget(outputDirectory, nuget).hasErrors()) {
+    Executable findHubNugetInspector(File outputDirectory, File nugetFolder, File nugetCommand) {
+        if (!nugetFolder.exists() && fetchFromNuget(outputDirectory, nugetCommand).hasErrors()) {
             logger.info('Failed to install HubNugetInspector')
         } else {
             return fileFinder.findExecutable('IntegrationNugetInspector.exe', nugetFolder.getAbsolutePath())
@@ -102,7 +102,7 @@ class NugetInspectorPackager {
         null
     }
 
-    CommandOutput fetchFromNuget(File outputDirectory, Executable nuget) {
+    CommandOutput fetchFromNuget(File outputDirectory, File nugetCommand) {
         def commandRunner = new CommandRunner(logger, outputDirectory)
         def installCommand = new Command(
                 nuget,

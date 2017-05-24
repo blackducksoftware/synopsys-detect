@@ -22,9 +22,9 @@ import com.blackducksoftware.integration.hub.packman.util.command.Executable
 
 @Component
 class PipPackageManager extends PackageManager {
-    public static final String SETUP_FILENAME = 'setup.py'
+    private final Logger logger = LoggerFactory.getLogger(this.getClass())
 
-    Logger logger = LoggerFactory.getLogger(this.getClass())
+    static final String SETUP_FILENAME = 'setup.py'
 
     @Autowired
     PipPackager pipPackager

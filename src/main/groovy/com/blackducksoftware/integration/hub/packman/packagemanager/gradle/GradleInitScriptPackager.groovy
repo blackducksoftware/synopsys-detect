@@ -17,9 +17,6 @@ import com.google.gson.Gson
 class GradleInitScriptPackager {
     private final Logger logger = LoggerFactory.getLogger(GradleInitScriptPackager.class)
 
-    @Value('${packman.gradle.path}')
-    String gradlePath
-
     @Value('${packman.gradle.build.command}')
     String gradleBuildCommand
 
@@ -41,17 +38,7 @@ class GradleInitScriptPackager {
     @Autowired
     CommandManager commandManager
 
-    DependencyNode extractRootProjectNode(String sourcePath) {
-        if (!gradlePath) {
-            logger.info('packman.gradle.path not set in config - first try to find the gradle wrapper')
-            gradlePath = commandManager.getPathOfCommand(sourcePath, CommandType.GRADLEW)
-        }
-
-        if (!gradlePath) {
-            logger.info('gradle wrapper not found - trying to find gradle on the PATH')
-            gradlePath = commandManager.getPathOfCommand(CommandType.GRADLE)
-        }
-
+    DependencyNode extractRootProjectNode(String gradleCommand, String sourcePath) {
         File initScriptFile = File.createTempFile('init-packman', '.gradle')
         initScriptFile.deleteOnExit()
         String initScriptContents = getClass().getResourceAsStream('/init-script-gradle').getText(StandardCharsets.UTF_8.name())
@@ -63,7 +50,7 @@ class GradleInitScriptPackager {
         initScriptFile << initScriptContents
         String initScriptPath = initScriptFile.absolutePath
         logger.info("using ${initScriptPath} as the path for the gradle init script")
-        String output = "${gradlePath} ${gradleBuildCommand} --init-script=${initScriptPath}".execute(null, new File(sourcePath)).text
+        String output = "${gradleCommand} ${gradleBuildCommand} --init-script=${initScriptPath}".execute(null, new File(sourcePath)).text
         logger.debug(output)
 
         File buildDirectory = new File(sourcePath, 'build')
