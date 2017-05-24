@@ -1,0 +1,14 @@
+{
+  "Artifact": "Project1",
+  "Children": [
+    {
+      "Artifact": "Project1",
+      "Children": [
+        {
+          "Artifact": "jQuery",
+          "Version": "3.1.1"
+        }
+      ]
+    }
+  ]
+}
