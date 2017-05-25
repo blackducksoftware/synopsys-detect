@@ -20,7 +20,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface ValueDescription {
 
-    String key() default "";
+    String key();
 
     String description() default "";
 }
