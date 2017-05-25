@@ -55,14 +55,12 @@ public class PipPackager {
 
         final File sourceDirectory = new File(sourcePath);
         final Command installProject = new Command(sourceDirectory, environmentVariables, pipCommand, Arrays.asList("install", "."));
+        commandRunner.executeLoudly(installProject);
 
-        final CommandOutput installOutput = commandRunner.executeLoudly(installProject);
-        String projectName = null;
-        for (final String line : installOutput.getStandardOutput().split("\n")) {
-            if (line.contains("Successfully built")) {
-                projectName = line.replace("Successfully built", "").trim();
-            }
-        }
+        final File setupScript = new File(sourceDirectory, "setup.py");
+        final List<String> projectNameArgs = Arrays.asList(setupScript.getAbsolutePath(), "--name");
+        final Command projectNameCommand = new Command(sourceDirectory, environmentVariables, pythonCommand, projectNameArgs);
+        final String projectName = commandRunner.executeLoudly(projectNameCommand).getStandardOutput().trim();
 
         logger.info("Running PIP analysis");
         if (StringUtils.isBlank(projectName)) {

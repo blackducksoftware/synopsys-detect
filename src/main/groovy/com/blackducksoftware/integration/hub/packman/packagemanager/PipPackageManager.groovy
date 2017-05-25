@@ -104,7 +104,7 @@ class PipPackageManager extends PackageManager {
         Command installVirtualenvPackage = new Command(sourceDirectory, pipCommand, Arrays.asList('install', 'virtualenv'))
 
         File virtualEnv = new File(packmanProperties.getOutputDirectoryPath(), 'blackduck_virtualenv')
-        String virtualEnvBin = new File(virtualEnv, binFolderName).getAbsolutePath()
+        String virtualEnvBin = new File(virtualEnv, binFolderName).absolutePath
 
         if (createVirtualEnv) {
             commandRunner.executeLoudly(installVirtualenvPackage)
