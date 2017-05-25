@@ -14,54 +14,43 @@ package com.blackducksoftware.integration.hub.packman.packagemanager
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.packman.PackageManagerType
 import com.blackducksoftware.integration.hub.packman.packagemanager.maven.MavenPackager
+import com.blackducksoftware.integration.hub.packman.type.CommandType
+import com.blackducksoftware.integration.hub.packman.type.PackageManagerType
 import com.blackducksoftware.integration.hub.packman.util.FileFinder
-import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
-import com.blackducksoftware.integration.util.ExcludedIncludedFilter
+import com.blackducksoftware.integration.hub.packman.util.command.CommandManager
 
 @Component
 class MavenPackageManager extends PackageManager {
-    Logger logger = LoggerFactory.getLogger(this.getClass())
+    private final Logger logger = LoggerFactory.getLogger(this.getClass())
 
-    final String POM_FILENAME = 'pom.xml'
+    static final String POM_FILENAME = 'pom.xml'
+
+    @Autowired
+    MavenPackager mavenPackager
+
+    @Autowired
+    CommandManager commandManager
 
     @Autowired
     FileFinder fileFinder
-
-    @Autowired
-    ProjectInfoGatherer projectInfoGatherer
-
-    @Value('${packman.maven.aggregate}')
-    boolean aggregateBom
-
-    @Value('${packman.maven.scopes.included}')
-    String includedScopes
-
-    @Value('${packman.maven.scopes.excluded}')
-    String excludedScopes
-
-    def executables = [mvn: ["mvn.cmd", "mvn"]]
 
     PackageManagerType getPackageManagerType() {
         return PackageManagerType.MAVEN
     }
 
     boolean isPackageManagerApplicable(String sourcePath) {
-        def foundExectables = fileFinder.canFindAllExecutables(executables)
-        def foundFiles = fileFinder.containsAllFiles(sourcePath, POM_FILENAME)
-        return foundExectables && foundFiles
+        def mvnCommand = commandManager.getCommand(CommandType.MVN)
+        def pomXml = fileFinder.findFile(sourcePath, POM_FILENAME)
+
+        mvnCommand && pomXml
     }
 
     List<DependencyNode> extractDependencyNodes(String sourcePath) {
-        File sourceDirectory = new File(sourcePath)
-        ExcludedIncludedFilter excludedIncludedFilter = new ExcludedIncludedFilter(excludedScopes.toLowerCase(), includedScopes.toLowerCase())
-        def mavenPackager = new MavenPackager(excludedIncludedFilter, projectInfoGatherer, sourceDirectory, aggregateBom, fileFinder.findExecutables(executables))
-        def projects = mavenPackager.makeDependencyNodes()
+        def projects = mavenPackager.makeDependencyNodes(commandManager.getCommand(CommandType.MVN).absolutePath, sourcePath)
         return projects
     }
 }

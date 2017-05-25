@@ -6,6 +6,7 @@ import org.junit.Test
 import com.blackducksoftware.integration.hub.packman.packagemanager.GradlePackageManager
 import com.blackducksoftware.integration.hub.packman.packagemanager.MavenPackageManager
 import com.blackducksoftware.integration.hub.packman.packagemanager.PipPackageManager
+import com.blackducksoftware.integration.hub.packman.type.PackageManagerType
 
 class PackageManagerRunnerTest {
     @Test

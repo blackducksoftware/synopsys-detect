@@ -30,7 +30,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId;
-import com.blackducksoftware.integration.hub.packman.PackageManagerType;
+import com.blackducksoftware.integration.hub.packman.type.PackageManagerType;
 import com.blackducksoftware.integration.hub.packman.util.FileFinder;
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer;
 
