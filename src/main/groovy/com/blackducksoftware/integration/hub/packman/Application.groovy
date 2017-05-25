@@ -73,9 +73,9 @@ class Application {
         printList.add('Properties : ')
         finder.getValueDescriptions().each { valueDescription ->
             String optionLine = ""
-            String key = StringUtils.rightPad(valueDescription.key(), 45, ' ')
+            String key = StringUtils.rightPad(valueDescription.key(), 50, ' ')
             if(StringUtils.isNotBlank(valueDescription.description())){
-                optionLine = "\t${key}\t${valueDescription.description()}"
+                optionLine = "\t${key}${valueDescription.description()}"
             } else {
                 optionLine = "\t${key}"
             }
