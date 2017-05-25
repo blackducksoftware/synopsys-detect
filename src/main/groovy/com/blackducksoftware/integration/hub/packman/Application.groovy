@@ -59,7 +59,7 @@ class Application {
 
     @PostConstruct
     void init() {
-        if('-h' in args.getSourceArgs() || '--help' in args.getSourceArgs()){
+        if ('-h' in args.getSourceArgs() || '--help' in args.getSourceArgs()){
             printHelp()
         } else {
             List<File> createdBdioFiles = parser.createBdioFiles()

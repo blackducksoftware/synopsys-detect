@@ -16,13 +16,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AnnotationFinder implements ApplicationContextAware {
-
     private final List<ValueDescription> valueDescriptions = new ArrayList<>();
 
     private ApplicationContext applicationContext;
@@ -33,6 +33,7 @@ public class AnnotationFinder implements ApplicationContextAware {
     }
 
     public List<ValueDescription> getValueDescriptions() {
+        // TODO if value is present use that key
         for (final String beanName : applicationContext.getBeanDefinitionNames()) {
             final Object obj = applicationContext.getBean(beanName);
             Class<?> objClz = obj.getClass();
@@ -42,6 +43,9 @@ public class AnnotationFinder implements ApplicationContextAware {
             for (final Field f : objClz.getDeclaredFields()) {
                 if (f.isAnnotationPresent(ValueDescription.class)) {
                     valueDescriptions.add(f.getAnnotation(ValueDescription.class));
+                }
+                if (f.isAnnotationPresent(Value.class)) {
+                    System.out.println(f.getAnnotation(Value.class).value());
                 }
             }
         }
