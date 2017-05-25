@@ -84,6 +84,7 @@ class Application {
         printList.add('')
         printList.add('Usage : ')
         printList.add('\t--<property name>=<value>')
+        printList.add('')
         logger.info(StringUtils.join(printList, System.getProperty("line.separator")))
     }
 
