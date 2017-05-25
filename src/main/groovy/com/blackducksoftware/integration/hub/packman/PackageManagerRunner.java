@@ -29,6 +29,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.BdioWriter;
 import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeTransformer;
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.SimpleBdioDocument;
+import com.blackducksoftware.integration.hub.packman.help.ValueDescription;
 import com.blackducksoftware.integration.hub.packman.packagemanager.PackageManager;
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
 import com.google.gson.Gson;
@@ -37,12 +38,15 @@ import com.google.gson.Gson;
 public class PackageManagerRunner {
     private final Logger logger = LoggerFactory.getLogger(PackageManagerRunner.class);
 
+    @ValueDescription(key = "packman.package.manager.type.override", description = "Specify which package managers to use")
     @Value("${packman.package.manager.type.override}")
     private String packageManagerTypeOverride;
 
+    @ValueDescription(key = "packman.project.name", description = "Hub project name")
     @Value("${packman.project.name}")
     private String projectName;
 
+    @ValueDescription(key = "packman.project.version", description = "Hub project version")
     @Value("${packman.project.version}")
     private String projectVersionName;
 

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.packman.PackageManagerType
 import com.blackducksoftware.integration.hub.packman.PackmanProperties
+import com.blackducksoftware.integration.hub.packman.help.ValueDescription
 import com.blackducksoftware.integration.hub.packman.packagemanager.pip.PipPackager
 import com.blackducksoftware.integration.hub.packman.packagemanager.pip.PipShowMapParser
 import com.blackducksoftware.integration.hub.packman.util.FileFinder
@@ -35,9 +36,11 @@ class PipPackageManager extends PackageManager {
     @Autowired
     PackmanProperties packmanProperties
 
+    @ValueDescription(key="packman.pip.createVirtualEnv", description="")
     @Value('${packman.pip.createVirtualEnv}')
     boolean createVirtualEnv
 
+    @ValueDescription(key="packman.pip.pip3", description="")
     @Value('${packman.pip.pip3}')
     boolean pipThreeOverride
 

@@ -13,9 +13,11 @@ package com.blackducksoftware.integration.hub.packman
 
 import javax.annotation.PostConstruct
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.builder.SpringApplicationBuilder
 import org.springframework.context.annotation.Bean
@@ -24,8 +26,10 @@ import com.blackducksoftware.integration.hub.bdio.simple.BdioNodeFactory
 import com.blackducksoftware.integration.hub.bdio.simple.BdioPropertyHelper
 import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeTransformer
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.packman.help.AnnotationFinder
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+
 
 @SpringBootApplication
 class Application {
@@ -43,14 +47,44 @@ class Application {
     @Autowired
     BdioUploader bdioUploader
 
+    @Autowired
+    ApplicationArguments args
+
+    @Autowired
+    AnnotationFinder finder
+
     static void main(final String[] args) {
         new SpringApplicationBuilder(Application.class).logStartupInfo(true).run(args)
     }
 
     @PostConstruct
     void init() {
-        List<File> createdBdioFiles = parser.createBdioFiles()
-        bdioUploader.uploadBdioFiles(createdBdioFiles)
+        if('-h' in args.getSourceArgs() || '--help' in args.getSourceArgs()){
+            printHelp()
+        } else {
+            List<File> createdBdioFiles = parser.createBdioFiles()
+            bdioUploader.uploadBdioFiles(createdBdioFiles)
+        }
+    }
+
+    void printHelp(){
+        List<String> printList = new ArrayList<>()
+        printList.add('')
+        printList.add('Properties : ')
+        finder.getValueDescriptions().each { valueDescription ->
+            String optionLine = ""
+            String key = StringUtils.rightPad(valueDescription.key(), 45, ' ')
+            if(StringUtils.isNotBlank(valueDescription.description())){
+                optionLine = "\t${key}\t${valueDescription.description()}"
+            } else {
+                optionLine = "\t${key}"
+            }
+            printList.add(optionLine)
+        }
+        printList.add('')
+        printList.add('Usage : ')
+        printList.add('\t--<property name>=<value>')
+        logger.info(StringUtils.join(printList, System.getProperty("line.separator")))
     }
 
     @Bean

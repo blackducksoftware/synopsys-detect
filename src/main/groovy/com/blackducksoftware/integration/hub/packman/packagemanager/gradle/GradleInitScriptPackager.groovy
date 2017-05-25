@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.packman.help.ValueDescription
 import com.blackducksoftware.integration.hub.packman.util.FileFinder
 import com.google.gson.Gson
 
@@ -17,21 +18,27 @@ import com.google.gson.Gson
 class GradleInitScriptPackager {
     private final Logger logger = LoggerFactory.getLogger(GradleInitScriptPackager.class)
 
+    @ValueDescription(key="packman.gradle.path", description="Path of the Gradle executable")
     @Value('${packman.gradle.path}')
     String gradlePath
 
+    @ValueDescription(key="packman.gradle.build.command", description="Gradle build command")
     @Value('${packman.gradle.build.command}')
     String gradleBuildCommand
 
+    @ValueDescription(key="packman.gradle.excluded.configurations", description="The names of the dependency configurations to exclude")
     @Value('${packman.gradle.excluded.configurations}')
     String excludedConfigurationNames
 
+    @ValueDescription(key="packman.gradle.included.configurations", description="The names of the dependency configurations to include")
     @Value('${packman.gradle.included.configurations}')
     String includedConfigurationNames
 
+    @ValueDescription(key="packman.gradle.excluded.projects", description="The names of the projects to exclude")
     @Value('${packman.gradle.excluded.projects}')
     String excludedProjectNames
 
+    @ValueDescription(key="packman.gradle.included.projects", description="The names of the projects to include")
     @Value('${packman.gradle.included.projects}')
     String includedProjectNames
 

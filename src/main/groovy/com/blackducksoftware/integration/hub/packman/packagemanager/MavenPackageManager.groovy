@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.packman.PackageManagerType
+import com.blackducksoftware.integration.hub.packman.help.ValueDescription
 import com.blackducksoftware.integration.hub.packman.packagemanager.maven.MavenPackager
 import com.blackducksoftware.integration.hub.packman.util.FileFinder
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
@@ -36,12 +37,15 @@ class MavenPackageManager extends PackageManager {
     @Autowired
     ProjectInfoGatherer projectInfoGatherer
 
+    @ValueDescription(key="packman.maven.aggregate", description="If true all maven projects will be aggregated into a single bom")
     @Value('${packman.maven.aggregate}')
     boolean aggregateBom
 
+    @ValueDescription(key="packman.maven.scopes.included", description="The names of the dependency scopes to include")
     @Value('${packman.maven.scopes.included}')
     String includedScopes
 
+    @ValueDescription(key="packman.maven.scopes.excluded", description="The names of the dependency scopes to exclude")
     @Value('${packman.maven.scopes.excluded}')
     String excludedScopes
 

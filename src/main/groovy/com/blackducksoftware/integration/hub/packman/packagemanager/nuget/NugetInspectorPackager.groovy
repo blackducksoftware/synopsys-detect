@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.packman.PackmanProperties
+import com.blackducksoftware.integration.hub.packman.help.ValueDescription
 import com.blackducksoftware.integration.hub.packman.util.FileFinder
 import com.blackducksoftware.integration.hub.packman.util.commands.Command
 import com.blackducksoftware.integration.hub.packman.util.commands.CommandOutput
@@ -40,15 +41,19 @@ class NugetInspectorPackager {
     @Autowired
     NugetNodeTransformer nugetNodeTransformer
 
+    @ValueDescription(key="packman.nuget.inspector.name", description="Name of the Nuget Inspector")
     @Value('${packman.nuget.inspector.name}')
     String inspectorPackageName
 
+    @ValueDescription(key="packman.nuget.inspector.version", description="Version of the Nuget Inspector")
     @Value('${packman.nuget.inspector.version}')
     String inspectorPackageVersion
 
+    @ValueDescription(key="packman.nuget.excluded.modules", description="The names of the projects in a solution to exclude")
     @Value('${packman.nuget.excluded.modules}')
     String inspectorExcludedModules
 
+    @ValueDescription(key="packman.nuget.ignore.failure", description="If true errors will be logged and then ignored.")
     @Value('${packman.nuget.ignore.failure}')
     boolean inspectorIgnoreFailure
 
