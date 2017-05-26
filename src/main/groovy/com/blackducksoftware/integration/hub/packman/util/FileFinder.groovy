@@ -60,10 +60,20 @@ class FileFinder {
     }
 
     File findFile(final File sourceDirectory, final String filenamePattern) {
+        File[] foundFiles = findFiles(sourceDirectory, filenamePattern)
+        if (foundFiles.length == 0) {
+            return null
+        } else if (foundFiles.length > 1) {
+            logger.info("Found multiple matches for ${filenamePattern} in ${sourceDirectory.absolutePath}")
+            logger.info("Using ${foundFiles[0]}")
+        }
+        foundFiles[0]
+    }
+
+    File[] findFiles(final File sourceDirectory, final String filenamePattern) {
         if (!sourceDirectory.isDirectory()) {
             return null
         }
-
         File[] foundFiles = sourceDirectory.listFiles(new FilenameFilter() {
                     boolean accept(File directoryContainingTheFile, String filename) {
                         return FilenameUtils.wildcardMatchOnSystem(filename, filenamePattern)
@@ -71,11 +81,7 @@ class FileFinder {
                 })
         if (foundFiles.length == 0) {
             return null
-        } else if (foundFiles.length > 1) {
-            logger.info("Found multiple matches for ${filenamePattern} in ${sourceDirectory.absolutePath}")
-            logger.info("Using ${foundFiles[0]}")
         }
-
-        foundFiles[0]
+        foundFiles
     }
 }

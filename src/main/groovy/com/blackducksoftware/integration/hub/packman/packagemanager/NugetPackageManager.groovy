@@ -33,6 +33,8 @@ class NugetPackageManager extends PackageManager {
 
     static final String SOLUTION_PATTERN = '*.sln'
 
+    static final String PROJECT_PATTERN = '*.*proj'
+
     @Autowired
     NugetInspectorPackager nugetInspectorPackager
 
@@ -55,12 +57,13 @@ class NugetPackageManager extends PackageManager {
     boolean isPackageManagerApplicable(String sourcePath) {
         def nugetCommand = commandManager.getCommand(CommandType.NUGET)
         def solutionFile = fileFinder.findFile(sourcePath, SOLUTION_PATTERN)
+        def projectFile = fileFinder.findFile(sourcePath, PROJECT_PATTERN)
 
-        if (solutionFile && !nugetCommand) {
+        if (projectFile && solutionFile && !nugetCommand) {
             logger.info('Can not execute nuget on a non-windows system')
         }
 
-        nugetCommand && solutionFile
+        nugetCommand && solutionFile && projectFile
     }
 
     List<DependencyNode> extractDependencyNodes(String sourcePath) {
