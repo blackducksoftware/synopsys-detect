@@ -65,11 +65,11 @@ class Application {
         List<String> printList = new ArrayList<>()
         printList.add('')
         printList.add('Properties : ')
-        finder.getPackmanProperties().each { packmanProperty ->
+        finder.getPackmanValues().each { packmanValue ->
             String optionLine = ""
-            String key = StringUtils.rightPad(packmanProperty.getKey(), 50, ' ')
-            if(StringUtils.isNotBlank(packmanProperty.getDescription())){
-                optionLine = "\t${key}${packmanProperty.getDescription()}"
+            String key = StringUtils.rightPad(packmanValue.getKey(), 50, ' ')
+            if(StringUtils.isNotBlank(packmanValue.getDescription())){
+                optionLine = "\t${key}${packmanValue.getDescription()}"
             } else {
                 optionLine = "\t${key}"
             }

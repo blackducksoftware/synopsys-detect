@@ -11,13 +11,13 @@
  */
 package com.blackducksoftware.integration.hub.packman.help;
 
-public class PackmanProperty {
+public class PackmanValue {
 
     private final String key;
 
     private final String description;
 
-    public PackmanProperty(final String key, final String description) {
+    public PackmanValue(final String key, final String description) {
         this.key = key;
         this.description = description;
     }
