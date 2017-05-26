@@ -61,7 +61,7 @@ class FileFinder {
 
     File findFile(final File sourceDirectory, final String filenamePattern) {
         File[] foundFiles = findFiles(sourceDirectory, filenamePattern)
-        if (foundFiles.length == 0) {
+        if (foundFiles == null || foundFiles.length == 0) {
             return null
         } else if (foundFiles.length > 1) {
             logger.info("Found multiple matches for ${filenamePattern} in ${sourceDirectory.absolutePath}")
