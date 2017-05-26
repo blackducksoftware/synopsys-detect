@@ -48,7 +48,7 @@ class MavenPackageManager extends PackageManager {
     }
 
     boolean isPackageManagerApplicable(String sourcePath) {
-        def mvnCommand = findMavenCommand()
+        def mvnCommand = findMavenCommandPath()
         def pomXml = fileFinder.findFile(sourcePath, POM_FILENAME)
 
         mvnCommand && pomXml
