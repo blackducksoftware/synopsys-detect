@@ -63,7 +63,7 @@ class NugetPackageManager extends PackageManager {
             logger.info('Can not execute nuget on a non-windows system')
         }
 
-        nugetCommand && solutionFile && projectFile
+        nugetCommand && (solutionFile || projectFile)
     }
 
     List<DependencyNode> extractDependencyNodes(String sourcePath) {
