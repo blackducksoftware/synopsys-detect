@@ -140,9 +140,9 @@ class PipPackageManager extends PackageManager {
         return map['Location'].trim()
     }
 
-    private File findPythonCommand(String path) {
+    private String findPythonCommand(String path) {
         if (StringUtils.isNotBlank(pythonPath)) {
-            new File(pythonPath)
+            pythonPath
         } else {
             if(StringUtils.isBlank(path)){
                 commandManager.getPathOfCommand(pythonCommandType)
@@ -152,9 +152,9 @@ class PipPackageManager extends PackageManager {
         }
     }
 
-    private File findPipCommand(String path) {
+    private String findPipCommand(String path) {
         if (StringUtils.isNotBlank(pipPath)) {
-            new File(pipPath)
+            pipPath
         } else {
             if(StringUtils.isBlank(path)){
                 commandManager.getPathOfCommand(pipCommandType)
