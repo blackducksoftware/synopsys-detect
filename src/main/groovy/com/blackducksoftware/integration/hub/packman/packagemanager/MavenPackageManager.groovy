@@ -45,18 +45,6 @@ class MavenPackageManager extends PackageManager {
     @Autowired
     ProjectInfoGatherer projectInfoGatherer
 
-    @ValueDescription(description="If true all maven projects will be aggregated into a single bom")
-    @Value('${packman.maven.aggregate}')
-    boolean aggregateBom
-
-    @ValueDescription(description="The names of the dependency scopes to include")
-    @Value('${packman.maven.scopes.included}')
-    String includedScopes
-
-    @ValueDescription(description="The names of the dependency scopes to exclude")
-    @Value('${packman.maven.scopes.excluded}')
-    String excludedScopes
-
     @ValueDescription(description="The path of the Maven executable")
     @Value('${packman.maven.path}')
     String mavenPath

@@ -19,10 +19,6 @@ import com.google.gson.Gson
 class GradleInitScriptPackager {
     private final Logger logger = LoggerFactory.getLogger(GradleInitScriptPackager.class)
 
-    @ValueDescription(description="Path of the Gradle executable")
-    @Value('${packman.gradle.path}')
-    String gradlePath
-
     @ValueDescription(description="Gradle build command")
     @Value('${packman.gradle.build.command}')
     String gradleBuildCommand
