@@ -12,7 +12,7 @@
 package com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -22,8 +22,7 @@ import org.json.JSONException;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
-import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.PodLock;
-import com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods.PodLockParser;
+import com.esotericsoftware.yamlbeans.YamlException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -32,8 +31,12 @@ public class PodlockParserTest {
     public void invalidPodlockParserTest() throws IOException {
         final String invalid = IOUtils.toString(this.getClass().getResourceAsStream("/cocoapods/Invalid.lock"), StandardCharsets.UTF_8);
         final PodLockParser parser = new PodLockParser();
-        final PodLock podLock = parser.parse(invalid);
-        assertNull(podLock);
+        try {
+            parser.parse(invalid);
+            assertTrue(false); // It should throw exception
+        } catch (final YamlException ignore) {
+
+        }
     }
 
     @Test
@@ -63,6 +66,7 @@ public class PodlockParserTest {
         final String expected = IOUtils.toString(this.getClass().getResourceAsStream("/cocoapods/complex/expected.json"),
                 StandardCharsets.UTF_8);
         final String actual = gson.toJson(actualPodlock);
+        System.out.println(actual);
         JSONAssert.assertEquals(expected, actual, false);
     }
 }
