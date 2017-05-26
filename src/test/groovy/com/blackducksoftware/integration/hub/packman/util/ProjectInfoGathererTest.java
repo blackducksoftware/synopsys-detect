@@ -16,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
-import com.blackducksoftware.integration.hub.packman.PackageManagerType;
+import com.blackducksoftware.integration.hub.packman.type.PackageManagerType;
 
 public class ProjectInfoGathererTest {
     private final String testName = "Name";

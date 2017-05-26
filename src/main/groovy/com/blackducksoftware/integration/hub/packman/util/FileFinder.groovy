@@ -16,8 +16,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.packman.util.commands.Executable
-
 @Component
 class FileFinder {
     private final Logger logger = LoggerFactory.getLogger(FileFinder.class)
@@ -62,10 +60,20 @@ class FileFinder {
     }
 
     File findFile(final File sourceDirectory, final String filenamePattern) {
+        File[] foundFiles = findFiles(sourceDirectory, filenamePattern)
+        if (foundFiles == null || foundFiles.length == 0) {
+            return null
+        } else if (foundFiles.length > 1) {
+            logger.info("Found multiple matches for ${filenamePattern} in ${sourceDirectory.absolutePath}")
+            logger.info("Using ${foundFiles[0]}")
+        }
+        foundFiles[0]
+    }
+
+    File[] findFiles(final File sourceDirectory, final String filenamePattern) {
         if (!sourceDirectory.isDirectory()) {
             return null
         }
-
         File[] foundFiles = sourceDirectory.listFiles(new FilenameFilter() {
                     boolean accept(File directoryContainingTheFile, String filename) {
                         return FilenameUtils.wildcardMatchOnSystem(filename, filenamePattern)
@@ -73,77 +81,7 @@ class FileFinder {
                 })
         if (foundFiles.length == 0) {
             return null
-        } else if (foundFiles.length > 1) {
-            logger.info("Found multiple matches for ${filenamePattern} in ${sourceDirectory.absolutePath}")
-            logger.info("Using ${foundFiles[0]}")
         }
-
-        foundFiles[0]
-    }
-
-    Map<String, Executable> findExecutables(final Map<String, List<String>> executables) {
-        findExecutables(executables, null)
-    }
-
-    Map<String, Executable> findExecutables(final Map<String, List<String>> executables, String path) {
-        Map<String, Executable> found = [:]
-        executables.each { executableName, executableList ->
-            for(String executable : executableList) {
-                Executable current = findExecutable(executable, path)
-                if(current) {
-                    found[executableName] = current
-                    break
-                }
-            }
-        }
-        found
-    }
-
-    Executable findExecutable(final String executable) {
-        def found = findExecutablePath(executable, null)
-    }
-
-    Executable findExecutable(final String executable, final String path) {
-        def found = null
-        if(path) {
-            found = findExecutablePath(executable, path)
-        } else {
-            found = findExecutablePath(executable)
-        }
-
-        if(found) {
-            return new Executable(executable, found)
-        }
-        null
-    }
-
-    String findExecutablePath(final String executable) {
-        String systemPath = System.getenv("PATH")
-        return findExecutablePath(executable, systemPath)
-    }
-
-    String findExecutablePath(final String executable, final String path) {
-        for (String pathPiece : path.split(File.pathSeparator)) {
-            File foundFile = findFile(pathPiece, executable)
-            if (foundFile && foundFile.canExecute()) {
-                return foundFile.absolutePath
-            }
-        }
-        null
-    }
-
-    Map<String, String> findFolders(Map<String, List<String>> folderMap, String path) {
-        def newFolderMap = [:]
-        folderMap.each {
-            for(String folderName : it.value) {
-                def parentFolder = new File(path)
-                def folder = new File(parentFolder, folderName)
-                if (folder.exists() && folder.isDirectory()) {
-                    newFolderMap[it.key] = folder.getAbsolutePath()
-                    break
-                }
-            }
-        }
-        newFolderMap
+        foundFiles
     }
 }

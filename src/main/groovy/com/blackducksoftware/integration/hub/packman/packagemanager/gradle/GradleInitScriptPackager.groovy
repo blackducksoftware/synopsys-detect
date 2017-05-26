@@ -2,7 +2,6 @@ package com.blackducksoftware.integration.hub.packman.packagemanager.gradle
 
 import java.nio.charset.StandardCharsets
 
-import org.apache.commons.lang3.SystemUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -11,7 +10,9 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.packman.help.ValueDescription
-import com.blackducksoftware.integration.hub.packman.util.FileFinder
+import com.blackducksoftware.integration.hub.packman.util.command.Command
+import com.blackducksoftware.integration.hub.packman.util.command.CommandManager
+import com.blackducksoftware.integration.hub.packman.util.command.CommandRunner
 import com.google.gson.Gson
 
 @Component
@@ -46,26 +47,12 @@ class GradleInitScriptPackager {
     Gson gson
 
     @Autowired
-    FileFinder fileFinder
+    CommandManager commandManager
 
-    DependencyNode extractRootProjectNode(String sourcePath) {
-        def gradlewCommand = 'gradlew'
-        def gradleCommand = 'gradle'
-        if (SystemUtils.IS_OS_WINDOWS) {
-            gradlewCommand = "${gradlewCommand}.bat"
-            gradleCommand = "${gradleCommand}.bat"
-        }
+    @Autowired
+    CommandRunner commandRunner
 
-        if (!gradlePath) {
-            logger.info('packman.gradle.path not set in config - first try to find the gradle wrapper')
-            gradlePath = fileFinder.findExecutablePath(gradlewCommand, sourcePath)
-        }
-
-        if (!gradlePath) {
-            logger.info('gradle wrapper not found - trying to find gradle on the PATH')
-            gradlePath = fileFinder.findExecutablePath(gradleCommand)
-        }
-
+    DependencyNode extractRootProjectNode(String gradleCommand, String sourcePath) {
         File initScriptFile = File.createTempFile('init-packman', '.gradle')
         initScriptFile.deleteOnExit()
         String initScriptContents = getClass().getResourceAsStream('/init-script-gradle').getText(StandardCharsets.UTF_8.name())
@@ -77,8 +64,11 @@ class GradleInitScriptPackager {
         initScriptFile << initScriptContents
         String initScriptPath = initScriptFile.absolutePath
         logger.info("using ${initScriptPath} as the path for the gradle init script")
-        String output = "${gradlePath} ${gradleBuildCommand} --init-script=${initScriptPath}".execute(null, new File(sourcePath)).text
-        logger.debug(output)
+        Command command = new Command(new File(sourcePath), gradleCommand, [
+            gradleBuildCommand,
+            "--init-script=${initScriptPath}"
+        ])
+        commandRunner.executeLoudly(command)
 
         File buildDirectory = new File(sourcePath, 'build')
         File blackduckDirectory = new File(buildDirectory, 'blackduck')

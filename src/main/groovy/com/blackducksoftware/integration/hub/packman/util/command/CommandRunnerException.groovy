@@ -9,18 +9,14 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.util.commands
+package com.blackducksoftware.integration.hub.packman.util.command
 
-class CommandOutput {
-    String output
-    String error
-
-    public CommandOutput(String output, String error) {
-        this.output = output
-        this.error = error
+class CommandRunnerException extends Exception {
+    CommandRunnerException(final Throwable innerException) {
+        super(innerException)
     }
 
-    boolean hasErrors() {
-        error?.trim()
+    CommandRunnerException(final CommandOutput commandOutput) {
+        super("${commandOutput.standardOutput}\n\n${commandOutput.errorOutput}")
     }
 }

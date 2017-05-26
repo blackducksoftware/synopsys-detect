@@ -1,4 +1,4 @@
-package com.blackducksoftware.integration.hub.packman;
+package com.blackducksoftware.integration.hub.packman.type;
 
 public enum PackageManagerType {
     MAVEN,
