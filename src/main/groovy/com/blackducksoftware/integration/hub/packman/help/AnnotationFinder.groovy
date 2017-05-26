@@ -22,8 +22,7 @@ import org.springframework.stereotype.Component
 
 @Component
 public class AnnotationFinder implements ApplicationContextAware {
-    private final Set<ValueDescription> valueDescriptions = new HashSet<>()
-
+    final List<PackmanProperty> propertyDescriptions = new ArrayList<>()
     private ApplicationContext applicationContext
 
     @Override
@@ -31,7 +30,7 @@ public class AnnotationFinder implements ApplicationContextAware {
         this.applicationContext = applicationContext
     }
 
-    public List<ValueDescription> getValueDescriptions() {
+    public List<PackmanProperty> getPackmanProperties() {
         for (final String beanName : applicationContext.getBeanDefinitionNames()) {
             final Object obj = applicationContext.getBean(beanName)
             Class<?> objClz = obj.getClass()
@@ -40,18 +39,31 @@ public class AnnotationFinder implements ApplicationContextAware {
             }
             for (final Field field : objClz.getDeclaredFields()) {
                 if (field.isAnnotationPresent(ValueDescription.class)) {
+                    String key = ''
+                    String description = ''
                     final ValueDescription valueDescription = field.getAnnotation(ValueDescription.class)
+                    description = valueDescription.description()
                     if (StringUtils.isBlank(valueDescription.key())) {
                         if (field.isAnnotationPresent(Value.class)) {
-                            String key = field.getAnnotation(Value.class).value().trim()
-                            key = key.substring(2, key.length() - 1)
-                            valueDescription.key = key
+                            String valueKey = field.getAnnotation(Value.class).value().trim()
+                            valueKey = valueKey.substring(2, valueKey.length() - 1)
+                            key = valueKey
                         }
+                    } else{
+                        key = valueDescription.key().trim()
                     }
-                    valueDescriptions.add(valueDescription)
+                    if(!isAlreadyInList(key)){
+                        propertyDescriptions.add(new PackmanProperty(key, description))
+                    }
                 }
             }
         }
-        valueDescriptions
+        propertyDescriptions
+    }
+
+    boolean isAlreadyInList(String key){
+        null != propertyDescriptions.find {
+            it.getKey().equals(key)
+        }
     }
 }

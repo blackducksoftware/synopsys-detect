@@ -43,19 +43,19 @@ class NugetInspectorPackager {
     @Autowired
     NugetNodeTransformer nugetNodeTransformer
 
-    @ValueDescription(key="packman.nuget.inspector.name", description="Name of the Nuget Inspector")
+    @ValueDescription(description="Name of the Nuget Inspector")
     @Value('${packman.nuget.inspector.name}')
     String inspectorPackageName
 
-    @ValueDescription(key="packman.nuget.inspector.version", description="Version of the Nuget Inspector")
+    @ValueDescription(description="Version of the Nuget Inspector")
     @Value('${packman.nuget.inspector.version}')
     String inspectorPackageVersion
 
-    @ValueDescription(key="packman.nuget.excluded.modules", description="The names of the projects in a solution to exclude")
+    @ValueDescription(description="The names of the projects in a solution to exclude")
     @Value('${packman.nuget.excluded.modules}')
     String inspectorExcludedModules
 
-    @ValueDescription(key="packman.nuget.ignore.failure", description="If true errors will be logged and then ignored.")
+    @ValueDescription(description="If true errors will be logged and then ignored.")
     @Value('${packman.nuget.ignore.failure}')
     boolean inspectorIgnoreFailure
 

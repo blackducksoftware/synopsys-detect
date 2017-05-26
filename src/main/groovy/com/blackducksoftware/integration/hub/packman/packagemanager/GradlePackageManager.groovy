@@ -30,7 +30,7 @@ class GradlePackageManager extends PackageManager {
     @Autowired
     FileFinder fileFinder
 
-    @ValueDescription(key="packman.gradle.path", description="Path of the Gradle executable")
+    @ValueDescription(description="Path of the Gradle executable")
     @Value('${packman.gradle.path}')
     String gradlePath
 

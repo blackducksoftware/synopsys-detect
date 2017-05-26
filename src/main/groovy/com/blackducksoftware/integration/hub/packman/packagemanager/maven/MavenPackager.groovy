@@ -38,15 +38,15 @@ public class MavenPackager {
     @Autowired
     CommandRunner commandRunner
 
-    @ValueDescription(key="packman.maven.aggregate", description="If true all maven projects will be aggregated into a single bom")
+    @ValueDescription(description="If true all maven projects will be aggregated into a single bom")
     @Value('${packman.maven.aggregate}')
     boolean aggregateBom
 
-    @ValueDescription(key="packman.maven.scopes.included", description="The names of the dependency scopes to include")
+    @ValueDescription(description="The names of the dependency scopes to include")
     @Value('${packman.maven.scopes.included}')
     String includedScopes
 
-    @ValueDescription(key="packman.maven.scopes.excluded", description="The names of the dependency scopes to exclude")
+    @ValueDescription(description="The names of the dependency scopes to exclude")
     @Value('${packman.maven.scopes.excluded}')
     String excludedScopes
 

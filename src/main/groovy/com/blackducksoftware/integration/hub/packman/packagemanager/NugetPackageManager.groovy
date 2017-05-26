@@ -49,11 +49,11 @@ class NugetPackageManager extends PackageManager {
     @Autowired
     ProjectInfoGatherer projectInfoGatherer
 
-    @ValueDescription(key="packman.nuget.aggregate", description="If true all nuget projects will be aggregated into a single bom")
+    @ValueDescription(description="If true all nuget projects will be aggregated into a single bom")
     @Value('${packman.nuget.aggregate}')
     boolean aggregateBom
 
-    @ValueDescription(key="packman.nuget.path", description="The path of the Nuget executable")
+    @ValueDescription(description="The path of the Nuget executable")
     @Value('${packman.nuget.path}')
     String nugetPath
 

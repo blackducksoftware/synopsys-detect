@@ -46,19 +46,19 @@ class PipPackageManager extends PackageManager {
     @Autowired
     PackmanProperties packmanProperties
 
-    @ValueDescription(key="packman.pip.createVirtualEnv", description="If true creates a temporary Python virtual environment")
+    @ValueDescription(description="If true creates a temporary Python virtual environment")
     @Value('${packman.pip.createVirtualEnv}')
     boolean createVirtualEnv
 
-    @ValueDescription(key="packman.pip.pip3", description="If true will use pip3 if available on class path")
+    @ValueDescription(description="If true will use pip3 if available on class path")
     @Value('${packman.pip.pip3}')
     boolean pipThreeOverride
 
-    @ValueDescription(key="packman.python.path", description="The path of the Python executable")
+    @ValueDescription(description="The path of the Python executable")
     @Value('${packman.python.path}')
     String pythonPath
 
-    @ValueDescription(key="packman.pip.path", description="The path of the Pip executable")
+    @ValueDescription(description="The path of the Pip executable")
     @Value('${packman.pip.path}')
     String pipPath
 
