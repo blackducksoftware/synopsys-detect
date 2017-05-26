@@ -2,6 +2,7 @@ package com.blackducksoftware.integration.hub.packman.packagemanager
 
 import javax.annotation.PostConstruct
 
+import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.SystemUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -50,6 +51,12 @@ class PipPackageManager extends PackageManager {
     @Value('${packman.pip.pip3}')
     boolean pipThreeOverride
 
+    @Value('${packman.python.path}')
+    String pythonPath
+
+    @Value('${packman.pip.path}')
+    String pipPath
+
     CommandType pipCommandType
     CommandType pythonCommandType
 
@@ -67,8 +74,8 @@ class PipPackageManager extends PackageManager {
             pythonCommandType = CommandType.PYTHON
             pipCommandType = CommandType.PIP
         }
-        pythonCommand = commandManager.getPathOfCommand(pythonCommandType)
-        pipCommand = commandManager.getPathOfCommand(pipCommandType)
+        pythonCommand = findPythonCommand(null)
+        pipCommand = findPipCommand(null)
         if(SystemUtils.IS_OS_WINDOWS) {
             binFolderName = 'Scripts'
             envVariables.putAll(WINDOWS_ENV_VARIABLES)
@@ -115,8 +122,8 @@ class PipPackageManager extends PackageManager {
             ]
             def createVirtualEnvCommand = new Command(sourceDirectory, pythonCommand, commandArgs)
             commandRunner.executeLoudly(createVirtualEnvCommand)
-            pythonCommand = commandManager.getPathOfCommand(virtualEnvBin, pythonCommandType)
-            pipCommand = commandManager.getPathOfCommand(virtualEnvBin, pipCommandType)
+            pythonCommand = findPythonCommand(virtualEnvBin)
+            pipCommand = findPipCommand(virtualEnvBin)
         }
     }
 
@@ -126,5 +133,29 @@ class PipPackageManager extends PackageManager {
         def pipShowParser = new PipShowMapParser()
         Map<String, String> map = pipShowParser.parse(pipShowResults.getStandardOutput())
         return map['Location'].trim()
+    }
+
+    private File findPythonCommand(String path) {
+        if (pythonPath) {
+            new File(pythonPath)
+        } else {
+            if(StringUtils.isNotBlank(path)){
+                commandManager.getPathOfCommand(pythonCommandType)
+            } else {
+                commandManager.getPathOfCommand(path, pythonCommandType)
+            }
+        }
+    }
+
+    private File findPipCommand(String path) {
+        if (pipPath) {
+            new File(pipPath)
+        } else {
+            if(StringUtils.isNotBlank(path)){
+                commandManager.getPathOfCommand(pipCommandType)
+            } else {
+                commandManager.getPathOfCommand(path, pipCommandType)
+            }
+        }
     }
 }

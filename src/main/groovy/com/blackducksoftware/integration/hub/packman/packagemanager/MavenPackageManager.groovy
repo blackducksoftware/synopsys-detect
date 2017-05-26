@@ -14,6 +14,7 @@ package com.blackducksoftware.integration.hub.packman.packagemanager
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
@@ -38,12 +39,15 @@ class MavenPackageManager extends PackageManager {
     @Autowired
     FileFinder fileFinder
 
+    @Value('${packman.maven.path}')
+    String mavenPath
+
     PackageManagerType getPackageManagerType() {
         return PackageManagerType.MAVEN
     }
 
     boolean isPackageManagerApplicable(String sourcePath) {
-        def mvnCommand = commandManager.getCommand(CommandType.MVN)
+        def mvnCommand = findMavenCommand()
         def pomXml = fileFinder.findFile(sourcePath, POM_FILENAME)
 
         mvnCommand && pomXml
@@ -52,5 +56,13 @@ class MavenPackageManager extends PackageManager {
     List<DependencyNode> extractDependencyNodes(String sourcePath) {
         def projects = mavenPackager.makeDependencyNodes(commandManager.getCommand(CommandType.MVN).absolutePath, sourcePath)
         return projects
+    }
+
+    private File findMavenCommand() {
+        if (mavenPath) {
+            new File(mavenPath)
+        } else {
+            commandManager.getCommand(CommandType.MVN)
+        }
     }
 }

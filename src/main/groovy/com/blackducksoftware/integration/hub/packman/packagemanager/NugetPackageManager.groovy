@@ -50,12 +50,15 @@ class NugetPackageManager extends PackageManager {
     @Value('${packman.nuget.aggregate}')
     boolean aggregateBom
 
+    @Value('${packman.nuget.path}')
+    String nugetPath
+
     PackageManagerType getPackageManagerType() {
         return PackageManagerType.NUGET
     }
 
     boolean isPackageManagerApplicable(String sourcePath) {
-        def nugetCommand = commandManager.getCommand(CommandType.NUGET)
+        def nugetCommand = findNugetCommand()
         def solutionFile = fileFinder.findFile(sourcePath, SOLUTION_PATTERN)
         def projectFile = fileFinder.findFile(sourcePath, PROJECT_PATTERN)
 
@@ -91,5 +94,13 @@ class NugetPackageManager extends PackageManager {
 
     boolean isSolution(DependencyNode root){
         root.children != null && root.children.size() > 0 && root.children[0].children != null && root.children[0].children.size() > 0
+    }
+
+    private File findNugetCommand() {
+        if (nugetPath) {
+            new File(nugetPath)
+        } else {
+            commandManager.getCommand(CommandType.NUGET)
+        }
     }
 }
