@@ -139,7 +139,7 @@ class PipPackageManager extends PackageManager {
         if (StringUtils.isNotBlank(pythonPath)) {
             new File(pythonPath)
         } else {
-            if(StringUtils.isNotBlank(path)){
+            if(StringUtils.isBlank(path)){
                 commandManager.getPathOfCommand(pythonCommandType)
             } else {
                 commandManager.getPathOfCommand(path, pythonCommandType)
@@ -151,7 +151,7 @@ class PipPackageManager extends PackageManager {
         if (StringUtils.isNotBlank(pipPath)) {
             new File(pipPath)
         } else {
-            if(StringUtils.isNotBlank(path)){
+            if(StringUtils.isBlank(path)){
                 commandManager.getPathOfCommand(pipCommandType)
             } else {
                 commandManager.getPathOfCommand(path, pipCommandType)
