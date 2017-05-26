@@ -85,7 +85,7 @@ class NugetPackageManager extends PackageManager {
             root.name = projectInfoGatherer.getDefaultProjectName(PackageManagerType.NUGET, sourcePath, root.name)
             root.version = projectInfoGatherer.getDefaultProjectVersionName(root.version)
             root.externalId = new NameVersionExternalId(Forge.nuget, root.name, root.version)
-            root
+            [root]
         }
     }
 
