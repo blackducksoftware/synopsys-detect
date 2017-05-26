@@ -68,18 +68,28 @@ class NugetPackageManager extends PackageManager {
 
     List<DependencyNode> extractDependencyNodes(String sourcePath) {
         def nugetCommand = commandManager.getCommand(CommandType.NUGET)
-        DependencyNode solution = nugetInspectorPackager.makeDependencyNode(sourcePath, nugetCommand)
-        if (!solution) {
+        DependencyNode root = nugetInspectorPackager.makeDependencyNode(sourcePath, nugetCommand)
+        if (!root) {
             logger.info('Unable to extract any dependencies from nuget')
             return []
         }
-
-        solution.name = projectInfoGatherer.getDefaultProjectName(PackageManagerType.NUGET, sourcePath, solution.name)
-        solution.version = projectInfoGatherer.getDefaultProjectVersionName(solution.version)
-        solution.externalId = new NameVersionExternalId(Forge.nuget, solution.name, solution.version)
-        if (aggregateBom) {
-            return [solution]
+        if(isSolution(root)){
+            root.name = projectInfoGatherer.getDefaultProjectName(PackageManagerType.NUGET, sourcePath, root.name)
+            root.version = projectInfoGatherer.getDefaultProjectVersionName(root.version)
+            root.externalId = new NameVersionExternalId(Forge.nuget, root.name, root.version)
+            if (aggregateBom) {
+                return [root]
+            }
+            root.children as List
+        } else{
+            root.name = projectInfoGatherer.getDefaultProjectName(PackageManagerType.NUGET, sourcePath, root.name)
+            root.version = projectInfoGatherer.getDefaultProjectVersionName(root.version)
+            root.externalId = new NameVersionExternalId(Forge.nuget, root.name, root.version)
+            root
         }
-        solution.children as List
+    }
+
+    boolean isSolution(DependencyNode root){
+        root.children != null && root.children.size() > 0 && root.children[0].children != null && root.children[0].children.size() > 0
     }
 }
