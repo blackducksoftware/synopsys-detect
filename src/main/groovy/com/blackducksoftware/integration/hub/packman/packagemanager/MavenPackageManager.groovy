@@ -55,15 +55,14 @@ class MavenPackageManager extends PackageManager {
     }
 
     List<DependencyNode> extractDependencyNodes(String sourcePath) {
-        def projects = mavenPackager.makeDependencyNodes(commandManager.getCommand(CommandType.MVN).absolutePath, sourcePath)
+        def projects = mavenPackager.makeDependencyNodes(findMavenCommandPath(), sourcePath)
         return projects
     }
 
-    private File findMavenCommand() {
-        if (StringUtils.isNotBlank(mavenPath)) {
-            new File(mavenPath)
-        } else {
-            commandManager.getCommand(CommandType.MVN)
+    private String findMavenCommandPath() {
+        if (StringUtils.isBlank(mavenPath)) {
+            return commandManager.getPathOfCommand(CommandType.MVN)
         }
+        mavenPath
     }
 }

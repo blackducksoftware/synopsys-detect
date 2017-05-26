@@ -71,7 +71,7 @@ class NugetPackageManager extends PackageManager {
     }
 
     List<DependencyNode> extractDependencyNodes(String sourcePath) {
-        def nugetCommand = commandManager.getCommand(CommandType.NUGET)
+        def nugetCommand = findNugetCommand()
         DependencyNode root = nugetInspectorPackager.makeDependencyNode(sourcePath, nugetCommand)
         if (!root) {
             logger.info('Unable to extract any dependencies from nuget')
