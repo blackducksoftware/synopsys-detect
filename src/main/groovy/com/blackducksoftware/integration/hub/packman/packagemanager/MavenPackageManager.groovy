@@ -11,6 +11,7 @@
  */
 package com.blackducksoftware.integration.hub.packman.packagemanager
 
+import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -59,7 +60,7 @@ class MavenPackageManager extends PackageManager {
     }
 
     private File findMavenCommand() {
-        if (mavenPath) {
+        if (StringUtils.isNotBlank(mavenPath)) {
             new File(mavenPath)
         } else {
             commandManager.getCommand(CommandType.MVN)

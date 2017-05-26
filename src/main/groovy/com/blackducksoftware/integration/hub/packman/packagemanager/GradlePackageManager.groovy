@@ -1,5 +1,6 @@
 package com.blackducksoftware.integration.hub.packman.packagemanager
 
+import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -49,12 +50,12 @@ class GradlePackageManager extends PackageManager {
     }
 
     private String findGradleCommand(String sourcePath) {
-        if (!gradlePath) {
+        if (StringUtils.isBlank(gradlePath)) {
             logger.info('packman.gradle.path not set in config - first try to find the gradle wrapper')
             gradlePath = commandManager.getPathOfCommand(sourcePath, CommandType.GRADLEW)
         }
 
-        if (!gradlePath) {
+        if (StringUtils.isBlank(gradlePath)) {
             logger.info('gradle wrapper not found - trying to find gradle on the PATH')
             gradlePath = commandManager.getPathOfCommand(CommandType.GRADLE)
         }

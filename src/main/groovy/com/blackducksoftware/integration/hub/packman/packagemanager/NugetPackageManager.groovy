@@ -11,6 +11,7 @@
  */
 package com.blackducksoftware.integration.hub.packman.packagemanager
 
+import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -97,7 +98,7 @@ class NugetPackageManager extends PackageManager {
     }
 
     private File findNugetCommand() {
-        if (nugetPath) {
+        if (StringUtils.isNotBlank(nugetPath)) {
             new File(nugetPath)
         } else {
             commandManager.getCommand(CommandType.NUGET)
