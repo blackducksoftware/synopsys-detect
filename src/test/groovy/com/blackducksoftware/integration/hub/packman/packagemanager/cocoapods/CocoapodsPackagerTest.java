@@ -46,6 +46,7 @@ public class CocoapodsPackagerTest {
         assertEquals(1, projects.size());
         fixVersion(projects.get(0), "1.0.0");
         final String actual = gson.toJson(projects);
+        System.out.println(actual);
         JSONAssert.assertEquals(expected, actual, false);
     }
 

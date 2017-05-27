@@ -11,8 +11,16 @@
  */
 package com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods
 
+import org.apache.commons.lang3.builder.RecursiveToStringStyle
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder
+
 class Pod {
     String name
     String version
     List<Pod> children = []
+
+    @Override
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this, RecursiveToStringStyle.JSON_STYLE)
+    }
 }

@@ -38,6 +38,8 @@ class CocoapodsPackager {
             return []
         }
 
+        collapseSubpods(podLock)
+
         String name = projectInfoGatherer.getDefaultProjectName(PackageManagerType.COCOAPODS, sourcePath)
         String version = projectInfoGatherer.getDefaultProjectVersionName()
         ExternalId externalId = new NameVersionExternalId(Forge.cocoapods, name, version)
@@ -57,5 +59,59 @@ class CocoapodsPackager {
         }
 
         nodes
+    }
+
+    void collapseSubpods(PodLock podlock) {
+        Map<String, List<Pod>> allPods = podlock.pods.groupBy({ pod -> getCleanPodName(pod) })
+        List<Pod> finalPods = []
+        allPods.each { name, pods ->
+            // Set the default masterPod as the first pod
+            Pod masterPod = pods[0]
+            masterPod.name = getCleanPodName(pods[0])
+            List<Pod> children = []
+            pods.each { pod ->
+                if(!isFakePod(pod)) {
+                    masterPod = pod
+                }
+                children += pod.children.findAll { child -> getCleanPodName(child) != masterPod.name}
+            }
+            masterPod.children = children
+            if(!masterPod.version) {
+                masterPod.version = masterPod.children[0].version
+            }
+
+            finalPods += masterPod
+        }
+        podlock.pods = finalPods
+
+        Map<String, Pod> finalPodsMap = [:]
+        finalPods.each { pod ->
+            finalPodsMap[pod.name] = pod
+        }
+
+        finalPods.each { collapsePod(finalPodsMap, it) }
+
+        Map<String, List<Pod>> newPods = finalPodsMap
+        List<Pod> finalDependencies = []
+        podlock.dependencies.each {
+            finalDependencies += newPods[getCleanPodName(it)]
+        }
+        podlock.dependencies = finalDependencies
+    }
+
+    void collapsePod(Map<String, Pod> pods, Pod pod) {
+        Set<Pod> newChildren = new HashSet<>()
+        pod.children.each {
+            newChildren += pods[getCleanPodName(it)]
+        }
+        pod.children = newChildren as List
+    }
+
+    boolean isFakePod(Pod pod) {
+        pod.name.contains('/')
+    }
+
+    String getCleanPodName(Pod pod) {
+        pod.name.split('/')[0].trim()
     }
 }
