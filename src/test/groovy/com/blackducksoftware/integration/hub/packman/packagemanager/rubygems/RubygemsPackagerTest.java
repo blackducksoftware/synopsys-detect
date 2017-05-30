@@ -70,7 +70,7 @@ public class RubygemsPackagerTest {
         final Map map = new HashMap();
         final String key = "lookForMe (These key's have versions)";
         map.put(key, new HashMap());
-        final RubygemsPackager rubygemsPackager = new RubygemsPackager(null,);
+        final RubygemsPackager rubygemsPackager = new RubygemsPackager(null);
         final String foundKey = rubygemsPackager.findKeyInMap("i dont exist", map);
         assertNull(foundKey);
     }
