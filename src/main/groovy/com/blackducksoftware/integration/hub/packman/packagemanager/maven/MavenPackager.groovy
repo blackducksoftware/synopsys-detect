@@ -22,9 +22,9 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.packman.type.PackageManagerType
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
-import com.blackducksoftware.integration.hub.packman.util.command.Executable
-import com.blackducksoftware.integration.hub.packman.util.command.ExecutableOutput
-import com.blackducksoftware.integration.hub.packman.util.command.ExecutableRunner
+import com.blackducksoftware.integration.hub.packman.util.executable.Executable
+import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableOutput
+import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableRunner
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter
 
 @Component
@@ -35,7 +35,7 @@ public class MavenPackager {
     ProjectInfoGatherer projectInfoGatherer
 
     @Autowired
-    ExecutableRunner commandRunner
+    ExecutableRunner executableRunner
 
     @Value('${packman.maven.aggregate}')
     boolean aggregateBom
@@ -53,12 +53,12 @@ public class MavenPackager {
         excludedIncludedFilter = new ExcludedIncludedFilter(excludedScopes.toLowerCase(), includedScopes.toLowerCase())
     }
 
-    public List<DependencyNode> makeDependencyNodes(String sourcePath, String mavenCommand) {
+    public List<DependencyNode> makeDependencyNodes(String sourcePath, String mavenExecutable) {
         final List<DependencyNode> projects = []
 
         File sourceDirectory = new File(sourcePath)
-        final Executable mvnCommand = new Executable(sourceDirectory, mavenCommand, ["dependency:tree"])
-        final ExecutableOutput mvnOutput = commandRunner.execute(mvnCommand)
+        final Executable mvnExecutable = new Executable(sourceDirectory, mavenExecutable, ["dependency:tree"])
+        final ExecutableOutput mvnOutput = executableRunner.execute(mvnExecutable)
 
         final MavenOutputParser mavenOutputParser = new MavenOutputParser(excludedIncludedFilter)
         projects.addAll(mavenOutputParser.parse(mvnOutput.standardOutput))

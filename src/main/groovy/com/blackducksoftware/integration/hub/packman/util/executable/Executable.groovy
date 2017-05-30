@@ -1,4 +1,4 @@
-package com.blackducksoftware.integration.hub.packman.util.command
+package com.blackducksoftware.integration.hub.packman.util.executable
 
 import org.apache.commons.lang3.StringUtils
 
@@ -41,7 +41,7 @@ class Executable {
         processBuilder
     }
 
-    String getCommandDescription() {
+    String getExecutableDescription() {
         StringUtils.join(createProcessBuilderArguments(), ' ')
     }
 
