@@ -14,7 +14,7 @@ class CocoapodsPackageManager extends PackageManager {
     FileFinder fileFinder
 
     @Autowired
-    CocoapodsPackager cocoapodsPackager2
+    CocoapodsPackager cocoapodsPackager
 
     PackageManagerType getPackageManagerType() {
         return PackageManagerType.COCOAPODS
@@ -25,6 +25,6 @@ class CocoapodsPackageManager extends PackageManager {
     }
 
     List<DependencyNode> extractDependencyNodes(String sourcePath) {
-        return cocoapodsPackager2.makeDependencyNodes(sourcePath)
+        return cocoapodsPackager.makeDependencyNodes(sourcePath)
     }
 }
