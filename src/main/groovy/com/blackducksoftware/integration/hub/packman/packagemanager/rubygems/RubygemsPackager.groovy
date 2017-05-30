@@ -23,21 +23,15 @@ import com.blackducksoftware.integration.hub.packman.type.PackageManagerType
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
 
 public class RubygemsPackager {
-    private final String gemlock
-
     private final ProjectInfoGatherer projectInfoGatherer
-
-    private final String sourcePath
 
     private final Pattern linePattern = Pattern.compile("(.*) \\((.*)\\)")
 
-    public RubygemsPackager(final ProjectInfoGatherer projectInfoGatherer, final String sourcePath, final String gemlock) {
-        this.gemlock = gemlock
+    public RubygemsPackager(final ProjectInfoGatherer projectInfoGatherer) {
         this.projectInfoGatherer = projectInfoGatherer
-        this.sourcePath = sourcePath
     }
 
-    public List<DependencyNode> makeDependencyNodes() {
+    public List<DependencyNode> makeDependencyNodes(final String sourcePath, final String gemlock) {
         final String rootName = projectInfoGatherer.getDefaultProjectName(PackageManagerType.RUBYGEMS, sourcePath)
         final String rootVersion = projectInfoGatherer.getDefaultProjectVersionName()
         final ExternalId rootExternalId = new NameVersionExternalId(Forge.rubygems, rootName, rootVersion)

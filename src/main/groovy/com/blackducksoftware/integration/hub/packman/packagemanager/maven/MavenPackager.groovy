@@ -53,7 +53,7 @@ public class MavenPackager {
         excludedIncludedFilter = new ExcludedIncludedFilter(excludedScopes.toLowerCase(), includedScopes.toLowerCase())
     }
 
-    public List<DependencyNode> makeDependencyNodes(String mavenCommand, String sourcePath) {
+    public List<DependencyNode> makeDependencyNodes(String sourcePath, String mavenCommand) {
         final List<DependencyNode> projects = []
 
         File sourceDirectory = new File(sourcePath)

@@ -45,7 +45,7 @@ class GradlePackageManager extends PackageManager {
 
     List<DependencyNode> extractDependencyNodes(String sourcePath) {
         def gradleCommand = findGradleCommand(sourcePath)
-        DependencyNode rootProjectNode = gradleInitScriptPackager.extractRootProjectNode(gradleCommand, sourcePath)
+        DependencyNode rootProjectNode = gradleInitScriptPackager.extractRootProjectNode(sourcePath, gradleCommand)
         [rootProjectNode]
     }
 

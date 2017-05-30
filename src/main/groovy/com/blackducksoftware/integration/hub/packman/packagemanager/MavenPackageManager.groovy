@@ -55,7 +55,7 @@ class MavenPackageManager extends PackageManager {
     }
 
     List<DependencyNode> extractDependencyNodes(String sourcePath) {
-        def projects = mavenPackager.makeDependencyNodes(findMavenCommandPath(), sourcePath)
+        def projects = mavenPackager.makeDependencyNodes(sourcePath, findMavenCommandPath())
         return projects
     }
 

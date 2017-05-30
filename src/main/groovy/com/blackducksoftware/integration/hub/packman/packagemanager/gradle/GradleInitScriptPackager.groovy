@@ -42,7 +42,7 @@ class GradleInitScriptPackager {
     @Autowired
     ExecutableRunner commandRunner
 
-    DependencyNode extractRootProjectNode(String gradleCommand, String sourcePath) {
+    DependencyNode extractRootProjectNode(String sourcePath, String gradleCommand) {
         File initScriptFile = File.createTempFile('init-packman', '.gradle')
         initScriptFile.deleteOnExit()
         String initScriptContents = getClass().getResourceAsStream('/init-script-gradle').getText(StandardCharsets.UTF_8.name())
