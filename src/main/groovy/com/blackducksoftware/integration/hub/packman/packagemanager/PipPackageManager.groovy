@@ -74,8 +74,8 @@ class PipPackageManager extends PackageManager {
             pythonCommandType = CommandType.PYTHON
             pipCommandType = CommandType.PIP
         }
-        pythonCommand = findPythonCommand(null)
-        pipCommand = findPipCommand(null)
+        pythonCommand = findCommand(null, pythonPath, pythonCommandType)
+        pipCommand = findCommand(null, pipPath, pipCommandType)
         if(SystemUtils.IS_OS_WINDOWS) {
             binFolderName = 'Scripts'
             envVariables.putAll(WINDOWS_ENV_VARIABLES)
@@ -122,8 +122,8 @@ class PipPackageManager extends PackageManager {
             ]
             def createVirtualEnvCommand = new Executable(sourceDirectory, pythonCommand, commandArgs)
             commandRunner.executeLoudly(createVirtualEnvCommand)
-            pythonCommand = findPythonCommand(virtualEnvBin)
-            pipCommand = findPipCommand(virtualEnvBin)
+            pythonCommand = findCommand(virtualEnvBin, pythonPath, pythonCommandType)
+            pipCommand = findCommand(virtualEnvBin, pipPath, pipCommandType)
         }
     }
 
@@ -135,26 +135,14 @@ class PipPackageManager extends PackageManager {
         return map['Location'].trim()
     }
 
-    private String findPythonCommand(String path) {
-        if (StringUtils.isNotBlank(pythonPath)) {
-            pythonPath
+    private String findCommand(String path, String executablePath, String commandType) {
+        if (StringUtils.isNotBlank(executablePath)) {
+            executablePath
         } else {
             if(StringUtils.isBlank(path)){
-                commandManager.getPathOfCommand(pythonCommandType)
+                commandManager.getPathOfCommand(commandType)
             } else {
-                commandManager.getPathOfCommand(path, pythonCommandType)
-            }
-        }
-    }
-
-    private String findPipCommand(String path) {
-        if (StringUtils.isNotBlank(pipPath)) {
-            pipPath
-        } else {
-            if(StringUtils.isBlank(path)){
-                commandManager.getPathOfCommand(pipCommandType)
-            } else {
-                commandManager.getPathOfCommand(path, pipCommandType)
+                commandManager.getPathOfCommand(path, commandType)
             }
         }
     }
