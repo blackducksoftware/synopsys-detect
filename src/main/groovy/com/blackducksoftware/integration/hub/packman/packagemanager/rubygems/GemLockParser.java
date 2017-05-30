@@ -17,12 +17,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Stack;
 
-public class SimpleParser {
+public class GemLockParser {
     private final String indentation;
 
     private final String objectIdenetifier;
 
-    public SimpleParser(final String indentation, final String objectIdentifier) {
+    public GemLockParser(final String indentation, final String objectIdentifier) {
         this.indentation = indentation;
         this.objectIdenetifier = objectIdentifier;
     }

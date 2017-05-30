@@ -28,19 +28,19 @@ import org.skyscreamer.jsonassert.JSONAssert;
 
 import com.google.gson.GsonBuilder;
 
-public class SimpleParserTest {
+public class GemLockParserTest {
     private final String indentation = "--";
 
     private final String objectIdentifier = "->";
 
-    private SimpleParser simpleParser;
+    private GemLockParser simpleParser;
 
-    private SimpleParser gemlockParser;
+    private GemLockParser gemlockParser;
 
     @Before
     public void init() {
-        simpleParser = new SimpleParser(indentation, objectIdentifier);
-        gemlockParser = new SimpleParser("  ", ":");
+        simpleParser = new GemLockParser(indentation, objectIdentifier);
+        gemlockParser = new GemLockParser("  ", ":");
     }
 
     @Test

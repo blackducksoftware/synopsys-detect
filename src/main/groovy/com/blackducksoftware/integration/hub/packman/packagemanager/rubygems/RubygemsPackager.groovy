@@ -47,7 +47,7 @@ public class RubygemsPackager {
         final List<DependencyNode> dependencies = new ArrayList<>()
         dependencies.add(root)
 
-        final SimpleParser gemlockParser = new SimpleParser("  ", ":")
+        final GemLockParser gemlockParser = new GemLockParser("  ", ":")
         final Map gemlockMap = gemlockParser.parse(gemlock)
         final Map specMap = gemlockMap.get("GEM").get("specs")
         gemlockMap.get("DEPENDENCIES").each { key, value ->
