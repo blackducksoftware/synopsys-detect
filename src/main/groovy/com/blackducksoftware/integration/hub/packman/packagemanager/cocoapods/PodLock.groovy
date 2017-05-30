@@ -9,17 +9,17 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods;
+package com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods
 
-import java.util.ArrayList;
-import java.util.List;
+import org.apache.commons.lang3.builder.RecursiveToStringStyle
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
+class PodLock {
+    List<Pod> pods
+    List<Pod> dependencies
 
-public class PodLock {
-    public List<DependencyNode> pods = new ArrayList<>();
-
-    public List<DependencyNode> dependencies = new ArrayList<>();
-
-    public String cococapodsVersion;
+    @Override
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this, RecursiveToStringStyle.JSON_STYLE)
+    }
 }

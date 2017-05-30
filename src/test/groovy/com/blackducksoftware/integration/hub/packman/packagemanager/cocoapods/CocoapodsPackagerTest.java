@@ -27,7 +27,6 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId;
-import com.blackducksoftware.integration.hub.packman.util.FileFinder;
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -41,12 +40,13 @@ public class CocoapodsPackagerTest {
         final String expected = IOUtils.toString(getClass().getResourceAsStream("/cocoapods/complex/Complex.json"), StandardCharsets.UTF_8);
         final File podlockFile = new File(getClass().getResource("/cocoapods/complex/Podfile.lock").toURI());
         final CocoapodsPackager cocoapodsPackager = new CocoapodsPackager();
-        cocoapodsPackager.fileFinder = new FileFinder();
-        cocoapodsPackager.projectInfoGatherer = new ProjectInfoGatherer();
+        cocoapodsPackager.setProjectInfoGatherer(new ProjectInfoGatherer());
+        cocoapodsPackager.setPodLockParser(new PodLockParser());
         final List<DependencyNode> projects = cocoapodsPackager.makeDependencyNodes(podlockFile.getParentFile().getAbsolutePath());
         assertEquals(1, projects.size());
         fixVersion(projects.get(0), "1.0.0");
         final String actual = gson.toJson(projects);
+        System.out.println(actual);
         JSONAssert.assertEquals(expected, actual, false);
     }
 
@@ -56,8 +56,8 @@ public class CocoapodsPackagerTest {
         final String expected = IOUtils.toString(getClass().getResourceAsStream("/cocoapods/simple/Simple.json"), StandardCharsets.UTF_8);
         final File podlockFile = new File(getClass().getResource("/cocoapods/simple/Podfile.lock").toURI());
         final CocoapodsPackager cocoapodsPackager = new CocoapodsPackager();
-        cocoapodsPackager.fileFinder = new FileFinder();
-        cocoapodsPackager.projectInfoGatherer = new ProjectInfoGatherer();
+        cocoapodsPackager.setProjectInfoGatherer(new ProjectInfoGatherer());
+        cocoapodsPackager.setPodLockParser(new PodLockParser());
         final List<DependencyNode> projects = cocoapodsPackager.makeDependencyNodes(podlockFile.getParentFile().getAbsolutePath());
         assertEquals(1, projects.size());
         fixVersion(projects.get(0), "0.0.1");
