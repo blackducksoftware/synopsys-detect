@@ -9,14 +9,14 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.util.command
+package com.blackducksoftware.integration.hub.packman.util.executable
 
 class ExecutableRunnerException extends Exception {
     ExecutableRunnerException(final Throwable innerException) {
         super(innerException)
     }
 
-    ExecutableRunnerException(final ExecutableOutput commandOutput) {
-        super("${commandOutput.standardOutput}\n\n${commandOutput.errorOutput}")
+    ExecutableRunnerException(final ExecutableOutput executableOutput) {
+        super("${executableOutput.standardOutput}\n\n${executableOutput.errorOutput}")
     }
 }

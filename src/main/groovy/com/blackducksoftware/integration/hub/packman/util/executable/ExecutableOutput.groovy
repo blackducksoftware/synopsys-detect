@@ -1,4 +1,4 @@
-package com.blackducksoftware.integration.hub.packman.util.command
+package com.blackducksoftware.integration.hub.packman.util.executable
 
 class ExecutableOutput {
     final String standardOutput

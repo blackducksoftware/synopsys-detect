@@ -10,21 +10,21 @@ enum ExecutableType {
     PIP3([(OperatingSystemType.WINDOWS): 'pip3.exe', (OperatingSystemType.LINUX): 'pip3']),
     PYTHON3([(OperatingSystemType.WINDOWS): 'python3.exe', (OperatingSystemType.LINUX): 'python3']);
 
-    private Map<OperatingSystemType, String> osToCommandMap = [:]
+    private Map<OperatingSystemType, String> osToExecutableMap = [:]
 
-    private ExecutableType(Map<OperatingSystemType, String> osToCommandMap) {
-        this.osToCommandMap.putAll(osToCommandMap)
+    private ExecutableType(Map<OperatingSystemType, String> osToExecutableMap) {
+        this.osToExecutableMap.putAll(osToExecutableMap)
     }
 
     /**
-     * If an operating system specific command is not present, the linux command, which could itself not be present, will be returned.
+     * If an operating system specific executable is not present, the linux executable, which could itself not be present, will be returned.
      */
-    public String getCommand(OperatingSystemType operatingSystemType) {
-        String osSpecificCommand = osToCommandMap[operatingSystemType]
-        if (osSpecificCommand) {
-            return osSpecificCommand
+    public String getExecutable(OperatingSystemType operatingSystemType) {
+        String osSpecificExecutable = osToExecutableMap[operatingSystemType]
+        if (osSpecificExecutable) {
+            return osSpecificExecutable
         } else {
-            return osToCommandMap[OperatingSystemType.LINUX]
+            return osToExecutableMap[OperatingSystemType.LINUX]
         }
     }
 }

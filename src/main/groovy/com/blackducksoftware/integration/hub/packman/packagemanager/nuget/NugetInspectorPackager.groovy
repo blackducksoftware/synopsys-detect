@@ -22,9 +22,9 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.packman.PackmanProperties
 import com.blackducksoftware.integration.hub.packman.util.FileFinder
-import com.blackducksoftware.integration.hub.packman.util.command.Executable
-import com.blackducksoftware.integration.hub.packman.util.command.ExecutableOutput
-import com.blackducksoftware.integration.hub.packman.util.command.ExecutableRunner
+import com.blackducksoftware.integration.hub.packman.util.executable.Executable
+import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableOutput
+import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableRunner
 
 @Component
 class NugetInspectorPackager {
@@ -37,7 +37,7 @@ class NugetInspectorPackager {
     FileFinder fileFinder
 
     @Autowired
-    ExecutableRunner commandRunner
+    ExecutableRunner executableRunner
 
     @Autowired
     NugetNodeTransformer nugetNodeTransformer
@@ -60,10 +60,10 @@ class NugetInspectorPackager {
         inspectorPackageVersion = inspectorPackageVersion.trim()
     }
 
-    DependencyNode makeDependencyNode(String sourcePath, File nugetCommand) {
+    DependencyNode makeDependencyNode(String sourcePath, File nugetExecutable) {
         def outputDirectory = new File(packmanProperties.outputDirectoryPath)
         def sourceDirectory = new File(sourcePath)
-        String inspectorExePath = getInspectorExePath(sourceDirectory, outputDirectory, nugetCommand)
+        String inspectorExePath = getInspectorExePath(sourceDirectory, outputDirectory, nugetExecutable)
 
         if (!inspectorExePath) {
             return null
@@ -81,8 +81,8 @@ class NugetInspectorPackager {
             options += "-v"
         }
 
-        def hubNugetInspectorCommand = new Executable(sourceDirectory, inspectorExePath, options)
-        ExecutableOutput commandOutput = commandRunner.executeLoudly(hubNugetInspectorCommand)
+        def hubNugetInspectorExecutable = new Executable(sourceDirectory, inspectorExePath, options)
+        ExecutableOutput executableOutput = executableRunner.executeLoudly(hubNugetInspectorExecutable)
 
         def dependencyNodeFile = fileFinder.findFile(outputDirectory, '*_dependency_node.json')
         DependencyNode node = nugetNodeTransformer.parse(dependencyNodeFile)
@@ -90,14 +90,14 @@ class NugetInspectorPackager {
         return node
     }
 
-    private String getInspectorExePath(File sourceDirectory, File outputDirectory, File nugetCommand) {
+    private String getInspectorExePath(File sourceDirectory, File outputDirectory, File nugetExecutable) {
         File inspectorVersionDirectory = new File(outputDirectory, "${inspectorPackageName}.${inspectorPackageVersion}")
         File toolsDirectory = new File(inspectorVersionDirectory, 'tools')
         File inspectorExe = new File(toolsDirectory, "${inspectorPackageName}.exe")
 
         //if we can't find the inspector where we expect to, attempt to install it from nuget.org
         if (inspectorExe == null || !inspectorExe.exists()) {
-            installInspectorFromNugetDotOrg(sourceDirectory, outputDirectory, nugetCommand)
+            installInspectorFromNugetDotOrg(sourceDirectory, outputDirectory, nugetExecutable)
             inspectorExe = new File(toolsDirectory, "${inspectorPackageName}.exe")
         }
 
@@ -109,7 +109,7 @@ class NugetInspectorPackager {
         return inspectorExe.absolutePath
     }
 
-    private ExecutableOutput installInspectorFromNugetDotOrg(File sourceDirectory, File outputDirectory, File nugetCommand) {
+    private ExecutableOutput installInspectorFromNugetDotOrg(File sourceDirectory, File outputDirectory, File nugetExecutable) {
         def options =  [
             'install',
             inspectorPackageName,
@@ -119,7 +119,7 @@ class NugetInspectorPackager {
             outputDirectory.absolutePath
         ]
 
-        Executable installCommand = new Executable(sourceDirectory, nugetCommand.absolutePath, options)
-        commandRunner.executeLoudly(installCommand)
+        Executable installExecutable = new Executable(sourceDirectory, nugetExecutable.absolutePath, options)
+        executableRunner.executeLoudly(installExecutable)
     }
 }

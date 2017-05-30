@@ -23,7 +23,7 @@ import com.blackducksoftware.integration.hub.packman.packagemanager.maven.MavenP
 import com.blackducksoftware.integration.hub.packman.type.ExecutableType
 import com.blackducksoftware.integration.hub.packman.type.PackageManagerType
 import com.blackducksoftware.integration.hub.packman.util.FileFinder
-import com.blackducksoftware.integration.hub.packman.util.command.ExecutableManager
+import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableManager
 
 @Component
 class MavenPackageManager extends PackageManager {
@@ -35,7 +35,7 @@ class MavenPackageManager extends PackageManager {
     MavenPackager mavenPackager
 
     @Autowired
-    ExecutableManager commandManager
+    ExecutableManager executableManager
 
     @Autowired
     FileFinder fileFinder
@@ -48,20 +48,20 @@ class MavenPackageManager extends PackageManager {
     }
 
     boolean isPackageManagerApplicable(String sourcePath) {
-        def mvnCommand = findMavenCommandPath()
+        def mvnExecutable = findMavenExecutablePath()
         def pomXml = fileFinder.findFile(sourcePath, POM_FILENAME)
 
-        mvnCommand && pomXml
+        mvnExecutable && pomXml
     }
 
     List<DependencyNode> extractDependencyNodes(String sourcePath) {
-        def projects = mavenPackager.makeDependencyNodes(sourcePath, findMavenCommandPath())
+        def projects = mavenPackager.makeDependencyNodes(sourcePath, findMavenExecutablePath())
         return projects
     }
 
-    private String findMavenCommandPath() {
+    private String findMavenExecutablePath() {
         if (StringUtils.isBlank(mavenPath)) {
-            return commandManager.getPathOfCommand(ExecutableType.MVN)
+            return executableManager.getPathOfExecutable(ExecutableType.MVN)
         }
         mavenPath
     }

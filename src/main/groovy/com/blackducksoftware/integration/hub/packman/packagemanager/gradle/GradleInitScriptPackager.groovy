@@ -9,9 +9,9 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.packman.util.command.Executable
-import com.blackducksoftware.integration.hub.packman.util.command.ExecutableManager
-import com.blackducksoftware.integration.hub.packman.util.command.ExecutableRunner
+import com.blackducksoftware.integration.hub.packman.util.executable.Executable
+import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableManager
+import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableRunner
 import com.google.gson.Gson
 
 @Component
@@ -37,12 +37,12 @@ class GradleInitScriptPackager {
     Gson gson
 
     @Autowired
-    ExecutableManager commandManager
+    ExecutableManager executableManager
 
     @Autowired
-    ExecutableRunner commandRunner
+    ExecutableRunner executableRunner
 
-    DependencyNode extractRootProjectNode(String sourcePath, String gradleCommand) {
+    DependencyNode extractRootProjectNode(String sourcePath, String gradleExecutable) {
         File initScriptFile = File.createTempFile('init-packman', '.gradle')
         initScriptFile.deleteOnExit()
         String initScriptContents = getClass().getResourceAsStream('/init-script-gradle').getText(StandardCharsets.UTF_8.name())
@@ -54,11 +54,11 @@ class GradleInitScriptPackager {
         initScriptFile << initScriptContents
         String initScriptPath = initScriptFile.absolutePath
         logger.info("using ${initScriptPath} as the path for the gradle init script")
-        Executable command = new Executable(new File(sourcePath), gradleCommand, [
+        Executable executable = new Executable(new File(sourcePath), gradleExecutable, [
             gradleBuildCommand,
             "--init-script=${initScriptPath}"
         ])
-        commandRunner.executeLoudly(command)
+        executableRunner.executeLoudly(executable)
 
         File buildDirectory = new File(sourcePath, 'build')
         File blackduckDirectory = new File(buildDirectory, 'blackduck')

@@ -1,4 +1,4 @@
-package com.blackducksoftware.integration.hub.packman.util.command
+package com.blackducksoftware.integration.hub.packman.util.executable
 
 import javax.annotation.PostConstruct
 
@@ -39,40 +39,40 @@ class ExecutableManager {
         }
     }
 
-    String getPathOfCommand(ExecutableType commandType) {
-        File commandFile = getCommand(commandType)
+    String getPathOfExecutable(ExecutableType executableType) {
+        File executableFile = getExecutable(executableType)
 
-        null == commandFile ? null : commandFile.absolutePath
+        null == executableFile ? null : executableFile.absolutePath
     }
 
-    File getCommand(ExecutableType commandType) {
-        String command = commandType.getCommand(currentOs)
-        File commandFile = findExecutableFile(command)
+    File getExecutable(ExecutableType executableType) {
+        String executable = executableType.getExecutable(currentOs)
+        File executableFile = findExecutableFile(executable)
 
-        commandFile
+        executableFile
     }
 
-    String getPathOfCommand(String path, ExecutableType commandType) {
-        File commandFile = getCommand(path, commandType)
+    String getPathOfExecutable(String path, ExecutableType executableType) {
+        File executableFile = getExecutable(path, executableType)
 
-        null == commandFile ? null : commandFile.absolutePath
+        null == executableFile ? null : executableFile.absolutePath
     }
 
-    File getCommand(String path, ExecutableType commandType) {
-        String command = commandType.getCommand(currentOs)
-        File commandFile = findExecutableFile(path, command)
+    File getExecutable(String path, ExecutableType executableType) {
+        String executable = executableType.getExecutable(currentOs)
+        File executableFile = findExecutableFile(path, executable)
 
-        commandFile
+        executableFile
     }
 
-    private File findExecutableFile(final String command) {
+    private File findExecutableFile(final String executable) {
         String systemPath = System.getenv("PATH")
-        return findExecutableFile(systemPath, command)
+        return findExecutableFile(systemPath, executable)
     }
 
-    private File findExecutableFile(final String path, String command) {
+    private File findExecutableFile(final String path, String executable) {
         for (String pathPiece : path.split(File.pathSeparator)) {
-            File foundFile = fileFinder.findFile(pathPiece, command)
+            File foundFile = fileFinder.findFile(pathPiece, executable)
             if (foundFile && foundFile.canExecute()) {
                 return foundFile
             }
