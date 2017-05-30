@@ -11,12 +11,12 @@
  */
 package com.blackducksoftware.integration.hub.packman.util.command
 
-class CommandRunnerException extends Exception {
-    CommandRunnerException(final Throwable innerException) {
+class ExecutableRunnerException extends Exception {
+    ExecutableRunnerException(final Throwable innerException) {
         super(innerException)
     }
 
-    CommandRunnerException(final CommandOutput commandOutput) {
+    ExecutableRunnerException(final ExecutableOutput commandOutput) {
         super("${commandOutput.standardOutput}\n\n${commandOutput.errorOutput}")
     }
 }

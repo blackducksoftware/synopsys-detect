@@ -23,13 +23,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CommandRunner {
-    private final Logger logger = LoggerFactory.getLogger(CommandRunner.class);
+public class ExecutableRunner {
+    private final Logger logger = LoggerFactory.getLogger(ExecutableRunner.class);
 
     /**
      * The output of the command's execution will NOT be logged.
      */
-    public CommandOutput executeQuietly(final Command command) throws CommandRunnerException {
+    public ExecutableOutput executeQuietly(final Executable command) throws ExecutableRunnerException {
         return execute(command, true);
     }
 
@@ -37,7 +37,7 @@ public class CommandRunner {
      * The standard output of the command's execution will be logged at DEBUG and any error output will be logged as
      * ERROR.
      */
-    public CommandOutput executeLoudly(final Command command) throws CommandRunnerException {
+    public ExecutableOutput executeLoudly(final Executable command) throws ExecutableRunnerException {
         return execute(command, false);
     }
 
@@ -46,20 +46,20 @@ public class CommandRunner {
      * output will be logged as
      * ERROR. Otherwise, the output of the command's execution will NOT be logged.
      */
-    public CommandOutput execute(final Command command, final boolean runQuietly) throws CommandRunnerException {
+    public ExecutableOutput execute(final Executable command, final boolean runQuietly) throws ExecutableRunnerException {
         logger.debug(String.format("Running command >%s", command.getCommandDescription()));
         try {
             final ProcessBuilder processBuilder = command.createProcessBuilder();
             final Process process = processBuilder.start();
             final String standardOutput = printStream(process.getInputStream(), runQuietly, false);
             final String errorOutput = printStream(process.getErrorStream(), runQuietly, true);
-            final CommandOutput output = new CommandOutput(standardOutput, errorOutput);
+            final ExecutableOutput output = new ExecutableOutput(standardOutput, errorOutput);
             if (StringUtils.isNotBlank(errorOutput)) {
-                throw new CommandRunnerException(output);
+                throw new ExecutableRunnerException(output);
             }
             return output;
         } catch (final IOException e) {
-            throw new CommandRunnerException(e);
+            throw new ExecutableRunnerException(e);
         }
     }
 

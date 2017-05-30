@@ -13,8 +13,8 @@ import com.blackducksoftware.integration.hub.packman.type.OperatingSystemType
 import com.blackducksoftware.integration.hub.packman.util.FileFinder
 
 @Component
-class CommandManager {
-    private final Logger logger = LoggerFactory.getLogger(CommandManager.class)
+class ExecutableManager {
+    private final Logger logger = LoggerFactory.getLogger(ExecutableManager.class)
 
     @Autowired
     FileFinder fileFinder

@@ -22,9 +22,9 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.packman.PackmanProperties
 import com.blackducksoftware.integration.hub.packman.util.FileFinder
-import com.blackducksoftware.integration.hub.packman.util.command.Command
-import com.blackducksoftware.integration.hub.packman.util.command.CommandOutput
-import com.blackducksoftware.integration.hub.packman.util.command.CommandRunner
+import com.blackducksoftware.integration.hub.packman.util.command.Executable
+import com.blackducksoftware.integration.hub.packman.util.command.ExecutableOutput
+import com.blackducksoftware.integration.hub.packman.util.command.ExecutableRunner
 
 @Component
 class NugetInspectorPackager {
@@ -37,7 +37,7 @@ class NugetInspectorPackager {
 	FileFinder fileFinder
 
 	@Autowired
-	CommandRunner commandRunner
+	ExecutableRunner commandRunner
 
 	@Autowired
 	NugetNodeTransformer nugetNodeTransformer
@@ -81,8 +81,8 @@ class NugetInspectorPackager {
 			options += "-v"
 		}
 
-		def hubNugetInspectorCommand = new Command(sourceDirectory, inspectorExePath, options)
-		CommandOutput commandOutput = commandRunner.executeLoudly(hubNugetInspectorCommand)
+		def hubNugetInspectorCommand = new Executable(sourceDirectory, inspectorExePath, options)
+		ExecutableOutput commandOutput = commandRunner.executeLoudly(hubNugetInspectorCommand)
 
 		def dependencyNodeFile = fileFinder.findFile(outputDirectory, '*_dependency_node.json')
 		DependencyNode node = nugetNodeTransformer.parse(dependencyNodeFile)
@@ -109,7 +109,7 @@ class NugetInspectorPackager {
 		return inspectorExe.absolutePath
 	}
 
-	private CommandOutput installInspectorFromNugetDotOrg(File sourceDirectory, File outputDirectory, File nugetCommand) {
+	private ExecutableOutput installInspectorFromNugetDotOrg(File sourceDirectory, File outputDirectory, File nugetCommand) {
 		def options =  [
 			'install',
 			inspectorPackageName,
@@ -119,7 +119,7 @@ class NugetInspectorPackager {
 			outputDirectory.absolutePath
 		]
 
-		Command installCommand = new Command(sourceDirectory, nugetCommand.absolutePath, options)
+		Executable installCommand = new Executable(sourceDirectory, nugetCommand.absolutePath, options)
 		commandRunner.executeLoudly(installCommand)
 	}
 }

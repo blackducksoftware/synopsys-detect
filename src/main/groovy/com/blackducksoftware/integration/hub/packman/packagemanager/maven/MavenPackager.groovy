@@ -22,9 +22,9 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.packman.type.PackageManagerType
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
-import com.blackducksoftware.integration.hub.packman.util.command.Command
-import com.blackducksoftware.integration.hub.packman.util.command.CommandOutput
-import com.blackducksoftware.integration.hub.packman.util.command.CommandRunner
+import com.blackducksoftware.integration.hub.packman.util.command.Executable
+import com.blackducksoftware.integration.hub.packman.util.command.ExecutableOutput
+import com.blackducksoftware.integration.hub.packman.util.command.ExecutableRunner
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter
 
 @Component
@@ -35,7 +35,7 @@ public class MavenPackager {
     ProjectInfoGatherer projectInfoGatherer
 
     @Autowired
-    CommandRunner commandRunner
+    ExecutableRunner commandRunner
 
     @Value('${packman.maven.aggregate}')
     boolean aggregateBom
@@ -57,8 +57,8 @@ public class MavenPackager {
         final List<DependencyNode> projects = []
 
         File sourceDirectory = new File(sourcePath)
-        final Command mvnCommand = new Command(sourceDirectory, mavenCommand, ["dependency:tree"])
-        final CommandOutput mvnOutput = commandRunner.execute(mvnCommand)
+        final Executable mvnCommand = new Executable(sourceDirectory, mavenCommand, ["dependency:tree"])
+        final ExecutableOutput mvnOutput = commandRunner.execute(mvnCommand)
 
         final MavenOutputParser mavenOutputParser = new MavenOutputParser(excludedIncludedFilter)
         projects.addAll(mavenOutputParser.parse(mvnOutput.standardOutput))

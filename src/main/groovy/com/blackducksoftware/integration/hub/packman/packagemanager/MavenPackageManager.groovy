@@ -23,7 +23,7 @@ import com.blackducksoftware.integration.hub.packman.packagemanager.maven.MavenP
 import com.blackducksoftware.integration.hub.packman.type.CommandType
 import com.blackducksoftware.integration.hub.packman.type.PackageManagerType
 import com.blackducksoftware.integration.hub.packman.util.FileFinder
-import com.blackducksoftware.integration.hub.packman.util.command.CommandManager
+import com.blackducksoftware.integration.hub.packman.util.command.ExecutableManager
 
 @Component
 class MavenPackageManager extends PackageManager {
@@ -35,7 +35,7 @@ class MavenPackageManager extends PackageManager {
     MavenPackager mavenPackager
 
     @Autowired
-    CommandManager commandManager
+    ExecutableManager commandManager
 
     @Autowired
     FileFinder fileFinder

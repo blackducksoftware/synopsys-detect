@@ -29,45 +29,45 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId;
-import com.blackducksoftware.integration.hub.packman.util.command.Command;
-import com.blackducksoftware.integration.hub.packman.util.command.CommandManager;
-import com.blackducksoftware.integration.hub.packman.util.command.CommandOutput;
-import com.blackducksoftware.integration.hub.packman.util.command.CommandRunner;
-import com.blackducksoftware.integration.hub.packman.util.command.CommandRunnerException;
+import com.blackducksoftware.integration.hub.packman.util.command.Executable;
+import com.blackducksoftware.integration.hub.packman.util.command.ExecutableManager;
+import com.blackducksoftware.integration.hub.packman.util.command.ExecutableOutput;
+import com.blackducksoftware.integration.hub.packman.util.command.ExecutableRunner;
+import com.blackducksoftware.integration.hub.packman.util.command.ExecutableRunnerException;
 
 @Component
 public class PipPackager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    CommandManager commandManager;
+    ExecutableManager commandManager;
 
     @Autowired
-    CommandRunner commandRunner;
+    ExecutableRunner commandRunner;
 
     @Autowired
     PipShowMapParser pipShowMapParser;
 
     public List<DependencyNode> makeDependencyNodes(final String sourcePath, final String pipCommand, final String pythonCommand,
             final Map<String, String> environmentVariables)
-            throws CommandRunnerException {
+            throws ExecutableRunnerException {
         final List<DependencyNode> projects = new ArrayList<>();
 
         final File sourceDirectory = new File(sourcePath);
-        final Command installProject = new Command(sourceDirectory, environmentVariables, pipCommand, Arrays.asList("install", "."));
+        final Executable installProject = new Executable(sourceDirectory, environmentVariables, pipCommand, Arrays.asList("install", "."));
         commandRunner.executeLoudly(installProject);
 
         final File setupScript = new File(sourceDirectory, "setup.py");
         final List<String> projectNameArgs = Arrays.asList(setupScript.getAbsolutePath(), "--name");
-        final Command projectNameCommand = new Command(sourceDirectory, environmentVariables, pythonCommand, projectNameArgs);
+        final Executable projectNameCommand = new Executable(sourceDirectory, environmentVariables, pythonCommand, projectNameArgs);
         final String projectName = commandRunner.executeLoudly(projectNameCommand).getStandardOutput().trim();
 
         logger.info("Running PIP analysis");
         if (StringUtils.isBlank(projectName)) {
             logger.error("Could not determine project name. Please make sure it is specified in your setup.py");
         } else {
-            final Command pipShowCommand = new Command(sourceDirectory, environmentVariables, pipCommand, Arrays.asList("show", projectName));
-            final CommandOutput pipProjectOutput = commandRunner.executeQuietly(pipShowCommand);
+            final Executable pipShowCommand = new Executable(sourceDirectory, environmentVariables, pipCommand, Arrays.asList("show", projectName));
+            final ExecutableOutput pipProjectOutput = commandRunner.executeQuietly(pipShowCommand);
             final Map<String, String> projectPipShowMap = pipShowMapParser.parse(pipProjectOutput.getStandardOutput());
             final DependencyNode projectNode = pipShowMapToNode(projectPipShowMap);
             projectNode.children.clear();
@@ -81,11 +81,11 @@ public class PipPackager {
 
     private DependencyNode dependencyNodeTransformer(final File sourceDirectory, final DependencyNode rawDependencyNode,
             final DependencyNodeBuilder nodeBuilder, final Map<String, DependencyNode> allNodes, final String pipCommand,
-            final Map<String, String> environmentVariables) throws CommandRunnerException {
+            final Map<String, String> environmentVariables) throws ExecutableRunnerException {
         if (allNodes.containsKey(rawDependencyNode.name.toLowerCase())) {
             return allNodes.get(rawDependencyNode.name.toLowerCase());
         }
-        final Command pipShowCommand = new Command(sourceDirectory, environmentVariables, pipCommand, Arrays.asList("show", rawDependencyNode.name));
+        final Executable pipShowCommand = new Executable(sourceDirectory, environmentVariables, pipCommand, Arrays.asList("show", rawDependencyNode.name));
         final String pipProjectText = commandRunner.executeQuietly(pipShowCommand).getStandardOutput();
         final DependencyNode dependencyNode = pipShowMapToNode(pipShowMapParser.parse(pipProjectText));
 
