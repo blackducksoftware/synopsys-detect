@@ -17,7 +17,9 @@ import static org.junit.Assert.assertNull;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
@@ -55,9 +57,9 @@ public class RubygemsPackagerTest {
 
     @Test
     public void findKeyInMapTest() {
-        final ParserMap map = new ParserMap();
+        final Map map = new HashMap();
         final String key = "lookForMe (These key's have versions)";
-        map.put(key, new ParserMap());
+        map.put(key, new HashMap());
         final RubygemsPackager rubygemsPackager = new RubygemsPackager(null, null, null);
         final String foundKey = rubygemsPackager.findKeyInMap("lookForMe", map);
         assertEquals(key, foundKey);
@@ -65,9 +67,9 @@ public class RubygemsPackagerTest {
 
     @Test
     public void findKeyNotInMapTest() {
-        final ParserMap map = new ParserMap();
+        final Map map = new HashMap();
         final String key = "lookForMe (These key's have versions)";
-        map.put(key, new ParserMap());
+        map.put(key, new HashMap());
         final RubygemsPackager rubygemsPackager = new RubygemsPackager(null, null, null);
         final String foundKey = rubygemsPackager.findKeyInMap("i dont exist", map);
         assertNull(foundKey);

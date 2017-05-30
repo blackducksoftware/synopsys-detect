@@ -12,6 +12,7 @@
 package com.blackducksoftware.integration.hub.packman.packagemanager.rubygems;
 
 import java.util.AbstractMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Stack;
@@ -26,16 +27,16 @@ public class SimpleParser {
         this.objectIdenetifier = objectIdentifier;
     }
 
-    public ParserMap parse(final String gemlockText) {
-        final ParserMap map = new ParserMap();
+    public Map parse(final String gemlockText) {
+        final Map map = new HashMap();
 
-        final Stack<ParserMap> mapStack = new Stack<>();
+        final Stack<Map> mapStack = new Stack<>();
 
         int level = 0;
         for (final String line : gemlockText.split("\n")) {
             final int currentLevel = getCurrentLevel(line);
             if (org.apache.commons.lang3.StringUtils.isNotEmpty(line)) {
-                final Entry<String, ParserMap> entry = lineToEntry(line);
+                final Entry<String, Map> entry = lineToEntry(line);
                 if (currentLevel == 0) {
                     for (; level > currentLevel; level--) {
                         mapStack.pop();
@@ -64,12 +65,12 @@ public class SimpleParser {
         return map;
     }
 
-    public Map.Entry<String, ParserMap> lineToEntry(final String line) {
-        Map.Entry<String, ParserMap> entry = null;
+    public Map.Entry<String, Map> lineToEntry(final String line) {
+        Map.Entry<String, Map> entry = null;
         if (line.contains(objectIdenetifier)) {
             final String[] lineSegments = line.split(objectIdenetifier);
             final String key = lineSegments[0].trim();
-            final ParserMap subMap = new ParserMap();
+            final Map subMap = new HashMap();
             if (lineSegments.length > 1) {
                 final String value = line.replace(key + objectIdenetifier, "");
                 subMap.put(value.trim(), null);
@@ -77,7 +78,7 @@ public class SimpleParser {
             entry = new AbstractMap.SimpleEntry<>(key, subMap);
         } else {
             final String key = line.trim();
-            final ParserMap subMap = new ParserMap();
+            final Map subMap = new HashMap();
             entry = new AbstractMap.SimpleEntry<>(key, subMap);
         }
         return entry;

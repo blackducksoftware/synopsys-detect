@@ -17,6 +17,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.io.IOUtils;
@@ -57,7 +58,7 @@ public class SimpleParserTest {
     @Test
     public void lineToEntryTest() {
         final String key = "myObjectName";
-        final Entry<String, ParserMap> entry = simpleParser.lineToEntry(key);
+        final Entry<String, Map> entry = simpleParser.lineToEntry(key);
         assertTrue(entry.getKey().equals(key));
         assertNotNull(entry.getValue());
         assertTrue(entry.getValue().isEmpty());
@@ -66,7 +67,7 @@ public class SimpleParserTest {
     @Test
     public void lineToEntryWithObjectIdentifierTest() {
         final String key = "myObjectName";
-        final Entry<String, ParserMap> entry = simpleParser.lineToEntry(key + objectIdentifier);
+        final Entry<String, Map> entry = simpleParser.lineToEntry(key + objectIdentifier);
         assertTrue(entry.getKey().equals(key));
         assertNotNull(entry.getValue());
         assertTrue(entry.getValue().isEmpty());
@@ -76,7 +77,7 @@ public class SimpleParserTest {
     public void lineToEntryWithObjectIdentifierValueTest() {
         final String key = "myObjectName";
         final String value = "My value is this";
-        final Entry<String, ParserMap> entry = simpleParser.lineToEntry(String.format("%s%s %s", key, objectIdentifier, value));
+        final Entry<String, Map> entry = simpleParser.lineToEntry(String.format("%s%s %s", key, objectIdentifier, value));
         assertTrue(entry.getKey().equals(key));
         assertNotNull(entry.getValue());
         assertTrue(entry.getValue().containsKey(value));
@@ -85,7 +86,7 @@ public class SimpleParserTest {
     @Test
     public void parseTest() throws IOException, JSONException {
         final String gemlockText = IOUtils.toString(getClass().getResourceAsStream("/rubygems/Gemfile.lock"), StandardCharsets.UTF_8);
-        final ParserMap parserMap = gemlockParser.parse(gemlockText);
+        final Map parserMap = gemlockParser.parse(gemlockText);
         final String actual = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create().toJson(parserMap);
         final String expected = IOUtils.toString(getClass().getResourceAsStream("/rubygems/expectedParser.json"), StandardCharsets.UTF_8);
         JSONAssert.assertEquals(expected, actual, false);

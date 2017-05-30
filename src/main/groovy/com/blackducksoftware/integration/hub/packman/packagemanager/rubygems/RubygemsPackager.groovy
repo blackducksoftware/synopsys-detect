@@ -48,8 +48,8 @@ public class RubygemsPackager {
         dependencies.add(root)
 
         final SimpleParser gemlockParser = new SimpleParser("  ", ":")
-        final ParserMap gemlockMap = gemlockParser.parse(gemlock)
-        final ParserMap specMap = gemlockMap.get("GEM").get("specs")
+        final Map gemlockMap = gemlockParser.parse(gemlock)
+        final Map specMap = gemlockMap.get("GEM").get("specs")
         gemlockMap.get("DEPENDENCIES").each { key, value ->
             final DependencyNode dependencyNode = entryToDependencyNode(specMap, key, value)
             if (dependencyNode) {
@@ -75,7 +75,7 @@ public class RubygemsPackager {
         return dependencyNode
     }
 
-    public DependencyNode entryToDependencyNode(final ParserMap specMap, String key, ParserMap value) {
+    public DependencyNode entryToDependencyNode(final Map specMap, String key, Map value) {
         final String foundKey = findKeyInMap(key, specMap)
         if(!foundKey) {
             return null
