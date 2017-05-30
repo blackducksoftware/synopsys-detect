@@ -22,7 +22,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
 import com.blackducksoftware.integration.hub.packman.packagemanager.nuget.NugetInspectorPackager
-import com.blackducksoftware.integration.hub.packman.type.CommandType
+import com.blackducksoftware.integration.hub.packman.type.ExecutableType
 import com.blackducksoftware.integration.hub.packman.type.PackageManagerType
 import com.blackducksoftware.integration.hub.packman.util.FileFinder
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
@@ -101,7 +101,7 @@ class NugetPackageManager extends PackageManager {
         if (StringUtils.isNotBlank(nugetPath)) {
             new File(nugetPath)
         } else {
-            commandManager.getCommand(CommandType.NUGET)
+            commandManager.getCommand(ExecutableType.NUGET)
         }
     }
 }

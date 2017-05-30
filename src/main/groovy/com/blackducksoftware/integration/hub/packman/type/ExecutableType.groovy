@@ -1,6 +1,6 @@
 package com.blackducksoftware.integration.hub.packman.type
 
-enum CommandType {
+enum ExecutableType {
     MVN([(OperatingSystemType.WINDOWS): 'mvn.cmd', (OperatingSystemType.LINUX): 'mvn']),
     GRADLE([(OperatingSystemType.WINDOWS): 'gradle.bat', (OperatingSystemType.LINUX): 'gradle']),
     GRADLEW([(OperatingSystemType.WINDOWS): 'gradlew.bat', (OperatingSystemType.LINUX): 'gradlew']),
@@ -12,7 +12,7 @@ enum CommandType {
 
     private Map<OperatingSystemType, String> osToCommandMap = [:]
 
-    private CommandType(Map<OperatingSystemType, String> osToCommandMap) {
+    private ExecutableType(Map<OperatingSystemType, String> osToCommandMap) {
         this.osToCommandMap.putAll(osToCommandMap)
     }
 

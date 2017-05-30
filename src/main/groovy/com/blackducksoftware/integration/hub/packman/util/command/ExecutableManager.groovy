@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.packman.type.CommandType
+import com.blackducksoftware.integration.hub.packman.type.ExecutableType
 import com.blackducksoftware.integration.hub.packman.type.OperatingSystemType
 import com.blackducksoftware.integration.hub.packman.util.FileFinder
 
@@ -39,26 +39,26 @@ class ExecutableManager {
         }
     }
 
-    String getPathOfCommand(CommandType commandType) {
+    String getPathOfCommand(ExecutableType commandType) {
         File commandFile = getCommand(commandType)
 
         null == commandFile ? null : commandFile.absolutePath
     }
 
-    File getCommand(CommandType commandType) {
+    File getCommand(ExecutableType commandType) {
         String command = commandType.getCommand(currentOs)
         File commandFile = findExecutableFile(command)
 
         commandFile
     }
 
-    String getPathOfCommand(String path, CommandType commandType) {
+    String getPathOfCommand(String path, ExecutableType commandType) {
         File commandFile = getCommand(path, commandType)
 
         null == commandFile ? null : commandFile.absolutePath
     }
 
-    File getCommand(String path, CommandType commandType) {
+    File getCommand(String path, ExecutableType commandType) {
         String command = commandType.getCommand(currentOs)
         File commandFile = findExecutableFile(path, command)
 

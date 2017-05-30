@@ -14,7 +14,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.packman.PackmanProperties
 import com.blackducksoftware.integration.hub.packman.packagemanager.pip.PipPackager
 import com.blackducksoftware.integration.hub.packman.packagemanager.pip.PipShowMapParser
-import com.blackducksoftware.integration.hub.packman.type.CommandType
+import com.blackducksoftware.integration.hub.packman.type.ExecutableType
 import com.blackducksoftware.integration.hub.packman.type.PackageManagerType
 import com.blackducksoftware.integration.hub.packman.util.FileFinder
 import com.blackducksoftware.integration.hub.packman.util.command.Executable
@@ -57,8 +57,8 @@ class PipPackageManager extends PackageManager {
     @Value('${packman.pip.path}')
     String pipPath
 
-    CommandType pipCommandType
-    CommandType pythonCommandType
+    ExecutableType pipCommandType
+    ExecutableType pythonCommandType
 
     String pythonCommand
     String pipCommand
@@ -68,11 +68,11 @@ class PipPackageManager extends PackageManager {
     @PostConstruct
     void init() {
         if(pipThreeOverride) {
-            pythonCommandType = CommandType.PYTHON3
-            pipCommandType = CommandType.PIP3
+            pythonCommandType = ExecutableType.PYTHON3
+            pipCommandType = ExecutableType.PIP3
         } else {
-            pythonCommandType = CommandType.PYTHON
-            pipCommandType = CommandType.PIP
+            pythonCommandType = ExecutableType.PYTHON
+            pipCommandType = ExecutableType.PIP
         }
         pythonCommand = findCommand(null, pythonPath, pythonCommandType)
         pipCommand = findCommand(null, pipPath, pipCommandType)

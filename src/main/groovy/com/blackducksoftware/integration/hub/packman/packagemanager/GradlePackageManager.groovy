@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.packman.packagemanager.gradle.GradleInitScriptPackager
-import com.blackducksoftware.integration.hub.packman.type.CommandType
+import com.blackducksoftware.integration.hub.packman.type.ExecutableType
 import com.blackducksoftware.integration.hub.packman.type.PackageManagerType
 import com.blackducksoftware.integration.hub.packman.util.FileFinder
 import com.blackducksoftware.integration.hub.packman.util.command.ExecutableManager
@@ -52,12 +52,12 @@ class GradlePackageManager extends PackageManager {
     private String findGradleCommand(String sourcePath) {
         if (StringUtils.isBlank(gradlePath)) {
             logger.info('packman.gradle.path not set in config - first try to find the gradle wrapper')
-            gradlePath = commandManager.getPathOfCommand(sourcePath, CommandType.GRADLEW)
+            gradlePath = commandManager.getPathOfCommand(sourcePath, ExecutableType.GRADLEW)
         }
 
         if (StringUtils.isBlank(gradlePath)) {
             logger.info('gradle wrapper not found - trying to find gradle on the PATH')
-            gradlePath = commandManager.getPathOfCommand(CommandType.GRADLE)
+            gradlePath = commandManager.getPathOfCommand(ExecutableType.GRADLE)
         }
 
         gradlePath

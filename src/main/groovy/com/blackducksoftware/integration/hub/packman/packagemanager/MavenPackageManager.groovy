@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.packman.packagemanager.maven.MavenPackager
-import com.blackducksoftware.integration.hub.packman.type.CommandType
+import com.blackducksoftware.integration.hub.packman.type.ExecutableType
 import com.blackducksoftware.integration.hub.packman.type.PackageManagerType
 import com.blackducksoftware.integration.hub.packman.util.FileFinder
 import com.blackducksoftware.integration.hub.packman.util.command.ExecutableManager
@@ -61,7 +61,7 @@ class MavenPackageManager extends PackageManager {
 
     private String findMavenCommandPath() {
         if (StringUtils.isBlank(mavenPath)) {
-            return commandManager.getPathOfCommand(CommandType.MVN)
+            return commandManager.getPathOfCommand(ExecutableType.MVN)
         }
         mavenPath
     }
