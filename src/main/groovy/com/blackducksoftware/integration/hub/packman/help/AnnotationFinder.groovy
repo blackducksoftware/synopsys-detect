@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component
 
 @Component
 public class AnnotationFinder implements ApplicationContextAware {
-    final List<PackmanValue> packmanValues = new ArrayList<>()
+    final List<PackmanOption> packmanOptions = new ArrayList<>()
     private ApplicationContext applicationContext
 
     @Override
@@ -30,7 +30,7 @@ public class AnnotationFinder implements ApplicationContextAware {
         this.applicationContext = applicationContext
     }
 
-    public List<PackmanValue> getPackmanValues() {
+    public List<PackmanOption> getPackmanValues() {
         for (final String beanName : applicationContext.getBeanDefinitionNames()) {
             final Object obj = applicationContext.getBean(beanName)
             Class<?> objClz = obj.getClass()
@@ -53,16 +53,16 @@ public class AnnotationFinder implements ApplicationContextAware {
                         key = valueDescription.key().trim()
                     }
                     if(!isAlreadyInList(key)){
-                        packmanValues.add(new PackmanValue(key, description))
+                        packmanOptions.add(new PackmanOption(key, description))
                     }
                 }
             }
         }
-        packmanValues
+        packmanOptions
     }
 
     boolean isAlreadyInList(String key){
-        null != packmanValues.find {
+        null != packmanOptions.find {
             it.getKey().equals(key)
         }
     }
