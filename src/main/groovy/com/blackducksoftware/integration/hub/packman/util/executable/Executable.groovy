@@ -1,20 +1,20 @@
-package com.blackducksoftware.integration.hub.packman.util.command
+package com.blackducksoftware.integration.hub.packman.util.executable
 
 import org.apache.commons.lang3.StringUtils
 
-class Command {
+class Executable {
     File workingDirectory
     def environmentVariables = [:]
     String executablePath
     def executableArguments = []
 
-    Command(File workingDirectory, final String executablePath, List<String> executableArguments) {
+    Executable(File workingDirectory, final String executablePath, List<String> executableArguments) {
         this.workingDirectory = workingDirectory
         this.executablePath = executablePath
         this.executableArguments.addAll(executableArguments)
     }
 
-    Command(File workingDirectory, Map<String, String> environmentVariables, final String executablePath, List<String> executableArguments) {
+    Executable(File workingDirectory, Map<String, String> environmentVariables, final String executablePath, List<String> executableArguments) {
         this.workingDirectory = workingDirectory
         this.environmentVariables.putAll(environmentVariables)
         this.executablePath = executablePath
@@ -41,7 +41,7 @@ class Command {
         processBuilder
     }
 
-    String getCommandDescription() {
+    String getExecutableDescription() {
         StringUtils.join(createProcessBuilderArguments(), ' ')
     }
 

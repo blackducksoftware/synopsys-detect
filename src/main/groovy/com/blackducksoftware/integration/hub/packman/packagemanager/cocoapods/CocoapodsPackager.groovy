@@ -42,7 +42,7 @@ class CocoapodsPackager {
 
         String name = projectInfoGatherer.getDefaultProjectName(PackageManagerType.COCOAPODS, sourcePath)
         String version = projectInfoGatherer.getDefaultProjectVersionName()
-        ExternalId externalId = new NameVersionExternalId(Forge.cocoapods, name, version)
+        ExternalId externalId = new NameVersionExternalId(Forge.COCOAPODS, name, version)
         List<DependencyNode> dependencies = podTransformer(podLock.dependencies)
 
         [
@@ -53,7 +53,7 @@ class CocoapodsPackager {
     List<DependencyNode> podTransformer(List<Pod> pods) {
         def nodes = []
         pods.each { pod ->
-            ExternalId externalId = new NameVersionExternalId(Forge.cocoapods, pod.name, pod.version)
+            ExternalId externalId = new NameVersionExternalId(Forge.COCOAPODS, pod.name, pod.version)
             List<DependencyNode> children = podTransformer(pod.children)
             nodes += new DependencyNode(pod.name, pod.version, externalId, children as Set)
         }

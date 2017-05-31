@@ -9,7 +9,7 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.util.command;
+package com.blackducksoftware.integration.hub.packman.util.executable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,43 +23,43 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CommandRunner {
-    private final Logger logger = LoggerFactory.getLogger(CommandRunner.class);
+public class ExecutableRunner {
+    private final Logger logger = LoggerFactory.getLogger(ExecutableRunner.class);
 
     /**
-     * The output of the command's execution will NOT be logged.
+     * The output of the executable's execution will NOT be logged.
      */
-    public CommandOutput executeQuietly(final Command command) throws CommandRunnerException {
-        return execute(command, true);
+    public ExecutableOutput executeQuietly(final Executable executable) throws ExecutableRunnerException {
+        return execute(executable, true);
     }
 
     /**
-     * The standard output of the command's execution will be logged at DEBUG and any error output will be logged as
+     * The standard output of the executable's execution will be logged at DEBUG and any error output will be logged as
      * ERROR.
      */
-    public CommandOutput executeLoudly(final Command command) throws CommandRunnerException {
-        return execute(command, false);
+    public ExecutableOutput executeLoudly(final Executable executable) throws ExecutableRunnerException {
+        return execute(executable, false);
     }
 
     /**
-     * If runQuietly == false, the standard output of the command's execution will be logged at DEBUG and any error
+     * If runQuietly == false, the standard output of the executable's execution will be logged at DEBUG and any error
      * output will be logged as
-     * ERROR. Otherwise, the output of the command's execution will NOT be logged.
+     * ERROR. Otherwise, the output of the executable's execution will NOT be logged.
      */
-    public CommandOutput execute(final Command command, final boolean runQuietly) throws CommandRunnerException {
-        logger.debug(String.format("Running command >%s", command.getCommandDescription()));
+    public ExecutableOutput execute(final Executable executable, final boolean runQuietly) throws ExecutableRunnerException {
+        logger.debug(String.format("Running executable >%s", executable.getExecutableDescription()));
         try {
-            final ProcessBuilder processBuilder = command.createProcessBuilder();
+            final ProcessBuilder processBuilder = executable.createProcessBuilder();
             final Process process = processBuilder.start();
             final String standardOutput = printStream(process.getInputStream(), runQuietly, false);
             final String errorOutput = printStream(process.getErrorStream(), runQuietly, true);
-            final CommandOutput output = new CommandOutput(standardOutput, errorOutput);
+            final ExecutableOutput output = new ExecutableOutput(standardOutput, errorOutput);
             if (StringUtils.isNotBlank(errorOutput)) {
-                throw new CommandRunnerException(output);
+                throw new ExecutableRunnerException(output);
             }
             return output;
         } catch (final IOException e) {
-            throw new CommandRunnerException(e);
+            throw new ExecutableRunnerException(e);
         }
     }
 

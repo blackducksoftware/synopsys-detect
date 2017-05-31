@@ -23,9 +23,9 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.packman.help.ValueDescription
 import com.blackducksoftware.integration.hub.packman.type.PackageManagerType
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
-import com.blackducksoftware.integration.hub.packman.util.command.Command
-import com.blackducksoftware.integration.hub.packman.util.command.CommandOutput
-import com.blackducksoftware.integration.hub.packman.util.command.CommandRunner
+import com.blackducksoftware.integration.hub.packman.util.executable.Executable
+import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableOutput
+import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableRunner
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter
 
 @Component
@@ -36,7 +36,7 @@ public class MavenPackager {
     ProjectInfoGatherer projectInfoGatherer
 
     @Autowired
-    CommandRunner commandRunner
+    ExecutableRunner executableRunner
 
     @ValueDescription(description="If true all maven projects will be aggregated into a single bom")
     @Value('${packman.maven.aggregate}')
@@ -57,12 +57,12 @@ public class MavenPackager {
         excludedIncludedFilter = new ExcludedIncludedFilter(excludedScopes.toLowerCase(), includedScopes.toLowerCase())
     }
 
-    public List<DependencyNode> makeDependencyNodes(String mavenCommand, String sourcePath) {
+    public List<DependencyNode> makeDependencyNodes(String sourcePath, String mavenExecutable) {
         final List<DependencyNode> projects = []
 
         File sourceDirectory = new File(sourcePath)
-        final Command mvnCommand = new Command(sourceDirectory, mavenCommand, ["dependency:tree"])
-        final CommandOutput mvnOutput = commandRunner.execute(mvnCommand)
+        final Executable mvnExecutable = new Executable(sourceDirectory, mavenExecutable, ["dependency:tree"])
+        final ExecutableOutput mvnOutput = executableRunner.execute(mvnExecutable)
 
         final MavenOutputParser mavenOutputParser = new MavenOutputParser(excludedIncludedFilter)
         projects.addAll(mavenOutputParser.parse(mvnOutput.standardOutput))

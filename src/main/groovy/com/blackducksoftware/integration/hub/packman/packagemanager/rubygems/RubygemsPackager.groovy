@@ -23,33 +23,27 @@ import com.blackducksoftware.integration.hub.packman.type.PackageManagerType
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
 
 public class RubygemsPackager {
-    private final String gemlock
-
     private final ProjectInfoGatherer projectInfoGatherer
-
-    private final String sourcePath
 
     private final Pattern linePattern = Pattern.compile("(.*) \\((.*)\\)")
 
-    public RubygemsPackager(final ProjectInfoGatherer projectInfoGatherer, final String sourcePath, final String gemlock) {
-        this.gemlock = gemlock
+    public RubygemsPackager(final ProjectInfoGatherer projectInfoGatherer) {
         this.projectInfoGatherer = projectInfoGatherer
-        this.sourcePath = sourcePath
     }
 
-    public List<DependencyNode> makeDependencyNodes() {
+    public List<DependencyNode> makeDependencyNodes(final String sourcePath, final String gemlock) {
         final String rootName = projectInfoGatherer.getDefaultProjectName(PackageManagerType.RUBYGEMS, sourcePath)
         final String rootVersion = projectInfoGatherer.getDefaultProjectVersionName()
-        final ExternalId rootExternalId = new NameVersionExternalId(Forge.rubygems, rootName, rootVersion)
+        final ExternalId rootExternalId = new NameVersionExternalId(Forge.RUBYGEMS, rootName, rootVersion)
         final DependencyNode root = new DependencyNode(rootName, rootVersion, rootExternalId)
 
         final DependencyNodeBuilder dependencyNodeBuilder = new DependencyNodeBuilder(root)
         final List<DependencyNode> dependencies = new ArrayList<>()
         dependencies.add(root)
 
-        final SimpleParser gemlockParser = new SimpleParser("  ", ":")
-        final ParserMap gemlockMap = gemlockParser.parse(gemlock)
-        final ParserMap specMap = gemlockMap.get("GEM").get("specs")
+        final GemLockParser gemlockParser = new GemLockParser("  ", ":")
+        final Map gemlockMap = gemlockParser.parse(gemlock)
+        final Map specMap = gemlockMap.get("GEM").get("specs")
         gemlockMap.get("DEPENDENCIES").each { key, value ->
             final DependencyNode dependencyNode = entryToDependencyNode(specMap, key, value)
             if (dependencyNode) {
@@ -70,12 +64,12 @@ public class RubygemsPackager {
             name = line.trim()
             version = null
         }
-        final ExternalId externalId = new NameVersionExternalId(Forge.rubygems, name, version)
+        final ExternalId externalId = new NameVersionExternalId(Forge.RUBYGEMS, name, version)
         final DependencyNode dependencyNode = new DependencyNode(name, version, externalId)
         return dependencyNode
     }
 
-    public DependencyNode entryToDependencyNode(final ParserMap specMap, String key, ParserMap value) {
+    public DependencyNode entryToDependencyNode(final Map specMap, String key, Map value) {
         final String foundKey = findKeyInMap(key, specMap)
         if(!foundKey) {
             return null

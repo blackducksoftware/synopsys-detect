@@ -38,22 +38,6 @@ class FileFinder {
         return containsFiles
     }
 
-    boolean canFindAllExecutables(final Map<String, List<String>> executables) {
-        return canFindAllExecutables(executables, null)
-    }
-
-    boolean canFindAllExecutables(final Map<String, List<String>> executables, String path) {
-        Map<String, String> foundExecutables = findExecutables(executables, path)
-        def foundAll = true
-        executables.each { executable ->
-            if(!foundExecutables[executable.key]) {
-                logger.info("No executable detected: ${executable.value}")
-                foundAll = false
-            }
-        }
-        return foundAll
-    }
-
     File findFile(final String sourcePath, final String filenamePattern) {
         File sourceDirectory = new File(sourcePath)
         findFile(sourceDirectory, filenamePattern)

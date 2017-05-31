@@ -21,11 +21,11 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.packman.help.ValueDescription
 import com.blackducksoftware.integration.hub.packman.packagemanager.maven.MavenPackager
-import com.blackducksoftware.integration.hub.packman.type.CommandType
+import com.blackducksoftware.integration.hub.packman.type.ExecutableType
 import com.blackducksoftware.integration.hub.packman.type.PackageManagerType
 import com.blackducksoftware.integration.hub.packman.util.FileFinder
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
-import com.blackducksoftware.integration.hub.packman.util.command.CommandManager
+import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableManager
 
 @Component
 class MavenPackageManager extends PackageManager {
@@ -37,7 +37,7 @@ class MavenPackageManager extends PackageManager {
     MavenPackager mavenPackager
 
     @Autowired
-    CommandManager commandManager
+    ExecutableManager executableManager
 
     @Autowired
     FileFinder fileFinder
@@ -56,20 +56,20 @@ class MavenPackageManager extends PackageManager {
     }
 
     boolean isPackageManagerApplicable(String sourcePath) {
-        def mvnCommand = findMavenCommandPath()
+        def mvnExecutable = findMavenExecutablePath()
         def pomXml = fileFinder.findFile(sourcePath, POM_FILENAME)
 
-        mvnCommand && pomXml
+        mvnExecutable && pomXml
     }
 
     List<DependencyNode> extractDependencyNodes(String sourcePath) {
-        def projects = mavenPackager.makeDependencyNodes(findMavenCommandPath(), sourcePath)
+        def projects = mavenPackager.makeDependencyNodes(sourcePath, findMavenExecutablePath())
         return projects
     }
 
-    private String findMavenCommandPath() {
+    private String findMavenExecutablePath() {
         if (StringUtils.isBlank(mavenPath)) {
-            return commandManager.getPathOfCommand(CommandType.MVN)
+            return executableManager.getPathOfExecutable(ExecutableType.MVN)
         }
         mavenPath
     }
