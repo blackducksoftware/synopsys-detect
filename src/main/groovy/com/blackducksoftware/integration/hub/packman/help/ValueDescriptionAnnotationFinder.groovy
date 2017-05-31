@@ -11,9 +11,7 @@
  */
 package com.blackducksoftware.integration.hub.packman.help
 
-import java.lang.reflect.Field
-
-import org.apache.commons.lang3.StringUtils
+import org.springframework.aop.support.AopUtils
 import org.springframework.beans.BeansException
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationContext
@@ -21,8 +19,7 @@ import org.springframework.context.ApplicationContextAware
 import org.springframework.stereotype.Component
 
 @Component
-public class AnnotationFinder implements ApplicationContextAware {
-    final List<PackmanOption> packmanOptions = new ArrayList<>()
+public class ValueDescriptionAnnotationFinder implements ApplicationContextAware {
     private ApplicationContext applicationContext
 
     @Override
@@ -31,39 +28,34 @@ public class AnnotationFinder implements ApplicationContextAware {
     }
 
     public List<PackmanOption> getPackmanValues() {
-        for (final String beanName : applicationContext.getBeanDefinitionNames()) {
+        Map<String, PackmanOption> packmanOptions = [:]
+        applicationContext.beanDefinitionNames.each { beanName ->
             final Object obj = applicationContext.getBean(beanName)
             Class<?> objClz = obj.getClass()
-            if (org.springframework.aop.support.AopUtils.isAopProxy(obj)) {
-                objClz = org.springframework.aop.support.AopUtils.getTargetClass(obj)
+            if (AopUtils.isAopProxy(obj)) {
+                objClz = AopUtils.getTargetClass(obj)
             }
-            for (final Field field : objClz.getDeclaredFields()) {
+            objClz.declaredFields.each { field ->
                 if (field.isAnnotationPresent(ValueDescription.class)) {
                     String key = ''
                     String description = ''
                     final ValueDescription valueDescription = field.getAnnotation(ValueDescription.class)
                     description = valueDescription.description()
-                    if (StringUtils.isBlank(valueDescription.key())) {
+                    if (!valueDescription.key()?.trim()) {
                         if (field.isAnnotationPresent(Value.class)) {
                             String valueKey = field.getAnnotation(Value.class).value().trim()
-                            valueKey = valueKey.substring(2, valueKey.length() - 1)
-                            key = valueKey
+                            key = valueKey[2..-2]
                         }
                     } else{
                         key = valueDescription.key().trim()
                     }
-                    if(!isAlreadyInList(key)){
-                        packmanOptions.add(new PackmanOption(key, description))
+                    if (!packmanOptions.containsKey(key)) {
+                        packmanOptions.put(key, new PackmanOption(key, description))
                     }
                 }
             }
         }
-        packmanOptions
-    }
 
-    boolean isAlreadyInList(String key){
-        null != packmanOptions.find {
-            it.getKey().equals(key)
-        }
+        new ArrayList<>(packmanOptions.values())
     }
 }
