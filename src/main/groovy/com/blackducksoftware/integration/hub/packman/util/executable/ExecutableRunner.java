@@ -51,8 +51,8 @@ public class ExecutableRunner {
         try {
             final ProcessBuilder processBuilder = executable.createProcessBuilder();
             final Process process = processBuilder.start();
-            final String standardOutput = printStream(process.getInputStream(), runQuietly, false);
-            final String errorOutput = printStream(process.getErrorStream(), runQuietly, true);
+            final String standardOutput = printStream(process.getInputStream(), runQuietly, false, process.exitValue());
+            final String errorOutput = printStream(process.getErrorStream(), runQuietly, true, process.exitValue());
             final ExecutableOutput output = new ExecutableOutput(standardOutput, errorOutput);
             if (StringUtils.isNotBlank(errorOutput)) {
                 throw new ExecutableRunnerException(output);
@@ -63,7 +63,7 @@ public class ExecutableRunner {
         }
     }
 
-    private String printStream(final InputStream inputStream, final boolean runQuietly, final boolean error) throws IOException {
+    private String printStream(final InputStream inputStream, final boolean runQuietly, final boolean error, final int exitCode) throws IOException {
         final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
         final StringBuilder stringBuilder = new StringBuilder();
 
@@ -71,7 +71,7 @@ public class ExecutableRunner {
         while ((line = bufferedReader.readLine()) != null) {
             stringBuilder.append(line + "\n");
             if (!runQuietly) {
-                if (error && StringUtils.isNotBlank(line)) {
+                if (error && StringUtils.isNotBlank(line) && exitCode != 0) {
                     logger.error(line);
                 } else {
                     logger.debug(line);
