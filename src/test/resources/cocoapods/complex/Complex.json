@@ -5,7 +5,10 @@
     "externalId": {
       "name": "complex_cocoapods",
       "version": "1.0.0",
-      "forge": "cocoapods"
+      "forge": {
+        "name": "cocoapods",
+        "separator": ":"
+      }
     },
     "children": [
       {
@@ -14,7 +17,10 @@
         "externalId": {
           "name": "Aerodramus",
           "version": "0.3.1",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
         "children": [
           {
@@ -23,9 +29,14 @@
             "externalId": {
               "name": "ISO8601DateFormatter",
               "version": "0.7.1",
-              "forge": "cocoapods"
+              "forge": {
+                "name": "cocoapods",
+                "separator": ":"
+              }
             },
-            "children": []
+            "children": [
+              
+            ]
           }
         ]
       },
@@ -35,7 +46,10 @@
         "externalId": {
           "name": "AFNetworkActivityLogger",
           "version": "2.0.4",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
         "children": [
           {
@@ -44,9 +58,14 @@
             "externalId": {
               "name": "AFNetworking",
               "version": "2.5.4",
-              "forge": "cocoapods"
+              "forge": {
+                "name": "cocoapods",
+                "separator": ":"
+              }
             },
-            "children": []
+            "children": [
+              
+            ]
           }
         ]
       },
@@ -56,9 +75,14 @@
         "externalId": {
           "name": "AFNetworking",
           "version": "2.5.4",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "AFOAuth1Client",
@@ -66,7 +90,10 @@
         "externalId": {
           "name": "AFOAuth1Client",
           "version": "0.4.0",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
         "children": [
           {
@@ -75,9 +102,14 @@
             "externalId": {
               "name": "AFNetworking",
               "version": "2.5.4",
-              "forge": "cocoapods"
+              "forge": {
+                "name": "cocoapods",
+                "separator": ":"
+              }
             },
-            "children": []
+            "children": [
+              
+            ]
           }
         ]
       },
@@ -87,9 +119,14 @@
         "externalId": {
           "name": "ALPValidator",
           "version": "0.0.3",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "Analytics",
@@ -97,9 +134,14 @@
         "externalId": {
           "name": "Analytics",
           "version": "3.0.7",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "AppHub",
@@ -107,7 +149,10 @@
         "externalId": {
           "name": "AppHub",
           "version": "0.5.1",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
         "children": [
           {
@@ -116,9 +161,14 @@
             "externalId": {
               "name": "React",
               "version": "0.34.1",
-              "forge": "cocoapods"
+              "forge": {
+                "name": "cocoapods",
+                "separator": ":"
+              }
             },
-            "children": []
+            "children": [
+              
+            ]
           }
         ]
       },
@@ -128,7 +178,10 @@
         "externalId": {
           "name": "ARAnalytics",
           "version": "3.9.0",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
         "children": [
           {
@@ -137,9 +190,14 @@
             "externalId": {
               "name": "ReactiveCocoa",
               "version": "2.5",
-              "forge": "cocoapods"
+              "forge": {
+                "name": "cocoapods",
+                "separator": ":"
+              }
             },
-            "children": []
+            "children": [
+              
+            ]
           },
           {
             "name": "HockeySDK-Source",
@@ -147,9 +205,14 @@
             "externalId": {
               "name": "HockeySDK-Source",
               "version": "3.8.5",
-              "forge": "cocoapods"
+              "forge": {
+                "name": "cocoapods",
+                "separator": ":"
+              }
             },
-            "children": []
+            "children": [
+              
+            ]
           },
           {
             "name": "Adjust",
@@ -157,9 +220,14 @@
             "externalId": {
               "name": "Adjust",
               "version": "4.11.0",
-              "forge": "cocoapods"
+              "forge": {
+                "name": "cocoapods",
+                "separator": ":"
+              }
             },
-            "children": []
+            "children": [
+              
+            ]
           },
           {
             "name": "Analytics",
@@ -167,9 +235,14 @@
             "externalId": {
               "name": "Analytics",
               "version": "3.0.7",
-              "forge": "cocoapods"
+              "forge": {
+                "name": "cocoapods",
+                "separator": ":"
+              }
             },
-            "children": []
+            "children": [
+              
+            ]
           },
           {
             "name": "RSSwizzle",
@@ -177,9 +250,14 @@
             "externalId": {
               "name": "RSSwizzle",
               "version": "0.1.0",
-              "forge": "cocoapods"
+              "forge": {
+                "name": "cocoapods",
+                "separator": ":"
+              }
             },
-            "children": []
+            "children": [
+              
+            ]
           }
         ]
       },
@@ -189,9 +267,14 @@
         "externalId": {
           "name": "ARCollectionViewMasonryLayout",
           "version": "2.1.2",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "ARGenericTableViewController",
@@ -199,9 +282,14 @@
         "externalId": {
           "name": "ARGenericTableViewController",
           "version": "1.0.2",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "ARTiledImageView",
@@ -209,7 +297,10 @@
         "externalId": {
           "name": "ARTiledImageView",
           "version": "1.2.0",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
         "children": [
           {
@@ -218,9 +309,14 @@
             "externalId": {
               "name": "SDWebImage",
               "version": "3.7.3",
-              "forge": "cocoapods"
+              "forge": {
+                "name": "cocoapods",
+                "separator": ":"
+              }
             },
-            "children": []
+            "children": [
+              
+            ]
           }
         ]
       },
@@ -230,9 +326,14 @@
         "externalId": {
           "name": "Artsy+UIColors",
           "version": "3.1.0",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "Artsy+UIFonts",
@@ -240,9 +341,14 @@
         "externalId": {
           "name": "Artsy+UIFonts",
           "version": "3.1.1",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "Artsy+UILabels",
@@ -250,7 +356,10 @@
         "externalId": {
           "name": "Artsy+UILabels",
           "version": "2.2.0",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
         "children": [
           {
@@ -259,9 +368,14 @@
             "externalId": {
               "name": "Artsy+UIFonts",
               "version": "3.1.1",
-              "forge": "cocoapods"
+              "forge": {
+                "name": "cocoapods",
+                "separator": ":"
+              }
             },
-            "children": []
+            "children": [
+              
+            ]
           },
           {
             "name": "Artsy+UIColors",
@@ -269,9 +383,14 @@
             "externalId": {
               "name": "Artsy+UIColors",
               "version": "3.1.0",
-              "forge": "cocoapods"
+              "forge": {
+                "name": "cocoapods",
+                "separator": ":"
+              }
             },
-            "children": []
+            "children": [
+              
+            ]
           }
         ]
       },
@@ -281,7 +400,10 @@
         "externalId": {
           "name": "Artsy-UIButtons",
           "version": "2.1.0",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
         "children": [
           {
@@ -290,9 +412,14 @@
             "externalId": {
               "name": "UIView+BooleanAnimations",
               "version": "1.0.2",
-              "forge": "cocoapods"
+              "forge": {
+                "name": "cocoapods",
+                "separator": ":"
+              }
             },
-            "children": []
+            "children": [
+              
+            ]
           },
           {
             "name": "Artsy+UIFonts",
@@ -300,9 +427,14 @@
             "externalId": {
               "name": "Artsy+UIFonts",
               "version": "3.1.1",
-              "forge": "cocoapods"
+              "forge": {
+                "name": "cocoapods",
+                "separator": ":"
+              }
             },
-            "children": []
+            "children": [
+              
+            ]
           },
           {
             "name": "Artsy+UIColors",
@@ -310,9 +442,14 @@
             "externalId": {
               "name": "Artsy+UIColors",
               "version": "3.1.0",
-              "forge": "cocoapods"
+              "forge": {
+                "name": "cocoapods",
+                "separator": ":"
+              }
             },
-            "children": []
+            "children": [
+              
+            ]
           }
         ]
       },
@@ -322,9 +459,14 @@
         "externalId": {
           "name": "CocoaLumberjack",
           "version": "2.0.1",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "DHCShakeNotifier",
@@ -332,9 +474,14 @@
         "externalId": {
           "name": "DHCShakeNotifier",
           "version": "0.2.0",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "EDColor",
@@ -342,9 +489,14 @@
         "externalId": {
           "name": "EDColor",
           "version": "1.0.0",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "Emission",
@@ -352,7 +504,10 @@
         "externalId": {
           "name": "Emission",
           "version": "1.2.3",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
         "children": [
           {
@@ -361,9 +516,14 @@
             "externalId": {
               "name": "SDWebImage",
               "version": "3.7.3",
-              "forge": "cocoapods"
+              "forge": {
+                "name": "cocoapods",
+                "separator": ":"
+              }
             },
-            "children": []
+            "children": [
+              
+            ]
           },
           {
             "name": "Artsy+UIFonts",
@@ -371,9 +531,14 @@
             "externalId": {
               "name": "Artsy+UIFonts",
               "version": "3.1.1",
-              "forge": "cocoapods"
+              "forge": {
+                "name": "cocoapods",
+                "separator": ":"
+              }
             },
-            "children": []
+            "children": [
+              
+            ]
           },
           {
             "name": "React",
@@ -381,9 +546,14 @@
             "externalId": {
               "name": "React",
               "version": "0.34.1",
-              "forge": "cocoapods"
+              "forge": {
+                "name": "cocoapods",
+                "separator": ":"
+              }
             },
-            "children": []
+            "children": [
+              
+            ]
           },
           {
             "name": "Extraction",
@@ -391,7 +561,10 @@
             "externalId": {
               "name": "Extraction",
               "version": "1.2.3",
-              "forge": "cocoapods"
+              "forge": {
+                "name": "cocoapods",
+                "separator": ":"
+              }
             },
             "children": [
               {
@@ -400,9 +573,14 @@
                 "externalId": {
                   "name": "FLKAutoLayout",
                   "version": "1.0.0",
-                  "forge": "cocoapods"
+                  "forge": {
+                    "name": "cocoapods",
+                    "separator": ":"
+                  }
                 },
-                "children": []
+                "children": [
+                  
+                ]
               },
               {
                 "name": "Artsy+UIFonts",
@@ -410,9 +588,14 @@
                 "externalId": {
                   "name": "Artsy+UIFonts",
                   "version": "3.1.1",
-                  "forge": "cocoapods"
+                  "forge": {
+                    "name": "cocoapods",
+                    "separator": ":"
+                  }
                 },
-                "children": []
+                "children": [
+                  
+                ]
               },
               {
                 "name": "ORStackView",
@@ -420,7 +603,10 @@
                 "externalId": {
                   "name": "ORStackView",
                   "version": "2.0.3",
-                  "forge": "cocoapods"
+                  "forge": {
+                    "name": "cocoapods",
+                    "separator": ":"
+                  }
                 },
                 "children": [
                   {
@@ -429,9 +615,14 @@
                     "externalId": {
                       "name": "FLKAutoLayout",
                       "version": "1.0.0",
-                      "forge": "cocoapods"
+                      "forge": {
+                        "name": "cocoapods",
+                        "separator": ":"
+                      }
                     },
-                    "children": []
+                    "children": [
+                      
+                    ]
                   }
                 ]
               },
@@ -441,9 +632,14 @@
                 "externalId": {
                   "name": "UIView+BooleanAnimations",
                   "version": "1.0.2",
-                  "forge": "cocoapods"
+                  "forge": {
+                    "name": "cocoapods",
+                    "separator": ":"
+                  }
                 },
-                "children": []
+                "children": [
+                  
+                ]
               },
               {
                 "name": "Artsy-UIButtons",
@@ -451,7 +647,10 @@
                 "externalId": {
                   "name": "Artsy-UIButtons",
                   "version": "2.1.0",
-                  "forge": "cocoapods"
+                  "forge": {
+                    "name": "cocoapods",
+                    "separator": ":"
+                  }
                 },
                 "children": [
                   {
@@ -460,9 +659,14 @@
                     "externalId": {
                       "name": "UIView+BooleanAnimations",
                       "version": "1.0.2",
-                      "forge": "cocoapods"
+                      "forge": {
+                        "name": "cocoapods",
+                        "separator": ":"
+                      }
                     },
-                    "children": []
+                    "children": [
+                      
+                    ]
                   },
                   {
                     "name": "Artsy+UIFonts",
@@ -470,9 +674,14 @@
                     "externalId": {
                       "name": "Artsy+UIFonts",
                       "version": "3.1.1",
-                      "forge": "cocoapods"
+                      "forge": {
+                        "name": "cocoapods",
+                        "separator": ":"
+                      }
                     },
-                    "children": []
+                    "children": [
+                      
+                    ]
                   },
                   {
                     "name": "Artsy+UIColors",
@@ -480,9 +689,14 @@
                     "externalId": {
                       "name": "Artsy+UIColors",
                       "version": "3.1.0",
-                      "forge": "cocoapods"
+                      "forge": {
+                        "name": "cocoapods",
+                        "separator": ":"
+                      }
                     },
-                    "children": []
+                    "children": [
+                      
+                    ]
                   }
                 ]
               },
@@ -492,9 +706,14 @@
                 "externalId": {
                   "name": "Artsy+UIColors",
                   "version": "3.1.0",
-                  "forge": "cocoapods"
+                  "forge": {
+                    "name": "cocoapods",
+                    "separator": ":"
+                  }
                 },
-                "children": []
+                "children": [
+                  
+                ]
               }
             ]
           }
@@ -506,9 +725,14 @@
         "externalId": {
           "name": "Expecta",
           "version": "1.0.5",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "Expecta+Snapshots",
@@ -516,7 +740,10 @@
         "externalId": {
           "name": "Expecta+Snapshots",
           "version": "3.0.0",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
         "children": [
           {
@@ -525,9 +752,14 @@
             "externalId": {
               "name": "Specta",
               "version": "1.0.5",
-              "forge": "cocoapods"
+              "forge": {
+                "name": "cocoapods",
+                "separator": ":"
+              }
             },
-            "children": []
+            "children": [
+              
+            ]
           },
           {
             "name": "Expecta",
@@ -535,9 +767,14 @@
             "externalId": {
               "name": "Expecta",
               "version": "1.0.5",
-              "forge": "cocoapods"
+              "forge": {
+                "name": "cocoapods",
+                "separator": ":"
+              }
             },
-            "children": []
+            "children": [
+              
+            ]
           },
           {
             "name": "FBSnapshotTestCase",
@@ -545,9 +782,14 @@
             "externalId": {
               "name": "FBSnapshotTestCase",
               "version": "2.1.4",
-              "forge": "cocoapods"
+              "forge": {
+                "name": "cocoapods",
+                "separator": ":"
+              }
             },
-            "children": []
+            "children": [
+              
+            ]
           }
         ]
       },
@@ -557,7 +799,10 @@
         "externalId": {
           "name": "Extraction",
           "version": "1.2.3",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
         "children": [
           {
@@ -566,9 +811,14 @@
             "externalId": {
               "name": "FLKAutoLayout",
               "version": "1.0.0",
-              "forge": "cocoapods"
+              "forge": {
+                "name": "cocoapods",
+                "separator": ":"
+              }
             },
-            "children": []
+            "children": [
+              
+            ]
           },
           {
             "name": "Artsy+UIFonts",
@@ -576,9 +826,14 @@
             "externalId": {
               "name": "Artsy+UIFonts",
               "version": "3.1.1",
-              "forge": "cocoapods"
+              "forge": {
+                "name": "cocoapods",
+                "separator": ":"
+              }
             },
-            "children": []
+            "children": [
+              
+            ]
           },
           {
             "name": "ORStackView",
@@ -586,7 +841,10 @@
             "externalId": {
               "name": "ORStackView",
               "version": "2.0.3",
-              "forge": "cocoapods"
+              "forge": {
+                "name": "cocoapods",
+                "separator": ":"
+              }
             },
             "children": [
               {
@@ -595,9 +853,14 @@
                 "externalId": {
                   "name": "FLKAutoLayout",
                   "version": "1.0.0",
-                  "forge": "cocoapods"
+                  "forge": {
+                    "name": "cocoapods",
+                    "separator": ":"
+                  }
                 },
-                "children": []
+                "children": [
+                  
+                ]
               }
             ]
           },
@@ -607,9 +870,14 @@
             "externalId": {
               "name": "UIView+BooleanAnimations",
               "version": "1.0.2",
-              "forge": "cocoapods"
+              "forge": {
+                "name": "cocoapods",
+                "separator": ":"
+              }
             },
-            "children": []
+            "children": [
+              
+            ]
           },
           {
             "name": "Artsy-UIButtons",
@@ -617,7 +885,10 @@
             "externalId": {
               "name": "Artsy-UIButtons",
               "version": "2.1.0",
-              "forge": "cocoapods"
+              "forge": {
+                "name": "cocoapods",
+                "separator": ":"
+              }
             },
             "children": [
               {
@@ -626,9 +897,14 @@
                 "externalId": {
                   "name": "UIView+BooleanAnimations",
                   "version": "1.0.2",
-                  "forge": "cocoapods"
+                  "forge": {
+                    "name": "cocoapods",
+                    "separator": ":"
+                  }
                 },
-                "children": []
+                "children": [
+                  
+                ]
               },
               {
                 "name": "Artsy+UIFonts",
@@ -636,9 +912,14 @@
                 "externalId": {
                   "name": "Artsy+UIFonts",
                   "version": "3.1.1",
-                  "forge": "cocoapods"
+                  "forge": {
+                    "name": "cocoapods",
+                    "separator": ":"
+                  }
                 },
-                "children": []
+                "children": [
+                  
+                ]
               },
               {
                 "name": "Artsy+UIColors",
@@ -646,9 +927,14 @@
                 "externalId": {
                   "name": "Artsy+UIColors",
                   "version": "3.1.0",
-                  "forge": "cocoapods"
+                  "forge": {
+                    "name": "cocoapods",
+                    "separator": ":"
+                  }
                 },
-                "children": []
+                "children": [
+                  
+                ]
               }
             ]
           },
@@ -658,9 +944,14 @@
             "externalId": {
               "name": "Artsy+UIColors",
               "version": "3.1.0",
-              "forge": "cocoapods"
+              "forge": {
+                "name": "cocoapods",
+                "separator": ":"
+              }
             },
-            "children": []
+            "children": [
+              
+            ]
           }
         ]
       },
@@ -670,7 +961,10 @@
         "externalId": {
           "name": "FBSDKCoreKit",
           "version": "4.10.1",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
         "children": [
           {
@@ -679,9 +973,14 @@
             "externalId": {
               "name": "Bolts",
               "version": "1.7.0",
-              "forge": "cocoapods"
+              "forge": {
+                "name": "cocoapods",
+                "separator": ":"
+              }
             },
-            "children": []
+            "children": [
+              
+            ]
           }
         ]
       },
@@ -691,7 +990,10 @@
         "externalId": {
           "name": "FBSDKLoginKit",
           "version": "4.10.1",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
         "children": [
           {
@@ -700,7 +1002,10 @@
             "externalId": {
               "name": "FBSDKCoreKit",
               "version": "4.10.1",
-              "forge": "cocoapods"
+              "forge": {
+                "name": "cocoapods",
+                "separator": ":"
+              }
             },
             "children": [
               {
@@ -709,9 +1014,14 @@
                 "externalId": {
                   "name": "Bolts",
                   "version": "1.7.0",
-                  "forge": "cocoapods"
+                  "forge": {
+                    "name": "cocoapods",
+                    "separator": ":"
+                  }
                 },
-                "children": []
+                "children": [
+                  
+                ]
               }
             ]
           }
@@ -723,9 +1033,14 @@
         "externalId": {
           "name": "FBSnapshotTestCase",
           "version": "2.1.4",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "FLKAutoLayout",
@@ -733,9 +1048,14 @@
         "externalId": {
           "name": "FLKAutoLayout",
           "version": "1.0.0",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "Forgeries",
@@ -743,7 +1063,10 @@
         "externalId": {
           "name": "Forgeries",
           "version": "1.0.0",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
         "children": [
           {
@@ -752,9 +1075,14 @@
             "externalId": {
               "name": "OCMock",
               "version": "2.2.4",
-              "forge": "cocoapods"
+              "forge": {
+                "name": "cocoapods",
+                "separator": ":"
+              }
             },
-            "children": []
+            "children": [
+              
+            ]
           }
         ]
       },
@@ -764,9 +1092,14 @@
         "externalId": {
           "name": "FXBlurView",
           "version": "1.6.1",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "Interstellar",
@@ -774,9 +1107,14 @@
         "externalId": {
           "name": "Interstellar",
           "version": "2.0.0",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "iRate",
@@ -784,9 +1122,14 @@
         "externalId": {
           "name": "iRate",
           "version": "1.10.2",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "ISO8601DateFormatter",
@@ -794,9 +1137,14 @@
         "externalId": {
           "name": "ISO8601DateFormatter",
           "version": "0.7.1",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "JLRoutes",
@@ -804,9 +1152,14 @@
         "externalId": {
           "name": "JLRoutes",
           "version": "2.0.0",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "JSBadgeView",
@@ -814,9 +1167,14 @@
         "externalId": {
           "name": "JSBadgeView",
           "version": "1.4.1",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "JSDecoupledAppDelegate",
@@ -824,9 +1182,14 @@
         "externalId": {
           "name": "JSDecoupledAppDelegate",
           "version": "1.2.0",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "JWTDecode",
@@ -834,9 +1197,14 @@
         "externalId": {
           "name": "JWTDecode",
           "version": "2.0.0",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "KSDeferred",
@@ -844,9 +1212,14 @@
         "externalId": {
           "name": "KSDeferred",
           "version": "0.2.0",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "Mantle",
@@ -854,9 +1227,14 @@
         "externalId": {
           "name": "Mantle",
           "version": "1.5.6",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "MARKRangeSlider",
@@ -864,9 +1242,14 @@
         "externalId": {
           "name": "MARKRangeSlider",
           "version": "1.0.1",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "MMMarkdown",
@@ -874,9 +1257,14 @@
         "externalId": {
           "name": "MMMarkdown",
           "version": "0.4",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "MultiDelegate",
@@ -884,9 +1272,14 @@
         "externalId": {
           "name": "MultiDelegate",
           "version": "0.0.2",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "NAMapKit",
@@ -894,7 +1287,10 @@
         "externalId": {
           "name": "NAMapKit",
           "version": "3.2.0",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
         "children": [
           {
@@ -903,9 +1299,14 @@
             "externalId": {
               "name": "SDWebImage",
               "version": "3.7.3",
-              "forge": "cocoapods"
+              "forge": {
+                "name": "cocoapods",
+                "separator": ":"
+              }
             },
-            "children": []
+            "children": [
+              
+            ]
           },
           {
             "name": "ARTiledImageView",
@@ -913,7 +1314,10 @@
             "externalId": {
               "name": "ARTiledImageView",
               "version": "1.2.0",
-              "forge": "cocoapods"
+              "forge": {
+                "name": "cocoapods",
+                "separator": ":"
+              }
             },
             "children": [
               {
@@ -922,9 +1326,14 @@
                 "externalId": {
                   "name": "SDWebImage",
                   "version": "3.7.3",
-                  "forge": "cocoapods"
+                  "forge": {
+                    "name": "cocoapods",
+                    "separator": ":"
+                  }
                 },
-                "children": []
+                "children": [
+                  
+                ]
               }
             ]
           }
@@ -936,9 +1345,14 @@
         "externalId": {
           "name": "Nimble",
           "version": "5.1.1",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "Nimble-Snapshots",
@@ -946,7 +1360,10 @@
         "externalId": {
           "name": "Nimble-Snapshots",
           "version": "4.3.0",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
         "children": [
           {
@@ -955,9 +1372,14 @@
             "externalId": {
               "name": "FBSnapshotTestCase",
               "version": "2.1.4",
-              "forge": "cocoapods"
+              "forge": {
+                "name": "cocoapods",
+                "separator": ":"
+              }
             },
-            "children": []
+            "children": [
+              
+            ]
           },
           {
             "name": "Nimble",
@@ -965,9 +1387,14 @@
             "externalId": {
               "name": "Nimble",
               "version": "5.1.1",
-              "forge": "cocoapods"
+              "forge": {
+                "name": "cocoapods",
+                "separator": ":"
+              }
             },
-            "children": []
+            "children": [
+              
+            ]
           },
           {
             "name": "Quick",
@@ -975,9 +1402,14 @@
             "externalId": {
               "name": "Quick",
               "version": "0.10.0",
-              "forge": "cocoapods"
+              "forge": {
+                "name": "cocoapods",
+                "separator": ":"
+              }
             },
-            "children": []
+            "children": [
+              
+            ]
           }
         ]
       },
@@ -987,9 +1419,14 @@
         "externalId": {
           "name": "NPKeyboardLayoutGuide",
           "version": "1.0.0",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "ObjectiveSugar",
@@ -997,9 +1434,14 @@
         "externalId": {
           "name": "ObjectiveSugar",
           "version": "1.1.0",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "OCMock",
@@ -1007,9 +1449,14 @@
         "externalId": {
           "name": "OCMock",
           "version": "2.2.4",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "OHHTTPStubs",
@@ -1017,9 +1464,14 @@
         "externalId": {
           "name": "OHHTTPStubs",
           "version": "3.1.2",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "ORKeyboardReactingApplication",
@@ -1027,9 +1479,14 @@
         "externalId": {
           "name": "ORKeyboardReactingApplication",
           "version": "0.5.3",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "ORStackView",
@@ -1037,7 +1494,10 @@
         "externalId": {
           "name": "ORStackView",
           "version": "2.0.3",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
         "children": [
           {
@@ -1046,9 +1506,14 @@
             "externalId": {
               "name": "FLKAutoLayout",
               "version": "1.0.0",
-              "forge": "cocoapods"
+              "forge": {
+                "name": "cocoapods",
+                "separator": ":"
+              }
             },
-            "children": []
+            "children": [
+              
+            ]
           }
         ]
       },
@@ -1058,9 +1523,14 @@
         "externalId": {
           "name": "Quick",
           "version": "0.10.0",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "React",
@@ -1068,9 +1538,14 @@
         "externalId": {
           "name": "React",
           "version": "0.34.1",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "ReactiveCocoa",
@@ -1078,9 +1553,14 @@
         "externalId": {
           "name": "ReactiveCocoa",
           "version": "2.5",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "SDWebImage",
@@ -1088,9 +1568,14 @@
         "externalId": {
           "name": "SDWebImage",
           "version": "3.7.3",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "Specta",
@@ -1098,9 +1583,14 @@
         "externalId": {
           "name": "Specta",
           "version": "1.0.5",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "SSFadingScrollView",
@@ -1108,9 +1598,14 @@
         "externalId": {
           "name": "SSFadingScrollView",
           "version": "1.1.0",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "Starscream",
@@ -1118,9 +1613,14 @@
         "externalId": {
           "name": "Starscream",
           "version": "2.0.2",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "SwiftyJSON",
@@ -1128,9 +1628,14 @@
         "externalId": {
           "name": "SwiftyJSON",
           "version": "3.1.4",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "Then",
@@ -1138,9 +1643,14 @@
         "externalId": {
           "name": "Then",
           "version": "2.1.0",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "UIAlertView+Blocks",
@@ -1148,9 +1658,14 @@
         "externalId": {
           "name": "UIAlertView+Blocks",
           "version": "0.8",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "UICKeyChainStore",
@@ -1158,9 +1673,14 @@
         "externalId": {
           "name": "UICKeyChainStore",
           "version": "1.0.5",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "UIView+BooleanAnimations",
@@ -1168,9 +1688,14 @@
         "externalId": {
           "name": "UIView+BooleanAnimations",
           "version": "1.0.2",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "VCRURLConnection",
@@ -1178,9 +1703,14 @@
         "externalId": {
           "name": "VCRURLConnection",
           "version": "0.2.0",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
-        "children": []
+        "children": [
+          
+        ]
       },
       {
         "name": "XCTest+OHHTTPStubSuiteCleanUp",
@@ -1188,7 +1718,10 @@
         "externalId": {
           "name": "XCTest+OHHTTPStubSuiteCleanUp",
           "version": "1.0.0",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
         },
         "children": [
           {
@@ -1197,9 +1730,14 @@
             "externalId": {
               "name": "OHHTTPStubs",
               "version": "3.1.2",
-              "forge": "cocoapods"
+              "forge": {
+                "name": "cocoapods",
+                "separator": ":"
+              }
             },
-            "children": []
+            "children": [
+              
+            ]
           }
         ]
       }

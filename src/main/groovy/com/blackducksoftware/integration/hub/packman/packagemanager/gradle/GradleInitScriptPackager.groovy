@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.packman.help.ValueDescription
 import com.blackducksoftware.integration.hub.packman.util.executable.Executable
 import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableManager
 import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableRunner
@@ -18,18 +19,23 @@ import com.google.gson.Gson
 class GradleInitScriptPackager {
     private final Logger logger = LoggerFactory.getLogger(GradleInitScriptPackager.class)
 
+    @ValueDescription(description="Gradle build command")
     @Value('${packman.gradle.build.command}')
     String gradleBuildCommand
 
+    @ValueDescription(description="The names of the dependency configurations to exclude")
     @Value('${packman.gradle.excluded.configurations}')
     String excludedConfigurationNames
 
+    @ValueDescription( description="The names of the dependency configurations to include")
     @Value('${packman.gradle.included.configurations}')
     String includedConfigurationNames
 
+    @ValueDescription(description="The names of the projects to exclude")
     @Value('${packman.gradle.excluded.projects}')
     String excludedProjectNames
 
+    @ValueDescription(description="The names of the projects to include")
     @Value('${packman.gradle.included.projects}')
     String includedProjectNames
 

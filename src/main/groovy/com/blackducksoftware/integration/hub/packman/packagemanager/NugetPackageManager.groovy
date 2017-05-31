@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+import com.blackducksoftware.integration.hub.packman.help.ValueDescription
 import com.blackducksoftware.integration.hub.packman.packagemanager.nuget.NugetInspectorPackager
 import com.blackducksoftware.integration.hub.packman.type.ExecutableType
 import com.blackducksoftware.integration.hub.packman.type.PackageManagerType
@@ -48,9 +49,11 @@ class NugetPackageManager extends PackageManager {
     @Autowired
     ProjectInfoGatherer projectInfoGatherer
 
+    @ValueDescription(description="If true all nuget projects will be aggregated into a single bom")
     @Value('${packman.nuget.aggregate}')
     boolean aggregateBom
 
+    @ValueDescription(description="The path of the Nuget executable")
     @Value('${packman.nuget.path}')
     String nugetPath
 

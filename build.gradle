@@ -19,7 +19,7 @@ tasks.withType(GroovyCompile) { options.encoding = 'UTF-8' }
 
 group = 'com.blackducksoftware.integration'
 
-version = '0.0.3-SNAPSHOT'
+version = '0.0.4-SNAPSHOT'
 // the override.snaphot property should be set to true for a CI build so
 // that the version is omitted from a snapshot build artifact
 if (version.contains('SNAPSHOT') && "true" == project.findProperty('override.snapshot')) {

@@ -27,7 +27,7 @@ public class PipShowMapParser {
     public Map<String, String> parse(final String pipShowText) {
         final Map<String, String> map = new HashMap<>();
         for (final String line : pipShowText.split("\n")) {
-            if (org.apache.commons.lang3.StringUtils.isNotEmpty(line)) {
+            if (StringUtils.isNotEmpty(line)) {
                 final Entry<String, String> entry = lineToEntry(line);
                 map.put(entry.getKey(), entry.getValue());
             }

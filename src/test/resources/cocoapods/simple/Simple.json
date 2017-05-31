@@ -5,7 +5,10 @@
     "externalId": {
       "name": "simple_cocoapods",
       "version": "0.0.1",
-      "forge": "cocoapods"
+      "forge": {
+        "name": "cocoapods",
+        "separator": ":"
+      }
     },
     "children": [
       {
@@ -14,7 +17,10 @@
         "externalId": {
           "name": "Allihoopa-macOS",
           "version": "1.1.0",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+      }
         },
         "children": [
           {
@@ -23,7 +29,10 @@
             "externalId": {
               "name": "AllihoopaCore",
               "version": "1.1.0",
-              "forge": "cocoapods"
+              "forge": {
+                "name": "cocoapods",
+                "separator": ":"
+      }
             },
             "children": []
           }
@@ -35,7 +44,10 @@
         "externalId": {
           "name": "Mapbox-macOS-SDK",
           "version": "0.4.1",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+      }
         },
         "children": []
       },
@@ -45,7 +57,10 @@
         "externalId": {
           "name": "RepliesSDK-macOS",
           "version": "0.2.22",
-          "forge": "cocoapods"
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+      }
         },
         "children": []
       }
