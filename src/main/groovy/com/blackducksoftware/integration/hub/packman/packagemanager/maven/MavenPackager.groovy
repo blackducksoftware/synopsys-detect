@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.packman.help.ValueDescription
 import com.blackducksoftware.integration.hub.packman.type.PackageManagerType
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
 import com.blackducksoftware.integration.hub.packman.util.executable.Executable
@@ -37,12 +38,15 @@ public class MavenPackager {
     @Autowired
     ExecutableRunner executableRunner
 
+    @ValueDescription(description="If true all maven projects will be aggregated into a single bom")
     @Value('${packman.maven.aggregate}')
     boolean aggregateBom
 
+    @ValueDescription(description="The names of the dependency scopes to include")
     @Value('${packman.maven.scopes.included}')
     String includedScopes
 
+    @ValueDescription(description="The names of the dependency scopes to exclude")
     @Value('${packman.maven.scopes.excluded}')
     String excludedScopes
 

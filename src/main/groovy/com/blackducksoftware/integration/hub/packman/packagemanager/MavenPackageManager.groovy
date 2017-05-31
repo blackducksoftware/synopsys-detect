@@ -19,10 +19,12 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.packman.help.ValueDescription
 import com.blackducksoftware.integration.hub.packman.packagemanager.maven.MavenPackager
 import com.blackducksoftware.integration.hub.packman.type.ExecutableType
 import com.blackducksoftware.integration.hub.packman.type.PackageManagerType
 import com.blackducksoftware.integration.hub.packman.util.FileFinder
+import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
 import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableManager
 
 @Component
@@ -40,8 +42,14 @@ class MavenPackageManager extends PackageManager {
     @Autowired
     FileFinder fileFinder
 
+    @Autowired
+    ProjectInfoGatherer projectInfoGatherer
+
+    @ValueDescription(description="The path of the Maven executable")
     @Value('${packman.maven.path}')
     String mavenPath
+
+    def executables = [mvn: ["mvn.cmd", "mvn"]]
 
     PackageManagerType getPackageManagerType() {
         return PackageManagerType.MAVEN

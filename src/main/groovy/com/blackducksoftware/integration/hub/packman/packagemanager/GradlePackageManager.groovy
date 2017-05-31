@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.packman.help.ValueDescription
 import com.blackducksoftware.integration.hub.packman.packagemanager.gradle.GradleInitScriptPackager
 import com.blackducksoftware.integration.hub.packman.type.ExecutableType
 import com.blackducksoftware.integration.hub.packman.type.PackageManagerType
@@ -29,6 +30,7 @@ class GradlePackageManager extends PackageManager {
     @Autowired
     FileFinder fileFinder
 
+    @ValueDescription(description="Path of the Gradle executable")
     @Value('${packman.gradle.path}')
     String gradlePath
 

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.packman.PackmanProperties
+import com.blackducksoftware.integration.hub.packman.help.ValueDescription
 import com.blackducksoftware.integration.hub.packman.packagemanager.pip.PipPackager
 import com.blackducksoftware.integration.hub.packman.packagemanager.pip.PipShowMapParser
 import com.blackducksoftware.integration.hub.packman.type.ExecutableType
@@ -45,15 +46,19 @@ class PipPackageManager extends PackageManager {
     @Autowired
     PackmanProperties packmanProperties
 
+    @ValueDescription(description="If true creates a temporary Python virtual environment")
     @Value('${packman.pip.createVirtualEnv}')
     boolean createVirtualEnv
 
+    @ValueDescription(description="If true will use pip3 if available on class path")
     @Value('${packman.pip.pip3}')
     boolean pipThreeOverride
 
+    @ValueDescription(description="The path of the Python executable")
     @Value('${packman.python.path}')
     String pythonPath
 
+    @ValueDescription(description="The path of the Pip executable")
     @Value('${packman.pip.path}')
     String pipPath
 

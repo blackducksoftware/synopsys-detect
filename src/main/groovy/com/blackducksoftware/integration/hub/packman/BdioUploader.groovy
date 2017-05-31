@@ -9,6 +9,7 @@ import com.blackducksoftware.integration.hub.api.bom.BomImportRequestService
 import com.blackducksoftware.integration.hub.builder.HubServerConfigBuilder
 import com.blackducksoftware.integration.hub.buildtool.BuildToolConstants
 import com.blackducksoftware.integration.hub.global.HubServerConfig
+import com.blackducksoftware.integration.hub.packman.help.ValueDescription
 import com.blackducksoftware.integration.hub.rest.RestConnection
 import com.blackducksoftware.integration.hub.service.HubServicesFactory
 import com.blackducksoftware.integration.log.Slf4jIntLogger
@@ -17,33 +18,43 @@ import com.blackducksoftware.integration.log.Slf4jIntLogger
 class BdioUploader {
     private final Logger logger = LoggerFactory.getLogger(BdioUploader.class)
 
+    @ValueDescription(description="If true the bdio files will be deleted after upload")
     @Value('${packman.cleanup.bdio.files}')
     String cleanupBdioFiles
 
+    @ValueDescription(description="URL of the Hub server")
     @Value('${packman.hub.url}')
     String hubUrl
 
+    @ValueDescription(description="Time to wait for rest connections to complete")
     @Value('${packman.hub.timeout}')
     String hubTimeout
 
+    @ValueDescription(description="Hub username")
     @Value('${packman.hub.username}')
     String hubUsername
 
+    @ValueDescription(description="Hub password")
     @Value('${packman.hub.password}')
     String hubPassword
 
+    @ValueDescription(description="Proxy host")
     @Value('${packman.hub.proxy.host}')
     String hubProxyHost
 
+    @ValueDescription(description="Proxy port")
     @Value('${packman.hub.proxy.port}')
     String hubProxyPort
 
+    @ValueDescription(description="Proxy username")
     @Value('${packman.hub.proxy.username}')
     String hubProxyUsername
 
+    @ValueDescription(description="Proxy password")
     @Value('${packman.hub.proxy.password}')
     String hubProxyPassword
 
+    @ValueDescription(description="If true the Hub https certificate will be automatically imported")
     @Value('${packman.hub.auto.import.cert}')
     String hubAutoImportCertificate
 
