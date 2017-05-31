@@ -56,7 +56,7 @@ class Application {
         if ('-h' in args.getSourceArgs() || '--help' in args.getSourceArgs()){
             printHelp()
         } else {
-            List<File> createdBdioFiles = parser.createBdioFiles()
+            List<File> createdBdioFiles = packageManagerRunner.createBdioFiles()
             bdioUploader.uploadBdioFiles(createdBdioFiles)
         }
     }
