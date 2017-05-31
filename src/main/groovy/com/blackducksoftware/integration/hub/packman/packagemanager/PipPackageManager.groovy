@@ -140,7 +140,7 @@ class PipPackageManager extends PackageManager {
         return map['Location'].trim()
     }
 
-    private String findExecutable(String path, String executablePath, String commandType) {
+    private String findExecutable(String path, String executablePath, ExecutableType commandType) {
         if (StringUtils.isNotBlank(executablePath)) {
             executablePath
         } else {
