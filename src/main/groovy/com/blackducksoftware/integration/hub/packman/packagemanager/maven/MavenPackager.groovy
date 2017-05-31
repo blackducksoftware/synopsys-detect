@@ -62,7 +62,7 @@ public class MavenPackager {
 
         File sourceDirectory = new File(sourcePath)
         final Executable mvnExecutable = new Executable(sourceDirectory, mavenExecutable, ["dependency:tree"])
-        final ExecutableOutput mvnOutput = executableRunner.execute(mvnExecutable)
+        final ExecutableOutput mvnOutput = executableRunner.executeLoudly(mvnExecutable)
 
         final MavenOutputParser mavenOutputParser = new MavenOutputParser(excludedIncludedFilter)
         projects.addAll(mavenOutputParser.parse(mvnOutput.standardOutput))
