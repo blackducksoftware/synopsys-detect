@@ -15,7 +15,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -32,6 +31,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.SimpleBdioDocumen
 import com.blackducksoftware.integration.hub.packman.help.ValueDescription;
 import com.blackducksoftware.integration.hub.packman.packagemanager.PackageManager;
 import com.blackducksoftware.integration.hub.packman.type.PackageManagerType;
+import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
 import com.google.gson.Gson;
 
@@ -67,8 +67,13 @@ public class PackageManagerRunner {
         final String[] sourcePaths = packmanProperties.getSourcePaths();
         final List<File> createdBdioFiles = new ArrayList<>();
         boolean foundSomePackageManagers = false;
-        final List<PackageManager> filteredPackageManagers = filterPackageManagers();
-        for (final PackageManager packageManager : filteredPackageManagers) {
+        final ExcludedIncludedFilter packageManagerFilter = new ExcludedIncludedFilter("", packageManagerTypeOverride);
+        for (final PackageManager packageManager : packageManagers) {
+            final String packageManagerType = packageManager.getPackageManagerType().toString();
+            if (!packageManagerFilter.shouldInclude(packageManagerType)) {
+                logger.info(String.format("Skipping %s.", packageManagerType));
+                continue;
+            }
             for (final String sourcePath : sourcePaths) {
                 final String packageManagerName = packageManager.getPackageManagerType().toString().toLowerCase();
                 logger.info(String.format("Searching source path for %s: %s", packageManagerName, sourcePath));
@@ -92,37 +97,6 @@ public class PackageManagerRunner {
             logger.info("Could not find any package managers");
         }
         return createdBdioFiles;
-    }
-
-    private List<PackageManager> filterPackageManagers() {
-        final EnumSet<PackageManagerType> packageManagerTypes = determinePackageManagerTypes();
-        if (packageManagerTypes.isEmpty()) {
-            return packageManagers;
-        }
-
-        final List<PackageManager> filteredPackageManagers = new ArrayList<>();
-        for (final PackageManager packageManager : packageManagers) {
-            if (packageManagerTypes.contains(packageManager.getPackageManagerType())) {
-                filteredPackageManagers.add(packageManager);
-            }
-        }
-        return filteredPackageManagers;
-    }
-
-    private EnumSet<PackageManagerType> determinePackageManagerTypes() {
-        final EnumSet<PackageManagerType> packageManagerTypes = EnumSet.noneOf(PackageManagerType.class);
-        final String[] packageManagerTypePieces = StringUtils.trimToEmpty(packageManagerTypeOverride).split(",");
-        for (final String packageManagerTypePiece : packageManagerTypePieces) {
-            final String trimmedPiece = StringUtils.trimToEmpty(packageManagerTypePiece);
-            try {
-                final PackageManagerType packageManagerType = PackageManagerType.valueOf(trimmedPiece);
-                packageManagerTypes.add(packageManagerType);
-            } catch (final IllegalArgumentException e) {
-                logger.warn("Invalid PackageManagerType used in override: " + trimmedPiece);
-            }
-        }
-
-        return packageManagerTypes;
     }
 
     private void createOutput(final List<File> createdBdioFiles, final PackageManagerType packageManagerType,
