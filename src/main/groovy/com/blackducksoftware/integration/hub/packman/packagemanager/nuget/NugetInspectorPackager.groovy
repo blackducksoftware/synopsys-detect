@@ -22,10 +22,9 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.packman.PackmanProperties
 import com.blackducksoftware.integration.hub.packman.util.FileFinder
-import com.blackducksoftware.integration.hub.packman.util.commands.Command
-import com.blackducksoftware.integration.hub.packman.util.commands.CommandOutput
-import com.blackducksoftware.integration.hub.packman.util.commands.CommandRunner
-import com.blackducksoftware.integration.hub.packman.util.commands.Executable
+import com.blackducksoftware.integration.hub.packman.util.executable.Executable
+import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableOutput
+import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableRunner
 
 @Component
 class NugetInspectorPackager {
@@ -36,6 +35,9 @@ class NugetInspectorPackager {
 
     @Autowired
     FileFinder fileFinder
+
+    @Autowired
+    ExecutableRunner executableRunner
 
     @Autowired
     NugetNodeTransformer nugetNodeTransformer
@@ -58,16 +60,16 @@ class NugetInspectorPackager {
         inspectorPackageVersion = inspectorPackageVersion.trim()
     }
 
-    DependencyNode makeDependencyNode(String sourcePath, Executable nuget) {
+    DependencyNode makeDependencyNode(String sourcePath, File nugetExecutable) {
         def outputDirectory = new File(packmanProperties.outputDirectoryPath)
-        def nugetFolder = new File(outputDirectory, "/${inspectorPackageName}.${inspectorPackageVersion}/tools")
+        def sourceDirectory = new File(sourcePath)
+        String inspectorExePath = getInspectorExePath(sourceDirectory, outputDirectory, nugetExecutable)
 
-        Executable hubNugetInspector = findHubNugetInspector(outputDirectory, nugetFolder, nuget)
-        if(!hubNugetInspector) {
+        if (!inspectorExePath) {
             return null
         }
 
-        String[] options =  [
+        def options =  [
             "--target_path=${sourcePath}",
             "--output_directory=${outputDirectory.getAbsolutePath()}",
             "--ignore_failure=${inspectorIgnoreFailure}"
@@ -79,13 +81,8 @@ class NugetInspectorPackager {
             options += "-v"
         }
 
-        def hubNugetInspectorCommand = new Command(hubNugetInspector, options)
-        def commandRunner = new CommandRunner(logger, outputDirectory)
-        CommandOutput commandOutput = commandRunner.execute(hubNugetInspectorCommand)
-        if(commandOutput.hasErrors()) {
-            logger.info('Something went wrong when running HubNugetInspector')
-            return null
-        }
+        def hubNugetInspectorExecutable = new Executable(sourceDirectory, inspectorExePath, options)
+        ExecutableOutput executableOutput = executableRunner.executeLoudly(hubNugetInspectorExecutable)
 
         def dependencyNodeFile = fileFinder.findFile(outputDirectory, '*_dependency_node.json')
         DependencyNode node = nugetNodeTransformer.parse(dependencyNodeFile)
@@ -93,22 +90,36 @@ class NugetInspectorPackager {
         return node
     }
 
-    Executable findHubNugetInspector(File outputDirectory, File nugetFolder, Executable nuget) {
-        if(!nugetFolder.exists() && fetchFromNuget(outputDirectory, nuget).hasErrors()) {
-            logger.info('Failed to install HubNugetInspector')
-        } else {
-            return fileFinder.findExecutable('IntegrationNugetInspector.exe', nugetFolder.getAbsolutePath())
+    private String getInspectorExePath(File sourceDirectory, File outputDirectory, File nugetExecutable) {
+        File inspectorVersionDirectory = new File(outputDirectory, "${inspectorPackageName}.${inspectorPackageVersion}")
+        File toolsDirectory = new File(inspectorVersionDirectory, 'tools')
+        File inspectorExe = new File(toolsDirectory, "${inspectorPackageName}.exe")
+
+        //if we can't find the inspector where we expect to, attempt to install it from nuget.org
+        if (inspectorExe == null || !inspectorExe.exists()) {
+            installInspectorFromNugetDotOrg(sourceDirectory, outputDirectory, nugetExecutable)
+            inspectorExe = new File(toolsDirectory, "${inspectorPackageName}.exe")
         }
-        null
+
+        if (inspectorExe == null || !inspectorExe.exists()) {
+            logger.error("Could not find the ${inspectorPackageName} version:${inspectorPackageVersion} even after an install attempt.")
+            return null
+        }
+
+        return inspectorExe.absolutePath
     }
 
-    CommandOutput fetchFromNuget(File outputDirectory, Executable nuget) {
-        def commandRunner = new CommandRunner(logger, outputDirectory)
-        def installCommand = new Command(
-                nuget,
-                'install', inspectorPackageName,
-                '-Version', inspectorPackageVersion,
-                '-OutputDirectory', outputDirectory.getAbsolutePath())
-        commandRunner.execute(installCommand)
+    private ExecutableOutput installInspectorFromNugetDotOrg(File sourceDirectory, File outputDirectory, File nugetExecutable) {
+        def options =  [
+            'install',
+            inspectorPackageName,
+            '-Version',
+            inspectorPackageVersion,
+            '-OutputDirectory',
+            outputDirectory.absolutePath
+        ]
+
+        Executable installExecutable = new Executable(sourceDirectory, nugetExecutable.absolutePath, options)
+        executableRunner.executeLoudly(installExecutable)
     }
 }

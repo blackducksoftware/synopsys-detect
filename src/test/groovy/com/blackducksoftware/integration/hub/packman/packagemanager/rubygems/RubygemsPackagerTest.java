@@ -17,7 +17,9 @@ import static org.junit.Assert.assertNull;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
@@ -39,8 +41,8 @@ public class RubygemsPackagerTest {
         final String sourcePath = "/rubygems/";
         final String expected = IOUtils.toString(getClass().getResourceAsStream("/rubygems/expectedPackager.json"), StandardCharsets.UTF_8);
         final String actualText = IOUtils.toString(getClass().getResourceAsStream("/rubygems/Gemfile.lock"), StandardCharsets.UTF_8);
-        final RubygemsPackager rubygemsPackager = new RubygemsPackager(projectInfoGatherer, sourcePath, actualText);
-        final List<DependencyNode> projects = rubygemsPackager.makeDependencyNodes();
+        final RubygemsPackager rubygemsPackager = new RubygemsPackager(projectInfoGatherer);
+        final List<DependencyNode> projects = rubygemsPackager.makeDependencyNodes(sourcePath, actualText);
         assertEquals(1, projects.size());
         fixVersion(projects.get(0), "1.0.0");
         final String actual = gson.toJson(projects);
@@ -50,25 +52,25 @@ public class RubygemsPackagerTest {
 
     private void fixVersion(final DependencyNode node, final String newVersion) {
         node.version = newVersion;
-        node.externalId = new NameVersionExternalId(Forge.rubygems, node.name, newVersion);
+        node.externalId = new NameVersionExternalId(Forge.RUBYGEMS, node.name, newVersion);
     }
 
     @Test
     public void findKeyInMapTest() {
-        final ParserMap map = new ParserMap();
+        final Map map = new HashMap();
         final String key = "lookForMe (These key's have versions)";
-        map.put(key, new ParserMap());
-        final RubygemsPackager rubygemsPackager = new RubygemsPackager(null, null, null);
+        map.put(key, new HashMap());
+        final RubygemsPackager rubygemsPackager = new RubygemsPackager(null);
         final String foundKey = rubygemsPackager.findKeyInMap("lookForMe", map);
         assertEquals(key, foundKey);
     }
 
     @Test
     public void findKeyNotInMapTest() {
-        final ParserMap map = new ParserMap();
+        final Map map = new HashMap();
         final String key = "lookForMe (These key's have versions)";
-        map.put(key, new ParserMap());
-        final RubygemsPackager rubygemsPackager = new RubygemsPackager(null, null, null);
+        map.put(key, new HashMap());
+        final RubygemsPackager rubygemsPackager = new RubygemsPackager(null);
         final String foundKey = rubygemsPackager.findKeyInMap("i dont exist", map);
         assertNull(foundKey);
     }

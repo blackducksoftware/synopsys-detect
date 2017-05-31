@@ -20,7 +20,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PipShowMapParser {
     public Map<String, String> parse(final String pipShowText) {
         final Map<String, String> map = new HashMap<>();

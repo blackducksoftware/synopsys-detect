@@ -37,7 +37,7 @@ class NugetNodeTransformer {
     private DependencyNode nugetNodeTransformer(final NugetNode node) {
         final String name = node.artifact
         final String version = node.version
-        final ExternalId externalId = new NameVersionExternalId(Forge.nuget, name, version)
+        final ExternalId externalId = new NameVersionExternalId(Forge.NUGET, name, version)
         final DependencyNode dependencyNode = new DependencyNode(name, version, externalId)
         node.children.each {
             dependencyNode.children.add(nugetNodeTransformer(it))

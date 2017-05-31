@@ -17,7 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.packman.PackageManagerType;
+import com.blackducksoftware.integration.hub.packman.type.PackageManagerType;
 
 @Component
 public class ProjectInfoGatherer {

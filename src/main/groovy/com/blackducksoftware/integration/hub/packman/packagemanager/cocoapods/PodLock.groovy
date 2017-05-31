@@ -9,20 +9,17 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.util.commands
+package com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods
 
-class Command {
-    final Executable executable
+import org.apache.commons.lang3.builder.RecursiveToStringStyle
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder
 
-    final String[] args
+class PodLock {
+    List<Pod> pods
+    List<Pod> dependencies
 
-    Command(final Executable executable, final String... args) {
-        this.executable = executable
-        this.args = args
-    }
-
-    Command(final Executable executable, final List<String> args) {
-        this.executable = executable
-        this.args = args.toArray()
+    @Override
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this, RecursiveToStringStyle.JSON_STYLE)
     }
 }

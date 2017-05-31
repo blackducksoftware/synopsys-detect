@@ -114,7 +114,7 @@ public class MavenOutputParserTest {
     }
 
     private DependencyNode createMavenNode(final String group, final String artifact, final String version) {
-        final ExternalId externalId = new MavenExternalId(Forge.maven, group, artifact, version);
+        final ExternalId externalId = new MavenExternalId(Forge.MAVEN, group, artifact, version);
         final DependencyNode node = new DependencyNode(artifact, version, externalId);
         return node;
     }

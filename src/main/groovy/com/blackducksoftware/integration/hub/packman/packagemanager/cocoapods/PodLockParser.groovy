@@ -9,82 +9,91 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods;
+package com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import org.springframework.stereotype.Component
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.esotericsoftware.yamlbeans.YamlException
+import com.esotericsoftware.yamlbeans.YamlReader
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId;
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId;
-import com.esotericsoftware.yamlbeans.YamlException;
-import com.esotericsoftware.yamlbeans.YamlReader;
+@Component
+class PodLockParser {
+    PodLock parse(String podLockText) throws YamlException {
+        final YamlReader fullReader = new YamlReader(podLockText)
+        final Object object = fullReader.read()
+        final def fileMap = (Map<String, Object>) object
 
-public class PodLockParser {
-    private final Logger logger = LoggerFactory.getLogger(PodLockParser.class);
-    private static final Pattern NAME_VERSION_PATTERN = Pattern.compile("(.*) \\((.*)\\)")
-
-    public PodLock parse(final String podlockText) {
-        final PodLock podLock = new PodLock();
-        try {
-            final YamlReader fullReader = new YamlReader(podlockText);
-            final Object object = fullReader.read();
-            final Map<String, Object> map = (Map<String, Object>) object;
-
-            // Extract dependencies
-            final List<String> dependencyNames = (List<String>) map.get("DEPENDENCIES");
-
-            dependencyNames.each { dependencyName ->
-                final DependencyNode node = podToDependencyNode(dependencyName);
-                podLock.dependencies.add(node);
-            }
-
-            // Extract pods
-            final List<Object> pods = (List<Object>) map.get("PODS");
-            pods.each { pod ->
-                DependencyNode node = null;
-                if (pod instanceof HashMap<?, ?>) {
-                    // There should only be one parent node
-                    final List<DependencyNode> parentNodes = []
-                    final Map<String, List<String>> podMap = (Map<String, ArrayList<String>>) pod;
-                    podMap.each { key, value ->
-                        final DependencyNode parent = podToDependencyNode(key);
-                        value.each { child ->
-                            final DependencyNode childNode = podToDependencyNode(child);
-                            parent.children.add(childNode);
-                        }
-                        parentNodes.add(parent);
-                    }
-                    node = parentNodes.get(0);
-                } else {
-                    node = podToDependencyNode(pod.toString());
+        // Parse the PODS section
+        final Map<String, Pod> allPods = [:]
+        def pods = (List<Object>) fileMap.get('PODS')
+        for(Object podObj : pods) {
+            if(podObj instanceof String) {
+                Pod pod = parsePodLine(podObj)
+                if(!allPods[pod.name]) {
+                    allPods[pod.name] = pod
                 }
-                podLock.pods.add(node);
+            } else {
+                // If a pod has children it will appear as a map with a single entry
+                List<Pod> mappedPods = []
+                def podMap = (Map<String, List<String>>) podObj
+                podMap.each { key, value ->
+                    final Pod parent = parsePodLine(key)
+                    // These children will be set to other pods after initial processing
+                    value.each { child ->
+                        final Pod childPod = parsePodLine(child)
+                        childPod.version = null
+                        parent.children.add(childPod)
+                    }
+                    mappedPods.add(parent)
+                }
+                Pod pod = mappedPods.get(0)
+                if(!allPods[pod.name]) {
+                    allPods[pod.name] = pod
+                }
             }
-        } catch (final YamlException ingore) {
-            logger.error("Cannot parse Podfile.lock. Invalid YAML file");
-            return null;
         }
-        return podLock;
+
+        // Fix children
+        allPods.entrySet().each { pod ->
+            def actualChildren = []
+            pod.value.children.each  { child ->
+                actualChildren += allPods[child.name]
+            }
+            pod.value.children = actualChildren
+        }
+
+        // Parse the DEPENDENCIES section
+        def actualDependencies = []
+        final Map<String, Pod> dependencies = [:]
+        def depPods = (List<Object>) fileMap.get('DEPENDENCIES')
+        depPods.each {
+            Pod dependency = parsePodLine((String) it)
+            actualDependencies += allPods[dependency.name]
+        }
+
+
+        PodLock podLock = new PodLock()
+        podLock.pods = new ArrayList<>(allPods.values())
+        podLock.dependencies = actualDependencies
+
+        podLock
     }
 
-    private DependencyNode podToDependencyNode(final String pod) {
-        final Matcher podMatcher = NAME_VERSION_PATTERN.matcher(pod);
-        String name;
-        String version;
-        if (podMatcher.find()) {
-            name = podMatcher.group(1);
-            version = podMatcher.group(2);
-        } else {
-            name = pod.trim();
-            version = null;
+    Pod parsePodLine(String podText) {
+        Pod pod = new Pod()
+        String text = podText.trim()
+        if(!text) {
+            return null
         }
-        final ExternalId externalId = new NameVersionExternalId(Forge.cocoapods, name, version);
-        final DependencyNode node = new DependencyNode(name, version, externalId);
-        return node;
+
+        if(text.contains(' (') && text.contains(')')) {
+            String[] segments = text.split(' ')
+            pod.name = segments[0].trim()
+            pod.version = segments[1].replace('(', '').replace(')', '').trim()
+        } else {
+            pod.name = text
+        }
+
+        pod
     }
 }

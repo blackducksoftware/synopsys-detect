@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.packman.PackageManagerType
 import com.blackducksoftware.integration.hub.packman.packagemanager.rubygems.RubygemsPackager
+import com.blackducksoftware.integration.hub.packman.type.PackageManagerType
 import com.blackducksoftware.integration.hub.packman.util.FileFinder
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
 
@@ -37,8 +37,8 @@ class RubygemsPackageManager extends PackageManager {
             gemlockStream = new FileInputStream(gemlockFile)
             String potentialProjectName = sourceDirectory.getName()
             String gemlock = IOUtils.toString(gemlockStream, StandardCharsets.UTF_8)
-            def rubygemsPackager = new RubygemsPackager(projectInfoGatherer, sourcePath, gemlock)
-            def projects = rubygemsPackager.makeDependencyNodes()
+            def rubygemsPackager = new RubygemsPackager(projectInfoGatherer)
+            def projects = rubygemsPackager.makeDependencyNodes(sourcePath, gemlock)
             return projects
         } finally {
             IOUtils.closeQuietly(gemlockStream)

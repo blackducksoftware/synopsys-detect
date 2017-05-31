@@ -30,6 +30,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeTransform
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.SimpleBdioDocument;
 import com.blackducksoftware.integration.hub.packman.packagemanager.PackageManager;
+import com.blackducksoftware.integration.hub.packman.type.PackageManagerType;
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
 import com.google.gson.Gson;
 
@@ -67,13 +68,19 @@ public class PackageManagerRunner {
             for (final String sourcePath : sourcePaths) {
                 final String packageManagerName = packageManager.getPackageManagerType().toString().toLowerCase();
                 logger.info(String.format("Searching source path for %s: %s", packageManagerName, sourcePath));
-                if (packageManager.isPackageManagerApplicable(sourcePath)) {
-                    logger.info(String.format("Found files for %s", packageManagerName));
-                    final List<DependencyNode> projectNodes = packageManager.extractDependencyNodes(sourcePath);
-                    if (projectNodes != null && projectNodes.size() > 0) {
-                        foundSomePackageManagers = true;
-                        createOutput(createdBdioFiles, packageManager.getPackageManagerType(), projectNodes);
+                try {
+                    if (packageManager.isPackageManagerApplicable(sourcePath)) {
+                        logger.info(String.format("Found files for %s", packageManagerName));
+                        final List<DependencyNode> projectNodes = packageManager.extractDependencyNodes(sourcePath);
+                        if (projectNodes != null && projectNodes.size() > 0) {
+                            foundSomePackageManagers = true;
+                            createOutput(createdBdioFiles, packageManager.getPackageManagerType(), projectNodes);
+                        }
                     }
+                } catch (final Exception e) {
+                    logger.error(String.format("Error running package manager %s for sourcePath %s: %s", packageManager.getPackageManagerType().toString(),
+                            sourcePath, e.getMessage()));
+                    e.printStackTrace();
                 }
             }
         }

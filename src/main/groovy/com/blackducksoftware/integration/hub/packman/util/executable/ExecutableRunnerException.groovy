@@ -9,10 +9,14 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.packagemanager.rubygems;
+package com.blackducksoftware.integration.hub.packman.util.executable
 
-import java.util.HashMap;
+class ExecutableRunnerException extends Exception {
+    ExecutableRunnerException(final Throwable innerException) {
+        super(innerException)
+    }
 
-public class ParserMap extends HashMap<String, ParserMap> {
-
+    ExecutableRunnerException(final ExecutableOutput executableOutput) {
+        super("${executableOutput.standardOutput}\n\n${executableOutput.errorOutput}")
+    }
 }

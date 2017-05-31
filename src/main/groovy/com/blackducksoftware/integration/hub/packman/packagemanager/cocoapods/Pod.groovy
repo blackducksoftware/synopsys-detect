@@ -9,18 +9,18 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.util.commands
+package com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods
 
-class CommandOutput {
-    String output
-    String error
+import org.apache.commons.lang3.builder.RecursiveToStringStyle
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder
 
-    public CommandOutput(String output, String error) {
-        this.output = output
-        this.error = error
-    }
+class Pod {
+    String name
+    String version
+    List<Pod> children = []
 
-    boolean hasErrors() {
-        error?.trim()
+    @Override
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this, RecursiveToStringStyle.JSON_STYLE)
     }
 }

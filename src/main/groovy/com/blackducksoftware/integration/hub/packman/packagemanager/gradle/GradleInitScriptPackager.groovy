@@ -2,7 +2,6 @@ package com.blackducksoftware.integration.hub.packman.packagemanager.gradle
 
 import java.nio.charset.StandardCharsets
 
-import org.apache.commons.lang3.SystemUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -10,15 +9,14 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.packman.util.FileFinder
+import com.blackducksoftware.integration.hub.packman.util.executable.Executable
+import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableManager
+import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableRunner
 import com.google.gson.Gson
 
 @Component
 class GradleInitScriptPackager {
     private final Logger logger = LoggerFactory.getLogger(GradleInitScriptPackager.class)
-
-    @Value('${packman.gradle.path}')
-    String gradlePath
 
     @Value('${packman.gradle.build.command}')
     String gradleBuildCommand
@@ -39,26 +37,12 @@ class GradleInitScriptPackager {
     Gson gson
 
     @Autowired
-    FileFinder fileFinder
+    ExecutableManager executableManager
 
-    DependencyNode extractRootProjectNode(String sourcePath) {
-        def gradlewCommand = 'gradlew'
-        def gradleCommand = 'gradle'
-        if (SystemUtils.IS_OS_WINDOWS) {
-            gradlewCommand = "${gradlewCommand}.bat"
-            gradleCommand = "${gradleCommand}.bat"
-        }
+    @Autowired
+    ExecutableRunner executableRunner
 
-        if (!gradlePath) {
-            logger.info('packman.gradle.path not set in config - first try to find the gradle wrapper')
-            gradlePath = fileFinder.findExecutablePath(gradlewCommand, sourcePath)
-        }
-
-        if (!gradlePath) {
-            logger.info('gradle wrapper not found - trying to find gradle on the PATH')
-            gradlePath = fileFinder.findExecutablePath(gradleCommand)
-        }
-
+    DependencyNode extractRootProjectNode(String sourcePath, String gradleExecutable) {
         File initScriptFile = File.createTempFile('init-packman', '.gradle')
         initScriptFile.deleteOnExit()
         String initScriptContents = getClass().getResourceAsStream('/init-script-gradle').getText(StandardCharsets.UTF_8.name())
@@ -70,8 +54,11 @@ class GradleInitScriptPackager {
         initScriptFile << initScriptContents
         String initScriptPath = initScriptFile.absolutePath
         logger.info("using ${initScriptPath} as the path for the gradle init script")
-        String output = "${gradlePath} ${gradleBuildCommand} --init-script=${initScriptPath}".execute(null, new File(sourcePath)).text
-        logger.debug(output)
+        Executable executable = new Executable(new File(sourcePath), gradleExecutable, [
+            gradleBuildCommand,
+            "--init-script=${initScriptPath}"
+        ])
+        executableRunner.executeLoudly(executable)
 
         File buildDirectory = new File(sourcePath, 'build')
         File blackduckDirectory = new File(buildDirectory, 'blackduck')
