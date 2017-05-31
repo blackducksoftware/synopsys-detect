@@ -10,11 +10,11 @@ import com.blackducksoftware.integration.hub.packman.help.ValueDescription
 
 @Component
 class PackmanProperties {
-    @ValueDescription(key = "packman.source.paths", description = "Source paths to inspect")
+    @ValueDescription(description = "Source paths to inspect")
     @Value('${packman.source.paths}')
     String[] sourcePaths
 
-    @ValueDescription(key = "packman.output.path", description = "Output path")
+    @ValueDescription(description = "Output path")
     @Value('${packman.output.path}')
     String outputDirectoryPath
 

@@ -39,15 +39,15 @@ import com.google.gson.Gson;
 public class PackageManagerRunner {
     private final Logger logger = LoggerFactory.getLogger(PackageManagerRunner.class);
 
-    @ValueDescription(key = "packman.package.manager.type.override", description = "Specify which package managers to use")
+    @ValueDescription(description = "Specify which package managers to use")
     @Value("${packman.package.manager.type.override}")
     private String packageManagerTypeOverride;
 
-    @ValueDescription(key = "packman.project.name", description = "Hub project name")
+    @ValueDescription(description = "Hub project name")
     @Value("${packman.project.name}")
     private String projectName;
 
-    @ValueDescription(key = "packman.project.version", description = "Hub project version")
+    @ValueDescription(description = "Hub project version")
     @Value("${packman.project.version}")
     private String projectVersionName;
 
