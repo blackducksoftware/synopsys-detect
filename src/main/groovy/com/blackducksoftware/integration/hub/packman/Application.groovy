@@ -13,7 +13,6 @@ package com.blackducksoftware.integration.hub.packman
 
 import javax.annotation.PostConstruct
 
-import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -26,14 +25,19 @@ import com.blackducksoftware.integration.hub.bdio.simple.BdioNodeFactory
 import com.blackducksoftware.integration.hub.bdio.simple.BdioPropertyHelper
 import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeTransformer
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.packman.help.AnnotationFinder
+import com.blackducksoftware.integration.hub.packman.help.HelpLogger
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-
 
 @SpringBootApplication
 class Application {
     private final Logger logger = LoggerFactory.getLogger(Application.class)
+
+    @Autowired
+    BdioPropertyHelper bdioPropertyHelper
+
+    @Autowired
+    BdioNodeFactory bdioNodeFactory
 
     @Autowired
     PackageManagerRunner packageManagerRunner
@@ -42,10 +46,10 @@ class Application {
     BdioUploader bdioUploader
 
     @Autowired
-    ApplicationArguments args
+    ApplicationArguments applicationArguments
 
     @Autowired
-    AnnotationFinder finder
+    HelpLogger helpLogger
 
     static void main(final String[] args) {
         new SpringApplicationBuilder(Application.class).logStartupInfo(true).run(args)
@@ -53,33 +57,12 @@ class Application {
 
     @PostConstruct
     void init() {
-        if ('-h' in args.getSourceArgs() || '--help' in args.getSourceArgs()){
-            printHelp()
+        if ('-h' in applicationArguments.getSourceArgs() || '--help' in applicationArguments.getSourceArgs()){
+            helpLogger.logHelpMessage()
         } else {
             List<File> createdBdioFiles = packageManagerRunner.createBdioFiles()
             bdioUploader.uploadBdioFiles(createdBdioFiles)
         }
-    }
-
-    void printHelp(){
-        List<String> printList = new ArrayList<>()
-        printList.add('')
-        printList.add('Properties : ')
-        finder.getPackmanValues().each { packmanValue ->
-            String optionLine = ""
-            String key = StringUtils.rightPad(packmanValue.getKey(), 50, ' ')
-            if(StringUtils.isNotBlank(packmanValue.getDescription())){
-                optionLine = "\t${key}${packmanValue.getDescription()}"
-            } else {
-                optionLine = "\t${key}"
-            }
-            printList.add(optionLine)
-        }
-        printList.add('')
-        printList.add('Usage : ')
-        printList.add('\t--<property name>=<value>')
-        printList.add('')
-        logger.info(StringUtils.join(printList, System.getProperty("line.separator")))
     }
 
     @Bean
@@ -94,13 +77,11 @@ class Application {
 
     @Bean
     BdioNodeFactory bdioNodeFactory() {
-        // TODO: Fix bean dependencies
-        new BdioNodeFactory(bdioPropertyHelper())
+        new BdioNodeFactory(bdioPropertyHelper)
     }
 
     @Bean
     DependencyNodeTransformer dependencyNodeTransformer() {
-        // TODO: Fix bean dependencies
-        new DependencyNodeTransformer(bdioNodeFactory(), bdioPropertyHelper())
+        new DependencyNodeTransformer(bdioNodeFactory, bdioPropertyHelper)
     }
 }

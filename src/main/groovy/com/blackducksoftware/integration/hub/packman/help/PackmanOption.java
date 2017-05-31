@@ -12,7 +12,6 @@
 package com.blackducksoftware.integration.hub.packman.help;
 
 public class PackmanOption {
-
     private final String key;
 
     private final String description;
