@@ -51,14 +51,15 @@ public class ExecutableRunner {
         try {
             final ProcessBuilder processBuilder = executable.createProcessBuilder();
             final Process process = processBuilder.start();
-            final String standardOutput = printStream(process.getInputStream(), runQuietly, false, process.exitValue());
-            final String errorOutput = printStream(process.getErrorStream(), runQuietly, true, process.exitValue());
+            final int exitCode = process.waitFor();
+            final String standardOutput = printStream(process.getInputStream(), runQuietly, false, exitCode);
+            final String errorOutput = printStream(process.getErrorStream(), runQuietly, true, exitCode);
             final ExecutableOutput output = new ExecutableOutput(standardOutput, errorOutput);
             if (StringUtils.isNotBlank(errorOutput)) {
                 throw new ExecutableRunnerException(output);
             }
             return output;
-        } catch (final IOException e) {
+        } catch (final IOException | InterruptedException e) {
             throw new ExecutableRunnerException(e);
         }
     }
