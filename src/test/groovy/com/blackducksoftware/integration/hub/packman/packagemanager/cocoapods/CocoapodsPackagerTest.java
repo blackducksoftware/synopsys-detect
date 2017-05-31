@@ -67,6 +67,6 @@ public class CocoapodsPackagerTest {
 
     private void fixVersion(final DependencyNode node, final String newVersion) {
         node.version = newVersion;
-        node.externalId = new NameVersionExternalId(Forge.cocoapods, node.name, newVersion);
+        node.externalId = new NameVersionExternalId(Forge.COCOAPODS, node.name, newVersion);
     }
 }

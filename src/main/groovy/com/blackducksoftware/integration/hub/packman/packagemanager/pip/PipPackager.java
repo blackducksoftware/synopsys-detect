@@ -104,7 +104,7 @@ public class PipPackager {
         final String name = pipShowMap.get("Name").trim();
         final String version = pipShowMap.get("Version").trim();
         final String[] requires = pipShowMap.get("Requires").split(",");
-        final ExternalId externalId = new NameVersionExternalId(Forge.pypi, name, version);
+        final ExternalId externalId = new NameVersionExternalId(Forge.PYPI, name, version);
         final DependencyNode node = new DependencyNode(name, version, externalId);
         for (final String requirement : requires) {
             if (StringUtils.isNotBlank(requirement)) {

@@ -52,7 +52,7 @@ public class RubygemsPackagerTest {
 
     private void fixVersion(final DependencyNode node, final String newVersion) {
         node.version = newVersion;
-        node.externalId = new NameVersionExternalId(Forge.rubygems, node.name, newVersion);
+        node.externalId = new NameVersionExternalId(Forge.RUBYGEMS, node.name, newVersion);
     }
 
     @Test

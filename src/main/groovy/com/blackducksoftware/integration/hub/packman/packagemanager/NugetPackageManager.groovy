@@ -80,7 +80,7 @@ class NugetPackageManager extends PackageManager {
         if(isSolution(root)){
             root.name = projectInfoGatherer.getDefaultProjectName(PackageManagerType.NUGET, sourcePath, root.name)
             root.version = projectInfoGatherer.getDefaultProjectVersionName(root.version)
-            root.externalId = new NameVersionExternalId(Forge.nuget, root.name, root.version)
+            root.externalId = new NameVersionExternalId(Forge.NUGET, root.name, root.version)
             if (aggregateBom) {
                 return [root]
             }
@@ -88,7 +88,7 @@ class NugetPackageManager extends PackageManager {
         } else{
             root.name = projectInfoGatherer.getDefaultProjectName(PackageManagerType.NUGET, sourcePath, root.name)
             root.version = projectInfoGatherer.getDefaultProjectVersionName(root.version)
-            root.externalId = new NameVersionExternalId(Forge.nuget, root.name, root.version)
+            root.externalId = new NameVersionExternalId(Forge.NUGET, root.name, root.version)
             [root]
         }
     }

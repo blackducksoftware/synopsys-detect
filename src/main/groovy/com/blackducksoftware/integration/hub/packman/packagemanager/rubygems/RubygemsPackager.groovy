@@ -34,7 +34,7 @@ public class RubygemsPackager {
     public List<DependencyNode> makeDependencyNodes(final String sourcePath, final String gemlock) {
         final String rootName = projectInfoGatherer.getDefaultProjectName(PackageManagerType.RUBYGEMS, sourcePath)
         final String rootVersion = projectInfoGatherer.getDefaultProjectVersionName()
-        final ExternalId rootExternalId = new NameVersionExternalId(Forge.rubygems, rootName, rootVersion)
+        final ExternalId rootExternalId = new NameVersionExternalId(Forge.RUBYGEMS, rootName, rootVersion)
         final DependencyNode root = new DependencyNode(rootName, rootVersion, rootExternalId)
 
         final DependencyNodeBuilder dependencyNodeBuilder = new DependencyNodeBuilder(root)
@@ -64,7 +64,7 @@ public class RubygemsPackager {
             name = line.trim()
             version = null
         }
-        final ExternalId externalId = new NameVersionExternalId(Forge.rubygems, name, version)
+        final ExternalId externalId = new NameVersionExternalId(Forge.RUBYGEMS, name, version)
         final DependencyNode dependencyNode = new DependencyNode(name, version, externalId)
         return dependencyNode
     }
