@@ -34,6 +34,12 @@ class Application {
     private final Logger logger = LoggerFactory.getLogger(Application.class)
 
     @Autowired
+    BdioPropertyHelper bdioPropertyHelper
+
+    @Autowired
+    BdioNodeFactory bdioNodeFactory
+
+    @Autowired
     PackageManagerRunner packageManagerRunner
 
     @Autowired
@@ -71,13 +77,11 @@ class Application {
 
     @Bean
     BdioNodeFactory bdioNodeFactory() {
-        // TODO: Fix bean dependencies
-        new BdioNodeFactory(bdioPropertyHelper())
+        new BdioNodeFactory(bdioPropertyHelper)
     }
 
     @Bean
     DependencyNodeTransformer dependencyNodeTransformer() {
-        // TODO: Fix bean dependencies
-        new DependencyNodeTransformer(bdioNodeFactory(), bdioPropertyHelper())
+        new DependencyNodeTransformer(bdioNodeFactory, bdioPropertyHelper)
     }
 }
