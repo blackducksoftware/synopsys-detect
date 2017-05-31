@@ -13,7 +13,7 @@ package com.blackducksoftware.integration.hub.packman
 
 import javax.annotation.PostConstruct
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -56,7 +56,7 @@ class Application {
         if ('-h' in args.getSourceArgs() || '--help' in args.getSourceArgs()){
             printHelp()
         } else {
-            List<File> createdBdioFiles = parser.createBdioFiles()
+            List<File> createdBdioFiles = packageManagerRunner.createBdioFiles()
             bdioUploader.uploadBdioFiles(createdBdioFiles)
         }
     }
