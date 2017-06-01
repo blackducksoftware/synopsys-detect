@@ -11,8 +11,6 @@
  */
 package com.blackducksoftware.integration.hub.packman.packagemanager.maven
 
-import javax.annotation.PostConstruct
-
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -26,7 +24,6 @@ import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
 import com.blackducksoftware.integration.hub.packman.util.executable.Executable
 import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableOutput
 import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableRunner
-import com.blackducksoftware.integration.util.ExcludedIncludedFilter
 
 @Component
 public class MavenPackager {
@@ -42,29 +39,23 @@ public class MavenPackager {
     @Value('${packman.maven.aggregate}')
     boolean aggregateBom
 
-    @ValueDescription(description="The names of the dependency scopes to include")
-    @Value('${packman.maven.scopes.included}')
-    String includedScopes
-
-    @ValueDescription(description="The names of the dependency scopes to exclude")
-    @Value('${packman.maven.scopes.excluded}')
-    String excludedScopes
-
-    ExcludedIncludedFilter excludedIncludedFilter
-
-    @PostConstruct
-    void init() {
-        excludedIncludedFilter = new ExcludedIncludedFilter(excludedScopes.toLowerCase(), includedScopes.toLowerCase())
-    }
+    @ValueDescription(description="The name of the dependency scope to include")
+    @Value('${packman.maven.scope}')
+    String mavenScope
 
     public List<DependencyNode> makeDependencyNodes(String sourcePath, String mavenExecutable) {
         final List<DependencyNode> projects = []
 
         File sourceDirectory = new File(sourcePath)
-        final Executable mvnExecutable = new Executable(sourceDirectory, mavenExecutable, ["dependency:tree"])
+
+        def arguments = ["dependency:tree"]
+        if (mavenScope?.trim()) {
+            arguments.add("-Dscope=${mavenScope}")
+        }
+        final Executable mvnExecutable = new Executable(sourceDirectory, mavenExecutable, arguments)
         final ExecutableOutput mvnOutput = executableRunner.executeLoudly(mvnExecutable)
 
-        final MavenOutputParser mavenOutputParser = new MavenOutputParser(excludedIncludedFilter)
+        final MavenOutputParser mavenOutputParser = new MavenOutputParser()
         projects.addAll(mavenOutputParser.parse(mvnOutput.standardOutput))
 
         if (aggregateBom && !projects.isEmpty()) {
