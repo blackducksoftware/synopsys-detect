@@ -46,25 +46,6 @@ public class MavenOutputParserTest {
         assertEquals(1, projects.size());
     }
 
-    @Test
-    public void mavenParserScopeTest() throws IOException {
-        final MavenOutputParser mavenOutputParser = new MavenOutputParser();
-        final String mavenOutput = IOUtils.toString(getClass().getResourceAsStream("/maven/mavenSampleOutput.txt"), StandardCharsets.UTF_8);
-        final List<DependencyNode> projects = mavenOutputParser.parse(mavenOutput);
-
-        assertEquals(1, projects.size());
-        assertMavenDependencyNodesEqual(getScopedIntegationBdioDependencyNode(), projects.get(0));
-    }
-
-    private DependencyNode getScopedIntegationBdioDependencyNode() {
-        final DependencyNode project = createMavenNode("com.blackducksoftware.integration", "integration-bdio", "2.0.0-SNAPSHOT");
-        final DependencyNode gson = createMavenNode("com.google.code.gson", "gson", "2.7");
-        final DependencyNode commonslang = createMavenNode("org.apache.commons", "commons-lang3", "3.5");
-        project.children.add(commonslang);
-        project.children.add(gson);
-        return project;
-    }
-
     private DependencyNode getIntegationBdioDependencyNode() {
         final DependencyNode project = createMavenNode("com.blackducksoftware.integration", "integration-bdio", "2.0.0-SNAPSHOT");
         final DependencyNode junit = createMavenNode("junit", "junit", "4.12");
