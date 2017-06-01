@@ -110,13 +110,13 @@ class PackmanProperties {
     @Value('${packman.maven.aggregate}')
     boolean aggregateBom
 
-    @ValueDescription(description="The names of the dependency scopes to include")
-    @Value('${packman.maven.scopes.included}')
-    String includedScopes
+    @ValueDescription(description="The name of the dependency scope to include")
+    @Value('${packman.maven.scope}')
+    String mavenScope
 
-    @ValueDescription(description="The names of the dependency scopes to exclude")
-    @Value('${packman.maven.scopes.excluded}')
-    String excludedScopes
+    @ValueDescription(description="Path of the Gradle executable")
+    @Value('${packman.gradle.path}')
+    String gradlePath
 
     @PostConstruct
     void init() {

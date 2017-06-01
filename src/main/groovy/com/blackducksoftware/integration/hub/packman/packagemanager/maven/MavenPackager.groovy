@@ -11,8 +11,6 @@
  */
 package com.blackducksoftware.integration.hub.packman.packagemanager.maven
 
-import javax.annotation.PostConstruct
-
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -25,7 +23,6 @@ import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
 import com.blackducksoftware.integration.hub.packman.util.executable.Executable
 import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableOutput
 import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableRunner
-import com.blackducksoftware.integration.util.ExcludedIncludedFilter
 
 @Component
 public class MavenPackager {
@@ -40,21 +37,19 @@ public class MavenPackager {
     @Autowired
     PackmanProperties packmanProperties
 
-    ExcludedIncludedFilter excludedIncludedFilter
-
-    @PostConstruct
-    void init() {
-        excludedIncludedFilter = new ExcludedIncludedFilter(excludedScopes.toLowerCase(), includedScopes.toLowerCase())
-    }
-
     public List<DependencyNode> makeDependencyNodes(String sourcePath, String mavenExecutable) {
         final List<DependencyNode> projects = []
 
         File sourceDirectory = new File(sourcePath)
-        final Executable mvnExecutable = new Executable(sourceDirectory, mavenExecutable, ["dependency:tree"])
+
+        def arguments = ["dependency:tree"]
+        if (packmanProperties.mavenScope?.trim()) {
+            arguments.add("-Dscope=${packmanProperties.mavenScope}")
+        }
+        final Executable mvnExecutable = new Executable(sourceDirectory, mavenExecutable, arguments)
         final ExecutableOutput mvnOutput = executableRunner.executeLoudly(mvnExecutable)
 
-        final MavenOutputParser mavenOutputParser = new MavenOutputParser(excludedIncludedFilter)
+        final MavenOutputParser mavenOutputParser = new MavenOutputParser()
         projects.addAll(mavenOutputParser.parse(mvnOutput.standardOutput))
 
         if (packmanProperties.aggregateBom && !projects.isEmpty()) {

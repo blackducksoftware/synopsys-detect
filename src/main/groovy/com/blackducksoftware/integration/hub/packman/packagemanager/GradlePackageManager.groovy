@@ -4,11 +4,10 @@ import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.packman.help.ValueDescription
+import com.blackducksoftware.integration.hub.packman.PackmanProperties
 import com.blackducksoftware.integration.hub.packman.packagemanager.gradle.GradleInitScriptPackager
 import com.blackducksoftware.integration.hub.packman.type.ExecutableType
 import com.blackducksoftware.integration.hub.packman.type.PackageManagerType
@@ -30,9 +29,8 @@ class GradlePackageManager extends PackageManager {
     @Autowired
     FileFinder fileFinder
 
-    @ValueDescription(description="Path of the Gradle executable")
-    @Value('${packman.gradle.path}')
-    String gradlePath
+    @Autowired
+    PackmanProperties packmanProperties
 
     PackageManagerType getPackageManagerType() {
         return PackageManagerType.GRADLE
@@ -52,6 +50,7 @@ class GradlePackageManager extends PackageManager {
     }
 
     private String findGradleExecutable(String sourcePath) {
+        String gradlePath = packmanProperties.gradlePath
         if (StringUtils.isBlank(gradlePath)) {
             logger.info('packman.gradle.path not set in config - first try to find the gradle wrapper')
             gradlePath = executableManager.getPathOfExecutable(sourcePath, ExecutableType.GRADLEW)
