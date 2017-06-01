@@ -22,7 +22,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenExternalId;
-import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
 
 public class MavenOutputParser {
     private final Pattern beginProjectRegex = Pattern.compile("--- .*? ---");
@@ -38,12 +37,6 @@ public class MavenOutputParser {
     private final Pattern emptyRegex = Pattern.compile("   ");
 
     private final Pattern finishRegex = Pattern.compile("--------");
-
-    private final ExcludedIncludedFilter scopeFilter;
-
-    public MavenOutputParser(final ExcludedIncludedFilter scopeFilter) {
-        this.scopeFilter = scopeFilter;
-    }
 
     public List<DependencyNode> parse(final String mavenOutputText) {
         final List<DependencyNode> projects = new ArrayList<>();
@@ -161,11 +154,6 @@ public class MavenOutputParser {
         final String group = gavMatcher.group(1);
         final String artifact = gavMatcher.group(2);
         final String version = gavMatcher.group(4);
-        final String scope = gavMatcher.group(6);
-
-        if (scope != null && !scopeFilter.shouldInclude(scope.toLowerCase())) {
-            return null;
-        }
 
         final ExternalId externalId = new MavenExternalId(group, artifact, version);
         final DependencyNode node = new DependencyNode(artifact, version, externalId);
