@@ -72,7 +72,7 @@ class PipPackageManager extends PackageManager {
 
     @PostConstruct
     void init() {
-        if(pipThreeOverride) {
+        if (pipThreeOverride) {
             pythonExecutableType = ExecutableType.PYTHON3
             pipExecutableType = ExecutableType.PIP3
         } else {
@@ -81,7 +81,7 @@ class PipPackageManager extends PackageManager {
         }
         pythonExecutable = findExecutable(null, pythonPath, pythonExecutableType)
         pipExecutable = findExecutable(null, pipPath, pipExecutableType)
-        if(SystemUtils.IS_OS_WINDOWS) {
+        if (SystemUtils.IS_OS_WINDOWS) {
             binFolderName = 'Scripts'
             envVariables.putAll(WINDOWS_ENV_VARIABLES)
         } else {
