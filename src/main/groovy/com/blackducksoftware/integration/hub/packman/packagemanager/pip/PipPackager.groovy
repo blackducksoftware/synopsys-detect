@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.packman.PackmanProperties
 import com.blackducksoftware.integration.hub.packman.util.FileFinder
 import com.blackducksoftware.integration.hub.packman.util.executable.Executable
 import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableRunner
@@ -33,49 +34,67 @@ class PipPackager {
     @Autowired
     ExecutableRunner executableRunner
 
-    @Value('packman.output.path')
-    String outputPath
+    @Autowired
+    PackmanProperties packmanProperties
 
-    @Value('packman.pip.requirements.path')
-    String requirementsPath
-
-    @Value('packman.pip.inspector.name')
+    @Value('${packman.pip.name}')
     String pipInspectorName
 
-    @Value('packman.pip.inspector.version')
+    @Value('${packman.pip.version}')
     String pipInspectorVersion
+
+    @Value('${packman.pip.requirements.path}')
+    String requirementsFilePath
 
     List<DependencyNode> makeDependencyNodes(final String sourcePath, final String pipExecutable, final String pythonExecutable,
             final Map<String, String> environmentVariables) throws ExecutableRunnerException {
         def sourceDirectory = new File(sourcePath)
-        def outputDirectory = new File(outputPath)
-        def requirementsFile = new File(requirementsPath)
+        def outputDirectory = new File(packmanProperties.outputDirectoryPath)
+        def tempDirectory = new File(outputDirectory, UUID.randomUUID().toString())
+        tempDirectory.mkdir()
+        def requirementsFile = null
+        if (requirementsFile) {
+            requirementsFile = new File(requirementsFilePath)
+        }
 
-        def installProject = new Executable(sourceDirectory, environmentVariables, pipExecutable, ['install', '.'])
+        def installProject = new Executable(sourceDirectory, environmentVariables, pythonExecutable, ['setup.py', 'install'])
+        executableRunner.executeLoudly(installProject)
+
         def installPipInspector = new Executable(sourceDirectory, environmentVariables, pipExecutable, [
             'install',
+            '-I',
             "${pipInspectorName}==${pipInspectorVersion}"
         ])
+        executableRunner.executeLoudly(installPipInspector)
 
         def pipInspectorOptions = [
+            '-u',
             'setup.py',
             'integration_pip_inspector',
-            "--OutputDirectory=${outputDirectory.absolutePath}",
-            '--IgnoreFailure=False',
-            '--CreateTreeDependencyList=True'
+            "--OutputDirectory=${tempDirectory.absolutePath}",
+            '--IgnoreFailure=False'
         ]
         if(requirementsFile) {
             pipInspectorOptions += "--RequirementsFile=${requirementsFile.absolutePath}"
         }
         def pipInspector = new Executable(sourceDirectory, environmentVariables, pythonExecutable, pipInspectorOptions)
 
-        executableRunner.executeLoudly(installProject)
-        executableRunner.executeLoudly(installPipInspector)
-        executableRunner.executeLoudly(pipInspector)
+        if(requirementsFile) {
+            def installRequirements = new Executable(sourceDirectory, environmentVariables, pipExecutable, [
+                'install',
+                '-r',
+                requirementsFile.absolutePath
+            ])
+            executableRunner.executeLoudly(installRequirements)
+        }
 
-        String inspectorOutput = fileFinder.findFile(outputDirectory, '*_blackduck_tree.txt').text
+        def failed = executableRunner.executeLoudly(pipInspector)
+
+
+        String inspectorOutput = fileFinder.findFile(tempDirectory, 'dependencyTree.txt').text
         def parser = new PipInspectorTreeParser()
         DependencyNode project = parser.parse(inspectorOutput)
+        tempDirectory.deleteDir()
 
         [project]
     }
