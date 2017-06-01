@@ -27,7 +27,6 @@ import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableR
 
 @Component
 public class MavenPackager {
-
     private final Logger logger = LoggerFactory.getLogger(this.getClass())
 
     @Autowired
@@ -50,7 +49,7 @@ public class MavenPackager {
         File sourceDirectory = new File(sourcePath)
 
         def arguments = ["dependency:tree"]
-        if (mavenScope?.trim()){
+        if (mavenScope?.trim()) {
             arguments.add("-Dscope=${mavenScope}")
         }
         final Executable mvnExecutable = new Executable(sourceDirectory, mavenExecutable, arguments)
