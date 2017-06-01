@@ -16,11 +16,10 @@ import javax.annotation.PostConstruct
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.packman.help.ValueDescription
+import com.blackducksoftware.integration.hub.packman.PackmanProperties
 import com.blackducksoftware.integration.hub.packman.type.PackageManagerType
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
 import com.blackducksoftware.integration.hub.packman.util.executable.Executable
@@ -38,17 +37,8 @@ public class MavenPackager {
     @Autowired
     ExecutableRunner executableRunner
 
-    @ValueDescription(description="If true all maven projects will be aggregated into a single bom")
-    @Value('${packman.maven.aggregate}')
-    boolean aggregateBom
-
-    @ValueDescription(description="The names of the dependency scopes to include")
-    @Value('${packman.maven.scopes.included}')
-    String includedScopes
-
-    @ValueDescription(description="The names of the dependency scopes to exclude")
-    @Value('${packman.maven.scopes.excluded}')
-    String excludedScopes
+    @Autowired
+    PackmanProperties packmanProperties
 
     ExcludedIncludedFilter excludedIncludedFilter
 
@@ -67,7 +57,7 @@ public class MavenPackager {
         final MavenOutputParser mavenOutputParser = new MavenOutputParser(excludedIncludedFilter)
         projects.addAll(mavenOutputParser.parse(mvnOutput.standardOutput))
 
-        if (aggregateBom && !projects.isEmpty()) {
+        if (packmanProperties.aggregateBom && !projects.isEmpty()) {
             final DependencyNode firstNode = projects.remove(0)
             projects.each { subProject ->
                 firstNode.children.addAll(subProject.children)

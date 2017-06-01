@@ -21,14 +21,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.bdio.simple.BdioWriter;
 import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeTransformer;
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.SimpleBdioDocument;
-import com.blackducksoftware.integration.hub.packman.help.ValueDescription;
 import com.blackducksoftware.integration.hub.packman.packagemanager.PackageManager;
 import com.blackducksoftware.integration.hub.packman.type.PackageManagerType;
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
@@ -38,18 +36,6 @@ import com.google.gson.Gson;
 @Component
 public class PackageManagerRunner {
     private final Logger logger = LoggerFactory.getLogger(PackageManagerRunner.class);
-
-    @ValueDescription(description = "Specify which package managers to use")
-    @Value("${packman.package.manager.type.override}")
-    private String packageManagerTypeOverride;
-
-    @ValueDescription(description = "Hub project name")
-    @Value("${packman.project.name}")
-    private String projectName;
-
-    @ValueDescription(description = "Hub project version")
-    @Value("${packman.project.version}")
-    private String projectVersionName;
 
     @Autowired
     PackmanProperties packmanProperties;
@@ -67,7 +53,7 @@ public class PackageManagerRunner {
         final String[] sourcePaths = packmanProperties.getSourcePaths();
         final List<File> createdBdioFiles = new ArrayList<>();
         boolean foundSomePackageManagers = false;
-        final ExcludedIncludedFilter packageManagerFilter = new ExcludedIncludedFilter("", packageManagerTypeOverride);
+        final ExcludedIncludedFilter packageManagerFilter = new ExcludedIncludedFilter("", packmanProperties.getPackageManagerTypeOverride());
         for (final PackageManager packageManager : packageManagers) {
             final String packageManagerType = packageManager.getPackageManagerType().toString();
             if (!packageManagerFilter.shouldInclude(packageManagerType)) {
@@ -115,14 +101,14 @@ public class PackageManagerRunner {
                 outputFile.delete();
             }
             try (final BdioWriter bdioWriter = new BdioWriter(gson, new FileOutputStream(outputFile))) {
-                if (StringUtils.isNotBlank(projectName)) {
-                    project.name = projectName;
+                if (StringUtils.isNotBlank(packmanProperties.getProjectName())) {
+                    project.name = packmanProperties.getProjectName();
                 }
-                if (StringUtils.isNotBlank(projectVersionName)) {
-                    project.version = projectVersionName;
+                if (StringUtils.isNotBlank(packmanProperties.getProjectVersionName())) {
+                    project.version = packmanProperties.getProjectVersionName();
                 }
                 final SimpleBdioDocument bdioDocument = dependencyNodeTransformer.transformDependencyNode(project);
-                if (StringUtils.isNotBlank(projectName) && StringUtils.isNotBlank(projectVersionName)) {
+                if (StringUtils.isNotBlank(packmanProperties.getProjectName()) && StringUtils.isNotBlank(packmanProperties.getProjectVersionName())) {
                     bdioDocument.billOfMaterials.spdxName = String.format("%s/%s/%s Black Duck I/O Export", project.name, project.version,
                             packageManagerType.toString());
                 }

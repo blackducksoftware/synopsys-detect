@@ -11,18 +11,14 @@
  */
 package com.blackducksoftware.integration.hub.packman.packagemanager.nuget
 
-import javax.annotation.PostConstruct
-
 import org.apache.commons.io.FileUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.packman.PackmanProperties
-import com.blackducksoftware.integration.hub.packman.help.ValueDescription
 import com.blackducksoftware.integration.hub.packman.util.FileFinder
 import com.blackducksoftware.integration.hub.packman.util.executable.Executable
 import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableOutput
@@ -44,28 +40,6 @@ class NugetInspectorPackager {
     @Autowired
     NugetNodeTransformer nugetNodeTransformer
 
-    @ValueDescription(description="Name of the Nuget Inspector")
-    @Value('${packman.nuget.inspector.name}')
-    String inspectorPackageName
-
-    @ValueDescription(description="Version of the Nuget Inspector")
-    @Value('${packman.nuget.inspector.version}')
-    String inspectorPackageVersion
-
-    @ValueDescription(description="The names of the projects in a solution to exclude")
-    @Value('${packman.nuget.excluded.modules}')
-    String inspectorExcludedModules
-
-    @ValueDescription(description="If true errors will be logged and then ignored.")
-    @Value('${packman.nuget.ignore.failure}')
-    boolean inspectorIgnoreFailure
-
-    @PostConstruct
-    void init() {
-        inspectorPackageName = inspectorPackageName.trim()
-        inspectorPackageVersion = inspectorPackageVersion.trim()
-    }
-
     DependencyNode makeDependencyNode(String sourcePath, File nugetExecutable) {
         def outputDirectory = new File(new File(packmanProperties.outputDirectoryPath), 'nuget')
         def sourceDirectory = new File(sourcePath)
@@ -78,10 +52,10 @@ class NugetInspectorPackager {
         def options =  [
             "--target_path=${sourcePath}",
             "--output_directory=${outputDirectory.getAbsolutePath()}",
-            "--ignore_failure=${inspectorIgnoreFailure}"
+            "--ignore_failure=${packmanProperties.inspectorIgnoreFailure}"
         ]
-        if(inspectorExcludedModules) {
-            options += "--excluded_modules=${inspectorExcludedModules}"
+        if(packmanProperties.inspectorExcludedModules) {
+            options += "--excluded_modules=${packmanProperties.inspectorExcludedModules}"
         }
         if(logger.traceEnabled) {
             options += "-v"
@@ -97,18 +71,18 @@ class NugetInspectorPackager {
     }
 
     private String getInspectorExePath(File sourceDirectory, File outputDirectory, File nugetExecutable) {
-        File inspectorVersionDirectory = new File(outputDirectory, "${inspectorPackageName}.${inspectorPackageVersion}")
+        File inspectorVersionDirectory = new File(outputDirectory, "${packmanProperties.inspectorPackageName}.${packmanProperties.inspectorPackageVersion}")
         File toolsDirectory = new File(inspectorVersionDirectory, 'tools')
-        File inspectorExe = new File(toolsDirectory, "${inspectorPackageName}.exe")
+        File inspectorExe = new File(toolsDirectory, "${packmanProperties.inspectorPackageName}.exe")
 
         //if we can't find the inspector where we expect to, attempt to install it from nuget.org
         if (inspectorExe == null || !inspectorExe.exists()) {
             installInspectorFromNugetDotOrg(sourceDirectory, outputDirectory, nugetExecutable)
-            inspectorExe = new File(toolsDirectory, "${inspectorPackageName}.exe")
+            inspectorExe = new File(toolsDirectory, "${packmanProperties.inspectorPackageName}.exe")
         }
 
         if (inspectorExe == null || !inspectorExe.exists()) {
-            logger.error("Could not find the ${inspectorPackageName} version:${inspectorPackageVersion} even after an install attempt.")
+            logger.error("Could not find the ${packmanProperties.inspectorPackageName} version:${packmanProperties.inspectorPackageVersion} even after an install attempt.")
             return null
         }
 
@@ -118,9 +92,9 @@ class NugetInspectorPackager {
     private ExecutableOutput installInspectorFromNugetDotOrg(File sourceDirectory, File outputDirectory, File nugetExecutable) {
         def options =  [
             'install',
-            inspectorPackageName,
+            packmanProperties.inspectorPackageName,
             '-Version',
-            inspectorPackageVersion,
+            packmanProperties.inspectorPackageVersion,
             '-OutputDirectory',
             outputDirectory.absolutePath
         ]
