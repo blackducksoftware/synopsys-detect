@@ -16,9 +16,9 @@ class GemlockNodeParserTest {
     public void testParsingGemfileLock() {
         String gemfileLockContents = getClass().getResourceAsStream('/rubygems/small_gemfile_lock').getText(StandardCharsets.UTF_8.name())
         GemlockNodeParser gemlockNodeParser = new GemlockNodeParser()
-        Set<DependencyNode> projectChildren = gemlockNodeParser.parseProjectDependencies(gemfileLockContents)
+        DependencyNode root = new DependencyNode('testName', 'testVersion', new NameVersionExternalId(Forge.RUBYGEMS, 'testName', 'testVersion'))
+        gemlockNodeParser.parseProjectDependencies(root, gemfileLockContents)
 
-        DependencyNode root = new DependencyNode('testName', 'testVersion', new NameVersionExternalId(Forge.RUBYGEMS, 'testName', 'testVersion'), projectChildren)
         StringBuilder stringBuilder = new StringBuilder()
         dependencyNodeUtil.buildNodeString(stringBuilder, 0, root)
         println stringBuilder.toString()
