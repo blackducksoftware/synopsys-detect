@@ -24,13 +24,11 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenExternalId;
-import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
 
 public class MavenOutputParserTest {
     @Test
     public void mavenParserTest() throws IOException {
-        final ExcludedIncludedFilter excludedIncludedFilter = new ExcludedIncludedFilter(null, null);
-        final MavenOutputParser mavenOutputParser = new MavenOutputParser(excludedIncludedFilter);
+        final MavenOutputParser mavenOutputParser = new MavenOutputParser();
         final String mavenOutput = IOUtils.toString(getClass().getResourceAsStream("/maven/mavenSampleOutput.txt"), StandardCharsets.UTF_8);
         final List<DependencyNode> projects = mavenOutputParser.parse(mavenOutput);
 
@@ -40,8 +38,7 @@ public class MavenOutputParserTest {
 
     @Test
     public void testParsingWebgoatContainer() throws IOException {
-        final ExcludedIncludedFilter excludedIncludedFilter = new ExcludedIncludedFilter(null, null);
-        final MavenOutputParser mavenOutputParser = new MavenOutputParser(excludedIncludedFilter);
+        final MavenOutputParser mavenOutputParser = new MavenOutputParser();
         final String mavenOutput = IOUtils.toString(getClass().getResourceAsStream("/maven/webgoat-container-pom-dependency-tree-output"),
                 StandardCharsets.UTF_8);
         final List<DependencyNode> projects = mavenOutputParser.parse(mavenOutput);
@@ -51,8 +48,7 @@ public class MavenOutputParserTest {
 
     @Test
     public void mavenParserScopeTest() throws IOException {
-        final ExcludedIncludedFilter excludedIncludedFilter = new ExcludedIncludedFilter(null, "Compile,Provided".toLowerCase());
-        final MavenOutputParser mavenOutputParser = new MavenOutputParser(excludedIncludedFilter);
+        final MavenOutputParser mavenOutputParser = new MavenOutputParser();
         final String mavenOutput = IOUtils.toString(getClass().getResourceAsStream("/maven/mavenSampleOutput.txt"), StandardCharsets.UTF_8);
         final List<DependencyNode> projects = mavenOutputParser.parse(mavenOutput);
 
