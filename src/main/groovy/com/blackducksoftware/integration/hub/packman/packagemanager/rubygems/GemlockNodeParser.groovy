@@ -114,7 +114,7 @@ class GemlockNodeParser {
 
     //a valid version looks like (###.###.###)
     private String parseValidVersion(String version) {
-        if (version[0] != '(' || version[-1] != ')' || version.indexOf('~>') >= 0 || version.indexOf('>=') >= 0 || version.indexOf('<') >= 0) {
+        if (version[0] != '(' || version[-1] != ')' || version.indexOf('~>') >= 0 || version.indexOf('>=') >= 0) {
             return ''
         } else {
             return version[1..-2]
