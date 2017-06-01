@@ -13,6 +13,7 @@ package com.blackducksoftware.integration.hub.packman.packagemanager.nuget
 
 import javax.annotation.PostConstruct
 
+import org.apache.commons.io.FileUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -66,7 +67,7 @@ class NugetInspectorPackager {
     }
 
     DependencyNode makeDependencyNode(String sourcePath, File nugetExecutable) {
-        def outputDirectory = new File(packmanProperties.outputDirectoryPath)
+        def outputDirectory = new File(new File(packmanProperties.outputDirectoryPath), 'nuget')
         def sourceDirectory = new File(sourcePath)
         String inspectorExePath = getInspectorExePath(sourceDirectory, outputDirectory, nugetExecutable)
 
@@ -91,7 +92,7 @@ class NugetInspectorPackager {
 
         def dependencyNodeFile = fileFinder.findFile(outputDirectory, '*_dependency_node.json')
         DependencyNode node = nugetNodeTransformer.parse(dependencyNodeFile)
-        dependencyNodeFile.delete()
+        FileUtils.deleteDirectory(outputDirectory)
         return node
     }
 
