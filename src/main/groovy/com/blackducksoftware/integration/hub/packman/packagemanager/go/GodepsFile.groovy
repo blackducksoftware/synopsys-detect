@@ -15,13 +15,13 @@ import com.google.gson.annotations.SerializedName
 
 class GodepsFile {
     @SerializedName("ImportPath")
-    String ImportPath
+    String importPath
     @SerializedName("goVersion")
-    String GoVersion
+    String goVersion
     @SerializedName("godepVersion")
-    String GodepVersion
+    String godepVersion
     @SerializedName("packages")
-    String[] Packages
+    String[] packages
     @SerializedName("deps")
-    GoDependency Deps
+    GoDependency deps
 }

@@ -151,6 +151,10 @@ class PackmanProperties {
     @Value('${packman.pip.path}')
     String pipPath
 
+    @ValueDescription(description="Path of the GoDep executable")
+    @Value('${packman.godep.path}')
+    String godepPath
+
     @PostConstruct
     void init() {
         if (sourcePaths == null || sourcePaths.length == 0) {
