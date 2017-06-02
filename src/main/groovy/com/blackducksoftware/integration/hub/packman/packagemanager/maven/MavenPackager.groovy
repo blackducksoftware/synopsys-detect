@@ -52,7 +52,7 @@ public class MavenPackager {
         final MavenOutputParser mavenOutputParser = new MavenOutputParser()
         projects.addAll(mavenOutputParser.parse(mvnOutput.standardOutput))
 
-        if (packmanProperties.aggregateBom && !projects.isEmpty()) {
+        if (packmanProperties.mavenAggregateBom && !projects.isEmpty()) {
             final DependencyNode firstNode = projects.remove(0)
             projects.each { subProject ->
                 firstNode.children.addAll(subProject.children)

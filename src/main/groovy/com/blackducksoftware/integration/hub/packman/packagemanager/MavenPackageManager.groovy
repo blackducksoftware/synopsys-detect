@@ -15,11 +15,10 @@ import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.packman.help.ValueDescription
+import com.blackducksoftware.integration.hub.packman.PackmanProperties
 import com.blackducksoftware.integration.hub.packman.packagemanager.maven.MavenPackager
 import com.blackducksoftware.integration.hub.packman.type.ExecutableType
 import com.blackducksoftware.integration.hub.packman.type.PackageManagerType
@@ -45,9 +44,8 @@ class MavenPackageManager extends PackageManager {
     @Autowired
     ProjectInfoGatherer projectInfoGatherer
 
-    @ValueDescription(description="The path of the Maven executable")
-    @Value('${packman.maven.path}')
-    String mavenPath
+    @Autowired
+    PackmanProperties packmanProperties
 
     def executables = [mvn: ["mvn.cmd", "mvn"]]
 
@@ -68,9 +66,9 @@ class MavenPackageManager extends PackageManager {
     }
 
     private String findMavenExecutablePath() {
-        if (StringUtils.isBlank(mavenPath)) {
+        if (StringUtils.isBlank(packmanProperties.mavenPath)) {
             return executableManager.getPathOfExecutable(ExecutableType.MVN)
         }
-        mavenPath
+        packmanProperties.mavenPath
     }
 }

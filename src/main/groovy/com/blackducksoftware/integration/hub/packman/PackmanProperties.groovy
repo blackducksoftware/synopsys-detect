@@ -108,7 +108,7 @@ class PackmanProperties {
 
     @ValueDescription(description="If true all maven projects will be aggregated into a single bom")
     @Value('${packman.maven.aggregate}')
-    boolean aggregateBom
+    boolean mavenAggregateBom
 
     @ValueDescription(description="The name of the dependency scope to include")
     @Value('${packman.maven.scope}')
@@ -117,6 +117,34 @@ class PackmanProperties {
     @ValueDescription(description="Path of the Gradle executable")
     @Value('${packman.gradle.path}')
     String gradlePath
+
+    @ValueDescription(description="The path of the Maven executable")
+    @Value('${packman.maven.path}')
+    String mavenPath
+
+    @ValueDescription(description="If true all nuget projects will be aggregated into a single bom")
+    @Value('${packman.nuget.aggregate}')
+    boolean nugetAggregateBom
+
+    @ValueDescription(description="The path of the Nuget executable")
+    @Value('${packman.nuget.path}')
+    String nugetPath
+
+    @ValueDescription(description="If true creates a temporary Python virtual environment")
+    @Value('${packman.pip.createVirtualEnv}')
+    boolean createVirtualEnv
+
+    @ValueDescription(description="If true will use pip3 if available on class path")
+    @Value('${packman.pip.pip3}')
+    boolean pipThreeOverride
+
+    @ValueDescription(description="The path of the Python executable")
+    @Value('${packman.python.path}')
+    String pythonPath
+
+    @ValueDescription(description="The path of the Pip executable")
+    @Value('${packman.pip.path}')
+    String pipPath
 
     @PostConstruct
     void init() {

@@ -15,13 +15,12 @@ import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
-import com.blackducksoftware.integration.hub.packman.help.ValueDescription
+import com.blackducksoftware.integration.hub.packman.PackmanProperties
 import com.blackducksoftware.integration.hub.packman.packagemanager.nuget.NugetInspectorPackager
 import com.blackducksoftware.integration.hub.packman.type.ExecutableType
 import com.blackducksoftware.integration.hub.packman.type.PackageManagerType
@@ -49,13 +48,8 @@ class NugetPackageManager extends PackageManager {
     @Autowired
     ProjectInfoGatherer projectInfoGatherer
 
-    @ValueDescription(description="If true all nuget projects will be aggregated into a single bom")
-    @Value('${packman.nuget.aggregate}')
-    boolean aggregateBom
-
-    @ValueDescription(description="The path of the Nuget executable")
-    @Value('${packman.nuget.path}')
-    String nugetPath
+    @Autowired
+    PackmanProperties packmanProperties
 
     PackageManagerType getPackageManagerType() {
         return PackageManagerType.NUGET
@@ -84,7 +78,7 @@ class NugetPackageManager extends PackageManager {
             root.name = projectInfoGatherer.getDefaultProjectName(PackageManagerType.NUGET, sourcePath, root.name)
             root.version = projectInfoGatherer.getDefaultProjectVersionName(root.version)
             root.externalId = new NameVersionExternalId(Forge.NUGET, root.name, root.version)
-            if (aggregateBom) {
+            if (packmanProperties.nugetAggregateBom) {
                 return [root]
             }
             root.children as List
@@ -101,8 +95,8 @@ class NugetPackageManager extends PackageManager {
     }
 
     private File findNugetExecutable() {
-        if (StringUtils.isNotBlank(nugetPath)) {
-            new File(nugetPath)
+        if (StringUtils.isNotBlank(packmanProperties.nugetPath)) {
+            new File(packmanProperties.nugetPath)
         } else {
             executableManager.getExecutable(ExecutableType.NUGET)
         }

@@ -7,12 +7,10 @@ import org.apache.commons.lang3.SystemUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.packman.PackmanProperties
-import com.blackducksoftware.integration.hub.packman.help.ValueDescription
 import com.blackducksoftware.integration.hub.packman.packagemanager.pip.PipPackager
 import com.blackducksoftware.integration.hub.packman.packagemanager.pip.PipShowMapParser
 import com.blackducksoftware.integration.hub.packman.type.ExecutableType
@@ -46,22 +44,6 @@ class PipPackageManager extends PackageManager {
     @Autowired
     PackmanProperties packmanProperties
 
-    @ValueDescription(description="If true creates a temporary Python virtual environment")
-    @Value('${packman.pip.createVirtualEnv}')
-    boolean createVirtualEnv
-
-    @ValueDescription(description="If true will use pip3 if available on class path")
-    @Value('${packman.pip.pip3}')
-    boolean pipThreeOverride
-
-    @ValueDescription(description="The path of the Python executable")
-    @Value('${packman.python.path}')
-    String pythonPath
-
-    @ValueDescription(description="The path of the Pip executable")
-    @Value('${packman.pip.path}')
-    String pipPath
-
     ExecutableType pipExecutableType
     ExecutableType pythonExecutableType
 
@@ -72,15 +54,15 @@ class PipPackageManager extends PackageManager {
 
     @PostConstruct
     void init() {
-        if (pipThreeOverride) {
+        if (packmanProperties.pipThreeOverride) {
             pythonExecutableType = ExecutableType.PYTHON3
             pipExecutableType = ExecutableType.PIP3
         } else {
             pythonExecutableType = ExecutableType.PYTHON
             pipExecutableType = ExecutableType.PIP
         }
-        pythonExecutable = findExecutable(null, pythonPath, pythonExecutableType)
-        pipExecutable = findExecutable(null, pipPath, pipExecutableType)
+        pythonExecutable = findExecutable(null, packmanProperties.pythonPath, pythonExecutableType)
+        pipExecutable = findExecutable(null, packmanProperties.pipPath, pipExecutableType)
         if (SystemUtils.IS_OS_WINDOWS) {
             binFolderName = 'Scripts'
             envVariables.putAll(WINDOWS_ENV_VARIABLES)
@@ -118,7 +100,7 @@ class PipPackageManager extends PackageManager {
         File virtualEnv = new File(packmanProperties.getOutputDirectoryPath(), 'blackduck_virtualenv')
         String virtualEnvBin = new File(virtualEnv, binFolderName).absolutePath
 
-        if (createVirtualEnv) {
+        if (packmanProperties.createVirtualEnv) {
             executableRunner.executeLoudly(installVirtualenvPackage)
             String virtualEnvLocation = getPackageLocation(sourceDirectory, 'virtualenv')
             List<String> commandArgs = [
@@ -127,8 +109,8 @@ class PipPackageManager extends PackageManager {
             ]
             def createVirtualEnvCommand = new Executable(sourceDirectory, pythonExecutable, commandArgs)
             executableRunner.executeLoudly(createVirtualEnvCommand)
-            pythonExecutable = findExecutable(virtualEnvBin, pythonPath, pythonExecutableType)
-            pipExecutable = findExecutable(virtualEnvBin, pipPath, pipExecutableType)
+            pythonExecutable = findExecutable(virtualEnvBin, packmanProperties.pythonPath, pythonExecutableType)
+            pipExecutable = findExecutable(virtualEnvBin, packmanProperties.pipPath, pipExecutableType)
         }
     }
 
