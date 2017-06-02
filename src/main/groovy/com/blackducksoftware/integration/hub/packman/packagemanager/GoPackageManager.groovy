@@ -41,17 +41,17 @@ class GoPackageManager extends PackageManager {
     PackmanProperties packmanProperties
 
     PackageManagerType getPackageManagerType() {
-        return PackageManagerType.GO
+        PackageManagerType.GO
     }
 
     boolean isPackageManagerApplicable(String sourcePath) {
-        //TODO shoud be recursive or not?
-        return fileFinder.findFile(sourcePath, '*.go')
+        //TODO should be recursive or not?
+        fileFinder.findFile(sourcePath, '*.go')
     }
 
     List<DependencyNode> extractDependencyNodes(String sourcePath) {
         def godepExecutable = findGoExecutable()
-        return goPackager.makeDependencyNodes(sourcePath, godepExecutable)
+        goPackager.makeDependencyNodes(sourcePath, godepExecutable)
     }
 
     private String findGoExecutable() {

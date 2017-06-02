@@ -12,6 +12,7 @@
 package com.blackducksoftware.integration.hub.packman.packagemanager.go
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
@@ -20,15 +21,13 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVe
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
 import com.google.gson.Gson
 
+@Component
 class GoDepParser {
     @Autowired
     Gson gson
 
-    private final ProjectInfoGatherer projectInfoGatherer
-
-    public GoDepParser(ProjectInfoGatherer projectInfoGatherer) {
-        this.projectInfoGatherer = projectInfoGatherer
-    }
+    @Autowired
+    ProjectInfoGatherer projectInfoGatherer
 
     public DependencyNode parseGoDep(final String goDepContents) {
         GodepsFile goDepsFile = gson.fromJson(goDepContents, GodepsFile.class)

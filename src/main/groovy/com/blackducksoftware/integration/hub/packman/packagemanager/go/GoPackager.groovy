@@ -14,6 +14,7 @@ package com.blackducksoftware.integration.hub.packman.packagemanager.go
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
@@ -24,29 +25,30 @@ import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
 import com.blackducksoftware.integration.hub.packman.util.executable.Executable
 import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableRunner
 
+@Component
 class GoPackager {
     private final Logger logger = LoggerFactory.getLogger(GoPackager.class)
 
     @Autowired
     ExecutableRunner executableRunner
 
-    private final ProjectInfoGatherer projectInfoGatherer
+    @Autowired
+    ProjectInfoGatherer projectInfoGatherer
 
-    public GoPackager(final ProjectInfoGatherer projectInfoGatherer) {
-        this.projectInfoGatherer = projectInfoGatherer
-    }
+    @Autowired
+    GoDepParser goDepParser
 
     public List<DependencyNode> makeDependencyNodes(final String sourcePath, String goExecutable) {
         final String rootName = projectInfoGatherer.getDefaultProjectName(PackageManagerType.GO, sourcePath)
         final String rootVersion = projectInfoGatherer.getDefaultProjectVersionName()
         final ExternalId rootExternalId = new NameVersionExternalId(Forge.GOGET, rootName, rootVersion)
         final DependencyNode root = new DependencyNode(rootName, rootVersion, rootExternalId)
-        GoDepParser goDepParser = new GoDepParser()
         def goDirectories = findGoDirectories(new File(sourcePath))
 
         def children = new ArrayList<DependencyNode>()
         goDirectories.each {
-            String goDepContents = getGoDepContents(it)
+            String goDepContents = getGoDepContents(it, goExecutable)
+            logger.info(goDepContents)
             DependencyNode child = goDepParser.parseGoDep(goDepContents)
             children.add(child)
         }
@@ -77,9 +79,10 @@ class GoPackager {
         logger.info("Running ${goExecutable} save on path ${goDirectory.getAbsolutePath()}")
         Executable executable = new Executable(goDirectory, goExecutable, ['save'])
         executableRunner.executeLoudly(executable)
-        def goDepsFile = new File(goDirectory, "Godeps")
-        goDepsFile = new File(goDepsFile, "Godeps.json")
-        // get Godeps/Godeps.json contents
-        goDepsFile.text
+        def goDepsDirectory = new File(goDirectory, "Godeps")
+        def goDepsFile = new File(goDepsDirectory, "Godeps.json")
+        def goDepContents = goDepsFile.text
+        //FileUtils.deleteDirectory(goDepsDirectory)
+        goDepContents
     }
 }
