@@ -16,12 +16,12 @@ import com.google.gson.annotations.SerializedName
 class GodepsFile {
     @SerializedName("ImportPath")
     String importPath
-    @SerializedName("goVersion")
+    @SerializedName("GoVersion")
     String goVersion
-    @SerializedName("godepVersion")
+    @SerializedName("GodepVersion")
     String godepVersion
-    @SerializedName("packages")
+    @SerializedName("Packages")
     String[] packages
-    @SerializedName("deps")
-    GoDependency deps
+    @SerializedName("Deps")
+    GoDependency[] deps
 }

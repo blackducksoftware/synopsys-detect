@@ -11,6 +11,7 @@
  */
 package com.blackducksoftware.integration.hub.packman.packagemanager.go
 
+import org.apache.commons.io.FileUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,6 +25,7 @@ import com.blackducksoftware.integration.hub.packman.type.PackageManagerType
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
 import com.blackducksoftware.integration.hub.packman.util.executable.Executable
 import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableRunner
+import com.google.gson.Gson
 
 @Component
 class GoPackager {
@@ -33,10 +35,10 @@ class GoPackager {
     ExecutableRunner executableRunner
 
     @Autowired
-    ProjectInfoGatherer projectInfoGatherer
+    Gson gson
 
     @Autowired
-    GoDepParser goDepParser
+    ProjectInfoGatherer projectInfoGatherer
 
     public List<DependencyNode> makeDependencyNodes(final String sourcePath, String goExecutable) {
         final String rootName = projectInfoGatherer.getDefaultProjectName(PackageManagerType.GO, sourcePath)
@@ -44,11 +46,10 @@ class GoPackager {
         final ExternalId rootExternalId = new NameVersionExternalId(Forge.GOGET, rootName, rootVersion)
         final DependencyNode root = new DependencyNode(rootName, rootVersion, rootExternalId)
         def goDirectories = findGoDirectories(new File(sourcePath))
-
+        GoDepParser goDepParser = new GoDepParser(gson, projectInfoGatherer)
         def children = new ArrayList<DependencyNode>()
         goDirectories.each {
             String goDepContents = getGoDepContents(it, goExecutable)
-            logger.info(goDepContents)
             DependencyNode child = goDepParser.parseGoDep(goDepContents)
             children.add(child)
         }
@@ -82,7 +83,7 @@ class GoPackager {
         def goDepsDirectory = new File(goDirectory, "Godeps")
         def goDepsFile = new File(goDepsDirectory, "Godeps.json")
         def goDepContents = goDepsFile.text
-        //FileUtils.deleteDirectory(goDepsDirectory)
+        FileUtils.deleteDirectory(goDepsDirectory)
         goDepContents
     }
 }
