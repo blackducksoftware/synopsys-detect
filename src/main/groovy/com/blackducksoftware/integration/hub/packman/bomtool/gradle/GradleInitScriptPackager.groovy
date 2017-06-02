@@ -34,6 +34,7 @@ class GradleInitScriptPackager {
         File initScriptFile = File.createTempFile('init-packman', '.gradle')
         initScriptFile.deleteOnExit()
         String initScriptContents = getClass().getResourceAsStream('/init-script-gradle').getText(StandardCharsets.UTF_8.name())
+        initScriptContents = initScriptContents.replace('GRADLE_INSPECTOR_VERSION', packmanProperties.gradleInspectorVersion)
         initScriptContents = initScriptContents.replace('EXCLUDED_PROJECT_NAMES', packmanProperties.excludedProjectNames)
         initScriptContents = initScriptContents.replace('INCLUDED_PROJECT_NAMES', packmanProperties.includedProjectNames)
         initScriptContents = initScriptContents.replace('EXCLUDED_CONFIGURATION_NAMES', packmanProperties.excludedConfigurationNames)

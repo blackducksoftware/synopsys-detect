@@ -75,6 +75,10 @@ class PackmanProperties {
     @Value('${packman.project.version}')
     String projectVersionName
 
+    @ValueDescription(description="Version of the Gradle Inspector")
+    @Value('${packman.gradle.inspector.version}')
+    String gradleInspectorVersion
+
     @ValueDescription(description="Gradle build command")
     @Value('${packman.gradle.build.command}')
     String gradleBuildCommand
