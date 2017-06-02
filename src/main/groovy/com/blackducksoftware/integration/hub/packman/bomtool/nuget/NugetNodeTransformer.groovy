@@ -9,7 +9,7 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.packagemanager.nuget
+package com.blackducksoftware.integration.hub.packman.bomtool.nuget
 
 import java.nio.charset.StandardCharsets
 

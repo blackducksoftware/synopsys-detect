@@ -1,4 +1,4 @@
-package com.blackducksoftware.integration.hub.packman.packagemanager
+package com.blackducksoftware.integration.hub.packman.bomtool
 
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
@@ -8,15 +8,15 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.packman.PackmanProperties
-import com.blackducksoftware.integration.hub.packman.packagemanager.gradle.GradleInitScriptPackager
+import com.blackducksoftware.integration.hub.packman.bomtool.gradle.GradleInitScriptPackager
+import com.blackducksoftware.integration.hub.packman.type.BomToolType
 import com.blackducksoftware.integration.hub.packman.type.ExecutableType
-import com.blackducksoftware.integration.hub.packman.type.PackageManagerType
 import com.blackducksoftware.integration.hub.packman.util.FileFinder
 import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableManager
 
 @Component
-class GradlePackageManager extends PackageManager {
-    private final Logger logger = LoggerFactory.getLogger(GradlePackageManager.class)
+class GradleBomTool extends BomTool {
+    private final Logger logger = LoggerFactory.getLogger(GradleBomTool.class)
 
     static final String BUILD_GRADLE = 'build.gradle'
 
@@ -32,21 +32,32 @@ class GradlePackageManager extends PackageManager {
     @Autowired
     PackmanProperties packmanProperties
 
-    PackageManagerType getPackageManagerType() {
-        return PackageManagerType.GRADLE
+    Map<String, String> matchingSourcePathToGradleExecutable = [:]
+
+    BomToolType getBomToolType() {
+        return BomToolType.GRADLE
     }
 
-    boolean isPackageManagerApplicable(String sourcePath) {
-        def gradleExecutable = findGradleExecutable(sourcePath)
-        def buildGradle = fileFinder.findFile(sourcePath, BUILD_GRADLE)
+    boolean isBomToolApplicable() {
+        packmanProperties.sourcePaths.each { sourcePath ->
+            def gradleExecutable = findGradleExecutable(sourcePath)
+            def buildGradle = fileFinder.findFile(sourcePath, BUILD_GRADLE)
+            if (gradleExecutable && buildGradle) {
+                matchingSourcePathToGradleExecutable.put(sourcePath, gradleExecutable)
+            }
+        }
 
-        gradleExecutable && buildGradle
+        !matchingSourcePathToGradleExecutable.empty
     }
 
-    List<DependencyNode> extractDependencyNodes(String sourcePath) {
-        def gradleExecutable = findGradleExecutable(sourcePath)
-        DependencyNode rootProjectNode = gradleInitScriptPackager.extractRootProjectNode(sourcePath, gradleExecutable)
-        [rootProjectNode]
+    List<DependencyNode> extractDependencyNodes() {
+        List<DependencyNode> projectNodes = []
+        matchingSourcePathToGradleExecutable.each { sourcePath, gradleExecutable ->
+            DependencyNode rootProjectNode = gradleInitScriptPackager.extractRootProjectNode(sourcePath, gradleExecutable)
+            projectNodes.add(rootProjectNode)
+        }
+
+        projectNodes
     }
 
     private String findGradleExecutable(String sourcePath) {

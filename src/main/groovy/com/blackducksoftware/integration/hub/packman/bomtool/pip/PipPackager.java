@@ -9,7 +9,7 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.packagemanager.pip;
+package com.blackducksoftware.integration.hub.packman.bomtool.pip;
 
 import java.io.File;
 import java.util.ArrayList;

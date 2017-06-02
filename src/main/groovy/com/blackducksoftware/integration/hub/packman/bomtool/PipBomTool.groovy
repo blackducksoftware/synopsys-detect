@@ -1,4 +1,4 @@
-package com.blackducksoftware.integration.hub.packman.packagemanager
+package com.blackducksoftware.integration.hub.packman.bomtool
 
 import javax.annotation.PostConstruct
 
@@ -11,11 +11,11 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.packman.PackmanProperties
-import com.blackducksoftware.integration.hub.packman.packagemanager.pip.PipPackager
-import com.blackducksoftware.integration.hub.packman.packagemanager.pip.PipShowMapParser
+import com.blackducksoftware.integration.hub.packman.bomtool.pip.PipPackager
+import com.blackducksoftware.integration.hub.packman.bomtool.pip.PipShowMapParser
+import com.blackducksoftware.integration.hub.packman.type.BomToolType
 import com.blackducksoftware.integration.hub.packman.type.ExecutableType
-import com.blackducksoftware.integration.hub.packman.type.PackageManagerType
-import com.blackducksoftware.integration.hub.packman.util.FileFinder
+import com.blackducksoftware.integration.hub.packman.util.SourcePathSearcher
 import com.blackducksoftware.integration.hub.packman.util.executable.Executable
 import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableManager
 import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableOutput
@@ -23,7 +23,7 @@ import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableR
 import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableRunnerException
 
 @Component
-class PipPackageManager extends PackageManager {
+class PipBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(this.getClass())
 
     static final String SETUP_FILENAME = 'setup.py'
@@ -39,7 +39,7 @@ class PipPackageManager extends PackageManager {
     ExecutableRunner executableRunner
 
     @Autowired
-    FileFinder fileFinder
+    SourcePathSearcher sourcePathSearcher
 
     @Autowired
     PackmanProperties packmanProperties
@@ -51,6 +51,8 @@ class PipPackageManager extends PackageManager {
     String pipExecutable
     String binFolderName
     Map<String, String> envVariables = [:]
+
+    List<String> matchingSourcePaths = []
 
     @PostConstruct
     void init() {
@@ -71,25 +73,30 @@ class PipPackageManager extends PackageManager {
         }
     }
 
-    PackageManagerType getPackageManagerType() {
-        return PackageManagerType.PIP
+    BomToolType getBomToolType() {
+        return BomToolType.PIP
     }
 
-    boolean isPackageManagerApplicable(String sourcePath) {
+    boolean isBomToolApplicable() {
         def foundExectables = pythonExecutable && pipExecutable
-        def foundFiles = fileFinder.containsAllFiles(sourcePath, SETUP_FILENAME)
-        foundExectables && foundFiles
+        matchingSourcePaths = sourcePathSearcher.findSourcePathsContainingFilenamePattern(SETUP_FILENAME)
+
+        foundExectables && !matchingSourcePaths.empty
     }
 
-    List<DependencyNode> extractDependencyNodes(String sourcePath) {
-        try {
-            setupEnvironment(sourcePath)
-            return pipPackager.makeDependencyNodes(sourcePath, pipExecutable, pythonExecutable, envVariables)
-        } catch (ExecutableRunnerException e) {
-            def message = 'An error occured when trying to extract python dependencies'
-            logger.warn(message, e)
+    List<DependencyNode> extractDependencyNodes() {
+        List<DependencyNode> projectNodes = []
+        matchingSourcePaths.each { sourcePath ->
+            try {
+                setupEnvironment(sourcePath)
+                projectNodes.addAll(pipPackager.makeDependencyNodes(sourcePath, pipExecutable, pythonExecutable, envVariables))
+            } catch (ExecutableRunnerException e) {
+                def message = 'An error occured when trying to extract python dependencies'
+                logger.warn(message, e)
+            }
         }
-        return null
+
+        return projectNodes
     }
 
     private void setupEnvironment(String sourcePath) throws ExecutableRunnerException {

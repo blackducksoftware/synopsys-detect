@@ -63,9 +63,9 @@ class PackmanProperties {
     @Value('${packman.output.path}')
     String outputDirectoryPath
 
-    @ValueDescription(description = "Specify which package managers to use")
-    @Value('${packman.package.manager.type.override}')
-    String packageManagerTypeOverride
+    @ValueDescription(description = "Specify which tools to use")
+    @Value('${packman.bom.tool.type.override}')
+    String bomToolTypeOverride
 
     @ValueDescription(description = "Hub project name")
     @Value('${packman.project.name}')

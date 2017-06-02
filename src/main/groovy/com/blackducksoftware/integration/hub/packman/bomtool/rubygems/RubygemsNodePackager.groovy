@@ -9,13 +9,13 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.packagemanager.rubygems
+package com.blackducksoftware.integration.hub.packman.bomtool.rubygems
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
-import com.blackducksoftware.integration.hub.packman.type.PackageManagerType
+import com.blackducksoftware.integration.hub.packman.type.BomToolType
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
 
 public class RubygemsNodePackager {
@@ -26,7 +26,7 @@ public class RubygemsNodePackager {
     }
 
     public List<DependencyNode> makeDependencyNodes(final String sourcePath, final String gemlock) {
-        final String rootName = projectInfoGatherer.getDefaultProjectName(PackageManagerType.RUBYGEMS, sourcePath)
+        final String rootName = projectInfoGatherer.getDefaultProjectName(BomToolType.RUBYGEMS, sourcePath)
         final String rootVersion = projectInfoGatherer.getDefaultProjectVersionName()
         final ExternalId rootExternalId = new NameVersionExternalId(Forge.RUBYGEMS, rootName, rootVersion)
         final DependencyNode root = new DependencyNode(rootName, rootVersion, rootExternalId)

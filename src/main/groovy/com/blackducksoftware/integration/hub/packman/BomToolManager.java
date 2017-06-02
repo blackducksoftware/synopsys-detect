@@ -27,21 +27,21 @@ import com.blackducksoftware.integration.hub.bdio.simple.BdioWriter;
 import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeTransformer;
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.SimpleBdioDocument;
-import com.blackducksoftware.integration.hub.packman.packagemanager.PackageManager;
-import com.blackducksoftware.integration.hub.packman.type.PackageManagerType;
+import com.blackducksoftware.integration.hub.packman.bomtool.BomTool;
+import com.blackducksoftware.integration.hub.packman.type.BomToolType;
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
 import com.google.gson.Gson;
 
 @Component
-public class PackageManagerRunner {
-    private final Logger logger = LoggerFactory.getLogger(PackageManagerRunner.class);
+public class BomToolManager {
+    private final Logger logger = LoggerFactory.getLogger(BomToolManager.class);
 
     @Autowired
     PackmanProperties packmanProperties;
 
     @Autowired
-    private List<PackageManager> packageManagers;
+    private List<BomTool> bomTools;
 
     @Autowired
     private Gson gson;
@@ -50,42 +50,33 @@ public class PackageManagerRunner {
     private DependencyNodeTransformer dependencyNodeTransformer;
 
     public List<File> createBdioFiles() throws IOException {
-        final String[] sourcePaths = packmanProperties.getSourcePaths();
         final List<File> createdBdioFiles = new ArrayList<>();
-        boolean foundSomePackageManagers = false;
-        final ExcludedIncludedFilter packageManagerFilter = new ExcludedIncludedFilter("", packmanProperties.getPackageManagerTypeOverride());
-        for (final PackageManager packageManager : packageManagers) {
-            final String packageManagerType = packageManager.getPackageManagerType().toString();
-            if (!packageManagerFilter.shouldInclude(packageManagerType)) {
-                logger.info(String.format("Skipping %s.", packageManagerType));
+        boolean foundSomeBomTools = false;
+        final ExcludedIncludedFilter toolFilter = new ExcludedIncludedFilter("", packmanProperties.getBomToolTypeOverride());
+        for (final BomTool bomTool : bomTools) {
+            final BomToolType bomToolType = bomTool.getBomToolType();
+            final String bomToolTypeString = bomToolType.toString();
+            if (!toolFilter.shouldInclude(bomToolTypeString)) {
+                logger.info(String.format("Skipping %s.", bomToolTypeString));
                 continue;
             }
-            for (final String sourcePath : sourcePaths) {
-                final String packageManagerName = packageManager.getPackageManagerType().toString().toLowerCase();
-                logger.info(String.format("Searching source path for %s: %s", packageManagerName, sourcePath));
-                try {
-                    if (packageManager.isPackageManagerApplicable(sourcePath)) {
-                        logger.info(String.format("Found files for %s", packageManagerName));
-                        final List<DependencyNode> projectNodes = packageManager.extractDependencyNodes(sourcePath);
-                        if (projectNodes != null && projectNodes.size() > 0) {
-                            foundSomePackageManagers = true;
-                            createOutput(createdBdioFiles, packageManager.getPackageManagerType(), projectNodes);
-                        }
-                    }
-                } catch (final Exception e) {
-                    logger.error(String.format("Error running package manager %s for sourcePath %s: %s", packageManager.getPackageManagerType().toString(),
-                            sourcePath, e.getMessage()));
-                    e.printStackTrace();
+            if (bomTool.isBomToolApplicable()) {
+                logger.info(bomToolType + " applies given the current configuration.");
+                final List<DependencyNode> projectNodes = bomTool.extractDependencyNodes();
+                if (projectNodes != null && projectNodes.size() > 0) {
+                    foundSomeBomTools = true;
+                    createOutput(createdBdioFiles, bomToolType, bomToolTypeString, projectNodes);
                 }
             }
         }
-        if (!foundSomePackageManagers) {
-            logger.info("Could not find any package managers");
+
+        if (!foundSomeBomTools) {
+            logger.info("Could not find any tools to run.");
         }
         return createdBdioFiles;
     }
 
-    private void createOutput(final List<File> createdBdioFiles, final PackageManagerType packageManagerType,
+    private void createOutput(final List<File> createdBdioFiles, final BomToolType bomToolType, final String bomToolTypeString,
             final List<DependencyNode> projectNodes) {
         final File outputDirectory = new File(packmanProperties.getOutputDirectoryPath());
 
@@ -94,7 +85,7 @@ public class PackageManagerRunner {
             final IntegrationEscapeUtil escapeUtil = new IntegrationEscapeUtil();
             final String safeProjectName = escapeUtil.escapeForUri(project.name);
             final String safeVersionName = escapeUtil.escapeForUri(project.version);
-            final String safeName = String.format("%s_%s_%s_bdio", packageManagerType.toString(), safeProjectName, safeVersionName);
+            final String safeName = String.format("%s_%s_%s_bdio", bomToolTypeString, safeProjectName, safeVersionName);
             final String filename = String.format("%s.jsonld", safeName);
             final File outputFile = new File(outputDirectory, filename);
             if (outputFile.exists()) {
@@ -109,8 +100,7 @@ public class PackageManagerRunner {
                 }
                 final SimpleBdioDocument bdioDocument = dependencyNodeTransformer.transformDependencyNode(project);
                 if (StringUtils.isNotBlank(packmanProperties.getProjectName()) && StringUtils.isNotBlank(packmanProperties.getProjectVersionName())) {
-                    bdioDocument.billOfMaterials.spdxName = String.format("%s/%s/%s Black Duck I/O Export", project.name, project.version,
-                            packageManagerType.toString());
+                    bdioDocument.billOfMaterials.spdxName = String.format("%s/%s/%s Black Duck I/O Export", project.name, project.version, bomToolTypeString);
                 }
                 bdioWriter.writeSimpleBdioDocument(bdioDocument);
                 createdBdioFiles.add(outputFile);

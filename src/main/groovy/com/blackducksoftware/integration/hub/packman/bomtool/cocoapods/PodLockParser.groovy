@@ -9,7 +9,7 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods
+package com.blackducksoftware.integration.hub.packman.bomtool.cocoapods
 
 import org.springframework.stereotype.Component
 

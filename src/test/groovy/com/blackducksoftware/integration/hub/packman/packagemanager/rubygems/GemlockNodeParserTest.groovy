@@ -9,6 +9,7 @@ import org.skyscreamer.jsonassert.JSONAssert
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+import com.blackducksoftware.integration.hub.packman.bomtool.rubygems.GemlockNodeParser
 import com.blackducksoftware.integration.hub.packman.testutils.DependencyNodeUtil
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder

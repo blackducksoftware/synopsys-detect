@@ -9,7 +9,7 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.packagemanager
+package com.blackducksoftware.integration.hub.packman.bomtool
 
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
@@ -19,16 +19,16 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.packman.PackmanProperties
-import com.blackducksoftware.integration.hub.packman.packagemanager.maven.MavenPackager
+import com.blackducksoftware.integration.hub.packman.bomtool.maven.MavenPackager
+import com.blackducksoftware.integration.hub.packman.type.BomToolType
 import com.blackducksoftware.integration.hub.packman.type.ExecutableType
-import com.blackducksoftware.integration.hub.packman.type.PackageManagerType
-import com.blackducksoftware.integration.hub.packman.util.FileFinder
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
+import com.blackducksoftware.integration.hub.packman.util.SourcePathSearcher
 import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableManager
 
 @Component
-class MavenPackageManager extends PackageManager {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass())
+class MavenBomTool extends BomTool {
+    private final Logger logger = LoggerFactory.getLogger(MavenBomTool.class)
 
     static final String POM_FILENAME = 'pom.xml'
 
@@ -39,7 +39,7 @@ class MavenPackageManager extends PackageManager {
     ExecutableManager executableManager
 
     @Autowired
-    FileFinder fileFinder
+    SourcePathSearcher sourcePathSearcher
 
     @Autowired
     ProjectInfoGatherer projectInfoGatherer
@@ -47,22 +47,27 @@ class MavenPackageManager extends PackageManager {
     @Autowired
     PackmanProperties packmanProperties
 
-    def executables = [mvn: ["mvn.cmd", "mvn"]]
+    String mvnExecutablePath
+    List<String> matchingSourcePaths = []
 
-    PackageManagerType getPackageManagerType() {
-        return PackageManagerType.MAVEN
+    BomToolType getBomToolType() {
+        return BomToolType.MAVEN
     }
 
-    boolean isPackageManagerApplicable(String sourcePath) {
-        def mvnExecutable = findMavenExecutablePath()
-        def pomXml = fileFinder.findFile(sourcePath, POM_FILENAME)
+    boolean isBomToolApplicable() {
+        mvnExecutablePath = findMavenExecutablePath()
+        matchingSourcePaths = sourcePathSearcher.findSourcePathsContainingFilenamePattern(POM_FILENAME)
 
-        mvnExecutable && pomXml
+        mvnExecutablePath && !matchingSourcePaths.empty
     }
 
-    List<DependencyNode> extractDependencyNodes(String sourcePath) {
-        def projects = mavenPackager.makeDependencyNodes(sourcePath, findMavenExecutablePath())
-        return projects
+    List<DependencyNode> extractDependencyNodes() {
+        List<DependencyNode> projectNodes = []
+        matchingSourcePaths.each {
+            projectNodes.addAll(mavenPackager.makeDependencyNodes(it, mvnExecutablePath))
+        }
+
+        projectNodes
     }
 
     private String findMavenExecutablePath() {

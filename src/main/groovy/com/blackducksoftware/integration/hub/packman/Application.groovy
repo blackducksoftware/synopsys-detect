@@ -25,7 +25,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.BdioNodeFactory
 import com.blackducksoftware.integration.hub.bdio.simple.BdioPropertyHelper
 import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeTransformer
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.packman.help.HelpLogger
+import com.blackducksoftware.integration.hub.packman.help.HelpPrinter
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
@@ -40,7 +40,7 @@ class Application {
     BdioNodeFactory bdioNodeFactory
 
     @Autowired
-    PackageManagerRunner packageManagerRunner
+    BomToolManager bomToolManager
 
     @Autowired
     BdioUploader bdioUploader
@@ -49,7 +49,7 @@ class Application {
     ApplicationArguments applicationArguments
 
     @Autowired
-    HelpLogger helpLogger
+    HelpPrinter helpPrinter
 
     static void main(final String[] args) {
         new SpringApplicationBuilder(Application.class).logStartupInfo(true).run(args)
@@ -58,9 +58,9 @@ class Application {
     @PostConstruct
     void init() {
         if ('-h' in applicationArguments.getSourceArgs() || '--help' in applicationArguments.getSourceArgs()){
-            helpLogger.logHelpMessage()
+            helpPrinter.printHelpMessage(System.out)
         } else {
-            List<File> createdBdioFiles = packageManagerRunner.createBdioFiles()
+            List<File> createdBdioFiles = bomToolManager.createBdioFiles()
             bdioUploader.uploadBdioFiles(createdBdioFiles)
         }
     }

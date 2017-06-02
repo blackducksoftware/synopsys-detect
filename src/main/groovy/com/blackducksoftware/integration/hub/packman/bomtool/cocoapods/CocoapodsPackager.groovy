@@ -9,7 +9,7 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.packagemanager.cocoapods
+package com.blackducksoftware.integration.hub.packman.bomtool.cocoapods
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -18,12 +18,14 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
-import com.blackducksoftware.integration.hub.packman.type.PackageManagerType
+import com.blackducksoftware.integration.hub.packman.bomtool.cocoapods.Pod
+import com.blackducksoftware.integration.hub.packman.bomtool.cocoapods.PodLock
+import com.blackducksoftware.integration.hub.packman.bomtool.cocoapods.PodLockParser
+import com.blackducksoftware.integration.hub.packman.type.BomToolType
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
 
 @Component
 class CocoapodsPackager {
-
     @Autowired
     ProjectInfoGatherer projectInfoGatherer
 
@@ -40,7 +42,7 @@ class CocoapodsPackager {
 
         collapseSubpods(podLock)
 
-        String name = projectInfoGatherer.getDefaultProjectName(PackageManagerType.COCOAPODS, sourcePath)
+        String name = projectInfoGatherer.getDefaultProjectName(BomToolType.COCOAPODS, sourcePath)
         String version = projectInfoGatherer.getDefaultProjectVersionName()
         ExternalId externalId = new NameVersionExternalId(Forge.COCOAPODS, name, version)
         List<DependencyNode> dependencies = podTransformer(podLock.dependencies)

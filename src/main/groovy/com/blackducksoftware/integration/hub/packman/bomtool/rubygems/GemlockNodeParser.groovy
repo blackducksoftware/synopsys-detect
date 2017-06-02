@@ -1,4 +1,4 @@
-package com.blackducksoftware.integration.hub.packman.packagemanager.rubygems
+package com.blackducksoftware.integration.hub.packman.bomtool.rubygems
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

@@ -1,4 +1,4 @@
-package com.blackducksoftware.integration.hub.packman.packagemanager.gradle
+package com.blackducksoftware.integration.hub.packman.bomtool.gradle
 
 import java.nio.charset.StandardCharsets
 
