@@ -27,12 +27,13 @@ class Executable {
         processBuilder.directory(workingDirectory)
         //ProcessBuilder's environment's keys and values must be non-null java.lang.String's
         if (environmentVariables) {
+            def processBuilderEnvironment = processBuilder.environment()
             environmentVariables.each { key, value ->
                 if (key && value) {
                     String keyString = key.toString()
                     String valueString = value.toString()
                     if (keyString && valueString) {
-                        processBuilder.environment.put(keyString, valueString)
+                        processBuilderEnvironment.put(keyString, valueString)
                     }
                 }
             }
