@@ -7,12 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.packman.PackmanProperties
 import com.blackducksoftware.integration.hub.packman.bomtool.gradle.GradleInitScriptPackager
 import com.blackducksoftware.integration.hub.packman.type.BomToolType
 import com.blackducksoftware.integration.hub.packman.type.ExecutableType
-import com.blackducksoftware.integration.hub.packman.util.FileFinder
-import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableManager
 
 @Component
 class GradleBomTool extends BomTool {
@@ -22,15 +19,6 @@ class GradleBomTool extends BomTool {
 
     @Autowired
     GradleInitScriptPackager gradleInitScriptPackager
-
-    @Autowired
-    ExecutableManager executableManager
-
-    @Autowired
-    FileFinder fileFinder
-
-    @Autowired
-    PackmanProperties packmanProperties
 
     Map<String, String> matchingSourcePathToGradleExecutable = [:]
 

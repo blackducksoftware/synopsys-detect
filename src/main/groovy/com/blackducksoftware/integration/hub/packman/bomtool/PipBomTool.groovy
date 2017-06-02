@@ -10,14 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.packman.PackmanProperties
 import com.blackducksoftware.integration.hub.packman.bomtool.pip.PipPackager
 import com.blackducksoftware.integration.hub.packman.bomtool.pip.PipShowMapParser
 import com.blackducksoftware.integration.hub.packman.type.BomToolType
 import com.blackducksoftware.integration.hub.packman.type.ExecutableType
-import com.blackducksoftware.integration.hub.packman.util.SourcePathSearcher
 import com.blackducksoftware.integration.hub.packman.util.executable.Executable
-import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableManager
 import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableOutput
 import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableRunner
 import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableRunnerException
@@ -31,18 +28,6 @@ class PipBomTool extends BomTool {
 
     @Autowired
     PipPackager pipPackager
-
-    @Autowired
-    ExecutableManager executableManager
-
-    @Autowired
-    ExecutableRunner executableRunner
-
-    @Autowired
-    SourcePathSearcher sourcePathSearcher
-
-    @Autowired
-    PackmanProperties packmanProperties
 
     ExecutableType pipExecutableType
     ExecutableType pythonExecutableType

@@ -20,13 +20,9 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
-import com.blackducksoftware.integration.hub.packman.PackmanProperties
 import com.blackducksoftware.integration.hub.packman.bomtool.nuget.NugetInspectorPackager
 import com.blackducksoftware.integration.hub.packman.type.BomToolType
 import com.blackducksoftware.integration.hub.packman.type.ExecutableType
-import com.blackducksoftware.integration.hub.packman.util.FileFinder
-import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
-import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableManager
 
 @Component
 class NugetBomTool extends BomTool {
@@ -37,18 +33,6 @@ class NugetBomTool extends BomTool {
 
     @Autowired
     NugetInspectorPackager nugetInspectorPackager
-
-    @Autowired
-    ExecutableManager executableManager
-
-    @Autowired
-    FileFinder fileFinder
-
-    @Autowired
-    ProjectInfoGatherer projectInfoGatherer
-
-    @Autowired
-    PackmanProperties packmanProperties
 
     String nugetExecutablePath
     List<String> matchingSourcePaths = []

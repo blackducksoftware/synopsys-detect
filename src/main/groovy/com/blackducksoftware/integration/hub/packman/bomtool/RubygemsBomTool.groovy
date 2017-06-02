@@ -3,23 +3,14 @@ package com.blackducksoftware.integration.hub.packman.bomtool
 import java.nio.charset.StandardCharsets
 
 import org.apache.commons.io.IOUtils
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.packman.bomtool.rubygems.RubygemsNodePackager
 import com.blackducksoftware.integration.hub.packman.type.BomToolType
-import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
-import com.blackducksoftware.integration.hub.packman.util.SourcePathSearcher
 
 @Component
 class RubygemsBomTool extends BomTool {
-    @Autowired
-    ProjectInfoGatherer projectInfoGatherer
-
-    @Autowired
-    SourcePathSearcher sourcePathSearcher
-
     List<String> matchingSourcePaths = []
 
     BomToolType getBomToolType() {

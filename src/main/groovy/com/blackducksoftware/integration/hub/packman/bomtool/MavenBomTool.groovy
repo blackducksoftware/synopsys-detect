@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.packman.PackmanProperties
 import com.blackducksoftware.integration.hub.packman.bomtool.maven.MavenPackager
 import com.blackducksoftware.integration.hub.packman.type.BomToolType
 import com.blackducksoftware.integration.hub.packman.type.ExecutableType
@@ -34,18 +33,6 @@ class MavenBomTool extends BomTool {
 
     @Autowired
     MavenPackager mavenPackager
-
-    @Autowired
-    ExecutableManager executableManager
-
-    @Autowired
-    SourcePathSearcher sourcePathSearcher
-
-    @Autowired
-    ProjectInfoGatherer projectInfoGatherer
-
-    @Autowired
-    PackmanProperties packmanProperties
 
     String mvnExecutablePath
     List<String> matchingSourcePaths = []
