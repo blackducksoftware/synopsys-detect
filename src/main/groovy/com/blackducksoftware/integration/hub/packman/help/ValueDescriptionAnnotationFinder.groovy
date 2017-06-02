@@ -56,6 +56,8 @@ public class ValueDescriptionAnnotationFinder implements ApplicationContextAware
             }
         }
 
-        new ArrayList<>(packmanOptions.values())
+        packmanOptions.values().toSorted { a, b ->
+            a.key <=> b.key
+        }
     }
 }
