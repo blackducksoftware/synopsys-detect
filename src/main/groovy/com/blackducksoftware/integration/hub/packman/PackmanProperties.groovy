@@ -3,13 +3,18 @@ package com.blackducksoftware.integration.hub.packman
 import javax.annotation.PostConstruct
 
 import org.apache.commons.lang3.StringUtils
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
+import com.blackducksoftware.integration.hub.boss.exception.BossException
 import com.blackducksoftware.integration.hub.packman.help.ValueDescription
 
 @Component
 class PackmanProperties {
+    private final Logger logger = LoggerFactory.getLogger(PackmanProperties.class)
+
     @ValueDescription(description="If true the bdio files will be deleted after upload")
     @Value('${packman.cleanup.bdio.files}')
     String cleanupBdioFiles
@@ -158,7 +163,11 @@ class PackmanProperties {
             outputDirectoryPath = System.getProperty('user.home') + File.separator + 'blackduck'
         }
 
-        new File(outputDirectoryPath).mkdirs()
+        File outputDirectory = new File(outputDirectoryPath)
+        outputDirectory.mkdirs()
+        if (!outputDirectory.exists() || !outputDirectory.isDirectory()) {
+            throw new BossException("The output directory ${outputDirectoryPath} does not exist. The system property 'user.home' will be used by default, but the output directory must exist.")
+        }
 
         inspectorPackageName = inspectorPackageName.trim()
         inspectorPackageVersion = inspectorPackageVersion.trim()
