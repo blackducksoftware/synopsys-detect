@@ -8,5 +8,6 @@ public enum PackageManagerType {
     COCOAPODS,
     PIP,
     RUBYGEMS,
-    CARTHAGE;
+    CARTHAGE,
+    GO;
 }
