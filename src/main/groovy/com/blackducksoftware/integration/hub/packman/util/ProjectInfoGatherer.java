@@ -17,22 +17,22 @@ import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.packman.type.PackageManagerType;
+import com.blackducksoftware.integration.hub.packman.type.BomToolType;
 
 @Component
 public class ProjectInfoGatherer {
     public static String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS";
 
-    public String getDefaultProjectName(final PackageManagerType packageManagerType, final String sourcePath) {
-        return getDefaultProjectName(packageManagerType, sourcePath, null);
+    public String getDefaultProjectName(final BomToolType bomToolType, final String sourcePath) {
+        return getDefaultProjectName(bomToolType, sourcePath, null);
     }
 
-    public String getDefaultProjectName(final PackageManagerType packageManagerType, final String sourcePath, final String defaultProjectName) {
+    public String getDefaultProjectName(final BomToolType bomToolType, final String sourcePath, final String defaultProjectName) {
         if (StringUtils.isNotBlank(defaultProjectName)) {
             return defaultProjectName;
         } else {
             final File sourcePathFile = new File(sourcePath);
-            return String.format("%s_%s", sourcePathFile.getName(), packageManagerType.toString().toLowerCase());
+            return String.format("%s_%s", sourcePathFile.getName(), bomToolType.toString().toLowerCase());
         }
     }
 

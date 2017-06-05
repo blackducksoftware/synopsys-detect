@@ -22,6 +22,8 @@ import org.json.JSONException;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
+import com.blackducksoftware.integration.hub.packman.bomtool.cocoapods.PodLock;
+import com.blackducksoftware.integration.hub.packman.bomtool.cocoapods.PodLockParser;
 import com.esotericsoftware.yamlbeans.YamlException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

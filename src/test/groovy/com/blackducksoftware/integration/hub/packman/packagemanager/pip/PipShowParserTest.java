@@ -23,6 +23,8 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
+import com.blackducksoftware.integration.hub.packman.bomtool.pip.PipShowMapParser;
+
 public class PipShowParserTest {
 
     @Test

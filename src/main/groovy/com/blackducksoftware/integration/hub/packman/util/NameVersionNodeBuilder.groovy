@@ -1,7 +1,7 @@
 package com.blackducksoftware.integration.hub.packman.util
 
 /**
- * This class should be used to construct DependencyNode graphs where you don't
+ * This class should be used to construct node graphs where you don't
  * always have a defined version for each dependency, but will EVENTUALLY find
  * a defined version, as in Gemfile.lock files.
  */

@@ -16,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
-import com.blackducksoftware.integration.hub.packman.type.PackageManagerType;
+import com.blackducksoftware.integration.hub.packman.type.BomToolType;
 
 public class ProjectInfoGathererTest {
     private final String testName = "Name";
@@ -28,7 +28,7 @@ public class ProjectInfoGathererTest {
     @Test
     public void getProjectNameFromPath() {
         final ProjectInfoGatherer projectInfoGatherer = new ProjectInfoGatherer();
-        final String projectName = projectInfoGatherer.getDefaultProjectName(PackageManagerType.MAVEN, "I/Am/A/Test/" + testName);
+        final String projectName = projectInfoGatherer.getDefaultProjectName(BomToolType.MAVEN, "I/Am/A/Test/" + testName);
         final String projectVersion = projectInfoGatherer.getDefaultProjectVersionName();
         assertEquals(testName + "_maven", projectName);
         final String aFewSecondsAfterTheValueWasCreated = DateTime.now().toString(ProjectInfoGatherer.DATE_FORMAT);
@@ -39,7 +39,7 @@ public class ProjectInfoGathererTest {
     @Test
     public void getProjectNameFromDefault() {
         final ProjectInfoGatherer projectInfoGatherer = new ProjectInfoGatherer();
-        final String projectName = projectInfoGatherer.getDefaultProjectName(PackageManagerType.MAVEN, "I/Am/A/Test/" + testName, testName2);
+        final String projectName = projectInfoGatherer.getDefaultProjectName(BomToolType.MAVEN, "I/Am/A/Test/" + testName, testName2);
         final String projectVersion = projectInfoGatherer.getDefaultProjectVersionName(testVersion);
         assertEquals(testName2, projectName);
         assertEquals(testVersion, projectVersion);
