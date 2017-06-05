@@ -5,8 +5,8 @@
     "name": "rooms",
     "version": "1.0.0",
     "forge": {
-      "name": "goget",
-      "separator": ""
+      "name": "golang",
+      "separator": ":"
     }
   },
   "children": [
@@ -17,8 +17,8 @@
         "name": "github.com/davecgh/go-spew/spew",
         "version": "v1.1.0",
         "forge": {
-          "name": "goget",
-          "separator": ""
+          "name": "golang",
+          "separator": ":"
         }
       },
       "children": []
@@ -30,8 +30,8 @@
         "name": "github.com/golang/protobuf/proto",
         "version": "5a0f697c9ed9d68fef0116532c6e05cfeae00e55",
         "forge": {
-          "name": "goget",
-          "separator": ""
+          "name": "golang",
+          "separator": ":"
         }
       },
       "children": []
@@ -43,8 +43,8 @@
         "name": "github.com/gorilla/mux",
         "version": "v1.4.0-6-g043ee65",
         "forge": {
-          "name": "goget",
-          "separator": ""
+          "name": "golang",
+          "separator": ":"
         }
       },
       "children": []
@@ -56,8 +56,8 @@
         "name": "github.com/pmezard/go-difflib/difflib",
         "version": "v1.0.0",
         "forge": {
-          "name": "goget",
-          "separator": ""
+          "name": "golang",
+          "separator": ":"
         }
       },
       "children": []
@@ -69,8 +69,8 @@
         "name": "github.com/stretchr/testify/assert",
         "version": "v1.1.4-66-gf6abca5",
         "forge": {
-          "name": "goget",
-          "separator": ""
+          "name": "golang",
+          "separator": ":"
         }
       },
       "children": []
@@ -82,8 +82,8 @@
         "name": "github.com/thenrich/rooms/conf",
         "version": "66b4fead8d45b139f376d53540d7ac5b3fe2bda7",
         "forge": {
-          "name": "goget",
-          "separator": ""
+          "name": "golang",
+          "separator": ":"
         }
       },
       "children": []
@@ -95,8 +95,8 @@
         "name": "github.com/thenrich/rooms/logger",
         "version": "66b4fead8d45b139f376d53540d7ac5b3fe2bda7",
         "forge": {
-          "name": "goget",
-          "separator": ""
+          "name": "golang",
+          "separator": ":"
         }
       },
       "children": []
@@ -108,8 +108,8 @@
         "name": "github.com/thenrich/rooms/util",
         "version": "66b4fead8d45b139f376d53540d7ac5b3fe2bda7",
         "forge": {
-          "name": "goget",
-          "separator": ""
+          "name": "golang",
+          "separator": ":"
         }
       },
       "children": []
@@ -121,8 +121,8 @@
         "name": "golang.org/x/net/context",
         "version": "3da985ce5951d99de868be4385f21ea6c2b22f24",
         "forge": {
-          "name": "goget",
-          "separator": ""
+          "name": "golang",
+          "separator": ":"
         }
       },
       "children": []
@@ -134,8 +134,8 @@
         "name": "google.golang.org/appengine",
         "version": "v1.0.0-37-ga2f4131",
         "forge": {
-          "name": "goget",
-          "separator": ""
+          "name": "golang",
+          "separator": ":"
         }
       },
       "children": []
@@ -147,8 +147,8 @@
         "name": "google.golang.org/appengine/aetest",
         "version": "v1.0.0-37-ga2f4131",
         "forge": {
-          "name": "goget",
-          "separator": ""
+          "name": "golang",
+          "separator": ":"
         }
       },
       "children": []
@@ -160,8 +160,8 @@
         "name": "google.golang.org/appengine/internal",
         "version": "v1.0.0-37-ga2f4131",
         "forge": {
-          "name": "goget",
-          "separator": ""
+          "name": "golang",
+          "separator": ":"
         }
       },
       "children": []
@@ -173,8 +173,8 @@
         "name": "google.golang.org/appengine/internal/app_identity",
         "version": "v1.0.0-37-ga2f4131",
         "forge": {
-          "name": "goget",
-          "separator": ""
+          "name": "golang",
+          "separator": ":"
         }
       },
       "children": []
@@ -186,8 +186,8 @@
         "name": "google.golang.org/appengine/internal/base",
         "version": "v1.0.0-37-ga2f4131",
         "forge": {
-          "name": "goget",
-          "separator": ""
+          "name": "golang",
+          "separator": ":"
         }
       },
       "children": []
@@ -199,8 +199,8 @@
         "name": "google.golang.org/appengine/internal/datastore",
         "version": "v1.0.0-37-ga2f4131",
         "forge": {
-          "name": "goget",
-          "separator": ""
+          "name": "golang",
+          "separator": ":"
         }
       },
       "children": []
@@ -212,8 +212,8 @@
         "name": "google.golang.org/appengine/internal/log",
         "version": "v1.0.0-37-ga2f4131",
         "forge": {
-          "name": "goget",
-          "separator": ""
+          "name": "golang",
+          "separator": ":"
         }
       },
       "children": []
@@ -225,8 +225,8 @@
         "name": "google.golang.org/appengine/internal/modules",
         "version": "v1.0.0-37-ga2f4131",
         "forge": {
-          "name": "goget",
-          "separator": ""
+          "name": "golang",
+          "separator": ":"
         }
       },
       "children": []
@@ -238,8 +238,8 @@
         "name": "google.golang.org/appengine/internal/remote_api",
         "version": "v1.0.0-37-ga2f4131",
         "forge": {
-          "name": "goget",
-          "separator": ""
+          "name": "golang",
+          "separator": ":"
         }
       },
       "children": []
@@ -251,8 +251,8 @@
         "name": "google.golang.org/appengine/internal/user",
         "version": "v1.0.0-37-ga2f4131",
         "forge": {
-          "name": "goget",
-          "separator": ""
+          "name": "golang",
+          "separator": ":"
         }
       },
       "children": []
@@ -264,8 +264,8 @@
         "name": "google.golang.org/appengine/log",
         "version": "v1.0.0-37-ga2f4131",
         "forge": {
-          "name": "goget",
-          "separator": ""
+          "name": "golang",
+          "separator": ":"
         }
       },
       "children": []
@@ -277,8 +277,8 @@
         "name": "google.golang.org/appengine/user",
         "version": "v1.0.0-37-ga2f4131",
         "forge": {
-          "name": "goget",
-          "separator": ""
+          "name": "golang",
+          "separator": ":"
         }
       },
       "children": []

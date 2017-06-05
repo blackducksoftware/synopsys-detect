@@ -19,8 +19,8 @@ import org.junit.Test
 import org.skyscreamer.jsonassert.JSONAssert
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+import com.blackducksoftware.integration.hub.packman.packagemanager.GoPackageManager
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -45,6 +45,6 @@ public class GoDepParserTest {
 
     private void fixVersion(final DependencyNode node, final String newVersion) {
         node.version = newVersion
-        node.externalId = new NameVersionExternalId(Forge.GOGET, node.name, newVersion)
+        node.externalId = new NameVersionExternalId(GoPackageManager.GOLANG, node.name, newVersion)
     }
 }

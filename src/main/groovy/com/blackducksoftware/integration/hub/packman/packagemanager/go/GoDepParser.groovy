@@ -12,9 +12,9 @@
 package com.blackducksoftware.integration.hub.packman.packagemanager.go
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+import com.blackducksoftware.integration.hub.packman.packagemanager.GoPackageManager
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
 import com.google.gson.Gson
 
@@ -32,7 +32,7 @@ class GoDepParser {
         GodepsFile goDepsFile = gson.fromJson(goDepContents, GodepsFile.class)
         //FIXME get version
         String goDepContentVersion = projectInfoGatherer.getDefaultProjectVersionName()
-        final ExternalId goDepContentExternalId = new NameVersionExternalId(Forge.GOGET, goDepsFile.importPath, goDepContentVersion)
+        final ExternalId goDepContentExternalId = new NameVersionExternalId(GoPackageManager.GOLANG, goDepsFile.importPath, goDepContentVersion)
         final DependencyNode goDepNode = new DependencyNode(goDepsFile.importPath, goDepContentVersion, goDepContentExternalId)
         def children = new ArrayList<DependencyNode>()
         goDepsFile.deps.each {
@@ -42,7 +42,7 @@ class GoDepParser {
             } else{
                 version = it.rev.trim()
             }
-            final ExternalId dependencyExternalId = new NameVersionExternalId(Forge.GOGET, it.importPath, version)
+            final ExternalId dependencyExternalId = new NameVersionExternalId(GoPackageManager.GOLANG, it.importPath, version)
             final DependencyNode dependency = new DependencyNode(it.importPath, version, dependencyExternalId)
             children.add(dependency)
         }

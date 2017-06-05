@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.packman.PackmanProperties
 import com.blackducksoftware.integration.hub.packman.packagemanager.go.GoPackager
 import com.blackducksoftware.integration.hub.packman.type.ExecutableType
@@ -27,6 +28,8 @@ import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableM
 @Component
 class GoPackageManager extends PackageManager {
     private final Logger logger = LoggerFactory.getLogger(GradlePackageManager.class)
+
+    public static final Forge GOLANG = new Forge("golang",":")
 
     @Autowired
     FileFinder fileFinder

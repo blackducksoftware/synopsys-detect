@@ -18,10 +18,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+import com.blackducksoftware.integration.hub.packman.packagemanager.GoPackageManager
 import com.blackducksoftware.integration.hub.packman.type.PackageManagerType
+import com.blackducksoftware.integration.hub.packman.util.FileFinder
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
 import com.blackducksoftware.integration.hub.packman.util.executable.Executable
 import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableRunner
@@ -40,10 +41,13 @@ class GoPackager {
     @Autowired
     ProjectInfoGatherer projectInfoGatherer
 
+    @Autowired
+    FileFinder fileFinder
+
     public List<DependencyNode> makeDependencyNodes(final String sourcePath, String goExecutable) {
         final String rootName = projectInfoGatherer.getDefaultProjectName(PackageManagerType.GO, sourcePath)
         final String rootVersion = projectInfoGatherer.getDefaultProjectVersionName()
-        final ExternalId rootExternalId = new NameVersionExternalId(Forge.GOGET, rootName, rootVersion)
+        final ExternalId rootExternalId = new NameVersionExternalId(GoPackageManager.GOLANG, rootName, rootVersion)
         final DependencyNode root = new DependencyNode(rootName, rootVersion, rootExternalId)
         def goDirectories = findGoDirectories(new File(sourcePath))
         GoDepParser goDepParser = new GoDepParser(gson, projectInfoGatherer)
