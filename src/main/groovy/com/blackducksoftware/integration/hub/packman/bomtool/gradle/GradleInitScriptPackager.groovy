@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.packman.PackmanProperties
 import com.blackducksoftware.integration.hub.packman.util.executable.Executable
-import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableManager
 import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableRunner
 import com.google.gson.Gson
 
@@ -20,9 +19,6 @@ class GradleInitScriptPackager {
 
     @Autowired
     Gson gson
-
-    @Autowired
-    ExecutableManager executableManager
 
     @Autowired
     ExecutableRunner executableRunner

@@ -1,5 +1,6 @@
 package com.blackducksoftware.integration.hub.packman.util
 
+import org.apache.commons.lang3.math.NumberUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -22,6 +23,22 @@ class SourcePathSearcher {
         List<String> matchingSourcePaths = []
         for (String sourcePath : packmanProperties.sourcePaths) {
             if (fileFinder.containsAllFiles(sourcePath, filenamePattern)) {
+                matchingSourcePaths.add(sourcePath)
+            }
+        }
+
+        matchingSourcePaths
+    }
+
+    /**
+     * Across all provided source paths, find the subset of source paths that
+     * include the provided pattern, within it and its sub-directories. You would use the filenamePattern
+     * 'pom.xml' to find all maven source paths.
+     */
+    List<String> findSourcePathsContainingFilenamePatternWithDepth(String filenamePattern) {
+        List<String> matchingSourcePaths = []
+        for (String sourcePath : packmanProperties.sourcePaths) {
+            if (fileFinder.containsAllFilesWithDepth(sourcePath, NumberUtils.toInt(packmanProperties.searchDepth), filenamePattern)) {
                 matchingSourcePaths.add(sourcePath)
             }
         }

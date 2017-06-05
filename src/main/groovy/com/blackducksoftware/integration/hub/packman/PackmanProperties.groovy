@@ -63,6 +63,10 @@ class PackmanProperties {
     @Value('${packman.output.path}')
     String outputDirectoryPath
 
+    @ValueDescription(description = "Depth from source paths to search for files.")
+    @Value('${packman.search.depth}')
+    String searchDepth
+
     @ValueDescription(description = "Specify which tools to use")
     @Value('${packman.bom.tool.type.override}')
     String bomToolTypeOverride
@@ -154,6 +158,18 @@ class PackmanProperties {
     @ValueDescription(description="The path of the Pip executable")
     @Value('${packman.pip.path}')
     String pipPath
+
+    @ValueDescription(description="Path of the Go executable")
+    @Value('${packman.go.path}')
+    String goPath
+
+    @ValueDescription(description="Path of the GoDep executable")
+    @Value('${packman.godep.path}')
+    String godepPath
+
+    @ValueDescription(description="If true all Go results will be aggregated into a single bom")
+    @Value('${packman.go.aggregate}')
+    boolean goAggregate
 
     @PostConstruct
     void init() {
