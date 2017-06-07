@@ -43,10 +43,9 @@ class GoBomTool extends BomTool {
 
     @Override
     public boolean isBomToolApplicable() {
-        def goExecutablePath = findGoDepExecutable()
+        def goExecutablePath = findGoExecutable()
         if (!goExecutablePath?.trim()) {
-            needToInstallGoDep = true
-            goExecutablePath = findGoExecutable()
+            logger.debug('Could not find Go on the environment PATH')
         }
         matchingSourcePaths = sourcePathSearcher.findSourcePathsContainingFilenamePatternWithDepth('*.go')
         goExecutablePath && !matchingSourcePaths.isEmpty()
@@ -54,11 +53,10 @@ class GoBomTool extends BomTool {
 
     @Override
     public List<DependencyNode> extractDependencyNodes() {
-        def godepExecutable = null
-        if (needToInstallGoDep) {
-            godepExecutable = installGoDep()
-        } else {
-            godepExecutable = findGoDepExecutable()
+        def godepExecutable = findGoDepExecutable()
+        if (!godepExecutable?.trim()) {
+            def goExecutable = findGoExecutable()
+            godepExecutable = installGoDep(goExecutable)
         }
         def nodes = []
         matchingSourcePaths.each {
@@ -68,11 +66,7 @@ class GoBomTool extends BomTool {
     }
 
     private String findGoExecutable() {
-        String goPath = packmanProperties.getGoPath()
-        if (StringUtils.isBlank(goPath)) {
-            goPath = executableManager.getPathOfExecutable(ExecutableType.GO)
-        }
-        goPath
+        executableManager.getPathOfExecutable(ExecutableType.GO)
     }
 
     private String findGoDepExecutable() {
@@ -80,12 +74,10 @@ class GoBomTool extends BomTool {
         if (StringUtils.isBlank(godepPath)) {
             godepPath = executableManager.getPathOfExecutable(ExecutableType.GODEP)
         }
-
         godepPath
     }
 
-    private String installGoDep(){
-        def goExecutable = findGoExecutable()
+    private String installGoDep(String goExecutable){
         def outputDirectory = new File(packmanProperties.getOutputDirectoryPath())
         logger.debug("Installing godep in ${outputDirectory}")
         Executable getGoDep = new Executable(outputDirectory, goExecutable, [
@@ -99,5 +91,6 @@ class GoBomTool extends BomTool {
             'github.com/tools/godep'
         ])
         executableRunner.executeLoudly(buildGoDep)
+        (new File(outputDirectory, 'godep')).getAbsolutePath()
     }
 }

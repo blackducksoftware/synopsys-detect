@@ -170,10 +170,6 @@ class PackmanProperties {
     @Value('${packman.pip.path}')
     String pipPath
 
-    @ValueDescription(description="Path of the Go executable")
-    @Value('${packman.go.path}')
-    String goPath
-
     @ValueDescription(description="Path of the GoDep executable")
     @Value('${packman.godep.path}')
     String godepPath
