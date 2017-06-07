@@ -93,7 +93,7 @@ class FileFinder {
 
     private File[] findFilesRecursive(final File sourceDirectory, final String filenamePattern, int currentDepth, int maxDepth){
         def files = [];
-        if(currentDepth >= maxDepth || !sourceDirectory.isDirectory()){
+        if(currentDepth > maxDepth || !sourceDirectory.isDirectory()){
             return files
         }
         sourceDirectory.listFiles().each {
@@ -112,7 +112,7 @@ class FileFinder {
 
     private File[] findDirectoriesContainingFilesRecursive(final File sourceDirectory, final String filenamePattern, int currentDepth, int maxDepth){
         def files = new HashSet<File>();
-        if(currentDepth >= maxDepth || !sourceDirectory.isDirectory()){
+        if(currentDepth > maxDepth || !sourceDirectory.isDirectory()){
             return files
         }
         for (File file : sourceDirectory.listFiles()) {

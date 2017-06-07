@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.boss.exception.BossException
 import com.blackducksoftware.integration.hub.packman.help.ValueDescription
+import com.blackducksoftware.integration.util.PropertyUtil
 
 @Component
 class PackmanProperties {
@@ -26,17 +27,17 @@ class PackmanProperties {
 
     Set<String> additionalDockerPropertyNames = new HashSet<>()
 
-    @ValueDescription(description="If true the bdio files will be deleted after upload")
+    @ValueDescription(description="If true the bdio files will be deleted after upload", defaultValue="false")
     @Value('${packman.cleanup.bdio.files}')
-    String cleanupBdioFiles
+    Boolean cleanupBdioFiles
 
     @ValueDescription(description="URL of the Hub server")
     @Value('${packman.hub.url}')
     String hubUrl
 
-    @ValueDescription(description="Time to wait for rest connections to complete")
+    @ValueDescription(description="Time to wait for rest connections to complete", defaultValue="120")
     @Value('${packman.hub.timeout}')
-    String hubTimeout
+    Integer hubTimeout
 
     @ValueDescription(description="Hub username")
     @Value('${packman.hub.username}')
@@ -52,7 +53,7 @@ class PackmanProperties {
 
     @ValueDescription(description="Proxy port")
     @Value('${packman.hub.proxy.port}')
-    String hubProxyPort
+    Integer hubProxyPort
 
     @ValueDescription(description="Proxy username")
     @Value('${packman.hub.proxy.username}')
@@ -62,9 +63,9 @@ class PackmanProperties {
     @Value('${packman.hub.proxy.password}')
     String hubProxyPassword
 
-    @ValueDescription(description="If true the Hub https certificate will be automatically imported")
+    @ValueDescription(description="If true the Hub https certificate will be automatically imported", defaultValue="false")
     @Value('${packman.hub.auto.import.cert}')
-    String hubAutoImportCertificate
+    Boolean hubAutoImportCertificate
 
     @ValueDescription(description = "Source paths to inspect")
     @Value('${packman.source.paths}')
@@ -74,9 +75,9 @@ class PackmanProperties {
     @Value('${packman.output.path}')
     String outputDirectoryPath
 
-    @ValueDescription(description = "Depth from source paths to search for files.")
+    @ValueDescription(description = "Depth from source paths to search for files.", defaultValue="10")
     @Value('${packman.search.depth}')
-    String searchDepth
+    searchDepth
 
     @ValueDescription(description = "Specify which tools to use")
     @Value('${packman.bom.tool.type.override}')
@@ -90,11 +91,11 @@ class PackmanProperties {
     @Value('${packman.project.version}')
     String projectVersionName
 
-    @ValueDescription(description="Version of the Gradle Inspector")
+    @ValueDescription(description="Version of the Gradle Inspector", defaultValue="0.0.6")
     @Value('${packman.gradle.inspector.version}')
     String gradleInspectorVersion
 
-    @ValueDescription(description="Gradle build command")
+    @ValueDescription(description="Gradle build command", defaultValue="dependencies")
     @Value('${packman.gradle.build.command}')
     String gradleBuildCommand
 
@@ -114,11 +115,11 @@ class PackmanProperties {
     @Value('${packman.gradle.included.projects}')
     String includedProjectNames
 
-    @ValueDescription(description="Name of the Nuget Inspector")
+    @ValueDescription(description="Name of the Nuget Inspector", defaultValue="IntegrationNugetInspector")
     @Value('${packman.nuget.inspector.name}')
     String inspectorPackageName
 
-    @ValueDescription(description="Version of the Nuget Inspector")
+    @ValueDescription(description="Version of the Nuget Inspector", defaultValue="0.0.3-alpha")
     @Value('${packman.nuget.inspector.version}')
     String inspectorPackageVersion
 
@@ -126,13 +127,13 @@ class PackmanProperties {
     @Value('${packman.nuget.excluded.modules}')
     String inspectorExcludedModules
 
-    @ValueDescription(description="If true errors will be logged and then ignored.")
+    @ValueDescription(description="If true errors will be logged and then ignored.", defaultValue="false")
     @Value('${packman.nuget.ignore.failure}')
-    boolean inspectorIgnoreFailure
+    Boolean inspectorIgnoreFailure
 
-    @ValueDescription(description="If true all maven projects will be aggregated into a single bom")
+    @ValueDescription(description="If true all maven projects will be aggregated into a single bom", defaultValue="true")
     @Value('${packman.maven.aggregate}')
-    boolean mavenAggregateBom
+    Boolean mavenAggregateBom
 
     @ValueDescription(description="The name of the dependency scope to include")
     @Value('${packman.maven.scope}')
@@ -146,21 +147,21 @@ class PackmanProperties {
     @Value('${packman.maven.path}')
     String mavenPath
 
-    @ValueDescription(description="If true all nuget projects will be aggregated into a single bom")
+    @ValueDescription(description="If true all nuget projects will be aggregated into a single bom", defaultValue="false")
     @Value('${packman.nuget.aggregate}')
-    boolean nugetAggregateBom
+    Boolean nugetAggregateBom
 
     @ValueDescription(description="The path of the Nuget executable")
     @Value('${packman.nuget.path}')
     String nugetPath
 
-    @ValueDescription(description="If true creates a temporary Python virtual environment")
+    @ValueDescription(description="If true creates a temporary Python virtual environment", defaultValue="true")
     @Value('${packman.pip.createVirtualEnv}')
-    boolean createVirtualEnv
+    Boolean createVirtualEnv
 
-    @ValueDescription(description="If true will use pip3 if available on class path")
+    @ValueDescription(description="If true will use pip3 if available on class path", defaultValue="false")
     @Value('${packman.pip.pip3}')
-    boolean pipThreeOverride
+    Boolean pipThreeOverride
 
     @ValueDescription(description="The path of the Python executable")
     @Value('${packman.python.path}')
@@ -174,12 +175,14 @@ class PackmanProperties {
     @Value('${packman.godep.path}')
     String godepPath
 
-    @ValueDescription(description="If true all Go results will be aggregated into a single bom")
+    @ValueDescription(description="If true all Go results will be aggregated into a single bom", defaultValue="true")
     @Value('${packman.go.aggregate}')
-    boolean goAggregate
+    Boolean goAggregate
 
     @PostConstruct
     void init() {
+        setDefaultValues()
+
         if (sourcePaths == null || sourcePaths.length == 0) {
             sourcePaths = [
                 System.getProperty('user.dir')
@@ -214,5 +217,20 @@ class PackmanProperties {
 
     public String getDetectProperty(String key) {
         configurableEnvironment.getProperty(key)
+    }
+
+    private void setDefaultValues(){
+        PropertyUtil propertyUtil = new PropertyUtil()
+
+        this.getClass().declaredFields.each { field ->
+            if (field.isAnnotationPresent(ValueDescription.class)) {
+                String defaultValue = ''
+                final ValueDescription valueDescription = field.getAnnotation(ValueDescription.class)
+                defaultValue = valueDescription.defaultValue()
+                if (defaultValue?.trim()) {
+                    propertyUtil.setPropertyUsingSetter(this, field.name, defaultValue)
+                }
+            }
+        }
     }
 }

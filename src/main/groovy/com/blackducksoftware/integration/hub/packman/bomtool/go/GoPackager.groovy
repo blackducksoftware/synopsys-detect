@@ -108,7 +108,7 @@ class GoPackager {
     private File[] findDirectoriesContainingGoFilesRecursive(final File sourceDirectory, int currentDepth, int maxDepth){
         def files = new HashSet<File>();
         // we want to ignore the vendor and Godeps directory, they are the go cache https://blog.gopheracademy.com/advent-2015/vendor-folder/
-        if(currentDepth >= maxDepth || !sourceDirectory.isDirectory() || sourceDirectory.getName().equals('vendor') || sourceDirectory.getName().equals('Godeps')){
+        if(currentDepth > maxDepth || !sourceDirectory.isDirectory() || sourceDirectory.getName().equals('vendor') || sourceDirectory.getName().equals('Godeps')){
             return files
         }
         for (File file : sourceDirectory.listFiles()) {
