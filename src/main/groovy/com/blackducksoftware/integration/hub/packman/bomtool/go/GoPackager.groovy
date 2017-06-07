@@ -72,16 +72,25 @@ class GoPackager {
     }
 
     private String getGoDepContents(File goDirectory, String goExecutable) {
-        if(!goDirectory.exists()){
-            println "${goDirectory.getAbsolutePath()} does not exist"
-        }
-        logger.info("Running ${goExecutable} save on path ${goDirectory.getAbsolutePath()}")
-        Executable executable = new Executable(goDirectory, goExecutable, ['save'])
-        executableRunner.executeLoudly(executable)
+        def vendorDirectory = new File(goDirectory, "vendor")
         def goDepsDirectory = new File(goDirectory, "Godeps")
         def goDepsFile = new File(goDepsDirectory, "Godeps.json")
+        boolean previousGodepsFile = goDepsFile.exists()
+        boolean previousVendorFile = vendorDirectory.exists()
+        if (!previousGodepsFile) {
+            logger.info("Running ${goExecutable} save on path ${goDirectory.getAbsolutePath()}")
+            Executable executable = new Executable(goDirectory, goExecutable, ['save'])
+            executableRunner.executeLoudly(executable)
+        }
         def goDepContents = goDepsFile.text
-        FileUtils.deleteDirectory(goDepsDirectory)
+        if(!previousGodepsFile){
+            // We dont want to delete the Godeps directory if we didnt create it with the save command
+            FileUtils.deleteDirectory(goDepsDirectory)
+        }
+        if(!previousVendorFile && vendorDirectory.exists()){
+            // cleanup the vendor directory if the save command created it
+            FileUtils.deleteDirectory(vendorDirectory)
+        }
         goDepContents
     }
 

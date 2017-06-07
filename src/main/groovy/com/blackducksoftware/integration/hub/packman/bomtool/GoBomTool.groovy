@@ -49,8 +49,7 @@ class GoBomTool extends BomTool {
             goExecutablePath = findGoExecutable()
         }
         matchingSourcePaths = sourcePathSearcher.findSourcePathsContainingFilenamePatternWithDepth('*.go')
-        def b = goExecutablePath && !matchingSourcePaths.isEmpty()
-        return b
+        goExecutablePath && !matchingSourcePaths.isEmpty()
     }
 
     @Override
