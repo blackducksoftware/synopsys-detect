@@ -88,7 +88,7 @@ class GoPackager {
             Executable executable = new Executable(goDirectory, goExecutable, ['save'])
             executableRunner.executeLoudly(executable)
         } catch (ExecutableRunnerException e){
-            logger.error("Failed to run ${goExecutable} save on path ${goDirectory.getAbsolutePath()}, ${e.getMessage().trim()}")
+            logger.error("Failed to run ${goExecutable} save on path ${goDirectory.getAbsolutePath()}, ${e.getMessage()}")
         }
         if (goDepsFile.exists()) {
             goDepContents = goDepsFile.text
