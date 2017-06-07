@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.env.ConfigurableEnvironment
 import org.springframework.core.env.EnumerablePropertySource
 import org.springframework.core.env.MutablePropertySources
+import org.springframework.core.env.PropertySource
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.boss.exception.BossException
@@ -19,7 +20,7 @@ import com.blackducksoftware.integration.hub.packman.help.ValueDescription
 class PackmanProperties {
     private final Logger logger = LoggerFactory.getLogger(PackmanProperties.class)
 
-    static final String DOCKER_PROPERTY_PREFIX = 'packman.docker.passthrough'
+    static final String DOCKER_PROPERTY_PREFIX = 'packman.docker.passthrough.'
 
     @Autowired
     ConfigurableEnvironment configurableEnvironment
@@ -188,15 +189,20 @@ class PackmanProperties {
         inspectorPackageVersion = inspectorPackageVersion.trim()
 
         MutablePropertySources mutablePropertySources = configurableEnvironment.getPropertySources()
-        mutablePropertySources.each { propertySource ->
+        for (PropertySource propertySource : mutablePropertySources) {
             if (propertySource instanceof EnumerablePropertySource) {
                 EnumerablePropertySource enumerablePropertySource = (EnumerablePropertySource) propertySource
-                enumerablePropertySource.propertyNames.each { propertyName ->
-                    if (propertyName.startsWith(DOCKER_PROPERTY_PREFIX)) {
+                String[] propertyNames = enumerablePropertySource.propertyNames
+                for (String propertyName : propertyNames) {
+                    if (propertyName && propertyName.startsWith(DOCKER_PROPERTY_PREFIX)) {
                         additionalDockerPropertyNames.add(propertyName)
                     }
                 }
             }
         }
+    }
+
+    public String getProperty(String key) {
+        configurableEnvironment.getProperty(key)
     }
 }
