@@ -9,13 +9,13 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.bomtool.go
+package com.blackducksoftware.integration.hub.detect.bomtool.go
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
-import com.blackducksoftware.integration.hub.packman.bomtool.GoBomTool
-import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
+import com.blackducksoftware.integration.hub.detect.bomtool.GoBomTool
+import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
 import com.google.gson.Gson
 
 class GoDepParser {

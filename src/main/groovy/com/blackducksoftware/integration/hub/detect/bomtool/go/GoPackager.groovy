@@ -9,7 +9,7 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.bomtool.go
+package com.blackducksoftware.integration.hub.detect.bomtool.go
 
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.FilenameUtils
@@ -22,14 +22,14 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
-import com.blackducksoftware.integration.hub.packman.PackmanProperties
-import com.blackducksoftware.integration.hub.packman.bomtool.GoBomTool
-import com.blackducksoftware.integration.hub.packman.type.BomToolType
-import com.blackducksoftware.integration.hub.packman.util.FileFinder
-import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
-import com.blackducksoftware.integration.hub.packman.util.executable.Executable
-import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableRunner
-import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableRunnerException
+import com.blackducksoftware.integration.hub.detect.DetectProperties
+import com.blackducksoftware.integration.hub.detect.bomtool.GoBomTool
+import com.blackducksoftware.integration.hub.detect.type.BomToolType
+import com.blackducksoftware.integration.hub.detect.util.FileFinder
+import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
+import com.blackducksoftware.integration.hub.detect.util.executable.Executable
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException
 import com.google.gson.Gson
 
 @Component
@@ -46,7 +46,7 @@ class GoPackager {
     ProjectInfoGatherer projectInfoGatherer
 
     @Autowired
-    PackmanProperties packmanProperties
+    DetectProperties detectProperties
 
     @Autowired
     FileFinder fileFinder

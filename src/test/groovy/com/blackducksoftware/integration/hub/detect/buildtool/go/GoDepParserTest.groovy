@@ -9,7 +9,7 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.buildtool.go;
+package com.blackducksoftware.integration.hub.detect.buildtool.go;
 
 import java.nio.charset.StandardCharsets
 
@@ -20,9 +20,9 @@ import org.skyscreamer.jsonassert.JSONAssert
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
-import com.blackducksoftware.integration.hub.packman.bomtool.GoBomTool
-import com.blackducksoftware.integration.hub.packman.bomtool.go.GoDepParser
-import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
+import com.blackducksoftware.integration.hub.detect.bomtool.GoBomTool
+import com.blackducksoftware.integration.hub.detect.bomtool.go.GoDepParser
+import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 

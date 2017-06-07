@@ -75,7 +75,7 @@ class DetectProperties {
     String outputDirectoryPath
 
     @ValueDescription(description = "Depth from source paths to search for files.")
-    @Value('${packman.search.depth}')
+    @Value('${detect.search.depth}')
     String searchDepth
 
     @ValueDescription(description = "Specify which tools to use")
@@ -171,11 +171,11 @@ class DetectProperties {
     String pipPath
 
     @ValueDescription(description="Path of the GoDep executable")
-    @Value('${packman.godep.path}')
+    @Value('${detect.godep.path}')
     String godepPath
 
     @ValueDescription(description="If true all Go results will be aggregated into a single bom")
-    @Value('${packman.go.aggregate}')
+    @Value('${detect.go.aggregate}')
     boolean goAggregate
 
     @PostConstruct

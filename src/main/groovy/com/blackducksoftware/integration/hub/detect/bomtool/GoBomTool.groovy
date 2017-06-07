@@ -9,7 +9,7 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.packman.bomtool
+package com.blackducksoftware.integration.hub.detect.bomtool
 
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
@@ -19,10 +19,11 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.packman.bomtool.go.GoPackager
-import com.blackducksoftware.integration.hub.packman.type.BomToolType
-import com.blackducksoftware.integration.hub.packman.type.ExecutableType
-import com.blackducksoftware.integration.hub.packman.util.executable.Executable
+import com.blackducksoftware.integration.hub.detect.bomtool.go.GoPackager
+import com.blackducksoftware.integration.hub.detect.type.BomToolType
+import com.blackducksoftware.integration.hub.detect.type.ExecutableType
+import com.blackducksoftware.integration.hub.detect.util.executable.Executable
+
 @Component
 class GoBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(GoBomTool.class)
