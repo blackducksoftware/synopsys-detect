@@ -40,10 +40,10 @@ class NpmBomTool extends BomTool {
 	 * Not yet defined
 	 */
 	private String getExecutablePath() {
-		if(!packmanProperties.npmPath) {
+		if(!detectProperties.npmPath) {
 			return executableManager.getPathOfExecutable(ExecutableType.NPM)
 		}
-		packmanProperties.npmPath
+		detectProperties.npmPath
 	}
 
 }
