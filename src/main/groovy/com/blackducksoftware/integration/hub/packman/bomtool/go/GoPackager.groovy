@@ -12,6 +12,7 @@
 package com.blackducksoftware.integration.hub.packman.bomtool.go
 
 import org.apache.commons.io.FileUtils
+import org.apache.commons.io.FilenameUtils
 import org.apache.commons.lang3.math.NumberUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -54,7 +55,7 @@ class GoPackager {
         final String rootVersion = projectInfoGatherer.getDefaultProjectVersionName()
         final ExternalId rootExternalId = new NameVersionExternalId(GoBomTool.GOLANG, rootName, rootVersion)
         final DependencyNode root = new DependencyNode(rootName, rootVersion, rootExternalId)
-        def goDirectories = fileFinder.findDirectoriesContainingFilesToDepth(new File(sourcePath), '*.go', NumberUtils.toInt(packmanProperties.getSearchDepth()));
+        def goDirectories = findDirectoriesContainingGoFilesToDepth(new File(sourcePath), '*.go', NumberUtils.toInt(packmanProperties.getSearchDepth()));
         GoDepParser goDepParser = new GoDepParser(gson, projectInfoGatherer)
         def children = new ArrayList<DependencyNode>()
         goDirectories.each {
@@ -82,5 +83,24 @@ class GoPackager {
         def goDepContents = goDepsFile.text
         FileUtils.deleteDirectory(goDepsDirectory)
         goDepContents
+    }
+
+    private File[] findDirectoriesContainingGoFilesToDepth(final File sourceDirectory, final String filenamePattern, int maxDepth){
+        return findDirectoriesContainingGoFilesRecursive(sourceDirectory, filenamePattern, 0, maxDepth)
+    }
+
+    private File[] findDirectoriesContainingGoFilesRecursive(final File sourceDirectory, final String filenamePattern, int currentDepth, int maxDepth){
+        def files = new HashSet<File>();
+        if(currentDepth >= maxDepth || !sourceDirectory.isDirectory() || sourceDirectory.getName().equals('vendor')){
+            return files
+        }
+        for (File file : sourceDirectory.listFiles()) {
+            if (file.isDirectory()) {
+                files.addAll(findDirectoriesContainingGoFilesRecursive(file, filenamePattern, currentDepth + 1, maxDepth))
+            } else if (FilenameUtils.wildcardMatchOnSystem(file.getName(), filenamePattern)) {
+                files.add(sourceDirectory)
+            }
+        }
+        return new ArrayList<File>(files)
     }
 }

@@ -93,15 +93,12 @@ class FileFinder {
 
     private File[] findFilesRecursive(final File sourceDirectory, final String filenamePattern, int currentDepth, int maxDepth){
         def files = [];
-        if(currentDepth >= maxDepth){
+        if(currentDepth >= maxDepth || !sourceDirectory.isDirectory()){
             return files
-        }
-        if (!sourceDirectory.isDirectory()) {
-            return null
         }
         sourceDirectory.listFiles().each {
             if(it.isDirectory()){
-                files.addAll(findFilesRecursive(it, filenamePattern, currentDepth++, maxDepth))
+                files.addAll(findFilesRecursive(it, filenamePattern, currentDepth + 1, maxDepth))
             }else if(FilenameUtils.wildcardMatchOnSystem(it.getName(), filenamePattern)){
                 files.add(it)
             }
@@ -115,20 +112,13 @@ class FileFinder {
 
     private File[] findDirectoriesContainingFilesRecursive(final File sourceDirectory, final String filenamePattern, int currentDepth, int maxDepth){
         def files = new HashSet<File>();
-        if(currentDepth >= maxDepth){
-            println "CAN NOT GO THIS DEEP"
+        if(currentDepth >= maxDepth || !sourceDirectory.isDirectory()){
             return files
         }
-        if (!sourceDirectory.isDirectory()) {
-            return files
-        }
-        sourceDirectory.listFiles().each {
-            if(currentDepth >= maxDepth){
-                println "${it.getAbsolutePath()} should be ignored but it isnt"
-            }
-            if (it.isDirectory()) {
-                files.addAll(findDirectoriesContainingFilesRecursive(it, filenamePattern, currentDepth++, maxDepth))
-            } else if (FilenameUtils.wildcardMatchOnSystem(it.getName(), filenamePattern)) {
+        for (File file : sourceDirectory.listFiles()) {
+            if (file.isDirectory()) {
+                files.addAll(findDirectoriesContainingFilesRecursive(file, filenamePattern, currentDepth + 1, maxDepth))
+            } else if (FilenameUtils.wildcardMatchOnSystem(file.getName(), filenamePattern)) {
                 files.add(sourceDirectory)
             }
         }
