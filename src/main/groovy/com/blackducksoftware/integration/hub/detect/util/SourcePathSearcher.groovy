@@ -37,8 +37,8 @@ class SourcePathSearcher {
      */
     List<String> findSourcePathsContainingFilenamePatternWithDepth(String filenamePattern) {
         List<String> matchingSourcePaths = []
-        for (String sourcePath : packmanProperties.getSourcePaths()) {
-            if (fileFinder.containsAllFilesWithDepth(sourcePath, NumberUtils.toInt(packmanProperties.getSearchDepth()), filenamePattern)) {
+        for (String sourcePath : detectProperties.sourcePaths) {
+            if (fileFinder.containsAllFilesWithDepth(sourcePath, NumberUtils.toInt(detectProperties.searchDepth), filenamePattern)) {
                 matchingSourcePaths.add(sourcePath)
             }
         }

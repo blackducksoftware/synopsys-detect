@@ -71,7 +71,7 @@ class GoBomTool extends BomTool {
     }
 
     private String findGoDepExecutable() {
-        String godepPath = packmanProperties.getGodepPath()
+        String godepPath = detectProperties.godepPath
         if (StringUtils.isBlank(godepPath)) {
             godepPath = executableManager.getPathOfExecutable(ExecutableType.GODEP)
         }
@@ -79,7 +79,7 @@ class GoBomTool extends BomTool {
     }
 
     private String installGoDep(String goExecutable){
-        def outputDirectory = new File(packmanProperties.getOutputDirectoryPath())
+        def outputDirectory = new File(detectProperties.outputDirectoryPath)
         logger.debug("Installing godep in ${outputDirectory}")
         Executable getGoDep = new Executable(outputDirectory, goExecutable, [
             'get',
