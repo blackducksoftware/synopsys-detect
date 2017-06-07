@@ -29,6 +29,7 @@ import com.blackducksoftware.integration.hub.packman.util.FileFinder
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
 import com.blackducksoftware.integration.hub.packman.util.executable.Executable
 import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableRunner
+import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableRunnerException
 import com.google.gson.Gson
 
 @Component
@@ -60,8 +61,10 @@ class GoPackager {
         def children = new ArrayList<DependencyNode>()
         goDirectories.each {
             String goDepContents = getGoDepContents(it, goExecutable)
-            DependencyNode child = goDepParser.parseGoDep(goDepContents)
-            children.add(child)
+            if(goDepContents?.trim()){
+                DependencyNode child = goDepParser.parseGoDep(goDepContents)
+                children.add(child)
+            }
         }
         if (packmanProperties.getGoAggregate()) {
             root.children = children
@@ -75,19 +78,23 @@ class GoPackager {
         def vendorDirectory = new File(goDirectory, "vendor")
         def goDepsDirectory = new File(goDirectory, "Godeps")
         def goDepsFile = new File(goDepsDirectory, "Godeps.json")
-        boolean previousGodepsFile = goDepsFile.exists()
+        if (goDepsFile.exists()) {
+            return goDepsFile.text
+        }
         boolean previousVendorFile = vendorDirectory.exists()
-        if (!previousGodepsFile) {
+        def goDepContents = null
+        try{
             logger.info("Running ${goExecutable} save on path ${goDirectory.getAbsolutePath()}")
             Executable executable = new Executable(goDirectory, goExecutable, ['save'])
             executableRunner.executeLoudly(executable)
+        } catch (ExecutableRunnerException e){
+            logger.error("Failed to run ${goExecutable} save on path ${goDirectory.getAbsolutePath()}, ${e.getMessage().trim()}")
         }
-        def goDepContents = goDepsFile.text
-        if(!previousGodepsFile){
-            // We dont want to delete the Godeps directory if we didnt create it with the save command
+        if (goDepsFile.exists()) {
+            goDepContents = goDepsFile.text
             FileUtils.deleteDirectory(goDepsDirectory)
         }
-        if(!previousVendorFile && vendorDirectory.exists()){
+        if (!previousVendorFile && vendorDirectory.exists()) {
             // cleanup the vendor directory if the save command created it
             FileUtils.deleteDirectory(vendorDirectory)
         }
