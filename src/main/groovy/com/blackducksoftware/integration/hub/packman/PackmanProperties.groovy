@@ -5,7 +5,12 @@ import javax.annotation.PostConstruct
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.core.env.ConfigurableEnvironment
+import org.springframework.core.env.EnumerablePropertySource
+import org.springframework.core.env.MutablePropertySources
+import org.springframework.core.env.PropertySource
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.boss.exception.BossException
@@ -14,6 +19,13 @@ import com.blackducksoftware.integration.hub.packman.help.ValueDescription
 @Component
 class PackmanProperties {
     private final Logger logger = LoggerFactory.getLogger(PackmanProperties.class)
+
+    static final String DOCKER_PROPERTY_PREFIX = 'packman.docker.passthrough.'
+
+    @Autowired
+    ConfigurableEnvironment configurableEnvironment
+
+    Set<String> additionalDockerPropertyNames = new HashSet<>()
 
     @ValueDescription(description="If true the bdio files will be deleted after upload")
     @Value('${packman.cleanup.bdio.files}')
@@ -175,5 +187,22 @@ class PackmanProperties {
 
         inspectorPackageName = inspectorPackageName.trim()
         inspectorPackageVersion = inspectorPackageVersion.trim()
+
+        MutablePropertySources mutablePropertySources = configurableEnvironment.getPropertySources()
+        for (PropertySource propertySource : mutablePropertySources) {
+            if (propertySource instanceof EnumerablePropertySource) {
+                EnumerablePropertySource enumerablePropertySource = (EnumerablePropertySource) propertySource
+                String[] propertyNames = enumerablePropertySource.propertyNames
+                for (String propertyName : propertyNames) {
+                    if (propertyName && propertyName.startsWith(DOCKER_PROPERTY_PREFIX)) {
+                        additionalDockerPropertyNames.add(propertyName)
+                    }
+                }
+            }
+        }
+    }
+
+    public String getProperty(String key) {
+        configurableEnvironment.getProperty(key)
     }
 }
