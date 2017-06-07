@@ -34,17 +34,17 @@ class GradleInitScriptPackager {
         File initScriptFile = File.createTempFile('init-packman', '.gradle')
         initScriptFile.deleteOnExit()
         String initScriptContents = getClass().getResourceAsStream('/init-script-gradle').getText(StandardCharsets.UTF_8.name())
-        initScriptContents = initScriptContents.replace('GRADLE_INSPECTOR_VERSION', packmanProperties.gradleInspectorVersion)
-        initScriptContents = initScriptContents.replace('EXCLUDED_PROJECT_NAMES', packmanProperties.excludedProjectNames)
-        initScriptContents = initScriptContents.replace('INCLUDED_PROJECT_NAMES', packmanProperties.includedProjectNames)
-        initScriptContents = initScriptContents.replace('EXCLUDED_CONFIGURATION_NAMES', packmanProperties.excludedConfigurationNames)
-        initScriptContents = initScriptContents.replace('INCLUDED_CONFIGURATION_NAMES', packmanProperties.includedConfigurationNames)
+        initScriptContents = initScriptContents.replace('GRADLE_INSPECTOR_VERSION', packmanProperties.getGradleInspectorVersion())
+        initScriptContents = initScriptContents.replace('EXCLUDED_PROJECT_NAMES', packmanProperties.getExcludedProjectNames())
+        initScriptContents = initScriptContents.replace('INCLUDED_PROJECT_NAMES', packmanProperties.getIncludedProjectNames())
+        initScriptContents = initScriptContents.replace('EXCLUDED_CONFIGURATION_NAMES', packmanProperties.getExcludedConfigurationNames())
+        initScriptContents = initScriptContents.replace('INCLUDED_CONFIGURATION_NAMES', packmanProperties.getIncludedConfigurationNames())
 
         initScriptFile << initScriptContents
         String initScriptPath = initScriptFile.absolutePath
         logger.info("using ${initScriptPath} as the path for the gradle init script")
         Executable executable = new Executable(new File(sourcePath), gradleExecutable, [
-            packmanProperties.gradleBuildCommand,
+            packmanProperties.getGradleBuildCommand(),
             "--init-script=${initScriptPath}"
         ])
         executableRunner.executeLoudly(executable)

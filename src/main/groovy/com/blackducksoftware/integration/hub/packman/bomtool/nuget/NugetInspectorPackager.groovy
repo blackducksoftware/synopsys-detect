@@ -41,7 +41,7 @@ class NugetInspectorPackager {
     NugetNodeTransformer nugetNodeTransformer
 
     DependencyNode makeDependencyNode(String sourcePath, File nugetExecutable) {
-        def outputDirectory = new File(new File(packmanProperties.outputDirectoryPath), 'nuget')
+        def outputDirectory = new File(new File(packmanProperties.getOutputDirectoryPath()), 'nuget')
         def sourceDirectory = new File(sourcePath)
         String inspectorExePath = getInspectorExePath(sourceDirectory, outputDirectory, nugetExecutable)
 
@@ -52,10 +52,10 @@ class NugetInspectorPackager {
         def options =  [
             "--target_path=${sourcePath}",
             "--output_directory=${outputDirectory.getAbsolutePath()}",
-            "--ignore_failure=${packmanProperties.inspectorIgnoreFailure}"
+            "--ignore_failure=${packmanProperties.getInspectorIgnoreFailure()}"
         ]
-        if(packmanProperties.inspectorExcludedModules) {
-            options += "--excluded_modules=${packmanProperties.inspectorExcludedModules}"
+        if(packmanProperties.getInspectorExcludedModules()) {
+            options += "--excluded_modules=${packmanProperties.getInspectorExcludedModules()}"
         }
         if(logger.traceEnabled) {
             options += "-v"
@@ -71,18 +71,18 @@ class NugetInspectorPackager {
     }
 
     private String getInspectorExePath(File sourceDirectory, File outputDirectory, File nugetExecutable) {
-        File inspectorVersionDirectory = new File(outputDirectory, "${packmanProperties.inspectorPackageName}.${packmanProperties.inspectorPackageVersion}")
+        File inspectorVersionDirectory = new File(outputDirectory, "${packmanProperties.getInspectorPackageName()}.${packmanProperties.getInspectorPackageVersion()}")
         File toolsDirectory = new File(inspectorVersionDirectory, 'tools')
-        File inspectorExe = new File(toolsDirectory, "${packmanProperties.inspectorPackageName}.exe")
+        File inspectorExe = new File(toolsDirectory, "${packmanProperties.getInspectorPackageName()}.exe")
 
         //if we can't find the inspector where we expect to, attempt to install it from nuget.org
         if (inspectorExe == null || !inspectorExe.exists()) {
             installInspectorFromNugetDotOrg(sourceDirectory, outputDirectory, nugetExecutable)
-            inspectorExe = new File(toolsDirectory, "${packmanProperties.inspectorPackageName}.exe")
+            inspectorExe = new File(toolsDirectory, "${packmanProperties.getInspectorPackageName()}.exe")
         }
 
         if (inspectorExe == null || !inspectorExe.exists()) {
-            logger.error("Could not find the ${packmanProperties.inspectorPackageName} version:${packmanProperties.inspectorPackageVersion} even after an install attempt.")
+            logger.error("Could not find the ${packmanProperties.getInspectorPackageName()} version:${packmanProperties.getInspectorPackageVersion()} even after an install attempt.")
             return null
         }
 
@@ -92,9 +92,9 @@ class NugetInspectorPackager {
     private ExecutableOutput installInspectorFromNugetDotOrg(File sourceDirectory, File outputDirectory, File nugetExecutable) {
         def options =  [
             'install',
-            packmanProperties.inspectorPackageName,
+            packmanProperties.getInspectorPackageName(),
             '-Version',
-            packmanProperties.inspectorPackageVersion,
+            packmanProperties.getInspectorPackageVersion(),
             '-OutputDirectory',
             outputDirectory.absolutePath
         ]

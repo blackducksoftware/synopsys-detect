@@ -35,9 +35,9 @@ class BdioUploader {
             BomImportRequestService bomImportRequestService = hubServicesFactory.createBomImportRequestService()
 
             createdBdioFiles.each { file ->
-                logger.info("uploading ${file.name} to ${packmanProperties.hubUrl}")
+                logger.info("uploading ${file.name} to ${packmanProperties.getHubUrl()}")
                 bomImportRequestService.importBomFile(file, BuildToolConstants.BDIO_FILE_MEDIA_TYPE)
-                if (Boolean.valueOf(packmanProperties.cleanupBdioFiles)) {
+                if (Boolean.valueOf(packmanProperties.getCleanupBdioFiles())) {
                     file.delete()
                 }
             }
@@ -48,17 +48,17 @@ class BdioUploader {
 
     private HubServerConfigBuilder createBuilder(Slf4jIntLogger slf4jIntLogger) {
         HubServerConfigBuilder hubServerConfigBuilder = new HubServerConfigBuilder()
-        hubServerConfigBuilder.setHubUrl(packmanProperties.hubUrl)
-        hubServerConfigBuilder.setTimeout(packmanProperties.hubTimeout)
-        hubServerConfigBuilder.setUsername(packmanProperties.hubUsername)
-        hubServerConfigBuilder.setPassword(packmanProperties.hubPassword)
+        hubServerConfigBuilder.setHubUrl(packmanProperties.getHubUrl())
+        hubServerConfigBuilder.setTimeout(packmanProperties.getHubTimeout())
+        hubServerConfigBuilder.setUsername(packmanProperties.getHubUsername())
+        hubServerConfigBuilder.setPassword(packmanProperties.getHubPassword())
 
-        hubServerConfigBuilder.setProxyHost(packmanProperties.hubProxyHost)
-        hubServerConfigBuilder.setProxyPort(packmanProperties.hubProxyPort)
-        hubServerConfigBuilder.setProxyUsername(packmanProperties.hubProxyUsername)
-        hubServerConfigBuilder.setProxyPassword(packmanProperties.hubProxyPassword)
+        hubServerConfigBuilder.setProxyHost(packmanProperties.getHubProxyHost())
+        hubServerConfigBuilder.setProxyPort(packmanProperties.getHubProxyPort())
+        hubServerConfigBuilder.setProxyUsername(packmanProperties.getHubProxyUsername())
+        hubServerConfigBuilder.setProxyPassword(packmanProperties.getHubProxyPassword())
 
-        hubServerConfigBuilder.setAutoImportHttpsCertificates(Boolean.valueOf(packmanProperties.hubAutoImportCertificate))
+        hubServerConfigBuilder.setAutoImportHttpsCertificates(Boolean.valueOf(packmanProperties.getHubAutoImportCertificate()))
         hubServerConfigBuilder.setLogger(slf4jIntLogger)
 
         hubServerConfigBuilder
