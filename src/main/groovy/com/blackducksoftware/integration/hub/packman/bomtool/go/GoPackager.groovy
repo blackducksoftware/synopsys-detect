@@ -54,7 +54,7 @@ class GoPackager {
         final String rootVersion = projectInfoGatherer.getDefaultProjectVersionName()
         final ExternalId rootExternalId = new NameVersionExternalId(GoBomTool.GOLANG, rootName, rootVersion)
         final DependencyNode root = new DependencyNode(rootName, rootVersion, rootExternalId)
-        def goDirectories = fileFinder.findDirectoriesContainingFiles(new File(sourcePath), '*.go', NumberUtils.toInt(packmanProperties.searchDepth));
+        def goDirectories = fileFinder.findDirectoriesContainingFiles(new File(sourcePath), '*.go', NumberUtils.toInt(packmanProperties.getSearchDepth()));
         GoDepParser goDepParser = new GoDepParser(gson, projectInfoGatherer)
         def children = new ArrayList<DependencyNode>()
         goDirectories.each {
@@ -62,7 +62,7 @@ class GoPackager {
             DependencyNode child = goDepParser.parseGoDep(goDepContents)
             children.add(child)
         }
-        if (packmanProperties.goAggregate) {
+        if (packmanProperties.getGoAggregate()) {
             root.children = children
             return [root]
         } else {
