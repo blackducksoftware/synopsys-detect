@@ -52,7 +52,7 @@ class DockerProperties {
         constructArgument(arguments, 'packman.docker.sandbox.path', WORKING_DIRECTORY)
         constructArgument(arguments, 'logging.level.com.blackducksoftware.integration', LOGGING_LEVEL_COM_BLACKDUCKSOFTWARE)
 
-        for (String propertyName : packmanProperties.getAdditionalDockerPropertyNames()) {
+        packmanProperties.additionalDockerPropertyNames.each { propertyName ->
             String dockerKey = propertyName[PackmanProperties.DOCKER_PROPERTY_PREFIX.length()..-1]
             constructArgument(arguments, propertyName, dockerKey)
         }
@@ -61,7 +61,7 @@ class DockerProperties {
     }
 
     private String constructArgument(List<String> arguments, String key, String dockerKey) {
-        String value = packmanProperties.getProperty(key)
+        String value = packmanProperties.getDetectProperty(key)
         if (value) {
             arguments.add("--${dockerKey}=${value}")
         }

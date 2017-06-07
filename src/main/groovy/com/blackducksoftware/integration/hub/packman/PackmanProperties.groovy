@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.env.ConfigurableEnvironment
 import org.springframework.core.env.EnumerablePropertySource
 import org.springframework.core.env.MutablePropertySources
-import org.springframework.core.env.PropertySource
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.boss.exception.BossException
@@ -205,11 +204,10 @@ class PackmanProperties {
         inspectorPackageVersion = inspectorPackageVersion.trim()
 
         MutablePropertySources mutablePropertySources = configurableEnvironment.getPropertySources()
-        for (PropertySource propertySource : mutablePropertySources) {
+        mutablePropertySources.each { propertySource ->
             if (propertySource instanceof EnumerablePropertySource) {
                 EnumerablePropertySource enumerablePropertySource = (EnumerablePropertySource) propertySource
-                String[] propertyNames = enumerablePropertySource.propertyNames
-                for (String propertyName : propertyNames) {
+                enumerablePropertySource.propertyNames.each { propertyName ->
                     if (propertyName && propertyName.startsWith(DOCKER_PROPERTY_PREFIX)) {
                         additionalDockerPropertyNames.add(propertyName)
                     }
@@ -218,7 +216,7 @@ class PackmanProperties {
         }
     }
 
-    public String getProperty(String key) {
+    public String getDetectProperty(String key) {
         configurableEnvironment.getProperty(key)
     }
 }
