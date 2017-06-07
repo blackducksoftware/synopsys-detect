@@ -1,13 +1,14 @@
 package com.blackducksoftware.integration.hub.packman.type;
 
 public enum BomToolType {
-    MAVEN,
-    GRADLE,
-    SBT,
-    NUGET,
     COCOAPODS,
+    DOCKER,
+    GRADLE,
+    MAVEN,
+    NUGET,
     PIP,
     RUBYGEMS,
     CARTHAGE,
-    GO;
+    GO,
+    SBT;
 }
