@@ -11,6 +11,9 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.pip
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
@@ -19,6 +22,7 @@ import com.blackducksoftware.integration.hub.detect.util.NameVersionNode
 import com.blackducksoftware.integration.hub.detect.util.NameVersionNodeBuilder
 
 class PipInspectorTreeParser {
+    final Logger logger = LoggerFactory.getLogger(this.getClass())
 
     public static final String SEPERATOR = '=='
     public static final String UNKOWN_PROJECT = "n?${SEPERATOR}v?"
@@ -34,20 +38,26 @@ class PipInspectorTreeParser {
         Stack<NameVersionNode> tree = new Stack<>()
         tree.push(projectNode)
 
-        int level = 0
+        int indentation = 0
         for(String line: lines) {
-            int currentLevel = getCurrentLevel(line)
+            if(line.startsWith(UNKOWN_REQUIREMENTS_PREFIX)) {
+                String path = line.replace(UNKOWN_REQUIREMENTS_PREFIX).trim()
+                logger.info("Pip inspector could not locate requirements file @ ${path}")
+                continue
+            }
+
+            int currentIndentation = getCurrentIndentation(line)
             NameVersionNode node = lineToNode(line)
-            if (currentLevel == level) {
+            if (currentIndentation == indentation) {
                 tree.pop()
             } else {
-                for(;level >= currentLevel; level--) {
+                for(;indentation >= currentIndentation; indentation--) {
                     tree.pop()
                 }
             }
 
             nodeBuilder.addChildNodeToParent(node, tree.peek())
-            level = currentLevel
+            indentation = currentIndentation
             tree.push(node)
         }
 
@@ -74,13 +84,13 @@ class PipInspectorTreeParser {
         node
     }
 
-    int getCurrentLevel(String line) {
-        int currentLevel = 0
+    int getCurrentIndentation(String line) {
+        int currentIndentation = 0
         while(line.startsWith(' '.multiply(4))) {
-            currentLevel++
+            currentIndentation++
             line = line.substring(4)
         }
 
-        currentLevel
+        currentIndentation
     }
 }
