@@ -154,6 +154,10 @@ class PackmanProperties {
     @ValueDescription(description="The path of the Pip executable")
     @Value('${packman.pip.path}')
     String pipPath
+	
+	@ValueDescription(description="The path of the Npm executable")
+	@Value('${packman.npm.path}')
+	String npmPath
 
     @PostConstruct
     void init() {

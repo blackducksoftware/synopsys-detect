@@ -8,7 +8,8 @@ enum ExecutableType {
     PIP([(OperatingSystemType.WINDOWS): 'pip.exe', (OperatingSystemType.LINUX): 'pip']),
     PYTHON([(OperatingSystemType.WINDOWS): 'python.exe', (OperatingSystemType.LINUX): 'python']),
     PIP3([(OperatingSystemType.WINDOWS): 'pip3.exe', (OperatingSystemType.LINUX): 'pip3']),
-    PYTHON3([(OperatingSystemType.WINDOWS): 'python3.exe', (OperatingSystemType.LINUX): 'python3']);
+    PYTHON3([(OperatingSystemType.WINDOWS): 'python3.exe', (OperatingSystemType.LINUX): 'python3']),
+	NPM([(OperatingSystemType.WINDOWS): 'npm.cmd', (OperatingSystemType.LINUX): 'npm']);
 
     private Map<OperatingSystemType, String> osToExecutableMap = [:]
 

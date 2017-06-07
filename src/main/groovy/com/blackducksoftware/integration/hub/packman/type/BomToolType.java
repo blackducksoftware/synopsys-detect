@@ -8,5 +8,6 @@ public enum BomToolType {
     COCOAPODS,
     PIP,
     RUBYGEMS,
-    CARTHAGE;
+    CARTHAGE,
+    NPM;
 }
