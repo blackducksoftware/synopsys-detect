@@ -27,6 +27,7 @@ class PipInspectorTreeParser {
     public static final String SEPERATOR = '=='
     public static final String UNKOWN_PROJECT = "n?${SEPERATOR}v?"
     public static final String UNKOWN_REQUIREMENTS_PREFIX = 'r?'
+    public static final String UNKOWN_PACKAGE_PREFIX = '--'
 
     DependencyNode parse(String treeText) {
         def lines = treeText.trim().split('\n').toList()
@@ -43,6 +44,12 @@ class PipInspectorTreeParser {
             if(line.startsWith(UNKOWN_REQUIREMENTS_PREFIX)) {
                 String path = line.replace(UNKOWN_REQUIREMENTS_PREFIX).trim()
                 logger.info("Pip inspector could not locate requirements file @ ${path}")
+                continue
+            }
+
+            if(line.startsWith(UNKOWN_PACKAGE_PREFIX)) {
+                String packageName = line.replace(UNKOWN_PACKAGE_PREFIX).trim()
+                logger.info("Pip inspector could not resolve the package: ${packageName}")
                 continue
             }
 
