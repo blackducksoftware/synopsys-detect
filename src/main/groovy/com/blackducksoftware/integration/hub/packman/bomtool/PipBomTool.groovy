@@ -41,15 +41,15 @@ class PipBomTool extends BomTool {
 
     @PostConstruct
     void init() {
-        if (packmanProperties.pipThreeOverride) {
+        if (packmanProperties.getPipThreeOverride()) {
             pythonExecutableType = ExecutableType.PYTHON3
             pipExecutableType = ExecutableType.PIP3
         } else {
             pythonExecutableType = ExecutableType.PYTHON
             pipExecutableType = ExecutableType.PIP
         }
-        pythonExecutable = findExecutable(null, packmanProperties.pythonPath, pythonExecutableType)
-        pipExecutable = findExecutable(null, packmanProperties.pipPath, pipExecutableType)
+        pythonExecutable = findExecutable(null, packmanProperties.getPythonPath(), pythonExecutableType)
+        pipExecutable = findExecutable(null, packmanProperties.getPipPath(), pipExecutableType)
         if (SystemUtils.IS_OS_WINDOWS) {
             binFolderName = 'Scripts'
             envVariables.putAll(WINDOWS_ENV_VARIABLES)
@@ -92,7 +92,7 @@ class PipBomTool extends BomTool {
         File virtualEnv = new File(packmanProperties.getOutputDirectoryPath(), 'blackduck_virtualenv')
         String virtualEnvBin = new File(virtualEnv, binFolderName).absolutePath
 
-        if (packmanProperties.createVirtualEnv) {
+        if (packmanProperties.getCreateVirtualEnv()) {
             executableRunner.executeLoudly(installVirtualenvPackage)
             String virtualEnvLocation = getPackageLocation(sourceDirectory, 'virtualenv')
             List<String> commandArgs = [
@@ -101,8 +101,8 @@ class PipBomTool extends BomTool {
             ]
             def createVirtualEnvCommand = new Executable(sourceDirectory, pythonExecutable, commandArgs)
             executableRunner.executeLoudly(createVirtualEnvCommand)
-            pythonExecutable = findExecutable(virtualEnvBin, packmanProperties.pythonPath, pythonExecutableType)
-            pipExecutable = findExecutable(virtualEnvBin, packmanProperties.pipPath, pipExecutableType)
+            pythonExecutable = findExecutable(virtualEnvBin, packmanProperties.getPythonPath(), pythonExecutableType)
+            pipExecutable = findExecutable(virtualEnvBin, packmanProperties.getPipPath(), pipExecutableType)
         }
     }
 

@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.packman.PackmanProperties
-import com.blackducksoftware.integration.hub.packman.bomtool.maven.MavenOutputParser
 import com.blackducksoftware.integration.hub.packman.type.BomToolType
 import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
 import com.blackducksoftware.integration.hub.packman.util.executable.Executable
@@ -44,8 +43,8 @@ public class MavenPackager {
         File sourceDirectory = new File(sourcePath)
 
         def arguments = ["dependency:tree"]
-        if (packmanProperties.mavenScope?.trim()) {
-            arguments.add("-Dscope=${packmanProperties.mavenScope}")
+        if (packmanProperties.getMavenScope()?.trim()) {
+            arguments.add("-Dscope=${packmanProperties.getMavenScope()}")
         }
         final Executable mvnExecutable = new Executable(sourceDirectory, mavenExecutable, arguments)
         final ExecutableOutput mvnOutput = executableRunner.executeLoudly(mvnExecutable)
@@ -53,7 +52,7 @@ public class MavenPackager {
         final MavenOutputParser mavenOutputParser = new MavenOutputParser()
         projects.addAll(mavenOutputParser.parse(mvnOutput.standardOutput))
 
-        if (packmanProperties.mavenAggregateBom && !projects.isEmpty()) {
+        if (packmanProperties.getMavenAggregateBom() && !projects.isEmpty()) {
             final DependencyNode firstNode = projects.remove(0)
             projects.each { subProject ->
                 firstNode.children.addAll(subProject.children)

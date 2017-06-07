@@ -21,9 +21,6 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.packman.bomtool.maven.MavenPackager
 import com.blackducksoftware.integration.hub.packman.type.BomToolType
 import com.blackducksoftware.integration.hub.packman.type.ExecutableType
-import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
-import com.blackducksoftware.integration.hub.packman.util.SourcePathSearcher
-import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableManager
 
 @Component
 class MavenBomTool extends BomTool {
@@ -58,9 +55,9 @@ class MavenBomTool extends BomTool {
     }
 
     private String findMavenExecutablePath() {
-        if (StringUtils.isBlank(packmanProperties.mavenPath)) {
+        if (StringUtils.isBlank(packmanProperties.getMavenPath())) {
             return executableManager.getPathOfExecutable(ExecutableType.MVN)
         }
-        packmanProperties.mavenPath
+        packmanProperties.getMavenPath()
     }
 }
