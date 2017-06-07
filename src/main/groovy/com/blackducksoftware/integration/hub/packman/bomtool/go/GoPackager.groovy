@@ -55,7 +55,7 @@ class GoPackager {
         final String rootVersion = projectInfoGatherer.getDefaultProjectVersionName()
         final ExternalId rootExternalId = new NameVersionExternalId(GoBomTool.GOLANG, rootName, rootVersion)
         final DependencyNode root = new DependencyNode(rootName, rootVersion, rootExternalId)
-        def goDirectories = findDirectoriesContainingGoFilesToDepth(new File(sourcePath), '*.go', NumberUtils.toInt(packmanProperties.getSearchDepth()));
+        def goDirectories = findDirectoriesContainingGoFilesToDepth(new File(sourcePath), NumberUtils.toInt(packmanProperties.getSearchDepth()));
         GoDepParser goDepParser = new GoDepParser(gson, projectInfoGatherer)
         def children = new ArrayList<DependencyNode>()
         goDirectories.each {
@@ -94,20 +94,20 @@ class GoPackager {
         goDepContents
     }
 
-    private File[] findDirectoriesContainingGoFilesToDepth(final File sourceDirectory, final String filenamePattern, int maxDepth){
-        return findDirectoriesContainingGoFilesRecursive(sourceDirectory, filenamePattern, 0, maxDepth)
+    private File[] findDirectoriesContainingGoFilesToDepth(final File sourceDirectory, int maxDepth){
+        return findDirectoriesContainingGoFilesRecursive(sourceDirectory, 0, maxDepth)
     }
 
-    private File[] findDirectoriesContainingGoFilesRecursive(final File sourceDirectory, final String filenamePattern, int currentDepth, int maxDepth){
+    private File[] findDirectoriesContainingGoFilesRecursive(final File sourceDirectory, int currentDepth, int maxDepth){
         def files = new HashSet<File>();
         // we want to ignore the vendor directory, it is the go cache https://blog.gopheracademy.com/advent-2015/vendor-folder/
-        if(currentDepth >= maxDepth || !sourceDirectory.isDirectory() || sourceDirectory.getName().equals('vendor')){
+        if(currentDepth >= maxDepth || !sourceDirectory.isDirectory() || sourceDirectory.getName().equals('vendor') || sourceDirectory.getName().equals('Godeps')){
             return files
         }
         for (File file : sourceDirectory.listFiles()) {
             if (file.isDirectory()) {
-                files.addAll(findDirectoriesContainingGoFilesRecursive(file, filenamePattern, currentDepth + 1, maxDepth))
-            } else if (FilenameUtils.wildcardMatchOnSystem(file.getName(), filenamePattern)) {
+                files.addAll(findDirectoriesContainingGoFilesRecursive(file, currentDepth + 1, maxDepth))
+            } else if (FilenameUtils.wildcardMatchOnSystem(file.getName(), '*.go')) {
                 files.add(sourceDirectory)
             }
         }
