@@ -1,3 +1,14 @@
+/*
+ * Copyright (C) 2017 Black Duck Software Inc.
+ * http://www.blackducksoftware.com/
+ * All rights reserved.
+ *
+ * This software is the confidential and proprietary information of
+ * Black Duck Software ("Confidential Information"). You shall not
+ * disclose such Confidential Information and shall use it only in
+ * accordance with the terms of the license agreement you entered into
+ * with Black Duck Software.
+ */
 package com.blackducksoftware.integration.hub.packman.bomtool
 
 import javax.annotation.PostConstruct
@@ -24,7 +35,6 @@ class PipBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(this.getClass())
 
     static final String SETUP_FILENAME = 'setup.py'
-    static final Map<String, String> WINDOWS_ENV_VARIABLES = ["PYTHONIOENCODING":"utf8"]
 
     @Autowired
     PipPackager pipPackager
@@ -35,7 +45,6 @@ class PipBomTool extends BomTool {
     String pythonExecutable
     String pipExecutable
     String binFolderName
-    Map<String, String> envVariables = [:]
 
     List<String> matchingSourcePaths = []
 
@@ -52,7 +61,6 @@ class PipBomTool extends BomTool {
         pipExecutable = findExecutable(null, packmanProperties.pipPath, pipExecutableType)
         if (SystemUtils.IS_OS_WINDOWS) {
             binFolderName = 'Scripts'
-            envVariables.putAll(WINDOWS_ENV_VARIABLES)
         } else {
             binFolderName = 'bin'
         }
@@ -74,7 +82,7 @@ class PipBomTool extends BomTool {
         matchingSourcePaths.each { sourcePath ->
             try {
                 setupEnvironment(sourcePath)
-                projectNodes.addAll(pipPackager.makeDependencyNodes(sourcePath, pipExecutable, pythonExecutable, envVariables))
+                projectNodes.addAll(pipPackager.makeDependencyNodes(sourcePath, pipExecutable, pythonExecutable))
             } catch (ExecutableRunnerException e) {
                 def message = 'An error occured when trying to extract python dependencies'
                 logger.warn(message, e)

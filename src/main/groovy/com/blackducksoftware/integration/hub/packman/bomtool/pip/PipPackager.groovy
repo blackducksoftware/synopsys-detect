@@ -17,8 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
 import com.blackducksoftware.integration.hub.packman.PackmanProperties
+import com.blackducksoftware.integration.hub.packman.type.BomToolType
 import com.blackducksoftware.integration.hub.packman.util.FileFinder
+import com.blackducksoftware.integration.hub.packman.util.ProjectInfoGatherer
 import com.blackducksoftware.integration.hub.packman.util.executable.Executable
 import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableRunner
 import com.blackducksoftware.integration.hub.packman.util.executable.ExecutableRunnerException
@@ -36,41 +40,27 @@ class PipPackager {
     @Autowired
     PackmanProperties packmanProperties
 
-    List<DependencyNode> makeDependencyNodes(final String sourcePath, final String pipExecutable, final String pythonExecutable,
-            final Map<String, String> environmentVariables) throws ExecutableRunnerException {
+    @Autowired
+    ProjectInfoGatherer projectInfoGatherer
+
+    List<DependencyNode> makeDependencyNodes(final String sourcePath, final String pipExecutable, final String pythonExecutable) throws ExecutableRunnerException {
         def sourceDirectory = new File(sourcePath)
         def outputDirectory = new File(packmanProperties.outputDirectoryPath)
-        def tempDirectory = new File(outputDirectory, UUID.randomUUID().toString())
-        tempDirectory.mkdir()
-        def requirementsFile = null
-        if (requirementsFile) {
-            requirementsFile = new File(requirementsFilePath)
-        }
-
-        def installProject = new Executable(sourceDirectory, environmentVariables, pythonExecutable, ['setup.py', 'install'])
-        executableRunner.executeLoudly(installProject)
-
-        def installPipInspector = new Executable(sourceDirectory, environmentVariables, pipExecutable, [
-            'install',
-            '-I',
-            "${pipInspectorName}==${pipInspectorVersion}"
-        ])
-        executableRunner.executeLoudly(installPipInspector)
+        def setupFile = fileFinder.findFile(sourceDirectory, 'setup.py')
 
         def pipInspectorOptions = [
-            '-u',
-            'setup.py',
-            'integration_pip_inspector',
-            "--OutputDirectory=${tempDirectory.absolutePath}",
-            '--IgnoreFailure=False'
+            getClass().getResource('pip-inpspector.py').toString()
         ]
-        if(requirementsFile) {
-            pipInspectorOptions += "--RequirementsFile=${requirementsFile.absolutePath}"
-        }
-        def pipInspector = new Executable(sourceDirectory, environmentVariables, pythonExecutable, pipInspectorOptions)
 
-        if(requirementsFile) {
-            def installRequirements = new Executable(sourceDirectory, environmentVariables, pipExecutable, [
+        // Install requirements file and add it as an option for the inspector
+        if (packmanProperties.requirementsFilePath) {
+            def requirementsFile = new File(packmanProperties.requirementsFilePath)
+            pipInspectorOptions += [
+                '-r',
+                requirementsFile.absolutePath
+            ]
+
+            def installRequirements = new Executable(sourceDirectory, pipExecutable, [
                 'install',
                 '-r',
                 requirementsFile.absolutePath
@@ -78,13 +68,31 @@ class PipPackager {
             executableRunner.executeLoudly(installRequirements)
         }
 
-        def failed = executableRunner.executeLoudly(pipInspector)
+        // Install project if it can find one and pass its name to the inspector
+        if(setupFile) {
+            def installProjectExecutable = new Executable(sourceDirectory, pipExecutable, ['install', '.', '-I'])
+            executableRunner.executeLoudly(installProjectExecutable)
 
+            if(!packmanProperties.projectName) {
+                def findProjectNameExecutable = new Executable(sourceDirectory, pythonExecutable, [
+                    setupFile.absolutePath,
+                    '--name'
+                ])
+                def projectName = executableRunner.executeQuietly(findProjectNameExecutable).standardOutput.trim()
+                pipInspectorOptions += ['-p', projectName]
+            }
+        }
 
-        String inspectorOutput = fileFinder.findFile(tempDirectory, 'dependencyTree.txt').text
+        def pipInspector = new Executable(sourceDirectory, pythonExecutable, pipInspectorOptions)
+        def inspectorOutput = executableRunner.executeLoudly(pipInspector).standardOutput
         def parser = new PipInspectorTreeParser()
         DependencyNode project = parser.parse(inspectorOutput)
-        tempDirectory.deleteDir()
+
+        if(project.name == PipInspectorTreeParser.UNKOWN_PROJECT) {
+            project.name = projectInfoGatherer.getDefaultProjectName(BomToolType.PIP, sourcePath)
+            project.version = projectInfoGatherer.getDefaultProjectVersionName()
+            project.externalId = new NameVersionExternalId(Forge.PYPI, project.name, project.version)
+        }
 
         [project]
     }

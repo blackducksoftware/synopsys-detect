@@ -20,6 +20,10 @@ import com.blackducksoftware.integration.hub.packman.util.NameVersionNodeBuilder
 
 class PipInspectorTreeParser {
 
+    public static final String SEPERATOR = '=='
+    public static final String UNKOWN_PROJECT = "n?${SEPERATOR}v?"
+    public static final String UNKOWN_REQUIREMENTS_PREFIX = 'r?'
+
     DependencyNode parse(String treeText) {
         def lines = treeText.trim().split('\n').toList()
 
@@ -62,7 +66,7 @@ class PipInspectorTreeParser {
     }
 
     NameVersionNode lineToNode(String line) {
-        def segments = line.split('==')
+        def segments = line.split(SEPERATOR)
         def node = new NameVersionNode()
         node.name = segments[0].trim()
         node.version = segments[1].trim()
