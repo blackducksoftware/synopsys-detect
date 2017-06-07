@@ -11,13 +11,14 @@ import org.junit.Test;
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.packman.bomtool.NpmBomTool;
 import com.blackducksoftware.integration.hub.packman.bomtool.npm.NpmCliDependencyFinder
+import com.blackducksoftware.integration.hub.packman.bomtool.npm.NpmNodeModulesDependencyFinder
 import com.blackducksoftware.integration.hub.packman.bomtool.npm.NpmParser;
 import com.google.gson.Gson
 
 public class NpmOutputParserTest {
 	
 	@Test
-	public void npmParserTest() throws IOException {
+	public void npmCliDependencyFinder() throws IOException {
 		def parser = new NpmCliDependencyFinder()
 		def testIn = new File(getClass().getResource("/npm/packman_proj_dependencies.json").getFile())
 		
@@ -28,5 +29,14 @@ public class NpmOutputParserTest {
 		
 		assertTrue(node.toString().contentEquals(testOut.text))
 	}
-
+	
+	@Test
+	public void npmNodeModulesDependencyFinder() throws IOException {
+		def parser = new NpmNodeModulesDependencyFinder()
+		
+		parser.setGson(new Gson())
+		
+		
+	}
+	
 }

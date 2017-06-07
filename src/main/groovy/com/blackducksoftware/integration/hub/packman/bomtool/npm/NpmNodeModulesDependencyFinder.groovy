@@ -113,7 +113,7 @@ class NpmNodeModulesDependencyFinder {
 		def node = new DependencyNode(name, version, externalId)
 	}
 	
-	private PackageNode deserializeJsonToPackageNode(File depOut) {
+	public PackageNode deserializeJsonToPackageNode(File depOut) {
 		gson.fromJson(new JsonReader(new FileReader(depOut)), PackageNode.class)
 	}
 	
