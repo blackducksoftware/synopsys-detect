@@ -110,21 +110,25 @@ class FileFinder {
     }
 
     File[] findDirectoriesContainingFilesToDepth(final File sourceDirectory, final String filenamePattern, int maxDepth){
-        return findDirectoriesRecursive(sourceDirectory, filenamePattern, 0, maxDepth)
+        return findDirectoriesContainingFilesRecursive(sourceDirectory, filenamePattern, 0, maxDepth)
     }
 
     private File[] findDirectoriesContainingFilesRecursive(final File sourceDirectory, final String filenamePattern, int currentDepth, int maxDepth){
         def files = new HashSet<File>();
         if(currentDepth >= maxDepth){
+            println "CAN NOT GO THIS DEEP"
             return files
         }
         if (!sourceDirectory.isDirectory()) {
-            return null
+            return files
         }
         sourceDirectory.listFiles().each {
-            if(it.isDirectory()){
-                files.addAll(findFilesRecursive(sourceDirectory, filenamePattern, currentDepth++, maxDepth))
-            }else if(FilenameUtils.wildcardMatchOnSystem(it.getName(), filenamePattern)){
+            if(currentDepth >= maxDepth){
+                println "${it.getAbsolutePath()} should be ignored but it isnt"
+            }
+            if (it.isDirectory()) {
+                files.addAll(findDirectoriesContainingFilesRecursive(it, filenamePattern, currentDepth++, maxDepth))
+            } else if (FilenameUtils.wildcardMatchOnSystem(it.getName(), filenamePattern)) {
                 files.add(sourceDirectory)
             }
         }

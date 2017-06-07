@@ -54,7 +54,7 @@ class GoPackager {
         final String rootVersion = projectInfoGatherer.getDefaultProjectVersionName()
         final ExternalId rootExternalId = new NameVersionExternalId(GoBomTool.GOLANG, rootName, rootVersion)
         final DependencyNode root = new DependencyNode(rootName, rootVersion, rootExternalId)
-        def goDirectories = fileFinder.findDirectoriesContainingFiles(new File(sourcePath), '*.go', NumberUtils.toInt(packmanProperties.getSearchDepth()));
+        def goDirectories = fileFinder.findDirectoriesContainingFilesToDepth(new File(sourcePath), '*.go', NumberUtils.toInt(packmanProperties.getSearchDepth()));
         GoDepParser goDepParser = new GoDepParser(gson, projectInfoGatherer)
         def children = new ArrayList<DependencyNode>()
         goDirectories.each {
@@ -71,6 +71,9 @@ class GoPackager {
     }
 
     private String getGoDepContents(File goDirectory, String goExecutable) {
+        if(!goDirectory.exists()){
+            println "${goDirectory.getAbsolutePath()} does not exist"
+        }
         logger.info("Running ${goExecutable} save on path ${goDirectory.getAbsolutePath()}")
         Executable executable = new Executable(goDirectory, goExecutable, ['save'])
         executableRunner.executeLoudly(executable)
