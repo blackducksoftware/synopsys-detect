@@ -1,7 +1,6 @@
 package com.blackducksoftware.integration.hub.packman.type;
 
 public enum BomToolType {
-    CARTHAGE,
     COCOAPODS,
     DOCKER,
     GRADLE,
@@ -9,5 +8,7 @@ public enum BomToolType {
     NUGET,
     PIP,
     RUBYGEMS,
+    CARTHAGE,
+    GO,
     SBT;
 }
