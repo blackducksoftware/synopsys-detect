@@ -37,7 +37,7 @@ class BdioUploader {
             createdBdioFiles.each { file ->
                 logger.info("uploading ${file.name} to ${detectProperties.getHubUrl()}")
                 bomImportRequestService.importBomFile(file, BuildToolConstants.BDIO_FILE_MEDIA_TYPE)
-                if (Boolean.valueOf(detectProperties.getCleanupBdioFiles())) {
+                if (detectProperties.getCleanupBdioFiles()) {
                     file.delete()
                 }
             }

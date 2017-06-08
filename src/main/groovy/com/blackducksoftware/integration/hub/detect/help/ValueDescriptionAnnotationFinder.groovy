@@ -11,6 +11,12 @@
  */
 package com.blackducksoftware.integration.hub.detect.help
 
+import javax.annotation.PostConstruct
+
+import org.apache.commons.lang3.StringUtils
+import org.apache.commons.lang3.math.NumberUtils
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.aop.support.AopUtils
 import org.springframework.beans.BeansException
 import org.springframework.beans.factory.annotation.Value
@@ -20,15 +26,24 @@ import org.springframework.stereotype.Component
 
 @Component
 public class ValueDescriptionAnnotationFinder implements ApplicationContextAware {
+    private final Logger logger = LoggerFactory.getLogger(ValueDescriptionAnnotationFinder.class)
+
     private ApplicationContext applicationContext
+
+    List<DetectOption> detectOptions
+
+    @PostConstruct
+    void init() {
+        gatherDetectValues()
+    }
 
     @Override
     public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext
     }
 
-    public List<DetectOption> getDetectValues() {
-        Map<String, DetectOption> detectOptions = [:]
+    public void gatherDetectValues() {
+        Map<String, DetectOption> detectOptionsMap = [:]
         applicationContext.beanDefinitionNames.each { beanName ->
             final Object obj = applicationContext.getBean(beanName)
             Class<?> objClz = obj.getClass()
@@ -39,8 +54,11 @@ public class ValueDescriptionAnnotationFinder implements ApplicationContextAware
                 if (field.isAnnotationPresent(ValueDescription.class)) {
                     String key = ''
                     String description = ''
+                    Class valueType = field.getType()
+                    String defaultValue = ''
                     final ValueDescription valueDescription = field.getAnnotation(ValueDescription.class)
                     description = valueDescription.description()
+                    defaultValue = valueDescription.defaultValue()
                     if (!valueDescription.key()?.trim()) {
                         if (field.isAnnotationPresent(Value.class)) {
                             String valueKey = field.getAnnotation(Value.class).value().trim()
@@ -49,15 +67,34 @@ public class ValueDescriptionAnnotationFinder implements ApplicationContextAware
                     } else{
                         key = valueDescription.key().trim()
                     }
-                    if (!detectOptions.containsKey(key)) {
-                        detectOptions.put(key, new DetectOption(key, description))
+                    field.setAccessible(true);
+                    Object fieldValue = field.get(obj)
+                    if (defaultValue?.trim()) {
+                        try {
+                            Class type = field.getType()
+                            if (String.class.equals(type) && StringUtils.isBlank(fieldValue)) {
+                                field.set(obj, defaultValue);
+                            } else if (Integer.class.equals(type) && fieldValue == null) {
+                                field.set(obj, NumberUtils.toInt(defaultValue));
+                            } else if (Boolean.class.equals(type) && fieldValue == null) {
+                                field.set(obj, Boolean.parseBoolean(defaultValue));
+                            }
+                        } catch (final IllegalAccessException e) {
+                            logger.error(String.format("Could not set defaultValue on field %s with %s: %s", field.getName(), defaultValue, e.getMessage()));
+                        }
+                    }
+                    if (!detectOptionsMap.containsKey(key)) {
+                        detectOptionsMap.put(key, new DetectOption(key, description, valueType, defaultValue))
                     }
                 }
             }
         }
-
-        detectOptions.values().toSorted { a, b ->
+        detectOptions = detectOptionsMap.values().toSorted { a, b ->
             a.key <=> b.key
         }
+    }
+
+    public List<DetectOption> getDetectValues() {
+        detectOptions
     }
 }

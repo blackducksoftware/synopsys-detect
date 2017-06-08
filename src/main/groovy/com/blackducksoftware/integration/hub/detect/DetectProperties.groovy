@@ -3,7 +3,6 @@ package com.blackducksoftware.integration.hub.detect
 import javax.annotation.PostConstruct
 
 import org.apache.commons.lang3.StringUtils
-import org.apache.commons.lang3.math.NumberUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -29,7 +28,7 @@ class DetectProperties {
 
     @ValueDescription(description="If true the bdio files will be deleted after upload", defaultValue="true")
     @Value('${detect.cleanup.bdio.files}')
-    String cleanupBdioFiles
+    Boolean cleanupBdioFiles
 
     @ValueDescription(description="URL of the Hub server")
     @Value('${detect.hub.url}')
@@ -189,7 +188,6 @@ class DetectProperties {
 
     @PostConstruct
     void init() {
-        setDefaultValues()
         if (sourcePaths == null || sourcePaths.length == 0) {
             sourcePaths = [
                 System.getProperty('user.dir')
@@ -226,31 +224,5 @@ class DetectProperties {
 
     public String getDetectProperty(String key) {
         configurableEnvironment.getProperty(key)
-    }
-
-    private void setDefaultValues(){
-        this.getClass().declaredFields.each { field ->
-            if (field.isAnnotationPresent(ValueDescription.class)) {
-                String defaultValue = ''
-                final ValueDescription valueDescription = field.getAnnotation(ValueDescription.class)
-                defaultValue = valueDescription.defaultValue()
-                field.setAccessible(true);
-                Object fieldValue = field.get(this)
-                if (defaultValue?.trim()) {
-                    try {
-                        Class type = field.getType()
-                        if (String.class.equals(type) && StringUtils.isBlank(fieldValue)) {
-                            field.set(this, defaultValue);
-                        } else if (Integer.class.equals(type) && fieldValue == null) {
-                            field.set(this, NumberUtils.toInt(defaultValue));
-                        } else if (Boolean.class.equals(type) && fieldValue == null) {
-                            field.set(this, Boolean.parseBoolean(defaultValue));
-                        }
-                    } catch (final IllegalAccessException e) {
-                        logger.error(String.format("Could not set defaultValue on field %s with %s: %s", field.getName(), defaultValue, e.getMessage()));
-                    }
-                }
-            }
-        }
     }
 }
