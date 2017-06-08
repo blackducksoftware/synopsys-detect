@@ -58,7 +58,7 @@ class BdioUploader {
         hubServerConfigBuilder.setProxyUsername(packmanProperties.getHubProxyUsername())
         hubServerConfigBuilder.setProxyPassword(packmanProperties.getHubProxyPassword())
 
-        hubServerConfigBuilder.setAutoImportHttpsCertificates(Boolean.valueOf(packmanProperties.getHubAutoImportCertificate()))
+        hubServerConfigBuilder.setAutoImportHttpsCertificates(packmanProperties.getHubAutoImportCertificate())
         hubServerConfigBuilder.setLogger(slf4jIntLogger)
 
         hubServerConfigBuilder

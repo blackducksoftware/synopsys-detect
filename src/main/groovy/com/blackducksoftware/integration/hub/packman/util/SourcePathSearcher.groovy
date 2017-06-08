@@ -1,6 +1,5 @@
 package com.blackducksoftware.integration.hub.packman.util
 
-import org.apache.commons.lang3.math.NumberUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -38,7 +37,7 @@ class SourcePathSearcher {
     List<String> findSourcePathsContainingFilenamePatternWithDepth(String filenamePattern) {
         List<String> matchingSourcePaths = []
         for (String sourcePath : packmanProperties.getSourcePaths()) {
-            if (fileFinder.containsAllFilesWithDepth(sourcePath, NumberUtils.toInt(packmanProperties.getSearchDepth()), filenamePattern)) {
+            if (fileFinder.containsAllFilesWithDepth(sourcePath, packmanProperties.getSearchDepth(), filenamePattern)) {
                 matchingSourcePaths.add(sourcePath)
             }
         }

@@ -28,7 +28,7 @@ class PackmanPropertiesTest {
 
     @Test
     void testPropertiesFieldReference(){
-        assertEquals("120", packmanProperties.hubTimeout)
-        assertEquals("120", packmanProperties.getHubTimeout())
+        assertEquals(120, packmanProperties.hubTimeout)
+        assertEquals(120, packmanProperties.getHubTimeout())
     }
 }
