@@ -155,7 +155,7 @@ class DetectProperties {
     String nugetPath
 
     @ValueDescription(description="If true creates a temporary Python virtual environment")
-    @Value('${detect.pip.createVirtualEnv}')
+    @Value('${detect.pip.create.virtual.env}')
     boolean createVirtualEnv
 
     @ValueDescription(description="If true will use pip3 if available on class path")
