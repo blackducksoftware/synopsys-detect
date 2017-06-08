@@ -73,17 +73,31 @@ class VirtualEnvironmentHandler {
     VirtualEnvironment getVirtualEnvironment(File sourceDirectory) {
         VirtualEnvironment env = null
         def outputDirectory = new File(detectProperties.outputDirectoryPath)
+        String definedPath = detectProperties.virtualEnvPath?.trim()
         if(detectProperties.createVirtualEnv) {
             def venvDirectory = new File(outputDirectory, VIRTUAL_ENV_NAME)
             env = findExistingEnvironment(venvDirectory)
-            if(!env) {
+
+            def definedEnv = null
+            if(definedPath) {
+                definedEnv = new File(definedPath)
+                env = findExistingEnvironment(definedEnv)
+            }
+
+            if(!env && definedEnv){
+                env = createVirtualEnvironment(definedEnv)
+            } else if (!env) {
                 env = createVirtualEnvironment(venvDirectory)
             }
-        } else if (detectProperties.virtualEnvPath){
+        } else if (definedPath){
             def venvDirectory = new File(detectProperties.virtualEnvPath)
             env = findExistingEnvironment(venvDirectory)
-        } else {
+        } else if (detectProperties.createVirtualEnv && definedPath){
             env = getSystemEnvironment()
+        }
+
+        if(!env) {
+            logger.warn('Failed to get/create any virtual environment')
         }
 
         env
@@ -97,7 +111,8 @@ class VirtualEnvironmentHandler {
             "--python=${systemEnvironment.getPythonPath()}",
             virtualEnvDirectory.absolutePath
         ]
-        def setupVirtualEnvironment = new Executable(virtualEnvDirectory.getParentFile(), 'virtualenv', virtualEnvOptions)
+        def virtualEnvPath = executableManager.getPathOfExecutable(ExecutableType.VIRTUALENV)
+        def setupVirtualEnvironment = new Executable(virtualEnvDirectory.getParentFile(), virtualEnvPath, virtualEnvOptions)
         executableRunner.executeLoudly(setupVirtualEnvironment)
 
         findExistingEnvironment(virtualEnvDirectory)
