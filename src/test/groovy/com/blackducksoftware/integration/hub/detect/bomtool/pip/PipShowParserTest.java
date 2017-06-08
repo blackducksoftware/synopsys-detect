@@ -9,7 +9,7 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.detect.packagemanager.pip;
+package com.blackducksoftware.integration.hub.detect.bomtool.pip;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

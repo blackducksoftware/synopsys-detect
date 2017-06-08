@@ -9,7 +9,7 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.detect.packagemanager.cocoapods;
+package com.blackducksoftware.integration.hub.detect.bomtool.cocoapods;
 
 import static org.junit.Assert.assertEquals;
 
