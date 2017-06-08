@@ -9,14 +9,13 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.detect.packagemanager.pip;
+package com.blackducksoftware.integration.hub.detect.bomtool.pip
 
-import java.io.IOException;
-import java.net.URISyntaxException;
+import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 
-public class PipPackagerTest {
-
-    public void pipPackagerTest() throws IOException, URISyntaxException {
-
-    }
+class VirtualEnvironment {
+    ExecutableType pythonType
+    ExecutableType pipType
+    String pythonPath
+    String pipPath
 }

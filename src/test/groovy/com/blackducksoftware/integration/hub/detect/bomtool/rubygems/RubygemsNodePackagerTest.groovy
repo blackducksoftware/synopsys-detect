@@ -9,7 +9,7 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.detect.packagemanager.rubygems
+package com.blackducksoftware.integration.hub.detect.bomtool.rubygems
 
 import java.nio.charset.StandardCharsets
 

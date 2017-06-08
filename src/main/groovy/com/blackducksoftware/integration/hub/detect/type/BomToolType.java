@@ -7,6 +7,7 @@ public enum BomToolType {
     MAVEN,
     NUGET,
     PIP,
+    PIP3,
     RUBYGEMS,
     CARTHAGE,
     GO,

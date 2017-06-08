@@ -1,4 +1,4 @@
-package com.blackducksoftware.integration.hub.detect.packagemanager.rubygems
+package com.blackducksoftware.integration.hub.detect.bomtool.rubygems
 
 import java.nio.charset.StandardCharsets
 

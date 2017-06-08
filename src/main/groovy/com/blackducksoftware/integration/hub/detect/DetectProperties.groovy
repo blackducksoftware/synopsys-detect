@@ -12,7 +12,7 @@ import org.springframework.core.env.EnumerablePropertySource
 import org.springframework.core.env.MutablePropertySources
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.boss.exception.BossException
+import com.blackducksoftware.integration.hub.detect.exception.DetectException
 import com.blackducksoftware.integration.hub.detect.help.ValueDescription
 
 @Component
@@ -155,7 +155,7 @@ class DetectProperties {
     String nugetPath
 
     @ValueDescription(description="If true creates a temporary Python virtual environment")
-    @Value('${detect.pip.createVirtualEnv}')
+    @Value('${detect.pip.create.virtual.env}')
     boolean createVirtualEnv
 
     @ValueDescription(description="If true will use pip3 if available on class path")
@@ -173,6 +173,14 @@ class DetectProperties {
 	@ValueDescription(description="The path of the Npm executable")
 	@Value('${detect.npm.path}')
 	String npmPath
+
+    @ValueDescription(description="The path to a user's virtual environment")
+    @Value('${detect.pip.virtualEnv.path}')
+    String virtualEnvPath
+
+    @ValueDescription(description="The path of the requirements.txt file")
+    @Value('${detect.pip.requirements.path}')
+    String requirementsFilePath
 
     @ValueDescription(description="Path of the GoDep executable")
     @Value('${detect.godep.path}')
@@ -197,9 +205,11 @@ class DetectProperties {
         File outputDirectory = new File(outputDirectoryPath)
         outputDirectory.mkdirs()
         if (!outputDirectory.exists() || !outputDirectory.isDirectory()) {
-            throw new BossException("The output directory ${outputDirectoryPath} does not exist. The system property 'user.home' will be used by default, but the output directory must exist.")
+            throw new DetectException("The output directory ${outputDirectoryPath} does not exist. The system property 'user.home' will be used by default, but the output directory must exist.")
         }
+        outputDirectoryPath = outputDirectoryPath.trim()
 
+        // Nuget
         inspectorPackageName = inspectorPackageName.trim()
         inspectorPackageVersion = inspectorPackageVersion.trim()
 
