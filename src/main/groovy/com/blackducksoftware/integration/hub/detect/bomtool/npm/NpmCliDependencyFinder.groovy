@@ -26,7 +26,7 @@ class NpmCliDependencyFinder {
 		
 		def npmLsExe = new Executable(new File(rootDirectoryPath), exePath, ['ls', '-json'])
 		def exeRunner = new ExecutableRunner()
-		def tempJsonOutFile = new File('packman_proj_dependencies.json')
+		def tempJsonOutFile = new File('detect_npm_proj_dependencies.json')
 		def cliOut = exeRunner.executeQuietly(npmLsExe)
 		
 		//Here I can output an error message somewhere
@@ -79,14 +79,5 @@ class NpmCliDependencyFinder {
 		}
 		
 		dependencyNode
-	}
-	
-	static main (args) {
-		def path = '/usr/local/bin/npm'
-		def parser = new NpmCliDependencyFinder()
-		//def bigTest = parser.parseNpm('/Users/bmandel/Node/NodeProj', path)
-		def littleTest = parser.generateDependencyNode('/Users/bmandel/Documents/NodeJS', path)
-		
-		println(littleTest.toString())
 	}
 }

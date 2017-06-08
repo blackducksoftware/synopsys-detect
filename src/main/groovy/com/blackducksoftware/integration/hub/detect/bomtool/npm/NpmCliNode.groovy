@@ -1,12 +1,8 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.npm
 
-import java.util.List
+import org.springframework.stereotype.Component
 
-import org.apache.commons.lang3.builder.RecursiveToStringStyle
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder
-
-import com.google.gson.annotations.SerializedName
-
+@Component
 class NpmCliNode {
 	String name
 	String version
