@@ -11,6 +11,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.pip
 
+import java.nio.charset.StandardCharsets
+
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -30,6 +32,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 @Component
 class PipPackager {
     final Logger logger = LoggerFactory.getLogger(this.getClass())
+    private final String INSPECTOR_NAME = 'pip-inspector'
 
     @Autowired
     FileFinder fileFinder
@@ -43,13 +46,18 @@ class PipPackager {
     @Autowired
     ProjectInfoGatherer projectInfoGatherer
 
-    List<DependencyNode> makeDependencyNodes(final String sourcePath, final String pipExecutable, final String pythonExecutable) throws ExecutableRunnerException {
+    List<DependencyNode> makeDependencyNodes(final String sourcePath, VirtualEnvironment virtualEnv) throws ExecutableRunnerException {
+        String pipPath = virtualEnv.pipPath
+        String pythonPath = virtualEnv.pythonPath
         def sourceDirectory = new File(sourcePath)
         def outputDirectory = new File(detectProperties.outputDirectoryPath)
         def setupFile = fileFinder.findFile(sourceDirectory, 'setup.py')
 
+        File inpsectorScript = File.createTempFile(INSPECTOR_NAME, '.py')
+        String inpsectorScriptContents = getClass().getResourceAsStream("/${INSPECTOR_NAME}.py").getText(StandardCharsets.UTF_8.name())
+        inpsectorScript << inpsectorScriptContents
         def pipInspectorOptions = [
-            getClass().getResource('pip-inpspector.py').toString()
+            inpsectorScript.absolutePath
         ]
 
         // Install requirements file and add it as an option for the inspector
@@ -60,7 +68,7 @@ class PipPackager {
                 requirementsFile.absolutePath
             ]
 
-            def installRequirements = new Executable(sourceDirectory, pipExecutable, [
+            def installRequirements = new Executable(sourceDirectory, pipPath, [
                 'install',
                 '-r',
                 requirementsFile.absolutePath
@@ -70,11 +78,11 @@ class PipPackager {
 
         // Install project if it can find one and pass its name to the inspector
         if(setupFile) {
-            def installProjectExecutable = new Executable(sourceDirectory, pipExecutable, ['install', '.', '-I'])
+            def installProjectExecutable = new Executable(sourceDirectory, pipPath, ['install', '.', '-I'])
             executableRunner.executeLoudly(installProjectExecutable)
 
             if(!detectProperties.projectName) {
-                def findProjectNameExecutable = new Executable(sourceDirectory, pythonExecutable, [
+                def findProjectNameExecutable = new Executable(sourceDirectory, pythonPath, [
                     setupFile.absolutePath,
                     '--name'
                 ])
@@ -83,8 +91,8 @@ class PipPackager {
             }
         }
 
-        def pipInspector = new Executable(sourceDirectory, pythonExecutable, pipInspectorOptions)
-        def inspectorOutput = executableRunner.executeLoudly(pipInspector).standardOutput
+        def pipInspector = new Executable(sourceDirectory, pythonPath, pipInspectorOptions)
+        def inspectorOutput = executableRunner.executeQuietly(pipInspector).standardOutput
         def parser = new PipInspectorTreeParser()
         DependencyNode project = parser.parse(inspectorOutput)
 

@@ -1,8 +1,8 @@
 import pkg_resources
-import pip
 import os
 import sys
 import getopt
+import pip
 
 
 def main():
