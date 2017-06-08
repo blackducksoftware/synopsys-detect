@@ -4,7 +4,9 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmParser
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
+import org.springframework.stereotype.Component
 
+@Component
 class NpmBomTool extends BomTool {
 	private NpmParser npmParser = new NpmParser()
 	private static final String packageJson = 'package.json'

@@ -171,7 +171,7 @@ class DetectProperties {
     String pipPath
 	
 	@ValueDescription(description="The path of the Npm executable")
-	@Value('${packman.npm.path}')
+	@Value('${detect.npm.path}')
 	String npmPath
 
     @ValueDescription(description="Path of the GoDep executable")
