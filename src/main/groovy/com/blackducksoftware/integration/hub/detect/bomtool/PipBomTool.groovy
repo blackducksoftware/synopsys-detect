@@ -47,8 +47,8 @@ class PipBomTool extends BomTool {
         VirtualEnvironment systemEnvironment = virtualEnvironmentHandler.getSystemEnvironment()
         def foundExectables = systemEnvironment.pipPath && systemEnvironment.pythonPath
         matchingSourcePaths = sourcePathSearcher.findSourcePathsContainingFilenamePattern(SETUP_FILENAME)
-
-        foundExectables && !matchingSourcePaths.empty
+        def definedRequirements = detectProperties.requirementsFilePath
+        foundExectables && (!matchingSourcePaths.empty || definedRequirements)
     }
 
     List<DependencyNode> extractDependencyNodes() {

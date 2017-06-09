@@ -135,6 +135,10 @@ class DetectProperties {
     @Value('${detect.nuget.path}')
     String nugetPath
 
+    @ValueDescription(description="Override for pip inspector to find your project")
+    @Value('${detect.pip.project.name}')
+    String pipProjectName
+
     @ValueDescription(description="If true creates a temporary Python virtual environment", defaultValue="true")
     @Value('${detect.pip.create.virtual.env}')
     Boolean createVirtualEnv
