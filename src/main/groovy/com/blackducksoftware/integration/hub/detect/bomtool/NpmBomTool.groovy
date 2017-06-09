@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmConstants
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmParser
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
@@ -36,8 +37,6 @@ class NpmBomTool extends BomTool {
 	@Autowired
 	NpmParser npmParser
 
-	private static final String PACKAGE_JSON = 'package.json'
-	private String npmExe
 	private List<String> npmPaths = []
 
 	@Override
@@ -47,15 +46,14 @@ class NpmBomTool extends BomTool {
 
 	@Override
 	public boolean isBomToolApplicable() {
-		npmExe = getExecutablePath()
-		npmPaths = sourcePathSearcher.findSourcePathsContainingFilenamePattern(PACKAGE_JSON)
-
-		npmExe && npmPaths
+		npmPaths = sourcePathSearcher.findSourcePathsContainingFilenamePattern(NpmConstants.NODE_MODULES)
 	}
 
 	@Override
 	public List<DependencyNode> extractDependencyNodes() {
 		List<DependencyNode> nodes = []
+
+		String npmExe = getExecutablePath()
 
 		npmPaths.each {
 			nodes.add(npmParser.retrieveDependencyNode(it, npmExe))

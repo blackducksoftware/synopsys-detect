@@ -44,7 +44,7 @@ class NpmCliDependencyFinder {
 
 		def npmLsExe = new Executable(new File(rootDirectoryPath), exePath, ['ls', '-json'])
 		def exeRunner = new ExecutableRunner()
-		def tempJsonOutFile = new File('detect_npm_proj_dependencies.json')
+		def tempJsonOutFile = new File(NpmConstants.OUTPUT_FILE)
 		def cliOut = exeRunner.executeQuietly(npmLsExe)
 
 		//Here I can output an error message somewhere

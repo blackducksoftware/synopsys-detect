@@ -28,24 +28,26 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+import com.blackducksoftware.integration.hub.detect.util.FileFinder
 import com.google.gson.Gson
 import com.google.gson.stream.JsonReader
 
 @Component
 class NpmNodeModulesDependencyFinder {
-	private static final String NODE_MODULES = 'node_modules'
-	private static final String PACKAGE_JSON = 'package.json'
 
 	@Autowired
 	Gson gson
 
+	@Autowired
+	FileFinder fileFinder
+
 	public DependencyNode generateDependencyNode(String nodeProjectDirectory) {
-		def packageJsonFile = new File(nodeProjectDirectory + '/' + PACKAGE_JSON)
-		def nodeModulesFile = new File(nodeProjectDirectory + '/' + NODE_MODULES)
+		def packageJsonFile = fileFinder.findFile(nodeProjectDirectory, NpmConstants.PACKAGE_JSON)
+		def nodeModulesFile = fileFinder.findFile(nodeProjectDirectory, NpmConstants.NODE_MODULES)
 
 		PackageNode pNode
 
-		if(packageJsonFile.exists()) {
+		if(packageJsonFile?.exists()) {
 			pNode = deserializeJsonToPackageNode(packageJsonFile)
 		}
 
@@ -56,19 +58,19 @@ class NpmNodeModulesDependencyFinder {
 				return createNodeFromNodeModules(nodeModulesFile)
 			}
 		} else if(pNode) {
-			//We have only the package.json and no modules actually installed
+			//We have only the package.json and no node_modules folder which would require REST calls to complete
 		}
 	}
 
 	/*
-	 * The best case scenario for parsing npm without npm installed (package.json and node_modules).
+	 * The best case scenario for parsing npm without npm installed (uses package.json and node_modules).
 	 * Note: May need to check for circular dependencies, it looks as if node allows it
 	 */
 	public DependencyNode createNodeFromPackageNode(PackageNode pNode, File nodeModulesFile) {
 		DependencyNode node = createDependencyNode(pNode)
 
 		for(String filename : pNode.dependencies.keySet()) {
-			def moduleFile = new File(nodeModulesFile.getAbsolutePath() + '/' + filename + '/' + PACKAGE_JSON)
+			def moduleFile = fileFinder.findFile(nodeModulesFile.getAbsolutePath() + '/' + filename + '/', NpmConstants.PACKAGE_JSON)
 
 			node.children.add(createNodeFromPackageNode(deserializeJsonToPackageNode(moduleFile), nodeModulesFile))
 		}
@@ -77,7 +79,7 @@ class NpmNodeModulesDependencyFinder {
 	}
 
 	/*
-	 * A slower check through the node_modules directory that doesn't require a starting package.json for the tree
+	 * A slower check through the node_modules directory that doesn't require a starting package.json for the tree.
 	 */
 	public DependencyNode createNodeFromNodeModules(File nodeModulesFile) {
 		def pNode = new PackageNode();
@@ -87,7 +89,7 @@ class NpmNodeModulesDependencyFinder {
 		final DependencyNode node = createDependencyNode(pNode)
 
 		/*
-		 * I think I can use this here in java, but doesn't look to work with groovy
+		 * I think I can use :: here in java, but doesn't look to work with groovy. What I want
 		 * https://stackoverflow.com/questions/20001427/double-colon-operator-in-java-8/20001866
 		 */
 		for(String filename : nodeModulesFile.list(new FilenameFilter() {
@@ -97,7 +99,7 @@ class NpmNodeModulesDependencyFinder {
 			}
 		}))
 		{
-			def moduleFile = new File(nodeModulesFile.getAbsolutePath() + '/' + filename + '/' + PACKAGE_JSON)
+			def moduleFile = fileFinder.findFile(nodeModulesFile.getAbsolutePath() + '/' + filename + '/', NpmConstants.PACKAGE_JSON)
 
 			DependencyNode tempNode = createNodeFromPackageNode(deserializeJsonToPackageNode(moduleFile), nodeModulesFile)
 
