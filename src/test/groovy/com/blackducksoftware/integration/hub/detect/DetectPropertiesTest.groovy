@@ -19,17 +19,17 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit4.SpringRunner
 
-import com.blackducksoftware.integration.hub.detect.DetectProperties
+import com.blackducksoftware.integration.hub.detect.help.ValueDescriptionAnnotationFinder
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = DetectProperties.class)
+@SpringBootTest(classes = [ValueDescriptionAnnotationFinder.class, DetectProperties.class])
 class DetectPropertiesTest {
     @Autowired
     DetectProperties detectProperties
 
     @Test
     void testPropertiesFieldReference(){
-        assertEquals("120", detectProperties.hubTimeout)
-        assertEquals("120", detectProperties.getHubTimeout())
+        assertEquals(120, detectProperties.hubTimeout)
+        assertEquals(120, detectProperties.getHubTimeout())
     }
 }
