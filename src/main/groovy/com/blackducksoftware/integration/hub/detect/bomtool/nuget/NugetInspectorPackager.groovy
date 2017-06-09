@@ -52,10 +52,10 @@ class NugetInspectorPackager {
         def options =  [
             "--target_path=${sourcePath}",
             "--output_directory=${outputDirectory.getAbsolutePath()}",
-            "--ignore_failure=${detectProperties.getInspectorIgnoreFailure()}"
+            "--ignore_failure=${detectProperties.getNugetInspectorIgnoreFailure()}"
         ]
-        if(detectProperties.getInspectorExcludedModules()) {
-            options += "--excluded_modules=${detectProperties.getInspectorExcludedModules()}"
+        if(detectProperties.getNugetInspectorExcludedModules()) {
+            options += "--excluded_modules=${detectProperties.getNugetInspectorExcludedModules()}"
         }
         if(logger.traceEnabled) {
             options += "-v"
@@ -71,18 +71,18 @@ class NugetInspectorPackager {
     }
 
     private String getInspectorExePath(File sourceDirectory, File outputDirectory, File nugetExecutable) {
-        File inspectorVersionDirectory = new File(outputDirectory, "${detectProperties.getInspectorPackageName()}.${detectProperties.getInspectorPackageVersion()}")
+        File inspectorVersionDirectory = new File(outputDirectory, "${detectProperties.getNugetInspectorPackageName()}.${detectProperties.getNugetInspectorPackageVersion()}")
         File toolsDirectory = new File(inspectorVersionDirectory, 'tools')
-        File inspectorExe = new File(toolsDirectory, "${detectProperties.getInspectorPackageName()}.exe")
+        File inspectorExe = new File(toolsDirectory, "${detectProperties.getNugetInspectorPackageName()}.exe")
 
         //if we can't find the inspector where we expect to, attempt to install it from nuget.org
         if (inspectorExe == null || !inspectorExe.exists()) {
             installInspectorFromNugetDotOrg(sourceDirectory, outputDirectory, nugetExecutable)
-            inspectorExe = new File(toolsDirectory, "${detectProperties.getInspectorPackageName()}.exe")
+            inspectorExe = new File(toolsDirectory, "${detectProperties.getNugetInspectorPackageName()}.exe")
         }
 
         if (inspectorExe == null || !inspectorExe.exists()) {
-            logger.error("Could not find the ${detectProperties.getInspectorPackageName()} version:${detectProperties.getInspectorPackageVersion()} even after an install attempt.")
+            logger.error("Could not find the ${detectProperties.getNugetInspectorPackageName()} version:${detectProperties.getNugetInspectorPackageVersion()} even after an install attempt.")
             return null
         }
 
@@ -92,9 +92,9 @@ class NugetInspectorPackager {
     private ExecutableOutput installInspectorFromNugetDotOrg(File sourceDirectory, File outputDirectory, File nugetExecutable) {
         def options =  [
             'install',
-            detectProperties.getInspectorPackageName(),
+            detectProperties.getNugetInspectorPackageName(),
             '-Version',
-            detectProperties.getInspectorPackageVersion(),
+            detectProperties.getNugetInspectorPackageVersion(),
             '-OutputDirectory',
             outputDirectory.absolutePath
         ]
