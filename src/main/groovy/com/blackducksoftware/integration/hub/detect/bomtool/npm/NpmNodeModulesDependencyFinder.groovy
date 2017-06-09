@@ -70,9 +70,9 @@ class NpmNodeModulesDependencyFinder {
 		DependencyNode node = createDependencyNode(pNode)
 
 		for(String filename : pNode.dependencies.keySet()) {
-			def moduleFile = fileFinder.findFile(nodeModulesFile.getAbsolutePath() + '/' + filename + '/', NpmConstants.PACKAGE_JSON)
+			def packageFile = fileFinder.findFile(nodeModulesFile.getAbsolutePath() + '/' + filename + '/', NpmConstants.PACKAGE_JSON)
 
-			node.children.add(createNodeFromPackageNode(deserializeJsonToPackageNode(moduleFile), nodeModulesFile))
+			node.children.add(createNodeFromPackageNode(deserializeJsonToPackageNode(packageFile), nodeModulesFile))
 		}
 
 		node
@@ -88,20 +88,9 @@ class NpmNodeModulesDependencyFinder {
 
 		final DependencyNode node = createDependencyNode(pNode)
 
-		/*
-		 * I think I can use :: here in java, but doesn't look to work with groovy. What I want
-		 * https://stackoverflow.com/questions/20001427/double-colon-operator-in-java-8/20001866
-		 */
-		for(String filename : nodeModulesFile.list(new FilenameFilter() {
-			@Override
-			public boolean accept(File current, String name) {
-				return new File(current, name).isDirectory();
-			}
-		}))
-		{
-			def moduleFile = fileFinder.findFile(nodeModulesFile.getAbsolutePath() + '/' + filename + '/', NpmConstants.PACKAGE_JSON)
-
-			DependencyNode tempNode = createNodeFromPackageNode(deserializeJsonToPackageNode(moduleFile), nodeModulesFile)
+		nodeModulesFile.eachDir() { dir ->
+			def packageFile = fileFinder.findFile(dir.getAbsolutePath() + '/', NpmConstants.PACKAGE_JSON)
+			DependencyNode tempNode = createNodeFromPackageNode(deserializeJsonToPackageNode(packageFile), nodeModulesFile)
 
 			node.children.add(tempNode)
 		}

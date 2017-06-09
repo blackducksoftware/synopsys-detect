@@ -45,16 +45,21 @@ class NpmCliDependencyFinder {
 		def npmLsExe = new Executable(new File(rootDirectoryPath), exePath, ['ls', '-json'])
 		def exeRunner = new ExecutableRunner()
 		def tempJsonOutFile = new File(NpmConstants.OUTPUT_FILE)
-		def cliOut = exeRunner.executeQuietly(npmLsExe)
+		//def cliOut = exeRunner.executeQuietly(npmLsExe)
+		def cliOut = exeRunner.executeToFile(npmLsExe, tempJsonOutFile)
 
 		//Here I can output an error message somewhere
-		if(cliOut.errorOutput) {
-			return null
-		}
+		//		if(cliOut.errorOutput) {
+		//			return null
+		//		}
 
-		tempJsonOutFile.newWriter().withWriter { w ->
-			w << cliOut.standardOutput
-		}
+		//		tempJsonOutFile.newWriter().withWriter { w ->
+		//			w << cliOut.standardOutput
+		//		}
+
+		//println(cliOut.standardOutput)
+
+		//tempJsonOutFile.write cliOut.standardOutput
 
 		if(tempJsonOutFile) {
 			result = convertNpmJsonFileToDependencyNode(tempJsonOutFile)
