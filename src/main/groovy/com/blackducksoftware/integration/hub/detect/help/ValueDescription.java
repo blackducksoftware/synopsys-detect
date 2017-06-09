@@ -33,4 +33,6 @@ public @interface ValueDescription {
     String key() default "";
 
     String description() default "";
+
+    String defaultValue() default "";
 }

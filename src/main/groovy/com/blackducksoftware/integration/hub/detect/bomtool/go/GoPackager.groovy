@@ -24,7 +24,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.go
 
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.FilenameUtils
-import org.apache.commons.lang3.math.NumberUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -67,7 +66,7 @@ class GoPackager {
         final String rootVersion = projectInfoGatherer.getDefaultProjectVersionName()
         final ExternalId rootExternalId = new NameVersionExternalId(GoBomTool.GOLANG, rootName, rootVersion)
         final DependencyNode root = new DependencyNode(rootName, rootVersion, rootExternalId)
-        def goDirectories = findDirectoriesContainingGoFilesToDepth(new File(sourcePath), NumberUtils.toInt(detectProperties.searchDepth));
+        def goDirectories = findDirectoriesContainingGoFilesToDepth(new File(sourcePath), detectProperties.getSearchDepth());
         GoDepParser goDepParser = new GoDepParser(gson, projectInfoGatherer)
         def children = new ArrayList<DependencyNode>()
         goDirectories.each {
@@ -77,7 +76,7 @@ class GoPackager {
                 children.add(child)
             }
         }
-        if (detectProperties.goAggregate) {
+        if (detectProperties.getGoAggregate()) {
             root.children = children
             return [root]
         } else {

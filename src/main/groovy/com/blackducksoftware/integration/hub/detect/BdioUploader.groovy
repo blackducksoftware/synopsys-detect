@@ -59,7 +59,7 @@ class BdioUploader {
             createdBdioFiles.each { file ->
                 logger.info("uploading ${file.name} to ${detectProperties.getHubUrl()}")
                 bomImportRequestService.importBomFile(file, BuildToolConstants.BDIO_FILE_MEDIA_TYPE)
-                if (Boolean.valueOf(detectProperties.getCleanupBdioFiles())) {
+                if (detectProperties.getCleanupBdioFiles()) {
                     file.delete()
                 }
             }
@@ -80,7 +80,7 @@ class BdioUploader {
         hubServerConfigBuilder.setProxyUsername(detectProperties.getHubProxyUsername())
         hubServerConfigBuilder.setProxyPassword(detectProperties.getHubProxyPassword())
 
-        hubServerConfigBuilder.setAutoImportHttpsCertificates(Boolean.valueOf(detectProperties.getHubAutoImportCertificate()))
+        hubServerConfigBuilder.setAutoImportHttpsCertificates(detectProperties.getHubAutoImportCertificate())
         hubServerConfigBuilder.setLogger(slf4jIntLogger)
 
         hubServerConfigBuilder

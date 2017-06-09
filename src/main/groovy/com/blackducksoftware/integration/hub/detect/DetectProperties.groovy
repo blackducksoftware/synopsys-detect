@@ -48,17 +48,17 @@ class DetectProperties {
 
     Set<String> additionalDockerPropertyNames = new HashSet<>()
 
-    @ValueDescription(description="If true the bdio files will be deleted after upload")
+    @ValueDescription(description="If true the bdio files will be deleted after upload", defaultValue="true")
     @Value('${detect.cleanup.bdio.files}')
-    String cleanupBdioFiles
+    Boolean cleanupBdioFiles
 
     @ValueDescription(description="URL of the Hub server")
     @Value('${detect.hub.url}')
     String hubUrl
 
-    @ValueDescription(description="Time to wait for rest connections to complete")
+    @ValueDescription(description="Time to wait for rest connections to complete", defaultValue="120")
     @Value('${detect.hub.timeout}')
-    String hubTimeout
+    Integer hubTimeout
 
     @ValueDescription(description="Hub username")
     @Value('${detect.hub.username}')
@@ -84,9 +84,9 @@ class DetectProperties {
     @Value('${detect.hub.proxy.password}')
     String hubProxyPassword
 
-    @ValueDescription(description="If true the Hub https certificate will be automatically imported")
+    @ValueDescription(description="If true the Hub https certificate will be automatically imported", defaultValue="false")
     @Value('${detect.hub.auto.import.cert}')
-    String hubAutoImportCertificate
+    Boolean hubAutoImportCertificate
 
     @ValueDescription(description = "Source paths to inspect")
     @Value('${detect.source.paths}')
@@ -96,9 +96,9 @@ class DetectProperties {
     @Value('${detect.output.path}')
     String outputDirectoryPath
 
-    @ValueDescription(description = "Depth from source paths to search for files.")
+    @ValueDescription(description = "Depth from source paths to search for files.", defaultValue="10")
     @Value('${detect.search.depth}')
-    String searchDepth
+    Integer searchDepth
 
     @ValueDescription(description = "Specify which tools to use")
     @Value('${detect.bom.tool.type.override}')
@@ -112,11 +112,11 @@ class DetectProperties {
     @Value('${detect.project.version}')
     String projectVersionName
 
-    @ValueDescription(description="Version of the Gradle Inspector")
+    @ValueDescription(description="Version of the Gradle Inspector", defaultValue="0.0.6")
     @Value('${detect.gradle.inspector.version}')
     String gradleInspectorVersion
 
-    @ValueDescription(description="Gradle build command")
+    @ValueDescription(description="Gradle build command", defaultValue="dependencies")
     @Value('${detect.gradle.build.command}')
     String gradleBuildCommand
 
@@ -136,11 +136,11 @@ class DetectProperties {
     @Value('${detect.gradle.included.projects}')
     String includedProjectNames
 
-    @ValueDescription(description="Name of the Nuget Inspector")
+    @ValueDescription(description="Name of the Nuget Inspector", defaultValue="IntegrationNugetInspector")
     @Value('${detect.nuget.inspector.name}')
     String inspectorPackageName
 
-    @ValueDescription(description="Version of the Nuget Inspector")
+    @ValueDescription(description="Version of the Nuget Inspector", defaultValue="0.0.3-alpha")
     @Value('${detect.nuget.inspector.version}')
     String inspectorPackageVersion
 
@@ -148,13 +148,13 @@ class DetectProperties {
     @Value('${detect.nuget.excluded.modules}')
     String inspectorExcludedModules
 
-    @ValueDescription(description="If true errors will be logged and then ignored.")
+    @ValueDescription(description="If true errors will be logged and then ignored.", defaultValue="false")
     @Value('${detect.nuget.ignore.failure}')
-    boolean inspectorIgnoreFailure
+    Boolean inspectorIgnoreFailure
 
-    @ValueDescription(description="If true all maven projects will be aggregated into a single bom")
+    @ValueDescription(description="If true all maven projects will be aggregated into a single bom", defaultValue="true")
     @Value('${detect.maven.aggregate}')
-    boolean mavenAggregateBom
+    Boolean mavenAggregateBom
 
     @ValueDescription(description="The name of the dependency scope to include")
     @Value('${detect.maven.scope}')
@@ -168,21 +168,21 @@ class DetectProperties {
     @Value('${detect.maven.path}')
     String mavenPath
 
-    @ValueDescription(description="If true all nuget projects will be aggregated into a single bom")
+    @ValueDescription(description="If true all nuget projects will be aggregated into a single bom", defaultValue="false")
     @Value('${detect.nuget.aggregate}')
-    boolean nugetAggregateBom
+    Boolean nugetAggregateBom
 
     @ValueDescription(description="The path of the Nuget executable")
     @Value('${detect.nuget.path}')
     String nugetPath
 
-    @ValueDescription(description="If true creates a temporary Python virtual environment")
+    @ValueDescription(description="If true creates a temporary Python virtual environment", defaultValue="true")
     @Value('${detect.pip.create.virtual.env}')
-    boolean createVirtualEnv
+    Boolean createVirtualEnv
 
-    @ValueDescription(description="If true will use pip3 if available on class path")
+    @ValueDescription(description="If true will use pip3 if available on class path", defaultValue="false")
     @Value('${detect.pip.pip3}')
-    boolean pipThreeOverride
+    Boolean pipThreeOverride
 
     @ValueDescription(description="The path of the Python executable")
     @Value('${detect.python.path}')
@@ -208,9 +208,9 @@ class DetectProperties {
     @Value('${detect.godep.path}')
     String godepPath
 
-    @ValueDescription(description="If true all Go results will be aggregated into a single bom")
+    @ValueDescription(description="If true all Go results will be aggregated into a single bom", defaultValue="true")
     @Value('${detect.go.aggregate}')
-    boolean goAggregate
+    Boolean goAggregate
 
     @PostConstruct
     void init() {

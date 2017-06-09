@@ -34,16 +34,30 @@ class HelpPrinter {
     void printHelpMessage(PrintStream printStream) {
         def helpMessagePieces = []
         helpMessagePieces.add('')
-        helpMessagePieces.add('Properties : ')
-        valueDescriptionAnnotationFinder.detectValues.each { detectValue ->
-            String optionLine = ""
-            String key = StringUtils.rightPad(detectValue.getKey(), 50, ' ')
-            if (StringUtils.isNotBlank(detectValue.getDescription())) {
-                optionLine = "\t${key}${detectValue.getDescription()}"
-            } else {
-                optionLine = "\t${key}"
+
+        StringBuilder headerLineBuilder = new StringBuilder()
+        headerLineBuilder.append(StringUtils.rightPad('Property Name', 40, ' '))
+        headerLineBuilder.append(StringUtils.rightPad('Default', 30, ' '))
+        headerLineBuilder.append(StringUtils.rightPad('Description', 75, ' '))
+        headerLineBuilder.append(StringUtils.rightPad('Type', 20, ' '))
+
+        helpMessagePieces.add(headerLineBuilder.toString())
+        helpMessagePieces.add(StringUtils.repeat('_', 165))
+        def character = null
+        valueDescriptionAnnotationFinder.getDetectValues().each { detectValue ->
+            StringBuilder optionLineBuilder = new StringBuilder()
+            def currentCharacter = detectValue.getKey()[7]
+            if (character == null) {
+                character = currentCharacter
+            } else if (!character.equals(currentCharacter)) {
+                helpMessagePieces.add(StringUtils.repeat(' ', 165))
+                character = currentCharacter
             }
-            helpMessagePieces.add(optionLine)
+            optionLineBuilder.append(StringUtils.rightPad("${detectValue.getKey()}", 40, ' '))
+            optionLineBuilder.append(StringUtils.rightPad(detectValue.getDefaultValue(), 30, ' '))
+            optionLineBuilder.append(StringUtils.rightPad(detectValue.getDescription(), 75, ' '))
+            optionLineBuilder.append(StringUtils.rightPad(detectValue.getValueType().getSimpleName(), 20, ' '))
+            helpMessagePieces.add(optionLineBuilder.toString())
         }
         helpMessagePieces.add('')
         helpMessagePieces.add('Usage : ')
