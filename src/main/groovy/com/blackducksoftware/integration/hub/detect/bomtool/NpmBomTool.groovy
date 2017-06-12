@@ -26,8 +26,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmCliDependencyFinder
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmConstants
-import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmParser
+import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmNodeModulesDependencyFinder
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 
@@ -35,7 +36,10 @@ import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 class NpmBomTool extends BomTool {
 
 	@Autowired
-	NpmParser npmParser
+	NpmCliDependencyFinder cliDependencyFinder
+
+	@Autowired
+	NpmNodeModulesDependencyFinder nodeModulesDependencyFinder
 
 	private List<String> npmPaths = []
 
@@ -56,7 +60,12 @@ class NpmBomTool extends BomTool {
 		String npmExe = getExecutablePath()
 
 		npmPaths.each {
-			nodes.add(npmParser.retrieveDependencyNode(it, npmExe))
+			if(npmExe) {
+				nodes.add(cliDependencyFinder.generateDependencyNode(it, npmExe))
+			} else {
+				nodes.add(nodeModulesDependencyFinder.generateDependencyNode(it))
+			}
+
 		}
 
 		nodes

@@ -23,11 +23,11 @@
 package com.blackducksoftware.integration.hub.detect.util.executable
 
 class ExecutableRunnerException extends Exception {
-    ExecutableRunnerException(final Throwable innerException) {
-        super(innerException)
-    }
+	ExecutableRunnerException(final Throwable innerException) {
+		super(innerException)
+	}
 
-    ExecutableRunnerException(final ExecutableOutput executableOutput) {
-        super("${executableOutput.standardOutput}\n\n${executableOutput.errorOutput}")
-    }
+	ExecutableRunnerException(final ExecutableOutput executableOutput) {
+		super("${executableOutput.standardOutput}\n\n${executableOutput.errorOutput}")
+	}
 }

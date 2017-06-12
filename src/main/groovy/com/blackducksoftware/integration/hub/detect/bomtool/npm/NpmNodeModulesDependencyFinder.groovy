@@ -41,6 +41,11 @@ class NpmNodeModulesDependencyFinder {
 	@Autowired
 	FileFinder fileFinder
 
+	/*
+	 * arraylist used to check for circular dependencies
+	 */
+	private ArrayList<String> modules = new ArrayList<String>()
+
 	public DependencyNode generateDependencyNode(String nodeProjectDirectory) {
 		def packageJsonFile = fileFinder.findFile(nodeProjectDirectory, NpmConstants.PACKAGE_JSON)
 		def nodeModulesFile = fileFinder.findFile(nodeProjectDirectory, NpmConstants.NODE_MODULES)
@@ -58,7 +63,7 @@ class NpmNodeModulesDependencyFinder {
 				return createNodeFromNodeModules(nodeModulesFile)
 			}
 		} else if(pNode) {
-			//We have only the package.json and no node_modules folder which would require REST calls to complete
+			//We have only the package.json and no node_modules folder which would require REST calls to complete. Try to log something
 		}
 	}
 
@@ -69,10 +74,18 @@ class NpmNodeModulesDependencyFinder {
 	public DependencyNode createNodeFromPackageNode(PackageNode pNode, File nodeModulesFile) {
 		DependencyNode node = createDependencyNode(pNode)
 
-		for(String filename : pNode.dependencies.keySet()) {
-			def packageFile = fileFinder.findFile(nodeModulesFile.getAbsolutePath() + '/' + filename + '/', NpmConstants.PACKAGE_JSON)
+		//Set<String> allDependencies = pNode?.dependencies?.keySet()?.addAll(pNode.optionalDependencies?.keySet())
 
-			node.children.add(createNodeFromPackageNode(deserializeJsonToPackageNode(packageFile), nodeModulesFile))
+		for(String filename : pNode.dependencies?.keySet()) {
+			if(modules.contains(filename)) {
+				continue
+			} else {
+				modules.add(filename)
+				def packageFile = fileFinder.findFile(nodeModulesFile.getAbsolutePath() + '/' + filename + '/', NpmConstants.PACKAGE_JSON)
+				if(packageFile) {
+					node.children.add(createNodeFromPackageNode(deserializeJsonToPackageNode(packageFile), nodeModulesFile))
+				}
+			}
 		}
 
 		node
@@ -83,16 +96,18 @@ class NpmNodeModulesDependencyFinder {
 	 */
 	public DependencyNode createNodeFromNodeModules(File nodeModulesFile) {
 		def pNode = new PackageNode();
-		pNode.name = 'NULL'
+		pNode.name = 'BrianMandel'
 		pNode.version = new Date().format('MM.dd.yy')
 
 		final DependencyNode node = createDependencyNode(pNode)
 
 		nodeModulesFile.eachDir() { dir ->
 			def packageFile = fileFinder.findFile(dir.getAbsolutePath() + '/', NpmConstants.PACKAGE_JSON)
-			DependencyNode tempNode = createNodeFromPackageNode(deserializeJsonToPackageNode(packageFile), nodeModulesFile)
+			if(packageFile) {
+				DependencyNode tempNode = createNodeFromPackageNode(deserializeJsonToPackageNode(packageFile), nodeModulesFile)
 
-			node.children.add(tempNode)
+				node.children.add(tempNode)
+			}
 		}
 
 		node
@@ -107,6 +122,16 @@ class NpmNodeModulesDependencyFinder {
 	}
 
 	public PackageNode deserializeJsonToPackageNode(File depOut) {
-		gson.fromJson(new JsonReader(new FileReader(depOut)), PackageNode.class)
+		def fileReader
+		def jsonReader
+		try {
+			fileReader = new FileReader(depOut)
+			jsonReader = new JsonReader(fileReader)
+		} catch (Exception e) {
+			println(depOut)
+			e.printStackTrace()
+		}
+		def packageNode = (PackageNode) gson.fromJson(jsonReader, PackageNode.class)
+		packageNode
 	}
 }

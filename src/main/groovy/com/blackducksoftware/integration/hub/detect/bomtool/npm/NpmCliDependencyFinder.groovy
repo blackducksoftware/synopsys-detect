@@ -39,41 +39,32 @@ class NpmCliDependencyFinder {
 	@Autowired
 	Gson gson
 
+	@Autowired
+	NpmNodeModulesDependencyFinder nmFinder
+
 	public DependencyNode generateDependencyNode(String rootDirectoryPath, String exePath) {
 		DependencyNode result;
 
 		def npmLsExe = new Executable(new File(rootDirectoryPath), exePath, ['ls', '-json'])
 		def exeRunner = new ExecutableRunner()
 		def tempJsonOutFile = new File(NpmConstants.OUTPUT_FILE)
-		//def cliOut = exeRunner.executeQuietly(npmLsExe)
-		def cliOut = exeRunner.executeToFile(npmLsExe, tempJsonOutFile)
 
-		//Here I can output an error message somewhere
-		//		if(cliOut.errorOutput) {
-		//			return null
-		//		}
+		exeRunner.executeToFile(npmLsExe, tempJsonOutFile)
 
-		//		tempJsonOutFile.newWriter().withWriter { w ->
-		//			w << cliOut.standardOutput
-		//		}
-
-		//println(cliOut.standardOutput)
-
-		//tempJsonOutFile.write cliOut.standardOutput
+		if(tempJsonOutFile?.length() > 0) {
+			result = convertNpmJsonFileToDependencyNode(tempJsonOutFile)
+		} else {
+			//If the file has no content or doesn't exist because of a failed NPM exe, run the backup finder
+			result = nmFinder.generateDependencyNode(rootDirectoryPath)
+		}
 
 		if(tempJsonOutFile) {
-			result = convertNpmJsonFileToDependencyNode(tempJsonOutFile)
-
 			try {
 				tempJsonOutFile.delete()
 			} catch (IOException e) {
 				println(e.stackTrace)
 			}
-
-
 		}
-
-		println('Finished')
 
 		result
 	}
