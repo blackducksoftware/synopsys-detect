@@ -36,69 +36,69 @@ import com.blackducksoftware.integration.hub.detect.util.FileFinder
 
 @Component
 class ExecutableManager {
-	private final Logger logger = LoggerFactory.getLogger(ExecutableManager.class)
+    private final Logger logger = LoggerFactory.getLogger(ExecutableManager.class)
 
-	@Autowired
-	FileFinder fileFinder
+    @Autowired
+    FileFinder fileFinder
 
-	OperatingSystemType currentOs
+    OperatingSystemType currentOs
 
-	@PostConstruct
-	void init() {
-		if (SystemUtils.IS_OS_LINUX) {
-			currentOs = OperatingSystemType.LINUX
-		} else if (SystemUtils.IS_OS_MAC) {
-			currentOs = OperatingSystemType.MAC
-		} else if (SystemUtils.IS_OS_WINDOWS) {
-			currentOs = OperatingSystemType.WINDOWS
-		}
+    @PostConstruct
+    void init() {
+        if (SystemUtils.IS_OS_LINUX) {
+            currentOs = OperatingSystemType.LINUX
+        } else if (SystemUtils.IS_OS_MAC) {
+            currentOs = OperatingSystemType.MAC
+        } else if (SystemUtils.IS_OS_WINDOWS) {
+            currentOs = OperatingSystemType.WINDOWS
+        }
 
-		if (!currentOs) {
-			logger.warn("Your operating system is not supported. Linux will be assumed.")
-			currentOs = OperatingSystemType.LINUX
-		} else {
-			logger.info("You seem to be running in a ${currentOs} operating system.")
-		}
-	}
+        if (!currentOs) {
+            logger.warn("Your operating system is not supported. Linux will be assumed.")
+            currentOs = OperatingSystemType.LINUX
+        } else {
+            logger.info("You seem to be running in a ${currentOs} operating system.")
+        }
+    }
 
-	String getPathOfExecutable(ExecutableType executableType) {
-		File executableFile = getExecutable(executableType)
+    String getPathOfExecutable(ExecutableType executableType) {
+        File executableFile = getExecutable(executableType)
 
-		null == executableFile ? null : executableFile.absolutePath
-	}
+        null == executableFile ? null : executableFile.absolutePath
+    }
 
-	File getExecutable(ExecutableType executableType) {
-		String executable = executableType.getExecutable(currentOs)
-		File executableFile = findExecutableFile(executable)
+    File getExecutable(ExecutableType executableType) {
+        String executable = executableType.getExecutable(currentOs)
+        File executableFile = findExecutableFile(executable)
 
-		executableFile
-	}
+        executableFile
+    }
 
-	String getPathOfExecutable(String path, ExecutableType executableType) {
-		File executableFile = getExecutable(path, executableType)
+    String getPathOfExecutable(String path, ExecutableType executableType) {
+        File executableFile = getExecutable(path, executableType)
 
-		null == executableFile ? null : executableFile.absolutePath
-	}
+        null == executableFile ? null : executableFile.absolutePath
+    }
 
-	File getExecutable(String path, ExecutableType executableType) {
-		String executable = executableType.getExecutable(currentOs)
-		File executableFile = findExecutableFile(path, executable)
+    File getExecutable(String path, ExecutableType executableType) {
+        String executable = executableType.getExecutable(currentOs)
+        File executableFile = findExecutableFile(path, executable)
 
-		executableFile
-	}
+        executableFile
+    }
 
-	private File findExecutableFile(final String executable) {
-		String systemPath = System.getenv("PATH")
-		return findExecutableFile(systemPath, executable)
-	}
+    private File findExecutableFile(final String executable) {
+        String systemPath = System.getenv("PATH")
+        return findExecutableFile(systemPath, executable)
+    }
 
-	private File findExecutableFile(final String path, String executable) {
-		for (String pathPiece : path.split(File.pathSeparator)) {
-			File foundFile = fileFinder.findFile(pathPiece, executable)
-			if (foundFile && foundFile.canExecute()) {
-				return foundFile
-			}
-		}
-		null
-	}
+    private File findExecutableFile(final String path, String executable) {
+        for (String pathPiece : path.split(File.pathSeparator)) {
+            File foundFile = fileFinder.findFile(pathPiece, executable)
+            if (foundFile && foundFile.canExecute()) {
+                return foundFile
+            }
+        }
+        null
+    }
 }
