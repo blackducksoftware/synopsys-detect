@@ -57,19 +57,24 @@ public class BomToolManager {
         boolean foundSomeBomTools = false;
         final ExcludedIncludedFilter toolFilter = new ExcludedIncludedFilter("", detectProperties.getBomToolTypeOverride());
         for (final BomTool bomTool : bomTools) {
-            final BomToolType bomToolType = bomTool.getBomToolType();
-            final String bomToolTypeString = bomToolType.toString();
-            if (!toolFilter.shouldInclude(bomToolTypeString)) {
-                logger.info(String.format("Skipping %s.", bomToolTypeString));
-                continue;
-            }
-            if (bomTool.isBomToolApplicable() && detectConfiguration.shouldRun(bomTool)) {
-                logger.info(bomToolType + " applies given the current configuration.");
-                final List<DependencyNode> projectNodes = bomTool.extractDependencyNodes();
-                if (projectNodes != null && projectNodes.size() > 0) {
-                    foundSomeBomTools = true;
-                    createOutput(createdBdioFiles, bomToolType, bomToolTypeString, projectNodes);
+            try {
+                final BomToolType bomToolType = bomTool.getBomToolType();
+                final String bomToolTypeString = bomToolType.toString();
+                if (!toolFilter.shouldInclude(bomToolTypeString)) {
+                    logger.info(String.format("Skipping %s.", bomToolTypeString));
+                    continue;
                 }
+                if (bomTool.isBomToolApplicable() && detectConfiguration.shouldRun(bomTool)) {
+                    logger.info(bomToolType + " applies given the current configuration.");
+                    final List<DependencyNode> projectNodes = bomTool.extractDependencyNodes();
+                    if (projectNodes != null && projectNodes.size() > 0) {
+                        foundSomeBomTools = true;
+                        createOutput(createdBdioFiles, bomToolType, bomToolTypeString, projectNodes);
+                    }
+                }
+            } catch (final Exception e) {
+                // any bom tool failure should not prevent other bom tools from running
+                logger.error(bomTool.getBomToolType().toString() + " threw an Exception: " + e.getMessage());
             }
         }
 

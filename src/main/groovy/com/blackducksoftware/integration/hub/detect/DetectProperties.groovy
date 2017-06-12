@@ -171,7 +171,7 @@ class DetectProperties {
     @Value('${detect.docker.path}')
     String dockerPath
 
-    @ValueDescription(description="Version of the Hub Docker Inspector to use", defaultValue="0.0.3-SNAPSHOT")
+    @ValueDescription(description="Version of the Hub Docker Inspector to use", defaultValue="0.0.4-SNAPSHOT")
     @Value('${detect.docker.inspector.version}')
     String dockerInspectorVersion
 
@@ -190,4 +190,8 @@ class DetectProperties {
     @ValueDescription(description="The docker image name to inspect. For detect to run docker either this property or detect.docker.tar must be set.")
     @Value('${detect.docker.image}')
     String dockerImage
+
+    @ValueDescription(description="Path of the base executable")
+    @Value('${detect.bash.path}')
+    String bashPath
 }
