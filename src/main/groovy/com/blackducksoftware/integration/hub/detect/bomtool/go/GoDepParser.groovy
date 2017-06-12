@@ -48,7 +48,7 @@ class GoDepParser {
         def children = new ArrayList<DependencyNode>()
         goDepsFile.deps.each {
             def version = ''
-            if (it.comment?.trim() && it.comment.startsWith('v')) {
+            if (it.comment?.trim() && it.comment.contains('v')) {
                 version = it.comment.trim()
                 if(version.contains('-')){
                     //v1.6-27-23859436879234678  should be transformed to v1.6

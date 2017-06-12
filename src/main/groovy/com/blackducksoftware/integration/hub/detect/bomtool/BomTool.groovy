@@ -25,6 +25,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool
 import org.springframework.beans.factory.annotation.Autowired
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.DetectProperties
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.util.FileFinder
@@ -36,6 +37,9 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 abstract class BomTool {
     @Autowired
     DetectProperties detectProperties
+
+    @Autowired
+    DetectConfiguration detectConfiguration
 
     @Autowired
     ExecutableManager executableManager

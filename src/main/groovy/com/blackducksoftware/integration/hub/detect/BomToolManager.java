@@ -52,6 +52,9 @@ public class BomToolManager {
     DetectProperties detectProperties;
 
     @Autowired
+    DetectConfiguration detectConfiguration;
+
+    @Autowired
     private List<BomTool> bomTools;
 
     @Autowired
@@ -71,7 +74,7 @@ public class BomToolManager {
                 logger.info(String.format("Skipping %s.", bomToolTypeString));
                 continue;
             }
-            if (bomTool.isBomToolApplicable()) {
+            if (bomTool.isBomToolApplicable() && detectConfiguration.shouldRun(bomTool)) {
                 logger.info(bomToolType + " applies given the current configuration.");
                 final List<DependencyNode> projectNodes = bomTool.extractDependencyNodes();
                 if (projectNodes != null && projectNodes.size() > 0) {

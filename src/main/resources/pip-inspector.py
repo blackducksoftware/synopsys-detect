@@ -34,7 +34,6 @@ def main():
     except getopt.GetoptError as error:
         print(str(error))
         print('integration-pip-inspector.py -p <project_name> -r <requirements_path>')
-        print('integration-pip-inspector.py -p <project_name> -r <requirements_path>')
         sys.exit(2)
 
     project_name = None
@@ -48,7 +47,8 @@ def main():
 
     if project_name is not None:
         project = resolve_package_by_name(project_name)
-    else:
+
+    if project is None:
         project = DependencyNode()
         project.name = 'n?'
         project.version = 'v?'
@@ -98,6 +98,8 @@ def get_package_by_name(package_name):
 def resolve_package_by_name(package_name):
     node = DependencyNode()
     package = get_package_by_name(package_name)
+    if package is None:
+        return None
     node.name = package.project_name
     node.version = package.version
     for req in package.requires():

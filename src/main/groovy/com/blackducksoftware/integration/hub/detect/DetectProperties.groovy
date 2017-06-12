@@ -22,32 +22,13 @@
  */
 package com.blackducksoftware.integration.hub.detect
 
-import javax.annotation.PostConstruct
-
-import org.apache.commons.lang3.StringUtils
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.core.env.ConfigurableEnvironment
-import org.springframework.core.env.EnumerablePropertySource
-import org.springframework.core.env.MutablePropertySources
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.detect.exception.DetectException
 import com.blackducksoftware.integration.hub.detect.help.ValueDescription
 
 @Component
 class DetectProperties {
-    private final Logger logger = LoggerFactory.getLogger(DetectProperties.class)
-
-    static final String DOCKER_PROPERTY_PREFIX = 'detect.docker.passthrough.'
-
-    @Autowired
-    ConfigurableEnvironment configurableEnvironment
-
-    Set<String> additionalDockerPropertyNames = new HashSet<>()
-
     @ValueDescription(description="If true the bdio files will be deleted after upload", defaultValue="true")
     @Value('${detect.cleanup.bdio.files}')
     Boolean cleanupBdioFiles
@@ -100,16 +81,16 @@ class DetectProperties {
     @Value('${detect.search.depth}')
     Integer searchDepth
 
-    @ValueDescription(description = "Specify which tools to use")
+    @ValueDescription(description = "By default, all tools will be active. If you wish to limit the tools used, specify the ones to use here.")
     @Value('${detect.bom.tool.type.override}')
     String bomToolTypeOverride
 
-    @ValueDescription(description = "Hub project name")
+    @ValueDescription(description = "An override for the name to use for the Hub project. If not supplied, detect will attempt to use the tools to figure out a reasonable project name. If that fails, the final part of the directory path where the inspection is taking place will be used.")
     @Value('${detect.project.name}')
     String projectName
 
-    @ValueDescription(description = "Hub project version")
-    @Value('${detect.project.version}')
+    @ValueDescription(description = "An override for the version to use for the Hub project. If not supplied, detect will attempt to use the tools to figure out a reasonable version name. If that fails, the current date will be used.")
+    @Value('${detect.project.version.name}')
     String projectVersionName
 
     @ValueDescription(description="Version of the Gradle Inspector", defaultValue="0.0.6")
@@ -122,35 +103,35 @@ class DetectProperties {
 
     @ValueDescription(description="The names of the dependency configurations to exclude")
     @Value('${detect.gradle.excluded.configurations}')
-    String excludedConfigurationNames
+    String gradleExcludedConfigurationNames
 
     @ValueDescription( description="The names of the dependency configurations to include")
     @Value('${detect.gradle.included.configurations}')
-    String includedConfigurationNames
+    String gradleIncludedConfigurationNames
 
     @ValueDescription(description="The names of the projects to exclude")
     @Value('${detect.gradle.excluded.projects}')
-    String excludedProjectNames
+    String gradleExcludedProjectNames
 
     @ValueDescription(description="The names of the projects to include")
     @Value('${detect.gradle.included.projects}')
-    String includedProjectNames
+    String gradleIncludedProjectNames
 
     @ValueDescription(description="Name of the Nuget Inspector", defaultValue="IntegrationNugetInspector")
     @Value('${detect.nuget.inspector.name}')
-    String inspectorPackageName
+    String nugetInspectorPackageName
 
     @ValueDescription(description="Version of the Nuget Inspector", defaultValue="0.0.3-alpha")
     @Value('${detect.nuget.inspector.version}')
-    String inspectorPackageVersion
+    String nugetInspectorPackageVersion
 
     @ValueDescription(description="The names of the projects in a solution to exclude")
     @Value('${detect.nuget.excluded.modules}')
-    String inspectorExcludedModules
+    String nugetInspectorExcludedModules
 
     @ValueDescription(description="If true errors will be logged and then ignored.", defaultValue="false")
     @Value('${detect.nuget.ignore.failure}')
-    Boolean inspectorIgnoreFailure
+    Boolean nugetInspectorIgnoreFailure
 
     @ValueDescription(description="If true all maven projects will be aggregated into a single bom", defaultValue="true")
     @Value('${detect.maven.aggregate}')
@@ -175,6 +156,10 @@ class DetectProperties {
     @ValueDescription(description="The path of the Nuget executable")
     @Value('${detect.nuget.path}')
     String nugetPath
+
+    @ValueDescription(description="Override for pip inspector to find your project")
+    @Value('${detect.pip.project.name}')
+    String pipProjectName
 
     @ValueDescription(description="If true creates a temporary Python virtual environment", defaultValue="true")
     @Value('${detect.pip.create.virtual.env}')
@@ -212,43 +197,27 @@ class DetectProperties {
     @Value('${detect.go.aggregate}')
     Boolean goAggregate
 
-    @PostConstruct
-    void init() {
-        if (sourcePaths == null || sourcePaths.length == 0) {
-            sourcePaths = [
-                System.getProperty('user.dir')
-            ] as String[]
-        }
+    @ValueDescription(description="Path of the docker executable")
+    @Value('${detect.docker.path}')
+    String dockerPath
 
-        if (StringUtils.isBlank(outputDirectoryPath)) {
-            outputDirectoryPath = System.getProperty('user.home') + File.separator + 'blackduck'
-        }
+    @ValueDescription(description="Version of the Hub Docker Inspector to use", defaultValue="0.0.3-SNAPSHOT")
+    @Value('${detect.docker.inspector.version}')
+    String dockerInspectorVersion
 
-        File outputDirectory = new File(outputDirectoryPath)
-        outputDirectory.mkdirs()
-        if (!outputDirectory.exists() || !outputDirectory.isDirectory()) {
-            throw new DetectException("The output directory ${outputDirectoryPath} does not exist. The system property 'user.home' will be used by default, but the output directory must exist.")
-        }
-        outputDirectoryPath = outputDirectoryPath.trim()
+    @ValueDescription(description="Where the Hub Docker Inspector should be installed - will default to a 'docker-install' directory in the outputDirectoryPath")
+    @Value('${detect.docker.install.path}')
+    String dockerInstallPath
 
-        // Nuget
-        inspectorPackageName = inspectorPackageName.trim()
-        inspectorPackageVersion = inspectorPackageVersion.trim()
+    @ValueDescription(description="Where the Hub Docker Inspector will put the files it needs to do its processing - this directory could be cleared by the inspector, so it should not be shared by others - will default to 'sandbox' directory in the dockerInstallPath")
+    @Value('${detect.docker.sandbox.path}')
+    String dockerSandboxPath
 
-        MutablePropertySources mutablePropertySources = configurableEnvironment.getPropertySources()
-        mutablePropertySources.each { propertySource ->
-            if (propertySource instanceof EnumerablePropertySource) {
-                EnumerablePropertySource enumerablePropertySource = (EnumerablePropertySource) propertySource
-                enumerablePropertySource.propertyNames.each { propertyName ->
-                    if (propertyName && propertyName.startsWith(DOCKER_PROPERTY_PREFIX)) {
-                        additionalDockerPropertyNames.add(propertyName)
-                    }
-                }
-            }
-        }
-    }
+    @ValueDescription(description="A saved docker image - must be a .tar file. For detect to run docker either this property or detect.docker.image must be set.")
+    @Value('${detect.docker.tar}')
+    String dockerTar
 
-    public String getDetectProperty(String key) {
-        configurableEnvironment.getProperty(key)
-    }
+    @ValueDescription(description="The docker image name to inspect. For detect to run docker either this property or detect.docker.tar must be set.")
+    @Value('${detect.docker.image}')
+    String dockerImage
 }

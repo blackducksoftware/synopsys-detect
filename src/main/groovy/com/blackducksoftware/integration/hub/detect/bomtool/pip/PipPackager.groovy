@@ -91,15 +91,15 @@ class PipPackager {
         if(setupFile) {
             def installProjectExecutable = new Executable(sourceDirectory, pipPath, ['install', '.', '-I'])
             executableRunner.executeLoudly(installProjectExecutable)
-
-            if(!detectProperties.projectName) {
+            def projectName = detectProperties.pipProjectName
+            if(!projectName) {
                 def findProjectNameExecutable = new Executable(sourceDirectory, pythonPath, [
                     setupFile.absolutePath,
                     '--name'
                 ])
-                def projectName = executableRunner.executeQuietly(findProjectNameExecutable).standardOutput.trim()
-                pipInspectorOptions += ['-p', projectName]
+                projectName = executableRunner.executeQuietly(findProjectNameExecutable).standardOutput.trim()
             }
+            pipInspectorOptions += ['-p', projectName]
         }
 
         def pipInspector = new Executable(sourceDirectory, pythonPath, pipInspectorOptions)
@@ -107,11 +107,13 @@ class PipPackager {
         def parser = new PipInspectorTreeParser()
         DependencyNode project = parser.parse(inspectorOutput)
 
-        if(project.name == PipInspectorTreeParser.UNKOWN_PROJECT) {
+        if(project.name == PipInspectorTreeParser.UNKOWN_PROJECT_NAME && project.version == PipInspectorTreeParser.UNKOWN_PROJECT_VERSION) {
             project.name = projectInfoGatherer.getDefaultProjectName(BomToolType.PIP, sourcePath)
             project.version = projectInfoGatherer.getDefaultProjectVersionName()
             project.externalId = new NameVersionExternalId(Forge.PYPI, project.name, project.version)
         }
+
+        inpsectorScript.delete()
 
         [project]
     }
