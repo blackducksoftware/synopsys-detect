@@ -1,5 +1,7 @@
 buildscript {
-    repositories { mavenCentral() }
+    repositories {
+        mavenCentral()
+    }
 
     dependencies {
         classpath('org.springframework.boot:spring-boot-gradle-plugin:1.5.2.RELEASE')
@@ -7,12 +9,15 @@ buildscript {
     }
 }
 
-apply plugin: 'groovy'
-apply plugin: 'eclipse'
-apply plugin: 'maven'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'jacoco'
-apply plugin: 'com.github.kt3k.coveralls'
+plugins {
+    id 'groovy'
+    id 'eclipse'
+    id 'maven'
+    id 'org.springframework.boot' version '1.5.2.RELEASE'
+    id 'jacoco'
+    id 'com.github.kt3k.coveralls' version '2.8.1'
+    id 'com.github.hierynomus.license' version '0.14.0'
+}
 
 tasks.withType(JavaCompile) { options.encoding = 'UTF-8' }
 tasks.withType(GroovyCompile) { options.encoding = 'UTF-8' }
@@ -66,3 +71,13 @@ springBoot { mainClass = 'com.blackducksoftware.integration.hub.detect.Applicati
 jacocoTestReport {
     reports { xml.enabled = true }
 }
+
+license {
+    header = file('HEADER')
+    ext.year = Calendar.getInstance().get(Calendar.YEAR)
+    ignoreFailures = true
+    includes (["**/*.groovy", "**/*.java"])
+    exclude "/src/test/*"
+}
+
+tasks.licenseMain.dependsOn(licenseFormatMain)
