@@ -33,7 +33,8 @@ enum ExecutableType {
     PIP3([(OperatingSystemType.WINDOWS): 'pip3.exe', (OperatingSystemType.LINUX): 'pip3']),
     PYTHON3([(OperatingSystemType.WINDOWS): 'python3.exe', (OperatingSystemType.LINUX): 'python3']),
     GO([(OperatingSystemType.WINDOWS): 'go.exe', (OperatingSystemType.LINUX): 'go']),
-    GODEP([(OperatingSystemType.WINDOWS): 'godep.exe', (OperatingSystemType.LINUX): 'godep'])
+    GODEP([(OperatingSystemType.WINDOWS): 'godep.exe', (OperatingSystemType.LINUX): 'godep']),
+    DOCKER([(OperatingSystemType.WINDOWS): 'docker.exe', (OperatingSystemType.LINUX): 'docker'])
 
     private Map<OperatingSystemType, String> osToExecutableMap = [:]
 

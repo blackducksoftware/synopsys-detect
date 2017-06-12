@@ -53,10 +53,10 @@ class GradleInitScriptPackager {
         initScriptFile.deleteOnExit()
         String initScriptContents = getClass().getResourceAsStream('/init-script-gradle').getText(StandardCharsets.UTF_8.name())
         initScriptContents = initScriptContents.replace('GRADLE_INSPECTOR_VERSION', detectProperties.getGradleInspectorVersion())
-        initScriptContents = initScriptContents.replace('EXCLUDED_PROJECT_NAMES', detectProperties.getExcludedProjectNames())
-        initScriptContents = initScriptContents.replace('INCLUDED_PROJECT_NAMES', detectProperties.getIncludedProjectNames())
-        initScriptContents = initScriptContents.replace('EXCLUDED_CONFIGURATION_NAMES', detectProperties.getExcludedConfigurationNames())
-        initScriptContents = initScriptContents.replace('INCLUDED_CONFIGURATION_NAMES', detectProperties.getIncludedConfigurationNames())
+        initScriptContents = initScriptContents.replace('EXCLUDED_PROJECT_NAMES', detectProperties.getGradleExcludedProjectNames())
+        initScriptContents = initScriptContents.replace('INCLUDED_PROJECT_NAMES', detectProperties.getGradleIncludedProjectNames())
+        initScriptContents = initScriptContents.replace('EXCLUDED_CONFIGURATION_NAMES', detectProperties.getGradleExcludedConfigurationNames())
+        initScriptContents = initScriptContents.replace('INCLUDED_CONFIGURATION_NAMES', detectProperties.getGradleIncludedConfigurationNames())
 
         initScriptFile << initScriptContents
         String initScriptPath = initScriptFile.absolutePath
