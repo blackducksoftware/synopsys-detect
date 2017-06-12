@@ -22,6 +22,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.npm
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -35,6 +37,8 @@ import com.google.gson.stream.JsonReader
 @Component
 class NpmNodeModulesDependencyFinder {
 
+	private final Logger logger = LoggerFactory.getLogger(NpmNodeModulesDependencyFinder.class)
+
 	@Autowired
 	Gson gson
 
@@ -44,7 +48,7 @@ class NpmNodeModulesDependencyFinder {
 	/*
 	 * arraylist used to check for circular dependencies
 	 */
-	private ArrayList<String> modules = new ArrayList<String>()
+	def modules = new HashSet<String>()
 
 	public DependencyNode generateDependencyNode(String nodeProjectDirectory) {
 		def packageJsonFile = fileFinder.findFile(nodeProjectDirectory, NpmConstants.PACKAGE_JSON)
@@ -58,25 +62,38 @@ class NpmNodeModulesDependencyFinder {
 
 		if(nodeModulesFile.exists() && nodeModulesFile.isDirectory()) {
 			if(pNode) {
+				logger.info("Traversing project directory starting from package.json dependencies")
 				return createNodeFromPackageNode(pNode, nodeModulesFile)
 			} else {
+				logger.info("No package.json found, parsing node_modules folder")
 				return createNodeFromNodeModules(nodeModulesFile)
 			}
 		} else if(pNode) {
-			//We have only the package.json and no node_modules folder which would require REST calls to complete. Try to log something
+			/*
+			 * We have only the package.json and no node_modules folder which would require REST calls to complete.
+			 * This would be a good place to check for shrinkwrap/package-lock files
+			 */
+			logger.error("No node_modules folder located in target path. Can't run program")
 		}
 	}
 
 	/*
 	 * The best case scenario for parsing npm without npm installed (uses package.json and node_modules).
-	 * Note: May need to check for circular dependencies, it looks as if node allows it
+	 * Note: Looks to be faster than the Cli finder
 	 */
 	public DependencyNode createNodeFromPackageNode(PackageNode pNode, File nodeModulesFile) {
 		DependencyNode node = createDependencyNode(pNode)
 
-		//Set<String> allDependencies = pNode?.dependencies?.keySet()?.addAll(pNode.optionalDependencies?.keySet())
+		//Had to create a HashSet object before adding content because of issues with the keySet method for maps
+		def allDependencies = new HashSet<String>()
+		allDependencies.addAll(pNode?.dependencies?.keySet())
+		Set<String> optionalDependencies = pNode?.optionalDependencies?.keySet()
 
-		for(String filename : pNode.dependencies?.keySet()) {
+		if(optionalDependencies) {
+			allDependencies.addAll(optionalDependencies)
+		}
+
+		for(String filename : allDependencies) {
 			if(modules.contains(filename)) {
 				continue
 			} else {

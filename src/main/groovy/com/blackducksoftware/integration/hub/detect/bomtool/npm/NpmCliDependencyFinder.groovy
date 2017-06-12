@@ -22,6 +22,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.npm
 
+import org.slf4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -35,6 +36,8 @@ import com.google.gson.stream.JsonReader
 
 @Component
 class NpmCliDependencyFinder {
+
+	private final Logger logger = LoggerFactory.getLogger(NpmCliDependencyFinder.class)
 
 	@Autowired
 	Gson gson
@@ -52,9 +55,10 @@ class NpmCliDependencyFinder {
 		exeRunner.executeToFile(npmLsExe, tempJsonOutFile)
 
 		if(tempJsonOutFile?.length() > 0) {
+			logger.info("Running npm ls and converting values")
 			result = convertNpmJsonFileToDependencyNode(tempJsonOutFile)
 		} else {
-			//If the file has no content or doesn't exist because of a failed NPM exe, run the backup finder
+			logger.info("Npm doesn't look to be installed, finding alternative routes...")
 			result = nmFinder.generateDependencyNode(rootDirectoryPath)
 		}
 
