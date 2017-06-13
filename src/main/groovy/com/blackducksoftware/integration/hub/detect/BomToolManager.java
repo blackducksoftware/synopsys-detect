@@ -72,7 +72,7 @@ public class BomToolManager {
                 final BomToolType bomToolType = bomTool.getBomToolType();
                 final String bomToolTypeString = bomToolType.toString();
                 if (!toolFilter.shouldInclude(bomToolTypeString)) {
-                    logger.info(String.format("Skipping %s.", bomToolTypeString));
+                    logger.debug(String.format("Skipping %s.", bomToolTypeString));
                     continue;
                 }
                 if (bomTool.isBomToolApplicable() && detectConfiguration.shouldRun(bomTool)) {
@@ -90,7 +90,7 @@ public class BomToolManager {
         }
 
         if (!foundSomeBomTools) {
-            logger.info("Could not find any tools to run.");
+            logger.debug("Could not find any tools to run.");
         }
         return createdBdioFiles;
     }
