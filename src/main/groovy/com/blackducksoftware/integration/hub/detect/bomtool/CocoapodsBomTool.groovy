@@ -43,7 +43,7 @@ class CocoapodsBomTool extends BomTool {
     boolean isBomToolApplicable() {
         matchingSourcePaths = sourcePathSearcher.findSourcePathsContainingFilenamePattern('Podfile.lock')
 
-        !matchingSourcePaths.empty
+        !matchingSourcePaths.isEmpty()
     }
 
     List<DependencyNode> extractDependencyNodes() {

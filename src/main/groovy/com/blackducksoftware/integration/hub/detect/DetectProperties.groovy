@@ -197,6 +197,10 @@ class DetectProperties {
     @Value('${detect.docker.path}')
     String dockerPath
 
+    @ValueDescription(description="This is used to override using the hosted script by github url. You can provide your own script at this path.")
+    @Value('${detect.docker.inspector.path}')
+    String dockerInspectorPath
+
     @ValueDescription(description="Version of the Hub Docker Inspector to use", defaultValue="0.0.4-SNAPSHOT")
     @Value('${detect.docker.inspector.version}')
     String dockerInspectorVersion

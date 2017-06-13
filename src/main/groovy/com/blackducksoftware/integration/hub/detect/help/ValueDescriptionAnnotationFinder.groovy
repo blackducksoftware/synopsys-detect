@@ -75,7 +75,7 @@ public class ValueDescriptionAnnotationFinder implements ApplicationContextAware
                             String valueKey = field.getAnnotation(Value.class).value().trim()
                             key = valueKey[2..-2]
                         }
-                    } else{
+                    } else {
                         key = valueDescription.key().trim()
                     }
                     field.setAccessible(true);

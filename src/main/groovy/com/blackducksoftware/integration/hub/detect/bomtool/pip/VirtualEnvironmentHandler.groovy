@@ -85,17 +85,17 @@ class VirtualEnvironmentHandler {
         VirtualEnvironment env = null
         def outputDirectory = new File(detectProperties.outputDirectoryPath)
         String definedPath = detectProperties.virtualEnvPath?.trim()
-        if(detectProperties.createVirtualEnv) {
+        if (detectProperties.createVirtualEnv) {
             def venvDirectory = new File(outputDirectory, VIRTUAL_ENV_NAME)
             env = findExistingEnvironment(venvDirectory)
 
             def definedEnv = null
-            if(definedPath) {
+            if (definedPath) {
                 definedEnv = new File(definedPath)
                 env = findExistingEnvironment(definedEnv)
             }
 
-            if(!env && definedEnv){
+            if (!env && definedEnv){
                 env = createVirtualEnvironment(definedEnv)
             } else if (!env) {
                 env = createVirtualEnvironment(venvDirectory)
@@ -107,7 +107,7 @@ class VirtualEnvironmentHandler {
             env = getSystemEnvironment()
         }
 
-        if(!env) {
+        if (!env) {
             logger.warn('Failed to get/create any virtual environment')
         }
 
@@ -137,7 +137,7 @@ class VirtualEnvironmentHandler {
         def virtualEnvPython = new File(virtualEnvDirectory, "${binFolderName}/${pythonName}")
         def virtualEnvPip = new File(virtualEnvDirectory, "${binFolderName}/${pipName}")
 
-        if(virtualEnvDirectory.exists() && virtualEnvDirectory.isDirectory() && virtualEnvPython.exists() && virtualEnvPip.exists()) {
+        if (virtualEnvDirectory.exists() && virtualEnvDirectory.isDirectory() && virtualEnvPython.exists() && virtualEnvPip.exists()) {
             existing = new VirtualEnvironment()
             existing.pythonType = systemEnvironment.pythonType
             existing.pipType = systemEnvironment.pipType
@@ -152,7 +152,7 @@ class VirtualEnvironmentHandler {
         if (StringUtils.isNotBlank(executablePath)) {
             executablePath
         } else {
-            if(StringUtils.isBlank(path)){
+            if (StringUtils.isBlank(path)){
                 executableManager.getPathOfExecutable(commandType)
             } else {
                 executableManager.getPathOfExecutable(path, commandType)

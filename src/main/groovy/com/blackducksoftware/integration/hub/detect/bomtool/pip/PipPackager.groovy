@@ -88,11 +88,11 @@ class PipPackager {
         }
 
         // Install project if it can find one and pass its name to the inspector
-        if(setupFile) {
+        if (setupFile) {
             def installProjectExecutable = new Executable(sourceDirectory, pipPath, ['install', '.', '-I'])
             executableRunner.executeLoudly(installProjectExecutable)
             def projectName = detectProperties.pipProjectName
-            if(!projectName) {
+            if (!projectName) {
                 def findProjectNameExecutable = new Executable(sourceDirectory, pythonPath, [
                     setupFile.absolutePath,
                     '--name'
@@ -107,7 +107,7 @@ class PipPackager {
         def parser = new PipInspectorTreeParser()
         DependencyNode project = parser.parse(inspectorOutput)
 
-        if(project.name == PipInspectorTreeParser.UNKOWN_PROJECT_NAME && project.version == PipInspectorTreeParser.UNKOWN_PROJECT_VERSION) {
+        if (project.name == PipInspectorTreeParser.UNKOWN_PROJECT_NAME && project.version == PipInspectorTreeParser.UNKOWN_PROJECT_VERSION) {
             project.name = projectInfoGatherer.getDefaultProjectName(BomToolType.PIP, sourcePath)
             project.version = projectInfoGatherer.getDefaultProjectVersionName()
             project.externalId = new NameVersionExternalId(Forge.PYPI, project.name, project.version)

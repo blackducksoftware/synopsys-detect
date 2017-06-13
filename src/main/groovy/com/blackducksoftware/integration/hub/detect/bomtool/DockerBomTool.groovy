@@ -71,13 +71,18 @@ class DockerBomTool extends BomTool {
 
     @Override
     public List<DependencyNode> extractDependencyNodes() {
-        URL hubDockerInspectorShellScriptUrl = new URL("https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector-${detectProperties.dockerInspectorVersion}.sh")
-        File dockerInstallDirectory = new File(detectProperties.dockerInstallPath)
-        String shellScriptContents = hubDockerInspectorShellScriptUrl.openStream().getText(StandardCharsets.UTF_8.name())
-        File shellScriptFile = new File(dockerInstallDirectory, "hub-docker-inspector-${detectProperties.dockerInspectorVersion}.sh")
-        shellScriptFile.delete()
-        shellScriptFile << shellScriptContents
-        shellScriptFile.setExecutable(true)
+        File shellScriptFile
+        if (detectProperties.dockerInspectorPath) {
+            shellScriptFile = new File(detectProperties.dockerInspectorPath)
+        } else {
+            URL hubDockerInspectorShellScriptUrl = new URL("https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector-${detectProperties.dockerInspectorVersion}.sh")
+            File dockerInstallDirectory = new File(detectProperties.dockerInstallPath)
+            String shellScriptContents = hubDockerInspectorShellScriptUrl.openStream().getText(StandardCharsets.UTF_8.name())
+            shellScriptFile = new File(dockerInstallDirectory, "hub-docker-inspector-${detectProperties.dockerInspectorVersion}.sh")
+            shellScriptFile.delete()
+            shellScriptFile << shellScriptContents
+            shellScriptFile.setExecutable(true)
+        }
 
         String path = System.getenv('PATH')
         File dockerExecutableFile = new File(dockerExecutablePath)
@@ -94,6 +99,7 @@ class DockerBomTool extends BomTool {
 
         Executable dockerExecutable = new Executable(dockerInstallDirectory, environmentVariables, bashExecutablePath, bashArguments)
         executableRunner.executeLoudly(dockerExecutable)
+        //At least for the moment, there is no way of running the hub-docker-inspector to generate the files only, so it currently handles all uploading
         return [];
     }
 

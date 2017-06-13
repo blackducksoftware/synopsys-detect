@@ -48,7 +48,7 @@ class PipBomTool extends BomTool {
     List<String> matchingSourcePaths = []
 
     BomToolType getBomToolType() {
-        if(detectProperties.pipThreeOverride)
+        if (detectProperties.pipThreeOverride)
             BomToolType.PIP3
         else
             BomToolType.PIP
@@ -59,7 +59,7 @@ class PipBomTool extends BomTool {
         def foundExectables = systemEnvironment.pipPath && systemEnvironment.pythonPath
         matchingSourcePaths = sourcePathSearcher.findSourcePathsContainingFilenamePattern(SETUP_FILENAME)
         def definedRequirements = detectProperties.requirementsFilePath
-        foundExectables && (!matchingSourcePaths.empty || definedRequirements)
+        foundExectables && (!matchingSourcePaths.isEmpty() || definedRequirements)
     }
 
     List<DependencyNode> extractDependencyNodes() {
