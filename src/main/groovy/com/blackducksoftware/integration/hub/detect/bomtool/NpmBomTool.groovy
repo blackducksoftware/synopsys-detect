@@ -27,55 +27,48 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmCliDependencyFinder
-import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmConstants
-import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmNodeModulesDependencyFinder
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 
 @Component
 class NpmBomTool extends BomTool {
 
-	@Autowired
-	NpmCliDependencyFinder cliDependencyFinder
+    def final static NODE_MODULES = 'node_modules'
+    def final static PACKAGE_JSON = 'package.json'
+    def final static OUTPUT_FILE = 'detect_npm_proj_dependencies.json'
 
-	@Autowired
-	NpmNodeModulesDependencyFinder nodeModulesDependencyFinder
+    @Autowired
+    NpmCliDependencyFinder cliDependencyFinder
 
-	private List<String> npmPaths = []
+    private List<String> npmPaths = []
 
-	@Override
-	public BomToolType getBomToolType() {
-		BomToolType.NPM
-	}
+    @Override
+    public BomToolType getBomToolType() {
+        BomToolType.NPM
+    }
 
-	@Override
-	public boolean isBomToolApplicable() {
-		npmPaths = sourcePathSearcher.findSourcePathsContainingFilenamePattern(NpmConstants.NODE_MODULES)
-	}
+    @Override
+    public boolean isBomToolApplicable() {
+        npmPaths = sourcePathSearcher.findSourcePathsContainingFilenamePattern(NODE_MODULES)
+    }
 
-	@Override
-	public List<DependencyNode> extractDependencyNodes() {
-		List<DependencyNode> nodes = []
+    @Override
+    public List<DependencyNode> extractDependencyNodes() {
+        List<DependencyNode> nodes = []
 
-		String npmExe = getExecutablePath()
+        String npmExe = getExecutablePath()
 
-		npmPaths.each {
-			if(npmExe) {
-				nodes.add(cliDependencyFinder.generateDependencyNode(it, npmExe))
-			} else {
-				nodes.add(nodeModulesDependencyFinder.generateDependencyNode(it))
-			}
+        npmPaths.each {
+            nodes.add(cliDependencyFinder.generateDependencyNode(it, npmExe))
+        }
 
-		}
+        nodes
+    }
 
-		nodes
-	}
-
-	private String getExecutablePath() {
-		if(!detectProperties.npmPath) {
-			return executableManager.getPathOfExecutable(ExecutableType.NPM)
-		}
-		detectProperties.npmPath
-	}
-
+    private String getExecutablePath() {
+        if(!detectProperties.npmPath) {
+            return executableManager.getPathOfExecutable(ExecutableType.NPM)
+        }
+        detectProperties.npmPath
+    }
 }

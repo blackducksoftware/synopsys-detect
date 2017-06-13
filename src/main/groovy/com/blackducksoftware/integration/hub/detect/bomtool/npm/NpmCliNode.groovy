@@ -23,7 +23,7 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.npm
 
 class NpmCliNode {
-	String name
-	String version
-	Map<String, NpmCliNode> dependencies
+    String name
+    String version
+    Map<String, NpmCliNode> dependencies
 }

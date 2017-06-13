@@ -1,4 +1,4 @@
-package com.blackducksoftware.integration.hub.detect.packagemanager.npm;
+package com.blackducksoftware.integration.hub.detect.bomtool.npm;
 
 import static org.junit.Assert.assertTrue;
 

@@ -30,6 +30,9 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+import com.blackducksoftware.integration.hub.detect.bomtool.NpmBomTool
+import com.blackducksoftware.integration.hub.detect.type.BomToolType
+import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
 import com.google.gson.Gson
@@ -37,66 +40,64 @@ import com.google.gson.stream.JsonReader
 
 @Component
 class NpmCliDependencyFinder {
+    private final Logger logger = LoggerFactory.getLogger(NpmCliDependencyFinder.class)
+    private String rootPath
 
-	private final Logger logger = LoggerFactory.getLogger(NpmCliDependencyFinder.class)
+    @Autowired
+    Gson gson
 
-	@Autowired
-	Gson gson
+    @Autowired
+    ProjectInfoGatherer projectInfoGatherer
 
-	@Autowired
-	NpmNodeModulesDependencyFinder nmFinder
+    public DependencyNode generateDependencyNode(String rootDirectoryPath, String exePath) {
+        DependencyNode result;
 
-	public DependencyNode generateDependencyNode(String rootDirectoryPath, String exePath) {
-		DependencyNode result;
+        rootPath = rootDirectoryPath
 
-		def npmLsExe = new Executable(new File(rootDirectoryPath), exePath, ['ls', '-json'])
-		def exeRunner = new ExecutableRunner()
-		def tempJsonOutFile = new File(NpmConstants.OUTPUT_FILE)
+        if(!exePath) {
+            logger.error("Npm executable not found, exiting")
+            return result
+        }
 
-		exeRunner.executeToFile(npmLsExe, tempJsonOutFile)
+        def npmLsExe = new Executable(new File(rootDirectoryPath), exePath, ['ls', '-json'])
+        def exeRunner = new ExecutableRunner()
+        def tempJsonOutFile = new File(NpmBomTool.OUTPUT_FILE)
 
-		if(tempJsonOutFile?.length() > 0) {
-			logger.info("Running npm ls and converting values")
-			result = convertNpmJsonFileToDependencyNode(tempJsonOutFile)
-		} else {
-			logger.info("Npm doesn't look to be installed, finding alternative routes...")
-			result = nmFinder.generateDependencyNode(rootDirectoryPath)
-		}
+        exeRunner.executeToFile(npmLsExe, tempJsonOutFile)
 
-		if(tempJsonOutFile) {
-			try {
-				tempJsonOutFile.delete()
-			} catch (IOException e) {
-				println(e.stackTrace)
-			}
-		}
+        if(tempJsonOutFile?.length() > 0) {
+            logger.info("Running npm ls and converting values")
+            result = convertNpmJsonFileToDependencyNode(tempJsonOutFile)
+        }
 
-		result
-	}
+        if(tempJsonOutFile) {
+            try {
+                tempJsonOutFile.delete()
+            } catch (IOException e) {
+                println(e.stackTrace)
+            }
+        }
 
-	private DependencyNode convertNpmJsonFileToDependencyNode(File file) {
-		convertToDependencyNode(jsonDeserialization(file), null)
-	}
+        result
+    }
 
-	private NpmCliNode jsonDeserialization(File depOut) {
-		gson.fromJson(new JsonReader(new FileReader(depOut)), NpmCliNode.class)
-	}
+    private DependencyNode convertNpmJsonFileToDependencyNode(File depOut) {
+        convertToDependencyNode(gson.fromJson(new JsonReader(new FileReader(depOut)), NpmCliNode.class))
+    }
 
-	private DependencyNode convertToDependencyNode(NpmCliNode node, String keyName) {
-		def name = node.name
+    private DependencyNode convertToDependencyNode(NpmCliNode node) {
+        def name = (node.name) ? node.name : projectInfoGatherer.getDefaultProjectName(BomToolType.NPM, rootPath)
+        def version = (node.version) ? node.version : projectInfoGatherer.getDefaultProjectVersionName()
+        def externalId = new NameVersionExternalId(Forge.NPM, name, version)
 
-		//If a keyname is provided through recursion, use that name instead of the node name (Because of package.json structure)
-		if(keyName) {
-			name = keyName
-		}
+        def dependencyNode = new DependencyNode(name, version, externalId)
+        node.dependencies.each {
+            if(!it.getValue().name) {
+                it.getValue().name = it.getKey()
+            }
+            dependencyNode.children.add(convertToDependencyNode(it.getValue()))
+        }
 
-		def version = node.version
-		def externalId = new NameVersionExternalId(Forge.NPM, name, version)
-		def dependencyNode = new DependencyNode(name, version, externalId)
-		node.dependencies.each {
-			dependencyNode.children.add(convertToDependencyNode(it.getValue(), it.getKey()))
-		}
-
-		dependencyNode
-	}
+        dependencyNode
+    }
 }
