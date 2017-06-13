@@ -217,7 +217,7 @@ class DetectProperties {
     @Value('${detect.docker.image}')
     String dockerImage
 
-    @ValueDescription(description="Path of the base executable")
+    @ValueDescription(description="Path of the bash executable")
     @Value('${detect.bash.path}')
     String bashPath
 }
