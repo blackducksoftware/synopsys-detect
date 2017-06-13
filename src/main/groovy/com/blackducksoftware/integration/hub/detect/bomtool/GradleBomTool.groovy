@@ -57,7 +57,7 @@ class GradleBomTool extends BomTool {
             }
         }
 
-        !matchingSourcePathToGradleExecutable.empty
+        !matchingSourcePathToGradleExecutable.isEmpty()
     }
 
     List<DependencyNode> extractDependencyNodes() {
@@ -73,12 +73,12 @@ class GradleBomTool extends BomTool {
     private String findGradleExecutable(String sourcePath) {
         String gradlePath = detectProperties.getGradlePath()
         if (StringUtils.isBlank(gradlePath)) {
-            logger.info('detect.gradle.path not set in config - first try to find the gradle wrapper')
+            logger.debug('detect.gradle.path not set in config - first try to find the gradle wrapper')
             gradlePath = executableManager.getPathOfExecutable(sourcePath, ExecutableType.GRADLEW)
         }
 
         if (StringUtils.isBlank(gradlePath)) {
-            logger.info('gradle wrapper not found - trying to find gradle on the PATH')
+            logger.debug('gradle wrapper not found - trying to find gradle on the PATH')
             gradlePath = executableManager.getPathOfExecutable(ExecutableType.GRADLE)
         }
 

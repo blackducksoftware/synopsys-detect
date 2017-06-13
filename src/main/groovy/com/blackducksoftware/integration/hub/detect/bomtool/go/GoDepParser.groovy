@@ -50,12 +50,12 @@ class GoDepParser {
             def version = ''
             if (it.comment?.trim() && it.comment.contains('v')) {
                 version = it.comment.trim()
-                if(version.contains('-')){
+                if (version.contains('-')){
                     //v1.6-27-23859436879234678  should be transformed to v1.6
                     version = version.substring(0, version.lastIndexOf('-'))
                     version = version.substring(0, version.lastIndexOf('-'))
                 }
-            } else{
+            } else {
                 version = it.rev.trim()
             }
             final ExternalId dependencyExternalId = new NameVersionExternalId(GoBomTool.GOLANG, it.importPath, version)

@@ -65,10 +65,10 @@ class NugetInspectorPackager {
             "--output_directory=${outputDirectory.getAbsolutePath()}",
             "--ignore_failure=${detectProperties.getNugetInspectorIgnoreFailure()}"
         ]
-        if(detectProperties.getNugetInspectorExcludedModules()) {
+        if (detectProperties.getNugetInspectorExcludedModules()) {
             options += "--excluded_modules=${detectProperties.getNugetInspectorExcludedModules()}"
         }
-        if(logger.traceEnabled) {
+        if (logger.traceEnabled) {
             options += "-v"
         }
 

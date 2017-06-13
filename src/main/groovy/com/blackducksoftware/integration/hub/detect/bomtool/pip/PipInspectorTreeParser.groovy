@@ -49,31 +49,31 @@ class PipInspectorTreeParser {
         Stack<NameVersionNode> tree = new Stack<>()
 
         int indentation = 0
-        for(String line: lines) {
-            if(!line.trim()) {
+        for (String line: lines) {
+            if (!line.trim()) {
                 continue
             }
 
-            if(line.startsWith(UNKOWN_REQUIREMENTS_PREFIX)) {
+            if (line.startsWith(UNKOWN_REQUIREMENTS_PREFIX)) {
                 String path = line.replace(UNKOWN_REQUIREMENTS_PREFIX).trim()
                 logger.info("Pip inspector could not locate requirements file @ ${path}")
                 continue
             }
 
-            if(line.startsWith(UNKOWN_PACKAGE_PREFIX)) {
+            if (line.startsWith(UNKOWN_PACKAGE_PREFIX)) {
                 String packageName = line.replace(UNKOWN_PACKAGE_PREFIX).trim()
                 logger.info("Pip inspector could not resolve the package: ${packageName}")
                 continue
             }
 
-            if(line.contains(SEPERATOR) && !nodeBuilder) {
+            if (line.contains(SEPERATOR) && !nodeBuilder) {
                 NameVersionNode projectNode = lineToNode(line)
                 tree.push(projectNode)
                 nodeBuilder = new NameVersionNodeBuilder(projectNode)
                 continue
             }
 
-            if(!nodeBuilder) {
+            if (!nodeBuilder) {
                 continue
             }
 
@@ -82,7 +82,7 @@ class PipInspectorTreeParser {
             if (currentIndentation == indentation) {
                 tree.pop()
             } else {
-                for(;indentation >= currentIndentation; indentation--) {
+                for (;indentation >= currentIndentation; indentation--) {
                     tree.pop()
                 }
             }
@@ -98,7 +98,7 @@ class PipInspectorTreeParser {
     DependencyNode transformToDependencyNode(NameVersionNode node) {
         ExternalId externalId = new NameVersionExternalId(Forge.PYPI, node.name, node.version)
         DependencyNode newNode = new DependencyNode(node.name, node.version, externalId)
-        for(NameVersionNode child: node.children) {
+        for (NameVersionNode child: node.children) {
             def childDependencyNode = transformToDependencyNode(child)
             newNode.children.add(childDependencyNode)
         }

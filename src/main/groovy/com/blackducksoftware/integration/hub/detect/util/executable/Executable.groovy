@@ -47,18 +47,12 @@ class Executable {
         def processBuilderArguments = createProcessBuilderArguments()
         ProcessBuilder processBuilder = new ProcessBuilder(processBuilderArguments);
         processBuilder.directory(workingDirectory)
-        //ProcessBuilder's environment's keys and values must be non-null java.lang.String's
-        if (environmentVariables) {
-            def processBuilderEnvironment = processBuilder.environment()
-            environmentVariables.each { key, value ->
-                if (key && value) {
-                    String keyString = key.toString()
-                    String valueString = value.toString()
-                    if (keyString && valueString) {
-                        processBuilderEnvironment.put(keyString, valueString)
-                    }
-                }
-            }
+        def processBuilderEnvironment = processBuilder.environment()
+        System.getenv().each { key, value ->
+            populateEnvironmentMap(processBuilderEnvironment, key, value)
+        }
+        environmentVariables.each { key, value ->
+            populateEnvironmentMap(processBuilderEnvironment, key, value)
         }
 
         processBuilder
@@ -77,5 +71,16 @@ class Executable {
         }
 
         processBuilderArguments
+    }
+
+    private void populateEnvironmentMap(Map<String, String> environment, Object key, Object value) {
+        //ProcessBuilder's environment's keys and values must be non-null java.lang.String's
+        if (key && value) {
+            String keyString = key.toString()
+            String valueString = value.toString()
+            if (keyString && valueString) {
+                environment.put(keyString, valueString)
+            }
+        }
     }
 }

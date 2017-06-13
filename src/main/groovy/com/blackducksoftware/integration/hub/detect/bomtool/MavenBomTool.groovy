@@ -53,7 +53,7 @@ class MavenBomTool extends BomTool {
         mvnExecutablePath = findMavenExecutablePath()
         matchingSourcePaths = sourcePathSearcher.findSourcePathsContainingFilenamePattern(POM_FILENAME)
 
-        mvnExecutablePath && !matchingSourcePaths.empty
+        mvnExecutablePath && !matchingSourcePaths.isEmpty()
     }
 
     List<DependencyNode> extractDependencyNodes() {

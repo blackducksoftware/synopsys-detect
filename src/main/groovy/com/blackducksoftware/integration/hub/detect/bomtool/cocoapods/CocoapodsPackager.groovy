@@ -83,13 +83,13 @@ class CocoapodsPackager {
             masterPod.name = getCleanPodName(pods[0])
             List<Pod> children = []
             pods.each { pod ->
-                if(!isFakePod(pod)) {
+                if (!isFakePod(pod)) {
                     masterPod = pod
                 }
                 children += pod.children.findAll { child -> getCleanPodName(child) != masterPod.name}
             }
             masterPod.children = children
-            if(!masterPod.version) {
+            if (!masterPod.version) {
                 masterPod.version = masterPod.children[0].version
             }
 

@@ -24,6 +24,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool
 
 import java.nio.charset.StandardCharsets
 
+import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -42,6 +43,9 @@ class DockerBomTool extends BomTool {
     @Autowired
     DockerProperties dockerProperties
 
+    private String dockerExecutablePath
+    private String bashExecutablePath
+
     @Override
     public BomToolType getBomToolType() {
         BomToolType.DOCKER
@@ -49,9 +53,13 @@ class DockerBomTool extends BomTool {
 
     @Override
     public boolean isBomToolApplicable() {
-        def dockerExecutablePath = findDockerExecutable()
+        dockerExecutablePath = findDockerExecutable()
         if (!dockerExecutablePath) {
             logger.debug('Could not find docker on the environment PATH')
+        }
+        bashExecutablePath = findBashExecutable()
+        if (!bashExecutablePath) {
+            logger.debug('Could not find bash on the environment PATH')
         }
         boolean propertiesOk = detectProperties.dockerInspectorVersion && (detectProperties.dockerTar || detectProperties.dockerImage)
         if (!propertiesOk) {
@@ -63,22 +71,36 @@ class DockerBomTool extends BomTool {
 
     @Override
     public List<DependencyNode> extractDependencyNodes() {
-        URL hubDockerInspectorShellScriptUrl = new URL("https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-${detectProperties.dockerInspectorVersion}.sh")
         File dockerInstallDirectory = new File(detectProperties.dockerInstallPath)
-        String shellScriptContents = hubDockerInspectorShellScriptUrl.openStream().getText(StandardCharsets.UTF_8.name())
-        File shellScriptFile = new File(dockerInstallDirectory, "hub-docker-${detectProperties.dockerInspectorVersion}.sh")
-        shellScriptFile.delete()
-        shellScriptFile << shellScriptContents
-        shellScriptFile.setExecutable(true)
+        File shellScriptFile
+        if (detectProperties.dockerInspectorPath) {
+            shellScriptFile = new File(detectProperties.dockerInspectorPath)
+        } else {
+            URL hubDockerInspectorShellScriptUrl = new URL("https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector-${detectProperties.dockerInspectorVersion}.sh")
+            String shellScriptContents = hubDockerInspectorShellScriptUrl.openStream().getText(StandardCharsets.UTF_8.name())
+            shellScriptFile = new File(dockerInstallDirectory, "hub-docker-inspector-${detectProperties.dockerInspectorVersion}.sh")
+            shellScriptFile.delete()
+            shellScriptFile << shellScriptContents
+            shellScriptFile.setExecutable(true)
+        }
 
-        File docker = new File(findDockerExecutable())
-        Map<String, String> environmentVariables = [PATH: docker.parentFile.absolutePath]
+        String path = System.getenv('PATH')
+        File dockerExecutableFile = new File(dockerExecutablePath)
+        path += File.pathSeparator + dockerExecutableFile.parentFile.absolutePath
+        Map<String, String> environmentVariables = [PATH: path]
 
         List<String> dockerShellScriptArguments = dockerProperties.createDockerArgumentList()
+        String bashScriptArg = StringUtils.join(dockerShellScriptArguments, ' ')
 
-        Executable dockerExecutable = new Executable(dockerInstallDirectory, environmentVariables, shellScriptFile.absolutePath, dockerShellScriptArguments)
+        List<String> bashArguments = [
+            "-c",
+            "${shellScriptFile.absolutePath} ${bashScriptArg}"
+        ]
+
+        Executable dockerExecutable = new Executable(dockerInstallDirectory, environmentVariables, bashExecutablePath, bashArguments)
         executableRunner.executeLoudly(dockerExecutable)
-        return null;
+        //At least for the moment, there is no way of running the hub-docker-inspector to generate the files only, so it currently handles all uploading
+        return [];
     }
 
     private String findDockerExecutable() {
@@ -87,5 +109,13 @@ class DockerBomTool extends BomTool {
             dockerPath = executableManager.getPathOfExecutable(ExecutableType.DOCKER)?.trim()
         }
         dockerPath
+    }
+
+    private String findBashExecutable() {
+        String bashPath = detectProperties.bashPath
+        if (!bashPath?.trim()) {
+            bashPath = executableManager.getPathOfExecutable(ExecutableType.BASH)?.trim()
+        }
+        bashPath
     }
 }
