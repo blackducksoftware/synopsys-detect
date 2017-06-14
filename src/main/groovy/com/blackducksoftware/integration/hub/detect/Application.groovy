@@ -66,7 +66,7 @@ class Application {
     HelpPrinter helpPrinter
 
     static void main(final String[] args) {
-        new SpringApplicationBuilder(Application.class).logStartupInfo(true).run(args)
+        new SpringApplicationBuilder(Application.class).logStartupInfo(false).run(args)
     }
 
     @PostConstruct

@@ -20,30 +20,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.nuget
+package com.blackducksoftware.integration.hub.detect.util
 
 import org.apache.commons.lang3.builder.RecursiveToStringStyle
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder
 
-import com.blackducksoftware.integration.hub.detect.util.NameVersionNode
-import com.google.gson.annotations.SerializedName
-
-class NugetNode implements NameVersionNode {
-    @SerializedName('Artifact')
-    String artifact
-
-    @SerializedName('Version')
+class NameVersionNodeImpl implements NameVersionNode {
+    String name
     String version
-
-    @SerializedName('Children')
-    List<NugetNode> children
-
-    String getName() {
-        artifact
-    }
-    void setName(String name) {
-        artifact = name
-    }
+    List<NameVersionNodeImpl> children = []
 
     @Override
     String toString() {

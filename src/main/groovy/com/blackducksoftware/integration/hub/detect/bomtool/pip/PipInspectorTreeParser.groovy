@@ -27,10 +27,9 @@ import org.slf4j.LoggerFactory
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
 import com.blackducksoftware.integration.hub.detect.util.NameVersionNode
 import com.blackducksoftware.integration.hub.detect.util.NameVersionNodeBuilder
+import com.blackducksoftware.integration.hub.detect.util.NameVersionNodeImpl
 
 class PipInspectorTreeParser {
     final Logger logger = LoggerFactory.getLogger(this.getClass())
@@ -92,23 +91,12 @@ class PipInspectorTreeParser {
             tree.push(node)
         }
 
-        transformToDependencyNode(nodeBuilder.getRoot())
-    }
-
-    DependencyNode transformToDependencyNode(NameVersionNode node) {
-        ExternalId externalId = new NameVersionExternalId(Forge.PYPI, node.name, node.version)
-        DependencyNode newNode = new DependencyNode(node.name, node.version, externalId)
-        for (NameVersionNode child: node.children) {
-            def childDependencyNode = transformToDependencyNode(child)
-            newNode.children.add(childDependencyNode)
-        }
-
-        newNode
+        nodeBuilder.createDependencyNode(Forge.PYPI, nodeBuilder.getRoot())
     }
 
     NameVersionNode lineToNode(String line) {
         def segments = line.split(SEPERATOR)
-        def node = new NameVersionNode()
+        def node = new NameVersionNodeImpl()
         node.name = segments[0].trim()
         node.version = segments[1].trim()
 

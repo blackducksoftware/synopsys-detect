@@ -22,16 +22,12 @@
  */
 package com.blackducksoftware.integration.hub.detect.util
 
-import org.apache.commons.lang3.builder.RecursiveToStringStyle
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder
+interface NameVersionNode {
+    public String getName()
+    public String getVersion()
+    public List<? extends NameVersionNode> getChildren()
 
-class NameVersionNode {
-    def name
-    def version
-    def children = []
-
-    @Override
-    String toString() {
-        return ReflectionToStringBuilder.toString(this, RecursiveToStringStyle.JSON_STYLE)
-    }
+    public void setName(String name)
+    public void setVersion(String version)
+    public void setChildren(List<? extends NameVersionNode> children)
 }
