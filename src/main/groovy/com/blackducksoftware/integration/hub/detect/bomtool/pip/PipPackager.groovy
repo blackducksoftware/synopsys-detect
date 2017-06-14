@@ -75,6 +75,10 @@ class PipPackager {
             inpsectorScript.absolutePath
         ]
 
+        // Install pytest-runner to avoid a zip_flag error if the project uses pytest-runner
+        def installPytestRunner = new Executable(sourceDirectory, pipPath, ['install', 'pytest-runner'])
+        executableRunner.executeLoudly(installPytestRunner)
+
         // Install requirements file and add it as an option for the inspector
         if (detectProperties.requirementsFilePath) {
             def requirementsFile = new File(detectProperties.requirementsFilePath)
