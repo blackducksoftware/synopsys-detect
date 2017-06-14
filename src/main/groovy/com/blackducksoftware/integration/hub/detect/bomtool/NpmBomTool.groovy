@@ -32,9 +32,7 @@ import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 
 @Component
 class NpmBomTool extends BomTool {
-
     def final static NODE_MODULES = 'node_modules'
-    def final static PACKAGE_JSON = 'package.json'
     def final static OUTPUT_FILE = 'detect_npm_proj_dependencies.json'
 
     @Autowired
