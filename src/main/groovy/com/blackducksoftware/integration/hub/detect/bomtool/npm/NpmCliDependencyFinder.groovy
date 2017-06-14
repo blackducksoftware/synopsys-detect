@@ -29,8 +29,8 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.NpmBomTool
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
@@ -49,15 +49,12 @@ class NpmCliDependencyFinder {
     @Autowired
     ProjectInfoGatherer projectInfoGatherer
 
+    @Autowired
+    NameVersionNodeTransformer nodeTransformer
+
     public DependencyNode generateDependencyNode(String rootDirectoryPath, String exePath) {
         DependencyNode result;
-
         rootPath = rootDirectoryPath
-
-        if(!exePath) {
-            logger.error("Npm executable not found, exiting")
-            return result
-        }
 
         def npmLsExe = new Executable(new File(rootDirectoryPath), exePath, ['ls', '-json'])
         def exeRunner = new ExecutableRunner()
@@ -69,7 +66,6 @@ class NpmCliDependencyFinder {
             logger.info("Running npm ls and converting values")
             result = convertNpmJsonFileToDependencyNode(tempJsonOutFile)
         }
-
         if(tempJsonOutFile) {
             try {
                 tempJsonOutFile.delete()
@@ -78,26 +74,21 @@ class NpmCliDependencyFinder {
             }
         }
 
+        if(!result) {
+            //Check for any package-lock or shrinkwrap files in future
+        }
+
         result
     }
 
     private DependencyNode convertNpmJsonFileToDependencyNode(File depOut) {
-        convertToDependencyNode(gson.fromJson(new JsonReader(new FileReader(depOut)), NpmCliNode.class))
-    }
+        NpmCliNode node = gson.fromJson(new JsonReader(new FileReader(depOut)), NpmCliNode.class)
 
-    private DependencyNode convertToDependencyNode(NpmCliNode node) {
-        def name = (node.name) ? node.name : projectInfoGatherer.getDefaultProjectName(BomToolType.NPM, rootPath)
-        def version = (node.version) ? node.version : projectInfoGatherer.getDefaultProjectVersionName()
-        def externalId = new NameVersionExternalId(Forge.NPM, name, version)
-
-        def dependencyNode = new DependencyNode(name, version, externalId)
-        node.dependencies.each {
-            if(!it.getValue().name) {
-                it.getValue().name = it.getKey()
-            }
-            dependencyNode.children.add(convertToDependencyNode(it.getValue()))
+        if(rootPath) {
+            node.name = node.name ?: projectInfoGatherer.getDefaultProjectName(BomToolType.NPM, rootPath)
         }
+        node.version = node.version ?: projectInfoGatherer.getDefaultProjectVersionName()
 
-        dependencyNode
+        nodeTransformer.createDependencyNode(Forge.NPM, node)
     }
 }

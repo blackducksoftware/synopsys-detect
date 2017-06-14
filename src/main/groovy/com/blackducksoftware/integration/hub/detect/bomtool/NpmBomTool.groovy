@@ -41,6 +41,7 @@ class NpmBomTool extends BomTool {
     NpmCliDependencyFinder cliDependencyFinder
 
     private List<String> npmPaths = []
+    private String npmExe
 
     @Override
     public BomToolType getBomToolType() {
@@ -49,14 +50,18 @@ class NpmBomTool extends BomTool {
 
     @Override
     public boolean isBomToolApplicable() {
+        /*
+         * I have to find node_modules as npm ls uses this folder to generate the list
+         */
         npmPaths = sourcePathSearcher.findSourcePathsContainingFilenamePattern(NODE_MODULES)
+        npmExe = getExecutablePath()
+
+        npmPaths && npmExe
     }
 
     @Override
     public List<DependencyNode> extractDependencyNodes() {
         List<DependencyNode> nodes = []
-
-        String npmExe = getExecutablePath()
 
         npmPaths.each {
             nodes.add(cliDependencyFinder.generateDependencyNode(it, npmExe))

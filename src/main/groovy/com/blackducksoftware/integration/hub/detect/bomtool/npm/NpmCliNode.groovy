@@ -22,8 +22,35 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.npm
 
-class NpmCliNode {
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
+import com.google.gson.annotations.SerializedName
+
+class NpmCliNode implements NameVersionNode {
     String name
     String version
-    Map<String, NpmCliNode> dependencies
+
+    @SerializedName("dependencies")
+    Map<String, NpmCliNode> children
+
+    @Override
+    public List<NpmCliNode> getChildren() {
+        List<NpmCliNode> npmChildNodes = []
+
+        if(children) {
+            children.each {
+                it.value.name = it.key
+                npmChildNodes.add(it.value)
+            }
+        }
+
+        npmChildNodes
+    }
+
+    @Override
+    public void setChildren(List<? extends NameVersionNode> children) {
+        this.@children.clear()
+        children.each {
+            this.@children.put(it.name, it)
+        }
+    }
 }
