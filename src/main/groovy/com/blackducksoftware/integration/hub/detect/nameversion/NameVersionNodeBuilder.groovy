@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.util
+package com.blackducksoftware.integration.hub.detect.nameversion
 
 /**
  * This class should be used to construct node graphs where you don't

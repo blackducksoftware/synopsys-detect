@@ -42,7 +42,7 @@ class FileFinder {
             final File foundFile = findFile(sourceDirectory, filenamePattern)
             if (foundFile == null) {
                 containsFiles = false
-                logger.info("No file detected: ${filenamePattern} in ${sourcePath}")
+                logger.debug("No file detected: ${filenamePattern} in ${sourcePath}")
                 break
             }
         }
@@ -60,7 +60,7 @@ class FileFinder {
             def foundFiles = findFilesToDepth(sourceDirectory, filenamePattern, maxDepth)
             if (!foundFiles) {
                 containsFiles = false
-                logger.info("No file detected: ${filenamePattern} in ${sourcePath}")
+                logger.debug("No file detected: ${filenamePattern} in ${sourcePath}")
                 break
             }
         }
@@ -77,8 +77,8 @@ class FileFinder {
         if (foundFiles == null || foundFiles.length == 0) {
             return null
         } else if (foundFiles.length > 1) {
-            logger.info("Found multiple matches for ${filenamePattern} in ${sourceDirectory.absolutePath}")
-            logger.info("Using ${foundFiles[0]}")
+            logger.debug("Found multiple matches for ${filenamePattern} in ${sourceDirectory.absolutePath}")
+            logger.debug("Using ${foundFiles[0]}")
         }
         foundFiles[0]
     }
@@ -104,13 +104,13 @@ class FileFinder {
 
     private File[] findFilesRecursive(final File sourceDirectory, final String filenamePattern, int currentDepth, int maxDepth){
         def files = [];
-        if(currentDepth > maxDepth || !sourceDirectory.isDirectory()){
+        if (currentDepth > maxDepth || !sourceDirectory.isDirectory()){
             return files
         }
         sourceDirectory.listFiles().each {
-            if(it.isDirectory()){
+            if (it.isDirectory()){
                 files.addAll(findFilesRecursive(it, filenamePattern, currentDepth + 1, maxDepth))
-            }else if(FilenameUtils.wildcardMatchOnSystem(it.getName(), filenamePattern)){
+            }else if (FilenameUtils.wildcardMatchOnSystem(it.getName(), filenamePattern)){
                 files.add(it)
             }
         }
@@ -123,7 +123,7 @@ class FileFinder {
 
     private File[] findDirectoriesContainingFilesRecursive(final File sourceDirectory, final String filenamePattern, int currentDepth, int maxDepth){
         def files = new HashSet<File>();
-        if(currentDepth > maxDepth || !sourceDirectory.isDirectory()){
+        if (currentDepth > maxDepth || !sourceDirectory.isDirectory()){
             return files
         }
         for (File file : sourceDirectory.listFiles()) {

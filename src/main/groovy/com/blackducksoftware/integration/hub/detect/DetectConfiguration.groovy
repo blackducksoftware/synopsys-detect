@@ -22,8 +22,6 @@
  */
 package com.blackducksoftware.integration.hub.detect
 
-import javax.annotation.PostConstruct
-
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -58,7 +56,6 @@ class DetectConfiguration {
     private boolean usingDefaultSourcePaths
     private boolean usingDefaultOutputPath
 
-    @PostConstruct
     void init() {
         if (detectProperties.sourcePaths == null || detectProperties.sourcePaths.length == 0) {
             usingDefaultSourcePaths = true

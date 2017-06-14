@@ -20,18 +20,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.util
+package com.blackducksoftware.integration.hub.detect.nameversion
 
-import org.apache.commons.lang3.builder.RecursiveToStringStyle
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder
+import org.springframework.stereotype.Component
 
-class NameVersionNode {
-    def name
-    def version
-    def children = []
+import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
 
-    @Override
-    String toString() {
-        return ReflectionToStringBuilder.toString(this, RecursiveToStringStyle.JSON_STYLE)
+@Component
+class NameVersionNodeTransformer {
+    public DependencyNode createDependencyNode(Forge forge, NameVersionNode nameVersionNode) {
+        def externalId = new NameVersionExternalId(forge, nameVersionNode.name, nameVersionNode.version)
+        def dependencyNode = new DependencyNode(nameVersionNode.name, nameVersionNode.version, externalId)
+        nameVersionNode.children.each {
+            dependencyNode.children.add(createDependencyNode(forge, it))
+        }
+
+        dependencyNode
     }
 }

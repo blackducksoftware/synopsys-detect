@@ -60,10 +60,13 @@ class Application {
     ApplicationArguments applicationArguments
 
     @Autowired
+    DetectConfiguration detectConfiguration
+
+    @Autowired
     HelpPrinter helpPrinter
 
     static void main(final String[] args) {
-        new SpringApplicationBuilder(Application.class).logStartupInfo(true).run(args)
+        new SpringApplicationBuilder(Application.class).logStartupInfo(false).run(args)
     }
 
     @PostConstruct
@@ -71,6 +74,8 @@ class Application {
         if ('-h' in applicationArguments.getSourceArgs() || '--help' in applicationArguments.getSourceArgs()){
             helpPrinter.printHelpMessage(System.out)
         } else {
+            detectConfiguration.init()
+            logger.info('Configuration processed completely.')
             List<File> createdBdioFiles = bomToolManager.createBdioFiles()
             bdioUploader.uploadBdioFiles(createdBdioFiles)
         }

@@ -27,9 +27,10 @@ import org.slf4j.LoggerFactory
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
-import com.blackducksoftware.integration.hub.detect.util.NameVersionNode
-import com.blackducksoftware.integration.hub.detect.util.NameVersionNodeBuilder
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeBuilder
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 
 class GemlockNodeParser {
     private final Logger logger = LoggerFactory.getLogger(GemlockNodeParser.class)
@@ -43,8 +44,8 @@ class GemlockNodeParser {
     private boolean inSpecsSection = false
     private boolean inDependenciesSection = false
 
-    void parseProjectDependencies(DependencyNode rootProject, final String gemfileLockContents) {
-        rootNameVersionNode = new NameVersionNode([name: rootProject.name, version: rootProject.version])
+    void parseProjectDependencies(NameVersionNodeTransformer nameVersionNodeTransformer, DependencyNode rootProject, final String gemfileLockContents) {
+        rootNameVersionNode = new NameVersionNodeImpl([name: rootProject.name, version: rootProject.version])
         nameVersionNodeBuilder = new NameVersionNodeBuilder(rootNameVersionNode)
         directDependencyNames = new HashSet<>()
         currentParent = null
@@ -89,7 +90,7 @@ class GemlockNodeParser {
         directDependencyNames.each { directDependencyName ->
             NameVersionNode nameVersionNode = nameVersionNodeBuilder.nameToNodeMap[directDependencyName]
             if (nameVersionNode) {
-                DependencyNode directDependencyNode = createDependencyNode(nameVersionNode)
+                DependencyNode directDependencyNode = nameVersionNodeTransformer.createDependencyNode(Forge.RUBYGEMS, nameVersionNode)
                 rootProject.children.add(directDependencyNode)
             } else {
                 logger.error("Could not find ${directDependencyName} in the populated map.")
@@ -131,7 +132,7 @@ class GemlockNodeParser {
             name = name[0..spaceIndex].trim()
         }
 
-        new NameVersionNode([name: name, version: version])
+        new NameVersionNodeImpl([name: name, version: version])
     }
 
     //a valid version looks like (###.###.###)
@@ -143,18 +144,4 @@ class GemlockNodeParser {
         }
     }
 
-    private DependencyNode createDependencyNode(NameVersionNode nameVersionNode) {
-        def name = nameVersionNode.name
-        def version = nameVersionNode.version
-        def children = new HashSet<>()
-
-        def dependencyNode = new DependencyNode(name, version, new NameVersionExternalId(Forge.RUBYGEMS, name, version), children)
-        if (nameVersionNode.children) {
-            nameVersionNode.children.each {
-                children.add(createDependencyNode(it))
-            }
-        }
-
-        dependencyNode
-    }
 }

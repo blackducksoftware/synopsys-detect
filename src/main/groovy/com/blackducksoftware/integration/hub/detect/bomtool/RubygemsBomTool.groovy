@@ -42,7 +42,7 @@ class RubygemsBomTool extends BomTool {
     boolean isBomToolApplicable() {
         matchingSourcePaths = sourcePathSearcher.findSourcePathsContainingFilenamePattern('Gemfile.lock')
 
-        !matchingSourcePaths.empty
+        !matchingSourcePaths.isEmpty()
     }
 
     List<DependencyNode> extractDependencyNodes() {
@@ -56,7 +56,7 @@ class RubygemsBomTool extends BomTool {
                 gemlockStream = new FileInputStream(gemlockFile)
                 String potentialProjectName = sourceDirectory.getName()
                 String gemlock = IOUtils.toString(gemlockStream, StandardCharsets.UTF_8)
-                def rubygemsPackager = new RubygemsNodePackager(projectInfoGatherer)
+                def rubygemsPackager = new RubygemsNodePackager(projectInfoGatherer, nameVersionNodeTransformer)
                 def projects = rubygemsPackager.makeDependencyNodes(sourcePath, gemlock)
                 projectNodes.addAll(projects)
             } finally {

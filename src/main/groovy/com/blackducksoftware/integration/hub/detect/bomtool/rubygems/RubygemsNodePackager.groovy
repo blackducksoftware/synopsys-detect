@@ -26,14 +26,17 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
 
 public class RubygemsNodePackager {
     private final ProjectInfoGatherer projectInfoGatherer
+    private final NameVersionNodeTransformer nameVersionNodeTransformer
 
-    public RubygemsNodePackager(final ProjectInfoGatherer projectInfoGatherer) {
+    public RubygemsNodePackager(final ProjectInfoGatherer projectInfoGatherer, NameVersionNodeTransformer nameVersionNodeTransformer) {
         this.projectInfoGatherer = projectInfoGatherer
+        this.nameVersionNodeTransformer = nameVersionNodeTransformer
     }
 
     public List<DependencyNode> makeDependencyNodes(final String sourcePath, final String gemlock) {
@@ -43,7 +46,7 @@ public class RubygemsNodePackager {
         final DependencyNode root = new DependencyNode(rootName, rootVersion, rootExternalId)
 
         GemlockNodeParser gemlockNodeParser = new GemlockNodeParser()
-        gemlockNodeParser.parseProjectDependencies(root, gemlock)
+        gemlockNodeParser.parseProjectDependencies(nameVersionNodeTransformer, root, gemlock)
 
         [root]
     }

@@ -62,11 +62,11 @@ class NugetBomTool extends BomTool {
             }
         }
 
-        if (!matchingSourcePaths.empty && !nugetExecutablePath) {
+        if (!matchingSourcePaths.isEmpty() && !nugetExecutablePath) {
             logger.warn('The nuget executable must be on the path - are you sure you are running on a windows system?')
         }
 
-        nugetExecutablePath && !matchingSourcePaths.empty
+        nugetExecutablePath && !matchingSourcePaths.isEmpty()
     }
 
     List<DependencyNode> extractDependencyNodes() {

@@ -37,10 +37,10 @@ class PodLockParser {
         // Parse the PODS section
         final Map<String, Pod> allPods = [:]
         def pods = (List<Object>) fileMap.get('PODS')
-        for(Object podObj : pods) {
-            if(podObj instanceof String) {
+        for (Object podObj : pods) {
+            if (podObj instanceof String) {
                 Pod pod = parsePodLine(podObj)
-                if(!allPods[pod.name]) {
+                if (!allPods[pod.name]) {
                     allPods[pod.name] = pod
                 }
             } else {
@@ -58,7 +58,7 @@ class PodLockParser {
                     mappedPods.add(parent)
                 }
                 Pod pod = mappedPods.get(0)
-                if(!allPods[pod.name]) {
+                if (!allPods[pod.name]) {
                     allPods[pod.name] = pod
                 }
             }
@@ -93,11 +93,11 @@ class PodLockParser {
     Pod parsePodLine(String podText) {
         Pod pod = new Pod()
         String text = podText.trim()
-        if(!text) {
+        if (!text) {
             return null
         }
 
-        if(text.contains(' (') && text.contains(')')) {
+        if (text.contains(' (') && text.contains(')')) {
             String[] segments = text.split(' ')
             pod.name = segments[0].trim()
             pod.version = segments[1].replace('(', '').replace(')', '').trim()

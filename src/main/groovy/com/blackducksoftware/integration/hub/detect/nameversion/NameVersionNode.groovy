@@ -20,8 +20,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.docker
+package com.blackducksoftware.integration.hub.detect.nameversion
 
-class DockerInspectorInstaller {
+interface NameVersionNode {
+    public String getName()
+    public String getVersion()
+    public List<? extends NameVersionNode> getChildren()
 
+    public void setName(String name)
+    public void setVersion(String version)
+    public void setChildren(List<? extends NameVersionNode> children)
 }

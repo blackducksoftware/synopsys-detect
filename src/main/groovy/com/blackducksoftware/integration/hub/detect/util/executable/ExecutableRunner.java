@@ -59,7 +59,7 @@ public class ExecutableRunner {
      * ERROR. Otherwise, the output of the executable's execution will NOT be logged.
      */
     public ExecutableOutput execute(final Executable executable, final boolean runQuietly) throws ExecutableRunnerException {
-        logger.debug(String.format("Running executable >%s", executable.getExecutableDescription()));
+        logger.info(String.format("Running executable >%s", executable.getExecutableDescription()));
         try {
             final ProcessBuilder processBuilder = executable.createProcessBuilder();
             final Process process = processBuilder.start();
@@ -100,7 +100,7 @@ public class ExecutableRunner {
                 if (error && StringUtils.isNotBlank(line)) {
                     logger.error(line);
                 } else {
-                    logger.debug(line);
+                    logger.info(line);
                 }
             }
         }
