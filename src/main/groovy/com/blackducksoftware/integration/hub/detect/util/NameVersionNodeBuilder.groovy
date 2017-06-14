@@ -22,6 +22,10 @@
  */
 package com.blackducksoftware.integration.hub.detect.util
 
+import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+
 /**
  * This class should be used to construct node graphs where you don't
  * always have a defined version for each dependency, but will EVENTUALLY find
@@ -55,5 +59,15 @@ class NameVersionNodeBuilder {
         }
 
         nameToNodeMap[parent.name].children.add(nameToNodeMap[child.name])
+    }
+
+    public DependencyNode createDependencyNode(Forge forge, NameVersionNode nameVersionNode) {
+        def externalId = new NameVersionExternalId(forge, nameVersionNode.name, nameVersionNode.version)
+        def dependencyNode = new DependencyNode(nameVersionNode.name, nameVersionNode.version, externalId)
+        nameVersionNode.children.each {
+            dependencyNode.children.add(createDependencyNode(forge, it))
+        }
+
+        dependencyNode
     }
 }

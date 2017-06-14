@@ -35,7 +35,6 @@ import com.google.gson.Gson
 
 @Component
 class NugetNodeTransformer {
-
     @Autowired
     Gson gson
 
