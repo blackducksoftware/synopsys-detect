@@ -22,8 +22,6 @@ import org.json.JSONException;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.PodLock;
-import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.PodLockParser;
 import com.esotericsoftware.yamlbeans.YamlException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -68,7 +66,6 @@ public class PodlockParserTest {
         final String expected = IOUtils.toString(this.getClass().getResourceAsStream("/cocoapods/complex/expected.json"),
                 StandardCharsets.UTF_8);
         final String actual = gson.toJson(actualPodlock);
-        System.out.println(actual);
         JSONAssert.assertEquals(expected, actual, false);
     }
 }

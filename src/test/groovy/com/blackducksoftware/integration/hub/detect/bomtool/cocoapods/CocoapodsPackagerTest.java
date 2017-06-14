@@ -27,8 +27,6 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId;
-import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.CocoapodsPackager;
-import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.PodLockParser;
 import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -48,7 +46,6 @@ public class CocoapodsPackagerTest {
         assertEquals(1, projects.size());
         fixVersion(projects.get(0), "1.0.0");
         final String actual = gson.toJson(projects);
-        System.out.println(actual);
         JSONAssert.assertEquals(expected, actual, false);
     }
 

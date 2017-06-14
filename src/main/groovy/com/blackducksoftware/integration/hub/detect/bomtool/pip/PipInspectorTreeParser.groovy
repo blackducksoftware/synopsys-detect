@@ -41,6 +41,7 @@ class PipInspectorTreeParser {
     public static final String UNKOWN_PROJECT = UNKOWN_PROJECT_NAME + SEPERATOR + UNKOWN_PROJECT_VERSION
     public static final String UNKOWN_REQUIREMENTS_PREFIX = 'r?'
     public static final String UNKOWN_PACKAGE_PREFIX = '--'
+    public static final String INDENTATION = ' '.multiply(4)
 
     DependencyNode parse(NameVersionNodeTransformer nameVersionNodeTransformer, String treeText) {
         def lines = treeText.trim().split('\n').toList()
@@ -92,10 +93,17 @@ class PipInspectorTreeParser {
             tree.push(node)
         }
 
-        nameVersionNodeTransformer.createDependencyNode(Forge.PYPI, nodeBuilder.getRoot())
+        if(nodeBuilder) {
+            return nameVersionNodeTransformer.createDependencyNode(Forge.PYPI, nodeBuilder.getRoot())
+        }
+
+        null
     }
 
     NameVersionNode lineToNode(String line) {
+        if(!line.contains(SEPERATOR)) {
+            return null
+        }
         def segments = line.split(SEPERATOR)
         def node = new NameVersionNodeImpl()
         node.name = segments[0].trim()
@@ -106,7 +114,7 @@ class PipInspectorTreeParser {
 
     int getCurrentIndentation(String line) {
         int currentIndentation = 0
-        while(line.startsWith(' '.multiply(4))) {
+        while(line.startsWith(INDENTATION)) {
             currentIndentation++
             line = line.substring(4)
         }
