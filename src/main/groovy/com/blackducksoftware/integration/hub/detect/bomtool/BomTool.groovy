@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.DetectProperties
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.util.FileFinder
 import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
@@ -55,6 +56,9 @@ abstract class BomTool {
 
     @Autowired
     ProjectInfoGatherer projectInfoGatherer
+
+    @Autowired
+    NameVersionNodeTransformer nameVersionNodeTransformer
 
     abstract BomToolType getBomToolType()
     abstract boolean isBomToolApplicable()

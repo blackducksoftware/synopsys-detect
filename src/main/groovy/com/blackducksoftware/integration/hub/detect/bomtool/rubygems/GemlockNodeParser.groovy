@@ -27,9 +27,10 @@ import org.slf4j.LoggerFactory
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.detect.util.NameVersionNode
-import com.blackducksoftware.integration.hub.detect.util.NameVersionNodeBuilder
-import com.blackducksoftware.integration.hub.detect.util.NameVersionNodeImpl
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeBuilder
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 
 class GemlockNodeParser {
     private final Logger logger = LoggerFactory.getLogger(GemlockNodeParser.class)
@@ -43,7 +44,7 @@ class GemlockNodeParser {
     private boolean inSpecsSection = false
     private boolean inDependenciesSection = false
 
-    void parseProjectDependencies(DependencyNode rootProject, final String gemfileLockContents) {
+    void parseProjectDependencies(NameVersionNodeTransformer nameVersionNodeTransformer, DependencyNode rootProject, final String gemfileLockContents) {
         rootNameVersionNode = new NameVersionNodeImpl([name: rootProject.name, version: rootProject.version])
         nameVersionNodeBuilder = new NameVersionNodeBuilder(rootNameVersionNode)
         directDependencyNames = new HashSet<>()
@@ -89,7 +90,7 @@ class GemlockNodeParser {
         directDependencyNames.each { directDependencyName ->
             NameVersionNode nameVersionNode = nameVersionNodeBuilder.nameToNodeMap[directDependencyName]
             if (nameVersionNode) {
-                DependencyNode directDependencyNode = nameVersionNodeBuilder.createDependencyNode(Forge.RUBYGEMS, nameVersionNode)
+                DependencyNode directDependencyNode = nameVersionNodeTransformer.createDependencyNode(Forge.RUBYGEMS, nameVersionNode)
                 rootProject.children.add(directDependencyNode)
             } else {
                 logger.error("Could not find ${directDependencyName} in the populated map.")

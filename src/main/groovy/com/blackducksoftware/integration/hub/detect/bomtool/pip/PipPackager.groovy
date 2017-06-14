@@ -33,6 +33,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
 import com.blackducksoftware.integration.hub.detect.DetectProperties
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.util.FileFinder
 import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
@@ -56,6 +57,9 @@ class PipPackager {
 
     @Autowired
     ProjectInfoGatherer projectInfoGatherer
+
+    @Autowired
+    NameVersionNodeTransformer nameVersionNodeTransformer
 
     List<DependencyNode> makeDependencyNodes(final String sourcePath, VirtualEnvironment virtualEnv) throws ExecutableRunnerException {
         String pipPath = virtualEnv.pipPath
@@ -105,7 +109,7 @@ class PipPackager {
         def pipInspector = new Executable(sourceDirectory, pythonPath, pipInspectorOptions)
         def inspectorOutput = executableRunner.executeQuietly(pipInspector).standardOutput
         def parser = new PipInspectorTreeParser()
-        DependencyNode project = parser.parse(inspectorOutput)
+        DependencyNode project = parser.parse(nameVersionNodeTransformer, inspectorOutput)
 
         if (project.name == PipInspectorTreeParser.UNKOWN_PROJECT_NAME && project.version == PipInspectorTreeParser.UNKOWN_PROJECT_VERSION) {
             project.name = projectInfoGatherer.getDefaultProjectName(BomToolType.PIP, sourcePath)

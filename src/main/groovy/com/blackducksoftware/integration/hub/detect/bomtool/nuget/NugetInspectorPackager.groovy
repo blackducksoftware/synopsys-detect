@@ -22,6 +22,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.nuget
 
+import java.nio.charset.StandardCharsets
+
 import org.apache.commons.io.FileUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -29,11 +31,14 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.detect.DetectProperties
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.util.FileFinder
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
+import com.google.gson.Gson
 
 @Component
 class NugetInspectorPackager {
@@ -49,7 +54,10 @@ class NugetInspectorPackager {
     ExecutableRunner executableRunner
 
     @Autowired
-    NugetNodeTransformer nugetNodeTransformer
+    Gson gson
+
+    @Autowired
+    NameVersionNodeTransformer nameVersionNodeTransformer
 
     DependencyNode makeDependencyNode(String sourcePath, File nugetExecutable) {
         def outputDirectory = new File(new File(detectProperties.getOutputDirectoryPath()), 'nuget')
@@ -76,9 +84,12 @@ class NugetInspectorPackager {
         ExecutableOutput executableOutput = executableRunner.executeLoudly(hubNugetInspectorExecutable)
 
         def dependencyNodeFile = fileFinder.findFile(outputDirectory, '*_dependency_node.json')
-        DependencyNode node = nugetNodeTransformer.parse(dependencyNodeFile)
+        final String dependencyNodeJson = dependencyNodeFile.getText(StandardCharsets.UTF_8.name())
+        final NugetNode nugetNode = gson.fromJson(dependencyNodeJson, NugetNode.class)
+
+        DependencyNode dependencyNode = nameVersionNodeTransformer.createDependencyNode(Forge.NUGET, nugetNode)
         FileUtils.deleteDirectory(outputDirectory)
-        return node
+        return dependencyNode
     }
 
     private String getInspectorExePath(File sourceDirectory, File outputDirectory, File nugetExecutable) {

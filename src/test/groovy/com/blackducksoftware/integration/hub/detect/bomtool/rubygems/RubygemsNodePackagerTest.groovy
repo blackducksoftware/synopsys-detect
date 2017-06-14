@@ -22,7 +22,7 @@ import org.skyscreamer.jsonassert.JSONAssert
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
-import com.blackducksoftware.integration.hub.detect.bomtool.rubygems.RubygemsNodePackager
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -33,12 +33,13 @@ class RubygemsNodePackagerTest {
     @Test
     public void packagerTest() throws JSONException, IOException, URISyntaxException {
         final ProjectInfoGatherer projectInfoGatherer = new ProjectInfoGatherer()
+        final NameVersionNodeTransformer nameVersionNodeTransformer = new NameVersionNodeTransformer()
         final String sourcePath = "/rubygems/"
         final String expected = IOUtils.toString(getClass().getResourceAsStream("/rubygems/expectedPackager.json"),
                 StandardCharsets.UTF_8)
         final String actualText = IOUtils.toString(getClass().getResourceAsStream("/rubygems/Gemfile.lock"),
                 StandardCharsets.UTF_8)
-        final RubygemsNodePackager rubygemsNodePackager = new RubygemsNodePackager(projectInfoGatherer)
+        final RubygemsNodePackager rubygemsNodePackager = new RubygemsNodePackager(projectInfoGatherer, nameVersionNodeTransformer)
         final List<DependencyNode> projects = rubygemsNodePackager.makeDependencyNodes(sourcePath, actualText)
         Assert.assertEquals(1, projects.size())
 

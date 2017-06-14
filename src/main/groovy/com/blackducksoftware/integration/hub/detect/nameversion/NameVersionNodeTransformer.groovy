@@ -20,38 +20,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.nuget
+package com.blackducksoftware.integration.hub.detect.nameversion
 
-import java.nio.charset.StandardCharsets
-
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
-import com.google.gson.Gson
 
 @Component
-class NugetNodeTransformer {
-    @Autowired
-    Gson gson
-
-    DependencyNode parse(File dependencyNodeFile) {
-        final String dependencyNodeJson = dependencyNodeFile.getText(StandardCharsets.UTF_8.name())
-        final NugetNode solution = gson.fromJson(dependencyNodeJson, NugetNode.class)
-        nugetNodeTransformer(solution)
-    }
-
-    private DependencyNode nugetNodeTransformer(final NugetNode node) {
-        final String name = node.artifact
-        final String version = node.version
-        final ExternalId externalId = new NameVersionExternalId(Forge.NUGET, name, version)
-        final DependencyNode dependencyNode = new DependencyNode(name, version, externalId)
-        node.children.each {
-            dependencyNode.children.add(nugetNodeTransformer(it))
+class NameVersionNodeTransformer {
+    public DependencyNode createDependencyNode(Forge forge, NameVersionNode nameVersionNode) {
+        def externalId = new NameVersionExternalId(forge, nameVersionNode.name, nameVersionNode.version)
+        def dependencyNode = new DependencyNode(nameVersionNode.name, nameVersionNode.version, externalId)
+        nameVersionNode.children.each {
+            dependencyNode.children.add(createDependencyNode(forge, it))
         }
+
         dependencyNode
     }
 }

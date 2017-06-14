@@ -25,7 +25,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool.nuget
 import org.apache.commons.lang3.builder.RecursiveToStringStyle
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder
 
-import com.blackducksoftware.integration.hub.detect.util.NameVersionNode
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
 import com.google.gson.annotations.SerializedName
 
 class NugetNode implements NameVersionNode {

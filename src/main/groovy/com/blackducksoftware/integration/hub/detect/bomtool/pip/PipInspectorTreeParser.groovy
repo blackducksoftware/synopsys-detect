@@ -27,9 +27,10 @@ import org.slf4j.LoggerFactory
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.detect.util.NameVersionNode
-import com.blackducksoftware.integration.hub.detect.util.NameVersionNodeBuilder
-import com.blackducksoftware.integration.hub.detect.util.NameVersionNodeImpl
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeBuilder
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 
 class PipInspectorTreeParser {
     final Logger logger = LoggerFactory.getLogger(this.getClass())
@@ -41,7 +42,7 @@ class PipInspectorTreeParser {
     public static final String UNKOWN_REQUIREMENTS_PREFIX = 'r?'
     public static final String UNKOWN_PACKAGE_PREFIX = '--'
 
-    DependencyNode parse(String treeText) {
+    DependencyNode parse(NameVersionNodeTransformer nameVersionNodeTransformer, String treeText) {
         def lines = treeText.trim().split('\n').toList()
 
         def nodeBuilder = null
@@ -91,7 +92,7 @@ class PipInspectorTreeParser {
             tree.push(node)
         }
 
-        nodeBuilder.createDependencyNode(Forge.PYPI, nodeBuilder.getRoot())
+        nameVersionNodeTransformer.createDependencyNode(Forge.PYPI, nodeBuilder.getRoot())
     }
 
     NameVersionNode lineToNode(String line) {

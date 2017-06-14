@@ -20,14 +20,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.util
+package com.blackducksoftware.integration.hub.detect.nameversion
 
-interface NameVersionNode {
-    public String getName()
-    public String getVersion()
-    public List<? extends NameVersionNode> getChildren()
+import org.apache.commons.lang3.builder.RecursiveToStringStyle
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder
 
-    public void setName(String name)
-    public void setVersion(String version)
-    public void setChildren(List<? extends NameVersionNode> children)
+class NameVersionNodeImpl implements NameVersionNode {
+    String name
+    String version
+    List<NameVersionNodeImpl> children = []
+
+    @Override
+    String toString() {
+        return ReflectionToStringBuilder.toString(this, RecursiveToStringStyle.JSON_STYLE)
+    }
 }
