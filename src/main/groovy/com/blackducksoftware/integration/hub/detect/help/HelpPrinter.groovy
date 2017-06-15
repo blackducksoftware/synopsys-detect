@@ -53,7 +53,7 @@ class HelpPrinter {
                 helpMessagePieces.add(StringUtils.repeat(' ', 165))
                 character = currentCharacter
             }
-            optionLineBuilder.append(StringUtils.rightPad("${detectValue.getKey()}", 40, ' '))
+            optionLineBuilder.append(StringUtils.rightPad("${detectValue.getKey()}", 50, ' '))
             optionLineBuilder.append(StringUtils.rightPad(detectValue.getDefaultValue(), 30, ' '))
             optionLineBuilder.append(StringUtils.rightPad(detectValue.getDescription(), 75, ' '))
             optionLineBuilder.append(StringUtils.rightPad(detectValue.getValueType().getSimpleName(), 20, ' '))
