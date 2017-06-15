@@ -79,6 +79,27 @@ class DetectConfiguration {
         }
         detectProperties.outputDirectoryPath = detectProperties.outputDirectoryPath.trim()
 
+        if (dockerBomTool.isBomToolApplicable()) {
+            configureForDocker()
+        }
+    }
+
+    /**
+     * If the default source path is being used AND docker is configured, don't run unless the tool is docker
+     */
+    public boolean shouldRun(BomTool bomTool) {
+        if (usingDefaultSourcePaths && dockerBomTool.isBomToolApplicable()) {
+            return BomToolType.DOCKER == bomTool.bomToolType
+        } else {
+            return true
+        }
+    }
+
+    public String getDetectProperty(String key) {
+        configurableEnvironment.getProperty(key)
+    }
+
+    private void configureForDocker() {
         if (!detectProperties.dockerInstallPath) {
             detectProperties.dockerInstallPath = detectProperties.outputDirectoryPath + File.separator + 'docker-install'
         }
@@ -104,20 +125,5 @@ class DetectConfiguration {
                 }
             }
         }
-    }
-
-    /**
-     * If the default source path is being used AND docker is configured, don't run unless the tool is docker
-     */
-    public boolean shouldRun(BomTool bomTool) {
-        if (usingDefaultSourcePaths && dockerBomTool.isBomToolApplicable()) {
-            return BomToolType.DOCKER == bomTool.bomToolType
-        } else {
-            return true
-        }
-    }
-
-    public String getDetectProperty(String key) {
-        configurableEnvironment.getProperty(key)
     }
 }

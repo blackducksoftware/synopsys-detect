@@ -40,7 +40,6 @@ class GemlockNodeParser {
     private HashSet<String> directDependencyNames
     private NameVersionNode currentParent
 
-    private boolean inGemSection = false
     private boolean inSpecsSection = false
     private boolean inDependenciesSection = false
 
@@ -52,13 +51,6 @@ class GemlockNodeParser {
 
         String[] lines = gemfileLockContents.split('\n')
         for (String line : lines) {
-            if (!inGemSection) {
-                if ('GEM' == line) {
-                    inGemSection = true
-                }
-                continue
-            }
-
             if (!line?.trim()) {
                 inSpecsSection = false
                 inDependenciesSection = false
@@ -132,6 +124,9 @@ class GemlockNodeParser {
             name = name[0..spaceIndex].trim()
         }
 
+        if (name.endsWith('!')) {
+            name = name[0..-2]
+        }
         new NameVersionNodeImpl([name: name, version: version])
     }
 
