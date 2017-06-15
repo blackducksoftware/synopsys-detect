@@ -65,17 +65,15 @@ class PipPackager {
     @Autowired
     FileHelper fileHelper
 
-    List<DependencyNode> makeDependencyNodes(final String sourcePath, VirtualEnvironment virtualEnv) throws ExecutableRunnerException {
+    List<DependencyNode> makeDependencyNodes(File outputDirectory, File sourceDirectory, VirtualEnvironment virtualEnv) throws ExecutableRunnerException {
+
         String pipPath = virtualEnv.pipPath
         String pythonPath = virtualEnv.pythonPath
-        def sourceDirectory = new File(sourcePath)
-        def outputDirectory = new File(detectProperties.outputDirectoryPath)
         def setupFile = fileFinder.findFile(sourceDirectory, 'setup.py')
 
         String inpsectorScriptContents = getClass().getResourceAsStream("/${INSPECTOR_NAME}").getText(StandardCharsets.UTF_8.name())
         def inspectorScript = new File(outputDirectory)
         fileHelper.writeToTemporaryFile(outputDirectory, inpsectorScriptContents)
-
         def pipInspectorOptions = [
             inspectorScript.absolutePath
         ]
@@ -121,12 +119,10 @@ class PipPackager {
         DependencyNode project = parser.parse(nameVersionNodeTransformer, inspectorOutput)
 
         if (project.name == PipInspectorTreeParser.UNKOWN_PROJECT_NAME && project.version == PipInspectorTreeParser.UNKOWN_PROJECT_VERSION) {
-            project.name = projectInfoGatherer.getDefaultProjectName(BomToolType.PIP, sourcePath)
+            project.name = projectInfoGatherer.getDefaultProjectName(BomToolType.PIP, sourceDirectory.getAbsolutePath())
             project.version = projectInfoGatherer.getDefaultProjectVersionName()
             project.externalId = new NameVersionExternalId(Forge.PYPI, project.name, project.version)
         }
-
-        inpsectorScript.delete()
 
         [project]
     }
