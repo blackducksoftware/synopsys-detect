@@ -91,18 +91,19 @@ class GoBomTool extends BomTool {
 
     private String installGoDep(String goExecutable){
         def outputDirectory = new File(detectProperties.outputDirectoryPath)
-        logger.debug("Installing godep in ${outputDirectory}")
-        Executable getGoDep = new Executable(outputDirectory, goExecutable, [
+        def goOutputDirectory = new File(outputDirectory, 'Go')
+        logger.debug("Installing godep in ${goOutputDirectory}")
+        Executable getGoDep = new Executable(goOutputDirectory, goExecutable, [
             'get',
             'github.com/tools/godep'
         ])
         executableRunner.executeLoudly(getGoDep)
 
-        Executable buildGoDep = new Executable(outputDirectory, goExecutable, [
+        Executable buildGoDep = new Executable(goOutputDirectory, goExecutable, [
             'build',
             'github.com/tools/godep'
         ])
         executableRunner.executeLoudly(buildGoDep)
-        (new File(outputDirectory, 'godep')).getAbsolutePath()
+        (new File(goOutputDirectory, 'godep')).getAbsolutePath()
     }
 }
