@@ -36,13 +36,13 @@ class HelpPrinter {
         helpMessagePieces.add('')
 
         StringBuilder headerLineBuilder = new StringBuilder()
-        headerLineBuilder.append(StringUtils.rightPad('Property Name', 40, ' '))
+        headerLineBuilder.append(StringUtils.rightPad('Property Name', 50, ' '))
         headerLineBuilder.append(StringUtils.rightPad('Default', 30, ' '))
-        headerLineBuilder.append(StringUtils.rightPad('Description', 75, ' '))
         headerLineBuilder.append(StringUtils.rightPad('Type', 20, ' '))
+        headerLineBuilder.append(StringUtils.rightPad('Description', 75, ' '))
 
         helpMessagePieces.add(headerLineBuilder.toString())
-        helpMessagePieces.add(StringUtils.repeat('_', 165))
+        helpMessagePieces.add(StringUtils.repeat('_', 175))
         def character = null
         valueDescriptionAnnotationFinder.getDetectValues().each { detectValue ->
             StringBuilder optionLineBuilder = new StringBuilder()
@@ -50,13 +50,13 @@ class HelpPrinter {
             if (character == null) {
                 character = currentCharacter
             } else if (!character.equals(currentCharacter)) {
-                helpMessagePieces.add(StringUtils.repeat(' ', 165))
+                helpMessagePieces.add(StringUtils.repeat(' ', 175))
                 character = currentCharacter
             }
             optionLineBuilder.append(StringUtils.rightPad("${detectValue.getKey()}", 50, ' '))
             optionLineBuilder.append(StringUtils.rightPad(detectValue.getDefaultValue(), 30, ' '))
-            optionLineBuilder.append(StringUtils.rightPad(detectValue.getDescription(), 75, ' '))
             optionLineBuilder.append(StringUtils.rightPad(detectValue.getValueType().getSimpleName(), 20, ' '))
+            optionLineBuilder.append(StringUtils.rightPad(detectValue.getDescription(), 75, ' '))
             helpMessagePieces.add(optionLineBuilder.toString())
         }
         helpMessagePieces.add('')
