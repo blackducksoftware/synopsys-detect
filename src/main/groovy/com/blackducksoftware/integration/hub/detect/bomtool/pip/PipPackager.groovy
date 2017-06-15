@@ -65,15 +65,15 @@ class PipPackager {
     @Autowired
     FileHelper fileHelper
 
-    List<DependencyNode> makeDependencyNodes(File outputDirectory, File sourceDirectory, VirtualEnvironment virtualEnv) throws ExecutableRunnerException {
+    List<DependencyNode> makeDependencyNodes(File sourceDirectory, VirtualEnvironment virtualEnv) throws ExecutableRunnerException {
 
         String pipPath = virtualEnv.pipPath
         String pythonPath = virtualEnv.pythonPath
         def setupFile = fileFinder.findFile(sourceDirectory, 'setup.py')
 
         String inpsectorScriptContents = getClass().getResourceAsStream("/${INSPECTOR_NAME}").getText(StandardCharsets.UTF_8.name())
-        def inspectorScript = new File(outputDirectory)
-        fileHelper.writeToTemporaryFile(outputDirectory, inpsectorScriptContents)
+        def inspectorScript = fileHelper.createTempFile(BomToolType.PIP, INSPECTOR_NAME)
+        fileHelper.writeToTempFile(inspectorScript, inpsectorScriptContents)
         def pipInspectorOptions = [
             inspectorScript.absolutePath
         ]

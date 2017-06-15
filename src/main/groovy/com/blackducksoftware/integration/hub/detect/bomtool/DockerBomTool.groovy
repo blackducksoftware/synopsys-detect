@@ -34,6 +34,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerProperties
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
+import com.blackducksoftware.integration.hub.detect.util.FileHelper
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 
 @Component
@@ -42,6 +43,9 @@ class DockerBomTool extends BomTool {
 
     @Autowired
     DockerProperties dockerProperties
+
+    @Autowired
+    FileHelper fileHelper
 
     private String dockerExecutablePath
     private String bashExecutablePath
@@ -79,8 +83,7 @@ class DockerBomTool extends BomTool {
             URL hubDockerInspectorShellScriptUrl = new URL("https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector-${detectProperties.dockerInspectorVersion}.sh")
             String shellScriptContents = hubDockerInspectorShellScriptUrl.openStream().getText(StandardCharsets.UTF_8.name())
             shellScriptFile = new File(dockerInstallDirectory, "hub-docker-inspector-${detectProperties.dockerInspectorVersion}.sh")
-            shellScriptFile.delete()
-            shellScriptFile << shellScriptContents
+            fileHelper.writeToTempFile(shellScriptFile, shellScriptContents)
             shellScriptFile.setExecutable(true)
         }
 
@@ -100,7 +103,7 @@ class DockerBomTool extends BomTool {
         Executable dockerExecutable = new Executable(dockerInstallDirectory, environmentVariables, bashExecutablePath, bashArguments)
         executableRunner.executeLoudly(dockerExecutable)
         //At least for the moment, there is no way of running the hub-docker-inspector to generate the files only, so it currently handles all uploading
-        return [];
+        return []
     }
 
     private String findDockerExecutable() {
