@@ -40,7 +40,6 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import com.google.gson.JsonPrimitive
 import com.google.gson.stream.JsonReader
 
 @Component
@@ -96,31 +95,60 @@ class NpmCliDependencyFinder {
     private DependencyNode convertNpmJsonFileToDependencyNode2(File depOut, String rootPath) {
         JsonObject npmJson = new JsonParser().parse(new JsonReader(new FileReader(depOut))).getAsJsonObject()
 
-        JsonPrimitive projectName = npmJson.getAsJsonPrimitive('name')
-        JsonPrimitive projectVersion = npmJson.getAsJsonPrimitive('version')
+        String projectName = projectInfoGatherer.getDefaultProjectName(BomToolType.NPM, rootPath, npmJson.getAsJsonPrimitive('name')?.getAsString())
+        String projectVersion = projectInfoGatherer.getDefaultProjectVersionName(npmJson.getAsJsonPrimitive('version')?.getAsString())
 
-        JsonObject dependenciesElement = npmJson.getAsJsonObject('dependencies')
+        def externalId = new NameVersionExternalId(Forge.NPM, projectName, projectVersion)
+        def dependencyNode = new DependencyNode(projectName, projectVersion, externalId)
 
-        createNpmNodeFromJsonObject(
-                projectInfoGatherer.getDefaultProjectName(BomToolType.NPM, rootPath, projectName?.getAsString()),
-                projectInfoGatherer.getDefaultProjectVersionName(projectVersion?.getAsString()),
-                dependenciesElement
-                )
+        createDependencyNodeFromJsonObject(dependencyNode, npmJson.getAsJsonObject('dependencies'))
+
+        dependencyNode
     }
 
-    private DependencyNode createNpmNodeFromJsonObject(String nodeName, String nodeVersion, JsonObject nodeChildren) {
-        def externalId = new NameVersionExternalId(Forge.NPM, nodeName, nodeVersion)
-        DependencyNode newNode = new DependencyNode(nodeName, nodeVersion, externalId)
-
-        def elements = nodeChildren?.entrySet()
-        elements?.each{
+    private void createDependencyNodeFromJsonObject(DependencyNode parentDependencyNode, JsonObject jsonChildren) {
+        def elements = jsonChildren?.entrySet()
+        elements?.each {
             String name = it.key
-            String version = it.value.getAsJsonPrimitive('version').getAsString()
+            String version = it.value.getAsJsonPrimitive('version')?.getAsString()
             JsonObject children = it.value.getAsJsonObject('dependencies')
 
-            newNode.children.add(createNpmNodeFromJsonObject(name, version, children))
-        }
+            def externalId = new NameVersionExternalId(Forge.NPM, name, version)
+            def newNode = new DependencyNode(name, version, externalId)
 
-        newNode
+            createDependencyNodeFromJsonObject(newNode, children)
+            parentDependencyNode.children.add(newNode)
+        }
     }
+
+    //    private DependencyNode convertNpmJsonFileToDependencyNode2(File depOut, String rootPath) {
+    //        JsonObject npmJson = new JsonParser().parse(new JsonReader(new FileReader(depOut))).getAsJsonObject()
+    //
+    //        JsonPrimitive projectName = npmJson.getAsJsonPrimitive('name')
+    //        JsonPrimitive projectVersion = npmJson.getAsJsonPrimitive('version')
+    //
+    //        JsonObject dependenciesElement = npmJson.getAsJsonObject('dependencies')
+    //
+    //        createNpmNodeFromJsonObject(
+    //                projectInfoGatherer.getDefaultProjectName(BomToolType.NPM, rootPath, projectName?.getAsString()),
+    //                projectInfoGatherer.getDefaultProjectVersionName(projectVersion?.getAsString()),
+    //                dependenciesElement
+    //                )
+    //    }
+    //
+    //    private DependencyNode createNpmNodeFromJsonObject(String nodeName, String nodeVersion, JsonObject nodeChildren) {
+    //        def externalId = new NameVersionExternalId(Forge.NPM, nodeName, nodeVersion)
+    //        DependencyNode newNode = new DependencyNode(nodeName, nodeVersion, externalId)
+    //
+    //        def elements = nodeChildren?.entrySet()
+    //        elements?.each{
+    //            String name = it.key
+    //            String version = it.value.getAsJsonPrimitive('version').getAsString()
+    //            JsonObject children = it.value.getAsJsonObject('dependencies')
+    //
+    //            newNode.children.add(createNpmNodeFromJsonObject(name, version, children))
+    //        }
+    //
+    //        newNode
+    //    }
 }
