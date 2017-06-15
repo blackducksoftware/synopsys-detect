@@ -33,7 +33,7 @@ class SourcePathSearcher {
     DetectProperties detectProperties
 
     @Autowired
-    FileFinder fileFinder
+    FileFinder detectFileService
 
     /**
      * Across all provided source paths, find the subset of source paths that
@@ -43,7 +43,7 @@ class SourcePathSearcher {
     List<String> findSourcePathsContainingFilenamePattern(String filenamePattern) {
         List<String> matchingSourcePaths = []
         for (String sourcePath : detectProperties.getSourcePaths()) {
-            if (fileFinder.containsAllFiles(sourcePath, filenamePattern)) {
+            if (detectFileService.containsAllFiles(sourcePath, filenamePattern)) {
                 matchingSourcePaths.add(sourcePath)
             }
         }
@@ -59,7 +59,7 @@ class SourcePathSearcher {
     List<String> findSourcePathsContainingFilenamePatternWithDepth(String filenamePattern) {
         List<String> matchingSourcePaths = []
         for (String sourcePath : detectProperties.getSourcePaths()) {
-            if (fileFinder.containsAllFilesWithDepth(sourcePath, detectProperties.getSearchDepth(), filenamePattern)) {
+            if (detectFileService.containsAllFilesWithDepth(sourcePath, detectProperties.getSearchDepth(), filenamePattern)) {
                 matchingSourcePaths.add(sourcePath)
             }
         }

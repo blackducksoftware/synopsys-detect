@@ -31,37 +31,40 @@ import com.blackducksoftware.integration.hub.detect.DetectProperties
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 
 @Component
-class FileHelper {
+class DetectFileService {
     final Logger logger = LoggerFactory.getLogger(this.getClass())
 
     @Autowired
     DetectProperties detectProperties
 
-    File getOutputDirectory(BomToolType bomToolType) {
+    @Autowired
+    FileFinder detectFileService
+
+    File createDirectory(BomToolType bomToolType) {
         def outputDirectory = new File(detectProperties.outputDirectoryPath, bomToolType.toString().toLowerCase())
         outputDirectory.mkdir()
 
         outputDirectory
     }
 
-    File createTempFile(BomToolType bomToolType, String fileName) {
-        File outputDirectory = getOutputDirectory(bomToolType)
+    File createFile(BomToolType bomToolType, String fileName) {
+        File outputDirectory = createDirectory(bomToolType)
 
         new File(outputDirectory, fileName)
     }
 
-    File writeToTempFile(File file, String contents) {
-        writeToTempFile(file, contents, true)
+    File writeToFile(File file, String contents) {
+        writeToFile(file, contents, true)
     }
 
-    File writeToTempFile(File file, String contents, boolean overwrite) {
-        if(!file) {
+    File writeToFile(File file, String contents, boolean overwrite) {
+        if (!file) {
             return null
         }
-        if(detectProperties.cleanupBomtoolFiles) {
+        if (detectProperties.cleanupBomtoolFiles) {
             file.deleteOnExit()
         }
-        if(overwrite) {
+        if (overwrite) {
             file.delete()
         }
         if (file.exists()) {
@@ -71,5 +74,33 @@ class FileHelper {
         }
 
         file
+    }
+
+    public boolean containsAllFiles(String sourcePath, String... filenamePatterns) {
+        return detectFileService.containsAllFiles(sourcePath, filenamePatterns)
+    }
+
+    public boolean containsAllFilesWithDepth(String sourcePath, int maxDepth, String... filenamePatterns) {
+        return detectFileService.containsAllFilesWithDepth(sourcePath, maxDepth, filenamePatterns)
+    }
+
+    public File findFile(String sourcePath, String filenamePattern) {
+        return detectFileService.findFile(sourcePath, filenamePattern)
+    }
+
+    public File findFile(File sourceDirectory, String filenamePattern) {
+        return detectFileService.findFile(sourceDirectory, filenamePattern)
+    }
+
+    public File[] findFiles(File sourceDirectory, String filenamePattern) {
+        return detectFileService.findFiles(sourceDirectory, filenamePattern)
+    }
+
+    public File[] findFilesToDepth(File sourceDirectory, String filenamePattern, int maxDepth) {
+        return detectFileService.findFilesToDepth(sourceDirectory, filenamePattern, maxDepth)
+    }
+
+    public File[] findDirectoriesContainingFilesToDepth(File sourceDirectory, String filenamePattern, int maxDepth) {
+        return detectFileService.findDirectoriesContainingFilesToDepth(sourceDirectory, filenamePattern, maxDepth)
     }
 }

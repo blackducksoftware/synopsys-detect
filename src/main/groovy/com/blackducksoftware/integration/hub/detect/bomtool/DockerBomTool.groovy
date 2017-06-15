@@ -34,7 +34,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerProperties
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
-import com.blackducksoftware.integration.hub.detect.util.FileHelper
+import com.blackducksoftware.integration.hub.detect.util.DetectFileService
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 
 @Component
@@ -45,7 +45,7 @@ class DockerBomTool extends BomTool {
     DockerProperties dockerProperties
 
     @Autowired
-    FileHelper fileHelper
+    DetectFileService detectFileService
 
     private String dockerExecutablePath
     private String bashExecutablePath
@@ -83,7 +83,7 @@ class DockerBomTool extends BomTool {
             URL hubDockerInspectorShellScriptUrl = new URL("https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector-${detectProperties.dockerInspectorVersion}.sh")
             String shellScriptContents = hubDockerInspectorShellScriptUrl.openStream().getText(StandardCharsets.UTF_8.name())
             shellScriptFile = new File(dockerInstallDirectory, "hub-docker-inspector-${detectProperties.dockerInspectorVersion}.sh")
-            fileHelper.writeToTempFile(shellScriptFile, shellScriptContents)
+            detectFileService.writeToFile(shellScriptFile, shellScriptContents)
             shellScriptFile.setExecutable(true)
         }
 

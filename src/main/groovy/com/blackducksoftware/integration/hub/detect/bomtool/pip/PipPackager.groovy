@@ -35,8 +35,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVe
 import com.blackducksoftware.integration.hub.detect.DetectProperties
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
-import com.blackducksoftware.integration.hub.detect.util.FileFinder
-import com.blackducksoftware.integration.hub.detect.util.FileHelper
+import com.blackducksoftware.integration.hub.detect.util.DetectFileService
 import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
@@ -46,9 +45,6 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 class PipPackager {
     final Logger logger = LoggerFactory.getLogger(this.getClass())
     private final String INSPECTOR_NAME = 'pip-inspector.py'
-
-    @Autowired
-    FileFinder fileFinder
 
     @Autowired
     ExecutableRunner executableRunner
@@ -63,17 +59,17 @@ class PipPackager {
     NameVersionNodeTransformer nameVersionNodeTransformer
 
     @Autowired
-    FileHelper fileHelper
+    DetectFileService detectFileService
 
     List<DependencyNode> makeDependencyNodes(File sourceDirectory, VirtualEnvironment virtualEnv) throws ExecutableRunnerException {
 
         String pipPath = virtualEnv.pipPath
         String pythonPath = virtualEnv.pythonPath
-        def setupFile = fileFinder.findFile(sourceDirectory, 'setup.py')
+        def setupFile = detectFileService.findFile(sourceDirectory, 'setup.py')
 
         String inpsectorScriptContents = getClass().getResourceAsStream("/${INSPECTOR_NAME}").getText(StandardCharsets.UTF_8.name())
-        def inspectorScript = fileHelper.createTempFile(BomToolType.PIP, INSPECTOR_NAME)
-        fileHelper.writeToTempFile(inspectorScript, inpsectorScriptContents)
+        def inspectorScript = detectFileService.createFile(BomToolType.PIP, INSPECTOR_NAME)
+        detectFileService.writeToFile(inspectorScript, inpsectorScriptContents)
         def pipInspectorOptions = [
             inspectorScript.absolutePath
         ]
