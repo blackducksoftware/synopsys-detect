@@ -43,6 +43,9 @@ class DetectFileService {
     File createDirectory(BomToolType bomToolType) {
         def outputDirectory = new File(detectProperties.outputDirectoryPath, bomToolType.toString().toLowerCase())
         outputDirectory.mkdir()
+        if (detectProperties.cleanupBomtoolFiles) {
+            outputDirectory.deleteOnExit()
+        }
 
         outputDirectory
     }
