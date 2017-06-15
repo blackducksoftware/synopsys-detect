@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
+import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
 import com.google.gson.Gson
 
 public class NpmOutputParserTest {
@@ -17,8 +18,9 @@ public class NpmOutputParserTest {
 
         parser.setGson(new Gson())
         parser.setNodeTransformer(new NameVersionNodeTransformer())
+        parser.setProjectInfoGatherer(new ProjectInfoGatherer())
 
-        DependencyNode node = parser.convertNpmJsonFileToDependencyNode(testIn)
+        DependencyNode node = parser.convertNpmJsonFileToDependencyNode(testIn, "")
         def testOut = new File(getClass().getResource("/npm/npmParseOutput.txt").getFile())
 
         assertTrue(node.toString().contentEquals(testOut.text))

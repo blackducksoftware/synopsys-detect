@@ -34,6 +34,8 @@ import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 class NpmBomTool extends BomTool {
     def final static NODE_MODULES = 'node_modules'
     def final static OUTPUT_FILE = 'detect_npm_proj_dependencies.json'
+    def final static PACKAGE_LOCK = 'pacakge-lock.json'
+    def final static PACKAGE_SHRINK = 'npm-shrinkwrap.json'
 
     @Autowired
     NpmCliDependencyFinder cliDependencyFinder
@@ -48,9 +50,6 @@ class NpmBomTool extends BomTool {
 
     @Override
     public boolean isBomToolApplicable() {
-        /*
-         * I have to find node_modules as npm ls uses this folder to generate the list
-         */
         npmPaths = sourcePathSearcher.findSourcePathsContainingFilenamePattern(NODE_MODULES)
         npmExe = getExecutablePath()
 
@@ -69,7 +68,7 @@ class NpmBomTool extends BomTool {
     }
 
     private String getExecutablePath() {
-        if(!detectProperties.npmPath) {
+        if (!detectProperties.npmPath) {
             return executableManager.getPathOfExecutable(ExecutableType.NPM)
         }
         detectProperties.npmPath

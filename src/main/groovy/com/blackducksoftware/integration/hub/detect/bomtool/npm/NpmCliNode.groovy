@@ -36,11 +36,9 @@ class NpmCliNode implements NameVersionNode {
     public List<NpmCliNode> getChildren() {
         List<NpmCliNode> npmChildNodes = []
 
-        if(children) {
-            children.each {
-                it.value.name = it.key
-                npmChildNodes.add(it.value)
-            }
+        children?.each { key, value ->
+            value.name = key
+            npmChildNodes.add(value)
         }
 
         npmChildNodes

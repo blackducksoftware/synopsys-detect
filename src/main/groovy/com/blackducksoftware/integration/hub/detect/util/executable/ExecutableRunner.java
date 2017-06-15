@@ -81,6 +81,10 @@ public class ExecutableRunner {
             final ProcessBuilder processBuilder = executable.createProcessBuilder();
             final Process process = processBuilder.redirectOutput(file).start();
             process.waitFor();
+            final ExecutableOutput errorOutput = new ExecutableOutput("", printStream(process.getErrorStream(), true, true));
+            if (StringUtils.isNotBlank(errorOutput.getErrorOutput())) {
+                throw new ExecutableRunnerException(errorOutput);
+            }
             if (file.length() == 0) {
                 throw new ExecutableRunnerException("Output file does not contain any info");
             }

@@ -29,6 +29,8 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+import com.blackducksoftware.integration.hub.detect.DetectProperties
 import com.blackducksoftware.integration.hub.detect.bomtool.NpmBomTool
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
@@ -36,12 +38,15 @@ import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
 import com.google.gson.Gson
+import com.google.gson.JsonObject
+import com.google.gson.JsonParser
+import com.google.gson.JsonPrimitive
 import com.google.gson.stream.JsonReader
 
 @Component
 class NpmCliDependencyFinder {
     private final Logger logger = LoggerFactory.getLogger(NpmCliDependencyFinder.class)
-    private String rootPath
+    private String NPM = 'npm-temp'
 
     @Autowired
     Gson gson
@@ -52,43 +57,70 @@ class NpmCliDependencyFinder {
     @Autowired
     NameVersionNodeTransformer nodeTransformer
 
+    @Autowired
+    DetectProperties detectProperties
+
     public DependencyNode generateDependencyNode(String rootDirectoryPath, String exePath) {
-        DependencyNode result;
-        rootPath = rootDirectoryPath
+        DependencyNode dependencyNode = null
 
         def npmLsExe = new Executable(new File(rootDirectoryPath), exePath, ['ls', '-json'])
         def exeRunner = new ExecutableRunner()
-        def tempJsonOutFile = new File(NpmBomTool.OUTPUT_FILE)
 
-        exeRunner.executeToFile(npmLsExe, tempJsonOutFile)
+        String directoryName = String.format('%s' + File.separator + '%s', detectProperties.getOutputDirectoryPath(), NPM)
+        def npmDirectory = new File(directoryName)
+        npmDirectory.mkdir()
+        npmDirectory.deleteOnExit()
 
-        if(tempJsonOutFile?.length() > 0) {
-            logger.info("Running npm ls and converting values")
-            result = convertNpmJsonFileToDependencyNode(tempJsonOutFile)
-        }
-        if(tempJsonOutFile) {
-            try {
-                tempJsonOutFile.delete()
-            } catch (IOException e) {
-                println(e.stackTrace)
-            }
-        }
+        def npmLsOutFile = new File(npmDirectory, NpmBomTool.OUTPUT_FILE)
+        npmLsOutFile.deleteOnExit()
 
-        if(!result) {
-            //Check for any package-lock or shrinkwrap files in future
+        exeRunner.executeToFile(npmLsExe, npmLsOutFile)
+
+        if (npmLsOutFile?.length() > 0) {
+            logger.info("Running npm ls and generating results")
+            dependencyNode = convertNpmJsonFileToDependencyNode2(npmLsOutFile, rootDirectoryPath)
         }
 
-        result
+        dependencyNode
     }
 
-    private DependencyNode convertNpmJsonFileToDependencyNode(File depOut) {
+    private DependencyNode convertNpmJsonFileToDependencyNode(File depOut, String rootPath) {
         NpmCliNode node = gson.fromJson(new JsonReader(new FileReader(depOut)), NpmCliNode.class)
 
-        if(rootPath) {
-            node.name = node.name ?: projectInfoGatherer.getDefaultProjectName(BomToolType.NPM, rootPath)
-        }
-        node.version = node.version ?: projectInfoGatherer.getDefaultProjectVersionName()
+        node.name = projectInfoGatherer.getDefaultProjectName(BomToolType.NPM, rootPath, node.name)
+        node.version = projectInfoGatherer.getDefaultProjectVersionName(node.version)
 
         nodeTransformer.createDependencyNode(Forge.NPM, node)
+    }
+
+    private DependencyNode convertNpmJsonFileToDependencyNode2(File depOut, String rootPath) {
+        JsonObject npmJson = new JsonParser().parse(new JsonReader(new FileReader(depOut))).getAsJsonObject()
+
+        JsonPrimitive projectName = npmJson.getAsJsonPrimitive('name')
+        JsonPrimitive projectVersion = npmJson.getAsJsonPrimitive('version')
+
+        JsonObject dependenciesElement = npmJson.getAsJsonObject('dependencies')
+
+        createNpmNodeFromJsonObject(
+                projectInfoGatherer.getDefaultProjectName(BomToolType.NPM, rootPath, projectName?.getAsString()),
+                projectInfoGatherer.getDefaultProjectVersionName(projectVersion?.getAsString()),
+                dependenciesElement
+                )
+    }
+
+    private DependencyNode createNpmNodeFromJsonObject(String nodeName, String nodeVersion, JsonObject nodeChildren) {
+        def externalId = new NameVersionExternalId(Forge.NPM, nodeName, nodeVersion)
+        DependencyNode newNode = new DependencyNode(nodeName, nodeVersion, externalId)
+
+        def elements = nodeChildren?.entrySet()
+        elements?.each{
+            String name = it.key
+            String version = it.value.getAsJsonPrimitive('version').getAsString()
+            JsonObject children = it.value.getAsJsonObject('dependencies')
+
+            newNode.children.add(createNpmNodeFromJsonObject(name, version, children))
+        }
+
+        newNode
     }
 }
