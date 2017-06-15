@@ -64,10 +64,12 @@ class PipBomTool extends BomTool {
 
     List<DependencyNode> extractDependencyNodes() {
         List<DependencyNode> projectNodes = []
+        def outputDirectory = new File(detectProperties.outputDirectoryPath, BomToolType.PIP.toString().toLowerCase())
+        outputDirectory.mkdir()
         matchingSourcePaths.each { sourcePath ->
             def sourceDirectory = new File(sourcePath)
-            VirtualEnvironment virtualEnv = virtualEnvironmentHandler.getVirtualEnvironment(sourceDirectory)
-            projectNodes.addAll(pipPackager.makeDependencyNodes(sourcePath, virtualEnv))
+            VirtualEnvironment virtualEnv = virtualEnvironmentHandler.getVirtualEnvironment(outputDirectory, sourceDirectory)
+            projectNodes.addAll(pipPackager.makeDependencyNodes(outputDirectory, sourceDirectory, virtualEnv))
         }
 
         projectNodes
