@@ -81,9 +81,8 @@ class VirtualEnvironmentHandler {
         }
     }
 
-    VirtualEnvironment getVirtualEnvironment(File sourceDirectory) {
-        VirtualEnvironment env = null
-        def outputDirectory = new File(detectProperties.outputDirectoryPath)
+    VirtualEnvironment getVirtualEnvironment(File outputDirectory, File sourceDirectory) {
+        VirtualEnvironment env = getSystemEnvironment()
         String definedPath = detectProperties.virtualEnvPath?.trim()
         if (detectProperties.createVirtualEnv) {
             def venvDirectory = new File(outputDirectory, VIRTUAL_ENV_NAME)
@@ -103,8 +102,6 @@ class VirtualEnvironmentHandler {
         } else if (definedPath){
             def venvDirectory = new File(detectProperties.virtualEnvPath)
             env = findExistingEnvironment(venvDirectory)
-        } else if (detectProperties.createVirtualEnv && definedPath){
-            env = getSystemEnvironment()
         }
 
         if (!env) {

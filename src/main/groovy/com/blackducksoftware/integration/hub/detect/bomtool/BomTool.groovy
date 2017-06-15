@@ -69,4 +69,8 @@ abstract class BomTool {
      * project for each item in the List.
      */
     abstract List<DependencyNode> extractDependencyNodes()
+    
+    void test() {
+        
+    }
 }
