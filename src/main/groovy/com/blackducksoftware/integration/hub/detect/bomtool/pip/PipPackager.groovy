@@ -36,6 +36,7 @@ import com.blackducksoftware.integration.hub.detect.DetectProperties
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.util.FileFinder
+import com.blackducksoftware.integration.hub.detect.util.FileHelper
 import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
@@ -44,7 +45,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 @Component
 class PipPackager {
     final Logger logger = LoggerFactory.getLogger(this.getClass())
-    private final String INSPECTOR_NAME = 'pip-inspector'
+    private final String INSPECTOR_NAME = 'pip-inspector.py'
 
     @Autowired
     FileFinder fileFinder
@@ -61,6 +62,9 @@ class PipPackager {
     @Autowired
     NameVersionNodeTransformer nameVersionNodeTransformer
 
+    @Autowired
+    FileHelper fileHelper
+
     List<DependencyNode> makeDependencyNodes(final String sourcePath, VirtualEnvironment virtualEnv) throws ExecutableRunnerException {
         String pipPath = virtualEnv.pipPath
         String pythonPath = virtualEnv.pythonPath
@@ -68,11 +72,12 @@ class PipPackager {
         def outputDirectory = new File(detectProperties.outputDirectoryPath)
         def setupFile = fileFinder.findFile(sourceDirectory, 'setup.py')
 
-        File inpsectorScript = File.createTempFile(INSPECTOR_NAME, '.py')
-        String inpsectorScriptContents = getClass().getResourceAsStream("/${INSPECTOR_NAME}.py").getText(StandardCharsets.UTF_8.name())
-        inpsectorScript << inpsectorScriptContents
+        String inpsectorScriptContents = getClass().getResourceAsStream("/${INSPECTOR_NAME}").getText(StandardCharsets.UTF_8.name())
+        def inspectorScript = new File(outputDirectory)
+        fileHelper.writeToTemporaryFile(outputDirectory, inpsectorScriptContents)
+
         def pipInspectorOptions = [
-            inpsectorScript.absolutePath
+            inspectorScript.absolutePath
         ]
 
         // Install pytest-runner to avoid a zip_flag error if the project uses pytest-runner
