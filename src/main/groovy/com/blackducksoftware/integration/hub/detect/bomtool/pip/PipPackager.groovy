@@ -32,7 +32,7 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
-import com.blackducksoftware.integration.hub.detect.DetectProperties
+import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.util.FileFinder
@@ -53,7 +53,7 @@ class PipPackager {
     ExecutableRunner executableRunner
 
     @Autowired
-    DetectProperties detectProperties
+    DetectConfiguration detectConfiguration
 
     @Autowired
     ProjectInfoGatherer projectInfoGatherer
@@ -80,8 +80,8 @@ class PipPackager {
         executableRunner.executeLoudly(installPytestRunner)
 
         // Install requirements file and add it as an option for the inspector
-        if (detectProperties.requirementsFilePath) {
-            def requirementsFile = new File(detectProperties.requirementsFilePath)
+        if (detectConfiguration.requirementsFilePath) {
+            def requirementsFile = new File(detectConfiguration.requirementsFilePath)
             pipInspectorOptions += [
                 '-r',
                 requirementsFile.absolutePath
@@ -99,7 +99,7 @@ class PipPackager {
         if (setupFile) {
             def installProjectExecutable = new Executable(sourceDirectory, pipPath, ['install', '.', '-I'])
             executableRunner.executeLoudly(installProjectExecutable)
-            def projectName = detectProperties.pipProjectName
+            def projectName = detectConfiguration.pipProjectName
             if (!projectName) {
                 def findProjectNameExecutable = new Executable(sourceDirectory, pythonPath, [
                     setupFile.absolutePath,

@@ -66,9 +66,9 @@ class MavenBomTool extends BomTool {
     }
 
     private String findMavenExecutablePath() {
-        if (StringUtils.isBlank(detectProperties.getMavenPath())) {
+        if (StringUtils.isBlank(detectConfiguration.getMavenPath())) {
             return executableManager.getPathOfExecutable(ExecutableType.MVN)
         }
-        detectProperties.getMavenPath()
+        detectConfiguration.getMavenPath()
     }
 }

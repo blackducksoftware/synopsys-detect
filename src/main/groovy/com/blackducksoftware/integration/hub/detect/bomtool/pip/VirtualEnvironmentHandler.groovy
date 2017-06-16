@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.detect.DetectProperties
+import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager
@@ -43,7 +43,7 @@ class VirtualEnvironmentHandler {
     private final String VIRTUAL_ENV_NAME = 'venv'
 
     @Autowired
-    DetectProperties detectProperties
+    DetectConfiguration detectConfiguration
 
     @Autowired
     ExecutableManager executableManager
@@ -61,7 +61,7 @@ class VirtualEnvironmentHandler {
         ExecutableType pipExecutableType
         ExecutableType pythonExecutableType
 
-        if (detectProperties.getPipThreeOverride()) {
+        if (detectConfiguration.getPipThreeOverride()) {
             pythonExecutableType = ExecutableType.PYTHON3
             pipExecutableType = ExecutableType.PIP3
         } else {
@@ -71,8 +71,8 @@ class VirtualEnvironmentHandler {
 
         systemEnvironment.pythonType = pythonExecutableType
         systemEnvironment.pipType = pipExecutableType
-        systemEnvironment.pythonPath = findExecutable(null, detectProperties.pythonPath, pythonExecutableType)
-        systemEnvironment.pipPath = findExecutable(null, detectProperties.pipPath, pipExecutableType)
+        systemEnvironment.pythonPath = findExecutable(null, detectConfiguration.pythonPath, pythonExecutableType)
+        systemEnvironment.pipPath = findExecutable(null, detectConfiguration.pipPath, pipExecutableType)
 
         if (SystemUtils.IS_OS_WINDOWS) {
             binFolderName = 'Scripts'
@@ -83,8 +83,8 @@ class VirtualEnvironmentHandler {
 
     VirtualEnvironment getVirtualEnvironment(File outputDirectory, File sourceDirectory) {
         VirtualEnvironment env = getSystemEnvironment()
-        String definedPath = detectProperties.virtualEnvPath?.trim()
-        if (detectProperties.createVirtualEnv) {
+        String definedPath = detectConfiguration.virtualEnvPath?.trim()
+        if (detectConfiguration.createVirtualEnv) {
             def venvDirectory = new File(outputDirectory, VIRTUAL_ENV_NAME)
             env = findExistingEnvironment(venvDirectory)
 
@@ -100,7 +100,7 @@ class VirtualEnvironmentHandler {
                 env = createVirtualEnvironment(venvDirectory)
             }
         } else if (definedPath){
-            def venvDirectory = new File(detectProperties.virtualEnvPath)
+            def venvDirectory = new File(detectConfiguration.virtualEnvPath)
             env = findExistingEnvironment(venvDirectory)
         }
 

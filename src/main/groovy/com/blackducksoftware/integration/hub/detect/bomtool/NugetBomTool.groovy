@@ -54,7 +54,7 @@ class NugetBomTool extends BomTool {
 
     boolean isBomToolApplicable() {
         nugetExecutablePath = findNugetExecutable()
-        detectProperties.getSourcePaths().each { sourcePath ->
+        detectConfiguration.getSourcePaths().each { sourcePath ->
             def solutionFile = fileFinder.findFile(sourcePath, SOLUTION_PATTERN)
             def projectFile = fileFinder.findFile(sourcePath, PROJECT_PATTERN)
             if (solutionFile || projectFile) {
@@ -80,7 +80,7 @@ class NugetBomTool extends BomTool {
                     root.name = projectInfoGatherer.getDefaultProjectName(BomToolType.NUGET, sourcePath, root.name)
                     root.version = projectInfoGatherer.getDefaultProjectVersionName(root.version)
                     root.externalId = new NameVersionExternalId(Forge.NUGET, root.name, root.version)
-                    if (detectProperties.getNugetAggregateBom()) {
+                    if (detectConfiguration.getNugetAggregateBom()) {
                         projectNodes.add(root)
                     } else {
                         projectNodes.addAll(root.children as List)
@@ -102,8 +102,8 @@ class NugetBomTool extends BomTool {
     }
 
     private File findNugetExecutable() {
-        if (StringUtils.isNotBlank(detectProperties.getNugetPath())) {
-            new File(detectProperties.getNugetPath())
+        if (StringUtils.isNotBlank(detectConfiguration.getNugetPath())) {
+            new File(detectConfiguration.getNugetPath())
         } else {
             executableManager.getExecutable(ExecutableType.NUGET)
         }

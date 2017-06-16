@@ -26,7 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
-import com.blackducksoftware.integration.hub.detect.DetectProperties
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.util.FileFinder
@@ -36,9 +35,6 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableMa
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
 
 abstract class BomTool {
-    @Autowired
-    DetectProperties detectProperties
-
     @Autowired
     DetectConfiguration detectConfiguration
 
@@ -69,8 +65,7 @@ abstract class BomTool {
      * project for each item in the List.
      */
     abstract List<DependencyNode> extractDependencyNodes()
-    
+
     void test() {
-        
     }
 }

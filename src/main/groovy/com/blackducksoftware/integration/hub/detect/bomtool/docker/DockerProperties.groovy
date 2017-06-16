@@ -26,15 +26,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
-import com.blackducksoftware.integration.hub.detect.DetectProperties
 
 @Component
 class DockerProperties {
     @Autowired
     DetectConfiguration detectConfiguration
-
-    @Autowired
-    DetectProperties detectProperties
 
     List<String> createDockerArgumentList() {
         def arguments = []
@@ -57,10 +53,10 @@ class DockerProperties {
             constructArgument(arguments, propertyName, dockerKey)
         }
 
-        if (detectProperties.dockerImage) {
-            arguments.add(detectProperties.dockerImage)
+        if (detectConfiguration.dockerImage) {
+            arguments.add(detectConfiguration.dockerImage)
         } else {
-            arguments.add(detectProperties.dockerTar)
+            arguments.add(detectConfiguration.dockerTar)
         }
 
         arguments
