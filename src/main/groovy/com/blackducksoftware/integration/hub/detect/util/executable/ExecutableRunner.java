@@ -78,10 +78,11 @@ public class ExecutableRunner {
     public void executeToFile(final Executable executable, final File file) throws ExecutableRunnerException {
         logger.debug(String.format("Running executable >%s", executable.getExecutableDescription()));
         try {
-            final ProcessBuilder processBuilder = executable.createProcessBuilder();
-            final Process process = processBuilder.redirectOutput(file).start();
+            final ProcessBuilder processBuilder = executable.createProcessBuilder().redirectOutput(file);
+            final Process process = processBuilder.start();
             process.waitFor();
-            final ExecutableOutput errorOutput = new ExecutableOutput("", printStream(process.getErrorStream(), true, true));
+            final String errorCheck = printStream(process.getErrorStream(), true, true);
+            final ExecutableOutput errorOutput = new ExecutableOutput("", errorCheck);
             if (StringUtils.isNotBlank(errorOutput.getErrorOutput())) {
                 throw new ExecutableRunnerException(errorOutput);
             }
