@@ -27,11 +27,10 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeBuilder
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
-import com.blackducksoftware.integration.hub.detect.DetectProperties
+import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.bomtool.NpmBomTool
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
@@ -61,13 +60,13 @@ class NpmCliDependencyFinder {
     NameVersionNodeTransformer nodeTransformer
 
     @Autowired
-    DetectProperties detectProperties
+    DetectConfiguration detectConfiguration
 
     public DependencyNode generateDependencyNode(String rootDirectoryPath, String exePath) {
         def npmLsExe = new Executable(new File(rootDirectoryPath), exePath, ['ls', '-json'])
         def exeRunner = new ExecutableRunner()
 
-        String directoryName = "${detectProperties.getOutputDirectoryPath()}${File.separator}${NPM_DIR}"
+        String directoryName = "${detectConfiguration.getOutputDirectoryPath()}${File.separator}${NPM_DIR}"
         def npmDirectory = new File(directoryName)
         npmDirectory.mkdir()
 
@@ -98,12 +97,12 @@ class NpmCliDependencyFinder {
         def externalId = new NameVersionExternalId(Forge.NPM, projectName, projectVersion)
         def dependencyNode = new DependencyNode(projectName, projectVersion, externalId)
 
-        createDependencyNodeTreeFromJsonObject(dependencyNode, npmJson.getAsJsonObject(JSON_DEPENDENCIES), new DependencyNodeBuilder(dependencyNode))
+        createDependencyNodeTreeFromJsonObject(dependencyNode, npmJson.getAsJsonObject(JSON_DEPENDENCIES))
 
         dependencyNode
     }
 
-    private void createDependencyNodeTreeFromJsonObject(DependencyNode parentDependencyNode, JsonObject parentNodeChildren, DependencyNodeBuilder nodeBuilder) {
+    private void createDependencyNodeTreeFromJsonObject(DependencyNode parentDependencyNode, JsonObject parentNodeChildren) {
         def elements = parentNodeChildren?.entrySet()
         elements?.each {
             String name = it.key
@@ -113,8 +112,8 @@ class NpmCliDependencyFinder {
             def externalId = new NameVersionExternalId(Forge.NPM, name, version)
             def newNode = new DependencyNode(name, version, externalId)
 
-            createDependencyNodeTreeFromJsonObject(newNode, children, nodeBuilder)
-            nodeBuilder.addParentNodeWithChildren(parentDependencyNode, [newNode])
+            createDependencyNodeTreeFromJsonObject(newNode, children)
+            parentDependencyNode.children.add(newNode)
         }
     }
 }

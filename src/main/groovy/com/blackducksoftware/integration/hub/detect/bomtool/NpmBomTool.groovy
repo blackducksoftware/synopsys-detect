@@ -68,9 +68,9 @@ class NpmBomTool extends BomTool {
     }
 
     private String getExecutablePath() {
-        if (!detectProperties.npmPath) {
+        if (!detectConfiguration.getNpmPath()) {
             return executableManager.getPathOfExecutable(ExecutableType.NPM)
         }
-        detectProperties.npmPath
+        detectConfiguration.getNpmPath()
     }
 }
