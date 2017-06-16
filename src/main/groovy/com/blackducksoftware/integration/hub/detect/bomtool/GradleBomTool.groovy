@@ -51,7 +51,7 @@ class GradleBomTool extends BomTool {
     boolean isBomToolApplicable() {
         detectConfiguration.getSourcePaths().each { sourcePath ->
             def gradleExecutable = findGradleExecutable(sourcePath)
-            def buildGradle = detectFileService.findFile(sourcePath, BUILD_GRADLE)
+            def buildGradle = detectFileManager.findFile(sourcePath, BUILD_GRADLE)
             if (gradleExecutable && buildGradle) {
                 matchingSourcePathToGradleExecutable.put(sourcePath, gradleExecutable)
             }

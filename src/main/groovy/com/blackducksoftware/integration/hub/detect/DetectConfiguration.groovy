@@ -8,7 +8,7 @@
  * distributed with this work for additional information
  * regarding copyright ownership. The ASF licenses this file
  * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
+ * "License") you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -129,153 +129,156 @@ class DetectConfiguration {
     }
 
     public Boolean getCleanupBdioFiles() {
-        return detectProperties.cleanupBdioFiles;
+        return detectProperties.cleanupBdioFiles
     }
     public String getHubUrl() {
-        return detectProperties.hubUrl;
+        return detectProperties.hubUrl
     }
     public Integer getHubTimeout() {
-        return detectProperties.hubTimeout;
+        return detectProperties.hubTimeout
     }
     public String getHubUsername() {
-        return detectProperties.hubUsername;
+        return detectProperties.hubUsername
     }
     public String getHubPassword() {
-        return detectProperties.hubPassword;
+        return detectProperties.hubPassword
     }
     public String getHubProxyHost() {
-        return detectProperties.hubProxyHost;
+        return detectProperties.hubProxyHost
     }
     public String getHubProxyPort() {
-        return detectProperties.hubProxyPort;
+        return detectProperties.hubProxyPort
     }
     public String getHubProxyUsername() {
-        return detectProperties.hubProxyUsername;
+        return detectProperties.hubProxyUsername
     }
     public String getHubProxyPassword() {
-        return detectProperties.hubProxyPassword;
+        return detectProperties.hubProxyPassword
     }
     public Boolean getHubAutoImportCertificate() {
-        return detectProperties.hubAutoImportCertificate;
+        return detectProperties.hubAutoImportCertificate
     }
     public String[] getSourcePaths() {
-        return detectProperties.sourcePaths;
+        return detectProperties.sourcePaths
     }
     public String getOutputDirectoryPath() {
-        return detectProperties.outputDirectoryPath;
+        return detectProperties.outputDirectoryPath
     }
     public Integer getSearchDepth() {
-        return detectProperties.searchDepth;
+        return detectProperties.searchDepth
     }
     public String getBomToolTypeOverride() {
-        return detectProperties.bomToolTypeOverride;
+        return detectProperties.bomToolTypeOverride
     }
     public String getProjectName() {
-        return detectProperties.projectName;
+        return detectProperties.projectName
     }
     public String getProjectVersionName() {
-        return detectProperties.projectVersionName;
+        return detectProperties.projectVersionName
     }
     public String getGradleInspectorVersion() {
-        return detectProperties.gradleInspectorVersion;
+        return detectProperties.gradleInspectorVersion
     }
     public String getGradleBuildCommand() {
-        return detectProperties.gradleBuildCommand;
+        return detectProperties.gradleBuildCommand
     }
     public String getGradleExcludedConfigurationNames() {
-        return detectProperties.gradleExcludedConfigurationNames;
+        return detectProperties.gradleExcludedConfigurationNames
     }
     public String getGradleIncludedConfigurationNames() {
-        return detectProperties.gradleIncludedConfigurationNames;
+        return detectProperties.gradleIncludedConfigurationNames
     }
     public String getGradleExcludedProjectNames() {
-        return detectProperties.gradleExcludedProjectNames;
+        return detectProperties.gradleExcludedProjectNames
     }
     public String getGradleIncludedProjectNames() {
-        return detectProperties.gradleIncludedProjectNames;
+        return detectProperties.gradleIncludedProjectNames
     }
     public String getNugetInspectorPackageName() {
-        return detectProperties.nugetInspectorPackageName;
+        return detectProperties.nugetInspectorPackageName
     }
     public String getNugetInspectorPackageVersion() {
-        return detectProperties.nugetInspectorPackageVersion;
+        return detectProperties.nugetInspectorPackageVersion
     }
     public String getNugetInspectorExcludedModules() {
-        return detectProperties.nugetInspectorExcludedModules;
+        return detectProperties.nugetInspectorExcludedModules
     }
     public Boolean getNugetInspectorIgnoreFailure() {
-        return detectProperties.nugetInspectorIgnoreFailure;
+        return detectProperties.nugetInspectorIgnoreFailure
     }
     public Boolean getMavenAggregateBom() {
-        return detectProperties.mavenAggregateBom;
+        return detectProperties.mavenAggregateBom
     }
     public String getMavenScope() {
-        return detectProperties.mavenScope;
+        return detectProperties.mavenScope
     }
     public String getGradlePath() {
-        return detectProperties.gradlePath;
+        return detectProperties.gradlePath
     }
     public String getMavenPath() {
-        return detectProperties.mavenPath;
+        return detectProperties.mavenPath
     }
     public Boolean getNugetAggregateBom() {
-        return detectProperties.nugetAggregateBom;
+        return detectProperties.nugetAggregateBom
     }
     public String getNugetPath() {
-        return detectProperties.nugetPath;
+        return detectProperties.nugetPath
     }
     public String getPipProjectName() {
-        return detectProperties.pipProjectName;
+        return detectProperties.pipProjectName
     }
     public Boolean getCreateVirtualEnv() {
-        return detectProperties.createVirtualEnv;
+        return detectProperties.createVirtualEnv
     }
     public Boolean getPipThreeOverride() {
-        return detectProperties.pipThreeOverride;
+        return detectProperties.pipThreeOverride
     }
     public String getPythonPath() {
-        return detectProperties.pythonPath;
+        return detectProperties.pythonPath
     }
     public String getPipPath() {
-        return detectProperties.pipPath;
+        return detectProperties.pipPath
     }
     public String getVirtualEnvPath() {
-        return detectProperties.virtualEnvPath;
+        return detectProperties.virtualEnvPath
     }
     public String getRequirementsFilePath() {
-        return detectProperties.requirementsFilePath;
+        return detectProperties.requirementsFilePath
     }
     public String getGodepPath() {
-        return detectProperties.godepPath;
+        return detectProperties.godepPath
     }
     public Boolean getGoAggregate() {
-        return detectProperties.goAggregate;
+        return detectProperties.goAggregate
     }
     public String getDockerPath() {
-        return detectProperties.dockerPath;
+        return detectProperties.dockerPath
     }
     public String getDockerInspectorPath() {
-        return detectProperties.dockerInspectorPath;
+        return detectProperties.dockerInspectorPath
     }
     public String getDockerInspectorVersion() {
-        return detectProperties.dockerInspectorVersion;
+        return detectProperties.dockerInspectorVersion
     }
     public String getDockerInstallPath() {
-        return detectProperties.dockerInstallPath;
+        return detectProperties.dockerInstallPath
     }
     public String getDockerSandboxPath() {
-        return detectProperties.dockerSandboxPath;
+        return detectProperties.dockerSandboxPath
     }
     public String getDockerTar() {
-        return detectProperties.dockerTar;
+        return detectProperties.dockerTar
     }
     public String getDockerImage() {
-        return detectProperties.dockerImage;
+        return detectProperties.dockerImage
     }
     public String getBashPath() {
-        return detectProperties.bashPath;
+        return detectProperties.bashPath
     }
     public String getLoggingLevel() {
-        return detectProperties.loggingLevel;
+        return detectProperties.loggingLevel
+    }
+    public String getCleanupBomToolFiles() {
+        return detectProperties.cleanupBomToolFiles
     }
 }

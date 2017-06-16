@@ -230,6 +230,6 @@ class DetectProperties {
     String loggingLevel
 
     @ValueDescription(description="Detect creates temporary files in the output directory. If set to true this will clean them up after execution", defaultValue='true')
-    @Value('${detect.cleanup.bomtools.files}')
-    Boolean cleanupBomtoolFiles
+    @Value('${detect.cleanup.bom.tool.files}')
+    Boolean cleanupBomToolFiles
 }

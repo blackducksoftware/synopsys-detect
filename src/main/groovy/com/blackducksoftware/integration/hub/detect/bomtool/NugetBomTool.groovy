@@ -55,8 +55,8 @@ class NugetBomTool extends BomTool {
     boolean isBomToolApplicable() {
         nugetExecutablePath = findNugetExecutable()
         detectConfiguration.sourcePaths.each { sourcePath ->
-            def solutionFile = detectFileService.findFile(sourcePath, SOLUTION_PATTERN)
-            def projectFile = detectFileService.findFile(sourcePath, PROJECT_PATTERN)
+            def solutionFile = detectFileManager.findFile(sourcePath, SOLUTION_PATTERN)
+            def projectFile = detectFileManager.findFile(sourcePath, PROJECT_PATTERN)
             if (solutionFile || projectFile) {
                 matchingSourcePaths.add(sourcePath)
             }

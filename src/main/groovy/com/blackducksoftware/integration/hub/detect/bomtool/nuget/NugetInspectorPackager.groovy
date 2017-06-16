@@ -34,7 +34,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
-import com.blackducksoftware.integration.hub.detect.util.DetectFileService
+import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
@@ -48,7 +48,7 @@ class NugetInspectorPackager {
     DetectConfiguration detectConfiguration
 
     @Autowired
-    DetectFileService detectFileService
+    DetectFileManager detectFileManager
 
     @Autowired
     ExecutableRunner executableRunner
@@ -83,7 +83,7 @@ class NugetInspectorPackager {
         def hubNugetInspectorExecutable = new Executable(sourceDirectory, inspectorExePath, options)
         ExecutableOutput executableOutput = executableRunner.executeLoudly(hubNugetInspectorExecutable)
 
-        def dependencyNodeFile = detectFileService.findFile(outputDirectory, '*_dependency_node.json')
+        def dependencyNodeFile = detectFileManager.findFile(outputDirectory, '*_dependency_node.json')
         final String dependencyNodeJson = dependencyNodeFile.getText(StandardCharsets.UTF_8.name())
         final NugetNode nugetNode = gson.fromJson(dependencyNodeJson, NugetNode.class)
 

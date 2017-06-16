@@ -79,7 +79,7 @@ class DockerBomTool extends BomTool {
             URL hubDockerInspectorShellScriptUrl = new URL("https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector-${detectConfiguration.dockerInspectorVersion}.sh")
             String shellScriptContents = hubDockerInspectorShellScriptUrl.openStream().getText(StandardCharsets.UTF_8.name())
             shellScriptFile = new File(dockerInstallDirectory, "hub-docker-inspector-${detectConfiguration.dockerInspectorVersion}.sh")
-            detectFileService.writeToFile(shellScriptFile, shellScriptContents)
+            detectFileManager.writeToFile(shellScriptFile, shellScriptContents)
             shellScriptFile.setExecutable(true)
         }
 

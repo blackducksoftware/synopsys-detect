@@ -35,7 +35,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVe
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
-import com.blackducksoftware.integration.hub.detect.util.DetectFileService
+import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
@@ -59,17 +59,17 @@ class PipPackager {
     NameVersionNodeTransformer nameVersionNodeTransformer
 
     @Autowired
-    DetectFileService detectFileService
+    DetectFileManager detectFileManager
 
     List<DependencyNode> makeDependencyNodes(File sourceDirectory, VirtualEnvironment virtualEnv) throws ExecutableRunnerException {
 
         String pipPath = virtualEnv.pipPath
         String pythonPath = virtualEnv.pythonPath
-        def setupFile = detectFileService.findFile(sourceDirectory, 'setup.py')
+        def setupFile = detectFileManager.findFile(sourceDirectory, 'setup.py')
 
         String inpsectorScriptContents = getClass().getResourceAsStream("/${INSPECTOR_NAME}").getText(StandardCharsets.UTF_8.name())
-        def inspectorScript = detectFileService.createFile(BomToolType.PIP, INSPECTOR_NAME)
-        detectFileService.writeToFile(inspectorScript, inpsectorScriptContents)
+        def inspectorScript = detectFileManager.createFile(BomToolType.PIP, INSPECTOR_NAME)
+        detectFileManager.writeToFile(inspectorScript, inpsectorScriptContents)
         def pipInspectorOptions = [
             inspectorScript.absolutePath
         ]
