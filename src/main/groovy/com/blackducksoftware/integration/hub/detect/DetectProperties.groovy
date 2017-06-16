@@ -228,4 +228,8 @@ class DetectProperties {
     @ValueDescription(description="Path of the bash executable")
     @Value('${detect.bash.path}')
     String bashPath
+
+    @ValueDescription(description="The logging level of Detect (ALL|TRACE|DEBUG|INFO|WARN|ERROR|FATAL|OFF)", defaultValue='INFO')
+    @Value('${logging.level.com.blackducksoftware.integration}')
+    String loggingLevel
 }

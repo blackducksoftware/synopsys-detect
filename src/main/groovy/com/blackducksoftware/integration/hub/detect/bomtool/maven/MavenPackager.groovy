@@ -28,7 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.detect.DetectProperties
+import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
@@ -46,7 +46,7 @@ public class MavenPackager {
     ExecutableRunner executableRunner
 
     @Autowired
-    DetectProperties detectProperties
+    DetectConfiguration detectConfiguration
 
     public List<DependencyNode> makeDependencyNodes(String sourcePath, String mavenExecutable) {
         final List<DependencyNode> projects = []
@@ -54,8 +54,8 @@ public class MavenPackager {
         File sourceDirectory = new File(sourcePath)
 
         def arguments = ["dependency:tree"]
-        if (detectProperties.getMavenScope()?.trim()) {
-            arguments.add("-Dscope=${detectProperties.getMavenScope()}")
+        if (detectConfiguration.getMavenScope()?.trim()) {
+            arguments.add("-Dscope=${detectConfiguration.getMavenScope()}")
         }
         final Executable mvnExecutable = new Executable(sourceDirectory, mavenExecutable, arguments)
         final ExecutableOutput mvnOutput = executableRunner.executeLoudly(mvnExecutable)
@@ -63,7 +63,7 @@ public class MavenPackager {
         final MavenOutputParser mavenOutputParser = new MavenOutputParser()
         projects.addAll(mavenOutputParser.parse(mvnOutput.standardOutput))
 
-        if (detectProperties.getMavenAggregateBom() && !projects.isEmpty()) {
+        if (detectConfiguration.getMavenAggregateBom() && !projects.isEmpty()) {
             final DependencyNode firstNode = projects.remove(0)
             projects.each { subProject ->
                 firstNode.children.addAll(subProject.children)

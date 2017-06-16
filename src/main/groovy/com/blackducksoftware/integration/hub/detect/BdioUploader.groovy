@@ -40,7 +40,7 @@ class BdioUploader {
     private final Logger logger = LoggerFactory.getLogger(BdioUploader.class)
 
     @Autowired
-    DetectProperties detectProperties
+    DetectConfiguration detectConfiguration
 
     void uploadBdioFiles(List<File> createdBdioFiles) {
         if (!createdBdioFiles) {
@@ -57,9 +57,9 @@ class BdioUploader {
             BomImportRequestService bomImportRequestService = hubServicesFactory.createBomImportRequestService()
 
             createdBdioFiles.each { file ->
-                logger.info("uploading ${file.name} to ${detectProperties.getHubUrl()}")
+                logger.info("uploading ${file.name} to ${detectConfiguration.getHubUrl()}")
                 bomImportRequestService.importBomFile(file, BuildToolConstants.BDIO_FILE_MEDIA_TYPE)
-                if (detectProperties.getCleanupBdioFiles()) {
+                if (detectConfiguration.getCleanupBdioFiles()) {
                     file.delete()
                 }
             }
@@ -70,17 +70,17 @@ class BdioUploader {
 
     private HubServerConfigBuilder createBuilder(Slf4jIntLogger slf4jIntLogger) {
         HubServerConfigBuilder hubServerConfigBuilder = new HubServerConfigBuilder()
-        hubServerConfigBuilder.setHubUrl(detectProperties.getHubUrl())
-        hubServerConfigBuilder.setTimeout(detectProperties.getHubTimeout())
-        hubServerConfigBuilder.setUsername(detectProperties.getHubUsername())
-        hubServerConfigBuilder.setPassword(detectProperties.getHubPassword())
+        hubServerConfigBuilder.setHubUrl(detectConfiguration.getHubUrl())
+        hubServerConfigBuilder.setTimeout(detectConfiguration.getHubTimeout())
+        hubServerConfigBuilder.setUsername(detectConfiguration.getHubUsername())
+        hubServerConfigBuilder.setPassword(detectConfiguration.getHubPassword())
 
-        hubServerConfigBuilder.setProxyHost(detectProperties.getHubProxyHost())
-        hubServerConfigBuilder.setProxyPort(detectProperties.getHubProxyPort())
-        hubServerConfigBuilder.setProxyUsername(detectProperties.getHubProxyUsername())
-        hubServerConfigBuilder.setProxyPassword(detectProperties.getHubProxyPassword())
+        hubServerConfigBuilder.setProxyHost(detectConfiguration.getHubProxyHost())
+        hubServerConfigBuilder.setProxyPort(detectConfiguration.getHubProxyPort())
+        hubServerConfigBuilder.setProxyUsername(detectConfiguration.getHubProxyUsername())
+        hubServerConfigBuilder.setProxyPassword(detectConfiguration.getHubProxyPassword())
 
-        hubServerConfigBuilder.setAutoImportHttpsCertificates(detectProperties.getHubAutoImportCertificate())
+        hubServerConfigBuilder.setAutoImportHttpsCertificates(detectConfiguration.getHubAutoImportCertificate())
         hubServerConfigBuilder.setLogger(slf4jIntLogger)
 
         hubServerConfigBuilder

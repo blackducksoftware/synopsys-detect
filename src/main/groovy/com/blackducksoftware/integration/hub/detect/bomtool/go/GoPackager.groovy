@@ -32,7 +32,7 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
-import com.blackducksoftware.integration.hub.detect.DetectProperties
+import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.bomtool.GoBomTool
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.util.FileFinder
@@ -56,7 +56,7 @@ class GoPackager {
     ProjectInfoGatherer projectInfoGatherer
 
     @Autowired
-    DetectProperties detectProperties
+    DetectConfiguration detectConfiguration
 
     @Autowired
     FileFinder fileFinder
@@ -66,7 +66,7 @@ class GoPackager {
         final String rootVersion = projectInfoGatherer.getDefaultProjectVersionName()
         final ExternalId rootExternalId = new NameVersionExternalId(GoBomTool.GOLANG, rootName, rootVersion)
         final DependencyNode root = new DependencyNode(rootName, rootVersion, rootExternalId)
-        def goDirectories = findDirectoriesContainingGoFilesToDepth(new File(sourcePath), detectProperties.getSearchDepth());
+        def goDirectories = findDirectoriesContainingGoFilesToDepth(new File(sourcePath), detectConfiguration.getSearchDepth());
         GoDepParser goDepParser = new GoDepParser(gson, projectInfoGatherer)
         def children = new ArrayList<DependencyNode>()
         goDirectories.each {
@@ -76,7 +76,7 @@ class GoPackager {
                 children.add(child)
             }
         }
-        if (detectProperties.getGoAggregate()) {
+        if (detectConfiguration.getGoAggregate()) {
             root.children = children
             return [root]
         } else {
