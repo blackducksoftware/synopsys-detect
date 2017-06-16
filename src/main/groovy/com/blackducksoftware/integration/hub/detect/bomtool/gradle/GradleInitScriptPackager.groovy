@@ -30,7 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.detect.DetectProperties
+import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.util.DetectFileService
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
@@ -48,7 +48,7 @@ class GradleInitScriptPackager {
     ExecutableRunner executableRunner
 
     @Autowired
-    DetectProperties detectProperties
+    DetectConfiguration detectConfiguration
 
     @Autowired
     DetectFileService detectFileService
@@ -56,17 +56,17 @@ class GradleInitScriptPackager {
     DependencyNode extractRootProjectNode(String sourcePath, String gradleExecutable) {
         File initScriptFile = detectFileService.createFile(BomToolType.GRADLE, 'init-detect.gradle')
         String initScriptContents = getClass().getResourceAsStream('/init-script-gradle').getText(StandardCharsets.UTF_8.name())
-        initScriptContents = initScriptContents.replace('GRADLE_INSPECTOR_VERSION', detectProperties.getGradleInspectorVersion())
-        initScriptContents = initScriptContents.replace('EXCLUDED_PROJECT_NAMES', detectProperties.getGradleExcludedProjectNames())
-        initScriptContents = initScriptContents.replace('INCLUDED_PROJECT_NAMES', detectProperties.getGradleIncludedProjectNames())
-        initScriptContents = initScriptContents.replace('EXCLUDED_CONFIGURATION_NAMES', detectProperties.getGradleExcludedConfigurationNames())
-        initScriptContents = initScriptContents.replace('INCLUDED_CONFIGURATION_NAMES', detectProperties.getGradleIncludedConfigurationNames())
+        initScriptContents = initScriptContents.replace('GRADLE_INSPECTOR_VERSION', detectConfiguration.getGradleInspectorVersion())
+        initScriptContents = initScriptContents.replace('EXCLUDED_PROJECT_NAMES', detectConfiguration.getGradleExcludedProjectNames())
+        initScriptContents = initScriptContents.replace('INCLUDED_PROJECT_NAMES', detectConfiguration.getGradleIncludedProjectNames())
+        initScriptContents = initScriptContents.replace('EXCLUDED_CONFIGURATION_NAMES', detectConfiguration.getGradleExcludedConfigurationNames())
+        initScriptContents = initScriptContents.replace('INCLUDED_CONFIGURATION_NAMES', detectConfiguration.getGradleIncludedConfigurationNames())
 
         detectFileService.writeToFile(initScriptFile, initScriptContents)
         String initScriptPath = initScriptFile.absolutePath
         logger.info("using ${initScriptPath} as the path for the gradle init script")
         Executable executable = new Executable(new File(sourcePath), gradleExecutable, [
-            detectProperties.getGradleBuildCommand(),
+            detectConfiguration.getGradleBuildCommand(),
             "--init-script=${initScriptPath}"
         ])
         executableRunner.executeLoudly(executable)

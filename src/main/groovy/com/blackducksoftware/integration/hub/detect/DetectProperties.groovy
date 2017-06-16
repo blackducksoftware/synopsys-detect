@@ -225,7 +225,7 @@ class DetectProperties {
     @Value('${detect.bash.path}')
     String bashPath
 
-    @ValueDescription(description="The logging level of Detect (ALL|DEBUG|ERROR|FATAL|INFO|OFF|TRACE|WARN)", defaultValue='INFO')
+    @ValueDescription(description="The logging level of Detect (ALL|TRACE|DEBUG|INFO|WARN|ERROR|FATAL|OFF)", defaultValue='INFO')
     @Value('${logging.level.com.blackducksoftware.integration}')
     String loggingLevel
 

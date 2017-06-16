@@ -49,7 +49,7 @@ class GradleBomTool extends BomTool {
     }
 
     boolean isBomToolApplicable() {
-        detectProperties.getSourcePaths().each { sourcePath ->
+        detectConfiguration.getSourcePaths().each { sourcePath ->
             def gradleExecutable = findGradleExecutable(sourcePath)
             def buildGradle = detectFileService.findFile(sourcePath, BUILD_GRADLE)
             if (gradleExecutable && buildGradle) {
@@ -71,7 +71,7 @@ class GradleBomTool extends BomTool {
     }
 
     private String findGradleExecutable(String sourcePath) {
-        String gradlePath = detectProperties.getGradlePath()
+        String gradlePath = detectConfiguration.getGradlePath()
         if (StringUtils.isBlank(gradlePath)) {
             logger.debug('detect.gradle.path not set in config - first try to find the gradle wrapper')
             gradlePath = executableManager.getPathOfExecutable(sourcePath, ExecutableType.GRADLEW)

@@ -24,13 +24,12 @@ package com.blackducksoftware.integration.hub.detect.util
 
 import org.springframework.beans.factory.annotation.Autowired
 
-import com.blackducksoftware.integration.hub.detect.DetectProperties
+import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 
 class FileHelper {
-
     @Autowired
-    DetectProperties detectProperties
+    DetectConfiguration detectConfiguration
 
     File getOutputDirectory(BomToolType bomToolType) {
     }

@@ -25,12 +25,12 @@ package com.blackducksoftware.integration.hub.detect.util
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.detect.DetectProperties
+import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 
 @Component
 class SourcePathSearcher {
     @Autowired
-    DetectProperties detectProperties
+    DetectConfiguration detectConfiguration
 
     @Autowired
     FileFinder detectFileService
@@ -42,7 +42,7 @@ class SourcePathSearcher {
      */
     List<String> findSourcePathsContainingFilenamePattern(String filenamePattern) {
         List<String> matchingSourcePaths = []
-        for (String sourcePath : detectProperties.getSourcePaths()) {
+        for (String sourcePath : detectConfiguration.getSourcePaths()) {
             if (detectFileService.containsAllFiles(sourcePath, filenamePattern)) {
                 matchingSourcePaths.add(sourcePath)
             }
@@ -58,8 +58,8 @@ class SourcePathSearcher {
      */
     List<String> findSourcePathsContainingFilenamePatternWithDepth(String filenamePattern) {
         List<String> matchingSourcePaths = []
-        for (String sourcePath : detectProperties.getSourcePaths()) {
-            if (detectFileService.containsAllFilesWithDepth(sourcePath, detectProperties.getSearchDepth(), filenamePattern)) {
+        for (String sourcePath : detectConfiguration.getSourcePaths()) {
+            if (detectFileService.containsAllFilesWithDepth(sourcePath, detectConfiguration.getSearchDepth(), filenamePattern)) {
                 matchingSourcePaths.add(sourcePath)
             }
         }

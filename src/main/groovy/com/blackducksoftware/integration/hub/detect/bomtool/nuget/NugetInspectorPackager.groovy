@@ -32,7 +32,7 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.detect.DetectProperties
+import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.util.DetectFileService
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
@@ -45,7 +45,7 @@ class NugetInspectorPackager {
     private final Logger logger = LoggerFactory.getLogger(NugetInspectorPackager.class)
 
     @Autowired
-    DetectProperties detectProperties
+    DetectConfiguration detectConfiguration
 
     @Autowired
     DetectFileService detectFileService
@@ -60,7 +60,7 @@ class NugetInspectorPackager {
     NameVersionNodeTransformer nameVersionNodeTransformer
 
     DependencyNode makeDependencyNode(String sourcePath, File nugetExecutable) {
-        def outputDirectory = new File(new File(detectProperties.getOutputDirectoryPath()), 'nuget')
+        def outputDirectory = new File(detectConfiguration.outputDirectory, 'nuget')
         def sourceDirectory = new File(sourcePath)
         String inspectorExePath = getInspectorExePath(sourceDirectory, outputDirectory, nugetExecutable)
 
@@ -71,10 +71,10 @@ class NugetInspectorPackager {
         def options =  [
             "--target_path=${sourcePath}",
             "--output_directory=${outputDirectory.getAbsolutePath()}",
-            "--ignore_failure=${detectProperties.getNugetInspectorIgnoreFailure()}"
+            "--ignore_failure=${detectConfiguration.getNugetInspectorIgnoreFailure()}"
         ]
-        if (detectProperties.getNugetInspectorExcludedModules()) {
-            options += "--excluded_modules=${detectProperties.getNugetInspectorExcludedModules()}"
+        if (detectConfiguration.getNugetInspectorExcludedModules()) {
+            options += "--excluded_modules=${detectConfiguration.getNugetInspectorExcludedModules()}"
         }
         if (logger.traceEnabled) {
             options += "-v"
@@ -93,18 +93,18 @@ class NugetInspectorPackager {
     }
 
     private String getInspectorExePath(File sourceDirectory, File outputDirectory, File nugetExecutable) {
-        File inspectorVersionDirectory = new File(outputDirectory, "${detectProperties.getNugetInspectorPackageName()}.${detectProperties.getNugetInspectorPackageVersion()}")
+        File inspectorVersionDirectory = new File(outputDirectory, "${detectConfiguration.getNugetInspectorPackageName()}.${detectConfiguration.getNugetInspectorPackageVersion()}")
         File toolsDirectory = new File(inspectorVersionDirectory, 'tools')
-        File inspectorExe = new File(toolsDirectory, "${detectProperties.getNugetInspectorPackageName()}.exe")
+        File inspectorExe = new File(toolsDirectory, "${detectConfiguration.getNugetInspectorPackageName()}.exe")
 
         //if we can't find the inspector where we expect to, attempt to install it from nuget.org
         if (inspectorExe == null || !inspectorExe.exists()) {
             installInspectorFromNugetDotOrg(sourceDirectory, outputDirectory, nugetExecutable)
-            inspectorExe = new File(toolsDirectory, "${detectProperties.getNugetInspectorPackageName()}.exe")
+            inspectorExe = new File(toolsDirectory, "${detectConfiguration.getNugetInspectorPackageName()}.exe")
         }
 
         if (inspectorExe == null || !inspectorExe.exists()) {
-            logger.error("Could not find the ${detectProperties.getNugetInspectorPackageName()} version:${detectProperties.getNugetInspectorPackageVersion()} even after an install attempt.")
+            logger.error("Could not find the ${detectConfiguration.getNugetInspectorPackageName()} version:${detectConfiguration.getNugetInspectorPackageVersion()} even after an install attempt.")
             return null
         }
 
@@ -114,9 +114,9 @@ class NugetInspectorPackager {
     private ExecutableOutput installInspectorFromNugetDotOrg(File sourceDirectory, File outputDirectory, File nugetExecutable) {
         def options =  [
             'install',
-            detectProperties.getNugetInspectorPackageName(),
+            detectConfiguration.getNugetInspectorPackageName(),
             '-Version',
-            detectProperties.getNugetInspectorPackageVersion(),
+            detectConfiguration.getNugetInspectorPackageVersion(),
             '-OutputDirectory',
             outputDirectory.absolutePath
         ]

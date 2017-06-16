@@ -34,7 +34,6 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerProperties
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
-import com.blackducksoftware.integration.hub.detect.util.DetectFileService
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 
 @Component
@@ -43,9 +42,6 @@ class DockerBomTool extends BomTool {
 
     @Autowired
     DockerProperties dockerProperties
-
-    @Autowired
-    DetectFileService detectFileService
 
     private String dockerExecutablePath
     private String bashExecutablePath
@@ -65,7 +61,7 @@ class DockerBomTool extends BomTool {
         if (!bashExecutablePath) {
             logger.debug('Could not find bash on the environment PATH')
         }
-        boolean propertiesOk = detectProperties.dockerInspectorVersion && (detectProperties.dockerTar || detectProperties.dockerImage)
+        boolean propertiesOk = detectConfiguration.dockerInspectorVersion && (detectConfiguration.dockerTar || detectConfiguration.dockerImage)
         if (!propertiesOk) {
             logger.debug('The docker properties are not sufficient to run')
         }
@@ -75,14 +71,14 @@ class DockerBomTool extends BomTool {
 
     @Override
     public List<DependencyNode> extractDependencyNodes() {
-        File dockerInstallDirectory = new File(detectProperties.dockerInstallPath)
+        File dockerInstallDirectory = new File(detectConfiguration.dockerInstallPath)
         File shellScriptFile
-        if (detectProperties.dockerInspectorPath) {
-            shellScriptFile = new File(detectProperties.dockerInspectorPath)
+        if (detectConfiguration.dockerInspectorPath) {
+            shellScriptFile = new File(detectConfiguration.dockerInspectorPath)
         } else {
-            URL hubDockerInspectorShellScriptUrl = new URL("https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector-${detectProperties.dockerInspectorVersion}.sh")
+            URL hubDockerInspectorShellScriptUrl = new URL("https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector-${detectConfiguration.dockerInspectorVersion}.sh")
             String shellScriptContents = hubDockerInspectorShellScriptUrl.openStream().getText(StandardCharsets.UTF_8.name())
-            shellScriptFile = new File(dockerInstallDirectory, "hub-docker-inspector-${detectProperties.dockerInspectorVersion}.sh")
+            shellScriptFile = new File(dockerInstallDirectory, "hub-docker-inspector-${detectConfiguration.dockerInspectorVersion}.sh")
             detectFileService.writeToFile(shellScriptFile, shellScriptContents)
             shellScriptFile.setExecutable(true)
         }
@@ -107,7 +103,7 @@ class DockerBomTool extends BomTool {
     }
 
     private String findDockerExecutable() {
-        String dockerPath = detectProperties.dockerPath
+        String dockerPath = detectConfiguration.dockerPath
         if (!dockerPath?.trim()) {
             dockerPath = executableManager.getPathOfExecutable(ExecutableType.DOCKER)?.trim()
         }
@@ -115,7 +111,7 @@ class DockerBomTool extends BomTool {
     }
 
     private String findBashExecutable() {
-        String bashPath = detectProperties.bashPath
+        String bashPath = detectConfiguration.bashPath
         if (!bashPath?.trim()) {
             bashPath = executableManager.getPathOfExecutable(ExecutableType.BASH)?.trim()
         }

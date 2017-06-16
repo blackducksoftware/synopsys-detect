@@ -49,9 +49,6 @@ public class BomToolManager {
     private final Logger logger = LoggerFactory.getLogger(BomToolManager.class);
 
     @Autowired
-    DetectProperties detectProperties;
-
-    @Autowired
     DetectConfiguration detectConfiguration;
 
     @Autowired
@@ -66,7 +63,7 @@ public class BomToolManager {
     public List<File> createBdioFiles() throws IOException {
         final List<File> createdBdioFiles = new ArrayList<>();
         boolean foundSomeBomTools = false;
-        final ExcludedIncludedFilter toolFilter = new ExcludedIncludedFilter("", detectProperties.getBomToolTypeOverride());
+        final ExcludedIncludedFilter toolFilter = new ExcludedIncludedFilter("", detectConfiguration.getBomToolTypeOverride());
         for (final BomTool bomTool : bomTools) {
             try {
                 final BomToolType bomToolType = bomTool.getBomToolType();
@@ -97,8 +94,6 @@ public class BomToolManager {
 
     private void createOutput(final List<File> createdBdioFiles, final BomToolType bomToolType, final String bomToolTypeString,
             final List<DependencyNode> projectNodes) {
-        final File outputDirectory = new File(detectProperties.getOutputDirectoryPath());
-
         logger.info("Creating " + projectNodes.size() + " project nodes");
         for (final DependencyNode project : projectNodes) {
             final IntegrationEscapeUtil escapeUtil = new IntegrationEscapeUtil();
@@ -106,19 +101,19 @@ public class BomToolManager {
             final String safeVersionName = escapeUtil.escapeForUri(project.version);
             final String safeName = String.format("%s_%s_%s_bdio", bomToolTypeString, safeProjectName, safeVersionName);
             final String filename = String.format("%s.jsonld", safeName);
-            final File outputFile = new File(outputDirectory, filename);
+            final File outputFile = new File(detectConfiguration.getOutputDirectory(), filename);
             if (outputFile.exists()) {
                 outputFile.delete();
             }
             try (final BdioWriter bdioWriter = new BdioWriter(gson, new FileOutputStream(outputFile))) {
-                if (StringUtils.isNotBlank(detectProperties.getProjectName())) {
-                    project.name = detectProperties.getProjectName();
+                if (StringUtils.isNotBlank(detectConfiguration.getProjectName())) {
+                    project.name = detectConfiguration.getProjectName();
                 }
-                if (StringUtils.isNotBlank(detectProperties.getProjectVersionName())) {
-                    project.version = detectProperties.getProjectVersionName();
+                if (StringUtils.isNotBlank(detectConfiguration.getProjectVersionName())) {
+                    project.version = detectConfiguration.getProjectVersionName();
                 }
                 final SimpleBdioDocument bdioDocument = dependencyNodeTransformer.transformDependencyNode(project);
-                if (StringUtils.isNotBlank(detectProperties.getProjectName()) && StringUtils.isNotBlank(detectProperties.getProjectVersionName())) {
+                if (StringUtils.isNotBlank(detectConfiguration.getProjectName()) && StringUtils.isNotBlank(detectConfiguration.getProjectVersionName())) {
                     bdioDocument.billOfMaterials.spdxName = String.format("%s/%s/%s Black Duck I/O Export", project.name, project.version, bomToolTypeString);
                 }
                 bdioWriter.writeSimpleBdioDocument(bdioDocument);
