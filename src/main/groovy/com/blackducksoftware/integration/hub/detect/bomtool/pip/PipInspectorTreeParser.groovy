@@ -93,7 +93,7 @@ class PipInspectorTreeParser {
             tree.push(node)
         }
 
-        if(nodeBuilder) {
+        if (nodeBuilder) {
             return nameVersionNodeTransformer.createDependencyNode(Forge.PYPI, nodeBuilder.getRoot())
         }
 
@@ -101,7 +101,7 @@ class PipInspectorTreeParser {
     }
 
     NameVersionNode lineToNode(String line) {
-        if(!line.contains(SEPERATOR)) {
+        if (!line.contains(SEPERATOR)) {
             return null
         }
         def segments = line.split(SEPERATOR)

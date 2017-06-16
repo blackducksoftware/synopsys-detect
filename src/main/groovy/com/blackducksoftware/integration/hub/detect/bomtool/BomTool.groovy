@@ -28,7 +28,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
-import com.blackducksoftware.integration.hub.detect.util.FileFinder
+import com.blackducksoftware.integration.hub.detect.util.DetectFileService
 import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
 import com.blackducksoftware.integration.hub.detect.util.SourcePathSearcher
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager
@@ -48,7 +48,7 @@ abstract class BomTool {
     SourcePathSearcher sourcePathSearcher
 
     @Autowired
-    FileFinder fileFinder
+    DetectFileService detectFileService
 
     @Autowired
     ProjectInfoGatherer projectInfoGatherer

@@ -79,8 +79,7 @@ class DockerBomTool extends BomTool {
             URL hubDockerInspectorShellScriptUrl = new URL("https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector-${detectConfiguration.dockerInspectorVersion}.sh")
             String shellScriptContents = hubDockerInspectorShellScriptUrl.openStream().getText(StandardCharsets.UTF_8.name())
             shellScriptFile = new File(dockerInstallDirectory, "hub-docker-inspector-${detectConfiguration.dockerInspectorVersion}.sh")
-            shellScriptFile.delete()
-            shellScriptFile << shellScriptContents
+            detectFileService.writeToFile(shellScriptFile, shellScriptContents)
             shellScriptFile.setExecutable(true)
         }
 
@@ -100,7 +99,7 @@ class DockerBomTool extends BomTool {
         Executable dockerExecutable = new Executable(dockerInstallDirectory, environmentVariables, bashExecutablePath, bashArguments)
         executableRunner.executeLoudly(dockerExecutable)
         //At least for the moment, there is no way of running the hub-docker-inspector to generate the files only, so it currently handles all uploading
-        return [];
+        return []
     }
 
     private String findDockerExecutable() {

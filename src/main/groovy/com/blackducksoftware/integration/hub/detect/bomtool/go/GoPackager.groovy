@@ -35,7 +35,6 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVe
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.bomtool.GoBomTool
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
-import com.blackducksoftware.integration.hub.detect.util.FileFinder
 import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
@@ -57,9 +56,6 @@ class GoPackager {
 
     @Autowired
     DetectConfiguration detectConfiguration
-
-    @Autowired
-    FileFinder fileFinder
 
     public List<DependencyNode> makeDependencyNodes(final String sourcePath, String goExecutable) {
         final String rootName = projectInfoGatherer.getDefaultProjectName(BomToolType.GO, sourcePath)
@@ -116,7 +112,7 @@ class GoPackager {
     }
 
     private File[] findDirectoriesContainingGoFilesRecursive(final File sourceDirectory, int currentDepth, int maxDepth){
-        def files = new HashSet<File>();
+        def files = new HashSet<File>()
         // we want to ignore the vendor and Godeps directory, they are the go cache https://blog.gopheracademy.com/advent-2015/vendor-folder/
         if (currentDepth > maxDepth || !sourceDirectory.isDirectory() || sourceDirectory.getName().equals('vendor') || sourceDirectory.getName().equals('Godeps')){
             return files

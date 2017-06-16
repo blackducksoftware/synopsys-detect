@@ -39,7 +39,7 @@ class ExecutableManager {
     private final Logger logger = LoggerFactory.getLogger(ExecutableManager.class)
 
     @Autowired
-    FileFinder fileFinder
+    FileFinder detectFileService
 
     OperatingSystemType currentOs
 
@@ -98,7 +98,7 @@ class ExecutableManager {
 
     private File findExecutableFile(final String path, String executable) {
         for (String pathPiece : path.split(File.pathSeparator)) {
-            File foundFile = fileFinder.findFile(pathPiece, executable)
+            File foundFile = detectFileService.findFile(pathPiece, executable)
             if (foundFile && foundFile.canExecute()) {
                 return foundFile
             }

@@ -31,6 +31,8 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
+import com.blackducksoftware.integration.hub.detect.type.BomToolType
+import com.blackducksoftware.integration.hub.detect.util.DetectFileService
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
 import com.google.gson.Gson
@@ -48,9 +50,11 @@ class GradleInitScriptPackager {
     @Autowired
     DetectConfiguration detectConfiguration
 
+    @Autowired
+    DetectFileService detectFileService
+
     DependencyNode extractRootProjectNode(String sourcePath, String gradleExecutable) {
-        File initScriptFile = File.createTempFile('init-detect', '.gradle')
-        initScriptFile.deleteOnExit()
+        File initScriptFile = detectFileService.createFile(BomToolType.GRADLE, 'init-detect.gradle')
         String initScriptContents = getClass().getResourceAsStream('/init-script-gradle').getText(StandardCharsets.UTF_8.name())
         initScriptContents = initScriptContents.replace('GRADLE_INSPECTOR_VERSION', detectConfiguration.getGradleInspectorVersion())
         initScriptContents = initScriptContents.replace('EXCLUDED_PROJECT_NAMES', detectConfiguration.getGradleExcludedProjectNames())
@@ -58,7 +62,7 @@ class GradleInitScriptPackager {
         initScriptContents = initScriptContents.replace('EXCLUDED_CONFIGURATION_NAMES', detectConfiguration.getGradleExcludedConfigurationNames())
         initScriptContents = initScriptContents.replace('INCLUDED_CONFIGURATION_NAMES', detectConfiguration.getGradleIncludedConfigurationNames())
 
-        initScriptFile << initScriptContents
+        detectFileService.writeToFile(initScriptFile, initScriptContents)
         String initScriptPath = initScriptFile.absolutePath
         logger.info("using ${initScriptPath} as the path for the gradle init script")
         Executable executable = new Executable(new File(sourcePath), gradleExecutable, [
