@@ -80,10 +80,7 @@ class PipPackager {
         // Install requirements file and add it as an option for the inspector
         if (detectConfiguration.requirementsFilePath) {
             def requirementsFile = new File(detectConfiguration.requirementsFilePath)
-            pipInspectorOptions += [
-                '-r',
-                requirementsFile.absolutePath
-            ]
+            pipInspectorOptions += "--requirements=${requirementsFile.absolutePath}"
 
             def installRequirements = new Executable(sourceDirectory, pipPath, [
                 'install',
@@ -105,7 +102,7 @@ class PipPackager {
                 ])
                 projectName = executableRunner.executeQuietly(findProjectNameExecutable).standardOutput.trim()
             }
-            pipInspectorOptions += ['-p', projectName]
+            pipInspectorOptions += "--projectname=${projectName}"
         }
 
         def pipInspector = new Executable(sourceDirectory, pythonPath, pipInspectorOptions)

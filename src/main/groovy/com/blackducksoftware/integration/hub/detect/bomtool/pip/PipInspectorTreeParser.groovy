@@ -56,13 +56,13 @@ class PipInspectorTreeParser {
             }
 
             if (line.startsWith(UNKOWN_REQUIREMENTS_PREFIX)) {
-                String path = line.replace(UNKOWN_REQUIREMENTS_PREFIX).trim()
+                String path = line.replace(UNKOWN_REQUIREMENTS_PREFIX, '').trim()
                 logger.info("Pip inspector could not locate requirements file @ ${path}")
                 continue
             }
 
             if (line.startsWith(UNKOWN_PACKAGE_PREFIX)) {
-                String packageName = line.replace(UNKOWN_PACKAGE_PREFIX).trim()
+                String packageName = line.replace(UNKOWN_PACKAGE_PREFIX, '').trim()
                 logger.info("Pip inspector could not resolve the package: ${packageName}")
                 continue
             }
@@ -116,7 +116,7 @@ class PipInspectorTreeParser {
         int currentIndentation = 0
         while(line.startsWith(INDENTATION)) {
             currentIndentation++
-            line = line.substring(4)
+            line = line.replaceFirst(INDENTATION, '')
         }
 
         currentIndentation
