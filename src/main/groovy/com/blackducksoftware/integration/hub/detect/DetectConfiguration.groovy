@@ -22,6 +22,8 @@
  */
 package com.blackducksoftware.integration.hub.detect
 
+import java.lang.reflect.Modifier
+
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -40,6 +42,7 @@ import com.blackducksoftware.integration.hub.detect.type.BomToolType
 class DetectConfiguration {
     private final Logger logger = LoggerFactory.getLogger(DetectProperties.class)
 
+    static final String DETECT_PROPERTY_PREFIX = 'detect.'
     static final String DOCKER_PROPERTY_PREFIX = 'detect.docker.passthrough.'
 
     @Autowired
@@ -52,6 +55,7 @@ class DetectConfiguration {
     DockerBomTool dockerBomTool
 
     File outputDirectory
+    Set<String> allDetectPropertyKeys = new HashSet<>()
     Set<String> additionalDockerPropertyNames = new HashSet<>()
 
     private boolean usingDefaultSourcePaths
@@ -80,9 +84,23 @@ class DetectConfiguration {
         }
         detectProperties.outputDirectoryPath = detectProperties.outputDirectoryPath.trim()
 
+        MutablePropertySources mutablePropertySources = configurableEnvironment.getPropertySources()
+        mutablePropertySources.each { propertySource ->
+            if (propertySource instanceof EnumerablePropertySource) {
+                EnumerablePropertySource enumerablePropertySource = (EnumerablePropertySource) propertySource
+                enumerablePropertySource.propertyNames.each { propertyName ->
+                    if (propertyName && propertyName.startsWith(DETECT_PROPERTY_PREFIX)) {
+                        allDetectPropertyKeys.add(propertyName)
+                    }
+                }
+            }
+        }
+
         if (dockerBomTool.isBomToolApplicable()) {
             configureForDocker()
         }
+
+        logConfiguration()
     }
 
     /**
@@ -115,16 +133,42 @@ class DetectConfiguration {
         File dockerSandboxDirectory = new File(detectProperties.dockerSandboxPath)
         dockerSandboxDirectory.mkdirs()
 
-        MutablePropertySources mutablePropertySources = configurableEnvironment.getPropertySources()
-        mutablePropertySources.each { propertySource ->
-            if (propertySource instanceof EnumerablePropertySource) {
-                EnumerablePropertySource enumerablePropertySource = (EnumerablePropertySource) propertySource
-                enumerablePropertySource.propertyNames.each { propertyName ->
-                    if (propertyName && propertyName.startsWith(DOCKER_PROPERTY_PREFIX)) {
-                        additionalDockerPropertyNames.add(propertyName)
-                    }
-                }
+        allDetectPropertyKeys.each {
+            if (it.startsWith(DOCKER_PROPERTY_PREFIX)) {
+                additionalDockerPropertyNames.add(it)
             }
+        }
+    }
+
+    private void logConfiguration() {
+        if (logger.isDebugEnabled()) {
+            logger.debug('')
+            logger.debug('Current property values:')
+            logger.debug('-'.multiply(60))
+            def propertyFields = DetectProperties.class.getDeclaredFields().findAll {
+                int modifiers = it.modifiers
+                !Modifier.isStatic(modifiers) && Modifier.isPrivate(modifiers)
+            }.sort { a, b ->
+                a.name <=> b.name
+            }
+
+            propertyFields.each {
+                it.accessible = true
+                String fieldName = it.name
+                Object fieldValue = it.get(detectProperties)
+                if (it.type.isArray()) {
+                    fieldValue = fieldValue.join(', ')
+                }
+                if (fieldName && fieldValue && 'metaClass' != fieldName) {
+                    if (fieldName.toLowerCase().contains('password')) {
+                        fieldValue = '*'.multiply(fieldValue.length())
+                    }
+                    logger.debug("${fieldName} = ${fieldValue}")
+                }
+                it.accessible = false
+            }
+            logger.debug('-'.multiply(60))
+            logger.debug('')
         }
     }
 
