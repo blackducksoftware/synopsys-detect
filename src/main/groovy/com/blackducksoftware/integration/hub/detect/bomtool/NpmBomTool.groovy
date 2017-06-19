@@ -34,8 +34,6 @@ import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 class NpmBomTool extends BomTool {
     def final static NODE_MODULES = 'node_modules'
     def final static OUTPUT_FILE = 'detect_npm_proj_dependencies.json'
-    def final static PACKAGE_LOCK = 'pacakge-lock.json'
-    def final static PACKAGE_SHRINK = 'npm-shrinkwrap.json'
 
     @Autowired
     NpmCliDependencyFinder cliDependencyFinder
