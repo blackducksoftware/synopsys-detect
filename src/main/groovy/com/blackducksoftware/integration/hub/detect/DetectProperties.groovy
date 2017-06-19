@@ -93,7 +93,7 @@ class DetectProperties {
     @Value('${detect.project.version.name}')
     String projectVersionName
 
-    @ValueDescription(description="Version of the Gradle Inspector", defaultValue="0.0.6")
+    @ValueDescription(description="Version of the Gradle Inspector", defaultValue="0.0.7")
     @Value('${detect.gradle.inspector.version}')
     String gradleInspectorVersion
 
@@ -116,6 +116,10 @@ class DetectProperties {
     @ValueDescription(description="The names of the projects to include")
     @Value('${detect.gradle.included.projects}')
     String gradleIncludedProjectNames
+
+    @ValueDescription(description="Set this to false if you do not want the 'blackduck' directory in your build directory to be deleted.", defaultValue="true")
+    @Value('${detect.gradle.cleanup.build.blackduck.directory}')
+    String gradleCleanupBuildBlackduckDirectory
 
     @ValueDescription(description="Name of the Nuget Inspector", defaultValue="IntegrationNugetInspector")
     @Value('${detect.nuget.inspector.name}')
