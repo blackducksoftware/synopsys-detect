@@ -62,7 +62,6 @@ class PipPackager {
     DetectFileManager detectFileManager
 
     List<DependencyNode> makeDependencyNodes(File sourceDirectory, VirtualEnvironment virtualEnv) throws ExecutableRunnerException {
-
         String pipPath = virtualEnv.pipPath
         String pythonPath = virtualEnv.pythonPath
         def setupFile = detectFileManager.findFile(sourceDirectory, 'setup.py')
