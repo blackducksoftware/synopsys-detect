@@ -83,6 +83,9 @@ public class BomToolManager {
             } catch (final Exception e) {
                 // any bom tool failure should not prevent other bom tools from running
                 logger.error(bomTool.getBomToolType().toString() + " threw an Exception: " + e.getMessage());
+                if (logger.isTraceEnabled()) {
+                    e.printStackTrace();
+                }
             }
         }
 

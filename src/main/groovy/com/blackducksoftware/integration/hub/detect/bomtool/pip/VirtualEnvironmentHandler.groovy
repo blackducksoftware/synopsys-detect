@@ -81,7 +81,7 @@ class VirtualEnvironmentHandler {
         }
     }
 
-    VirtualEnvironment getVirtualEnvironment(File outputDirectory, File sourceDirectory) {
+    VirtualEnvironment getVirtualEnvironment(File outputDirectory) {
         VirtualEnvironment env = getSystemEnvironment()
         String definedPath = detectConfiguration.virtualEnvPath?.trim()
         if (detectConfiguration.createVirtualEnv) {

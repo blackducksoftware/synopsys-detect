@@ -7,20 +7,22 @@ import pip
 
 def main():
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'p:r', ['project_name=', 'requirements='])
+        opts, args = getopt.getopt(sys.argv[1:], 'p:r', ['projectname=', 'requirements='])
     except getopt.GetoptError as error:
         print(str(error))
-        print('integration-pip-inspector.py -p <project_name> -r <requirements_path>')
+        print('integration-pip-inspector.py -projectname=<project_name> -requirements=<requirements_path>')
         sys.exit(2)
 
     project_name = None
     requirements_path = None
 
     for opt, arg in opts:
-        if opt in ('-p', '--project'):
+        if opt in ('--projectname'):
             project_name = arg
-        elif opt in ('-r', '--requirements'):
+        elif opt in ('--requirements'):
             requirements_path = arg
+
+    project = None
 
     if project_name is not None:
         project = resolve_package_by_name(project_name)

@@ -290,7 +290,7 @@ class DetectConfiguration {
         return detectProperties.virtualEnvPath
     }
     public String getRequirementsFilePath() {
-        return detectProperties.requirementsFilePath
+        return detectProperties.requirementsFilePath?.trim()
     }
     public String getGodepPath() {
         return detectProperties.godepPath
