@@ -93,6 +93,10 @@ class DetectProperties {
     @Value('${detect.project.version.name}')
     String projectVersionName
 
+    @ValueDescription(description = "Set to true if you would like a policy check from the hub for your project. False by default")
+    @Value('${detect.check.policy}')
+    String checkPolicy
+
     @ValueDescription(description="Version of the Gradle Inspector", defaultValue="0.0.6")
     @Value('${detect.gradle.inspector.version}')
     String gradleInspectorVersion

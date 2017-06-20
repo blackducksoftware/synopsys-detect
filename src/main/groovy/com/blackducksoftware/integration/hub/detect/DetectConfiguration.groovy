@@ -176,6 +176,9 @@ class DetectConfiguration {
     public String getProjectVersionName() {
         return detectProperties.projectVersionName
     }
+    public String getCheckPolicy() {
+        return detectProperties.checkPolicy
+    }
     public String getGradleInspectorVersion() {
         return detectProperties.gradleInspectorVersion
     }

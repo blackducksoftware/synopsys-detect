@@ -39,6 +39,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeTransform
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.SimpleBdioDocument;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
+import com.blackducksoftware.integration.hub.detect.policychecker.PolicyChecker;
 import com.blackducksoftware.integration.hub.detect.type.BomToolType;
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
@@ -59,6 +60,9 @@ public class BomToolManager {
 
     @Autowired
     private DependencyNodeTransformer dependencyNodeTransformer;
+
+    @Autowired
+    private PolicyChecker policyChecker;
 
     public List<File> createBdioFiles() throws IOException {
         final List<File> createdBdioFiles = new ArrayList<>();
@@ -92,6 +96,7 @@ public class BomToolManager {
         return createdBdioFiles;
     }
 
+    // TODO #1 place to add functionality for policy checker
     private void createOutput(final List<File> createdBdioFiles, final BomToolType bomToolType, final String bomToolTypeString,
             final List<DependencyNode> projectNodes) {
         logger.info("Creating " + projectNodes.size() + " project nodes");
@@ -119,6 +124,11 @@ public class BomToolManager {
                 bdioWriter.writeSimpleBdioDocument(bdioDocument);
                 createdBdioFiles.add(outputFile);
                 logger.info("BDIO Generated: " + outputFile.getAbsolutePath());
+
+                if (detectConfiguration.getCheckPolicy().equalsIgnoreCase("true")) {
+                    final String policyCheck = policyChecker.checkForPolicyViolations(project.name, project.version).toString();
+                    logger.info("Policy check returned result " + policyCheck.replace('_', ' '));
+                }
             } catch (final IOException e) {
                 throw new RuntimeException(e);
             }
