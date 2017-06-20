@@ -97,9 +97,9 @@ class DetectProperties {
     @Value('${detect.policy.check}')
     String policyCheck
 
-    //    @ValueDescription(description = "Timeout for communication with the hub", defaultValue="300000")
-    //    @Value('${detect.policy.timeout}')
-    //    String policyTimeout
+    @ValueDescription(description="Timeout for hub policy response", defaultValue="300000")
+    @Value('${detect.policy.timeout}')
+    Integer policyTimeout
 
     @ValueDescription(description="Version of the Gradle Inspector", defaultValue="0.0.7")
     @Value('${detect.gradle.inspector.version}')

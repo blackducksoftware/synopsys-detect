@@ -43,7 +43,6 @@ import com.blackducksoftware.integration.hub.rest.RestConnection
 import com.blackducksoftware.integration.hub.service.HubServicesFactory
 import com.blackducksoftware.integration.log.Slf4jIntLogger
 import com.blackducksoftware.integration.util.ResourceUtil
-import com.google.gson.Gson
 
 @Component
 class BdioUploader {
@@ -51,9 +50,6 @@ class BdioUploader {
 
     @Autowired
     DetectConfiguration detectConfiguration
-
-    @Autowired
-    Gson gson
 
     void uploadBdioFiles(List<File> createdBdioFiles) {
         if (!createdBdioFiles) {
@@ -73,13 +69,9 @@ class BdioUploader {
 
                 if (detectConfiguration.getPolicyCheck().equalsIgnoreCase("true")) {
                     logger.info("Checking for policy violations...")
-                    ScanStatusDataService scanStatusDataService = hubServicesFactory.createScanStatusDataService(
-                            slf4jIntLogger,
-                            300000
-                            //Integer.parseInt(detectConfiguration.getPolicyTimeout())
-                            )
+                    ScanStatusDataService scanStatusDataService = hubServicesFactory.createScanStatusDataService(slf4jIntLogger, detectConfiguration.getPolicyTimeout())
                     PolicyStatusDataService policyStatusDataService = hubServicesFactory.createPolicyStatusDataService(slf4jIntLogger)
-                    PolicyChecker policyChecker = new PolicyChecker(scanStatusDataService, policyStatusDataService, gson)
+                    PolicyChecker policyChecker = new PolicyChecker(scanStatusDataService, policyStatusDataService)
                     def policyCheck = policyChecker.checkForPolicyViolations(file)
                     logger.info("Policy check returned result " + policyCheck.toString().replace('_', ' '))
                 }
