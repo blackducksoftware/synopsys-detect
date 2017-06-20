@@ -26,7 +26,9 @@ group = 'com.blackducksoftware.integration'
 
 version = '0.0.5-SNAPSHOT'
 
-
+def versionFile = new File("${projectDir}/src/main/resources/version.txt")
+versionFile.delete()
+versionFile << version
 
 // the override.snaphot property should be set to true for a CI build so
 // that the version is omitted from a snapshot build artifact
