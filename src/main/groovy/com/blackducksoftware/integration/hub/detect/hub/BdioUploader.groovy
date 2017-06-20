@@ -54,10 +54,11 @@ class BdioUploader {
         }
 
         try {
-            HubServerConfig hubServerConfig = createHubServerConfig(logger)
-            HubServicesFactory hubServicesFactory = createHubServicesFactory(logger, hubServerConfig)
+            Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
+            HubServerConfig hubServerConfig = createHubServerConfig(slf4jIntLogger)
+            HubServicesFactory hubServicesFactory = createHubServicesFactory(slf4jIntLogger, hubServerConfig)
             BomImportRequestService bomImportRequestService = hubServicesFactory.createBomImportRequestService()
-            PhoneHomeDataService phoneHomeDataService = hubServicesFactory.createPhoneHomeDataService(new Slf4jIntLogger(logger))
+            PhoneHomeDataService phoneHomeDataService = hubServicesFactory.createPhoneHomeDataService(slf4jIntLogger)
 
             createdBdioFiles.each { file ->
                 logger.info("uploading ${file.name} to ${detectConfiguration.getHubUrl()}")
@@ -74,16 +75,13 @@ class BdioUploader {
         }
     }
 
-    private HubServicesFactory createHubServicesFactory(Logger logger, HubServerConfig hubServerConfig) {
-        Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
+    private HubServicesFactory createHubServicesFactory(Slf4jIntLogger slf4jIntLogger, HubServerConfig hubServerConfig) {
         RestConnection restConnection = hubServerConfig.createCredentialsRestConnection(slf4jIntLogger)
 
         new HubServicesFactory(restConnection)
     }
 
-    private HubServerConfig createHubServerConfig(Logger logger) {
-        Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
-
+    private HubServerConfig createHubServerConfig(Slf4jIntLogger slf4jIntLogger) {
         HubServerConfigBuilder hubServerConfigBuilder = new HubServerConfigBuilder()
         hubServerConfigBuilder.setHubUrl(detectConfiguration.getHubUrl())
         hubServerConfigBuilder.setTimeout(detectConfiguration.getHubTimeout())
