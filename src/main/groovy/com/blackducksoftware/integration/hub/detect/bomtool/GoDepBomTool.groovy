@@ -36,8 +36,8 @@ import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 
 @Component
-class GoBomTool extends BomTool {
-    private final Logger logger = LoggerFactory.getLogger(GoBomTool.class)
+class GoDepBomTool extends BomTool {
+    private final Logger logger = LoggerFactory.getLogger(GoDepBomTool.class)
 
     public static final Forge GOLANG = new Forge("golang",":")
 
@@ -46,68 +46,68 @@ class GoBomTool extends BomTool {
 
     List<String> matchingSourcePaths = []
 
-    boolean needToInstallGoDep = false
-
     @Override
     public BomToolType getBomToolType() {
-        return BomToolType.GO;
+        return BomToolType.GO_DEP;
     }
 
     @Override
     public boolean isBomToolApplicable() {
-        def goExecutablePath = findGoExecutable()
+        def goExecutablePath = executableManager.getPathOfExecutable(ExecutableType.GO)
         if (!goExecutablePath?.trim()) {
             logger.debug('Could not find Go on the environment PATH')
         }
-        matchingSourcePaths = sourcePathSearcher.findFilenamePattern('*.go', detectConfiguration.getSearchDepth())
+        // detectFileManager.containsAllFiles(sourcePath, 'Gopkg.lock') || detectFileManager.containsAllFiles(sourcePath, detectConfiguration.getSearchDepth(), '*.go' )
+        matchingSourcePaths = sourcePathSearcher.findFilenamePattern('Gopkg.lock')
+
         goExecutablePath && !matchingSourcePaths.isEmpty()
     }
 
+
     @Override
     public List<DependencyNode> extractDependencyNodes() {
-        def godepExecutable = findGoDepExecutable()
-        if (!godepExecutable?.trim()) {
-            def goExecutable = findGoExecutable()
-            godepExecutable = installGoDep(goExecutable)
-        }
         def nodes = []
         matchingSourcePaths.each {
-            nodes.addAll(goPackager.makeDependencyNodes(it, godepExecutable))
+            nodes.addAll(goPackager.makeDependencyNodes(it, findGoDepExecutable()))
         }
         return nodes
     }
 
-    private String findGoExecutable() {
-        executableManager.getPathOfExecutable(ExecutableType.GO)
-    }
-
     private String findGoDepExecutable() {
-        String godepPath = detectConfiguration.godepPath
-        if (StringUtils.isBlank(godepPath)) {
+        String goDepPath = detectConfiguration.goDepPath
+        if (StringUtils.isBlank(goDepPath)) {
             def goDep = getBuiltGoDep()
             if (goDep.exists()) {
-                godepPath = goDep.getAbsolutePath()
+                goDepPath = goDep.getAbsolutePath()
             } else {
-                godepPath = executableManager.getPathOfExecutable(ExecutableType.GODEP)
+                goDepPath = executableManager.getPathOfExecutable(ExecutableType.GO_DEP)
             }
         }
-        godepPath
+        if (!goDepPath?.trim()) {
+            def goExecutable = executableManager.getPathOfExecutable(ExecutableType.GO)
+            goDepPath = installGoDep(goExecutable)
+        }
+        goDepPath
     }
 
     private String installGoDep(String goExecutable){
         File goDep = getBuiltGoDep()
         def goOutputDirectory = goDep.getParentFile()
         goOutputDirectory.mkdirs()
-        logger.debug("Installing godep in ${goOutputDirectory}")
+        logger.debug("Retrieving the Go Dep tool")
         Executable getGoDep = new Executable(goOutputDirectory, goExecutable, [
             'get',
-            'github.com/tools/godep'
+            '-u',
+            '-v',
+            '-d',
+            'github.com/golang/dep/cmd/dep'
         ])
         executableRunner.executeLoudly(getGoDep)
 
+        logger.debug("Building the Go Dep tool in ${goOutputDirectory}")
         Executable buildGoDep = new Executable(goOutputDirectory, goExecutable, [
             'build',
-            'github.com/tools/godep'
+            'github.com/golang/dep/cmd/dep'
         ])
         executableRunner.executeLoudly(buildGoDep)
         goDep.getAbsolutePath()

@@ -21,7 +21,7 @@ import org.skyscreamer.jsonassert.JSONAssert
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
-import com.blackducksoftware.integration.hub.detect.bomtool.GoBomTool
+import com.blackducksoftware.integration.hub.detect.bomtool.GoDepBomTool
 import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -35,7 +35,7 @@ public class GoDepParserTest {
     @Ignore
     //ejk: I'm ignoring this test since it appears that it suffers under the Go feature of using the latest "release" from github
     public void goDepParserTest() throws IOException {
-        final GoDepParser goDepParser = new GoDepParser(gson, projectInfoGatherer);
+        final GoGodepsParser goDepParser = new GoGodepsParser(gson, projectInfoGatherer);
         final String goDepOutput = IOUtils.toString(getClass().getResourceAsStream("/go/Godeps.json"), StandardCharsets.UTF_8);
         final DependencyNode node = goDepParser.parseGoDep(goDepOutput);
         Assert.assertNotNull(node)
@@ -48,6 +48,6 @@ public class GoDepParserTest {
 
     private void fixVersion(final DependencyNode node, final String newVersion) {
         node.version = newVersion
-        node.externalId = new NameVersionExternalId(GoBomTool.GOLANG, node.name, newVersion)
+        node.externalId = new NameVersionExternalId(GoDepBomTool.GOLANG, node.name, newVersion)
     }
 }

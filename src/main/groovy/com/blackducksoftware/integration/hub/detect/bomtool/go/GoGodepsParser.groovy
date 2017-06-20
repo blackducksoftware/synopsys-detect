@@ -25,16 +25,16 @@ package com.blackducksoftware.integration.hub.detect.bomtool.go
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
-import com.blackducksoftware.integration.hub.detect.bomtool.GoBomTool
+import com.blackducksoftware.integration.hub.detect.bomtool.GoDepBomTool
 import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
 import com.google.gson.Gson
 
-class GoDepParser {
+class GoGodepsParser {
     private final Gson gson
 
     private final ProjectInfoGatherer projectInfoGatherer
 
-    public GoDepParser(Gson gson, ProjectInfoGatherer projectInfoGatherer){
+    public GoGodepsParser(Gson gson, ProjectInfoGatherer projectInfoGatherer){
         this.gson = gson;
         this.projectInfoGatherer = projectInfoGatherer
     }
@@ -43,11 +43,12 @@ class GoDepParser {
         GodepsFile goDepsFile = gson.fromJson(goDepContents, GodepsFile.class)
         //FIXME get version
         String goDepContentVersion = projectInfoGatherer.getDefaultProjectVersionName()
-        final ExternalId goDepContentExternalId = new NameVersionExternalId(GoBomTool.GOLANG, goDepsFile.importPath, goDepContentVersion)
+        final ExternalId goDepContentExternalId = new NameVersionExternalId(GoDepBomTool.GOLANG, goDepsFile.importPath, goDepContentVersion)
         final DependencyNode goDepNode = new DependencyNode(goDepsFile.importPath, goDepContentVersion, goDepContentExternalId)
         def children = new ArrayList<DependencyNode>()
         goDepsFile.deps.each {
             def version = ''
+            // FIXME tags with *-*-* may not start with v
             if (it.comment?.trim() && it.comment.contains('v')) {
                 version = it.comment.trim()
                 if (version.contains('-')){
@@ -58,7 +59,7 @@ class GoDepParser {
             } else {
                 version = it.rev.trim()
             }
-            final ExternalId dependencyExternalId = new NameVersionExternalId(GoBomTool.GOLANG, it.importPath, version)
+            final ExternalId dependencyExternalId = new NameVersionExternalId(GoDepBomTool.GOLANG, it.importPath, version)
             final DependencyNode dependency = new DependencyNode(it.importPath, version, dependencyExternalId)
             children.add(dependency)
         }

@@ -92,6 +92,7 @@ class DetectConfiguration {
         if (usingDefaultSourcePaths && dockerBomTool.isBomToolApplicable()) {
             return BomToolType.DOCKER == bomTool.bomToolType
         } else {
+            // FIXME add check for Go Bom tools
             return true
         }
     }
@@ -243,10 +244,10 @@ class DetectConfiguration {
         return detectProperties.virtualEnvPath
     }
     public String getRequirementsFilePath() {
-        return detectProperties.requirementsFilePath?.trim()
+        return detectProperties.requirementsFilePath
     }
-    public String getGodepPath() {
-        return detectProperties.godepPath
+    public String getGoDepPath() {
+        return detectProperties.goDepPath
     }
     public Boolean getGoAggregate() {
         return detectProperties.goAggregate

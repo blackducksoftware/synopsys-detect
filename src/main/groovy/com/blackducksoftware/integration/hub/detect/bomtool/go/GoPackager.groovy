@@ -33,7 +33,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
-import com.blackducksoftware.integration.hub.detect.bomtool.GoBomTool
+import com.blackducksoftware.integration.hub.detect.bomtool.GoDepBomTool
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
@@ -60,10 +60,10 @@ class GoPackager {
     public List<DependencyNode> makeDependencyNodes(final String sourcePath, String goExecutable) {
         final String rootName = projectInfoGatherer.getDefaultProjectName(BomToolType.GO, sourcePath)
         final String rootVersion = projectInfoGatherer.getDefaultProjectVersionName()
-        final ExternalId rootExternalId = new NameVersionExternalId(GoBomTool.GOLANG, rootName, rootVersion)
+        final ExternalId rootExternalId = new NameVersionExternalId(GoDepBomTool.GOLANG, rootName, rootVersion)
         final DependencyNode root = new DependencyNode(rootName, rootVersion, rootExternalId)
         def goDirectories = findDirectoriesContainingGoFilesToDepth(new File(sourcePath), detectConfiguration.getSearchDepth());
-        GoDepParser goDepParser = new GoDepParser(gson, projectInfoGatherer)
+        GoGodepsParser goDepParser = new GoGodepsParser(gson, projectInfoGatherer)
         def children = new ArrayList<DependencyNode>()
         goDirectories.each {
             String goDepContents = getGoDepContents(it, goExecutable)

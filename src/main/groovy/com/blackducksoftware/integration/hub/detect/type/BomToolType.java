@@ -32,6 +32,8 @@ public enum BomToolType {
     PIP3,
     RUBYGEMS,
     CARTHAGE,
-    GO,
+    GO_GODEP,
+    GO_VNDR,
+    GO_DEP,
     SBT;
 }
