@@ -49,7 +49,7 @@ class PipBomTool extends BomTool {
     @Autowired
     DetectFileManager detectFileManager
 
-    List<String> matchingSourcePaths = []
+    Set<String> matchingSourcePaths = []
 
     BomToolType getBomToolType() {
         BomToolType.PIP
@@ -58,9 +58,15 @@ class PipBomTool extends BomTool {
     boolean isBomToolApplicable() {
         VirtualEnvironment systemEnvironment = virtualEnvironmentHandler.getSystemEnvironment()
         def foundExectables = systemEnvironment.pipPath && systemEnvironment.pythonPath
-        matchingSourcePaths = sourcePathSearcher.findSourcePathsContainingFilenamePattern(SETUP_FILENAME)
+        matchingSourcePaths = sourcePathSearcher.findFilenamePattern(SETUP_FILENAME)
         def definedRequirements = detectConfiguration.requirementsFilePath
-        foundExectables && (!matchingSourcePaths.isEmpty() || definedRequirements)
+
+        if(definedRequirements) {
+            def requirementsFile = new File(definedRequirements)
+            matchingSourcePaths += requirementsFile.getParentFile().absolutePath
+        }
+
+        foundExectables && !matchingSourcePaths.isEmpty()
     }
 
     List<DependencyNode> extractDependencyNodes() {

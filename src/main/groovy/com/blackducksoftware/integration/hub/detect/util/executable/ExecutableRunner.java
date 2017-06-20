@@ -101,7 +101,7 @@ public class ExecutableRunner {
         String line;
         while ((line = bufferedReader.readLine()) != null) {
             stringBuilder.append(line + "\n");
-            if (!runQuietly) {
+            if (!runQuietly || logger.isTraceEnabled()) {
                 if (error && StringUtils.isNotBlank(line)) {
                     logger.error(line);
                 } else {

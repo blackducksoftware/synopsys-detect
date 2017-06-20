@@ -43,26 +43,45 @@ class ExternalIdTypeAdapter extends TypeAdapter<ExternalId> {
 
     @Override
     ExternalId read(final JsonReader jsonReader) throws IOException {
-        String forgeName = null
+        Forge forge = null
         final Map<String, String> otherProperties = [:]
         jsonReader.beginObject()
         while (jsonReader.hasNext()) {
             final String fieldName = jsonReader.nextName()
-            final String fieldValue = jsonReader.nextString()
             if (fieldName.equals("forge")) {
-                forgeName = fieldValue
+                forge = readForge(jsonReader)
             } else {
+                final String fieldValue = jsonReader.nextString()
                 otherProperties.put(fieldName, fieldValue)
             }
         }
         jsonReader.endObject()
 
-        Forge forge = forgeMap[forgeName]
         if (Forge.MAVEN.equals(forge)) {
             return new MavenExternalId(otherProperties.get("group"), otherProperties.get("name"), otherProperties.get("version"))
-        } else if (forgeMap.containsKey(forgeName)) {
+        } else if (forgeMap.containsKey(forge.name)) {
             return new NameVersionExternalId(forge, otherProperties.get("name"), otherProperties.get("version"))
         }
         return null
+    }
+
+    private Forge readForge(JsonReader jsonReader) {
+        String name = null
+        String separator = null
+
+        jsonReader.beginObject()
+        while (jsonReader.hasNext()) {
+            String propertyName = jsonReader.nextName()
+            if (propertyName.equals('name')) {
+                name = jsonReader.nextString()
+            } else if (propertyName.equals('separator')) {
+                separator = jsonReader.nextString()
+            } else {
+                jsonReader.skipValue()
+            }
+        }
+        jsonReader.endObject()
+
+        return new Forge(name, separator)
     }
 }

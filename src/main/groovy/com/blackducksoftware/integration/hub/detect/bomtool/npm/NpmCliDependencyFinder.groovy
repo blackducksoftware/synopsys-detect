@@ -34,6 +34,7 @@ import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.bomtool.NpmBomTool
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
+import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
@@ -62,16 +63,14 @@ class NpmCliDependencyFinder {
     @Autowired
     DetectConfiguration detectConfiguration
 
+    @Autowired
+    DetectFileManager detectFileManager
+
     public DependencyNode generateDependencyNode(String rootDirectoryPath, String exePath) {
         def npmLsExe = new Executable(new File(rootDirectoryPath), exePath, ['ls', '-json'])
         def exeRunner = new ExecutableRunner()
 
-        String directoryName = "${detectConfiguration.getOutputDirectoryPath()}${File.separator}${NPM_DIR}"
-        def npmDirectory = new File(directoryName)
-        npmDirectory.mkdir()
-
-        def npmLsOutFile = new File(npmDirectory, NpmBomTool.OUTPUT_FILE)
-        npmLsOutFile.deleteOnExit()
+        File npmLsOutFile = detectFileManager.createFile(BomToolType.NPM, NpmBomTool.OUTPUT_FILE)
 
         exeRunner.executeToFile(npmLsExe, npmLsOutFile)
 
