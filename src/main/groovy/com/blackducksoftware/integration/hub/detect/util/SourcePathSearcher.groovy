@@ -59,7 +59,7 @@ class SourcePathSearcher {
     List<String> findSourcePathsContainingFilenamePatternWithDepth(String filenamePattern) {
         List<String> matchingSourcePaths = []
         for (String sourcePath : detectConfiguration.getSourcePaths()) {
-            if (detectFileManager.containsAllFilesWithDepth(sourcePath, detectConfiguration.getSearchDepth(), filenamePattern)) {
+            if (detectFileManager.containsAllFilesToDepth(sourcePath, detectConfiguration.getSearchDepth(), filenamePattern)) {
                 matchingSourcePaths.add(sourcePath)
             }
         }

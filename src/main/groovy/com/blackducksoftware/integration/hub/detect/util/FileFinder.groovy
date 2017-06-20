@@ -49,7 +49,7 @@ class FileFinder {
         return containsFiles
     }
 
-    boolean containsAllFilesWithDepth(final String sourcePath, int maxDepth, final String... filenamePatterns) {
+    boolean containsAllFilesToDepth(final String sourcePath, int maxDepth, final String... filenamePatterns) {
         final File sourceDirectory = new File(sourcePath)
         if (!sourcePath || !sourceDirectory.isDirectory()) {
             return false
