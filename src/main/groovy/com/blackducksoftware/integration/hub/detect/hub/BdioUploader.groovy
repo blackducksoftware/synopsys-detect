@@ -22,15 +22,24 @@
  */
 package com.blackducksoftware.integration.hub.detect.hub
 
+import java.nio.charset.StandardCharsets
+
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.api.bom.BomImportRequestService
+import com.blackducksoftware.integration.hub.builder.HubServerConfigBuilder
 import com.blackducksoftware.integration.hub.buildtool.BuildToolConstants
+import com.blackducksoftware.integration.hub.dataservice.phonehome.PhoneHomeDataService
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
+import com.blackducksoftware.integration.hub.global.HubServerConfig
+import com.blackducksoftware.integration.hub.phonehome.IntegrationInfo
+import com.blackducksoftware.integration.hub.rest.RestConnection
 import com.blackducksoftware.integration.hub.service.HubServicesFactory
+import com.blackducksoftware.integration.log.Slf4jIntLogger
+import com.blackducksoftware.integration.util.ResourceUtil
 
 @Component
 class BdioUploader {
@@ -39,17 +48,16 @@ class BdioUploader {
     @Autowired
     DetectConfiguration detectConfiguration
 
-    @Autowired
-    HubManager hubManager
-
     void uploadBdioFiles(List<File> createdBdioFiles) {
         if (!createdBdioFiles) {
             return
         }
 
         try {
-            HubServicesFactory hubServicesFactory = hubManager.createHubServicesFactory(logger)
+            HubServerConfig hubServerConfig = createHubServerConfig(logger)
+            HubServicesFactory hubServicesFactory = createHubServicesFactory(logger, hubServerConfig)
             BomImportRequestService bomImportRequestService = hubServicesFactory.createBomImportRequestService()
+            PhoneHomeDataService phoneHomeDataService = hubServicesFactory.createPhoneHomeDataService(new Slf4jIntLogger(logger))
 
             createdBdioFiles.each { file ->
                 logger.info("uploading ${file.name} to ${detectConfiguration.getHubUrl()}")
@@ -58,8 +66,38 @@ class BdioUploader {
                     file.delete()
                 }
             }
+            String hubDetectVersion = ResourceUtil.getResourceAsString('hubDetectVersion.txt', StandardCharsets.UTF_8)
+            IntegrationInfo integrationInfo = new IntegrationInfo('Hub-Detect', hubDetectVersion, hubDetectVersion)
+            phoneHomeDataService.phoneHome(hubServerConfig, integrationInfo)
         } catch (Exception e) {
             logger.error("Your Hub configuration is not valid: ${e.message}")
         }
+    }
+
+    private HubServicesFactory createHubServicesFactory(Logger logger, HubServerConfig hubServerConfig) {
+        Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
+        RestConnection restConnection = hubServerConfig.createCredentialsRestConnection(slf4jIntLogger)
+
+        new HubServicesFactory(restConnection)
+    }
+
+    private HubServerConfig createHubServerConfig(Logger logger) {
+        Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
+
+        HubServerConfigBuilder hubServerConfigBuilder = new HubServerConfigBuilder()
+        hubServerConfigBuilder.setHubUrl(detectConfiguration.getHubUrl())
+        hubServerConfigBuilder.setTimeout(detectConfiguration.getHubTimeout())
+        hubServerConfigBuilder.setUsername(detectConfiguration.getHubUsername())
+        hubServerConfigBuilder.setPassword(detectConfiguration.getHubPassword())
+
+        hubServerConfigBuilder.setProxyHost(detectConfiguration.getHubProxyHost())
+        hubServerConfigBuilder.setProxyPort(detectConfiguration.getHubProxyPort())
+        hubServerConfigBuilder.setProxyUsername(detectConfiguration.getHubProxyUsername())
+        hubServerConfigBuilder.setProxyPassword(detectConfiguration.getHubProxyPassword())
+
+        hubServerConfigBuilder.setAutoImportHttpsCertificates(detectConfiguration.getHubAutoImportCertificate())
+        hubServerConfigBuilder.setLogger(slf4jIntLogger)
+
+        hubServerConfigBuilder.build()
     }
 }

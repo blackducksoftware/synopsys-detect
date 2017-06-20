@@ -38,7 +38,6 @@ import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeTransform
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.detect.help.HelpPrinter
 import com.blackducksoftware.integration.hub.detect.hub.BdioUploader
-import com.blackducksoftware.integration.hub.detect.hub.UsageReporter
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
@@ -67,9 +66,6 @@ class Application {
     @Autowired
     HelpPrinter helpPrinter
 
-    @Autowired
-    UsageReporter usageReporter
-
     static void main(final String[] args) {
         new SpringApplicationBuilder(Application.class).logStartupInfo(false).run(args)
     }
@@ -81,7 +77,6 @@ class Application {
         } else {
             detectConfiguration.init()
             logger.info('Configuration processed completely.')
-            usageReporter.phoneHome()
             List<File> createdBdioFiles = bomToolManager.createBdioFiles()
             bdioUploader.uploadBdioFiles(createdBdioFiles)
         }

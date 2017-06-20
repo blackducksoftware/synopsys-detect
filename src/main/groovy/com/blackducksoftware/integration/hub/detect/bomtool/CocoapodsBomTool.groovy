@@ -41,7 +41,7 @@ class CocoapodsBomTool extends BomTool {
     }
 
     boolean isBomToolApplicable() {
-        matchingSourcePaths = sourcePathSearcher.findSourcePathsContainingFilenamePattern('Podfile.lock')
+        matchingSourcePaths = sourcePathSearcher.findFilenamePattern('Podfile.lock')
 
         !matchingSourcePaths.isEmpty()
     }
