@@ -176,6 +176,10 @@ class DetectProperties {
     @ValueDescription(description="The path of the Pip executable")
     @Value('${detect.pip.path}')
     String pipPath
+	
+	@ValueDescription(description="The path of the Npm executable")
+	@Value('${detect.npm.path}')
+	String npmPath
 
     @ValueDescription(description="The path to a user's virtual environment")
     @Value('${detect.pip.virtualEnv.path}')
