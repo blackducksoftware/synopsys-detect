@@ -59,7 +59,7 @@ class GoBomTool extends BomTool {
         if (!goExecutablePath?.trim()) {
             logger.debug('Could not find Go on the environment PATH')
         }
-        matchingSourcePaths = sourcePathSearcher.findSourcePathsContainingFilenamePatternWithDepth('*.go')
+        matchingSourcePaths = sourcePathSearcher.findFilenamePattern('*.go', detectConfiguration.getSearchDepth())
         goExecutablePath && !matchingSourcePaths.isEmpty()
     }
 

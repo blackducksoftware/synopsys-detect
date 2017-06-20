@@ -58,7 +58,7 @@ class PipBomTool extends BomTool {
     boolean isBomToolApplicable() {
         VirtualEnvironment systemEnvironment = virtualEnvironmentHandler.getSystemEnvironment()
         def foundExectables = systemEnvironment.pipPath && systemEnvironment.pythonPath
-        matchingSourcePaths = sourcePathSearcher.findSourcePathsContainingFilenamePattern(SETUP_FILENAME)
+        matchingSourcePaths = sourcePathSearcher.findFilenamePattern(SETUP_FILENAME)
         def definedRequirements = detectConfiguration.requirementsFilePath
 
         if(definedRequirements) {
