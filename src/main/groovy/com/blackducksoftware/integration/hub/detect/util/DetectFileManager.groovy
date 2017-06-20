@@ -52,8 +52,12 @@ class DetectFileManager {
 
     File createFile(BomToolType bomToolType, String fileName) {
         File outputDirectory = createDirectory(bomToolType)
+        def newFile = new File(outputDirectory, fileName)
+        if (detectConfiguration.cleanupBomToolFiles) {
+            newFile.deleteOnExit()
+        }
 
-        new File(outputDirectory, fileName)
+        newFile
     }
 
     File writeToFile(File file, String contents) {
@@ -63,9 +67,6 @@ class DetectFileManager {
     File writeToFile(File file, String contents, boolean overwrite) {
         if (!file) {
             return null
-        }
-        if (detectConfiguration.cleanupBomToolFiles) {
-            file.deleteOnExit()
         }
         if (overwrite) {
             file.delete()
@@ -83,8 +84,8 @@ class DetectFileManager {
         return fileFinder.containsAllFiles(sourcePath, filenamePatterns)
     }
 
-    public boolean containsAllFilesWithDepth(String sourcePath, int maxDepth, String... filenamePatterns) {
-        return fileFinder.containsAllFilesWithDepth(sourcePath, maxDepth, filenamePatterns)
+    public boolean containsAllFilesToDepth(String sourcePath, int maxDepth, String... filenamePatterns) {
+        return fileFinder.containsAllFilesToDepth(sourcePath, maxDepth, filenamePatterns)
     }
 
     public File findFile(String sourcePath, String filenamePattern) {

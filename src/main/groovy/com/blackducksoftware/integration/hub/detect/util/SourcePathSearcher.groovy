@@ -40,7 +40,7 @@ class SourcePathSearcher {
      * include the provided pattern. You would use the filenamePattern
      * 'pom.xml' to find all maven source paths.
      */
-    List<String> findSourcePathsContainingFilenamePattern(String filenamePattern) {
+    List<String> findFilenamePattern(String filenamePattern) {
         List<String> matchingSourcePaths = []
         for (String sourcePath : detectConfiguration.getSourcePaths()) {
             if (detectFileManager.containsAllFiles(sourcePath, filenamePattern)) {
@@ -56,10 +56,10 @@ class SourcePathSearcher {
      * include the provided pattern, within it and its sub-directories. You would use the filenamePattern
      * 'pom.xml' to find all maven source paths.
      */
-    List<String> findSourcePathsContainingFilenamePatternWithDepth(String filenamePattern) {
+    List<String> findFilenamePattern(String filenamePattern, int searchDepth) {
         List<String> matchingSourcePaths = []
         for (String sourcePath : detectConfiguration.getSourcePaths()) {
-            if (detectFileManager.containsAllFilesWithDepth(sourcePath, detectConfiguration.getSearchDepth(), filenamePattern)) {
+            if (detectFileManager.containsAllFilesToDepth(sourcePath, searchDepth, filenamePattern)) {
                 matchingSourcePaths.add(sourcePath)
             }
         }

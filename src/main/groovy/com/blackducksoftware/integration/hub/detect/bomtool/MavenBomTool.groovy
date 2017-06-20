@@ -50,8 +50,8 @@ class MavenBomTool extends BomTool {
     }
 
     boolean isBomToolApplicable() {
-        matchingSourcePaths += sourcePathSearcher.findSourcePathsContainingFilenamePattern(POM_FILENAME)
-        matchingSourcePaths += sourcePathSearcher.findSourcePathsContainingFilenamePattern(POM_WRAPPER_FILENAME)
+        matchingSourcePaths += sourcePathSearcher.findFilenamePattern(POM_FILENAME)
+        matchingSourcePaths += sourcePathSearcher.findFilenamePattern(POM_WRAPPER_FILENAME)
         def mvnExecutable = false
         for(String sourcePath : matchingSourcePaths) {
             if(findMavenExecutablePath(sourcePath)){

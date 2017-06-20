@@ -26,32 +26,49 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.CocoapodsPackager
+import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmCliDependencyFinder
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
+import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 
 @Component
-class CocoapodsBomTool extends BomTool {
+class NpmBomTool extends BomTool {
+    def final static NODE_MODULES = 'node_modules'
+    def final static OUTPUT_FILE = 'detect_npm_proj_dependencies.json'
+
     @Autowired
-    CocoapodsPackager cocoapodsPackager
+    NpmCliDependencyFinder cliDependencyFinder
 
-    private List<String> matchingSourcePaths = []
+    private List<String> npmPaths = []
+    private String npmExe
 
-    BomToolType getBomToolType() {
-        return BomToolType.COCOAPODS
+    @Override
+    public BomToolType getBomToolType() {
+        BomToolType.NPM
     }
 
-    boolean isBomToolApplicable() {
-        matchingSourcePaths = sourcePathSearcher.findFilenamePattern('Podfile.lock')
+    @Override
+    public boolean isBomToolApplicable() {
+        npmPaths = sourcePathSearcher.findSourcePathsContainingFilenamePattern(NODE_MODULES)
+        npmExe = getExecutablePath()
 
-        !matchingSourcePaths.isEmpty()
+        npmPaths && npmExe
     }
 
-    List<DependencyNode> extractDependencyNodes() {
-        List<DependencyNode> projectNodes = []
-        matchingSourcePaths.each {
-            projectNodes.addAll(cocoapodsPackager.makeDependencyNodes(it))
+    @Override
+    public List<DependencyNode> extractDependencyNodes() {
+        List<DependencyNode> nodes = []
+
+        npmPaths.each {
+            nodes.add(cliDependencyFinder.generateDependencyNode(it, npmExe))
         }
 
-        projectNodes
+        nodes
+    }
+
+    private String getExecutablePath() {
+        if (!detectConfiguration.getNpmPath()) {
+            return executableManager.getPathOfExecutable(ExecutableType.NPM)
+        }
+        detectConfiguration.getNpmPath()
     }
 }

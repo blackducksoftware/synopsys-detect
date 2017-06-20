@@ -33,5 +33,6 @@ public enum BomToolType {
     RUBYGEMS,
     CARTHAGE,
     GO,
-    SBT;
+    SBT,
+    NPM;
 }
