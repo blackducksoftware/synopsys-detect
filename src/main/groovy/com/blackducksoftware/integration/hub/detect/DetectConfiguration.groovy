@@ -238,7 +238,7 @@ class DetectConfiguration {
     public String getGradleIncludedProjectNames() {
         return detectProperties.gradleIncludedProjectNames
     }
-    public String getGradleCleanupBuildBlackduckDirectory() {
+    public Boolean getGradleCleanupBuildBlackduckDirectory() {
         return detectProperties.gradleCleanupBuildBlackduckDirectory
     }
     public String getNugetInspectorPackageName() {

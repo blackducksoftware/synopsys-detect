@@ -77,7 +77,7 @@ class GradleInitScriptPackager {
         String dependencyNodeJson = dependencyNodeFile.getText(StandardCharsets.UTF_8.name())
         DependencyNode rootProjectDependencyNode = gson.fromJson(dependencyNodeJson, DependencyNode.class)
 
-        if ("false" != detectConfiguration.gradleCleanupBuildBlackduckDirectory) {
+        if (Boolean.TRUE == detectConfiguration.gradleCleanupBuildBlackduckDirectory) {
             blackduckDirectory.deleteDir()
         }
 

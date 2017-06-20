@@ -119,7 +119,7 @@ class DetectProperties {
 
     @ValueDescription(description="Set this to false if you do not want the 'blackduck' directory in your build directory to be deleted.", defaultValue="true")
     @Value('${detect.gradle.cleanup.build.blackduck.directory}')
-    String gradleCleanupBuildBlackduckDirectory
+    Boolean gradleCleanupBuildBlackduckDirectory
 
     @ValueDescription(description="Name of the Nuget Inspector", defaultValue="IntegrationNugetInspector")
     @Value('${detect.nuget.inspector.name}')
