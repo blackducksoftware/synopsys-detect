@@ -14,58 +14,47 @@ package com.blackducksoftware.integration.hub.detect.policychecker
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.builder.HubServerConfigBuilder
+import com.blackducksoftware.integration.hub.bdio.simple.model.SimpleBdioDocument
 import com.blackducksoftware.integration.hub.dataservice.policystatus.PolicyStatusDataService
 import com.blackducksoftware.integration.hub.dataservice.scan.ScanStatusDataService
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration
-import com.blackducksoftware.integration.hub.global.HubServerConfig
 import com.blackducksoftware.integration.hub.model.enumeration.VersionBomPolicyStatusOverallStatusEnum
 import com.blackducksoftware.integration.hub.model.view.VersionBomPolicyStatusView
-import com.blackducksoftware.integration.hub.rest.RestConnection
 import com.blackducksoftware.integration.hub.service.HubServicesFactory
 import com.blackducksoftware.integration.log.Slf4jIntLogger
+import com.google.gson.Gson
+import com.google.gson.stream.JsonReader
 
-@Component
 class PolicyChecker {
     private final Logger logger = LoggerFactory.getLogger(PolicyChecker.class)
 
+    private HubServicesFactory hubServicesFactory
+
+    static final int TIMEOUT = 300000
+
     @Autowired
-    DetectConfiguration detectConfiguration
+    Gson gson
+
+    public PolicyChecker(HubServicesFactory hubServicesFactory) {
+        this.hubServicesFactory = hubServicesFactory
+    }
 
     //TODO Add functionality for policy violations
-    public VersionBomPolicyStatusOverallStatusEnum checkForPolicyViolations(String projectName, String projectVersion) {
-        Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
-        HubServerConfig hubServerConfig = createBuilder(slf4jIntLogger).build()
-        RestConnection restConnection = hubServerConfig.createCredentialsRestConnection(slf4jIntLogger)
+    public VersionBomPolicyStatusOverallStatusEnum checkForPolicyViolations(Slf4jIntLogger slf4jIntLogger, SimpleBdioDocument bdioDocument) {
+        PolicyStatusDataService policyCheck = hubServicesFactory.createPolicyStatusDataService(slf4jIntLogger)
 
-        HubServicesFactory hubServicesFactory = new HubServicesFactory(restConnection);
-
-        PolicyStatusDataService policyCheck = hubServicesFactory.createPolicyStatusDataService(logger)
-
-        ScanStatusDataService scanStatusDataService = hubServicesFactory.createScanStatusDataService(logger, 300000)
-        scanStatusDataService.assertBomImportScanStartedThenFinished(projectName, projectVersion)
-        VersionBomPolicyStatusView policyStatus = policyCheck.getPolicyStatusForProjectAndVersion(projectName, projectVersion)
+        ScanStatusDataService scanStatusDataService = hubServicesFactory.createScanStatusDataService(slf4jIntLogger, TIMEOUT)
+        scanStatusDataService.assertBomImportScanStartedThenFinished(bdioDocument.project.name, bdioDocument.project.version)
+        VersionBomPolicyStatusView policyStatus = policyCheck.getPolicyStatusForProjectAndVersion(bdioDocument.project.name, bdioDocument.project.version)
 
         policyStatus.overallStatus
     }
 
-    private HubServerConfigBuilder createBuilder(Slf4jIntLogger slf4jIntLogger) {
-        HubServerConfigBuilder hubServerConfigBuilder = new HubServerConfigBuilder()
-        hubServerConfigBuilder.setHubUrl(detectConfiguration.getHubUrl())
-        hubServerConfigBuilder.setTimeout(detectConfiguration.getHubTimeout())
-        hubServerConfigBuilder.setUsername(detectConfiguration.getHubUsername())
-        hubServerConfigBuilder.setPassword(detectConfiguration.getHubPassword())
+    public VersionBomPolicyStatusOverallStatusEnum checkForPolicyViolations(Slf4jIntLogger slf4jIntLogger, File bdioDocument) {
+        checkForPolicyViolations(slf4jIntLogger, convertFromJsonToSimpleBdioDocument(bdioDocument))
+    }
 
-        hubServerConfigBuilder.setProxyHost(detectConfiguration.getHubProxyHost())
-        hubServerConfigBuilder.setProxyPort(detectConfiguration.getHubProxyPort())
-        hubServerConfigBuilder.setProxyUsername(detectConfiguration.getHubProxyUsername())
-        hubServerConfigBuilder.setProxyPassword(detectConfiguration.getHubProxyPassword())
-
-        hubServerConfigBuilder.setAutoImportHttpsCertificates(detectConfiguration.getHubAutoImportCertificate())
-        hubServerConfigBuilder.setLogger(slf4jIntLogger)
-
-        hubServerConfigBuilder
+    private SimpleBdioDocument convertFromJsonToSimpleBdioDocument(File bdioDocument) {
+        gson.fromJson(new JsonReader(new FileReader(bdioDocument)), SimpleBdioDocument.class)
     }
 }

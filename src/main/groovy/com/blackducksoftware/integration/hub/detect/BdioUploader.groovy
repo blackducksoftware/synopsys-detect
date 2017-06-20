@@ -30,6 +30,7 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.api.bom.BomImportRequestService
 import com.blackducksoftware.integration.hub.builder.HubServerConfigBuilder
 import com.blackducksoftware.integration.hub.buildtool.BuildToolConstants
+import com.blackducksoftware.integration.hub.detect.policychecker.PolicyChecker
 import com.blackducksoftware.integration.hub.global.HubServerConfig
 import com.blackducksoftware.integration.hub.rest.RestConnection
 import com.blackducksoftware.integration.hub.service.HubServicesFactory
@@ -59,6 +60,13 @@ class BdioUploader {
             createdBdioFiles.each { file ->
                 logger.info("uploading ${file.name} to ${detectConfiguration.getHubUrl()}")
                 bomImportRequestService.importBomFile(file, BuildToolConstants.BDIO_FILE_MEDIA_TYPE)
+
+                if (detectConfiguration.getCheckPolicy().equalsIgnoreCase("true")) {
+                    PolicyChecker policyChecker = new PolicyChecker(hubServicesFactory)
+                    def policyCheck = policyChecker.checkForPolicyViolations(slf4jIntLogger, file)
+                    logger.info("Policy check returned result " + policyCheck.toString().replace('_', ' '));
+                }
+
                 if (detectConfiguration.getCleanupBdioFiles()) {
                     file.delete()
                 }
