@@ -48,7 +48,7 @@ class NpmBomTool extends BomTool {
 
     @Override
     public boolean isBomToolApplicable() {
-        npmPaths = sourcePathSearcher.findSourcePathsContainingFilenamePattern(NODE_MODULES)
+        npmPaths = sourcePathSearcher.findFilenamePattern(NODE_MODULES)
         npmExe = getExecutablePath()
 
         npmPaths && npmExe
