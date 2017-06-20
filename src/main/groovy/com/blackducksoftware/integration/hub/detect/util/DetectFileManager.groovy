@@ -52,8 +52,12 @@ class DetectFileManager {
 
     File createFile(BomToolType bomToolType, String fileName) {
         File outputDirectory = createDirectory(bomToolType)
+        def newFile = new File(outputDirectory, fileName)
+        if (detectConfiguration.cleanupBomToolFiles) {
+            newFile.deleteOnExit()
+        }
 
-        new File(outputDirectory, fileName)
+        newFile
     }
 
     File writeToFile(File file, String contents) {
@@ -63,9 +67,6 @@ class DetectFileManager {
     File writeToFile(File file, String contents, boolean overwrite) {
         if (!file) {
             return null
-        }
-        if (detectConfiguration.cleanupBomToolFiles) {
-            file.deleteOnExit()
         }
         if (overwrite) {
             file.delete()
