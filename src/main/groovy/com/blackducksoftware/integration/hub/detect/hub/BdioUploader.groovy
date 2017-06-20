@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect
+package com.blackducksoftware.integration.hub.detect.hub
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -28,12 +28,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.api.bom.BomImportRequestService
-import com.blackducksoftware.integration.hub.builder.HubServerConfigBuilder
 import com.blackducksoftware.integration.hub.buildtool.BuildToolConstants
-import com.blackducksoftware.integration.hub.global.HubServerConfig
-import com.blackducksoftware.integration.hub.rest.RestConnection
+import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.service.HubServicesFactory
-import com.blackducksoftware.integration.log.Slf4jIntLogger
 
 @Component
 class BdioUploader {
@@ -42,18 +39,16 @@ class BdioUploader {
     @Autowired
     DetectConfiguration detectConfiguration
 
+    @Autowired
+    HubManager hubManager
+
     void uploadBdioFiles(List<File> createdBdioFiles) {
         if (!createdBdioFiles) {
             return
         }
 
         try {
-            Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
-            HubServerConfig hubServerConfig = createBuilder(slf4jIntLogger).build()
-            RestConnection restConnection = hubServerConfig.createCredentialsRestConnection(slf4jIntLogger)
-
-            HubServicesFactory hubServicesFactory = new HubServicesFactory(restConnection);
-
+            HubServicesFactory hubServicesFactory = hubManager.createHubServicesFactory(logger)
             BomImportRequestService bomImportRequestService = hubServicesFactory.createBomImportRequestService()
 
             createdBdioFiles.each { file ->
@@ -66,23 +61,5 @@ class BdioUploader {
         } catch (Exception e) {
             logger.error("Your Hub configuration is not valid: ${e.message}")
         }
-    }
-
-    private HubServerConfigBuilder createBuilder(Slf4jIntLogger slf4jIntLogger) {
-        HubServerConfigBuilder hubServerConfigBuilder = new HubServerConfigBuilder()
-        hubServerConfigBuilder.setHubUrl(detectConfiguration.getHubUrl())
-        hubServerConfigBuilder.setTimeout(detectConfiguration.getHubTimeout())
-        hubServerConfigBuilder.setUsername(detectConfiguration.getHubUsername())
-        hubServerConfigBuilder.setPassword(detectConfiguration.getHubPassword())
-
-        hubServerConfigBuilder.setProxyHost(detectConfiguration.getHubProxyHost())
-        hubServerConfigBuilder.setProxyPort(detectConfiguration.getHubProxyPort())
-        hubServerConfigBuilder.setProxyUsername(detectConfiguration.getHubProxyUsername())
-        hubServerConfigBuilder.setProxyPassword(detectConfiguration.getHubProxyPassword())
-
-        hubServerConfigBuilder.setAutoImportHttpsCertificates(detectConfiguration.getHubAutoImportCertificate())
-        hubServerConfigBuilder.setLogger(slf4jIntLogger)
-
-        hubServerConfigBuilder
     }
 }
