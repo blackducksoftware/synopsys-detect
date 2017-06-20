@@ -85,8 +85,6 @@ class NpmCliDependencyFinder {
         null
     }
 
-    //TODO merge master then use the new file manager
-
     private DependencyNode convertNpmJsonFileToDependencyNode(File NpmLsOutFile, String projectRootPath) {
         JsonObject npmJson = new JsonParser().parse(new JsonReader(new FileReader(NpmLsOutFile))).getAsJsonObject()
 

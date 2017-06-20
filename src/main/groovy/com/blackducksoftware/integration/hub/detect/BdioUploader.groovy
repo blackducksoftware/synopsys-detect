@@ -30,11 +30,14 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.api.bom.BomImportRequestService
 import com.blackducksoftware.integration.hub.builder.HubServerConfigBuilder
 import com.blackducksoftware.integration.hub.buildtool.BuildToolConstants
+import com.blackducksoftware.integration.hub.dataservice.policystatus.PolicyStatusDataService
+import com.blackducksoftware.integration.hub.dataservice.scan.ScanStatusDataService
 import com.blackducksoftware.integration.hub.detect.policychecker.PolicyChecker
 import com.blackducksoftware.integration.hub.global.HubServerConfig
 import com.blackducksoftware.integration.hub.rest.RestConnection
 import com.blackducksoftware.integration.hub.service.HubServicesFactory
 import com.blackducksoftware.integration.log.Slf4jIntLogger
+import com.google.gson.Gson
 
 @Component
 class BdioUploader {
@@ -42,6 +45,9 @@ class BdioUploader {
 
     @Autowired
     DetectConfiguration detectConfiguration
+
+    @Autowired
+    Gson gson
 
     void uploadBdioFiles(List<File> createdBdioFiles) {
         if (!createdBdioFiles) {
@@ -61,9 +67,13 @@ class BdioUploader {
                 logger.info("uploading ${file.name} to ${detectConfiguration.getHubUrl()}")
                 bomImportRequestService.importBomFile(file, BuildToolConstants.BDIO_FILE_MEDIA_TYPE)
 
-                if (detectConfiguration.getCheckPolicy().equalsIgnoreCase("true")) {
-                    PolicyChecker policyChecker = new PolicyChecker(hubServicesFactory)
-                    def policyCheck = policyChecker.checkForPolicyViolations(slf4jIntLogger, file)
+                if (detectConfiguration.getPolicyCheck().equalsIgnoreCase("true")) {
+                    ScanStatusDataService scanStatusDataService = hubServicesFactory.createScanStatusDataService(
+                            slf4jIntLogger,
+                            Integer.parseInt(detectConfiguration.getPolicyTimeout()))
+                    PolicyStatusDataService policyStatusDataService = hubServicesFactory.createPolicyStatusDataService(slf4jIntLogger)
+                    PolicyChecker policyChecker = new PolicyChecker(scanStatusDataService, policyStatusDataService, gson)
+                    def policyCheck = policyChecker.checkForPolicyViolations(file)
                     logger.info("Policy check returned result " + policyCheck.toString().replace('_', ' '));
                 }
 

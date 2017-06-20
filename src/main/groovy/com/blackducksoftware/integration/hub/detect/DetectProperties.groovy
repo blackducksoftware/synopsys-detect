@@ -94,8 +94,12 @@ class DetectProperties {
     String projectVersionName
 
     @ValueDescription(description = "Set to true if you would like a policy check from the hub for your project. False by default")
-    @Value('${detect.check.policy}')
-    String checkPolicy
+    @Value('${detect.policy.check}')
+    String policyCheck
+
+    @ValueDescription(description = "Timeout for communication with the hub", defaultValue="300000")
+    @Value('${detect.policy.timeout}')
+    String policyTimeout
 
     @ValueDescription(description="Version of the Gradle Inspector", defaultValue="0.0.6")
     @Value('${detect.gradle.inspector.version}')
@@ -180,10 +184,10 @@ class DetectProperties {
     @ValueDescription(description="The path of the Pip executable")
     @Value('${detect.pip.path}')
     String pipPath
-	
-	@ValueDescription(description="The path of the Npm executable")
-	@Value('${detect.npm.path}')
-	String npmPath
+
+    @ValueDescription(description="The path of the Npm executable")
+    @Value('${detect.npm.path}')
+    String npmPath
 
     @ValueDescription(description="The path to a user's virtual environment")
     @Value('${detect.pip.virtualEnv.path}')
