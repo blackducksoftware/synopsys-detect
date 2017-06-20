@@ -66,7 +66,7 @@ class BdioUploader {
                     file.delete()
                 }
             }
-            String hubDetectVersion = ResourceUtil.getResourceAsString('hubDetectVersion.txt', StandardCharsets.UTF_8)
+            String hubDetectVersion = ResourceUtil.getResourceAsString('version.txt', StandardCharsets.UTF_8)
             IntegrationInfo integrationInfo = new IntegrationInfo('Hub-Detect', hubDetectVersion, hubDetectVersion)
             phoneHomeDataService.phoneHome(hubServerConfig, integrationInfo)
         } catch (Exception e) {
