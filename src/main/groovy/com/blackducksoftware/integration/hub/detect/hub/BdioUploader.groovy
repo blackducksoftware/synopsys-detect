@@ -72,19 +72,23 @@ class BdioUploader {
                 bomImportRequestService.importBomFile(file, BuildToolConstants.BDIO_FILE_MEDIA_TYPE)
 
                 if (detectConfiguration.getPolicyCheck().equalsIgnoreCase("true")) {
+                    logger.info("Checking for policy violations...")
                     ScanStatusDataService scanStatusDataService = hubServicesFactory.createScanStatusDataService(
                             slf4jIntLogger,
-                            Integer.parseInt(detectConfiguration.getPolicyTimeout()))
+                            300000
+                            //Integer.parseInt(detectConfiguration.getPolicyTimeout())
+                            )
                     PolicyStatusDataService policyStatusDataService = hubServicesFactory.createPolicyStatusDataService(slf4jIntLogger)
                     PolicyChecker policyChecker = new PolicyChecker(scanStatusDataService, policyStatusDataService, gson)
                     def policyCheck = policyChecker.checkForPolicyViolations(file)
-                    logger.info("Policy check returned result " + policyCheck.toString().replace('_', ' '));
+                    logger.info("Policy check returned result " + policyCheck.toString().replace('_', ' '))
                 }
 
                 if (detectConfiguration.getCleanupBdioFiles()) {
                     file.delete()
                 }
             }
+
             String hubDetectVersion = ResourceUtil.getResourceAsString('version.txt', StandardCharsets.UTF_8)
             IntegrationInfo integrationInfo = new IntegrationInfo('Hub-Detect', hubDetectVersion, hubDetectVersion)
             phoneHomeDataService.phoneHome(hubServerConfig, integrationInfo)

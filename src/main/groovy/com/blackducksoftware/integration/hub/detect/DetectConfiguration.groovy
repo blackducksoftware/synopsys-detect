@@ -223,9 +223,9 @@ class DetectConfiguration {
     public String getPolicyCheck() {
         return detectProperties.policyCheck
     }
-    public String getPolicyTimeout() {
-        return detectProperties.policyTimeout
-    }
+    //    public String getPolicyTimeout() {
+    //        return detectProperties.policyTimeout
+    //    }
     public String getGradleInspectorVersion() {
         return detectProperties.gradleInspectorVersion
     }
