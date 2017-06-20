@@ -30,11 +30,13 @@ class PolicyChecker {
 
     private HubServicesFactory hubServicesFactory
 
+    //TODO Make this timeout a detect property
     static final int TIMEOUT = 300000
 
     @Autowired
     Gson gson
 
+    //TODO add dependencies through ctor
     public PolicyChecker(HubServicesFactory hubServicesFactory) {
         this.hubServicesFactory = hubServicesFactory
     }
