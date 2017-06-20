@@ -227,6 +227,9 @@ class DetectConfiguration {
     public String getNugetPath() {
         return detectProperties.nugetPath
     }
+    public String getNpmPath() {
+        return detectProperties.npmPath;
+    }
     public String getPipProjectName() {
         return detectProperties.pipProjectName
     }

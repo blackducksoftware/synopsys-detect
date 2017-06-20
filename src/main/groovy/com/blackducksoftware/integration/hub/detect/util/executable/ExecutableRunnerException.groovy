@@ -30,4 +30,8 @@ class ExecutableRunnerException extends Exception {
     ExecutableRunnerException(final ExecutableOutput executableOutput) {
         super("${executableOutput.standardOutput}\n\n${executableOutput.errorOutput}")
     }
+
+    ExecutableRunnerException(String exceptionOutput) {
+        super(exceptionOutput)
+    }
 }

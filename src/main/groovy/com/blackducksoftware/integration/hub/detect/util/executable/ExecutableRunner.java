@@ -23,6 +23,7 @@
 package com.blackducksoftware.integration.hub.detect.util.executable;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -70,6 +71,25 @@ public class ExecutableRunner {
             }
             return output;
         } catch (final IOException e) {
+            throw new ExecutableRunnerException(e);
+        }
+    }
+
+    public void executeToFile(final Executable executable, final File file) throws ExecutableRunnerException {
+        logger.debug(String.format("Running executable >%s", executable.getExecutableDescription()));
+        try {
+            final ProcessBuilder processBuilder = executable.createProcessBuilder().redirectOutput(file);
+            final Process process = processBuilder.start();
+            process.waitFor();
+            final String errorCheck = printStream(process.getErrorStream(), true, true);
+            final ExecutableOutput errorOutput = new ExecutableOutput("", errorCheck);
+            if (StringUtils.isNotBlank(errorOutput.getErrorOutput())) {
+                throw new ExecutableRunnerException(errorOutput);
+            }
+            if (file.length() == 0) {
+                throw new ExecutableRunnerException("Output file does not contain any info");
+            }
+        } catch (InterruptedException | IOException e) {
             throw new ExecutableRunnerException(e);
         }
     }
