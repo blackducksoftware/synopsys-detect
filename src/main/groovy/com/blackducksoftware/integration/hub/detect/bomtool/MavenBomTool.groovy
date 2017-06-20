@@ -38,11 +38,11 @@ class MavenBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(MavenBomTool.class)
 
     static final String POM_FILENAME = 'pom.xml'
+    static final String POM_WRAPPER_FILENAME = 'pom.groovy'
 
     @Autowired
     MavenPackager mavenPackager
 
-    String mvnExecutablePath
     List<String> matchingSourcePaths = []
 
     BomToolType getBomToolType() {
@@ -50,25 +50,37 @@ class MavenBomTool extends BomTool {
     }
 
     boolean isBomToolApplicable() {
-        mvnExecutablePath = findMavenExecutablePath()
-        matchingSourcePaths = sourcePathSearcher.findSourcePathsContainingFilenamePattern(POM_FILENAME)
-
-        mvnExecutablePath && !matchingSourcePaths.isEmpty()
+        matchingSourcePaths += sourcePathSearcher.findSourcePathsContainingFilenamePattern(POM_FILENAME)
+        matchingSourcePaths += sourcePathSearcher.findSourcePathsContainingFilenamePattern(POM_WRAPPER_FILENAME)
+        def mvnExecutable = false
+        for(String sourcePath : matchingSourcePaths) {
+            if(findMavenExecutablePath(sourcePath)){
+                mvnExecutable = true
+                break
+            }
+        }
+        mvnExecutable && !matchingSourcePaths.isEmpty()
     }
 
     List<DependencyNode> extractDependencyNodes() {
         List<DependencyNode> projectNodes = []
         matchingSourcePaths.each {
-            projectNodes.addAll(mavenPackager.makeDependencyNodes(it, mvnExecutablePath))
+            projectNodes.addAll(mavenPackager.makeDependencyNodes(it, findMavenExecutablePath(it)))
         }
 
         projectNodes
     }
 
-    private String findMavenExecutablePath() {
-        if (StringUtils.isBlank(detectConfiguration.getMavenPath())) {
-            return executableManager.getPathOfExecutable(ExecutableType.MVN)
+    private String findMavenExecutablePath(String sourcePath) {
+        if (StringUtils.isNotBlank(detectConfiguration.getMavenPath())) {
+            return detectConfiguration.getMavenPath()
         }
-        detectConfiguration.getMavenPath()
+
+        String wrapperPath = executableManager.getPathOfExecutable(sourcePath, ExecutableType.MVNW)
+        if(wrapperPath) {
+            return wrapperPath
+        }
+
+        executableManager.getPathOfExecutable(ExecutableType.MVN)
     }
 }

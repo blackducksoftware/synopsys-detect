@@ -232,4 +232,8 @@ class DetectProperties {
     @ValueDescription(description="The logging level of Detect (ALL|TRACE|DEBUG|INFO|WARN|ERROR|FATAL|OFF)", defaultValue='INFO')
     @Value('${logging.level.com.blackducksoftware.integration}')
     String loggingLevel
+
+    @ValueDescription(description="Detect creates temporary files in the output directory. If set to true this will clean them up after execution", defaultValue='true')
+    @Value('${detect.cleanup.bom.tool.files}')
+    Boolean cleanupBomToolFiles
 }

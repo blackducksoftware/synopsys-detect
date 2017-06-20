@@ -35,7 +35,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVe
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
-import com.blackducksoftware.integration.hub.detect.util.FileFinder
+import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
@@ -44,10 +44,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 @Component
 class PipPackager {
     final Logger logger = LoggerFactory.getLogger(this.getClass())
-    private final String INSPECTOR_NAME = 'pip-inspector'
-
-    @Autowired
-    FileFinder fileFinder
+    private final String INSPECTOR_NAME = 'pip-inspector.py'
 
     @Autowired
     ExecutableRunner executableRunner
@@ -61,18 +58,19 @@ class PipPackager {
     @Autowired
     NameVersionNodeTransformer nameVersionNodeTransformer
 
-    List<DependencyNode> makeDependencyNodes(File outputDirectory, File sourceDirectory, VirtualEnvironment virtualEnv) throws ExecutableRunnerException {
+    @Autowired
+    DetectFileManager detectFileManager
+
+    List<DependencyNode> makeDependencyNodes(File sourceDirectory, VirtualEnvironment virtualEnv) throws ExecutableRunnerException {
         String pipPath = virtualEnv.pipPath
         String pythonPath = virtualEnv.pythonPath
-        def setupFile = fileFinder.findFile(sourceDirectory, 'setup.py')
+        def setupFile = detectFileManager.findFile(sourceDirectory, 'setup.py')
 
-        String inpsectorScriptContents = getClass().getResourceAsStream("/${INSPECTOR_NAME}.py").getText(StandardCharsets.UTF_8.name())
-        File inpsectorScript = new File(outputDirectory, "${INSPECTOR_NAME}.py")
-        inpsectorScript.delete()
-        inpsectorScript.deleteOnExit()
-        inpsectorScript << inpsectorScriptContents
+        String inpsectorScriptContents = getClass().getResourceAsStream("/${INSPECTOR_NAME}").getText(StandardCharsets.UTF_8.name())
+        def inspectorScript = detectFileManager.createFile(BomToolType.PIP, INSPECTOR_NAME)
+        detectFileManager.writeToFile(inspectorScript, inpsectorScriptContents)
         def pipInspectorOptions = [
-            inpsectorScript.absolutePath
+            inspectorScript.absolutePath
         ]
 
         // Install pytest-runner to avoid a zip_flag error if the project uses pytest-runner

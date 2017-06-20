@@ -24,6 +24,7 @@ package com.blackducksoftware.integration.hub.detect.type
 
 enum ExecutableType {
     MVN([(OperatingSystemType.WINDOWS): 'mvn.cmd', (OperatingSystemType.LINUX): 'mvn']),
+    MVNW([(OperatingSystemType.WINDOWS): 'mvnw.bat', (OperatingSystemType.LINUX): 'mvnw']),
     GRADLE([(OperatingSystemType.WINDOWS): 'gradle.bat', (OperatingSystemType.LINUX): 'gradle']),
     GRADLEW([(OperatingSystemType.WINDOWS): 'gradlew.bat', (OperatingSystemType.LINUX): 'gradlew']),
     NUGET((OperatingSystemType.WINDOWS): 'nuget.exe'),

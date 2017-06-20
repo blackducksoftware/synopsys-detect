@@ -32,6 +32,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.pip.PipPackager
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.VirtualEnvironment
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.VirtualEnvironmentHandler
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
+import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 
 @Component
 class PipBomTool extends BomTool {
@@ -45,13 +46,13 @@ class PipBomTool extends BomTool {
     @Autowired
     VirtualEnvironmentHandler virtualEnvironmentHandler
 
+    @Autowired
+    DetectFileManager detectFileManager
+
     List<String> matchingSourcePaths = []
 
     BomToolType getBomToolType() {
-        if (detectConfiguration.pipThreeOverride)
-            BomToolType.PIP3
-        else
-            BomToolType.PIP
+        BomToolType.PIP
     }
 
     boolean isBomToolApplicable() {
@@ -64,12 +65,12 @@ class PipBomTool extends BomTool {
 
     List<DependencyNode> extractDependencyNodes() {
         List<DependencyNode> projectNodes = []
-        def outputDirectory = new File(detectConfiguration.outputDirectory, BomToolType.PIP.toString().toLowerCase())
+        def outputDirectory = detectFileManager.createDirectory(BomToolType.PIP)
         outputDirectory.mkdir()
         matchingSourcePaths.each { sourcePath ->
             def sourceDirectory = new File(sourcePath)
-            VirtualEnvironment virtualEnv = virtualEnvironmentHandler.getVirtualEnvironment(outputDirectory, sourceDirectory)
-            projectNodes.addAll(pipPackager.makeDependencyNodes(outputDirectory, sourceDirectory, virtualEnv))
+            VirtualEnvironment virtualEnv = virtualEnvironmentHandler.getVirtualEnvironment(outputDirectory)
+            projectNodes.addAll(pipPackager.makeDependencyNodes(sourceDirectory, virtualEnv))
         }
 
         projectNodes
