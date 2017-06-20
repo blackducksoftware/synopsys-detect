@@ -40,7 +40,7 @@ class RubygemsBomTool extends BomTool {
     }
 
     boolean isBomToolApplicable() {
-        matchingSourcePaths = sourcePathSearcher.findSourcePathsContainingFilenamePattern('Gemfile.lock')
+        matchingSourcePaths = sourcePathSearcher.findFilenamePattern('Gemfile.lock')
 
         !matchingSourcePaths.isEmpty()
     }
