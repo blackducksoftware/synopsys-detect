@@ -22,6 +22,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.go
 
+import org.apache.commons.io.FileUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -74,6 +75,15 @@ class DepPackager {
         if (gopkgLockFile.exists()) {
             return gopkgLockFile.text
         }
+        def gopkgTomlFile = new File(file, "Gopkg.toml")
+        def vendorDirectory = new File(file, "vendor")
+        boolean vendorDirectoryExistedBefore = vendorDirectory.exists()
+        def vendorDirectoryBackup = new File(file, "vendor_old")
+        if (vendorDirectoryExistedBefore) {
+            logger.info("Backing up ${vendorDirectory.getAbsolutePath()} to ${vendorDirectoryBackup.getAbsolutePath()}")
+            FileUtils.moveDirectory(vendorDirectory, vendorDirectoryBackup)
+        }
+
         def gopkgLockContents = null
         try{
             logger.info("Running ${goDepExecutable} 'init' on path ${file.getAbsolutePath()}")
@@ -91,6 +101,13 @@ class DepPackager {
         }
         if (gopkgLockFile.exists()) {
             gopkgLockContents = gopkgLockFile.text
+            gopkgLockFile.delete()
+            gopkgTomlFile.delete()
+            FileUtils.deleteDirectory(vendorDirectory)
+            if (vendorDirectoryExistedBefore) {
+                logger.info("Restoring back up ${vendorDirectory.getAbsolutePath()} from ${vendorDirectoryBackup.getAbsolutePath()}")
+                FileUtils.moveDirectory(vendorDirectoryBackup, vendorDirectory)
+            }
         }
         gopkgLockContents
     }

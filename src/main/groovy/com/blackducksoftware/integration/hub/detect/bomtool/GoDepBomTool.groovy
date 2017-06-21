@@ -58,7 +58,9 @@ class GoDepBomTool extends BomTool {
             logger.debug('Could not find Go on the environment PATH')
         }
         for (String sourcePath : detectConfiguration.getSourcePaths()) {
-            if (detectFileManager.containsAllFiles(sourcePath, 'Gopkg.lock', '*.go')) {
+            if (detectFileManager.containsAllFiles(sourcePath, 'Gopkg.lock')) {
+                matchingSourcePaths.add(sourcePath)
+            } else if (detectFileManager.containsAllFilesToDepth(sourcePath, detectConfiguration.getSearchDepth(), '*.go')) {
                 matchingSourcePaths.add(sourcePath)
             }
         }

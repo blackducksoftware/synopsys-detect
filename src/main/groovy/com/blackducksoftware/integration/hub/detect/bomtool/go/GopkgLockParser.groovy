@@ -40,7 +40,7 @@ class GopkgLockParser {
         List<DependencyNode> nodes = new ArrayList<>()
         GopkgLock gopkgLock = new Toml().read(depLockContents).to(GopkgLock.class)
 
-        gopkgLock.projects.each { project ->
+        for (Project project : gopkgLock.projects) {
             String name = project.name
             String version = ''
             if (project?.version?.trim()) {
@@ -48,13 +48,13 @@ class GopkgLockParser {
             } else {
                 version = project.revision
             }
-            project.packages.each{
+            for (String pack : project.packages){
                 String packageName = name
-                if (!it.equals('.')){
-                    packageName = "${packageName}/${it}"
+                if (!project.equals('.')){
+                    packageName = "${packageName}/${project}"
                 }
-                final ExternalId dependencyExternalId = new NameVersionExternalId(GoDepBomTool.GOLANG, name, version)
-                final DependencyNode dependency = new DependencyNode(name, version, dependencyExternalId)
+                final ExternalId dependencyExternalId = new NameVersionExternalId(GoDepBomTool.GOLANG, packageName, version)
+                final DependencyNode dependency = new DependencyNode(packageName, version, dependencyExternalId)
                 nodes.add(dependency)
             }
         }
