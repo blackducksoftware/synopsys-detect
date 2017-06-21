@@ -37,6 +37,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.BdioPropertyHelper
 import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeTransformer
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.detect.help.HelpPrinter
+import com.blackducksoftware.integration.hub.detect.hub.BdioUploader
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 

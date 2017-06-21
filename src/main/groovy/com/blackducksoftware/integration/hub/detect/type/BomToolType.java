@@ -35,5 +35,6 @@ public enum BomToolType {
     GO_GODEP,
     GO_VNDR,
     GO_DEP,
-    SBT;
+    SBT,
+    NPM;
 }
