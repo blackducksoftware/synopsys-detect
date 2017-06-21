@@ -61,7 +61,7 @@ class PipBomTool extends BomTool {
         matchingSourcePaths = sourcePathSearcher.findFilenamePattern(SETUP_FILENAME)
         def definedRequirements = detectConfiguration.requirementsFilePath
 
-        if(definedRequirements) {
+        if (definedRequirements) {
             def requirementsFile = new File(definedRequirements)
             matchingSourcePaths += requirementsFile.getParentFile().absolutePath
         }

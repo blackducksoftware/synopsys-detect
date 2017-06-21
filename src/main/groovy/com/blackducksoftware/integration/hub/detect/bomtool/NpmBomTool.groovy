@@ -32,8 +32,8 @@ import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 
 @Component
 class NpmBomTool extends BomTool {
-    def final static NODE_MODULES = 'node_modules'
-    def final static OUTPUT_FILE = 'detect_npm_proj_dependencies.json'
+    private static final String NODE_MODULES = 'node_modules'
+    private static final String OUTPUT_FILE = 'detect_npm_proj_dependencies.json'
 
     @Autowired
     NpmCliDependencyFinder cliDependencyFinder
@@ -66,9 +66,10 @@ class NpmBomTool extends BomTool {
     }
 
     private String getExecutablePath() {
-        if (!detectConfiguration.getNpmPath()) {
-            return executableManager.getPathOfExecutable(ExecutableType.NPM)
+        if (detectConfiguration.getNpmPath()) {
+            return detectConfiguration.getNpmPath()
         }
-        detectConfiguration.getNpmPath()
+
+        executableManager.getPathOfExecutable(ExecutableType.NPM)
     }
 }

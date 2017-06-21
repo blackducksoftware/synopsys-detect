@@ -89,7 +89,7 @@ class PipInspectorTreeParserTest {
 
         Assert.assertEquals(2, root.children.size())
         int foundCount = 0
-        for(DependencyNode child : root.children) {
+        for (DependencyNode child : root.children) {
             if (child.name == child1Name || child.name == child2Name) {
                 foundCount++
             }
