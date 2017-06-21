@@ -38,8 +38,9 @@ class GopkgLockParser {
                 version = project.revision
             }
             project.packages.each{
+                String packageName = name
                 if (!it.equals('.')){
-                    name = "${name}/${it}"
+                    packageName = "${packageName}/${it}"
                 }
                 final ExternalId dependencyExternalId = new NameVersionExternalId(GoDepBomTool.GOLANG, name, version)
                 final DependencyNode dependency = new DependencyNode(name, version, dependencyExternalId)

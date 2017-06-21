@@ -15,7 +15,6 @@ import java.nio.charset.StandardCharsets
 
 import org.apache.commons.io.IOUtils
 import org.junit.Assert
-import org.junit.Ignore
 import org.junit.Test
 import org.skyscreamer.jsonassert.JSONAssert
 
@@ -27,23 +26,21 @@ import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
-public class GoDepParserTest {
+public class GoGodepsParserTest {
     Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create()
 
     ProjectInfoGatherer projectInfoGatherer = new ProjectInfoGatherer()
 
     @Test
-    @Ignore
-    //ejk: I'm ignoring this test since it appears that it suffers under the Go feature of using the latest "release" from github
     public void goDepParserTest() throws IOException {
         final GoGodepsParser goDepParser = new GoGodepsParser(gson, projectInfoGatherer);
-        final String goDepOutput = IOUtils.toString(getClass().getResourceAsStream("/go/Godeps.json"), StandardCharsets.UTF_8);
+        final String goDepOutput = IOUtils.toString(getClass().getResourceAsStream("/go/Go_Godeps.json"), StandardCharsets.UTF_8);
         final DependencyNode node = goDepParser.parseGoDep(goDepOutput);
         Assert.assertNotNull(node)
 
         fixVersion(node, '1.0.0')
         final String actual = gson.toJson(node);
-        final String expected = IOUtils.toString(getClass().getResourceAsStream("/go/goParserExpected.json"), StandardCharsets.UTF_8);
+        final String expected = IOUtils.toString(getClass().getResourceAsStream("/go/Go_GodepsParserExpected.json"), StandardCharsets.UTF_8);
         JSONAssert.assertEquals(expected, actual, false);
     }
 
