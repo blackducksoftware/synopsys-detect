@@ -81,7 +81,7 @@ class NugetInspectorPackager {
         }
 
         def hubNugetInspectorExecutable = new Executable(sourceDirectory, inspectorExePath, options)
-        ExecutableOutput executableOutput = executableRunner.executeLoudly(hubNugetInspectorExecutable)
+        ExecutableOutput executableOutput = executableRunner.execute(hubNugetInspectorExecutable)
 
         def dependencyNodeFile = detectFileManager.findFile(outputDirectory, '*_dependency_node.json')
         final String dependencyNodeJson = dependencyNodeFile.getText(StandardCharsets.UTF_8.name())
@@ -122,6 +122,6 @@ class NugetInspectorPackager {
         ]
 
         Executable installExecutable = new Executable(sourceDirectory, nugetExecutable.absolutePath, options)
-        executableRunner.executeLoudly(installExecutable)
+        executableRunner.execute(installExecutable)
     }
 }

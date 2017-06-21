@@ -66,13 +66,16 @@ class NpmCliDependencyFinder {
     @Autowired
     DetectFileManager detectFileManager
 
+    @Autowired
+    ExecutableRunner executableRunner
+
     public DependencyNode generateDependencyNode(String rootDirectoryPath, String exePath) {
         def npmLsExe = new Executable(new File(rootDirectoryPath), exePath, ['ls', '-json'])
-        def exeRunner = new ExecutableRunner()
 
         File npmLsOutputFile = detectFileManager.createFile(BomToolType.NPM, NpmBomTool.OUTPUT_FILE)
+        File npmLsErrorFile = detectFileManager.createFile(BomToolType.NPM, NpmBomTool.ERROR_FILE)
 
-        exeRunner.executeToFile(npmLsExe, npmLsOutputFile)
+        executableRunner.executeToFile(npmLsExe, npmLsOutputFile, npmLsErrorFile)
 
         if (npmLsOutputFile?.length() > 0) {
             logger.info("Running npm ls and generating results")

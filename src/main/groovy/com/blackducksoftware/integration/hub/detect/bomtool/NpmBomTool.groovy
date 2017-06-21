@@ -32,8 +32,9 @@ import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 
 @Component
 class NpmBomTool extends BomTool {
-    private static final String NODE_MODULES = 'node_modules'
-    private static final String OUTPUT_FILE = 'detect_npm_proj_dependencies.json'
+    public static final String NODE_MODULES = 'node_modules'
+    public static final String OUTPUT_FILE = 'detect_npm_proj_dependencies.json'
+    public static final String ERROR_FILE = 'detect_npm_error.json'
 
     @Autowired
     NpmCliDependencyFinder cliDependencyFinder

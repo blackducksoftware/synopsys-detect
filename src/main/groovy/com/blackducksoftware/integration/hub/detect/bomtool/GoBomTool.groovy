@@ -103,13 +103,13 @@ class GoBomTool extends BomTool {
             'get',
             'github.com/tools/godep'
         ])
-        executableRunner.executeLoudly(getGoDep)
+        executableRunner.execute(getGoDep)
 
         Executable buildGoDep = new Executable(goOutputDirectory, goExecutable, [
             'build',
             'github.com/tools/godep'
         ])
-        executableRunner.executeLoudly(buildGoDep)
+        executableRunner.execute(buildGoDep)
         goDep.getAbsolutePath()
     }
 
