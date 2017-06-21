@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.detect.bomtool.go.GoPackager
+import com.blackducksoftware.integration.hub.detect.bomtool.go.DepPackager
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
@@ -42,7 +42,7 @@ class GoDepBomTool extends BomTool {
     public static final Forge GOLANG = new Forge("golang",":")
 
     @Autowired
-    GoPackager goPackager
+    DepPackager goPackager
 
     List<String> matchingSourcePaths = []
 

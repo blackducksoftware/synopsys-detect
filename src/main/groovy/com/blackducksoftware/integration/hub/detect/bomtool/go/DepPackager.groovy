@@ -40,8 +40,8 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 import com.google.gson.Gson
 
 @Component
-class GoPackager {
-    private final Logger logger = LoggerFactory.getLogger(GoPackager.class)
+class DepPackager {
+    private final Logger logger = LoggerFactory.getLogger(DepPackager.class)
 
     @Autowired
     ExecutableRunner executableRunner
