@@ -93,6 +93,10 @@ class DetectProperties {
     @Value('${detect.project.version.name}')
     String projectVersionName
 
+    @ValueDescription(description = "Specify code location if you would like to overwrite an already existing code location")
+    @Value('${detect.project.code.location}')
+    String projectCodeLocation
+
     @ValueDescription(description="Version of the Gradle Inspector", defaultValue="0.0.7")
     @Value('${detect.gradle.inspector.version}')
     String gradleInspectorVersion
@@ -180,10 +184,10 @@ class DetectProperties {
     @ValueDescription(description="The path of the Pip executable")
     @Value('${detect.pip.path}')
     String pipPath
-	
-	@ValueDescription(description="The path of the Npm executable")
-	@Value('${detect.npm.path}')
-	String npmPath
+
+    @ValueDescription(description="The path of the Npm executable")
+    @Value('${detect.npm.path}')
+    String npmPath
 
     @ValueDescription(description="The path to a user's virtual environment")
     @Value('${detect.pip.virtualEnv.path}')
