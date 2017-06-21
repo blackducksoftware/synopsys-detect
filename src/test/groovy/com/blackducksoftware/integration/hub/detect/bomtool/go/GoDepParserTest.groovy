@@ -22,6 +22,7 @@ import org.skyscreamer.jsonassert.JSONAssert
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.GoDepBomTool
+import com.blackducksoftware.integration.hub.detect.bomtool.go.godep.GoGodepsParser
 import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder

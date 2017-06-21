@@ -180,10 +180,10 @@ class DetectProperties {
     @ValueDescription(description="The path of the Pip executable")
     @Value('${detect.pip.path}')
     String pipPath
-	
-	@ValueDescription(description="The path of the Npm executable")
-	@Value('${detect.npm.path}')
-	String npmPath
+
+    @ValueDescription(description="The path of the Npm executable")
+    @Value('${detect.npm.path}')
+    String npmPath
 
     @ValueDescription(description="The path to a user's virtual environment")
     @Value('${detect.pip.virtualEnv.path}')
@@ -196,10 +196,6 @@ class DetectProperties {
     @ValueDescription(description="Path of the Go Dep executable")
     @Value('${detect.go.dep.path}')
     String goDepPath
-
-    @ValueDescription(description="If true all Go results will be aggregated into a single bom", defaultValue="true")
-    @Value('${detect.go.aggregate}')
-    Boolean goAggregate
 
     @ValueDescription(description="Path of the docker executable")
     @Value('${detect.docker.path}')

@@ -20,11 +20,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.go
+package com.blackducksoftware.integration.hub.detect.bomtool.go.godep
 
 import com.google.gson.annotations.SerializedName
 
-class GoDependency {
+class GodepDependency {
     @SerializedName("ImportPath")
     String importPath
     @SerializedName("Comment")

@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.detect.bomtool.go.VndrParser
+import com.blackducksoftware.integration.hub.detect.bomtool.go.vndr.VndrParser
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 
 @Component
@@ -43,8 +43,8 @@ class GoVndrBomTool extends BomTool {
         matchingSourcePaths.each {
             def vendorConf = new File(it, "vendor.conf")
             if (vendorConf.exists()) {
-                def dependencyNode = vndrParser.parseGoDep(vendorConf.text)
-                nodes.addAll(dependencyNode)
+                def children = vndrParser.parseVendorConf(vendorConf.text)
+                nodes.addAll(children)
             }
         }
         return nodes

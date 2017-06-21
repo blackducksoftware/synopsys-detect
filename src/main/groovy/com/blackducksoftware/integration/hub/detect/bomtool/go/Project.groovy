@@ -11,17 +11,11 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.go
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
-
-class DepLockParser {
-    private final ProjectInfoGatherer projectInfoGatherer
-
-    public DepLockParser(ProjectInfoGatherer projectInfoGatherer){
-        this.projectInfoGatherer = projectInfoGatherer
-    }
-
-    public DependencyNode parseDepLock(String depLockContents) {
-        return null
-    }
+class Project {
+    String name
+    String branch
+    String revision
+    String version
+    String source
+    List<String> packages
 }

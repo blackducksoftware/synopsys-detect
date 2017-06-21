@@ -57,9 +57,11 @@ class GoDepBomTool extends BomTool {
         if (!goExecutablePath?.trim()) {
             logger.debug('Could not find Go on the environment PATH')
         }
-        // detectFileManager.containsAllFiles(sourcePath, 'Gopkg.lock') || detectFileManager.containsAllFiles(sourcePath, detectConfiguration.getSearchDepth(), '*.go' )
-        matchingSourcePaths = sourcePathSearcher.findFilenamePattern('Gopkg.lock')
-
+        for (String sourcePath : detectConfiguration.getSourcePaths()) {
+            if (detectFileManager.containsAllFiles(sourcePath, 'Gopkg.lock', '*.go')) {
+                matchingSourcePaths.add(sourcePath)
+            }
+        }
         goExecutablePath && !matchingSourcePaths.isEmpty()
     }
 
@@ -68,7 +70,7 @@ class GoDepBomTool extends BomTool {
     public List<DependencyNode> extractDependencyNodes() {
         def nodes = []
         matchingSourcePaths.each {
-            nodes.addAll(goPackager.makeDependencyNodes(it, findGoDepExecutable()))
+            nodes.add(goPackager.makeDependencyNodes(it, findGoDepExecutable()))
         }
         return nodes
     }

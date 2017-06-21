@@ -11,17 +11,12 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.go
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
+import com.google.gson.annotations.SerializedName
 
-class VndrParser {
-    private final ProjectInfoGatherer projectInfoGatherer
+class GopkgLock {
+    // see https://github.com/golang/dep/blob/master/lock.go for the source of the lock file
+    List<Project> projects
 
-    public VndrParser(ProjectInfoGatherer projectInfoGatherer){
-        this.projectInfoGatherer = projectInfoGatherer
-    }
-
-    public DependencyNode parseGoDep(String vendorConfContents) {
-        return null
-    }
+    @SerializedName("solve-meta")
+    SolveMeta solveMeta
 }

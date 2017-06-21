@@ -22,8 +22,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.go
 
-import org.apache.commons.io.FileUtils
-import org.apache.commons.io.FilenameUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -57,73 +55,43 @@ class GoPackager {
     @Autowired
     DetectConfiguration detectConfiguration
 
-    public List<DependencyNode> makeDependencyNodes(final String sourcePath, String goExecutable) {
-        final String rootName = projectInfoGatherer.getDefaultProjectName(BomToolType.GO, sourcePath)
+    public DependencyNode makeDependencyNodes(final String sourcePath, String goDepExecutable) {
+        final String rootName = projectInfoGatherer.getDefaultProjectName(BomToolType.GO_DEP, sourcePath)
         final String rootVersion = projectInfoGatherer.getDefaultProjectVersionName()
         final ExternalId rootExternalId = new NameVersionExternalId(GoDepBomTool.GOLANG, rootName, rootVersion)
         final DependencyNode root = new DependencyNode(rootName, rootVersion, rootExternalId)
-        def goDirectories = findDirectoriesContainingGoFilesToDepth(new File(sourcePath), detectConfiguration.getSearchDepth());
-        GoGodepsParser goDepParser = new GoGodepsParser(gson, projectInfoGatherer)
-        def children = new ArrayList<DependencyNode>()
-        goDirectories.each {
-            String goDepContents = getGoDepContents(it, goExecutable)
-            if (goDepContents?.trim()){
-                DependencyNode child = goDepParser.parseGoDep(goDepContents)
-                children.add(child)
-            }
+        GopkgLockParser gopkgLockParser = new GopkgLockParser(projectInfoGatherer)
+        String goDepContents = getGopkgLockContents(new File(sourcePath), goDepExecutable)
+        if(goDepContents?.trim()){
+            def children = gopkgLockParser.parseDepLock(goDepContents)
+            root.children.addAll(children)
         }
-        if (detectConfiguration.getGoAggregate()) {
-            root.children = children
-            return [root]
-        } else {
-            return children
-        }
+        return root
     }
 
-    private String getGoDepContents(File goDirectory, String goExecutable) {
-        def vendorDirectory = new File(goDirectory, "vendor")
-        def goDepsDirectory = new File(goDirectory, "Godeps")
-        def goDepsFile = new File(goDepsDirectory, "Godeps.json")
-        if (goDepsFile.exists()) {
-            return goDepsFile.text
+    private String getGopkgLockContents(File file, String goDepExecutable) {
+        def gopkgLockFile = new File(file, "Gopkg.lock")
+        if (gopkgLockFile.exists()) {
+            return gopkgLockFile.text
         }
-        boolean previousVendorFile = vendorDirectory.exists()
-        def goDepContents = null
+        def gopkgLockContents = null
         try{
-            logger.info("Running ${goExecutable} save on path ${goDirectory.getAbsolutePath()}")
-            Executable executable = new Executable(goDirectory, goExecutable, ['save'])
+            logger.info("Running ${goDepExecutable} 'init' on path ${file.getAbsolutePath()}")
+            Executable executable = new Executable(file, goDepExecutable, ['init'])
             executableRunner.executeLoudly(executable)
         } catch (ExecutableRunnerException e){
-            logger.error("Failed to run ${goExecutable} save on path ${goDirectory.getAbsolutePath()}, ${e.getMessage()}")
+            logger.error("Failed to run ${goDepExecutable} 'init' on path ${file.getAbsolutePath()}, ${e.getMessage()}")
         }
-        if (goDepsFile.exists()) {
-            goDepContents = goDepsFile.text
-            FileUtils.deleteDirectory(goDepsDirectory)
+        try{
+            logger.info("Running ${goDepExecutable} 'ensure -update' on path ${file.getAbsolutePath()}")
+            Executable executable = new Executable(file, goDepExecutable, ['ensure', '-update'])
+            executableRunner.executeLoudly(executable)
+        } catch (ExecutableRunnerException e){
+            logger.error("Failed to run ${goDepExecutable} 'ensure -update' on path ${file.getAbsolutePath()}, ${e.getMessage()}")
         }
-        if (!previousVendorFile && vendorDirectory.exists()) {
-            // cleanup the vendor directory if the save command created it
-            FileUtils.deleteDirectory(vendorDirectory)
+        if (gopkgLockFile.exists()) {
+            gopkgLockContents = gopkgLockFile.text
         }
-        goDepContents
-    }
-
-    private File[] findDirectoriesContainingGoFilesToDepth(final File sourceDirectory, int maxDepth){
-        return findDirectoriesContainingGoFilesRecursive(sourceDirectory, 0, maxDepth)
-    }
-
-    private File[] findDirectoriesContainingGoFilesRecursive(final File sourceDirectory, int currentDepth, int maxDepth){
-        def files = new HashSet<File>()
-        // we want to ignore the vendor and Godeps directory, they are the go cache https://blog.gopheracademy.com/advent-2015/vendor-folder/
-        if (currentDepth > maxDepth || !sourceDirectory.isDirectory() || sourceDirectory.getName().equals('vendor') || sourceDirectory.getName().equals('Godeps')){
-            return files
-        }
-        for (File file : sourceDirectory.listFiles()) {
-            if (file.isDirectory()) {
-                files.addAll(findDirectoriesContainingGoFilesRecursive(file, currentDepth + 1, maxDepth))
-            } else if (FilenameUtils.wildcardMatchOnSystem(file.getName(), '*.go')) {
-                files.add(sourceDirectory)
-            }
-        }
-        return new ArrayList<File>(files)
+        gopkgLockContents
     }
 }

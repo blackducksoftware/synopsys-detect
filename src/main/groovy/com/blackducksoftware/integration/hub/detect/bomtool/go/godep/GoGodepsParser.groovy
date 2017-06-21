@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.go
+package com.blackducksoftware.integration.hub.detect.bomtool.go.godep
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
@@ -41,18 +41,17 @@ class GoGodepsParser {
 
     public DependencyNode parseGoDep(String goDepContents) {
         GodepsFile goDepsFile = gson.fromJson(goDepContents, GodepsFile.class)
-        //FIXME get version
         String goDepContentVersion = projectInfoGatherer.getDefaultProjectVersionName()
         final ExternalId goDepContentExternalId = new NameVersionExternalId(GoDepBomTool.GOLANG, goDepsFile.importPath, goDepContentVersion)
         final DependencyNode goDepNode = new DependencyNode(goDepsFile.importPath, goDepContentVersion, goDepContentExternalId)
         def children = new ArrayList<DependencyNode>()
         goDepsFile.deps.each {
             def version = ''
-            // FIXME tags with *-*-* may not start with v
-            if (it.comment?.trim() && it.comment.contains('v')) {
+            if (it.comment?.trim()) {
                 version = it.comment.trim()
-                if (version.contains('-')){
-                    //v1.6-27-23859436879234678  should be transformed to v1.6
+                //TODO test with kubernetes
+                if (version.matches('.*-.*-.*')) {
+                    //v1.6-27-23859436879234678  should be changed to v1.6
                     version = version.substring(0, version.lastIndexOf('-'))
                     version = version.substring(0, version.lastIndexOf('-'))
                 }

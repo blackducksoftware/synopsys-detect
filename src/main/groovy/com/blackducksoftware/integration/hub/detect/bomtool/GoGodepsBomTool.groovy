@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.detect.bomtool.go.GoGodepsParser
+import com.blackducksoftware.integration.hub.detect.bomtool.go.godep.GoGodepsParser
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.google.gson.Gson
 
