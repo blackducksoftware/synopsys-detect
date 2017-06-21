@@ -46,10 +46,10 @@ import com.google.gson.stream.JsonReader
 @Component
 class NpmCliDependencyFinder {
     private final Logger logger = LoggerFactory.getLogger(NpmCliDependencyFinder.class)
-    private final String NPM_DIR = 'npm-temp'
-    private final String JSON_NAME = 'name'
-    private final String JSON_VERSION = 'version'
-    private final String JSON_DEPENDENCIES = 'dependencies'
+    private static final String NPM_DIR = 'npm-temp'
+    private static final String JSON_NAME = 'name'
+    private static final String JSON_VERSION = 'version'
+    private static final String JSON_DEPENDENCIES = 'dependencies'
 
     @Autowired
     Gson gson
@@ -70,38 +70,38 @@ class NpmCliDependencyFinder {
         def npmLsExe = new Executable(new File(rootDirectoryPath), exePath, ['ls', '-json'])
         def exeRunner = new ExecutableRunner()
 
-        File npmLsOutFile = detectFileManager.createFile(BomToolType.NPM, NpmBomTool.OUTPUT_FILE)
+        File npmLsOutputFile = detectFileManager.createFile(BomToolType.NPM, NpmBomTool.OUTPUT_FILE)
 
-        exeRunner.executeToFile(npmLsExe, npmLsOutFile)
+        exeRunner.executeToFile(npmLsExe, npmLsOutputFile)
 
-        if (npmLsOutFile?.length() > 0) {
+        if (npmLsOutputFile?.length() > 0) {
             logger.info("Running npm ls and generating results")
-            return convertNpmJsonFileToDependencyNode(npmLsOutFile, rootDirectoryPath)
+            return convertNpmJsonFileToDependencyNode(npmLsOutputFile, rootDirectoryPath)
         } else {
             logger.error("Ran into an issue creating and writing to file")
         }
 
-        null
+        []
     }
 
     private DependencyNode convertNpmJsonFileToDependencyNode(File NpmLsOutFile, String projectRootPath) {
         JsonObject npmJson = new JsonParser().parse(new JsonReader(new FileReader(NpmLsOutFile))).getAsJsonObject()
 
-        String name = npmJson.getAsJsonPrimitive(JSON_NAME)?.getAsString()
-        String version = npmJson.getAsJsonPrimitive(JSON_VERSION)?.getAsString()
+        String projectName = npmJson.getAsJsonPrimitive(JSON_NAME)?.getAsString()
+        projectName = projectInfoGatherer.getDefaultProjectName(BomToolType.NPM, projectRootPath, projectName)
 
-        String projectName = projectInfoGatherer.getDefaultProjectName(BomToolType.NPM, projectRootPath, name)
-        String projectVersion = projectInfoGatherer.getDefaultProjectVersionName(version)
+        String projectVersion = npmJson.getAsJsonPrimitive(JSON_VERSION)?.getAsString()
+        projectVersion = projectInfoGatherer.getDefaultProjectVersionName(projectVersion)
 
         def externalId = new NameVersionExternalId(Forge.NPM, projectName, projectVersion)
         def dependencyNode = new DependencyNode(projectName, projectVersion, externalId)
 
-        createDependencyNodeTreeFromJsonObject(dependencyNode, npmJson.getAsJsonObject(JSON_DEPENDENCIES))
+        populateChildren(dependencyNode, npmJson.getAsJsonObject(JSON_DEPENDENCIES))
 
         dependencyNode
     }
 
-    private void createDependencyNodeTreeFromJsonObject(DependencyNode parentDependencyNode, JsonObject parentNodeChildren) {
+    private void populateChildren(DependencyNode parentDependencyNode, JsonObject parentNodeChildren) {
         def elements = parentNodeChildren?.entrySet()
         elements?.each {
             String name = it.key
@@ -111,7 +111,7 @@ class NpmCliDependencyFinder {
             def externalId = new NameVersionExternalId(Forge.NPM, name, version)
             def newNode = new DependencyNode(name, version, externalId)
 
-            createDependencyNodeTreeFromJsonObject(newNode, children)
+            populateChildren(newNode, children)
             parentDependencyNode.children.add(newNode)
         }
     }
