@@ -112,11 +112,11 @@ class GoDepBomTool extends BomTool {
             'github.com/golang/dep/cmd/dep'
         ])
         executableRunner.execute(buildGoDep)
-        goDep.getAbsolutePath() 
+        goDep.getAbsolutePath()
     }
 
     private File getBuiltGoDep(){
         def goOutputDirectory = new File(detectConfiguration.outputDirectory, 'Go')
-        new File(goOutputDirectory, executableManager.getExecutableName(ExecutableType.GODEP))
+        new File(goOutputDirectory, executableManager.getExecutableName(ExecutableType.GO_DEP))
     }
 }
