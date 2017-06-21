@@ -58,7 +58,7 @@ public class MavenPackager {
             arguments.add("-Dscope=${detectConfiguration.getMavenScope()}")
         }
         final Executable mvnExecutable = new Executable(sourceDirectory, mavenExecutable, arguments)
-        final ExecutableOutput mvnOutput = executableRunner.executeLoudly(mvnExecutable)
+        final ExecutableOutput mvnOutput = executableRunner.execute(mvnExecutable)
 
         final MavenOutputParser mavenOutputParser = new MavenOutputParser()
         projects.addAll(mavenOutputParser.parse(mvnOutput.standardOutput))

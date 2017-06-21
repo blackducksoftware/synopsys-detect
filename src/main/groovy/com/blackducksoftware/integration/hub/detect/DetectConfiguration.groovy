@@ -107,8 +107,6 @@ class DetectConfiguration {
         if (dockerBomTool.isBomToolApplicable()) {
             configureForDocker()
         }
-
-        logConfiguration()
     }
 
     /**
@@ -150,36 +148,34 @@ class DetectConfiguration {
         }
     }
 
-    private void logConfiguration() {
-        if (logger.isDebugEnabled()) {
-            logger.debug('')
-            logger.debug('Current property values:')
-            logger.debug('-'.multiply(60))
-            def propertyFields = DetectProperties.class.getDeclaredFields().findAll {
-                int modifiers = it.modifiers
-                !Modifier.isStatic(modifiers) && Modifier.isPrivate(modifiers)
-            }.sort { a, b ->
-                a.name <=> b.name
-            }
-
-            propertyFields.each {
-                it.accessible = true
-                String fieldName = it.name
-                Object fieldValue = it.get(detectProperties)
-                if (it.type.isArray()) {
-                    fieldValue = fieldValue.join(', ')
-                }
-                if (fieldName && fieldValue && 'metaClass' != fieldName) {
-                    if (fieldName.toLowerCase().contains('password')) {
-                        fieldValue = '*'.multiply(fieldValue.length())
-                    }
-                    logger.debug("${fieldName} = ${fieldValue}")
-                }
-                it.accessible = false
-            }
-            logger.debug('-'.multiply(60))
-            logger.debug('')
+    public void printConfiguration(PrintStream printStream) {
+        printStream.println('')
+        printStream.println('Current property values:')
+        printStream.println('-'.multiply(60))
+        def propertyFields = DetectProperties.class.getDeclaredFields().findAll {
+            int modifiers = it.modifiers
+            !Modifier.isStatic(modifiers) && Modifier.isPrivate(modifiers)
+        }.sort { a, b ->
+            a.name <=> b.name
         }
+
+        propertyFields.each {
+            it.accessible = true
+            String fieldName = it.name
+            Object fieldValue = it.get(detectProperties)
+            if (it.type.isArray()) {
+                fieldValue = fieldValue.join(', ')
+            }
+            if (fieldName && fieldValue && 'metaClass' != fieldName) {
+                if (fieldName.toLowerCase().contains('password')) {
+                    fieldValue = '*'.multiply(fieldValue.length())
+                }
+                printStream.println("${fieldName} = ${fieldValue}")
+            }
+            it.accessible = false
+        }
+        printStream.println('-'.multiply(60))
+        printStream.println('')
     }
 
     public Boolean getCleanupBdioFiles() {
@@ -337,5 +333,8 @@ class DetectConfiguration {
     }
     public String getCleanupBomToolFiles() {
         return detectProperties.cleanupBomToolFiles
+    }
+    public Boolean getSuppressConfigurationOutput() {
+        return detectProperties.suppressConfigurationOutput
     }
 }

@@ -97,7 +97,7 @@ class DockerBomTool extends BomTool {
         ]
 
         Executable dockerExecutable = new Executable(dockerInstallDirectory, environmentVariables, bashExecutablePath, bashArguments)
-        executableRunner.executeLoudly(dockerExecutable)
+        executableRunner.execute(dockerExecutable)
         //At least for the moment, there is no way of running the hub-docker-inspector to generate the files only, so it currently handles all uploading
         return []
     }

@@ -77,6 +77,9 @@ class Application {
         } else {
             detectConfiguration.init()
             logger.info('Configuration processed completely.')
+            if (Boolean.FALSE == detectConfiguration.suppressConfigurationOutput) {
+                detectConfiguration.printConfiguration(System.out)
+            }
             List<File> createdBdioFiles = bomToolManager.createBdioFiles()
             bdioUploader.uploadBdioFiles(createdBdioFiles)
         }

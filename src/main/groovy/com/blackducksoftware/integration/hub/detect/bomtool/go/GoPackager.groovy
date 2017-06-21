@@ -78,14 +78,14 @@ class GoPackager {
         try{
             logger.info("Running ${goDepExecutable} 'init' on path ${file.getAbsolutePath()}")
             Executable executable = new Executable(file, goDepExecutable, ['init'])
-            executableRunner.executeLoudly(executable)
+            executableRunner.execute(executable)
         } catch (ExecutableRunnerException e){
             logger.error("Failed to run ${goDepExecutable} 'init' on path ${file.getAbsolutePath()}, ${e.getMessage()}")
         }
         try{
             logger.info("Running ${goDepExecutable} 'ensure -update' on path ${file.getAbsolutePath()}")
             Executable executable = new Executable(file, goDepExecutable, ['ensure', '-update'])
-            executableRunner.executeLoudly(executable)
+            executableRunner.execute(executable)
         } catch (ExecutableRunnerException e){
             logger.error("Failed to run ${goDepExecutable} 'ensure -update' on path ${file.getAbsolutePath()}, ${e.getMessage()}")
         }
