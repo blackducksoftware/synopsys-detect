@@ -73,7 +73,7 @@ class BdioUploader {
                     PolicyStatusDataService policyStatusDataService = hubServicesFactory.createPolicyStatusDataService(slf4jIntLogger)
                     PolicyChecker policyChecker = new PolicyChecker(scanStatusDataService, policyStatusDataService)
                     def policyCheck = policyChecker.checkForPolicyViolations(file)
-                    logger.info("Policy check returned result " + policyCheck.toString().replace('_', ' '))
+                    logger.info("Policy check returned: " + policyCheck.toString().replace('_', ' '))
                 }
 
                 if (detectConfiguration.getCleanupBdioFiles()) {

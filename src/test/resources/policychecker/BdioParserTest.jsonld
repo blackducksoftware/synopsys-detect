@@ -1,0 +1,165 @@
+[
+  {
+    "specVersion": "1.1.0",
+    "spdx:name": "node-js/0.2.0 Black Duck I/O Export",
+    "@id": "uuid:d24572c1-0769-4674-9272-1447f81c77a0",
+    "@type": "BillOfMaterials",
+    "relationship": []
+  },
+  {
+    "name": "node-js",
+    "revision": "0.2.0",
+    "@id": "data:npm/node_js/0_2_0",
+    "@type": "Project",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npm",
+      "externalId": "node-js@0.2.0"
+    },
+    "relationship": [
+      {
+        "related": "data:npm/sentence_case/2_1_1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "data:npm/upper_case/1_1_3",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "data:npm/xml2js/0_4_17",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "sentence-case",
+    "revision": "2.1.1",
+    "@id": "data:npm/sentence_case/2_1_1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npm",
+      "externalId": "sentence-case@2.1.1"
+    },
+    "relationship": [
+      {
+        "related": "data:npm/upper_case_first/1_1_2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "data:npm/no_case/2_3_1",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "upper-case-first",
+    "revision": "1.1.2",
+    "@id": "data:npm/upper_case_first/1_1_2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npm",
+      "externalId": "upper-case-first@1.1.2"
+    },
+    "relationship": [
+      {
+        "related": "data:npm/upper_case/1_1_3",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "upper-case",
+    "revision": "1.1.3",
+    "@id": "data:npm/upper_case/1_1_3",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npm",
+      "externalId": "upper-case@1.1.3"
+    },
+    "relationship": []
+  },
+  {
+    "name": "no-case",
+    "revision": "2.3.1",
+    "@id": "data:npm/no_case/2_3_1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npm",
+      "externalId": "no-case@2.3.1"
+    },
+    "relationship": [
+      {
+        "related": "data:npm/lower_case/1_1_4",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "lower-case",
+    "revision": "1.1.4",
+    "@id": "data:npm/lower_case/1_1_4",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npm",
+      "externalId": "lower-case@1.1.4"
+    },
+    "relationship": []
+  },
+  {
+    "name": "xml2js",
+    "revision": "0.4.17",
+    "@id": "data:npm/xml2js/0_4_17",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npm",
+      "externalId": "xml2js@0.4.17"
+    },
+    "relationship": [
+      {
+        "related": "data:npm/sax/1_2_2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "data:npm/xmlbuilder/4_2_1",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "sax",
+    "revision": "1.2.2",
+    "@id": "data:npm/sax/1_2_2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npm",
+      "externalId": "sax@1.2.2"
+    },
+    "relationship": []
+  },
+  {
+    "name": "xmlbuilder",
+    "revision": "4.2.1",
+    "@id": "data:npm/xmlbuilder/4_2_1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npm",
+      "externalId": "xmlbuilder@4.2.1"
+    },
+    "relationship": [
+      {
+        "related": "data:npm/lodash/4_17_4",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "lodash",
+    "revision": "4.17.4",
+    "@id": "data:npm/lodash/4_17_4",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "npm",
+      "externalId": "lodash@4.17.4"
+    },
+    "relationship": []
+  }
+]
