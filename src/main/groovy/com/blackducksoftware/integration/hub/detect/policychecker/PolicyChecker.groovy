@@ -59,9 +59,9 @@ class PolicyChecker {
 
     private BdioPolicy convertFromJsonToSimpleBdioDocument(File bdioFile) {
         JsonArray bdioComponents = new JsonParser().parse(new JsonReader(new FileReader(bdioFile))).getAsJsonArray()
-        for(JsonElement element : bdioComponents) {
+        for (JsonElement element : bdioComponents) {
             JsonObject component = element.getAsJsonObject()
-            if(component.getAsJsonPrimitive('@type').getAsString().equalsIgnoreCase('project')) {
+            if (component.getAsJsonPrimitive('@type').getAsString().equalsIgnoreCase('project')) {
                 BdioPolicy bdioPolicyModel = new BdioPolicy()
                 bdioPolicyModel.name = component.getAsJsonPrimitive('name').getAsString()
                 bdioPolicyModel.version = component.getAsJsonPrimitive('revision').getAsString()
