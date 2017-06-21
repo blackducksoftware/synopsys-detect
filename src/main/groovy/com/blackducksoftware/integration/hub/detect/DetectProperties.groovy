@@ -29,6 +29,10 @@ import com.blackducksoftware.integration.hub.detect.help.ValueDescription
 
 @Component
 class DetectProperties {
+    @ValueDescription(description="If true, the default behavior of printing your configuration properties at startup will be suppressed.", defaultValue="false")
+    @Value('${detect.suppress.configuration.output}')
+    Boolean suppressConfigurationOutput
+
     @ValueDescription(description="If true the bdio files will be deleted after upload", defaultValue="true")
     @Value('${detect.cleanup.bdio.files}')
     Boolean cleanupBdioFiles

@@ -69,7 +69,7 @@ class GradleInitScriptPackager {
             detectConfiguration.getGradleBuildCommand(),
             "--init-script=${initScriptPath}"
         ])
-        executableRunner.executeLoudly(executable)
+        executableRunner.execute(executable)
 
         File buildDirectory = new File(sourcePath, 'build')
         File blackduckDirectory = new File(buildDirectory, 'blackduck')

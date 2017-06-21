@@ -75,7 +75,7 @@ class PipPackager {
 
         // Install pytest-runner to avoid a zip_flag error if the project uses pytest-runner
         def installPytestRunner = new Executable(sourceDirectory, pipPath, ['install', 'pytest-runner'])
-        executableRunner.executeLoudly(installPytestRunner)
+        executableRunner.execute(installPytestRunner)
 
         // Install requirements file and add it as an option for the inspector
         if (detectConfiguration.requirementsFilePath) {
@@ -87,26 +87,26 @@ class PipPackager {
                 '-r',
                 requirementsFile.absolutePath
             ])
-            executableRunner.executeLoudly(installRequirements)
+            executableRunner.execute(installRequirements)
         }
 
         // Install project if it can find one and pass its name to the inspector
         if (setupFile) {
             def installProjectExecutable = new Executable(sourceDirectory, pipPath, ['install', '.', '-I'])
-            executableRunner.executeLoudly(installProjectExecutable)
+            executableRunner.execute(installProjectExecutable)
             def projectName = detectConfiguration.pipProjectName
             if (!projectName) {
                 def findProjectNameExecutable = new Executable(sourceDirectory, pythonPath, [
                     setupFile.absolutePath,
                     '--name'
                 ])
-                projectName = executableRunner.executeQuietly(findProjectNameExecutable).standardOutput.trim()
+                projectName = executableRunner.execute(findProjectNameExecutable).standardOutput.trim()
             }
             pipInspectorOptions += "--projectname=${projectName}"
         }
 
         def pipInspector = new Executable(sourceDirectory, pythonPath, pipInspectorOptions)
-        def inspectorOutput = executableRunner.executeQuietly(pipInspector).standardOutput
+        def inspectorOutput = executableRunner.execute(pipInspector).standardOutput
         def parser = new PipInspectorTreeParser()
         DependencyNode project = parser.parse(nameVersionNodeTransformer, inspectorOutput)
 

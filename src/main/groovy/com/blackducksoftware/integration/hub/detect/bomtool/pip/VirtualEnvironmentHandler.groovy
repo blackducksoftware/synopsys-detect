@@ -113,7 +113,7 @@ class VirtualEnvironmentHandler {
 
     VirtualEnvironment createVirtualEnvironment(File virtualEnvDirectory) {
         def installVirtualEnvPackage = new Executable(virtualEnvDirectory.getParentFile(), systemEnvironment.pipPath, ['install', 'virtualenv'])
-        executableRunner.executeLoudly(installVirtualEnvPackage)
+        executableRunner.execute(installVirtualEnvPackage)
 
         def virtualEnvOptions = [
             "--python=${systemEnvironment.getPythonPath()}",
@@ -121,7 +121,7 @@ class VirtualEnvironmentHandler {
         ]
         def virtualEnvPath = executableManager.getPathOfExecutable(ExecutableType.VIRTUALENV)
         def setupVirtualEnvironment = new Executable(virtualEnvDirectory.getParentFile(), virtualEnvPath, virtualEnvOptions)
-        executableRunner.executeLoudly(setupVirtualEnvironment)
+        executableRunner.execute(setupVirtualEnvironment)
 
         findExistingEnvironment(virtualEnvDirectory)
     }

@@ -92,7 +92,7 @@ class GoPackager {
         try{
             logger.info("Running ${goExecutable} save on path ${goDirectory.getAbsolutePath()}")
             Executable executable = new Executable(goDirectory, goExecutable, ['save'])
-            executableRunner.executeLoudly(executable)
+            executableRunner.execute(executable)
         } catch (ExecutableRunnerException e){
             logger.error("Failed to run ${goExecutable} save on path ${goDirectory.getAbsolutePath()}, ${e.getMessage()}")
         }
