@@ -22,24 +22,8 @@
  */
 package com.blackducksoftware.integration.hub.detect
 
-import java.lang.reflect.Modifier
-
-import org.apache.commons.lang3.StringUtils
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.core.env.ConfigurableEnvironment
-import org.springframework.core.env.EnumerablePropertySource
-import org.springframework.core.env.MutablePropertySources
-import org.springframework.stereotype.Component
-
-import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
-import com.blackducksoftware.integration.hub.detect.bomtool.DockerBomTool
-import com.blackducksoftware.integration.hub.detect.exception.DetectException
-import com.blackducksoftware.integration.hub.detect.type.BomToolType
-
 @Component
-class DetectConfiguration {
+class {
     private final Logger logger = LoggerFactory.getLogger(DetectProperties.class)
 
     static final String DETECT_PROPERTY_PREFIX = 'detect.'
@@ -85,10 +69,12 @@ class DetectConfiguration {
         detectProperties.outputDirectoryPath = detectProperties.outputDirectoryPath.trim()
 
         MutablePropertySources mutablePropertySources = configurableEnvironment.getPropertySources()
-        mutablePropertySources.each { propertySource ->
+        mutablePropertySources.each {
+            propertySource ->
             if (propertySource instanceof EnumerablePropertySource) {
                 EnumerablePropertySource enumerablePropertySource = (EnumerablePropertySource) propertySource
-                enumerablePropertySource.propertyNames.each { propertyName ->
+                enumerablePropertySource.propertyNames.each {
+                    propertyName ->
                     if (propertyName && propertyName.startsWith(DETECT_PROPERTY_PREFIX)) {
                         allDetectPropertyKeys.add(propertyName)
                     }
@@ -145,7 +131,8 @@ class DetectConfiguration {
         def propertyFields = DetectProperties.class.getDeclaredFields().findAll {
             int modifiers = it.modifiers
             !Modifier.isStatic(modifiers) && Modifier.isPrivate(modifiers)
-        }.sort { a, b ->
+        }.sort {
+            a, b ->
             a.name <=> b.name
         }
 
@@ -219,8 +206,8 @@ class DetectConfiguration {
     public String getPolicyCheck() {
         return detectProperties.policyCheck
     }
-    public Integer getPolicyTimeout() {
-        return detectProperties.policyTimeout
+    public Integer getPolicyCheckTimeout() {
+        return detectProperties.policyCheckTimeout
     }
     public String getGradleInspectorVersion() {
         return detectProperties.gradleInspectorVersion
