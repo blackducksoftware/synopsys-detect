@@ -69,7 +69,7 @@ class BdioUploader {
 
                 if (detectConfiguration.getPolicyCheck().equalsIgnoreCase("true")) {
                     logger.info("Checking for policy violations...")
-                    ScanStatusDataService scanStatusDataService = hubServicesFactory.createScanStatusDataService(slf4jIntLogger, detectConfiguration.getPolicyTimeout())
+                    ScanStatusDataService scanStatusDataService = hubServicesFactory.createScanStatusDataService(slf4jIntLogger, detectConfiguration.getPolicyCheckTimeout())
                     PolicyStatusDataService policyStatusDataService = hubServicesFactory.createPolicyStatusDataService(slf4jIntLogger)
                     PolicyChecker policyChecker = new PolicyChecker(scanStatusDataService, policyStatusDataService)
                     def policyCheck = policyChecker.checkForPolicyViolations(file)
