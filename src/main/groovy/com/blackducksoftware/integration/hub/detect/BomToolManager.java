@@ -121,7 +121,7 @@ public class BomToolManager {
                 if (StringUtils.isNotBlank(detectConfiguration.getProjectVersionName())) {
                     project.version = detectConfiguration.getProjectVersionName();
                 }
-                final SimpleBdioDocument bdioDocument = dependencyNodeTransformer.transformDependencyNode(detectConfiguration.getProjectCodeLocation(),
+                final SimpleBdioDocument bdioDocument = dependencyNodeTransformer.transformDependencyNode(detectConfiguration.getProjectCodeLocationName(),
                         project);
                 if (StringUtils.isNotBlank(detectConfiguration.getProjectName()) && StringUtils.isNotBlank(detectConfiguration.getProjectVersionName())) {
                     bdioDocument.billOfMaterials.spdxName = String.format("%s/%s/%s Black Duck I/O Export", project.name, project.version, bomToolTypeString);
