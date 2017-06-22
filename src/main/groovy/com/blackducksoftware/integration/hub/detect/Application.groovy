@@ -28,6 +28,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.ApplicationArguments
+import org.springframework.boot.Banner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.builder.SpringApplicationBuilder
 import org.springframework.context.annotation.Bean
@@ -67,7 +68,7 @@ class Application {
     HelpPrinter helpPrinter
 
     static void main(final String[] args) {
-        new SpringApplicationBuilder(Application.class).logStartupInfo(false).run(args)
+        new SpringApplicationBuilder(Application.class).bannerMode(Banner.Mode.OFF).logStartupInfo(false).run(args)
     }
 
     @PostConstruct
