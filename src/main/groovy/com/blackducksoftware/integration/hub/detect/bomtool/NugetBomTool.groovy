@@ -45,15 +45,16 @@ class NugetBomTool extends BomTool {
     @Autowired
     NugetInspectorPackager nugetInspectorPackager
 
-    String nugetExecutablePath
+    File nugetExecutable
     List<String> matchingSourcePaths = []
 
     BomToolType getBomToolType() {
         return BomToolType.NUGET
     }
 
-    boolean isBomToolApplicable() {
-        nugetExecutablePath = findNugetExecutable()
+    @Override
+    public boolean isBomToolApplicable() {
+        nugetExecutable = findNugetExecutable()
         detectConfiguration.sourcePaths.each { sourcePath ->
             def solutionFile = detectFileManager.findFile(sourcePath, SOLUTION_PATTERN)
             def projectFile = detectFileManager.findFile(sourcePath, PROJECT_PATTERN)
@@ -62,17 +63,18 @@ class NugetBomTool extends BomTool {
             }
         }
 
-        if (!matchingSourcePaths.isEmpty() && !nugetExecutablePath) {
+        if (!matchingSourcePaths.isEmpty() && !nugetExecutable) {
             logger.warn('The nuget executable must be on the path - are you sure you are running on a windows system?')
         }
 
-        nugetExecutablePath && !matchingSourcePaths.isEmpty()
+        nugetExecutable && !matchingSourcePaths.isEmpty()
     }
 
-    List<DependencyNode> extractDependencyNodes() {
+    @Override
+    public List<DependencyNode> extractDependencyNodes() {
         List<DependencyNode> projectNodes = []
         matchingSourcePaths.each { sourcePath ->
-            DependencyNode root = nugetInspectorPackager.makeDependencyNode(sourcePath, nugetExecutablePath)
+            DependencyNode root = nugetInspectorPackager.makeDependencyNode(sourcePath, nugetExecutable)
             if (!root) {
                 logger.info('Unable to extract any dependencies from nuget')
             } else {
