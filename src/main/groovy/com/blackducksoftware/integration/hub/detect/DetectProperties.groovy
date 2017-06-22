@@ -97,7 +97,7 @@ class DetectProperties {
     @Value('${detect.project.version.name}')
     String projectVersionName
 
-    @ValueDescription(description = "Set to true if you would like a policy check from the hub for your project. False by default")
+    @ValueDescription(description = "Set to true if you would like a policy check from the hub for your project. False by default", defaultValue="false")
     @Value('${detect.policy.check}')
     String policyCheck
 

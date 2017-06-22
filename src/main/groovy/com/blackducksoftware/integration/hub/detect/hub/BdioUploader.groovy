@@ -35,6 +35,7 @@ import com.blackducksoftware.integration.hub.buildtool.BuildToolConstants
 import com.blackducksoftware.integration.hub.dataservice.phonehome.PhoneHomeDataService
 import com.blackducksoftware.integration.hub.dataservice.policystatus.PolicyStatusDataService
 import com.blackducksoftware.integration.hub.dataservice.scan.ScanStatusDataService
+import com.blackducksoftware.integration.hub.detect.BomToolManager
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.policychecker.PolicyChecker
 import com.blackducksoftware.integration.hub.global.HubServerConfig
@@ -47,6 +48,9 @@ import com.blackducksoftware.integration.util.ResourceUtil
 @Component
 class BdioUploader {
     private final Logger logger = LoggerFactory.getLogger(BdioUploader.class)
+
+    @Autowired
+    BomToolManager bomToolManager
 
     @Autowired
     DetectConfiguration detectConfiguration
@@ -72,8 +76,11 @@ class BdioUploader {
                     ScanStatusDataService scanStatusDataService = hubServicesFactory.createScanStatusDataService(slf4jIntLogger, detectConfiguration.getPolicyCheckTimeout())
                     PolicyStatusDataService policyStatusDataService = hubServicesFactory.createPolicyStatusDataService(slf4jIntLogger)
                     PolicyChecker policyChecker = new PolicyChecker(scanStatusDataService, policyStatusDataService)
-                    def policyCheck = policyChecker.checkForPolicyViolations(file)
-                    logger.info("Policy check returned: " + policyCheck.toString().replace('_', ' '))
+                    String projectName = bomToolManager.getProjectNameByBdioFilename(file.name)
+                    String projectVersionName = bomToolManager.getProjectVersionNameByBdioFilename(file.name)
+
+                    String policyStatusMessage = policyChecker.checkForPolicyViolations(projectName, projectVersionName)
+                    logger.info("Policy status for ${projectName} (${projectVersionName}): ${policyStatusMessage}")
                 }
 
                 if (detectConfiguration.getCleanupBdioFiles()) {

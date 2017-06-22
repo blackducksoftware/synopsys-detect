@@ -26,14 +26,9 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 import com.blackducksoftware.integration.hub.dataservice.policystatus.PolicyStatusDataService
+import com.blackducksoftware.integration.hub.dataservice.policystatus.PolicyStatusDescription
 import com.blackducksoftware.integration.hub.dataservice.scan.ScanStatusDataService
-import com.blackducksoftware.integration.hub.model.enumeration.VersionBomPolicyStatusOverallStatusEnum
 import com.blackducksoftware.integration.hub.model.view.VersionBomPolicyStatusView
-import com.google.gson.JsonArray
-import com.google.gson.JsonElement
-import com.google.gson.JsonObject
-import com.google.gson.JsonParser
-import com.google.gson.stream.JsonReader
 
 class PolicyChecker {
     private final Logger logger = LoggerFactory.getLogger(PolicyChecker.class)
@@ -46,30 +41,11 @@ class PolicyChecker {
         this.policyStatusDataService = policyStatusDataService
     }
 
-    public VersionBomPolicyStatusOverallStatusEnum checkForPolicyViolations(BdioPolicy bdioPolicyModel) {
-        scanStatusDataService.assertBomImportScanStartedThenFinished(bdioPolicyModel.name, bdioPolicyModel.version)
-        VersionBomPolicyStatusView policyStatus = policyStatusDataService.getPolicyStatusForProjectAndVersion(bdioPolicyModel.name, bdioPolicyModel.version)
+    public String checkForPolicyViolations(String projectName, String projectVersionName) {
+        scanStatusDataService.assertBomImportScanStartedThenFinished(projectName, projectVersionName)
+        VersionBomPolicyStatusView versionBomPolicyStatusView = policyStatusDataService.getPolicyStatusForProjectAndVersion(projectName, projectVersionName)
+        PolicyStatusDescription policyStatusDescription = new PolicyStatusDescription(versionBomPolicyStatusView)
 
-        policyStatus.overallStatus
-    }
-
-    public VersionBomPolicyStatusOverallStatusEnum checkForPolicyViolations(File bdioFile) {
-        checkForPolicyViolations(convertFromJsonToSimpleBdioDocument(bdioFile))
-    }
-
-    private BdioPolicy convertFromJsonToSimpleBdioDocument(File bdioFile) {
-        JsonArray bdioComponents = new JsonParser().parse(new JsonReader(new FileReader(bdioFile))).getAsJsonArray()
-        for (JsonElement element : bdioComponents) {
-            JsonObject component = element.getAsJsonObject()
-            if (component.getAsJsonPrimitive('@type').getAsString().equalsIgnoreCase('project')) {
-                BdioPolicy bdioPolicyModel = new BdioPolicy()
-                bdioPolicyModel.name = component.getAsJsonPrimitive('name').getAsString()
-                bdioPolicyModel.version = component.getAsJsonPrimitive('revision').getAsString()
-
-                return bdioPolicyModel
-            }
-        }
-
-        null
+        policyStatusDescription.policyStatusMessage
     }
 }
