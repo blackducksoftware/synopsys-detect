@@ -216,6 +216,9 @@ class DetectConfiguration {
     public String getProjectVersionName() {
         return detectProperties.projectVersionName
     }
+    public String getProjectCodeLocationName() {
+        return detectProperties.projectCodeLocationName
+    }
     public String getPolicyCheck() {
         return detectProperties.policyCheck
     }

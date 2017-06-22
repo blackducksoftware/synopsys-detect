@@ -97,6 +97,10 @@ class DetectProperties {
     @Value('${detect.project.version.name}')
     String projectVersionName
 
+    @ValueDescription(description = "Code location to use when sending data to the Hub. If the code location already exists, it will use that pre-existing location")
+    @Value('${detect.project.code.location.name}')
+    String projectCodeLocationName
+
     @ValueDescription(description = "Set to true if you would like a policy check from the hub for your project. False by default", defaultValue="false")
     @Value('${detect.policy.check}')
     String policyCheck
@@ -246,6 +250,6 @@ class DetectProperties {
     String loggingLevel
 
     @ValueDescription(description="Detect creates temporary files in the output directory. If set to true this will clean them up after execution", defaultValue='true')
-    @Value('${detect.cleanup.bomtools.files}')
-    Boolean cleanupBomtoolFiles
+    @Value('${detect.cleanup.bom.tool.files}')
+    Boolean cleanupBomToolFiles
 }
