@@ -97,7 +97,7 @@ class DetectProperties {
     @Value('${detect.project.version.name}')
     String projectVersionName
 
-    @ValueDescription(description = "Specify code location if you would like to overwrite an already existing code location")
+    @ValueDescription(description = "Code location to use when sending data to the Hub. If the code location already exists, it will use that pre-existing location")
     @Value('${detect.project.code.location}')
     String projectCodeLocation
 
