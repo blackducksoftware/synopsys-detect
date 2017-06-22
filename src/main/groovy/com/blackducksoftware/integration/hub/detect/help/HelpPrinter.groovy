@@ -35,17 +35,17 @@ class HelpPrinter {
         def helpMessagePieces = []
         helpMessagePieces.add('')
 
-        StringBuilder headerLineBuilder = new StringBuilder()
-        headerLineBuilder.append(StringUtils.rightPad('Property Name', 50, ' '))
-        headerLineBuilder.append(StringUtils.rightPad('Default', 30, ' '))
-        headerLineBuilder.append(StringUtils.rightPad('Type', 20, ' '))
-        headerLineBuilder.append(StringUtils.rightPad('Description', 75, ' '))
+        def headerColumns = [
+            'Property Name',
+            'Default',
+            'Type',
+            'Description'
+        ]
 
-        helpMessagePieces.add(headerLineBuilder.toString())
+        helpMessagePieces.add(formatColumns(headerColumns, 50, 30, 20, 75))
         helpMessagePieces.add(StringUtils.repeat('_', 175))
         def character = null
         valueDescriptionAnnotationFinder.getDetectValues().each { detectValue ->
-            StringBuilder optionLineBuilder = new StringBuilder()
             def currentCharacter = detectValue.getKey()[7]
             if (character == null) {
                 character = currentCharacter
@@ -53,11 +53,13 @@ class HelpPrinter {
                 helpMessagePieces.add(StringUtils.repeat(' ', 175))
                 character = currentCharacter
             }
-            optionLineBuilder.append(StringUtils.rightPad("${detectValue.getKey()}", 50, ' '))
-            optionLineBuilder.append(StringUtils.rightPad(detectValue.getDefaultValue(), 30, ' '))
-            optionLineBuilder.append(StringUtils.rightPad(detectValue.getValueType().getSimpleName(), 20, ' '))
-            optionLineBuilder.append(StringUtils.rightPad(detectValue.getDescription(), 75, ' '))
-            helpMessagePieces.add(optionLineBuilder.toString())
+            def bodyColumns = [
+                "${detectValue.getKey()}",
+                detectValue.getDefaultValue(),
+                detectValue.getValueType().getSimpleName(),
+                detectValue.getDescription()
+            ]
+            helpMessagePieces.add(formatColumns(bodyColumns, 50, 30, 20, 75))
         }
         helpMessagePieces.add('')
         helpMessagePieces.add('Usage : ')
@@ -65,5 +67,40 @@ class HelpPrinter {
         helpMessagePieces.add('')
 
         printStream.println(StringUtils.join(helpMessagePieces, System.getProperty("line.separator")))
+    }
+
+    private String formatColumns(List<String> columns, int... columnWidths) {
+        if(allColumnsEmpty(columns)) {
+            return ''
+        }
+
+        StringBuilder createColumns = new StringBuilder()
+        List<String> subStrings = []
+        List<String> nextStrings = []
+        for(int i = 0; i < columns.size(); i++) {
+            if(columns.get(i).size() < columnWidths[i]) {
+                subStrings.add(columns.get(i))
+                nextStrings.add('')
+            } else {
+                subStrings.add(columns.get(i).substring(0, columnWidths[i]).trim() + '\n')
+                nextStrings.add(columns.get(i).substring(columnWidths[i]))
+            }
+        }
+
+        for(int i = 0; i < subStrings.size(); i++) {
+            createColumns.append(StringUtils.rightPad(subStrings.get(i), columnWidths[i], ' '))
+        }
+        createColumns.append(formatColumns(nextStrings, columnWidths))
+
+        createColumns.toString()
+    }
+
+    private boolean allColumnsEmpty(List<String> columns) {
+        for(String column : columns) {
+            if(column) {
+                return false
+            }
+        }
+        true
     }
 }
