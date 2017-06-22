@@ -31,7 +31,7 @@ import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
 class VndrParser {
     private final ProjectInfoGatherer projectInfoGatherer
 
-    public VndrParser(ProjectInfoGatherer projectInfoGatherer){
+    public VndrParser(ProjectInfoGatherer projectInfoGatherer) {
         this.projectInfoGatherer = projectInfoGatherer
     }
 
@@ -41,7 +41,7 @@ class VndrParser {
         def lines = contents.split(System.lineSeparator())
         //TODO test against moby
         lines.each { line ->
-            if (line?.trim() && !line.startsWith('#')){
+            if (line?.trim() && !line.startsWith('#')) {
                 def parts = line.split(' ')
                 final ExternalId dependencyExternalId = new NameVersionExternalId(GoDepBomTool.GOLANG, parts[0], parts[1])
                 final DependencyNode dependency = new DependencyNode(parts[0], parts[1], dependencyExternalId)

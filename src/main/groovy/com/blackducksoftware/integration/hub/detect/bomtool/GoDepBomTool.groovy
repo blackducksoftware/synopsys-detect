@@ -94,7 +94,7 @@ class GoDepBomTool extends BomTool {
         goDepPath
     }
 
-    private String installGoDep(String goExecutable){
+    private String installGoDep(String goExecutable) {
         File goDep = getBuiltGoDep()
         def goOutputDirectory = goDep.getParentFile()
         goOutputDirectory.mkdirs()
@@ -117,7 +117,7 @@ class GoDepBomTool extends BomTool {
         goDep.getAbsolutePath()
     }
 
-    private File getBuiltGoDep(){
+    private File getBuiltGoDep() {
         def goOutputDirectory = new File(detectConfiguration.outputDirectory, 'Go')
         new File(goOutputDirectory, executableManager.getExecutableName(ExecutableType.GO_DEP))
     }

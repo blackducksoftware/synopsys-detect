@@ -32,7 +32,7 @@ import com.moandjiezana.toml.Toml
 class GopkgLockParser {
     private final ProjectInfoGatherer projectInfoGatherer
 
-    public GopkgLockParser(ProjectInfoGatherer projectInfoGatherer){
+    public GopkgLockParser(ProjectInfoGatherer projectInfoGatherer) {
         this.projectInfoGatherer = projectInfoGatherer
     }
 
@@ -48,9 +48,9 @@ class GopkgLockParser {
             } else {
                 version = project.revision
             }
-            for (String pack : project.packages){
+            for (String pack : project.packages) {
                 String packageName = name
-                if (!pack.equals('.')){
+                if (!pack.equals('.')) {
                     packageName = "${packageName}/${pack}"
                 }
                 final ExternalId dependencyExternalId = new NameVersionExternalId(GoDepBomTool.GOLANG, packageName, version)

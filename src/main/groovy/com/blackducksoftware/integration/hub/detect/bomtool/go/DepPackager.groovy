@@ -63,7 +63,7 @@ class DepPackager {
         final DependencyNode root = new DependencyNode(rootName, rootVersion, rootExternalId)
         GopkgLockParser gopkgLockParser = new GopkgLockParser(projectInfoGatherer)
         String goDepContents = getGopkgLockContents(new File(sourcePath), goDepExecutable)
-        if(goDepContents?.trim()){
+        if (goDepContents?.trim()) {
             def children = gopkgLockParser.parseDepLock(goDepContents)
             root.children.addAll(children)
         }
@@ -89,14 +89,14 @@ class DepPackager {
             logger.info("Running ${goDepExecutable} 'init' on path ${file.getAbsolutePath()}")
             Executable executable = new Executable(file, goDepExecutable, ['init'])
             executableRunner.execute(executable)
-        } catch (ExecutableRunnerException e){
+        } catch (ExecutableRunnerException e) {
             logger.error("Failed to run ${goDepExecutable} 'init' on path ${file.getAbsolutePath()}, ${e.getMessage()}")
         }
         try{
             logger.info("Running ${goDepExecutable} 'ensure -update' on path ${file.getAbsolutePath()}")
             Executable executable = new Executable(file, goDepExecutable, ['ensure', '-update'])
             executableRunner.execute(executable)
-        } catch (ExecutableRunnerException e){
+        } catch (ExecutableRunnerException e) {
             logger.error("Failed to run ${goDepExecutable} 'ensure -update' on path ${file.getAbsolutePath()}, ${e.getMessage()}")
         }
         if (gopkgLockFile.exists()) {

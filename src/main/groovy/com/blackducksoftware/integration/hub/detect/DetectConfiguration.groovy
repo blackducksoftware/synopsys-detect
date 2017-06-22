@@ -115,7 +115,7 @@ class DetectConfiguration {
     public boolean shouldRun(BomTool bomTool) {
         if (usingDefaultSourcePaths && dockerBomTool.isBomToolApplicable()) {
             return BomToolType.DOCKER == bomTool.bomToolType
-        } else if (BomToolType.GO_DEP == bomTool.bomToolType){
+        } else if (BomToolType.GO_DEP == bomTool.bomToolType) {
             return !goGodepsBomTool.isBomToolApplicable() && !goVndrBomTool.isBomToolApplicable()
         } else {
             return true

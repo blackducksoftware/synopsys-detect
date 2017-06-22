@@ -34,7 +34,7 @@ class GoGodepsParser {
 
     private final ProjectInfoGatherer projectInfoGatherer
 
-    public GoGodepsParser(Gson gson, ProjectInfoGatherer projectInfoGatherer){
+    public GoGodepsParser(Gson gson, ProjectInfoGatherer projectInfoGatherer) {
         this.gson = gson;
         this.projectInfoGatherer = projectInfoGatherer
     }

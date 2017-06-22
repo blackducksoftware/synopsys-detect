@@ -98,32 +98,32 @@ class FileFinder {
         foundFiles
     }
 
-    File[] findFilesToDepth(final File sourceDirectory, final String filenamePattern, int maxDepth){
+    File[] findFilesToDepth(final File sourceDirectory, final String filenamePattern, int maxDepth) {
         return findFilesRecursive(sourceDirectory, filenamePattern, 0, maxDepth)
     }
 
-    private File[] findFilesRecursive(final File sourceDirectory, final String filenamePattern, int currentDepth, int maxDepth){
+    private File[] findFilesRecursive(final File sourceDirectory, final String filenamePattern, int currentDepth, int maxDepth) {
         def files = [];
-        if (currentDepth > maxDepth || !sourceDirectory.isDirectory()){
+        if (currentDepth > maxDepth || !sourceDirectory.isDirectory()) {
             return files
         }
         sourceDirectory.listFiles().each {
-            if (it.isDirectory()){
+            if (it.isDirectory()) {
                 files.addAll(findFilesRecursive(it, filenamePattern, currentDepth + 1, maxDepth))
-            }else if (FilenameUtils.wildcardMatchOnSystem(it.getName(), filenamePattern)){
+            }else if (FilenameUtils.wildcardMatchOnSystem(it.getName(), filenamePattern)) {
                 files.add(it)
             }
         }
         return files
     }
 
-    File[] findDirectoriesContainingFilesToDepth(final File sourceDirectory, final String filenamePattern, int maxDepth){
+    File[] findDirectoriesContainingFilesToDepth(final File sourceDirectory, final String filenamePattern, int maxDepth) {
         return findDirectoriesContainingFilesRecursive(sourceDirectory, filenamePattern, 0, maxDepth)
     }
 
-    private File[] findDirectoriesContainingFilesRecursive(final File sourceDirectory, final String filenamePattern, int currentDepth, int maxDepth){
+    private File[] findDirectoriesContainingFilesRecursive(final File sourceDirectory, final String filenamePattern, int currentDepth, int maxDepth) {
         def files = new HashSet<File>();
-        if (currentDepth > maxDepth || !sourceDirectory.isDirectory()){
+        if (currentDepth > maxDepth || !sourceDirectory.isDirectory()) {
             return files
         }
         for (File file : sourceDirectory.listFiles()) {
