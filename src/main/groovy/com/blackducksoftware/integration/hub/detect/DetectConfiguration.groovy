@@ -226,6 +226,9 @@ class DetectConfiguration {
     public String getProjectVersionName() {
         return detectProperties.projectVersionName
     }
+    public String getProjectCodeLocation() {
+        return detectProperties.projectCodeLocation
+    }
     public String getPolicyCheck() {
         return detectProperties.policyCheck
     }
@@ -338,7 +341,7 @@ class DetectConfiguration {
         return detectProperties.loggingLevel
     }
     public String getCleanupBomToolFiles() {
-        return detectProperties.cleanupBomToolFiles
+        return detectProperties.cleanupBomtoolFiles
     }
     public Boolean getSuppressConfigurationOutput() {
         return detectProperties.suppressConfigurationOutput
