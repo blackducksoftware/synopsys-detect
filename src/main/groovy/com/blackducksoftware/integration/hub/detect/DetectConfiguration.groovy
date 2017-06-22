@@ -35,8 +35,6 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import com.blackducksoftware.integration.hub.detect.bomtool.DockerBomTool
-import com.blackducksoftware.integration.hub.detect.bomtool.GoGodepsBomTool
-import com.blackducksoftware.integration.hub.detect.bomtool.GoVndrBomTool
 import com.blackducksoftware.integration.hub.detect.exception.DetectException
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 
@@ -52,12 +50,6 @@ class DetectConfiguration {
 
     @Autowired
     DetectProperties detectProperties
-
-    @Autowired
-    GoGodepsBomTool goGodepsBomTool
-
-    @Autowired
-    GoVndrBomTool goVndrBomTool
 
     @Autowired
     DockerBomTool dockerBomTool
@@ -115,8 +107,6 @@ class DetectConfiguration {
     public boolean shouldRun(BomTool bomTool) {
         if (usingDefaultSourcePaths && dockerBomTool.isBomToolApplicable()) {
             return BomToolType.DOCKER == bomTool.bomToolType
-        } else if (BomToolType.GO_DEP == bomTool.bomToolType) {
-            return !goGodepsBomTool.isBomToolApplicable() && !goVndrBomTool.isBomToolApplicable()
         } else {
             return true
         }
