@@ -60,7 +60,7 @@ class GoDepBomTool extends BomTool {
         for (String sourcePath : detectConfiguration.getSourcePaths()) {
             if (detectFileManager.containsAllFiles(sourcePath, GoGodepsBomTool.FILE_SEARCH_PATTERN) || detectFileManager.containsAllFiles(sourcePath, GoVndrBomTool.FILE_SEARCH_PATTERN)) {
                 // not applicable, the other Go BomTools should be used for this path
-                continue 
+                continue
             } else if (detectFileManager.containsAllFiles(sourcePath, 'Gopkg.lock')) {
                 matchingSourcePaths.add(sourcePath)
             } else if (detectFileManager.containsAllFilesToDepth(sourcePath, detectConfiguration.getSearchDepth(), '*.go')) {
