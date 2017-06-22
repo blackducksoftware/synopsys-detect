@@ -72,7 +72,7 @@ class Application {
 
     @PostConstruct
     void init() {
-        if ('-h' in applicationArguments.getSourceArgs() || '--help' in applicationArguments.getSourceArgs()){
+        if ('-h' in applicationArguments.getSourceArgs() || '--help' in applicationArguments.getSourceArgs()) {
             helpPrinter.printHelpMessage(System.out)
         } else {
             detectConfiguration.init()

@@ -67,7 +67,7 @@ class ExecutableManager {
         null == executableFile ? null : executableFile.absolutePath
     }
 
-    String getExecutableName(ExecutableType executableType){
+    String getExecutableName(ExecutableType executableType) {
         executableType.getExecutable(currentOs)
     }
 

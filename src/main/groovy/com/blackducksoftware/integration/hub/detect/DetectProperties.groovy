@@ -205,13 +205,9 @@ class DetectProperties {
     @Value('${detect.pip.requirements.path}')
     String requirementsFilePath
 
-    @ValueDescription(description="Path of the GoDep executable")
-    @Value('${detect.godep.path}')
-    String godepPath
-
-    @ValueDescription(description="If true all Go results will be aggregated into a single bom", defaultValue="true")
-    @Value('${detect.go.aggregate}')
-    Boolean goAggregate
+    @ValueDescription(description="Path of the Go Dep executable")
+    @Value('${detect.go.dep.path}')
+    String goDepPath
 
     @ValueDescription(description="Path of the docker executable")
     @Value('${detect.docker.path}')
@@ -250,6 +246,6 @@ class DetectProperties {
     String loggingLevel
 
     @ValueDescription(description="Detect creates temporary files in the output directory. If set to true this will clean them up after execution", defaultValue='true')
-    @Value('${detect.cleanup.bom.tool.files}')
-    Boolean cleanupBomToolFiles
+    @Value('${detect.cleanup.bomtools.files}')
+    Boolean cleanupBomtoolFiles
 }

@@ -54,7 +54,7 @@ class MavenBomTool extends BomTool {
         matchingSourcePaths += sourcePathSearcher.findFilenamePattern(POM_WRAPPER_FILENAME)
         def mvnExecutable = false
         for (String sourcePath : matchingSourcePaths) {
-            if (findMavenExecutablePath(sourcePath)){
+            if (findMavenExecutablePath(sourcePath)) {
                 mvnExecutable = true
                 break
             }

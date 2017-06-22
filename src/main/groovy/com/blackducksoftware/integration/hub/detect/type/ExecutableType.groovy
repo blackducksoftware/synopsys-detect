@@ -34,7 +34,7 @@ enum ExecutableType {
     PIP3([(OperatingSystemType.WINDOWS): 'pip3.exe', (OperatingSystemType.LINUX): 'pip3']),
     PYTHON3([(OperatingSystemType.WINDOWS): 'python3.exe', (OperatingSystemType.LINUX): 'python3']),
     GO([(OperatingSystemType.WINDOWS): 'go.exe', (OperatingSystemType.LINUX): 'go']),
-    GODEP([(OperatingSystemType.WINDOWS): 'godep.exe', (OperatingSystemType.LINUX): 'godep']),
+    GO_DEP([(OperatingSystemType.WINDOWS): 'dep.exe', (OperatingSystemType.LINUX): 'dep']),
     DOCKER([(OperatingSystemType.WINDOWS): 'docker.exe', (OperatingSystemType.LINUX): 'docker']),
     NPM([(OperatingSystemType.WINDOWS): 'npm.cmd', (OperatingSystemType.LINUX): 'npm']),
     BASH([(OperatingSystemType.WINDOWS): 'bash.exe', (OperatingSystemType.LINUX): 'bash'])

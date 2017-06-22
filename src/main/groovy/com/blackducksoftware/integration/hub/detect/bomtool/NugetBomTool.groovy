@@ -97,7 +97,7 @@ class NugetBomTool extends BomTool {
         projectNodes
     }
 
-    boolean isSolution(DependencyNode root){
+    boolean isSolution(DependencyNode root) {
         root.children != null && root.children.size() > 0 && root.children[0].children != null && root.children[0].children.size() > 0
     }
 

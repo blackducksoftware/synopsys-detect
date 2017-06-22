@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2017 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
  *
@@ -20,21 +20,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.type;
+import com.google.gson.annotations.SerializedName
 
-public enum BomToolType {
-    COCOAPODS,
-    DOCKER,
-    GRADLE,
-    MAVEN,
-    NUGET,
-    PIP,
-    PIP3,
-    RUBYGEMS,
-    CARTHAGE,
-    GO_GODEP,
-    GO_VNDR,
-    GO_DEP,
-    SBT,
-    NPM;
+class SolveMeta {
+    @SerializedName("inputs-digest")
+    String inputsDigest
+
+    @SerializedName("analyzer-name")
+    String analyzerName
+
+    @SerializedName("analyzer-version")
+    Integer analyzerVersion
+
+    @SerializedName("solver-name")
+    String solverName
+
+    @SerializedName("solver-version")
+    Integer solverVersion
 }
