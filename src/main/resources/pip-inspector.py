@@ -62,6 +62,8 @@ def main():
             for req in requirements:
                 try:
                     requirement = resolve_package_by_name(req.req.name)
+                    if requirement is None:
+                        raise Exception()
                     project.children = project.children + [requirement]
                 except:
                     print('--' + req.req.name)
