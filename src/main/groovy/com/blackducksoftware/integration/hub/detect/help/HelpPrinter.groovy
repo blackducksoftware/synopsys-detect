@@ -42,7 +42,8 @@ class HelpPrinter {
             'Description'
         ]
 
-        helpMessagePieces.add(formatColumns(headerColumns, 50, 30, 20, 75))
+        String headerText = formatColumns(headerColumns, 50, 30, 20, 75)
+        helpMessagePieces.add(headerText)
         helpMessagePieces.add(StringUtils.repeat('_', 175))
         def character = null
         valueDescriptionAnnotationFinder.getDetectValues().each { detectValue ->
@@ -59,7 +60,8 @@ class HelpPrinter {
                 detectValue.getValueType().getSimpleName(),
                 detectValue.getDescription()
             ]
-            helpMessagePieces.add(formatColumns(bodyColumns, 50, 30, 20, 75))
+            String bodyText = formatColumns(bodyColumns, 50, 30, 20, 75)
+            helpMessagePieces.add(bodyText)
         }
         helpMessagePieces.add('')
         helpMessagePieces.add('Usage : ')
@@ -70,28 +72,26 @@ class HelpPrinter {
     }
 
     private String formatColumns(List<String> columns, int... columnWidths) {
-        if(allColumnsEmpty(columns)) {
-            return ''
-        }
-
         StringBuilder createColumns = new StringBuilder()
-        List<String> subStrings = []
-        List<String> nextStrings = []
+        List<String> columnfirstRow = []
+        List<String> columnRemainingRows = []
         for(int i = 0; i < columns.size(); i++) {
             if(columns.get(i).size() < columnWidths[i]) {
-                subStrings.add(columns.get(i))
-                nextStrings.add('')
+                columnfirstRow.add(columns.get(i))
+                columnRemainingRows.add('')
             } else {
-                subStrings.add(columns.get(i).substring(0, columnWidths[i]).trim() + '\n')
-                nextStrings.add(columns.get(i).substring(columnWidths[i]))
+                columnfirstRow.add(columns.get(i).substring(0, columnWidths[i]))
+                columnRemainingRows.add(columns.get(i).substring(columnWidths[i]))
             }
         }
 
-        for(int i = 0; i < subStrings.size(); i++) {
-            createColumns.append(StringUtils.rightPad(subStrings.get(i), columnWidths[i], ' '))
+        for(int i = 0; i < columnfirstRow.size(); i++) {
+            createColumns.append(StringUtils.rightPad(columnfirstRow.get(i), columnWidths[i], ' '))
         }
-        createColumns.append(formatColumns(nextStrings, columnWidths))
 
+        if(!allColumnsEmpty(columnRemainingRows)) {
+            createColumns.append(System.getProperty("line.separator") + formatColumns(columnRemainingRows, columnWidths))
+        }
         createColumns.toString()
     }
 
