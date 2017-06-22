@@ -22,55 +22,49 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool
 
+
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmCliDependencyFinder
+import com.blackducksoftware.integration.hub.detect.bomtool.go.godep.GoGodepsParser
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
-import com.blackducksoftware.integration.hub.detect.type.ExecutableType
+import com.google.gson.Gson
 
 @Component
-class NpmBomTool extends BomTool {
-    public static final String NODE_MODULES = 'node_modules'
-    public static final String OUTPUT_FILE = 'detect_npm_proj_dependencies.json'
-    public static final String ERROR_FILE = 'detect_npm_error.json'
+class GoGodepsBomTool extends BomTool {
+    private final Logger logger = LoggerFactory.getLogger(GoGodepsBomTool.class)
 
     @Autowired
-    NpmCliDependencyFinder cliDependencyFinder
+    Gson gson
 
-    private List<String> npmPaths = []
-    private String npmExe
+    List<String> matchingSourcePaths = []
 
     @Override
     public BomToolType getBomToolType() {
-        BomToolType.NPM
+        return BomToolType.GO_GODEP
     }
 
     @Override
     public boolean isBomToolApplicable() {
-        npmPaths = sourcePathSearcher.findFilenamePattern(NODE_MODULES)
-        npmExe = getExecutablePath()
-
-        npmPaths && npmExe
+        matchingSourcePaths = sourcePathSearcher.findFilenamePattern('Godeps')
+        !matchingSourcePaths.isEmpty()
     }
 
     @Override
     public List<DependencyNode> extractDependencyNodes() {
-        List<DependencyNode> nodes = []
-
-        npmPaths.each {
-            nodes.add(cliDependencyFinder.generateDependencyNode(it, npmExe))
+        def nodes = []
+        GoGodepsParser goDepParser = new GoGodepsParser(gson, projectInfoGatherer)
+        matchingSourcePaths.each {
+            def goDepsDirectory = new File(it, "Godeps")
+            def goDepsFile = new File(goDepsDirectory, "Godeps.json")
+            if (goDepsFile.exists()) {
+                def dependencyNode = goDepParser.parseGoDep(goDepsFile.text)
+                nodes.add(dependencyNode)
+            }
         }
-
-        nodes
-    }
-
-    private String getExecutablePath() {
-        if (detectConfiguration.getNpmPath()) {
-            return detectConfiguration.getNpmPath()
-        }
-
-        executableManager.getPathOfExecutable(ExecutableType.NPM)
+        return nodes
     }
 }

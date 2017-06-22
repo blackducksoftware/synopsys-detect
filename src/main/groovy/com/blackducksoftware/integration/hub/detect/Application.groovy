@@ -72,11 +72,14 @@ class Application {
 
     @PostConstruct
     void init() {
-        if ('-h' in applicationArguments.getSourceArgs() || '--help' in applicationArguments.getSourceArgs()){
+        if ('-h' in applicationArguments.getSourceArgs() || '--help' in applicationArguments.getSourceArgs()) {
             helpPrinter.printHelpMessage(System.out)
         } else {
             detectConfiguration.init()
             logger.info('Configuration processed completely.')
+            if (Boolean.FALSE == detectConfiguration.suppressConfigurationOutput) {
+                detectConfiguration.printConfiguration(System.out)
+            }
             List<File> createdBdioFiles = bomToolManager.createBdioFiles()
             bdioUploader.uploadBdioFiles(createdBdioFiles)
         }

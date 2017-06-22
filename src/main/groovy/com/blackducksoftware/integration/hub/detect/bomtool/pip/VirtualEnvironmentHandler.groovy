@@ -94,12 +94,12 @@ class VirtualEnvironmentHandler {
                 env = findExistingEnvironment(definedEnv)
             }
 
-            if (!env && definedEnv){
+            if (!env && definedEnv) {
                 env = createVirtualEnvironment(definedEnv)
             } else if (!env) {
                 env = createVirtualEnvironment(venvDirectory)
             }
-        } else if (definedPath){
+        } else if (definedPath) {
             def venvDirectory = new File(detectConfiguration.virtualEnvPath)
             env = findExistingEnvironment(venvDirectory)
         }
@@ -113,7 +113,7 @@ class VirtualEnvironmentHandler {
 
     VirtualEnvironment createVirtualEnvironment(File virtualEnvDirectory) {
         def installVirtualEnvPackage = new Executable(virtualEnvDirectory.getParentFile(), systemEnvironment.pipPath, ['install', 'virtualenv'])
-        executableRunner.executeLoudly(installVirtualEnvPackage)
+        executableRunner.execute(installVirtualEnvPackage)
 
         def virtualEnvOptions = [
             "--python=${systemEnvironment.getPythonPath()}",
@@ -121,7 +121,7 @@ class VirtualEnvironmentHandler {
         ]
         def virtualEnvPath = executableManager.getPathOfExecutable(ExecutableType.VIRTUALENV)
         def setupVirtualEnvironment = new Executable(virtualEnvDirectory.getParentFile(), virtualEnvPath, virtualEnvOptions)
-        executableRunner.executeLoudly(setupVirtualEnvironment)
+        executableRunner.execute(setupVirtualEnvironment)
 
         findExistingEnvironment(virtualEnvDirectory)
     }
@@ -149,7 +149,7 @@ class VirtualEnvironmentHandler {
         if (StringUtils.isNotBlank(executablePath)) {
             executablePath
         } else {
-            if (StringUtils.isBlank(path)){
+            if (StringUtils.isBlank(path)) {
                 executableManager.getPathOfExecutable(commandType)
             } else {
                 executableManager.getPathOfExecutable(path, commandType)

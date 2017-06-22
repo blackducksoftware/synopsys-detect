@@ -26,7 +26,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -59,6 +61,10 @@ public class BomToolManager {
 
     @Autowired
     private DependencyNodeTransformer dependencyNodeTransformer;
+
+    private final Map<String, String> filenameToProjectName = new HashMap<>();
+
+    private final Map<String, String> filenameToProjectVersionName = new HashMap<>();
 
     public List<File> createBdioFiles() throws IOException {
         final List<File> createdBdioFiles = new ArrayList<>();
@@ -125,6 +131,17 @@ public class BomToolManager {
             } catch (final IOException e) {
                 throw new RuntimeException(e);
             }
+
+            filenameToProjectName.put(filename, project.name);
+            filenameToProjectVersionName.put(filename, project.version);
         }
+    }
+
+    public String getProjectNameByBdioFilename(final String bdioFilename) {
+        return filenameToProjectName.get(bdioFilename);
+    }
+
+    public String getProjectVersionNameByBdioFilename(final String bdioFilename) {
+        return filenameToProjectVersionName.get(bdioFilename);
     }
 }

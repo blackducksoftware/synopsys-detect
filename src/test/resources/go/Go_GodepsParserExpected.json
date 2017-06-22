@@ -38,10 +38,10 @@
     },
     {
       "name": "github.com/gorilla/mux",
-      "version": "v1.4.0-6-g043ee65",
+      "version": "v1.4.0",
       "externalId": {
         "name": "github.com/gorilla/mux",
-        "version": "v1.4.0-6-g043ee65",
+        "version": "v1.4.0",
         "forge": {
           "name": "golang",
           "separator": ":"
@@ -64,10 +64,10 @@
     },
     {
       "name": "github.com/stretchr/testify/assert",
-      "version": "v1.1.4-66-gf6abca5",
+      "version": "v1.1.4",
       "externalId": {
         "name": "github.com/stretchr/testify/assert",
-        "version": "v1.1.4-66-gf6abca5",
+        "version": "v1.1.4",
         "forge": {
           "name": "golang",
           "separator": ":"
@@ -129,10 +129,10 @@
     },
     {
       "name": "google.golang.org/appengine",
-      "version": "v1.0.0-37-ga2f4131",
+      "version": "v1.0.0",
       "externalId": {
         "name": "google.golang.org/appengine",
-        "version": "v1.0.0-37-ga2f4131",
+        "version": "v1.0.0",
         "forge": {
           "name": "golang",
           "separator": ":"
@@ -142,10 +142,10 @@
     },
     {
       "name": "google.golang.org/appengine/aetest",
-      "version": "v1.0.0-37-ga2f4131",
+      "version": "v1.0.0",
       "externalId": {
         "name": "google.golang.org/appengine/aetest",
-        "version": "v1.0.0-37-ga2f4131",
+        "version": "v1.0.0",
         "forge": {
           "name": "golang",
           "separator": ":"
@@ -155,10 +155,10 @@
     },
     {
       "name": "google.golang.org/appengine/internal",
-      "version": "v1.0.0-37-ga2f4131",
+      "version": "v1.0.0",
       "externalId": {
         "name": "google.golang.org/appengine/internal",
-        "version": "v1.0.0-37-ga2f4131",
+        "version": "v1.0.0",
         "forge": {
           "name": "golang",
           "separator": ":"
@@ -168,10 +168,10 @@
     },
     {
       "name": "google.golang.org/appengine/internal/app_identity",
-      "version": "v1.0.0-37-ga2f4131",
+      "version": "v1.0.0",
       "externalId": {
         "name": "google.golang.org/appengine/internal/app_identity",
-        "version": "v1.0.0-37-ga2f4131",
+        "version": "v1.0.0",
         "forge": {
           "name": "golang",
           "separator": ":"
@@ -181,10 +181,10 @@
     },
     {
       "name": "google.golang.org/appengine/internal/base",
-      "version": "v1.0.0-37-ga2f4131",
+      "version": "v1.0.0",
       "externalId": {
         "name": "google.golang.org/appengine/internal/base",
-        "version": "v1.0.0-37-ga2f4131",
+        "version": "v1.0.0",
         "forge": {
           "name": "golang",
           "separator": ":"
@@ -194,10 +194,10 @@
     },
     {
       "name": "google.golang.org/appengine/internal/datastore",
-      "version": "v1.0.0-37-ga2f4131",
+      "version": "v1.0.0",
       "externalId": {
         "name": "google.golang.org/appengine/internal/datastore",
-        "version": "v1.0.0-37-ga2f4131",
+        "version": "v1.0.0",
         "forge": {
           "name": "golang",
           "separator": ":"
@@ -207,10 +207,10 @@
     },
     {
       "name": "google.golang.org/appengine/internal/log",
-      "version": "v1.0.0-37-ga2f4131",
+      "version": "v1.0.0",
       "externalId": {
         "name": "google.golang.org/appengine/internal/log",
-        "version": "v1.0.0-37-ga2f4131",
+        "version": "v1.0.0",
         "forge": {
           "name": "golang",
           "separator": ":"
@@ -220,10 +220,10 @@
     },
     {
       "name": "google.golang.org/appengine/internal/modules",
-      "version": "v1.0.0-37-ga2f4131",
+      "version": "v1.0.0",
       "externalId": {
         "name": "google.golang.org/appengine/internal/modules",
-        "version": "v1.0.0-37-ga2f4131",
+        "version": "v1.0.0",
         "forge": {
           "name": "golang",
           "separator": ":"
@@ -233,10 +233,10 @@
     },
     {
       "name": "google.golang.org/appengine/internal/remote_api",
-      "version": "v1.0.0-37-ga2f4131",
+      "version": "v1.0.0",
       "externalId": {
         "name": "google.golang.org/appengine/internal/remote_api",
-        "version": "v1.0.0-37-ga2f4131",
+        "version": "v1.0.0",
         "forge": {
           "name": "golang",
           "separator": ":"
@@ -246,10 +246,10 @@
     },
     {
       "name": "google.golang.org/appengine/internal/user",
-      "version": "v1.0.0-37-ga2f4131",
+      "version": "v1.0.0",
       "externalId": {
         "name": "google.golang.org/appengine/internal/user",
-        "version": "v1.0.0-37-ga2f4131",
+        "version": "v1.0.0",
         "forge": {
           "name": "golang",
           "separator": ":"
@@ -259,10 +259,10 @@
     },
     {
       "name": "google.golang.org/appengine/log",
-      "version": "v1.0.0-37-ga2f4131",
+      "version": "v1.0.0",
       "externalId": {
         "name": "google.golang.org/appengine/log",
-        "version": "v1.0.0-37-ga2f4131",
+        "version": "v1.0.0",
         "forge": {
           "name": "golang",
           "separator": ":"
@@ -272,10 +272,10 @@
     },
     {
       "name": "google.golang.org/appengine/user",
-      "version": "v1.0.0-37-ga2f4131",
+      "version": "v1.0.0",
       "externalId": {
         "name": "google.golang.org/appengine/user",
-        "version": "v1.0.0-37-ga2f4131",
+        "version": "v1.0.0",
         "forge": {
           "name": "golang",
           "separator": ":"

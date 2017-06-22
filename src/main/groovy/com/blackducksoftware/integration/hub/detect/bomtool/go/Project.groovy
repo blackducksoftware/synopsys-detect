@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2017 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
  *
@@ -20,21 +20,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.type;
+package com.blackducksoftware.integration.hub.detect.bomtool.go
 
-public enum BomToolType {
-    COCOAPODS,
-    DOCKER,
-    GRADLE,
-    MAVEN,
-    NUGET,
-    PIP,
-    PIP3,
-    RUBYGEMS,
-    CARTHAGE,
-    GO_GODEP,
-    GO_VNDR,
-    GO_DEP,
-    SBT,
-    NPM;
+class Project {
+    String name
+    String branch
+    String revision
+    String version
+    String source
+    List<String> packages
 }

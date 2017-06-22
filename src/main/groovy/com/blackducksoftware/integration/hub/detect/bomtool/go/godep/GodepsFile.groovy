@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2017 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
  *
@@ -20,21 +20,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.type;
+package com.blackducksoftware.integration.hub.detect.bomtool.go.godep
 
-public enum BomToolType {
-    COCOAPODS,
-    DOCKER,
-    GRADLE,
-    MAVEN,
-    NUGET,
-    PIP,
-    PIP3,
-    RUBYGEMS,
-    CARTHAGE,
-    GO_GODEP,
-    GO_VNDR,
-    GO_DEP,
-    SBT,
-    NPM;
+import com.google.gson.annotations.SerializedName
+
+class GodepsFile {
+    @SerializedName("ImportPath")
+    String importPath
+    @SerializedName("GoVersion")
+    String goVersion
+    @SerializedName("GodepVersion")
+    String godepVersion
+    @SerializedName("Packages")
+    String[] packages
+    @SerializedName("Deps")
+    GodepDependency[] deps
 }

@@ -29,6 +29,10 @@ import com.blackducksoftware.integration.hub.detect.help.ValueDescription
 
 @Component
 class DetectProperties {
+    @ValueDescription(description="If true, the default behavior of printing your configuration properties at startup will be suppressed.", defaultValue="false")
+    @Value('${detect.suppress.configuration.output}')
+    Boolean suppressConfigurationOutput
+
     @ValueDescription(description="If true the bdio files will be deleted after upload", defaultValue="true")
     @Value('${detect.cleanup.bdio.files}')
     Boolean cleanupBdioFiles
@@ -96,6 +100,14 @@ class DetectProperties {
     @ValueDescription(description = "Specify code location if you would like to overwrite an already existing code location")
     @Value('${detect.project.code.location}')
     String projectCodeLocation
+
+    @ValueDescription(description = "Set to true if you would like a policy check from the hub for your project. False by default", defaultValue="false")
+    @Value('${detect.policy.check}')
+    String policyCheck
+
+    @ValueDescription(description="Timeout for the Hub's policy check response. When changing this value, keep in mind the checking of policies might have to wait for a new scan to process which can take some time.", defaultValue="300000")
+    @Value('${detect.policy.check.timeout}')
+    Integer policyCheckTimeout
 
     @ValueDescription(description="Version of the Gradle Inspector", defaultValue="0.0.7")
     @Value('${detect.gradle.inspector.version}')
@@ -197,13 +209,9 @@ class DetectProperties {
     @Value('${detect.pip.requirements.path}')
     String requirementsFilePath
 
-    @ValueDescription(description="Path of the GoDep executable")
-    @Value('${detect.godep.path}')
-    String godepPath
-
-    @ValueDescription(description="If true all Go results will be aggregated into a single bom", defaultValue="true")
-    @Value('${detect.go.aggregate}')
-    Boolean goAggregate
+    @ValueDescription(description="Path of the Go Dep executable")
+    @Value('${detect.go.dep.path}')
+    String goDepPath
 
     @ValueDescription(description="Path of the docker executable")
     @Value('${detect.docker.path}')
@@ -242,6 +250,6 @@ class DetectProperties {
     String loggingLevel
 
     @ValueDescription(description="Detect creates temporary files in the output directory. If set to true this will clean them up after execution", defaultValue='true')
-    @Value('${detect.cleanup.bom.tool.files}')
-    Boolean cleanupBomToolFiles
+    @Value('${detect.cleanup.bomtools.files}')
+    Boolean cleanupBomtoolFiles
 }
