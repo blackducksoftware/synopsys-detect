@@ -225,7 +225,7 @@ class DetectProperties {
     @Value('${detect.docker.inspector.path}')
     String dockerInspectorPath
 
-    @ValueDescription(description="Version of the Hub Docker Inspector to use", defaultValue="0.0.4")
+    @ValueDescription(description="Version of the Hub Docker Inspector to use", defaultValue="0.1.1")
     @Value('${detect.docker.inspector.version}')
     String dockerInspectorVersion
 
