@@ -69,7 +69,8 @@ public class BomToolManager {
     public List<File> createBdioFiles() throws IOException {
         final List<File> createdBdioFiles = new ArrayList<>();
         boolean foundSomeBomTools = false;
-        final ExcludedIncludedFilter toolFilter = new ExcludedIncludedFilter("", detectConfiguration.getBomToolTypeOverride());
+        final ExcludedIncludedFilter toolFilter = new ExcludedIncludedFilter(detectConfiguration.getExcludedBomToolTypes(),
+                detectConfiguration.getIncludedBomToolTypes());
         for (final BomTool bomTool : bomTools) {
             try {
                 final BomToolType bomToolType = bomTool.getBomToolType();

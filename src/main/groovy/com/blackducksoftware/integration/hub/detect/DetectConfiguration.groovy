@@ -207,8 +207,11 @@ class DetectConfiguration {
     public Integer getSearchDepth() {
         return detectProperties.searchDepth
     }
-    public String getBomToolTypeOverride() {
-        return detectProperties.bomToolTypeOverride
+    public String getExcludedBomToolTypes() {
+        return detectProperties.excludedBomToolTypes
+    }
+    public String getIncludedBomToolTypes() {
+        return detectProperties.includedBomToolTypes
     }
     public String getProjectName() {
         return detectProperties.projectName

@@ -85,9 +85,13 @@ class DetectProperties {
     @Value('${detect.search.depth}')
     Integer searchDepth
 
-    @ValueDescription(description = "By default, all tools will be active. If you wish to limit the tools used, specify the ones to use here.", group="bomtool")
-    @Value('${detect.bom.tool.type.override}')
-    String bomToolTypeOverride
+    @ValueDescription(description = "By default, all tools will be included. If you want to exclude specific tools, specify the ones to exclude here. Exclusion rules always win.", group="bomtool")
+    @Value('${detect.excluded.bom.tool.types}')
+    String excludedBomToolTypes
+
+    @ValueDescription(description = "By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.", group="bomtool")
+    @Value('${detect.included.bom.tool.types}')
+    String includedBomToolTypes
 
     @ValueDescription(description = "An override for the name to use for the Hub project. If not supplied, detect will attempt to use the tools to figure out a reasonable project name. If that fails, the final part of the directory path where the inspection is taking place will be used.", group="project info")
     @Value('${detect.project.name}')
