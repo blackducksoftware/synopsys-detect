@@ -8,7 +8,7 @@ DETECT_LATEST_SNAPSHOT=hub-detect-latest-SNAPSHOT.jar
 
 # This value should be automatically updated by the
 # gradle build process for a non-snapshot build.
-DETECT_LATEST_RELEASE_VERSION="0.0.4"
+DETECT_LATEST_RELEASE_VERSION="0.0.5"
 DETECT_LATEST_RELEASE="hub-detect-${DETECT_LATEST_RELEASE_VERSION}.jar"
 
 # If you would like to enable the shell script to use
@@ -25,7 +25,7 @@ DETECT_USE_SNAPSHOT=${DETECT_USE_SNAPSHOT:-0}
 
 DETECT_JAR_PATH=${DETECT_JAR_PATH:-/tmp}
 
-all_command_line_args=$@
+JAVAOPTS="$@"
 
 run() {
   get_detect
@@ -70,8 +70,13 @@ get_detect() {
 }
 
 run_detect() {
-  echo "running detect: ${DETECT_DESTINATION} ${all_command_line_args}"
-  java -jar $DETECT_DESTINATION $all_command_line_args
+  JAVACMD="java -jar ${DETECT_DESTINATION}"
+  echo "running detect: ${JAVACMD} ${JAVAOPTS}"
+  rm $DETECT_JAR_PATH/hub-detect-java.sh
+  echo "#!/bin/sh" >> $DETECT_JAR_PATH/hub-detect-java.sh
+  echo "" >> $DETECT_JAR_PATH/hub-detect-java.sh
+  echo $JAVACMD $JAVAOPTS >> $DETECT_JAR_PATH/hub-detect-java.sh
+  source $DETECT_JAR_PATH/hub-detect-java.sh
 }
 
 run
