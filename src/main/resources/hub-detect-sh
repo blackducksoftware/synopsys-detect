@@ -8,7 +8,7 @@ DETECT_LATEST_SNAPSHOT=hub-detect-latest-SNAPSHOT.jar
 
 # This value should be automatically updated by the
 # gradle build process for a non-snapshot build.
-DETECT_LATEST_RELEASE_VERSION="0.0.4"
+DETECT_LATEST_RELEASE_VERSION="0.0.5"
 DETECT_LATEST_RELEASE="hub-detect-${DETECT_LATEST_RELEASE_VERSION}.jar"
 
 # If you would like to enable the shell script to use
