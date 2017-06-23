@@ -46,14 +46,14 @@ class HelpPrinter {
         String headerText = formatColumns(headerColumns, 50, 30, 20, 75)
         helpMessagePieces.add(headerText)
         helpMessagePieces.add(StringUtils.repeat('_', 175))
-        def character = null
+        String group = null
         valueDescriptionAnnotationFinder.getDetectValues().each { detectValue ->
-            def currentCharacter = detectValue.getGroup()
-            if (character == null) {
-                character = currentCharacter
-            } else if (!character.equals(currentCharacter)) {
+            String currentGroup = detectValue.getGroup()
+            if (group == null) {
+                group = currentGroup
+            } else if (!group.equals(currentGroup)) {
                 helpMessagePieces.add(StringUtils.repeat(' ', 175))
-                character = currentCharacter
+                group = currentGroup
             }
             def bodyColumns = [
                 detectValue.getKey(),
