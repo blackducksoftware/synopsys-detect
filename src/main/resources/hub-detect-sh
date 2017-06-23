@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # This value should not be updated - the Jenkins
 # build process will, for ANY snapshot build,
