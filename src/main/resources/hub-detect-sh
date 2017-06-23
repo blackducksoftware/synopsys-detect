@@ -72,7 +72,10 @@ get_detect() {
 run_detect() {
   JAVACMD="java -jar ${DETECT_DESTINATION}"
   echo "running detect: ${JAVACMD} ${JAVAOPTS}"
-  echo "#!/bin/sh\n\n"$JAVACMD $JAVAOPTS > $DETECT_JAR_PATH/hub-detect-java.sh
+  rm $DETECT_JAR_PATH/hub-detect-java.sh
+  echo "#!/bin/sh" >> $DETECT_JAR_PATH/hub-detect-java.sh
+  echo "" >> $DETECT_JAR_PATH/hub-detect-java.sh
+  echo $JAVACMD $JAVAOPTS >> $DETECT_JAR_PATH/hub-detect-java.sh
   source $DETECT_JAR_PATH/hub-detect-java.sh
 }
 
