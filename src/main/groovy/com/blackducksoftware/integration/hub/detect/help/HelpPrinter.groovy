@@ -39,11 +39,10 @@ class HelpPrinter {
         def headerColumns = [
             'Property Name',
             'Default',
-            'Type',
             'Description'
         ]
 
-        String headerText = formatColumns(headerColumns, 50, 30, 20, 75)
+        String headerText = formatColumns(headerColumns, 50, 30, 100)
         helpMessagePieces.add(headerText)
         helpMessagePieces.add(StringUtils.repeat('_', 175))
         String group = null
@@ -52,16 +51,15 @@ class HelpPrinter {
             if (group == null) {
                 group = currentGroup
             } else if (!group.equals(currentGroup)) {
-                helpMessagePieces.add(StringUtils.repeat(' ', 175))
+                helpMessagePieces.add(' ')
                 group = currentGroup
             }
             def bodyColumns = [
                 detectValue.getKey(),
                 detectValue.getDefaultValue(),
-                detectValue.getValueType().getSimpleName(),
                 detectValue.getDescription()
             ]
-            String bodyText = formatColumns(bodyColumns, 50, 30, 20, 75)
+            String bodyText = formatColumns(bodyColumns, 50, 30, 100)
             helpMessagePieces.add(bodyText)
         }
         helpMessagePieces.add('')
