@@ -55,7 +55,7 @@ class HelpPrinter {
                 character = currentCharacter
             }
             def bodyColumns = [
-                "${detectValue.getKey()}",
+                detectValue.getKey(),
                 detectValue.getDefaultValue(),
                 detectValue.getValueType().getSimpleName(),
                 detectValue.getDescription()
@@ -75,29 +75,37 @@ class HelpPrinter {
         StringBuilder createColumns = new StringBuilder()
         List<String> columnfirstRow = []
         List<String> columnRemainingRows = []
-        for(int i = 0; i < columns.size(); i++) {
-            if(columns.get(i).size() < columnWidths[i]) {
+        for (int i = 0; i < columns.size(); i++) {
+            if (columns.get(i).size() < columnWidths[i]) {
                 columnfirstRow.add(columns.get(i))
                 columnRemainingRows.add('')
             } else {
-                columnfirstRow.add(columns.get(i).substring(0, columnWidths[i]))
-                columnRemainingRows.add(columns.get(i).substring(columnWidths[i]))
+                String firstRow = columns.get(i).substring(0, columnWidths[i])
+                int endOfWordIndex = firstRow.lastIndexOf(' ')
+                if (endOfWordIndex == -1) {
+                    endOfWordIndex = columnWidths[i] - 1
+                    columnfirstRow.add(firstRow.substring(0, endOfWordIndex) + ' ')
+                } else {
+                    columnfirstRow.add(firstRow.substring(0, endOfWordIndex))
+                }
+
+                columnRemainingRows.add(columns.get(i).substring(endOfWordIndex).trim())
             }
         }
 
-        for(int i = 0; i < columnfirstRow.size(); i++) {
+        for (int i = 0; i < columnfirstRow.size(); i++) {
             createColumns.append(StringUtils.rightPad(columnfirstRow.get(i), columnWidths[i], ' '))
         }
 
-        if(!allColumnsEmpty(columnRemainingRows)) {
+        if (!allColumnsEmpty(columnRemainingRows)) {
             createColumns.append(System.getProperty("line.separator") + formatColumns(columnRemainingRows, columnWidths))
         }
         createColumns.toString()
     }
 
     private boolean allColumnsEmpty(List<String> columns) {
-        for(String column : columns) {
-            if(column) {
+        for (String column : columns) {
+            if (column) {
                 return false
             }
         }
