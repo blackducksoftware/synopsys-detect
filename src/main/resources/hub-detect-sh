@@ -25,7 +25,7 @@ DETECT_USE_SNAPSHOT=${DETECT_USE_SNAPSHOT:-0}
 
 DETECT_JAR_PATH=${DETECT_JAR_PATH:-/tmp}
 
-all_command_line_args=$@
+JAVAOPTS="$@"
 
 run() {
   get_detect
@@ -70,8 +70,10 @@ get_detect() {
 }
 
 run_detect() {
-  echo "running detect: ${DETECT_DESTINATION} ${all_command_line_args}"
-  java -jar $DETECT_DESTINATION $all_command_line_args
+  JAVACMD="java -jar ${DETECT_DESTINATION}"
+  echo "running detect: ${JAVACMD} ${JAVAOPTS}"
+  echo "#!/bin/sh\n\n"$JAVACMD $JAVAOPTS > $DETECT_JAR_PATH/hub-detect-java.sh
+  source $DETECT_JAR_PATH/hub-detect-java.sh
 }
 
 run
