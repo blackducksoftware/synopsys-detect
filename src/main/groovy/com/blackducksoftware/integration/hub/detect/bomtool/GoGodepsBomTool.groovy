@@ -37,8 +37,6 @@ import com.google.gson.Gson
 class GoGodepsBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(GoGodepsBomTool.class)
 
-    public static final String[] FILE_SEARCH_PATTERN = ['Godeps']
-
     @Autowired
     Gson gson
 
@@ -51,8 +49,12 @@ class GoGodepsBomTool extends BomTool {
 
     @Override
     public boolean isBomToolApplicable() {
-        matchingSourcePaths = sourcePathSearcher.findFilenamePattern(FILE_SEARCH_PATTERN)
+        matchingSourcePaths = sourcePathSearcher.findFilenamePattern('Godeps')
         !matchingSourcePaths.isEmpty()
+    }
+
+    public boolean isApplicableToPath(String path){
+        detectFileManager.containsAllFiles(path, 'Godeps')
     }
 
     @Override
