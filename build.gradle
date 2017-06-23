@@ -24,7 +24,7 @@ tasks.withType(GroovyCompile) { options.encoding = 'UTF-8' }
 
 group = 'com.blackducksoftware.integration'
 
-version = '0.0.5-SNAPSHOT'
+version = '0.0.5'
 
 def versionFile = new File("${projectDir}/src/main/resources/version.txt")
 versionFile.delete()
