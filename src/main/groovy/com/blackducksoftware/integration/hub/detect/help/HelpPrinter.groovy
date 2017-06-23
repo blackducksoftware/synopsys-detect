@@ -48,7 +48,6 @@ class HelpPrinter {
         helpMessagePieces.add(StringUtils.repeat('_', 175))
         def character = null
         valueDescriptionAnnotationFinder.getDetectValues().each { detectValue ->
-            //def currentCharacter = detectValue.getKey()[7]
             def currentCharacter = detectValue.getGroup()
             if (character == null) {
                 character = currentCharacter
@@ -73,7 +72,7 @@ class HelpPrinter {
         printStream.println(StringUtils.join(helpMessagePieces, System.getProperty("line.separator")))
     }
 
-    public String formatColumns(List<String> columns, int... columnWidths) {
+    private String formatColumns(List<String> columns, int... columnWidths) {
         StringBuilder createColumns = new StringBuilder()
         List<String> columnfirstRow = []
         List<String> columnRemainingRows = []
