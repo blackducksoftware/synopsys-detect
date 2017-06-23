@@ -145,7 +145,7 @@ class DetectProperties {
     @Value('${detect.nuget.inspector.name}')
     String nugetInspectorPackageName
 
-    @ValueDescription(description="Version of the Nuget Inspector", defaultValue="0.0.3-alpha", group="nuget bomtool")
+    @ValueDescription(description="Version of the Nuget Inspector", defaultValue="1.0.0")
     @Value('${detect.nuget.inspector.version}')
     String nugetInspectorPackageVersion
 
