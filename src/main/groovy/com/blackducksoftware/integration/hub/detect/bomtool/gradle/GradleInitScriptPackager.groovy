@@ -33,6 +33,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
+import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
 import com.google.gson.Gson
@@ -52,6 +53,9 @@ class GradleInitScriptPackager {
 
     @Autowired
     DetectFileManager detectFileManager
+
+    @Autowired
+    ProjectInfoGatherer projectInfoGatherer
 
     DependencyNode extractRootProjectNode(String sourcePath, String gradleExecutable) {
         File initScriptFile = detectFileManager.createFile(BomToolType.GRADLE, 'init-detect.gradle')

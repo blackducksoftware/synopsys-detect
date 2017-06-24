@@ -60,8 +60,8 @@ class GoVndrBomTool extends BomTool {
         matchingSourcePaths.each {
             def vendorConf = new File(it, "vendor.conf")
             if (vendorConf.exists()) {
-                final String rootName = projectInfoGatherer.getDefaultProjectName(BomToolType.GO_VNDR, it)
-                final String rootVersion = projectInfoGatherer.getDefaultProjectVersionName()
+                final String rootName = projectInfoGatherer.getProjectName(BomToolType.GO_VNDR, it)
+                final String rootVersion = projectInfoGatherer.getProjectVersionName()
                 final ExternalId rootExternalId = new NameVersionExternalId(GoDepBomTool.GOLANG, rootName, rootVersion)
                 final DependencyNode projectNode = new DependencyNode(rootName, rootVersion, rootExternalId)
                 def children = vndrParser.parseVendorConf(vendorConf.text)

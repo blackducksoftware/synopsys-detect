@@ -64,6 +64,8 @@ class GradleBomTool extends BomTool {
         List<DependencyNode> projectNodes = []
         matchingSourcePathToGradleExecutable.each { sourcePath, gradleExecutable ->
             DependencyNode rootProjectNode = gradleInitScriptPackager.extractRootProjectNode(sourcePath, gradleExecutable)
+            rootProjectNode.name = projectInfoGatherer.getProjectName(getBomToolType(), sourcePath, rootProjectNode.name)
+            rootProjectNode.version = projectInfoGatherer.getProjectVersionName(rootProjectNode.version)
             projectNodes.add(rootProjectNode)
         }
 

@@ -40,8 +40,8 @@ public class RubygemsNodePackager {
     }
 
     public List<DependencyNode> makeDependencyNodes(final String sourcePath, final String gemlock) {
-        final String rootName = projectInfoGatherer.getDefaultProjectName(BomToolType.RUBYGEMS, sourcePath)
-        final String rootVersion = projectInfoGatherer.getDefaultProjectVersionName()
+        final String rootName = projectInfoGatherer.getProjectName(BomToolType.RUBYGEMS, sourcePath)
+        final String rootVersion = projectInfoGatherer.getProjectVersionName()
         final ExternalId rootExternalId = new NameVersionExternalId(Forge.RUBYGEMS, rootName, rootVersion)
         final DependencyNode root = new DependencyNode(rootName, rootVersion, rootExternalId)
 

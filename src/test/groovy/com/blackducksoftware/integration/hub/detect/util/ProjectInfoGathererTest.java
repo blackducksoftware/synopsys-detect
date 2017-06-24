@@ -28,8 +28,8 @@ public class ProjectInfoGathererTest {
     @Test
     public void getProjectNameFromPath() {
         final ProjectInfoGatherer projectInfoGatherer = new ProjectInfoGatherer();
-        final String projectName = projectInfoGatherer.getDefaultProjectName(BomToolType.MAVEN, "I/Am/A/Test/" + testName);
-        final String projectVersion = projectInfoGatherer.getDefaultProjectVersionName();
+        final String projectName = projectInfoGatherer.getProjectName(BomToolType.MAVEN, "I/Am/A/Test/" + testName);
+        final String projectVersion = projectInfoGatherer.getProjectVersionName();
         assertEquals(testName + "_maven", projectName);
         final String aFewSecondsAfterTheValueWasCreated = DateTime.now().toString(ProjectInfoGatherer.DATE_FORMAT);
 
@@ -39,8 +39,8 @@ public class ProjectInfoGathererTest {
     @Test
     public void getProjectNameFromDefault() {
         final ProjectInfoGatherer projectInfoGatherer = new ProjectInfoGatherer();
-        final String projectName = projectInfoGatherer.getDefaultProjectName(BomToolType.MAVEN, "I/Am/A/Test/" + testName, testName2);
-        final String projectVersion = projectInfoGatherer.getDefaultProjectVersionName(testVersion);
+        final String projectName = projectInfoGatherer.getProjectName(BomToolType.MAVEN, "I/Am/A/Test/" + testName, testName2);
+        final String projectVersion = projectInfoGatherer.getProjectVersionName(testVersion);
         assertEquals(testName2, projectName);
         assertEquals(testVersion, projectVersion);
     }

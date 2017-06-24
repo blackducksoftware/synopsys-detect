@@ -30,7 +30,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +41,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.SimpleBdioDocument;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.type.BomToolType;
+import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer;
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
 import com.google.gson.Gson;
@@ -52,6 +52,9 @@ public class BomToolManager {
 
     @Autowired
     DetectConfiguration detectConfiguration;
+
+    @Autowired
+    ProjectInfoGatherer projectInfoGatherer;
 
     @Autowired
     private List<BomTool> bomTools;
@@ -84,7 +87,7 @@ public class BomToolManager {
                     final List<DependencyNode> projectNodes = bomTool.extractDependencyNodes();
                     if (projectNodes != null && projectNodes.size() > 0) {
                         foundSomeBomTools = true;
-                        createOutput(createdBdioFiles, bomToolType, bomToolTypeString, projectNodes);
+                        createOutput(createdBdioFiles, bomToolType, projectNodes);
                     }
                 }
             } catch (final Exception e) {
@@ -102,31 +105,22 @@ public class BomToolManager {
         return createdBdioFiles;
     }
 
-    private void createOutput(final List<File> createdBdioFiles, final BomToolType bomToolType, final String bomToolTypeString,
-            final List<DependencyNode> projectNodes) {
+    private void createOutput(final List<File> createdBdioFiles, final BomToolType bomToolType, final List<DependencyNode> projectNodes) {
         logger.info("Creating " + projectNodes.size() + " project nodes");
         for (final DependencyNode project : projectNodes) {
             final IntegrationEscapeUtil escapeUtil = new IntegrationEscapeUtil();
             final String safeProjectName = escapeUtil.escapeForUri(project.name);
             final String safeVersionName = escapeUtil.escapeForUri(project.version);
-            final String safeName = String.format("%s_%s_%s_bdio", bomToolTypeString, safeProjectName, safeVersionName);
+            final String safeName = String.format("%s_%s_%s_bdio", bomToolType.toString(), safeProjectName, safeVersionName);
             final String filename = String.format("%s.jsonld", safeName);
             final File outputFile = new File(detectConfiguration.getOutputDirectory(), filename);
             if (outputFile.exists()) {
                 outputFile.delete();
             }
             try (final BdioWriter bdioWriter = new BdioWriter(gson, new FileOutputStream(outputFile))) {
-                if (StringUtils.isNotBlank(detectConfiguration.getProjectName())) {
-                    project.name = detectConfiguration.getProjectName();
-                }
-                if (StringUtils.isNotBlank(detectConfiguration.getProjectVersionName())) {
-                    project.version = detectConfiguration.getProjectVersionName();
-                }
-                final SimpleBdioDocument bdioDocument = dependencyNodeTransformer.transformDependencyNode(detectConfiguration.getProjectCodeLocationName(),
-                        project);
-                if (StringUtils.isNotBlank(detectConfiguration.getProjectName()) && StringUtils.isNotBlank(detectConfiguration.getProjectVersionName())) {
-                    bdioDocument.billOfMaterials.spdxName = String.format("%s/%s/%s Black Duck I/O Export", project.name, project.version, bomToolTypeString);
-                }
+                final String codeLocation = projectInfoGatherer.getCodeLocationName(bomToolType, project.name, project.version);
+                final SimpleBdioDocument bdioDocument = dependencyNodeTransformer.transformDependencyNode(codeLocation, project);
+
                 bdioWriter.writeSimpleBdioDocument(bdioDocument);
                 createdBdioFiles.add(outputFile);
                 logger.info("BDIO Generated: " + outputFile.getAbsolutePath());
