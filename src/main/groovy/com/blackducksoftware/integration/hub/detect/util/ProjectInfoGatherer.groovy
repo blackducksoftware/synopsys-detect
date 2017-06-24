@@ -70,6 +70,11 @@ public class ProjectInfoGatherer {
     }
 
     public String getCodeLocationName(final BomToolType bomToolType, final String projectName, final String projectVersion) {
-        "${bomToolType.toString()}/${projectName}/${projectVersion} Hub Detect Export"
+        String codeLocation = "${bomToolType.toString()}/${projectName}/${projectVersion} Hub Detect Export"
+        if(detectConfiguration.getProjectCodeLocationName()) {
+            codeLocation = detectConfiguration.getProjectCodeLocationName()
+        }
+
+        codeLocation
     }
 }
