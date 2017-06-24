@@ -79,7 +79,7 @@ class BdioUploader {
                     String projectName = bomToolManager.getProjectNameByBdioFilename(file.name)
                     String projectVersionName = bomToolManager.getProjectVersionNameByBdioFilename(file.name)
 
-                    String policyStatusMessage = policyChecker.checkForPolicyViolations(projectName, projectVersionName)
+                    String policyStatusMessage = policyChecker.getPolicyStatusMessage(projectName, projectVersionName)
                     logger.info("Policy status for ${projectName} (${projectVersionName}): ${policyStatusMessage}")
                 }
 

@@ -29,7 +29,7 @@ public class DetectOption {
     final String defaultValue
     final String group
 
-    public DetectOption(final String key, final String description,Class valueType, String defaultValue, String group) {
+    public DetectOption(final String key, final String description, Class valueType, String defaultValue, String group) {
         this.key = key
         this.description = description
         this.valueType = valueType

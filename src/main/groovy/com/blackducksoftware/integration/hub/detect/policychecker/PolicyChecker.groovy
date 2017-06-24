@@ -41,7 +41,7 @@ class PolicyChecker {
         this.policyStatusDataService = policyStatusDataService
     }
 
-    public String checkForPolicyViolations(String projectName, String projectVersionName) {
+    public String getPolicyStatusMessage(String projectName, String projectVersionName) {
         scanStatusDataService.assertBomImportScanStartedThenFinished(projectName, projectVersionName)
         VersionBomPolicyStatusView versionBomPolicyStatusView = policyStatusDataService.getPolicyStatusForProjectAndVersion(projectName, projectVersionName)
         PolicyStatusDescription policyStatusDescription = new PolicyStatusDescription(versionBomPolicyStatusView)

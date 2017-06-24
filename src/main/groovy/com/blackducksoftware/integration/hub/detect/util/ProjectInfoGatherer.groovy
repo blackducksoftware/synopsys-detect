@@ -30,17 +30,17 @@ import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 
 @Component
-public class ProjectInfoGatherer {
-    public static String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS"
+class ProjectInfoGatherer {
+    static String DATE_FORMAT = 'yyyy-MM-dd\'T\'HH:mm:ss.SSS'
 
     @Autowired
-    public DetectConfiguration detectConfiguration
+    DetectConfiguration detectConfiguration
 
-    public String getProjectName(final BomToolType bomToolType, final String sourcePath) {
+    String getProjectName(final BomToolType bomToolType, final String sourcePath) {
         getProjectName(bomToolType, sourcePath, null)
     }
 
-    public String getProjectName(final BomToolType bomToolType, final String sourcePath, final String defaultProjectName) {
+    String getProjectName(final BomToolType bomToolType, final String sourcePath, final String defaultProjectName) {
         String projectName = defaultProjectName?.trim()
 
         if (detectConfiguration.getProjectName()) {
@@ -53,11 +53,11 @@ public class ProjectInfoGatherer {
         projectName
     }
 
-    public String getProjectVersionName() {
+    String getProjectVersionName() {
         getProjectVersionName(null)
     }
 
-    public String getProjectVersionName(final String defaultVersionName) {
+    String getProjectVersionName(final String defaultVersionName) {
         String projectVersion = defaultVersionName?.trim()
 
         if (detectConfiguration.getProjectVersionName()) {
@@ -69,12 +69,12 @@ public class ProjectInfoGatherer {
         projectVersion
     }
 
-    public String getCodeLocationName(final BomToolType bomToolType, final String projectName, final String projectVersion) {
-        String codeLocation = "${bomToolType.toString()}/${projectName}/${projectVersion} Hub Detect Export"
-        if (detectConfiguration.getProjectCodeLocationName()) {
-            codeLocation = detectConfiguration.getProjectCodeLocationName()
+    String getCodeLocationName(final BomToolType bomToolType, final String projectName, final String projectVersion) {
+        String codeLocationFormat = '%s/%s Hub Detect Export'
+        String codeLocation = detectConfiguration.getProjectCodeLocationName()
+        if (!codeLocation?.trim()) {
+            codeLocation = String.format('%s/%s', projectName, projectVersion)
         }
-
-        codeLocation
+        return String.format(codeLocationFormat, codeLocation)
     }
 }

@@ -28,7 +28,6 @@ import org.springframework.stereotype.Component
 
 @Component
 class HelpPrinter {
-
     @Autowired
     ValueDescriptionAnnotationFinder valueDescriptionAnnotationFinder
 
