@@ -15,9 +15,18 @@ import static org.junit.Assert.assertEquals;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.blackducksoftware.integration.hub.detect.Application;
 import com.blackducksoftware.integration.hub.detect.type.BomToolType;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = Application.class)
+@SpringBootTest
 public class ProjectInfoGathererTest {
     private final String testName = "Name";
 
@@ -25,11 +34,13 @@ public class ProjectInfoGathererTest {
 
     private final String testVersion = "1.0.0";
 
+    @Autowired
+    ProjectInfoGatherer projectInfoGatherer;
+
     @Test
     public void getProjectNameFromPath() {
-        final ProjectInfoGatherer projectInfoGatherer = new ProjectInfoGatherer();
-        final String projectName = projectInfoGatherer.getDefaultProjectName(BomToolType.MAVEN, "I/Am/A/Test/" + testName);
-        final String projectVersion = projectInfoGatherer.getDefaultProjectVersionName();
+        final String projectName = projectInfoGatherer.getProjectName(BomToolType.MAVEN, "I/Am/A/Test/" + testName);
+        final String projectVersion = projectInfoGatherer.getProjectVersionName();
         assertEquals(testName + "_maven", projectName);
         final String aFewSecondsAfterTheValueWasCreated = DateTime.now().toString(ProjectInfoGatherer.DATE_FORMAT);
 
@@ -38,9 +49,8 @@ public class ProjectInfoGathererTest {
 
     @Test
     public void getProjectNameFromDefault() {
-        final ProjectInfoGatherer projectInfoGatherer = new ProjectInfoGatherer();
-        final String projectName = projectInfoGatherer.getDefaultProjectName(BomToolType.MAVEN, "I/Am/A/Test/" + testName, testName2);
-        final String projectVersion = projectInfoGatherer.getDefaultProjectVersionName(testVersion);
+        final String projectName = projectInfoGatherer.getProjectName(BomToolType.MAVEN, "I/Am/A/Test/" + testName, testName2);
+        final String projectVersion = projectInfoGatherer.getProjectVersionName(testVersion);
         assertEquals(testName2, projectName);
         assertEquals(testVersion, projectVersion);
     }

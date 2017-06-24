@@ -79,8 +79,8 @@ class NugetBomTool extends BomTool {
                 logger.info('Unable to extract any dependencies from nuget')
             } else {
                 if (isSolution(root)) {
-                    root.name = projectInfoGatherer.getDefaultProjectName(BomToolType.NUGET, sourcePath, root.name)
-                    root.version = projectInfoGatherer.getDefaultProjectVersionName(root.version)
+                    root.name = projectInfoGatherer.getProjectName(BomToolType.NUGET, sourcePath, root.name)
+                    root.version = projectInfoGatherer.getProjectVersionName(root.version)
                     root.externalId = new NameVersionExternalId(Forge.NUGET, root.name, root.version)
                     if (detectConfiguration.getNugetAggregateBom()) {
                         projectNodes.add(root)
@@ -88,8 +88,8 @@ class NugetBomTool extends BomTool {
                         projectNodes.addAll(root.children as List)
                     }
                 } else {
-                    root.name = projectInfoGatherer.getDefaultProjectName(BomToolType.NUGET, sourcePath, root.name)
-                    root.version = projectInfoGatherer.getDefaultProjectVersionName(root.version)
+                    root.name = projectInfoGatherer.getProjectName(BomToolType.NUGET, sourcePath, root.name)
+                    root.version = projectInfoGatherer.getProjectVersionName(root.version)
                     root.externalId = new NameVersionExternalId(Forge.NUGET, root.name, root.version)
                     projectNodes.add(root)
                 }

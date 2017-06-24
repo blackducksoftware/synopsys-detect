@@ -23,15 +23,17 @@
 package com.blackducksoftware.integration.hub.detect.help;
 
 public class DetectOption {
-    final String key;
-    final String description;
-    final Class valueType;
-    final String defaultValue;
+    final String key
+    final String description
+    final Class valueType
+    final String defaultValue
+    final String group
 
-    public DetectOption(final String key, final String description,Class valueType, String defaultValue) {
-        this.key = key;
-        this.description = description;
-        this.valueType = valueType;
-        this.defaultValue = defaultValue;
+    public DetectOption(final String key, final String description,Class valueType, String defaultValue, String group) {
+        this.key = key
+        this.description = description
+        this.valueType = valueType
+        this.defaultValue = defaultValue
+        this.group = group
     }
 }

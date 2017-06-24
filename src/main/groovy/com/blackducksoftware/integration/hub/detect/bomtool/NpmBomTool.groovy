@@ -22,6 +22,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -32,7 +34,10 @@ import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 
 @Component
 class NpmBomTool extends BomTool {
+    private final Logger logger = LoggerFactory.getLogger(NpmBomTool.class)
+
     public static final String NODE_MODULES = 'node_modules'
+    public static final String PACKAGE_JSON = 'package.json'
     public static final String OUTPUT_FILE = 'detect_npm_proj_dependencies.json'
     public static final String ERROR_FILE = 'detect_npm_error.json'
 
@@ -50,7 +55,14 @@ class NpmBomTool extends BomTool {
     @Override
     public boolean isBomToolApplicable() {
         npmPaths = sourcePathSearcher.findFilenamePattern(NODE_MODULES)
+        def packageJsonPaths = sourcePathSearcher.findFilenamePattern(PACKAGE_JSON)
         npmExe = getExecutablePath()
+
+        packageJsonPaths?.removeAll(npmPaths)
+
+        packageJsonPaths.each { path ->
+            logger.info("Package.json was located in ${path}, but no node_modules folder. Please run npm install in that location and try again.")
+        }
 
         npmPaths && npmExe
     }

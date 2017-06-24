@@ -57,8 +57,8 @@ class DepPackager {
     DetectConfiguration detectConfiguration
 
     public DependencyNode makeDependencyNodes(final String sourcePath, String goDepExecutable) {
-        final String rootName = projectInfoGatherer.getDefaultProjectName(BomToolType.GO_DEP, sourcePath)
-        final String rootVersion = projectInfoGatherer.getDefaultProjectVersionName()
+        final String rootName = projectInfoGatherer.getProjectName(BomToolType.GO_DEP, sourcePath)
+        final String rootVersion = projectInfoGatherer.getProjectVersionName()
         final ExternalId rootExternalId = new NameVersionExternalId(GoDepBomTool.GOLANG, rootName, rootVersion)
         final DependencyNode root = new DependencyNode(rootName, rootVersion, rootExternalId)
         GopkgLockParser gopkgLockParser = new GopkgLockParser(projectInfoGatherer)

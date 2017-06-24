@@ -94,7 +94,12 @@ class PipInspectorTreeParser {
         }
 
         if (nodeBuilder) {
-            return nameVersionNodeTransformer.createDependencyNode(Forge.PYPI, nodeBuilder.getRoot())
+            NameVersionNode projectNode = nodeBuilder.getRoot()
+            if(projectNode.name == UNKOWN_PROJECT_NAME && projectNode.version == UNKOWN_PROJECT_VERSION) {
+                projectNode.name == null
+                projectNode.version == null
+            }
+            return nameVersionNodeTransformer.createDependencyNode(Forge.PYPI, projectNode)
         }
 
         null

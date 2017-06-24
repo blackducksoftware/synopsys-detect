@@ -109,12 +109,9 @@ class PipPackager {
         def inspectorOutput = executableRunner.execute(pipInspector).standardOutput
         def parser = new PipInspectorTreeParser()
         DependencyNode project = parser.parse(nameVersionNodeTransformer, inspectorOutput)
-
-        if (project.name == PipInspectorTreeParser.UNKOWN_PROJECT_NAME && project.version == PipInspectorTreeParser.UNKOWN_PROJECT_VERSION) {
-            project.name = projectInfoGatherer.getDefaultProjectName(BomToolType.PIP, sourceDirectory.getAbsolutePath())
-            project.version = projectInfoGatherer.getDefaultProjectVersionName()
-            project.externalId = new NameVersionExternalId(Forge.PYPI, project.name, project.version)
-        }
+        project.name = projectInfoGatherer.getProjectName(BomToolType.PIP, sourceDirectory.getAbsolutePath(), project.name)
+        project.version = projectInfoGatherer.getProjectVersionName(project.version)
+        project.externalId = new NameVersionExternalId(Forge.PYPI, project.name, project.version)
 
         [project]
     }

@@ -168,14 +168,14 @@ class DetectConfiguration {
         printStream.println('')
     }
 
-    public Boolean getCleanupBdioFiles() {
-        return detectProperties.cleanupBdioFiles
+    public boolean getCleanupBdioFiles() {
+        return toPrimitiveBoolean(detectProperties.cleanupBdioFiles)
     }
     public String getHubUrl() {
         return detectProperties.hubUrl
     }
-    public Integer getHubTimeout() {
-        return detectProperties.hubTimeout
+    public int getHubTimeout() {
+        return toPrimitiveInteger(detectProperties.hubTimeout)
     }
     public String getHubUsername() {
         return detectProperties.hubUsername
@@ -195,8 +195,8 @@ class DetectConfiguration {
     public String getHubProxyPassword() {
         return detectProperties.hubProxyPassword
     }
-    public Boolean getHubAutoImportCertificate() {
-        return detectProperties.hubAutoImportCertificate
+    public boolean getHubAutoImportCertificate() {
+        return toPrimitiveBoolean(detectProperties.hubAutoImportCertificate)
     }
     public String[] getSourcePaths() {
         return detectProperties.sourcePaths
@@ -204,8 +204,8 @@ class DetectConfiguration {
     public String getOutputDirectoryPath() {
         return detectProperties.outputDirectoryPath
     }
-    public Integer getSearchDepth() {
-        return detectProperties.searchDepth
+    public int getSearchDepth() {
+        return toPrimitiveInteger(detectProperties.searchDepth)
     }
     public String getExcludedBomToolTypes() {
         return detectProperties.excludedBomToolTypes
@@ -214,19 +214,19 @@ class DetectConfiguration {
         return detectProperties.includedBomToolTypes
     }
     public String getProjectName() {
-        return detectProperties.projectName
+        return detectProperties.projectName?.trim()
     }
     public String getProjectVersionName() {
-        return detectProperties.projectVersionName
+        return detectProperties.projectVersionName?.trim()
     }
     public String getProjectCodeLocationName() {
-        return detectProperties.projectCodeLocationName
+        return detectProperties.projectCodeLocationName?.trim()
     }
     public String getPolicyCheck() {
         return detectProperties.policyCheck
     }
-    public Integer getPolicyCheckTimeout() {
-        return detectProperties.policyCheckTimeout
+    public int getPolicyCheckTimeout() {
+        return toPrimitiveInteger(detectProperties.policyCheckTimeout)
     }
     public String getGradleInspectorVersion() {
         return detectProperties.gradleInspectorVersion
@@ -246,8 +246,8 @@ class DetectConfiguration {
     public String getGradleIncludedProjectNames() {
         return detectProperties.gradleIncludedProjectNames
     }
-    public Boolean getGradleCleanupBuildBlackduckDirectory() {
-        return detectProperties.gradleCleanupBuildBlackduckDirectory
+    public boolean getGradleCleanupBuildBlackduckDirectory() {
+        return toPrimitiveBoolean(detectProperties.gradleCleanupBuildBlackduckDirectory)
     }
     public String getNugetInspectorPackageName() {
         return detectProperties.nugetInspectorPackageName
@@ -258,11 +258,11 @@ class DetectConfiguration {
     public String getNugetInspectorExcludedModules() {
         return detectProperties.nugetInspectorExcludedModules
     }
-    public Boolean getNugetInspectorIgnoreFailure() {
-        return detectProperties.nugetInspectorIgnoreFailure
+    public boolean getNugetInspectorIgnoreFailure() {
+        return toPrimitiveBoolean(detectProperties.nugetInspectorIgnoreFailure)
     }
-    public Boolean getMavenAggregateBom() {
-        return detectProperties.mavenAggregateBom
+    public boolean getMavenAggregateBom() {
+        return toPrimitiveBoolean(detectProperties.mavenAggregateBom)
     }
     public String getMavenScope() {
         return detectProperties.mavenScope
@@ -273,23 +273,23 @@ class DetectConfiguration {
     public String getMavenPath() {
         return detectProperties.mavenPath
     }
-    public Boolean getNugetAggregateBom() {
-        return detectProperties.nugetAggregateBom
+    public boolean getNugetAggregateBom() {
+        return toPrimitiveBoolean(detectProperties.nugetAggregateBom)
     }
     public String getNugetPath() {
         return detectProperties.nugetPath
     }
     public String getNpmPath() {
-        return detectProperties.npmPath;
+        return detectProperties.npmPath
     }
     public String getPipProjectName() {
         return detectProperties.pipProjectName
     }
-    public Boolean getCreateVirtualEnv() {
-        return detectProperties.createVirtualEnv
+    public boolean getCreateVirtualEnv() {
+        return toPrimitiveBoolean(detectProperties.createVirtualEnv)
     }
-    public Boolean getPipThreeOverride() {
-        return detectProperties.pipThreeOverride
+    public boolean getPipThreeOverride() {
+        return toPrimitiveBoolean(detectProperties.pipThreeOverride)
     }
     public String getPythonPath() {
         return detectProperties.pythonPath
@@ -336,7 +336,23 @@ class DetectConfiguration {
     public String getCleanupBomToolFiles() {
         return detectProperties.cleanupBomToolFiles
     }
-    public Boolean getSuppressConfigurationOutput() {
-        return detectProperties.suppressConfigurationOutput
+    public boolean getSuppressConfigurationOutput() {
+        return toPrimitiveBoolean(detectProperties.suppressConfigurationOutput)
+    }
+
+    private int toPrimitiveInteger(Integer propertyValue) {
+        if(propertyValue) {
+            return propertyValue
+        }
+
+        Integer.MIN_VALUE
+    }
+
+    private boolean toPrimitiveBoolean(Boolean propertyValue) {
+        if(propertyValue) {
+            return propertyValue
+        }
+
+        false
     }
 }
