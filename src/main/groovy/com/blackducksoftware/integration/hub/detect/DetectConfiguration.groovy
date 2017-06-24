@@ -214,13 +214,13 @@ class DetectConfiguration {
         return detectProperties.includedBomToolTypes
     }
     public String getProjectName() {
-        return detectProperties.projectName
+        return detectProperties.projectName?.trim()
     }
     public String getProjectVersionName() {
-        return detectProperties.projectVersionName
+        return detectProperties.projectVersionName?.trim()
     }
     public String getProjectCodeLocationName() {
-        return detectProperties.projectCodeLocationName
+        return detectProperties.projectCodeLocationName?.trim()
     }
     public String getPolicyCheck() {
         return detectProperties.policyCheck

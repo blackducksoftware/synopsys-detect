@@ -41,7 +41,7 @@ class GoGodepsParser {
 
     public DependencyNode parseGoDep(String goDepContents) {
         GodepsFile goDepsFile = gson.fromJson(goDepContents, GodepsFile.class)
-        String goDepContentVersion = projectInfoGatherer.getDefaultProjectVersionName()
+        String goDepContentVersion = projectInfoGatherer.getProjectVersionName()
         final ExternalId goDepContentExternalId = new NameVersionExternalId(GoDepBomTool.GOLANG, goDepsFile.importPath, goDepContentVersion)
         final DependencyNode goDepNode = new DependencyNode(goDepsFile.importPath, goDepContentVersion, goDepContentExternalId)
         def children = new ArrayList<DependencyNode>()

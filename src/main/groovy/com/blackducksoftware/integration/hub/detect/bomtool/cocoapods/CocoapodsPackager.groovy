@@ -53,8 +53,8 @@ class CocoapodsPackager {
 
         collapseSubpods(podLock)
 
-        String name = projectInfoGatherer.getDefaultProjectName(BomToolType.COCOAPODS, sourcePath)
-        String version = projectInfoGatherer.getDefaultProjectVersionName()
+        String name = projectInfoGatherer.getProjectName(BomToolType.COCOAPODS, sourcePath)
+        String version = projectInfoGatherer.getProjectVersionName()
         ExternalId externalId = new NameVersionExternalId(Forge.COCOAPODS, name, version)
         List<DependencyNode> dependencies = podTransformer(podLock.dependencies)
 

@@ -17,22 +17,33 @@ import org.apache.commons.io.IOUtils
 import org.json.JSONException
 import org.junit.Assert
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.skyscreamer.jsonassert.JSONAssert
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.ContextConfiguration
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+import com.blackducksoftware.integration.hub.detect.Application
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = Application.class)
+@SpringBootTest
 class RubygemsNodePackagerTest {
     Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create()
 
+    @Autowired
+    ProjectInfoGatherer projectInfoGatherer
+
     @Test
     public void packagerTest() throws JSONException, IOException, URISyntaxException {
-        final ProjectInfoGatherer projectInfoGatherer = new ProjectInfoGatherer()
         final NameVersionNodeTransformer nameVersionNodeTransformer = new NameVersionNodeTransformer()
         final String sourcePath = "/rubygems/"
         final String expected = IOUtils.toString(getClass().getResourceAsStream("/rubygems/expectedPackager.json"),
