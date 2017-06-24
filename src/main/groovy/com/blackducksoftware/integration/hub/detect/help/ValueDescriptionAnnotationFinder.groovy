@@ -100,9 +100,9 @@ public class ValueDescriptionAnnotationFinder implements ApplicationContextAware
                     @Override
                     public int compare(DetectOption o1, DetectOption o2) {
                         if (o1.group.isEmpty()) {
-                            return Integer.MAX_VALUE
+                            return 1
                         } else if (o2.group.isEmpty()) {
-                            return Integer.MIN_VALUE
+                            return -1
                         } else {
                             return o1.group.compareTo(o2.group)
                         }
