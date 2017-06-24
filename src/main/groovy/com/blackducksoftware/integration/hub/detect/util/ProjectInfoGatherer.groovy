@@ -47,7 +47,7 @@ public class ProjectInfoGatherer {
             projectName = detectConfiguration.getProjectName()
         } else if (!projectName && sourcePath) {
             final File sourcePathFile = new File(sourcePath)
-            projectName = "${sourcePathFile.getName()}_${bomToolType.toString().toLowerCase()})"
+            projectName = "${sourcePathFile.getName()}_${bomToolType.toString().toLowerCase()}"
         }
 
         projectName
