@@ -35,4 +35,6 @@ public @interface ValueDescription {
     String description() default "";
 
     String defaultValue() default "";
+
+    String group() default "";
 }

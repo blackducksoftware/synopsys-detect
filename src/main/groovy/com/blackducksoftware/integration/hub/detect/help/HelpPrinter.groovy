@@ -28,6 +28,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class HelpPrinter {
+
     @Autowired
     ValueDescriptionAnnotationFinder valueDescriptionAnnotationFinder
 
@@ -38,29 +39,27 @@ class HelpPrinter {
         def headerColumns = [
             'Property Name',
             'Default',
-            'Type',
             'Description'
         ]
 
-        String headerText = formatColumns(headerColumns, 50, 30, 20, 75)
+        String headerText = formatColumns(headerColumns, 50, 30, 100)
         helpMessagePieces.add(headerText)
         helpMessagePieces.add(StringUtils.repeat('_', 175))
-        def character = null
+        String group = null
         valueDescriptionAnnotationFinder.getDetectValues().each { detectValue ->
-            def currentCharacter = detectValue.getKey()[7]
-            if (character == null) {
-                character = currentCharacter
-            } else if (!character.equals(currentCharacter)) {
-                helpMessagePieces.add(StringUtils.repeat(' ', 175))
-                character = currentCharacter
+            String currentGroup = detectValue.getGroup()
+            if (group == null) {
+                group = currentGroup
+            } else if (!group.equals(currentGroup)) {
+                helpMessagePieces.add(' ')
+                group = currentGroup
             }
             def bodyColumns = [
                 detectValue.getKey(),
                 detectValue.getDefaultValue(),
-                detectValue.getValueType().getSimpleName(),
                 detectValue.getDescription()
             ]
-            String bodyText = formatColumns(bodyColumns, 50, 30, 20, 75)
+            String bodyText = formatColumns(bodyColumns, 50, 30, 100)
             helpMessagePieces.add(bodyText)
         }
         helpMessagePieces.add('')
