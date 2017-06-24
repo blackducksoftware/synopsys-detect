@@ -95,7 +95,7 @@ class PipInspectorTreeParser {
 
         if (nodeBuilder) {
             NameVersionNode projectNode = nodeBuilder.getRoot()
-            if(projectNode.name == UNKOWN_PROJECT_NAME && projectNode.version == UNKOWN_PROJECT_VERSION) {
+            if (projectNode.name == UNKOWN_PROJECT_NAME && projectNode.version == UNKOWN_PROJECT_VERSION) {
                 projectNode.name == null
                 projectNode.version == null
             }

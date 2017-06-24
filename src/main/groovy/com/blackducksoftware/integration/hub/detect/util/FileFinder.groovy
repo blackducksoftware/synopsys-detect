@@ -110,7 +110,7 @@ class FileFinder {
         sourceDirectory.listFiles().each {
             if (it.isDirectory()) {
                 files.addAll(findFilesRecursive(it, filenamePattern, currentDepth + 1, maxDepth))
-            }else if (FilenameUtils.wildcardMatchOnSystem(it.getName(), filenamePattern)) {
+            } else if (FilenameUtils.wildcardMatchOnSystem(it.getName(), filenamePattern)) {
                 files.add(it)
             }
         }

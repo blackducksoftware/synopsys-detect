@@ -49,7 +49,7 @@ class GoVndrBomTool extends BomTool {
         !matchingSourcePaths.isEmpty()
     }
 
-    public boolean isApplicableToPath(String path){
+    public boolean isApplicableToPath(String path) {
         detectFileManager.containsAllFiles(path, 'vendor.conf')
     }
 

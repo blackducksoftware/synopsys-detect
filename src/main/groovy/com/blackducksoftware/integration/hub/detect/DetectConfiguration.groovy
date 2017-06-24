@@ -341,7 +341,7 @@ class DetectConfiguration {
     }
 
     private int toPrimitiveInteger(Integer propertyValue) {
-        if(propertyValue) {
+        if (propertyValue) {
             return propertyValue
         }
 
@@ -349,7 +349,7 @@ class DetectConfiguration {
     }
 
     private boolean toPrimitiveBoolean(Boolean propertyValue) {
-        if(propertyValue) {
+        if (propertyValue) {
             return propertyValue
         }
 

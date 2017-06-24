@@ -22,8 +22,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.util.executable
 
-import javax.annotation.PostConstruct
-
 import org.apache.commons.lang3.SystemUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -43,7 +41,6 @@ class ExecutableManager {
 
     OperatingSystemType currentOs
 
-    @PostConstruct
     void init() {
         if (SystemUtils.IS_OS_LINUX) {
             currentOs = OperatingSystemType.LINUX

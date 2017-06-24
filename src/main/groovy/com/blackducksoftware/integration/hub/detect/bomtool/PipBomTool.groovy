@@ -51,11 +51,17 @@ class PipBomTool extends BomTool {
 
     Set<String> matchingSourcePaths = []
 
+    private boolean virtualEnvironmentHandlerInitialized
+
     BomToolType getBomToolType() {
         BomToolType.PIP
     }
 
     boolean isBomToolApplicable() {
+        if (!virtualEnvironmentHandlerInitialized) {
+            virtualEnvironmentHandler.init()
+            virtualEnvironmentHandlerInitialized = true
+        }
         VirtualEnvironment systemEnvironment = virtualEnvironmentHandler.getSystemEnvironment()
         def foundExectables = systemEnvironment.pipPath && systemEnvironment.pythonPath
         matchingSourcePaths = sourcePathSearcher.findFilenamePattern(SETUP_FILENAME)

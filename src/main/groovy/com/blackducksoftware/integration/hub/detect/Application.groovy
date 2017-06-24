@@ -37,13 +37,24 @@ import com.blackducksoftware.integration.hub.bdio.simple.BdioPropertyHelper
 import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeTransformer
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.detect.help.HelpPrinter
+import com.blackducksoftware.integration.hub.detect.help.ValueDescriptionAnnotationFinder
 import com.blackducksoftware.integration.hub.detect.hub.BdioUploader
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
 @SpringBootApplication
 class Application {
     private final Logger logger = LoggerFactory.getLogger(Application.class)
+
+    @Autowired
+    ValueDescriptionAnnotationFinder valueDescriptionAnnotationFinder
+
+    @Autowired
+    DetectConfiguration detectConfiguration
+
+    @Autowired
+    ExecutableManager executableManager
 
     @Autowired
     BdioPropertyHelper bdioPropertyHelper
@@ -61,9 +72,6 @@ class Application {
     ApplicationArguments applicationArguments
 
     @Autowired
-    DetectConfiguration detectConfiguration
-
-    @Autowired
     HelpPrinter helpPrinter
 
     static void main(final String[] args) {
@@ -75,7 +83,9 @@ class Application {
         if ('-h' in applicationArguments.getSourceArgs() || '--help' in applicationArguments.getSourceArgs()) {
             helpPrinter.printHelpMessage(System.out)
         } else {
+            valueDescriptionAnnotationFinder.init()
             detectConfiguration.init()
+            executableManager.init()
             logger.info('Configuration processed completely.')
             if (Boolean.FALSE == detectConfiguration.suppressConfigurationOutput) {
                 detectConfiguration.printConfiguration(System.out)

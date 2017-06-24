@@ -85,7 +85,7 @@ class GemlockNodeParser {
                 DependencyNode directDependencyNode = nameVersionNodeTransformer.createDependencyNode(Forge.RUBYGEMS, nameVersionNode)
                 rootProject.children.add(directDependencyNode)
             } else {
-                logger.error("Could not find ${directDependencyName} in the populated map.")
+                logger.debug("Could not find ${directDependencyName} in the populated map.")
             }
         }
     }
