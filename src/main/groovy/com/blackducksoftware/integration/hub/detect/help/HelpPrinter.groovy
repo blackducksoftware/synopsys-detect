@@ -52,7 +52,7 @@ class HelpPrinter {
             if (group == null) {
                 group = currentGroup
             } else if (!group.equals(currentGroup)) {
-                helpMessagePieces.add(StringUtils.repeat(' ', 175))
+                helpMessagePieces.add('')
                 group = currentGroup
             }
             def bodyColumns = [
