@@ -30,6 +30,7 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.bomtool.maven.MavenPackager
+import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 
@@ -42,6 +43,9 @@ class MavenBomTool extends BomTool {
 
     @Autowired
     MavenPackager mavenPackager
+
+    @Autowired
+    HubSignatureScanner hubSignatureScanner
 
     List<String> matchingSourcePaths = []
 
@@ -64,8 +68,12 @@ class MavenBomTool extends BomTool {
 
     List<DependencyNode> extractDependencyNodes() {
         List<DependencyNode> projectNodes = []
-        matchingSourcePaths.each {
-            projectNodes.addAll(mavenPackager.makeDependencyNodes(it, findMavenExecutablePath(it)))
+        matchingSourcePaths.each { sourcePath ->
+            List<DependencyNode> sourcePathProjectNodes = mavenPackager.makeDependencyNodes(sourcePath, findMavenExecutablePath(sourcePath))
+            projectNodes.addAll(sourcePathProjectNodes)
+            sourcePathProjectNodes.each { dependencyNode ->
+                hubSignatureScanner.registerDirectoryToScan(new File(sourcePath, 'target'), dependencyNode.name, dependencyNode.version)
+            }
         }
 
         projectNodes

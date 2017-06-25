@@ -339,6 +339,15 @@ class DetectConfiguration {
     public boolean getSuppressConfigurationOutput() {
         return toPrimitiveBoolean(detectProperties.suppressConfigurationOutput)
     }
+    public String[] getBlackDuckSignatureScannerDefaultDirectories() {
+        return detectProperties.blackDuckSignatureScannerDefaultDirectories
+    }
+    public String[] getBlackDuckSignatureScannerPaths() {
+        return detectProperties.blackDuckSignatureScannerPaths
+    }
+    public int getBlackDuckSignatureScannerTimeout() {
+        return toPrimitiveInteger(detectProperties.blackDuckSignatureScannerPaths)
+    }
 
     private int toPrimitiveInteger(Integer propertyValue) {
         if (propertyValue) {

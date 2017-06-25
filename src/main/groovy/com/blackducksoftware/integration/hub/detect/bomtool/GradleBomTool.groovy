@@ -30,6 +30,7 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleInitScriptPackager
+import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 
@@ -41,6 +42,9 @@ class GradleBomTool extends BomTool {
 
     @Autowired
     GradleInitScriptPackager gradleInitScriptPackager
+
+    @Autowired
+    HubSignatureScanner hubSignatureScanner
 
     Map<String, String> matchingSourcePathToGradleExecutable = [:]
 
@@ -67,6 +71,7 @@ class GradleBomTool extends BomTool {
             rootProjectNode.name = projectInfoGatherer.getProjectName(getBomToolType(), sourcePath, rootProjectNode.name)
             rootProjectNode.version = projectInfoGatherer.getProjectVersionName(rootProjectNode.version)
             projectNodes.add(rootProjectNode)
+            hubSignatureScanner.registerDirectoryToScan(new File(sourcePath, 'build'), rootProjectNode.name, rootProjectNode.version)
         }
 
         projectNodes

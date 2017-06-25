@@ -140,4 +140,5 @@ public class BomToolManager {
     public String getProjectVersionNameByBdioFilename(final String bdioFilename) {
         return filenameToProjectVersionName.get(bdioFilename);
     }
+
 }

@@ -256,4 +256,16 @@ class DetectProperties {
     @ValueDescription(description="Detect creates temporary files in the output directory. If set to true this will clean them up after execution", defaultValue='true', group="cleanup")
     @Value('${detect.cleanup.bom.tool.files}')
     Boolean cleanupBomToolFiles
+
+    @ValueDescription(description="If detect.blackduck.signature.scanner.paths is not set, these directories will be appended to each source path and will then be scanned.", defaultValue="/target,/build,/bin", group="signature scanner")
+    @Value('${detect.blackduck.signature.scanner.default.directories}')
+    String[] blackDuckSignatureScannerDefaultDirectories
+
+    @ValueDescription(description="These paths and only these paths will be scanned.", group="signature scanner")
+    @Value('${detect.blackduck.signature.scanner.paths}')
+    String[] blackDuckSignatureScannerPaths
+
+    @ValueDescription(description="Timeout for the signature scanning to complete.", defaultValue="300000", group="signature scanner")
+    @Value('${detect.blackduck.signature.scanner.timeout}')
+    Integer blackDuckSignatureScannerTimeout
 }
