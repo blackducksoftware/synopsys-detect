@@ -45,13 +45,17 @@ class DetectFileManager {
     }
 
     File createDirectory(String directoryName) {
-        def directory = new File(detectConfiguration.outputDirectory, directoryName)
-        directory.mkdir()
+        createDirectory(detectConfiguration.outputDirectory, directoryName)
+    }
+
+    File createDirectory(File directory, String newDirectoryName) {
+        def newDirectory = new File(directory, newDirectoryName)
+        newDirectory.mkdir()
         if (detectConfiguration.cleanupBomToolFiles) {
-            directory.deleteOnExit()
+            newDirectory.deleteOnExit()
         }
 
-        directory
+        newDirectory
     }
 
     File createFile(File directory, String filename) {

@@ -339,14 +339,11 @@ class DetectConfiguration {
     public boolean getSuppressConfigurationOutput() {
         return toPrimitiveBoolean(detectProperties.suppressConfigurationOutput)
     }
-    public String[] getBlackDuckSignatureScannerDefaultDirectories() {
-        return detectProperties.blackDuckSignatureScannerDefaultDirectories
+    public String[] getHubSignatureScannerPaths() {
+        return detectProperties.hubSignatureScannerPaths
     }
-    public String[] getBlackDuckSignatureScannerPaths() {
-        return detectProperties.blackDuckSignatureScannerPaths
-    }
-    public int getBlackDuckSignatureScannerTimeout() {
-        return toPrimitiveInteger(detectProperties.blackDuckSignatureScannerPaths)
+    public long getHubSignatureScannerTimeoutMilliseconds() {
+        return toPrimitiveLong(detectProperties.hubSignatureScannerTimeoutMilliseconds)
     }
 
     private int toPrimitiveInteger(Integer propertyValue) {
@@ -354,7 +351,15 @@ class DetectConfiguration {
             return propertyValue
         }
 
-        Integer.MIN_VALUE
+        0
+    }
+
+    private long toPrimitiveLong(Long propertyValue) {
+        if (propertyValue) {
+            return propertyValue
+        }
+
+        0L
     }
 
     private boolean toPrimitiveBoolean(Boolean propertyValue) {

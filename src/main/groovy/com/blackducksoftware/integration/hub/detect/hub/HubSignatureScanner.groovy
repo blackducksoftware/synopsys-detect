@@ -69,10 +69,15 @@ class HubSignatureScanner {
         Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
         HubServerConfig hubServerConfig = hubManager.createHubServerConfig(slf4jIntLogger)
         HubServicesFactory hubServicesFactory = hubManager.createHubServicesFactory(slf4jIntLogger, hubServerConfig)
-        CLIDataService cliDataService = hubServicesFactory.createCLIDataService(logger, detectConfiguration.blackDuckSignatureScannerTimeout)
+        CLIDataService cliDataService = hubServicesFactory.createCLIDataService(slf4jIntLogger, detectConfiguration.hubSignatureScannerTimeoutMilliseconds)
         pathToProjectName.each { path, projectName ->
             String projectVersionName = pathToProjectVersionName[path]
-            scanDirectory(cliDataService, hubServerConfig, new File(path), projectName, projectVersionName)
+            logger.info("Attempting to scan ${path} for ${projectName}/${projectVersionName}")
+            try {
+                scanDirectory(cliDataService, hubServerConfig, new File(path), projectName, projectVersionName)
+            } catch (Exception e) {
+                logger.error("Not able to scan ${path}: ${e.message}")
+            }
         }
     }
 
@@ -89,11 +94,12 @@ class HubSignatureScanner {
         HubScanConfigBuilder hubScanConfigBuilder = new HubScanConfigBuilder()
         hubScanConfigBuilder.scanMemory = 4096
         hubScanConfigBuilder.toolsDir = toolsDirectory
+        hubScanConfigBuilder.workingDirectory = detectConfiguration.outputDirectory
         hubScanConfigBuilder.addScanTargetPath(canonicalPath)
 
         HubScanConfig hubScanConfig = hubScanConfigBuilder.build()
 
-        IntegrationInfo integrationInfo = new IntegrationInfo('Hub-Detect', "0.0.6-SNAPSHOT", "0.0.6-SNAPSHOT")
+        IntegrationInfo integrationInfo = new IntegrationInfo('Hub-Detect', '0.0.6-SNAPSHOT', '0.0.6-SNAPSHOT')
         ProjectVersionView projectVersionView = cliDataService.installAndRunControlledScan(hubServerConfig, hubScanConfig, projectRequest, false, integrationInfo)
         logger.info("${canonicalPath} was successfully scanned by the BlackDuck CLI.")
     }
