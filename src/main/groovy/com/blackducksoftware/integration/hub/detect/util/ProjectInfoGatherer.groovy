@@ -31,7 +31,7 @@ import com.blackducksoftware.integration.hub.detect.type.BomToolType
 
 @Component
 class ProjectInfoGatherer {
-    static String DATE_FORMAT = 'yyyy-MM-dd\'T\'HH:mm:ss.SSS'
+    public static String DATE_FORMAT = 'yyyy-MM-dd\'T\'HH:mm:ss.SSS'
 
     @Autowired
     DetectConfiguration detectConfiguration
@@ -75,6 +75,6 @@ class ProjectInfoGatherer {
         if (!codeLocation?.trim()) {
             codeLocation = String.format('%s/%s', projectName, projectVersion)
         }
-        return String.format(codeLocationFormat, codeLocation)
+        return String.format(codeLocationFormat, bomToolType, codeLocation)
     }
 }
