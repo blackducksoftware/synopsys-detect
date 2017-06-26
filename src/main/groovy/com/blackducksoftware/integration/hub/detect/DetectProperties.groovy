@@ -260,8 +260,4 @@ class DetectProperties {
     @ValueDescription(description="These paths and only these paths will be scanned.", group="signature scanner")
     @Value('${detect.hub.signature.scanner.paths}')
     String[] hubSignatureScannerPaths
-
-    @ValueDescription(description="Timeout for the signature scanning to complete.", defaultValue="300000", group="signature scanner")
-    @Value('${detect.hub.signature.scanner.timeout.milliseconds}')
-    Long hubSignatureScannerTimeoutMilliseconds
 }

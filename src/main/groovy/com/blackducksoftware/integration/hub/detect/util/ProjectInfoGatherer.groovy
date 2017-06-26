@@ -74,6 +74,6 @@ class ProjectInfoGatherer {
         if (!codeLocation?.trim()) {
             codeLocation = String.format('%s/%s', projectName, projectVersion)
         }
-        return String.format('%s Hub Detect Export', codeLocation)
+        return String.format('%s/%s Hub Detect Export', bomToolType.toString(), codeLocation)
     }
 }

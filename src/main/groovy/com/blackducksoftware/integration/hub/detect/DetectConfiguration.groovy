@@ -69,6 +69,8 @@ class DetectConfiguration {
             ] as String[]
         }
 
+        //TODO check for source paths to be directories
+
         if (StringUtils.isBlank(detectProperties.outputDirectoryPath)) {
             usingDefaultOutputPath = true
             detectProperties.outputDirectoryPath = System.getProperty('user.home') + File.separator + 'blackduck'
@@ -341,9 +343,6 @@ class DetectConfiguration {
     }
     public String[] getHubSignatureScannerPaths() {
         return detectProperties.hubSignatureScannerPaths
-    }
-    public long getHubSignatureScannerTimeoutMilliseconds() {
-        return toPrimitiveLong(detectProperties.hubSignatureScannerTimeoutMilliseconds)
     }
 
     private int toPrimitiveInteger(Integer propertyValue) {

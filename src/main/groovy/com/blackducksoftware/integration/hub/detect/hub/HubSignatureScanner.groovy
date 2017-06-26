@@ -66,41 +66,57 @@ class HubSignatureScanner {
     }
 
     public void scanFiles() {
-        Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
-        HubServerConfig hubServerConfig = hubManager.createHubServerConfig(slf4jIntLogger)
-        HubServicesFactory hubServicesFactory = hubManager.createHubServicesFactory(slf4jIntLogger, hubServerConfig)
-        CLIDataService cliDataService = hubServicesFactory.createCLIDataService(slf4jIntLogger, detectConfiguration.hubSignatureScannerTimeoutMilliseconds)
-        pathToProjectName.each { path, projectName ->
-            String projectVersionName = pathToProjectVersionName[path]
-            logger.info("Attempting to scan ${path} for ${projectName}/${projectVersionName}")
-            try {
-                scanDirectory(cliDataService, hubServerConfig, new File(path), projectName, projectVersionName)
-            } catch (Exception e) {
-                logger.error("Not able to scan ${path}: ${e.message}")
+        try {
+            Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
+            HubServerConfig hubServerConfig = hubManager.createHubServerConfig(slf4jIntLogger)
+            HubServicesFactory hubServicesFactory = hubManager.createHubServicesFactory(slf4jIntLogger, hubServerConfig)
+            CLIDataService cliDataService = hubServicesFactory.createCLIDataService(slf4jIntLogger, detectConfiguration.hubSignatureScannerTimeoutMilliseconds)
+
+            if (detectConfiguration.projectName && detectConfiguration.projectVersionName && detectConfiguration.hubSignatureScannerPaths) {
+                detectConfiguration.hubSignatureScannerPaths.each {
+                    scanDirectory(cliDataService, hubServerConfig, new File(it), detectConfiguration.projectName, detectConfiguration.projectVersionName)
+                }
+            } else {
+                pathToProjectName.each { path, projectName ->
+                    String projectVersionName = pathToProjectVersionName[path]
+                    logger.info("Attempting to scan ${path} for ${projectName}/${projectVersionName}")
+                    try {
+                        scanDirectory(cliDataService, hubServerConfig, new File(path), projectName, projectVersionName)
+                    } catch (Exception e) {
+                        logger.error("Not able to scan ${path}: ${e.message}")
+                    }
+                }
             }
+        } catch (Exception e) {
+            logger.error("Your Hub configuration is not valid: ${e.message}")
         }
     }
 
     private void scanDirectory(CLIDataService cliDataService, HubServerConfig hubServerConfig, File directory, String project, String version) {
-        String canonicalPath = directory.canonicalPath
-        ProjectRequestBuilder projectRequestBuilder = new ProjectRequestBuilder()
-        projectRequestBuilder.projectName = project
-        projectRequestBuilder.versionName = version
-        ProjectRequest projectRequest = projectRequestBuilder.build()
+        try {
+            String canonicalPath = directory.canonicalPath
+            ProjectRequestBuilder projectRequestBuilder = new ProjectRequestBuilder()
+            projectRequestBuilder.projectName = project
+            projectRequestBuilder.versionName = version
+            ProjectRequest projectRequest = projectRequestBuilder.build()
 
-        File scannerDirectory = detectFileManager.createDirectory('signature_scanner')
-        File toolsDirectory = detectFileManager.createDirectory(scannerDirectory, "tools")
+            File scannerDirectory = detectFileManager.createDirectory('signature_scanner')
+            File toolsDirectory = detectFileManager.createDirectory(scannerDirectory, "tools")
 
-        HubScanConfigBuilder hubScanConfigBuilder = new HubScanConfigBuilder()
-        hubScanConfigBuilder.scanMemory = 4096
-        hubScanConfigBuilder.toolsDir = toolsDirectory
-        hubScanConfigBuilder.workingDirectory = detectConfiguration.outputDirectory
-        hubScanConfigBuilder.addScanTargetPath(canonicalPath)
+            HubScanConfigBuilder hubScanConfigBuilder = new HubScanConfigBuilder()
+            hubScanConfigBuilder.scanMemory = 4096
+            hubScanConfigBuilder.toolsDir = toolsDirectory
+            hubScanConfigBuilder.workingDirectory = toolsDirectory
+            hubScanConfigBuilder.addScanTargetPath(canonicalPath)
 
-        HubScanConfig hubScanConfig = hubScanConfigBuilder.build()
+            HubScanConfig hubScanConfig = hubScanConfigBuilder.build()
 
-        IntegrationInfo integrationInfo = new IntegrationInfo('Hub-Detect', '0.0.6-SNAPSHOT', '0.0.6-SNAPSHOT')
-        ProjectVersionView projectVersionView = cliDataService.installAndRunControlledScan(hubServerConfig, hubScanConfig, projectRequest, false, integrationInfo)
-        logger.info("${canonicalPath} was successfully scanned by the BlackDuck CLI.")
+            IntegrationInfo integrationInfo = new IntegrationInfo('Hub-Detect', '0.0.6-SNAPSHOT', '0.0.6-SNAPSHOT')
+            //TODO make version.txt file during build
+            ProjectVersionView projectVersionView = cliDataService.installAndRunControlledScan(hubServerConfig, hubScanConfig, projectRequest, false, integrationInfo)
+            logger.info("${canonicalPath} was successfully scanned by the BlackDuck CLI.")
+        } catch (Exception e) {
+            logger.error("${project}/${version} was not scanned by the BlackDuck CLI: ${e.message}")
+        }
     }
 }
