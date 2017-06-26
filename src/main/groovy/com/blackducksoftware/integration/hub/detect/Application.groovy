@@ -39,6 +39,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.Extern
 import com.blackducksoftware.integration.hub.detect.help.HelpPrinter
 import com.blackducksoftware.integration.hub.detect.help.ValueDescriptionAnnotationFinder
 import com.blackducksoftware.integration.hub.detect.hub.BdioUploader
+import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -55,6 +56,9 @@ class Application {
 
     @Autowired
     ExecutableManager executableManager
+
+    @Autowired
+    HubSignatureScanner hubSignatureScanner
 
     @Autowired
     BdioPropertyHelper bdioPropertyHelper
@@ -92,6 +96,7 @@ class Application {
             }
             List<File> createdBdioFiles = bomToolManager.createBdioFiles()
             bdioUploader.uploadBdioFiles(createdBdioFiles)
+            hubSignatureScanner.scanFiles()
         }
     }
 

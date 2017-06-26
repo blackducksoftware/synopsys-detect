@@ -29,22 +29,23 @@ import com.blackducksoftware.integration.hub.detect.help.ValueDescription
 
 @Component
 class DetectProperties {
-    private static final String GROUP_HUB_CONFIGURATION = "hub configuration"
-    private static final String GROUP_LOGGING = "logging"
-    private static final String GROUP_CLEANUP = "cleanup"
-    private static final String GROUP_PATHS = "paths"
-    private static final String GROUP_BOMTOOL = "bomtool"
-    private static final String GROUP_PROJECT_INFO = "project info"
-    private static final String GROUP_POLICY_CHECK = "policy check"
+    private static final String GROUP_HUB_CONFIGURATION = 'hub configuration'
+    private static final String GROUP_LOGGING = 'logging'
+    private static final String GROUP_CLEANUP = 'cleanup'
+    private static final String GROUP_PATHS = 'paths'
+    private static final String GROUP_BOMTOOL = 'bomtool'
+    private static final String GROUP_PROJECT_INFO = 'project info'
+    private static final String GROUP_POLICY_CHECK = 'policy check'
+    private static final String GROUP_SIGNATURE_SCANNER = 'signature scanner'
 
-    private static final String GROUP_NPM_BOMTOOL = "npm bomtool"
-    private static final String GROUP_GRADLE_BOMTOOL = "gradle bomtool"
-    private static final String GROUP_MAVEN_BOMTOOL = "maven bomtool"
-    private static final String GROUP_NUGET_BOMTOOL = "nuget bomtool"
-    private static final String GROUP_PIP_BOMTOOL = "pip bomtool"
-    private static final String GROUP_PYTHON_BOMTOOL = "python bomtool"
-    private static final String GROUP_GO_BOMTOOL = "go bomtool"
-    private static final String GROUP_DOCKER_BOMTOOL = "docker bomtool"
+    private static final String GROUP_NPM_BOMTOOL = 'npm bomtool'
+    private static final String GROUP_GRADLE_BOMTOOL = 'gradle bomtool'
+    private static final String GROUP_MAVEN_BOMTOOL = 'maven bomtool'
+    private static final String GROUP_NUGET_BOMTOOL = 'nuget bomtool'
+    private static final String GROUP_PIP_BOMTOOL = 'pip bomtool'
+    private static final String GROUP_PYTHON_BOMTOOL = 'python bomtool'
+    private static final String GROUP_GO_BOMTOOL = 'go bomtool'
+    private static final String GROUP_DOCKER_BOMTOOL = 'docker bomtool'
 
     @ValueDescription(description="If true, the default behavior of printing your configuration properties at startup will be suppressed.", defaultValue="false", group=DetectProperties.GROUP_LOGGING)
     @Value('${detect.suppress.configuration.output}')
@@ -273,4 +274,12 @@ class DetectProperties {
     @ValueDescription(description="Detect creates temporary files in the output directory. If set to true this will clean them up after execution", defaultValue='true', group=DetectProperties.GROUP_CLEANUP)
     @Value('${detect.cleanup.bom.tool.files}')
     Boolean cleanupBomToolFiles
+
+    @ValueDescription(description="These paths and only these paths will be scanned.", group=DetectProperties.GROUP_SIGNATURE_SCANNER)
+    @Value('${detect.hub.signature.scanner.paths}')
+    String[] hubSignatureScannerPaths
+
+    @ValueDescription(description="The memory for the scanner to use.", defaultValue="4096", group=DetectProperties.GROUP_SIGNATURE_SCANNER)
+    @Value('${detect.hub.signature.scanner.memory}')
+    Integer hubSignatureScannerMemory
 }

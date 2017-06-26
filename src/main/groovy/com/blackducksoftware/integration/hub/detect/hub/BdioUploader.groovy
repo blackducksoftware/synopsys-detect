@@ -30,7 +30,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.api.bom.BomImportRequestService
-import com.blackducksoftware.integration.hub.builder.HubServerConfigBuilder
 import com.blackducksoftware.integration.hub.buildtool.BuildToolConstants
 import com.blackducksoftware.integration.hub.dataservice.phonehome.PhoneHomeDataService
 import com.blackducksoftware.integration.hub.dataservice.policystatus.PolicyStatusDataService
@@ -40,7 +39,6 @@ import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.policychecker.PolicyChecker
 import com.blackducksoftware.integration.hub.global.HubServerConfig
 import com.blackducksoftware.integration.hub.phonehome.IntegrationInfo
-import com.blackducksoftware.integration.hub.rest.RestConnection
 import com.blackducksoftware.integration.hub.service.HubServicesFactory
 import com.blackducksoftware.integration.log.Slf4jIntLogger
 import com.blackducksoftware.integration.util.ResourceUtil
@@ -55,6 +53,9 @@ class BdioUploader {
     @Autowired
     DetectConfiguration detectConfiguration
 
+    @Autowired
+    HubManager hubManager
+
     void uploadBdioFiles(List<File> createdBdioFiles) {
         if (!createdBdioFiles) {
             return
@@ -62,8 +63,8 @@ class BdioUploader {
 
         try {
             Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
-            HubServerConfig hubServerConfig = createHubServerConfig(slf4jIntLogger)
-            HubServicesFactory hubServicesFactory = createHubServicesFactory(slf4jIntLogger, hubServerConfig)
+            HubServerConfig hubServerConfig = hubManager.createHubServerConfig(slf4jIntLogger)
+            HubServicesFactory hubServicesFactory = hubManager.createHubServicesFactory(slf4jIntLogger, hubServerConfig)
             BomImportRequestService bomImportRequestService = hubServicesFactory.createBomImportRequestService()
             PhoneHomeDataService phoneHomeDataService = hubServicesFactory.createPhoneHomeDataService(slf4jIntLogger)
 
@@ -94,29 +95,5 @@ class BdioUploader {
         } catch (Exception e) {
             logger.error("Your Hub configuration is not valid: ${e.message}")
         }
-    }
-
-    private HubServicesFactory createHubServicesFactory(Slf4jIntLogger slf4jIntLogger, HubServerConfig hubServerConfig) {
-        RestConnection restConnection = hubServerConfig.createCredentialsRestConnection(slf4jIntLogger)
-
-        new HubServicesFactory(restConnection)
-    }
-
-    private HubServerConfig createHubServerConfig(Slf4jIntLogger slf4jIntLogger) {
-        HubServerConfigBuilder hubServerConfigBuilder = new HubServerConfigBuilder()
-        hubServerConfigBuilder.setHubUrl(detectConfiguration.getHubUrl())
-        hubServerConfigBuilder.setTimeout(detectConfiguration.getHubTimeout())
-        hubServerConfigBuilder.setUsername(detectConfiguration.getHubUsername())
-        hubServerConfigBuilder.setPassword(detectConfiguration.getHubPassword())
-
-        hubServerConfigBuilder.setProxyHost(detectConfiguration.getHubProxyHost())
-        hubServerConfigBuilder.setProxyPort(detectConfiguration.getHubProxyPort())
-        hubServerConfigBuilder.setProxyUsername(detectConfiguration.getHubProxyUsername())
-        hubServerConfigBuilder.setProxyPassword(detectConfiguration.getHubProxyPassword())
-
-        hubServerConfigBuilder.setAutoImportHttpsCertificates(detectConfiguration.getHubAutoImportCertificate())
-        hubServerConfigBuilder.setLogger(slf4jIntLogger)
-
-        hubServerConfigBuilder.build()
     }
 }
