@@ -344,6 +344,9 @@ class DetectConfiguration {
     public String[] getHubSignatureScannerPaths() {
         return detectProperties.hubSignatureScannerPaths
     }
+    public int getHubSignatureScannerMemory() {
+        return toPrimitiveInteger(detectProperties.hubSignatureScannerMemory)
+    }
 
     private int toPrimitiveInteger(Integer propertyValue) {
         if (propertyValue) {

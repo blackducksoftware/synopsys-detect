@@ -70,7 +70,7 @@ class HubSignatureScanner {
             Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
             HubServerConfig hubServerConfig = hubManager.createHubServerConfig(slf4jIntLogger)
             HubServicesFactory hubServicesFactory = hubManager.createHubServicesFactory(slf4jIntLogger, hubServerConfig)
-            CLIDataService cliDataService = hubServicesFactory.createCLIDataService(slf4jIntLogger, detectConfiguration.hubSignatureScannerTimeoutMilliseconds)
+            CLIDataService cliDataService = hubServicesFactory.createCLIDataService(slf4jIntLogger, 0L)
 
             if (detectConfiguration.projectName && detectConfiguration.projectVersionName && detectConfiguration.hubSignatureScannerPaths) {
                 detectConfiguration.hubSignatureScannerPaths.each {
@@ -101,10 +101,10 @@ class HubSignatureScanner {
             ProjectRequest projectRequest = projectRequestBuilder.build()
 
             File scannerDirectory = detectFileManager.createDirectory('signature_scanner')
-            File toolsDirectory = detectFileManager.createDirectory(scannerDirectory, "tools")
+            File toolsDirectory = detectFileManager.createDirectory(scannerDirectory, 'tools')
 
             HubScanConfigBuilder hubScanConfigBuilder = new HubScanConfigBuilder()
-            hubScanConfigBuilder.scanMemory = 4096
+            hubScanConfigBuilder.scanMemory = detectConfiguration.hubSignatureScannerMemory
             hubScanConfigBuilder.toolsDir = toolsDirectory
             hubScanConfigBuilder.workingDirectory = toolsDirectory
             hubScanConfigBuilder.addScanTargetPath(canonicalPath)
