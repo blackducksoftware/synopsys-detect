@@ -22,8 +22,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.help
 
-import javax.annotation.PostConstruct
-
 import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.math.NumberUtils
 import org.slf4j.Logger
@@ -48,7 +46,6 @@ public class ValueDescriptionAnnotationFinder implements ApplicationContextAware
         this.applicationContext = applicationContext
     }
 
-    @PostConstruct
     public void init() {
         Map<String, DetectOption> detectOptionsMap = [:]
         applicationContext.beanDefinitionNames.each { beanName ->
