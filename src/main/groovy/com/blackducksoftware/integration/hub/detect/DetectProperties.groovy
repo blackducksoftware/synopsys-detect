@@ -29,9 +29,6 @@ import com.blackducksoftware.integration.hub.detect.help.ValueDescription
 
 @Component
 class DetectProperties {
-    /*
-     * General property groupings
-     */
     private static final String GROUP_HUB_CONFIGURATION = "hub configuration"
     private static final String GROUP_LOGGING = "logging"
     private static final String GROUP_CLEANUP = "cleanup"
@@ -40,9 +37,6 @@ class DetectProperties {
     private static final String GROUP_PROJECT_INFO = "project info"
     private static final String GROUP_POLICY_CHECK = "policy check"
 
-    /*
-     * Bomtool property groupings
-     */
     private static final String GROUP_NPM_BOMTOOL = "npm bomtool"
     private static final String GROUP_GRADLE_BOMTOOL = "gradle bomtool"
     private static final String GROUP_MAVEN_BOMTOOL = "maven bomtool"
