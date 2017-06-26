@@ -84,10 +84,10 @@ class Application {
 
     @PostConstruct
     void init() {
+        valueDescriptionAnnotationFinder.init()
         if ('-h' in applicationArguments.getSourceArgs() || '--help' in applicationArguments.getSourceArgs()) {
             helpPrinter.printHelpMessage(System.out)
         } else {
-            valueDescriptionAnnotationFinder.init()
             detectConfiguration.init()
             executableManager.init()
             logger.info('Configuration processed completely.')

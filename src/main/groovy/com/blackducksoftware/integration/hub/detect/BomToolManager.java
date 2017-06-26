@@ -88,6 +88,8 @@ public class BomToolManager {
                     if (projectNodes != null && projectNodes.size() > 0) {
                         foundSomeBomTools = true;
                         createOutput(createdBdioFiles, bomToolType, projectNodes);
+                    } else {
+                        logger.error("Did not find any projects from " + bomToolType);
                     }
                 }
             } catch (final Exception e) {
