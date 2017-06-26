@@ -38,7 +38,7 @@ public class ExecutableRunner {
     private final Logger logger = LoggerFactory.getLogger(ExecutableRunner.class);
 
     public ExecutableOutput execute(final Executable executable) throws ExecutableRunnerException {
-        logger.info(String.format("Running executable >%s", executable.getExecutableDescription()));
+        logger.info(String.format("Running executable >%s", executable.getMaskedExecutableDescription()));
         try {
             final ProcessBuilder processBuilder = executable.createProcessBuilder();
             final Process process = processBuilder.start();
@@ -52,7 +52,7 @@ public class ExecutableRunner {
     }
 
     public void executeToFile(final Executable executable, final File standardOutput, final File errorOutput) throws ExecutableRunnerException {
-        logger.debug(String.format("Running executable >%s", executable.getExecutableDescription()));
+        logger.debug(String.format("Running executable >%s", executable.getMaskedExecutableDescription()));
         try {
             final ProcessBuilder processBuilder = executable.createProcessBuilder().redirectOutput(standardOutput).redirectError(errorOutput);
             final Process process = processBuilder.start();
