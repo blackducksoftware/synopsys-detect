@@ -106,13 +106,13 @@ class HubSignatureScanner {
             HubScanConfigBuilder hubScanConfigBuilder = new HubScanConfigBuilder()
             hubScanConfigBuilder.scanMemory = detectConfiguration.hubSignatureScannerMemory
             hubScanConfigBuilder.toolsDir = toolsDirectory
-            hubScanConfigBuilder.workingDirectory = toolsDirectory
+            hubScanConfigBuilder.workingDirectory = scannerDirectory
             hubScanConfigBuilder.addScanTargetPath(canonicalPath)
 
             HubScanConfig hubScanConfig = hubScanConfigBuilder.build()
 
-            IntegrationInfo integrationInfo = new IntegrationInfo('Hub-Detect', '0.0.6-SNAPSHOT', '0.0.6-SNAPSHOT')
-            //TODO make version.txt file during build
+            String hubDetectVersion = ResourceUtil.getResourceAsString('version.txt', StandardCharsets.UTF_8)
+            IntegrationInfo integrationInfo = new IntegrationInfo('Hub-Detect', hubDetectVersion, hubDetectVersion)
             ProjectVersionView projectVersionView = cliDataService.installAndRunControlledScan(hubServerConfig, hubScanConfig, projectRequest, false, integrationInfo)
             logger.info("${canonicalPath} was successfully scanned by the BlackDuck CLI.")
         } catch (Exception e) {
