@@ -335,7 +335,7 @@ class DetectConfiguration {
     public String getLoggingLevel() {
         return detectProperties.loggingLevel
     }
-    public String getCleanupBomToolFiles() {
+    public boolean getCleanupBomToolFiles() {
         return detectProperties.cleanupBomToolFiles
     }
     public boolean getSuppressConfigurationOutput() {
