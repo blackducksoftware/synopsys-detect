@@ -24,7 +24,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool
 
 import java.nio.charset.StandardCharsets
 
-import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -82,18 +81,18 @@ class DockerBomTool extends BomTool {
             detectFileManager.writeToFile(shellScriptFile, shellScriptContents)
             shellScriptFile.setExecutable(true)
         }
+        // --spring.config.location
+        File dockerPropertiesFile = detectFileManager.createFile(BomToolType.DOCKER, 'application.properties')
+        dockerProperties.fillInDockerProperties(dockerPropertiesFile)
 
         String path = System.getenv('PATH')
         File dockerExecutableFile = new File(dockerExecutablePath)
         path += File.pathSeparator + dockerExecutableFile.parentFile.absolutePath
         Map<String, String> environmentVariables = [PATH: path]
 
-        List<String> dockerShellScriptArguments = dockerProperties.createDockerArgumentList()
-        String bashScriptArg = StringUtils.join(dockerShellScriptArguments, ' ')
-
         List<String> bashArguments = [
             "-c",
-            "${shellScriptFile.absolutePath} ${bashScriptArg}"
+            "${shellScriptFile.absolutePath} --spring.config.location=\"${dockerPropertiesFile.getAbsolutePath()}\""
         ]
 
         Executable dockerExecutable = new Executable(dockerInstallDirectory, environmentVariables, bashExecutablePath, bashArguments)
