@@ -38,14 +38,14 @@ class DetectProperties {
     private static final String GROUP_POLICY_CHECK = 'policy check'
     private static final String GROUP_SIGNATURE_SCANNER = 'signature scanner'
 
-    private static final String GROUP_NPM_BOMTOOL = 'npm bomtool'
-    private static final String GROUP_GRADLE_BOMTOOL = 'gradle bomtool'
-    private static final String GROUP_MAVEN_BOMTOOL = 'maven bomtool'
-    private static final String GROUP_NUGET_BOMTOOL = 'nuget bomtool'
-    private static final String GROUP_PIP_BOMTOOL = 'pip bomtool'
-    private static final String GROUP_PYTHON_BOMTOOL = 'python bomtool'
-    private static final String GROUP_GO_BOMTOOL = 'go bomtool'
-    private static final String GROUP_DOCKER_BOMTOOL = 'docker bomtool'
+    private static final String GROUP_NPM = 'npm'
+    private static final String GROUP_GRADLE = 'gradle'
+    private static final String GROUP_MAVEN = 'maven'
+    private static final String GROUP_NUGET = 'nuget'
+    private static final String GROUP_PIP = 'pip'
+    private static final String GROUP_PYTHON = 'python'
+    private static final String GROUP_GO = 'go'
+    private static final String GROUP_DOCKER = 'docker'
 
     @ValueDescription(description="If true, the default behavior of printing your configuration properties at startup will be suppressed.", defaultValue="false", group=DetectProperties.GROUP_LOGGING)
     @Value('${detect.suppress.configuration.output}')
@@ -131,135 +131,135 @@ class DetectProperties {
     @Value('${detect.policy.check.timeout}')
     Integer policyCheckTimeout
 
-    @ValueDescription(description="Version of the Gradle Inspector", defaultValue="0.0.7", group=DetectProperties.GROUP_GRADLE_BOMTOOL)
+    @ValueDescription(description="Version of the Gradle Inspector", defaultValue="0.0.7", group=DetectProperties.GROUP_GRADLE)
     @Value('${detect.gradle.inspector.version}')
     String gradleInspectorVersion
 
-    @ValueDescription(description="Gradle build command", defaultValue="dependencies", group=DetectProperties.GROUP_GRADLE_BOMTOOL)
+    @ValueDescription(description="Gradle build command", defaultValue="dependencies", group=DetectProperties.GROUP_GRADLE)
     @Value('${detect.gradle.build.command}')
     String gradleBuildCommand
 
-    @ValueDescription(description="The names of the dependency configurations to exclude", group=DetectProperties.GROUP_GRADLE_BOMTOOL)
+    @ValueDescription(description="The names of the dependency configurations to exclude", group=DetectProperties.GROUP_GRADLE)
     @Value('${detect.gradle.excluded.configurations}')
     String gradleExcludedConfigurationNames
 
-    @ValueDescription( description="The names of the dependency configurations to include", group=DetectProperties.GROUP_GRADLE_BOMTOOL)
+    @ValueDescription( description="The names of the dependency configurations to include", group=DetectProperties.GROUP_GRADLE)
     @Value('${detect.gradle.included.configurations}')
     String gradleIncludedConfigurationNames
 
-    @ValueDescription(description="The names of the projects to exclude", group=DetectProperties.GROUP_GRADLE_BOMTOOL)
+    @ValueDescription(description="The names of the projects to exclude", group=DetectProperties.GROUP_GRADLE)
     @Value('${detect.gradle.excluded.projects}')
     String gradleExcludedProjectNames
 
-    @ValueDescription(description="The names of the projects to include", group=DetectProperties.GROUP_GRADLE_BOMTOOL)
+    @ValueDescription(description="The names of the projects to include", group=DetectProperties.GROUP_GRADLE)
     @Value('${detect.gradle.included.projects}')
     String gradleIncludedProjectNames
 
-    @ValueDescription(description="Set this to false if you do not want the 'blackduck' directory in your build directory to be deleted.", defaultValue="true", group=DetectProperties.GROUP_GRADLE_BOMTOOL)
+    @ValueDescription(description="Set this to false if you do not want the 'blackduck' directory in your build directory to be deleted.", defaultValue="true", group=DetectProperties.GROUP_GRADLE)
     @Value('${detect.gradle.cleanup.build.blackduck.directory}')
     Boolean gradleCleanupBuildBlackduckDirectory
 
-    @ValueDescription(description="Name of the Nuget Inspector", defaultValue="IntegrationNugetInspector", group=DetectProperties.GROUP_NUGET_BOMTOOL)
+    @ValueDescription(description="Name of the Nuget Inspector", defaultValue="IntegrationNugetInspector", group=DetectProperties.GROUP_NUGET)
     @Value('${detect.nuget.inspector.name}')
     String nugetInspectorPackageName
 
-    @ValueDescription(description="Version of the Nuget Inspector", defaultValue="1.0.0", group=DetectProperties.GROUP_NUGET_BOMTOOL)
+    @ValueDescription(description="Version of the Nuget Inspector", defaultValue="1.0.0", group=DetectProperties.GROUP_NUGET)
     @Value('${detect.nuget.inspector.version}')
     String nugetInspectorPackageVersion
 
-    @ValueDescription(description="The names of the projects in a solution to exclude", group=DetectProperties.GROUP_NUGET_BOMTOOL)
+    @ValueDescription(description="The names of the projects in a solution to exclude", group=DetectProperties.GROUP_NUGET)
     @Value('${detect.nuget.excluded.modules}')
     String nugetInspectorExcludedModules
 
-    @ValueDescription(description="If true errors will be logged and then ignored.", defaultValue="false", group=DetectProperties.GROUP_NUGET_BOMTOOL)
+    @ValueDescription(description="If true errors will be logged and then ignored.", defaultValue="false", group=DetectProperties.GROUP_NUGET)
     @Value('${detect.nuget.ignore.failure}')
     Boolean nugetInspectorIgnoreFailure
 
-    @ValueDescription(description="If true all maven projects will be aggregated into a single bom", defaultValue="true", group=DetectProperties.GROUP_MAVEN_BOMTOOL)
+    @ValueDescription(description="If true all maven projects will be aggregated into a single bom", defaultValue="true", group=DetectProperties.GROUP_MAVEN)
     @Value('${detect.maven.aggregate}')
     Boolean mavenAggregateBom
 
-    @ValueDescription(description="The name of the dependency scope to include", group=DetectProperties.GROUP_MAVEN_BOMTOOL)
+    @ValueDescription(description="The name of the dependency scope to include", group=DetectProperties.GROUP_MAVEN)
     @Value('${detect.maven.scope}')
     String mavenScope
 
-    @ValueDescription(description="Path of the Gradle executable", group=DetectProperties.GROUP_GRADLE_BOMTOOL)
+    @ValueDescription(description="Path of the Gradle executable", group=DetectProperties.GROUP_GRADLE)
     @Value('${detect.gradle.path}')
     String gradlePath
 
-    @ValueDescription(description="The path of the Maven executable", group=DetectProperties.GROUP_MAVEN_BOMTOOL)
+    @ValueDescription(description="The path of the Maven executable", group=DetectProperties.GROUP_MAVEN)
     @Value('${detect.maven.path}')
     String mavenPath
 
-    @ValueDescription(description="If true all nuget projects will be aggregated into a single bom", defaultValue="false", group=DetectProperties.GROUP_NUGET_BOMTOOL)
+    @ValueDescription(description="If true all nuget projects will be aggregated into a single bom", defaultValue="false", group=DetectProperties.GROUP_NUGET)
     @Value('${detect.nuget.aggregate}')
     Boolean nugetAggregateBom
 
-    @ValueDescription(description="The path of the Nuget executable", group=DetectProperties.GROUP_NUGET_BOMTOOL)
+    @ValueDescription(description="The path of the Nuget executable", group=DetectProperties.GROUP_NUGET)
     @Value('${detect.nuget.path}')
     String nugetPath
 
-    @ValueDescription(description="Override for pip inspector to find your project", group=DetectProperties.GROUP_PIP_BOMTOOL)
+    @ValueDescription(description="Override for pip inspector to find your project", group=DetectProperties.GROUP_PIP)
     @Value('${detect.pip.project.name}')
     String pipProjectName
 
-    @ValueDescription(description="If true creates a temporary Python virtual environment", defaultValue="true", group=DetectProperties.GROUP_PIP_BOMTOOL)
+    @ValueDescription(description="If true creates a temporary Python virtual environment", defaultValue="true", group=DetectProperties.GROUP_PIP)
     @Value('${detect.pip.create.virtual.env}')
     Boolean createVirtualEnv
 
-    @ValueDescription(description="If true will use pip3 if available on class path", defaultValue="false", group=DetectProperties.GROUP_PIP_BOMTOOL)
+    @ValueDescription(description="If true will use pip3 if available on class path", defaultValue="false", group=DetectProperties.GROUP_PIP)
     @Value('${detect.pip.pip3}')
     Boolean pipThreeOverride
 
-    @ValueDescription(description="The path of the Python executable", group=DetectProperties.GROUP_PYTHON_BOMTOOL)
+    @ValueDescription(description="The path of the Python executable", group=DetectProperties.GROUP_PYTHON)
     @Value('${detect.python.path}')
     String pythonPath
 
-    @ValueDescription(description="The path of the Pip executable", group=DetectProperties.GROUP_PIP_BOMTOOL)
+    @ValueDescription(description="The path of the Pip executable", group=DetectProperties.GROUP_PIP)
     @Value('${detect.pip.path}')
     String pipPath
 
-    @ValueDescription(description="The path of the Npm executable", group=DetectProperties.GROUP_NPM_BOMTOOL)
+    @ValueDescription(description="The path of the Npm executable", group=DetectProperties.GROUP_NPM)
     @Value('${detect.npm.path}')
     String npmPath
 
-    @ValueDescription(description="The path to a user's virtual environment", group=DetectProperties.GROUP_PIP_BOMTOOL)
+    @ValueDescription(description="The path to a user's virtual environment", group=DetectProperties.GROUP_PIP)
     @Value('${detect.pip.virtualEnv.path}')
     String virtualEnvPath
 
-    @ValueDescription(description="The path of the requirements.txt file", group=DetectProperties.GROUP_PIP_BOMTOOL)
+    @ValueDescription(description="The path of the requirements.txt file", group=DetectProperties.GROUP_PIP)
     @Value('${detect.pip.requirements.path}')
     String requirementsFilePath
 
-    @ValueDescription(description="Path of the Go Dep executable", group=DetectProperties.GROUP_GO_BOMTOOL)
+    @ValueDescription(description="Path of the Go Dep executable", group=DetectProperties.GROUP_GO)
     @Value('${detect.go.dep.path}')
     String goDepPath
 
-    @ValueDescription(description="Path of the docker executable", group=DetectProperties.GROUP_DOCKER_BOMTOOL)
+    @ValueDescription(description="Path of the docker executable", group=DetectProperties.GROUP_DOCKER)
     @Value('${detect.docker.path}')
     String dockerPath
 
-    @ValueDescription(description="This is used to override using the hosted script by github url. You can provide your own script at this path.", group=DetectProperties.GROUP_DOCKER_BOMTOOL)
+    @ValueDescription(description="This is used to override using the hosted script by github url. You can provide your own script at this path.", group=DetectProperties.GROUP_DOCKER)
     @Value('${detect.docker.inspector.path}')
     String dockerInspectorPath
 
-    @ValueDescription(description="Version of the Hub Docker Inspector to use", defaultValue="0.1.1", group=DetectProperties.GROUP_DOCKER_BOMTOOL)
+    @ValueDescription(description="Version of the Hub Docker Inspector to use", defaultValue="0.1.1", group=DetectProperties.GROUP_DOCKER)
     @Value('${detect.docker.inspector.version}')
     String dockerInspectorVersion
 
-    @ValueDescription(description="Where the Hub Docker Inspector should be installed - will default to a 'docker-install' directory in the outputDirectoryPath", group=DetectProperties.GROUP_DOCKER_BOMTOOL)
+    @ValueDescription(description="Where the Hub Docker Inspector should be installed - will default to a 'docker-install' directory in the outputDirectoryPath", group=DetectProperties.GROUP_DOCKER)
     @Value('${detect.docker.install.path}')
     String dockerInstallPath
 
-    @ValueDescription(description="Where the Hub Docker Inspector will put the files it needs to do its processing - this directory could be cleared by the inspector, so it should not be shared by others - will default to 'sandbox' directory in the dockerInstallPath", group=DetectProperties.GROUP_DOCKER_BOMTOOL)
+    @ValueDescription(description="Where the Hub Docker Inspector will put the files it needs to do its processing - this directory could be cleared by the inspector, so it should not be shared by others - will default to 'sandbox' directory in the dockerInstallPath", group=DetectProperties.GROUP_DOCKER)
     @Value('${detect.docker.sandbox.path}')
     String dockerSandboxPath
 
-    @ValueDescription(description="A saved docker image - must be a .tar file. For detect to run docker either this property or detect.docker.image must be set.", group=DetectProperties.GROUP_DOCKER_BOMTOOL)
+    @ValueDescription(description="A saved docker image - must be a .tar file. For detect to run docker either this property or detect.docker.image must be set.", group=DetectProperties.GROUP_DOCKER)
     @Value('${detect.docker.tar}')
     String dockerTar
 
-    @ValueDescription(description="The docker image name to inspect. For detect to run docker either this property or detect.docker.tar must be set.", group=DetectProperties.GROUP_DOCKER_BOMTOOL)
+    @ValueDescription(description="The docker image name to inspect. For detect to run docker either this property or detect.docker.tar must be set.", group=DetectProperties.GROUP_DOCKER)
     @Value('${detect.docker.image}')
     String dockerImage
 
