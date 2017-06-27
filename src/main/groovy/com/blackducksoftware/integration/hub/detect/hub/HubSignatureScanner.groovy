@@ -22,6 +22,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.hub
 
+import java.nio.charset.StandardCharsets
+
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -39,6 +41,7 @@ import com.blackducksoftware.integration.hub.request.builder.ProjectRequestBuild
 import com.blackducksoftware.integration.hub.scan.HubScanConfig
 import com.blackducksoftware.integration.hub.service.HubServicesFactory
 import com.blackducksoftware.integration.log.Slf4jIntLogger
+import com.blackducksoftware.integration.util.ResourceUtil
 
 @Component
 class HubSignatureScanner {
@@ -58,6 +61,7 @@ class HubSignatureScanner {
 
     public void registerDirectoryToScan(File directory, String projectName, String projectVersionName) {
         if (directory.exists() && projectName && projectVersionName) {
+            logger.debug("Registering path ${directory.getAbsolutePath()} to scan, for Project ${projectName} Version ${projectVersionName}")
             pathToProjectName[directory.canonicalPath] = projectName
             pathToProjectVersionName[directory.canonicalPath] = projectVersionName
         } else {
