@@ -33,6 +33,7 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
+import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
@@ -52,6 +53,9 @@ class NugetInspectorPackager {
 
     @Autowired
     ExecutableRunner executableRunner
+
+    @Autowired
+    HubSignatureScanner hubSignatureScanner
 
     @Autowired
     Gson gson
@@ -86,10 +90,18 @@ class NugetInspectorPackager {
         def dependencyNodeFile = detectFileManager.findFile(outputDirectory, '*_dependency_node.json')
         final String dependencyNodeJson = dependencyNodeFile.getText(StandardCharsets.UTF_8.name())
         final NugetNode nugetNode = gson.fromJson(dependencyNodeJson, NugetNode.class)
+        registerScanPaths(nugetNode)
 
         DependencyNode dependencyNode = nameVersionNodeTransformer.createDependencyNode(Forge.NUGET, nugetNode)
         FileUtils.deleteDirectory(outputDirectory)
         return dependencyNode
+    }
+
+    private void registerScanPaths(NugetNode nugetNode){
+        nugetNode.outputPaths?.each {
+            hubSignatureScanner.registerDirectoryToScan(new File(it), nugetNode.artifact, nugetNode.version)
+        }
+        nugetNode.children?.each { registerScanPaths(it) }
     }
 
     private String getInspectorExePath(File sourceDirectory, File outputDirectory, File nugetExecutable) {

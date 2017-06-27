@@ -100,7 +100,17 @@ class NugetBomTool extends BomTool {
     }
 
     boolean isSolution(DependencyNode root) {
-        root.children != null && root.children.size() > 0 && root.children[0].children != null && root.children[0].children.size() > 0
+        boolean isSolution = false
+        if (root.children != null && root.children.size() > 0) {
+            for (DependencyNode child : root.children) {
+                if (child.children != null && child.children.size() > 0) {
+                    // the only way to tell if we are dealing with a solution is if at least one of the projects has a dependency
+                    isSolution = true
+                    break
+                }
+            }
+        }
+        return isSolution
     }
 
     private File findNugetExecutable() {
