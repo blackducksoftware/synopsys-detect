@@ -88,6 +88,9 @@ class NugetInspectorPackager {
         ExecutableOutput executableOutput = executableRunner.execute(hubNugetInspectorExecutable)
 
         def dependencyNodeFile = detectFileManager.findFile(outputDirectory, '*_dependency_node.json')
+        if (!dependencyNodeFile) {
+            return null
+        }
         final String dependencyNodeJson = dependencyNodeFile.getText(StandardCharsets.UTF_8.name())
         final NugetNode nugetNode = gson.fromJson(dependencyNodeJson, NugetNode.class)
         registerScanPaths(nugetNode)
