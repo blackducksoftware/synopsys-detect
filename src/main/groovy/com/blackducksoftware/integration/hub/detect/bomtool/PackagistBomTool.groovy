@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
 import com.blackducksoftware.integration.hub.detect.bomtool.packagist.PackagistParser
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 
@@ -71,13 +71,17 @@ class PackagistBomTool extends BomTool {
     }
 
     @Override
-    public List<DependencyNode> extractDependencyNodes() {
-        List<DependencyNode> nodes = []
+    public List<DetectProject> extractDetectProjects() {
+        List<DetectProject> projects = []
 
         composerLockAndJsonPaths.each { path ->
-            nodes.add(packagistParser.getDependencyNodeFromProject(path))
+            DetectProject detectProject = new DetectProject(new File(path))
+            detectProject.dependencyNodes = [
+                packagistParser.getDependencyNodeFromProject(path)
+            ]
+            projects.add(detectProject)
         }
 
-        nodes
+        projects
     }
 }
