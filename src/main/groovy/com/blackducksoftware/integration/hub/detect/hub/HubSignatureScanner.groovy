@@ -74,7 +74,7 @@ class HubSignatureScanner {
             Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
             HubServerConfig hubServerConfig = hubManager.createHubServerConfig(slf4jIntLogger)
             HubServicesFactory hubServicesFactory = hubManager.createHubServicesFactory(slf4jIntLogger, hubServerConfig)
-            CLIDataService cliDataService = hubServicesFactory.createCLIDataService(slf4jIntLogger, 0L)
+            CLIDataService cliDataService = hubServicesFactory.createCLIDataService(slf4jIntLogger, 120000L)
 
             if (detectConfiguration.projectName && detectConfiguration.projectVersionName && detectConfiguration.hubSignatureScannerPaths) {
                 detectConfiguration.hubSignatureScannerPaths.each {
@@ -112,6 +112,7 @@ class HubSignatureScanner {
             hubScanConfigBuilder.toolsDir = toolsDirectory
             hubScanConfigBuilder.workingDirectory = scannerDirectory
             hubScanConfigBuilder.addScanTargetPath(canonicalPath)
+            hubScanConfigBuilder.cleanupLogsOnSuccess = detectConfiguration.getCleanupBomToolFiles()
 
             HubScanConfig hubScanConfig = hubScanConfigBuilder.build()
 
