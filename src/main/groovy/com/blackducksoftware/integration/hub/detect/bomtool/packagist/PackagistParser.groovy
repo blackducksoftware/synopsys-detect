@@ -56,6 +56,7 @@ class PackagistParser {
     @Autowired
     ProjectInfoGatherer projectInfoGatherer
 
+    //TODO Add property to choose between allowing or not allowing dev dependencies
     public DependencyNode getDependencyNodeFromProject(String projectPath) {
         File composerLockFile = fileFinder.findFile(projectPath, PackagistBomTool.COMPOSER_LOCK)
 
@@ -64,18 +65,21 @@ class PackagistParser {
         String projectVersion = projectInfoGatherer.getProjectVersionName(composerLockJsonObject.get('version')?.getAsString())
 
         def rootDependencyNode = new DependencyNode(projectName, projectVersion, new NameVersionExternalId(packagistForge, projectName, projectVersion))
-        JsonArray packagistPackages = composerLockJsonObject.get('packages')?.getAsJsonArray()
         DependencyNodeBuilder dependencyNodeBuilder = new DependencyNodeBuilder(rootDependencyNode)
 
         File composerJsonJsonFile = fileFinder.findFile(projectPath, PackagistBomTool.COMPOSER_JSON)
         JsonObject composerJsonObject = new JsonParser().parse(new JsonReader(new FileReader(composerJsonJsonFile))).getAsJsonObject()
 
-        convertFromJsonToDependencyNode(rootDependencyNode, getStartingPackages(composerJsonObject), packagistPackages, dependencyNodeBuilder)
+        JsonArray packagistPackages = composerLockJsonObject.get('packages')?.getAsJsonArray()
+        JsonArray packagistDevPackages = composerLockJsonObject.get('packages-dev')?.getAsJsonArray()
+
+        convertFromJsonToDependencyNode(rootDependencyNode, getStartingPackages(composerJsonObject, false), packagistPackages, dependencyNodeBuilder)
+        convertFromJsonToDependencyNode(rootDependencyNode, getStartingPackages(composerJsonObject, true), packagistDevPackages, dependencyNodeBuilder)
         rootDependencyNode
     }
 
     private void convertFromJsonToDependencyNode(DependencyNode parentNode, List<String> currentPackages, JsonArray jsonArray, DependencyNodeBuilder nodeBuilder) {
-        if(!currentPackages || !JsonArray) {
+        if(!currentPackages) {
             return
         }
 
@@ -83,26 +87,33 @@ class PackagistParser {
             String currentRowPackageName = it.getAt('name').toString().replace('"', '')
 
             if(currentPackages.contains(currentRowPackageName)) {
-                String currentRowPackageVersion = it.getAt('version')
+                String currentRowPackageVersion = it.getAt('version').toString().replace('"', '')
 
                 DependencyNode newNode = new DependencyNode(currentRowPackageName, currentRowPackageVersion, new NameVersionExternalId(packagistForge, currentRowPackageName, currentRowPackageVersion))
 
-                convertFromJsonToDependencyNode(newNode, getStartingPackages(it.getAsJsonObject()), jsonArray, nodeBuilder)
+                convertFromJsonToDependencyNode(newNode, getStartingPackages(it.getAsJsonObject(), false), jsonArray, nodeBuilder)
                 nodeBuilder.addChildNodeWithParents(newNode, [parentNode])
             }
         }
     }
 
-    private List<String> getStartingPackages(JsonObject jsonFile) {
-        List<String> startingPackages = []
+    private List<String> getStartingPackages(JsonObject jsonFile, boolean checkDev) {
+        List<String> allRequires = []
 
         def requiredPackages = jsonFile.get('require')?.getAsJsonObject()
         requiredPackages?.entrySet().each {
             if(!it.key.equalsIgnoreCase('php')) {
-                startingPackages.add(it.key)
+                allRequires.add(it.key)
+            }
+        }
+        if(checkDev) {
+            def devRequiredPackages = jsonFile.get('require-dev')?.getAsJsonObject()
+            devRequiredPackages?.entrySet().each {
+                allRequires.add(it.key)
             }
         }
 
-        startingPackages
+
+        allRequires
     }
 }
