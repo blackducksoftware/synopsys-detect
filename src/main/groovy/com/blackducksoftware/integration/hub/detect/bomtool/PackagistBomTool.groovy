@@ -22,6 +22,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -34,7 +36,9 @@ class PackagistBomTool extends BomTool {
     static final COMPOSER_LOCK = 'composer.lock'
     static final COMPOSER_JSON = 'composer.json'
 
-    def packagistPaths = []
+    private final Logger logger = LoggerFactory.getLogger(PackagistBomTool.class)
+
+    def composerLockAndJsonPaths = []
 
     @Autowired
     PackagistParser packagistParser
@@ -46,16 +50,34 @@ class PackagistBomTool extends BomTool {
 
     @Override
     public boolean isBomToolApplicable() {
-        packagistPaths = sourcePathSearcher.findFilenamePattern(COMPOSER_LOCK)
+        composerLockAndJsonPaths = sourcePathSearcher.findFilenamePattern(COMPOSER_LOCK, COMPOSER_JSON)
 
-        packagistPaths
+        if(composerLockAndJsonPaths) {
+            def composerLockPaths = sourcePathSearcher.findFilenamePattern(COMPOSER_LOCK)
+            def composerJsonPaths = sourcePathSearcher.findFilenamePattern(COMPOSER_JSON)
+
+            def missingComposerJsonPaths = composerLockPaths
+            missingComposerJsonPaths?.removeAll(composerJsonPaths)
+            missingComposerJsonPaths.each { path ->
+                logger.info("${COMPOSER_LOCK} was located in ${path}, but no ${COMPOSER_JSON}. Please add a ${COMPOSER_JSON} file and try again.")
+            }
+            def missingComposerLockPaths = composerJsonPaths
+            missingComposerLockPaths?.removeAll(composerLockPaths)
+            missingComposerLockPaths.each { path ->
+                logger.info("${COMPOSER_JSON} was located in ${path}, but no ${COMPOSER_LOCK}. Please install dependencies and try again.")
+            }
+
+            return true
+        }
+
+        false
     }
 
     @Override
     public List<DependencyNode> extractDependencyNodes() {
         List<DependencyNode> nodes = []
 
-        packagistPaths.each { path ->
+        composerLockAndJsonPaths.each { path ->
             nodes.add(packagistParser.getDependencyNodeFromProject(path))
         }
 
