@@ -11,6 +11,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.Application
+import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.util.FileFinder
 import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
 
@@ -25,12 +26,16 @@ class PackagistTest {
     @Autowired
     ProjectInfoGatherer projectInfoGatherer
 
+    @Autowired
+    DetectConfiguration detectConfiguration
+
     @Test
     public void packagistParserTest() throws IOException {
         PackagistParser testParser = new PackagistParser()
 
         testParser.fileFinder = fileFinder
         testParser.projectInfoGatherer = projectInfoGatherer
+        testParser.detectConfiguration = detectConfiguration
 
         String location = getClass().getResource("/packagist/").getFile()
         DependencyNode actual = testParser.getDependencyNodeFromProject(location)
