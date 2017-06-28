@@ -30,11 +30,9 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.PackagistBomTool
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.util.FileFinder
 import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
-import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
@@ -45,36 +43,29 @@ class PackagistParser {
     private Forge packagistForge = new Forge('packagist', ':')
 
     @Autowired
-    Gson gson
-
-    @Autowired
-    NameVersionNodeTransformer nameVersionNodeTransformer
-
-    @Autowired
     FileFinder fileFinder
 
     @Autowired
     ProjectInfoGatherer projectInfoGatherer
 
-    //TODO Add property to choose between allowing or not allowing dev dependencies
     public DependencyNode getDependencyNodeFromProject(String projectPath) {
-        File composerLockFile = fileFinder.findFile(projectPath, PackagistBomTool.COMPOSER_LOCK)
+        File composerJsonJsonFile = fileFinder.findFile(projectPath, PackagistBomTool.COMPOSER_JSON)
 
-        JsonObject composerLockJsonObject = new JsonParser().parse(new JsonReader(new FileReader(composerLockFile))).getAsJsonObject()
-        String projectName = projectInfoGatherer.getProjectName(BomToolType.PACKAGIST, projectPath, composerLockJsonObject.get('name')?.getAsString())
-        String projectVersion = projectInfoGatherer.getProjectVersionName(composerLockJsonObject.get('version')?.getAsString())
+        JsonObject composerJsonJsonObject = new JsonParser().parse(new JsonReader(new FileReader(composerJsonJsonFile))).getAsJsonObject()
+        String projectName = projectInfoGatherer.getProjectName(BomToolType.PACKAGIST, projectPath, composerJsonJsonObject.get('name')?.getAsString())
+        String projectVersion = projectInfoGatherer.getProjectVersionName(composerJsonJsonObject.get('version')?.getAsString())
 
         def rootDependencyNode = new DependencyNode(projectName, projectVersion, new NameVersionExternalId(packagistForge, projectName, projectVersion))
         DependencyNodeBuilder dependencyNodeBuilder = new DependencyNodeBuilder(rootDependencyNode)
 
-        File composerJsonJsonFile = fileFinder.findFile(projectPath, PackagistBomTool.COMPOSER_JSON)
-        JsonObject composerJsonObject = new JsonParser().parse(new JsonReader(new FileReader(composerJsonJsonFile))).getAsJsonObject()
+        File composerLockJsonFile = fileFinder.findFile(projectPath, PackagistBomTool.COMPOSER_LOCK)
+        JsonObject composerLockJsonObject = new JsonParser().parse(new JsonReader(new FileReader(composerLockJsonFile))).getAsJsonObject()
 
         JsonArray packagistPackages = composerLockJsonObject.get('packages')?.getAsJsonArray()
         JsonArray packagistDevPackages = composerLockJsonObject.get('packages-dev')?.getAsJsonArray()
 
-        convertFromJsonToDependencyNode(rootDependencyNode, getStartingPackages(composerJsonObject, false), packagistPackages, dependencyNodeBuilder)
-        convertFromJsonToDependencyNode(rootDependencyNode, getStartingPackages(composerJsonObject, true), packagistDevPackages, dependencyNodeBuilder)
+        convertFromJsonToDependencyNode(rootDependencyNode, getStartingPackages(composerJsonJsonObject, false), packagistPackages, dependencyNodeBuilder)
+        convertFromJsonToDependencyNode(rootDependencyNode, getStartingPackages(composerJsonJsonObject, true), packagistDevPackages, dependencyNodeBuilder)
         rootDependencyNode
     }
 
