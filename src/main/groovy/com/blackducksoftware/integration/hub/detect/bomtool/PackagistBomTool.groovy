@@ -50,12 +50,10 @@ class PackagistBomTool extends BomTool {
 
     @Override
     public boolean isBomToolApplicable() {
-        composerLockAndJsonPaths = sourcePathSearcher.findFilenamePattern(COMPOSER_LOCK, COMPOSER_JSON)
+        def composerLockPaths = sourcePathSearcher.findFilenamePattern(COMPOSER_LOCK)
+        def composerJsonPaths = sourcePathSearcher.findFilenamePattern(COMPOSER_JSON)
 
-        if(composerLockAndJsonPaths) {
-            def composerLockPaths = sourcePathSearcher.findFilenamePattern(COMPOSER_LOCK)
-            def composerJsonPaths = sourcePathSearcher.findFilenamePattern(COMPOSER_JSON)
-
+        if (composerLockPaths || composerJsonPaths) {
             def missingComposerJsonPaths = composerLockPaths
             missingComposerJsonPaths?.removeAll(composerJsonPaths)
             missingComposerJsonPaths.each { path ->
@@ -66,11 +64,10 @@ class PackagistBomTool extends BomTool {
             missingComposerLockPaths.each { path ->
                 logger.info("${COMPOSER_JSON} was located in ${path}, but no ${COMPOSER_LOCK}. Please install dependencies and try again.")
             }
-
-            return true
         }
 
-        false
+        composerLockAndJsonPaths = sourcePathSearcher.findFilenamePattern(COMPOSER_LOCK, COMPOSER_JSON)
+        composerLockAndJsonPaths
     }
 
     @Override
