@@ -46,6 +46,7 @@ class DetectProperties {
     private static final String GROUP_PYTHON = 'python'
     private static final String GROUP_GO = 'go'
     private static final String GROUP_DOCKER = 'docker'
+    private static final String GROUP_PACKAGIST = 'packagist'
 
     @ValueDescription(description="If true, the default behavior of printing your configuration properties at startup will be suppressed.", defaultValue="false", group=DetectProperties.GROUP_LOGGING)
     @Value('${detect.suppress.configuration.output}')
@@ -282,4 +283,9 @@ class DetectProperties {
     @ValueDescription(description="The memory for the scanner to use.", defaultValue="4096", group=DetectProperties.GROUP_SIGNATURE_SCANNER)
     @Value('${detect.hub.signature.scanner.memory}')
     Integer hubSignatureScannerMemory
+
+    @ValueDescription(description="Set this value to true if you would like to also include your dev requires dependencies when ran", defaultValue='false', group=DetectProperties.GROUP_PACKAGIST)
+    @Value('${detect.packagist.include.dev.dependencies}')
+    Boolean packagistIncludeDevDependencies
 }
+

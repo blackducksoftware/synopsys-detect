@@ -344,6 +344,9 @@ class DetectConfiguration {
     public String[] getHubSignatureScannerPaths() {
         return detectProperties.hubSignatureScannerPaths
     }
+    public boolean getPackagistIncludeDevDependencies() {
+        return detectProperties.packagistIncludeDevDependencies.booleanValue()
+    }
     public int getHubSignatureScannerMemory() {
         return toPrimitiveInteger(detectProperties.hubSignatureScannerMemory)
     }

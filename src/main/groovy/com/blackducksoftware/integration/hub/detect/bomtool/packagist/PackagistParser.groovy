@@ -29,6 +29,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeBuilder
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.bomtool.PackagistBomTool
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.util.FileFinder
@@ -48,6 +49,9 @@ class PackagistParser {
     @Autowired
     ProjectInfoGatherer projectInfoGatherer
 
+    @Autowired
+    DetectConfiguration detectConfiguration
+
     public DependencyNode getDependencyNodeFromProject(String projectPath) {
         File composerJsonJsonFile = fileFinder.findFile(projectPath, PackagistBomTool.COMPOSER_JSON)
 
@@ -65,7 +69,9 @@ class PackagistParser {
         JsonArray packagistDevPackages = composerLockJsonObject.get('packages-dev')?.getAsJsonArray()
 
         convertFromJsonToDependencyNode(rootDependencyNode, getStartingPackages(composerJsonJsonObject, false), packagistPackages, dependencyNodeBuilder)
-        convertFromJsonToDependencyNode(rootDependencyNode, getStartingPackages(composerJsonJsonObject, true), packagistDevPackages, dependencyNodeBuilder)
+        if(detectConfiguration.getPackagistIncludeDevDependencies()) {
+            convertFromJsonToDependencyNode(rootDependencyNode, getStartingPackages(composerJsonJsonObject, true), packagistDevPackages, dependencyNodeBuilder)
+        }
         rootDependencyNode
     }
 
