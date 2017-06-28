@@ -116,7 +116,8 @@ public class BomToolManager {
                 final IntegrationEscapeUtil escapeUtil = new IntegrationEscapeUtil();
                 final String safeProjectName = escapeUtil.escapeForUri(dependencyNode.name);
                 final String safeVersionName = escapeUtil.escapeForUri(dependencyNode.version);
-                final String safeName = String.format("%s_%s_%s_%s_bdio", bomToolType.toString(), project.getTargetName(), safeProjectName, safeVersionName);
+                final String safeTargetName = escapeUtil.escapeForUri(project.getTargetName());
+                final String safeName = String.format("%s_%s_%s_%s_bdio", bomToolType.toString(), safeTargetName, safeProjectName, safeVersionName);
                 final String filename = String.format("%s.jsonld", safeName);
                 final File outputFile = new File(detectConfiguration.getOutputDirectory(), filename);
                 if (outputFile.exists()) {
