@@ -61,7 +61,7 @@ class Executable {
     String getMaskedExecutableDescription() {
         List<String> arguments = []
         createProcessBuilderArguments().each { argument ->
-            if (argument.matches('.*password.*=.*') || argument.matches('.*Password.*=.*')) {
+            if (argument.matches('.*password.*=.*')) {
                 String maskedArgument = argument.substring(0, argument.indexOf('=') + 1) + '********'
                 arguments.add(maskedArgument)
             } else {
