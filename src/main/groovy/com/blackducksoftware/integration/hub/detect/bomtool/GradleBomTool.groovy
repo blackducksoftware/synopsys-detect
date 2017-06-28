@@ -30,6 +30,7 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleInitScriptPackager
+import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
@@ -64,17 +65,21 @@ class GradleBomTool extends BomTool {
         !matchingSourcePathToGradleExecutable.isEmpty()
     }
 
-    List<DependencyNode> extractDependencyNodes() {
-        List<DependencyNode> projectNodes = []
+    List<DetectProject> extractDetectProjects() {
+        List<DetectProject> projects = []
         matchingSourcePathToGradleExecutable.each { sourcePath, gradleExecutable ->
             DependencyNode rootProjectNode = gradleInitScriptPackager.extractRootProjectNode(sourcePath, gradleExecutable)
             rootProjectNode.name = projectInfoGatherer.getProjectName(getBomToolType(), sourcePath, rootProjectNode.name)
             rootProjectNode.version = projectInfoGatherer.getProjectVersionName(rootProjectNode.version)
-            projectNodes.add(rootProjectNode)
-            hubSignatureScanner.registerDirectoryToScan(new File(sourcePath, 'build'), rootProjectNode.name, rootProjectNode.version)
+            File sourcePathFile = new File(sourcePath)
+
+            DetectProject project = new DetectProject(sourcePathFile)
+            project.dependencyNodes = [rootProjectNode]
+            projects.add(project)
+            hubSignatureScanner.registerDirectoryToScan(new File(sourcePathFile, 'build'), rootProjectNode.name, rootProjectNode.version)
         }
 
-        projectNodes
+        projects
     }
 
     private String findGradleExecutable(String sourcePath) {
