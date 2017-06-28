@@ -123,7 +123,6 @@ public class BomToolManager {
                 if (outputFile.exists()) {
                     outputFile.delete();
                 }
-                // TODO Use project path to generate a unique name in hub and stop returning a bdioDocument.
                 try (final BdioWriter bdioWriter = new BdioWriter(gson, new FileOutputStream(outputFile))) {
                     final String codeLocation = projectInfoGatherer.getCodeLocationName(bomToolType, project.getTargetName(), dependencyNode.name,
                             dependencyNode.version);
