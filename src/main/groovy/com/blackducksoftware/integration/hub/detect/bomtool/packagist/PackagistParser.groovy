@@ -75,7 +75,7 @@ class PackagistParser {
     }
 
     private void convertFromJsonToDependencyNode(DependencyNode parentNode, List<String> currentPackages, JsonArray jsonArray, DependencyNodeBuilder nodeBuilder) {
-        if(!currentPackages) {
+        if(!currentPackages || !JsonArray) {
             return
         }
 
@@ -96,8 +96,8 @@ class PackagistParser {
     private List<String> getStartingPackages(JsonObject jsonFile) {
         List<String> startingPackages = []
 
-        def requiredPackages = jsonFile.get('require').getAsJsonObject()
-        requiredPackages.entrySet().each {
+        def requiredPackages = jsonFile.get('require')?.getAsJsonObject()
+        requiredPackages?.entrySet().each {
             if(!it.key.equalsIgnoreCase('php')) {
                 startingPackages.add(it.key)
             }
