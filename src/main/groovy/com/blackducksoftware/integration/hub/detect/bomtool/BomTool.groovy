@@ -24,8 +24,8 @@ package com.blackducksoftware.integration.hub.detect.bomtool
 
 import org.springframework.beans.factory.annotation.Autowired
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
+import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
@@ -60,11 +60,11 @@ abstract class BomTool {
     abstract boolean isBomToolApplicable()
 
     /**
-     * Each DependencyNode in the returned List should be a root project with all
+     * Each DetectProject in the returned List should be a root project with all
      * its children dependencies. The expectation would be to create a Hub
      * project for each item in the List.
      */
-    abstract List<DependencyNode> extractDependencyNodes()
+    abstract List<DetectProject> extractDetectProjects()
 
     void test() {
     }

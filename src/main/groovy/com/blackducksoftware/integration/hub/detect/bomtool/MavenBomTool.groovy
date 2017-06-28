@@ -30,6 +30,7 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.bomtool.maven.MavenPackager
+import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
@@ -66,17 +67,23 @@ class MavenBomTool extends BomTool {
         mvnExecutable && !matchingSourcePaths.isEmpty()
     }
 
-    List<DependencyNode> extractDependencyNodes() {
-        List<DependencyNode> projectNodes = []
+    List<DetectProject> extractDetectProjects() {
+        List<DetectProject> projects = []
         matchingSourcePaths.each { sourcePath ->
             List<DependencyNode> sourcePathProjectNodes = mavenPackager.makeDependencyNodes(sourcePath, findMavenExecutablePath(sourcePath))
-            projectNodes.addAll(sourcePathProjectNodes)
+
+            File sourcePathFile = new File(sourcePath)
+            DetectProject project = new DetectProject()
+            project.targetName = sourcePathFile.getName()
+            project.dependencyNodes = sourcePathProjectNodes
+            projects.add(project)
+
             sourcePathProjectNodes.each { dependencyNode ->
                 hubSignatureScanner.registerDirectoryToScan(new File(sourcePath, 'target'), dependencyNode.name, dependencyNode.version)
             }
         }
 
-        projectNodes
+        projects
     }
 
     private String findMavenExecutablePath(String sourcePath) {

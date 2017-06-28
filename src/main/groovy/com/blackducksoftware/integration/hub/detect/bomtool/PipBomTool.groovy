@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.PipPackager
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.VirtualEnvironment
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.VirtualEnvironmentHandler
@@ -75,16 +75,19 @@ class PipBomTool extends BomTool {
         foundExectables && !matchingSourcePaths.isEmpty()
     }
 
-    List<DependencyNode> extractDependencyNodes() {
-        List<DependencyNode> projectNodes = []
+    List<DetectProject> extractDetectProjects() {
+        List<DetectProject> projects = []
         def outputDirectory = detectFileManager.createDirectory(BomToolType.PIP)
-        outputDirectory.mkdir()
         matchingSourcePaths.each { sourcePath ->
             def sourceDirectory = new File(sourcePath)
             VirtualEnvironment virtualEnv = virtualEnvironmentHandler.getVirtualEnvironment(outputDirectory)
-            projectNodes.addAll(pipPackager.makeDependencyNodes(sourceDirectory, virtualEnv))
+
+            DetectProject project = new DetectProject()
+            project.targetName = sourceDirectory.getName()
+            project.dependencyNodes = pipPackager.makeDependencyNodes(sourceDirectory, virtualEnv)
+            projects.add(project)
         }
 
-        projectNodes
+        projects
     }
 }

@@ -25,8 +25,8 @@ package com.blackducksoftware.integration.hub.detect.bomtool
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.CocoapodsPackager
+import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 
 @Component
@@ -46,12 +46,16 @@ class CocoapodsBomTool extends BomTool {
         !matchingSourcePaths.isEmpty()
     }
 
-    List<DependencyNode> extractDependencyNodes() {
-        List<DependencyNode> projectNodes = []
+    List<DetectProject> extractDetectProjects() {
+        List<DetectProject> projects = []
         matchingSourcePaths.each {
-            projectNodes.addAll(cocoapodsPackager.makeDependencyNodes(it))
+            File sourcePathFile = new File(it)
+            DetectProject project = new DetectProject()
+            project.targetName = sourcePathFile.getName()
+            project.dependencyNodes = cocoapodsPackager.makeDependencyNodes(it)
+            projects.add(project)
         }
 
-        projectNodes
+        projects
     }
 }

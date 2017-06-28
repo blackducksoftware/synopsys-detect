@@ -40,6 +40,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeTransform
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.SimpleBdioDocument;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
+import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject;
 import com.blackducksoftware.integration.hub.detect.type.BomToolType;
 import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer;
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
@@ -84,10 +85,10 @@ public class BomToolManager {
                 }
                 if (bomTool.isBomToolApplicable() && detectConfiguration.shouldRun(bomTool)) {
                     logger.info(bomToolType + " applies given the current configuration.");
-                    final List<DependencyNode> projectNodes = bomTool.extractDependencyNodes();
-                    if (projectNodes != null && projectNodes.size() > 0) {
+                    final List<DetectProject> projects = bomTool.extractDetectProjects();
+                    if (projects != null && projects.size() > 0) {
                         foundSomeBomTools = true;
-                        createOutput(createdBdioFiles, bomToolType, projectNodes);
+                        createOutput(createdBdioFiles, bomToolType, projects);
                     } else {
                         logger.error("Did not find any projects from " + bomToolType);
                     }
@@ -107,32 +108,36 @@ public class BomToolManager {
         return createdBdioFiles;
     }
 
-    private void createOutput(final List<File> createdBdioFiles, final BomToolType bomToolType, final List<DependencyNode> projectNodes) {
-        logger.info("Creating " + projectNodes.size() + " project nodes");
-        for (final DependencyNode project : projectNodes) {
-            final IntegrationEscapeUtil escapeUtil = new IntegrationEscapeUtil();
-            final String safeProjectName = escapeUtil.escapeForUri(project.name);
-            final String safeVersionName = escapeUtil.escapeForUri(project.version);
-            final String safeName = String.format("%s_%s_%s_bdio", bomToolType.toString(), safeProjectName, safeVersionName);
-            final String filename = String.format("%s.jsonld", safeName);
-            final File outputFile = new File(detectConfiguration.getOutputDirectory(), filename);
-            if (outputFile.exists()) {
-                outputFile.delete();
-            }
-            // TODO Use project path to generate a unique name in hub and stop returning a bdioDocument.
-            try (final BdioWriter bdioWriter = new BdioWriter(gson, new FileOutputStream(outputFile))) {
-                final String codeLocation = projectInfoGatherer.getCodeLocationName(bomToolType, project.name, project.version);
-                final SimpleBdioDocument bdioDocument = dependencyNodeTransformer.transformDependencyNode(codeLocation, project);
+    private void createOutput(final List<File> createdBdioFiles, final BomToolType bomToolType, final List<DetectProject> projects) {
+        logger.info("Found " + projects.size() + " projects");
+        for (final DetectProject project : projects) {
+            logger.info("Creating " + project.getDependencyNodes().size() + " project nodes");
+            for (final DependencyNode dependencyNode : project.getDependencyNodes()) {
+                final IntegrationEscapeUtil escapeUtil = new IntegrationEscapeUtil();
+                final String safeProjectName = escapeUtil.escapeForUri(dependencyNode.name);
+                final String safeVersionName = escapeUtil.escapeForUri(dependencyNode.version);
+                final String safeName = String.format("%s_%s_%s_bdio", bomToolType.toString(), safeProjectName, safeVersionName);
+                final String filename = String.format("%s.jsonld", safeName);
+                final File outputFile = new File(detectConfiguration.getOutputDirectory(), filename);
+                if (outputFile.exists()) {
+                    outputFile.delete();
+                }
+                // TODO Use project path to generate a unique name in hub and stop returning a bdioDocument.
+                try (final BdioWriter bdioWriter = new BdioWriter(gson, new FileOutputStream(outputFile))) {
+                    final String codeLocation = projectInfoGatherer.getCodeLocationName(bomToolType, project.getTargetName(), dependencyNode.name,
+                            dependencyNode.version);
+                    final SimpleBdioDocument bdioDocument = dependencyNodeTransformer.transformDependencyNode(codeLocation, dependencyNode);
 
-                bdioWriter.writeSimpleBdioDocument(bdioDocument);
-                createdBdioFiles.add(outputFile);
-                logger.info("BDIO Generated: " + outputFile.getAbsolutePath());
-            } catch (final IOException e) {
-                throw new RuntimeException(e);
-            }
+                    bdioWriter.writeSimpleBdioDocument(bdioDocument);
+                    createdBdioFiles.add(outputFile);
+                    logger.info("BDIO Generated: " + outputFile.getAbsolutePath());
+                } catch (final IOException e) {
+                    throw new RuntimeException(e);
+                }
 
-            filenameToProjectName.put(filename, project.name);
-            filenameToProjectVersionName.put(filename, project.version);
+                filenameToProjectName.put(filename, dependencyNode.name);
+                filenameToProjectVersionName.put(filename, dependencyNode.version);
+            }
         }
     }
 

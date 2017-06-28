@@ -28,9 +28,9 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.detect.bomtool.go.DepPackager
+import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
@@ -78,12 +78,18 @@ class GoDepBomTool extends BomTool {
 
 
     @Override
-    public List<DependencyNode> extractDependencyNodes() {
-        def nodes = []
+    public List<DetectProject> extractDetectProjects() {
+        def projects = []
         matchingSourcePaths.each {
-            nodes.add(goPackager.makeDependencyNodes(it, findGoDepExecutable()))
+            File sourcePathFile = new File(it)
+            DetectProject project = new DetectProject()
+            project.targetName = sourcePathFile.getName()
+            project.dependencyNodes = [
+                goPackager.makeDependencyNodes(it, findGoDepExecutable())
+            ]
+            projects.add(project)
         }
-        return nodes
+        return projects
     }
 
     private String findGoDepExecutable() {

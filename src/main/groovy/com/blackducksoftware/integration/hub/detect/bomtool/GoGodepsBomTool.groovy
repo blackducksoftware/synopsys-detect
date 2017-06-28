@@ -28,8 +28,8 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.bomtool.go.godep.GoGodepsParser
+import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.google.gson.Gson
 
@@ -58,17 +58,21 @@ class GoGodepsBomTool extends BomTool {
     }
 
     @Override
-    public List<DependencyNode> extractDependencyNodes() {
-        def nodes = []
+    public List<DetectProject> extractDetectProjects() {
+        def projects = []
         GoGodepsParser goDepParser = new GoGodepsParser(gson, projectInfoGatherer)
         matchingSourcePaths.each {
             def goDepsDirectory = new File(it, "Godeps")
             def goDepsFile = new File(goDepsDirectory, "Godeps.json")
             if (goDepsFile.exists()) {
                 def dependencyNode = goDepParser.parseGoDep(goDepsFile.text)
-                nodes.add(dependencyNode)
+                File sourcePathFile = new File(it)
+                DetectProject project = new DetectProject()
+                project.targetName = sourcePathFile.getName()
+                project.dependencyNodes = [dependencyNode]
+                projects.add(project)
             }
         }
-        return nodes
+        return projects
     }
 }
