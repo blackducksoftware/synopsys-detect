@@ -27,8 +27,8 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmCliDependencyFinder
+import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 
@@ -68,14 +68,17 @@ class NpmBomTool extends BomTool {
     }
 
     @Override
-    public List<DependencyNode> extractDependencyNodes() {
-        List<DependencyNode> nodes = []
+    public List<DetectProject> extractDetectProjects() {
+        List<DetectProject> projects = []
 
         npmPaths.each {
-            nodes.add(cliDependencyFinder.generateDependencyNode(it, npmExe))
+            def dependencyNode = cliDependencyFinder.generateDependencyNode(it, npmExe)
+            DetectProject project = new DetectProject(new File(it))
+            project.dependencyNodes =  [dependencyNode]
+            projects.add(project)
         }
 
-        nodes
+        projects
     }
 
     private String getExecutablePath() {

@@ -30,8 +30,8 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerProperties
+import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
@@ -70,7 +70,7 @@ class DockerBomTool extends BomTool {
     }
 
     @Override
-    public List<DependencyNode> extractDependencyNodes() {
+    public List<DetectProject> extractDetectProjects() {
         File dockerInstallDirectory = new File(detectConfiguration.dockerInstallPath)
         File shellScriptFile
         if (detectConfiguration.dockerInspectorPath) {

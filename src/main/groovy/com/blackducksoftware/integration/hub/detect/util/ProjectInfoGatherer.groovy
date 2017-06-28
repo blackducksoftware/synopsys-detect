@@ -69,10 +69,10 @@ class ProjectInfoGatherer {
         projectVersion
     }
 
-    String getCodeLocationName(final BomToolType bomToolType, final String projectName, final String projectVersion) {
+    String getCodeLocationName(final BomToolType bomToolType, final String targetName, final String projectName, final String projectVersion) {
         String codeLocation = detectConfiguration.getProjectCodeLocationName()
         if (!codeLocation?.trim()) {
-            codeLocation = String.format('%s/%s', projectName, projectVersion)
+            codeLocation = String.format('%s/%s/%s', targetName, projectName, projectVersion)
         }
         return String.format('%s/%s Hub Detect Export', bomToolType.toString(), codeLocation)
     }

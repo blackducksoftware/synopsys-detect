@@ -32,6 +32,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorPackager
+import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 
@@ -71,32 +72,35 @@ class NugetBomTool extends BomTool {
     }
 
     @Override
-    public List<DependencyNode> extractDependencyNodes() {
-        List<DependencyNode> projectNodes = []
+    public List<DetectProject> extractDetectProjects() {
+        List<DetectProject> projects = []
         matchingSourcePaths.each { sourcePath ->
             DependencyNode root = nugetInspectorPackager.makeDependencyNode(sourcePath, nugetExecutable)
             if (!root) {
                 logger.info('Unable to extract any dependencies from nuget')
             } else {
+                DetectProject project = new DetectProject(new File(sourcePath))
                 if (isSolution(root)) {
                     root.name = projectInfoGatherer.getProjectName(BomToolType.NUGET, sourcePath, root.name)
                     root.version = projectInfoGatherer.getProjectVersionName(root.version)
                     root.externalId = new NameVersionExternalId(Forge.NUGET, root.name, root.version)
                     if (detectConfiguration.getNugetAggregateBom()) {
-                        projectNodes.add(root)
+                        project.dependencyNodes =  [root]
                     } else {
-                        projectNodes.addAll(root.children as List)
+                        project.dependencyNodes =  root.children as List
                     }
                 } else {
                     root.name = projectInfoGatherer.getProjectName(BomToolType.NUGET, sourcePath, root.name)
                     root.version = projectInfoGatherer.getProjectVersionName(root.version)
                     root.externalId = new NameVersionExternalId(Forge.NUGET, root.name, root.version)
-                    projectNodes.add(root)
+                    project.dependencyNodes =  [root]
                 }
+
+                projects.add(project)
             }
         }
 
-        projectNodes
+        projects
     }
 
     boolean isSolution(DependencyNode root) {

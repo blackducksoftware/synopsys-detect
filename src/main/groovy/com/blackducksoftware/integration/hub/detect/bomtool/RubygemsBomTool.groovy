@@ -27,7 +27,7 @@ import java.nio.charset.StandardCharsets
 import org.apache.commons.io.IOUtils
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
 import com.blackducksoftware.integration.hub.detect.bomtool.rubygems.RubygemsNodePackager
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 
@@ -45,8 +45,8 @@ class RubygemsBomTool extends BomTool {
         !matchingSourcePaths.isEmpty()
     }
 
-    List<DependencyNode> extractDependencyNodes() {
-        List<DependencyNode> projectNodes = []
+    List<DetectProject> extractDetectProjects() {
+        List<DetectProject> projects = []
         matchingSourcePaths.each { sourcePath ->
             File sourceDirectory = new File(sourcePath)
             File gemlockFile = new File(sourceDirectory, 'Gemfile.lock')
@@ -57,13 +57,16 @@ class RubygemsBomTool extends BomTool {
                 String potentialProjectName = sourceDirectory.getName()
                 String gemlock = IOUtils.toString(gemlockStream, StandardCharsets.UTF_8)
                 def rubygemsPackager = new RubygemsNodePackager(projectInfoGatherer, nameVersionNodeTransformer)
-                def projects = rubygemsPackager.makeDependencyNodes(sourcePath, gemlock)
-                projectNodes.addAll(projects)
+                def dependencyNodes = rubygemsPackager.makeDependencyNodes(sourcePath, gemlock)
+
+                DetectProject project = new DetectProject(new File(sourcePath))
+                project.dependencyNodes = dependencyNodes
+                projects.add(project)
             } finally {
                 IOUtils.closeQuietly(gemlockStream)
             }
         }
 
-        projectNodes
+        projects
     }
 }

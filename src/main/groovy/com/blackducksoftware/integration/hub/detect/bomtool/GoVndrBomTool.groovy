@@ -30,6 +30,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.go.vndr.VndrParser
+import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 
 @Component
@@ -54,8 +55,8 @@ class GoVndrBomTool extends BomTool {
     }
 
     @Override
-    public List<DependencyNode> extractDependencyNodes() {
-        def nodes = []
+    public List<DetectProject> extractDetectProjects() {
+        def projects = []
         VndrParser vndrParser = new VndrParser(projectInfoGatherer)
         matchingSourcePaths.each {
             def vendorConf = new File(it, "vendor.conf")
@@ -63,12 +64,15 @@ class GoVndrBomTool extends BomTool {
                 final String rootName = projectInfoGatherer.getProjectName(BomToolType.GO_VNDR, it)
                 final String rootVersion = projectInfoGatherer.getProjectVersionName()
                 final ExternalId rootExternalId = new NameVersionExternalId(GoDepBomTool.GOLANG, rootName, rootVersion)
-                final DependencyNode projectNode = new DependencyNode(rootName, rootVersion, rootExternalId)
+                final DependencyNode dependencyNode = new DependencyNode(rootName, rootVersion, rootExternalId)
                 def children = vndrParser.parseVendorConf(vendorConf.text)
-                projectNode.children.addAll(children)
-                nodes.add(projectNode)
+                dependencyNode.children.addAll(children)
+
+                DetectProject project = new DetectProject(new File(it))
+                project.dependencyNodes = [dependencyNode]
+                projects.add(project)
             }
         }
-        return nodes
+        return projects
     }
 }
