@@ -68,9 +68,7 @@ class GoVndrBomTool extends BomTool {
                 def children = vndrParser.parseVendorConf(vendorConf.text)
                 dependencyNode.children.addAll(children)
 
-                File sourcePathFile = new File(it)
-                DetectProject project = new DetectProject()
-                project.targetName = sourcePathFile.getName()
+                DetectProject project = new DetectProject(new File(it))
                 project.dependencyNodes = [dependencyNode]
                 projects.add(project)
             }

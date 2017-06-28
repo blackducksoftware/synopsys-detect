@@ -82,8 +82,7 @@ class PipBomTool extends BomTool {
             def sourceDirectory = new File(sourcePath)
             VirtualEnvironment virtualEnv = virtualEnvironmentHandler.getVirtualEnvironment(outputDirectory)
 
-            DetectProject project = new DetectProject()
-            project.targetName = sourceDirectory.getName()
+            DetectProject project = new DetectProject(sourceDirectory)
             project.dependencyNodes = pipPackager.makeDependencyNodes(sourceDirectory, virtualEnv)
             projects.add(project)
         }

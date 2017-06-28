@@ -79,9 +79,7 @@ class NugetBomTool extends BomTool {
             if (!root) {
                 logger.info('Unable to extract any dependencies from nuget')
             } else {
-                File sourcePathFile = new File(sourcePath)
-                DetectProject project = new DetectProject()
-                project.targetName = sourcePathFile.getName()
+                DetectProject project = new DetectProject(new File(sourcePath))
                 if (isSolution(root)) {
                     root.name = projectInfoGatherer.getProjectName(BomToolType.NUGET, sourcePath, root.name)
                     root.version = projectInfoGatherer.getProjectVersionName(root.version)

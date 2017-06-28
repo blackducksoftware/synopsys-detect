@@ -66,9 +66,7 @@ class GoGodepsBomTool extends BomTool {
             def goDepsFile = new File(goDepsDirectory, "Godeps.json")
             if (goDepsFile.exists()) {
                 def dependencyNode = goDepParser.parseGoDep(goDepsFile.text)
-                File sourcePathFile = new File(it)
-                DetectProject project = new DetectProject()
-                project.targetName = sourcePathFile.getName()
+                DetectProject project = new DetectProject(new File(it))
                 project.dependencyNodes = [dependencyNode]
                 projects.add(project)
             }

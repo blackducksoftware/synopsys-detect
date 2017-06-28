@@ -73,11 +73,10 @@ class GradleBomTool extends BomTool {
             rootProjectNode.version = projectInfoGatherer.getProjectVersionName(rootProjectNode.version)
             File sourcePathFile = new File(sourcePath)
 
-            DetectProject project = new DetectProject()
-            project.targetName = sourcePathFile.getName()
+            DetectProject project = new DetectProject(sourcePathFile)
             project.dependencyNodes = [rootProjectNode]
             projects.add(project)
-            hubSignatureScanner.registerDirectoryToScan(new File(sourcePath, 'build'), rootProjectNode.name, rootProjectNode.version)
+            hubSignatureScanner.registerDirectoryToScan(new File(sourcePathFile, 'build'), rootProjectNode.name, rootProjectNode.version)
         }
 
         projects

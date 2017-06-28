@@ -59,9 +59,7 @@ class RubygemsBomTool extends BomTool {
                 def rubygemsPackager = new RubygemsNodePackager(projectInfoGatherer, nameVersionNodeTransformer)
                 def dependencyNodes = rubygemsPackager.makeDependencyNodes(sourcePath, gemlock)
 
-                File sourcePathFile = new File(sourcePath)
-                DetectProject project = new DetectProject()
-                project.targetName = sourcePathFile.getName()
+                DetectProject project = new DetectProject(new File(sourcePath))
                 project.dependencyNodes = dependencyNodes
                 projects.add(project)
             } finally {

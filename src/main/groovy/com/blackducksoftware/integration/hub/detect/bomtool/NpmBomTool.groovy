@@ -73,9 +73,7 @@ class NpmBomTool extends BomTool {
 
         npmPaths.each {
             def dependencyNode = cliDependencyFinder.generateDependencyNode(it, npmExe)
-            File sourcePathFile = new File(it)
-            DetectProject project = new DetectProject()
-            project.targetName = sourcePathFile.getName()
+            DetectProject project = new DetectProject(new File(it))
             project.dependencyNodes =  [dependencyNode]
             projects.add(project)
         }

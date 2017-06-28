@@ -81,9 +81,7 @@ class GoDepBomTool extends BomTool {
     public List<DetectProject> extractDetectProjects() {
         def projects = []
         matchingSourcePaths.each {
-            File sourcePathFile = new File(it)
-            DetectProject project = new DetectProject()
-            project.targetName = sourcePathFile.getName()
+            DetectProject project = new DetectProject(new File(it))
             project.dependencyNodes = [
                 goPackager.makeDependencyNodes(it, findGoDepExecutable())
             ]

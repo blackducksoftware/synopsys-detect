@@ -25,6 +25,14 @@ package com.blackducksoftware.integration.hub.detect.bomtool.output
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 
 class DetectProject {
-    String targetName
+    File target
     List<DependencyNode> dependencyNodes
+
+    public DetectProject (File target) {
+        this.target = target
+    }
+
+    String getTargetName() {
+        target.getName()
+    }
 }

@@ -73,13 +73,12 @@ class MavenBomTool extends BomTool {
             List<DependencyNode> sourcePathProjectNodes = mavenPackager.makeDependencyNodes(sourcePath, findMavenExecutablePath(sourcePath))
 
             File sourcePathFile = new File(sourcePath)
-            DetectProject project = new DetectProject()
-            project.targetName = sourcePathFile.getName()
+            DetectProject project = new DetectProject(sourcePathFile)
             project.dependencyNodes = sourcePathProjectNodes
             projects.add(project)
 
             sourcePathProjectNodes.each { dependencyNode ->
-                hubSignatureScanner.registerDirectoryToScan(new File(sourcePath, 'target'), dependencyNode.name, dependencyNode.version)
+                hubSignatureScanner.registerDirectoryToScan(new File(sourcePathFile, 'target'), dependencyNode.name, dependencyNode.version)
             }
         }
 
