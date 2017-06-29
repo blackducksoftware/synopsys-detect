@@ -25,7 +25,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.packagist
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeBuilder
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
@@ -53,30 +52,29 @@ class PackagistParser {
     DetectConfiguration detectConfiguration
 
     public DependencyNode getDependencyNodeFromProject(String projectPath) {
-        File composerJsonJsonFile = fileFinder.findFile(projectPath, PackagistBomTool.COMPOSER_JSON)
+        File composerJsonFile = fileFinder.findFile(projectPath, PackagistBomTool.COMPOSER_JSON)
 
-        JsonObject composerJsonJsonObject = new JsonParser().parse(new JsonReader(new FileReader(composerJsonJsonFile))).getAsJsonObject()
-        String projectName = projectInfoGatherer.getProjectName(BomToolType.PACKAGIST, projectPath, composerJsonJsonObject.get('name')?.getAsString())
-        String projectVersion = projectInfoGatherer.getProjectVersionName(composerJsonJsonObject.get('version')?.getAsString())
+        JsonObject composerJsonObject = new JsonParser().parse(new JsonReader(new FileReader(composerJsonFile))).getAsJsonObject()
+        String projectName = projectInfoGatherer.getProjectName(BomToolType.PACKAGIST, projectPath, composerJsonObject.get('name')?.getAsString())
+        String projectVersion = projectInfoGatherer.getProjectVersionName(composerJsonObject.get('version')?.getAsString())
 
         def rootDependencyNode = new DependencyNode(projectName, projectVersion, new NameVersionExternalId(packagistForge, projectName, projectVersion))
-        DependencyNodeBuilder dependencyNodeBuilder = new DependencyNodeBuilder(rootDependencyNode)
 
-        File composerLockJsonFile = fileFinder.findFile(projectPath, PackagistBomTool.COMPOSER_LOCK)
-        JsonObject composerLockJsonObject = new JsonParser().parse(new JsonReader(new FileReader(composerLockJsonFile))).getAsJsonObject()
+        File composerLockFile = fileFinder.findFile(projectPath, PackagistBomTool.COMPOSER_LOCK)
+        JsonObject composerLockObject = new JsonParser().parse(new JsonReader(new FileReader(composerLockFile))).getAsJsonObject()
 
-        JsonArray packagistPackages = composerLockJsonObject.get('packages')?.getAsJsonArray()
-        JsonArray packagistDevPackages = composerLockJsonObject.get('packages-dev')?.getAsJsonArray()
+        JsonArray packagistPackages = composerLockObject.get('packages')?.getAsJsonArray()
+        JsonArray packagistDevPackages = composerLockObject.get('packages-dev')?.getAsJsonArray()
 
-        convertFromJsonToDependencyNode(rootDependencyNode, getStartingPackages(composerJsonJsonObject, false), packagistPackages, dependencyNodeBuilder)
-        if(detectConfiguration.getPackagistIncludeDevDependencies()) {
-            convertFromJsonToDependencyNode(rootDependencyNode, getStartingPackages(composerJsonJsonObject, true), packagistDevPackages, dependencyNodeBuilder)
+        convertFromJsonToDependencyNode(rootDependencyNode, getStartingPackages(composerJsonObject, false), packagistPackages)
+        if (detectConfiguration.getPackagistIncludeDevDependencies()) {
+            convertFromJsonToDependencyNode(rootDependencyNode, getStartingPackages(composerJsonObject, true), packagistDevPackages)
         }
         rootDependencyNode
     }
 
-    private void convertFromJsonToDependencyNode(DependencyNode parentNode, List<String> currentPackages, JsonArray jsonArray, DependencyNodeBuilder nodeBuilder) {
-        if(!currentPackages) {
+    private void convertFromJsonToDependencyNode(DependencyNode parentNode, List<String> currentPackages, JsonArray jsonArray) {
+        if (!currentPackages) {
             return
         }
 
@@ -86,10 +84,10 @@ class PackagistParser {
             if(currentPackages.contains(currentRowPackageName)) {
                 String currentRowPackageVersion = it.getAt('version').toString().replace('"', '')
 
-                DependencyNode newNode = new DependencyNode(currentRowPackageName, currentRowPackageVersion, new NameVersionExternalId(packagistForge, currentRowPackageName, currentRowPackageVersion))
+                DependencyNode childNode = new DependencyNode(currentRowPackageName, currentRowPackageVersion, new NameVersionExternalId(packagistForge, currentRowPackageName, currentRowPackageVersion))
 
-                convertFromJsonToDependencyNode(newNode, getStartingPackages(it.getAsJsonObject(), false), jsonArray, nodeBuilder)
-                nodeBuilder.addChildNodeWithParents(newNode, [parentNode])
+                convertFromJsonToDependencyNode(childNode, getStartingPackages(it.getAsJsonObject(), false), jsonArray)
+                parentNode.children.add(childNode)
             }
         }
     }
@@ -103,13 +101,12 @@ class PackagistParser {
                 allRequires.add(it.key)
             }
         }
-        if(checkDev) {
+        if (checkDev) {
             def devRequiredPackages = jsonFile.get('require-dev')?.getAsJsonObject()
             devRequiredPackages?.entrySet().each {
                 allRequires.add(it.key)
             }
         }
-
 
         allRequires
     }

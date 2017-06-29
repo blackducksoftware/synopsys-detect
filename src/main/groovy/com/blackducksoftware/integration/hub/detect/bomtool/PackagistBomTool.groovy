@@ -53,20 +53,19 @@ class PackagistBomTool extends BomTool {
         def composerLockPaths = sourcePathSearcher.findFilenamePattern(COMPOSER_LOCK)
         def composerJsonPaths = sourcePathSearcher.findFilenamePattern(COMPOSER_JSON)
 
-        if (composerLockPaths || composerJsonPaths) {
-            def missingComposerJsonPaths = composerLockPaths.collect()
-            missingComposerJsonPaths?.removeAll(composerJsonPaths)
-            missingComposerJsonPaths.each { path ->
-                logger.info("${COMPOSER_LOCK} was located in ${path}, but no ${COMPOSER_JSON}. Please add a ${COMPOSER_JSON} file and try again.")
-            }
-            def missingComposerLockPaths = composerJsonPaths.collect()
-            missingComposerLockPaths?.removeAll(composerLockPaths)
-            missingComposerLockPaths.each { path ->
-                logger.info("${COMPOSER_JSON} was located in ${path}, but no ${COMPOSER_LOCK}. Please install dependencies and try again.")
+        composerLockPaths.each { path ->
+            if(composerJsonPaths.contains(path)) {
+                composerLockAndJsonPaths.add(path)
+                composerJsonPaths.remove(path)
+            } else {
+                logger.warn("${COMPOSER_LOCK} was located in ${path}, but no ${COMPOSER_JSON}. Please add a ${COMPOSER_JSON} file and try again.")
             }
         }
 
-        composerLockAndJsonPaths = sourcePathSearcher.findFilenamePattern(COMPOSER_LOCK, COMPOSER_JSON)
+        composerJsonPaths.each { path ->
+            logger.warn("${COMPOSER_JSON} was located in ${path}, but no ${COMPOSER_LOCK}. Please install dependencies and try again.")
+        }
+
         composerLockAndJsonPaths
     }
 
