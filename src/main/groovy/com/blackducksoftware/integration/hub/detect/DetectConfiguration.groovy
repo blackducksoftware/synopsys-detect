@@ -171,13 +171,13 @@ class DetectConfiguration {
     }
 
     public boolean getCleanupBdioFiles() {
-        return toPrimitiveBoolean(detectProperties.cleanupBdioFiles)
+        return detectProperties.cleanupBdioFiles.booleanValue()
     }
     public String getHubUrl() {
         return detectProperties.hubUrl
     }
     public int getHubTimeout() {
-        return toPrimitiveInteger(detectProperties.hubTimeout)
+        return detectProperties.hubTimeout.intValue()
     }
     public String getHubUsername() {
         return detectProperties.hubUsername
@@ -198,7 +198,7 @@ class DetectConfiguration {
         return detectProperties.hubProxyPassword
     }
     public boolean getHubAutoImportCertificate() {
-        return toPrimitiveBoolean(detectProperties.hubAutoImportCertificate)
+        return detectProperties.hubAutoImportCertificate.booleanValue()
     }
     public String[] getSourcePaths() {
         return detectProperties.sourcePaths
@@ -207,7 +207,7 @@ class DetectConfiguration {
         return detectProperties.outputDirectoryPath
     }
     public int getSearchDepth() {
-        return toPrimitiveInteger(detectProperties.searchDepth)
+        return detectProperties.searchDepth.intValue()
     }
     public String getExcludedBomToolTypes() {
         return detectProperties.excludedBomToolTypes
@@ -228,7 +228,7 @@ class DetectConfiguration {
         return detectProperties.policyCheck
     }
     public int getPolicyCheckTimeout() {
-        return toPrimitiveInteger(detectProperties.policyCheckTimeout)
+        return detectProperties.policyCheckTimeout.intValue()
     }
     public String getGradleInspectorVersion() {
         return detectProperties.gradleInspectorVersion
@@ -249,7 +249,7 @@ class DetectConfiguration {
         return detectProperties.gradleIncludedProjectNames
     }
     public boolean getGradleCleanupBuildBlackduckDirectory() {
-        return toPrimitiveBoolean(detectProperties.gradleCleanupBuildBlackduckDirectory)
+        return detectProperties.gradleCleanupBuildBlackduckDirectory.booleanValue()
     }
     public String getNugetInspectorPackageName() {
         return detectProperties.nugetInspectorPackageName
@@ -261,10 +261,10 @@ class DetectConfiguration {
         return detectProperties.nugetInspectorExcludedModules
     }
     public boolean getNugetInspectorIgnoreFailure() {
-        return toPrimitiveBoolean(detectProperties.nugetInspectorIgnoreFailure)
+        return detectProperties.nugetInspectorIgnoreFailure.booleanValue()
     }
     public boolean getMavenAggregateBom() {
-        return toPrimitiveBoolean(detectProperties.mavenAggregateBom)
+        return detectProperties.mavenAggregateBom.booleanValue()
     }
     public String getMavenScope() {
         return detectProperties.mavenScope
@@ -276,7 +276,7 @@ class DetectConfiguration {
         return detectProperties.mavenPath
     }
     public boolean getNugetAggregateBom() {
-        return toPrimitiveBoolean(detectProperties.nugetAggregateBom)
+        return detectProperties.nugetAggregateBom.booleanValue()
     }
     public String getNugetPath() {
         return detectProperties.nugetPath
@@ -288,10 +288,10 @@ class DetectConfiguration {
         return detectProperties.pipProjectName
     }
     public boolean getCreateVirtualEnv() {
-        return toPrimitiveBoolean(detectProperties.createVirtualEnv)
+        return detectProperties.createVirtualEnv.booleanValue()
     }
     public boolean getPipThreeOverride() {
-        return toPrimitiveBoolean(detectProperties.pipThreeOverride)
+        return detectProperties.pipThreeOverride.booleanValue()
     }
     public String getPythonPath() {
         return detectProperties.pythonPath
@@ -339,36 +339,12 @@ class DetectConfiguration {
         return detectProperties.cleanupBomToolFiles
     }
     public boolean getSuppressConfigurationOutput() {
-        return toPrimitiveBoolean(detectProperties.suppressConfigurationOutput)
+        return detectProperties.suppressConfigurationOutput.booleanValue()
     }
     public String[] getHubSignatureScannerPaths() {
         return detectProperties.hubSignatureScannerPaths
     }
     public int getHubSignatureScannerMemory() {
-        return toPrimitiveInteger(detectProperties.hubSignatureScannerMemory)
-    }
-
-    private int toPrimitiveInteger(Integer propertyValue) {
-        if (propertyValue) {
-            return propertyValue
-        }
-
-        0
-    }
-
-    private long toPrimitiveLong(Long propertyValue) {
-        if (propertyValue) {
-            return propertyValue
-        }
-
-        0L
-    }
-
-    private boolean toPrimitiveBoolean(Boolean propertyValue) {
-        if (propertyValue) {
-            return propertyValue
-        }
-
-        false
+        return detectProperties.hubSignatureScannerMemory.intValue()
     }
 }
