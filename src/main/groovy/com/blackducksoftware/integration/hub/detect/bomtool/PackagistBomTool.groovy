@@ -54,7 +54,7 @@ class PackagistBomTool extends BomTool {
         def composerJsonPaths = sourcePathSearcher.findFilenamePattern(COMPOSER_JSON)
 
         composerLockPaths.each { path ->
-            if(composerJsonPaths.contains(path)) {
+            if (composerJsonPaths.contains(path)) {
                 composerLockAndJsonPaths.add(path)
                 composerJsonPaths.remove(path)
             } else {
