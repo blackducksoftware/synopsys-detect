@@ -81,7 +81,7 @@ class PackagistParser {
         jsonArray.each {
             String currentRowPackageName = it.getAt('name').toString().replace('"', '')
 
-            if(currentPackages.contains(currentRowPackageName)) {
+            if (currentPackages.contains(currentRowPackageName)) {
                 String currentRowPackageVersion = it.getAt('version').toString().replace('"', '')
 
                 DependencyNode childNode = new DependencyNode(currentRowPackageName, currentRowPackageVersion, new NameVersionExternalId(packagistForge, currentRowPackageName, currentRowPackageVersion))
@@ -97,7 +97,7 @@ class PackagistParser {
 
         def requiredPackages = jsonFile.get('require')?.getAsJsonObject()
         requiredPackages?.entrySet().each {
-            if(!it.key.equalsIgnoreCase('php')) {
+            if (!it.key.equalsIgnoreCase('php')) {
                 allRequires.add(it.key)
             }
         }
