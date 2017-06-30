@@ -115,7 +115,7 @@ class DetectConfiguration {
     }
 
     public String getDetectProperty(String key) {
-        configurableEnvironment.getProperty(key)
+        detectProperties.getDetectProperty(key)
     }
 
     private void configureForDocker() {
