@@ -38,17 +38,33 @@ public class PackratPackager {
 	   this.nameVersionNodeTransformer = nameVersionNodeTransformer
    }
 
-   public List<DependencyNode> makeDependencyNodes(final String sourcePath, final String packratLock) {
-	   String packratLessPath = sourcePath //Transform here
-	   final String rootName = projectInfoGatherer.getDefaultProjectName(BomToolType.CRAN, packratLessPath)
-	   final String rootVersion = projectInfoGatherer.getDefaultProjectVersionName()
+   public List<DependencyNode> makeDependencyNodes(final String sourcePath, final String packratLock, final String descriptionContents) {
+	   
+	   final String rootName = projectInfoGatherer.getDefaultProjectName(BomToolType.CRAN, sourcePath)
+	   DescriptionParser descriptionParser = new DescriptionParser()
+	   PackRatNodeParser packratNodeParser = new PackRatNodeParser()
 	   Forge CRAN = new Forge("cran", "/");
+	   
+	   final String rootVersion
+	   if(descriptionContents != "DNE"){
+		   rootVersion = descriptionParser.getProjectVersion(descriptionContents)
+	   }
+	   else{
+		   rootVersion = projectInfoGatherer.getDefaultProjectVersionName()
+	   }
 	   
 	   final ExternalId rootExternalId = new NameVersionExternalId(CRAN, rootName, rootVersion)
 	   final DependencyNode root = new DependencyNode(rootName, rootVersion, rootExternalId)
+	   
+	   if(packratLock == "DNE"){
+		   descriptionParser.parseProjectDependencies(nameVersionNodeTransformer, root, descriptionContents, CRAN)
+	   }
+	   
+	   else{
 
-	   PackRatNodeParser packratNodeParser = new PackRatNodeParser()
 	   packratNodeParser.parseProjectDependencies(nameVersionNodeTransformer, root, packratLock, CRAN)
+	   
+	   }
 
 	   [root]
    }

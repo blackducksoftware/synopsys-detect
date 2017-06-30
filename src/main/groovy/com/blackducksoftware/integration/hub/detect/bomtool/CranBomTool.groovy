@@ -34,36 +34,102 @@ import com.blackducksoftware.integration.hub.detect.type.BomToolType
 @Component
 class CranBomTool extends BomTool {
 	List<String> matchingSourcePaths = []
+	static final String PACKRAT_PATTERN = "packrat.lock"
+	static final String DESCRIPTION_PATTERN = "DESCRIPTION"
 
 	BomToolType getBomToolType() {
 		return BomToolType.CRAN
 	}
 
 	boolean isBomToolApplicable() {
-		matchingSourcePaths = sourcePathSearcher.findFilenamePattern('packrat.lock')
+		//File sourceDirectory = new File(sourcePath)
+		if (sourcePathSearcher.findFilenamePattern(2, 'packrat.lock')){
+			matchingSourcePaths.addAll(sourcePathSearcher.findFilenamePattern(3, 'packrat.lock'))
+		}
+		else{
+			matchingSourcePaths.add("DNE")
+		}
+		if (sourcePathSearcher.findFilenamePattern(1, 'DESCRIPTION')){
+		matchingSourcePaths.addAll(sourcePathSearcher.findFilenamePattern(1, 'DESCRIPTION'))
+		}
+		else{
+			matchingSourcePaths.add("DNE")
+		}
 
 		!matchingSourcePaths.isEmpty()
 	}
 
 	List<DependencyNode> extractDependencyNodes() {
 		List<DependencyNode> projectNodes = []
-		matchingSourcePaths.each { sourcePath ->
-			File sourceDirectory = new File(sourcePath)
-			File packratLockFile = new File(sourceDirectory, 'packrat.lock')
-
-			final InputStream packratLockStream
-			try {
-				packratLockStream = new FileInputStream(packratLockFile)
-				String potentialProjectName = sourceDirectory.getName()
-				String packratLock = IOUtils.toString(packratLockStream, StandardCharsets.UTF_8)
-				def packratPackager = new PackratPackager(projectInfoGatherer, nameVersionNodeTransformer)
-				def projects = packratPackager.makeDependencyNodes(sourcePath, packratLock)
-				projectNodes.addAll(projects)
-			} finally {
-				IOUtils.closeQuietly(packratLockStream)
+		int counter = 0
+		String sourcePath
+		File sourceDirectory
+		File[] packratLockFile
+			if (matchingSourcePaths[0] != "DNE"){
+			sourcePath = matchingSourcePaths[0]
+			sourceDirectory = new File(sourcePath)
+			packratLockFile = detectFileManager.findFilesToDepth(sourceDirectory, 'packrat.lock', 2)
+			counter ++
 			}
-		}
-
+			File[] descriptionFile
+			if(matchingSourcePaths[1] != "DNE"){
+			sourcePath = matchingSourcePaths[1]
+			sourceDirectory = new File(sourcePath)
+			descriptionFile = detectFileManager.findFilesToDepth(sourceDirectory, 'DESCRIPTION', 1)
+			counter --
+			}
+			
+			switch (counter){
+				case 0: 
+				
+					final InputStream packratLockStream
+					final InputStream descriptionStream
+					try {
+						packratLockStream = new FileInputStream(packratLockFile[0])
+						descriptionStream = new FileInputStream(descriptionFile[0])
+						String potentialProjectName = sourceDirectory.getName()
+						String packratLock = IOUtils.toString(packratLockStream, StandardCharsets.UTF_8)
+						String description = IOUtils.toString(descriptionStream, StandardCharsets.UTF_8)
+						def packratPackager = new PackratPackager(projectInfoGatherer, nameVersionNodeTransformer)
+						def projects = packratPackager.makeDependencyNodes(sourcePath, packratLock, description)
+						projectNodes.addAll(projects)
+					} finally {
+						IOUtils.closeQuietly(packratLockStream)
+						IOUtils.closeQuietly(descriptionStream)
+					}
+					break
+				
+				case -1:
+					
+					final InputStream descriptionStream
+					try {
+						descriptionStream = new FileInputStream(descriptionFile[0])
+						String description = IOUtils.toString(descriptionStream, StandardCharsets.UTF_8)
+						def packratPackager = new PackratPackager(projectInfoGatherer, nameVersionNodeTransformer)
+						def projects = packratPackager.makeDependencyNodes(sourcePath, "DNE", description)
+						projectNodes.addAll(projects)
+					} finally {
+						IOUtils.closeQuietly(descriptionStream)
+					}
+					break
+					
+				case 1: 
+				
+					final InputStream packratLockStream
+					try {
+						packratLockStream = new FileInputStream(packratLockFile[0])
+						String potentialProjectName = sourceDirectory.getName()
+						String packratLock = IOUtils.toString(packratLockStream, StandardCharsets.UTF_8)
+						def packratPackager = new PackratPackager(projectInfoGatherer, nameVersionNodeTransformer)
+						def projects = packratPackager.makeDependencyNodes(sourcePath, packratLock, "DNE")
+						projectNodes.addAll(projects)
+					} finally {
+						IOUtils.closeQuietly(packratLockStream)
+					}
+					break
+			
+			}
+		
 		projectNodes
 	}
 }
