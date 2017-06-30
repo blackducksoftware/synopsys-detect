@@ -90,7 +90,9 @@ public class BomToolManager {
                         foundSomeBomTools = true;
                         createOutput(createdBdioFiles, bomToolType, projects);
                     } else {
-                        logger.error("Did not find any projects from " + bomToolType);
+                        if (BomToolType.DOCKER != bomToolType) {
+                            logger.error("Did not find any projects from " + bomToolType);
+                        }
                     }
                 }
             } catch (final Exception e) {
