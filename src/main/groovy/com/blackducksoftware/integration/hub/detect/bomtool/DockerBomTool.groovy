@@ -83,7 +83,7 @@ class DockerBomTool extends BomTool {
         }
 
         File dockerPropertiesFile = detectFileManager.createFile(BomToolType.DOCKER, 'application.properties')
-        dockerProperties.fillInDockerProperties(dockerPropertiesFile)
+        String imageArgument = dockerProperties.fillInDockerProperties(dockerPropertiesFile)
         File dockerPropertiesDirectory =  dockerPropertiesFile.getParentFile()
 
         String path = System.getenv('PATH')
@@ -93,7 +93,7 @@ class DockerBomTool extends BomTool {
 
         List<String> bashArguments = [
             "-c",
-            "${shellScriptFile.absolutePath} --spring.config.location=\"${dockerPropertiesDirectory.getAbsolutePath()}\""
+            "${shellScriptFile.absolutePath} --spring.config.location=\"${dockerPropertiesDirectory.getAbsolutePath()}\" ${imageArgument}"
         ]
 
         Executable dockerExecutable = new Executable(dockerInstallDirectory, environmentVariables, bashExecutablePath, bashArguments)

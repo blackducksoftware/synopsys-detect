@@ -32,7 +32,7 @@ class DockerProperties {
     @Autowired
     DetectConfiguration detectConfiguration
 
-    void fillInDockerProperties(File dockerPropertiesFile) {
+    String fillInDockerProperties(File dockerPropertiesFile) {
         Properties dockerProperties = new Properties()
         addDockerProperty(dockerProperties, 'detect.hub.url', 'hub.url')
         addDockerProperty(dockerProperties, 'detect.hub.timeout', 'hub.timeout')
@@ -56,6 +56,14 @@ class DockerProperties {
             addDockerProperty(dockerProperties, propertyName, dockerKey)
         }
         dockerProperties.store(dockerPropertiesFile.newOutputStream(), "")
+
+        String imageArgument
+        if (detectConfiguration.dockerImage) {
+            imageArgument = detectConfiguration.dockerImage
+        } else {
+            imageArgument = detectConfiguration.dockerTar
+        }
+        return imageArgument
     }
 
     private String addDockerProperty(Properties dockerProperties, String key, String dockerKey) {
