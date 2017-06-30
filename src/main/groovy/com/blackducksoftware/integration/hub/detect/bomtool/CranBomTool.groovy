@@ -44,13 +44,13 @@ class CranBomTool extends BomTool {
 	boolean isBomToolApplicable() {
 		//File sourceDirectory = new File(sourcePath)
 		if (sourcePathSearcher.findFilenamePattern(2, 'packrat.lock')){
-			matchingSourcePaths.addAll(sourcePathSearcher.findFilenamePattern(3, 'packrat.lock'))
+			matchingSourcePaths.addAll(sourcePathSearcher.findFilenamePattern(detectConfiguration.getSearchDepth(), 'packrat.lock'))
 		}
 		else{
 			matchingSourcePaths.add("DNE")
 		}
-		if (sourcePathSearcher.findFilenamePattern(1, 'DESCRIPTION')){
-		matchingSourcePaths.addAll(sourcePathSearcher.findFilenamePattern(1, 'DESCRIPTION'))
+		if (sourcePathSearcher.findFilenamePattern('DESCRIPTION')){
+		matchingSourcePaths.addAll(sourcePathSearcher.findFilenamePattern('DESCRIPTION'))
 		}
 		else{
 			matchingSourcePaths.add("DNE")
@@ -68,7 +68,7 @@ class CranBomTool extends BomTool {
 			if (matchingSourcePaths[0] != "DNE"){
 			sourcePath = matchingSourcePaths[0]
 			sourceDirectory = new File(sourcePath)
-			packratLockFile = detectFileManager.findFilesToDepth(sourceDirectory, 'packrat.lock', 2)
+			packratLockFile = detectFileManager.findFilesToDepth(sourceDirectory, 'packrat.lock', detectConfiguration.getSearchDepth())
 			counter ++
 			}
 			File[] descriptionFile

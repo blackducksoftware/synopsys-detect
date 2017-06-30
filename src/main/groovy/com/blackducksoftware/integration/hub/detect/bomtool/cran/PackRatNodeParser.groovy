@@ -61,7 +61,6 @@ public class PackRatNodeParser {
 				String version;
 		
 				for (String line : lines) {
-					//if (line != null) {
 						
 						
 						if (line.contains("Package")){
@@ -82,8 +81,6 @@ public class PackRatNodeParser {
 								nameVersionNodeBuilder.addChildNodeToParent(currentParent, node)
 								
 							}
-						//}
-					
 		
 					}
 					
@@ -110,9 +107,5 @@ public class PackRatNodeParser {
 	        
 		}
 	
-	/*private NameVersionNode createNameVersionNode(String name, String version){
-        nameVersionNodeBuilder.addChildNodeToParent(new NameVersionNode([name: name, version: version]), rootNameVersionNode)
-        
-	}*/
 
 }

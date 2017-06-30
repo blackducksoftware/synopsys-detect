@@ -63,15 +63,7 @@ public class DescriptionParser {
    private final String packratLockContents
    private Forge CRAN
    private String lines
-   
-   
-   public DescriptionParser (){
-	   //this.nameVersionNodeTransformer = nameVersionNodeTransformer
-	   //this.CRAN = CRAN
-	  // this.rootProject = rootProject
-	  // this.packratLockContents = packratLockContents
-	   //String[] lines = descriptionContents.split("\n")
-   }
+
    
    
    
@@ -80,11 +72,11 @@ public class DescriptionParser {
 	   String version;
 	   
 	   for (String line : lines) {
-		   //if (line != null) {
 			   
 			   
 			   if (line.contains("Version")){
 				   version = line.replace("Version: ", "").trim();
+				   break
 			   }
 			   
 
@@ -94,48 +86,6 @@ public class DescriptionParser {
 	   
    }
 
-   void parseProjectDependencies(NameVersionNodeTransformer nameVersionNodeTransformer, DependencyNode rootProject, final String descriptionContents,  Forge CRAN) {
-			   rootNameVersionNode = new NameVersionNodeImpl([name: rootProject.name, version: rootProject.version])
-			   nameVersionNodeBuilder = new NameVersionNodeBuilder(rootNameVersionNode)
-			   directDependencyNames = new HashSet<>()
-			   currentParent = rootNameVersionNode
-			   
-			   String[] lines = descriptionContents.split("\n")
-			   String name;
-			   String version;
-	   
-			   for (String line : lines) {
-				   //if (line != null) {
-					   
-					   
-					   if (line.contains("Imports")){
-						   while (!line.contains("Suggestions") || line == ""){
-							   String[] imports = line.replace("Import","").trim().split(",")
-						   }
-						   String[] imports = line.replace("Import","").trim().split(",")
-						   for (int i; i < imports.size(); i++){
-							   directDependencyNames.add(imports[i])
-							   NameVersionNode node = this.createNameVersionNodeImpl(imports[i], "")
-							   nameVersionNodeBuilder.addChildNodeToParent(currentParent, node)
-							   
-						   }
-						   
-					   }
-					   
-			   }
-			   
-			   directDependencyNames.each { directDependencyName ->
-			   NameVersionNode nameVersionNode = nameVersionNodeBuilder.nameToNodeMap[directDependencyName]
-			   if (nameVersionNode) {
-				   DependencyNode directDependencyNode = nameVersionNodeTransformer.createDependencyNode(CRAN, nameVersionNode)
-				   rootProject.children.add(directDependencyNode)
-			   } else {
-				   logger.error("Could not find ${directDependencyName} in the populated map.")
-			   }
-		   }
-	   
-	   
-   }
    
    private NameVersionNode createNameVersionNodeImpl(String name, String version){
 	   return new NameVersionNodeImpl([name: name, version: version])
