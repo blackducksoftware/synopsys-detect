@@ -47,9 +47,6 @@ class DockerProperties {
         dockerProperties.setProperty('working.directory', detectConfiguration.getDockerSandboxPath())
         dockerProperties.setProperty('logging.level.com.blackducksoftware', detectConfiguration.getLoggingLevel())
 
-        dockerProperties.setProperty('docker.tar', detectConfiguration.getDockerTar())
-        dockerProperties.setProperty('docker.image', detectConfiguration.getDockerImage())
-
         detectConfiguration.additionalDockerPropertyNames.each { propertyName ->
             String dockerKey = propertyName[DetectConfiguration.DOCKER_PROPERTY_PREFIX.length()..-1]
             addDockerProperty(dockerProperties, propertyName, dockerKey)
