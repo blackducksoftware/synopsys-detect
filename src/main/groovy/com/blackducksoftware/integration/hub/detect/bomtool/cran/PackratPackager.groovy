@@ -55,16 +55,10 @@ public class PackratPackager {
 	   
 	   final ExternalId rootExternalId = new NameVersionExternalId(CRAN, rootName, rootVersion)
 	   final DependencyNode root = new DependencyNode(rootName, rootVersion, rootExternalId)
-	   
-	   if(packratLock == "DNE"){
-		   descriptionParser.parseProjectDependencies(nameVersionNodeTransformer, root, descriptionContents, CRAN)
-	   }
-	   
-	   else{
 
 	   packratNodeParser.parseProjectDependencies(nameVersionNodeTransformer, root, packratLock, CRAN)
 	   
-	   }
+	   
 
 	   [root]
    }
