@@ -35,5 +35,6 @@ public enum BomToolType {
     NUGET,
     PIP,
     RUBYGEMS,
-    SBT;
+    SBT,
+    PACKAGIST;
 }
