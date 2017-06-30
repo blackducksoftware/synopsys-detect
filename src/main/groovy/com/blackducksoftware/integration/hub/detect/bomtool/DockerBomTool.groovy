@@ -83,7 +83,17 @@ class DockerBomTool extends BomTool {
         }
 
         File dockerPropertiesFile = detectFileManager.createFile(BomToolType.DOCKER, 'application.properties')
-        String imageArgument = dockerProperties.fillInDockerProperties(dockerPropertiesFile)
+        Properties dockerProps = new Properties()
+        dockerProperties.fillInDockerProperties(dockerProps)
+        dockerProps.store(dockerPropertiesFile.newOutputStream(), "")
+
+        String imageArgument = ''
+        if (detectConfiguration.dockerImage) {
+            imageArgument = detectConfiguration.dockerImage
+        } else {
+            imageArgument = detectConfiguration.dockerTar
+        }
+
         File dockerPropertiesDirectory =  dockerPropertiesFile.getParentFile()
 
         String path = System.getenv('PATH')

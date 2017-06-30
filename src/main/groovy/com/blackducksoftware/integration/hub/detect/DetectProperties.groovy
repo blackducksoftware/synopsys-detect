@@ -287,17 +287,5 @@ class DetectProperties {
     @ValueDescription(description="Set this value to false if you would like to exclude your dev requires dependencies when ran", defaultValue='true', group=DetectProperties.GROUP_PACKAGIST)
     @Value('${detect.packagist.include.dev.dependencies}')
     Boolean packagistIncludeDevDependencies
-
-    public String getDetectProperty(String key) {
-        def foundField = this.getClass().declaredFields.find { field ->
-            if (field.isAnnotationPresent(Value.class)) {
-                Value value = field.getAnnotation(Value.class)
-                String propertyKey = value.value()[2..-2]
-                propertyKey.equals(key)
-            }
-        }
-        foundField.setAccessible(true)
-        foundField?.get(this)
-    }
 }
 

@@ -32,38 +32,28 @@ class DockerProperties {
     @Autowired
     DetectConfiguration detectConfiguration
 
-    String fillInDockerProperties(File dockerPropertiesFile) {
-        Properties dockerProperties = new Properties()
-        addDockerProperty(dockerProperties, 'detect.hub.url', 'hub.url')
-        addDockerProperty(dockerProperties, 'detect.hub.timeout', 'hub.timeout')
-        addDockerProperty(dockerProperties, 'detect.hub.username', 'hub.username')
-        addDockerProperty(dockerProperties, 'detect.hub.password', 'hub.password')
-        addDockerProperty(dockerProperties, 'detect.hub.proxy.host', 'hub.proxy.host')
-        addDockerProperty(dockerProperties, 'detect.hub.proxy.port', 'hub.proxy.port')
-        addDockerProperty(dockerProperties, 'detect.hub.proxy.username', 'hub.proxy.username')
-        addDockerProperty(dockerProperties, 'detect.hub.proxy.password', 'hub.proxy.password')
-        addDockerProperty(dockerProperties, 'detect.project.name', 'hub.project.name')
-        addDockerProperty(dockerProperties, 'detect.project.version.name', 'hub.project.version')
-        addDockerProperty(dockerProperties, 'detect.docker.install.path', 'install.dir')
-        addDockerProperty(dockerProperties, 'detect.docker.sandbox.path', 'working.directory')
-        addDockerProperty(dockerProperties, 'logging.level.com.blackducksoftware.integration', 'logging.level.com.blackducksoftware')
+    public void fillInDockerProperties(Properties dockerProperties) {
+        dockerProperties.setProperty('hub.url', detectConfiguration.getHubUrl())
+        dockerProperties.setProperty('hub.timeout', detectConfiguration.getHubTimeout().toString())
+        dockerProperties.setProperty('hub.username', detectConfiguration.getHubUsername())
+        dockerProperties.setProperty('hub.password', detectConfiguration.getHubPassword())
+        dockerProperties.setProperty('hub.proxy.host', detectConfiguration.getHubProxyHost())
+        dockerProperties.setProperty('hub.proxy.port', detectConfiguration.getHubProxyPort().toString())
+        dockerProperties.setProperty('hub.proxy.username', detectConfiguration.getHubProxyUsername())
+        dockerProperties.setProperty('hub.proxy.password', detectConfiguration.getHubProxyPassword())
+        dockerProperties.setProperty('hub.project.name', detectConfiguration.getProjectName())
+        dockerProperties.setProperty('hub.project.version', detectConfiguration.getProjectVersionName())
+        dockerProperties.setProperty('install.dir', detectConfiguration.getDockerInstallPath())
+        dockerProperties.setProperty('working.directory', detectConfiguration.getDockerSandboxPath())
+        dockerProperties.setProperty('logging.level.com.blackducksoftware', detectConfiguration.getLoggingLevel())
 
-        addDockerProperty(dockerProperties, 'detect.docker.tar', 'docker.tar')
-        addDockerProperty(dockerProperties, 'detect.docker.image', 'docker.image')
+        dockerProperties.setProperty('docker.tar', detectConfiguration.getDockerTar())
+        dockerProperties.setProperty('docker.image', detectConfiguration.getDockerImage())
 
         detectConfiguration.additionalDockerPropertyNames.each { propertyName ->
             String dockerKey = propertyName[DetectConfiguration.DOCKER_PROPERTY_PREFIX.length()..-1]
             addDockerProperty(dockerProperties, propertyName, dockerKey)
         }
-        dockerProperties.store(dockerPropertiesFile.newOutputStream(), "")
-
-        String imageArgument
-        if (detectConfiguration.dockerImage) {
-            imageArgument = detectConfiguration.dockerImage
-        } else {
-            imageArgument = detectConfiguration.dockerTar
-        }
-        return imageArgument
     }
 
     private String addDockerProperty(Properties dockerProperties, String key, String dockerKey) {
