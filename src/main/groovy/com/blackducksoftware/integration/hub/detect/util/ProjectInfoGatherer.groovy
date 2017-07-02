@@ -37,6 +37,11 @@ class ProjectInfoGatherer {
     @Autowired
     DetectConfiguration detectConfiguration
 
+    String getProjectName() {
+        getProjectName(detectConfiguration.sourcePath)
+    }
+
+    //TODO: Change these methods to getProjectNameFromPath, these should be for special cases only
     String getProjectName(final String sourcePath) {
         getProjectName(sourcePath, null)
     }
