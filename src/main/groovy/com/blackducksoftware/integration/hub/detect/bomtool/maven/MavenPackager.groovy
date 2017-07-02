@@ -29,8 +29,6 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
-import com.blackducksoftware.integration.hub.detect.type.BomToolType
-import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
@@ -38,9 +36,6 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 @Component
 public class MavenPackager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass())
-
-    @Autowired
-    ProjectInfoGatherer projectInfoGatherer
 
     @Autowired
     ExecutableRunner executableRunner
@@ -70,8 +65,6 @@ public class MavenPackager {
             }
             projects.clear()
             projects.add(firstNode)
-            firstNode.name = projectInfoGatherer.getProjectName(BomToolType.MAVEN, sourcePath, firstNode.name)
-            firstNode.version = projectInfoGatherer.getProjectVersionName(firstNode.version)
         }
 
         return projects
