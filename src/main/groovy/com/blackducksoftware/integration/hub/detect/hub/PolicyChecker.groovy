@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.policychecker
+package com.blackducksoftware.integration.hub.detect.hub
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -39,7 +39,6 @@ import com.blackducksoftware.integration.hub.dataservice.scan.ScanStatusDataServ
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
 import com.blackducksoftware.integration.hub.detect.exception.DetectException
-import com.blackducksoftware.integration.hub.detect.hub.HubManager
 import com.blackducksoftware.integration.hub.global.HubServerConfig
 import com.blackducksoftware.integration.hub.model.view.CodeLocationView
 import com.blackducksoftware.integration.hub.model.view.ScanSummaryView
