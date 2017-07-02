@@ -39,6 +39,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.SimpleBdioDocumen
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
+import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter
@@ -69,6 +70,9 @@ class DetectProjectManager {
 
     @Autowired
     List<BomTool> bomTools
+
+    @Autowired
+    HubSignatureScanner hubSignatureScanner
 
     private boolean foundAnyBomTools
 
@@ -112,7 +116,8 @@ class DetectProjectManager {
         detectProject.projectVersionName = projectInfoGatherer.getProjectVersionName(detectProject.projectVersionName)
 
         if (!foundAnyBomTools) {
-            logger.debug("Could not find any tools to run.");
+            logger.info("Could not find any tools to run - will register ${detectConfiguration.sourcePath} for signature scanning of ${detectProject.projectName}/${detectProject.projectVersionName}");
+            hubSignatureScanner.registerDirectoryToScan(detectConfiguration.sourceDirectory)
         }
 
         detectProject
