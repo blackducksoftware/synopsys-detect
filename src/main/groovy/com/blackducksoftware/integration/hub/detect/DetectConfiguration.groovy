@@ -350,4 +350,13 @@ class DetectConfiguration {
     public int getHubSignatureScannerMemory() {
         return detectProperties.hubSignatureScannerMemory.intValue()
     }
+    public String getPerlPath() {
+        return detectProperties.perlPath?.trim()
+    }
+    public String getCpanPath() {
+        return detectProperties.cpanPath?.trim()
+    }
+    public String getCpanmPath() {
+        return detectProperties.cpanmPath?.trim()
+    }
 }

@@ -47,6 +47,7 @@ class DetectProperties {
     private static final String GROUP_GO = 'go'
     private static final String GROUP_DOCKER = 'docker'
     private static final String GROUP_PACKAGIST = 'packagist'
+    private static final String GROUP_CPAN = 'cpan'
 
     @ValueDescription(description="If true, the default behavior of printing your configuration properties at startup will be suppressed.", defaultValue="false", group=DetectProperties.GROUP_LOGGING)
     @Value('${detect.suppress.configuration.output}')
@@ -287,5 +288,17 @@ class DetectProperties {
     @ValueDescription(description="Set this value to false if you would like to exclude your dev requires dependencies when ran", defaultValue='true', group=DetectProperties.GROUP_PACKAGIST)
     @Value('${detect.packagist.include.dev.dependencies}')
     Boolean packagistIncludeDevDependencies
+
+    @ValueDescription(description="The path of the perl executable", group=DetectProperties.GROUP_CPAN)
+    @Value('${detect.perl.path}')
+    String perlPath
+
+    @ValueDescription(description="The path of the cpan executable", group=DetectProperties.GROUP_CPAN)
+    @Value('${detect.cpan.path}')
+    String cpanPath
+
+    @ValueDescription(description="The path of the cpanm executable", group=DetectProperties.GROUP_CPAN)
+    @Value('${detect.cpanm.path}')
+    String cpanmPath
 }
 
