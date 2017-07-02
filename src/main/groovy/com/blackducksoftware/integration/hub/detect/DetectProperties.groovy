@@ -126,11 +126,11 @@ class DetectProperties {
 
     @ValueDescription(description = "Set to true if you would like a policy check from the hub for your project. False by default", defaultValue="false", group=DetectProperties.GROUP_POLICY_CHECK)
     @Value('${detect.policy.check}')
-    String policyCheck
+    Boolean policyCheck
 
     @ValueDescription(description="Timeout for the Hub's policy check response. When changing this value, keep in mind the checking of policies might have to wait for a new scan to process which can take some time.", defaultValue="300000", group=DetectProperties.GROUP_POLICY_CHECK)
     @Value('${detect.policy.check.timeout}')
-    Integer policyCheckTimeout
+    Long policyCheckTimeout
 
     @ValueDescription(description="Version of the Gradle Inspector", defaultValue="0.0.7", group=DetectProperties.GROUP_GRADLE)
     @Value('${detect.gradle.inspector.version}')

@@ -41,6 +41,7 @@ import com.blackducksoftware.integration.hub.detect.help.HelpPrinter
 import com.blackducksoftware.integration.hub.detect.help.ValueDescriptionAnnotationFinder
 import com.blackducksoftware.integration.hub.detect.hub.BdioUploader
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
+import com.blackducksoftware.integration.hub.detect.policychecker.PolicyChecker
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -74,6 +75,9 @@ class Application {
     BdioUploader bdioUploader
 
     @Autowired
+    PolicyChecker policyChecker
+
+    @Autowired
     ApplicationArguments applicationArguments
 
     @Autowired
@@ -99,6 +103,11 @@ class Application {
             List<File> createdBdioFiles = detectProjectManager.createBdioFiles(detectProject)
             bdioUploader.uploadBdioFiles(createdBdioFiles)
             hubSignatureScanner.scanFiles(detectProject)
+
+            if (detectConfiguration.getPolicyCheck()) {
+                String policyStatusMessage = policyChecker.getPolicyStatusMessage(detectProject)
+                logger.info(policyStatusMessage)
+            }
         }
     }
 

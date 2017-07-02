@@ -64,19 +64,6 @@ class BdioUploader {
             createdBdioFiles.each { file ->
                 logger.info("uploading ${file.name} to ${detectConfiguration.getHubUrl()}")
                 bomImportRequestService.importBomFile(file, BuildToolConstants.BDIO_FILE_MEDIA_TYPE)
-
-                //                if (detectConfiguration.getPolicyCheck().equalsIgnoreCase("true")) {
-                //                    logger.info("Checking for policy violations...")
-                //                    ScanStatusDataService scanStatusDataService = hubServicesFactory.createScanStatusDataService(slf4jIntLogger, detectConfiguration.getPolicyCheckTimeout())
-                //                    PolicyStatusDataService policyStatusDataService = hubServicesFactory.createPolicyStatusDataService(slf4jIntLogger)
-                //                    PolicyChecker policyChecker = new PolicyChecker(scanStatusDataService, policyStatusDataService)
-                //                    String projectName = bomToolManager.getProjectNameByBdioFilename(file.name)
-                //                    String projectVersionName = bomToolManager.getProjectVersionNameByBdioFilename(file.name)
-                //
-                //                    String policyStatusMessage = policyChecker.getPolicyStatusMessage(projectName, projectVersionName)
-                //                    logger.info("Policy status for ${projectName} (${projectVersionName}): ${policyStatusMessage}")
-                //                }
-
                 if (detectConfiguration.getCleanupBdioFiles()) {
                     file.delete()
                 }

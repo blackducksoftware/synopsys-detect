@@ -24,25 +24,75 @@ package com.blackducksoftware.integration.hub.detect.policychecker
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Component
 
+import com.blackducksoftware.integration.exception.IntegrationException
+import com.blackducksoftware.integration.hub.api.codelocation.CodeLocationRequestService
+import com.blackducksoftware.integration.hub.api.item.MetaService
+import com.blackducksoftware.integration.hub.api.scan.ScanSummaryRequestService
 import com.blackducksoftware.integration.hub.dataservice.policystatus.PolicyStatusDataService
 import com.blackducksoftware.integration.hub.dataservice.policystatus.PolicyStatusDescription
+import com.blackducksoftware.integration.hub.dataservice.project.ProjectDataService
+import com.blackducksoftware.integration.hub.dataservice.project.ProjectVersionWrapper
 import com.blackducksoftware.integration.hub.dataservice.scan.ScanStatusDataService
+import com.blackducksoftware.integration.hub.detect.DetectConfiguration
+import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
+import com.blackducksoftware.integration.hub.detect.exception.DetectException
+import com.blackducksoftware.integration.hub.detect.hub.HubManager
+import com.blackducksoftware.integration.hub.global.HubServerConfig
+import com.blackducksoftware.integration.hub.model.view.CodeLocationView
+import com.blackducksoftware.integration.hub.model.view.ScanSummaryView
 import com.blackducksoftware.integration.hub.model.view.VersionBomPolicyStatusView
+import com.blackducksoftware.integration.hub.service.HubServicesFactory
+import com.blackducksoftware.integration.log.Slf4jIntLogger
 
+@Component
 class PolicyChecker {
     private final Logger logger = LoggerFactory.getLogger(PolicyChecker.class)
 
-    private ScanStatusDataService scanStatusDataService
-    private PolicyStatusDataService policyStatusDataService
+    @Autowired
+    DetectConfiguration detectConfiguration
 
-    public PolicyChecker(ScanStatusDataService scanStatusDataService, PolicyStatusDataService policyStatusDataService) {
-        this.scanStatusDataService = scanStatusDataService
-        this.policyStatusDataService = policyStatusDataService
-    }
+    @Autowired
+    HubManager hubManager
 
-    public String getPolicyStatusMessage(String projectName, String projectVersionName) {
-        scanStatusDataService.assertBomImportScanStartedThenFinished(projectName, projectVersionName)
+    /**
+     * For the given DetectProject, find the matching Hub project/version, then
+     * all of its code locations, then all of their scan summaries, wait until
+     * they are all complete, then get the policy status.
+     */
+    public String getPolicyStatusMessage(DetectProject detectProject) throws DetectException {
+        Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
+        HubServerConfig hubServerConfig = hubManager.createHubServerConfig(slf4jIntLogger)
+        HubServicesFactory hubServicesFactory = hubManager.createHubServicesFactory(slf4jIntLogger, hubServerConfig)
+
+        ProjectDataService projectDataService = hubServicesFactory.createProjectDataService(slf4jIntLogger)
+        CodeLocationRequestService codeLocationRequestService = hubServicesFactory.createCodeLocationRequestService(slf4jIntLogger)
+        ScanSummaryRequestService scanSummaryRequestService = hubServicesFactory.createScanSummaryRequestService()
+        MetaService metaService = hubServicesFactory.createMetaService(slf4jIntLogger)
+        ScanStatusDataService scanStatusDataService = hubServicesFactory.createScanStatusDataService(slf4jIntLogger, detectConfiguration.policyCheckTimeout)
+        PolicyStatusDataService policyStatusDataService = hubServicesFactory.createPolicyStatusDataService(slf4jIntLogger)
+
+        String projectName = detectProject.projectName
+        String projectVersionName = detectProject.projectVersionName
+        ProjectVersionWrapper projectVersion = null
+        try {
+            projectVersion = projectDataService.getProjectVersion(projectName, projectVersionName)
+        } catch (IntegrationException e) {
+            throw new DetectException("Not able to find ${projectName}/${projectVersionName}: ${e.message}")
+        }
+
+        List<CodeLocationView> allCodeLocations = codeLocationRequestService.getAllCodeLocationsForProjectVersion(projectVersion.projectVersionView)
+        List<ScanSummaryView> scanSummaryViews = []
+        allCodeLocations.each {
+            String scansLink = metaService.getFirstLinkSafely(it, MetaService.SCANS_LINK)
+            List<ScanSummaryView> codeLocationScanSummaryViews = scanSummaryRequestService.getAllScanSummaryItems(scansLink)
+            scanSummaryViews.addAll(codeLocationScanSummaryViews)
+        }
+
+        scanStatusDataService.assertScansFinished(scanSummaryViews)
+
         VersionBomPolicyStatusView versionBomPolicyStatusView = policyStatusDataService.getPolicyStatusForProjectAndVersion(projectName, projectVersionName)
         PolicyStatusDescription policyStatusDescription = new PolicyStatusDescription(versionBomPolicyStatusView)
 
