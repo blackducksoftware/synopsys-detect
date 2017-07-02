@@ -69,7 +69,6 @@ class DockerBomTool extends BomTool {
         dockerExecutablePath && propertiesOk
     }
 
-    @Override
     public List<DetectProject> extractDetectProjects() {
         File dockerInstallDirectory = new File(detectConfiguration.dockerInstallPath)
         File shellScriptFile

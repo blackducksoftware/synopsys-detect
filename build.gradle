@@ -62,7 +62,10 @@ repositories {
 }
 
 dependencies {
-    compile 'com.blackducksoftware.integration:hub-common:13.0.2'
+    compile ('com.blackducksoftware.integration:hub-common:13.0.2') {
+        exclude module: 'integration-bdio'
+    }
+    compile 'com.blackducksoftware.integration:integration-bdio:4.0.2-SNAPSHOT'
     compile 'org.springframework.boot:spring-boot-starter'
     compile 'org.apache.maven.shared:maven-invoker:3.0.0'
     compile 'com.esotericsoftware.yamlbeans:yamlbeans:1.11'

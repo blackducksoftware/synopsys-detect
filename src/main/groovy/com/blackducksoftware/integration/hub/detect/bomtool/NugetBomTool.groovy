@@ -71,7 +71,6 @@ class NugetBomTool extends BomTool {
         nugetExecutable && !matchingSourcePaths.isEmpty()
     }
 
-    @Override
     public List<DetectProject> extractDetectProjects() {
         List<DetectProject> projects = []
         matchingSourcePaths.each { sourcePath ->

@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.bomtool.maven.MavenPackager
-import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
+import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
@@ -48,49 +48,39 @@ class MavenBomTool extends BomTool {
     @Autowired
     HubSignatureScanner hubSignatureScanner
 
-    List<String> matchingSourcePaths = []
+    private String mvnExecutable
 
     BomToolType getBomToolType() {
         return BomToolType.MAVEN
     }
 
     boolean isBomToolApplicable() {
-        matchingSourcePaths += sourcePathSearcher.findFilenamePattern(POM_FILENAME)
-        matchingSourcePaths += sourcePathSearcher.findFilenamePattern(POM_WRAPPER_FILENAME)
-        def mvnExecutable = false
-        for (String sourcePath : matchingSourcePaths) {
-            if (findMavenExecutablePath(sourcePath)) {
-                mvnExecutable = true
-                break
-            }
-        }
-        mvnExecutable && !matchingSourcePaths.isEmpty()
+        String pomXmlPath = detectFileManager.findFile(detectConfiguration.sourcePath, POM_FILENAME)
+        String pomWrapperPath = detectFileManager.findFile(detectConfiguration.sourcePath, POM_WRAPPER_FILENAME)
+        mvnExecutable = findMavenExecutablePath()
+
+        mvnExecutable && (pomXmlPath || pomWrapperPath)
     }
 
-    List<DetectProject> extractDetectProjects() {
-        List<DetectProject> projects = []
-        matchingSourcePaths.each { sourcePath ->
-            List<DependencyNode> sourcePathProjectNodes = mavenPackager.makeDependencyNodes(sourcePath, findMavenExecutablePath(sourcePath))
-
-            File sourcePathFile = new File(sourcePath)
-            DetectProject project = new DetectProject(sourcePathFile)
-            project.dependencyNodes = sourcePathProjectNodes
-            projects.add(project)
-
-            sourcePathProjectNodes.each { dependencyNode ->
-                hubSignatureScanner.registerDirectoryToScan(new File(sourcePathFile, 'target'), dependencyNode.name, dependencyNode.version)
-            }
+    List<DetectCodeLocation> extractDetectCodeLocations() {
+        List<DetectCodeLocation> codeLocations = []
+        List<DependencyNode> sourcePathProjectNodes = mavenPackager.makeDependencyNodes(detectConfiguration.sourcePath, mvnExecutable)
+        sourcePathProjectNodes.each {
+            DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), detectConfiguration.sourcePath, it)
+            codeLocations.add(detectCodeLocation)
         }
 
-        projects
+        hubSignatureScanner.registerDirectoryToScan(new File(detectConfiguration.sourcePath, 'target'))
+
+        codeLocations
     }
 
-    private String findMavenExecutablePath(String sourcePath) {
+    private String findMavenExecutablePath() {
         if (StringUtils.isNotBlank(detectConfiguration.getMavenPath())) {
             return detectConfiguration.getMavenPath()
         }
 
-        String wrapperPath = executableManager.getPathOfExecutable(sourcePath, ExecutableType.MVNW)
+        String wrapperPath = executableManager.getPathOfExecutable(detectConfiguration.sourcePath, ExecutableType.MVNW)
         if (wrapperPath) {
             return wrapperPath
         }

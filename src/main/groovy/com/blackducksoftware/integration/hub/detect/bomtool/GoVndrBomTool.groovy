@@ -54,7 +54,6 @@ class GoVndrBomTool extends BomTool {
         detectFileManager.containsAllFiles(path, 'vendor.conf')
     }
 
-    @Override
     public List<DetectProject> extractDetectProjects() {
         def projects = []
         VndrParser vndrParser = new VndrParser(projectInfoGatherer)

@@ -55,4 +55,11 @@ public class ProjectInfoGathererTest {
         assertEquals(testVersion, projectVersion);
     }
 
+    @Test
+    public void extractFinalPieceFromPath() {
+        assertEquals('a', projectInfoGatherer.extractFinalPieceFromSourcePath('/a'))
+        assertEquals('a', projectInfoGatherer.extractFinalPieceFromSourcePath('/a/'))
+        assertEquals('c', projectInfoGatherer.extractFinalPieceFromSourcePath('/a/b/c'))
+        assertEquals('c', projectInfoGatherer.extractFinalPieceFromSourcePath('/a/b/c/'))
+    }
 }

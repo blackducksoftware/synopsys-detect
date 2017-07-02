@@ -36,6 +36,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.BdioNodeFactory
 import com.blackducksoftware.integration.hub.bdio.simple.BdioPropertyHelper
 import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeTransformer
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
 import com.blackducksoftware.integration.hub.detect.help.HelpPrinter
 import com.blackducksoftware.integration.hub.detect.help.ValueDescriptionAnnotationFinder
 import com.blackducksoftware.integration.hub.detect.hub.BdioUploader
@@ -58,6 +59,9 @@ class Application {
     ExecutableManager executableManager
 
     @Autowired
+    DetectProjectManager detectProjectManager
+
+    @Autowired
     HubSignatureScanner hubSignatureScanner
 
     @Autowired
@@ -65,9 +69,6 @@ class Application {
 
     @Autowired
     BdioNodeFactory bdioNodeFactory
-
-    @Autowired
-    BomToolManager bomToolManager
 
     @Autowired
     BdioUploader bdioUploader
@@ -94,9 +95,10 @@ class Application {
             if (Boolean.FALSE == detectConfiguration.suppressConfigurationOutput) {
                 detectConfiguration.printConfiguration(System.out)
             }
-            List<File> createdBdioFiles = bomToolManager.createBdioFiles()
+            DetectProject detectProject = detectProjectManager.createDetectProject()
+            List<File> createdBdioFiles = detectProjectManager.createBdioFiles(detectProject)
             bdioUploader.uploadBdioFiles(createdBdioFiles)
-            hubSignatureScanner.scanFiles()
+            hubSignatureScanner.scanFiles(detectProject)
         }
     }
 
@@ -117,6 +119,6 @@ class Application {
 
     @Bean
     DependencyNodeTransformer dependencyNodeTransformer() {
-        new DependencyNodeTransformer(bdioNodeFactory, bdioPropertyHelper)
+        new DependencyNodeTransformer(bdioNodeFactory(), bdioPropertyHelper())
     }
 }

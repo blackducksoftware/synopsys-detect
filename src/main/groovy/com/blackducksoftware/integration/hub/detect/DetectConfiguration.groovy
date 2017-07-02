@@ -54,22 +54,26 @@ class DetectConfiguration {
     @Autowired
     DockerBomTool dockerBomTool
 
+    File sourceDirectory
     File outputDirectory
     Set<String> allDetectPropertyKeys = new HashSet<>()
     Set<String> additionalDockerPropertyNames = new HashSet<>()
 
-    private boolean usingDefaultSourcePaths
+    private boolean usingDefaultSourcePath
     private boolean usingDefaultOutputPath
 
     void init() {
-        if (detectProperties.sourcePaths == null || detectProperties.sourcePaths.length == 0) {
-            usingDefaultSourcePaths = true
-            detectProperties.sourcePaths = [
-                System.getProperty('user.dir')
-            ] as String[]
+        if (!detectProperties.sourcePath) {
+            usingDefaultSourcePath = true
+            detectProperties.sourcePath = System.getProperty('user.dir')
         }
 
-        //TODO check for source paths to be directories
+        sourceDirectory = new File(detectProperties.sourcePath)
+        if (!sourceDirectory.exists() || !sourceDirectory.isDirectory()) {
+            throw new DetectException("The source path ${detectProperties.sourcePath} either doesn't exist, isn't a directory, or doesn't have appropriate permissions.")
+        }
+        //make sure the path is absolute
+        detectProperties.sourcePath = sourceDirectory.canonicalPath
 
         if (StringUtils.isBlank(detectProperties.outputDirectoryPath)) {
             usingDefaultOutputPath = true
@@ -107,7 +111,7 @@ class DetectConfiguration {
      * If the default source path is being used AND docker is configured, don't run unless the tool is docker
      */
     public boolean shouldRun(BomTool bomTool) {
-        if (usingDefaultSourcePaths && dockerBomTool.isBomToolApplicable()) {
+        if (usingDefaultSourcePath && dockerBomTool.isBomToolApplicable()) {
             return BomToolType.DOCKER == bomTool.bomToolType
         } else {
             return true
@@ -200,8 +204,8 @@ class DetectConfiguration {
     public boolean getHubAutoImportCertificate() {
         return detectProperties.hubAutoImportCertificate.booleanValue()
     }
-    public String[] getSourcePaths() {
-        return detectProperties.sourcePaths
+    public String getSourcePath() {
+        return detectProperties.sourcePath
     }
     public String getOutputDirectoryPath() {
         return detectProperties.outputDirectoryPath

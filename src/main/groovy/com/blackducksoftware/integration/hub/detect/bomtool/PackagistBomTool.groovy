@@ -69,7 +69,6 @@ class PackagistBomTool extends BomTool {
         composerLockAndJsonPaths
     }
 
-    @Override
     public List<DetectProject> extractDetectProjects() {
         List<DetectProject> projects = []
 

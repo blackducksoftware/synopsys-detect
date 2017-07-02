@@ -54,7 +54,8 @@ class NpmBomTool extends BomTool {
 
     @Override
     public boolean isBomToolApplicable() {
-        npmPaths = sourcePathSearcher.findFilenamePattern(NODE_MODULES)
+        npmPaths = detectFileManager.findFile(detectConfiguration.sourcePath, NODE_MODULES)
+        sourcePathSearcher.findFilenamePattern(NODE_MODULES)
         def packageJsonPaths = sourcePathSearcher.findFilenamePattern(PACKAGE_JSON)
         npmExe = getExecutablePath()
 
@@ -67,7 +68,6 @@ class NpmBomTool extends BomTool {
         npmPaths && npmExe
     }
 
-    @Override
     public List<DetectProject> extractDetectProjects() {
         List<DetectProject> projects = []
 

@@ -92,9 +92,9 @@ class DetectProperties {
     @Value('${detect.hub.auto.import.cert}')
     Boolean hubAutoImportCertificate
 
-    @ValueDescription(description = "Source paths to inspect", group=DetectProperties.GROUP_PATHS)
-    @Value('${detect.source.paths}')
-    String[] sourcePaths
+    @ValueDescription(description = "Source path to inspect", group=DetectProperties.GROUP_PATHS)
+    @Value('${detect.source.path}')
+    String sourcePath
 
     @ValueDescription(description = "Output path", group=DetectProperties.GROUP_PATHS)
     @Value('${detect.output.path}')

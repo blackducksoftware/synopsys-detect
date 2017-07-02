@@ -32,6 +32,7 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.builder.HubScanConfigBuilder
 import com.blackducksoftware.integration.hub.dataservice.cli.CLIDataService
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
+import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.global.HubServerConfig
 import com.blackducksoftware.integration.hub.model.request.ProjectRequest
@@ -56,20 +57,18 @@ class HubSignatureScanner {
     @Autowired
     DetectFileManager detectFileManager
 
-    def pathToProjectName = [:]
-    def pathToProjectVersionName = [:]
+    private List<File> registeredDirectories = []
 
-    public void registerDirectoryToScan(File directory, String projectName, String projectVersionName) {
-        if (directory.exists() && projectName && projectVersionName) {
-            logger.debug("Registering path ${directory.getAbsolutePath()} to scan, for Project ${projectName} Version ${projectVersionName}")
-            pathToProjectName[directory.canonicalPath] = projectName
-            pathToProjectVersionName[directory.canonicalPath] = projectVersionName
+    public void registerDirectoryToScan(File directory) {
+        if (directory.exists() && directory.isDirectory()) {
+            logger.debug("Registering path ${directory.getAbsolutePath()} to scan")
+            registeredDirectories.add(directory)
         } else {
-            logger.warn("Tried to register a scan for ${directory.canonicalPath} without enough information: ${projectName}/${projectVersionName}")
+            logger.warn("Tried to register a scan for ${directory.canonicalPath} but it doesn't appear to exist or it isn't a directory.")
         }
     }
 
-    public void scanFiles() {
+    public void scanFiles(DetectProject detectProject) {
         try {
             Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
             HubServerConfig hubServerConfig = hubManager.createHubServerConfig(slf4jIntLogger)
@@ -81,13 +80,12 @@ class HubSignatureScanner {
                     scanDirectory(cliDataService, hubServerConfig, new File(it), detectConfiguration.projectName, detectConfiguration.projectVersionName)
                 }
             } else {
-                pathToProjectName.each { path, projectName ->
-                    String projectVersionName = pathToProjectVersionName[path]
-                    logger.info("Attempting to scan ${path} for ${projectName}/${projectVersionName}")
+                registeredDirectories.each {
+                    logger.info("Attempting to scan ${it.canonicalPath} for ${detectProject.projectName}/${detectProject.projectVersionName}")
                     try {
-                        scanDirectory(cliDataService, hubServerConfig, new File(path), projectName, projectVersionName)
+                        scanDirectory(cliDataService, hubServerConfig, it, detectProject.projectName, detectProject.projectVersionName)
                     } catch (Exception e) {
-                        logger.error("Not able to scan ${path}: ${e.message}")
+                        logger.error("Not able to scan ${it.canonicalPath}: ${e.message}")
                     }
                 }
             }

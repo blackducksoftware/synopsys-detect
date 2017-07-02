@@ -57,7 +57,6 @@ class GoGodepsBomTool extends BomTool {
         detectFileManager.containsAllFiles(path, 'Godeps')
     }
 
-    @Override
     public List<DetectProject> extractDetectProjects() {
         def projects = []
         GoGodepsParser goDepParser = new GoGodepsParser(gson, projectInfoGatherer)

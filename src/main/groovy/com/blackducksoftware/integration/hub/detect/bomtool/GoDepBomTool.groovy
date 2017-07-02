@@ -77,7 +77,6 @@ class GoDepBomTool extends BomTool {
     }
 
 
-    @Override
     public List<DetectProject> extractDetectProjects() {
         def projects = []
         matchingSourcePaths.each {

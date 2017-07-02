@@ -22,17 +22,36 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.output
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-
 class DetectProject {
-    File target
-    List<DependencyNode> dependencyNodes
+    private String projectName
+    private String projectVersionName
+    private List<DetectCodeLocation> detectCodeLocations = []
 
-    public DetectProject (File target) {
-        this.target = target
+    public String getProjectName() {
+        projectName
     }
 
-    String getTargetName() {
-        target.getName()
+    public String getProjectVersionName() {
+        projectVersionName
+    }
+
+    public void addAllDetectCodeLocations(List<DetectCodeLocation> detectCodeLocations) {
+        detectCodeLocations.each { addDetectCodeLocation(it) }
+    }
+
+    public void addDetectCodeLocation(DetectCodeLocation detectCodeLocation) {
+        if (!projectName) {
+            projectName = detectCodeLocation.bomToolProjectName
+        }
+
+        if (!projectVersionName) {
+            projectVersionName = detectCodeLocation.bomToolProjectVersionName
+        }
+
+        detectCodeLocations.add(detectCodeLocation)
+    }
+
+    public List<DetectCodeLocation> getDetectCodeLocations() {
+        detectCodeLocations
     }
 }
