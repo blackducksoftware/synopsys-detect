@@ -75,9 +75,9 @@ class HubSignatureScanner {
             HubServicesFactory hubServicesFactory = hubManager.createHubServicesFactory(slf4jIntLogger, hubServerConfig)
             CLIDataService cliDataService = hubServicesFactory.createCLIDataService(slf4jIntLogger, 120000L)
 
-            if (detectConfiguration.projectName && detectConfiguration.projectVersionName && detectConfiguration.hubSignatureScannerPaths) {
+            if (detectProject.projectName && detectProject.projectVersionName && detectConfiguration.hubSignatureScannerPaths) {
                 detectConfiguration.hubSignatureScannerPaths.each {
-                    scanDirectory(cliDataService, hubServerConfig, new File(it), detectConfiguration.projectName, detectConfiguration.projectVersionName)
+                    scanDirectory(cliDataService, hubServerConfig, new File(it), detectProject.projectName, detectProject.projectVersionName)
                 }
             } else {
                 registeredDirectories.each {
