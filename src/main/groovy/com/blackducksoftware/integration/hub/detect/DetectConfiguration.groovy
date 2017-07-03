@@ -355,6 +355,9 @@ class DetectConfiguration {
     public int getHubSignatureScannerMemory() {
         return convertInt(detectProperties.hubSignatureScannerMemory)
     }
+    public boolean getHubSignatureScannerDisabled() {
+        BooleanUtils.toBoolean(detectProperties.getHubSignatureScannerDisabled())
+    }
 
     private int convertInt(Integer integerObj) {
         return integerObj == null ? 0 : integerObj.intValue()

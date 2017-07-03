@@ -102,7 +102,9 @@ class Application {
             DetectProject detectProject = detectProjectManager.createDetectProject()
             List<File> createdBdioFiles = detectProjectManager.createBdioFiles(detectProject)
             bdioUploader.uploadBdioFiles(createdBdioFiles)
-            hubSignatureScanner.scanFiles(detectProject)
+            if (!detectConfiguration.getHubSignatureScannerDisabled()) {
+                hubSignatureScanner.scanFiles(detectProject)
+            }
 
             if (detectConfiguration.getPolicyCheck()) {
                 String policyStatusMessage = policyChecker.getPolicyStatusMessage(detectProject)

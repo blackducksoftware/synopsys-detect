@@ -284,6 +284,10 @@ class DetectProperties {
     @Value('${detect.hub.signature.scanner.memory}')
     Integer hubSignatureScannerMemory
 
+    @ValueDescription(description="Set to true to disable the Hub Signature Scanner.", defaultValue="false", group=DetectProperties.GROUP_SIGNATURE_SCANNER)
+    @Value('${detect.hub.signature.scanner.disabled}')
+    Boolean hubSignatureScannerDisabled
+
     @ValueDescription(description="Set this value to false if you would like to exclude your dev requires dependencies when ran", defaultValue='true', group=DetectProperties.GROUP_PACKAGIST)
     @Value('${detect.packagist.include.dev.dependencies}')
     Boolean packagistIncludeDevDependencies
