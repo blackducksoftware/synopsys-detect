@@ -26,29 +26,17 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
-import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
 
 @Component
 public class RubygemsNodePackager {
     @Autowired
-    ProjectInfoGatherer projectInfoGatherer
-
-    @Autowired
     NameVersionNodeTransformer nameVersionNodeTransformer
 
-    public DependencyNode makeDependencyNode(final String gemlock) {
-        final String rootName = projectInfoGatherer.getProjectName()
-        final String rootVersion = projectInfoGatherer.getProjectVersionName()
-        final ExternalId rootExternalId = new NameVersionExternalId(Forge.RUBYGEMS, rootName, rootVersion)
-        final DependencyNode root = new DependencyNode(rootName, rootVersion, rootExternalId)
-
+    public List<DependencyNode> extractProjectDependencies(final String gemlock) {
         def gemlockNodeParser = new GemlockNodeParser()
-        gemlockNodeParser.parseProjectDependencies(nameVersionNodeTransformer, root, gemlock)
+        List<DependencyNode> dependencies = gemlockNodeParser.parseProjectDependencies(nameVersionNodeTransformer, gemlock)
 
-        root
+        dependencies
     }
 }

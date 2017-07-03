@@ -29,7 +29,6 @@ import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLoc
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
-import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
 
@@ -45,9 +44,6 @@ abstract class BomTool {
 
     @Autowired
     DetectFileManager detectFileManager
-
-    @Autowired
-    ProjectInfoGatherer projectInfoGatherer
 
     @Autowired
     NameVersionNodeTransformer nameVersionNodeTransformer

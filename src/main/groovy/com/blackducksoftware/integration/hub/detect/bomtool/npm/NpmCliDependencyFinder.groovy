@@ -35,7 +35,6 @@ import com.blackducksoftware.integration.hub.detect.bomtool.NpmBomTool
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
-import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
 import com.google.gson.Gson
@@ -53,9 +52,6 @@ class NpmCliDependencyFinder {
 
     @Autowired
     Gson gson
-
-    @Autowired
-    ProjectInfoGatherer projectInfoGatherer
 
     @Autowired
     NameVersionNodeTransformer nodeTransformer
@@ -91,10 +87,7 @@ class NpmCliDependencyFinder {
         JsonObject npmJson = new JsonParser().parse(new JsonReader(new FileReader(NpmLsOutFile))).getAsJsonObject()
 
         String projectName = npmJson.getAsJsonPrimitive(JSON_NAME)?.getAsString()
-        projectName = projectInfoGatherer.getProjectName(BomToolType.NPM, projectRootPath, projectName)
-
         String projectVersion = npmJson.getAsJsonPrimitive(JSON_VERSION)?.getAsString()
-        projectVersion = projectInfoGatherer.getProjectVersionName(projectVersion)
 
         def externalId = new NameVersionExternalId(Forge.NPM, projectName, projectVersion)
         def dependencyNode = new DependencyNode(projectName, projectVersion, externalId)
