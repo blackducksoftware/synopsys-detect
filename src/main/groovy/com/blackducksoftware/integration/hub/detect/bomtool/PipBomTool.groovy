@@ -27,12 +27,12 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
+import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.PipPackager
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.VirtualEnvironment
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.VirtualEnvironmentHandler
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 
 @Component
 class PipBomTool extends BomTool {
@@ -46,47 +46,28 @@ class PipBomTool extends BomTool {
     @Autowired
     VirtualEnvironmentHandler virtualEnvironmentHandler
 
-    @Autowired
-    DetectFileManager detectFileManager
-
-    Set<String> matchingSourcePaths = []
-
-    private boolean virtualEnvironmentHandlerInitialized
-
     BomToolType getBomToolType() {
         BomToolType.PIP
     }
 
     boolean isBomToolApplicable() {
-        if (!virtualEnvironmentHandlerInitialized) {
-            virtualEnvironmentHandler.init()
-            virtualEnvironmentHandlerInitialized = true
-        }
+        virtualEnvironmentHandler.init()
         VirtualEnvironment systemEnvironment = virtualEnvironmentHandler.getSystemEnvironment()
         def foundExectables = systemEnvironment.pipPath && systemEnvironment.pythonPath
-        matchingSourcePaths = sourcePathSearcher.findFilenamePattern(SETUP_FILENAME)
+        def matchingSourcePath = detectFileManager.findFile(detectConfiguration.sourcePath, SETUP_FILENAME)
         def definedRequirements = detectConfiguration.requirementsFilePath
 
-        if (definedRequirements) {
-            def requirementsFile = new File(definedRequirements)
-            matchingSourcePaths += requirementsFile.getParentFile().absolutePath
-        }
-
-        foundExectables && !matchingSourcePaths.isEmpty()
+        foundExectables && (matchingSourcePath || definedRequirements)
     }
 
-    List<DetectProject> extractDetectProjects() {
-        List<DetectProject> projects = []
+    List<DetectCodeLocation> extractDetectCodeLocations() {
         def outputDirectory = detectFileManager.createDirectory(BomToolType.PIP)
-        matchingSourcePaths.each { sourcePath ->
-            def sourceDirectory = new File(sourcePath)
-            VirtualEnvironment virtualEnv = virtualEnvironmentHandler.getVirtualEnvironment(outputDirectory)
+        def sourcePath = detectConfiguration.sourcePath
 
-            DetectProject project = new DetectProject(sourceDirectory)
-            project.dependencyNodes = pipPackager.makeDependencyNodes(sourceDirectory, virtualEnv)
-            projects.add(project)
-        }
+        VirtualEnvironment virtualEnv = virtualEnvironmentHandler.getVirtualEnvironment(outputDirectory)
+        DependencyNode projectNode = pipPackager.makeDependencyNode(virtualEnv)
+        def codeLocation = new DetectCodeLocation(BomToolType.PIP, sourcePath, projectNode)
 
-        projects
+        [codeLocation]
     }
 }
