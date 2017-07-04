@@ -99,7 +99,10 @@ class DetectProjectManager {
                         foundAnyBomTools = true;
                         detectProject.addAllDetectCodeLocations(codeLocations)
                     } else {
-                        logger.error("Did not find any projects from ${bomToolTypeString} even though it applied.")
+                        //currently, Docker creates and uploads the bdio files itself, so there's nothing for Detect to do
+                        if (BomToolType.DOCKER != bomToolType) {
+                            logger.error("Did not find any projects from ${bomToolTypeString} even though it applied.")
+                        }
                     }
                 }
             } catch (final Exception e) {

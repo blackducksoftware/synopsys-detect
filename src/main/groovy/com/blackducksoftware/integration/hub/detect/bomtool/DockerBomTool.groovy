@@ -24,14 +24,13 @@ package com.blackducksoftware.integration.hub.detect.bomtool
 
 import java.nio.charset.StandardCharsets
 
-import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerProperties
-import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
+import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
@@ -69,7 +68,7 @@ class DockerBomTool extends BomTool {
         dockerExecutablePath && propertiesOk
     }
 
-    public List<DetectProject> extractDetectProjects() {
+    List<DetectCodeLocation> extractDetectCodeLocations() {
         File dockerInstallDirectory = new File(detectConfiguration.dockerInstallPath)
         File shellScriptFile
         if (detectConfiguration.dockerInspectorPath) {
@@ -82,23 +81,34 @@ class DockerBomTool extends BomTool {
             shellScriptFile.setExecutable(true)
         }
 
+        File dockerPropertiesFile = detectFileManager.createFile(BomToolType.DOCKER, 'application.properties')
+        Properties dockerProps = new Properties()
+        dockerProperties.fillInDockerProperties(dockerProps)
+        dockerProps.store(dockerPropertiesFile.newOutputStream(), "")
+
+        String imageArgument = ''
+        if (detectConfiguration.dockerImage) {
+            imageArgument = detectConfiguration.dockerImage
+        } else {
+            imageArgument = detectConfiguration.dockerTar
+        }
+
+        File dockerPropertiesDirectory =  dockerPropertiesFile.getParentFile()
+
         String path = System.getenv('PATH')
         File dockerExecutableFile = new File(dockerExecutablePath)
         path += File.pathSeparator + dockerExecutableFile.parentFile.absolutePath
         Map<String, String> environmentVariables = [PATH: path]
 
-        List<String> dockerShellScriptArguments = dockerProperties.createDockerArgumentList()
-        String bashScriptArg = StringUtils.join(dockerShellScriptArguments, ' ')
-
         List<String> bashArguments = [
             "-c",
-            "${shellScriptFile.absolutePath} ${bashScriptArg}"
+            "${shellScriptFile.absolutePath} --spring.config.location=\"${dockerPropertiesDirectory.getAbsolutePath()}\" ${imageArgument}"
         ]
 
         Executable dockerExecutable = new Executable(dockerInstallDirectory, environmentVariables, bashExecutablePath, bashArguments)
         executableRunner.execute(dockerExecutable)
         //At least for the moment, there is no way of running the hub-docker-inspector to generate the files only, so it currently handles all uploading
-        return []
+        []
     }
 
     private String findDockerExecutable() {
@@ -114,6 +124,7 @@ class DockerBomTool extends BomTool {
         if (!bashPath?.trim()) {
             bashPath = executableManager.getPathOfExecutable(ExecutableType.BASH)?.trim()
         }
+
         bashPath
     }
 }
