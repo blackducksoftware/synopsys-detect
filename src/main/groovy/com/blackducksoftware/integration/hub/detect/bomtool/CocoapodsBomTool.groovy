@@ -43,18 +43,18 @@ class CocoapodsBomTool extends BomTool {
     }
 
     boolean isBomToolApplicable() {
-        boolean containsPodfile = detectFileManager.containsAllFiles(detectConfiguration.sourcePath, 'Podfile.lock')
+        boolean containsPodfile = detectFileManager.containsAllFiles(sourcePath, 'Podfile.lock')
         containsPodfile
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
-        final String podLockText = new File(detectConfiguration.sourcePath, 'Podfile.lock').text
+        final String podLockText = new File(sourcePath, 'Podfile.lock').text
 
         List<DependencyNode> projectDependencies = cocoapodsPackager.extractProjectDependencies(podLockText)
         Set<DependencyNode> dependenciesSet = new HashSet<>(projectDependencies)
-        ExternalId externalId = new PathExternalId(Forge.COCOAPODS, detectConfiguration.sourcePath)
+        ExternalId externalId = new PathExternalId(Forge.COCOAPODS, sourcePath)
 
-        def codeLocation = new DetectCodeLocation(getBomToolType(), detectConfiguration.sourcePath, "", "", externalId, dependenciesSet)
+        def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, "", "", externalId, dependenciesSet)
         [codeLocation]
     }
 }

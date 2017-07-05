@@ -30,7 +30,6 @@ public class NpmOutputParserTest {
 
         parser.setGson(new Gson())
         parser.setNodeTransformer(new NameVersionNodeTransformer())
-        parser.setProjectInfoGatherer(projectInfoGatherer)
 
         DependencyNode node = parser.convertNpmJsonFileToDependencyNode(testIn, "")
         def testOut = new File(getClass().getResource("/npm/npmParseOutput.txt").getFile())

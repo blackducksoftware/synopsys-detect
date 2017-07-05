@@ -54,20 +54,20 @@ class NpmBomTool extends BomTool {
 
     @Override
     public boolean isBomToolApplicable() {
-        boolean containsNodeModules = detectFileManager.containsAllFiles(detectConfiguration.sourcePath, NODE_MODULES)
-        boolean containsPackageJson = detectFileManager.containsAllFiles(detectConfiguration.sourcePath, PACKAGE_JSON)
+        boolean containsNodeModules = detectFileManager.containsAllFiles(sourcePath, NODE_MODULES)
+        boolean containsPackageJson = detectFileManager.containsAllFiles(sourcePath, PACKAGE_JSON)
         npmExe = getExecutablePath()
 
         if (containsPackageJson && !containsNodeModules) {
-            logger.info("package.json was located in ${detectConfiguration.sourcePath}, but the node_modules folder was NOT located. Please run 'npm install' in that location and try again.")
+            logger.info("package.json was located in ${sourcePath}, but the node_modules folder was NOT located. Please run 'npm install' in that location and try again.")
         }
 
-        containsPackageJson && containsNodeModules && npmExe
+        containsNodeModules && npmExe
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
-        def dependencyNode = cliDependencyFinder.generateDependencyNode(detectConfiguration.sourcePath, npmExe)
-        def detectCodeLocation = new DetectCodeLocation(getBomToolType(), detectConfiguration.sourcePath, dependencyNode)
+        def dependencyNode = cliDependencyFinder.generateDependencyNode(sourcePath, npmExe)
+        def detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, dependencyNode)
 
         [detectCodeLocation]
     }

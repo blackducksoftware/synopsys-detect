@@ -55,8 +55,8 @@ class MavenBomTool extends BomTool {
     }
 
     boolean isBomToolApplicable() {
-        String pomXmlPath = detectFileManager.findFile(detectConfiguration.sourcePath, POM_FILENAME)
-        String pomWrapperPath = detectFileManager.findFile(detectConfiguration.sourcePath, POM_WRAPPER_FILENAME)
+        String pomXmlPath = detectFileManager.findFile(sourcePath, POM_FILENAME)
+        String pomWrapperPath = detectFileManager.findFile(sourcePath, POM_WRAPPER_FILENAME)
         mvnExecutable = findMavenExecutablePath()
 
         mvnExecutable && (pomXmlPath || pomWrapperPath)
@@ -64,14 +64,14 @@ class MavenBomTool extends BomTool {
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
         List<DetectCodeLocation> codeLocations = []
-        List<DependencyNode> sourcePathProjectNodes = mavenPackager.makeDependencyNodes(detectConfiguration.sourcePath, mvnExecutable)
+        List<DependencyNode> sourcePathProjectNodes = mavenPackager.makeDependencyNodes(sourcePath, mvnExecutable)
         sourcePathProjectNodes.each {
-            DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), detectConfiguration.sourcePath, it)
+            DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, it)
             codeLocations.add(detectCodeLocation)
         }
 
         //there may also be subprojects, so just look one level down (depth = 2) for any/all target directories
-        File[] additionalTargets = detectFileManager.findFilesToDepth(detectConfiguration.sourceDirectory, 'target', 2)
+        File[] additionalTargets = detectFileManager.findFilesToDepth(sourcePath, 'target', 2)
         if (additionalTargets) {
             additionalTargets.each { hubSignatureScanner.registerDirectoryToScan(it) }
         }
@@ -84,7 +84,7 @@ class MavenBomTool extends BomTool {
             return detectConfiguration.getMavenPath()
         }
 
-        String wrapperPath = executableManager.getPathOfExecutable(detectConfiguration.sourcePath, ExecutableType.MVNW)
+        String wrapperPath = executableManager.getPathOfExecutable(sourcePath, ExecutableType.MVNW)
         if (wrapperPath) {
             return wrapperPath
         }
