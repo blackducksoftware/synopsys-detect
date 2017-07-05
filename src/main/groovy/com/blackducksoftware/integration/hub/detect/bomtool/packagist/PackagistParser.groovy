@@ -29,10 +29,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
-import com.blackducksoftware.integration.hub.detect.bomtool.PackagistBomTool
-import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.util.FileFinder
-import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
@@ -46,23 +43,16 @@ class PackagistParser {
     FileFinder fileFinder
 
     @Autowired
-    ProjectInfoGatherer projectInfoGatherer
-
-    @Autowired
     DetectConfiguration detectConfiguration
 
-    public DependencyNode getDependencyNodeFromProject(String projectPath) {
-        File composerJsonFile = fileFinder.findFile(projectPath, PackagistBomTool.COMPOSER_JSON)
-
+    public DependencyNode getDependencyNodeFromProject(File composerJsonFile, File composerLockFile) {
         JsonObject composerJsonObject = new JsonParser().parse(new JsonReader(new FileReader(composerJsonFile))).getAsJsonObject()
-        String projectName = projectInfoGatherer.getProjectName(BomToolType.PACKAGIST, projectPath, composerJsonObject.get('name')?.getAsString())
-        String projectVersion = projectInfoGatherer.getProjectVersionName(composerJsonObject.get('version')?.getAsString())
+        String projectName = composerJsonObject.get('name')?.getAsString()
+        String projectVersion = composerJsonObject.get('version')?.getAsString()
 
         def rootDependencyNode = new DependencyNode(projectName, projectVersion, new NameVersionExternalId(packagistForge, projectName, projectVersion))
 
-        File composerLockFile = fileFinder.findFile(projectPath, PackagistBomTool.COMPOSER_LOCK)
         JsonObject composerLockObject = new JsonParser().parse(new JsonReader(new FileReader(composerLockFile))).getAsJsonObject()
-
         JsonArray packagistPackages = composerLockObject.get('packages')?.getAsJsonArray()
         JsonArray packagistDevPackages = composerLockObject.get('packages-dev')?.getAsJsonArray()
 
@@ -70,6 +60,7 @@ class PackagistParser {
         if (detectConfiguration.getPackagistIncludeDevDependencies()) {
             convertFromJsonToDependencyNode(rootDependencyNode, getStartingPackages(composerJsonObject, true), packagistDevPackages)
         }
+
         rootDependencyNode
     }
 
