@@ -62,7 +62,7 @@ class NpmBomTool extends BomTool {
             logger.info("package.json was located in ${detectConfiguration.sourcePath}, but the node_modules folder was NOT located. Please run 'npm install' in that location and try again.")
         }
 
-        containsPackageJson && containsNodeModules && npmExe
+        containsNodeModules && npmExe
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {

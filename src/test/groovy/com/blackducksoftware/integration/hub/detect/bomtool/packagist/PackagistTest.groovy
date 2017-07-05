@@ -34,11 +34,12 @@ class PackagistTest {
         PackagistParser testParser = new PackagistParser()
 
         testParser.fileFinder = fileFinder
-        testParser.projectInfoGatherer = projectInfoGatherer
         testParser.detectConfiguration = detectConfiguration
 
         String location = getClass().getResource("/packagist/").getFile()
-        DependencyNode actual = testParser.getDependencyNodeFromProject(location)
+        def composerLockFile = new File("${location}${File.separator}composer.lock")
+        def composerJsonFile = new File("${location}${File.separator}composer.json")
+        DependencyNode actual = testParser.getDependencyNodeFromProject(composerJsonFile, composerLockFile)
 
         File expected = new File(getClass().getResource("/packagist/PackagistTestDependencyNode.txt").getFile())
 
