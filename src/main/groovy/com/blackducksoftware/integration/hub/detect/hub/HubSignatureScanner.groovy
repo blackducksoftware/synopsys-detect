@@ -61,7 +61,7 @@ class HubSignatureScanner {
 
     public void registerDirectoryToScan(File directory) {
         if (directory.exists() && directory.isDirectory()) {
-            logger.debug("Registering path ${directory.getAbsolutePath()} to scan")
+            logger.info("Registering path ${directory.getAbsolutePath()} to scan")
             registeredDirectories.add(directory)
         } else {
             logger.warn("Tried to register a scan for ${directory.canonicalPath} but it doesn't appear to exist or it isn't a directory.")
