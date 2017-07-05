@@ -46,24 +46,24 @@ class PackagistBomTool extends BomTool {
 
     @Override
     public boolean isBomToolApplicable() {
-        boolean containsComposerLock = detectFileManager.containsAllFiles(detectConfiguration.sourcePath, 'composer.lock')
-        boolean containsComposerJson = detectFileManager.containsAllFiles(detectConfiguration.sourcePath, 'composer.json')
+        boolean containsComposerLock = detectFileManager.containsAllFiles(sourcePath, 'composer.lock')
+        boolean containsComposerJson = detectFileManager.containsAllFiles(sourcePath, 'composer.json')
 
         if (containsComposerLock && !containsComposerJson) {
-            logger.warn("composer.lock was located in ${detectConfiguration.sourcePath}, but no composer.json. Please add a composer.json file and try again.")
+            logger.warn("composer.lock was located in ${sourcePath}, but no composer.json. Please add a composer.json file and try again.")
         } else if (!containsComposerLock && containsComposerJson) {
-            logger.warn("composer.json was located in ${detectConfiguration.sourcePath}, but no composer.lock. Please install dependencies and try again.")
+            logger.warn("composer.json was located in ${sourcePath}, but no composer.lock. Please install dependencies and try again.")
         }
 
         containsComposerLock && containsComposerJson
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
-        File composerJsonFile = new File(detectConfiguration.sourcePath, 'composer.json')
-        File composerLockFile = new File(detectConfiguration.sourcePath, 'composer.lock')
+        File composerJsonFile = new File(sourcePath, 'composer.json')
+        File composerLockFile = new File(sourcePath, 'composer.lock')
 
         DependencyNode rootDependencyNode = packagistParser.getDependencyNodeFromProject(composerJsonFile, composerLockFile)
-        def detectCodeLocation = new DetectCodeLocation(getBomToolType(), detectConfiguration.sourcePath, rootDependencyNode)
+        def detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, rootDependencyNode)
 
         [detectCodeLocation]
     }

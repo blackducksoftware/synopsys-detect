@@ -54,7 +54,7 @@ class PipBomTool extends BomTool {
         virtualEnvironmentHandler.init()
         VirtualEnvironment systemEnvironment = virtualEnvironmentHandler.getSystemEnvironment()
         def foundExectables = systemEnvironment.pipPath && systemEnvironment.pythonPath
-        def matchingSourcePath = detectFileManager.findFile(detectConfiguration.sourcePath, SETUP_FILENAME)
+        def matchingSourcePath = detectFileManager.findFile(sourcePath, SETUP_FILENAME)
         def definedRequirements = detectConfiguration.requirementsFilePath
 
         foundExectables && (matchingSourcePath || definedRequirements)
@@ -62,7 +62,7 @@ class PipBomTool extends BomTool {
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
         def outputDirectory = detectFileManager.createDirectory(BomToolType.PIP)
-        def sourcePath = detectConfiguration.sourcePath
+        def sourcePath = sourcePath
 
         VirtualEnvironment virtualEnv = virtualEnvironmentHandler.getVirtualEnvironment(outputDirectory)
         DependencyNode projectNode = pipPackager.makeDependencyNode(virtualEnv)

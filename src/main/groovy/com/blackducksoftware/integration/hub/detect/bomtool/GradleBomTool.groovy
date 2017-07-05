@@ -54,8 +54,8 @@ class GradleBomTool extends BomTool {
     }
 
     boolean isBomToolApplicable() {
-        gradleExecutable = findGradleExecutable(detectConfiguration.sourcePath)
-        def buildGradle = detectFileManager.findFile(detectConfiguration.sourcePath, BUILD_GRADLE)
+        gradleExecutable = findGradleExecutable(sourcePath)
+        def buildGradle = detectFileManager.findFile(sourcePath, BUILD_GRADLE)
         if (gradleExecutable && buildGradle) {
             return true
         }
@@ -64,10 +64,10 @@ class GradleBomTool extends BomTool {
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
-        DependencyNode rootProjectNode = gradleInitScriptPackager.extractRootProjectNode(detectConfiguration.sourcePath, gradleExecutable)
-        DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), detectConfiguration.sourcePath, rootProjectNode)
+        DependencyNode rootProjectNode = gradleInitScriptPackager.extractRootProjectNode(sourcePath, gradleExecutable)
+        DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, rootProjectNode)
 
-        hubSignatureScanner.registerDirectoryToScan(new File(detectConfiguration.sourcePath, 'build'))
+        hubSignatureScanner.registerDirectoryToScan(new File(sourcePath, 'build'))
 
         [detectCodeLocation]
     }

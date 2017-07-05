@@ -55,8 +55,8 @@ class NugetBomTool extends BomTool {
     @Override
     public boolean isBomToolApplicable() {
         nugetExecutable = findNugetExecutable()
-        def containsSolutionFile = detectFileManager.containsAllFiles(detectConfiguration.sourcePath, SOLUTION_PATTERN)
-        def containsProjectFile = detectFileManager.containsAllFiles(detectConfiguration.sourcePath, PROJECT_PATTERN)
+        def containsSolutionFile = detectFileManager.containsAllFiles(sourcePath, SOLUTION_PATTERN)
+        def containsProjectFile = detectFileManager.containsAllFiles(sourcePath, PROJECT_PATTERN)
 
         if (!nugetExecutable && (containsSolutionFile || containsProjectFile)) {
             logger.warn('The nuget executable must be on the path - are you sure you are running on a windows system?')
@@ -66,7 +66,6 @@ class NugetBomTool extends BomTool {
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
-        String sourcePath = detectConfiguration.sourcePath
         DependencyNode root = nugetInspectorPackager.makeDependencyNode(sourcePath, nugetExecutable)
         if (!root) {
             logger.info('Unable to extract any dependencies from nuget')
@@ -74,7 +73,7 @@ class NugetBomTool extends BomTool {
         }
 
         root.externalId = new NameVersionExternalId(Forge.NUGET, root.name, root.version)
-        DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), detectConfiguration.sourcePath, root)
+        DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, root)
         [detectCodeLocation]
     }
 

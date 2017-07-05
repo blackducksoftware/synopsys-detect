@@ -45,7 +45,7 @@ class RubygemsBomTool extends BomTool {
     }
 
     boolean isBomToolApplicable() {
-        detectFileManager.containsAllFiles(detectConfiguration.sourcePath, 'Gemfile.lock')
+        detectFileManager.containsAllFiles(sourcePath, 'Gemfile.lock')
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
@@ -56,9 +56,9 @@ class RubygemsBomTool extends BomTool {
 
         List<DependencyNode> dependencies = rubygemsNodePackager.extractProjectDependencies(gemlock)
         Set<DependencyNode> dependenciesSet = new HashSet<>(dependencies)
-        ExternalId externalId = new PathExternalId(Forge.RUBYGEMS, detectConfiguration.sourcePath)
+        ExternalId externalId = new PathExternalId(Forge.RUBYGEMS, sourcePath)
 
-        def codeLocation = new DetectCodeLocation(getBomToolType(), detectConfiguration.sourcePath, "", "", externalId, dependenciesSet)
+        def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, "", "", externalId, dependenciesSet)
         [codeLocation]
     }
 }

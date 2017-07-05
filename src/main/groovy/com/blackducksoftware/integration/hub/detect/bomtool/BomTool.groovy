@@ -22,6 +22,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool
 
+import javax.annotation.PostConstruct
+
 import org.springframework.beans.factory.annotation.Autowired
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
@@ -48,6 +50,8 @@ abstract class BomTool {
     @Autowired
     NameVersionNodeTransformer nameVersionNodeTransformer
 
+    protected String sourcePath = ''
+
     abstract BomToolType getBomToolType()
     abstract boolean isBomToolApplicable()
 
@@ -57,5 +61,10 @@ abstract class BomTool {
     //    abstract List<DetectCodeLocation> extractDetectCodeLocations()
     List<DetectCodeLocation> extractDetectCodeLocations() {
         []
+    }
+
+    @PostConstruct
+    void init() {
+        sourcePath = detectConfiguration.sourcePath
     }
 }
