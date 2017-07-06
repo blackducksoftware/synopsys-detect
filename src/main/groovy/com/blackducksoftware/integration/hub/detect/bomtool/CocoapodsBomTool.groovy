@@ -25,8 +25,12 @@ package com.blackducksoftware.integration.hub.detect.bomtool
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
+import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.PathExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.CocoapodsPackager
-import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
+import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 
 @Component
@@ -34,26 +38,23 @@ class CocoapodsBomTool extends BomTool {
     @Autowired
     CocoapodsPackager cocoapodsPackager
 
-    private List<String> matchingSourcePaths = []
-
     BomToolType getBomToolType() {
         return BomToolType.COCOAPODS
     }
 
     boolean isBomToolApplicable() {
-        matchingSourcePaths = sourcePathSearcher.findFilenamePattern('Podfile.lock')
-
-        !matchingSourcePaths.isEmpty()
+        boolean containsPodfile = detectFileManager.containsAllFiles(sourcePath, 'Podfile.lock')
+        containsPodfile
     }
 
-    List<DetectProject> extractDetectProjects() {
-        List<DetectProject> projects = []
-        matchingSourcePaths.each {
-            DetectProject project = new DetectProject(new File(it))
-            project.dependencyNodes = cocoapodsPackager.makeDependencyNodes(it)
-            projects.add(project)
-        }
+    List<DetectCodeLocation> extractDetectCodeLocations() {
+        final String podLockText = new File(sourcePath, 'Podfile.lock').text
 
-        projects
+        List<DependencyNode> projectDependencies = cocoapodsPackager.extractProjectDependencies(podLockText)
+        Set<DependencyNode> dependenciesSet = new HashSet<>(projectDependencies)
+        ExternalId externalId = new PathExternalId(Forge.COCOAPODS, sourcePath)
+
+        def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, "", "", externalId, dependenciesSet)
+        [codeLocation]
     }
 }

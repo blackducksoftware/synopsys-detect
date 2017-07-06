@@ -36,10 +36,12 @@ import com.blackducksoftware.integration.hub.bdio.simple.BdioNodeFactory
 import com.blackducksoftware.integration.hub.bdio.simple.BdioPropertyHelper
 import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeTransformer
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
 import com.blackducksoftware.integration.hub.detect.help.HelpPrinter
 import com.blackducksoftware.integration.hub.detect.help.ValueDescriptionAnnotationFinder
 import com.blackducksoftware.integration.hub.detect.hub.BdioUploader
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
+import com.blackducksoftware.integration.hub.detect.hub.PolicyChecker
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -58,6 +60,9 @@ class Application {
     ExecutableManager executableManager
 
     @Autowired
+    DetectProjectManager detectProjectManager
+
+    @Autowired
     HubSignatureScanner hubSignatureScanner
 
     @Autowired
@@ -67,10 +72,10 @@ class Application {
     BdioNodeFactory bdioNodeFactory
 
     @Autowired
-    BomToolManager bomToolManager
+    BdioUploader bdioUploader
 
     @Autowired
-    BdioUploader bdioUploader
+    PolicyChecker policyChecker
 
     @Autowired
     ApplicationArguments applicationArguments
@@ -94,9 +99,17 @@ class Application {
             if (Boolean.FALSE == detectConfiguration.suppressConfigurationOutput) {
                 detectConfiguration.printConfiguration(System.out)
             }
-            List<File> createdBdioFiles = bomToolManager.createBdioFiles()
+            DetectProject detectProject = detectProjectManager.createDetectProject()
+            List<File> createdBdioFiles = detectProjectManager.createBdioFiles(detectProject)
             bdioUploader.uploadBdioFiles(createdBdioFiles)
-            hubSignatureScanner.scanFiles()
+            if (!detectConfiguration.getHubSignatureScannerDisabled()) {
+                hubSignatureScanner.scanFiles(detectProject)
+            }
+
+            if (detectConfiguration.getPolicyCheck()) {
+                String policyStatusMessage = policyChecker.getPolicyStatusMessage(detectProject)
+                logger.info(policyStatusMessage)
+            }
         }
     }
 
@@ -117,6 +130,6 @@ class Application {
 
     @Bean
     DependencyNodeTransformer dependencyNodeTransformer() {
-        new DependencyNodeTransformer(bdioNodeFactory, bdioPropertyHelper)
+        new DependencyNodeTransformer(bdioNodeFactory(), bdioPropertyHelper())
     }
 }

@@ -30,7 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerProperties
-import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
+import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
@@ -68,8 +68,7 @@ class DockerBomTool extends BomTool {
         dockerExecutablePath && propertiesOk
     }
 
-    @Override
-    public List<DetectProject> extractDetectProjects() {
+    List<DetectCodeLocation> extractDetectCodeLocations() {
         File dockerInstallDirectory = new File(detectConfiguration.dockerInstallPath)
         File shellScriptFile
         if (detectConfiguration.dockerInspectorPath) {
@@ -109,7 +108,7 @@ class DockerBomTool extends BomTool {
         Executable dockerExecutable = new Executable(dockerInstallDirectory, environmentVariables, bashExecutablePath, bashArguments)
         executableRunner.execute(dockerExecutable)
         //At least for the moment, there is no way of running the hub-docker-inspector to generate the files only, so it currently handles all uploading
-        return []
+        []
     }
 
     private String findDockerExecutable() {
@@ -125,6 +124,7 @@ class DockerBomTool extends BomTool {
         if (!bashPath?.trim()) {
             bashPath = executableManager.getPathOfExecutable(ExecutableType.BASH)?.trim()
         }
+
         bashPath
     }
 }

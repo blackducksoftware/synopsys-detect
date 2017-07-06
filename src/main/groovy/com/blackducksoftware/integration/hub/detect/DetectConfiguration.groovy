@@ -24,6 +24,7 @@ package com.blackducksoftware.integration.hub.detect
 
 import java.lang.reflect.Modifier
 
+import org.apache.commons.lang3.BooleanUtils
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -54,22 +55,26 @@ class DetectConfiguration {
     @Autowired
     DockerBomTool dockerBomTool
 
+    File sourceDirectory
     File outputDirectory
     Set<String> allDetectPropertyKeys = new HashSet<>()
     Set<String> additionalDockerPropertyNames = new HashSet<>()
 
-    private boolean usingDefaultSourcePaths
+    private boolean usingDefaultSourcePath
     private boolean usingDefaultOutputPath
 
     void init() {
-        if (detectProperties.sourcePaths == null || detectProperties.sourcePaths.length == 0) {
-            usingDefaultSourcePaths = true
-            detectProperties.sourcePaths = [
-                System.getProperty('user.dir')
-            ] as String[]
+        if (!detectProperties.sourcePath) {
+            usingDefaultSourcePath = true
+            detectProperties.sourcePath = System.getProperty('user.dir')
         }
 
-        //TODO check for source paths to be directories
+        sourceDirectory = new File(detectProperties.sourcePath)
+        if (!sourceDirectory.exists() || !sourceDirectory.isDirectory()) {
+            throw new DetectException("The source path ${detectProperties.sourcePath} either doesn't exist, isn't a directory, or doesn't have appropriate permissions.")
+        }
+        //make sure the path is absolute
+        detectProperties.sourcePath = sourceDirectory.canonicalPath
 
         if (StringUtils.isBlank(detectProperties.outputDirectoryPath)) {
             usingDefaultOutputPath = true
@@ -107,7 +112,7 @@ class DetectConfiguration {
      * If the default source path is being used AND docker is configured, don't run unless the tool is docker
      */
     public boolean shouldRun(BomTool bomTool) {
-        if (usingDefaultSourcePaths && dockerBomTool.isBomToolApplicable()) {
+        if (usingDefaultSourcePath && dockerBomTool.isBomToolApplicable()) {
             return BomToolType.DOCKER == bomTool.bomToolType
         } else {
             return true
@@ -171,13 +176,13 @@ class DetectConfiguration {
     }
 
     public boolean getCleanupBdioFiles() {
-        return detectProperties.cleanupBdioFiles.booleanValue()
+        return BooleanUtils.toBoolean(detectProperties.cleanupBdioFiles)
     }
     public String getHubUrl() {
         return detectProperties.hubUrl
     }
     public int getHubTimeout() {
-        return detectProperties.hubTimeout.intValue()
+        return convertInt(detectProperties.hubTimeout)
     }
     public String getHubUsername() {
         return detectProperties.hubUsername
@@ -198,16 +203,16 @@ class DetectConfiguration {
         return detectProperties.hubProxyPassword
     }
     public boolean getHubAutoImportCertificate() {
-        return detectProperties.hubAutoImportCertificate.booleanValue()
+        return BooleanUtils.toBoolean(detectProperties.hubAutoImportCertificate)
     }
-    public String[] getSourcePaths() {
-        return detectProperties.sourcePaths
+    public String getSourcePath() {
+        return detectProperties.sourcePath
     }
     public String getOutputDirectoryPath() {
         return detectProperties.outputDirectoryPath
     }
     public int getSearchDepth() {
-        return detectProperties.searchDepth.intValue()
+        return convertInt(detectProperties.searchDepth)
     }
     public String getExcludedBomToolTypes() {
         return detectProperties.excludedBomToolTypes
@@ -224,11 +229,11 @@ class DetectConfiguration {
     public String getProjectCodeLocationName() {
         return detectProperties.projectCodeLocationName?.trim()
     }
-    public String getPolicyCheck() {
-        return detectProperties.policyCheck
+    public boolean getPolicyCheck() {
+        return BooleanUtils.toBoolean(detectProperties.policyCheck)
     }
-    public int getPolicyCheckTimeout() {
-        return detectProperties.policyCheckTimeout.intValue()
+    public long getPolicyCheckTimeout() {
+        return convertLong(detectProperties.policyCheckTimeout)
     }
     public String getGradleInspectorVersion() {
         return detectProperties.gradleInspectorVersion
@@ -249,7 +254,7 @@ class DetectConfiguration {
         return detectProperties.gradleIncludedProjectNames
     }
     public boolean getGradleCleanupBuildBlackduckDirectory() {
-        return detectProperties.gradleCleanupBuildBlackduckDirectory.booleanValue()
+        return BooleanUtils.toBoolean(detectProperties.gradleCleanupBuildBlackduckDirectory)
     }
     public String getNugetInspectorPackageName() {
         return detectProperties.nugetInspectorPackageName
@@ -261,10 +266,10 @@ class DetectConfiguration {
         return detectProperties.nugetInspectorExcludedModules
     }
     public boolean getNugetInspectorIgnoreFailure() {
-        return detectProperties.nugetInspectorIgnoreFailure.booleanValue()
+        return BooleanUtils.toBoolean(detectProperties.nugetInspectorIgnoreFailure)
     }
     public boolean getMavenAggregateBom() {
-        return detectProperties.mavenAggregateBom.booleanValue()
+        return BooleanUtils.toBoolean(detectProperties.mavenAggregateBom)
     }
     public String getMavenScope() {
         return detectProperties.mavenScope
@@ -276,7 +281,7 @@ class DetectConfiguration {
         return detectProperties.mavenPath
     }
     public boolean getNugetAggregateBom() {
-        return detectProperties.nugetAggregateBom.booleanValue()
+        return BooleanUtils.toBoolean(detectProperties.nugetAggregateBom)
     }
     public String getNugetPath() {
         return detectProperties.nugetPath
@@ -288,10 +293,10 @@ class DetectConfiguration {
         return detectProperties.pipProjectName
     }
     public boolean getCreateVirtualEnv() {
-        return detectProperties.createVirtualEnv.booleanValue()
+        return BooleanUtils.toBoolean(detectProperties.createVirtualEnv)
     }
     public boolean getPipThreeOverride() {
-        return detectProperties.pipThreeOverride.booleanValue()
+        return BooleanUtils.toBoolean(detectProperties.pipThreeOverride)
     }
     public String getPythonPath() {
         return detectProperties.pythonPath
@@ -336,18 +341,29 @@ class DetectConfiguration {
         return detectProperties.loggingLevel
     }
     public boolean getCleanupBomToolFiles() {
-        return detectProperties.cleanupBomToolFiles.booleanValue()
+        return BooleanUtils.toBoolean(detectProperties.cleanupBomToolFiles)
     }
     public boolean getSuppressConfigurationOutput() {
-        return detectProperties.suppressConfigurationOutput.booleanValue()
+        return BooleanUtils.toBoolean(detectProperties.suppressConfigurationOutput)
     }
     public String[] getHubSignatureScannerPaths() {
         return detectProperties.hubSignatureScannerPaths
     }
     public boolean getPackagistIncludeDevDependencies() {
-        return detectProperties.packagistIncludeDevDependencies.booleanValue()
+        return BooleanUtils.toBoolean(detectProperties.packagistIncludeDevDependencies)
     }
     public int getHubSignatureScannerMemory() {
-        return detectProperties.hubSignatureScannerMemory.intValue()
+        return convertInt(detectProperties.hubSignatureScannerMemory)
+    }
+    public boolean getHubSignatureScannerDisabled() {
+        BooleanUtils.toBoolean(detectProperties.getHubSignatureScannerDisabled())
+    }
+
+    private int convertInt(Integer integerObj) {
+        return integerObj == null ? 0 : integerObj.intValue()
+    }
+
+    private long convertLong(Long longObj) {
+        return longObj == null ? 0L : longObj.longValue()
     }
 }

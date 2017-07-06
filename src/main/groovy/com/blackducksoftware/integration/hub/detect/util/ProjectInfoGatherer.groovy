@@ -22,6 +22,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.util
 
+import org.apache.commons.io.FilenameUtils
 import org.joda.time.DateTime
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -36,18 +37,24 @@ class ProjectInfoGatherer {
     @Autowired
     DetectConfiguration detectConfiguration
 
-    String getProjectName(final BomToolType bomToolType, final String sourcePath) {
-        getProjectName(bomToolType, sourcePath, null)
+    String getProjectName() {
+        getProjectName(detectConfiguration.sourcePath)
     }
 
-    String getProjectName(final BomToolType bomToolType, final String sourcePath, final String defaultProjectName) {
+    //TODO: Change these methods to getProjectNameFromPath, these should be for special cases only
+    //TODO: Instead, this class should be deleted and these methods should be moved in to DetectProjectManager
+    String getProjectName(final String sourcePath) {
+        getProjectName(sourcePath, null)
+    }
+
+    String getProjectName(final String sourcePath, final String defaultProjectName) {
         String projectName = defaultProjectName?.trim()
 
         if (detectConfiguration.getProjectName()) {
             projectName = detectConfiguration.getProjectName()
         } else if (!projectName && sourcePath) {
-            final File sourcePathFile = new File(sourcePath)
-            projectName = "${sourcePathFile.getName()}_${bomToolType.toString().toLowerCase()}"
+            String finalSourcePathPiece = extractFinalPieceFromSourcePath(sourcePath)
+            projectName = finalSourcePathPiece
         }
 
         projectName
@@ -69,11 +76,20 @@ class ProjectInfoGatherer {
         projectVersion
     }
 
-    String getCodeLocationName(final BomToolType bomToolType, final String targetName, final String projectName, final String projectVersion) {
+    String getCodeLocationName(final BomToolType bomToolType, final String sourcePath, final String projectName, final String projectVersion) {
         String codeLocation = detectConfiguration.getProjectCodeLocationName()
         if (!codeLocation?.trim()) {
-            codeLocation = String.format('%s/%s/%s', targetName, projectName, projectVersion)
+            String finalSourcePathPiece = extractFinalPieceFromSourcePath(sourcePath)
+            codeLocation = String.format('%s/%s/%s', finalSourcePathPiece, projectName, projectVersion)
         }
         return String.format('%s/%s Hub Detect Export', bomToolType.toString(), codeLocation)
+    }
+
+    private String extractFinalPieceFromSourcePath(String sourcePath) {
+        if (sourcePath == null || sourcePath.length() == 0) {
+            return ''
+        }
+        String normalizedSourcePath = FilenameUtils.normalizeNoEndSeparator(sourcePath, true)
+        normalizedSourcePath[normalizedSourcePath.lastIndexOf('/') + 1..-1]
     }
 }

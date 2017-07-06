@@ -82,6 +82,8 @@ public class ValueDescriptionAnnotationFinder implements ApplicationContextAware
                                 field.set(obj, defaultValue);
                             } else if (Integer.class.equals(type) && fieldValue == null) {
                                 field.set(obj, NumberUtils.toInt(defaultValue));
+                            } else if (Long.class.equals(type) && fieldValue == null) {
+                                field.set(obj, NumberUtils.toLong(defaultValue));
                             } else if (Boolean.class.equals(type) && fieldValue == null) {
                                 field.set(obj, Boolean.parseBoolean(defaultValue));
                             }
