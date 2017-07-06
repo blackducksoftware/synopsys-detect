@@ -42,6 +42,7 @@ class ProjectInfoGatherer {
     }
 
     //TODO: Change these methods to getProjectNameFromPath, these should be for special cases only
+    //TODO: Instead, this class should be deleted and these methods should be moved in to DetectProjectManager
     String getProjectName(final String sourcePath) {
         getProjectName(sourcePath, null)
     }

@@ -29,7 +29,6 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
-import com.blackducksoftware.integration.hub.detect.util.FileFinder
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
@@ -38,9 +37,6 @@ import com.google.gson.stream.JsonReader
 @Component
 class PackagistParser {
     private Forge packagistForge = new Forge('packagist', ':')
-
-    @Autowired
-    FileFinder fileFinder
 
     @Autowired
     DetectConfiguration detectConfiguration

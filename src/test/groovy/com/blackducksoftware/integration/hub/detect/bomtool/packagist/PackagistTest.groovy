@@ -1,48 +1,34 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.packagist
 
-import static org.junit.Assert.assertTrue
-
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
+import org.skyscreamer.jsonassert.JSONAssert
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.detect.Application
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
-import com.blackducksoftware.integration.hub.detect.util.FileFinder
-import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
+import com.blackducksoftware.integration.hub.detect.DetectProperties
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = Application.class)
-@SpringBootTest
 class PackagistTest {
-
-    @Autowired
-    FileFinder fileFinder
-
-    @Autowired
-    ProjectInfoGatherer projectInfoGatherer
-
-    @Autowired
-    DetectConfiguration detectConfiguration
+    public Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     @Test
     public void packagistParserTest() throws IOException {
-        PackagistParser testParser = new PackagistParser()
+        DetectProperties detectProperties = new DetectProperties()
+        detectProperties.packagistIncludeDevDependencies = true
+        DetectConfiguration detectConfiguration = new DetectConfiguration()
+        detectConfiguration.detectProperties = detectProperties
 
-        testParser.fileFinder = fileFinder
-        testParser.detectConfiguration = detectConfiguration
+        PackagistParser packagistParser = new PackagistParser()
+        packagistParser.detectConfiguration = detectConfiguration
 
-        String location = getClass().getResource("/packagist/").getFile()
-        def composerLockFile = new File("${location}${File.separator}composer.lock")
-        def composerJsonFile = new File("${location}${File.separator}composer.json")
-        DependencyNode actual = testParser.getDependencyNodeFromProject(composerJsonFile, composerLockFile)
+        def composerLockFile = new File(getClass().getResource('/packagist/composer.lock').getFile())
+        def composerJsonFile = new File(getClass().getResource('/packagist/composer.json').getFile())
+        DependencyNode dependencyNode = packagistParser.getDependencyNodeFromProject(composerJsonFile, composerLockFile)
+        final String actual = gson.toJson(dependencyNode);
 
-        File expected = new File(getClass().getResource("/packagist/PackagistTestDependencyNode.txt").getFile())
+        String expectedText = new File(getClass().getResource("/packagist/PackagistTestDependencyNode.txt").getFile()).text
 
-        assertTrue(actual.toString().contentEquals(expected.text))
+        JSONAssert.assertEquals(expectedText, actual, false);
     }
 }

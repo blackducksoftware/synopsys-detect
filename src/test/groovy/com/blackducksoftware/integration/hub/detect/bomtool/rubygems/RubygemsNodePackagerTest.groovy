@@ -17,30 +17,15 @@ import org.apache.commons.io.IOUtils
 import org.json.JSONException
 import org.junit.Assert
 import org.junit.Test
-import org.junit.runner.RunWith
 import org.skyscreamer.jsonassert.JSONAssert
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
-import com.blackducksoftware.integration.hub.detect.Application
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
-import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = Application.class)
-@SpringBootTest
 class RubygemsNodePackagerTest {
     Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create()
-
-    @Autowired
-    ProjectInfoGatherer projectInfoGatherer
 
     @Test
     public void packagerTest() throws JSONException, IOException, URISyntaxException {
@@ -50,19 +35,13 @@ class RubygemsNodePackagerTest {
                 StandardCharsets.UTF_8)
         final String actualText = IOUtils.toString(getClass().getResourceAsStream("/rubygems/Gemfile.lock"),
                 StandardCharsets.UTF_8)
-        final RubygemsNodePackager rubygemsNodePackager = new RubygemsNodePackager(projectInfoGatherer, nameVersionNodeTransformer)
-        final List<DependencyNode> projects = rubygemsNodePackager.makeDependencyNodes(sourcePath, actualText)
-        Assert.assertEquals(1, projects.size())
-
-        fixVersion(projects.get(0), "1.0.0")
+        final RubygemsNodePackager rubygemsNodePackager = new RubygemsNodePackager()
+        rubygemsNodePackager.nameVersionNodeTransformer = nameVersionNodeTransformer
+        final List<DependencyNode> projects = rubygemsNodePackager.extractProjectDependencies(actualText)
+        Assert.assertEquals(8, projects.size())
 
         final String actual = gson.toJson(projects)
         System.out.println(actual)
         JSONAssert.assertEquals(expected, actual, false)
-    }
-
-    private void fixVersion(final DependencyNode node, final String newVersion) {
-        node.version = newVersion
-        node.externalId = new NameVersionExternalId(Forge.RUBYGEMS, node.name, newVersion)
     }
 }
