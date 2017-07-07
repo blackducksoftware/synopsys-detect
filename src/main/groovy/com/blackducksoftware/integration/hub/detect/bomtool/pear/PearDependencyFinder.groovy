@@ -42,11 +42,13 @@ class PearDependencyFinder {
             'package.xml'
         ])
 
-        ExecutableOutput pearDependencyList = executableRunner.execute(pearListExe)
         ExecutableOutput pearPackageDependencyNames = executableRunner.execute(pearPackageDependencyExe)
+        ExecutableOutput pearDependencyList = executableRunner.execute(pearListExe)
 
         if (pearDependencyList.errorOutput || pearPackageDependencyNames.errorOutput) {
             logger.error("There was an error during execution.")
+        } else if (!pearDependencyList.standardOutput || !pearPackageDependencyNames.standardOutput) {
+            logger.error("No information retrieved from running pear commands")
         } else {
             def nameList = findDependencyNames(pearPackageDependencyNames.standardOutput)
             DependencyNode resultNode = createRootNode(rootDirectoryPath)
@@ -70,7 +72,6 @@ class PearDependencyFinder {
              * 2 Dependency name
              * 3+ extra unnecessary info
              */
-
             String[] dependencyInfo = line.trim().split(' ')
             dependencyInfo -= ''
 
