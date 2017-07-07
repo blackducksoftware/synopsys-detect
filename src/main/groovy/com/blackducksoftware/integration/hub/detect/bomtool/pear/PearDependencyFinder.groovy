@@ -41,7 +41,7 @@ class PearDependencyFinder {
         ExecutableOutput pearDependencyList = executableRunner.execute(pearListExe)
 
         if(pearDependencyList.errorOutput) {
-            logger.error("There was an error during execution.\n${pearDependencyList.standardOutput}")
+            logger.error("There was an error during execution.\n${pearDependencyList.errorOutput}")
         } else {
             DependencyNode resultNode = createRootNode(rootDirectoryPath)
             createPearDependencyNodeFromList(pearDependencyList.standardOutput, resultNode)
@@ -57,7 +57,7 @@ class PearDependencyFinder {
 
         lines.each {
             /*
-             * This split turns the line into an array of
+             * These next lines turn the line into an array of
              * 0 Dependency name
              * 1 Dependency version
              * 2 Dependency state
