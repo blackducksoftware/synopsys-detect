@@ -20,7 +20,6 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
@@ -36,9 +35,6 @@ class CpanPackager {
     CpanListParser cpanListParser
 
     @Autowired
-    DetectFileManager detectFileManager
-
-    @Autowired
     NameVersionNodeTransformer nameVersionNodeTransformer
 
     public List<DependencyNode> makeDependencyNodes(File sourceDirectory, String cpanExecutablePath, String cpanmExecutablePath, String perlExecutablePath) {
@@ -52,7 +48,7 @@ class CpanPackager {
                 DependencyNode module = nameVersionNodeTransformer.createDependencyNode(Forge.CPAN, nameVersionNode)
                 dependencyNodes += module
             } else {
-                logger.info("Could node find resolved version for module: ${moduleName}")
+                logger.warn("Could node find resolved version for module: ${moduleName}")
             }
         }
 
