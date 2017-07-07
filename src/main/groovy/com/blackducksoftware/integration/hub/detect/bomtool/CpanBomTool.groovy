@@ -28,9 +28,6 @@ class CpanBomTool extends BomTool {
     @Autowired
     CpanPackager cpanPackager
 
-    private List<String> matchingSourcePaths
-
-    private String perlExecutablePath
     private String cpanExecutablePath
     private String cpanmExecutablePath
 
@@ -41,17 +38,16 @@ class CpanBomTool extends BomTool {
 
     @Override
     public boolean isBomToolApplicable() {
-        def cpanfile = detectFileManager.findFile(detectConfiguration.sourceDirectory, 'cpanfile')
-        perlExecutablePath = detectConfiguration.getPerlPath() ? detectConfiguration.getPerlPath() : executableManager.getPathOfExecutable(ExecutableType.PERL)
-        cpanExecutablePath = detectConfiguration.getCpanPath() ? detectConfiguration.getCpanPath() : executableManager.getPathOfExecutable(ExecutableType.CPAN)
-        cpanmExecutablePath = detectConfiguration.getCpanmPath() ? detectConfiguration.getCpanmPath() : executableManager.getPathOfExecutable(ExecutableType.CPANM)
+        def containsFiles = detectFileManager.containsAllFiles(sourcePath, 'cpanfile')
+        cpanExecutablePath = executableManager.getPathOfExecutable(ExecutableType.CPAN, detectConfiguration.getCpanPath())
+        cpanmExecutablePath = executableManager.getPathOfExecutable(ExecutableType.CPANM, detectConfiguration.getCpanmPath())
 
-        cpanfile && cpanExecutablePath && cpanmExecutablePath && perlExecutablePath
+        containsFiles && cpanExecutablePath && cpanmExecutablePath
     }
 
     @Override
     public List<DetectCodeLocation> extractDetectCodeLocations() {
-        Set<DependencyNode> dependenciesSet = new HashSet<>(cpanPackager.makeDependencyNodes(detectConfiguration.sourceDirectory, cpanExecutablePath, cpanmExecutablePath, perlExecutablePath))
+        Set<DependencyNode> dependenciesSet = new HashSet<>(cpanPackager.makeDependencyNodes(detectConfiguration.sourceDirectory, cpanExecutablePath, cpanmExecutablePath))
         ExternalId externalId = new PathExternalId(Forge.CPAN, detectConfiguration.sourcePath)
         def detectCodeLocation = new DetectCodeLocation(BomToolType.CPAN, detectConfiguration.sourcePath, "", "", externalId, dependenciesSet)
 

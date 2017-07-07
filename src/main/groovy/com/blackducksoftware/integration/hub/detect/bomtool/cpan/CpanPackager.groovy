@@ -37,7 +37,7 @@ class CpanPackager {
     @Autowired
     NameVersionNodeTransformer nameVersionNodeTransformer
 
-    public List<DependencyNode> makeDependencyNodes(File sourceDirectory, String cpanExecutablePath, String cpanmExecutablePath, String perlExecutablePath) {
+    public List<DependencyNode> makeDependencyNodes(File sourceDirectory, String cpanExecutablePath, String cpanmExecutablePath) {
         Map<String, NameVersionNode> allModules = getAllModulesMap(sourceDirectory, cpanExecutablePath)
         List<String> directModuleNames = getDirectModuleNames(sourceDirectory, cpanmExecutablePath)
 
