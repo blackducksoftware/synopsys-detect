@@ -14,7 +14,12 @@ package com.blackducksoftware.integration.hub.detect.bomtool
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
+import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.PathExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.cpan.CpanPackager
+import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
@@ -37,26 +42,26 @@ class CpanBomTool extends BomTool {
 
     @Override
     public boolean isBomToolApplicable() {
-        matchingSourcePaths = sourcePathSearcher.findFilenamePattern('cpanfile')
+        def cpanfile = detectFileManager.findFile(detectConfiguration.sourceDirectory, 'cpanfile')
         perlExecutablePath = detectConfiguration.getPerlPath() ? detectConfiguration.getPerlPath() : executableManager.getPathOfExecutable(ExecutableType.PERL)
         cpanExecutablePath = detectConfiguration.getCpanPath() ? detectConfiguration.getCpanPath() : executableManager.getPathOfExecutable(ExecutableType.CPAN)
         cpanmExecutablePath = detectConfiguration.getCpanmPath() ? detectConfiguration.getCpanmPath() : executableManager.getPathOfExecutable(ExecutableType.CPANM)
 
-        !matchingSourcePaths.isEmpty() && cpanExecutablePath && cpanmExecutablePath && perlExecutablePath
+        cpanfile && cpanExecutablePath && cpanmExecutablePath && perlExecutablePath
     }
 
     @Override
-    public List<DetectProject> extractDetectProjects() {
+    public List<DetectCodeLocation> extractDetectCodeLocations() {
         List<DetectProject> projects = []
-        matchingSourcePaths.each {
-            def sourceDirectory = new File(it)
-            def detectProject = new DetectProject(sourceDirectory)
-            String name = projectInfoGatherer.getProjectName(BomToolType.CPAN, it)
-            String version = projectInfoGatherer.getProjectVersionName()
-            detectProject.dependencyNodes = cpanPackager.makeDependencyNodes(sourceDirectory, cpanExecutablePath, cpanmExecutablePath, perlExecutablePath)
-            projects += detectProject
-        }
 
-        projects
+        def sourcePath = detectConfiguration.sourcePath
+        def sourceDirectory = detectConfiguration.sourceDirectory
+
+        Set<DependencyNode> dependenciesSet = new HashSet<>(cpanPackager.makeDependencyNodes(sourceDirectory, cpanExecutablePath, cpanmExecutablePath, perlExecutablePath))
+
+        ExternalId externalId = new PathExternalId(Forge.CPAN, sourcePath)
+        def detectCodeLocation = new DetectCodeLocation(BomToolType.CPAN, sourcePath, "", "", externalId, dependenciesSet)
+
+        [detectCodeLocation]
     }
 }

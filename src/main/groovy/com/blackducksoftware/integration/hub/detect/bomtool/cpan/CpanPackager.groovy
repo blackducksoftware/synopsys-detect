@@ -28,7 +28,6 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 @Component
 class CpanPackager {
     private final Logger logger = LoggerFactory.getLogger(CpanPackager.class)
-    private final String INSPECTOR = 'cpan-inspector.pl'
 
     @Autowired
     ExecutableRunner executableRunner
