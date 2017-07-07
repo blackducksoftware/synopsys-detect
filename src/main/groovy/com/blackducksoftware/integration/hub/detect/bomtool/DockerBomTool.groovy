@@ -99,6 +99,7 @@ class DockerBomTool extends BomTool {
         File dockerExecutableFile = new File(dockerExecutablePath)
         path += File.pathSeparator + dockerExecutableFile.parentFile.absolutePath
         Map<String, String> environmentVariables = [PATH: path]
+        environmentVariables.put('BD_HUB_PASSWORD', detectConfiguration.hubPassword)
 
         List<String> bashArguments = [
             "-c",

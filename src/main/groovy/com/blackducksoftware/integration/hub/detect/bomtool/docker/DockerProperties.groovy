@@ -36,7 +36,6 @@ class DockerProperties {
         dockerProperties.setProperty('hub.url', detectConfiguration.getHubUrl())
         dockerProperties.setProperty('hub.timeout', detectConfiguration.getHubTimeout().toString())
         dockerProperties.setProperty('hub.username', detectConfiguration.getHubUsername())
-        dockerProperties.setProperty('hub.password', detectConfiguration.getHubPassword())
         dockerProperties.setProperty('hub.proxy.host', detectConfiguration.getHubProxyHost())
         dockerProperties.setProperty('hub.proxy.port', detectConfiguration.getHubProxyPort().toString())
         dockerProperties.setProperty('hub.proxy.username', detectConfiguration.getHubProxyUsername())
