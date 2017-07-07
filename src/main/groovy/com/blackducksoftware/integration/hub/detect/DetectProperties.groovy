@@ -229,6 +229,10 @@ class DetectProperties {
     @Value('${detect.pear.path}')
     String pearPath
 
+    @ValueDescription(description="Set to true if you would like to include the not required packages", defaultValue='false', group=DetectProperties.GROUP_PEAR)
+    @Value('${detect.pear.not.required.dependencies}')
+    String pearNotRequiredDependencies
+
     @ValueDescription(description="The path to a user's virtual environment", group=DetectProperties.GROUP_PIP)
     @Value('${detect.pip.virtualEnv.path}')
     String virtualEnvPath

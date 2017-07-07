@@ -11,6 +11,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.pear
 
+import org.apache.commons.lang3.BooleanUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput
@@ -34,6 +36,9 @@ class PearDependencyFinder {
 
     @Autowired
     ExecutableRunner executableRunner
+
+    @Autowired
+    DetectConfiguration detectConfiguration
 
     public DependencyNode parsePearDependencyList(String rootDirectoryPath, String exePath) {
         def pearListExe = new Executable(new File(rootDirectoryPath), exePath, ['list'])
@@ -76,9 +81,16 @@ class PearDependencyFinder {
             dependencyInfo -= ''
 
             String nodeName = dependencyInfo[2].trim()
+            String nodeRequired = dependencyInfo[0].trim()
 
             if (nodeName) {
-                nameList.add(nodeName.split('/')[-1])
+                if (detectConfiguration.getPearNotRequiredDependencies()) {
+                    nameList.add(nodeName.split('/')[-1])
+                } else {
+                    if (BooleanUtils.toBoolean(nodeRequired)) {
+                        nameList.add(nodeName.split('/')[-1])
+                    }
+                }
             }
         }
 
