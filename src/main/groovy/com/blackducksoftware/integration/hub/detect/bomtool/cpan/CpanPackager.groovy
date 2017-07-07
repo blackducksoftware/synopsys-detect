@@ -37,11 +37,11 @@ class CpanPackager {
     @Autowired
     NameVersionNodeTransformer nameVersionNodeTransformer
 
-    public List<DependencyNode> makeDependencyNodes(File sourceDirectory, String cpanExecutablePath, String cpanmExecutablePath) {
+    public Set<DependencyNode> makeDependencyNodes(File sourceDirectory, String cpanExecutablePath, String cpanmExecutablePath) {
         Map<String, NameVersionNode> allModules = getAllModulesMap(sourceDirectory, cpanExecutablePath)
         List<String> directModuleNames = getDirectModuleNames(sourceDirectory, cpanmExecutablePath)
 
-        List<DependencyNode> dependencyNodes = []
+        Set<DependencyNode> dependencyNodes = []
         directModuleNames.each { moduleName ->
             def nameVersionNode = allModules[moduleName]
             if(nameVersionNode) {
