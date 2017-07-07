@@ -11,14 +11,15 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.cpan
 
-import java.nio.charset.StandardCharsets
-
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
-import com.blackducksoftware.integration.hub.detect.type.BomToolType
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput
@@ -26,39 +27,47 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 
 @Component
 class CpanPackager {
+    private final Logger logger = LoggerFactory.getLogger(CpanPackager.class)
     private final String INSPECTOR = 'cpan-inspector.pl'
 
     @Autowired
     ExecutableRunner executableRunner
 
     @Autowired
-    FindDependenciesParser findDependenciesParser
+    CpanListParser cpanListParser
 
     @Autowired
     DetectFileManager detectFileManager
 
+    @Autowired
+    NameVersionNodeTransformer nameVersionNodeTransformer
+
     public List<DependencyNode> makeDependencyNodes(File sourceDirectory, String cpanExecutablePath, String cpanmExecutablePath, String perlExecutablePath) {
+        Map<String, NameVersionNode> allModules = getAllModulesMap(sourceDirectory, cpanExecutablePath)
         List<String> directModuleNames = getDirectModuleNames(sourceDirectory, cpanmExecutablePath)
 
-        def installDepPlugin = new Executable(sourceDirectory, cpanmExecutablePath, ['CPAN::FindDependencies'])
-        executableRunner.execute(installDepPlugin)
-
-        String inspectorText = getClass().getResourceAsStream("/${INSPECTOR}").getText(StandardCharsets.UTF_8.name())
-        inspectorText = inspectorText.replace('PERL_PATH', perlExecutablePath)
-        File outputDirectory = detectFileManager.createDirectory(BomToolType.CPAN)
-        File inspectorFile = detectFileManager.createFile(outputDirectory, INSPECTOR)
-        inspectorFile.delete()
-        inspectorFile << inspectorText
-
-        List<NameVersionNode> nameVersionNodes = []
+        List<DependencyNode> dependencyNodes = []
         directModuleNames.each { moduleName ->
-            def findDependencies = new Executable(sourceDirectory, perlExecutablePath, [
-                inspectorFile.getAbsolutePath(),
-                moduleName
-            ])
-            String treeText = executableRunner.execute(findDependencies)
-            nameVersionNodes += findDependenciesParser.parse(treeText)
+            def nameVersionNode = allModules[moduleName]
+            if(nameVersionNode) {
+                DependencyNode module = nameVersionNodeTransformer.createDependencyNode(Forge.CPAN, nameVersionNode)
+                dependencyNodes += module
+            } else {
+                logger.info("Could node find resolved version for module: ${moduleName}")
+            }
         }
+        
+        
+
+        dependencyNodes
+    }
+
+    private Map<String, NameVersionNode> getAllModulesMap(File sourceDirectory, String cpanExecutablePath) {
+        def executable = new Executable(sourceDirectory, cpanExecutablePath, ['-l'])
+        ExecutableOutput executableOutput = executableRunner.execute(executable)
+        String listText = executableOutput.getStandardOutput()
+
+        cpanListParser.parse(listText)
     }
 
     private List<String> getDirectModuleNames(File sourceDirectory, String cpanmExecutablePath) {
@@ -68,10 +77,10 @@ class CpanPackager {
 
         List<String> modules = []
         for(String line : lines.split('\n')) {
-            if(!line.trim()) {
+            if(!line?.trim()) {
                 continue
             }
-            if(line.contains('-->') || line.contains(' ... ')) {
+            if(line.contains('-->') || (line.contains(' ... ') && line.contains('Configuring'))) {
                 continue
             }
             modules += line.split('~')[0].trim()
