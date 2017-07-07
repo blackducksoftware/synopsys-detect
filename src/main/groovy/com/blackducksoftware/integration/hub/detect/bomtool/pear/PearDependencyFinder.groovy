@@ -37,43 +37,51 @@ class PearDependencyFinder {
 
     public DependencyNode parsePearDependencyList(String rootDirectoryPath, String exePath) {
         def pearListExe = new Executable(new File(rootDirectoryPath), exePath, ['list'])
+        def pearPackageDependencyExe = new Executable(new File(rootDirectoryPath), exePath, [
+            'package-dependencies',
+            'package.xml'
+        ])
 
         ExecutableOutput pearDependencyList = executableRunner.execute(pearListExe)
+        ExecutableOutput pearPackageDependencyNames = executableRunner.execute(pearPackageDependencyExe)
 
-        if(pearDependencyList.errorOutput) {
-            logger.error("There was an error during execution.\n${pearDependencyList.errorOutput}")
+        if (pearDependencyList.errorOutput || pearPackageDependencyNames.errorOutput) {
+            logger.error("There was an error during execution.")
         } else {
+            def nameList = findDependencyNames(pearPackageDependencyNames.standardOutput)
             DependencyNode resultNode = createRootNode(rootDirectoryPath)
-            createPearDependencyNodeFromList(pearDependencyList.standardOutput, resultNode)
+            createPearDependencyNodeFromList(pearDependencyList.standardOutput, nameList, resultNode)
             return resultNode
         }
 
         []
     }
 
-    private void createPearDependencyNodeFromList(String list, DependencyNode parentNode) {
-        String dependencyList = list.split('VERSION STATE')[1]
-        String[] lines = dependencyList.trim().split('\n')
+    private List<String> findDependencyNames(String list) {
+        def nameList = []
+        String[] content = list.split('\n')
 
-        lines.each {
+        def listing = content[5..-1]
+        listing.each { line ->
             /*
              * These next lines turn the line into an array of
-             * 0 Dependency name
-             * 1 Dependency version
-             * 2 Dependency state
+             * 0 Dependency required
+             * 1 Dependency type
+             * 2 Dependency name
+             * 3+ extra unnecessary info
              */
-            String[] dependencyInfo = it.split(' ')
+
+            String[] dependencyInfo = line.trim().split(' ')
             dependencyInfo -= ''
 
-            String nodeName = dependencyInfo[0].trim()
-            String nodeVersion = dependencyInfo[1].trim()
+            String nodeName = dependencyInfo[2].trim()
 
-            if(dependencyInfo) {
-                def newNode = new DependencyNode(nodeName, nodeVersion, new NameVersionExternalId(pear, nodeName, nodeVersion))
-
-                parentNode.children.add(newNode)
+            if (nodeName) {
+                nameList.add(nodeName.split('/')[-1])
             }
         }
+
+        nameList
     }
 
     private DependencyNode createRootNode(String sourcePath) {
@@ -85,5 +93,30 @@ class PearDependencyFinder {
 
         def rootNode = new DependencyNode(rootName, rootVersion, new NameVersionExternalId(pear, rootName, rootVersion))
         rootNode
+    }
+
+    private void createPearDependencyNodeFromList(String list, List<String> dependencyNames, DependencyNode parentNode) {
+        String[] dependencyList = list.split('\n')
+        def listing = dependencyList[3..-1]
+
+        listing.each { line ->
+            /*
+             * These next lines turn the line into an array of
+             * 0 Dependency name
+             * 1 Dependency version
+             * 2 Dependency state
+             */
+            String[] dependencyInfo = line.split(' ')
+            dependencyInfo -= ''
+
+            String nodeName = dependencyInfo[0].trim()
+            String nodeVersion = dependencyInfo[1].trim()
+
+            if (dependencyInfo && dependencyNames.contains(nodeName)) {
+                def newNode = new DependencyNode(nodeName, nodeVersion, new NameVersionExternalId(pear, nodeName, nodeVersion))
+
+                parentNode.children.add(newNode)
+            }
+        }
     }
 }
