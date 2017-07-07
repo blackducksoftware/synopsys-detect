@@ -47,6 +47,7 @@ class DetectProperties {
     private static final String GROUP_GO = 'go'
     private static final String GROUP_DOCKER = 'docker'
     private static final String GROUP_PACKAGIST = 'packagist'
+    private static final String GROUP_PEAR = 'pear'
 
     @ValueDescription(description="If true, the default behavior of printing your configuration properties at startup will be suppressed.", defaultValue="false", group=DetectProperties.GROUP_LOGGING)
     @Value('${detect.suppress.configuration.output}')
@@ -223,6 +224,10 @@ class DetectProperties {
     @ValueDescription(description="The path of the Npm executable", group=DetectProperties.GROUP_NPM)
     @Value('${detect.npm.path}')
     String npmPath
+
+    @ValueDescription(description="The path of the pear executable", group=DetectProperties.GROUP_PEAR)
+    @Value('${detect.pear.path}')
+    String pearPath
 
     @ValueDescription(description="The path to a user's virtual environment", group=DetectProperties.GROUP_PIP)
     @Value('${detect.pip.virtualEnv.path}')

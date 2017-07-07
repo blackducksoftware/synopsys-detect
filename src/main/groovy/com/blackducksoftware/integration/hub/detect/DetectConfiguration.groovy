@@ -289,6 +289,9 @@ class DetectConfiguration {
     public String getNpmPath() {
         return detectProperties.npmPath
     }
+    public String getPearPath() {
+        return detectProperties.pearPath
+    }
     public String getPipProjectName() {
         return detectProperties.pipProjectName
     }
