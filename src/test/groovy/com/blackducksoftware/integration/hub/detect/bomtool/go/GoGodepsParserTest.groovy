@@ -14,11 +14,9 @@ package com.blackducksoftware.integration.hub.detect.bomtool.go
 import java.nio.charset.StandardCharsets
 
 import org.apache.commons.io.IOUtils
-import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.skyscreamer.jsonassert.JSONAssert
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
@@ -28,7 +26,6 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVe
 import com.blackducksoftware.integration.hub.detect.Application
 import com.blackducksoftware.integration.hub.detect.bomtool.GoDepBomTool
 import com.blackducksoftware.integration.hub.detect.bomtool.go.godep.GoGodepsParser
-import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
@@ -38,18 +35,12 @@ import com.google.gson.GsonBuilder
 public class GoGodepsParserTest {
     Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create()
 
-    @Autowired
-    ProjectInfoGatherer projectInfoGatherer
-
     @Test
     public void goDepParserTest() throws IOException {
-        final GoGodepsParser goDepParser = new GoGodepsParser(gson, projectInfoGatherer)
+        final GoGodepsParser goDepParser = new GoGodepsParser(gson)
         final String goDepOutput = IOUtils.toString(getClass().getResourceAsStream("/go/Go_Godeps.json"), StandardCharsets.UTF_8)
-        final DependencyNode node = goDepParser.parseGoDep(goDepOutput)
-        Assert.assertNotNull(node)
-
-        fixVersion(node, '1.0.0')
-        final String actual = gson.toJson(node)
+        final List<DependencyNode> projectDependencies = goDepParser.extractProjectDependencies(goDepOutput)
+        final String actual = gson.toJson(projectDependencies)
         final String expected = IOUtils.toString(getClass().getResourceAsStream("/go/Go_GodepsParserExpected.json"), StandardCharsets.UTF_8)
         JSONAssert.assertEquals(expected, actual, false)
     }

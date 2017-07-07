@@ -32,7 +32,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorPackager
-import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
+import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 
@@ -47,7 +47,6 @@ class NugetBomTool extends BomTool {
     NugetInspectorPackager nugetInspectorPackager
 
     File nugetExecutable
-    List<String> matchingSourcePaths = []
 
     BomToolType getBomToolType() {
         return BomToolType.NUGET
@@ -56,53 +55,29 @@ class NugetBomTool extends BomTool {
     @Override
     public boolean isBomToolApplicable() {
         nugetExecutable = findNugetExecutable()
-        detectConfiguration.sourcePaths.each { sourcePath ->
-            def solutionFile = detectFileManager.findFile(sourcePath, SOLUTION_PATTERN)
-            def projectFile = detectFileManager.findFile(sourcePath, PROJECT_PATTERN)
-            if (solutionFile || projectFile) {
-                matchingSourcePaths.add(sourcePath)
-            }
-        }
+        def containsSolutionFile = detectFileManager.containsAllFiles(sourcePath, SOLUTION_PATTERN)
+        def containsProjectFile = detectFileManager.containsAllFiles(sourcePath, PROJECT_PATTERN)
 
-        if (!matchingSourcePaths.isEmpty() && !nugetExecutable) {
+        if (!nugetExecutable && (containsSolutionFile || containsProjectFile)) {
             logger.warn('The nuget executable must be on the path - are you sure you are running on a windows system?')
         }
 
-        nugetExecutable && !matchingSourcePaths.isEmpty()
+        nugetExecutable && (containsSolutionFile || containsProjectFile)
     }
 
-    @Override
-    public List<DetectProject> extractDetectProjects() {
-        List<DetectProject> projects = []
-        matchingSourcePaths.each { sourcePath ->
-            DependencyNode root = nugetInspectorPackager.makeDependencyNode(sourcePath, nugetExecutable)
-            if (!root) {
-                logger.info('Unable to extract any dependencies from nuget')
-            } else {
-                DetectProject project = new DetectProject(new File(sourcePath))
-                if (isSolution(root)) {
-                    root.name = projectInfoGatherer.getProjectName(BomToolType.NUGET, sourcePath, root.name)
-                    root.version = projectInfoGatherer.getProjectVersionName(root.version)
-                    root.externalId = new NameVersionExternalId(Forge.NUGET, root.name, root.version)
-                    if (detectConfiguration.getNugetAggregateBom()) {
-                        project.dependencyNodes =  [root]
-                    } else {
-                        project.dependencyNodes =  root.children as List
-                    }
-                } else {
-                    root.name = projectInfoGatherer.getProjectName(BomToolType.NUGET, sourcePath, root.name)
-                    root.version = projectInfoGatherer.getProjectVersionName(root.version)
-                    root.externalId = new NameVersionExternalId(Forge.NUGET, root.name, root.version)
-                    project.dependencyNodes =  [root]
-                }
-
-                projects.add(project)
-            }
+    List<DetectCodeLocation> extractDetectCodeLocations() {
+        DependencyNode root = nugetInspectorPackager.makeDependencyNode(sourcePath, nugetExecutable)
+        if (!root) {
+            logger.info('Unable to extract any dependencies from nuget')
+            return []
         }
 
-        projects
+        root.externalId = new NameVersionExternalId(Forge.NUGET, root.name, root.version)
+        DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, root)
+        [detectCodeLocation]
     }
 
+    //TODO (ek) is this needed?
     boolean isSolution(DependencyNode root) {
         boolean isSolution = false
         if (root.children != null && root.children.size() > 0) {

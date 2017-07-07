@@ -43,12 +43,13 @@ class GemlockNodeParser {
     private boolean inSpecsSection = false
     private boolean inDependenciesSection = false
 
-    void parseProjectDependencies(NameVersionNodeTransformer nameVersionNodeTransformer, DependencyNode rootProject, final String gemfileLockContents) {
-        rootNameVersionNode = new NameVersionNodeImpl([name: rootProject.name, version: rootProject.version])
+    List<DependencyNode> parseProjectDependencies(NameVersionNodeTransformer nameVersionNodeTransformer, final String gemfileLockContents) {
+        rootNameVersionNode = new NameVersionNodeImpl([name: 'gemfileLockRoot'])
         nameVersionNodeBuilder = new NameVersionNodeBuilder(rootNameVersionNode)
         directDependencyNames = new HashSet<>()
         currentParent = null
 
+        List<DependencyNode> projectDependencies = []
         String[] lines = gemfileLockContents.split('\n')
         for (String line : lines) {
             if (!line?.trim()) {
@@ -83,11 +84,13 @@ class GemlockNodeParser {
             NameVersionNode nameVersionNode = nameVersionNodeBuilder.nameToNodeMap[directDependencyName]
             if (nameVersionNode) {
                 DependencyNode directDependencyNode = nameVersionNodeTransformer.createDependencyNode(Forge.RUBYGEMS, nameVersionNode)
-                rootProject.children.add(directDependencyNode)
+                projectDependencies.add(directDependencyNode)
             } else {
                 logger.debug("Could not find ${directDependencyName} in the populated map.")
             }
         }
+
+        projectDependencies
     }
 
     private void parseSpecsSectionLine(String line) {

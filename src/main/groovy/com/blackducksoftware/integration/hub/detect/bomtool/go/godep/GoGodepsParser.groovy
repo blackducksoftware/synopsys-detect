@@ -26,25 +26,18 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.GoDepBomTool
-import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
 import com.google.gson.Gson
 
 class GoGodepsParser {
     private final Gson gson
 
-    private final ProjectInfoGatherer projectInfoGatherer
-
-    public GoGodepsParser(Gson gson, ProjectInfoGatherer projectInfoGatherer) {
+    public GoGodepsParser(Gson gson) {
         this.gson = gson;
-        this.projectInfoGatherer = projectInfoGatherer
     }
 
-    public DependencyNode parseGoDep(String goDepContents) {
+    public List<DependencyNode> extractProjectDependencies(String goDepContents) {
         GodepsFile goDepsFile = gson.fromJson(goDepContents, GodepsFile.class)
-        String goDepContentVersion = projectInfoGatherer.getProjectVersionName()
-        final ExternalId goDepContentExternalId = new NameVersionExternalId(GoDepBomTool.GOLANG, goDepsFile.importPath, goDepContentVersion)
-        final DependencyNode goDepNode = new DependencyNode(goDepsFile.importPath, goDepContentVersion, goDepContentExternalId)
-        def children = new ArrayList<DependencyNode>()
+        List<DependencyNode> children = []
         goDepsFile.deps.each {
             def version = ''
             if (it.comment?.trim()) {
@@ -62,7 +55,6 @@ class GoGodepsParser {
             final DependencyNode dependency = new DependencyNode(it.importPath, version, dependencyExternalId)
             children.add(dependency)
         }
-        goDepNode.children = children
-        goDepNode
+        children
     }
 }

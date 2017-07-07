@@ -58,44 +58,44 @@ class DetectProperties {
     Boolean cleanupBdioFiles
 
     @ValueDescription(description="URL of the Hub server", group=DetectProperties.GROUP_HUB_CONFIGURATION)
-    @Value('${detect.hub.url}')
+    @Value('${blackduck.hub.url}')
     String hubUrl
 
     @ValueDescription(description="Time to wait for rest connections to complete", defaultValue="120", group=DetectProperties.GROUP_HUB_CONFIGURATION)
-    @Value('${detect.hub.timeout}')
+    @Value('${blackduck.hub.timeout}')
     Integer hubTimeout
 
     @ValueDescription(description="Hub username", group=DetectProperties.GROUP_HUB_CONFIGURATION)
-    @Value('${detect.hub.username}')
+    @Value('${blackduck.hub.username}')
     String hubUsername
 
     @ValueDescription(description="Hub password", group=DetectProperties.GROUP_HUB_CONFIGURATION)
-    @Value('${detect.hub.password}')
+    @Value('${blackduck.hub.password}')
     String hubPassword
 
     @ValueDescription(description="Proxy host", group=DetectProperties.GROUP_HUB_CONFIGURATION)
-    @Value('${detect.hub.proxy.host}')
+    @Value('${blackduck.hub.proxy.host}')
     String hubProxyHost
 
     @ValueDescription(description="Proxy port", group=DetectProperties.GROUP_HUB_CONFIGURATION)
-    @Value('${detect.hub.proxy.port}')
+    @Value('${blackduck.hub.proxy.port}')
     String hubProxyPort
 
     @ValueDescription(description="Proxy username", group=DetectProperties.GROUP_HUB_CONFIGURATION)
-    @Value('${detect.hub.proxy.username}')
+    @Value('${blackduck.hub.proxy.username}')
     String hubProxyUsername
 
     @ValueDescription(description="Proxy password", group=DetectProperties.GROUP_HUB_CONFIGURATION)
-    @Value('${detect.hub.proxy.password}')
+    @Value('${blackduck.hub.proxy.password}')
     String hubProxyPassword
 
     @ValueDescription(description="If true the Hub https certificate will be automatically imported", defaultValue="false", group=DetectProperties.GROUP_HUB_CONFIGURATION)
-    @Value('${detect.hub.auto.import.cert}')
+    @Value('${blackduck.hub.auto.import.cert}')
     Boolean hubAutoImportCertificate
 
-    @ValueDescription(description = "Source paths to inspect", group=DetectProperties.GROUP_PATHS)
-    @Value('${detect.source.paths}')
-    String[] sourcePaths
+    @ValueDescription(description = "Source path to inspect", group=DetectProperties.GROUP_PATHS)
+    @Value('${detect.source.path}')
+    String sourcePath
 
     @ValueDescription(description = "Output path", group=DetectProperties.GROUP_PATHS)
     @Value('${detect.output.path}')
@@ -127,11 +127,11 @@ class DetectProperties {
 
     @ValueDescription(description = "Set to true if you would like a policy check from the hub for your project. False by default", defaultValue="false", group=DetectProperties.GROUP_POLICY_CHECK)
     @Value('${detect.policy.check}')
-    String policyCheck
+    Boolean policyCheck
 
     @ValueDescription(description="Timeout for the Hub's policy check response. When changing this value, keep in mind the checking of policies might have to wait for a new scan to process which can take some time.", defaultValue="300000", group=DetectProperties.GROUP_POLICY_CHECK)
     @Value('${detect.policy.check.timeout}')
-    Integer policyCheckTimeout
+    Long policyCheckTimeout
 
     @ValueDescription(description="Version of the Gradle Inspector", defaultValue="0.0.7", group=DetectProperties.GROUP_GRADLE)
     @Value('${detect.gradle.inspector.version}')
@@ -284,6 +284,10 @@ class DetectProperties {
     @ValueDescription(description="The memory for the scanner to use.", defaultValue="4096", group=DetectProperties.GROUP_SIGNATURE_SCANNER)
     @Value('${detect.hub.signature.scanner.memory}')
     Integer hubSignatureScannerMemory
+
+    @ValueDescription(description="Set to true to disable the Hub Signature Scanner.", defaultValue="false", group=DetectProperties.GROUP_SIGNATURE_SCANNER)
+    @Value('${detect.hub.signature.scanner.disabled}')
+    Boolean hubSignatureScannerDisabled
 
     @ValueDescription(description="Set this value to false if you would like to exclude your dev requires dependencies when ran", defaultValue='true', group=DetectProperties.GROUP_PACKAGIST)
     @Value('${detect.packagist.include.dev.dependencies}')

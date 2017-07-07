@@ -1,1927 +1,2093 @@
-{
-  "name": "testName",
-  "version": "testVersion",
-  "externalId": {
-    "name": "testName",
-    "version": "testVersion",
-    "forge": {
-      "name": "rubygems",
-      "separator": "="
-    }
-  },
-  "children": [
-    {
+[
+  {
+    "name": "nokogiri",
+    "version": "1.7.1",
+    "externalId": {
       "name": "nokogiri",
       "version": "1.7.1",
-      "externalId": {
-        "name": "nokogiri",
-        "version": "1.7.1",
-        "forge": {
-          "name": "rubygems",
-          "separator": "="
-        }
-      },
-      "children": [
-        {
+      "forge": {
+        "name": "rubygems",
+        "separator": "="
+      }
+    },
+    "children": [
+      {
+        "name": "mini_portile2",
+        "version": "2.1.0",
+        "externalId": {
           "name": "mini_portile2",
           "version": "2.1.0",
-          "externalId": {
-            "name": "mini_portile2",
-            "version": "2.1.0",
-            "forge": {
-              "name": "rubygems",
-              "separator": "="
-            }
-          },
-          "children": []
-        }
-      ]
-    },
-    {
+          "forge": {
+            "name": "rubygems",
+            "separator": "="
+          }
+        },
+        "children": [
+          
+        ]
+      }
+    ]
+  },
+  {
+    "name": "xcpretty",
+    "version": "0.2.7",
+    "externalId": {
       "name": "xcpretty",
       "version": "0.2.7",
-      "externalId": {
-        "name": "xcpretty",
-        "version": "0.2.7",
-        "forge": {
-          "name": "rubygems",
-          "separator": "="
-        }
-      },
-      "children": [
-        {
+      "forge": {
+        "name": "rubygems",
+        "separator": "="
+      }
+    },
+    "children": [
+      {
+        "name": "rouge",
+        "version": "2.0.7",
+        "externalId": {
           "name": "rouge",
           "version": "2.0.7",
-          "externalId": {
-            "name": "rouge",
-            "version": "2.0.7",
-            "forge": {
-              "name": "rubygems",
-              "separator": "="
-            }
-          },
-          "children": []
-        }
-      ]
-    },
-    {
+          "forge": {
+            "name": "rubygems",
+            "separator": "="
+          }
+        },
+        "children": [
+          
+        ]
+      }
+    ]
+  },
+  {
+    "name": "lowdown",
+    "version": "1.0.0",
+    "externalId": {
       "name": "lowdown",
       "version": "1.0.0",
-      "externalId": {
-        "name": "lowdown",
-        "version": "1.0.0",
-        "forge": {
-          "name": "rubygems",
-          "separator": "="
-        }
-      },
-      "children": [
-        {
+      "forge": {
+        "name": "rubygems",
+        "separator": "="
+      }
+    },
+    "children": [
+      {
+        "name": "celluloid-io",
+        "version": "0.17.3",
+        "externalId": {
           "name": "celluloid-io",
           "version": "0.17.3",
-          "externalId": {
-            "name": "celluloid-io",
-            "version": "0.17.3",
-            "forge": {
-              "name": "rubygems",
-              "separator": "="
-            }
-          },
-          "children": [
-            {
+          "forge": {
+            "name": "rubygems",
+            "separator": "="
+          }
+        },
+        "children": [
+          {
+            "name": "nio4r",
+            "version": "2.0.0",
+            "externalId": {
               "name": "nio4r",
               "version": "2.0.0",
-              "externalId": {
-                "name": "nio4r",
-                "version": "2.0.0",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
-              },
-              "children": []
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
             },
-            {
+            "children": [
+              
+            ]
+          },
+          {
+            "name": "timers",
+            "version": "4.1.2",
+            "externalId": {
               "name": "timers",
               "version": "4.1.2",
-              "externalId": {
-                "name": "timers",
-                "version": "4.1.2",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
-              },
-              "children": [
-                {
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              {
+                "name": "hitimes",
+                "version": "1.2.4",
+                "externalId": {
                   "name": "hitimes",
                   "version": "1.2.4",
-                  "externalId": {
-                    "name": "hitimes",
-                    "version": "1.2.4",
-                    "forge": {
-                      "name": "rubygems",
-                      "separator": "="
-                    }
-                  },
-                  "children": []
-                }
-              ]
-            },
-            {
+                  "forge": {
+                    "name": "rubygems",
+                    "separator": "="
+                  }
+                },
+                "children": [
+                  
+                ]
+              }
+            ]
+          },
+          {
+            "name": "celluloid",
+            "version": "0.17.3",
+            "externalId": {
               "name": "celluloid",
               "version": "0.17.3",
-              "externalId": {
-                "name": "celluloid",
-                "version": "0.17.3",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
-              },
-              "children": [
-                {
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              {
+                "name": "celluloid-extras",
+                "version": "0.20.5",
+                "externalId": {
                   "name": "celluloid-extras",
                   "version": "0.20.5",
-                  "externalId": {
-                    "name": "celluloid-extras",
-                    "version": "0.20.5",
-                    "forge": {
-                      "name": "rubygems",
-                      "separator": "="
-                    }
-                  },
-                  "children": [
-                    {
-                      "name": "timers",
-                      "version": "4.1.2",
-                      "externalId": {
-                        "name": "timers",
-                        "version": "4.1.2",
-                        "forge": {
-                          "name": "rubygems",
-                          "separator": "="
-                        }
-                      },
-                      "children": [
-                        {
-                          "name": "hitimes",
-                          "version": "1.2.4",
-                          "externalId": {
-                            "name": "hitimes",
-                            "version": "1.2.4",
-                            "forge": {
-                              "name": "rubygems",
-                              "separator": "="
-                            }
-                          },
-                          "children": []
-                        }
-                      ]
-                    }
-                  ]
+                  "forge": {
+                    "name": "rubygems",
+                    "separator": "="
+                  }
                 },
-                {
-                  "name": "celluloid-pool",
-                  "version": "0.20.5",
-                  "externalId": {
-                    "name": "celluloid-pool",
-                    "version": "0.20.5",
-                    "forge": {
-                      "name": "rubygems",
-                      "separator": "="
-                    }
-                  },
-                  "children": [
-                    {
-                      "name": "timers",
-                      "version": "4.1.2",
-                      "externalId": {
-                        "name": "timers",
-                        "version": "4.1.2",
-                        "forge": {
-                          "name": "rubygems",
-                          "separator": "="
-                        }
-                      },
-                      "children": [
-                        {
-                          "name": "hitimes",
-                          "version": "1.2.4",
-                          "externalId": {
-                            "name": "hitimes",
-                            "version": "1.2.4",
-                            "forge": {
-                              "name": "rubygems",
-                              "separator": "="
-                            }
-                          },
-                          "children": []
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "name": "celluloid-fsm",
-                  "version": "0.20.5",
-                  "externalId": {
-                    "name": "celluloid-fsm",
-                    "version": "0.20.5",
-                    "forge": {
-                      "name": "rubygems",
-                      "separator": "="
-                    }
-                  },
-                  "children": [
-                    {
-                      "name": "timers",
-                      "version": "4.1.2",
-                      "externalId": {
-                        "name": "timers",
-                        "version": "4.1.2",
-                        "forge": {
-                          "name": "rubygems",
-                          "separator": "="
-                        }
-                      },
-                      "children": [
-                        {
-                          "name": "hitimes",
-                          "version": "1.2.4",
-                          "externalId": {
-                            "name": "hitimes",
-                            "version": "1.2.4",
-                            "forge": {
-                              "name": "rubygems",
-                              "separator": "="
-                            }
-                          },
-                          "children": []
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "name": "celluloid-supervision",
-                  "version": "0.20.6",
-                  "externalId": {
-                    "name": "celluloid-supervision",
-                    "version": "0.20.6",
-                    "forge": {
-                      "name": "rubygems",
-                      "separator": "="
-                    }
-                  },
-                  "children": [
-                    {
-                      "name": "timers",
-                      "version": "4.1.2",
-                      "externalId": {
-                        "name": "timers",
-                        "version": "4.1.2",
-                        "forge": {
-                          "name": "rubygems",
-                          "separator": "="
-                        }
-                      },
-                      "children": [
-                        {
-                          "name": "hitimes",
-                          "version": "1.2.4",
-                          "externalId": {
-                            "name": "hitimes",
-                            "version": "1.2.4",
-                            "forge": {
-                              "name": "rubygems",
-                              "separator": "="
-                            }
-                          },
-                          "children": []
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "name": "timers",
-                  "version": "4.1.2",
-                  "externalId": {
+                "children": [
+                  {
                     "name": "timers",
                     "version": "4.1.2",
-                    "forge": {
-                      "name": "rubygems",
-                      "separator": "="
-                    }
-                  },
-                  "children": [
-                    {
-                      "name": "hitimes",
-                      "version": "1.2.4",
-                      "externalId": {
-                        "name": "hitimes",
-                        "version": "1.2.4",
-                        "forge": {
-                          "name": "rubygems",
-                          "separator": "="
-                        }
-                      },
-                      "children": []
-                    }
-                  ]
-                },
-                {
-                  "name": "celluloid-essentials",
-                  "version": "0.20.5",
-                  "externalId": {
-                    "name": "celluloid-essentials",
-                    "version": "0.20.5",
-                    "forge": {
-                      "name": "rubygems",
-                      "separator": "="
-                    }
-                  },
-                  "children": [
-                    {
+                    "externalId": {
                       "name": "timers",
                       "version": "4.1.2",
-                      "externalId": {
-                        "name": "timers",
-                        "version": "4.1.2",
-                        "forge": {
-                          "name": "rubygems",
-                          "separator": "="
-                        }
-                      },
-                      "children": [
-                        {
+                      "forge": {
+                        "name": "rubygems",
+                        "separator": "="
+                      }
+                    },
+                    "children": [
+                      {
+                        "name": "hitimes",
+                        "version": "1.2.4",
+                        "externalId": {
                           "name": "hitimes",
                           "version": "1.2.4",
-                          "externalId": {
-                            "name": "hitimes",
-                            "version": "1.2.4",
-                            "forge": {
-                              "name": "rubygems",
-                              "separator": "="
-                            }
-                          },
-                          "children": []
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        },
-        {
+                          "forge": {
+                            "name": "rubygems",
+                            "separator": "="
+                          }
+                        },
+                        "children": [
+                          
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "celluloid-pool",
+                "version": "0.20.5",
+                "externalId": {
+                  "name": "celluloid-pool",
+                  "version": "0.20.5",
+                  "forge": {
+                    "name": "rubygems",
+                    "separator": "="
+                  }
+                },
+                "children": [
+                  {
+                    "name": "timers",
+                    "version": "4.1.2",
+                    "externalId": {
+                      "name": "timers",
+                      "version": "4.1.2",
+                      "forge": {
+                        "name": "rubygems",
+                        "separator": "="
+                      }
+                    },
+                    "children": [
+                      {
+                        "name": "hitimes",
+                        "version": "1.2.4",
+                        "externalId": {
+                          "name": "hitimes",
+                          "version": "1.2.4",
+                          "forge": {
+                            "name": "rubygems",
+                            "separator": "="
+                          }
+                        },
+                        "children": [
+                          
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "celluloid-fsm",
+                "version": "0.20.5",
+                "externalId": {
+                  "name": "celluloid-fsm",
+                  "version": "0.20.5",
+                  "forge": {
+                    "name": "rubygems",
+                    "separator": "="
+                  }
+                },
+                "children": [
+                  {
+                    "name": "timers",
+                    "version": "4.1.2",
+                    "externalId": {
+                      "name": "timers",
+                      "version": "4.1.2",
+                      "forge": {
+                        "name": "rubygems",
+                        "separator": "="
+                      }
+                    },
+                    "children": [
+                      {
+                        "name": "hitimes",
+                        "version": "1.2.4",
+                        "externalId": {
+                          "name": "hitimes",
+                          "version": "1.2.4",
+                          "forge": {
+                            "name": "rubygems",
+                            "separator": "="
+                          }
+                        },
+                        "children": [
+                          
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "celluloid-supervision",
+                "version": "0.20.6",
+                "externalId": {
+                  "name": "celluloid-supervision",
+                  "version": "0.20.6",
+                  "forge": {
+                    "name": "rubygems",
+                    "separator": "="
+                  }
+                },
+                "children": [
+                  {
+                    "name": "timers",
+                    "version": "4.1.2",
+                    "externalId": {
+                      "name": "timers",
+                      "version": "4.1.2",
+                      "forge": {
+                        "name": "rubygems",
+                        "separator": "="
+                      }
+                    },
+                    "children": [
+                      {
+                        "name": "hitimes",
+                        "version": "1.2.4",
+                        "externalId": {
+                          "name": "hitimes",
+                          "version": "1.2.4",
+                          "forge": {
+                            "name": "rubygems",
+                            "separator": "="
+                          }
+                        },
+                        "children": [
+                          
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "timers",
+                "version": "4.1.2",
+                "externalId": {
+                  "name": "timers",
+                  "version": "4.1.2",
+                  "forge": {
+                    "name": "rubygems",
+                    "separator": "="
+                  }
+                },
+                "children": [
+                  {
+                    "name": "hitimes",
+                    "version": "1.2.4",
+                    "externalId": {
+                      "name": "hitimes",
+                      "version": "1.2.4",
+                      "forge": {
+                        "name": "rubygems",
+                        "separator": "="
+                      }
+                    },
+                    "children": [
+                      
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "celluloid-essentials",
+                "version": "0.20.5",
+                "externalId": {
+                  "name": "celluloid-essentials",
+                  "version": "0.20.5",
+                  "forge": {
+                    "name": "rubygems",
+                    "separator": "="
+                  }
+                },
+                "children": [
+                  {
+                    "name": "timers",
+                    "version": "4.1.2",
+                    "externalId": {
+                      "name": "timers",
+                      "version": "4.1.2",
+                      "forge": {
+                        "name": "rubygems",
+                        "separator": "="
+                      }
+                    },
+                    "children": [
+                      {
+                        "name": "hitimes",
+                        "version": "1.2.4",
+                        "externalId": {
+                          "name": "hitimes",
+                          "version": "1.2.4",
+                          "forge": {
+                            "name": "rubygems",
+                            "separator": "="
+                          }
+                        },
+                        "children": [
+                          
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "http-2",
+        "version": "0.8.3",
+        "externalId": {
           "name": "http-2",
           "version": "0.8.3",
-          "externalId": {
-            "name": "http-2",
-            "version": "0.8.3",
-            "forge": {
-              "name": "rubygems",
-              "separator": "="
-            }
-          },
-          "children": []
-        }
-      ]
-    },
-    {
+          "forge": {
+            "name": "rubygems",
+            "separator": "="
+          }
+        },
+        "children": [
+          
+        ]
+      }
+    ]
+  },
+  {
+    "name": "second_curtain",
+    "version": "0.6.0",
+    "externalId": {
       "name": "second_curtain",
       "version": "0.6.0",
-      "externalId": {
-        "name": "second_curtain",
-        "version": "0.6.0",
-        "forge": {
-          "name": "rubygems",
-          "separator": "="
-        }
-      },
-      "children": [
-        {
+      "forge": {
+        "name": "rubygems",
+        "separator": "="
+      }
+    },
+    "children": [
+      {
+        "name": "mustache",
+        "version": "0.99.8",
+        "externalId": {
           "name": "mustache",
           "version": "0.99.8",
-          "externalId": {
-            "name": "mustache",
-            "version": "0.99.8",
-            "forge": {
-              "name": "rubygems",
-              "separator": "="
-            }
-          },
-          "children": []
+          "forge": {
+            "name": "rubygems",
+            "separator": "="
+          }
         },
-        {
+        "children": [
+          
+        ]
+      },
+      {
+        "name": "aws-sdk-v1",
+        "version": "1.67.0",
+        "externalId": {
           "name": "aws-sdk-v1",
           "version": "1.67.0",
-          "externalId": {
-            "name": "aws-sdk-v1",
-            "version": "1.67.0",
-            "forge": {
-              "name": "rubygems",
-              "separator": "="
-            }
-          },
-          "children": [
-            {
+          "forge": {
+            "name": "rubygems",
+            "separator": "="
+          }
+        },
+        "children": [
+          {
+            "name": "nokogiri",
+            "version": "1.7.1",
+            "externalId": {
               "name": "nokogiri",
               "version": "1.7.1",
-              "externalId": {
-                "name": "nokogiri",
-                "version": "1.7.1",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
-              },
-              "children": [
-                {
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              {
+                "name": "mini_portile2",
+                "version": "2.1.0",
+                "externalId": {
                   "name": "mini_portile2",
                   "version": "2.1.0",
-                  "externalId": {
-                    "name": "mini_portile2",
-                    "version": "2.1.0",
-                    "forge": {
-                      "name": "rubygems",
-                      "separator": "="
-                    }
-                  },
-                  "children": []
-                }
-              ]
-            },
-            {
+                  "forge": {
+                    "name": "rubygems",
+                    "separator": "="
+                  }
+                },
+                "children": [
+                  
+                ]
+              }
+            ]
+          },
+          {
+            "name": "json",
+            "version": "1.8.6",
+            "externalId": {
               "name": "json",
               "version": "1.8.6",
-              "externalId": {
-                "name": "json",
-                "version": "1.8.6",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
-              },
-              "children": []
-            }
-          ]
-        }
-      ]
-    },
-    {
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "cocoapods-check",
+    "version": "1.0.1",
+    "externalId": {
       "name": "cocoapods-check",
       "version": "1.0.1",
-      "externalId": {
-        "name": "cocoapods-check",
-        "version": "1.0.1",
-        "forge": {
-          "name": "rubygems",
-          "separator": "="
-        }
-      },
-      "children": [
-        {
-          "name": "cocoapods",
-          "version": "1.2.1",
-          "externalId": {
-            "name": "cocoapods",
-            "version": "1.2.1",
-            "forge": {
-              "name": "rubygems",
-              "separator": "="
-            }
-          },
-          "children": [
-            {
-              "name": "molinillo",
-              "version": "0.5.7",
-              "externalId": {
-                "name": "molinillo",
-                "version": "0.5.7",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
-              },
-              "children": []
-            },
-            {
-              "name": "cocoapods-stats",
-              "version": "1.0.0",
-              "externalId": {
-                "name": "cocoapods-stats",
-                "version": "1.0.0",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
-              },
-              "children": []
-            },
-            {
-              "name": "cocoapods-plugins",
-              "version": "1.0.0",
-              "externalId": {
-                "name": "cocoapods-plugins",
-                "version": "1.0.0",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
-              },
-              "children": [
-                {
-                  "name": "nap",
-                  "version": "1.1.0",
-                  "externalId": {
-                    "name": "nap",
-                    "version": "1.1.0",
-                    "forge": {
-                      "name": "rubygems",
-                      "separator": "="
-                    }
-                  },
-                  "children": []
-                }
-              ]
-            },
-            {
-              "name": "nap",
-              "version": "1.1.0",
-              "externalId": {
-                "name": "nap",
-                "version": "1.1.0",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
-              },
-              "children": []
-            },
-            {
-              "name": "cocoapods-trunk",
-              "version": "1.2.0",
-              "externalId": {
-                "name": "cocoapods-trunk",
-                "version": "1.2.0",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
-              },
-              "children": [
-                {
-                  "name": "netrc",
-                  "version": "0.7.8",
-                  "externalId": {
-                    "name": "netrc",
-                    "version": "0.7.8",
-                    "forge": {
-                      "name": "rubygems",
-                      "separator": "="
-                    }
-                  },
-                  "children": []
-                },
-                {
-                  "name": "nap",
-                  "version": "1.1.0",
-                  "externalId": {
-                    "name": "nap",
-                    "version": "1.1.0",
-                    "forge": {
-                      "name": "rubygems",
-                      "separator": "="
-                    }
-                  },
-                  "children": []
-                }
-              ]
-            },
-            {
-              "name": "cocoapods-deintegrate",
-              "version": "1.0.1",
-              "externalId": {
-                "name": "cocoapods-deintegrate",
-                "version": "1.0.1",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
-              },
-              "children": []
-            },
-            {
-              "name": "ruby-macho",
-              "version": "1.1.0",
-              "externalId": {
-                "name": "ruby-macho",
-                "version": "1.1.0",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
-              },
-              "children": []
-            },
-            {
-              "name": "fourflusher",
-              "version": "2.0.1",
-              "externalId": {
-                "name": "fourflusher",
-                "version": "2.0.1",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
-              },
-              "children": []
-            },
-            {
-              "name": "cocoapods-core",
-              "version": "1.2.1",
-              "externalId": {
-                "name": "cocoapods-core",
-                "version": "1.2.1",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
-              },
-              "children": [
-                {
-                  "name": "nap",
-                  "version": "1.1.0",
-                  "externalId": {
-                    "name": "nap",
-                    "version": "1.1.0",
-                    "forge": {
-                      "name": "rubygems",
-                      "separator": "="
-                    }
-                  },
-                  "children": []
-                },
-                {
-                  "name": "fuzzy_match",
-                  "version": "2.0.4",
-                  "externalId": {
-                    "name": "fuzzy_match",
-                    "version": "2.0.4",
-                    "forge": {
-                      "name": "rubygems",
-                      "separator": "="
-                    }
-                  },
-                  "children": []
-                },
-                {
-                  "name": "activesupport",
-                  "version": "4.2.8",
-                  "externalId": {
-                    "name": "activesupport",
-                    "version": "4.2.8",
-                    "forge": {
-                      "name": "rubygems",
-                      "separator": "="
-                    }
-                  },
-                  "children": [
-                    {
-                      "name": "tzinfo",
-                      "version": "1.2.3",
-                      "externalId": {
-                        "name": "tzinfo",
-                        "version": "1.2.3",
-                        "forge": {
-                          "name": "rubygems",
-                          "separator": "="
-                        }
-                      },
-                      "children": [
-                        {
-                          "name": "thread_safe",
-                          "version": "0.3.6",
-                          "externalId": {
-                            "name": "thread_safe",
-                            "version": "0.3.6",
-                            "forge": {
-                              "name": "rubygems",
-                              "separator": "="
-                            }
-                          },
-                          "children": []
-                        }
-                      ]
-                    },
-                    {
-                      "name": "minitest",
-                      "version": "5.10.1",
-                      "externalId": {
-                        "name": "minitest",
-                        "version": "5.10.1",
-                        "forge": {
-                          "name": "rubygems",
-                          "separator": "="
-                        }
-                      },
-                      "children": []
-                    },
-                    {
-                      "name": "thread_safe",
-                      "version": "0.3.6",
-                      "externalId": {
-                        "name": "thread_safe",
-                        "version": "0.3.6",
-                        "forge": {
-                          "name": "rubygems",
-                          "separator": "="
-                        }
-                      },
-                      "children": []
-                    },
-                    {
-                      "name": "i18n",
-                      "version": "0.8.1",
-                      "externalId": {
-                        "name": "i18n",
-                        "version": "0.8.1",
-                        "forge": {
-                          "name": "rubygems",
-                          "separator": "="
-                        }
-                      },
-                      "children": []
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "name": "cocoapods-search",
-              "version": "1.0.0",
-              "externalId": {
-                "name": "cocoapods-search",
-                "version": "1.0.0",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
-              },
-              "children": []
-            },
-            {
-              "name": "colored2",
-              "version": "3.1.2",
-              "externalId": {
-                "name": "colored2",
-                "version": "3.1.2",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
-              },
-              "children": []
-            },
-            {
-              "name": "escape",
-              "version": "0.0.4",
-              "externalId": {
-                "name": "escape",
-                "version": "0.0.4",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
-              },
-              "children": []
-            },
-            {
-              "name": "gh_inspector",
-              "version": "1.0.3",
-              "externalId": {
-                "name": "gh_inspector",
-                "version": "1.0.3",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
-              },
-              "children": []
-            },
-            {
-              "name": "cocoapods-downloader",
-              "version": "1.1.3",
-              "externalId": {
-                "name": "cocoapods-downloader",
-                "version": "1.1.3",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
-              },
-              "children": []
-            },
-            {
-              "name": "xcodeproj",
-              "version": "1.4.4",
-              "externalId": {
-                "name": "xcodeproj",
-                "version": "1.4.4",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
-              },
-              "children": [
-                {
-                  "name": "CFPropertyList",
-                  "version": "2.3.5",
-                  "externalId": {
-                    "name": "CFPropertyList",
-                    "version": "2.3.5",
-                    "forge": {
-                      "name": "rubygems",
-                      "separator": "="
-                    }
-                  },
-                  "children": []
-                },
-                {
-                  "name": "colored2",
-                  "version": "3.1.2",
-                  "externalId": {
-                    "name": "colored2",
-                    "version": "3.1.2",
-                    "forge": {
-                      "name": "rubygems",
-                      "separator": "="
-                    }
-                  },
-                  "children": []
-                },
-                {
-                  "name": "nanaimo",
-                  "version": "0.2.3",
-                  "externalId": {
-                    "name": "nanaimo",
-                    "version": "0.2.3",
-                    "forge": {
-                      "name": "rubygems",
-                      "separator": "="
-                    }
-                  },
-                  "children": []
-                },
-                {
-                  "name": "claide",
-                  "version": "1.0.1",
-                  "externalId": {
-                    "name": "claide",
-                    "version": "1.0.1",
-                    "forge": {
-                      "name": "rubygems",
-                      "separator": "="
-                    }
-                  },
-                  "children": []
-                }
-              ]
-            },
-            {
-              "name": "cocoapods-try",
-              "version": "1.1.0",
-              "externalId": {
-                "name": "cocoapods-try",
-                "version": "1.1.0",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
-              },
-              "children": []
-            },
-            {
-              "name": "claide",
-              "version": "1.0.1",
-              "externalId": {
-                "name": "claide",
-                "version": "1.0.1",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
-              },
-              "children": []
-            },
-            {
-              "name": "activesupport",
-              "version": "4.2.8",
-              "externalId": {
-                "name": "activesupport",
-                "version": "4.2.8",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
-              },
-              "children": [
-                {
-                  "name": "tzinfo",
-                  "version": "1.2.3",
-                  "externalId": {
-                    "name": "tzinfo",
-                    "version": "1.2.3",
-                    "forge": {
-                      "name": "rubygems",
-                      "separator": "="
-                    }
-                  },
-                  "children": [
-                    {
-                      "name": "thread_safe",
-                      "version": "0.3.6",
-                      "externalId": {
-                        "name": "thread_safe",
-                        "version": "0.3.6",
-                        "forge": {
-                          "name": "rubygems",
-                          "separator": "="
-                        }
-                      },
-                      "children": []
-                    }
-                  ]
-                },
-                {
-                  "name": "minitest",
-                  "version": "5.10.1",
-                  "externalId": {
-                    "name": "minitest",
-                    "version": "5.10.1",
-                    "forge": {
-                      "name": "rubygems",
-                      "separator": "="
-                    }
-                  },
-                  "children": []
-                },
-                {
-                  "name": "thread_safe",
-                  "version": "0.3.6",
-                  "externalId": {
-                    "name": "thread_safe",
-                    "version": "0.3.6",
-                    "forge": {
-                      "name": "rubygems",
-                      "separator": "="
-                    }
-                  },
-                  "children": []
-                },
-                {
-                  "name": "i18n",
-                  "version": "0.8.1",
-                  "externalId": {
-                    "name": "i18n",
-                    "version": "0.8.1",
-                    "forge": {
-                      "name": "rubygems",
-                      "separator": "="
-                    }
-                  },
-                  "children": []
-                }
-              ]
-            }
-          ]
-        }
-      ]
+      "forge": {
+        "name": "rubygems",
+        "separator": "="
+      }
     },
-    {
-      "name": "danger",
-      "version": "5.1.1",
-      "externalId": {
-        "name": "danger",
-        "version": "5.1.1",
-        "forge": {
-          "name": "rubygems",
-          "separator": "="
-        }
-      },
-      "children": [
-        {
-          "name": "colored2",
-          "version": "3.1.2",
-          "externalId": {
-            "name": "colored2",
-            "version": "3.1.2",
-            "forge": {
-              "name": "rubygems",
-              "separator": "="
-            }
-          },
-          "children": []
-        },
-        {
-          "name": "claide-plugins",
-          "version": "0.9.2",
-          "externalId": {
-            "name": "claide-plugins",
-            "version": "0.9.2",
-            "forge": {
-              "name": "rubygems",
-              "separator": "="
-            }
-          },
-          "children": [
-            {
-              "name": "cork",
-              "version": "0.3.0",
-              "externalId": {
-                "name": "cork",
-                "version": "0.3.0",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
-              },
-              "children": [
-                {
-                  "name": "colored2",
-                  "version": "3.1.2",
-                  "externalId": {
-                    "name": "colored2",
-                    "version": "3.1.2",
-                    "forge": {
-                      "name": "rubygems",
-                      "separator": "="
-                    }
-                  },
-                  "children": []
-                }
-              ]
-            },
-            {
-              "name": "nap",
-              "version": "1.1.0",
-              "externalId": {
-                "name": "nap",
-                "version": "1.1.0",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
-              },
-              "children": []
-            },
-            {
-              "name": "open4",
-              "version": "1.3.4",
-              "externalId": {
-                "name": "open4",
-                "version": "1.3.4",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
-              },
-              "children": []
-            }
-          ]
-        },
-        {
-          "name": "cork",
-          "version": "0.3.0",
-          "externalId": {
-            "name": "cork",
-            "version": "0.3.0",
-            "forge": {
-              "name": "rubygems",
-              "separator": "="
-            }
-          },
-          "children": [
-            {
-              "name": "colored2",
-              "version": "3.1.2",
-              "externalId": {
-                "name": "colored2",
-                "version": "3.1.2",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
-              },
-              "children": []
-            }
-          ]
-        },
-        {
-          "name": "git",
-          "version": "1.3.0",
-          "externalId": {
-            "name": "git",
-            "version": "1.3.0",
-            "forge": {
-              "name": "rubygems",
-              "separator": "="
-            }
-          },
-          "children": []
-        },
-        {
-          "name": "kramdown",
-          "version": "1.13.2",
-          "externalId": {
-            "name": "kramdown",
-            "version": "1.13.2",
-            "forge": {
-              "name": "rubygems",
-              "separator": "="
-            }
-          },
-          "children": []
-        },
-        {
-          "name": "terminal-table",
-          "version": "1.7.3",
-          "externalId": {
-            "name": "terminal-table",
-            "version": "1.7.3",
-            "forge": {
-              "name": "rubygems",
-              "separator": "="
-            }
-          },
-          "children": [
-            {
-              "name": "unicode-display_width",
-              "version": "1.1.3",
-              "externalId": {
-                "name": "unicode-display_width",
-                "version": "1.1.3",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
-              },
-              "children": []
-            }
-          ]
-        },
-        {
-          "name": "octokit",
-          "version": "4.7.0",
-          "externalId": {
-            "name": "octokit",
-            "version": "4.7.0",
-            "forge": {
-              "name": "rubygems",
-              "separator": "="
-            }
-          },
-          "children": [
-            {
-              "name": "sawyer",
-              "version": "0.8.1",
-              "externalId": {
-                "name": "sawyer",
-                "version": "0.8.1",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
-              },
-              "children": [
-                {
-                  "name": "addressable",
-                  "version": "2.5.1",
-                  "externalId": {
-                    "name": "addressable",
-                    "version": "2.5.1",
-                    "forge": {
-                      "name": "rubygems",
-                      "separator": "="
-                    }
-                  },
-                  "children": [
-                    {
-                      "name": "public_suffix",
-                      "version": "2.0.5",
-                      "externalId": {
-                        "name": "public_suffix",
-                        "version": "2.0.5",
-                        "forge": {
-                          "name": "rubygems",
-                          "separator": "="
-                        }
-                      },
-                      "children": []
-                    }
-                  ]
-                },
-                {
-                  "name": "faraday",
-                  "version": "0.12.1",
-                  "externalId": {
-                    "name": "faraday",
-                    "version": "0.12.1",
-                    "forge": {
-                      "name": "rubygems",
-                      "separator": "="
-                    }
-                  },
-                  "children": [
-                    {
-                      "name": "multipart-post",
-                      "version": "2.0.0",
-                      "externalId": {
-                        "name": "multipart-post",
-                        "version": "2.0.0",
-                        "forge": {
-                          "name": "rubygems",
-                          "separator": "="
-                        }
-                      },
-                      "children": []
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "name": "claide",
-          "version": "1.0.1",
-          "externalId": {
-            "name": "claide",
-            "version": "1.0.1",
-            "forge": {
-              "name": "rubygems",
-              "separator": "="
-            }
-          },
-          "children": []
-        },
-        {
-          "name": "faraday-http-cache",
-          "version": "1.3.1",
-          "externalId": {
-            "name": "faraday-http-cache",
-            "version": "1.3.1",
-            "forge": {
-              "name": "rubygems",
-              "separator": "="
-            }
-          },
-          "children": [
-            {
-              "name": "faraday",
-              "version": "0.12.1",
-              "externalId": {
-                "name": "faraday",
-                "version": "0.12.1",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
-              },
-              "children": [
-                {
-                  "name": "multipart-post",
-                  "version": "2.0.0",
-                  "externalId": {
-                    "name": "multipart-post",
-                    "version": "2.0.0",
-                    "forge": {
-                      "name": "rubygems",
-                      "separator": "="
-                    }
-                  },
-                  "children": []
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "name": "faraday",
-          "version": "0.12.1",
-          "externalId": {
-            "name": "faraday",
-            "version": "0.12.1",
-            "forge": {
-              "name": "rubygems",
-              "separator": "="
-            }
-          },
-          "children": [
-            {
-              "name": "multipart-post",
-              "version": "2.0.0",
-              "externalId": {
-                "name": "multipart-post",
-                "version": "2.0.0",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
-              },
-              "children": []
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "cocoapods",
-      "version": "1.2.1",
-      "externalId": {
+    "children": [
+      {
         "name": "cocoapods",
         "version": "1.2.1",
-        "forge": {
-          "name": "rubygems",
-          "separator": "="
-        }
-      },
-      "children": [
-        {
-          "name": "molinillo",
-          "version": "0.5.7",
-          "externalId": {
+        "externalId": {
+          "name": "cocoapods",
+          "version": "1.2.1",
+          "forge": {
+            "name": "rubygems",
+            "separator": "="
+          }
+        },
+        "children": [
+          {
             "name": "molinillo",
             "version": "0.5.7",
-            "forge": {
-              "name": "rubygems",
-              "separator": "="
-            }
+            "externalId": {
+              "name": "molinillo",
+              "version": "0.5.7",
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              
+            ]
           },
-          "children": []
-        },
-        {
-          "name": "cocoapods-stats",
-          "version": "1.0.0",
-          "externalId": {
+          {
             "name": "cocoapods-stats",
             "version": "1.0.0",
-            "forge": {
-              "name": "rubygems",
-              "separator": "="
-            }
+            "externalId": {
+              "name": "cocoapods-stats",
+              "version": "1.0.0",
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              
+            ]
           },
-          "children": []
-        },
-        {
-          "name": "cocoapods-plugins",
-          "version": "1.0.0",
-          "externalId": {
+          {
             "name": "cocoapods-plugins",
             "version": "1.0.0",
-            "forge": {
-              "name": "rubygems",
-              "separator": "="
-            }
-          },
-          "children": [
-            {
-              "name": "nap",
-              "version": "1.1.0",
-              "externalId": {
+            "externalId": {
+              "name": "cocoapods-plugins",
+              "version": "1.0.0",
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              {
                 "name": "nap",
                 "version": "1.1.0",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
-              },
-              "children": []
-            }
-          ]
-        },
-        {
-          "name": "nap",
-          "version": "1.1.0",
-          "externalId": {
+                "externalId": {
+                  "name": "nap",
+                  "version": "1.1.0",
+                  "forge": {
+                    "name": "rubygems",
+                    "separator": "="
+                  }
+                },
+                "children": [
+                  
+                ]
+              }
+            ]
+          },
+          {
             "name": "nap",
             "version": "1.1.0",
-            "forge": {
-              "name": "rubygems",
-              "separator": "="
-            }
+            "externalId": {
+              "name": "nap",
+              "version": "1.1.0",
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              
+            ]
           },
-          "children": []
-        },
-        {
-          "name": "cocoapods-trunk",
-          "version": "1.2.0",
-          "externalId": {
+          {
             "name": "cocoapods-trunk",
             "version": "1.2.0",
-            "forge": {
-              "name": "rubygems",
-              "separator": "="
-            }
-          },
-          "children": [
-            {
-              "name": "netrc",
-              "version": "0.7.8",
-              "externalId": {
+            "externalId": {
+              "name": "cocoapods-trunk",
+              "version": "1.2.0",
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              {
                 "name": "netrc",
                 "version": "0.7.8",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
+                "externalId": {
+                  "name": "netrc",
+                  "version": "0.7.8",
+                  "forge": {
+                    "name": "rubygems",
+                    "separator": "="
+                  }
+                },
+                "children": [
+                  
+                ]
               },
-              "children": []
-            },
-            {
-              "name": "nap",
-              "version": "1.1.0",
-              "externalId": {
+              {
                 "name": "nap",
                 "version": "1.1.0",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
-              },
-              "children": []
-            }
-          ]
-        },
-        {
-          "name": "cocoapods-deintegrate",
-          "version": "1.0.1",
-          "externalId": {
+                "externalId": {
+                  "name": "nap",
+                  "version": "1.1.0",
+                  "forge": {
+                    "name": "rubygems",
+                    "separator": "="
+                  }
+                },
+                "children": [
+                  
+                ]
+              }
+            ]
+          },
+          {
             "name": "cocoapods-deintegrate",
             "version": "1.0.1",
-            "forge": {
-              "name": "rubygems",
-              "separator": "="
-            }
+            "externalId": {
+              "name": "cocoapods-deintegrate",
+              "version": "1.0.1",
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              
+            ]
           },
-          "children": []
-        },
-        {
-          "name": "ruby-macho",
-          "version": "1.1.0",
-          "externalId": {
+          {
             "name": "ruby-macho",
             "version": "1.1.0",
-            "forge": {
-              "name": "rubygems",
-              "separator": "="
-            }
+            "externalId": {
+              "name": "ruby-macho",
+              "version": "1.1.0",
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              
+            ]
           },
-          "children": []
-        },
-        {
-          "name": "fourflusher",
-          "version": "2.0.1",
-          "externalId": {
+          {
             "name": "fourflusher",
             "version": "2.0.1",
-            "forge": {
-              "name": "rubygems",
-              "separator": "="
-            }
+            "externalId": {
+              "name": "fourflusher",
+              "version": "2.0.1",
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              
+            ]
           },
-          "children": []
-        },
-        {
-          "name": "cocoapods-core",
-          "version": "1.2.1",
-          "externalId": {
+          {
             "name": "cocoapods-core",
             "version": "1.2.1",
-            "forge": {
-              "name": "rubygems",
-              "separator": "="
-            }
-          },
-          "children": [
-            {
-              "name": "nap",
-              "version": "1.1.0",
-              "externalId": {
+            "externalId": {
+              "name": "cocoapods-core",
+              "version": "1.2.1",
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              {
                 "name": "nap",
                 "version": "1.1.0",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
+                "externalId": {
+                  "name": "nap",
+                  "version": "1.1.0",
+                  "forge": {
+                    "name": "rubygems",
+                    "separator": "="
+                  }
+                },
+                "children": [
+                  
+                ]
               },
-              "children": []
-            },
-            {
-              "name": "fuzzy_match",
-              "version": "2.0.4",
-              "externalId": {
+              {
                 "name": "fuzzy_match",
                 "version": "2.0.4",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
+                "externalId": {
+                  "name": "fuzzy_match",
+                  "version": "2.0.4",
+                  "forge": {
+                    "name": "rubygems",
+                    "separator": "="
+                  }
+                },
+                "children": [
+                  
+                ]
               },
-              "children": []
-            },
-            {
-              "name": "activesupport",
-              "version": "4.2.8",
-              "externalId": {
+              {
                 "name": "activesupport",
                 "version": "4.2.8",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
-              },
-              "children": [
-                {
-                  "name": "tzinfo",
-                  "version": "1.2.3",
-                  "externalId": {
+                "externalId": {
+                  "name": "activesupport",
+                  "version": "4.2.8",
+                  "forge": {
+                    "name": "rubygems",
+                    "separator": "="
+                  }
+                },
+                "children": [
+                  {
                     "name": "tzinfo",
                     "version": "1.2.3",
-                    "forge": {
-                      "name": "rubygems",
-                      "separator": "="
-                    }
-                  },
-                  "children": [
-                    {
-                      "name": "thread_safe",
-                      "version": "0.3.6",
-                      "externalId": {
+                    "externalId": {
+                      "name": "tzinfo",
+                      "version": "1.2.3",
+                      "forge": {
+                        "name": "rubygems",
+                        "separator": "="
+                      }
+                    },
+                    "children": [
+                      {
                         "name": "thread_safe",
                         "version": "0.3.6",
-                        "forge": {
-                          "name": "rubygems",
-                          "separator": "="
-                        }
-                      },
-                      "children": []
-                    }
-                  ]
-                },
-                {
-                  "name": "minitest",
-                  "version": "5.10.1",
-                  "externalId": {
+                        "externalId": {
+                          "name": "thread_safe",
+                          "version": "0.3.6",
+                          "forge": {
+                            "name": "rubygems",
+                            "separator": "="
+                          }
+                        },
+                        "children": [
+                          
+                        ]
+                      }
+                    ]
+                  },
+                  {
                     "name": "minitest",
                     "version": "5.10.1",
-                    "forge": {
-                      "name": "rubygems",
-                      "separator": "="
-                    }
+                    "externalId": {
+                      "name": "minitest",
+                      "version": "5.10.1",
+                      "forge": {
+                        "name": "rubygems",
+                        "separator": "="
+                      }
+                    },
+                    "children": [
+                      
+                    ]
                   },
-                  "children": []
-                },
-                {
-                  "name": "thread_safe",
-                  "version": "0.3.6",
-                  "externalId": {
+                  {
                     "name": "thread_safe",
                     "version": "0.3.6",
-                    "forge": {
-                      "name": "rubygems",
-                      "separator": "="
-                    }
+                    "externalId": {
+                      "name": "thread_safe",
+                      "version": "0.3.6",
+                      "forge": {
+                        "name": "rubygems",
+                        "separator": "="
+                      }
+                    },
+                    "children": [
+                      
+                    ]
                   },
-                  "children": []
-                },
-                {
-                  "name": "i18n",
-                  "version": "0.8.1",
-                  "externalId": {
+                  {
                     "name": "i18n",
                     "version": "0.8.1",
-                    "forge": {
-                      "name": "rubygems",
-                      "separator": "="
-                    }
-                  },
-                  "children": []
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "name": "cocoapods-search",
-          "version": "1.0.0",
-          "externalId": {
+                    "externalId": {
+                      "name": "i18n",
+                      "version": "0.8.1",
+                      "forge": {
+                        "name": "rubygems",
+                        "separator": "="
+                      }
+                    },
+                    "children": [
+                      
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
             "name": "cocoapods-search",
             "version": "1.0.0",
-            "forge": {
-              "name": "rubygems",
-              "separator": "="
-            }
+            "externalId": {
+              "name": "cocoapods-search",
+              "version": "1.0.0",
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              
+            ]
           },
-          "children": []
-        },
-        {
-          "name": "colored2",
-          "version": "3.1.2",
-          "externalId": {
+          {
             "name": "colored2",
             "version": "3.1.2",
-            "forge": {
-              "name": "rubygems",
-              "separator": "="
-            }
-          },
-          "children": []
-        },
-        {
-          "name": "escape",
-          "version": "0.0.4",
-          "externalId": {
-            "name": "escape",
-            "version": "0.0.4",
-            "forge": {
-              "name": "rubygems",
-              "separator": "="
-            }
-          },
-          "children": []
-        },
-        {
-          "name": "gh_inspector",
-          "version": "1.0.3",
-          "externalId": {
-            "name": "gh_inspector",
-            "version": "1.0.3",
-            "forge": {
-              "name": "rubygems",
-              "separator": "="
-            }
-          },
-          "children": []
-        },
-        {
-          "name": "cocoapods-downloader",
-          "version": "1.1.3",
-          "externalId": {
-            "name": "cocoapods-downloader",
-            "version": "1.1.3",
-            "forge": {
-              "name": "rubygems",
-              "separator": "="
-            }
-          },
-          "children": []
-        },
-        {
-          "name": "xcodeproj",
-          "version": "1.4.4",
-          "externalId": {
-            "name": "xcodeproj",
-            "version": "1.4.4",
-            "forge": {
-              "name": "rubygems",
-              "separator": "="
-            }
-          },
-          "children": [
-            {
-              "name": "CFPropertyList",
-              "version": "2.3.5",
-              "externalId": {
-                "name": "CFPropertyList",
-                "version": "2.3.5",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
-              },
-              "children": []
-            },
-            {
+            "externalId": {
               "name": "colored2",
               "version": "3.1.2",
-              "externalId": {
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              
+            ]
+          },
+          {
+            "name": "escape",
+            "version": "0.0.4",
+            "externalId": {
+              "name": "escape",
+              "version": "0.0.4",
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              
+            ]
+          },
+          {
+            "name": "gh_inspector",
+            "version": "1.0.3",
+            "externalId": {
+              "name": "gh_inspector",
+              "version": "1.0.3",
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              
+            ]
+          },
+          {
+            "name": "cocoapods-downloader",
+            "version": "1.1.3",
+            "externalId": {
+              "name": "cocoapods-downloader",
+              "version": "1.1.3",
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              
+            ]
+          },
+          {
+            "name": "xcodeproj",
+            "version": "1.4.4",
+            "externalId": {
+              "name": "xcodeproj",
+              "version": "1.4.4",
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              {
+                "name": "CFPropertyList",
+                "version": "2.3.5",
+                "externalId": {
+                  "name": "CFPropertyList",
+                  "version": "2.3.5",
+                  "forge": {
+                    "name": "rubygems",
+                    "separator": "="
+                  }
+                },
+                "children": [
+                  
+                ]
+              },
+              {
                 "name": "colored2",
                 "version": "3.1.2",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
+                "externalId": {
+                  "name": "colored2",
+                  "version": "3.1.2",
+                  "forge": {
+                    "name": "rubygems",
+                    "separator": "="
+                  }
+                },
+                "children": [
+                  
+                ]
               },
-              "children": []
-            },
-            {
-              "name": "nanaimo",
-              "version": "0.2.3",
-              "externalId": {
+              {
                 "name": "nanaimo",
                 "version": "0.2.3",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
+                "externalId": {
+                  "name": "nanaimo",
+                  "version": "0.2.3",
+                  "forge": {
+                    "name": "rubygems",
+                    "separator": "="
+                  }
+                },
+                "children": [
+                  
+                ]
               },
-              "children": []
-            },
-            {
-              "name": "claide",
-              "version": "1.0.1",
-              "externalId": {
+              {
                 "name": "claide",
                 "version": "1.0.1",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
-              },
-              "children": []
-            }
-          ]
-        },
-        {
-          "name": "cocoapods-try",
-          "version": "1.1.0",
-          "externalId": {
+                "externalId": {
+                  "name": "claide",
+                  "version": "1.0.1",
+                  "forge": {
+                    "name": "rubygems",
+                    "separator": "="
+                  }
+                },
+                "children": [
+                  
+                ]
+              }
+            ]
+          },
+          {
             "name": "cocoapods-try",
             "version": "1.1.0",
-            "forge": {
-              "name": "rubygems",
-              "separator": "="
-            }
+            "externalId": {
+              "name": "cocoapods-try",
+              "version": "1.1.0",
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              
+            ]
           },
-          "children": []
-        },
-        {
-          "name": "claide",
-          "version": "1.0.1",
-          "externalId": {
+          {
             "name": "claide",
             "version": "1.0.1",
-            "forge": {
-              "name": "rubygems",
-              "separator": "="
-            }
+            "externalId": {
+              "name": "claide",
+              "version": "1.0.1",
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              
+            ]
           },
-          "children": []
-        },
-        {
-          "name": "activesupport",
-          "version": "4.2.8",
-          "externalId": {
+          {
             "name": "activesupport",
             "version": "4.2.8",
-            "forge": {
-              "name": "rubygems",
-              "separator": "="
-            }
-          },
-          "children": [
-            {
-              "name": "tzinfo",
-              "version": "1.2.3",
-              "externalId": {
+            "externalId": {
+              "name": "activesupport",
+              "version": "4.2.8",
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              {
                 "name": "tzinfo",
                 "version": "1.2.3",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
-              },
-              "children": [
-                {
-                  "name": "thread_safe",
-                  "version": "0.3.6",
-                  "externalId": {
+                "externalId": {
+                  "name": "tzinfo",
+                  "version": "1.2.3",
+                  "forge": {
+                    "name": "rubygems",
+                    "separator": "="
+                  }
+                },
+                "children": [
+                  {
                     "name": "thread_safe",
                     "version": "0.3.6",
-                    "forge": {
-                      "name": "rubygems",
-                      "separator": "="
-                    }
-                  },
-                  "children": []
-                }
-              ]
-            },
-            {
-              "name": "minitest",
-              "version": "5.10.1",
-              "externalId": {
+                    "externalId": {
+                      "name": "thread_safe",
+                      "version": "0.3.6",
+                      "forge": {
+                        "name": "rubygems",
+                        "separator": "="
+                      }
+                    },
+                    "children": [
+                      
+                    ]
+                  }
+                ]
+              },
+              {
                 "name": "minitest",
                 "version": "5.10.1",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
+                "externalId": {
+                  "name": "minitest",
+                  "version": "5.10.1",
+                  "forge": {
+                    "name": "rubygems",
+                    "separator": "="
+                  }
+                },
+                "children": [
+                  
+                ]
               },
-              "children": []
-            },
-            {
-              "name": "thread_safe",
-              "version": "0.3.6",
-              "externalId": {
+              {
                 "name": "thread_safe",
                 "version": "0.3.6",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
+                "externalId": {
+                  "name": "thread_safe",
+                  "version": "0.3.6",
+                  "forge": {
+                    "name": "rubygems",
+                    "separator": "="
+                  }
+                },
+                "children": [
+                  
+                ]
               },
-              "children": []
-            },
-            {
-              "name": "i18n",
-              "version": "0.8.1",
-              "externalId": {
+              {
                 "name": "i18n",
                 "version": "0.8.1",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
-              },
-              "children": []
-            }
-          ]
-        }
-      ]
+                "externalId": {
+                  "name": "i18n",
+                  "version": "0.8.1",
+                  "forge": {
+                    "name": "rubygems",
+                    "separator": "="
+                  }
+                },
+                "children": [
+                  
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "danger",
+    "version": "5.1.1",
+    "externalId": {
+      "name": "danger",
+      "version": "5.1.1",
+      "forge": {
+        "name": "rubygems",
+        "separator": "="
+      }
     },
-    {
+    "children": [
+      {
+        "name": "colored2",
+        "version": "3.1.2",
+        "externalId": {
+          "name": "colored2",
+          "version": "3.1.2",
+          "forge": {
+            "name": "rubygems",
+            "separator": "="
+          }
+        },
+        "children": [
+          
+        ]
+      },
+      {
+        "name": "claide-plugins",
+        "version": "0.9.2",
+        "externalId": {
+          "name": "claide-plugins",
+          "version": "0.9.2",
+          "forge": {
+            "name": "rubygems",
+            "separator": "="
+          }
+        },
+        "children": [
+          {
+            "name": "cork",
+            "version": "0.3.0",
+            "externalId": {
+              "name": "cork",
+              "version": "0.3.0",
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              {
+                "name": "colored2",
+                "version": "3.1.2",
+                "externalId": {
+                  "name": "colored2",
+                  "version": "3.1.2",
+                  "forge": {
+                    "name": "rubygems",
+                    "separator": "="
+                  }
+                },
+                "children": [
+                  
+                ]
+              }
+            ]
+          },
+          {
+            "name": "nap",
+            "version": "1.1.0",
+            "externalId": {
+              "name": "nap",
+              "version": "1.1.0",
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              
+            ]
+          },
+          {
+            "name": "open4",
+            "version": "1.3.4",
+            "externalId": {
+              "name": "open4",
+              "version": "1.3.4",
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              
+            ]
+          }
+        ]
+      },
+      {
+        "name": "cork",
+        "version": "0.3.0",
+        "externalId": {
+          "name": "cork",
+          "version": "0.3.0",
+          "forge": {
+            "name": "rubygems",
+            "separator": "="
+          }
+        },
+        "children": [
+          {
+            "name": "colored2",
+            "version": "3.1.2",
+            "externalId": {
+              "name": "colored2",
+              "version": "3.1.2",
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              
+            ]
+          }
+        ]
+      },
+      {
+        "name": "git",
+        "version": "1.3.0",
+        "externalId": {
+          "name": "git",
+          "version": "1.3.0",
+          "forge": {
+            "name": "rubygems",
+            "separator": "="
+          }
+        },
+        "children": [
+          
+        ]
+      },
+      {
+        "name": "kramdown",
+        "version": "1.13.2",
+        "externalId": {
+          "name": "kramdown",
+          "version": "1.13.2",
+          "forge": {
+            "name": "rubygems",
+            "separator": "="
+          }
+        },
+        "children": [
+          
+        ]
+      },
+      {
+        "name": "terminal-table",
+        "version": "1.7.3",
+        "externalId": {
+          "name": "terminal-table",
+          "version": "1.7.3",
+          "forge": {
+            "name": "rubygems",
+            "separator": "="
+          }
+        },
+        "children": [
+          {
+            "name": "unicode-display_width",
+            "version": "1.1.3",
+            "externalId": {
+              "name": "unicode-display_width",
+              "version": "1.1.3",
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              
+            ]
+          }
+        ]
+      },
+      {
+        "name": "octokit",
+        "version": "4.7.0",
+        "externalId": {
+          "name": "octokit",
+          "version": "4.7.0",
+          "forge": {
+            "name": "rubygems",
+            "separator": "="
+          }
+        },
+        "children": [
+          {
+            "name": "sawyer",
+            "version": "0.8.1",
+            "externalId": {
+              "name": "sawyer",
+              "version": "0.8.1",
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              {
+                "name": "addressable",
+                "version": "2.5.1",
+                "externalId": {
+                  "name": "addressable",
+                  "version": "2.5.1",
+                  "forge": {
+                    "name": "rubygems",
+                    "separator": "="
+                  }
+                },
+                "children": [
+                  {
+                    "name": "public_suffix",
+                    "version": "2.0.5",
+                    "externalId": {
+                      "name": "public_suffix",
+                      "version": "2.0.5",
+                      "forge": {
+                        "name": "rubygems",
+                        "separator": "="
+                      }
+                    },
+                    "children": [
+                      
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "faraday",
+                "version": "0.12.1",
+                "externalId": {
+                  "name": "faraday",
+                  "version": "0.12.1",
+                  "forge": {
+                    "name": "rubygems",
+                    "separator": "="
+                  }
+                },
+                "children": [
+                  {
+                    "name": "multipart-post",
+                    "version": "2.0.0",
+                    "externalId": {
+                      "name": "multipart-post",
+                      "version": "2.0.0",
+                      "forge": {
+                        "name": "rubygems",
+                        "separator": "="
+                      }
+                    },
+                    "children": [
+                      
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "claide",
+        "version": "1.0.1",
+        "externalId": {
+          "name": "claide",
+          "version": "1.0.1",
+          "forge": {
+            "name": "rubygems",
+            "separator": "="
+          }
+        },
+        "children": [
+          
+        ]
+      },
+      {
+        "name": "faraday-http-cache",
+        "version": "1.3.1",
+        "externalId": {
+          "name": "faraday-http-cache",
+          "version": "1.3.1",
+          "forge": {
+            "name": "rubygems",
+            "separator": "="
+          }
+        },
+        "children": [
+          {
+            "name": "faraday",
+            "version": "0.12.1",
+            "externalId": {
+              "name": "faraday",
+              "version": "0.12.1",
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              {
+                "name": "multipart-post",
+                "version": "2.0.0",
+                "externalId": {
+                  "name": "multipart-post",
+                  "version": "2.0.0",
+                  "forge": {
+                    "name": "rubygems",
+                    "separator": "="
+                  }
+                },
+                "children": [
+                  
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "faraday",
+        "version": "0.12.1",
+        "externalId": {
+          "name": "faraday",
+          "version": "0.12.1",
+          "forge": {
+            "name": "rubygems",
+            "separator": "="
+          }
+        },
+        "children": [
+          {
+            "name": "multipart-post",
+            "version": "2.0.0",
+            "externalId": {
+              "name": "multipart-post",
+              "version": "2.0.0",
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "cocoapods",
+    "version": "1.2.1",
+    "externalId": {
+      "name": "cocoapods",
+      "version": "1.2.1",
+      "forge": {
+        "name": "rubygems",
+        "separator": "="
+      }
+    },
+    "children": [
+      {
+        "name": "molinillo",
+        "version": "0.5.7",
+        "externalId": {
+          "name": "molinillo",
+          "version": "0.5.7",
+          "forge": {
+            "name": "rubygems",
+            "separator": "="
+          }
+        },
+        "children": [
+          
+        ]
+      },
+      {
+        "name": "cocoapods-stats",
+        "version": "1.0.0",
+        "externalId": {
+          "name": "cocoapods-stats",
+          "version": "1.0.0",
+          "forge": {
+            "name": "rubygems",
+            "separator": "="
+          }
+        },
+        "children": [
+          
+        ]
+      },
+      {
+        "name": "cocoapods-plugins",
+        "version": "1.0.0",
+        "externalId": {
+          "name": "cocoapods-plugins",
+          "version": "1.0.0",
+          "forge": {
+            "name": "rubygems",
+            "separator": "="
+          }
+        },
+        "children": [
+          {
+            "name": "nap",
+            "version": "1.1.0",
+            "externalId": {
+              "name": "nap",
+              "version": "1.1.0",
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              
+            ]
+          }
+        ]
+      },
+      {
+        "name": "nap",
+        "version": "1.1.0",
+        "externalId": {
+          "name": "nap",
+          "version": "1.1.0",
+          "forge": {
+            "name": "rubygems",
+            "separator": "="
+          }
+        },
+        "children": [
+          
+        ]
+      },
+      {
+        "name": "cocoapods-trunk",
+        "version": "1.2.0",
+        "externalId": {
+          "name": "cocoapods-trunk",
+          "version": "1.2.0",
+          "forge": {
+            "name": "rubygems",
+            "separator": "="
+          }
+        },
+        "children": [
+          {
+            "name": "netrc",
+            "version": "0.7.8",
+            "externalId": {
+              "name": "netrc",
+              "version": "0.7.8",
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              
+            ]
+          },
+          {
+            "name": "nap",
+            "version": "1.1.0",
+            "externalId": {
+              "name": "nap",
+              "version": "1.1.0",
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              
+            ]
+          }
+        ]
+      },
+      {
+        "name": "cocoapods-deintegrate",
+        "version": "1.0.1",
+        "externalId": {
+          "name": "cocoapods-deintegrate",
+          "version": "1.0.1",
+          "forge": {
+            "name": "rubygems",
+            "separator": "="
+          }
+        },
+        "children": [
+          
+        ]
+      },
+      {
+        "name": "ruby-macho",
+        "version": "1.1.0",
+        "externalId": {
+          "name": "ruby-macho",
+          "version": "1.1.0",
+          "forge": {
+            "name": "rubygems",
+            "separator": "="
+          }
+        },
+        "children": [
+          
+        ]
+      },
+      {
+        "name": "fourflusher",
+        "version": "2.0.1",
+        "externalId": {
+          "name": "fourflusher",
+          "version": "2.0.1",
+          "forge": {
+            "name": "rubygems",
+            "separator": "="
+          }
+        },
+        "children": [
+          
+        ]
+      },
+      {
+        "name": "cocoapods-core",
+        "version": "1.2.1",
+        "externalId": {
+          "name": "cocoapods-core",
+          "version": "1.2.1",
+          "forge": {
+            "name": "rubygems",
+            "separator": "="
+          }
+        },
+        "children": [
+          {
+            "name": "nap",
+            "version": "1.1.0",
+            "externalId": {
+              "name": "nap",
+              "version": "1.1.0",
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              
+            ]
+          },
+          {
+            "name": "fuzzy_match",
+            "version": "2.0.4",
+            "externalId": {
+              "name": "fuzzy_match",
+              "version": "2.0.4",
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              
+            ]
+          },
+          {
+            "name": "activesupport",
+            "version": "4.2.8",
+            "externalId": {
+              "name": "activesupport",
+              "version": "4.2.8",
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              {
+                "name": "tzinfo",
+                "version": "1.2.3",
+                "externalId": {
+                  "name": "tzinfo",
+                  "version": "1.2.3",
+                  "forge": {
+                    "name": "rubygems",
+                    "separator": "="
+                  }
+                },
+                "children": [
+                  {
+                    "name": "thread_safe",
+                    "version": "0.3.6",
+                    "externalId": {
+                      "name": "thread_safe",
+                      "version": "0.3.6",
+                      "forge": {
+                        "name": "rubygems",
+                        "separator": "="
+                      }
+                    },
+                    "children": [
+                      
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "minitest",
+                "version": "5.10.1",
+                "externalId": {
+                  "name": "minitest",
+                  "version": "5.10.1",
+                  "forge": {
+                    "name": "rubygems",
+                    "separator": "="
+                  }
+                },
+                "children": [
+                  
+                ]
+              },
+              {
+                "name": "thread_safe",
+                "version": "0.3.6",
+                "externalId": {
+                  "name": "thread_safe",
+                  "version": "0.3.6",
+                  "forge": {
+                    "name": "rubygems",
+                    "separator": "="
+                  }
+                },
+                "children": [
+                  
+                ]
+              },
+              {
+                "name": "i18n",
+                "version": "0.8.1",
+                "externalId": {
+                  "name": "i18n",
+                  "version": "0.8.1",
+                  "forge": {
+                    "name": "rubygems",
+                    "separator": "="
+                  }
+                },
+                "children": [
+                  
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "cocoapods-search",
+        "version": "1.0.0",
+        "externalId": {
+          "name": "cocoapods-search",
+          "version": "1.0.0",
+          "forge": {
+            "name": "rubygems",
+            "separator": "="
+          }
+        },
+        "children": [
+          
+        ]
+      },
+      {
+        "name": "colored2",
+        "version": "3.1.2",
+        "externalId": {
+          "name": "colored2",
+          "version": "3.1.2",
+          "forge": {
+            "name": "rubygems",
+            "separator": "="
+          }
+        },
+        "children": [
+          
+        ]
+      },
+      {
+        "name": "escape",
+        "version": "0.0.4",
+        "externalId": {
+          "name": "escape",
+          "version": "0.0.4",
+          "forge": {
+            "name": "rubygems",
+            "separator": "="
+          }
+        },
+        "children": [
+          
+        ]
+      },
+      {
+        "name": "gh_inspector",
+        "version": "1.0.3",
+        "externalId": {
+          "name": "gh_inspector",
+          "version": "1.0.3",
+          "forge": {
+            "name": "rubygems",
+            "separator": "="
+          }
+        },
+        "children": [
+          
+        ]
+      },
+      {
+        "name": "cocoapods-downloader",
+        "version": "1.1.3",
+        "externalId": {
+          "name": "cocoapods-downloader",
+          "version": "1.1.3",
+          "forge": {
+            "name": "rubygems",
+            "separator": "="
+          }
+        },
+        "children": [
+          
+        ]
+      },
+      {
+        "name": "xcodeproj",
+        "version": "1.4.4",
+        "externalId": {
+          "name": "xcodeproj",
+          "version": "1.4.4",
+          "forge": {
+            "name": "rubygems",
+            "separator": "="
+          }
+        },
+        "children": [
+          {
+            "name": "CFPropertyList",
+            "version": "2.3.5",
+            "externalId": {
+              "name": "CFPropertyList",
+              "version": "2.3.5",
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              
+            ]
+          },
+          {
+            "name": "colored2",
+            "version": "3.1.2",
+            "externalId": {
+              "name": "colored2",
+              "version": "3.1.2",
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              
+            ]
+          },
+          {
+            "name": "nanaimo",
+            "version": "0.2.3",
+            "externalId": {
+              "name": "nanaimo",
+              "version": "0.2.3",
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              
+            ]
+          },
+          {
+            "name": "claide",
+            "version": "1.0.1",
+            "externalId": {
+              "name": "claide",
+              "version": "1.0.1",
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              
+            ]
+          }
+        ]
+      },
+      {
+        "name": "cocoapods-try",
+        "version": "1.1.0",
+        "externalId": {
+          "name": "cocoapods-try",
+          "version": "1.1.0",
+          "forge": {
+            "name": "rubygems",
+            "separator": "="
+          }
+        },
+        "children": [
+          
+        ]
+      },
+      {
+        "name": "claide",
+        "version": "1.0.1",
+        "externalId": {
+          "name": "claide",
+          "version": "1.0.1",
+          "forge": {
+            "name": "rubygems",
+            "separator": "="
+          }
+        },
+        "children": [
+          
+        ]
+      },
+      {
+        "name": "activesupport",
+        "version": "4.2.8",
+        "externalId": {
+          "name": "activesupport",
+          "version": "4.2.8",
+          "forge": {
+            "name": "rubygems",
+            "separator": "="
+          }
+        },
+        "children": [
+          {
+            "name": "tzinfo",
+            "version": "1.2.3",
+            "externalId": {
+              "name": "tzinfo",
+              "version": "1.2.3",
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              {
+                "name": "thread_safe",
+                "version": "0.3.6",
+                "externalId": {
+                  "name": "thread_safe",
+                  "version": "0.3.6",
+                  "forge": {
+                    "name": "rubygems",
+                    "separator": "="
+                  }
+                },
+                "children": [
+                  
+                ]
+              }
+            ]
+          },
+          {
+            "name": "minitest",
+            "version": "5.10.1",
+            "externalId": {
+              "name": "minitest",
+              "version": "5.10.1",
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              
+            ]
+          },
+          {
+            "name": "thread_safe",
+            "version": "0.3.6",
+            "externalId": {
+              "name": "thread_safe",
+              "version": "0.3.6",
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              
+            ]
+          },
+          {
+            "name": "i18n",
+            "version": "0.8.1",
+            "externalId": {
+              "name": "i18n",
+              "version": "0.8.1",
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "cocoapods-keys",
+    "version": "2.0.0",
+    "externalId": {
       "name": "cocoapods-keys",
       "version": "2.0.0",
-      "externalId": {
-        "name": "cocoapods-keys",
-        "version": "2.0.0",
-        "forge": {
-          "name": "rubygems",
-          "separator": "="
-        }
-      },
-      "children": [
-        {
+      "forge": {
+        "name": "rubygems",
+        "separator": "="
+      }
+    },
+    "children": [
+      {
+        "name": "dotenv",
+        "version": "2.2.1",
+        "externalId": {
           "name": "dotenv",
           "version": "2.2.1",
-          "externalId": {
-            "name": "dotenv",
-            "version": "2.2.1",
-            "forge": {
-              "name": "rubygems",
-              "separator": "="
-            }
-          },
-          "children": []
+          "forge": {
+            "name": "rubygems",
+            "separator": "="
+          }
         },
-        {
+        "children": [
+          
+        ]
+      },
+      {
+        "name": "osx_keychain",
+        "version": "1.0.1",
+        "externalId": {
           "name": "osx_keychain",
           "version": "1.0.1",
-          "externalId": {
-            "name": "osx_keychain",
-            "version": "1.0.1",
-            "forge": {
-              "name": "rubygems",
-              "separator": "="
-            }
-          },
-          "children": [
-            {
+          "forge": {
+            "name": "rubygems",
+            "separator": "="
+          }
+        },
+        "children": [
+          {
+            "name": "RubyInline",
+            "version": "3.12.4",
+            "externalId": {
               "name": "RubyInline",
               "version": "3.12.4",
-              "externalId": {
-                "name": "RubyInline",
-                "version": "3.12.4",
-                "forge": {
-                  "name": "rubygems",
-                  "separator": "="
-                }
-              },
-              "children": [
-                {
+              "forge": {
+                "name": "rubygems",
+                "separator": "="
+              }
+            },
+            "children": [
+              {
+                "name": "ZenTest",
+                "version": "4.11.1",
+                "externalId": {
                   "name": "ZenTest",
                   "version": "4.11.1",
-                  "externalId": {
-                    "name": "ZenTest",
-                    "version": "4.11.1",
-                    "forge": {
-                      "name": "rubygems",
-                      "separator": "="
-                    }
-                  },
-                  "children": []
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    }
-  ]
-}
+                  "forge": {
+                    "name": "rubygems",
+                    "separator": "="
+                  }
+                },
+                "children": [
+                  
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

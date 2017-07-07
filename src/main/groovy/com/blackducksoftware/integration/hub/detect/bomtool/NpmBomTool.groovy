@@ -28,7 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmCliDependencyFinder
-import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
+import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 
@@ -54,31 +54,22 @@ class NpmBomTool extends BomTool {
 
     @Override
     public boolean isBomToolApplicable() {
-        npmPaths = sourcePathSearcher.findFilenamePattern(NODE_MODULES)
-        def packageJsonPaths = sourcePathSearcher.findFilenamePattern(PACKAGE_JSON)
+        boolean containsNodeModules = detectFileManager.containsAllFiles(sourcePath, NODE_MODULES)
+        boolean containsPackageJson = detectFileManager.containsAllFiles(sourcePath, PACKAGE_JSON)
         npmExe = getExecutablePath()
 
-        packageJsonPaths?.removeAll(npmPaths)
-
-        packageJsonPaths.each { path ->
-            logger.info("Package.json was located in ${path}, but no node_modules folder. Please run npm install in that location and try again.")
+        if (containsPackageJson && !containsNodeModules) {
+            logger.info("package.json was located in ${sourcePath}, but the node_modules folder was NOT located. Please run 'npm install' in that location and try again.")
         }
 
-        npmPaths && npmExe
+        containsNodeModules && npmExe
     }
 
-    @Override
-    public List<DetectProject> extractDetectProjects() {
-        List<DetectProject> projects = []
+    List<DetectCodeLocation> extractDetectCodeLocations() {
+        def dependencyNode = cliDependencyFinder.generateDependencyNode(sourcePath, npmExe)
+        def detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, dependencyNode)
 
-        npmPaths.each {
-            def dependencyNode = cliDependencyFinder.generateDependencyNode(it, npmExe)
-            DetectProject project = new DetectProject(new File(it))
-            project.dependencyNodes =  [dependencyNode]
-            projects.add(project)
-        }
-
-        projects
+        [detectCodeLocation]
     }
 
     private String getExecutablePath() {

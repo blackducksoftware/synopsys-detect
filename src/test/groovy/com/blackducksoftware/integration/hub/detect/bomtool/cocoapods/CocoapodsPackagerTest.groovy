@@ -13,11 +13,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool.cocoapods;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
@@ -30,8 +26,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge;
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId;
 import com.blackducksoftware.integration.hub.detect.Application;
 import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer;
 import com.google.gson.Gson;
@@ -49,15 +43,13 @@ public class CocoapodsPackagerTest {
     @Test
     public void complexTest() throws JSONException, IOException, URISyntaxException {
         final Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-        final String expected = IOUtils.toString(getClass().getResourceAsStream("/cocoapods/complex/Complex.json"), StandardCharsets.UTF_8);
+        String expected = getClass().getResourceAsStream('/cocoapods/complex/Complex.json').getText(StandardCharsets.UTF_8.name())
         final File podlockFile = new File(getClass().getResource("/cocoapods/complex/Podfile.lock").toURI());
         final CocoapodsPackager cocoapodsPackager = new CocoapodsPackager();
-        cocoapodsPackager.setProjectInfoGatherer(projectInfoGatherer);
         cocoapodsPackager.setPodLockParser(new PodLockParser());
-        final List<DependencyNode> projects = cocoapodsPackager.makeDependencyNodes(podlockFile.getParentFile().getAbsolutePath());
-        assertEquals(1, projects.size());
-        fixVersion(projects.get(0), "1.0.0");
-        final String actual = gson.toJson(projects);
+        final List<DependencyNode> projectDependencies = cocoapodsPackager.extractProjectDependencies(podlockFile.text);
+        assertEquals(66, projectDependencies.size());
+        final String actual = gson.toJson(projectDependencies);
         JSONAssert.assertEquals(expected, actual, false);
     }
 
@@ -67,17 +59,10 @@ public class CocoapodsPackagerTest {
         final String expected = IOUtils.toString(getClass().getResourceAsStream("/cocoapods/simple/Simple.json"), StandardCharsets.UTF_8);
         final File podlockFile = new File(getClass().getResource("/cocoapods/simple/Podfile.lock").toURI());
         final CocoapodsPackager cocoapodsPackager = new CocoapodsPackager();
-        cocoapodsPackager.setProjectInfoGatherer(projectInfoGatherer);
         cocoapodsPackager.setPodLockParser(new PodLockParser());
-        final List<DependencyNode> projects = cocoapodsPackager.makeDependencyNodes(podlockFile.getParentFile().getAbsolutePath());
-        assertEquals(1, projects.size());
-        fixVersion(projects.get(0), "0.0.1");
-        final String actual = gson.toJson(projects);
+        final List<DependencyNode> projectDependencies = cocoapodsPackager.extractProjectDependencies(podlockFile.text);
+        assertEquals(3, projectDependencies.size());
+        final String actual = gson.toJson(projectDependencies);
         JSONAssert.assertEquals(expected, actual, false);
-    }
-
-    private void fixVersion(final DependencyNode node, final String newVersion) {
-        node.version = newVersion;
-        node.externalId = new NameVersionExternalId(Forge.COCOAPODS, node.name, newVersion);
     }
 }
