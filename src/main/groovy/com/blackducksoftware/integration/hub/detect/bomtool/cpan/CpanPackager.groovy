@@ -56,8 +56,6 @@ class CpanPackager {
                 logger.info("Could node find resolved version for module: ${moduleName}")
             }
         }
-        
-        
 
         dependencyNodes
     }
