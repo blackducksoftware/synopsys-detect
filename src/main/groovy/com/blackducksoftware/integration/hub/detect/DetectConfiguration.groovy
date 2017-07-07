@@ -145,10 +145,11 @@ class DetectConfiguration {
         }
     }
 
-    public void printConfiguration(PrintStream printStream) {
-        printStream.println('')
-        printStream.println('Current property values:')
-        printStream.println('-'.multiply(60))
+    public void logConfiguration() {
+        StringBuilder configurationBuilder = new StringBuilder()
+        configurationBuilder.append('' + System.lineSeparator())
+        configurationBuilder.append('Current property values:' + System.lineSeparator())
+        configurationBuilder.append('-'.multiply(60) + System.lineSeparator())
         def propertyFields = DetectProperties.class.getDeclaredFields().findAll {
             int modifiers = it.modifiers
             !Modifier.isStatic(modifiers) && Modifier.isPrivate(modifiers)
@@ -167,12 +168,13 @@ class DetectConfiguration {
                 if (fieldName.toLowerCase().contains('password')) {
                     fieldValue = '*'.multiply(fieldValue.length())
                 }
-                printStream.println("${fieldName} = ${fieldValue}")
+                configurationBuilder.append("${fieldName} = ${fieldValue}" + System.lineSeparator())
             }
             it.accessible = false
         }
-        printStream.println('-'.multiply(60))
-        printStream.println('')
+        configurationBuilder.append('-'.multiply(60) + System.lineSeparator())
+        configurationBuilder.append('' + System.lineSeparator())
+        logger.info(configurationBuilder.toString())
     }
 
     public boolean getCleanupBdioFiles() {

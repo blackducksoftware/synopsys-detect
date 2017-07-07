@@ -97,7 +97,7 @@ class Application {
             executableManager.init()
             logger.info('Configuration processed completely.')
             if (Boolean.FALSE == detectConfiguration.suppressConfigurationOutput) {
-                detectConfiguration.printConfiguration(System.out)
+                detectConfiguration.logConfiguration()
             }
             DetectProject detectProject = detectProjectManager.createDetectProject()
             List<File> createdBdioFiles = detectProjectManager.createBdioFiles(detectProject)

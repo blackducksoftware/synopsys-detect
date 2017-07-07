@@ -94,9 +94,9 @@ class DetectProjectManager {
 
                 if (bomTool.isBomToolApplicable() && detectConfiguration.shouldRun(bomTool)) {
                     logger.info("${bomToolTypeString} applies given the current configuration.")
+                    foundAnyBomTools = true;
                     List<DetectCodeLocation> codeLocations = bomTool.extractDetectCodeLocations()
                     if (codeLocations != null && codeLocations.size() > 0) {
-                        foundAnyBomTools = true;
                         detectProject.addAllDetectCodeLocations(codeLocations)
                     } else {
                         //currently, Docker creates and uploads the bdio files itself, so there's nothing for Detect to do

@@ -58,39 +58,39 @@ class DetectProperties {
     Boolean cleanupBdioFiles
 
     @ValueDescription(description="URL of the Hub server", group=DetectProperties.GROUP_HUB_CONFIGURATION)
-    @Value('${detect.hub.url}')
+    @Value('${blackduck.hub.url}')
     String hubUrl
 
     @ValueDescription(description="Time to wait for rest connections to complete", defaultValue="120", group=DetectProperties.GROUP_HUB_CONFIGURATION)
-    @Value('${detect.hub.timeout}')
+    @Value('${blackduck.hub.timeout}')
     Integer hubTimeout
 
     @ValueDescription(description="Hub username", group=DetectProperties.GROUP_HUB_CONFIGURATION)
-    @Value('${detect.hub.username}')
+    @Value('${blackduck.hub.username}')
     String hubUsername
 
     @ValueDescription(description="Hub password", group=DetectProperties.GROUP_HUB_CONFIGURATION)
-    @Value('${detect.hub.password}')
+    @Value('${blackduck.hub.password}')
     String hubPassword
 
     @ValueDescription(description="Proxy host", group=DetectProperties.GROUP_HUB_CONFIGURATION)
-    @Value('${detect.hub.proxy.host}')
+    @Value('${blackduck.hub.proxy.host}')
     String hubProxyHost
 
     @ValueDescription(description="Proxy port", group=DetectProperties.GROUP_HUB_CONFIGURATION)
-    @Value('${detect.hub.proxy.port}')
+    @Value('${blackduck.hub.proxy.port}')
     String hubProxyPort
 
     @ValueDescription(description="Proxy username", group=DetectProperties.GROUP_HUB_CONFIGURATION)
-    @Value('${detect.hub.proxy.username}')
+    @Value('${blackduck.hub.proxy.username}')
     String hubProxyUsername
 
     @ValueDescription(description="Proxy password", group=DetectProperties.GROUP_HUB_CONFIGURATION)
-    @Value('${detect.hub.proxy.password}')
+    @Value('${blackduck.hub.proxy.password}')
     String hubProxyPassword
 
     @ValueDescription(description="If true the Hub https certificate will be automatically imported", defaultValue="false", group=DetectProperties.GROUP_HUB_CONFIGURATION)
-    @Value('${detect.hub.auto.import.cert}')
+    @Value('${blackduck.hub.auto.import.cert}')
     Boolean hubAutoImportCertificate
 
     @ValueDescription(description = "Source path to inspect", group=DetectProperties.GROUP_PATHS)
