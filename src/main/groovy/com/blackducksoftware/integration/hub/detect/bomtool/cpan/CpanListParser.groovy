@@ -22,7 +22,7 @@ class CpanListParser {
         Map<String, NameVersionNode> moduleMap = [:]
 
         for (String line: listText.split('\n')) {
-            if(!line.trim()) {
+            if (!line.trim()) {
                 continue
             }
 

@@ -69,11 +69,11 @@ class CpanPackager {
         String lines = executableOutput.getStandardOutput()
 
         List<String> modules = []
-        for(String line : lines.split('\n')) {
-            if(!line?.trim()) {
+        for (String line : lines.split('\n')) {
+            if (!line?.trim()) {
                 continue
             }
-            if(line.contains('-->') || (line.contains(' ... ') && line.contains('Configuring'))) {
+            if (line.contains('-->') || (line.contains(' ... ') && line.contains('Configuring'))) {
                 continue
             }
             modules += line.split('~')[0].trim()
