@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2017 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
  *
@@ -20,22 +20,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.type;
+package com.blackducksoftware.integration.hub.detect.bomtool.cpan
 
-public enum BomToolType {
-    CARTHAGE,
-    COCOAPODS,
-    CPAN,
-    DOCKER,
-    GO_DEP,
-    GO_GODEP,
-    GO_VNDR,
-    GRADLE,
-    MAVEN,
-    NPM,
-    NUGET,
-    PIP,
-    RUBYGEMS,
-    SBT,
-    PACKAGIST;
+import org.springframework.stereotype.Component
+
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
+
+@Component
+class CpanListParser {
+    public Map<String, NameVersionNode> parse(String listText) {
+        Map<String, NameVersionNode> moduleMap = [:]
+
+        for (String line: listText.split('\n')) {
+            if (!line.trim()) {
+                continue
+            }
+
+            String[] module = line.split('\t')
+            def nameVersionNode = new NameVersionNodeImpl()
+            nameVersionNode.name = module[0].trim()
+            nameVersionNode.version = module[1].trim()
+            moduleMap[nameVersionNode.name] = nameVersionNode
+        }
+
+        moduleMap
+    }
 }
