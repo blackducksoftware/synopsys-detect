@@ -29,7 +29,9 @@ import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLoc
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
+import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
 
 abstract class BomTool {
@@ -61,5 +63,14 @@ abstract class BomTool {
 
     String getSourcePath() {
         detectConfiguration.sourcePath
+    }
+
+    File getSourceDirectory() {
+        detectConfiguration.sourceDirectory
+    }
+
+    ExecutableOutput runBomToolExe(String bomToolExePath, String... args) {
+        def bomToolExe = new Executable(new File(sourcePath), bomToolExePath, args.toList())
+        executableRunner.execute(bomToolExe)
     }
 }
