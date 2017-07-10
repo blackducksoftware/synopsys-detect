@@ -64,6 +64,14 @@ class ExecutableManager {
         null == executableFile ? null : executableFile.absolutePath
     }
 
+    String getPathOfExecutable(ExecutableType executableType, String defaultPath) {
+        if (defaultPath?.trim()) {
+            return defaultPath
+        }
+
+        getPathOfExecutable(executableType)
+    }
+
     String getExecutableName(ExecutableType executableType) {
         executableType.getExecutable(currentOs)
     }

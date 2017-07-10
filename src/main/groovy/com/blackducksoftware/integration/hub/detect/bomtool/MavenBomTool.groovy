@@ -34,6 +34,8 @@ import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLoc
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
+import com.blackducksoftware.integration.hub.detect.util.executable.Executable
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput
 
 @Component
 class MavenBomTool extends BomTool {
@@ -64,7 +66,15 @@ class MavenBomTool extends BomTool {
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
         List<DetectCodeLocation> codeLocations = []
-        List<DependencyNode> sourcePathProjectNodes = mavenPackager.makeDependencyNodes(sourcePath, mvnExecutable)
+
+        def arguments = ["dependency:tree"]
+        if (detectConfiguration.getMavenScope()?.trim()) {
+            arguments.add("-Dscope=${detectConfiguration.getMavenScope()}")
+        }
+        final Executable mvnExecutable = new Executable(detectConfiguration.sourceDirectory, mvnExecutable, arguments)
+        final ExecutableOutput mvnOutput = executableRunner.execute(mvnExecutable)
+
+        List<DependencyNode> sourcePathProjectNodes = mavenPackager.makeDependencyNodes(mvnOutput.standardOutput)
         sourcePathProjectNodes.each {
             DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, it)
             codeLocations.add(detectCodeLocation)
