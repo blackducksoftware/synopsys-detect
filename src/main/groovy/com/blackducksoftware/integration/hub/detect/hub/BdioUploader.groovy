@@ -49,12 +49,11 @@ class BdioUploader {
     @Autowired
     HubManager hubManager
 
-    void uploadBdioFiles(HubServerConfig hubServerConfig, List<File> createdBdioFiles) {
+    void uploadBdioFiles(HubServerConfig hubServerConfig, HubServicesFactory hubServicesFactory, List<File> createdBdioFiles) {
         if (!createdBdioFiles) {
             return
         }
         Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
-        HubServicesFactory hubServicesFactory = hubManager.createHubServicesFactory(slf4jIntLogger, hubServerConfig)
         BomImportRequestService bomImportRequestService = hubServicesFactory.createBomImportRequestService()
         PhoneHomeDataService phoneHomeDataService = hubServicesFactory.createPhoneHomeDataService(slf4jIntLogger)
 

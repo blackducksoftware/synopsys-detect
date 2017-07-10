@@ -39,7 +39,6 @@ import com.blackducksoftware.integration.hub.dataservice.scan.ScanStatusDataServ
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
 import com.blackducksoftware.integration.hub.detect.exception.DetectException
-import com.blackducksoftware.integration.hub.global.HubServerConfig
 import com.blackducksoftware.integration.hub.model.view.CodeLocationView
 import com.blackducksoftware.integration.hub.model.view.ScanSummaryView
 import com.blackducksoftware.integration.hub.model.view.VersionBomPolicyStatusView
@@ -61,9 +60,8 @@ class PolicyChecker {
      * all of its code locations, then all of their scan summaries, wait until
      * they are all complete, then get the policy status.
      */
-    public String getPolicyStatusMessage(HubServerConfig hubServerConfig, DetectProject detectProject) throws DetectException {
+    public String getPolicyStatusMessage(HubServicesFactory hubServicesFactory, DetectProject detectProject) throws DetectException {
         Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
-        HubServicesFactory hubServicesFactory = hubManager.createHubServicesFactory(slf4jIntLogger, hubServerConfig)
 
         ProjectDataService projectDataService = hubServicesFactory.createProjectDataService(slf4jIntLogger)
         CodeLocationRequestService codeLocationRequestService = hubServicesFactory.createCodeLocationRequestService(slf4jIntLogger)

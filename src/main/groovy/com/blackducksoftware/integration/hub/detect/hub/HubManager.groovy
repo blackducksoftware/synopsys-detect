@@ -27,7 +27,10 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
+import com.blackducksoftware.integration.hub.api.item.MetaService
 import com.blackducksoftware.integration.hub.builder.HubServerConfigBuilder
+import com.blackducksoftware.integration.hub.dataservice.project.ProjectDataService
+import com.blackducksoftware.integration.hub.dataservice.project.ProjectVersionWrapper
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
 import com.blackducksoftware.integration.hub.global.HubServerConfig
@@ -79,16 +82,22 @@ class HubManager {
         try {
             Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
             HubServerConfig hubServerConfig = createHubServerConfig(slf4jIntLogger)
+            HubServicesFactory hubServicesFactory = createHubServicesFactory(slf4jIntLogger, hubServerConfig)
 
-            bdioUploader.uploadBdioFiles(hubServerConfig, createdBdioFiles)
+            bdioUploader.uploadBdioFiles(hubServerConfig, hubServicesFactory, createdBdioFiles)
             if (!detectConfiguration.getHubSignatureScannerDisabled()) {
-                hubSignatureScanner.scanFiles(hubServerConfig, detectProject)
+                hubSignatureScanner.scanFiles(hubServerConfig, hubServicesFactory, detectProject)
             }
 
             if (detectConfiguration.getPolicyCheck()) {
-                String policyStatusMessage = policyChecker.getPolicyStatusMessage(hubServerConfig, detectProject)
+                String policyStatusMessage = policyChecker.getPolicyStatusMessage(hubServicesFactory, detectProject)
                 logger.info(policyStatusMessage)
             }
+            ProjectDataService projectDataService = hubServicesFactory.createProjectDataService(slf4jIntLogger)
+            ProjectVersionWrapper projectVersionWrapper = projectDataService.getProjectVersion(detectProject.getProjectName(), detectProject.getProjectVersionName())
+            MetaService metaService = hubServicesFactory.createMetaService(slf4jIntLogger)
+            String componentsLink = metaService.getFirstLinkSafely(projectVersionWrapper.getProjectVersionView(), MetaService.COMPONENTS_LINK)
+            logger.info("To see your results, follow the URL: ${componentsLink}")
         } catch (Exception e) {
             logger.error("Your Hub configuration is not valid: ${e.message}")
         }

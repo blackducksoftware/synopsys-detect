@@ -68,9 +68,8 @@ class HubSignatureScanner {
         }
     }
 
-    public void scanFiles(HubServerConfig hubServerConfig, DetectProject detectProject) {
+    public void scanFiles(HubServerConfig hubServerConfig, HubServicesFactory hubServicesFactory, DetectProject detectProject) {
         Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
-        HubServicesFactory hubServicesFactory = hubManager.createHubServicesFactory(slf4jIntLogger, hubServerConfig)
         CLIDataService cliDataService = hubServicesFactory.createCLIDataService(slf4jIntLogger, 120000L)
 
         if (detectProject.projectName && detectProject.projectVersionName && detectConfiguration.hubSignatureScannerPaths) {
