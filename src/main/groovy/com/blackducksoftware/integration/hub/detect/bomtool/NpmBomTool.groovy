@@ -31,6 +31,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmCliDependency
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
+import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 
 @Component
 class NpmBomTool extends BomTool {
@@ -83,5 +84,10 @@ class NpmBomTool extends BomTool {
         }
 
         []
+    }
+
+    def runBomToolExeToFile(String bomToolExePath, File outputFile, File errorFile, String... args) {
+        def bomToolExe = new Executable(new File(sourcePath), bomToolExePath, args.toList())
+        executableRunner.executeToFile(bomToolExe, outputFile, errorFile)
     }
 }
