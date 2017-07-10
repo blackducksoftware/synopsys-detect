@@ -76,8 +76,6 @@ class PearBomTool extends BomTool {
 
     private ExecutableOutput runExe(String... commands) {
         def pearExe = new Executable(new File(sourcePath), pearExePath, commands.toList())
-
-        ExecutableOutput pearExeOutput = executableRunner.execute(pearExe)
-        pearExeOutput
+        executableRunner.execute(pearExe)
     }
 }
