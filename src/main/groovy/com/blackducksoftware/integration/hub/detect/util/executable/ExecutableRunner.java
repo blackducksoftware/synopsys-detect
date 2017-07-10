@@ -42,8 +42,8 @@ public class ExecutableRunner {
         try {
             final ProcessBuilder processBuilder = executable.createProcessBuilder();
             final Process process = processBuilder.start();
-            final String standardOutput = printStream(process.getInputStream());
-            final String errorOutput = printStream(process.getErrorStream());
+            final String standardOutput = printStream(process.getInputStream()).trim();
+            final String errorOutput = printStream(process.getErrorStream()).trim();
             final ExecutableOutput output = new ExecutableOutput(standardOutput, errorOutput);
             return output;
         } catch (final Exception e) {

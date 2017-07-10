@@ -54,7 +54,7 @@ class DepPackager {
         if (goDepContents?.trim()) {
             return gopkgLockParser.parseDepLock(goDepContents)
         }
-        return null
+        return []
     }
 
     private String getGopkgLockContents(File file, String goDepExecutable) {

@@ -34,6 +34,7 @@ public enum BomToolType {
     MAVEN,
     NPM,
     NUGET,
+    PEAR,
     PIP,
     RUBYGEMS,
     SBT,
