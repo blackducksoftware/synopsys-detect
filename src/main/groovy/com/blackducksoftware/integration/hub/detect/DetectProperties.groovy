@@ -304,5 +304,9 @@ class DetectProperties {
     @ValueDescription(description="The path of the cpanm executable", group=DetectProperties.GROUP_CPAN)
     @Value('${detect.cpanm.path}')
     String cpanmPath
+
+    @ValueDescription(description="When using a hash as a version, use a truncated version", defaultValue='true', group=DetectProperties.GROUP_PROJECT_INFO)
+    @Value('${detect.project.version.shorthash}')
+    Boolean shortHash
 }
 

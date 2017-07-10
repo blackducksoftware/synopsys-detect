@@ -377,4 +377,8 @@ class DetectConfiguration {
     public String getCpanmPath() {
         return detectProperties.cpanmPath?.trim()
     }
+
+    public boolean getShortHash() {
+        return BooleanUtils.toBoolean(detectProperties.getShortHash())
+    }
 }
