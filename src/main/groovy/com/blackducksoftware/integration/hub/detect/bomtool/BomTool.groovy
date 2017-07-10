@@ -62,4 +62,8 @@ abstract class BomTool {
     String getSourcePath() {
         detectConfiguration.sourcePath
     }
+
+    File getSourceDirectory() {
+        detectConfiguration.sourceDirectory
+    }
 }
