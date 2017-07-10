@@ -20,8 +20,6 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
-import com.blackducksoftware.integration.hub.detect.util.executable.Executable
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
 
 @Component
@@ -37,14 +35,14 @@ class CpanPackager {
     @Autowired
     NameVersionNodeTransformer nameVersionNodeTransformer
 
-    public Set<DependencyNode> makeDependencyNodes(File sourceDirectory, String cpanExecutablePath, String cpanmExecutablePath) {
-        Map<String, NameVersionNode> allModules = getAllModulesMap(sourceDirectory, cpanExecutablePath)
-        List<String> directModuleNames = getDirectModuleNames(sourceDirectory, cpanmExecutablePath)
+    public Set<DependencyNode> makeDependencyNodes(File sourceDirectory, String cpanListText, String directDependenciesText) {
+        Map<String, NameVersionNode> allModules = cpanListParser.parse(cpanListText)
+        List<String> directModuleNames = getDirectModuleNames(directDependenciesText)
 
         Set<DependencyNode> dependencyNodes = []
         directModuleNames.each { moduleName ->
             def nameVersionNode = allModules[moduleName]
-            if(nameVersionNode) {
+            if (nameVersionNode) {
                 DependencyNode module = nameVersionNodeTransformer.createDependencyNode(Forge.CPAN, nameVersionNode)
                 dependencyNodes += module
             } else {
@@ -55,21 +53,9 @@ class CpanPackager {
         dependencyNodes
     }
 
-    private Map<String, NameVersionNode> getAllModulesMap(File sourceDirectory, String cpanExecutablePath) {
-        def executable = new Executable(sourceDirectory, cpanExecutablePath, ['-l'])
-        ExecutableOutput executableOutput = executableRunner.execute(executable)
-        String listText = executableOutput.getStandardOutput()
-
-        cpanListParser.parse(listText)
-    }
-
-    private List<String> getDirectModuleNames(File sourceDirectory, String cpanmExecutablePath) {
-        def executable = new Executable(sourceDirectory, cpanmExecutablePath, ['--showdeps', '.'])
-        ExecutableOutput executableOutput = executableRunner.execute(executable)
-        String lines = executableOutput.getStandardOutput()
-
+    private List<String> getDirectModuleNames(String directDependenciesText) {
         List<String> modules = []
-        for (String line : lines.split('\n')) {
+        for (String line : directDependenciesText.split('\n')) {
             if (!line?.trim()) {
                 continue
             }

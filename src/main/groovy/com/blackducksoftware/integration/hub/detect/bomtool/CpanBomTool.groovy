@@ -22,6 +22,8 @@ import com.blackducksoftware.integration.hub.detect.bomtool.cpan.CpanPackager
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
+import com.blackducksoftware.integration.hub.detect.util.executable.Executable
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput
 
 @Component
 class CpanBomTool extends BomTool {
@@ -47,7 +49,15 @@ class CpanBomTool extends BomTool {
 
     @Override
     public List<DetectCodeLocation> extractDetectCodeLocations() {
-        Set<DependencyNode> dependenciesSet = cpanPackager.makeDependencyNodes(detectConfiguration.sourceDirectory, cpanExecutablePath, cpanmExecutablePath)
+        def cpanListExecutable = new Executable(sourceDirectory, cpanExecutablePath, ['-l'])
+        ExecutableOutput cpanListOutput = executableRunner.execute(cpanListExecutable)
+        String listText = cpanListOutput.getStandardOutput()
+
+        def cpanmShowdepsExecutable = new Executable(sourceDirectory, cpanmExecutablePath, ['--showdeps', '.'])
+        ExecutableOutput showdepsOutput = executableRunner.execute(cpanmShowdepsExecutable)
+        String showdeps = showdepsOutput.getStandardOutput()
+
+        Set<DependencyNode> dependenciesSet = cpanPackager.makeDependencyNodes(detectConfiguration.sourceDirectory, listText, showdeps)
         ExternalId externalId = new PathExternalId(Forge.CPAN, detectConfiguration.sourcePath)
         def detectCodeLocation = new DetectCodeLocation(BomToolType.CPAN, detectConfiguration.sourcePath, "", "", externalId, dependenciesSet)
 

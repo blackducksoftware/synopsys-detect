@@ -65,7 +65,7 @@ class ExecutableManager {
     }
 
     String getPathOfExecutable(ExecutableType executableType, String defaultPath) {
-        if(defaultPath?.trim()) {
+        if (defaultPath?.trim()) {
             return defaultPath
         }
 
