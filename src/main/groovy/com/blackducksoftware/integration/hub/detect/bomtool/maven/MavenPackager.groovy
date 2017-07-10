@@ -29,34 +29,19 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
-import com.blackducksoftware.integration.hub.detect.util.executable.Executable
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
 
 @Component
 public class MavenPackager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass())
 
     @Autowired
-    ExecutableRunner executableRunner
-
-    @Autowired
     DetectConfiguration detectConfiguration
 
-    public List<DependencyNode> makeDependencyNodes(String sourcePath, String mavenExecutable) {
+    public List<DependencyNode> makeDependencyNodes(String mavenOutput) {
         final List<DependencyNode> projects = []
-
-        File sourceDirectory = new File(sourcePath)
-
-        def arguments = ["dependency:tree"]
-        if (detectConfiguration.getMavenScope()?.trim()) {
-            arguments.add("-Dscope=${detectConfiguration.getMavenScope()}")
-        }
-        final Executable mvnExecutable = new Executable(sourceDirectory, mavenExecutable, arguments)
-        final ExecutableOutput mvnOutput = executableRunner.execute(mvnExecutable)
-
         final MavenOutputParser mavenOutputParser = new MavenOutputParser()
-        projects.addAll(mavenOutputParser.parse(mvnOutput.standardOutput))
+
+        projects.addAll(mavenOutputParser.parse(mavenOutput))
 
         if (detectConfiguration.getMavenAggregateBom() && !projects.isEmpty()) {
             final DependencyNode firstNode = projects.remove(0)
