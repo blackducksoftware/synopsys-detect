@@ -41,7 +41,7 @@ class NpmBomTool extends BomTool {
     public static final String OUTPUT_FILE = 'detect_npm_proj_dependencies.json'
     public static final String ERROR_FILE = 'detect_npm_error.json'
 
-    private String npmExe
+    private String npmExePath
 
     @Autowired
     NpmCliDependencyFinder cliDependencyFinder
@@ -55,23 +55,33 @@ class NpmBomTool extends BomTool {
     public boolean isBomToolApplicable() {
         boolean containsNodeModules = detectFileManager.containsAllFiles(sourcePath, NODE_MODULES)
         boolean containsPackageJson = detectFileManager.containsAllFiles(sourcePath, PACKAGE_JSON)
-        npmExe = detectConfiguration.getNpmPath() ? detectConfiguration.getNpmPath() : executableManager.getPathOfExecutable(ExecutableType.NPM)
+        npmExePath = detectConfiguration.getNpmPath() ? detectConfiguration.getNpmPath() : executableManager.getPathOfExecutable(ExecutableType.NPM)
 
         if (containsPackageJson && !containsNodeModules) {
-            logger.error("package.json was located in ${sourcePath}, but the node_modules folder was NOT located. Please run 'npm install' in that location and try again.")
+            logger.warn("package.json was located in ${sourcePath}, but the node_modules folder was NOT located. Please run 'npm install' in that location and try again.")
         }
 
-        if (!npmExe) {
-            logger.error("No npm executable located on machine. Please install npm and try running again")
+        if (!npmExePath) {
+            logger.warn("No npm executable located on machine. Please install npm and try running again")
         }
 
-        containsNodeModules && npmExe
+        containsNodeModules && npmExePath
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
-        def dependencyNode = cliDependencyFinder.generateDependencyNode(sourcePath, npmExe)
-        def detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, dependencyNode)
+        File npmLsOutputFile = detectFileManager.createFile(BomToolType.NPM, NpmBomTool.OUTPUT_FILE)
+        File npmLsErrorFile = detectFileManager.createFile(BomToolType.NPM, NpmBomTool.ERROR_FILE)
+        def npmExe = runBomToolExe(npmExePath, npmLsOutputFile, npmLsErrorFile, 'ls', '-json')
 
-        [detectCodeLocation]
+        if (npmLsErrorFile.length() == 0) {
+            def dependencyNode = cliDependencyFinder.generateDependencyNode(npmLsOutputFile)
+            def detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, dependencyNode)
+
+            [detectCodeLocation]
+        } else {
+            logger.error("Error when running npm ls command\n${npmLsErrorFile.text}")
+        }
+
+        []
     }
 }

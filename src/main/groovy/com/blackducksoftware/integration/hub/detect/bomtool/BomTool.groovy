@@ -73,4 +73,9 @@ abstract class BomTool {
         def bomToolExe = new Executable(new File(sourcePath), bomToolExePath, args.toList())
         executableRunner.execute(bomToolExe)
     }
+
+    def runBomToolExeToFile(String bomToolExePath, File outputFile, File errorFile, String... args) {
+        def bomToolExe = new Executable(new File(sourcePath), bomToolExePath, args.toList())
+        executableRunner.executeToFile(bomToolExe, outputFile, errorFile)
+    }
 }
