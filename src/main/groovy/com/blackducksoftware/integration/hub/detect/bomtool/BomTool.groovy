@@ -69,11 +69,14 @@ abstract class BomTool {
     }
 
     String getHashVersion(String text) {
-        def version = DigestUtils.sha1Hex(text.getBytes())
-        if(detectConfiguration.getShortHash()) {
-            version = version.substring(0, 6)
+        if(detectConfiguration.getHashVersion()) {
+            def version = DigestUtils.sha1Hex(text.getBytes())
+            if(detectConfiguration.getShortHash()) {
+                version = version.substring(0, 6)
+            }
+            return version
         }
 
-        version
+        ''
     }
 }
