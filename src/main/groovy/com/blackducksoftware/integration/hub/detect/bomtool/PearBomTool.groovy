@@ -15,14 +15,20 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.bomtool.pear.PearDependencyFinder
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
+import com.blackducksoftware.integration.hub.detect.util.executable.Executable
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput
 
 @Component
 class PearBomTool extends BomTool {
     private String pearExePath
+    final static Forge PEAR = new Forge('pear', '/')
 
     @Autowired
     PearDependencyFinder pearDependencyFinder
@@ -42,8 +48,20 @@ class PearBomTool extends BomTool {
 
     @Override
     public List<DetectCodeLocation> extractDetectCodeLocations() {
-        DependencyNode rootDependencyNode = pearDependencyFinder.parsePearDependencyList(sourcePath, pearExePath)
-        def detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, rootDependencyNode)
+        ExecutableOutput pearListing = runExe('list')
+        ExecutableOutput pearDependencies = runExe('package-dependencies', 'package.xml')
+
+        NameVersionNodeImpl nameVersionModel = pearDependencyFinder.findNameVersion(sourcePath)
+
+        Set<DependencyNode> childDependencyNodes = pearDependencyFinder.parsePearDependencyList(pearListing, pearDependencies)
+        def detectCodeLocation = new DetectCodeLocation(
+                getBomToolType(),
+                sourcePath,
+                nameVersionModel.name,
+                nameVersionModel.version,
+                new NameVersionExternalId(PEAR, nameVersionModel.name, nameVersionModel.version),
+                childDependencyNodes
+                )
 
         [detectCodeLocation]
     }
@@ -54,5 +72,12 @@ class PearBomTool extends BomTool {
         }
 
         executableManager.getPathOfExecutable(ExecutableType.PEAR)
+    }
+
+    private ExecutableOutput runExe(String... commands) {
+        def pearExe = new Executable(new File(sourcePath), pearExePath, commands.toList())
+
+        ExecutableOutput pearExeOutput = executableRunner.execute(pearExe)
+        pearExeOutput
     }
 }

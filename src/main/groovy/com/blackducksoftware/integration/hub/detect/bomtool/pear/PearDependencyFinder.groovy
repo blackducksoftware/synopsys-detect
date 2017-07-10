@@ -18,18 +18,17 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
+import com.blackducksoftware.integration.hub.detect.bomtool.PearBomTool
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
-import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
 
 @Component
 class PearDependencyFinder {
     private final Logger logger = LoggerFactory.getLogger(PearDependencyFinder.class)
-    private final Forge pear = new Forge('pear', '/')
 
     @Autowired
     DetectFileManager detectFileManager
@@ -40,28 +39,32 @@ class PearDependencyFinder {
     @Autowired
     DetectConfiguration detectConfiguration
 
-    public DependencyNode parsePearDependencyList(String rootDirectoryPath, String exePath) {
-        def pearListExe = new Executable(new File(rootDirectoryPath), exePath, ['list'])
-        def pearPackageDependencyExe = new Executable(new File(rootDirectoryPath), exePath, [
-            'package-dependencies',
-            'package.xml'
-        ])
+    public Set<DependencyNode> parsePearDependencyList(ExecutableOutput pearListing, ExecutableOutput pearDependencies) {
+        Set<DependencyNode> childNodes = []
 
-        ExecutableOutput pearPackageDependencyNames = executableRunner.execute(pearPackageDependencyExe)
-        ExecutableOutput pearDependencyList = executableRunner.execute(pearListExe)
-
-        if (pearDependencyList.errorOutput || pearPackageDependencyNames.errorOutput) {
+        if (pearDependencies.errorOutput || pearListing.errorOutput) {
             logger.error("There was an error during execution.")
-        } else if (!pearDependencyList.standardOutput || !pearPackageDependencyNames.standardOutput) {
+        } else if (!pearDependencies.standardOutput || !pearListing.standardOutput) {
             logger.error("No information retrieved from running pear commands")
         } else {
-            def nameList = findDependencyNames(pearPackageDependencyNames.standardOutput)
-            DependencyNode resultNode = createRootNode(rootDirectoryPath)
-            createPearDependencyNodeFromList(pearDependencyList.standardOutput, nameList, resultNode)
-            return resultNode
+            def nameList = findDependencyNames(pearDependencies.standardOutput)
+            childNodes = createPearDependencyNodeFromList(pearListing.standardOutput, nameList)
         }
 
-        []
+        childNodes
+    }
+
+    public NameVersionNodeImpl findNameVersion(String sourcePath) {
+        File packageFile = detectFileManager.findFile(sourcePath, 'package.xml')
+
+        def packageXml = new XmlSlurper().parseText(packageFile.text)
+        String rootName = packageXml.name
+        String rootVersion = packageXml.version.api
+
+        def nameVersionModel = new NameVersionNodeImpl()
+        nameVersionModel.name = rootName
+        nameVersionModel.version = rootVersion
+        nameVersionModel
     }
 
     private List<String> findDependencyNames(String list) {
@@ -97,18 +100,9 @@ class PearDependencyFinder {
         nameList
     }
 
-    private DependencyNode createRootNode(String sourcePath) {
-        File packageFile = detectFileManager.findFile(sourcePath, 'package.xml')
+    private Set<DependencyNode> createPearDependencyNodeFromList(String list, List<String> dependencyNames) {
+        Set<DependencyNode> childrenNodes = []
 
-        def packageXml = new XmlSlurper().parseText(packageFile.text)
-        String rootName = packageXml.name
-        String rootVersion = packageXml.version.api
-
-        def rootNode = new DependencyNode(rootName, rootVersion, new NameVersionExternalId(pear, rootName, rootVersion))
-        rootNode
-    }
-
-    private void createPearDependencyNodeFromList(String list, List<String> dependencyNames, DependencyNode parentNode) {
         String[] dependencyList = list.split('\n')
         def listing = dependencyList[3..-1]
 
@@ -126,10 +120,12 @@ class PearDependencyFinder {
             String nodeVersion = dependencyInfo[1].trim()
 
             if (dependencyInfo && dependencyNames.contains(nodeName)) {
-                def newNode = new DependencyNode(nodeName, nodeVersion, new NameVersionExternalId(pear, nodeName, nodeVersion))
+                def newNode = new DependencyNode(nodeName, nodeVersion, new NameVersionExternalId(PearBomTool.PEAR, nodeName, nodeVersion))
 
-                parentNode.children.add(newNode)
+                childrenNodes.add(newNode)
             }
         }
+
+        childrenNodes
     }
 }
