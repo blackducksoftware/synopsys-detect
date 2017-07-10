@@ -381,4 +381,8 @@ class DetectConfiguration {
     public boolean getShortHash() {
         return BooleanUtils.toBoolean(detectProperties.getShortHash())
     }
+
+    public String getVersionTimeFormat() {
+        return detectProperties.versionTimeFormat?.trim()
+    }
 }

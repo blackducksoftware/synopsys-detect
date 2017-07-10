@@ -32,8 +32,6 @@ import com.blackducksoftware.integration.hub.detect.type.BomToolType
 
 @Component
 class ProjectInfoGatherer {
-    public static final String DATE_FORMAT = 'yyyy-MM-dd\'T\'HH:mm:ss.SSS'
-
     @Autowired
     DetectConfiguration detectConfiguration
 
@@ -70,7 +68,7 @@ class ProjectInfoGatherer {
         if (detectConfiguration.getProjectVersionName()) {
             projectVersion = detectConfiguration.getProjectVersionName()
         } else if (!projectVersion) {
-            projectVersion = DateTime.now().toString(DATE_FORMAT)
+            projectVersion = DateTime.now().toString(detectConfiguration.getVersionTimeFormat())
         }
 
         projectVersion
