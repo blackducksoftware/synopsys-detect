@@ -98,8 +98,10 @@ class HubManager {
             MetaService metaService = hubServicesFactory.createMetaService(slf4jIntLogger)
             String componentsLink = metaService.getFirstLinkSafely(projectVersionWrapper.getProjectVersionView(), MetaService.COMPONENTS_LINK)
             logger.info("To see your results, follow the URL: ${componentsLink}")
-        } catch (Exception e) {
+        } catch (IllegalStateException e) {
             logger.error("Your Hub configuration is not valid: ${e.message}")
+        } catch (Exception e) {
+            logger.error("There was a problem communicating with the Hub : ${e.message}")
         }
     }
 }
