@@ -72,7 +72,7 @@ abstract class BomTool {
         if(detectConfiguration.getHashVersion()) {
             def version = DigestUtils.sha1Hex(text.getBytes())
             if(detectConfiguration.getShortHash()) {
-                version = version.substring(0, 6)
+                version = version.substring(0, 7)
             }
             return version
         }
