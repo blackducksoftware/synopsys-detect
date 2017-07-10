@@ -26,15 +26,9 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.GoDepBomTool
-import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
 import com.moandjiezana.toml.Toml
 
 class GopkgLockParser {
-    private final ProjectInfoGatherer projectInfoGatherer
-
-    public GopkgLockParser(ProjectInfoGatherer projectInfoGatherer) {
-        this.projectInfoGatherer = projectInfoGatherer
-    }
 
     public List<DependencyNode> parseDepLock(String depLockContents) {
         List<DependencyNode> nodes = new ArrayList<>()

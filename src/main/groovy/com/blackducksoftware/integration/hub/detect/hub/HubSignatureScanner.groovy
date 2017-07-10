@@ -68,29 +68,24 @@ class HubSignatureScanner {
         }
     }
 
-    public void scanFiles(DetectProject detectProject) {
-        try {
-            Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
-            HubServerConfig hubServerConfig = hubManager.createHubServerConfig(slf4jIntLogger)
-            HubServicesFactory hubServicesFactory = hubManager.createHubServicesFactory(slf4jIntLogger, hubServerConfig)
-            CLIDataService cliDataService = hubServicesFactory.createCLIDataService(slf4jIntLogger, 120000L)
+    public void scanFiles(HubServerConfig hubServerConfig, DetectProject detectProject) {
+        Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
+        HubServicesFactory hubServicesFactory = hubManager.createHubServicesFactory(slf4jIntLogger, hubServerConfig)
+        CLIDataService cliDataService = hubServicesFactory.createCLIDataService(slf4jIntLogger, 120000L)
 
-            if (detectProject.projectName && detectProject.projectVersionName && detectConfiguration.hubSignatureScannerPaths) {
-                detectConfiguration.hubSignatureScannerPaths.each {
-                    scanDirectory(cliDataService, hubServerConfig, new File(it), detectProject.projectName, detectProject.projectVersionName)
-                }
-            } else {
-                registeredDirectories.each {
-                    logger.info("Attempting to scan ${it.canonicalPath} for ${detectProject.projectName}/${detectProject.projectVersionName}")
-                    try {
-                        scanDirectory(cliDataService, hubServerConfig, it, detectProject.projectName, detectProject.projectVersionName)
-                    } catch (Exception e) {
-                        logger.error("Not able to scan ${it.canonicalPath}: ${e.message}")
-                    }
+        if (detectProject.projectName && detectProject.projectVersionName && detectConfiguration.hubSignatureScannerPaths) {
+            detectConfiguration.hubSignatureScannerPaths.each {
+                scanDirectory(cliDataService, hubServerConfig, new File(it), detectProject.projectName, detectProject.projectVersionName)
+            }
+        } else {
+            registeredDirectories.each {
+                logger.info("Attempting to scan ${it.canonicalPath} for ${detectProject.projectName}/${detectProject.projectVersionName}")
+                try {
+                    scanDirectory(cliDataService, hubServerConfig, it, detectProject.projectName, detectProject.projectVersionName)
+                } catch (Exception e) {
+                    logger.error("Not able to scan ${it.canonicalPath}: ${e.message}")
                 }
             }
-        } catch (Exception e) {
-            logger.error("Your Hub configuration is not valid: ${e.message}")
         }
     }
 

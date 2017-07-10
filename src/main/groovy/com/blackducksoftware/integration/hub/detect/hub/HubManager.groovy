@@ -22,11 +22,14 @@
  */
 package com.blackducksoftware.integration.hub.detect.hub
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.builder.HubServerConfigBuilder
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
+import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
 import com.blackducksoftware.integration.hub.global.HubServerConfig
 import com.blackducksoftware.integration.hub.rest.RestConnection
 import com.blackducksoftware.integration.hub.service.HubServicesFactory
@@ -34,8 +37,19 @@ import com.blackducksoftware.integration.log.Slf4jIntLogger
 
 @Component
 class HubManager {
+    private final Logger logger = LoggerFactory.getLogger(HubManager.class)
+
     @Autowired
     DetectConfiguration detectConfiguration
+
+    @Autowired
+    BdioUploader bdioUploader
+
+    @Autowired
+    HubSignatureScanner hubSignatureScanner
+
+    @Autowired
+    PolicyChecker policyChecker
 
     public HubServicesFactory createHubServicesFactory(Slf4jIntLogger slf4jIntLogger, HubServerConfig hubServerConfig) {
         RestConnection restConnection = hubServerConfig.createCredentialsRestConnection(slf4jIntLogger)
@@ -59,5 +73,24 @@ class HubManager {
         hubServerConfigBuilder.setLogger(slf4jIntLogger)
 
         hubServerConfigBuilder.build()
+    }
+
+    public void performPostActions(DetectProject detectProject, List<File> createdBdioFiles){
+        try {
+            Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
+            HubServerConfig hubServerConfig = createHubServerConfig(slf4jIntLogger)
+
+            bdioUploader.uploadBdioFiles(hubServerConfig, createdBdioFiles)
+            if (!detectConfiguration.getHubSignatureScannerDisabled()) {
+                hubSignatureScanner.scanFiles(hubServerConfig, detectProject)
+            }
+
+            if (detectConfiguration.getPolicyCheck()) {
+                String policyStatusMessage = policyChecker.getPolicyStatusMessage(hubServerConfig, detectProject)
+                logger.info(policyStatusMessage)
+            }
+        } catch (Exception e) {
+            logger.error("Your Hub configuration is not valid: ${e.message}")
+        }
     }
 }

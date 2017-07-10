@@ -61,9 +61,8 @@ class PolicyChecker {
      * all of its code locations, then all of their scan summaries, wait until
      * they are all complete, then get the policy status.
      */
-    public String getPolicyStatusMessage(DetectProject detectProject) throws DetectException {
+    public String getPolicyStatusMessage(HubServerConfig hubServerConfig, DetectProject detectProject) throws DetectException {
         Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
-        HubServerConfig hubServerConfig = hubManager.createHubServerConfig(slf4jIntLogger)
         HubServicesFactory hubServicesFactory = hubManager.createHubServicesFactory(slf4jIntLogger, hubServerConfig)
 
         ProjectDataService projectDataService = hubServicesFactory.createProjectDataService(slf4jIntLogger)

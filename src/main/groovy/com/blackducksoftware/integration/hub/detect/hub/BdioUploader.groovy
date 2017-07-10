@@ -49,31 +49,25 @@ class BdioUploader {
     @Autowired
     HubManager hubManager
 
-    void uploadBdioFiles(List<File> createdBdioFiles) {
+    void uploadBdioFiles(HubServerConfig hubServerConfig, List<File> createdBdioFiles) {
         if (!createdBdioFiles) {
             return
         }
+        Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
+        HubServicesFactory hubServicesFactory = hubManager.createHubServicesFactory(slf4jIntLogger, hubServerConfig)
+        BomImportRequestService bomImportRequestService = hubServicesFactory.createBomImportRequestService()
+        PhoneHomeDataService phoneHomeDataService = hubServicesFactory.createPhoneHomeDataService(slf4jIntLogger)
 
-        try {
-            Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
-            HubServerConfig hubServerConfig = hubManager.createHubServerConfig(slf4jIntLogger)
-            HubServicesFactory hubServicesFactory = hubManager.createHubServicesFactory(slf4jIntLogger, hubServerConfig)
-            BomImportRequestService bomImportRequestService = hubServicesFactory.createBomImportRequestService()
-            PhoneHomeDataService phoneHomeDataService = hubServicesFactory.createPhoneHomeDataService(slf4jIntLogger)
-
-            createdBdioFiles.each { file ->
-                logger.info("uploading ${file.name} to ${detectConfiguration.getHubUrl()}")
-                bomImportRequestService.importBomFile(file, BuildToolConstants.BDIO_FILE_MEDIA_TYPE)
-                if (detectConfiguration.getCleanupBdioFiles()) {
-                    file.delete()
-                }
+        createdBdioFiles.each { file ->
+            logger.info("uploading ${file.name} to ${detectConfiguration.getHubUrl()}")
+            bomImportRequestService.importBomFile(file, BuildToolConstants.BDIO_FILE_MEDIA_TYPE)
+            if (detectConfiguration.getCleanupBdioFiles()) {
+                file.delete()
             }
-
-            String hubDetectVersion = ResourceUtil.getResourceAsString('version.txt', StandardCharsets.UTF_8)
-            IntegrationInfo integrationInfo = new IntegrationInfo('Hub-Detect', hubDetectVersion, hubDetectVersion)
-            phoneHomeDataService.phoneHome(hubServerConfig, integrationInfo)
-        } catch (Exception e) {
-            logger.error("Your Hub configuration is not valid: ${e.message}")
         }
+
+        String hubDetectVersion = ResourceUtil.getResourceAsString('version.txt', StandardCharsets.UTF_8)
+        IntegrationInfo integrationInfo = new IntegrationInfo('Hub-Detect', hubDetectVersion, hubDetectVersion)
+        phoneHomeDataService.phoneHome(hubServerConfig, integrationInfo)
     }
 }
