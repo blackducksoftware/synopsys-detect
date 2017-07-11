@@ -31,7 +31,6 @@ import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmCliDependency
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
-import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 
 @Component
 class NpmBomTool extends BomTool {
@@ -72,7 +71,7 @@ class NpmBomTool extends BomTool {
     List<DetectCodeLocation> extractDetectCodeLocations() {
         File npmLsOutputFile = detectFileManager.createFile(BomToolType.NPM, NpmBomTool.OUTPUT_FILE)
         File npmLsErrorFile = detectFileManager.createFile(BomToolType.NPM, NpmBomTool.ERROR_FILE)
-        def npmExe = runBomToolExeToFile(npmExePath, npmLsOutputFile, npmLsErrorFile, 'ls', '-json')
+        def npmExe = executableRunner.runExeToFile(npmExePath, npmLsOutputFile, npmLsErrorFile, 'ls', '-json')
 
         if (npmLsErrorFile.length() == 0) {
             def dependencyNode = cliDependencyFinder.generateDependencyNode(npmLsOutputFile)
@@ -84,10 +83,5 @@ class NpmBomTool extends BomTool {
         }
 
         []
-    }
-
-    def runBomToolExeToFile(String bomToolExePath, File outputFile, File errorFile, String... args) {
-        def bomToolExe = new Executable(new File(sourcePath), bomToolExePath, args.toList())
-        executableRunner.executeToFile(bomToolExe, outputFile, errorFile)
     }
 }
