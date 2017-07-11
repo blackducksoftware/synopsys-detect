@@ -61,7 +61,7 @@ class NpmBomTool extends BomTool {
             logger.warn("package.json was located in ${sourcePath}, but the node_modules folder was NOT located. Please run 'npm install' in that location and try again.")
         }
 
-        if (!npmExePath) {
+        if ((containsPackageJson && containsNodeModules) && !npmExePath) {
             logger.warn("No npm executable located on machine. Please install npm and try running again")
         }
 
