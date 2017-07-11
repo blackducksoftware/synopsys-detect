@@ -22,8 +22,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.maven
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -32,26 +30,23 @@ import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 
 @Component
 public class MavenPackager {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass())
-
     @Autowired
     DetectConfiguration detectConfiguration
 
-    public List<DependencyNode> makeDependencyNodes(String mavenOutput) {
-        final List<DependencyNode> projects = []
-        final MavenOutputParser mavenOutputParser = new MavenOutputParser()
+    @Autowired
+    MavenOutputParser mavenOutputParser
 
-        projects.addAll(mavenOutputParser.parse(mavenOutput))
+    public List<DependencyNode> makeDependencyNodes(String mavenOutput) {
+        List<DependencyNode> projects = mavenOutputParser.parse(mavenOutput)
 
         if (detectConfiguration.getMavenAggregateBom() && !projects.isEmpty()) {
-            final DependencyNode firstNode = projects.remove(0)
+            final DependencyNode rootNode = projects.remove(0)
             projects.each { subProject ->
-                firstNode.children.addAll(subProject.children)
+                rootNode.children.addAll(subProject.children)
             }
-            projects.clear()
-            projects.add(firstNode)
+            return [rootNode]
         }
 
-        return projects
+        projects
     }
 }
