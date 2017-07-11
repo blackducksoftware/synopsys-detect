@@ -29,6 +29,7 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.api.item.MetaService
 import com.blackducksoftware.integration.hub.builder.HubServerConfigBuilder
+import com.blackducksoftware.integration.hub.dataservice.policystatus.PolicyStatusDescription
 import com.blackducksoftware.integration.hub.dataservice.project.ProjectDataService
 import com.blackducksoftware.integration.hub.dataservice.project.ProjectVersionWrapper
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
@@ -90,8 +91,12 @@ class HubManager {
             }
 
             if (detectConfiguration.getPolicyCheck()) {
-                String policyStatusMessage = policyChecker.getPolicyStatusMessage(hubServicesFactory, detectProject)
-                logger.info(policyStatusMessage)
+                PolicyStatusDescription policyStatusMessage = policyChecker.getPolicyStatus(hubServicesFactory, detectProject)
+                logger.info(policyStatusMessage.getPolicyStatusMessage())
+                if(policyStatusMessage.getCountInViolation().value > 0) {
+                    logger.info("${policyStatusMessage.getCountInViolation().value} violation(s) detected, exiting application")
+                    System.exit(1)
+                }
             }
             ProjectDataService projectDataService = hubServicesFactory.createProjectDataService(slf4jIntLogger)
             ProjectVersionWrapper projectVersionWrapper = projectDataService.getProjectVersion(detectProject.getProjectName(), detectProject.getProjectVersionName())

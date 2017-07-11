@@ -60,7 +60,7 @@ class PolicyChecker {
      * all of its code locations, then all of their scan summaries, wait until
      * they are all complete, then get the policy status.
      */
-    public String getPolicyStatusMessage(HubServicesFactory hubServicesFactory, DetectProject detectProject) throws DetectException {
+    public PolicyStatusDescription getPolicyStatus(HubServicesFactory hubServicesFactory, DetectProject detectProject) throws DetectException {
         Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
 
         ProjectDataService projectDataService = hubServicesFactory.createProjectDataService(slf4jIntLogger)
@@ -92,6 +92,6 @@ class PolicyChecker {
         VersionBomPolicyStatusView versionBomPolicyStatusView = policyStatusDataService.getPolicyStatusForProjectAndVersion(projectName, projectVersionName)
         PolicyStatusDescription policyStatusDescription = new PolicyStatusDescription(versionBomPolicyStatusView)
 
-        policyStatusDescription.policyStatusMessage
+        policyStatusDescription
     }
 }
