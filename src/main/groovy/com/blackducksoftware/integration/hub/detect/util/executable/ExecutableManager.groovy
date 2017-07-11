@@ -70,7 +70,7 @@ class ExecutableManager {
 
     String getPathOfExecutable(ExecutableType executableType, String defaultPath) {
         if (defaultPath?.trim()) {
-            if (findExecutableFile(defaultPath.trim()) {
+            if (findExecutableFile(defaultPath.trim())) {
                 return defaultPath.trim()
             }
         }
