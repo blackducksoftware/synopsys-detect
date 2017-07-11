@@ -23,7 +23,6 @@
 package com.blackducksoftware.integration.hub.detect.util
 
 import org.apache.commons.io.FilenameUtils
-import org.joda.time.DateTime
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -67,10 +66,8 @@ class ProjectInfoGatherer {
 
         if (detectConfiguration.getProjectVersionName()) {
             projectVersion = detectConfiguration.getProjectVersionName()
-        } else if (bomToolFileHash) {
-            projectVersion = bomToolFileHash
         } else if (!projectVersion) {
-            projectVersion = DateTime.now().toString(detectConfiguration.getVersionTimeFormat())
+            projectVersion = 'Detect Unkown Version'
         }
 
         projectVersion
