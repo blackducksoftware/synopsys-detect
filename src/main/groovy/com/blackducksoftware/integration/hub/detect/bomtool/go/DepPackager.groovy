@@ -29,12 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
-import com.blackducksoftware.integration.hub.detect.bomtool.GoDepBomTool
-import com.blackducksoftware.integration.hub.detect.type.BomToolType
-import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException
@@ -51,23 +46,15 @@ class DepPackager {
     Gson gson
 
     @Autowired
-    ProjectInfoGatherer projectInfoGatherer
-
-    @Autowired
     DetectConfiguration detectConfiguration
 
-    public DependencyNode makeDependencyNodes(final String sourcePath, String goDepExecutable) {
-        final String rootName = projectInfoGatherer.getProjectName(BomToolType.GO_DEP, sourcePath)
-        final String rootVersion = projectInfoGatherer.getProjectVersionName()
-        final ExternalId rootExternalId = new NameVersionExternalId(GoDepBomTool.GOLANG, rootName, rootVersion)
-        final DependencyNode root = new DependencyNode(rootName, rootVersion, rootExternalId)
-        GopkgLockParser gopkgLockParser = new GopkgLockParser(projectInfoGatherer)
+    public List<DependencyNode> makeDependencyNodes(final String sourcePath, String goDepExecutable) {
+        GopkgLockParser gopkgLockParser = new GopkgLockParser()
         String goDepContents = getGopkgLockContents(new File(sourcePath), goDepExecutable)
         if (goDepContents?.trim()) {
-            def children = gopkgLockParser.parseDepLock(goDepContents)
-            root.children.addAll(children)
+            return gopkgLockParser.parseDepLock(goDepContents)
         }
-        return root
+        return []
     }
 
     private String getGopkgLockContents(File file, String goDepExecutable) {

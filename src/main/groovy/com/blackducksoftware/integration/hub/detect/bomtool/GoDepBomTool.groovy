@@ -30,6 +30,8 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.PathExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.go.DepPackager
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
@@ -77,8 +79,9 @@ class GoDepBomTool extends BomTool {
     List<DetectCodeLocation> extractDetectCodeLocations() {
         String goDepExecutable = findGoDepExecutable()
 
-        DependencyNode rootProjectNode = goPackager.makeDependencyNodes(sourcePath, goDepExecutable)
-        DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, rootProjectNode)
+        List<DependencyNode> dependencies = goPackager.makeDependencyNodes(sourcePath, goDepExecutable)
+        ExternalId externalId = new PathExternalId(GOLANG, sourcePath)
+        DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, "", "", externalId, new HashSet(dependencies))
 
         [detectCodeLocation]
     }

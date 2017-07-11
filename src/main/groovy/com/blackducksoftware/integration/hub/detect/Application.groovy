@@ -39,9 +39,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.Extern
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
 import com.blackducksoftware.integration.hub.detect.help.HelpPrinter
 import com.blackducksoftware.integration.hub.detect.help.ValueDescriptionAnnotationFinder
-import com.blackducksoftware.integration.hub.detect.hub.BdioUploader
-import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
-import com.blackducksoftware.integration.hub.detect.hub.PolicyChecker
+import com.blackducksoftware.integration.hub.detect.hub.HubManager
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -62,8 +60,6 @@ class Application {
     @Autowired
     DetectProjectManager detectProjectManager
 
-    @Autowired
-    HubSignatureScanner hubSignatureScanner
 
     @Autowired
     BdioPropertyHelper bdioPropertyHelper
@@ -72,16 +68,13 @@ class Application {
     BdioNodeFactory bdioNodeFactory
 
     @Autowired
-    BdioUploader bdioUploader
-
-    @Autowired
-    PolicyChecker policyChecker
-
-    @Autowired
     ApplicationArguments applicationArguments
 
     @Autowired
     HelpPrinter helpPrinter
+
+    @Autowired
+    HubManager hubManager
 
     static void main(final String[] args) {
         new SpringApplicationBuilder(Application.class).logStartupInfo(false).run(args)
@@ -101,15 +94,7 @@ class Application {
             }
             DetectProject detectProject = detectProjectManager.createDetectProject()
             List<File> createdBdioFiles = detectProjectManager.createBdioFiles(detectProject)
-            bdioUploader.uploadBdioFiles(createdBdioFiles)
-            if (!detectConfiguration.getHubSignatureScannerDisabled()) {
-                hubSignatureScanner.scanFiles(detectProject)
-            }
-
-            if (detectConfiguration.getPolicyCheck()) {
-                String policyStatusMessage = policyChecker.getPolicyStatusMessage(detectProject)
-                logger.info(policyStatusMessage)
-            }
+            hubManager.performPostActions(detectProject, createdBdioFiles)
         }
     }
 
