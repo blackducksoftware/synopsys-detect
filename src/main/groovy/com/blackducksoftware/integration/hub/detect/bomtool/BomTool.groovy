@@ -68,7 +68,7 @@ abstract class BomTool {
         detectConfiguration.sourceDirectory
     }
 
-    String getHashVersion(String text) {
+    String getHash(String text) {
         if(detectConfiguration.getHashVersion()) {
             def version = DigestUtils.sha1Hex(text.getBytes())
             if(detectConfiguration.getShortHash()) {

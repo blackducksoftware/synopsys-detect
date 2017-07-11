@@ -59,14 +59,16 @@ class ProjectInfoGatherer {
     }
 
     String getProjectVersionName() {
-        getProjectVersionName(null)
+        getProjectVersionName(null, null)
     }
 
-    String getProjectVersionName(final String defaultVersionName) {
+    String getProjectVersionName(final String defaultVersionName, final String bomToolFileHash) {
         String projectVersion = defaultVersionName?.trim()
 
         if (detectConfiguration.getProjectVersionName()) {
             projectVersion = detectConfiguration.getProjectVersionName()
+        } else if (bomToolFileHash) {
+            projectVersion = bomToolFileHash
         } else if (!projectVersion) {
             projectVersion = DateTime.now().toString(detectConfiguration.getVersionTimeFormat())
         }

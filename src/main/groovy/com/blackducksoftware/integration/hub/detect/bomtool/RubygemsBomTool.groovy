@@ -57,9 +57,9 @@ class RubygemsBomTool extends BomTool {
         List<DependencyNode> dependencies = rubygemsNodePackager.extractProjectDependencies(gemlockText)
         Set<DependencyNode> dependenciesSet = new HashSet<>(dependencies)
         ExternalId externalId = new PathExternalId(Forge.RUBYGEMS, sourcePath)
-        String version = getHashVersion(gemlockText)
+        String hash = getHash(gemlockText)
 
-        def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, "", version, externalId, dependenciesSet)
+        def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, '', '', hash, externalId, dependenciesSet)
         [codeLocation]
     }
 }

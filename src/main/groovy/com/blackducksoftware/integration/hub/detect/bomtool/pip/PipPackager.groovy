@@ -112,7 +112,7 @@ class PipPackager {
 
         DependencyNode project = parser.parse(nameVersionNodeTransformer, inspectorOutput)
         project.name = projectInfoGatherer.getProjectName(detectConfiguration.sourcePath, project.name)
-        project.version = projectInfoGatherer.getProjectVersionName(project.version)
+        project.version = projectInfoGatherer.getProjectVersionName(project.version, null)
         project.externalId = new NameVersionExternalId(Forge.PYPI, project.name, project.version)
 
         project
