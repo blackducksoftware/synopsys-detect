@@ -22,13 +22,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.cran;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;import java.io.ObjectOutputStream.ReplaceTable
-import java.util.ArrayList;
-import java.util.HashSet;
-
-
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -36,7 +29,8 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode;
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeBuilder;
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl;import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl;
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 
 public class PackRatNodeParser {
 
@@ -51,61 +45,54 @@ public class PackRatNodeParser {
 	private boolean inDependenciesSection = false
 
 	void parseProjectDependencies(NameVersionNodeTransformer nameVersionNodeTransformer, DependencyNode rootProject, final String packratLockContents, Forge CRAN) {
-		        rootNameVersionNode = new NameVersionNodeImpl([name: rootProject.name, version: rootProject.version])
-		        nameVersionNodeBuilder = new NameVersionNodeBuilder(rootNameVersionNode)
-		        directDependencyNames = new HashSet<>()
-		        currentParent = rootNameVersionNode
-				
-				String[] lines = packratLockContents.split("\n")
-				String name;
-				String version;
-		
-				for (String line : lines) {
-						
-						
-						if (line.contains("Package")){
-							name = line.replace("Package: ", "").trim();
-							directDependencyNames.add(name)
-						}
-						
-						if(line.contains("Version")){
-							version = line.replace("Version:", "").trim();
-						}
-						
-						currentParent = this.createNameVersionNodeImpl(name, version)
-						
-						if (line.contains("Requires")) {
-							String[] parts = line.replace("Requires","").split(",");
-							for (int i; i < parts.size(); i++){
-								NameVersionNode node = this.createNameVersionNodeImpl(parts[i], "")
-								nameVersionNodeBuilder.addChildNodeToParent(currentParent, node)
-								
-							}
-		
-					}
-					
-						currentParent = rootNameVersionNode
-		
-				}
-				
-				directDependencyNames.each { directDependencyName ->
-				NameVersionNode nameVersionNode = nameVersionNodeBuilder.nameToNodeMap[directDependencyName]
-				if (nameVersionNode) {
-					DependencyNode directDependencyNode = nameVersionNodeTransformer.createDependencyNode(CRAN, nameVersionNode)
-					rootProject.children.add(directDependencyNode)
-				} else {
-					logger.error("Could not find ${directDependencyName} in the populated map.")
+		rootNameVersionNode = new NameVersionNodeImpl([name: rootProject.name, version: rootProject.version])
+		nameVersionNodeBuilder = new NameVersionNodeBuilder(rootNameVersionNode)
+		directDependencyNames = new HashSet<>()
+		currentParent = rootNameVersionNode
+
+		String[] lines = packratLockContents.split("\n")
+		String name;
+		String version;
+
+		for (String line : lines) {
+
+
+			if (line.contains("Package")){
+				name = line.replace("Package: ", "").trim();
+				directDependencyNames.add(name)
+				continue
+			}
+
+			if(line.contains("Version")){
+				version = line.replace("Version:", "").trim();
+			}
+
+			currentParent = this.createNameVersionNodeImpl(name, version)
+
+			if (line.contains("Requires")) {
+				String[] parts = line.replace("Requires","").split(",");
+				for (int i; i < parts.size(); i++){
+					NameVersionNode node = this.createNameVersionNodeImpl(parts[i], "")
+					nameVersionNodeBuilder.addChildNodeToParent(currentParent, node)
 				}
 			}
-		
-		
+
+			currentParent = rootNameVersionNode
+		}
+
+		directDependencyNames.each { directDependencyName ->
+			NameVersionNode nameVersionNode = nameVersionNodeBuilder.nameToNodeMap[directDependencyName]
+			if (nameVersionNode) {
+				DependencyNode directDependencyNode = nameVersionNodeTransformer.createDependencyNode(CRAN, nameVersionNode)
+				rootProject.children.add(directDependencyNode)
+			} else {
+				logger.error("Could not find ${directDependencyName} in the populated map.")
+			}
+		}
 	}
 
 
 	private NameVersionNode createNameVersionNodeImpl(String name, String version){
-	        return new NameVersionNodeImpl([name: name, version: version])
-	        
-		}
-	
-
+		return new NameVersionNodeImpl([name: name, version: version])
+	}
 }

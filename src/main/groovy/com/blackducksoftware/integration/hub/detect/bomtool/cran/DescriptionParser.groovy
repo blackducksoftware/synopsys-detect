@@ -21,20 +21,13 @@
  * under the License.
  */
 /* Unless required by applicable law or agreed to in writing,
-* software distributed under the License is distributed on an
-* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-* KIND, either express or implied. See the License for the
-* specific language governing permissions and limitations
-* under the License.
-*/
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package com.blackducksoftware.integration.hub.detect.bomtool.cran;
-
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;import java.io.ObjectOutputStream.ReplaceTable
-import java.util.ArrayList;
-import java.util.HashSet;
-
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -43,53 +36,42 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode;
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeBuilder;
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl;
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 
 public class DescriptionParser {
 
-   private final Logger logger = LoggerFactory.getLogger(PackRatNodeParser.class)
+	private final Logger logger = LoggerFactory.getLogger(PackRatNodeParser.class)
 
-   private NameVersionNode rootNameVersionNode
-   private NameVersionNodeBuilder nameVersionNodeBuilder
-   private HashSet<String> directDependencyNames
-   private NameVersionNode currentParent
+	private NameVersionNode rootNameVersionNode
+	private NameVersionNodeBuilder nameVersionNodeBuilder
+	private HashSet<String> directDependencyNames
+	private NameVersionNode currentParent
 
-   private boolean inSpecsSection = false
-   private boolean inDependenciesSection = false
-   
-   private NameVersionNodeTransformer nameVersionNodeTransformer
-   private DependencyNode rootProject 
-   private final String packratLockContents
-   private Forge CRAN
-   private String lines
+	private boolean inSpecsSection = false
+	private boolean inDependenciesSection = false
 
-   
-   
-   
-   String getProjectVersion(final String descriptionContents){
-	   String[] lines = descriptionContents.split("\n")
-	   String version;
-	   
-	   for (String line : lines) {
-			   
-			   
-			   if (line.contains("Version")){
-				   version = line.replace("Version: ", "").trim();
-				   break
-			   }
-			   
+	private NameVersionNodeTransformer nameVersionNodeTransformer
+	private DependencyNode rootProject
+	private final String packratLockContents
+	private Forge CRAN
+	private String lines
 
-	   }
-	   
-	   return version
-	   
-   }
 
-   
-   private NameVersionNode createNameVersionNodeImpl(String name, String version){
-	   return new NameVersionNodeImpl([name: name, version: version])
-	   
-   }
 
-} 
+
+	String getProjectVersion(final String descriptionContents){
+		String[] lines = descriptionContents.split("\n")
+		String version;
+
+		for (String line : lines) {
+
+
+			if (line.contains("Version")){
+				version = line.replace("Version: ", "").trim();
+				break
+			}
+		}
+
+		return version
+	}
+}
