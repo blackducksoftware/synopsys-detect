@@ -34,6 +34,8 @@ import com.blackducksoftware.integration.hub.dataservice.project.ProjectDataServ
 import com.blackducksoftware.integration.hub.dataservice.project.ProjectVersionWrapper
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
+import com.blackducksoftware.integration.hub.detect.exception.DetectException
+import com.blackducksoftware.integration.hub.detect.exception.PolicyViolationException
 import com.blackducksoftware.integration.hub.global.HubServerConfig
 import com.blackducksoftware.integration.hub.rest.RestConnection
 import com.blackducksoftware.integration.hub.service.HubServicesFactory
@@ -79,7 +81,7 @@ class HubManager {
         hubServerConfigBuilder.build()
     }
 
-    public void performPostActions(DetectProject detectProject, List<File> createdBdioFiles){
+    public void performPostActions(DetectProject detectProject, List<File> createdBdioFiles) throws DetectException{
         try {
             Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
             HubServerConfig hubServerConfig = createHubServerConfig(slf4jIntLogger)
@@ -93,9 +95,8 @@ class HubManager {
             if (detectConfiguration.getPolicyCheck()) {
                 PolicyStatusDescription policyStatusMessage = policyChecker.getPolicyStatus(hubServicesFactory, detectProject)
                 logger.info(policyStatusMessage.getPolicyStatusMessage())
-                if(policyStatusMessage.getCountInViolation().value > 0) {
-                    logger.info("${policyStatusMessage.getCountInViolation().value} violation(s) detected, exiting application")
-                    System.exit(1)
+                if (policyStatusMessage.getCountInViolation().value > 0) {
+                    throw new PolicyViolationException("${policyStatusMessage.getCountInViolation().value} violation(s) detected, exiting application", 1)
                 }
             }
             ProjectDataService projectDataService = hubServicesFactory.createProjectDataService(slf4jIntLogger)

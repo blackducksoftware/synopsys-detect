@@ -28,8 +28,10 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.ApplicationArguments
+import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.builder.SpringApplicationBuilder
+import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.Bean
 
 import com.blackducksoftware.integration.hub.bdio.simple.BdioNodeFactory
@@ -37,6 +39,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.BdioPropertyHelper
 import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeTransformer
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
+import com.blackducksoftware.integration.hub.detect.exception.PolicyViolationException
 import com.blackducksoftware.integration.hub.detect.help.HelpPrinter
 import com.blackducksoftware.integration.hub.detect.help.ValueDescriptionAnnotationFinder
 import com.blackducksoftware.integration.hub.detect.hub.HubManager
@@ -47,6 +50,7 @@ import com.google.gson.GsonBuilder
 @SpringBootApplication
 class Application {
     private final Logger logger = LoggerFactory.getLogger(Application.class)
+    //private static final SpringApplicationBuilder springApplicationBuilder = new SpringApplicationBuilder(Application.class)
 
     @Autowired
     ValueDescriptionAnnotationFinder valueDescriptionAnnotationFinder
@@ -59,7 +63,6 @@ class Application {
 
     @Autowired
     DetectProjectManager detectProjectManager
-
 
     @Autowired
     BdioPropertyHelper bdioPropertyHelper
@@ -75,6 +78,9 @@ class Application {
 
     @Autowired
     HubManager hubManager
+
+    @Autowired
+    ApplicationContext appContext
 
     static void main(final String[] args) {
         new SpringApplicationBuilder(Application.class).logStartupInfo(false).run(args)
@@ -94,7 +100,11 @@ class Application {
             }
             DetectProject detectProject = detectProjectManager.createDetectProject()
             List<File> createdBdioFiles = detectProjectManager.createBdioFiles(detectProject)
-            hubManager.performPostActions(detectProject, createdBdioFiles)
+            try {
+                hubManager.performPostActions(detectProject, createdBdioFiles)
+            } catch (PolicyViolationException policyViolation) {
+                SpringApplication.exit(appContext, policyViolation)
+            }
         }
     }
 
