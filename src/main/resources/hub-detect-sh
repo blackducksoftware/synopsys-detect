@@ -48,8 +48,10 @@ get_detect() {
     DETECT_SOURCE=$DETECT_LATEST_SNAPSHOT
   else
     echo "will look for release: ${DETECT_LATEST_RELEASE}"
-    DETECT_DESTINATION="${DETECT_JAR_PATH}/${DETECT_LATEST_RELEASE}"
-    DETECT_SOURCE=$DETECT_LATEST_RELEASE
+#    DETECT_DESTINATION="${DETECT_JAR_PATH}/${DETECT_LATEST_RELEASE}"
+#    DETECT_SOURCE=$DETECT_LATEST_RELEASE
+DETECT_DESTINATION="/Users/bmandel/git/hub-detect/build/libs/hub-detect-0.0.8-SNAPSHOT.jar"
+DETECT_SOURCE="hub-detect-0.0.8-SNAPSHOT.jar"
   fi
 
   USE_REMOTE=1
@@ -76,7 +78,7 @@ run_detect() {
   echo "#!/bin/sh" >> $DETECT_JAR_PATH/hub-detect-java.sh
   echo "" >> $DETECT_JAR_PATH/hub-detect-java.sh
   echo $JAVACMD $JAVAOPTS >> $DETECT_JAR_PATH/hub-detect-java.sh
-  source $DETECT_JAR_PATH/hub-detect-java.sh
+  sh $DETECT_JAR_PATH/hub-detect-java.sh
 }
 
 run

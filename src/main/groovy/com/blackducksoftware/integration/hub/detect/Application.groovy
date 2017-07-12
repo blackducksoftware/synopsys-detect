@@ -28,7 +28,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.ApplicationArguments
-import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.builder.SpringApplicationBuilder
 import org.springframework.context.ApplicationContext
@@ -50,7 +49,6 @@ import com.google.gson.GsonBuilder
 @SpringBootApplication
 class Application {
     private final Logger logger = LoggerFactory.getLogger(Application.class)
-    //private static final SpringApplicationBuilder springApplicationBuilder = new SpringApplicationBuilder(Application.class)
 
     @Autowired
     ValueDescriptionAnnotationFinder valueDescriptionAnnotationFinder
@@ -103,7 +101,8 @@ class Application {
             try {
                 hubManager.performPostActions(detectProject, createdBdioFiles)
             } catch (PolicyViolationException policyViolation) {
-                SpringApplication.exit(appContext, policyViolation)
+                //SpringApplication.exit(appContext, policyViolation)
+                System.exit(1)
             }
         }
     }

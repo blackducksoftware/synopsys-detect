@@ -34,7 +34,6 @@ import com.blackducksoftware.integration.hub.dataservice.project.ProjectDataServ
 import com.blackducksoftware.integration.hub.dataservice.project.ProjectVersionWrapper
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
-import com.blackducksoftware.integration.hub.detect.exception.DetectException
 import com.blackducksoftware.integration.hub.detect.exception.PolicyViolationException
 import com.blackducksoftware.integration.hub.global.HubServerConfig
 import com.blackducksoftware.integration.hub.rest.RestConnection
@@ -81,7 +80,7 @@ class HubManager {
         hubServerConfigBuilder.build()
     }
 
-    public void performPostActions(DetectProject detectProject, List<File> createdBdioFiles) throws DetectException{
+    public void performPostActions(DetectProject detectProject, List<File> createdBdioFiles) throws PolicyViolationException{
         try {
             Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
             HubServerConfig hubServerConfig = createHubServerConfig(slf4jIntLogger)
