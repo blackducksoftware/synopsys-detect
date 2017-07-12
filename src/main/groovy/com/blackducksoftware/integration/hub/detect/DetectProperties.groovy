@@ -313,5 +313,17 @@ class DetectProperties {
     @ValueDescription(description="The path of the cpanm executable", group=DetectProperties.GROUP_CPAN)
     @Value('${detect.cpanm.path}')
     String cpanmPath
+
+    // @ValueDescription(description="When dealing with static files, use a hash as a version instead of a time-date format", defaultValue='true', group=DetectProperties.GROUP_PROJECT_INFO)
+    @Value('${detect.project.version.hash}')
+    Boolean hashVersion
+
+    // @ValueDescription(description="When using a hash as a version, use a truncated version", defaultValue='true', group=DetectProperties.GROUP_PROJECT_INFO)
+    @Value('${detect.project.version.shorthash}')
+    Boolean shortHash
+
+    @ValueDescription(description="The timestamp format to use as default project version", defaultValue='yyyy-MM-dd\'T\'HH:mm:ss.SSS', group=DetectProperties.GROUP_PROJECT_INFO)
+    @Value('${detect.project.version.timeformat}')
+    String versionTimeFormat
 }
 

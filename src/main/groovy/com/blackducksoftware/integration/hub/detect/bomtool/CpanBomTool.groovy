@@ -70,7 +70,7 @@ class CpanBomTool extends BomTool {
 
         Set<DependencyNode> dependenciesSet = cpanPackager.makeDependencyNodes(detectConfiguration.sourceDirectory, listText, showdeps)
         ExternalId externalId = new PathExternalId(Forge.CPAN, detectConfiguration.sourcePath)
-        def detectCodeLocation = new DetectCodeLocation(BomToolType.CPAN, detectConfiguration.sourcePath, "", "", externalId, dependenciesSet)
+        def detectCodeLocation = new DetectCodeLocation(BomToolType.CPAN, detectConfiguration.sourcePath, '', '', '', externalId, dependenciesSet)
 
         [detectCodeLocation]
     }

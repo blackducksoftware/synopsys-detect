@@ -177,6 +177,14 @@ class DetectConfiguration {
         logger.info(configurationBuilder.toString())
     }
 
+    private int convertInt(Integer integerObj) {
+        return integerObj == null ? 0 : integerObj.intValue()
+    }
+
+    private long convertLong(Long longObj) {
+        return longObj == null ? 0L : longObj.longValue()
+    }
+
     public boolean getCleanupBdioFiles() {
         return BooleanUtils.toBoolean(detectProperties.cleanupBdioFiles)
     }
@@ -366,14 +374,6 @@ class DetectConfiguration {
     public boolean getHubSignatureScannerDisabled() {
         BooleanUtils.toBoolean(detectProperties.getHubSignatureScannerDisabled())
     }
-
-    private int convertInt(Integer integerObj) {
-        return integerObj == null ? 0 : integerObj.intValue()
-    }
-
-    private long convertLong(Long longObj) {
-        return longObj == null ? 0L : longObj.longValue()
-    }
     public String getPerlPath() {
         return detectProperties.perlPath?.trim()
     }
@@ -382,5 +382,14 @@ class DetectConfiguration {
     }
     public String getCpanmPath() {
         return detectProperties.cpanmPath?.trim()
+    }
+    public boolean getHashVersion() {
+        return BooleanUtils.toBoolean(detectProperties.getHashVersion())
+    }
+    public boolean getShortHash() {
+        return BooleanUtils.toBoolean(detectProperties.getShortHash())
+    }
+    public String getVersionTimeFormat() {
+        return detectProperties.versionTimeFormat?.trim()
     }
 }
