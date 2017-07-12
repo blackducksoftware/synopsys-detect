@@ -22,15 +22,14 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool
 
+import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.beans.factory.annotation.Autowired
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
+import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
-import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
-import com.blackducksoftware.integration.hub.detect.util.SourcePathSearcher
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
 
@@ -45,13 +44,7 @@ abstract class BomTool {
     ExecutableRunner executableRunner
 
     @Autowired
-    SourcePathSearcher sourcePathSearcher
-
-    @Autowired
     DetectFileManager detectFileManager
-
-    @Autowired
-    ProjectInfoGatherer projectInfoGatherer
 
     @Autowired
     NameVersionNodeTransformer nameVersionNodeTransformer
@@ -60,12 +53,30 @@ abstract class BomTool {
     abstract boolean isBomToolApplicable()
 
     /**
-     * Each DependencyNode in the returned List should be a root project with all
-     * its children dependencies. The expectation would be to create a Hub
-     * project for each item in the List.
+     * A BomTool is responsible for doing its best to create at least one, but possibly many, DetectCodeLocations.
      */
-    abstract List<DependencyNode> extractDependencyNodes()
+    //    abstract List<DetectCodeLocation> extractDetectCodeLocations()
+    List<DetectCodeLocation> extractDetectCodeLocations() {
+        []
+    }
 
-    void test() {
+    String getSourcePath() {
+        detectConfiguration.sourcePath
+    }
+
+    File getSourceDirectory() {
+        detectConfiguration.sourceDirectory
+    }
+
+    String getHash(String text) {
+        if(detectConfiguration.getHashVersion()) {
+            def version = DigestUtils.sha1Hex(text.getBytes())
+            if(detectConfiguration.getShortHash()) {
+                version = version.substring(0, 7)
+            }
+            return version
+        }
+
+        ''
     }
 }

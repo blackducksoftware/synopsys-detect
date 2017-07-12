@@ -27,8 +27,8 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmCliDependencyFinder
+import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 
@@ -41,11 +41,10 @@ class NpmBomTool extends BomTool {
     public static final String OUTPUT_FILE = 'detect_npm_proj_dependencies.json'
     public static final String ERROR_FILE = 'detect_npm_error.json'
 
+    private String npmExePath
+
     @Autowired
     NpmCliDependencyFinder cliDependencyFinder
-
-    private List<String> npmPaths = []
-    private String npmExe
 
     @Override
     public BomToolType getBomToolType() {
@@ -54,35 +53,32 @@ class NpmBomTool extends BomTool {
 
     @Override
     public boolean isBomToolApplicable() {
-        npmPaths = sourcePathSearcher.findFilenamePattern(NODE_MODULES)
-        def packageJsonPaths = sourcePathSearcher.findFilenamePattern(PACKAGE_JSON)
-        npmExe = getExecutablePath()
+        boolean containsNodeModules = detectFileManager.containsAllFiles(sourcePath, NODE_MODULES)
+        boolean containsPackageJson = detectFileManager.containsAllFiles(sourcePath, PACKAGE_JSON)
 
-        packageJsonPaths?.removeAll(npmPaths)
-
-        packageJsonPaths.each { path ->
-            logger.info("Package.json was located in ${path}, but no node_modules folder. Please run npm install in that location and try again.")
+        if (containsPackageJson && !containsNodeModules) {
+            logger.warn("package.json was located in ${sourcePath}, but the node_modules folder was NOT located. Please run 'npm install' in that location and try again.")
+        } else if (containsPackageJson && containsNodeModules) {
+            npmExePath = executableManager.getPathOfExecutable(ExecutableType.NPM, detectConfiguration.getNpmPath())
         }
 
-        npmPaths && npmExe
+        containsNodeModules && npmExePath
     }
 
-    @Override
-    public List<DependencyNode> extractDependencyNodes() {
-        List<DependencyNode> nodes = []
+    List<DetectCodeLocation> extractDetectCodeLocations() {
+        File npmLsOutputFile = detectFileManager.createFile(BomToolType.NPM, NpmBomTool.OUTPUT_FILE)
+        File npmLsErrorFile = detectFileManager.createFile(BomToolType.NPM, NpmBomTool.ERROR_FILE)
+        def npmExe = executableRunner.runExeToFile(npmExePath, npmLsOutputFile, npmLsErrorFile, 'ls', '-json')
 
-        npmPaths.each {
-            nodes.add(cliDependencyFinder.generateDependencyNode(it, npmExe))
+        if (npmLsErrorFile.length() == 0) {
+            def dependencyNode = cliDependencyFinder.generateDependencyNode(npmLsOutputFile)
+            def detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, dependencyNode)
+
+            return [detectCodeLocation]
+        } else {
+            logger.error("Error when running npm ls command\n${npmLsErrorFile.text}")
         }
 
-        nodes
-    }
-
-    private String getExecutablePath() {
-        if (detectConfiguration.getNpmPath()) {
-            return detectConfiguration.getNpmPath()
-        }
-
-        executableManager.getPathOfExecutable(ExecutableType.NPM)
+        []
     }
 }

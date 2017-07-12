@@ -1,0 +1,107 @@
+{
+  "name": "clue/graph-composer",
+  "version": "1.0.0",
+  "externalId": {
+    "name": "clue/graph-composer",
+    "version": "1.0.0",
+    "forge": {
+      "name": "packagist",
+      "separator": ":"
+    }
+  },
+  "children": [
+    {
+      "name": "graphp/graphviz",
+      "version": "v0.2.1",
+      "externalId": {
+        "name": "graphp/graphviz",
+        "version": "v0.2.1",
+        "forge": {
+          "name": "packagist",
+          "separator": ":"
+        }
+      },
+      "children": [
+        {
+          "name": "clue/graph",
+          "version": "v0.9.0",
+          "externalId": {
+            "name": "clue/graph",
+            "version": "v0.9.0",
+            "forge": {
+              "name": "packagist",
+              "separator": ":"
+            }
+          },
+          "children": []
+        },
+        {
+          "name": "graphp/algorithms",
+          "version": "v0.8.1",
+          "externalId": {
+            "name": "graphp/algorithms",
+            "version": "v0.8.1",
+            "forge": {
+              "name": "packagist",
+              "separator": ":"
+            }
+          },
+          "children": [
+            {
+              "name": "clue/graph",
+              "version": "v0.9.0",
+              "externalId": {
+                "name": "clue/graph",
+                "version": "v0.9.0",
+                "forge": {
+                  "name": "packagist",
+                  "separator": ":"
+                }
+              },
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "clue/graph",
+      "version": "v0.9.0",
+      "externalId": {
+        "name": "clue/graph",
+        "version": "v0.9.0",
+        "forge": {
+          "name": "packagist",
+          "separator": ":"
+        }
+      },
+      "children": []
+    },
+    {
+      "name": "symfony/console",
+      "version": "v2.6.13",
+      "externalId": {
+        "name": "symfony/console",
+        "version": "v2.6.13",
+        "forge": {
+          "name": "packagist",
+          "separator": ":"
+        }
+      },
+      "children": []
+    },
+    {
+      "name": "jms/composer-deps-analyzer",
+      "version": "0.1.0",
+      "externalId": {
+        "name": "jms/composer-deps-analyzer",
+        "version": "0.1.0",
+        "forge": {
+          "name": "packagist",
+          "separator": ":"
+        }
+      },
+      "children": []
+    }
+  ]
+}

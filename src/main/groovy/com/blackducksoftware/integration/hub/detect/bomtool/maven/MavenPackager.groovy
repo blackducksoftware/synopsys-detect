@@ -22,58 +22,31 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.maven
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
-import com.blackducksoftware.integration.hub.detect.type.BomToolType
-import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
-import com.blackducksoftware.integration.hub.detect.util.executable.Executable
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
 
 @Component
 public class MavenPackager {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass())
-
-    @Autowired
-    ProjectInfoGatherer projectInfoGatherer
-
-    @Autowired
-    ExecutableRunner executableRunner
-
     @Autowired
     DetectConfiguration detectConfiguration
 
-    public List<DependencyNode> makeDependencyNodes(String sourcePath, String mavenExecutable) {
-        final List<DependencyNode> projects = []
+    @Autowired
+    MavenOutputParser mavenOutputParser
 
-        File sourceDirectory = new File(sourcePath)
-
-        def arguments = ["dependency:tree"]
-        if (detectConfiguration.getMavenScope()?.trim()) {
-            arguments.add("-Dscope=${detectConfiguration.getMavenScope()}")
-        }
-        final Executable mvnExecutable = new Executable(sourceDirectory, mavenExecutable, arguments)
-        final ExecutableOutput mvnOutput = executableRunner.execute(mvnExecutable)
-
-        final MavenOutputParser mavenOutputParser = new MavenOutputParser()
-        projects.addAll(mavenOutputParser.parse(mvnOutput.standardOutput))
+    public List<DependencyNode> makeDependencyNodes(String mavenOutput) {
+        List<DependencyNode> projects = mavenOutputParser.parse(mavenOutput)
 
         if (detectConfiguration.getMavenAggregateBom() && !projects.isEmpty()) {
-            final DependencyNode firstNode = projects.remove(0)
+            final DependencyNode rootNode = projects.remove(0)
             projects.each { subProject ->
-                firstNode.children.addAll(subProject.children)
+                rootNode.children.addAll(subProject.children)
             }
-            projects.clear()
-            projects.add(firstNode)
-            firstNode.name = projectInfoGatherer.getProjectName(BomToolType.MAVEN, sourcePath, firstNode.name)
-            firstNode.version = projectInfoGatherer.getProjectVersionName(firstNode.version)
+            return [rootNode]
         }
 
-        return projects
+        projects
     }
 }

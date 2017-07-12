@@ -22,32 +22,21 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.rubygems
 
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Component
+
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
-import com.blackducksoftware.integration.hub.detect.type.BomToolType
-import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
 
+@Component
 public class RubygemsNodePackager {
-    private final ProjectInfoGatherer projectInfoGatherer
-    private final NameVersionNodeTransformer nameVersionNodeTransformer
+    @Autowired
+    NameVersionNodeTransformer nameVersionNodeTransformer
 
-    public RubygemsNodePackager(final ProjectInfoGatherer projectInfoGatherer, NameVersionNodeTransformer nameVersionNodeTransformer) {
-        this.projectInfoGatherer = projectInfoGatherer
-        this.nameVersionNodeTransformer = nameVersionNodeTransformer
-    }
+    public List<DependencyNode> extractProjectDependencies(final String gemlock) {
+        def gemlockNodeParser = new GemlockNodeParser()
+        List<DependencyNode> dependencies = gemlockNodeParser.parseProjectDependencies(nameVersionNodeTransformer, gemlock)
 
-    public List<DependencyNode> makeDependencyNodes(final String sourcePath, final String gemlock) {
-        final String rootName = projectInfoGatherer.getProjectName(BomToolType.RUBYGEMS, sourcePath)
-        final String rootVersion = projectInfoGatherer.getProjectVersionName()
-        final ExternalId rootExternalId = new NameVersionExternalId(Forge.RUBYGEMS, rootName, rootVersion)
-        final DependencyNode root = new DependencyNode(rootName, rootVersion, rootExternalId)
-
-        GemlockNodeParser gemlockNodeParser = new GemlockNodeParser()
-        gemlockNodeParser.parseProjectDependencies(nameVersionNodeTransformer, root, gemlock)
-
-        [root]
+        dependencies
     }
 }

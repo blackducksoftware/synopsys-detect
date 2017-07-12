@@ -29,7 +29,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.PathExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.go.godep.GoGodepsParser
+import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.google.gson.Gson
 
@@ -40,8 +43,6 @@ class GoGodepsBomTool extends BomTool {
     @Autowired
     Gson gson
 
-    List<String> matchingSourcePaths = []
-
     @Override
     public BomToolType getBomToolType() {
         return BomToolType.GO_GODEP
@@ -49,26 +50,19 @@ class GoGodepsBomTool extends BomTool {
 
     @Override
     public boolean isBomToolApplicable() {
-        matchingSourcePaths = sourcePathSearcher.findFilenamePattern('Godeps')
-        !matchingSourcePaths.isEmpty()
+        detectFileManager.containsAllFiles(sourcePath, 'Godeps')
     }
 
-    public boolean isApplicableToPath(String path) {
-        detectFileManager.containsAllFiles(path, 'Godeps')
-    }
+    List<DetectCodeLocation> extractDetectCodeLocations() {
+        GoGodepsParser goDepParser = new GoGodepsParser(gson)
+        def goDepsDirectory = new File(sourcePath, "Godeps")
+        def goDepsFile = new File(goDepsDirectory, "Godeps.json")
+        List<DependencyNode> dependencies = goDepParser.extractProjectDependencies(goDepsFile.text)
+        Set<DependencyNode> dependenciesSet = new HashSet<>(dependencies)
 
-    @Override
-    public List<DependencyNode> extractDependencyNodes() {
-        def nodes = []
-        GoGodepsParser goDepParser = new GoGodepsParser(gson, projectInfoGatherer)
-        matchingSourcePaths.each {
-            def goDepsDirectory = new File(it, "Godeps")
-            def goDepsFile = new File(goDepsDirectory, "Godeps.json")
-            if (goDepsFile.exists()) {
-                def dependencyNode = goDepParser.parseGoDep(goDepsFile.text)
-                nodes.add(dependencyNode)
-            }
-        }
-        return nodes
+        ExternalId externalId = new PathExternalId(GoDepBomTool.GOLANG, sourcePath)
+
+        def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, '', '', '', externalId, dependenciesSet)
+        [codeLocation]
     }
 }

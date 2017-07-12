@@ -22,7 +22,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool
 
-import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,6 +31,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorPackager
+import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 
@@ -45,8 +45,7 @@ class NugetBomTool extends BomTool {
     @Autowired
     NugetInspectorPackager nugetInspectorPackager
 
-    File nugetExecutable
-    List<String> matchingSourcePaths = []
+    String nugetExecutable
 
     BomToolType getBomToolType() {
         return BomToolType.NUGET
@@ -54,70 +53,26 @@ class NugetBomTool extends BomTool {
 
     @Override
     public boolean isBomToolApplicable() {
-        nugetExecutable = findNugetExecutable()
-        detectConfiguration.sourcePaths.each { sourcePath ->
-            def solutionFile = detectFileManager.findFile(sourcePath, SOLUTION_PATTERN)
-            def projectFile = detectFileManager.findFile(sourcePath, PROJECT_PATTERN)
-            if (solutionFile || projectFile) {
-                matchingSourcePaths.add(sourcePath)
-            }
+        def containsSolutionFile = detectFileManager.containsAllFiles(sourcePath, SOLUTION_PATTERN)
+        def containsProjectFile = detectFileManager.containsAllFiles(sourcePath, PROJECT_PATTERN)
+
+        if (containsSolutionFile || containsProjectFile) {
+            //logger.warn('The nuget executable must be on the path - are you sure you are running on a windows system?')
+            nugetExecutable = executableManager.getPathOfExecutable(ExecutableType.NUGET, detectConfiguration.getNugetPath())
         }
 
-        if (!matchingSourcePaths.isEmpty() && !nugetExecutable) {
-            logger.warn('The nuget executable must be on the path - are you sure you are running on a windows system?')
-        }
-
-        nugetExecutable && !matchingSourcePaths.isEmpty()
+        nugetExecutable && (containsSolutionFile || containsProjectFile)
     }
 
-    @Override
-    public List<DependencyNode> extractDependencyNodes() {
-        List<DependencyNode> projectNodes = []
-        matchingSourcePaths.each { sourcePath ->
-            DependencyNode root = nugetInspectorPackager.makeDependencyNode(sourcePath, nugetExecutable)
-            if (!root) {
-                logger.info('Unable to extract any dependencies from nuget')
-            } else {
-                if (isSolution(root)) {
-                    root.name = projectInfoGatherer.getProjectName(BomToolType.NUGET, sourcePath, root.name)
-                    root.version = projectInfoGatherer.getProjectVersionName(root.version)
-                    root.externalId = new NameVersionExternalId(Forge.NUGET, root.name, root.version)
-                    if (detectConfiguration.getNugetAggregateBom()) {
-                        projectNodes.add(root)
-                    } else {
-                        projectNodes.addAll(root.children as List)
-                    }
-                } else {
-                    root.name = projectInfoGatherer.getProjectName(BomToolType.NUGET, sourcePath, root.name)
-                    root.version = projectInfoGatherer.getProjectVersionName(root.version)
-                    root.externalId = new NameVersionExternalId(Forge.NUGET, root.name, root.version)
-                    projectNodes.add(root)
-                }
-            }
+    List<DetectCodeLocation> extractDetectCodeLocations() {
+        DependencyNode root = nugetInspectorPackager.makeDependencyNode(sourcePath, new File(nugetExecutable))
+        if (!root) {
+            logger.warn('Unable to extract any dependencies from nuget')
+            return []
         }
 
-        projectNodes
-    }
-
-    boolean isSolution(DependencyNode root) {
-        boolean isSolution = false
-        if (root.children != null && root.children.size() > 0) {
-            for (DependencyNode child : root.children) {
-                if (child.children != null && child.children.size() > 0) {
-                    // the only way to tell if we are dealing with a solution is if at least one of the projects has a dependency
-                    isSolution = true
-                    break
-                }
-            }
-        }
-        return isSolution
-    }
-
-    private File findNugetExecutable() {
-        if (StringUtils.isNotBlank(detectConfiguration.getNugetPath())) {
-            new File(detectConfiguration.getNugetPath())
-        } else {
-            executableManager.getExecutable(ExecutableType.NUGET)
-        }
+        root.externalId = new NameVersionExternalId(Forge.NUGET, root.name, root.version)
+        DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, root)
+        [detectCodeLocation]
     }
 }

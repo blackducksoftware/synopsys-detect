@@ -28,15 +28,14 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.PathExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.go.vndr.VndrParser
+import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 
 @Component
 class GoVndrBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(GoVndrBomTool.class)
-
-    List<String> matchingSourcePaths = []
 
     @Override
     public BomToolType getBomToolType() {
@@ -45,30 +44,19 @@ class GoVndrBomTool extends BomTool {
 
     @Override
     public boolean isBomToolApplicable() {
-        matchingSourcePaths = sourcePathSearcher.findFilenamePattern('vendor.conf')
-        !matchingSourcePaths.isEmpty()
+        detectFileManager.containsAllFiles(sourcePath, 'vendor.conf')
     }
 
-    public boolean isApplicableToPath(String path) {
-        detectFileManager.containsAllFiles(path, 'vendor.conf')
-    }
+    List<DetectCodeLocation> extractDetectCodeLocations() {
+        File sourceDirectory = detectConfiguration.sourceDirectory
 
-    @Override
-    public List<DependencyNode> extractDependencyNodes() {
-        def nodes = []
-        VndrParser vndrParser = new VndrParser(projectInfoGatherer)
-        matchingSourcePaths.each {
-            def vendorConf = new File(it, "vendor.conf")
-            if (vendorConf.exists()) {
-                final String rootName = projectInfoGatherer.getProjectName(BomToolType.GO_VNDR, it)
-                final String rootVersion = projectInfoGatherer.getProjectVersionName()
-                final ExternalId rootExternalId = new NameVersionExternalId(GoDepBomTool.GOLANG, rootName, rootVersion)
-                final DependencyNode projectNode = new DependencyNode(rootName, rootVersion, rootExternalId)
-                def children = vndrParser.parseVendorConf(vendorConf.text)
-                projectNode.children.addAll(children)
-                nodes.add(projectNode)
-            }
-        }
-        return nodes
+        VndrParser vndrParser = new VndrParser()
+        def vendorConf = new File(sourcePath, "vendor.conf")
+        List<DependencyNode> dependencies = vndrParser.parseVendorConf(vendorConf.text)
+        Set<DependencyNode> dependenciesSet = new HashSet<>(dependencies)
+        ExternalId externalId = new PathExternalId(GoDepBomTool.GOLANG, sourcePath)
+
+        def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, '', '', '', externalId, dependenciesSet)
+        [codeLocation]
     }
 }

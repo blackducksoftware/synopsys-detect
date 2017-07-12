@@ -37,7 +37,11 @@ enum ExecutableType {
     GO_DEP([(OperatingSystemType.WINDOWS): 'dep.exe', (OperatingSystemType.LINUX): 'dep']),
     DOCKER([(OperatingSystemType.WINDOWS): 'docker.exe', (OperatingSystemType.LINUX): 'docker']),
     NPM([(OperatingSystemType.WINDOWS): 'npm.cmd', (OperatingSystemType.LINUX): 'npm']),
-    BASH([(OperatingSystemType.WINDOWS): 'bash.exe', (OperatingSystemType.LINUX): 'bash'])
+    BASH([(OperatingSystemType.WINDOWS): 'bash.exe', (OperatingSystemType.LINUX): 'bash']),
+    PEAR([(OperatingSystemType.WINDOWS): 'pear.bat', (OperatingSystemType.LINUX): 'pear']),
+    PERL([(OperatingSystemType.WINDOWS): 'perl.bat', (OperatingSystemType.LINUX): 'perl']),
+    CPAN([(OperatingSystemType.WINDOWS): 'cpan.bat', (OperatingSystemType.LINUX): 'cpan']),
+    CPANM([(OperatingSystemType.WINDOWS): 'cpanm.bat', (OperatingSystemType.LINUX): 'cpanm'])
 
     private Map<OperatingSystemType, String> osToExecutableMap = [:]
 

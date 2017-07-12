@@ -39,7 +39,6 @@ import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException
 
 @Component
 class PipPackager {
@@ -61,7 +60,9 @@ class PipPackager {
     @Autowired
     DetectFileManager detectFileManager
 
-    List<DependencyNode> makeDependencyNodes(File sourceDirectory, VirtualEnvironment virtualEnv) throws ExecutableRunnerException {
+    DependencyNode makeDependencyNode(VirtualEnvironment virtualEnv) {
+        File sourceDirectory = detectConfiguration.sourceDirectory
+
         String pipPath = virtualEnv.pipPath
         String pythonPath = virtualEnv.pythonPath
         def setupFile = detectFileManager.findFile(sourceDirectory, 'setup.py')
@@ -108,11 +109,12 @@ class PipPackager {
         def pipInspector = new Executable(sourceDirectory, pythonPath, pipInspectorOptions)
         def inspectorOutput = executableRunner.execute(pipInspector).standardOutput
         def parser = new PipInspectorTreeParser()
+
         DependencyNode project = parser.parse(nameVersionNodeTransformer, inspectorOutput)
-        project.name = projectInfoGatherer.getProjectName(BomToolType.PIP, sourceDirectory.getAbsolutePath(), project.name)
-        project.version = projectInfoGatherer.getProjectVersionName(project.version)
+        project.name = projectInfoGatherer.getProjectName(detectConfiguration.sourcePath, project.name)
+        project.version = projectInfoGatherer.getProjectVersionName(project.version, null)
         project.externalId = new NameVersionExternalId(Forge.PYPI, project.name, project.version)
 
-        [project]
+        project
     }
 }

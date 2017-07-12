@@ -30,6 +30,7 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleInitScriptPackager
+import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
@@ -46,42 +47,40 @@ class GradleBomTool extends BomTool {
     @Autowired
     HubSignatureScanner hubSignatureScanner
 
-    Map<String, String> matchingSourcePathToGradleExecutable = [:]
+    private String gradleExecutable
 
     BomToolType getBomToolType() {
         return BomToolType.GRADLE
     }
 
     boolean isBomToolApplicable() {
-        detectConfiguration.getSourcePaths().each { sourcePath ->
-            def gradleExecutable = findGradleExecutable(sourcePath)
-            def buildGradle = detectFileManager.findFile(sourcePath, BUILD_GRADLE)
-            if (gradleExecutable && buildGradle) {
-                matchingSourcePathToGradleExecutable.put(sourcePath, gradleExecutable)
-            }
+        def buildGradle = detectFileManager.findFile(sourcePath, BUILD_GRADLE)
+
+        if (buildGradle) {
+            gradleExecutable = findGradleExecutable(sourcePath)
         }
 
-        !matchingSourcePathToGradleExecutable.isEmpty()
+        buildGradle && gradleExecutable
     }
 
-    List<DependencyNode> extractDependencyNodes() {
-        List<DependencyNode> projectNodes = []
-        matchingSourcePathToGradleExecutable.each { sourcePath, gradleExecutable ->
-            DependencyNode rootProjectNode = gradleInitScriptPackager.extractRootProjectNode(sourcePath, gradleExecutable)
-            rootProjectNode.name = projectInfoGatherer.getProjectName(getBomToolType(), sourcePath, rootProjectNode.name)
-            rootProjectNode.version = projectInfoGatherer.getProjectVersionName(rootProjectNode.version)
-            projectNodes.add(rootProjectNode)
-            hubSignatureScanner.registerDirectoryToScan(new File(sourcePath, 'build'), rootProjectNode.name, rootProjectNode.version)
+    List<DetectCodeLocation> extractDetectCodeLocations() {
+        DependencyNode rootProjectNode = gradleInitScriptPackager.extractRootProjectNode(sourcePath, gradleExecutable)
+        DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, rootProjectNode)
+
+        //there may also be subprojects, so just look up to two levels down (depth = 3) for any/all build directories
+        File[] additionalTargets = detectFileManager.findFilesToDepth(detectConfiguration.sourceDirectory, 'build', 3)
+        if (additionalTargets) {
+            additionalTargets.each { hubSignatureScanner.registerDirectoryToScan(it) }
         }
 
-        projectNodes
+        [detectCodeLocation]
     }
 
     private String findGradleExecutable(String sourcePath) {
         String gradlePath = detectConfiguration.getGradlePath()
         if (StringUtils.isBlank(gradlePath)) {
             logger.debug('detect.gradle.path not set in config - first try to find the gradle wrapper')
-            gradlePath = executableManager.getPathOfExecutable(sourcePath, ExecutableType.GRADLEW)
+            gradlePath = executableManager.getPathOfExecutable(ExecutableType.GRADLEW)
         }
 
         if (StringUtils.isBlank(gradlePath)) {

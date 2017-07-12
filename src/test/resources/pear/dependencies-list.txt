@@ -1,0 +1,16 @@
+Dependencies for PEAR
+=====================
+Required? Type           Name                    Versioning                   Group
+Yes       Php                                     (version >= 5.4.0)
+Yes       Pear Installer                          (version >= 1.9.0)
+Yes       Package        pear/Archive_Tar         (recommended version 1.4.3)
+Yes       Package        pear/Structures_Graph    (recommended version 1.1.1)
+Yes       Package        pear/Console_Getopt      (recommended version 1.4.1)
+Yes       Package        pear/XML_Util            (recommended version 1.4.2)
+Yes       Package        pear/PEAR_Frontend_Web  conflicts
+Yes       Package        pear/PEAR_Frontend_Gtk  conflicts
+Yes       Extension      xml
+Yes       Extension      pcre
+No        Package        pear/PEAR_Frontend_Web   (version >= 0.5.1)
+No        Package        pear/PEAR_Frontend_Gtk   (version >= 0.4.0)
+No        Package        pear/PEAR_Frontend_Gtk2

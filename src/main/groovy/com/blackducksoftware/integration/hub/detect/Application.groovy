@@ -36,10 +36,10 @@ import com.blackducksoftware.integration.hub.bdio.simple.BdioNodeFactory
 import com.blackducksoftware.integration.hub.bdio.simple.BdioPropertyHelper
 import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeTransformer
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
 import com.blackducksoftware.integration.hub.detect.help.HelpPrinter
 import com.blackducksoftware.integration.hub.detect.help.ValueDescriptionAnnotationFinder
-import com.blackducksoftware.integration.hub.detect.hub.BdioUploader
-import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
+import com.blackducksoftware.integration.hub.detect.hub.HubManager
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -58,7 +58,8 @@ class Application {
     ExecutableManager executableManager
 
     @Autowired
-    HubSignatureScanner hubSignatureScanner
+    DetectProjectManager detectProjectManager
+
 
     @Autowired
     BdioPropertyHelper bdioPropertyHelper
@@ -67,16 +68,13 @@ class Application {
     BdioNodeFactory bdioNodeFactory
 
     @Autowired
-    BomToolManager bomToolManager
-
-    @Autowired
-    BdioUploader bdioUploader
-
-    @Autowired
     ApplicationArguments applicationArguments
 
     @Autowired
     HelpPrinter helpPrinter
+
+    @Autowired
+    HubManager hubManager
 
     static void main(final String[] args) {
         new SpringApplicationBuilder(Application.class).logStartupInfo(false).run(args)
@@ -92,11 +90,11 @@ class Application {
             executableManager.init()
             logger.info('Configuration processed completely.')
             if (Boolean.FALSE == detectConfiguration.suppressConfigurationOutput) {
-                detectConfiguration.printConfiguration(System.out)
+                detectConfiguration.logConfiguration()
             }
-            List<File> createdBdioFiles = bomToolManager.createBdioFiles()
-            bdioUploader.uploadBdioFiles(createdBdioFiles)
-            hubSignatureScanner.scanFiles()
+            DetectProject detectProject = detectProjectManager.createDetectProject()
+            List<File> createdBdioFiles = detectProjectManager.createBdioFiles(detectProject)
+            hubManager.performPostActions(detectProject, createdBdioFiles)
         }
     }
 
@@ -117,6 +115,6 @@ class Application {
 
     @Bean
     DependencyNodeTransformer dependencyNodeTransformer() {
-        new DependencyNodeTransformer(bdioNodeFactory, bdioPropertyHelper)
+        new DependencyNodeTransformer(bdioNodeFactory(), bdioPropertyHelper())
     }
 }

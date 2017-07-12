@@ -30,7 +30,10 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.PathExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.go.DepPackager
+import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
@@ -50,40 +53,39 @@ class GoDepBomTool extends BomTool {
     @Autowired
     DepPackager goPackager
 
-    List<String> matchingSourcePaths = []
-
     @Override
     public BomToolType getBomToolType() {
-        return BomToolType.GO_DEP;
+        return BomToolType.GO_DEP
     }
 
     @Override
     public boolean isBomToolApplicable() {
-        def goExecutablePath = executableManager.getPathOfExecutable(ExecutableType.GO)
-        if (!goExecutablePath?.trim()) {
-            logger.debug('Could not find Go on the environment PATH')
-        }
-        for (String sourcePath : detectConfiguration.getSourcePaths()) {
-            if (detectFileManager.containsAllFiles(sourcePath, 'Gopkg.lock')) {
-                matchingSourcePaths.add(sourcePath)
-            } else if (goGodepsBomTool.isApplicableToPath(sourcePath) || goVndrBomTool.isApplicableToPath(sourcePath)) {
-                // not applicable, the other Go BomTools should be used for this path
-                continue
-            } else if (detectFileManager.containsAllFilesToDepth(sourcePath, detectConfiguration.getSearchDepth(), '*.go')) {
-                matchingSourcePaths.add(sourcePath)
+        boolean isTheBestGoBomTool = false
+        if (detectFileManager.containsAllFiles(sourcePath, 'Gopkg.lock')) {
+            isTheBestGoBomTool = true
+        } else  {
+            boolean otherGoBomToolsWouldBeBetter = goGodepsBomTool.isBomToolApplicable() || goVndrBomTool.isBomToolApplicable()
+            if (!otherGoBomToolsWouldBeBetter && detectFileManager.containsAllFilesToDepth(sourcePath, detectConfiguration.getSearchDepth(), '*.go')) {
+                isTheBestGoBomTool = true
             }
         }
-        goExecutablePath && !matchingSourcePaths.isEmpty()
+
+        def goExecutablePath
+        if (isTheBestGoBomTool) {
+            goExecutablePath = executableManager.getPathOfExecutable(ExecutableType.GO)
+        }
+
+        goExecutablePath && isTheBestGoBomTool
     }
 
+    List<DetectCodeLocation> extractDetectCodeLocations() {
+        String goDepExecutable = findGoDepExecutable()
 
-    @Override
-    public List<DependencyNode> extractDependencyNodes() {
-        def nodes = []
-        matchingSourcePaths.each {
-            nodes.add(goPackager.makeDependencyNodes(it, findGoDepExecutable()))
-        }
-        return nodes
+        List<DependencyNode> dependencies = goPackager.makeDependencyNodes(sourcePath, goDepExecutable)
+        ExternalId externalId = new PathExternalId(GOLANG, sourcePath)
+        DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, '', '', '', externalId, new HashSet(dependencies))
+
+        [detectCodeLocation]
     }
 
     private String findGoDepExecutable() {

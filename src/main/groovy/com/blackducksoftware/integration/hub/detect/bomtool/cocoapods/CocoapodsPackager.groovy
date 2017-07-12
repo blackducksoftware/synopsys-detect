@@ -29,23 +29,13 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
-import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.Pod
-import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.PodLock
-import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.PodLockParser
-import com.blackducksoftware.integration.hub.detect.type.BomToolType
-import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
 
 @Component
 class CocoapodsPackager {
     @Autowired
-    ProjectInfoGatherer projectInfoGatherer
-
-    @Autowired
     PodLockParser podLockParser
 
-    List<DependencyNode> makeDependencyNodes(final String sourcePath) {
-        final File sourceDirectory = new File(sourcePath)
-        final String podLockText = new File(sourceDirectory, "Podfile.lock").text
+    List<DependencyNode> extractProjectDependencies(final String podLockText) {
         final PodLock podLock = podLockParser.parse(podLockText)
         if (podLock == null) {
             return []
@@ -53,14 +43,8 @@ class CocoapodsPackager {
 
         collapseSubpods(podLock)
 
-        String name = projectInfoGatherer.getProjectName(BomToolType.COCOAPODS, sourcePath)
-        String version = projectInfoGatherer.getProjectVersionName()
-        ExternalId externalId = new NameVersionExternalId(Forge.COCOAPODS, name, version)
         List<DependencyNode> dependencies = podTransformer(podLock.dependencies)
-
-        [
-            new DependencyNode(name, version, externalId, dependencies as Set)
-        ]
+        dependencies
     }
 
     List<DependencyNode> podTransformer(List<Pod> pods) {

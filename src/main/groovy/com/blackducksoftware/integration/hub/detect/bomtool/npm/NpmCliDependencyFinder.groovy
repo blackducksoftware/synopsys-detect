@@ -31,12 +31,8 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
-import com.blackducksoftware.integration.hub.detect.bomtool.NpmBomTool
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
-import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
-import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
-import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
 import com.google.gson.Gson
 import com.google.gson.JsonObject
@@ -46,16 +42,12 @@ import com.google.gson.stream.JsonReader
 @Component
 class NpmCliDependencyFinder {
     private final Logger logger = LoggerFactory.getLogger(NpmCliDependencyFinder.class)
-    private static final String NPM_DIR = 'npm-temp'
     private static final String JSON_NAME = 'name'
     private static final String JSON_VERSION = 'version'
     private static final String JSON_DEPENDENCIES = 'dependencies'
 
     @Autowired
     Gson gson
-
-    @Autowired
-    ProjectInfoGatherer projectInfoGatherer
 
     @Autowired
     NameVersionNodeTransformer nodeTransformer
@@ -69,17 +61,10 @@ class NpmCliDependencyFinder {
     @Autowired
     ExecutableRunner executableRunner
 
-    public DependencyNode generateDependencyNode(String rootDirectoryPath, String exePath) {
-        def npmLsExe = new Executable(new File(rootDirectoryPath), exePath, ['ls', '-json'])
-
-        File npmLsOutputFile = detectFileManager.createFile(BomToolType.NPM, NpmBomTool.OUTPUT_FILE)
-        File npmLsErrorFile = detectFileManager.createFile(BomToolType.NPM, NpmBomTool.ERROR_FILE)
-
-        executableRunner.executeToFile(npmLsExe, npmLsOutputFile, npmLsErrorFile)
-
+    public DependencyNode generateDependencyNode(File npmLsOutputFile) {
         if (npmLsOutputFile?.length() > 0) {
-            logger.info("Running npm ls and generating results")
-            return convertNpmJsonFileToDependencyNode(npmLsOutputFile, rootDirectoryPath)
+            logger.info("Generating results from npm ls")
+            return convertNpmJsonFileToDependencyNode(npmLsOutputFile)
         } else {
             logger.error("Ran into an issue creating and writing to file")
         }
@@ -87,14 +72,11 @@ class NpmCliDependencyFinder {
         []
     }
 
-    private DependencyNode convertNpmJsonFileToDependencyNode(File NpmLsOutFile, String projectRootPath) {
+    private DependencyNode convertNpmJsonFileToDependencyNode(File NpmLsOutFile) {
         JsonObject npmJson = new JsonParser().parse(new JsonReader(new FileReader(NpmLsOutFile))).getAsJsonObject()
 
         String projectName = npmJson.getAsJsonPrimitive(JSON_NAME)?.getAsString()
-        projectName = projectInfoGatherer.getProjectName(BomToolType.NPM, projectRootPath, projectName)
-
         String projectVersion = npmJson.getAsJsonPrimitive(JSON_VERSION)?.getAsString()
-        projectVersion = projectInfoGatherer.getProjectVersionName(projectVersion)
 
         def externalId = new NameVersionExternalId(Forge.NPM, projectName, projectVersion)
         def dependencyNode = new DependencyNode(projectName, projectVersion, externalId)
