@@ -52,8 +52,11 @@ class CpanBomTool extends BomTool {
     @Override
     public boolean isBomToolApplicable() {
         def containsFiles = detectFileManager.containsAllFiles(sourcePath, 'cpanfile')
-        cpanExecutablePath = executableManager.getPathOfExecutable(ExecutableType.CPAN, detectConfiguration.getCpanPath())
-        cpanmExecutablePath = executableManager.getPathOfExecutable(ExecutableType.CPANM, detectConfiguration.getCpanmPath())
+
+        if (containsFiles) {
+            cpanExecutablePath = executableManager.getPathOfExecutable(ExecutableType.CPAN, detectConfiguration.getCpanPath())
+            cpanmExecutablePath = executableManager.getPathOfExecutable(ExecutableType.CPANM, detectConfiguration.getCpanmPath())
+        }
 
         containsFiles && cpanExecutablePath && cpanmExecutablePath
     }
