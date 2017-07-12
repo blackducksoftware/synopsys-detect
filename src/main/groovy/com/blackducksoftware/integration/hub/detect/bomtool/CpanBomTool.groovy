@@ -62,10 +62,10 @@ class CpanBomTool extends BomTool {
 
     @Override
     public List<DetectCodeLocation> extractDetectCodeLocations() {
-        ExecutableOutput cpanListOutput = executableRunner.runExe(cpanExecutablePath, ['-l'])
+        ExecutableOutput cpanListOutput = executableRunner.runExe(cpanExecutablePath, '-l')
         String listText = cpanListOutput.getStandardOutput()
 
-        ExecutableOutput showdepsOutput = executableRunner.runExe(cpanmExecutablePath, ['--showdeps', '.'])
+        ExecutableOutput showdepsOutput = executableRunner.runExe(cpanmExecutablePath, '--showdeps', '.')
         String showdeps = showdepsOutput.getStandardOutput()
 
         Set<DependencyNode> dependenciesSet = cpanPackager.makeDependencyNodes(detectConfiguration.sourceDirectory, listText, showdeps)
