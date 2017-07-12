@@ -60,10 +60,6 @@ class GoDepBomTool extends BomTool {
 
     @Override
     public boolean isBomToolApplicable() {
-        def goExecutablePath = executableManager.getPathOfExecutable(ExecutableType.GO)
-        if (!goExecutablePath?.trim()) {
-            logger.debug('Could not find Go on the environment PATH')
-        }
         boolean isTheBestGoBomTool = false
         if (detectFileManager.containsAllFiles(sourcePath, 'Gopkg.lock')) {
             isTheBestGoBomTool = true
@@ -73,6 +69,12 @@ class GoDepBomTool extends BomTool {
                 isTheBestGoBomTool = true
             }
         }
+
+        def goExecutablePath
+        if (isTheBestGoBomTool) {
+            goExecutablePath = executableManager.getPathOfExecutable(ExecutableType.GO)
+        }
+
         goExecutablePath && isTheBestGoBomTool
     }
 
