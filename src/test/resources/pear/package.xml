@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package version="2.1" xmlns="http://pear.php.net/dtd/package-2.1" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0     http://pear.php.net/dtd/tasks-1.0.xsd     http://pear.php.net/dtd/package-2.1     http://pear.php.net/dtd/package-2.1.xsd">
+ <name>test-name</name>
+ <channel>my.thing.net</channel>
+ <summary>Testing
+</summary>
+ <description>
+Test package.xml
+</description>
+ <lead>
+  <name>Brian Mandel</name>
+  <user>me</user>
+  <email>me@me.me</email>
+  <active>yes</active>
+ </lead>
+ <date>2017-07-11</date>
+ <time>00:25:22</time>
+ <version>
+  <release>1.1.1</release>
+  <api>1.0.0</api>
+ </version>
+ <stability>
+  <release>stable</release>
+  <api>stable</api>
+ </stability>
+ <license uri="http://www.opensource.org/licenses/bsd-license.php">New BSD License</license>
+ <contents>
+  <dir name="/">
+   <dir name="examples">
+    <file role="doc" name="example.php"/>
+   </dir>
+   <dir name="tests" baseinstalldir="/">
+    <file role="test" name="ssdeep.phpt"/>
+   </dir>
+   <file role="doc" name="LICENSE"/>
+   <file role="doc" name="README"/>
+   <file role="doc" name="CREDITS"/>
+   <file role="src" name="ax_libssdeep.m4"/>
+   <file role="src" name="config.m4"/>
+   <file role="src" name="config.w32"/>
+   <file role="src" name="php_ssdeep.h"/>
+   <file role="src" name="ssdeep.c"/>
+  </dir>
+ </contents>
+ <dependencies>
+  <required>
+   <php>
+    <min>5.2.0</min>
+   </php>
+   <pearinstaller>
+    <min>1.4.8</min>
+   </pearinstaller>
+  </required>
+ </dependencies>
+ <providesextension>ssdeep</providesextension>
+ <extsrcrelease/>
+</package>

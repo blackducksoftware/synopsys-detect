@@ -52,17 +52,12 @@ class DockerBomTool extends BomTool {
 
     @Override
     public boolean isBomToolApplicable() {
-        dockerExecutablePath = findDockerExecutable()
-        if (!dockerExecutablePath) {
-            logger.debug('Could not find docker on the environment PATH')
-        }
-        bashExecutablePath = findBashExecutable()
-        if (!bashExecutablePath) {
-            logger.debug('Could not find bash on the environment PATH')
-        }
         boolean propertiesOk = detectConfiguration.dockerInspectorVersion && (detectConfiguration.dockerTar || detectConfiguration.dockerImage)
         if (!propertiesOk) {
             logger.debug('The docker properties are not sufficient to run')
+        } else {
+            dockerExecutablePath = executableManager.getPathOfExecutable(ExecutableType.DOCKER, detectConfiguration.dockerPath)?.trim()
+            bashExecutablePath = executableManager.getPathOfExecutable(ExecutableType.BASH, detectConfiguration.bashPath)?.trim()
         }
 
         dockerExecutablePath && propertiesOk
@@ -110,22 +105,5 @@ class DockerBomTool extends BomTool {
         executableRunner.execute(dockerExecutable)
         //At least for the moment, there is no way of running the hub-docker-inspector to generate the files only, so it currently handles all uploading
         []
-    }
-
-    private String findDockerExecutable() {
-        String dockerPath = detectConfiguration.dockerPath
-        if (!dockerPath?.trim()) {
-            dockerPath = executableManager.getPathOfExecutable(ExecutableType.DOCKER)?.trim()
-        }
-        dockerPath
-    }
-
-    private String findBashExecutable() {
-        String bashPath = detectConfiguration.bashPath
-        if (!bashPath?.trim()) {
-            bashPath = executableManager.getPathOfExecutable(ExecutableType.BASH)?.trim()
-        }
-
-        bashPath
     }
 }

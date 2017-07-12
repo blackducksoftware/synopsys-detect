@@ -25,6 +25,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool.output
 class DetectProject {
     private String projectName
     private String projectVersionName
+    private String projectVersionHash
     private List<DetectCodeLocation> detectCodeLocations = []
 
     public String getProjectName() {
@@ -46,6 +47,10 @@ class DetectProject {
 
         if (!projectVersionName) {
             projectVersionName = detectCodeLocation.bomToolProjectVersionName
+        }
+
+        if (!projectVersionHash) {
+            projectVersionHash = detectCodeLocation.bomToolFileHash
         }
 
         detectCodeLocations.add(detectCodeLocation)

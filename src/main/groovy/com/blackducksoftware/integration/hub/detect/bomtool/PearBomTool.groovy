@@ -33,7 +33,6 @@ import com.blackducksoftware.integration.hub.detect.bomtool.pear.PearDependencyF
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
-import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput
 
 @Component
@@ -52,17 +51,21 @@ class PearBomTool extends BomTool {
     @Override
     public boolean isBomToolApplicable() {
         boolean containsPackageXml = detectFileManager.containsAllFiles(sourcePath, 'package.xml')
-        pearExePath = findPearExePath()
+
+        if (containsPackageXml) {
+            pearExePath = executableManager.getPathOfExecutable(ExecutableType.PEAR, detectConfiguration.getPearPath())
+        }
 
         pearExePath && containsPackageXml
     }
 
     @Override
     public List<DetectCodeLocation> extractDetectCodeLocations() {
-        ExecutableOutput pearListing = runExe('list')
-        ExecutableOutput pearDependencies = runExe('package-dependencies', 'package.xml')
+        ExecutableOutput pearListing = executableRunner.runExe(pearExePath, 'list')
+        ExecutableOutput pearDependencies = executableRunner.runExe(pearExePath, 'package-dependencies', 'package.xml')
 
-        NameVersionNodeImpl nameVersionModel = pearDependencyFinder.findNameVersion(sourcePath)
+        File packageFile = detectFileManager.findFile(sourcePath, 'package.xml')
+        NameVersionNodeImpl nameVersionModel = pearDependencyFinder.findNameVersion(packageFile)
 
         Set<DependencyNode> childDependencyNodes = pearDependencyFinder.parsePearDependencyList(pearListing, pearDependencies)
         def detectCodeLocation = new DetectCodeLocation(
@@ -75,18 +78,5 @@ class PearBomTool extends BomTool {
                 )
 
         [detectCodeLocation]
-    }
-
-    private String findPearExePath() {
-        if (detectConfiguration.getPearPath()) {
-            return detectConfiguration.getPearPath()
-        }
-
-        executableManager.getPathOfExecutable(ExecutableType.PEAR)
-    }
-
-    private ExecutableOutput runExe(String... commands) {
-        def pearExe = new Executable(new File(sourcePath), pearExePath, commands.toList())
-        executableRunner.execute(pearExe)
     }
 }
