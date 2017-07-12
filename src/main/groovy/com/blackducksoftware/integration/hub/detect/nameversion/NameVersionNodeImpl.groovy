@@ -31,6 +31,13 @@ class NameVersionNodeImpl implements NameVersionNode {
     List<NameVersionNodeImpl> children = []
 
     @Override
+    boolean equals(Object obj) {
+        NameVersionNodeImpl nameVersionNodeImpl = obj as NameVersionNodeImpl
+
+        (name.contentEquals(nameVersionNodeImpl.name)) && (version.contentEquals(nameVersionNodeImpl.version))
+    }
+
+    @Override
     String toString() {
         return ReflectionToStringBuilder.toString(this, RecursiveToStringStyle.JSON_STYLE)
     }
