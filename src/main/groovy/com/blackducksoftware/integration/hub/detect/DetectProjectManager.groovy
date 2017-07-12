@@ -94,7 +94,7 @@ class DetectProjectManager {
 
                 if (bomTool.isBomToolApplicable() && detectConfiguration.shouldRun(bomTool)) {
                     logger.info("${bomToolTypeString} applies given the current configuration.")
-                    foundAnyBomTools = true;
+                    foundAnyBomTools = true
                     List<DetectCodeLocation> codeLocations = bomTool.extractDetectCodeLocations()
                     if (codeLocations != null && codeLocations.size() > 0) {
                         detectProject.addAllDetectCodeLocations(codeLocations)
@@ -107,19 +107,19 @@ class DetectProjectManager {
                 }
             } catch (final Exception e) {
                 // any bom tool failure should not prevent other bom tools from running
-                logger.error("${bomToolTypeString} threw an Exception: ${e.message}");
+                logger.error("${bomToolTypeString} threw an Exception: ${e.message}")
                 if (logger.isTraceEnabled()) {
-                    e.printStackTrace();
+                    e.printStackTrace()
                 }
             }
         }
 
         //if none of the bom tools could determine a project/version, use some reasonable defaults
         detectProject.projectName = projectInfoGatherer.getProjectName(detectConfiguration.sourcePath, detectProject.projectName)
-        detectProject.projectVersionName = projectInfoGatherer.getProjectVersionName(detectProject.projectVersionName)
+        detectProject.projectVersionName = projectInfoGatherer.getProjectVersionName(detectProject.projectVersionName, detectProject.projectVersionHash)
 
         if (!foundAnyBomTools) {
-            logger.info("Could not find any tools to run - will register ${detectConfiguration.sourcePath} for signature scanning of ${detectProject.projectName}/${detectProject.projectVersionName}");
+            logger.info("Could not find any tools to run - will register ${detectConfiguration.sourcePath} for signature scanning of ${detectProject.projectName}/${detectProject.projectVersionName}")
             hubSignatureScanner.registerDirectoryToScan(detectConfiguration.sourceDirectory)
         }
 
@@ -141,13 +141,13 @@ class DetectProjectManager {
         String projectVersionName = detectProject.projectVersionName
         String codeLocationName = projectInfoGatherer.getCodeLocationName(detectCodeLocation.bomToolType, detectCodeLocation.sourcePath, projectName, projectVersionName)
 
-        final IntegrationEscapeUtil escapeUtil = new IntegrationEscapeUtil();
-        final String safeProjectName = escapeUtil.escapeForUri(projectName);
-        final String safeVersionName = escapeUtil.escapeForUri(projectVersionName);
-        final String filename = String.format("%s_%s_%s_bdio.jsonld", detectCodeLocation.bomToolType.toString(), safeProjectName, safeVersionName);
-        final File outputFile = new File(detectConfiguration.getOutputDirectory(), filename);
+        final IntegrationEscapeUtil escapeUtil = new IntegrationEscapeUtil()
+        final String safeProjectName = escapeUtil.escapeForUri(projectName)
+        final String safeVersionName = escapeUtil.escapeForUri(projectVersionName)
+        final String filename = String.format("%s_%s_%s_bdio.jsonld", detectCodeLocation.bomToolType.toString(), safeProjectName, safeVersionName)
+        final File outputFile = new File(detectConfiguration.getOutputDirectory(), filename)
         if (outputFile.exists()) {
-            outputFile.delete();
+            outputFile.delete()
         }
 
         BdioBillOfMaterials bdioBillOfMaterials = bdioNodeFactory.createBillOfMaterials(codeLocationName, projectName, projectVersionName)
@@ -161,7 +161,7 @@ class DetectProjectManager {
         SimpleBdioDocument simpleBdioDocument = new SimpleBdioDocument()
         simpleBdioDocument.billOfMaterials = bdioBillOfMaterials
         simpleBdioDocument.project = project
-        simpleBdioDocument.components = bdioComponents;
+        simpleBdioDocument.components = bdioComponents
 
         final BdioWriter bdioWriter = new BdioWriter(gson, new FileOutputStream(outputFile))
         try {
@@ -169,7 +169,7 @@ class DetectProjectManager {
         } finally {
             bdioWriter.close()
         }
-        logger.info("BDIO Generated: " + outputFile.getAbsolutePath());
+        logger.info("BDIO Generated: " + outputFile.getAbsolutePath())
 
         outputFile
     }

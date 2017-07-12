@@ -62,7 +62,7 @@ class GoGodepsBomTool extends BomTool {
 
         ExternalId externalId = new PathExternalId(GoDepBomTool.GOLANG, sourcePath)
 
-        def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, "", "", externalId, dependenciesSet)
+        def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, '', '', '', externalId, dependenciesSet)
         [codeLocation]
     }
 }

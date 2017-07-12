@@ -55,7 +55,7 @@ class GoDepBomTool extends BomTool {
 
     @Override
     public BomToolType getBomToolType() {
-        return BomToolType.GO_DEP;
+        return BomToolType.GO_DEP
     }
 
     @Override
@@ -81,7 +81,7 @@ class GoDepBomTool extends BomTool {
 
         List<DependencyNode> dependencies = goPackager.makeDependencyNodes(sourcePath, goDepExecutable)
         ExternalId externalId = new PathExternalId(GOLANG, sourcePath)
-        DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, "", "", externalId, new HashSet(dependencies))
+        DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, '', '', '', externalId, new HashSet(dependencies))
 
         [detectCodeLocation]
     }
