@@ -22,7 +22,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool
 
-import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -46,7 +45,7 @@ class NugetBomTool extends BomTool {
     @Autowired
     NugetInspectorPackager nugetInspectorPackager
 
-    File nugetExecutable
+    String nugetExecutable
 
     BomToolType getBomToolType() {
         return BomToolType.NUGET
@@ -54,49 +53,26 @@ class NugetBomTool extends BomTool {
 
     @Override
     public boolean isBomToolApplicable() {
-        nugetExecutable = findNugetExecutable()
         def containsSolutionFile = detectFileManager.containsAllFiles(sourcePath, SOLUTION_PATTERN)
         def containsProjectFile = detectFileManager.containsAllFiles(sourcePath, PROJECT_PATTERN)
 
-        if (!nugetExecutable && (containsSolutionFile || containsProjectFile)) {
-            logger.warn('The nuget executable must be on the path - are you sure you are running on a windows system?')
+        if (containsSolutionFile || containsProjectFile) {
+            //logger.warn('The nuget executable must be on the path - are you sure you are running on a windows system?')
+            nugetExecutable = executableManager.getPathOfExecutable(ExecutableType.NUGET, detectConfiguration.getNugetPath())
         }
 
         nugetExecutable && (containsSolutionFile || containsProjectFile)
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
-        DependencyNode root = nugetInspectorPackager.makeDependencyNode(sourcePath, nugetExecutable)
+        DependencyNode root = nugetInspectorPackager.makeDependencyNode(sourcePath, new File(nugetExecutable))
         if (!root) {
-            logger.info('Unable to extract any dependencies from nuget')
+            logger.warn('Unable to extract any dependencies from nuget')
             return []
         }
 
         root.externalId = new NameVersionExternalId(Forge.NUGET, root.name, root.version)
         DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, root)
         [detectCodeLocation]
-    }
-
-    //TODO (ek) is this needed?
-    boolean isSolution(DependencyNode root) {
-        boolean isSolution = false
-        if (root.children != null && root.children.size() > 0) {
-            for (DependencyNode child : root.children) {
-                if (child.children != null && child.children.size() > 0) {
-                    // the only way to tell if we are dealing with a solution is if at least one of the projects has a dependency
-                    isSolution = true
-                    break
-                }
-            }
-        }
-        return isSolution
-    }
-
-    private File findNugetExecutable() {
-        if (StringUtils.isNotBlank(detectConfiguration.getNugetPath())) {
-            new File(detectConfiguration.getNugetPath())
-        } else {
-            executableManager.getExecutable(ExecutableType.NUGET)
-        }
     }
 }

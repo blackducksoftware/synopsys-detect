@@ -73,6 +73,7 @@ class PearBomTool extends BomTool {
                 sourcePath,
                 nameVersionModel.name,
                 nameVersionModel.version,
+                '',
                 new NameVersionExternalId(PEAR, nameVersionModel.name, nameVersionModel.version),
                 childDependencyNodes
                 )
