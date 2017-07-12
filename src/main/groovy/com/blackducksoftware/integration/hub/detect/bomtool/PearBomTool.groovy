@@ -64,7 +64,8 @@ class PearBomTool extends BomTool {
         ExecutableOutput pearListing = executableRunner.runExe('list')
         ExecutableOutput pearDependencies = executableRunner.runExe('package-dependencies', 'package.xml')
 
-        NameVersionNodeImpl nameVersionModel = pearDependencyFinder.findNameVersion(sourcePath)
+        File packageFile = detectFileManager.findFile(sourcePath, 'package.xml')
+        NameVersionNodeImpl nameVersionModel = pearDependencyFinder.findNameVersion(packageFile)
 
         Set<DependencyNode> childDependencyNodes = pearDependencyFinder.parsePearDependencyList(pearListing, pearDependencies)
         def detectCodeLocation = new DetectCodeLocation(
