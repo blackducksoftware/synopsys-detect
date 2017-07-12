@@ -59,7 +59,10 @@ class MavenBomTool extends BomTool {
     boolean isBomToolApplicable() {
         String pomXmlPath = detectFileManager.findFile(sourcePath, POM_FILENAME)
         String pomWrapperPath = detectFileManager.findFile(sourcePath, POM_WRAPPER_FILENAME)
-        mvnExecutable = findMavenExecutablePath()
+        
+        if (pomXmlPath || pomWrapperPath) {
+            mvnExecutable = findMavenExecutablePath()
+        }
 
         mvnExecutable && (pomXmlPath || pomWrapperPath)
     }
@@ -94,7 +97,7 @@ class MavenBomTool extends BomTool {
             return detectConfiguration.getMavenPath()
         }
 
-        String wrapperPath = executableManager.getPathOfExecutable(sourcePath, ExecutableType.MVNW)
+        String wrapperPath = executableManager.getPathOfExecutable(ExecutableType.MVNW)
         if (wrapperPath) {
             return wrapperPath
         }
