@@ -83,7 +83,7 @@ class GoDepBomTool extends BomTool {
 
         List<DependencyNode> dependencies = goPackager.makeDependencyNodes(sourcePath, goDepExecutable)
         ExternalId externalId = new PathExternalId(GOLANG, sourcePath)
-        DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, "", "", externalId, new HashSet(dependencies))
+        DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, '', '', '', externalId, new HashSet(dependencies))
 
         [detectCodeLocation]
     }

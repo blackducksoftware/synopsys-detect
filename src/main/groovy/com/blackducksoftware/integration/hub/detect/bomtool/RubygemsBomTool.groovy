@@ -52,13 +52,14 @@ class RubygemsBomTool extends BomTool {
         File sourceDirectory = detectConfiguration.sourceDirectory
 
         def gemlockFile = new File(sourceDirectory, 'Gemfile.lock')
-        String gemlock = gemlockFile.getText(StandardCharsets.UTF_8.name())
+        String gemlockText = gemlockFile.getText(StandardCharsets.UTF_8.name())
 
-        List<DependencyNode> dependencies = rubygemsNodePackager.extractProjectDependencies(gemlock)
+        List<DependencyNode> dependencies = rubygemsNodePackager.extractProjectDependencies(gemlockText)
         Set<DependencyNode> dependenciesSet = new HashSet<>(dependencies)
         ExternalId externalId = new PathExternalId(Forge.RUBYGEMS, sourcePath)
+        String hash = getHash(gemlockText)
 
-        def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, "", "", externalId, dependenciesSet)
+        def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, '', '', hash, externalId, dependenciesSet)
         [codeLocation]
     }
 }

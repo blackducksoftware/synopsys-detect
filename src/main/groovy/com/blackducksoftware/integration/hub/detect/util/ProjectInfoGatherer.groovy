@@ -23,7 +23,6 @@
 package com.blackducksoftware.integration.hub.detect.util
 
 import org.apache.commons.io.FilenameUtils
-import org.joda.time.DateTime
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -32,8 +31,6 @@ import com.blackducksoftware.integration.hub.detect.type.BomToolType
 
 @Component
 class ProjectInfoGatherer {
-    public static final String DATE_FORMAT = 'yyyy-MM-dd\'T\'HH:mm:ss.SSS'
-
     @Autowired
     DetectConfiguration detectConfiguration
 
@@ -61,16 +58,16 @@ class ProjectInfoGatherer {
     }
 
     String getProjectVersionName() {
-        getProjectVersionName(null)
+        getProjectVersionName(null, null)
     }
 
-    String getProjectVersionName(final String defaultVersionName) {
+    String getProjectVersionName(final String defaultVersionName, final String bomToolFileHash) {
         String projectVersion = defaultVersionName?.trim()
 
         if (detectConfiguration.getProjectVersionName()) {
             projectVersion = detectConfiguration.getProjectVersionName()
         } else if (!projectVersion) {
-            projectVersion = DateTime.now().toString(DATE_FORMAT)
+            projectVersion = 'Detect Unkown Version'
         }
 
         projectVersion
