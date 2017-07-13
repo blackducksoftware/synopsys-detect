@@ -31,7 +31,7 @@ class PearDependencyTest {
         expected.name = 'test-name'
         expected.version = '1.0.0'
 
-        Assert.assertEquals(expected, actual)
+        Assert.assertTrue((actual.name.equals(expected.name)) && (actual.version.equals(expected.version)))
     }
 
     @Test
