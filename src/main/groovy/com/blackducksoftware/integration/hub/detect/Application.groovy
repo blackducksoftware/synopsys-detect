@@ -93,12 +93,9 @@ class Application {
             }
             DetectProject detectProject = detectProjectManager.createDetectProject()
             List<File> createdBdioFiles = detectProjectManager.createBdioFiles(detectProject)
-            ApplicationResults applicationResults = hubManager.performPostActions(detectProject, createdBdioFiles)
-            if (applicationResults.exitValue != 0) {
-                if (applicationResults.message) {
-                    logger.error("Exiting: ${applicationResults.message}")
-                }
-                System.exit(applicationResults.exitValue)
+            int postResult = hubManager.performPostActions(detectProject, createdBdioFiles)
+            if (postResult != 0) {
+                System.exit(postResult)
             }
         }
     }

@@ -32,7 +32,6 @@ import com.blackducksoftware.integration.hub.builder.HubServerConfigBuilder
 import com.blackducksoftware.integration.hub.dataservice.policystatus.PolicyStatusDescription
 import com.blackducksoftware.integration.hub.dataservice.project.ProjectDataService
 import com.blackducksoftware.integration.hub.dataservice.project.ProjectVersionWrapper
-import com.blackducksoftware.integration.hub.detect.ApplicationResults
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
 import com.blackducksoftware.integration.hub.global.HubServerConfig
@@ -55,9 +54,6 @@ class HubManager {
 
     @Autowired
     PolicyChecker policyChecker
-
-    @Autowired
-    ApplicationResults applicationResults
 
     public HubServicesFactory createHubServicesFactory(Slf4jIntLogger slf4jIntLogger, HubServerConfig hubServerConfig) {
         RestConnection restConnection = hubServerConfig.createCredentialsRestConnection(slf4jIntLogger)
@@ -83,9 +79,8 @@ class HubManager {
         hubServerConfigBuilder.build()
     }
 
-    //TODO Return a new object that contains data about the call (Instead of an exception)
-    public ApplicationResults performPostActions(DetectProject detectProject, List<File> createdBdioFiles) {
-        ApplicationResults applicationResults = new ApplicationResults()
+    public int performPostActions(DetectProject detectProject, List<File> createdBdioFiles) {
+        def postActionResult = 0
         try {
 
             Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
@@ -101,8 +96,7 @@ class HubManager {
                 PolicyStatusDescription policyStatus = policyChecker.getPolicyStatus(hubServicesFactory, detectProject)
                 logger.info(policyStatus.policyStatusMessage)
                 if (policyStatus.getCountInViolation() != 0) {
-                    applicationResults.exitValue = 1
-                    applicationResults.message = "Policy violation's"
+                    postActionResult = 1
                 }
             }
             ProjectDataService projectDataService = hubServicesFactory.createProjectDataService(slf4jIntLogger)
@@ -115,6 +109,6 @@ class HubManager {
         } catch (Exception e) {
             logger.error("There was a problem communicating with the Hub : ${e.message}")
         }
-        applicationResults
+        postActionResult
     }
 }
