@@ -48,10 +48,8 @@ get_detect() {
     DETECT_SOURCE=$DETECT_LATEST_SNAPSHOT
   else
     echo "will look for release: ${DETECT_LATEST_RELEASE}"
-#    DETECT_DESTINATION="${DETECT_JAR_PATH}/${DETECT_LATEST_RELEASE}"
-#    DETECT_SOURCE=$DETECT_LATEST_RELEASE
-DETECT_DESTINATION="/Users/bmandel/git/hub-detect/build/libs/hub-detect-0.0.8-SNAPSHOT.jar"
-DETECT_SOURCE="hub-detect-0.0.8-SNAPSHOT.jar"
+    DETECT_DESTINATION="${DETECT_JAR_PATH}/${DETECT_LATEST_RELEASE}"
+    DETECT_SOURCE=$DETECT_LATEST_RELEASE
   fi
 
   USE_REMOTE=1
@@ -78,8 +76,7 @@ run_detect() {
   echo "#!/bin/sh" >> $DETECT_JAR_PATH/hub-detect-java.sh
   echo "" >> $DETECT_JAR_PATH/hub-detect-java.sh
   echo $JAVACMD $JAVAOPTS >> $DETECT_JAR_PATH/hub-detect-java.sh
-#  sh $DETECT_JAR_PATH/hub-detect-java.sh
-java -jar /Users/bmandel/git/hub-detect/build/libs/hub-detect-0.0.8-SNAPSHOT.jar --detect.source.path=/Users/bmandel/Node/NodeSmall --blackduck.hub.username=sysadmin --blackduck.hub.password=blackduck --detect.policy.check=true --blackduck.hub.url=http://int-hub01.dc1.lan:8080/
+  source $DETECT_JAR_PATH/hub-detect-java.sh
   RESULT=$?
   if [ $RESULT -ne 0 ]; then
   	echo "Result code of ${RESULT}, exiting"

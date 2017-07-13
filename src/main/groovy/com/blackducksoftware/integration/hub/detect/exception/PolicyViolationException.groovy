@@ -22,9 +22,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.exception
 
-import org.springframework.boot.ExitCodeGenerator
-
-class PolicyViolationException extends Exception implements ExitCodeGenerator {
+class PolicyViolationException extends Exception {
     private int exceptionExitCode = 1
 
     public PolicyViolationException(int exitCode) {
@@ -37,7 +35,6 @@ class PolicyViolationException extends Exception implements ExitCodeGenerator {
         exceptionExitCode = exitCode
     }
 
-    @Override
     public int getExitCode() {
         return exceptionExitCode
     }

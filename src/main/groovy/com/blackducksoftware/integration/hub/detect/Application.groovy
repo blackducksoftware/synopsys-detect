@@ -26,13 +26,10 @@ import javax.annotation.PostConstruct
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.BeansException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.builder.SpringApplicationBuilder
-import org.springframework.context.ApplicationContext
-import org.springframework.context.ApplicationContextAware
 import org.springframework.context.annotation.Bean
 
 import com.blackducksoftware.integration.hub.bdio.simple.BdioNodeFactory
@@ -49,9 +46,8 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
 @SpringBootApplication
-class Application implements ApplicationContextAware {
+class Application {
     private final Logger logger = LoggerFactory.getLogger(Application.class)
-    private ApplicationContext appContext
 
     @Autowired
     ValueDescriptionAnnotationFinder valueDescriptionAnnotationFinder
@@ -80,8 +76,6 @@ class Application implements ApplicationContextAware {
     @Autowired
     HubManager hubManager
 
-
-
     static void main(final String[] args) {
         new SpringApplicationBuilder(Application.class).logStartupInfo(false).run(args)
     }
@@ -103,8 +97,7 @@ class Application implements ApplicationContextAware {
             try {
                 hubManager.performPostActions(detectProject, createdBdioFiles)
             } catch (PolicyViolationException policyViolation) {
-                //SpringApplication.exit(appContext, policyViolation)
-                System.exit(1)
+                System.exit(policyViolation.getExitCode())
             }
         }
     }
@@ -127,10 +120,5 @@ class Application implements ApplicationContextAware {
     @Bean
     DependencyNodeTransformer dependencyNodeTransformer() {
         new DependencyNodeTransformer(bdioNodeFactory(), bdioPropertyHelper())
-    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        appContext = applicationContext
     }
 }
