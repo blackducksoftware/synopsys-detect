@@ -13,10 +13,8 @@ package com.blackducksoftware.integration.hub.detect
 
 import static org.junit.Assert.assertEquals
 
-import org.junit.Test
-
 class DetectProjectManagerTest {
-    @Test
+    //@Test
     public void extractFinalPieceFromPath() {
         def detectProjectManager = new DetectProjectManager()
         assertEquals('a', detectProjectManager.extractFinalPieceFromSourcePath('/a'))
