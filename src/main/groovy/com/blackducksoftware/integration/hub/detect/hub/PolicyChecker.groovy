@@ -39,6 +39,7 @@ import com.blackducksoftware.integration.hub.dataservice.scan.ScanStatusDataServ
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
 import com.blackducksoftware.integration.hub.detect.exception.DetectException
+import com.blackducksoftware.integration.hub.model.enumeration.VersionBomPolicyStatusOverallStatusEnum
 import com.blackducksoftware.integration.hub.model.view.CodeLocationView
 import com.blackducksoftware.integration.hub.model.view.ScanSummaryView
 import com.blackducksoftware.integration.hub.model.view.VersionBomPolicyStatusView
@@ -92,6 +93,13 @@ class PolicyChecker {
         VersionBomPolicyStatusView versionBomPolicyStatusView = policyStatusDataService.getPolicyStatusForProjectAndVersion(projectName, projectVersionName)
         PolicyStatusDescription policyStatusDescription = new PolicyStatusDescription(versionBomPolicyStatusView)
 
+        VersionBomPolicyStatusOverallStatusEnum statusEnum = VersionBomPolicyStatusOverallStatusEnum.NOT_IN_VIOLATION
+        if (policyStatusDescription.getCountInViolation()?.value > 0) {
+            statusEnum = VersionBomPolicyStatusOverallStatusEnum.IN_VIOLATION
+        } else if (policyStatusDescription.getCountInViolationOverridden()?.value > 0) {
+            statusEnum = VersionBomPolicyStatusOverallStatusEnum.IN_VIOLATION_OVERRIDDEN
+        }
+        logger.info("Policy Status: ${statusEnum.name()}")
         policyStatusDescription
     }
 }
