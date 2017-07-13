@@ -206,10 +206,6 @@ class DetectProperties {
     @Value('${detect.pip.project.name}')
     String pipProjectName
 
-    @ValueDescription(description="If true creates a temporary Python virtual environment", defaultValue="true", group=DetectProperties.GROUP_PIP)
-    @Value('${detect.pip.create.virtual.env}')
-    Boolean createVirtualEnv
-
     @ValueDescription(description="If true will use pip3 if available on class path", defaultValue="false", group=DetectProperties.GROUP_PIP)
     @Value('${detect.pip.pip3}')
     Boolean pipThreeOverride

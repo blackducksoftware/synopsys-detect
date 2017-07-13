@@ -22,6 +22,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool
 
+import java.nio.charset.StandardCharsets
+
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -29,11 +31,12 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleInitScriptPackager
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
+import com.blackducksoftware.integration.hub.detect.util.executable.Executable
+import com.google.gson.Gson
 
 @Component
 class GradleBomTool extends BomTool {
@@ -42,7 +45,7 @@ class GradleBomTool extends BomTool {
     static final String BUILD_GRADLE = 'build.gradle'
 
     @Autowired
-    GradleInitScriptPackager gradleInitScriptPackager
+    Gson gson
 
     @Autowired
     HubSignatureScanner hubSignatureScanner
@@ -64,7 +67,7 @@ class GradleBomTool extends BomTool {
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
-        DependencyNode rootProjectNode = gradleInitScriptPackager.extractRootProjectNode(sourcePath, gradleExecutable)
+        DependencyNode rootProjectNode = extractRootProjectNode()
         DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, rootProjectNode)
 
         //there may also be subprojects, so just look up to two levels down (depth = 3) for any/all build directories
@@ -89,5 +92,36 @@ class GradleBomTool extends BomTool {
         }
 
         gradlePath
+    }
+
+    DependencyNode extractRootProjectNode() {
+        File initScriptFile = detectFileManager.createFile(BomToolType.GRADLE, 'init-detect.gradle')
+        String initScriptContents = getClass().getResourceAsStream('/init-script-gradle').getText(StandardCharsets.UTF_8.name())
+        initScriptContents = initScriptContents.replace('GRADLE_INSPECTOR_VERSION', detectConfiguration.getGradleInspectorVersion())
+        initScriptContents = initScriptContents.replace('EXCLUDED_PROJECT_NAMES', detectConfiguration.getGradleExcludedProjectNames())
+        initScriptContents = initScriptContents.replace('INCLUDED_PROJECT_NAMES', detectConfiguration.getGradleIncludedProjectNames())
+        initScriptContents = initScriptContents.replace('EXCLUDED_CONFIGURATION_NAMES', detectConfiguration.getGradleExcludedConfigurationNames())
+        initScriptContents = initScriptContents.replace('INCLUDED_CONFIGURATION_NAMES', detectConfiguration.getGradleIncludedConfigurationNames())
+
+        detectFileManager.writeToFile(initScriptFile, initScriptContents)
+        String initScriptPath = initScriptFile.absolutePath
+        logger.info("using ${initScriptPath} as the path for the gradle init script")
+        Executable executable = new Executable(sourceDirectory, gradleExecutable, [
+            detectConfiguration.getGradleBuildCommand(),
+            "--init-script=${initScriptPath}"
+        ])
+        executableRunner.execute(executable)
+
+        File buildDirectory = new File(sourcePath, 'build')
+        File blackduckDirectory = new File(buildDirectory, 'blackduck')
+        File dependencyNodeFile = new File(blackduckDirectory, 'dependencyNodes.json')
+        String dependencyNodeJson = dependencyNodeFile.getText(StandardCharsets.UTF_8.name())
+        DependencyNode rootProjectDependencyNode = gson.fromJson(dependencyNodeJson, DependencyNode.class)
+
+        if (detectConfiguration.gradleCleanupBuildBlackduckDirectory) {
+            blackduckDirectory.deleteDir()
+        }
+
+        rootProjectDependencyNode
     }
 }
