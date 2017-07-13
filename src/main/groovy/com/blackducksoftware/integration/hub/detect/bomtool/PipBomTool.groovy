@@ -22,6 +22,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool
 
+import java.nio.charset.StandardCharsets
+
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -29,49 +31,89 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
-import com.blackducksoftware.integration.hub.detect.bomtool.pip.PipPackager
-import com.blackducksoftware.integration.hub.detect.bomtool.pip.VirtualEnvironment
-import com.blackducksoftware.integration.hub.detect.bomtool.pip.VirtualEnvironmentHandler
+import com.blackducksoftware.integration.hub.detect.bomtool.pip.PipInspectorTreeParser
+import com.blackducksoftware.integration.hub.detect.bomtool.pip.PythonEnvironment
+import com.blackducksoftware.integration.hub.detect.bomtool.pip.PythonEnvironmentHandler
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
+import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 
 @Component
 class PipBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(this.getClass())
 
-    static final String SETUP_FILENAME = 'setup.py'
+    private final String INSPECTOR_NAME = 'pip-inspector.py'
+    private final String SETUP_FILE_NAME = 'setup.py'
 
     @Autowired
-    PipPackager pipPackager
+    PipInspectorTreeParser pipInspectorTreeParser
 
     @Autowired
-    VirtualEnvironmentHandler virtualEnvironmentHandler
+    PythonEnvironmentHandler virtualEnvironmentHandler
 
     BomToolType getBomToolType() {
         BomToolType.PIP
     }
 
     boolean isBomToolApplicable() {
-        def matchingSourcePath = detectFileManager.findFile(sourcePath, SETUP_FILENAME)
+        def containsFiles = detectFileManager.containsAllFiles(sourcePath, SETUP_FILE_NAME)
         def definedRequirements = detectConfiguration.requirementsFilePath
 
         def foundExecutables
-        if (matchingSourcePath || definedRequirements) {
+        if (containsFiles || definedRequirements) {
             virtualEnvironmentHandler.init()
-            VirtualEnvironment systemEnvironment = virtualEnvironmentHandler.getSystemEnvironment()
+            PythonEnvironment systemEnvironment = virtualEnvironmentHandler.getSystemEnvironment()
             foundExecutables = systemEnvironment.pipPath && systemEnvironment.pythonPath
         }
 
-        foundExecutables && (matchingSourcePath || definedRequirements)
+        foundExecutables && (containsFiles || definedRequirements)
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
         def outputDirectory = detectFileManager.createDirectory(BomToolType.PIP)
         def sourcePath = sourcePath
 
-        VirtualEnvironment virtualEnv = virtualEnvironmentHandler.getVirtualEnvironment(outputDirectory)
-        DependencyNode projectNode = pipPackager.makeDependencyNode(virtualEnv)
+        PythonEnvironment pythonEnvironment = virtualEnvironmentHandler.getEnvironment(detectConfiguration.virtualEnvPath)
+        DependencyNode projectNode = makeDependencyNode(pythonEnvironment)
         def codeLocation = new DetectCodeLocation(BomToolType.PIP, sourcePath, projectNode)
 
         [codeLocation]
+    }
+
+    DependencyNode makeDependencyNode(PythonEnvironment pythonEnvironment) {
+        String pipPath = pythonEnvironment.pipPath
+        String pythonPath = pythonEnvironment.pythonPath
+        def setupFile = detectFileManager.findFile(sourceDirectory, 'setup.py')
+
+        String inpsectorScriptContents = getClass().getResourceAsStream("/${INSPECTOR_NAME}").getText(StandardCharsets.UTF_8.name())
+        def inspectorScript = detectFileManager.createFile(BomToolType.PIP, INSPECTOR_NAME)
+        detectFileManager.writeToFile(inspectorScript, inpsectorScriptContents)
+        def pipInspectorOptions = [
+            inspectorScript.absolutePath
+        ]
+
+        // Install requirements file and add it as an option for the inspector
+        if (detectConfiguration.requirementsFilePath) {
+            def requirementsFile = new File(detectConfiguration.requirementsFilePath)
+            pipInspectorOptions += "--requirements=${requirementsFile.absolutePath}"
+        }
+
+        // Install project if it can find one and pass its name to the inspector
+        if (setupFile) {
+            def projectName = detectConfiguration.pipProjectName
+            if (!projectName) {
+                def findProjectNameExecutable = new Executable(sourceDirectory, pythonPath, [
+                    setupFile.absolutePath,
+                    '--name'
+                ])
+                String[] output = executableRunner.execute(findProjectNameExecutable).standardOutput.split('\n')
+                projectName = output[output.length - 1].trim()
+            }
+            pipInspectorOptions += "--projectname=${projectName}"
+        }
+
+        def pipInspector = new Executable(sourceDirectory, pythonPath, pipInspectorOptions)
+        def inspectorOutput = executableRunner.execute(pipInspector).standardOutput
+
+        pipInspectorTreeParser.parse(nameVersionNodeTransformer, inspectorOutput)
     }
 }

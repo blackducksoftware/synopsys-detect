@@ -24,6 +24,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool.pip
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
@@ -32,6 +33,7 @@ import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeB
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 
+@Component
 class PipInspectorTreeParser {
     final Logger logger = LoggerFactory.getLogger(this.getClass())
 
@@ -96,8 +98,8 @@ class PipInspectorTreeParser {
         if (nodeBuilder) {
             NameVersionNode projectNode = nodeBuilder.getRoot()
             if (projectNode.name == UNKOWN_PROJECT_NAME && projectNode.version == UNKOWN_PROJECT_VERSION) {
-                projectNode.name == null
-                projectNode.version == null
+                projectNode.name = ''
+                projectNode.version = ''
             }
             return nameVersionNodeTransformer.createDependencyNode(Forge.PYPI, projectNode)
         }
