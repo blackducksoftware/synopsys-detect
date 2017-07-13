@@ -206,10 +206,6 @@ class DetectProperties {
     @Value('${detect.pip.project.name}')
     String pipProjectName
 
-    @ValueDescription(description="If true creates a temporary Python virtual environment", defaultValue="true", group=DetectProperties.GROUP_PIP)
-    @Value('${detect.pip.create.virtual.env}')
-    Boolean createVirtualEnv
-
     @ValueDescription(description="If true will use pip3 if available on class path", defaultValue="false", group=DetectProperties.GROUP_PIP)
     @Value('${detect.pip.pip3}')
     Boolean pipThreeOverride
@@ -314,11 +310,11 @@ class DetectProperties {
     @Value('${detect.cpanm.path}')
     String cpanmPath
 
-    // @ValueDescription(description="When dealing with static files, use a hash as a version instead of a time-date format", defaultValue='true', group=DetectProperties.GROUP_PROJECT_INFO)
+    @ValueDescription(description="DISABLED: When dealing with static files, use a hash as a version instead of a time-date format", defaultValue='true', group=DetectProperties.GROUP_PROJECT_INFO)
     @Value('${detect.project.version.hash}')
     Boolean hashVersion
 
-    // @ValueDescription(description="When using a hash as a version, use a truncated version", defaultValue='true', group=DetectProperties.GROUP_PROJECT_INFO)
+    @ValueDescription(description="DISABLED: When using a hash as a version, use a truncated version", defaultValue='true', group=DetectProperties.GROUP_PROJECT_INFO)
     @Value('${detect.project.version.shorthash}')
     Boolean shortHash
 
