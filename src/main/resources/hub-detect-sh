@@ -78,7 +78,13 @@ run_detect() {
   echo "#!/bin/sh" >> $DETECT_JAR_PATH/hub-detect-java.sh
   echo "" >> $DETECT_JAR_PATH/hub-detect-java.sh
   echo $JAVACMD $JAVAOPTS >> $DETECT_JAR_PATH/hub-detect-java.sh
-  sh $DETECT_JAR_PATH/hub-detect-java.sh
+#  sh $DETECT_JAR_PATH/hub-detect-java.sh
+java -jar /Users/bmandel/git/hub-detect/build/libs/hub-detect-0.0.8-SNAPSHOT.jar --detect.source.path=/Users/bmandel/Node/NodeSmall --blackduck.hub.username=sysadmin --blackduck.hub.password=blackduck --detect.policy.check=true --blackduck.hub.url=http://int-hub01.dc1.lan:8080/
+  RESULT=$?
+  if [ $RESULT -ne 0 ]; then
+  	echo "Result code of ${RESULT}, exiting"
+  	exit $RESULT
+  fi
 }
 
 run

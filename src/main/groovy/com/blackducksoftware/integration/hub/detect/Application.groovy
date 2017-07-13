@@ -26,11 +26,13 @@ import javax.annotation.PostConstruct
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.BeansException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.builder.SpringApplicationBuilder
 import org.springframework.context.ApplicationContext
+import org.springframework.context.ApplicationContextAware
 import org.springframework.context.annotation.Bean
 
 import com.blackducksoftware.integration.hub.bdio.simple.BdioNodeFactory
@@ -47,8 +49,9 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
 @SpringBootApplication
-class Application {
+class Application implements ApplicationContextAware {
     private final Logger logger = LoggerFactory.getLogger(Application.class)
+    private ApplicationContext appContext
 
     @Autowired
     ValueDescriptionAnnotationFinder valueDescriptionAnnotationFinder
@@ -77,8 +80,7 @@ class Application {
     @Autowired
     HubManager hubManager
 
-    @Autowired
-    ApplicationContext appContext
+
 
     static void main(final String[] args) {
         new SpringApplicationBuilder(Application.class).logStartupInfo(false).run(args)
@@ -125,5 +127,10 @@ class Application {
     @Bean
     DependencyNodeTransformer dependencyNodeTransformer() {
         new DependencyNodeTransformer(bdioNodeFactory(), bdioPropertyHelper())
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        appContext = applicationContext
     }
 }

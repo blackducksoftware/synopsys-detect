@@ -24,7 +24,7 @@ package com.blackducksoftware.integration.hub.detect.exception
 
 import org.springframework.boot.ExitCodeGenerator
 
-class PolicyViolationException extends DetectException implements ExitCodeGenerator {
+class PolicyViolationException extends Exception implements ExitCodeGenerator {
     private int exceptionExitCode = 1
 
     public PolicyViolationException(int exitCode) {

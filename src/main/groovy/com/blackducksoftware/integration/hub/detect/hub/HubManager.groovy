@@ -34,6 +34,7 @@ import com.blackducksoftware.integration.hub.dataservice.project.ProjectDataServ
 import com.blackducksoftware.integration.hub.dataservice.project.ProjectVersionWrapper
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
+import com.blackducksoftware.integration.hub.detect.exception.DetectException
 import com.blackducksoftware.integration.hub.detect.exception.PolicyViolationException
 import com.blackducksoftware.integration.hub.global.HubServerConfig
 import com.blackducksoftware.integration.hub.rest.RestConnection
@@ -105,7 +106,7 @@ class HubManager {
             logger.info("To see your results, follow the URL: ${componentsLink}")
         } catch (IllegalStateException e) {
             logger.error("Your Hub configuration is not valid: ${e.message}")
-        } catch (Exception e) {
+        } catch (DetectException e) {
             logger.error("There was a problem communicating with the Hub : ${e.message}")
         }
     }
