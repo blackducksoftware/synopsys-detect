@@ -37,7 +37,6 @@ import com.blackducksoftware.integration.hub.bdio.simple.BdioPropertyHelper
 import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeTransformer
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
-import com.blackducksoftware.integration.hub.detect.exception.PolicyViolationException
 import com.blackducksoftware.integration.hub.detect.help.HelpPrinter
 import com.blackducksoftware.integration.hub.detect.help.ValueDescriptionAnnotationFinder
 import com.blackducksoftware.integration.hub.detect.hub.HubManager
@@ -94,10 +93,12 @@ class Application {
             }
             DetectProject detectProject = detectProjectManager.createDetectProject()
             List<File> createdBdioFiles = detectProjectManager.createBdioFiles(detectProject)
-            try {
-                hubManager.performPostActions(detectProject, createdBdioFiles)
-            } catch (PolicyViolationException policyViolation) {
-                System.exit(policyViolation.getExitCode())
+            ApplicationResults applicationResults = hubManager.performPostActions(detectProject, createdBdioFiles)
+            if (applicationResults.exitValue != 0) {
+                if (applicationResults.message) {
+                    logger.error("Exiting: ${applicationResults.message}")
+                }
+                System.exit(applicationResults.exitValue)
             }
         }
     }

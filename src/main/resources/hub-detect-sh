@@ -78,10 +78,8 @@ run_detect() {
   echo $JAVACMD $JAVAOPTS >> $DETECT_JAR_PATH/hub-detect-java.sh
   source $DETECT_JAR_PATH/hub-detect-java.sh
   RESULT=$?
-  if [ $RESULT -ne 0 ]; then
-  	echo "Result code of ${RESULT}, exiting"
-  	exit $RESULT
-  fi
+  echo "Result code of ${RESULT}, exiting"
+  exit $RESULT
 }
 
 run

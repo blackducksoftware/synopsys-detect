@@ -32,10 +32,9 @@ import com.blackducksoftware.integration.hub.builder.HubServerConfigBuilder
 import com.blackducksoftware.integration.hub.dataservice.policystatus.PolicyStatusDescription
 import com.blackducksoftware.integration.hub.dataservice.project.ProjectDataService
 import com.blackducksoftware.integration.hub.dataservice.project.ProjectVersionWrapper
+import com.blackducksoftware.integration.hub.detect.ApplicationResults
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
-import com.blackducksoftware.integration.hub.detect.exception.DetectException
-import com.blackducksoftware.integration.hub.detect.exception.PolicyViolationException
 import com.blackducksoftware.integration.hub.global.HubServerConfig
 import com.blackducksoftware.integration.hub.rest.RestConnection
 import com.blackducksoftware.integration.hub.service.HubServicesFactory
@@ -56,6 +55,9 @@ class HubManager {
 
     @Autowired
     PolicyChecker policyChecker
+
+    @Autowired
+    ApplicationResults applicationResults
 
     public HubServicesFactory createHubServicesFactory(Slf4jIntLogger slf4jIntLogger, HubServerConfig hubServerConfig) {
         RestConnection restConnection = hubServerConfig.createCredentialsRestConnection(slf4jIntLogger)
@@ -81,8 +83,11 @@ class HubManager {
         hubServerConfigBuilder.build()
     }
 
-    public void performPostActions(DetectProject detectProject, List<File> createdBdioFiles) throws PolicyViolationException{
+    //TODO Return a new object that contains data about the call (Instead of an exception)
+    public ApplicationResults performPostActions(DetectProject detectProject, List<File> createdBdioFiles) {
+        ApplicationResults applicationResults = new ApplicationResults()
         try {
+
             Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
             HubServerConfig hubServerConfig = createHubServerConfig(slf4jIntLogger)
             HubServicesFactory hubServicesFactory = createHubServicesFactory(slf4jIntLogger, hubServerConfig)
@@ -93,10 +98,11 @@ class HubManager {
             }
 
             if (detectConfiguration.getPolicyCheck()) {
-                PolicyStatusDescription policyStatusMessage = policyChecker.getPolicyStatus(hubServicesFactory, detectProject)
-                logger.info(policyStatusMessage.getPolicyStatusMessage())
-                if (policyStatusMessage.getCountInViolation().value > 0) {
-                    throw new PolicyViolationException("${policyStatusMessage.getCountInViolation().value} violation(s) detected, exiting application", 1)
+                PolicyStatusDescription policyStatus = policyChecker.getPolicyStatus(hubServicesFactory, detectProject)
+                logger.info(policyStatus.policyStatusMessage)
+                if (policyStatus.getCountInViolation() != 0) {
+                    applicationResults.exitValue = 1
+                    applicationResults.message = "Policy violation's"
                 }
             }
             ProjectDataService projectDataService = hubServicesFactory.createProjectDataService(slf4jIntLogger)
@@ -106,8 +112,9 @@ class HubManager {
             logger.info("To see your results, follow the URL: ${componentsLink}")
         } catch (IllegalStateException e) {
             logger.error("Your Hub configuration is not valid: ${e.message}")
-        } catch (DetectException e) {
+        } catch (Exception e) {
             logger.error("There was a problem communicating with the Hub : ${e.message}")
         }
+        applicationResults
     }
 }
