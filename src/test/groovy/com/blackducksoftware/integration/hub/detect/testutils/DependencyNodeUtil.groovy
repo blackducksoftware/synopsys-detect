@@ -2,6 +2,10 @@ package com.blackducksoftware.integration.hub.detect.testutils
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 
+// Run tests with the following annotations on the class to test with spring components
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(classes = Application.class)
+//@SpringBootTest
 class DependencyNodeUtil {
     public static final Comparator<DependencyNode> DATA_ID_COMPARATOR = new Comparator<DependencyNode>() {
         public int compare(final DependencyNode lhs, final DependencyNode rhs) {
@@ -27,7 +31,7 @@ class DependencyNodeUtil {
 
     void sortDependencyNode(DependencyNode dependencyNode) {
         if (!dependencyNode.children.isEmpty()) {
-            TreeSet<DependencyNode> sortedChildren = new TreeSet<>(DATA_ID_COMPARATOR);
+            TreeSet<DependencyNode> sortedChildren = new TreeSet<>(DATA_ID_COMPARATOR)
             sortedChildren.addAll(dependencyNode.children)
 
             dependencyNode.children = sortedChildren
