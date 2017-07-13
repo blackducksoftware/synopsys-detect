@@ -112,7 +112,7 @@ class DetectProjectManager {
         }
 
         //if none of the bom tools could determine a project/version, use some reasonable defaults
-        detectProject.projectName = getProjectName(detectConfiguration.sourcePath, detectProject.projectName)
+        detectProject.projectName = getProjectName(detectProject.projectName)
         detectProject.projectVersionName = getProjectVersionName(detectProject.projectVersionName, detectProject.projectVersionHash)
 
         if (!foundAnyBomTools) {
