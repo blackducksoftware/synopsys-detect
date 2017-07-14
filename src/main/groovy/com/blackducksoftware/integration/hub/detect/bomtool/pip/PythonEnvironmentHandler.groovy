@@ -112,7 +112,7 @@ class PythonEnvironmentHandler {
             if (StringUtils.isBlank(path)) {
                 executableManager.getPathOfExecutable(commandType)
             } else {
-                executableManager.getPathOfExecutable(path, commandType)
+                executableManager.getPathOfExecutableFromRelativePath(path, commandType)
             }
         }
     }
