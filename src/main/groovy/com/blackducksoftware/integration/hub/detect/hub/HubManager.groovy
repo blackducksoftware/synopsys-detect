@@ -100,8 +100,10 @@ class HubManager {
             logger.info("To see your results, follow the URL: ${componentsLink}")
         } catch (IllegalStateException e) {
             logger.error("Your Hub configuration is not valid: ${e.message}")
+            logger.debug(e.getMessage(), e)
         } catch (Exception e) {
             logger.error("There was a problem communicating with the Hub : ${e.message}")
+            logger.debug(e.getMessage(), e)
         }
     }
 }

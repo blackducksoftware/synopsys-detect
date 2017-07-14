@@ -190,7 +190,7 @@ class DetectProjectManager {
         if (detectConfiguration.getProjectVersionName()) {
             projectVersion = detectConfiguration.getProjectVersionName()
         } else if (!projectVersion) {
-            projectVersion = 'Detect Unkown Version'
+            projectVersion = 'Detect Unknown Version'
         }
 
         projectVersion

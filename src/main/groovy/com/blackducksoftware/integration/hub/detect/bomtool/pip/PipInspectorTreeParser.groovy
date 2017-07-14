@@ -38,11 +38,11 @@ class PipInspectorTreeParser {
     final Logger logger = LoggerFactory.getLogger(this.getClass())
 
     public static final String SEPERATOR = '=='
-    public static final String UNKOWN_PROJECT_NAME = "n?"
-    public static final String UNKOWN_PROJECT_VERSION = "v?"
-    public static final String UNKOWN_PROJECT = UNKOWN_PROJECT_NAME + SEPERATOR + UNKOWN_PROJECT_VERSION
-    public static final String UNKOWN_REQUIREMENTS_PREFIX = 'r?'
-    public static final String UNKOWN_PACKAGE_PREFIX = '--'
+    public static final String UNKNOWN_PROJECT_NAME = "n?"
+    public static final String UNKNOWN_PROJECT_VERSION = "v?"
+    public static final String UNKNOWN_PROJECT = UNKNOWN_PROJECT_NAME + SEPERATOR + UNKNOWN_PROJECT_VERSION
+    public static final String UNKNOWN_REQUIREMENTS_PREFIX = 'r?'
+    public static final String UNKNOWN_PACKAGE_PREFIX = '--'
     public static final String INDENTATION = ' '.multiply(4)
 
     DependencyNode parse(NameVersionNodeTransformer nameVersionNodeTransformer, String treeText) {
@@ -57,14 +57,14 @@ class PipInspectorTreeParser {
                 continue
             }
 
-            if (line.startsWith(UNKOWN_REQUIREMENTS_PREFIX)) {
-                String path = line.replace(UNKOWN_REQUIREMENTS_PREFIX, '').trim()
+            if (line.startsWith(UNKNOWN_REQUIREMENTS_PREFIX)) {
+                String path = line.replace(UNKNOWN_REQUIREMENTS_PREFIX, '').trim()
                 logger.info("Pip inspector could not locate requirements file @ ${path}")
                 continue
             }
 
-            if (line.startsWith(UNKOWN_PACKAGE_PREFIX)) {
-                String packageName = line.replace(UNKOWN_PACKAGE_PREFIX, '').trim()
+            if (line.startsWith(UNKNOWN_PACKAGE_PREFIX)) {
+                String packageName = line.replace(UNKNOWN_PACKAGE_PREFIX, '').trim()
                 logger.info("Pip inspector could not resolve the package: ${packageName}")
                 continue
             }
@@ -97,7 +97,7 @@ class PipInspectorTreeParser {
 
         if (nodeBuilder) {
             NameVersionNode projectNode = nodeBuilder.getRoot()
-            if (projectNode.name == UNKOWN_PROJECT_NAME && projectNode.version == UNKOWN_PROJECT_VERSION) {
+            if (projectNode.name == UNKNOWN_PROJECT_NAME && projectNode.version == UNKNOWN_PROJECT_VERSION) {
                 projectNode.name = ''
                 projectNode.version = ''
             }
