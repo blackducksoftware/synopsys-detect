@@ -30,7 +30,6 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.bomtool.pear.PearDependencyFinder
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput
@@ -65,16 +64,18 @@ class PearBomTool extends BomTool {
         ExecutableOutput pearDependencies = executableRunner.runExe(pearExePath, 'package-dependencies', 'package.xml')
 
         File packageFile = detectFileManager.findFile(sourcePath, 'package.xml')
-        NameVersionNodeImpl nameVersionModel = pearDependencyFinder.findNameVersion(packageFile)
+        def packageXml = new XmlSlurper().parseText(packageFile.text)
+        String rootName = packageXml.name
+        String rootVersion = packageXml.version.api
 
         Set<DependencyNode> childDependencyNodes = pearDependencyFinder.parsePearDependencyList(pearListing, pearDependencies)
         def detectCodeLocation = new DetectCodeLocation(
                 getBomToolType(),
                 sourcePath,
-                nameVersionModel.name,
-                nameVersionModel.version,
+                rootName,
+                rootVersion,
                 '',
-                new NameVersionExternalId(PEAR, nameVersionModel.name, nameVersionModel.version),
+                new NameVersionExternalId(PEAR, rootName, rootVersion),
                 childDependencyNodes
                 )
 

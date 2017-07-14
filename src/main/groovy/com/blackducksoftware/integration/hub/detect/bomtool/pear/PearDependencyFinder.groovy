@@ -65,17 +65,6 @@ class PearDependencyFinder {
         childNodes
     }
 
-    public NameVersionNodeImpl findNameVersion(File packageFile) {
-        def packageXml = new XmlSlurper().parseText(packageFile.text)
-        String rootName = packageXml.name
-        String rootVersion = packageXml.version.api
-
-        def nameVersionModel = new NameVersionNodeImpl()
-        nameVersionModel.name = rootName
-        nameVersionModel.version = rootVersion
-        nameVersionModel
-    }
-
     private List<String> findDependencyNames(String list) {
         def nameList = []
         String[] content = list.split('\n')
