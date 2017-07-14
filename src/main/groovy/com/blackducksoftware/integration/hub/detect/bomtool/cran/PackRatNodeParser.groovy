@@ -44,15 +44,17 @@ public class PackRatNodeParser {
 	private boolean inSpecsSection = false
 	private boolean inDependenciesSection = false
 
-	void parseProjectDependencies(NameVersionNodeTransformer nameVersionNodeTransformer, DependencyNode rootProject, final String packratLockContents, Forge CRAN) {
-		rootNameVersionNode = new NameVersionNodeImpl([name: rootProject.name, version: rootProject.version])
+	List<DependencyNode> parseProjectDependencies(NameVersionNodeTransformer nameVersionNodeTransformer, final String packratLockContents, Forge CRAN) {
+		rootNameVersionNode = new NameVersionNodeImpl([name: 'packratLockFileRoot'])
 		nameVersionNodeBuilder = new NameVersionNodeBuilder(rootNameVersionNode)
 		directDependencyNames = new HashSet<>()
-		currentParent = rootNameVersionNode
+		currentParent = null
 
 		String[] lines = packratLockContents.split("\n")
 		String name;
 		String version;
+		List<DependencyNode> projectDependencies = []
+		boolean newDependency = false;
 
 		for (String line : lines) {
 
@@ -60,35 +62,47 @@ public class PackRatNodeParser {
 			if (line.contains("Package")){
 				name = line.replace("Package: ", "").trim();
 				directDependencyNames.add(name)
+				newDependency = true;
 				continue
 			}
 
 			if(line.contains("Version")){
-				version = line.replace("Version:", "").trim();
+				version = line.replace("Version: ", "").trim();
+				NameVersionNode node = this.createNameVersionNodeImpl(name, version)
+				nameVersionNodeBuilder.addChildNodeToParent(rootNameVersionNode, node)
 			}
 
 			currentParent = this.createNameVersionNodeImpl(name, version)
+			//			nameVersionNodeBuilder.addChildNodeToParent(rootNameVersionNode, currentParent)
 
 			if (line.contains("Requires")) {
-				String[] parts = line.replace("Requires","").split(",");
+				String[] parts = line.replace("Requires: ","").split(",");
 				for (int i; i < parts.size(); i++){
-					NameVersionNode node = this.createNameVersionNodeImpl(parts[i], "")
+					NameVersionNode node = this.createNameVersionNodeImpl(parts[i].trim(), "")
 					nameVersionNodeBuilder.addChildNodeToParent(currentParent, node)
 				}
 			}
 
-			currentParent = rootNameVersionNode
 		}
+
+		//		directDependencyNames.each { directDependencyName ->
+		//			if(!nameVersionNodeBuilder.nameToNodeMap[directDependencyName]){
+		//				NameVersionNode node = this.createNameVersionNodeImpl(directDependencyName, "")
+		//				nameVersionNodeBuilder.addChildNodeToParent(currentParent, node)
+		//			}
+		//		}
 
 		directDependencyNames.each { directDependencyName ->
 			NameVersionNode nameVersionNode = nameVersionNodeBuilder.nameToNodeMap[directDependencyName]
 			if (nameVersionNode) {
 				DependencyNode directDependencyNode = nameVersionNodeTransformer.createDependencyNode(CRAN, nameVersionNode)
-				rootProject.children.add(directDependencyNode)
+				projectDependencies.add(directDependencyNode)
 			} else {
 				logger.error("Could not find ${directDependencyName} in the populated map.")
 			}
 		}
+
+		projectDependencies
 	}
 
 
