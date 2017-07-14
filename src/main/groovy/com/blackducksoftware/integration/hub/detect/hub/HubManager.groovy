@@ -95,7 +95,7 @@ class HubManager {
             if (detectConfiguration.getPolicyCheck()) {
                 PolicyStatusDescription policyStatus = policyChecker.getPolicyStatus(hubServicesFactory, detectProject)
                 logger.info(policyStatus.policyStatusMessage)
-                if (policyStatus.getCountInViolation() != 0) {
+                if (policyStatus.getCountInViolation()?.value > 0) {
                     postActionResult = 1
                 }
             }

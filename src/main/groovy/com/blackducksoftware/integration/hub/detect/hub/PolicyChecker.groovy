@@ -87,9 +87,9 @@ class PolicyChecker {
             List<ScanSummaryView> codeLocationScanSummaryViews = scanSummaryRequestService.getAllScanSummaryItems(scansLink)
             scanSummaryViews.addAll(codeLocationScanSummaryViews)
         }
-
+        logger.info("Waiting for the BOM to be updated")
         scanStatusDataService.assertScansFinished(scanSummaryViews)
-
+        logger.info("The BOM has been updated")
         VersionBomPolicyStatusView versionBomPolicyStatusView = policyStatusDataService.getPolicyStatusForProjectAndVersion(projectName, projectVersionName)
         PolicyStatusDescription policyStatusDescription = new PolicyStatusDescription(versionBomPolicyStatusView)
 
