@@ -68,20 +68,22 @@ class PearDependencyFinder {
         def nameList = []
         String[] content = list.split('\n')
 
-        def listing = content[5..-1]
-        listing.each { line ->
-            String[] dependencyInfo = line.trim().split(' ')
-            dependencyInfo -= ''
+        if(content.size() > 5) {
+            def listing = content[5..-1]
+            listing.each { line ->
+                String[] dependencyInfo = line.trim().split(' ')
+                dependencyInfo -= ''
 
-            String dependencyName = dependencyInfo[2].trim()
-            String dependencyRequired = dependencyInfo[0].trim()
+                String dependencyName = dependencyInfo[2].trim()
+                String dependencyRequired = dependencyInfo[0].trim()
 
-            if (dependencyName) {
-                if (detectConfiguration.getPearNotRequiredDependencies()) {
-                    nameList.add(dependencyName.split('/')[-1])
-                } else {
-                    if (BooleanUtils.toBoolean(dependencyRequired)) {
+                if (dependencyName) {
+                    if (detectConfiguration.getPearNotRequiredDependencies()) {
                         nameList.add(dependencyName.split('/')[-1])
+                    } else {
+                        if (BooleanUtils.toBoolean(dependencyRequired)) {
+                            nameList.add(dependencyName.split('/')[-1])
+                        }
                     }
                 }
             }
@@ -94,18 +96,20 @@ class PearDependencyFinder {
         Set<DependencyNode> childrenNodes = []
         String[] dependencyList = list.split('\n')
 
-        def listing = dependencyList[3..-1]
-        listing.each { line ->
-            String[] dependencyInfo = line.trim().split(' ')
-            dependencyInfo -= ''
+        if(dependencyList.size() > 3) {
+            def listing = dependencyList[3..-1]
+            listing.each { line ->
+                String[] dependencyInfo = line.trim().split(' ')
+                dependencyInfo -= ''
 
-            String packageName = dependencyInfo[0].trim()
-            String packageVersion = dependencyInfo[1].trim()
+                String packageName = dependencyInfo[0].trim()
+                String packageVersion = dependencyInfo[1].trim()
 
-            if (dependencyInfo && dependencyNames.contains(packageName)) {
-                def newNode = new DependencyNode(packageName, packageVersion, new NameVersionExternalId(PearBomTool.PEAR, packageName, packageVersion))
+                if (dependencyInfo && dependencyNames.contains(packageName)) {
+                    def newNode = new DependencyNode(packageName, packageVersion, new NameVersionExternalId(PearBomTool.PEAR, packageName, packageVersion))
 
-                childrenNodes.add(newNode)
+                    childrenNodes.add(newNode)
+                }
             }
         }
 
