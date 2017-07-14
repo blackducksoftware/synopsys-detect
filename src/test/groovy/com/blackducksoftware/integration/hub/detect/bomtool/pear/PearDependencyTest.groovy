@@ -16,23 +16,9 @@ import org.junit.Test
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.DetectProperties
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
 
 class PearDependencyTest {
     def PearDependencyFinder pearDependencyFinder = new PearDependencyFinder()
-
-    @Test
-    public void findNameVersionTest() {
-        def packageXml = new File(getClass().getResource('/pear/package.xml').getFile())
-
-        NameVersionNodeImpl actual = pearDependencyFinder.findNameVersion(packageXml)
-
-        NameVersionNodeImpl expected = new NameVersionNodeImpl()
-        expected.name = 'test-name'
-        expected.version = '1.0.0'
-
-        Assert.assertTrue((actual.name.equals(expected.name)) && (actual.version.equals(expected.version)))
-    }
 
     @Test
     public void findDependencyNamesTest() {
