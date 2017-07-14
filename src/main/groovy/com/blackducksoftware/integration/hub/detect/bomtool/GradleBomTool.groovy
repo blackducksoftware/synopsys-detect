@@ -83,7 +83,7 @@ class GradleBomTool extends BomTool {
         String gradlePath = detectConfiguration.getGradlePath()
         if (StringUtils.isBlank(gradlePath)) {
             logger.debug('detect.gradle.path not set in config - first try to find the gradle wrapper')
-            gradlePath = executableManager.getPathOfExecutable(ExecutableType.GRADLEW)
+            gradlePath = executableManager.getPathOfExecutableFromRelativePath(sourcePath, ExecutableType.GRADLEW)
         }
 
         if (StringUtils.isBlank(gradlePath)) {
