@@ -32,7 +32,6 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.bomtool.PearBomTool
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
@@ -71,13 +70,6 @@ class PearDependencyFinder {
 
         def listing = content[5..-1]
         listing.each { line ->
-            /*
-             * These next lines turn the line into an array of
-             * 0 Dependency required
-             * 1 Dependency type
-             * 2 Dependency name
-             * 3+ extra unnecessary info
-             */
             String[] dependencyInfo = line.trim().split(' ')
             dependencyInfo -= ''
 
@@ -100,18 +92,11 @@ class PearDependencyFinder {
 
     private Set<DependencyNode> createPearDependencyNodeFromList(String list, List<String> dependencyNames) {
         Set<DependencyNode> childrenNodes = []
-
         String[] dependencyList = list.split('\n')
-        def listing = dependencyList[3..-1]
 
+        def listing = dependencyList[3..-1]
         listing.each { line ->
-            /*
-             * These next lines turn the line into an array of
-             * 0 Dependency name
-             * 1 Dependency version
-             * 2 Dependency state
-             */
-            String[] dependencyInfo = line.split(' ')
+            String[] dependencyInfo = line.trim().split(' ')
             dependencyInfo -= ''
 
             String nodeName = dependencyInfo[0].trim()
