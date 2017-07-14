@@ -34,8 +34,6 @@ public class PackratPackager {
 	@Autowired
 	private final NameVersionNodeTransformer nameVersionNodeTransformer
 
-
-
 	public List<DependencyNode> extractProjectDependencies(final String packratLock, Forge CRAN){
 		def packRatNodeParser = new PackRatNodeParser();
 		List<DependencyNode> dependencies = packRatNodeParser.parseProjectDependencies(nameVersionNodeTransformer, packratLock, CRAN)
@@ -46,32 +44,7 @@ public class PackratPackager {
 	public String getVersion(String descriptionContents){
 		DescriptionParser descriptionParser = new DescriptionParser()
 		String rootVersion = descriptionParser.getProjectVersion(descriptionContents)
+
+		rootVersion
 	}
-
-
-
-
-
-
-	//	public List<DependencyNode> makeDependencyNodes(final String sourcePath, final String packratLock, final String descriptionContents) {
-	//
-	//		final String rootName = projectInfoGatherer.getDefaultProjectName(BomToolType.CRAN, sourcePath)
-	//		DescriptionParser descriptionParser = new DescriptionParser()
-	//		PackRatNodeParser packratNodeParser = new PackRatNodeParser()
-	//		Forge CRAN = new Forge("cran", "/");
-	//
-	//		final String rootVersion = projectInfoGatherer.getDefaultProjectVersionName()
-	//		if(descriptionContents){
-	//			rootVersion = descriptionParser.getProjectVersion(descriptionContents)
-	//		}
-	//
-	//		final ExternalId rootExternalId = new NameVersionExternalId(CRAN, rootName, rootVersion)
-	//		final DependencyNode root = new DependencyNode(rootName, rootVersion, rootExternalId)
-	//
-	//		packratNodeParser.parseProjectDependencies(nameVersionNodeTransformer, root, packratLock, CRAN)
-	//
-	//
-	//
-	//		[root]
-	//	}
 }

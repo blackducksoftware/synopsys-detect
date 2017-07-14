@@ -69,28 +69,19 @@ public class PackRatNodeParser {
 			if(line.contains("Version")){
 				version = line.replace("Version: ", "").trim();
 				NameVersionNode node = this.createNameVersionNodeImpl(name, version)
-				nameVersionNodeBuilder.addChildNodeToParent(rootNameVersionNode, node)
+				nameVersionNodeBuilder.addChildNodeToParent(node, rootNameVersionNode)
 			}
 
 			currentParent = this.createNameVersionNodeImpl(name, version)
-			//			nameVersionNodeBuilder.addChildNodeToParent(rootNameVersionNode, currentParent)
 
 			if (line.contains("Requires")) {
 				String[] parts = line.replace("Requires: ","").split(",");
 				for (int i; i < parts.size(); i++){
 					NameVersionNode node = this.createNameVersionNodeImpl(parts[i].trim(), "")
-					nameVersionNodeBuilder.addChildNodeToParent(currentParent, node)
+					nameVersionNodeBuilder.addChildNodeToParent(node, currentParent)
 				}
 			}
-
 		}
-
-		//		directDependencyNames.each { directDependencyName ->
-		//			if(!nameVersionNodeBuilder.nameToNodeMap[directDependencyName]){
-		//				NameVersionNode node = this.createNameVersionNodeImpl(directDependencyName, "")
-		//				nameVersionNodeBuilder.addChildNodeToParent(currentParent, node)
-		//			}
-		//		}
 
 		directDependencyNames.each { directDependencyName ->
 			NameVersionNode nameVersionNode = nameVersionNodeBuilder.nameToNodeMap[directDependencyName]

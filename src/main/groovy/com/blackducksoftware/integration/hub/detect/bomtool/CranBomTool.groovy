@@ -47,14 +47,6 @@ class CranBomTool extends BomTool {
 	boolean isBomToolApplicable() {
 
 		detectFileManager.containsAllFilesToDepth(sourcePath, detectConfiguration.getSearchDepth(),'packrat.lock')
-
-
-
-
-		//		matchingSourcePaths = sourcePathSearcher.findFilenamePattern(detectConfiguration.getSearchDepth(), 'packrat.lock')
-		//		descriptionSourcePaths = sourcePathSearcher.findFilenamePattern('DESCRIPTION')
-		//
-		//		!matchingSourcePaths.isEmpty()
 	}
 
 
@@ -62,9 +54,8 @@ class CranBomTool extends BomTool {
 		File sourceDirectory = detectConfiguration.sourceDirectory
 
 		def packratLockFile = detectFileManager.findFilesToDepth(sourceDirectory, 'packrat.lock', detectConfiguration.getSearchDepth())
-		//		def packratLockFile = new File(sourceDirectory, 'packrat.lock')
 		String projectVersion = ''
-		if(detectFileManager.containsAllFilesToDepth(sourcePath, 1,'packrat.lock')){
+		if(detectFileManager.containsAllFiles(sourcePath,'DESCRIPTION')){
 			def descriptionFile = new File(sourceDirectory, 'DESCRIPTION')
 			String descriptionText = descriptionFile.getText(StandardCharsets.UTF_8.name())
 			projectVersion = packratPackager.getVersion(descriptionText)
@@ -74,47 +65,8 @@ class CranBomTool extends BomTool {
 		List<DependencyNode> dependencies = packratPackager.extractProjectDependencies(packratLockText, CRAN)
 		Set<DependencyNode> dependenciesSet = new HashSet<>(dependencies)
 		ExternalId externalId = new PathExternalId(CRAN, sourcePath)
-		//String hash = getHash(packratLockText)
 
 		def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, '', projectVersion, '', externalId, dependenciesSet)
 		[codeLocation]
 	}
-
-
-	//	List<DependencyNode> extractDependencyNodes() {
-	//		List<DependencyNode> projectNodes = []
-	//		matchingSourcePaths.each { sourcePath ->
-	//			File sourceDirectory = new File(sourcePath)
-	//			File[] packratLockFile = detectFileManager.findFilesToDepth(sourceDirectory, 'packrat.lock', detectConfiguration.getSearchDepth())
-	//			File descriptionFile = null
-	//			if(!descriptionSourcePaths.isEmpty()){
-	//				descriptionSourcePaths.each { descriptionPath ->
-	//					File descriptionDirectory = new File(sourcePath)
-	//					descriptionFile = new File(sourceDirectory, 'DESCRIPTION')
-	//				}
-	//			}
-	//
-	//			final InputStream packratLockStream
-	//			final InputStream descriptionStream
-	//			try {
-	//				packratLockStream = new FileInputStream(packratLockFile[0])
-	//				if(descriptionFile){
-	//					descriptionStream = new FileInputStream(descriptionFile)
-	//				}
-	//				String potentialProjectName = sourceDirectory.getName()
-	//				String packratLock = IOUtils.toString(packratLockStream, StandardCharsets.UTF_8)
-	//				String description = null
-	//				if(descriptionStream){
-	//					description = IOUtils.toString(descriptionStream, StandardCharsets.UTF_8)
-	//				}
-	//				def packratPackager = new PackratPackager(projectInfoGatherer, nameVersionNodeTransformer)
-	//				def projects = packratPackager.makeDependencyNodes(sourcePath, packratLock, description)
-	//				projectNodes.addAll(projects)
-	//			} finally {
-	//				IOUtils.closeQuietly(packratLockStream)
-	//				IOUtils.closeQuietly(descriptionStream)
-	//			}
-	//		}
-	//		projectNodes
-	//	}
 }

@@ -65,13 +65,12 @@ public class DescriptionParser {
 
 		for (String line : lines) {
 
-
 			if (line.contains("Version")){
 				version = line.replace("Version: ", "").trim();
 				break
 			}
 		}
 
-		return version
+		version
 	}
 }
