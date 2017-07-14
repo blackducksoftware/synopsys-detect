@@ -41,9 +41,6 @@ public class PackRatNodeParser {
 	private HashSet<String> directDependencyNames
 	private NameVersionNode currentParent
 
-	private boolean inSpecsSection = false
-	private boolean inDependenciesSection = false
-
 	List<DependencyNode> parseProjectDependencies(NameVersionNodeTransformer nameVersionNodeTransformer, final String packratLockContents, Forge CRAN) {
 		rootNameVersionNode = new NameVersionNodeImpl([name: 'packratLockFileRoot'])
 		nameVersionNodeBuilder = new NameVersionNodeBuilder(rootNameVersionNode)

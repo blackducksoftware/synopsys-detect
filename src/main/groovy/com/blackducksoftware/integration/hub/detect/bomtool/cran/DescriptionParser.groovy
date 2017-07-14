@@ -29,35 +29,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.cran;
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode;
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeBuilder;
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
-
 public class DescriptionParser {
-
-	private final Logger logger = LoggerFactory.getLogger(PackRatNodeParser.class)
-
-	private NameVersionNode rootNameVersionNode
-	private NameVersionNodeBuilder nameVersionNodeBuilder
-	private HashSet<String> directDependencyNames
-	private NameVersionNode currentParent
-
-	private boolean inSpecsSection = false
-	private boolean inDependenciesSection = false
-
-	private NameVersionNodeTransformer nameVersionNodeTransformer
-	private DependencyNode rootProject
-	private final String packratLockContents
-	private Forge CRAN
-	private String lines
-
-
-
 
 	String getProjectVersion(final String descriptionContents){
 		String[] lines = descriptionContents.split("\n")
