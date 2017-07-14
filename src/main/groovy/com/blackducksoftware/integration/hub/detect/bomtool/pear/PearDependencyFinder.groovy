@@ -73,15 +73,15 @@ class PearDependencyFinder {
             String[] dependencyInfo = line.trim().split(' ')
             dependencyInfo -= ''
 
-            String nodeName = dependencyInfo[2].trim()
-            String nodeRequired = dependencyInfo[0].trim()
+            String dependencyName = dependencyInfo[2].trim()
+            String dependencyRequired = dependencyInfo[0].trim()
 
-            if (nodeName) {
+            if (dependencyName) {
                 if (detectConfiguration.getPearNotRequiredDependencies()) {
-                    nameList.add(nodeName.split('/')[-1])
+                    nameList.add(dependencyName.split('/')[-1])
                 } else {
-                    if (BooleanUtils.toBoolean(nodeRequired)) {
-                        nameList.add(nodeName.split('/')[-1])
+                    if (BooleanUtils.toBoolean(dependencyRequired)) {
+                        nameList.add(dependencyName.split('/')[-1])
                     }
                 }
             }
@@ -99,11 +99,11 @@ class PearDependencyFinder {
             String[] dependencyInfo = line.trim().split(' ')
             dependencyInfo -= ''
 
-            String nodeName = dependencyInfo[0].trim()
-            String nodeVersion = dependencyInfo[1].trim()
+            String packageName = dependencyInfo[0].trim()
+            String packageVersion = dependencyInfo[1].trim()
 
-            if (dependencyInfo && dependencyNames.contains(nodeName)) {
-                def newNode = new DependencyNode(nodeName, nodeVersion, new NameVersionExternalId(PearBomTool.PEAR, nodeName, nodeVersion))
+            if (dependencyInfo && dependencyNames.contains(packageName)) {
+                def newNode = new DependencyNode(packageName, packageVersion, new NameVersionExternalId(PearBomTool.PEAR, packageName, packageVersion))
 
                 childrenNodes.add(newNode)
             }
