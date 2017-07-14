@@ -27,7 +27,7 @@ class DependencyNodeUtil {
 
     void sortDependencyNode(DependencyNode dependencyNode) {
         if (!dependencyNode.children.isEmpty()) {
-            TreeSet<DependencyNode> sortedChildren = new TreeSet<>(DATA_ID_COMPARATOR);
+            TreeSet<DependencyNode> sortedChildren = new TreeSet<>(DATA_ID_COMPARATOR)
             sortedChildren.addAll(dependencyNode.children)
 
             dependencyNode.children = sortedChildren

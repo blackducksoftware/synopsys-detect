@@ -22,6 +22,7 @@
  */
 package com.blackducksoftware.integration.hub.detect
 
+import org.apache.commons.io.FilenameUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -41,7 +42,6 @@ import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLoc
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
-import com.blackducksoftware.integration.hub.detect.util.ProjectInfoGatherer
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil
 import com.google.gson.Gson
@@ -52,9 +52,6 @@ class DetectProjectManager {
 
     @Autowired
     DetectConfiguration detectConfiguration
-
-    @Autowired
-    ProjectInfoGatherer projectInfoGatherer
 
     @Autowired
     BdioPropertyHelper bdioPropertyHelper
@@ -115,8 +112,8 @@ class DetectProjectManager {
         }
 
         //if none of the bom tools could determine a project/version, use some reasonable defaults
-        detectProject.projectName = projectInfoGatherer.getProjectName(detectConfiguration.sourcePath, detectProject.projectName)
-        detectProject.projectVersionName = projectInfoGatherer.getProjectVersionName(detectProject.projectVersionName, detectProject.projectVersionHash)
+        detectProject.projectName = getProjectName(detectProject.projectName)
+        detectProject.projectVersionName = getProjectVersionName(detectProject.projectVersionName, detectProject.projectVersionHash)
 
         if (!foundAnyBomTools) {
             logger.info("Could not find any tools to run - will register ${detectConfiguration.sourcePath} for signature scanning of ${detectProject.projectName}/${detectProject.projectVersionName}")
@@ -139,7 +136,7 @@ class DetectProjectManager {
     private File createBdioFile(DetectProject detectProject, DetectCodeLocation detectCodeLocation) {
         String projectName = detectProject.projectName
         String projectVersionName = detectProject.projectVersionName
-        String codeLocationName = projectInfoGatherer.getCodeLocationName(detectCodeLocation.bomToolType, detectCodeLocation.sourcePath, projectName, projectVersionName)
+        String codeLocationName = getCodeLocationName(detectCodeLocation.bomToolType, detectCodeLocation.sourcePath, projectName, projectVersionName)
 
         final IntegrationEscapeUtil escapeUtil = new IntegrationEscapeUtil()
         final String safeProjectName = escapeUtil.escapeForUri(projectName)
@@ -172,5 +169,47 @@ class DetectProjectManager {
         logger.info("BDIO Generated: " + outputFile.getAbsolutePath())
 
         outputFile
+    }
+
+    String getProjectName(final String defaultProjectName) {
+        String projectName = defaultProjectName?.trim()
+
+        if (detectConfiguration.getProjectName()) {
+            projectName = detectConfiguration.getProjectName()
+        } else if (!projectName && detectConfiguration.sourcePath) {
+            String finalSourcePathPiece = extractFinalPieceFromSourcePath(detectConfiguration.sourcePath)
+            projectName = finalSourcePathPiece
+        }
+
+        projectName
+    }
+
+    String getProjectVersionName(final String defaultVersionName, final String bomToolFileHash) {
+        String projectVersion = defaultVersionName?.trim()
+
+        if (detectConfiguration.getProjectVersionName()) {
+            projectVersion = detectConfiguration.getProjectVersionName()
+        } else if (!projectVersion) {
+            projectVersion = 'Detect Unkown Version'
+        }
+
+        projectVersion
+    }
+
+    String getCodeLocationName(final BomToolType bomToolType, final String sourcePath, final String projectName, final String projectVersion) {
+        String codeLocation = detectConfiguration.getProjectCodeLocationName()
+        if (!codeLocation?.trim()) {
+            String finalSourcePathPiece = extractFinalPieceFromSourcePath(sourcePath)
+            codeLocation = String.format('%s/%s/%s', finalSourcePathPiece, projectName, projectVersion)
+        }
+        return String.format('%s/%s Hub Detect Export', bomToolType.toString(), codeLocation)
+    }
+
+    private String extractFinalPieceFromSourcePath(String sourcePath) {
+        if (sourcePath == null || sourcePath.length() == 0) {
+            return ''
+        }
+        String normalizedSourcePath = FilenameUtils.normalizeNoEndSeparator(sourcePath, true)
+        normalizedSourcePath[normalizedSourcePath.lastIndexOf('/') + 1..-1]
     }
 }
