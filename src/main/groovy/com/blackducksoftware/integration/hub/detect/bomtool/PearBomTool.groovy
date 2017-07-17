@@ -22,6 +22,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -36,8 +38,13 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOu
 
 @Component
 class PearBomTool extends BomTool {
+    private final Logger logger = LoggerFactory.getLogger(PearBomTool.class)
+
+    static final Forge PEAR = new Forge('pear', '/')
+
+    static final String PACKAGE_XML_FILENAME = 'package.xml'
+
     private String pearExePath
-    final static Forge PEAR = new Forge('pear', '/')
 
     @Autowired
     PearDependencyFinder pearDependencyFinder
@@ -49,10 +56,13 @@ class PearBomTool extends BomTool {
 
     @Override
     public boolean isBomToolApplicable() {
-        boolean containsPackageXml = detectFileManager.containsAllFiles(sourcePath, 'package.xml')
+        boolean containsPackageXml = detectFileManager.containsAllFiles(sourcePath, PACKAGE_XML_FILENAME)
 
         if (containsPackageXml) {
             pearExePath = executableManager.getPathOfExecutable(ExecutableType.PEAR, detectConfiguration.getPearPath())
+            if (!pearExePath) {
+                logger.warn("Could not find a ${executableManager.getExecutableName(ExecutableType.PEAR)} executable")
+            }
         }
 
         pearExePath && containsPackageXml
@@ -61,9 +71,9 @@ class PearBomTool extends BomTool {
     @Override
     public List<DetectCodeLocation> extractDetectCodeLocations() {
         ExecutableOutput pearListing = executableRunner.runExe(pearExePath, 'list')
-        ExecutableOutput pearDependencies = executableRunner.runExe(pearExePath, 'package-dependencies', 'package.xml')
+        ExecutableOutput pearDependencies = executableRunner.runExe(pearExePath, 'package-dependencies', PACKAGE_XML_FILENAME)
 
-        File packageFile = detectFileManager.findFile(sourcePath, 'package.xml')
+        File packageFile = detectFileManager.findFile(sourcePath, PACKAGE_XML_FILENAME)
         def packageXml = new XmlSlurper().parseText(packageFile.text)
         String rootName = packageXml.name
         String rootVersion = packageXml.version.api

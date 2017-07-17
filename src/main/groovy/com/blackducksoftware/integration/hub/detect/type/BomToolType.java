@@ -26,6 +26,7 @@ public enum BomToolType {
     CARTHAGE,
     COCOAPODS,
     CPAN,
+    CRAN,
     DOCKER,
     GO_DEP,
     GO_GODEP,
@@ -34,9 +35,9 @@ public enum BomToolType {
     MAVEN,
     NPM,
     NUGET,
+    PACKAGIST,
     PEAR,
     PIP,
     RUBYGEMS,
-    SBT,
-    PACKAGIST;
+    SBT;
 }

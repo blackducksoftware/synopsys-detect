@@ -60,7 +60,6 @@ class Application {
     @Autowired
     DetectProjectManager detectProjectManager
 
-
     @Autowired
     BdioPropertyHelper bdioPropertyHelper
 
@@ -94,7 +93,8 @@ class Application {
             }
             DetectProject detectProject = detectProjectManager.createDetectProject()
             List<File> createdBdioFiles = detectProjectManager.createBdioFiles(detectProject)
-            hubManager.performPostActions(detectProject, createdBdioFiles)
+            int postResult = hubManager.performPostActions(detectProject, createdBdioFiles)
+            System.exit(postResult)
         }
     }
 
