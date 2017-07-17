@@ -26,75 +26,71 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
+import com.blackducksoftware.integration.hub.detect.bomtool.CranBomTool
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode;
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeBuilder;
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl;
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 
 public class PackRatNodeParser {
+    private final Logger logger = LoggerFactory.getLogger(PackRatNodeParser.class)
 
-	private final Logger logger = LoggerFactory.getLogger(PackRatNodeParser.class)
+    private NameVersionNode rootNameVersionNode
+    private NameVersionNodeBuilder nameVersionNodeBuilder
+    private HashSet<String> directDependencyNames
+    private NameVersionNode currentParent
 
-	private NameVersionNode rootNameVersionNode
-	private NameVersionNodeBuilder nameVersionNodeBuilder
-	private HashSet<String> directDependencyNames
-	private NameVersionNode currentParent
+    List<DependencyNode> parseProjectDependencies(NameVersionNodeTransformer nameVersionNodeTransformer, final String packratLockContents) {
+        rootNameVersionNode = new NameVersionNodeImpl([name: 'packratLockFileRoot'])
+        nameVersionNodeBuilder = new NameVersionNodeBuilder(rootNameVersionNode)
+        directDependencyNames = new HashSet<>()
+        currentParent = null
 
-	List<DependencyNode> parseProjectDependencies(NameVersionNodeTransformer nameVersionNodeTransformer, final String packratLockContents, Forge CRAN) {
-		rootNameVersionNode = new NameVersionNodeImpl([name: 'packratLockFileRoot'])
-		nameVersionNodeBuilder = new NameVersionNodeBuilder(rootNameVersionNode)
-		directDependencyNames = new HashSet<>()
-		currentParent = null
+        String[] lines = packratLockContents.split('\n')
+        String name;
+        String version;
+        List<DependencyNode> projectDependencies = []
+        boolean newDependency = false;
 
-		String[] lines = packratLockContents.split("\n")
-		String name;
-		String version;
-		List<DependencyNode> projectDependencies = []
-		boolean newDependency = false;
+        for (String line : lines) {
+            if (line.contains('Package: ')){
+                name = line.replace('Package: ', '').trim();
+                directDependencyNames.add(name)
+                newDependency = true;
+                continue
+            }
 
-		for (String line : lines) {
+            if (line.contains('Version: ')) {
+                version = line.replace('Version: ', '').trim();
+                NameVersionNode node = this.createNameVersionNodeImpl(name, version)
+                nameVersionNodeBuilder.addChildNodeToParent(node, rootNameVersionNode)
+            }
 
+            currentParent = this.createNameVersionNodeImpl(name, version)
 
-			if (line.contains("Package")){
-				name = line.replace("Package: ", "").trim();
-				directDependencyNames.add(name)
-				newDependency = true;
-				continue
-			}
+            if (line.contains('Requires: ')) {
+                String[] parts = line.replace('Requires: ','').split(',');
+                for (int i; i < parts.size(); i++){
+                    NameVersionNode node = this.createNameVersionNodeImpl(parts[i].trim(), '')
+                    nameVersionNodeBuilder.addChildNodeToParent(node, currentParent)
+                }
+            }
+        }
 
-			if(line.contains("Version")){
-				version = line.replace("Version: ", "").trim();
-				NameVersionNode node = this.createNameVersionNodeImpl(name, version)
-				nameVersionNodeBuilder.addChildNodeToParent(node, rootNameVersionNode)
-			}
+        directDependencyNames.each { directDependencyName ->
+            NameVersionNode nameVersionNode = nameVersionNodeBuilder.nameToNodeMap[directDependencyName]
+            if (nameVersionNode) {
+                DependencyNode directDependencyNode = nameVersionNodeTransformer.createDependencyNode(CranBomTool.CRAN, nameVersionNode)
+                projectDependencies.add(directDependencyNode)
+            } else {
+                logger.error("Could not find ${directDependencyName} in the populated map.")
+            }
+        }
 
-			currentParent = this.createNameVersionNodeImpl(name, version)
+        projectDependencies
+    }
 
-			if (line.contains("Requires")) {
-				String[] parts = line.replace("Requires: ","").split(",");
-				for (int i; i < parts.size(); i++){
-					NameVersionNode node = this.createNameVersionNodeImpl(parts[i].trim(), "")
-					nameVersionNodeBuilder.addChildNodeToParent(node, currentParent)
-				}
-			}
-		}
-
-		directDependencyNames.each { directDependencyName ->
-			NameVersionNode nameVersionNode = nameVersionNodeBuilder.nameToNodeMap[directDependencyName]
-			if (nameVersionNode) {
-				DependencyNode directDependencyNode = nameVersionNodeTransformer.createDependencyNode(CRAN, nameVersionNode)
-				projectDependencies.add(directDependencyNode)
-			} else {
-				logger.error("Could not find ${directDependencyName} in the populated map.")
-			}
-		}
-
-		projectDependencies
-	}
-
-
-	private NameVersionNode createNameVersionNodeImpl(String name, String version){
-		return new NameVersionNodeImpl([name: name, version: version])
-	}
+    private NameVersionNode createNameVersionNodeImpl(String name, String version) {
+        return new NameVersionNodeImpl([name: name, version: version])
+    }
 }

@@ -23,21 +23,21 @@
 package com.blackducksoftware.integration.hub.detect.type;
 
 public enum BomToolType {
-	CARTHAGE,
-	COCOAPODS,
-	CPAN,
-	DOCKER,
-	GO_DEP,
-	GO_GODEP,
-	GO_VNDR,
-	GRADLE,
-	MAVEN,
-	NPM,
-	NUGET,
-	PEAR,
-	PIP,
-	RUBYGEMS,
-	SBT,
-	PACKAGIST,
-	CRAN;
+    CARTHAGE,
+    COCOAPODS,
+    CPAN,
+    CRAN,
+    DOCKER,
+    GO_DEP,
+    GO_GODEP,
+    GO_VNDR,
+    GRADLE,
+    MAVEN,
+    NPM,
+    NUGET,
+    PACKAGIST,
+    PEAR,
+    PIP,
+    RUBYGEMS,
+    SBT;
 }

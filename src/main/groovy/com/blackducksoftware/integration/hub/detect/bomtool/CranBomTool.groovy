@@ -37,36 +37,36 @@ import com.blackducksoftware.integration.hub.detect.type.BomToolType
 
 @Component
 class CranBomTool extends BomTool {
-	@Autowired
-	PackratPackager packratPackager
+    public static final Forge CRAN = new Forge('cran', '/')
 
-	BomToolType getBomToolType() {
-		return BomToolType.CRAN
-	}
+    @Autowired
+    PackratPackager packratPackager
 
-	boolean isBomToolApplicable() {
+    BomToolType getBomToolType() {
+        return BomToolType.CRAN
+    }
 
-		detectFileManager.containsAllFilesToDepth(sourcePath, detectConfiguration.getSearchDepth(),'packrat.lock')
-	}
+    boolean isBomToolApplicable() {
+        detectFileManager.containsAllFilesToDepth(sourcePath, detectConfiguration.getSearchDepth(), 'packrat.lock')
+    }
 
+    List<DetectCodeLocation> extractDetectCodeLocations() {
+        File sourceDirectory = detectConfiguration.sourceDirectory
 
-	List<DetectCodeLocation> extractDetectCodeLocations() {
-		File sourceDirectory = detectConfiguration.sourceDirectory
+        def packratLockFile = detectFileManager.findFilesToDepth(sourceDirectory, 'packrat.lock', detectConfiguration.getSearchDepth())
+        String projectVersion = ''
+        if (detectFileManager.containsAllFiles(sourcePath,'DESCRIPTION')) {
+            def descriptionFile = new File(sourceDirectory, 'DESCRIPTION')
+            String descriptionText = descriptionFile.getText(StandardCharsets.UTF_8.name())
+            projectVersion = packratPackager.getVersion(descriptionText)
+        }
 
-		def packratLockFile = detectFileManager.findFilesToDepth(sourceDirectory, 'packrat.lock', detectConfiguration.getSearchDepth())
-		String projectVersion = ''
-		if(detectFileManager.containsAllFiles(sourcePath,'DESCRIPTION')){
-			def descriptionFile = new File(sourceDirectory, 'DESCRIPTION')
-			String descriptionText = descriptionFile.getText(StandardCharsets.UTF_8.name())
-			projectVersion = packratPackager.getVersion(descriptionText)
-		}
-		String packratLockText = packratLockFile[0].getText(StandardCharsets.UTF_8.name())
-		Forge CRAN = new Forge("cran", "/")
-		List<DependencyNode> dependencies = packratPackager.extractProjectDependencies(packratLockText, CRAN)
-		Set<DependencyNode> dependenciesSet = new HashSet<>(dependencies)
-		ExternalId externalId = new PathExternalId(CRAN, sourcePath)
+        String packratLockText = packratLockFile[0].getText(StandardCharsets.UTF_8.name())
+        List<DependencyNode> dependencies = packratPackager.extractProjectDependencies(packratLockText)
+        Set<DependencyNode> dependenciesSet = new HashSet<>(dependencies)
+        ExternalId externalId = new PathExternalId(CRAN, sourcePath)
 
-		def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, '', projectVersion, '', externalId, dependenciesSet)
-		[codeLocation]
-	}
+        def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, '', projectVersion, '', externalId, dependenciesSet)
+        [codeLocation]
+    }
 }

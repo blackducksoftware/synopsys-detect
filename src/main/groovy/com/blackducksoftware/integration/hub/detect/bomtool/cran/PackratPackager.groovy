@@ -25,26 +25,29 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 
 
 @Component
 public class PackratPackager {
-	@Autowired
-	private final NameVersionNodeTransformer nameVersionNodeTransformer
+    @Autowired
+    private final NameVersionNodeTransformer nameVersionNodeTransformer
 
-	public List<DependencyNode> extractProjectDependencies(final String packratLock, Forge CRAN){
-		def packRatNodeParser = new PackRatNodeParser();
-		List<DependencyNode> dependencies = packRatNodeParser.parseProjectDependencies(nameVersionNodeTransformer, packratLock, CRAN)
+    public List<DependencyNode> extractProjectDependencies(final String packratLock) {
+        def packRatNodeParser = new PackRatNodeParser();
+        List<DependencyNode> dependencies = packRatNodeParser.parseProjectDependencies(nameVersionNodeTransformer, packratLock)
 
-		dependencies
-	}
+        dependencies
+    }
 
-	public String getVersion(String descriptionContents){
-		DescriptionParser descriptionParser = new DescriptionParser()
-		String rootVersion = descriptionParser.getProjectVersion(descriptionContents)
+    public String getVersion(String descriptionContents) {
+        String[] lines = descriptionContents.split('\n')
+        String versionLine = lines.find { it.contains('Version: ') }
 
-		rootVersion
-	}
+        if (versionLine != null) {
+            return versionLine.replace('Version: ').trim()
+        }
+
+        null
+    }
 }
