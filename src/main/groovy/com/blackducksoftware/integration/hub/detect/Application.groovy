@@ -41,6 +41,7 @@ import com.blackducksoftware.integration.hub.detect.help.HelpPrinter
 import com.blackducksoftware.integration.hub.detect.help.ValueDescriptionAnnotationFinder
 import com.blackducksoftware.integration.hub.detect.hub.HubManager
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager
+import com.blackducksoftware.integration.util.IntegrationEscapeUtil
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
@@ -59,7 +60,6 @@ class Application {
 
     @Autowired
     DetectProjectManager detectProjectManager
-
 
     @Autowired
     BdioPropertyHelper bdioPropertyHelper
@@ -116,5 +116,10 @@ class Application {
     @Bean
     DependencyNodeTransformer dependencyNodeTransformer() {
         new DependencyNodeTransformer(bdioNodeFactory(), bdioPropertyHelper())
+    }
+
+    @Bean
+    IntegrationEscapeUtil integrationEscapeUtil() {
+        new IntegrationEscapeUtil()
     }
 }

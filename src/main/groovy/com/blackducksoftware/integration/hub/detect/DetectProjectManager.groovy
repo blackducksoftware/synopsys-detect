@@ -36,11 +36,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.BdioBillOfMateria
 import com.blackducksoftware.integration.hub.bdio.simple.model.BdioComponent
 import com.blackducksoftware.integration.hub.bdio.simple.model.BdioExternalIdentifier
 import com.blackducksoftware.integration.hub.bdio.simple.model.BdioProject
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.SimpleBdioDocument
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.PathExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
@@ -74,6 +70,9 @@ class DetectProjectManager {
 
     @Autowired
     HubSignatureScanner hubSignatureScanner
+
+    @Autowired
+    IntegrationEscapeUtil escapeUtil
 
     private boolean foundAnyBomTools
 
@@ -129,48 +128,58 @@ class DetectProjectManager {
 
     public List<File> createBdioFiles(DetectProject detectProject) {
         List<File> bdioFiles = []
+        final String safeProjectName = escapeUtil.escapeForUri(detectProject.projectName)
+        final String safeVersionName = escapeUtil.escapeForUri(detectProject.projectVersionName)
 
         if(detectConfiguration.aggregateBomName) {
-            aggregateCodeLocations(detectProject)
-        }
-        detectProject.detectCodeLocations.each {
-            File createdBdioFile = createBdioFile(detectProject, it)
+            final SimpleBdioDocument aggregateBdioDocument = createAggregateSimpleBdioDocument(detectProject)
+            detectProject.detectCodeLocations.each {
+                aggregateBdioDocument.components += dependencyNodeTransformer.addComponentsGraph(aggregateBdioDocument.project, it.dependencies)
+            }
+            final String filename = "${escapeUtil.escapeForUri(detectConfiguration.aggregateBomName)}.jsonld"
+            final File outputFile = new File(detectConfiguration.getOutputDirectory(), filename)
+            if (outputFile.exists()) {
+                outputFile.delete()
+            }
+            final File createdBdioFile = writeSimpleBdioDocument(outputFile, aggregateBdioDocument)
             bdioFiles += createdBdioFile
+        } else {
+            detectProject.detectCodeLocations.each {
+                final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(detectProject, it)
+                final String filename = "${it.bomToolType.toString()}_${safeProjectName}_${safeVersionName}_bdio.jsonld"
+                final File outputFile = new File(detectConfiguration.getOutputDirectory(), filename)
+                if (outputFile.exists()) {
+                    outputFile.delete()
+                }
+                final File createdBdioFile = writeSimpleBdioDocument(outputFile, simpleBdioDocument)
+                bdioFiles += createdBdioFile
+            }
         }
 
         bdioFiles
     }
 
-    private void aggregateCodeLocations(DetectProject detectProject) {
-        final Set<DependencyNode> dependencies = new HashSet<>()
-        detectProject.detectCodeLocations.each { dependencies.addAll(it.getDependencies()) }
-        final Forge forge = new Forge('DetectAggregate', ':')
-        final String sourcePath = detectConfiguration.sourcePath
-        final ExternalId externalId = new PathExternalId(forge, sourcePath)
-        final DetectCodeLocation detectCodeLocation = new DetectCodeLocation(BomToolType.AGGREGATE_BOM, sourcePath, externalId, dependencies)
-        detectProject.detectCodeLocations = [detectCodeLocation]
+    private SimpleBdioDocument createAggregateSimpleBdioDocument(DetectProject detectProject) {
+        String projectName = detectProject.projectName
+        String projectVersionName = detectProject.projectVersionName
+
+        final BdioBillOfMaterials bdioBillOfMaterials = bdioNodeFactory.createBillOfMaterials('', projectName, projectVersionName)
+        final BdioExternalIdentifier projectExternalIdentifier = bdioPropertyHelper.createExternalIdentifier('', projectName)
+        final BdioProject project = bdioNodeFactory.createProject(projectName, projectVersionName, projectName, projectExternalIdentifier)
+
+        final SimpleBdioDocument simpleBdioDocument = new SimpleBdioDocument()
+        simpleBdioDocument.billOfMaterials = bdioBillOfMaterials
+        simpleBdioDocument.project = project
+
+        simpleBdioDocument
     }
 
-    private File createBdioFile(DetectProject detectProject, DetectCodeLocation detectCodeLocation) {
+    private SimpleBdioDocument createSimpleBdioDocument(DetectProject detectProject, DetectCodeLocation detectCodeLocation) {
         String projectName = detectProject.projectName
         String projectVersionName = detectProject.projectVersionName
         String codeLocationName = getCodeLocationName(detectCodeLocation.bomToolType, detectCodeLocation.sourcePath, projectName, projectVersionName)
 
-        final IntegrationEscapeUtil escapeUtil = new IntegrationEscapeUtil()
-        final String safeProjectName = escapeUtil.escapeForUri(projectName)
-        final String safeVersionName = escapeUtil.escapeForUri(projectVersionName)
-        String filename
-        if(detectConfiguration.aggregateBomName) {
-            filename = "${detectConfiguration.aggregateBomName}.jsonld"
-        } else {
-            filename = "${detectCodeLocation.bomToolType.toString()}_${safeProjectName}_${safeVersionName}_bdio.jsonld"
-        }
-        final File outputFile = new File(detectConfiguration.getOutputDirectory(), filename)
-        if (outputFile.exists()) {
-            outputFile.delete()
-        }
-
-        BdioBillOfMaterials bdioBillOfMaterials = bdioNodeFactory.createBillOfMaterials(codeLocationName, projectName, projectVersionName)
+        final BdioBillOfMaterials bdioBillOfMaterials = bdioNodeFactory.createBillOfMaterials(codeLocationName, projectName, projectVersionName)
 
         final String projectId = detectCodeLocation.bomToolProjectExternalId.createDataId()
         final BdioExternalIdentifier projectExternalIdentifier = bdioPropertyHelper.createExternalIdentifier(detectCodeLocation.bomToolProjectExternalId)
@@ -178,11 +187,15 @@ class DetectProjectManager {
 
         final List<BdioComponent> bdioComponents = dependencyNodeTransformer.addComponentsGraph(project, detectCodeLocation.dependencies)
 
-        SimpleBdioDocument simpleBdioDocument = new SimpleBdioDocument()
+        final SimpleBdioDocument simpleBdioDocument = new SimpleBdioDocument()
         simpleBdioDocument.billOfMaterials = bdioBillOfMaterials
         simpleBdioDocument.project = project
         simpleBdioDocument.components = bdioComponents
 
+        simpleBdioDocument
+    }
+
+    private File writeSimpleBdioDocument(File outputFile, SimpleBdioDocument simpleBdioDocument) {
         final BdioWriter bdioWriter = new BdioWriter(gson, new FileOutputStream(outputFile))
         try {
             bdioWriter.writeSimpleBdioDocument(simpleBdioDocument)
