@@ -24,6 +24,8 @@ package com.blackducksoftware.integration.hub.detect.bomtool
 
 import java.nio.charset.StandardCharsets
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -37,6 +39,10 @@ import com.blackducksoftware.integration.hub.detect.type.BomToolType
 
 @Component
 class RubygemsBomTool extends BomTool {
+    private final Logger logger = LoggerFactory.getLogger(RubygemsBomTool.class)
+
+    public static final String GEMFILE_LOCK_FILENAME= 'Gemfile.lock'
+
     @Autowired
     RubygemsNodePackager rubygemsNodePackager
 
@@ -45,13 +51,15 @@ class RubygemsBomTool extends BomTool {
     }
 
     boolean isBomToolApplicable() {
-        detectFileManager.containsAllFiles(sourcePath, 'Gemfile.lock')
+        boolean containsGemfile = detectFileManager.containsAllFiles(sourcePath, GEMFILE_LOCK_FILENAME)
+        logger.debug("Found a ${GEMFILE_LOCK_FILENAME} : $containsGemfile")
+        containsGemfile
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
         File sourceDirectory = detectConfiguration.sourceDirectory
 
-        def gemlockFile = new File(sourceDirectory, 'Gemfile.lock')
+        def gemlockFile = new File(sourceDirectory, GEMFILE_LOCK_FILENAME)
         String gemlockText = gemlockFile.getText(StandardCharsets.UTF_8.name())
 
         List<DependencyNode> dependencies = rubygemsNodePackager.extractProjectDependencies(gemlockText)

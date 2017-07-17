@@ -22,6 +22,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -37,6 +39,10 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOu
 
 @Component
 class CpanBomTool extends BomTool {
+    private final Logger logger = LoggerFactory.getLogger(CpanBomTool.class)
+
+    public static final String CPAN_FILENAME= 'cpanfile'
+
     @Autowired
     CpanPackager cpanPackager
 
@@ -50,11 +56,18 @@ class CpanBomTool extends BomTool {
 
     @Override
     public boolean isBomToolApplicable() {
-        def containsFiles = detectFileManager.containsAllFiles(sourcePath, 'cpanfile')
-
+        def containsFiles = detectFileManager.containsAllFiles(sourcePath, CPAN_FILENAME)
         if (containsFiles) {
             cpanExecutablePath = executableManager.getPathOfExecutable(ExecutableType.CPAN, detectConfiguration.getCpanPath())
             cpanmExecutablePath = executableManager.getPathOfExecutable(ExecutableType.CPANM, detectConfiguration.getCpanmPath())
+            if (!cpanExecutablePath) {
+                logger.warn("Could not find the ${executableManager.getExecutableName(ExecutableType.CPAN)} executable")
+            }
+            if (!cpanmExecutablePath) {
+                logger.warn("Could not find the ${executableManager.getExecutableName(ExecutableType.CPANM)} executable")
+            }
+        } else {
+            logger.debug("Did not find a ${CPAN_FILENAME}")
         }
 
         containsFiles && cpanExecutablePath && cpanmExecutablePath

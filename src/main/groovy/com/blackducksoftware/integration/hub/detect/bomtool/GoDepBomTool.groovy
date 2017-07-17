@@ -42,6 +42,10 @@ import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 class GoDepBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(GoDepBomTool.class)
 
+    public static final String GOPKG_LOCK_FILENAME= 'Gopkg.lock'
+
+    public static final String GOFILE_FILENAME_PATTERN= '*.go'
+
     public static final Forge GOLANG = new Forge("golang",":")
 
     @Autowired
@@ -61,11 +65,20 @@ class GoDepBomTool extends BomTool {
     @Override
     public boolean isBomToolApplicable() {
         boolean isTheBestGoBomTool = false
-        if (detectFileManager.containsAllFiles(sourcePath, 'Gopkg.lock')) {
+        if (detectFileManager.containsAllFiles(sourcePath, GOPKG_LOCK_FILENAME)) {
+            logger.debug("Found a $GOPKG_LOCK_FILENAME")
             isTheBestGoBomTool = true
         } else  {
+            logger.debug("Did not find a $GOPKG_LOCK_FILENAME")
             boolean otherGoBomToolsWouldBeBetter = goGodepsBomTool.isBomToolApplicable() || goVndrBomTool.isBomToolApplicable()
-            if (!otherGoBomToolsWouldBeBetter && detectFileManager.containsAllFilesToDepth(sourcePath, detectConfiguration.getSearchDepth(), '*.go')) {
+            boolean foundGoFiles = detectFileManager.containsAllFilesToDepth(sourcePath, detectConfiguration.getSearchDepth(), GOFILE_FILENAME_PATTERN)
+            if (!foundGoFiles) {
+                logger.debug("Could not find files matching the pattern $GOFILE_FILENAME_PATTERN")
+            }
+            if (foundGoFiles && otherGoBomToolsWouldBeBetter) {
+                logger.debug("A different Go BomTool is applicable for source path $sourcePath")
+            }
+            if (!otherGoBomToolsWouldBeBetter && foundGoFiles) {
                 isTheBestGoBomTool = true
             }
         }
@@ -73,6 +86,9 @@ class GoDepBomTool extends BomTool {
         def goExecutablePath
         if (isTheBestGoBomTool) {
             goExecutablePath = executableManager.getPathOfExecutable(ExecutableType.GO)
+        }
+        if (isTheBestGoBomTool && !goExecutablePath) {
+            logger.warn("Could not find the ${executableManager.getExecutableName(ExecutableType.GO)} executable")
         }
 
         goExecutablePath && isTheBestGoBomTool

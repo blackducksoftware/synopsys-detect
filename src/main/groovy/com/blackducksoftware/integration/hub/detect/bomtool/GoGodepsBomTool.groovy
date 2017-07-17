@@ -40,6 +40,8 @@ import com.google.gson.Gson
 class GoGodepsBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(GoGodepsBomTool.class)
 
+    public static final String GODEPS_DIRECTORYNAME= 'Godeps'
+
     @Autowired
     Gson gson
 
@@ -50,12 +52,14 @@ class GoGodepsBomTool extends BomTool {
 
     @Override
     public boolean isBomToolApplicable() {
-        detectFileManager.containsAllFiles(sourcePath, 'Godeps')
+        boolean foundGodepsDirectory = detectFileManager.containsAllFiles(sourcePath, GODEPS_DIRECTORYNAME)
+        logger.debug("Found a $GODEPS_DIRECTORYNAME directory : $foundGodepsDirectory")
+        foundGodepsDirectory
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
         GoGodepsParser goDepParser = new GoGodepsParser(gson)
-        def goDepsDirectory = new File(sourcePath, "Godeps")
+        def goDepsDirectory = new File(sourcePath, GODEPS_DIRECTORYNAME)
         def goDepsFile = new File(goDepsDirectory, "Godeps.json")
         List<DependencyNode> dependencies = goDepParser.extractProjectDependencies(goDepsFile.text)
         Set<DependencyNode> dependenciesSet = new HashSet<>(dependencies)

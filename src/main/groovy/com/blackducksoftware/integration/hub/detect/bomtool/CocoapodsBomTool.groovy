@@ -22,6 +22,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -32,9 +34,12 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.PathEx
 import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.CocoapodsPackager
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
-
 @Component
 class CocoapodsBomTool extends BomTool {
+    private final Logger logger = LoggerFactory.getLogger(CocoapodsBomTool.class)
+
+    public static final String PODFILE_LOCK_FILENAME= 'Podfile.lock'
+
     @Autowired
     CocoapodsPackager cocoapodsPackager
 
@@ -43,12 +48,13 @@ class CocoapodsBomTool extends BomTool {
     }
 
     boolean isBomToolApplicable() {
-        boolean containsPodfile = detectFileManager.containsAllFiles(sourcePath, 'Podfile.lock')
+        boolean containsPodfile = detectFileManager.containsAllFiles(sourcePath, PODFILE_LOCK_FILENAME)
+        logger.debug("Found a ${PODFILE_LOCK_FILENAME} : $containsPodfile")
         containsPodfile
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
-        final String podLockText = new File(sourcePath, 'Podfile.lock').text
+        final String podLockText = new File(sourcePath, PODFILE_LOCK_FILENAME).text
 
         List<DependencyNode> projectDependencies = cocoapodsPackager.extractProjectDependencies(podLockText)
         Set<DependencyNode> dependenciesSet = new HashSet<>(projectDependencies)

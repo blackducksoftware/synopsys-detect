@@ -59,6 +59,11 @@ class NugetBomTool extends BomTool {
         if (containsSolutionFile || containsProjectFile) {
             //logger.warn('The nuget executable must be on the path - are you sure you are running on a windows system?')
             nugetExecutable = executableManager.getPathOfExecutable(ExecutableType.NUGET, detectConfiguration.getNugetPath())
+            if (!nugetExecutable) {
+                logger.warn("Could not find a ${executableManager.getExecutableName(ExecutableType.NUGET)} executable")
+            }
+        } else {
+            logger.debug("Did not find files matching patterns $SOLUTION_PATTERN or $PROJECT_PATTERN")
         }
 
         nugetExecutable && (containsSolutionFile || containsProjectFile)

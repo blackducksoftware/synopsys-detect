@@ -42,7 +42,7 @@ import com.google.gson.Gson
 class GradleBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(GradleBomTool.class)
 
-    static final String BUILD_GRADLE = 'build.gradle'
+    static final String BUILD_GRADLE_FILENAME = 'build.gradle'
 
     @Autowired
     Gson gson
@@ -57,10 +57,15 @@ class GradleBomTool extends BomTool {
     }
 
     boolean isBomToolApplicable() {
-        def buildGradle = detectFileManager.findFile(sourcePath, BUILD_GRADLE)
+        def buildGradle = detectFileManager.findFile(sourcePath, BUILD_GRADLE_FILENAME)
 
         if (buildGradle) {
             gradleExecutable = findGradleExecutable(sourcePath)
+            if (!gradleExecutable) {
+                logger.warn('Could not find a Gradle wrapper or executable')
+            }
+        } else {
+            logger.debug("Did not find a $BUILD_GRADLE_FILENAME")
         }
 
         buildGradle && gradleExecutable
@@ -90,7 +95,6 @@ class GradleBomTool extends BomTool {
             logger.debug('gradle wrapper not found - trying to find gradle on the PATH')
             gradlePath = executableManager.getPathOfExecutable(ExecutableType.GRADLE)
         }
-
         gradlePath
     }
 

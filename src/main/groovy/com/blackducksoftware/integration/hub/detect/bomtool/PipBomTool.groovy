@@ -39,7 +39,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 
 @Component
 class PipBomTool extends BomTool {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass())
+    private final Logger logger = LoggerFactory.getLogger(PipBomTool.class)
 
     private final String INSPECTOR_NAME = 'pip-inspector.py'
     private final String SETUP_FILE_NAME = 'setup.py'
@@ -63,6 +63,14 @@ class PipBomTool extends BomTool {
             virtualEnvironmentHandler.init()
             PythonEnvironment systemEnvironment = virtualEnvironmentHandler.getSystemEnvironment()
             foundExecutables = systemEnvironment.pipPath && systemEnvironment.pythonPath
+            if (!systemEnvironment.pipPath) {
+                logger.warn("Could not find a ${executableManager.getExecutableName(systemEnvironment.pipType)} executable")
+            }
+            if (!systemEnvironment.pythonPath) {
+                logger.warn("Could not find a ${executableManager.getExecutableName(systemEnvironment.pythonType)} executable")
+            }
+        } else {
+            logger.debug("Could not find a $SETUP_FILE_NAME or requirements files")
         }
 
         foundExecutables && (containsFiles || definedRequirements)
