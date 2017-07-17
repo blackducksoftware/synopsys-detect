@@ -62,7 +62,7 @@ class ExecutableManager {
         File executableFile = getExecutable(executableType)
 
         if (executableFile == null) {
-            logger.info("Expected to find an executable of type ${executableType.toString()} but none was found")
+            logger.debug("Expected to find an executable of type ${executableType.toString()} but none was found")
             return null
         }
         return executableFile.absolutePath
