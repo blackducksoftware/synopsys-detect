@@ -321,5 +321,9 @@ class DetectProperties {
     @ValueDescription(description="The timestamp format to use as default project version", defaultValue='yyyy-MM-dd\'T\'HH:mm:ss.SSS', group=DetectProperties.GROUP_PROJECT_INFO)
     @Value('${detect.project.version.timeformat}')
     String versionTimeFormat
+
+    @ValueDescription(description='If set, this will aggregate all the BOMs to create a single BDIO file with the name provided. For Co-Pilot use only', group=DetectProperties.GROUP_PROJECT_INFO)
+    @Value('${detect.bom.aggregate.name}')
+    String aggregateBomName
 }
 

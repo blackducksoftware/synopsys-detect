@@ -389,4 +389,7 @@ class DetectConfiguration {
     public String getVersionTimeFormat() {
         return detectProperties.versionTimeFormat?.trim()
     }
+    public String getAggregateBomName() {
+        return detectProperties.aggregateBomName?.trim()
+    }
 }

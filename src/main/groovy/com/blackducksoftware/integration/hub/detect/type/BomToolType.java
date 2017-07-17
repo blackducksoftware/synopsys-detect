@@ -39,5 +39,6 @@ public enum BomToolType {
     PEAR,
     PIP,
     RUBYGEMS,
-    SBT;
+    SBT,
+    AGGREGATE_BOM;
 }

@@ -36,7 +36,11 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.BdioBillOfMateria
 import com.blackducksoftware.integration.hub.bdio.simple.model.BdioComponent
 import com.blackducksoftware.integration.hub.bdio.simple.model.BdioExternalIdentifier
 import com.blackducksoftware.integration.hub.bdio.simple.model.BdioProject
+import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.SimpleBdioDocument
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.PathExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
@@ -125,12 +129,26 @@ class DetectProjectManager {
 
     public List<File> createBdioFiles(DetectProject detectProject) {
         List<File> bdioFiles = []
+
+        if(detectConfiguration.aggregateBomName) {
+            aggregateCodeLocations(detectProject)
+        }
         detectProject.detectCodeLocations.each {
             File createdBdioFile = createBdioFile(detectProject, it)
-            bdioFiles.add(createdBdioFile)
+            bdioFiles += createdBdioFile
         }
 
         bdioFiles
+    }
+
+    private void aggregateCodeLocations(DetectProject detectProject) {
+        final Set<DependencyNode> dependencies = new HashSet<>()
+        detectProject.detectCodeLocations.each { dependencies.addAll(it.getDependencies()) }
+        final Forge forge = new Forge('DetectAggregate', ':')
+        final String sourcePath = detectConfiguration.sourcePath
+        final ExternalId externalId = new PathExternalId(forge, sourcePath)
+        final DetectCodeLocation detectCodeLocation = new DetectCodeLocation(BomToolType.AGGREGATE_BOM, sourcePath, externalId, dependencies)
+        detectProject.detectCodeLocations = [detectCodeLocation]
     }
 
     private File createBdioFile(DetectProject detectProject, DetectCodeLocation detectCodeLocation) {
@@ -141,7 +159,12 @@ class DetectProjectManager {
         final IntegrationEscapeUtil escapeUtil = new IntegrationEscapeUtil()
         final String safeProjectName = escapeUtil.escapeForUri(projectName)
         final String safeVersionName = escapeUtil.escapeForUri(projectVersionName)
-        final String filename = String.format("%s_%s_%s_bdio.jsonld", detectCodeLocation.bomToolType.toString(), safeProjectName, safeVersionName)
+        String filename
+        if(detectConfiguration.aggregateBomName) {
+            filename = "${detectConfiguration.aggregateBomName}.jsonld"
+        } else {
+            filename = "${detectCodeLocation.bomToolType.toString()}_${safeProjectName}_${safeVersionName}_bdio.jsonld"
+        }
         final File outputFile = new File(detectConfiguration.getOutputDirectory(), filename)
         if (outputFile.exists()) {
             outputFile.delete()
