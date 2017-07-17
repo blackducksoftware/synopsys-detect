@@ -76,7 +76,7 @@ class PearBomTool extends BomTool {
         File packageFile = detectFileManager.findFile(sourcePath, PACKAGE_XML_FILENAME)
         def packageXml = new XmlSlurper().parseText(packageFile.text)
         String rootName = packageXml.name
-        String rootVersion = packageXml.version.api
+        String rootVersion = packageXml.version.release
 
         Set<DependencyNode> childDependencyNodes = pearDependencyFinder.parsePearDependencyList(pearListing, pearDependencies)
         def detectCodeLocation = new DetectCodeLocation(
