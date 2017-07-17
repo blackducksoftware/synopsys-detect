@@ -82,7 +82,6 @@ class HubManager {
     public int performPostActions(DetectProject detectProject, List<File> createdBdioFiles) {
         def postActionResult = 0
         try {
-
             Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
             HubServerConfig hubServerConfig = createHubServerConfig(slf4jIntLogger)
             HubServicesFactory hubServicesFactory = createHubServicesFactory(slf4jIntLogger, hubServerConfig)

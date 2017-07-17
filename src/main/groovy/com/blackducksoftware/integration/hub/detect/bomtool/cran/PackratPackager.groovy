@@ -40,6 +40,20 @@ public class PackratPackager {
         dependencies
     }
 
+    public String getProjectName(final String descriptionContents) {
+        String[] lines = descriptionContents.split('\n')
+        String name
+
+        for (String line : lines) {
+            if (line.contains('Package: ')) {
+                name = line.replace('Package: ', '').trim()
+                break
+            }
+        }
+
+        name
+    }
+
     public String getVersion(String descriptionContents) {
         String[] lines = descriptionContents.split('\n')
         String versionLine = lines.find { it.contains('Version: ') }
