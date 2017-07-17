@@ -51,9 +51,7 @@ class RubygemsBomTool extends BomTool {
     }
 
     boolean isBomToolApplicable() {
-        boolean containsGemfile = detectFileManager.containsAllFiles(sourcePath, GEMFILE_LOCK_FILENAME)
-        logger.debug("Found a ${GEMFILE_LOCK_FILENAME} : $containsGemfile")
-        containsGemfile
+        detectFileManager.containsAllFiles(sourcePath, GEMFILE_LOCK_FILENAME)
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {

@@ -64,8 +64,6 @@ class GradleBomTool extends BomTool {
             if (!gradleExecutable) {
                 logger.warn('Could not find a Gradle wrapper or executable')
             }
-        } else {
-            logger.debug("Did not find a $BUILD_GRADLE_FILENAME")
         }
 
         buildGradle && gradleExecutable

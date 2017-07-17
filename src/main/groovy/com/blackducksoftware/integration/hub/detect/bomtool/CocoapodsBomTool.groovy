@@ -48,9 +48,7 @@ class CocoapodsBomTool extends BomTool {
     }
 
     boolean isBomToolApplicable() {
-        boolean containsPodfile = detectFileManager.containsAllFiles(sourcePath, PODFILE_LOCK_FILENAME)
-        logger.debug("Found a ${PODFILE_LOCK_FILENAME} : $containsPodfile")
-        containsPodfile
+        detectFileManager.containsAllFiles(sourcePath, PODFILE_LOCK_FILENAME)
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {

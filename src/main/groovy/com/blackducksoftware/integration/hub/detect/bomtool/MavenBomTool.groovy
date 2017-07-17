@@ -65,8 +65,6 @@ class MavenBomTool extends BomTool {
             if (!mvnExecutable) {
                 logger.warn('Could not find a Maven wrapper or executable')
             }
-        } else {
-            logger.debug("Did not find a $POM_FILENAME or $POM_WRAPPER_FILENAME")
         }
 
         mvnExecutable && (pomXmlPath || pomWrapperPath)

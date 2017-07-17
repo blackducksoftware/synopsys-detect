@@ -52,9 +52,7 @@ class GoGodepsBomTool extends BomTool {
 
     @Override
     public boolean isBomToolApplicable() {
-        boolean foundGodepsDirectory = detectFileManager.containsAllFiles(sourcePath, GODEPS_DIRECTORYNAME)
-        logger.debug("Found a $GODEPS_DIRECTORYNAME directory : $foundGodepsDirectory")
-        foundGodepsDirectory
+        detectFileManager.containsAllFiles(sourcePath, GODEPS_DIRECTORYNAME)
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {

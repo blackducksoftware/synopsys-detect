@@ -46,9 +46,7 @@ class GoVndrBomTool extends BomTool {
 
     @Override
     public boolean isBomToolApplicable() {
-        boolean foundVndrConf = detectFileManager.containsAllFiles(sourcePath, VNDR_CONF_FILENAME)
-        logger.debug("Found a $VNDR_CONF_FILENAME : $foundVndrConf")
-        foundVndrConf
+        detectFileManager.containsAllFiles(sourcePath, VNDR_CONF_FILENAME)
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {

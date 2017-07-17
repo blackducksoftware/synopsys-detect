@@ -69,8 +69,6 @@ class PipBomTool extends BomTool {
             if (!systemEnvironment.pythonPath) {
                 logger.warn("Could not find a ${executableManager.getExecutableName(systemEnvironment.pythonType)} executable")
             }
-        } else {
-            logger.debug("Could not find a $SETUP_FILE_NAME or requirements files")
         }
 
         foundExecutables && (containsFiles || definedRequirements)

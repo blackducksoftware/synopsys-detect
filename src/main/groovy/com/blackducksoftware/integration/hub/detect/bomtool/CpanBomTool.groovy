@@ -66,8 +66,6 @@ class CpanBomTool extends BomTool {
             if (!cpanmExecutablePath) {
                 logger.warn("Could not find the ${executableManager.getExecutableName(ExecutableType.CPANM)} executable")
             }
-        } else {
-            logger.debug("Did not find a ${CPAN_FILENAME}")
         }
 
         containsFiles && cpanExecutablePath && cpanmExecutablePath

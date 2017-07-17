@@ -62,8 +62,6 @@ class NugetBomTool extends BomTool {
             if (!nugetExecutable) {
                 logger.warn("Could not find a ${executableManager.getExecutableName(ExecutableType.NUGET)} executable")
             }
-        } else {
-            logger.debug("Did not find files matching patterns $SOLUTION_PATTERN or $PROJECT_PATTERN")
         }
 
         nugetExecutable && (containsSolutionFile || containsProjectFile)

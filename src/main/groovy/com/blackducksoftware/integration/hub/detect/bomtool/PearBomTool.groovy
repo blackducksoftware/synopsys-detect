@@ -64,8 +64,6 @@ class PearBomTool extends BomTool {
             if (!pearExePath) {
                 logger.warn("Could not find a ${executableManager.getExecutableName(ExecutableType.PEAR)} executable")
             }
-        } else {
-            logger.debug("Did not find a $PACKAGE_XML_FILENAME")
         }
 
         pearExePath && containsPackageXml
