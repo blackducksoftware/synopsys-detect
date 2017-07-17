@@ -37,6 +37,8 @@ import com.blackducksoftware.integration.hub.detect.type.BomToolType
 class GoVndrBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(GoVndrBomTool.class)
 
+    public static final String VNDR_CONF_FILENAME= 'vendor.conf'
+
     @Override
     public BomToolType getBomToolType() {
         return BomToolType.GO_VNDR
@@ -44,14 +46,14 @@ class GoVndrBomTool extends BomTool {
 
     @Override
     public boolean isBomToolApplicable() {
-        detectFileManager.containsAllFiles(sourcePath, 'vendor.conf')
+        detectFileManager.containsAllFiles(sourcePath, VNDR_CONF_FILENAME)
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
         File sourceDirectory = detectConfiguration.sourceDirectory
 
         VndrParser vndrParser = new VndrParser()
-        def vendorConf = new File(sourcePath, "vendor.conf")
+        def vendorConf = new File(sourcePath, VNDR_CONF_FILENAME)
         List<DependencyNode> dependencies = vndrParser.parseVendorConf(vendorConf.text)
         Set<DependencyNode> dependenciesSet = new HashSet<>(dependencies)
         ExternalId externalId = new PathExternalId(GoDepBomTool.GOLANG, sourcePath)

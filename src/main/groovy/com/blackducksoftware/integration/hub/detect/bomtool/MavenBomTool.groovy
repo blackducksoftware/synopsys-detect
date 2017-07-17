@@ -59,9 +59,12 @@ class MavenBomTool extends BomTool {
     boolean isBomToolApplicable() {
         String pomXmlPath = detectFileManager.findFile(sourcePath, POM_FILENAME)
         String pomWrapperPath = detectFileManager.findFile(sourcePath, POM_WRAPPER_FILENAME)
-        
+
         if (pomXmlPath || pomWrapperPath) {
             mvnExecutable = findMavenExecutablePath()
+            if (!mvnExecutable) {
+                logger.warn('Could not find a Maven wrapper or executable')
+            }
         }
 
         mvnExecutable && (pomXmlPath || pomWrapperPath)
