@@ -144,17 +144,17 @@ class DetectProjectManager {
         }
 
         detectProject.detectCodeLocations.each {
-            final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(detectProject, it)
-            final String filename = "${it.bomToolType.toString()}_${safeProjectName}_${safeVersionName}_bdio.jsonld"
-            final File outputFile = new File(detectConfiguration.getOutputDirectory(), filename)
-            if (outputFile.exists()) {
-                outputFile.delete()
-            }
-            final File createdBdioFile = writeSimpleBdioDocument(outputFile, simpleBdioDocument)
-            bdioFiles.add(createdBdioFile)
-
             if (detectConfiguration.aggregateBomName) {
                 aggregateBdioDocument.components.addAll(dependencyNodeTransformer.addComponentsGraph(aggregateBdioDocument.project, it.dependencies))
+            } else {
+                final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(detectProject, it)
+                final String filename = "${it.bomToolType.toString()}_${safeProjectName}_${safeVersionName}_bdio.jsonld"
+                final File outputFile = new File(detectConfiguration.getOutputDirectory(), filename)
+                if (outputFile.exists()) {
+                    outputFile.delete()
+                }
+                final File createdBdioFile = writeSimpleBdioDocument(outputFile, simpleBdioDocument)
+                bdioFiles.add(createdBdioFile)
             }
         }
 
