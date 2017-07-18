@@ -61,7 +61,7 @@ class PolicyChecker {
      * all of its code locations, then all of their scan summaries, wait until
      * they are all complete, then get the policy status.
      */
-    public String getPolicyStatusMessage(HubServicesFactory hubServicesFactory, DetectProject detectProject) throws DetectException {
+    public PolicyStatusDescription getPolicyStatus(HubServicesFactory hubServicesFactory, DetectProject detectProject) throws DetectException {
         Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
 
         ProjectDataService projectDataService = hubServicesFactory.createProjectDataService(slf4jIntLogger)
@@ -87,9 +87,9 @@ class PolicyChecker {
             List<ScanSummaryView> codeLocationScanSummaryViews = scanSummaryRequestService.getAllScanSummaryItems(scansLink)
             scanSummaryViews.addAll(codeLocationScanSummaryViews)
         }
-
+        logger.info("Waiting for the BOM to be updated")
         scanStatusDataService.assertScansFinished(scanSummaryViews)
-
+        logger.info("The BOM has been updated")
         VersionBomPolicyStatusView versionBomPolicyStatusView = policyStatusDataService.getPolicyStatusForProjectAndVersion(projectName, projectVersionName)
         PolicyStatusDescription policyStatusDescription = new PolicyStatusDescription(versionBomPolicyStatusView)
 
@@ -100,6 +100,6 @@ class PolicyChecker {
             statusEnum = VersionBomPolicyStatusOverallStatusEnum.IN_VIOLATION_OVERRIDDEN
         }
         logger.info("Policy Status: ${statusEnum.name()}")
-        policyStatusDescription.policyStatusMessage
+        policyStatusDescription
     }
 }

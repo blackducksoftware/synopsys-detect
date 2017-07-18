@@ -60,6 +60,9 @@ class NpmBomTool extends BomTool {
             logger.warn("package.json was located in ${sourcePath}, but the node_modules folder was NOT located. Please run 'npm install' in that location and try again.")
         } else if (containsPackageJson && containsNodeModules) {
             npmExePath = executableManager.getPathOfExecutable(ExecutableType.NPM, detectConfiguration.getNpmPath())
+            if (!npmExePath) {
+                logger.warn("Could not find a ${executableManager.getExecutableName(ExecutableType.NPM)} executable")
+            }
         }
 
         containsNodeModules && npmExePath

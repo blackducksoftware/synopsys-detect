@@ -322,7 +322,7 @@ class DetectProperties {
     @Value('${detect.project.version.timeformat}')
     String versionTimeFormat
 
-    @ValueDescription(description='If set, this will aggregate all the BOMs to create a single BDIO file with the name provided. For Co-Pilot use only', group=DetectProperties.GROUP_PROJECT_INFO)
+    @ValueDescription(description="If set, this will aggregate all the BOMs to create a single BDIO file with the name provided. For Co-Pilot use only", group=DetectProperties.GROUP_PROJECT_INFO)
     @Value('${detect.bom.aggregate.name}')
     String aggregateBomName
 }
