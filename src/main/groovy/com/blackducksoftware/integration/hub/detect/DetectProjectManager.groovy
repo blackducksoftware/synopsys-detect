@@ -36,6 +36,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.BdioBillOfMateria
 import com.blackducksoftware.integration.hub.bdio.simple.model.BdioComponent
 import com.blackducksoftware.integration.hub.bdio.simple.model.BdioExternalIdentifier
 import com.blackducksoftware.integration.hub.bdio.simple.model.BdioProject
+import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.SimpleBdioDocument
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
@@ -70,6 +71,9 @@ class DetectProjectManager {
 
     @Autowired
     HubSignatureScanner hubSignatureScanner
+
+    @Autowired
+    IntegrationEscapeUtil integrationEscapeUtil
 
     private boolean foundAnyBomTools
 
@@ -125,41 +129,72 @@ class DetectProjectManager {
 
     public List<File> createBdioFiles(DetectProject detectProject) {
         List<File> bdioFiles = []
+        final String safeProjectName = integrationEscapeUtil.escapeForUri(detectProject.projectName)
+        final String safeVersionName = integrationEscapeUtil.escapeForUri(detectProject.projectVersionName)
+
+        File aggregateBdioFile = null
+        final SimpleBdioDocument aggregateBdioDocument = null
+        if (detectConfiguration.aggregateBomName) {
+            aggregateBdioDocument = createAggregateSimpleBdioDocument(detectProject)
+            final String filename = "${integrationEscapeUtil.escapeForUri(detectConfiguration.aggregateBomName)}.jsonld"
+            aggregateBdioFile = new File(detectConfiguration.getOutputDirectory(), filename)
+            if (aggregateBdioFile.exists()) {
+                aggregateBdioFile.delete()
+            }
+        }
+
         detectProject.detectCodeLocations.each {
-            File createdBdioFile = createBdioFile(detectProject, it)
-            bdioFiles.add(createdBdioFile)
+            if (detectConfiguration.aggregateBomName) {
+                aggregateBdioDocument.components.addAll(dependencyNodeTransformer.addComponentsGraph(aggregateBdioDocument.project, it.dependencies))
+            } else {
+                final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(detectProject, it)
+                final String filename = "${it.bomToolType.toString()}_${safeProjectName}_${safeVersionName}_bdio.jsonld"
+                final File outputFile = new File(detectConfiguration.getOutputDirectory(), filename)
+                if (outputFile.exists()) {
+                    outputFile.delete()
+                }
+                final File createdBdioFile = writeSimpleBdioDocument(outputFile, simpleBdioDocument)
+                bdioFiles.add(createdBdioFile)
+            }
+        }
+
+        if (aggregateBdioFile != null && aggregateBdioDocument != null) {
+            writeSimpleBdioDocument(aggregateBdioFile, aggregateBdioDocument)
         }
 
         bdioFiles
     }
 
-    private File createBdioFile(DetectProject detectProject, DetectCodeLocation detectCodeLocation) {
-        String projectName = detectProject.projectName
-        String projectVersionName = detectProject.projectVersionName
-        String codeLocationName = getCodeLocationName(detectCodeLocation.bomToolType, detectCodeLocation.sourcePath, projectName, projectVersionName)
+    private SimpleBdioDocument createAggregateSimpleBdioDocument(DetectProject detectProject) {
+        createSimpleBdioDocument(detectProject, '', detectProject.projectName, bdioPropertyHelper.createExternalIdentifier('', detectProject.projectName), [] as Set)
+    }
 
-        final IntegrationEscapeUtil escapeUtil = new IntegrationEscapeUtil()
-        final String safeProjectName = escapeUtil.escapeForUri(projectName)
-        final String safeVersionName = escapeUtil.escapeForUri(projectVersionName)
-        final String filename = String.format("%s_%s_%s_bdio.jsonld", detectCodeLocation.bomToolType.toString(), safeProjectName, safeVersionName)
-        final File outputFile = new File(detectConfiguration.getOutputDirectory(), filename)
-        if (outputFile.exists()) {
-            outputFile.delete()
-        }
-
-        BdioBillOfMaterials bdioBillOfMaterials = bdioNodeFactory.createBillOfMaterials(codeLocationName, projectName, projectVersionName)
-
+    private SimpleBdioDocument createSimpleBdioDocument(DetectProject detectProject, DetectCodeLocation detectCodeLocation) {
+        final String codeLocationName = getCodeLocationName(detectCodeLocation.bomToolType, detectCodeLocation.sourcePath, detectProject.projectName, detectProject.projectVersionName)
         final String projectId = detectCodeLocation.bomToolProjectExternalId.createDataId()
         final BdioExternalIdentifier projectExternalIdentifier = bdioPropertyHelper.createExternalIdentifier(detectCodeLocation.bomToolProjectExternalId)
+
+        createSimpleBdioDocument(detectProject, codeLocationName, projectId, projectExternalIdentifier, detectCodeLocation.dependencies)
+    }
+
+    private SimpleBdioDocument createSimpleBdioDocument(DetectProject detectProject, String codeLocationName, String projectId, BdioExternalIdentifier projectExternalIdentifier, Set<DependencyNode> dependencies) {
+        final String projectName = detectProject.projectName
+        final String projectVersionName = detectProject.projectVersionName
+
+        final BdioBillOfMaterials bdioBillOfMaterials = bdioNodeFactory.createBillOfMaterials(codeLocationName, projectName, projectVersionName)
         final BdioProject project = bdioNodeFactory.createProject(projectName, projectVersionName, projectId, projectExternalIdentifier)
 
-        final List<BdioComponent> bdioComponents = dependencyNodeTransformer.addComponentsGraph(project, detectCodeLocation.dependencies)
+        final List<BdioComponent> bdioComponents = dependencyNodeTransformer.addComponentsGraph(project, dependencies)
 
-        SimpleBdioDocument simpleBdioDocument = new SimpleBdioDocument()
+        final SimpleBdioDocument simpleBdioDocument = new SimpleBdioDocument()
         simpleBdioDocument.billOfMaterials = bdioBillOfMaterials
         simpleBdioDocument.project = project
         simpleBdioDocument.components = bdioComponents
 
+        simpleBdioDocument
+    }
+
+    private File writeSimpleBdioDocument(File outputFile, SimpleBdioDocument simpleBdioDocument) {
         final BdioWriter bdioWriter = new BdioWriter(gson, new FileOutputStream(outputFile))
         try {
             bdioWriter.writeSimpleBdioDocument(simpleBdioDocument)
