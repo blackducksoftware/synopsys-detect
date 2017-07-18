@@ -54,10 +54,12 @@ class CranBomTool extends BomTool {
         File sourceDirectory = detectConfiguration.sourceDirectory
 
         def packratLockFile = detectFileManager.findFilesToDepth(sourceDirectory, 'packrat.lock', detectConfiguration.getSearchDepth())
+        String projectName = ''
         String projectVersion = ''
         if (detectFileManager.containsAllFiles(sourcePath,'DESCRIPTION')) {
             def descriptionFile = new File(sourceDirectory, 'DESCRIPTION')
             String descriptionText = descriptionFile.getText(StandardCharsets.UTF_8.name())
+            projectName = packratPackager.getProjectName(descriptionText)
             projectVersion = packratPackager.getVersion(descriptionText)
         }
 
@@ -66,7 +68,7 @@ class CranBomTool extends BomTool {
         Set<DependencyNode> dependenciesSet = new HashSet<>(dependencies)
         ExternalId externalId = new PathExternalId(CRAN, sourcePath)
 
-        def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, '', projectVersion, '', externalId, dependenciesSet)
+        def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, projectName, projectVersion, '', externalId, dependenciesSet)
         [codeLocation]
     }
 }

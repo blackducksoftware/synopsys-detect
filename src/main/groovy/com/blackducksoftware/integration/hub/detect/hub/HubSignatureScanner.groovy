@@ -105,6 +105,7 @@ class HubSignatureScanner {
             hubScanConfigBuilder.workingDirectory = scannerDirectory
             hubScanConfigBuilder.addScanTargetPath(canonicalPath)
             hubScanConfigBuilder.cleanupLogsOnSuccess = detectConfiguration.getCleanupBomToolFiles()
+            hubScanConfigBuilder.codeLocationAlias = "${detectConfiguration.projectCodeLocationName} Hub Detect Scan"
 
             HubScanConfig hubScanConfig = hubScanConfigBuilder.build()
 
