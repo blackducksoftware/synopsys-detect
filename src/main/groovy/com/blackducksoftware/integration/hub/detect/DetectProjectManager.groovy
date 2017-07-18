@@ -73,7 +73,7 @@ class DetectProjectManager {
     HubSignatureScanner hubSignatureScanner
 
     @Autowired
-    IntegrationEscapeUtil escapeUtil
+    IntegrationEscapeUtil integrationEscapeUtil
 
     private boolean foundAnyBomTools
 
@@ -129,32 +129,37 @@ class DetectProjectManager {
 
     public List<File> createBdioFiles(DetectProject detectProject) {
         List<File> bdioFiles = []
-        final String safeProjectName = escapeUtil.escapeForUri(detectProject.projectName)
-        final String safeVersionName = escapeUtil.escapeForUri(detectProject.projectVersionName)
+        final String safeProjectName = integrationEscapeUtil.escapeForUri(detectProject.projectName)
+        final String safeVersionName = integrationEscapeUtil.escapeForUri(detectProject.projectVersionName)
 
-        if(detectConfiguration.aggregateBomName) {
-            final SimpleBdioDocument aggregateBdioDocument = createAggregateSimpleBdioDocument(detectProject)
-            detectProject.detectCodeLocations.each {
-                aggregateBdioDocument.components += dependencyNodeTransformer.addComponentsGraph(aggregateBdioDocument.project, it.dependencies)
+        File aggregateBdioFile = null
+        final SimpleBdioDocument aggregateBdioDocument = null
+        if (detectConfiguration.aggregateBomName) {
+            aggregateBdioDocument = createAggregateSimpleBdioDocument(detectProject)
+            final String filename = "${integrationEscapeUtil.escapeForUri(detectConfiguration.aggregateBomName)}.jsonld"
+            aggregateBdioFile = new File(detectConfiguration.getOutputDirectory(), filename)
+            if (aggregateBdioFile.exists()) {
+                aggregateBdioFile.delete()
             }
-            final String filename = "${escapeUtil.escapeForUri(detectConfiguration.aggregateBomName)}.jsonld"
+        }
+
+        detectProject.detectCodeLocations.each {
+            final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(detectProject, it)
+            final String filename = "${it.bomToolType.toString()}_${safeProjectName}_${safeVersionName}_bdio.jsonld"
             final File outputFile = new File(detectConfiguration.getOutputDirectory(), filename)
             if (outputFile.exists()) {
                 outputFile.delete()
             }
-            final File createdBdioFile = writeSimpleBdioDocument(outputFile, aggregateBdioDocument)
-            bdioFiles += createdBdioFile
-        } else {
-            detectProject.detectCodeLocations.each {
-                final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(detectProject, it)
-                final String filename = "${it.bomToolType.toString()}_${safeProjectName}_${safeVersionName}_bdio.jsonld"
-                final File outputFile = new File(detectConfiguration.getOutputDirectory(), filename)
-                if (outputFile.exists()) {
-                    outputFile.delete()
-                }
-                final File createdBdioFile = writeSimpleBdioDocument(outputFile, simpleBdioDocument)
-                bdioFiles += createdBdioFile
+            final File createdBdioFile = writeSimpleBdioDocument(outputFile, simpleBdioDocument)
+            bdioFiles.add(createdBdioFile)
+
+            if (detectConfiguration.aggregateBomName) {
+                aggregateBdioDocument.components.addAll(dependencyNodeTransformer.addComponentsGraph(aggregateBdioDocument.project, it.dependencies))
             }
+        }
+
+        if (aggregateBdioFile != null && aggregateBdioDocument != null) {
+            writeSimpleBdioDocument(aggregateBdioFile, aggregateBdioDocument)
         }
 
         bdioFiles
