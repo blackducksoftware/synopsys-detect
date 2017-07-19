@@ -57,40 +57,39 @@ class HubSignatureScanner {
     @Autowired
     DetectFileManager detectFileManager
 
-    private List<File> registeredDirectories = []
+    private List<String> registeredPaths = []
 
-    public void registerDirectoryToScan(File directory) {
-        if (directory.exists() && directory.isDirectory()) {
-            logger.info("Registering path ${directory.getAbsolutePath()} to scan")
-            registeredDirectories.add(directory)
+    public void registerPathToScan(File file) {
+        if (file.exists() && (file.isFile() || file.isDirectory())) {
+            logger.info("Registering path ${file.canonicalPath} to scan")
+            registeredPaths.add(file.canonicalPath)
         } else {
-            logger.warn("Tried to register a scan for ${directory.canonicalPath} but it doesn't appear to exist or it isn't a directory.")
+            logger.warn("Tried to register a scan for ${file.canonicalPath} but it doesn't appear to exist or it isn't a file or directory.")
         }
     }
 
-    public void scanFiles(HubServerConfig hubServerConfig, HubServicesFactory hubServicesFactory, DetectProject detectProject) {
+    public void scanPaths(HubServerConfig hubServerConfig, HubServicesFactory hubServicesFactory, DetectProject detectProject) {
         Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
         CLIDataService cliDataService = hubServicesFactory.createCLIDataService(slf4jIntLogger, 120000L)
 
         if (detectProject.projectName && detectProject.projectVersionName && detectConfiguration.hubSignatureScannerPaths) {
             detectConfiguration.hubSignatureScannerPaths.each {
-                scanDirectory(cliDataService, hubServerConfig, new File(it), detectProject.projectName, detectProject.projectVersionName)
+                scanPath(cliDataService, hubServerConfig, new File(it).canonicalPath, detectProject.projectName, detectProject.projectVersionName)
             }
         } else {
-            registeredDirectories.each {
-                logger.info("Attempting to scan ${it.canonicalPath} for ${detectProject.projectName}/${detectProject.projectVersionName}")
+            registeredPaths.each {
+                logger.info("Attempting to scan ${it} for ${detectProject.projectName}/${detectProject.projectVersionName}")
                 try {
-                    scanDirectory(cliDataService, hubServerConfig, it, detectProject.projectName, detectProject.projectVersionName)
+                    scanPath(cliDataService, hubServerConfig, it, detectProject.projectName, detectProject.projectVersionName)
                 } catch (Exception e) {
-                    logger.error("Not able to scan ${it.canonicalPath}: ${e.message}")
+                    logger.error("Not able to scan ${it}: ${e.message}")
                 }
             }
         }
     }
 
-    private void scanDirectory(CLIDataService cliDataService, HubServerConfig hubServerConfig, File directory, String project, String version) {
+    private void scanPath(CLIDataService cliDataService, HubServerConfig hubServerConfig, String canonicalPath, String project, String version) {
         try {
-            String canonicalPath = directory.canonicalPath
             ProjectRequestBuilder projectRequestBuilder = new ProjectRequestBuilder()
             projectRequestBuilder.projectName = project
             projectRequestBuilder.versionName = version
