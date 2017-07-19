@@ -41,6 +41,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOu
 class CpanBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(CpanBomTool.class)
 
+    public static Forge CPAN_FORGE = new Forge('cpan', '/')
     public static final String CPAN_FILENAME= 'cpanfile'
 
     @Autowired
@@ -80,7 +81,7 @@ class CpanBomTool extends BomTool {
         String showdeps = showdepsOutput.getStandardOutput()
 
         Set<DependencyNode> dependenciesSet = cpanPackager.makeDependencyNodes(detectConfiguration.sourceDirectory, listText, showdeps)
-        ExternalId externalId = new PathExternalId(Forge.CPAN, detectConfiguration.sourcePath)
+        ExternalId externalId = new PathExternalId(CPAN_FORGE, detectConfiguration.sourcePath)
         def detectCodeLocation = new DetectCodeLocation(BomToolType.CPAN, detectConfiguration.sourcePath, '', '', '', externalId, dependenciesSet)
 
         [detectCodeLocation]
