@@ -41,7 +41,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOu
 class CpanBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(CpanBomTool.class)
 
-    public static Forge CPAN_FORGE = new Forge('cpan', '/')
+    public static Forge CPAN_FORGE = new Forge('cpan', '-')
     public static final String CPAN_FILENAME= 'cpanfile'
 
     @Autowired
