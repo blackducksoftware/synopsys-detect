@@ -28,13 +28,12 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
-import com.blackducksoftware.integration.hub.detect.bomtool.sbt.SbtConfigTree
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.SbtPackager
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
-import com.blackducksoftware.integration.util.ExcludedIncludedFilter
+
+import groovy.util.slurpersupport.GPathResult
 
 @Component
 class SbtBomTool extends BomTool {
@@ -49,9 +48,6 @@ class SbtBomTool extends BomTool {
     @Autowired
     SbtPackager sbtPackager
 
-    @Autowired
-    HubSignatureScanner hubSignatureScanner
-
     private String mvnExecutable
 
     BomToolType getBomToolType() {
@@ -64,65 +60,23 @@ class SbtBomTool extends BomTool {
         buildDotSbt
     }
 
-    String firstUniqueOrLogError(List<String> things, String thingType) {
-        def uniqueThings = things.toUnique()
-        def result = ""
-        if (uniqueThings.size == 1){
-            result = uniqueThings.first()
-        }else if (uniqueThings.size == 0){
-            logger.error("Could not find any ${thingType}!")
-        }else if (uniqueThings.size > 1) {
-            logger.error("Found more than 1 unique ${thingType}: ${uniqueThings}!")
-        }
-
-        result
-    }
-
-    String findSharedName(List<SbtConfigTree> configurations) {
-        def names = configurations.collect{ config -> config.rootNode.name };
-        firstUniqueOrLogError(names, "configuration name")
-    }
-
-    String findSharedOrg(List<SbtConfigTree> configurations) {
-        def orgs = configurations.collect{ config ->
-            def id = config.rootNode.externalId as MavenExternalId;
-            id.group
-        };
-        firstUniqueOrLogError(orgs, "organisation")
-    }
-
-    String findSharedVersion(List<SbtConfigTree> configurations) {
-        def versions = configurations.collect{ config -> config.rootNode.version }
-        firstUniqueOrLogError(versions, "version")
-    }
-
-
     List<DetectCodeLocation> extractDetectCodeLocations() {
-        List<DetectCodeLocation> codeLocations = []
 
         File reportPath = new File(sourcePath, REPORT_FILE_DIRECTORY);
         List<File> files = detectFileManager.findFiles(reportPath, REPORT_FILE_PATTERN);
 
-        ExcludedIncludedFilter filter = new ExcludedIncludedFilter(detectConfiguration.getSbtIncludedConfigurationNames(), detectConfiguration.getSbtExcludedConfigurationNames());
-        List<SbtConfigTree> found = sbtPackager.makeDependencyNodes(files)
+        def included = detectConfiguration.getSbtIncludedConfigurationNames();
+        def excluded = detectConfiguration.getSbtExcludedConfigurationNames();
 
-        List<SbtConfigTree> configurations = found.findAll{tree -> filter.shouldInclude(tree.configuration)}
-
-        def name = findSharedName(configurations);
-        def org = findSharedOrg(configurations);
-        def version = findSharedVersion(configurations);
-
-        DependencyNode root = new DependencyNode(new MavenExternalId(org, name, version));
-        root.name = name;
-        root.version = version;
-        root.children = new ArrayList<DependencyNode>();
-        configurations.each {config ->
-            root.children += config.rootNode.children;
+        List<GPathResult> xmls = files.each { file ->
+            def text = file.text;
+            def xml = new XmlSlurper().parseText(file.text)
         }
 
-        DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, root)
-        codeLocations.add(detectCodeLocation)
+        DependencyNode node = sbtPackager.makeDependencyNode(xmls, included, excluded);
 
-        codeLocations
+        DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, node)
+
+        [detectCodeLocation]
     }
 }
