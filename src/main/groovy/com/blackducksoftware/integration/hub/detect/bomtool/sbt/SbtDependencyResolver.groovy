@@ -14,15 +14,13 @@ package com.blackducksoftware.integration.hub.detect.bomtool.sbt;
 import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeBuilder
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenExternalId
+import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtConfigurationDependencyTree
+import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtReport
 
-public class SbtConfigurationDependencyTree {
-    String configuration;
-    DependencyNode rootNode;
-}
 
 public class SbtDependencyResolver {
 
-    public SbtConfigurationDependencyTree resolveReportDependencies(SbtReport) {
+    public SbtConfigurationDependencyTree resolveReportDependencies(SbtReport report) {
 
         def rootId = new MavenExternalId(report.organisation, report.module, report.revision);
         DependencyNode root = new DependencyNode(report.module, report.revision, rootId );

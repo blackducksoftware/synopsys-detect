@@ -29,6 +29,7 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
+import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtConfigurationDependencyTree
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter
 
 import groovy.util.slurpersupport.GPathResult

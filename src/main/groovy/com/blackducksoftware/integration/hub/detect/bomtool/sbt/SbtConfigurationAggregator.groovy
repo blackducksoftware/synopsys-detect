@@ -13,8 +13,10 @@ package com.blackducksoftware.integration.hub.detect.bomtool.sbt;
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenExternalId
+import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtConfigurationDependencyTree
 
 public class SbtConfigurationAggregator {
+
     DependencyNode aggregateConfigurations(List<SbtConfigurationDependencyTree> configurations){
         def name = findSharedName(configurations);
         def org = findSharedOrg(configurations);

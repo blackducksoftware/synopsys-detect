@@ -11,41 +11,13 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.sbt;
 
+import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtCaller
+import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtModule
+import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtReport
+import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtRevision
+
 import groovy.util.slurpersupport.GPathResult;
 
-public class SbtReport {
-    String organisation;
-
-    String module;
-
-    String revision;
-
-    String configuration;
-
-    List<SbtModule> dependencies;
-}
-
-public class SbtModule {
-    String organisation;
-
-    String name;
-
-    List<SbtRevision> revisions;
-}
-
-public class SbtRevision {
-    String name;
-
-    List<SbtCaller> callers;
-}
-
-public class SbtCaller {
-    String callerOrganisation;
-
-    String callerName;
-
-    String callerRevision;
-}
 
 public class SbtReportParser {
     public SbtReport parseReportFromXml(GPathResult xmlReport) {
