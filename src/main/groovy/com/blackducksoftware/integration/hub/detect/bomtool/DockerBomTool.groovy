@@ -40,7 +40,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 class DockerBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(DockerBomTool.class)
 
-    static final String LATEST_URL = 'https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector.sh'
+    static final URL LATEST_URL = new URL('https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector.sh')
 
     @Autowired
     DockerProperties dockerProperties

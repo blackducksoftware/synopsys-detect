@@ -88,7 +88,7 @@ class HubManager {
 
             bdioUploader.uploadBdioFiles(hubServerConfig, hubServicesFactory, createdBdioFiles)
             if (!detectConfiguration.getHubSignatureScannerDisabled()) {
-                hubSignatureScanner.scanFiles(hubServerConfig, hubServicesFactory, detectProject)
+                hubSignatureScanner.scanPaths(hubServerConfig, hubServicesFactory, detectProject)
             }
 
             if (detectConfiguration.getPolicyCheck()) {
