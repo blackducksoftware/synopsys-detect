@@ -383,6 +383,12 @@ class DetectConfiguration {
     public String getCpanmPath() {
         return detectProperties.cpanmPath?.trim()
     }
+    public String getSbtExcludedConfigurationNames() {
+        return detectProperties.sbtExcludedConfigurationNames
+    }
+    public String getSbtIncludedConfigurationNames() {
+        return detectProperties.sbtIncludedConfigurationNames
+    }
     public boolean getHashVersion() {
         return BooleanUtils.toBoolean(detectProperties.getHashVersion())
     }

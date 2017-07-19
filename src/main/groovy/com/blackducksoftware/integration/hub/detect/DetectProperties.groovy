@@ -49,6 +49,7 @@ class DetectProperties {
     private static final String GROUP_PACKAGIST = 'packagist'
     private static final String GROUP_PEAR = 'pear'
     private static final String GROUP_CPAN = 'cpan'
+    private static final String GROUP_SBT = 'sbt'
 
     @ValueDescription(description="If true, the default behavior of printing your configuration properties at startup will be suppressed.", defaultValue="false", group=DetectProperties.GROUP_LOGGING)
     @Value('${detect.suppress.configuration.output}')
@@ -313,6 +314,14 @@ class DetectProperties {
     @ValueDescription(description="The path of the cpanm executable", group=DetectProperties.GROUP_CPAN)
     @Value('${detect.cpanm.path}')
     String cpanmPath
+
+    @ValueDescription(description="The names of the sbt configurations to exclude", group=DetectProperties.GROUP_SBT)
+    @Value('${detect.sbt.excluded.configurations}')
+    String sbtExcludedConfigurationNames
+
+    @ValueDescription( description="The names of the sbt configurations to include", group=DetectProperties.GROUP_SBT)
+    @Value('${detect.sbt.included.configurations}')
+    String sbtIncludedConfigurationNames
 
     // @ValueDescription(description="When dealing with static files, use a hash as a version instead of a time-date format", defaultValue='true', group=DetectProperties.GROUP_PROJECT_INFO)
     @Value('${detect.project.version.hash}')
