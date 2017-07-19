@@ -50,12 +50,15 @@ class PackagistParser {
 
         JsonObject composerLockObject = new JsonParser().parse(new JsonReader(new FileReader(composerLockFile))).getAsJsonObject()
         JsonArray packagistPackages = composerLockObject.get('packages')?.getAsJsonArray()
-        JsonArray packagistDevPackages = composerLockObject.get('packages-dev')?.getAsJsonArray()
+        List<String> startingPackages = getStartingPackages(composerJsonObject, false)
 
-        convertFromJsonToDependencyNode(rootDependencyNode, getStartingPackages(composerJsonObject, false), packagistPackages)
         if (detectConfiguration.getPackagistIncludeDevDependencies()) {
-            convertFromJsonToDependencyNode(rootDependencyNode, getStartingPackages(composerJsonObject, true), packagistDevPackages)
+            JsonArray packagistDevPackages = composerLockObject.get('packages-dev')?.getAsJsonArray()
+            packagistPackages.addAll(packagistDevPackages)
+            List<String> startingDevPackages = getStartingPackages(composerJsonObject, true)
+            startingPackages.addAll(startingDevPackages)
         }
+        convertFromJsonToDependencyNode(rootDependencyNode, startingPackages, packagistPackages)
 
         rootDependencyNode
     }
@@ -81,16 +84,16 @@ class PackagistParser {
 
     private List<String> getStartingPackages(JsonObject jsonFile, boolean checkDev) {
         List<String> allRequires = []
+        def requiredPackages
 
-        def requiredPackages = jsonFile.get('require')?.getAsJsonObject()
+        if (checkDev) {
+            requiredPackages = jsonFile.get('require-dev')?.getAsJsonObject()
+        } else {
+            requiredPackages = jsonFile.get('require')?.getAsJsonObject()
+        }
+
         requiredPackages?.entrySet().each {
             if (!it.key.equalsIgnoreCase('php')) {
-                allRequires.add(it.key)
-            }
-        }
-        if (checkDev) {
-            def devRequiredPackages = jsonFile.get('require-dev')?.getAsJsonObject()
-            devRequiredPackages?.entrySet().each {
                 allRequires.add(it.key)
             }
         }
