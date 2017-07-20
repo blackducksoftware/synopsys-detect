@@ -102,7 +102,7 @@ class DetectProperties {
     @Value('${detect.output.path}')
     String outputDirectoryPath
 
-    @ValueDescription(description = "Depth from source paths to search for files.", defaultValue="10", group=DetectProperties.GROUP_PATHS)
+    @ValueDescription(description = "Depth from source paths to search for files.", defaultValue="3", group=DetectProperties.GROUP_PATHS)
     @Value('${detect.search.depth}')
     Integer searchDepth
 

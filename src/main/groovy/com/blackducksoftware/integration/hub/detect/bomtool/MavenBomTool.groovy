@@ -86,8 +86,7 @@ class MavenBomTool extends BomTool {
             codeLocations.add(detectCodeLocation)
         }
 
-        //there may also be subprojects, so just look one level down (depth = 2) for any/all target directories
-        File[] additionalTargets = detectFileManager.findFilesToDepth(detectConfiguration.sourceDirectory, 'target', 2)
+        File[] additionalTargets = detectFileManager.findFilesToDepth(detectConfiguration.sourceDirectory, 'target', detectConfiguration.searchDepth)
         if (additionalTargets) {
             additionalTargets.each { hubSignatureScanner.registerPathToScan(it) }
         }

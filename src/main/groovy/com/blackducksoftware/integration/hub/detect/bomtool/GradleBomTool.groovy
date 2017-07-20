@@ -73,8 +73,7 @@ class GradleBomTool extends BomTool {
         DependencyNode rootProjectNode = extractRootProjectNode()
         DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, rootProjectNode)
 
-        //there may also be subprojects, so just look up to two levels down (depth = 3) for any/all build directories
-        File[] additionalTargets = detectFileManager.findFilesToDepth(detectConfiguration.sourceDirectory, 'build', 3)
+        File[] additionalTargets = detectFileManager.findFilesToDepth(detectConfiguration.sourceDirectory, 'build', detectConfiguration.searchDepth)
         if (additionalTargets) {
             additionalTargets.each { hubSignatureScanner.registerPathToScan(it) }
         }
