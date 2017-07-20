@@ -57,7 +57,6 @@ class NugetBomTool extends BomTool {
         def containsProjectFile = detectFileManager.containsAllFiles(sourcePath, PROJECT_PATTERN)
 
         if (containsSolutionFile || containsProjectFile) {
-            //logger.warn('The nuget executable must be on the path - are you sure you are running on a windows system?')
             nugetExecutable = executableManager.getPathOfExecutable(ExecutableType.NUGET, detectConfiguration.getNugetPath())
             if (!nugetExecutable) {
                 logger.warn("Could not find a ${executableManager.getExecutableName(ExecutableType.NUGET)} executable")

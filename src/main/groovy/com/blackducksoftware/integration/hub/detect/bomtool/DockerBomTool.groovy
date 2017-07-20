@@ -31,6 +31,7 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerProperties
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
+import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
@@ -39,8 +40,13 @@ import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 class DockerBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(DockerBomTool.class)
 
+    static final URL LATEST_URL = new URL('https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector.sh')
+
     @Autowired
     DockerProperties dockerProperties
+
+    @Autowired
+    HubSignatureScanner hubSignatureScanner
 
     private String dockerExecutablePath
     private String bashExecutablePath
@@ -75,7 +81,10 @@ class DockerBomTool extends BomTool {
         if (detectConfiguration.dockerInspectorPath) {
             shellScriptFile = new File(detectConfiguration.dockerInspectorPath)
         } else {
-            URL hubDockerInspectorShellScriptUrl = new URL("https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector-${detectConfiguration.dockerInspectorVersion}.sh")
+            URL hubDockerInspectorShellScriptUrl = LATEST_URL
+            if (!'latest'.equals(detectConfiguration.dockerInspectorVersion)) {
+                hubDockerInspectorShellScriptUrl = new URL("https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector-${detectConfiguration.dockerInspectorVersion}.sh")
+            }
             String shellScriptContents = hubDockerInspectorShellScriptUrl.openStream().getText(StandardCharsets.UTF_8.name())
             shellScriptFile = new File(dockerInstallDirectory, "hub-docker-inspector-${detectConfiguration.dockerInspectorVersion}.sh")
             detectFileManager.writeToFile(shellScriptFile, shellScriptContents)
@@ -87,11 +96,13 @@ class DockerBomTool extends BomTool {
         dockerProperties.fillInDockerProperties(dockerProps)
         dockerProps.store(dockerPropertiesFile.newOutputStream(), "")
 
+        boolean usingTarFile = false
         String imageArgument = ''
         if (detectConfiguration.dockerImage) {
             imageArgument = detectConfiguration.dockerImage
         } else {
             imageArgument = detectConfiguration.dockerTar
+            usingTarFile = true
         }
 
         File dockerPropertiesDirectory =  dockerPropertiesFile.getParentFile()
@@ -109,6 +120,11 @@ class DockerBomTool extends BomTool {
 
         Executable dockerExecutable = new Executable(dockerInstallDirectory, environmentVariables, bashExecutablePath, bashArguments)
         executableRunner.execute(dockerExecutable)
+
+        if (usingTarFile) {
+            hubSignatureScanner.registerPathToScan(new File(detectConfiguration.dockerTar))
+        }
+
         //At least for the moment, there is no way of running the hub-docker-inspector to generate the files only, so it currently handles all uploading
         []
     }

@@ -121,7 +121,7 @@ class DetectProjectManager {
 
         if (!foundAnyBomTools) {
             logger.info("Could not find any tools to run - will register ${detectConfiguration.sourcePath} for signature scanning of ${detectProject.projectName}/${detectProject.projectVersionName}")
-            hubSignatureScanner.registerDirectoryToScan(detectConfiguration.sourceDirectory)
+            hubSignatureScanner.registerPathToScan(detectConfiguration.sourceDirectory)
         }
 
         detectProject
