@@ -42,7 +42,7 @@ public class SbtPackager {
     @Autowired
     DetectConfiguration detectConfiguration
 
-    public DependencyNode makeDependencyNode(List<GPathResult> xmls, String include, String exclude){
+    public DependencyNode makeDependencyNode(List<GPathResult> xmlReports, String include, String exclude){
         def parser = new SbtReportParser();
         def resolver = new SbtDependencyResolver();
         def filter = new ExcludedIncludedFilter(include, exclude);
@@ -51,7 +51,7 @@ public class SbtPackager {
         List<SbtConfigurationDependencyTree> configurations;
 
         configurations = xmlReports.collect { xmlReport ->
-            def report = parser.parseReportFromXml(xml)
+            def report = parser.parseReportFromXml(xmlReport)
             def tree = resolver.resolveReportDependencies(report)
             tree
         }.findAll{tree ->

@@ -11,11 +11,16 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.sbt;
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtConfigurationDependencyTree
 
 public class SbtConfigurationAggregator {
+
+    private final Logger logger = LoggerFactory.getLogger(SbtConfigurationAggregator.class)
 
     DependencyNode aggregateConfigurations(List<SbtConfigurationDependencyTree> configurations){
         def name = findSharedName(configurations);

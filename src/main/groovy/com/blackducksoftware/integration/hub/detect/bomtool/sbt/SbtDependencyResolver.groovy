@@ -19,17 +19,14 @@ import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtReport
 
 
 public class SbtDependencyResolver {
-
     public SbtConfigurationDependencyTree resolveReportDependencies(SbtReport report) {
-
         def rootId = new MavenExternalId(report.organisation, report.module, report.revision);
-        DependencyNode root = new DependencyNode(report.module, report.revision, rootId );
+        def root = new DependencyNode(report.module, report.revision, rootId );
 
         def builder = new DependencyNodeBuilder(root);
 
         report.dependencies.each{ module ->
             module.revisions.each {revision ->
-
                 def id = new MavenExternalId(module.organisation, module.name, revision.name);
                 def node = new DependencyNode(module.name, revision.name, id)
 

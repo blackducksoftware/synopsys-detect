@@ -30,7 +30,6 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.SbtPackager
-import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 
 import groovy.util.slurpersupport.GPathResult
@@ -62,21 +61,42 @@ class SbtBomTool extends BomTool {
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
 
-        File reportPath = new File(sourcePath, REPORT_FILE_DIRECTORY);
-        List<File> files = detectFileManager.findFiles(reportPath, REPORT_FILE_PATTERN);
-
         def included = detectConfiguration.getSbtIncludedConfigurationNames();
         def excluded = detectConfiguration.getSbtExcludedConfigurationNames();
 
-        List<GPathResult> xmls = files.each { file ->
-            def text = file.text;
-            def xml = new XmlSlurper().parseText(file.text)
+        def depth = detectConfiguration.getSearchDepth();
+        List<File> sbtFiles = detectFileManager.findFilesToDepth(sourcePath, BUILD_SBT_FILENAME, depth)
+
+        DependencyNode root;
+        List<DependencyNode> children = new ArrayList<DependencyNode>();
+
+        sbtFiles.each { sbtFile ->
+            def sbtDirectory = sbtFile.getParentFile();
+            def reportPath = new File(sbtDirectory, REPORT_FILE_DIRECTORY);
+
+            List<File> reportFiles = detectFileManager.findFiles(reportPath, REPORT_FILE_PATTERN);
+
+            List<GPathResult> xmls = reportFiles.collect { reportFile ->
+                def text = reportFile.text;
+                def xml = new XmlSlurper().parseText(text)
+                xml
+            }
+
+            DependencyNode node = sbtPackager.makeDependencyNode(xmls, included, excluded);
+            if (sbtDirectory.path.equals(sourcePath)){
+                root = node;
+            }else{
+                children.add(node);
+            }
         }
 
-        DependencyNode node = sbtPackager.makeDependencyNode(xmls, included, excluded);
+        root.children.addAll(children);
 
-        DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, node)
+        DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, root)
 
         [detectCodeLocation]
+    }
+
+    DependencyNode extractSbtNode() {
     }
 }
