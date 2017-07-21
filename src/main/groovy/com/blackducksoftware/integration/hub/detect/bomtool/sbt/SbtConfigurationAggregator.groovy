@@ -27,6 +27,10 @@ public class SbtConfigurationAggregator {
         def org = findSharedOrg(configurations);
         def version = findSharedVersion(configurations);
 
+        if (name == null || org == null || version == null){
+            return null;
+        }
+
         DependencyNode root = new DependencyNode(new MavenExternalId(org, name, version));
         root.name = name;
         root.version = version;
@@ -35,7 +39,7 @@ public class SbtConfigurationAggregator {
             root.children += config.rootNode.children;
         }
 
-        root
+        return root;
     }
 
     String findSharedName(List<SbtConfigurationDependencyTree> configurations) {
@@ -58,7 +62,7 @@ public class SbtConfigurationAggregator {
 
     String firstUniqueOrLogError(List<String> things, String thingType) {
         def uniqueThings = things.toUnique()
-        def result = ""
+        def result = null
         if (uniqueThings.size == 1){
             result = uniqueThings.first()
         }else if (uniqueThings.size == 0){

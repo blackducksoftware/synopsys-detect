@@ -24,25 +24,16 @@ package com.blackducksoftware.integration.hub.detect.bomtool.sbt
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtConfigurationDependencyTree
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter
 
-import groovy.util.slurpersupport.GPathResult
-
-@Component
 public class SbtPackager {
 
     private final Logger logger = LoggerFactory.getLogger(SbtPackager.class)
 
-    @Autowired
-    DetectConfiguration detectConfiguration
-
-    public DependencyNode makeDependencyNode(List<GPathResult> xmlReports, String include, String exclude){
+    public DependencyNode makeDependencyNode(List<File> reportFiles, String include, String exclude){
         def parser = new SbtReportParser();
         def resolver = new SbtDependencyResolver();
         def filter = new ExcludedIncludedFilter(include, exclude);
@@ -50,8 +41,9 @@ public class SbtPackager {
 
         List<SbtConfigurationDependencyTree> configurations;
 
-        configurations = xmlReports.collect { xmlReport ->
-            def report = parser.parseReportFromXml(xmlReport)
+        configurations = reportFiles.collect { reportFile->
+            def xml = new XmlSlurper().parse(reportFile)
+            def report = parser.parseReportFromXml(xml)
             def tree = resolver.resolveReportDependencies(report)
             tree
         }.findAll{tree ->

@@ -92,6 +92,12 @@ class DetectFileManager {
         file
     }
 
+    boolean directoryExists(final String sourcePath, final String relativePath) {
+        final File sourceDirectory = new File(sourcePath)
+        final File relDirectory = new File(sourceDirectory, relativePath);
+        return relDirectory.isDirectory();
+    }
+
     public boolean containsAllFiles(String sourcePath, String... filenamePatterns) {
         return fileFinder.containsAllFiles(sourcePath, filenamePatterns)
     }

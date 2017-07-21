@@ -24,15 +24,12 @@ package com.blackducksoftware.integration.hub.detect.bomtool
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.SbtPackager
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
-
-import groovy.util.slurpersupport.GPathResult
 
 @Component
 class SbtBomTool extends BomTool {
@@ -44,8 +41,7 @@ class SbtBomTool extends BomTool {
 
     static final String REPORT_DIRECTORY_DEPTH = 2
 
-    @Autowired
-    SbtPackager sbtPackager
+    SbtPackager sbtPackager = new SbtPackager();
 
     private String mvnExecutable
 
@@ -55,16 +51,24 @@ class SbtBomTool extends BomTool {
 
     boolean isBomToolApplicable() {
         String buildDotSbt = detectFileManager.findFile(sourcePath, BUILD_SBT_FILENAME)
+        boolean reportsExist = detectFileManager.directoryExists(sourcePath, REPORT_FILE_DIRECTORY)
 
-        buildDotSbt
+        if (buildDotSbt && reportsExist){
+            return true
+        }else if (buildDotSbt){
+            logger.warn("This is an sbt project but no artifacts were detected at : ${REPORT_FILE_DIRECTORY}")
+            return false
+        }else{
+            return false
+        }
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
 
-        def included = detectConfiguration.getSbtIncludedConfigurationNames();
-        def excluded = detectConfiguration.getSbtExcludedConfigurationNames();
+        String included = detectConfiguration.getSbtIncludedConfigurationNames();
+        String excluded = detectConfiguration.getSbtExcludedConfigurationNames();
 
-        def depth = detectConfiguration.getSearchDepth();
+        int depth = detectConfiguration.getSearchDepth();
         List<File> sbtFiles = detectFileManager.findFilesToDepth(sourcePath, BUILD_SBT_FILENAME, depth)
 
         DependencyNode root;
@@ -76,27 +80,28 @@ class SbtBomTool extends BomTool {
 
             List<File> reportFiles = detectFileManager.findFiles(reportPath, REPORT_FILE_PATTERN);
 
-            List<GPathResult> xmls = reportFiles.collect { reportFile ->
-                def text = reportFile.text;
-                def xml = new XmlSlurper().parseText(text)
-                xml
-            }
+            DependencyNode node = sbtPackager.makeDependencyNode(reportFiles, included, excluded);
 
-            DependencyNode node = sbtPackager.makeDependencyNode(xmls, included, excluded);
-            if (sbtDirectory.path.equals(sourcePath)){
-                root = node;
+            if (node == null){
+                logger.warn("No dependencies could be generated for report folder: ${reportPath}")
             }else{
-                children.add(node);
+                if (sbtDirectory.path.equals(sourcePath)){
+                    root = node;
+                }else{
+                    children.add(node);
+                }
             }
         }
 
-        root.children.addAll(children);
+        if (root == null){
+            logger.error("Unable to find dependencies for the root artifact.");
+            return []
+        }else{
+            root.children.addAll(children);
 
-        DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, root)
+            def detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, root)
 
-        [detectCodeLocation]
-    }
-
-    DependencyNode extractSbtNode() {
+            return [detectCodeLocation]
+        }
     }
 }
