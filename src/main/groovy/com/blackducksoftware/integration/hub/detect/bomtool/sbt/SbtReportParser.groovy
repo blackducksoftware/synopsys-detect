@@ -34,7 +34,7 @@ public class SbtReportParser {
             module.revisions = new ArrayList<SbtRevision>();
             report.dependencies.add(module);
 
-            xmlModule.revision.each {  xmlRevision ->
+            xmlModule.revision.each { xmlRevision ->
                 SbtRevision revision = new SbtRevision();
                 revision.name = xmlRevision.@name.toString()
                 revision.callers = new ArrayList<SbtCaller>();
