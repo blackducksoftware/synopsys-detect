@@ -21,12 +21,12 @@ import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtConfig
 public class SbtConfigurationAggregator {
     private final Logger logger = LoggerFactory.getLogger(SbtConfigurationAggregator.class)
 
-    DependencyNode aggregateConfigurations(List<SbtConfigurationDependencyTree> configurations){
+    DependencyNode aggregateConfigurations(List<SbtConfigurationDependencyTree> configurations) {
         def name = findSharedName(configurations);
         def org = findSharedOrg(configurations);
         def version = findSharedVersion(configurations);
 
-        if (name == null || org == null || version == null){
+        if (name == null || org == null || version == null) {
             return null;
         }
 
@@ -42,12 +42,12 @@ public class SbtConfigurationAggregator {
     }
 
     String findSharedName(List<SbtConfigurationDependencyTree> configurations) {
-        def names = configurations.collect{ config -> config.rootNode.name };
+        def names = configurations.collect { config -> config.rootNode.name };
         firstUniqueOrLogError(names, "configuration name")
     }
 
     String findSharedOrg(List<SbtConfigurationDependencyTree> configurations) {
-        def orgs = configurations.collect{ config ->
+        def orgs = configurations.collect { config ->
             def id = config.rootNode.externalId as MavenExternalId;
             id.group
         };
@@ -55,18 +55,18 @@ public class SbtConfigurationAggregator {
     }
 
     String findSharedVersion(List<SbtConfigurationDependencyTree> configurations) {
-        def versions = configurations.collect{ config -> config.rootNode.version }
+        def versions = configurations.collect { config -> config.rootNode.version }
         firstUniqueOrLogError(versions, "version")
     }
 
     String firstUniqueOrLogError(List<String> things, String thingType) {
         def uniqueThings = things.toUnique()
         def result = null
-        if (uniqueThings.size == 1){
+        if (uniqueThings.size == 1) {
             result = uniqueThings.first()
-        }else if (uniqueThings.size == 0){
+        } else if (uniqueThings.size == 0) {
             logger.error("Could not find any ${thingType} in ivy reports!")
-        }else if (uniqueThings.size > 1) {
+        } else if (uniqueThings.size > 1) {
             logger.error("Found more than 1 unique ${thingType} in ivy reports: ${uniqueThings}!")
         }
         result

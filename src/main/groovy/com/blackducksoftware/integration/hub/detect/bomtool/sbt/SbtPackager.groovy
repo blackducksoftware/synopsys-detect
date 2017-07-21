@@ -32,7 +32,7 @@ import com.blackducksoftware.integration.util.ExcludedIncludedFilter
 public class SbtPackager {
     private final Logger logger = LoggerFactory.getLogger(SbtPackager.class)
 
-    public DependencyNode makeDependencyNode(List<File> reportFiles, String include, String exclude){
+    public DependencyNode makeDependencyNode(List<File> reportFiles, String include, String exclude) {
         def parser = new SbtReportParser();
         def resolver = new SbtDependencyResolver();
         def filter = new ExcludedIncludedFilter(include, exclude);
@@ -43,11 +43,11 @@ public class SbtPackager {
             def report = parser.parseReportFromXml(xml)
             def tree = resolver.resolveReportDependencies(report)
             tree
-        }.findAll{tree ->
+        }.findAll {tree ->
             filter.shouldInclude(tree.configuration)
         }
 
-        if (configurations.size() <= 0){
+        if (configurations.size() <= 0) {
             logger.warn("No sbt configurations were included.");
         }
 

@@ -49,12 +49,12 @@ class SbtBomTool extends BomTool {
         String buildDotSbt = detectFileManager.findFile(sourcePath, BUILD_SBT_FILENAME)
         boolean reportsExist = detectFileManager.directoryExists(sourcePath, REPORT_FILE_DIRECTORY)
 
-        if (buildDotSbt && reportsExist){
+        if (buildDotSbt && reportsExist) {
             return true
-        }else if (buildDotSbt){
+        } else if (buildDotSbt) {
             logger.warn("This is an sbt project but no artifacts were detected at : ${REPORT_FILE_DIRECTORY}")
             return false
-        }else{
+        } else {
             return false
         }
     }
@@ -77,21 +77,21 @@ class SbtBomTool extends BomTool {
 
             DependencyNode node = sbtPackager.makeDependencyNode(reportFiles, included, excluded);
 
-            if (node == null){
+            if (node == null) {
                 logger.warn("No dependencies could be generated for report folder: ${reportPath}")
-            }else{
-                if (sbtDirectory.path.equals(sourcePath)){
+            } else {
+                if (sbtDirectory.path.equals(sourcePath)) {
                     root = node;
-                }else{
+                } else {
                     children.add(node);
                 }
             }
         }
 
-        if (root == null){
+        if (root == null) {
             logger.error("Unable to find dependencies for the root artifact.");
             return []
-        }else{
+        } else {
             root.children.addAll(children);
 
             def detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, root)

@@ -25,7 +25,7 @@ public class SbtDependencyResolver {
 
         def builder = new DependencyNodeBuilder(root);
 
-        report.dependencies.each{ module ->
+        report.dependencies.each { module ->
             module.revisions.each {revision ->
                 def id = new MavenExternalId(module.organisation, module.name, revision.name);
                 def node = new DependencyNode(module.name, revision.name, id)
