@@ -25,12 +25,12 @@ public class SbtDependencyResolver {
         def builder = new DependencyNodeBuilder(root);
 
         report.dependencies.each { module ->
-            module.revisions.each {revision ->
+            module.revisions.each { revision ->
                 def id = new MavenExternalId(module.organisation, module.name, revision.name);
                 def node = new DependencyNode(module.name, revision.name, id)
 
                 List<DependencyNode> children = new ArrayList<DependencyNode>();
-                revision.callers.each {caller ->
+                revision.callers.each { caller ->
                     def childId = new MavenExternalId(caller.callerOrganisation, caller.callerName, caller.callerRevision);
                     def childNode = new DependencyNode(caller.callerName, caller.callerRevision, childId)
                     children.add(childNode)

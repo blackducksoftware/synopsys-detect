@@ -43,7 +43,7 @@ public class SbtPackager {
             def report = parser.parseReportFromXml(xml)
             def tree = resolver.resolveReportDependencies(report)
             tree
-        }.findAll {tree ->
+        }.findAll { tree ->
             filter.shouldInclude(tree.configuration)
         }
 

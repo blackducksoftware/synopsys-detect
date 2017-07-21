@@ -27,7 +27,7 @@ public class SbtReportParser {
         report.configuration = xmlReport.info.@conf.toString();
         report.dependencies = new ArrayList<SbtModule>();
 
-        xmlReport.dependencies.module.each {xmlModule ->
+        xmlReport.dependencies.module.each { xmlModule ->
             SbtModule module = new SbtModule();
             module.name = xmlModule.@name.toString()
             module.organisation = xmlModule.@organisation.toString()
