@@ -30,7 +30,6 @@ import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtConfig
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter
 
 public class SbtPackager {
-
     private final Logger logger = LoggerFactory.getLogger(SbtPackager.class)
 
     public DependencyNode makeDependencyNode(List<File> reportFiles, String include, String exclude){
@@ -39,9 +38,7 @@ public class SbtPackager {
         def filter = new ExcludedIncludedFilter(include, exclude);
         def aggregator = new SbtConfigurationAggregator();
 
-        List<SbtConfigurationDependencyTree> configurations;
-
-        configurations = reportFiles.collect { reportFile->
+        List<SbtConfigurationDependencyTree> configurations = reportFiles.collect { reportFile->
             def xml = new XmlSlurper().parse(reportFile)
             def report = parser.parseReportFromXml(xml)
             def tree = resolver.resolveReportDependencies(report)

@@ -19,7 +19,6 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenE
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtConfigurationDependencyTree
 
 public class SbtConfigurationAggregator {
-
     private final Logger logger = LoggerFactory.getLogger(SbtConfigurationAggregator.class)
 
     DependencyNode aggregateConfigurations(List<SbtConfigurationDependencyTree> configurations){
@@ -70,7 +69,6 @@ public class SbtConfigurationAggregator {
         }else if (uniqueThings.size > 1) {
             logger.error("Found more than 1 unique ${thingType} in ivy reports: ${uniqueThings}!")
         }
-
         result
     }
 }

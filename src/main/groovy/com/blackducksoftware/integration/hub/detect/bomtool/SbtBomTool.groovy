@@ -39,11 +39,7 @@ class SbtBomTool extends BomTool {
     static final String REPORT_FILE_DIRECTORY = "${File.separator}target${File.separator}resolution-cache${File.separator}reports"
     static final String REPORT_FILE_PATTERN = '*.xml'
 
-    static final String REPORT_DIRECTORY_DEPTH = 2
-
     SbtPackager sbtPackager = new SbtPackager();
-
-    private String mvnExecutable
 
     BomToolType getBomToolType() {
         return BomToolType.SBT
@@ -64,14 +60,13 @@ class SbtBomTool extends BomTool {
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
-
         String included = detectConfiguration.getSbtIncludedConfigurationNames();
         String excluded = detectConfiguration.getSbtExcludedConfigurationNames();
 
         int depth = detectConfiguration.getSearchDepth();
         List<File> sbtFiles = detectFileManager.findFilesToDepth(sourcePath, BUILD_SBT_FILENAME, depth)
 
-        DependencyNode root;
+        DependencyNode root = null;
         List<DependencyNode> children = new ArrayList<DependencyNode>();
 
         sbtFiles.each { sbtFile ->
