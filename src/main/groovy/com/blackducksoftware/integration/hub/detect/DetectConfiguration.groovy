@@ -392,4 +392,10 @@ class DetectConfiguration {
     public String getAggregateBomName() {
         return detectProperties.aggregateBomName?.trim()
     }
+    public String getCondaPath() {
+        return detectProperties.condaPath?.trim()
+    }
+    public String getCondaEnvironmentName() {
+        return detectProperties.condaEnvironmentName?.trim()
+    }
 }

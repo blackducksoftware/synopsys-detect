@@ -81,7 +81,7 @@ public class ExecutableRunner {
     }
 
     public ExecutableOutput runExe(final String exePath, final String... args) {
-        def exe = new Executable(new File(detectConfiguration.getSourcePath()), exePath, args.toList())
+        def exe = new Executable(detectConfiguration.getSourceDirectory(), exePath, args.toList())
         execute(exe)
     }
 }

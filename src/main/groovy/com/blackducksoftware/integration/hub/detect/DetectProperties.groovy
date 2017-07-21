@@ -34,21 +34,23 @@ class DetectProperties {
     private static final String GROUP_CLEANUP = 'cleanup'
     private static final String GROUP_PATHS = 'paths'
     private static final String GROUP_BOMTOOL = 'bomtool'
-    private static final String GROUP_PROJECT_INFO = 'project info'
-    private static final String GROUP_POLICY_CHECK = 'policy check'
-    private static final String GROUP_SIGNATURE_SCANNER = 'signature scanner'
 
-    private static final String GROUP_NPM = 'npm'
+    private static final String GROUP_CONDA = 'conda'
+    private static final String GROUP_CPAN = 'cpan'
+    private static final String GROUP_DOCKER = 'docker'
+    private static final String GROUP_GO = 'go'
     private static final String GROUP_GRADLE = 'gradle'
     private static final String GROUP_MAVEN = 'maven'
+    private static final String GROUP_NPM = 'npm'
     private static final String GROUP_NUGET = 'nuget'
-    private static final String GROUP_PIP = 'pip'
-    private static final String GROUP_PYTHON = 'python'
-    private static final String GROUP_GO = 'go'
-    private static final String GROUP_DOCKER = 'docker'
     private static final String GROUP_PACKAGIST = 'packagist'
     private static final String GROUP_PEAR = 'pear'
-    private static final String GROUP_CPAN = 'cpan'
+    private static final String GROUP_PIP = 'pip'
+    private static final String GROUP_POLICY_CHECK = 'policy check'
+    private static final String GROUP_PROJECT_INFO = 'project info'
+    private static final String GROUP_PYTHON = 'python'
+    private static final String GROUP_SIGNATURE_SCANNER = 'signature scanner'
+
 
     @ValueDescription(description="If true, the default behavior of printing your configuration properties at startup will be suppressed.", defaultValue="false", group=DetectProperties.GROUP_LOGGING)
     @Value('${detect.suppress.configuration.output}')
@@ -325,5 +327,13 @@ class DetectProperties {
     @ValueDescription(description="If set, this will aggregate all the BOMs to create a single BDIO file with the name provided. For Co-Pilot use only", group=DetectProperties.GROUP_PROJECT_INFO)
     @Value('${detect.bom.aggregate.name}')
     String aggregateBomName
+
+    @ValueDescription(description="The path of the conda executable", group=DetectProperties.GROUP_CONDA)
+    @Value('${detect.conda.path}')
+    String condaPath
+
+    @ValueDescription(description="The name of the anaconda environment used by your project", group=DetectProperties.GROUP_CONDA)
+    @Value('${detect.conda.environment.name}')
+    String condaEnvironmentName
 }
 
