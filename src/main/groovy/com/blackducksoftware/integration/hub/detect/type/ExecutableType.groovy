@@ -23,25 +23,26 @@
 package com.blackducksoftware.integration.hub.detect.type
 
 enum ExecutableType {
-    MVN([(OperatingSystemType.WINDOWS): 'mvn.cmd', (OperatingSystemType.LINUX): 'mvn']),
-    MVNW([(OperatingSystemType.WINDOWS): 'mvnw.bat', (OperatingSystemType.LINUX): 'mvnw']),
-    GRADLE([(OperatingSystemType.WINDOWS): 'gradle.bat', (OperatingSystemType.LINUX): 'gradle']),
-    GRADLEW([(OperatingSystemType.WINDOWS): 'gradlew.bat', (OperatingSystemType.LINUX): 'gradlew']),
-    NUGET((OperatingSystemType.WINDOWS): 'nuget.exe'),
-    PIP([(OperatingSystemType.WINDOWS): 'pip.exe', (OperatingSystemType.LINUX): 'pip']),
-    VIRTUALENV([(OperatingSystemType.WINDOWS): 'virtualenv.exe', (OperatingSystemType.LINUX): 'virtualenv']),
-    PYTHON([(OperatingSystemType.WINDOWS): 'python.exe', (OperatingSystemType.LINUX): 'python']),
-    PIP3([(OperatingSystemType.WINDOWS): 'pip3.exe', (OperatingSystemType.LINUX): 'pip3']),
-    PYTHON3([(OperatingSystemType.WINDOWS): 'python3.exe', (OperatingSystemType.LINUX): 'python3']),
+    BASH([(OperatingSystemType.WINDOWS): 'bash.exe', (OperatingSystemType.LINUX): 'bash']),
+    CONDA([(OperatingSystemType.WINDOWS): 'conda.exe', (OperatingSystemType.LINUX): 'conda']),
+    CPAN([(OperatingSystemType.WINDOWS): 'cpan.bat', (OperatingSystemType.LINUX): 'cpan']),
+    CPANM([(OperatingSystemType.WINDOWS): 'cpanm.bat', (OperatingSystemType.LINUX): 'cpanm']),
+    DOCKER([(OperatingSystemType.WINDOWS): 'docker.exe', (OperatingSystemType.LINUX): 'docker']),
     GO([(OperatingSystemType.WINDOWS): 'go.exe', (OperatingSystemType.LINUX): 'go']),
     GO_DEP([(OperatingSystemType.WINDOWS): 'dep.exe', (OperatingSystemType.LINUX): 'dep']),
-    DOCKER([(OperatingSystemType.WINDOWS): 'docker.exe', (OperatingSystemType.LINUX): 'docker']),
+    GRADLE([(OperatingSystemType.WINDOWS): 'gradle.bat', (OperatingSystemType.LINUX): 'gradle']),
+    GRADLEW([(OperatingSystemType.WINDOWS): 'gradlew.bat', (OperatingSystemType.LINUX): 'gradlew']),
+    MVN([(OperatingSystemType.WINDOWS): 'mvn.cmd', (OperatingSystemType.LINUX): 'mvn']),
+    MVNW([(OperatingSystemType.WINDOWS): 'mvnw.bat', (OperatingSystemType.LINUX): 'mvnw']),
     NPM([(OperatingSystemType.WINDOWS): 'npm.cmd', (OperatingSystemType.LINUX): 'npm']),
-    BASH([(OperatingSystemType.WINDOWS): 'bash.exe', (OperatingSystemType.LINUX): 'bash']),
+    NUGET((OperatingSystemType.WINDOWS): 'nuget.exe'),
     PEAR([(OperatingSystemType.WINDOWS): 'pear.bat', (OperatingSystemType.LINUX): 'pear']),
     PERL([(OperatingSystemType.WINDOWS): 'perl.bat', (OperatingSystemType.LINUX): 'perl']),
-    CPAN([(OperatingSystemType.WINDOWS): 'cpan.bat', (OperatingSystemType.LINUX): 'cpan']),
-    CPANM([(OperatingSystemType.WINDOWS): 'cpanm.bat', (OperatingSystemType.LINUX): 'cpanm'])
+    PIP([(OperatingSystemType.WINDOWS): 'pip.exe', (OperatingSystemType.LINUX): 'pip']),
+    PIP3([(OperatingSystemType.WINDOWS): 'pip3.exe', (OperatingSystemType.LINUX): 'pip3']),
+    PYTHON([(OperatingSystemType.WINDOWS): 'python.exe', (OperatingSystemType.LINUX): 'python']),
+    PYTHON3([(OperatingSystemType.WINDOWS): 'python3.exe', (OperatingSystemType.LINUX): 'python3']),
+    VIRTUALENV([(OperatingSystemType.WINDOWS): 'virtualenv.exe', (OperatingSystemType.LINUX): 'virtualenv'])
 
     private Map<OperatingSystemType, String> osToExecutableMap = [:]
 

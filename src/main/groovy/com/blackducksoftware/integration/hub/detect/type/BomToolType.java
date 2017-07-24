@@ -25,6 +25,7 @@ package com.blackducksoftware.integration.hub.detect.type;
 public enum BomToolType {
     CARTHAGE,
     COCOAPODS,
+    CONDA,
     CPAN,
     CRAN,
     DOCKER,
