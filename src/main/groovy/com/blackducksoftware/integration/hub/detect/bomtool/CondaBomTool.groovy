@@ -41,7 +41,6 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOu
 @Component
 class CondaBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(CondaBomTool.class)
-    public static final ANACONDA_FORGE = new Forge('anaconda', '/')
 
     @Autowired
     CondaListParser condaListParser
@@ -84,7 +83,7 @@ class CondaBomTool extends BomTool {
         String infoJsonText = condaInfoOutput.getStandardOutput()
 
         Set<DependencyNode> dependenciesSet = condaListParser.parse(listJsonText, infoJsonText)
-        ExternalId externalId = new PathExternalId(ANACONDA_FORGE, detectConfiguration.sourcePath)
+        ExternalId externalId = new PathExternalId(Forge.ANACONDA, detectConfiguration.sourcePath)
         def detectCodeLocation = new DetectCodeLocation(BomToolType.CONDA, detectConfiguration.sourcePath, '', '', '', externalId, dependenciesSet)
 
         [detectCodeLocation]

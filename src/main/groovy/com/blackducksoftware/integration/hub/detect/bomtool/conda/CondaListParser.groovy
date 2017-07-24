@@ -49,7 +49,7 @@ class CondaListParser {
         condaList.each { dependency ->
             String name = dependency.name
             String version = "${dependency.version}-${dependency.buildString}-${condaInfo.platform}"
-            ExternalId externalId = new NameVersionExternalId(Forge.ANACONDA, name, version)
+            ExternalId externalId = new NameVersionExternalId(Forge.ANACONDA, name, version) 
             def dependencyNode = new DependencyNode(dependency.name, dependency.version, externalId)
             dependencies.add(dependencyNode)
         }
