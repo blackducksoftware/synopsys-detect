@@ -1,47 +1,58 @@
 /*
- * Copyright (C) 2017 Black Duck Software Inc.
+ * Copyright (C) 2017 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
- * All rights reserved.
  *
- * This software is the confidential and proprietary information of
- * Black Duck Software ("Confidential Information"). You shall not
- * disclose such Confidential Information and shall use it only in
- * accordance with the terms of the license agreement you entered into
- * with Black Duck Software.
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.sbt;
+package com.blackducksoftware.integration.hub.detect.bomtool.sbt
 
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtCaller
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtModule
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtReport
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtRevision
 
-import groovy.util.slurpersupport.GPathResult;
+import groovy.util.slurpersupport.GPathResult
 
 public class SbtReportParser {
     public SbtReport parseReportFromXml(GPathResult xmlReport) {
-        SbtReport report = new SbtReport();
-        report.organisation = xmlReport.info.@organisation.toString();
-        report.module = xmlReport.info.@module.toString();
-        report.revision = xmlReport.info.@revision.toString();
-        report.configuration = xmlReport.info.@conf.toString();
-        report.dependencies = new ArrayList<SbtModule>();
+        SbtReport report = new SbtReport()
+        report.organisation = xmlReport.info.@organisation.toString()
+        report.module = xmlReport.info.@module.toString()
+        report.revision = xmlReport.info.@revision.toString()
+        report.configuration = xmlReport.info.@conf.toString()
+        report.dependencies = new ArrayList<SbtModule>()
 
         xmlReport.dependencies.module.each { xmlModule ->
-            SbtModule module = new SbtModule();
+            SbtModule module = new SbtModule()
             module.name = xmlModule.@name.toString()
             module.organisation = xmlModule.@organisation.toString()
-            module.revisions = new ArrayList<SbtRevision>();
-            report.dependencies.add(module);
+            module.revisions = new ArrayList<SbtRevision>()
+            report.dependencies.add(module)
 
             xmlModule.revision.each { xmlRevision ->
-                SbtRevision revision = new SbtRevision();
+                SbtRevision revision = new SbtRevision()
                 revision.name = xmlRevision.@name.toString()
-                revision.callers = new ArrayList<SbtCaller>();
-                module.revisions.add(revision);
+                revision.callers = new ArrayList<SbtCaller>()
+                module.revisions.add(revision)
 
                 xmlRevision.caller.each { xmlCaller ->
-                    SbtCaller caller = new SbtCaller();
+                    SbtCaller caller = new SbtCaller()
                     caller.callerOrganisation = xmlCaller.@organisation.toString()
                     caller.callerName = xmlCaller.@name.toString()
                     caller.callerRevision = xmlCaller.@callerrev.toString()

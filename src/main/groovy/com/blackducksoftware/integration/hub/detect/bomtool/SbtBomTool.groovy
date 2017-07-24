@@ -39,7 +39,7 @@ class SbtBomTool extends BomTool {
     static final String REPORT_FILE_DIRECTORY = "${File.separator}target${File.separator}resolution-cache${File.separator}reports"
     static final String REPORT_FILE_PATTERN = '*.xml'
 
-    SbtPackager sbtPackager = new SbtPackager();
+    SbtPackager sbtPackager = new SbtPackager()
 
     BomToolType getBomToolType() {
         return BomToolType.SBT
@@ -60,39 +60,39 @@ class SbtBomTool extends BomTool {
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
-        String included = detectConfiguration.getSbtIncludedConfigurationNames();
-        String excluded = detectConfiguration.getSbtExcludedConfigurationNames();
+        String included = detectConfiguration.getSbtIncludedConfigurationNames()
+        String excluded = detectConfiguration.getSbtExcludedConfigurationNames()
 
-        int depth = detectConfiguration.getSearchDepth();
+        int depth = detectConfiguration.getSearchDepth()
         List<File> sbtFiles = detectFileManager.findFilesToDepth(sourcePath, BUILD_SBT_FILENAME, depth)
 
-        DependencyNode root = null;
-        List<DependencyNode> children = new ArrayList<DependencyNode>();
+        DependencyNode root = null
+        List<DependencyNode> children = new ArrayList<DependencyNode>()
 
         sbtFiles.each { sbtFile ->
-            def sbtDirectory = sbtFile.getParentFile();
-            def reportPath = new File(sbtDirectory, REPORT_FILE_DIRECTORY);
+            def sbtDirectory = sbtFile.getParentFile()
+            def reportPath = new File(sbtDirectory, REPORT_FILE_DIRECTORY)
 
-            List<File> reportFiles = detectFileManager.findFiles(reportPath, REPORT_FILE_PATTERN);
+            List<File> reportFiles = detectFileManager.findFiles(reportPath, REPORT_FILE_PATTERN)
 
-            DependencyNode node = sbtPackager.makeDependencyNode(reportFiles, included, excluded);
+            DependencyNode node = sbtPackager.makeDependencyNode(reportFiles, included, excluded)
 
             if (node == null) {
                 logger.warn("No dependencies could be generated for report folder: ${reportPath}")
             } else {
                 if (sbtDirectory.path.equals(sourcePath)) {
-                    root = node;
+                    root = node
                 } else {
-                    children.add(node);
+                    children.add(node)
                 }
             }
         }
 
         if (root == null) {
-            logger.error("Unable to find dependencies for the root artifact.");
+            logger.error("Unable to find dependencies for the root artifact.")
             return []
         } else {
-            root.children.addAll(children);
+            root.children.addAll(children)
 
             def detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, root)
 

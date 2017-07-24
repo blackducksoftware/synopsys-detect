@@ -33,10 +33,10 @@ public class SbtPackager {
     private final Logger logger = LoggerFactory.getLogger(SbtPackager.class)
 
     public DependencyNode makeDependencyNode(List<File> reportFiles, String include, String exclude) {
-        def parser = new SbtReportParser();
-        def resolver = new SbtDependencyResolver();
-        def filter = new ExcludedIncludedFilter(include, exclude);
-        def aggregator = new SbtConfigurationAggregator();
+        def parser = new SbtReportParser()
+        def resolver = new SbtDependencyResolver()
+        def filter = new ExcludedIncludedFilter(include, exclude)
+        def aggregator = new SbtConfigurationAggregator()
 
         List<SbtConfigurationDependencyTree> configurations = reportFiles.collect { reportFile->
             def xml = new XmlSlurper().parse(reportFile)
@@ -48,9 +48,9 @@ public class SbtPackager {
         }
 
         if (configurations.size() <= 0) {
-            logger.warn("No sbt configurations were included.");
+            logger.warn("No sbt configurations were included.")
         }
 
-        aggregator.aggregateConfigurations(configurations);
+        aggregator.aggregateConfigurations(configurations)
     }
 }
