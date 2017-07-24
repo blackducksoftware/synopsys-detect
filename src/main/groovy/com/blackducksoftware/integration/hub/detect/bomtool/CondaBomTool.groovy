@@ -41,7 +41,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOu
 @Component
 class CondaBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(CondaBomTool.class)
-    public static final ANACONDA_FORGE = new Forge('anaconda', '/')
+    public static final Forge ANACONDA_FORGE = new Forge('anaconda', '/')
 
     @Autowired
     CondaListParser condaListParser
