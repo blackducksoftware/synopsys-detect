@@ -61,13 +61,13 @@ class HubSignatureScanner {
 
     public void registerPathToScan(File file) {
         boolean excluded = false
-        for(File excludedPath : detectConfiguration.getHubSignatureScannerExcludedPaths()) {
-            if(file.canonicalPath.startsWith(excludedPath.canonicalPath)) {
+        for (File excludedPath : detectConfiguration.getHubSignatureScannerExcludedPaths()) {
+            if (file.canonicalPath.startsWith(excludedPath.canonicalPath)) {
                 excluded = true
                 break
             }
         }
-        if(excluded) {
+        if (excluded) {
             logger.info("Not registering excluded path ${file.canonicalPath} to scan")
         } else if (file.exists() && (file.isFile() || file.isDirectory())) {
             logger.info("Registering path ${file.canonicalPath} to scan")
