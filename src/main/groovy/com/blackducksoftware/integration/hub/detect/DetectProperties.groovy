@@ -34,7 +34,6 @@ class DetectProperties {
     private static final String GROUP_CLEANUP = 'cleanup'
     private static final String GROUP_PATHS = 'paths'
     private static final String GROUP_BOMTOOL = 'bomtool'
-
     private static final String GROUP_CONDA = 'conda'
     private static final String GROUP_CPAN = 'cpan'
     private static final String GROUP_DOCKER = 'docker'
@@ -49,6 +48,7 @@ class DetectProperties {
     private static final String GROUP_POLICY_CHECK = 'policy check'
     private static final String GROUP_PROJECT_INFO = 'project info'
     private static final String GROUP_PYTHON = 'python'
+    private static final String GROUP_SBT = 'sbt'
     private static final String GROUP_SIGNATURE_SCANNER = 'signature scanner'
 
     @ValueDescription(description="If true, the default behavior of printing your configuration properties at startup will be suppressed.", defaultValue="false", group=DetectProperties.GROUP_LOGGING)
@@ -311,11 +311,19 @@ class DetectProperties {
     @Value('${detect.cpanm.path}')
     String cpanmPath
 
-    @ValueDescription(description="DISABLED: When dealing with static files, use a hash as a version instead of a time-date format", defaultValue='true', group=DetectProperties.GROUP_PROJECT_INFO)
+    @ValueDescription(description="The names of the sbt configurations to exclude", group=DetectProperties.GROUP_SBT)
+    @Value('${detect.sbt.excluded.configurations}')
+    String sbtExcludedConfigurationNames
+
+    @ValueDescription( description="The names of the sbt configurations to include", group=DetectProperties.GROUP_SBT)
+    @Value('${detect.sbt.included.configurations}')
+    String sbtIncludedConfigurationNames
+
+    //@ValueDescription(description="When dealing with static files, use a hash as a version instead of a time-date format", defaultValue='true', group=DetectProperties.GROUP_PROJECT_INFO)
     @Value('${detect.project.version.hash}')
     Boolean hashVersion
 
-    @ValueDescription(description="DISABLED: When using a hash as a version, use a truncated version", defaultValue='true', group=DetectProperties.GROUP_PROJECT_INFO)
+    //@ValueDescription(description="When using a hash as a version, use a truncated version", defaultValue='true', group=DetectProperties.GROUP_PROJECT_INFO)
     @Value('${detect.project.version.shorthash}')
     Boolean shortHash
 

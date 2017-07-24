@@ -49,7 +49,7 @@ class MavenOutputParser {
             }
 
             line = line.replace("[INFO] ", "")
-            if(!line.trim()) {
+            if (!line.trim()) {
                 continue
             }
 
@@ -87,7 +87,7 @@ class MavenOutputParser {
                 }
                 projectReady = false
                 projects.add(projectStack.pop())
-            } else if(textToDependencyNode(line)) {
+            } else if (textToDependencyNode(line)) {
                 if (level == previousLevel) {
                     final DependencyNode currentNode = projectStack.pop()
                     projectStack.last().children += currentNode
