@@ -28,13 +28,17 @@ class CondaListParser {
     @Autowired
     Gson gson
 
-    Set<DependencyNode> parse(String listJsonText) {
+    Set<DependencyNode> parse(String listJsonText, String infoJsonText) {
         Type listType = new TypeToken<ArrayList<CondaListElement>>(){}.getType()
         List<CondaListElement> condaList = gson.fromJson(listJsonText, listType)
 
+        CondaInfo condaInfo = gson.fromJson(infoJsonText, CondaInfo.class)
+
         Set<DependencyNode> dependencies = new HashSet<>()
         condaList.each { dependency ->
-            ExternalId externalId = new NameVersionExternalId(Forge.ANACONDA, dependency.name, dependency.version)
+            String name = dependency.name
+            String version = "${dependency.version}-${dependency.buildString}-${condaInfo.platform}"
+            ExternalId externalId = new NameVersionExternalId(Forge.ANACONDA, name, version)
             def dependencyNode = new DependencyNode(dependency.name, dependency.version, externalId)
             dependencies.add(dependencyNode)
         }

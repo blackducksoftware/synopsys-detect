@@ -13,13 +13,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool.conda
 
 import com.google.gson.annotations.SerializedName
 
-class CondaListElement {
-    @SerializedName("name")
-    String name
-
-    @SerializedName("version")
-    String version
-
-    @SerializedName("build_string")
-    String buildString
+class CondaInfo {
+    @SerializedName("platform")
+    String platform
 }
