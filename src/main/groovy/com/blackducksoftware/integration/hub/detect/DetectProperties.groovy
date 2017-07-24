@@ -283,6 +283,10 @@ class DetectProperties {
     @Value('${detect.cleanup.bom.tool.files}')
     Boolean cleanupBomToolFiles
 
+    @ValueDescription(description="These paths will be excluded from scanning", group=DetectProperties.GROUP_SIGNATURE_SCANNER)
+    @Value('${detect.hub.signature.scanner.paths.excluded}')
+    String[] hubSignatureScannerExcludedPaths
+
     @ValueDescription(description="These paths and only these paths will be scanned.", group=DetectProperties.GROUP_SIGNATURE_SCANNER)
     @Value('${detect.hub.signature.scanner.paths}')
     String[] hubSignatureScannerPaths

@@ -63,6 +63,8 @@ class DetectConfiguration {
     private boolean usingDefaultSourcePath
     private boolean usingDefaultOutputPath
 
+    List<File> excludedScanPaths = []
+
     void init() {
         if (!detectProperties.sourcePath) {
             usingDefaultSourcePath = true
@@ -105,6 +107,12 @@ class DetectConfiguration {
 
         if (dockerBomTool.isBomToolApplicable()) {
             configureForDocker()
+        }
+
+        if(detectProperties.getHubSignatureScannerExcludedPaths()) {
+            detectProperties.getHubSignatureScannerExcludedPaths().each {
+                excludedScanPaths += new File(it)
+            }
         }
     }
 
@@ -361,6 +369,9 @@ class DetectConfiguration {
     }
     public String[] getHubSignatureScannerPaths() {
         return detectProperties.hubSignatureScannerPaths
+    }
+    public List<File> getHubSignatureScannerExcludedPaths() {
+        return excludedScanPaths
     }
     public boolean getPackagistIncludeDevDependencies() {
         return BooleanUtils.toBoolean(detectProperties.packagistIncludeDevDependencies)
