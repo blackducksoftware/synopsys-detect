@@ -28,7 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.PathExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.conda.CondaListParser
@@ -41,7 +40,6 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOu
 @Component
 class CondaBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(CondaBomTool.class)
-    public static final Forge ANACONDA_FORGE = new Forge('anaconda', '/')
 
     @Autowired
     CondaListParser condaListParser
@@ -84,7 +82,7 @@ class CondaBomTool extends BomTool {
         String infoJsonText = condaInfoOutput.getStandardOutput()
 
         Set<DependencyNode> dependenciesSet = condaListParser.parse(listJsonText, infoJsonText)
-        ExternalId externalId = new PathExternalId(ANACONDA_FORGE, detectConfiguration.sourcePath)
+        ExternalId externalId = new PathExternalId(Forge.ANACONDA, detectConfiguration.sourcePath)
         def detectCodeLocation = new DetectCodeLocation(BomToolType.CONDA, detectConfiguration.sourcePath, '', '', '', externalId, dependenciesSet)
 
         [detectCodeLocation]
