@@ -76,7 +76,6 @@ class NpmBomTool extends BomTool {
         if (npmLsErrorFile.length() == 0) {
             if (logger.debugEnabled) {
                 def npmVersion = executableRunner.runExe(npmExePath, '-version')
-                //logger.debug(npmVersion.standardOutput)
             }
             def dependencyNode = cliDependencyFinder.generateDependencyNode(npmLsOutputFile)
             def detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, dependencyNode)
