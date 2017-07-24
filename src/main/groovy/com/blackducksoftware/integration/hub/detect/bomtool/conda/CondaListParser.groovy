@@ -28,9 +28,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
-import com.blackducksoftware.integration.hub.detect.bomtool.CondaBomTool
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -49,7 +49,7 @@ class CondaListParser {
         condaList.each { dependency ->
             String name = dependency.name
             String version = "${dependency.version}-${dependency.buildString}-${condaInfo.platform}"
-            ExternalId externalId = new NameVersionExternalId(Forge.ANACONDA, name, version)
+            ExternalId externalId = new NameVersionExternalId(Forge.ANACONDA, name, version) 
             def dependencyNode = new DependencyNode(dependency.name, dependency.version, externalId)
             dependencies.add(dependencyNode)
         }
