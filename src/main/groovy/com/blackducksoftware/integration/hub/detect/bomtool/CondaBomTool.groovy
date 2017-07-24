@@ -68,7 +68,7 @@ class CondaBomTool extends BomTool {
     @Override
     public List<DetectCodeLocation> extractDetectCodeLocations() {
         List<String> condaListOptions = ['list']
-        if(detectConfiguration.getCondaEnvironmentName()) {
+        if (detectConfiguration.getCondaEnvironmentName()) {
             condaListOptions += [
                 '-n',
                 detectConfiguration.getCondaEnvironmentName()

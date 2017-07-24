@@ -51,7 +51,6 @@ class DetectProperties {
     private static final String GROUP_PYTHON = 'python'
     private static final String GROUP_SIGNATURE_SCANNER = 'signature scanner'
 
-
     @ValueDescription(description="If true, the default behavior of printing your configuration properties at startup will be suppressed.", defaultValue="false", group=DetectProperties.GROUP_LOGGING)
     @Value('${detect.suppress.configuration.output}')
     Boolean suppressConfigurationOutput
