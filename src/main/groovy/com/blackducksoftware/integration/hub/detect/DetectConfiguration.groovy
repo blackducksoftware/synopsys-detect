@@ -111,7 +111,7 @@ class DetectConfiguration {
 
         if(detectProperties.getHubSignatureScannerExcludedPaths()) {
             detectProperties.getHubSignatureScannerExcludedPaths().each {
-                excludedScanPaths += new File(it)
+                excludedScanPaths += new File(sourceDirectory, it)
             }
         }
     }
