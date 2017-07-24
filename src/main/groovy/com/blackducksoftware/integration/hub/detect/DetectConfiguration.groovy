@@ -109,7 +109,7 @@ class DetectConfiguration {
             configureForDocker()
         }
 
-        if(detectProperties.getHubSignatureScannerExcludedPaths()) {
+        if (detectProperties.getHubSignatureScannerExcludedPaths()) {
             detectProperties.getHubSignatureScannerExcludedPaths().each {
                 excludedScanPaths.add(new File(sourceDirectory, it))
             }
