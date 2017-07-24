@@ -92,6 +92,12 @@ class DetectFileManager {
         file
     }
 
+    boolean directoryExists(final String sourcePath, final String relativePath) {
+        final File sourceDirectory = new File(sourcePath)
+        final File relDirectory = new File(sourceDirectory, relativePath);
+        return relDirectory.isDirectory();
+    }
+
     public boolean containsAllFiles(String sourcePath, String... filenamePatterns) {
         return fileFinder.containsAllFiles(sourcePath, filenamePatterns)
     }
@@ -110,6 +116,10 @@ class DetectFileManager {
 
     public File[] findFiles(File sourceDirectory, String filenamePattern) {
         return fileFinder.findFiles(sourceDirectory, filenamePattern)
+    }
+
+    public File[] findFilesToDepth(String sourceDirectory, String filenamePattern, int maxDepth) {
+        return findFilesToDepth(new File(sourceDirectory), filenamePattern, maxDepth);
     }
 
     public File[] findFilesToDepth(File sourceDirectory, String filenamePattern, int maxDepth) {
