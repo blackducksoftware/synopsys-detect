@@ -22,8 +22,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import java.nio.charset.StandardCharsets
+
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -31,35 +31,44 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.PathExternalId
-import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.CocoapodsPackager
+import com.blackducksoftware.integration.hub.detect.bomtool.cran.PackratPackager
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
-@Component
-class CocoapodsBomTool extends BomTool {
-    private final Logger logger = LoggerFactory.getLogger(CocoapodsBomTool.class)
 
-    public static final String PODFILE_LOCK_FILENAME= 'Podfile.lock'
+@Component
+class CranBomTool extends BomTool {
+    public static final Forge CRAN = new Forge('cran', '/')
 
     @Autowired
-    CocoapodsPackager cocoapodsPackager
+    PackratPackager packratPackager
 
     BomToolType getBomToolType() {
-        return BomToolType.COCOAPODS
+        return BomToolType.CRAN
     }
 
     boolean isBomToolApplicable() {
-        detectFileManager.containsAllFiles(sourcePath, PODFILE_LOCK_FILENAME)
+        detectFileManager.containsAllFilesToDepth(sourcePath, detectConfiguration.getSearchDepth(), 'packrat.lock')
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
-        final String podLockText = new File(sourcePath, PODFILE_LOCK_FILENAME).text
+        File sourceDirectory = detectConfiguration.sourceDirectory
 
-        List<DependencyNode> projectDependencies = cocoapodsPackager.extractProjectDependencies(podLockText)
-        Set<DependencyNode> dependenciesSet = new HashSet<>(projectDependencies)
-        ExternalId externalId = new PathExternalId(Forge.COCOAPODS, sourcePath)
-        String hash = getHash(podLockText)
+        def packratLockFile = detectFileManager.findFilesToDepth(sourceDirectory, 'packrat.lock', detectConfiguration.getSearchDepth())
+        String projectName = ''
+        String projectVersion = ''
+        if (detectFileManager.containsAllFiles(sourcePath,'DESCRIPTION')) {
+            def descriptionFile = new File(sourceDirectory, 'DESCRIPTION')
+            String descriptionText = descriptionFile.getText(StandardCharsets.UTF_8.name())
+            projectName = packratPackager.getProjectName(descriptionText)
+            projectVersion = packratPackager.getVersion(descriptionText)
+        }
 
-        def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, '', '', hash, externalId, dependenciesSet)
+        String packratLockText = packratLockFile[0].getText(StandardCharsets.UTF_8.name())
+        List<DependencyNode> dependencies = packratPackager.extractProjectDependencies(packratLockText)
+        Set<DependencyNode> dependenciesSet = new HashSet<>(dependencies)
+        ExternalId externalId = new PathExternalId(CRAN, sourcePath)
+
+        def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, projectName, projectVersion, '', externalId, dependenciesSet)
         [codeLocation]
     }
 }

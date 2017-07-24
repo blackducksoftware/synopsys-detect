@@ -103,7 +103,7 @@ class DetectProperties {
     @Value('${detect.output.path}')
     String outputDirectoryPath
 
-    @ValueDescription(description = "Depth from source paths to search for files.", defaultValue="10", group=DetectProperties.GROUP_PATHS)
+    @ValueDescription(description = "Depth from source paths to search for files.", defaultValue="3", group=DetectProperties.GROUP_PATHS)
     @Value('${detect.search.depth}')
     Integer searchDepth
 
@@ -207,10 +207,6 @@ class DetectProperties {
     @Value('${detect.pip.project.name}')
     String pipProjectName
 
-    @ValueDescription(description="If true creates a temporary Python virtual environment", defaultValue="true", group=DetectProperties.GROUP_PIP)
-    @Value('${detect.pip.create.virtual.env}')
-    Boolean createVirtualEnv
-
     @ValueDescription(description="If true will use pip3 if available on class path", defaultValue="false", group=DetectProperties.GROUP_PIP)
     @Value('${detect.pip.pip3}')
     Boolean pipThreeOverride
@@ -255,7 +251,7 @@ class DetectProperties {
     @Value('${detect.docker.inspector.path}')
     String dockerInspectorPath
 
-    @ValueDescription(description="Version of the Hub Docker Inspector to use", defaultValue="0.1.3", group=DetectProperties.GROUP_DOCKER)
+    @ValueDescription(description="Version of the Hub Docker Inspector to use", defaultValue="latest", group=DetectProperties.GROUP_DOCKER)
     @Value('${detect.docker.inspector.version}')
     String dockerInspectorVersion
 
@@ -323,16 +319,20 @@ class DetectProperties {
     @Value('${detect.sbt.included.configurations}')
     String sbtIncludedConfigurationNames
 
-    // @ValueDescription(description="When dealing with static files, use a hash as a version instead of a time-date format", defaultValue='true', group=DetectProperties.GROUP_PROJECT_INFO)
+    //@ValueDescription(description="When dealing with static files, use a hash as a version instead of a time-date format", defaultValue='true', group=DetectProperties.GROUP_PROJECT_INFO)
     @Value('${detect.project.version.hash}')
     Boolean hashVersion
 
-    // @ValueDescription(description="When using a hash as a version, use a truncated version", defaultValue='true', group=DetectProperties.GROUP_PROJECT_INFO)
+    //@ValueDescription(description="When using a hash as a version, use a truncated version", defaultValue='true', group=DetectProperties.GROUP_PROJECT_INFO)
     @Value('${detect.project.version.shorthash}')
     Boolean shortHash
 
     @ValueDescription(description="The timestamp format to use as default project version", defaultValue='yyyy-MM-dd\'T\'HH:mm:ss.SSS', group=DetectProperties.GROUP_PROJECT_INFO)
     @Value('${detect.project.version.timeformat}')
     String versionTimeFormat
+
+    @ValueDescription(description="If set, this will aggregate all the BOMs to create a single BDIO file with the name provided. For Co-Pilot use only", group=DetectProperties.GROUP_PROJECT_INFO)
+    @Value('${detect.bom.aggregate.name}')
+    String aggregateBomName
 }
 

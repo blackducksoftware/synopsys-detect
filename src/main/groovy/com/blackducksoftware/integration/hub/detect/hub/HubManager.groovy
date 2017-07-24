@@ -29,6 +29,7 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.api.item.MetaService
 import com.blackducksoftware.integration.hub.builder.HubServerConfigBuilder
+import com.blackducksoftware.integration.hub.dataservice.policystatus.PolicyStatusDescription
 import com.blackducksoftware.integration.hub.dataservice.project.ProjectDataService
 import com.blackducksoftware.integration.hub.dataservice.project.ProjectVersionWrapper
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
@@ -78,7 +79,8 @@ class HubManager {
         hubServerConfigBuilder.build()
     }
 
-    public void performPostActions(DetectProject detectProject, List<File> createdBdioFiles){
+    public int performPostActions(DetectProject detectProject, List<File> createdBdioFiles) {
+        def postActionResult = 0
         try {
             Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
             HubServerConfig hubServerConfig = createHubServerConfig(slf4jIntLogger)
@@ -86,22 +88,33 @@ class HubManager {
 
             bdioUploader.uploadBdioFiles(hubServerConfig, hubServicesFactory, createdBdioFiles)
             if (!detectConfiguration.getHubSignatureScannerDisabled()) {
-                hubSignatureScanner.scanFiles(hubServerConfig, hubServicesFactory, detectProject)
+                hubSignatureScanner.scanPaths(hubServerConfig, hubServicesFactory, detectProject)
             }
 
             if (detectConfiguration.getPolicyCheck()) {
-                String policyStatusMessage = policyChecker.getPolicyStatusMessage(hubServicesFactory, detectProject)
-                logger.info(policyStatusMessage)
+                PolicyStatusDescription policyStatus = policyChecker.getPolicyStatus(hubServicesFactory, detectProject)
+                logger.info(policyStatus.policyStatusMessage)
+                if (policyStatus.getCountInViolation()?.value > 0) {
+                    postActionResult = 1
+                }
             }
-            ProjectDataService projectDataService = hubServicesFactory.createProjectDataService(slf4jIntLogger)
-            ProjectVersionWrapper projectVersionWrapper = projectDataService.getProjectVersion(detectProject.getProjectName(), detectProject.getProjectVersionName())
-            MetaService metaService = hubServicesFactory.createMetaService(slf4jIntLogger)
-            String componentsLink = metaService.getFirstLinkSafely(projectVersionWrapper.getProjectVersionView(), MetaService.COMPONENTS_LINK)
-            logger.info("To see your results, follow the URL: ${componentsLink}")
+            if (detectProject.getDetectCodeLocations() && !detectConfiguration.getHubSignatureScannerDisabled()) {
+                // only log BOM URL if we have updated it in some way
+                ProjectDataService projectDataService = hubServicesFactory.createProjectDataService(slf4jIntLogger)
+                ProjectVersionWrapper projectVersionWrapper = projectDataService.getProjectVersion(detectProject.getProjectName(), detectProject.getProjectVersionName())
+                MetaService metaService = hubServicesFactory.createMetaService(slf4jIntLogger)
+                String componentsLink = metaService.getFirstLinkSafely(projectVersionWrapper.getProjectVersionView(), MetaService.COMPONENTS_LINK)
+                logger.info("To see your results, follow the URL: ${componentsLink}")
+            } else {
+                logger.debug('Found no code locations and did not run a scan.')
+            }
         } catch (IllegalStateException e) {
             logger.error("Your Hub configuration is not valid: ${e.message}")
+            logger.debug(e.getMessage(), e)
         } catch (Exception e) {
             logger.error("There was a problem communicating with the Hub : ${e.message}")
+            logger.debug(e.getMessage(), e)
         }
+        postActionResult
     }
 }

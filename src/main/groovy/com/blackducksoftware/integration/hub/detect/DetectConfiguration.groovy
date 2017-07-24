@@ -308,9 +308,6 @@ class DetectConfiguration {
     public String getPipProjectName() {
         return detectProperties.pipProjectName
     }
-    public boolean getCreateVirtualEnv() {
-        return BooleanUtils.toBoolean(detectProperties.createVirtualEnv)
-    }
     public boolean getPipThreeOverride() {
         return BooleanUtils.toBoolean(detectProperties.pipThreeOverride)
     }
@@ -397,5 +394,8 @@ class DetectConfiguration {
     }
     public String getVersionTimeFormat() {
         return detectProperties.versionTimeFormat?.trim()
+    }
+    public String getAggregateBomName() {
+        return detectProperties.aggregateBomName?.trim()
     }
 }

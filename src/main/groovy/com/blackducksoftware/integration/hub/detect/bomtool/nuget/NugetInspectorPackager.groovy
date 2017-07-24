@@ -102,7 +102,7 @@ class NugetInspectorPackager {
 
     private void registerScanPaths(NugetNode nugetNode){
         nugetNode.outputPaths?.each {
-            hubSignatureScanner.registerDirectoryToScan(new File(it), nugetNode.artifact, nugetNode.version)
+            hubSignatureScanner.registerPathToScan(new File(it))
         }
         nugetNode.children?.each { registerScanPaths(it) }
     }

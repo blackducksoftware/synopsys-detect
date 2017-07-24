@@ -31,12 +31,10 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
-import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
 
 @Component
-class VirtualEnvironmentHandler {
+class PythonEnvironmentHandler {
     private final Logger logger = LoggerFactory.getLogger(this.getClass())
     private final String VIRTUAL_ENV_NAME = 'venv'
 
@@ -46,15 +44,11 @@ class VirtualEnvironmentHandler {
     @Autowired
     ExecutableManager executableManager
 
-    @Autowired
-    ExecutableRunner executableRunner
-
-    VirtualEnvironment systemEnvironment
-
-    String binFolderName
+    private PythonEnvironment systemEnvironment
+    private String binFolderName
 
     void init() {
-        systemEnvironment = new VirtualEnvironment()
+        systemEnvironment = new PythonEnvironment()
         ExecutableType pipExecutableType
         ExecutableType pythonExecutableType
 
@@ -78,53 +72,22 @@ class VirtualEnvironmentHandler {
         }
     }
 
-    VirtualEnvironment getVirtualEnvironment(File outputDirectory) {
-        VirtualEnvironment env = getSystemEnvironment()
-        String definedPath = detectConfiguration.virtualEnvPath?.trim()
-        if (detectConfiguration.createVirtualEnv) {
-            def venvDirectory = new File(outputDirectory, VIRTUAL_ENV_NAME)
+    PythonEnvironment getEnvironment(String virtualEnvironementPath) {
+        PythonEnvironment env = getSystemEnvironment()
+        if (virtualEnvironementPath) {
+            def venvDirectory = new File(virtualEnvironementPath)
             env = findExistingEnvironment(venvDirectory)
-
-            def definedEnv = null
-            if (definedPath) {
-                definedEnv = new File(definedPath)
-                env = findExistingEnvironment(definedEnv)
-            }
-
-            if (!env && definedEnv) {
-                env = createVirtualEnvironment(definedEnv)
-            } else if (!env) {
-                env = createVirtualEnvironment(venvDirectory)
-            }
-        } else if (definedPath) {
-            def venvDirectory = new File(detectConfiguration.virtualEnvPath)
-            env = findExistingEnvironment(venvDirectory)
-        }
-
-        if (!env) {
-            logger.warn('Failed to get/create any virtual environment')
         }
 
         env
     }
 
-    VirtualEnvironment createVirtualEnvironment(File virtualEnvDirectory) {
-        def installVirtualEnvPackage = new Executable(virtualEnvDirectory.getParentFile(), systemEnvironment.pipPath, ['install', 'virtualenv'])
-        executableRunner.execute(installVirtualEnvPackage)
-
-        def virtualEnvOptions = [
-            "--python=${systemEnvironment.getPythonPath()}",
-            virtualEnvDirectory.absolutePath
-        ]
-        def virtualEnvPath = executableManager.getPathOfExecutable(ExecutableType.VIRTUALENV)
-        def setupVirtualEnvironment = new Executable(virtualEnvDirectory.getParentFile(), virtualEnvPath, virtualEnvOptions)
-        executableRunner.execute(setupVirtualEnvironment)
-
-        findExistingEnvironment(virtualEnvDirectory)
+    public PythonEnvironment getSystemEnvironment() {
+        systemEnvironment
     }
 
-    VirtualEnvironment findExistingEnvironment(File virtualEnvDirectory) {
-        VirtualEnvironment existing = null
+    PythonEnvironment findExistingEnvironment(File virtualEnvDirectory) {
+        PythonEnvironment existing = null
 
         String pythonName = systemEnvironment.pythonType.getExecutable(executableManager.currentOs)
         String pipName = systemEnvironment.pipType.getExecutable(executableManager.currentOs)
@@ -132,7 +95,7 @@ class VirtualEnvironmentHandler {
         def virtualEnvPip = new File(virtualEnvDirectory, "${binFolderName}/${pipName}")
 
         if (virtualEnvDirectory.exists() && virtualEnvDirectory.isDirectory() && virtualEnvPython.exists() && virtualEnvPip.exists()) {
-            existing = new VirtualEnvironment()
+            existing = new PythonEnvironment()
             existing.pythonType = systemEnvironment.pythonType
             existing.pipType = systemEnvironment.pipType
             existing.pythonPath = virtualEnvPython.absolutePath
@@ -149,7 +112,7 @@ class VirtualEnvironmentHandler {
             if (StringUtils.isBlank(path)) {
                 executableManager.getPathOfExecutable(commandType)
             } else {
-                executableManager.getPathOfExecutable(path, commandType)
+                executableManager.getPathOfExecutableFromRelativePath(path, commandType)
             }
         }
     }

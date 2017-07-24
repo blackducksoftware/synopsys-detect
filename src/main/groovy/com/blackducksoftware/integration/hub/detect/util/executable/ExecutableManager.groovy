@@ -62,7 +62,7 @@ class ExecutableManager {
         File executableFile = getExecutable(executableType)
 
         if (executableFile == null) {
-            logger.error("Expected to find an executable of type ${executableType.toString()} but none was found")
+            logger.debug("Expected to find an executable of type ${executableType.toString()} but none was found")
             return null
         }
         return executableFile.absolutePath
@@ -89,25 +89,25 @@ class ExecutableManager {
         executableFile
     }
 
-    String getPathOfExecutable(String path, ExecutableType executableType) {
-        File executableFile = getExecutable(path, executableType)
+    String getPathOfExecutableFromRelativePath(String path, ExecutableType executableType) {
+        File executableFile = getExecutableFromRelativePath(path, executableType)
 
         null == executableFile ? null : executableFile.absolutePath
     }
 
-    File getExecutable(String path, ExecutableType executableType) {
+    File getExecutableFromRelativePath(String path, ExecutableType executableType) {
         String executable = executableType.getExecutable(currentOs)
-        File executableFile = findExecutableFile(path, executable)
+        File executableFile = findExecutableFileFromRelativePath(path, executable)
 
         executableFile
     }
 
     private File findExecutableFile(final String executable) {
         String systemPath = System.getenv("PATH")
-        return findExecutableFile(systemPath, executable)
+        return findExecutableFileFromRelativePath(systemPath, executable)
     }
 
-    private File findExecutableFile(final String path, String executable) {
+    private File findExecutableFileFromRelativePath(final String path, String executable) {
         for (String pathPiece : path.split(File.pathSeparator)) {
             File foundFile = detectFileManager.findFile(pathPiece, executable)
             if (foundFile && foundFile.canExecute()) {

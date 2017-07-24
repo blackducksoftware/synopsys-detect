@@ -59,9 +59,12 @@ class MavenBomTool extends BomTool {
     boolean isBomToolApplicable() {
         String pomXmlPath = detectFileManager.findFile(sourcePath, POM_FILENAME)
         String pomWrapperPath = detectFileManager.findFile(sourcePath, POM_WRAPPER_FILENAME)
-        
+
         if (pomXmlPath || pomWrapperPath) {
             mvnExecutable = findMavenExecutablePath()
+            if (!mvnExecutable) {
+                logger.warn('Could not find a Maven wrapper or executable')
+            }
         }
 
         mvnExecutable && (pomXmlPath || pomWrapperPath)
@@ -83,10 +86,9 @@ class MavenBomTool extends BomTool {
             codeLocations.add(detectCodeLocation)
         }
 
-        //there may also be subprojects, so just look one level down (depth = 2) for any/all target directories
-        File[] additionalTargets = detectFileManager.findFilesToDepth(detectConfiguration.sourceDirectory, 'target', 2)
+        File[] additionalTargets = detectFileManager.findFilesToDepth(detectConfiguration.sourceDirectory, 'target', detectConfiguration.searchDepth)
         if (additionalTargets) {
-            additionalTargets.each { hubSignatureScanner.registerDirectoryToScan(it) }
+            additionalTargets.each { hubSignatureScanner.registerPathToScan(it) }
         }
 
         codeLocations
