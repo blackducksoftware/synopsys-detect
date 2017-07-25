@@ -25,6 +25,8 @@ package com.blackducksoftware.integration.hub.detect.bomtool.output
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
+import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
+import com.blackducksoftware.integration.util.IntegrationEscapeUtil
 
 class DetectCodeLocation {
     private final BomToolType bomToolType
@@ -60,6 +62,20 @@ class DetectCodeLocation {
         this.bomToolProjectVersionName = rootDependencyNode.version
         this.bomToolProjectExternalId = rootDependencyNode.externalId
         this.dependencies = rootDependencyNode.children
+    }
+
+    public String createBdioFilename(IntegrationEscapeUtil integrationEscapeUtil, DetectFileManager detectFileManager, String projectName, String projectVersionName) {
+        String finalSourcePathPiece = detectFileManager.extractFinalPieceFromPath(sourcePath)
+        List<String> safePieces = [
+            bomToolType.toString(),
+            projectName,
+            projectVersionName,
+            finalSourcePathPiece,
+            'bdio'
+        ].collect { integrationEscapeUtil.escapeForUri(it) }
+
+        String filename = safePieces.join('_') + '.jsonld'
+        filename
     }
 
     BomToolType getBomToolType() {

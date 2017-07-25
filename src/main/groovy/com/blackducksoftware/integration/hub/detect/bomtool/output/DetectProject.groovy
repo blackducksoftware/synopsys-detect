@@ -22,6 +22,9 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.output
 
+import com.blackducksoftware.integration.hub.detect.type.BomToolType
+import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
+
 class DetectProject {
     private String projectName
     private String projectVersionName
@@ -54,6 +57,12 @@ class DetectProject {
         }
 
         detectCodeLocations.add(detectCodeLocation)
+    }
+
+    public String getCodeLocationName(DetectFileManager detectFileManager, final BomToolType bomToolType, final String sourcePath, String suffix) {
+        String finalSourcePathPiece = detectFileManager.extractFinalPieceFromPath(sourcePath)
+        String codeLocation = String.format('%s/%s/%s/%s %s', bomToolType.toString(), finalSourcePathPiece, projectName, projectVersionName, suffix)
+        codeLocation
     }
 
     public List<DetectCodeLocation> getDetectCodeLocations() {

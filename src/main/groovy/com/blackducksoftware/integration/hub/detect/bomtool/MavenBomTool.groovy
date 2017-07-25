@@ -28,8 +28,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.detect.bomtool.maven.MavenPackager
+import com.blackducksoftware.integration.hub.detect.bomtool.maven.MavenCodeLocationPackager
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
@@ -45,7 +44,7 @@ class MavenBomTool extends BomTool {
     static final String POM_WRAPPER_FILENAME = 'pom.groovy'
 
     @Autowired
-    MavenPackager mavenPackager
+    MavenCodeLocationPackager mavenCodeLocationPackager
 
     @Autowired
     HubSignatureScanner hubSignatureScanner
@@ -71,8 +70,6 @@ class MavenBomTool extends BomTool {
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
-        List<DetectCodeLocation> codeLocations = []
-
         def arguments = ["dependency:tree"]
         if (detectConfiguration.getMavenScope()?.trim()) {
             arguments.add("-Dscope=${detectConfiguration.getMavenScope()}")
@@ -80,11 +77,7 @@ class MavenBomTool extends BomTool {
         final Executable mvnExecutable = new Executable(detectConfiguration.sourceDirectory, mvnExecutable, arguments)
         final ExecutableOutput mvnOutput = executableRunner.execute(mvnExecutable)
 
-        List<DependencyNode> sourcePathProjectNodes = mavenPackager.makeDependencyNodes(mvnOutput.standardOutput)
-        sourcePathProjectNodes.each {
-            DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, it)
-            codeLocations.add(detectCodeLocation)
-        }
+        List<DetectCodeLocation> codeLocations = mavenCodeLocationPackager.extractCodeLocations(sourcePath, mvnOutput.standardOutput)
 
         File[] additionalTargets = detectFileManager.findFilesToDepth(detectConfiguration.sourceDirectory, 'target', detectConfiguration.searchDepth)
         if (additionalTargets) {

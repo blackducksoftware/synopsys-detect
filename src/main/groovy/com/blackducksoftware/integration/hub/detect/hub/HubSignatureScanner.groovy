@@ -74,13 +74,13 @@ class HubSignatureScanner {
 
         if (detectProject.projectName && detectProject.projectVersionName && detectConfiguration.hubSignatureScannerPaths) {
             detectConfiguration.hubSignatureScannerPaths.each {
-                scanPath(cliDataService, hubServerConfig, new File(it).canonicalPath, detectProject.projectName, detectProject.projectVersionName)
+                scanPath(cliDataService, hubServerConfig, new File(it).canonicalPath, detectProject)
             }
         } else {
             registeredPaths.each {
                 logger.info("Attempting to scan ${it} for ${detectProject.projectName}/${detectProject.projectVersionName}")
                 try {
-                    scanPath(cliDataService, hubServerConfig, it, detectProject.projectName, detectProject.projectVersionName)
+                    scanPath(cliDataService, hubServerConfig, it, detectProject)
                 } catch (Exception e) {
                     logger.error("Not able to scan ${it}: ${e.message}")
                 }
@@ -88,11 +88,11 @@ class HubSignatureScanner {
         }
     }
 
-    private void scanPath(CLIDataService cliDataService, HubServerConfig hubServerConfig, String canonicalPath, String project, String version) {
+    private void scanPath(CLIDataService cliDataService, HubServerConfig hubServerConfig, String canonicalPath, DetectProject detectProject) {
         try {
             ProjectRequestBuilder projectRequestBuilder = new ProjectRequestBuilder()
-            projectRequestBuilder.projectName = project
-            projectRequestBuilder.versionName = version
+            projectRequestBuilder.projectName = detectProject.projectName
+            projectRequestBuilder.versionName = detectProject.projectVersionName
             ProjectRequest projectRequest = projectRequestBuilder.build()
 
             File scannerDirectory = detectFileManager.createDirectory('signature_scanner')
@@ -104,9 +104,10 @@ class HubSignatureScanner {
             hubScanConfigBuilder.workingDirectory = scannerDirectory
             hubScanConfigBuilder.addScanTargetPath(canonicalPath)
             hubScanConfigBuilder.cleanupLogsOnSuccess = detectConfiguration.getCleanupBomToolFiles()
-            if (detectConfiguration.projectCodeLocationName) {
-                hubScanConfigBuilder.codeLocationAlias = "${detectConfiguration.projectCodeLocationName} Hub Detect Scan"
-            }
+            hubScanConfigBuilder.dryRun = detectConfiguration.hubSignatureScannerDryRun
+
+            final String codeLocationName = detectProject.getCodeLocationName(detectFileManager, canonicalPath, 'Hub Detect Scan')
+            hubScanConfigBuilder.codeLocationAlias = codeLocationName
 
             HubScanConfig hubScanConfig = hubScanConfigBuilder.build()
 

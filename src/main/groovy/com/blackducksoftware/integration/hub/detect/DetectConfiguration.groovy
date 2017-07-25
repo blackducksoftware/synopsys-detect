@@ -236,9 +236,6 @@ class DetectConfiguration {
     public String getProjectVersionName() {
         return detectProperties.projectVersionName?.trim()
     }
-    public String getProjectCodeLocationName() {
-        return detectProperties.projectCodeLocationName?.trim()
-    }
     public boolean getPolicyCheck() {
         return BooleanUtils.toBoolean(detectProperties.policyCheck)
     }
@@ -358,6 +355,9 @@ class DetectConfiguration {
     }
     public boolean getSuppressConfigurationOutput() {
         return BooleanUtils.toBoolean(detectProperties.suppressConfigurationOutput)
+    }
+    public String[] getHubSignatureScannerDryRun() {
+        return detectProperties.hubSignatureScannerDryRun
     }
     public String[] getHubSignatureScannerPaths() {
         return detectProperties.hubSignatureScannerPaths
