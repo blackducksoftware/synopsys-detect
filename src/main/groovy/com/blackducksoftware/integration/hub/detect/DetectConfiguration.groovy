@@ -63,6 +63,8 @@ class DetectConfiguration {
     private boolean usingDefaultSourcePath
     private boolean usingDefaultOutputPath
 
+    List<File> excludedScanPaths = []
+
     void init() {
         if (!detectProperties.sourcePath) {
             usingDefaultSourcePath = true
@@ -105,6 +107,12 @@ class DetectConfiguration {
 
         if (dockerBomTool.isBomToolApplicable()) {
             configureForDocker()
+        }
+
+        if (detectProperties.getHubSignatureScannerExcludedPaths()) {
+            detectProperties.getHubSignatureScannerExcludedPaths().each {
+                excludedScanPaths.add(new File(sourceDirectory, it))
+            }
         }
     }
 
@@ -362,6 +370,9 @@ class DetectConfiguration {
     public String[] getHubSignatureScannerPaths() {
         return detectProperties.hubSignatureScannerPaths
     }
+    public List<File> getHubSignatureScannerExcludedPaths() {
+        return excludedScanPaths
+    }
     public boolean getPackagistIncludeDevDependencies() {
         return BooleanUtils.toBoolean(detectProperties.packagistIncludeDevDependencies)
     }
@@ -380,6 +391,12 @@ class DetectConfiguration {
     public String getCpanmPath() {
         return detectProperties.cpanmPath?.trim()
     }
+    public String getSbtExcludedConfigurationNames() {
+        return detectProperties.sbtExcludedConfigurationNames
+    }
+    public String getSbtIncludedConfigurationNames() {
+        return detectProperties.sbtIncludedConfigurationNames
+    }
     public boolean getHashVersion() {
         return BooleanUtils.toBoolean(detectProperties.getHashVersion())
     }
@@ -391,5 +408,11 @@ class DetectConfiguration {
     }
     public String getAggregateBomName() {
         return detectProperties.aggregateBomName?.trim()
+    }
+    public String getCondaPath() {
+        return detectProperties.condaPath?.trim()
+    }
+    public String getCondaEnvironmentName() {
+        return detectProperties.condaEnvironmentName?.trim()
     }
 }

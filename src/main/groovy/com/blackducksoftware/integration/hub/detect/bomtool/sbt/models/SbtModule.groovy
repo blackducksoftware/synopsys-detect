@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2017 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
  *
@@ -20,25 +20,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.type;
+package com.blackducksoftware.integration.hub.detect.bomtool.sbt.models
 
-public enum BomToolType {
-    CARTHAGE,
-    COCOAPODS,
-    CONDA,
-    CPAN,
-    CRAN,
-    DOCKER,
-    GO_DEP,
-    GO_GODEP,
-    GO_VNDR,
-    GRADLE,
-    MAVEN,
-    NPM,
-    NUGET,
-    PACKAGIST,
-    PEAR,
-    PIP,
-    RUBYGEMS,
-    SBT;
+
+public class SbtModule {
+    String organisation
+
+    String name
+
+    List<SbtRevision> revisions
 }

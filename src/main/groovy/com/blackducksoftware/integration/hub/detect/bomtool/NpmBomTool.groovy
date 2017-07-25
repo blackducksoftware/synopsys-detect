@@ -71,15 +71,18 @@ class NpmBomTool extends BomTool {
     List<DetectCodeLocation> extractDetectCodeLocations() {
         File npmLsOutputFile = detectFileManager.createFile(BomToolType.NPM, NpmBomTool.OUTPUT_FILE)
         File npmLsErrorFile = detectFileManager.createFile(BomToolType.NPM, NpmBomTool.ERROR_FILE)
-        def npmExe = executableRunner.runExeToFile(npmExePath, npmLsOutputFile, npmLsErrorFile, 'ls', '-json')
+        executableRunner.runExeToFile(npmExePath, npmLsOutputFile, npmLsErrorFile, 'ls', '-json')
 
         if (npmLsErrorFile.length() == 0) {
+            if (logger.debugEnabled) {
+                def npmVersion = executableRunner.runExe(npmExePath, '-version')
+            }
             def dependencyNode = cliDependencyFinder.generateDependencyNode(npmLsOutputFile)
             def detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, dependencyNode)
 
             return [detectCodeLocation]
         } else {
-            logger.error("Error when running npm ls command\n${npmLsErrorFile.text}")
+            logger.error("Error when running npm ls -json command\n${npmLsErrorFile.text}")
         }
 
         []
