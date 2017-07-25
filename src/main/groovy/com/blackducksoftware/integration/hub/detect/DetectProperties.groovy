@@ -123,6 +123,18 @@ class DetectProperties {
     @Value('${detect.project.version.name}')
     String projectVersionName
 
+    @ValueDescription(description = "An override for the Project level matches.", defaultValue="true", group=DetectProperties.GROUP_PROJECT_INFO)
+    @Value('${detect.project.level.adjustments}')
+    String projectLevelMatchAdjustments
+
+    @ValueDescription(description = "An override for the Project Version phase.", defaultValue="Development",  group=DetectProperties.GROUP_PROJECT_INFO)
+    @Value('${detect.project.version.phase}')
+    String projectVersionPhase
+
+    @ValueDescription(description = "An override for the Project Version distribution", defaultValue="External",  group=DetectProperties.GROUP_PROJECT_INFO)
+    @Value('${detect.project.version.distribution}')
+    String projectVersionDistribution
+
     @ValueDescription(description = "Set to true if you would like a policy check from the hub for your project. False by default", defaultValue="false", group=DetectProperties.GROUP_POLICY_CHECK)
     @Value('${detect.policy.check}')
     Boolean policyCheck

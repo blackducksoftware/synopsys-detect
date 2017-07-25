@@ -99,10 +99,13 @@ class HubSignatureScanner {
 
     private void scanPath(CLIDataService cliDataService, HubServerConfig hubServerConfig, String canonicalPath, DetectProject detectProject) {
         try {
-            ProjectRequestBuilder projectRequestBuilder = new ProjectRequestBuilder()
-            projectRequestBuilder.projectName = detectProject.projectName
-            projectRequestBuilder.versionName = detectProject.projectVersionName
-            ProjectRequest projectRequest = projectRequestBuilder.build()
+            ProjectRequestBuilder builder = new ProjectRequestBuilder()
+            builder.setProjectName(detectProject.projectName)
+            builder.setVersionName(detectProject.projectVersionName)
+            builder.setProjectLevelAdjustments(detectConfiguration.projectLevelMatchAdjustments)
+            builder.setPhase(detectConfiguration.getProjectVersionPhase())
+            builder.setDistribution(detectConfiguration.getProjectVersionDistribution())
+            ProjectRequest projectRequest = builder.build()
 
             File scannerDirectory = detectFileManager.createDirectory('signature_scanner')
             File toolsDirectory = detectFileManager.createDirectory(scannerDirectory, 'tools')

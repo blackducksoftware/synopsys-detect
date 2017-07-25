@@ -244,6 +244,15 @@ class DetectConfiguration {
     public String getProjectVersionName() {
         return detectProperties.projectVersionName?.trim()
     }
+    public boolean getProjectLevelMatchAdjustments() {
+        return BooleanUtils.toBoolean(detectProperties.projectLevelMatchAdjustments)
+    }
+    public String getProjectVersionPhase() {
+        return detectProperties.projectVersionPhase?.trim()
+    }
+    public String getProjectVersionDistribution() {
+        return detectProperties.projectVersionDistribution?.trim()
+    }
     public boolean getPolicyCheck() {
         return BooleanUtils.toBoolean(detectProperties.policyCheck)
     }
