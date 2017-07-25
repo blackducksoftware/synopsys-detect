@@ -283,13 +283,17 @@ class DetectProperties {
     @Value('${detect.cleanup.bom.tool.files}')
     Boolean cleanupBomToolFiles
 
-    @ValueDescription(description="These paths will be excluded from scanning", group=DetectProperties.GROUP_SIGNATURE_SCANNER)
-    @Value('${detect.hub.signature.scanner.paths.excluded}')
-    String[] hubSignatureScannerExcludedPaths
+    @ValueDescription(description="Enables you to specify sub-directories to exclude from scans", group=DetectProperties.GROUP_SIGNATURE_SCANNER)
+    @Value('${detect.hub.signature.scanner.exlusion.patterns}')
+    String[] hubSignatureScannerExclusionPatterns
 
     @ValueDescription(description="These paths and only these paths will be scanned.", group=DetectProperties.GROUP_SIGNATURE_SCANNER)
     @Value('${detect.hub.signature.scanner.paths}')
     String[] hubSignatureScannerPaths
+
+    @ValueDescription(description="The relative paths of directories to be excluded from scan registration", group=DetectProperties.GROUP_SIGNATURE_SCANNER)
+    @Value('${detect.scan.registration.exclusion.paths}')
+    String[] hubScanRegistrationExlusionPaths
 
     @ValueDescription(description="The memory for the scanner to use.", defaultValue="4096", group=DetectProperties.GROUP_SIGNATURE_SCANNER)
     @Value('${detect.hub.signature.scanner.memory}')
