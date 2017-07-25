@@ -40,20 +40,19 @@ class CondaListParser {
     Gson gson
 
     Set<DependencyNode> parse(String listJsonText, String infoJsonText) {
-        Type listType = new TypeToken<ArrayList<CondaListElement>>(){}.getType()
-        List<CondaListElement> condaList = gson.fromJson(listJsonText, listType)
+        final Type listType = new TypeToken<ArrayList<CondaListElement>>(){}.getType()
+        final List<CondaListElement> condaList = gson.fromJson(listJsonText, listType)
+        final CondaInfo condaInfo = gson.fromJson(infoJsonText, CondaInfo.class)
+        final String platform = condaInfo.platform
 
-        CondaInfo condaInfo = gson.fromJson(infoJsonText, CondaInfo.class)
+        condaList.collect { condaListElementToDependencyNodeTransformer(platform, it) }
+    }
 
-        Set<DependencyNode> dependencies = new HashSet<>()
-        condaList.each { dependency ->
-            String name = dependency.name
-            String version = "${dependency.version}-${dependency.buildString}-${condaInfo.platform}"
-            ExternalId externalId = new NameVersionExternalId(Forge.ANACONDA, name, version) 
-            def dependencyNode = new DependencyNode(dependency.name, dependency.version, externalId)
-            dependencies.add(dependencyNode)
-        }
+    DependencyNode condaListElementToDependencyNodeTransformer(String platform, CondaListElement element) {
+        String name = element.name
+        String version = "${element.version}-${element.buildString}-${platform}"
+        ExternalId externalId = new NameVersionExternalId(Forge.ANACONDA, name, version)
 
-        dependencies
+        new DependencyNode(name, version, externalId)
     }
 }
