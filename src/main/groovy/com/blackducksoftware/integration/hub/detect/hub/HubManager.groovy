@@ -93,7 +93,7 @@ class HubManager {
             HubServerConfig hubServerConfig = createHubServerConfig(slf4jIntLogger)
             HubServicesFactory hubServicesFactory = createHubServicesFactory(slf4jIntLogger, hubServerConfig)
             if (createdBdioFiles) {
-                ensureProjectVersionExist(detectProject, hubServicesFactory.createProjectRequestService(slf4jIntLogger), hubServicesFactory.createProjectVersionRequestService(slf4jIntLogger))
+                ensureProjectVersionExists(detectProject, hubServicesFactory.createProjectRequestService(slf4jIntLogger), hubServicesFactory.createProjectVersionRequestService(slf4jIntLogger))
                 bdioUploader.uploadBdioFiles(hubServerConfig, hubServicesFactory, createdBdioFiles)
             } else {
                 logger.debug('Did not create any bdio files.')
@@ -129,7 +129,7 @@ class HubManager {
         postActionResult
     }
 
-    public void ensureProjectVersionExist(DetectProject detectProject, ProjectRequestService projectRequestService, ProjectVersionRequestService projectVersionRequestService){
+    public void ensureProjectVersionExists(DetectProject detectProject, ProjectRequestService projectRequestService, ProjectVersionRequestService projectVersionRequestService) {
         ProjectRequestBuilder builder = new ProjectRequestBuilder()
         builder.setProjectName(detectProject.getProjectName())
         builder.setVersionName(detectProject.getProjectVersionName())
