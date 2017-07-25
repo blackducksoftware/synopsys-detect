@@ -71,7 +71,7 @@ class NpmBomTool extends BomTool {
     List<DetectCodeLocation> extractDetectCodeLocations() {
         File npmLsOutputFile = detectFileManager.createFile(BomToolType.NPM, NpmBomTool.OUTPUT_FILE)
         File npmLsErrorFile = detectFileManager.createFile(BomToolType.NPM, NpmBomTool.ERROR_FILE)
-        def npmExe = executableRunner.runExeToFile(npmExePath, npmLsOutputFile, npmLsErrorFile, 'ls', '-json')
+        executableRunner.runExeToFile(npmExePath, npmLsOutputFile, npmLsErrorFile, 'ls', '-json')
 
         if (npmLsErrorFile.length() == 0) {
             if (logger.debugEnabled) {
