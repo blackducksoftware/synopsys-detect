@@ -28,13 +28,20 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.api.item.MetaService
+import com.blackducksoftware.integration.hub.api.project.ProjectRequestService
+import com.blackducksoftware.integration.hub.api.project.version.ProjectVersionRequestService
 import com.blackducksoftware.integration.hub.builder.HubServerConfigBuilder
 import com.blackducksoftware.integration.hub.dataservice.policystatus.PolicyStatusDescription
 import com.blackducksoftware.integration.hub.dataservice.project.ProjectDataService
 import com.blackducksoftware.integration.hub.dataservice.project.ProjectVersionWrapper
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
+import com.blackducksoftware.integration.hub.exception.DoesNotExistException
 import com.blackducksoftware.integration.hub.global.HubServerConfig
+import com.blackducksoftware.integration.hub.model.request.ProjectRequest
+import com.blackducksoftware.integration.hub.model.view.ProjectVersionView
+import com.blackducksoftware.integration.hub.model.view.ProjectView
+import com.blackducksoftware.integration.hub.request.builder.ProjectRequestBuilder
 import com.blackducksoftware.integration.hub.rest.RestConnection
 import com.blackducksoftware.integration.hub.service.HubServicesFactory
 import com.blackducksoftware.integration.log.Slf4jIntLogger
@@ -85,8 +92,12 @@ class HubManager {
             Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
             HubServerConfig hubServerConfig = createHubServerConfig(slf4jIntLogger)
             HubServicesFactory hubServicesFactory = createHubServicesFactory(slf4jIntLogger, hubServerConfig)
-
-            bdioUploader.uploadBdioFiles(hubServerConfig, hubServicesFactory, createdBdioFiles)
+            if (createdBdioFiles) {
+                ensureProjectVersionExist(detectProject, hubServicesFactory.createProjectRequestService(slf4jIntLogger), hubServicesFactory.createProjectVersionRequestService(slf4jIntLogger))
+                bdioUploader.uploadBdioFiles(hubServerConfig, hubServicesFactory, createdBdioFiles)
+            } else {
+                logger.debug('Did not create any bdio files.')
+            }
             if (!detectConfiguration.getHubSignatureScannerDisabled()) {
                 hubSignatureScanner.scanPaths(hubServerConfig, hubServicesFactory, detectProject)
             }
@@ -116,5 +127,28 @@ class HubManager {
             logger.debug(e.getMessage(), e)
         }
         postActionResult
+    }
+
+    public void ensureProjectVersionExist(DetectProject detectProject, ProjectRequestService projectRequestService, ProjectVersionRequestService projectVersionRequestService){
+        ProjectRequestBuilder builder = new ProjectRequestBuilder()
+        builder.setProjectName(detectProject.getProjectName())
+        builder.setVersionName(detectProject.getProjectVersionName())
+        builder.setProjectLevelAdjustments(detectConfiguration.getProjectLevelMatchAdjustments())
+        builder.setPhase(detectConfiguration.getProjectVersionPhase())
+        builder.setDistribution(detectConfiguration.getProjectVersionDistribution())
+        ProjectRequest projectRequest = builder.build()
+        ProjectView project = null
+        try {
+            project = projectRequestService.getProjectByName(projectRequest.getName())
+        } catch (final DoesNotExistException e) {
+            final String projectURL = projectRequestService.createHubProject(projectRequest)
+            project = projectRequestService.getItem(projectURL, ProjectView.class)
+        }
+        try {
+            projectVersionRequestService.getProjectVersion(project, projectRequest.getVersionRequest().getVersionName())
+        } catch (final DoesNotExistException e) {
+            final String versionURL = projectVersionRequestService.createHubVersion(project, projectRequest.getVersionRequest())
+            projectVersionRequestService.getItem(versionURL, ProjectVersionView.class)
+        }
     }
 }
