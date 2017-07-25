@@ -50,9 +50,6 @@ class BdioUploader {
     HubManager hubManager
 
     void uploadBdioFiles(HubServerConfig hubServerConfig, HubServicesFactory hubServicesFactory, List<File> createdBdioFiles) {
-        if (!createdBdioFiles) {
-            return
-        }
         Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
         BomImportRequestService bomImportRequestService = hubServicesFactory.createBomImportRequestService()
         PhoneHomeDataService phoneHomeDataService = hubServicesFactory.createPhoneHomeDataService(slf4jIntLogger)
