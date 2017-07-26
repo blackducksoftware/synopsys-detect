@@ -263,14 +263,6 @@ class DetectProperties {
     @Value('${detect.docker.inspector.version}')
     String dockerInspectorVersion
 
-    @ValueDescription(description="Where the Hub Docker Inspector should be installed - will default to a 'docker-install' directory in the outputDirectoryPath", group=DetectProperties.GROUP_DOCKER)
-    @Value('${detect.docker.install.path}')
-    String dockerInstallPath
-
-    @ValueDescription(description="Where the Hub Docker Inspector will put the files it needs to do its processing - this directory could be cleared by the inspector, so it should not be shared by others - will default to 'sandbox' directory in the dockerInstallPath", group=DetectProperties.GROUP_DOCKER)
-    @Value('${detect.docker.sandbox.path}')
-    String dockerSandboxPath
-
     @ValueDescription(description="A saved docker image - must be a .tar file. For detect to run docker either this property or detect.docker.image must be set.", group=DetectProperties.GROUP_DOCKER)
     @Value('${detect.docker.tar}')
     String dockerTar

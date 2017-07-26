@@ -42,8 +42,6 @@ class DockerProperties {
         dockerProperties.setProperty('hub.proxy.password', detectConfiguration.getHubProxyPassword())
         dockerProperties.setProperty('hub.project.name', detectConfiguration.getProjectName())
         dockerProperties.setProperty('hub.project.version', detectConfiguration.getProjectVersionName())
-        dockerProperties.setProperty('install.dir', detectConfiguration.getDockerInstallPath())
-        dockerProperties.setProperty('working.directory', detectConfiguration.getDockerSandboxPath())
         dockerProperties.setProperty('logging.level.com.blackducksoftware', detectConfiguration.getLoggingLevel())
 
         detectConfiguration.additionalDockerPropertyNames.each { propertyName ->
