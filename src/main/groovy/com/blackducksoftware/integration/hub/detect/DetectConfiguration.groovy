@@ -109,8 +109,8 @@ class DetectConfiguration {
             configureForDocker()
         }
 
-        if (detectProperties.getHubScanRegistrationExlusionPaths()) {
-            detectProperties.getHubScanRegistrationExlusionPaths().each {
+        if (detectProperties.hubSignatureScannerRelativePathsToExclude) {
+            detectProperties.hubSignatureScannerRelativePathsToExclude.each {
                 excludedScanPaths.add(new File(sourceDirectory, it).getCanonicalPath())
             }
         }
@@ -382,7 +382,7 @@ class DetectConfiguration {
     public String[] getHubSignatureScannerExclusionPatterns() {
         return detectProperties.hubSignatureScannerExclusionPatterns
     }
-    public List<String> getHubScanRegistrationExlusionPaths() {
+    public List<String> getHubSignatureScannerPathsToExclude() {
         return excludedScanPaths
     }
     public boolean getPackagistIncludeDevDependencies() {
