@@ -63,7 +63,7 @@ class NpmCliDependencyFinder {
 
     public DependencyNode generateDependencyNode(File npmLsOutputFile) {
         if (npmLsOutputFile?.length() > 0) {
-            logger.info("Generating results from npm ls")
+            logger.info("Generating results from npm ls -json")
             return convertNpmJsonFileToDependencyNode(npmLsOutputFile)
         } else {
             logger.error("Ran into an issue creating and writing to file")
