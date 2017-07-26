@@ -295,10 +295,6 @@ class DetectProperties {
     @Value('${detect.hub.signature.scanner.dry.run}')
     Boolean hubSignatureScannerDryRun
 
-    @ValueDescription(description="These paths will be excluded from scanning", group=DetectProperties.GROUP_SIGNATURE_SCANNER)
-    @Value('${detect.hub.signature.scanner.paths.excluded}')
-    String[] hubSignatureScannerExcludedPaths
-
     @ValueDescription(description="Enables you to specify sub-directories to exclude from scans", group=DetectProperties.GROUP_SIGNATURE_SCANNER)
     @Value('${detect.hub.signature.scanner.exclusion.patterns}')
     String[] hubSignatureScannerExclusionPatterns
