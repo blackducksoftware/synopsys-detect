@@ -65,6 +65,13 @@ class DetectProject {
         codeLocation
     }
 
+    public String getCodeLocationName(DetectFileManager detectFileManager, final String canonicalProjectSourcePath, final String canonicalCodeLocationSourcePath, String suffix) {
+        String finalProjectSourcePathPiece = detectFileManager.extractFinalPieceFromPath(canonicalProjectSourcePath)
+        String sourcePath = canonicalCodeLocationSourcePath.replace(canonicalProjectSourcePath, finalProjectSourcePathPiece);
+        String codeLocation = String.format('%s/%s/%s %s', sourcePath, projectName, projectVersionName, suffix)
+        codeLocation
+    }
+
     public List<DetectCodeLocation> getDetectCodeLocations() {
         detectCodeLocations
     }

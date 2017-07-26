@@ -118,7 +118,7 @@ class HubSignatureScanner {
             hubScanConfigBuilder.cleanupLogsOnSuccess = detectConfiguration.getCleanupBomToolFiles()
             hubScanConfigBuilder.dryRun = detectConfiguration.hubSignatureScannerDryRun
 
-            final String codeLocationName = detectProject.getCodeLocationName(detectFileManager, canonicalPath, 'Hub Detect Scan')
+            final String codeLocationName = detectProject.getCodeLocationName(detectFileManager, detectConfiguration.sourcePath, canonicalPath, 'Hub Detect Scan')
             hubScanConfigBuilder.codeLocationAlias = codeLocationName
 
             HubScanConfig hubScanConfig = hubScanConfigBuilder.build()
@@ -128,7 +128,7 @@ class HubSignatureScanner {
             ProjectVersionView projectVersionView = cliDataService.installAndRunControlledScan(hubServerConfig, hubScanConfig, projectRequest, false, integrationInfo)
             logger.info("${canonicalPath} was successfully scanned by the BlackDuck CLI.")
         } catch (Exception e) {
-            logger.error("${project}/${version} was not scanned by the BlackDuck CLI: ${e.message}")
+            logger.error("${detectProject.projectName}/${detectProject.projectVersionName} was not scanned by the BlackDuck CLI: ${e.message}")
         }
     }
 }
