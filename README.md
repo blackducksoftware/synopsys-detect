@@ -11,4 +11,4 @@ In dev.
 
 ## Documentation 
 
-All documentation is located on our public [Black Duck Confluence](https://blackducksoftware.atlassian.net/wiki/display/INTDOCS/)
+All documentation is located on our public [Black Duck Confluence](https://github.com/blackducksoftware/hub-detect/wiki)
