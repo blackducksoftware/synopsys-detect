@@ -60,14 +60,11 @@ class HubSignatureScanner {
     private List<String> registeredPaths = []
 
     public void registerPathToScan(File file) {
-        boolean excluded = false
-        for (File excludedPath : detectConfiguration.getHubSignatureScannerExcludedPaths()) {
-            if (file.canonicalPath.startsWith(excludedPath.canonicalPath)) {
-                excluded = true
-                break
-            }
+        String matchingExcludedPath = detectConfiguration.hubSignatureScannerPathsToExclude.find {
+            file.canonicalPath.startsWith(it)
         }
-        if (excluded) {
+
+        if (matchingExcludedPath) {
             logger.info("Not registering excluded path ${file.canonicalPath} to scan")
         } else if (file.exists() && (file.isFile() || file.isDirectory())) {
             logger.info("Registering path ${file.canonicalPath} to scan")
@@ -103,8 +100,8 @@ class HubSignatureScanner {
             builder.setProjectName(detectProject.projectName)
             builder.setVersionName(detectProject.projectVersionName)
             builder.setProjectLevelAdjustments(detectConfiguration.projectLevelMatchAdjustments)
-            builder.setPhase(detectConfiguration.getProjectVersionPhase())
-            builder.setDistribution(detectConfiguration.getProjectVersionDistribution())
+            builder.setPhase(detectConfiguration.projectVersionPhase)
+            builder.setDistribution(detectConfiguration.projectVersionDistribution)
             ProjectRequest projectRequest = builder.build()
 
             File scannerDirectory = detectFileManager.createDirectory('signature_scanner')
@@ -115,11 +112,15 @@ class HubSignatureScanner {
             hubScanConfigBuilder.toolsDir = toolsDirectory
             hubScanConfigBuilder.workingDirectory = scannerDirectory
             hubScanConfigBuilder.addScanTargetPath(canonicalPath)
-            hubScanConfigBuilder.cleanupLogsOnSuccess = detectConfiguration.getCleanupBomToolFiles()
+            hubScanConfigBuilder.cleanupLogsOnSuccess = detectConfiguration.cleanupBomToolFiles
             hubScanConfigBuilder.dryRun = detectConfiguration.hubSignatureScannerDryRun
 
             final String codeLocationName = detectProject.getCodeLocationName(detectFileManager, detectConfiguration.sourcePath, canonicalPath, 'Hub Detect Scan')
             hubScanConfigBuilder.codeLocationAlias = codeLocationName
+
+            if (detectConfiguration.hubSignatureScannerExclusionPatterns) {
+                hubScanConfigBuilder.setExcludePatterns(detectConfiguration.hubSignatureScannerExclusionPatterns)
+            }
 
             HubScanConfig hubScanConfig = hubScanConfigBuilder.build()
 

@@ -1,0 +1,57 @@
+{
+  "GID": 20,
+  "UID": 502,
+  "channels": [
+    "https://repo.continuum.io/pkgs/free/osx-64",
+    "https://repo.continuum.io/pkgs/free/noarch",
+    "https://repo.continuum.io/pkgs/r/osx-64",
+    "https://repo.continuum.io/pkgs/r/noarch",
+    "https://repo.continuum.io/pkgs/pro/osx-64",
+    "https://repo.continuum.io/pkgs/pro/noarch"
+  ],
+  "conda_build_version": "not installed",
+  "conda_env_version": "4.3.22",
+  "conda_location": "/usr/local/miniconda3/lib/python3.6/site-packages/conda",
+  "conda_prefix": "/usr/local/miniconda3",
+  "conda_private": false,
+  "conda_version": "4.3.22",
+  "default_prefix": "/usr/local/miniconda3",
+  "env_vars": {
+    "CIO_TEST": "<not set>",
+    "CONDA_DEFAULT_ENV": "<not set>",
+    "CONDA_ENVS_PATH": "<not set>",
+    "DYLD_LIBRARY_PATH": "<not set>",
+    "PATH": "/Users/jmathews/.rvm/gems/ruby-2.4.0/bin:/Users/jmathews/.rvm/gems/ruby-2.4.0@global/bin:/Users/jmathews/.rvm/rubies/ruby-2.4.0/bin:/usr/local/miniconda3/bin:/usr/local/Cellar/maven/3.5.0/libexec/bin/mvn:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/Users/jmathews/.rvm/bin",
+    "PYTHONHOME": "<not set>",
+    "PYTHONPATH": "<not set>"
+  },
+  "envs": [
+    "/usr/local/miniconda3/envs/FPD17",
+    "/usr/local/miniconda3/envs/bf-api",
+    "/usr/local/miniconda3/envs/bunnies",
+    "/usr/local/miniconda3/envs/bunniessss"
+  ],
+  "envs_dirs": [
+    "/usr/local/miniconda3/envs",
+    "/Users/jmathews/.conda/envs"
+  ],
+  "netrc_file": null,
+  "offline": false,
+  "pkgs_dirs": [
+    "/usr/local/miniconda3/pkgs",
+    "/Users/jmathews/.conda/pkgs"
+  ],
+  "platform": "osx-64",
+  "python_version": "3.6.1.final.0",
+  "rc_path": "/Users/jmathews/.condarc",
+  "requests_version": "2.14.2",
+  "root_prefix": "/usr/local/miniconda3",
+  "root_writable": true,
+  "site_dirs": [],
+  "sys.executable": "/usr/local/miniconda3/bin/python",
+  "sys.prefix": "/usr/local/miniconda3",
+  "sys.version": "3.6.1 |Continuum Analytics, Inc.| (default, May 11 2017, 13:04:09) \n[GCC 4.2.1 Compatible Apple LLVM 6.0 (clang-600.0.57)]",
+  "sys_rc_path": "/usr/local/miniconda3/.condarc",
+  "user_agent": "conda/4.3.22 requests/2.14.2 CPython/3.6.1 Darwin/16.6.0 OSX/10.12.5",
+  "user_rc_path": "/Users/jmathews/.condarc"
+}
