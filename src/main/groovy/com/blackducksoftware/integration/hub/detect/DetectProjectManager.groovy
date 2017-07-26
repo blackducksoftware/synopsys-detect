@@ -22,7 +22,6 @@
  */
 package com.blackducksoftware.integration.hub.detect
 
-import org.apache.commons.io.FilenameUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -43,6 +42,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLoc
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
+import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil
 import com.google.gson.Gson
@@ -74,6 +74,9 @@ class DetectProjectManager {
 
     @Autowired
     IntegrationEscapeUtil integrationEscapeUtil
+
+    @Autowired
+    DetectFileManager detectFileManager
 
     private boolean foundAnyBomTools
 
@@ -129,8 +132,6 @@ class DetectProjectManager {
 
     public List<File> createBdioFiles(DetectProject detectProject) {
         List<File> bdioFiles = []
-        final String safeProjectName = integrationEscapeUtil.escapeForUri(detectProject.projectName)
-        final String safeVersionName = integrationEscapeUtil.escapeForUri(detectProject.projectVersionName)
 
         File aggregateBdioFile = null
         final SimpleBdioDocument aggregateBdioDocument = null
@@ -148,7 +149,7 @@ class DetectProjectManager {
                 aggregateBdioDocument.components.addAll(dependencyNodeTransformer.addComponentsGraph(aggregateBdioDocument.project, it.dependencies))
             } else {
                 final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(detectProject, it)
-                final String filename = "${it.bomToolType.toString()}_${safeProjectName}_${safeVersionName}_bdio.jsonld"
+                final String filename = it.createBdioFilename(integrationEscapeUtil, detectFileManager, detectProject.projectName, detectProject.projectVersionName)
                 final File outputFile = new File(detectConfiguration.getOutputDirectory(), filename)
                 if (outputFile.exists()) {
                     outputFile.delete()
@@ -170,7 +171,7 @@ class DetectProjectManager {
     }
 
     private SimpleBdioDocument createSimpleBdioDocument(DetectProject detectProject, DetectCodeLocation detectCodeLocation) {
-        final String codeLocationName = getCodeLocationName(detectCodeLocation.bomToolType, detectCodeLocation.sourcePath, detectProject.projectName, detectProject.projectVersionName)
+        final String codeLocationName = detectProject.getCodeLocationName(detectFileManager, detectCodeLocation.bomToolType, detectCodeLocation.sourcePath, 'Hub Detect Tool')
         final String projectId = detectCodeLocation.bomToolProjectExternalId.createDataId()
         final BdioExternalIdentifier projectExternalIdentifier = bdioPropertyHelper.createExternalIdentifier(detectCodeLocation.bomToolProjectExternalId)
 
@@ -212,7 +213,7 @@ class DetectProjectManager {
         if (detectConfiguration.getProjectName()) {
             projectName = detectConfiguration.getProjectName()
         } else if (!projectName && detectConfiguration.sourcePath) {
-            String finalSourcePathPiece = extractFinalPieceFromSourcePath(detectConfiguration.sourcePath)
+            String finalSourcePathPiece = detectFileManager.extractFinalPieceFromPath(detectConfiguration.sourcePath)
             projectName = finalSourcePathPiece
         }
 
@@ -231,20 +232,4 @@ class DetectProjectManager {
         projectVersion
     }
 
-    String getCodeLocationName(final BomToolType bomToolType, final String sourcePath, final String projectName, final String projectVersion) {
-        String codeLocation = detectConfiguration.getProjectCodeLocationName()
-        if (!codeLocation?.trim()) {
-            String finalSourcePathPiece = extractFinalPieceFromSourcePath(sourcePath)
-            codeLocation = String.format('%s/%s/%s', finalSourcePathPiece, projectName, projectVersion)
-        }
-        return String.format('%s/%s Hub Detect Export', bomToolType.toString(), codeLocation)
-    }
-
-    private String extractFinalPieceFromSourcePath(String sourcePath) {
-        if (sourcePath == null || sourcePath.length() == 0) {
-            return ''
-        }
-        String normalizedSourcePath = FilenameUtils.normalizeNoEndSeparator(sourcePath, true)
-        normalizedSourcePath[normalizedSourcePath.lastIndexOf('/') + 1..-1]
-    }
 }

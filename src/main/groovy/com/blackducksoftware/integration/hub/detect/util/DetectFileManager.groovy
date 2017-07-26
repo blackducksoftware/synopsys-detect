@@ -22,6 +22,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.util
 
+import org.apache.commons.io.FilenameUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -92,10 +93,18 @@ class DetectFileManager {
         file
     }
 
+    public String extractFinalPieceFromPath(String path) {
+        if (path == null || path.length() == 0) {
+            return ''
+        }
+        String normalizedPath = FilenameUtils.normalizeNoEndSeparator(path, true)
+        normalizedPath[normalizedPath.lastIndexOf('/') + 1..-1]
+    }
+
     boolean directoryExists(final String sourcePath, final String relativePath) {
         final File sourceDirectory = new File(sourcePath)
-        final File relDirectory = new File(sourceDirectory, relativePath);
-        return relDirectory.isDirectory();
+        final File relDirectory = new File(sourceDirectory, relativePath)
+        return relDirectory.isDirectory()
     }
 
     public boolean containsAllFiles(String sourcePath, String... filenamePatterns) {

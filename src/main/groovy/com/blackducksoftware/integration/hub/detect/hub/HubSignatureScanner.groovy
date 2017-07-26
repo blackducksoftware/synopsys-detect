@@ -80,13 +80,13 @@ class HubSignatureScanner {
 
         if (detectProject.projectName && detectProject.projectVersionName && detectConfiguration.hubSignatureScannerPaths) {
             detectConfiguration.hubSignatureScannerPaths.each {
-                scanPath(cliDataService, hubServerConfig, new File(it).canonicalPath, detectProject.projectName, detectProject.projectVersionName)
+                scanPath(cliDataService, hubServerConfig, new File(it).canonicalPath, detectProject)
             }
         } else {
             registeredPaths.each {
                 logger.info("Attempting to scan ${it} for ${detectProject.projectName}/${detectProject.projectVersionName}")
                 try {
-                    scanPath(cliDataService, hubServerConfig, it, detectProject.projectName, detectProject.projectVersionName)
+                    scanPath(cliDataService, hubServerConfig, it, detectProject)
                 } catch (Exception e) {
                     logger.error("Not able to scan ${it}: ${e.message}")
                 }
@@ -94,14 +94,14 @@ class HubSignatureScanner {
         }
     }
 
-    private void scanPath(CLIDataService cliDataService, HubServerConfig hubServerConfig, String canonicalPath, String project, String version) {
+    private void scanPath(CLIDataService cliDataService, HubServerConfig hubServerConfig, String canonicalPath, DetectProject detectProject) {
         try {
             ProjectRequestBuilder builder = new ProjectRequestBuilder()
-            builder.setProjectName(project)
-            builder.setVersionName(version)
-            builder.setProjectLevelAdjustments(detectConfiguration.getProjectLevelMatchAdjustments())
-            builder.setPhase(detectConfiguration.getProjectVersionPhase())
-            builder.setDistribution(detectConfiguration.getProjectVersionDistribution())
+            builder.setProjectName(detectProject.projectName)
+            builder.setVersionName(detectProject.projectVersionName)
+            builder.setProjectLevelAdjustments(detectConfiguration.projectLevelMatchAdjustments)
+            builder.setPhase(detectConfiguration.projectVersionPhase)
+            builder.setDistribution(detectConfiguration.projectVersionDistribution)
             ProjectRequest projectRequest = builder.build()
 
             File scannerDirectory = detectFileManager.createDirectory('signature_scanner')
@@ -112,12 +112,14 @@ class HubSignatureScanner {
             hubScanConfigBuilder.toolsDir = toolsDirectory
             hubScanConfigBuilder.workingDirectory = scannerDirectory
             hubScanConfigBuilder.addScanTargetPath(canonicalPath)
-            hubScanConfigBuilder.cleanupLogsOnSuccess = detectConfiguration.getCleanupBomToolFiles()
-            if (detectConfiguration.getHubSignatureScannerExclusionPatterns()) {
-                hubScanConfigBuilder.setExcludePatterns(detectConfiguration.getHubSignatureScannerExclusionPatterns())
-            }
-            if (detectConfiguration.projectCodeLocationName) {
-                hubScanConfigBuilder.codeLocationAlias = "${detectConfiguration.projectCodeLocationName} Hub Detect Scan"
+            hubScanConfigBuilder.cleanupLogsOnSuccess = detectConfiguration.cleanupBomToolFiles
+            hubScanConfigBuilder.dryRun = detectConfiguration.hubSignatureScannerDryRun
+
+            final String codeLocationName = detectProject.getCodeLocationName(detectFileManager, detectConfiguration.sourcePath, canonicalPath, 'Hub Detect Scan')
+            hubScanConfigBuilder.codeLocationAlias = codeLocationName
+
+            if (detectConfiguration.hubSignatureScannerExclusionPatterns) {
+                hubScanConfigBuilder.setExcludePatterns(detectConfiguration.hubSignatureScannerExclusionPatterns)
             }
 
             HubScanConfig hubScanConfig = hubScanConfigBuilder.build()
@@ -127,7 +129,7 @@ class HubSignatureScanner {
             ProjectVersionView projectVersionView = cliDataService.installAndRunControlledScan(hubServerConfig, hubScanConfig, projectRequest, false, integrationInfo)
             logger.info("${canonicalPath} was successfully scanned by the BlackDuck CLI.")
         } catch (Exception e) {
-            logger.error("${project}/${version} was not scanned by the BlackDuck CLI: ${e.message}")
+            logger.error("${detectProject.projectName}/${detectProject.projectVersionName} was not scanned by the BlackDuck CLI: ${e.message}")
         }
     }
 }

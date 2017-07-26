@@ -135,10 +135,6 @@ class DetectProperties {
     @Value('${detect.project.version.distribution}')
     String projectVersionDistribution
 
-    @ValueDescription(description = "Code location to use when sending data to the Hub. If the code location already exists, it will use that pre-existing location", group=DetectProperties.GROUP_PROJECT_INFO)
-    @Value('${detect.project.code.location.name}')
-    String projectCodeLocationName
-
     @ValueDescription(description = "Set to true if you would like a policy check from the hub for your project. False by default", defaultValue="false", group=DetectProperties.GROUP_POLICY_CHECK)
     @Value('${detect.policy.check}')
     Boolean policyCheck
@@ -294,6 +290,14 @@ class DetectProperties {
     @ValueDescription(description="Detect creates temporary files in the output directory. If set to true this will clean them up after execution", defaultValue='true', group=DetectProperties.GROUP_CLEANUP)
     @Value('${detect.cleanup.bom.tool.files}')
     Boolean cleanupBomToolFiles
+
+    @ValueDescription(description="If set to true, the signature scanner results will not be uploaded to the Hub and the scanner results will be written to disk.", defaultValue='false', group=DetectProperties.GROUP_SIGNATURE_SCANNER)
+    @Value('${detect.hub.signature.scanner.dry.run}')
+    Boolean hubSignatureScannerDryRun
+
+    @ValueDescription(description="These paths will be excluded from scanning", group=DetectProperties.GROUP_SIGNATURE_SCANNER)
+    @Value('${detect.hub.signature.scanner.paths.excluded}')
+    String[] hubSignatureScannerExcludedPaths
 
     @ValueDescription(description="Enables you to specify sub-directories to exclude from scans", group=DetectProperties.GROUP_SIGNATURE_SCANNER)
     @Value('${detect.hub.signature.scanner.exclusion.patterns}')
