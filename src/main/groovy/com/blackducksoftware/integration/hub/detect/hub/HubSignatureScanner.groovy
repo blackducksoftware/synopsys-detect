@@ -60,14 +60,11 @@ class HubSignatureScanner {
     private List<String> registeredPaths = []
 
     public void registerPathToScan(File file) {
-        boolean excluded = false
-        for (File excludedPath : detectConfiguration.getHubSignatureScannerExcludedPaths()) {
-            if (file.canonicalPath.startsWith(excludedPath.canonicalPath)) {
-                excluded = true
-                break
-            }
+        String matchingExcludedPath = detectConfiguration.hubSignatureScannerPathsToExclude.find {
+            file.canonicalPath.startsWith(it)
         }
-        if (excluded) {
+
+        if (matchingExcludedPath) {
             logger.info("Not registering excluded path ${file.canonicalPath} to scan")
         } else if (file.exists() && (file.isFile() || file.isDirectory())) {
             logger.info("Registering path ${file.canonicalPath} to scan")
@@ -116,6 +113,9 @@ class HubSignatureScanner {
             hubScanConfigBuilder.workingDirectory = scannerDirectory
             hubScanConfigBuilder.addScanTargetPath(canonicalPath)
             hubScanConfigBuilder.cleanupLogsOnSuccess = detectConfiguration.getCleanupBomToolFiles()
+            if (detectConfiguration.getHubSignatureScannerExclusionPatterns()) {
+                hubScanConfigBuilder.setExcludePatterns(detectConfiguration.getHubSignatureScannerExclusionPatterns())
+            }
             if (detectConfiguration.projectCodeLocationName) {
                 hubScanConfigBuilder.codeLocationAlias = "${detectConfiguration.projectCodeLocationName} Hub Detect Scan"
             }
