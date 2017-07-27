@@ -362,5 +362,13 @@ class DetectProperties {
     @ValueDescription(description="The name of the anaconda environment used by your project", group=DetectProperties.GROUP_CONDA)
     @Value('${detect.conda.environment.name}')
     String condaEnvironmentName
+	
+	@ValueDescription (description="When set to true, a Black Duck RISK report in PDF form will be created in your source directory", defaultValue='false', group=DetectProperties.GROUP_PROJECT_INFO)
+	@Value('${detect.riskreportPDF}')
+	Boolean riskreportPDF
+	
+//	@ValueDescription (description="When set to true, a Black Duck RISK report in PDF form will be created in your source directory", defaultValue="false", group=DetectProperties.GROUP_PROJECT_INFO)
+//	@Value('${detect.riskreportPDF}')
+//	String riskreportPDF
 }
 

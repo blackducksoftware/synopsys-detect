@@ -34,6 +34,7 @@ import com.blackducksoftware.integration.hub.builder.HubServerConfigBuilder
 import com.blackducksoftware.integration.hub.dataservice.policystatus.PolicyStatusDescription
 import com.blackducksoftware.integration.hub.dataservice.project.ProjectDataService
 import com.blackducksoftware.integration.hub.dataservice.project.ProjectVersionWrapper
+import com.blackducksoftware.integration.hub.dataservice.report.RiskReportDataService
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
 import com.blackducksoftware.integration.hub.exception.DoesNotExistException
@@ -45,6 +46,7 @@ import com.blackducksoftware.integration.hub.request.builder.ProjectRequestBuild
 import com.blackducksoftware.integration.hub.rest.RestConnection
 import com.blackducksoftware.integration.hub.service.HubServicesFactory
 import com.blackducksoftware.integration.log.Slf4jIntLogger
+import java.io.File;
 
 @Component
 class HubManager {
@@ -82,8 +84,9 @@ class HubManager {
 
         hubServerConfigBuilder.setAutoImportHttpsCertificates(detectConfiguration.getHubAutoImportCertificate())
         hubServerConfigBuilder.setLogger(slf4jIntLogger)
-
+		
         hubServerConfigBuilder.build()
+		
     }
 
     public int performPostActions(DetectProject detectProject, List<File> createdBdioFiles) {
@@ -109,6 +112,10 @@ class HubManager {
                     postActionResult = 1
                 }
             }
+			if (detectConfiguration.getDetectProperties().riskreportPDF) {
+				RiskReportDataService riskReportDataService = hubServicesFactory.createRiskReportDataService(slf4jIntLogger, 30000)
+				File pdfFile = riskReportDataService.createReportPdfFile(new File("."), detectProject.projectName, detectProject.projectVersionName)
+			}
             if (detectProject.getDetectCodeLocations() && !detectConfiguration.getHubSignatureScannerDisabled()) {
                 // only log BOM URL if we have updated it in some way
                 ProjectDataService projectDataService = hubServicesFactory.createProjectDataService(slf4jIntLogger)
