@@ -278,9 +278,6 @@ class DetectConfiguration {
     public boolean getNugetInspectorIgnoreFailure() {
         return BooleanUtils.toBoolean(detectProperties.nugetInspectorIgnoreFailure)
     }
-    public boolean getMavenAggregateBom() {
-        return BooleanUtils.toBoolean(detectProperties.mavenAggregateBom)
-    }
     public String getMavenScope() {
         return detectProperties.mavenScope
     }
@@ -289,9 +286,6 @@ class DetectConfiguration {
     }
     public String getMavenPath() {
         return detectProperties.mavenPath
-    }
-    public boolean getNugetAggregateBom() {
-        return BooleanUtils.toBoolean(detectProperties.nugetAggregateBom)
     }
     public String getNugetPath() {
         return detectProperties.nugetPath
