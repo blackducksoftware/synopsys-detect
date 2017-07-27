@@ -100,6 +100,10 @@ class DetectProjectManager {
                     logger.info("${bomToolTypeString} applies given the current configuration.")
                     foundAnyBomTools = true
                     List<DetectCodeLocation> codeLocations = bomTool.extractDetectCodeLocations()
+                    if (!detectProject.projectName && !detectProject.projectVersionName && bomTool.projectName && bomTool.projectVersion) {
+                        detectProject.projectName = bomTool.projectName
+                        detectProject.projectVersionName = bomTool.projectVersion
+                    }
                     if (codeLocations != null && codeLocations.size() > 0) {
                         detectProject.addAllDetectCodeLocations(codeLocations)
                     } else {
@@ -117,11 +121,11 @@ class DetectProjectManager {
                 }
             }
         }
-
-        //if none of the bom tools could determine a project/version, use some reasonable defaults
-        detectProject.projectName = getProjectName(detectProject.projectName)
-        detectProject.projectVersionName = getProjectVersionName(detectProject.projectVersionName, detectProject.projectVersionHash)
-
+        if (!detectProject.projectName && !detectProject.projectVersionName) {
+            //if none of the bom tools could determine a project/version, use some reasonable defaults
+            detectProject.projectName = getProjectName(detectProject.projectName)
+            detectProject.projectVersionName = getProjectVersionName(detectProject.projectVersionName, detectProject.projectVersionHash)
+        }
         if (!foundAnyBomTools) {
             logger.info("Could not find any tools to run - will register ${detectConfiguration.sourcePath} for signature scanning of ${detectProject.projectName}/${detectProject.projectVersionName}")
             hubSignatureScanner.registerPathToScan(detectConfiguration.sourceDirectory)

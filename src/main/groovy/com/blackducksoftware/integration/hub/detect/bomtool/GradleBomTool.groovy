@@ -70,15 +70,18 @@ class GradleBomTool extends BomTool {
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
-        DependencyNode rootProjectNode = extractRootProjectNode()
-        DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, rootProjectNode)
-
+        List<DetectCodeLocation> codeLocations = new ArrayList<>()
+        List<DependencyNode> projectNodes = extractProjectNodes()
+        projectNodes.each {
+            // Set the source path of the DetectCodeLocation to the name of the node since we dont know the path of the project it came from
+            DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), it.name, it.name, it.version, null, it.externalId, it.children)
+            codeLocations.add(detectCodeLocation)
+        }
         File[] additionalTargets = detectFileManager.findFilesToDepth(detectConfiguration.sourceDirectory, 'build', detectConfiguration.searchDepth)
         if (additionalTargets) {
             additionalTargets.each { hubSignatureScanner.registerPathToScan(it) }
         }
-
-        [detectCodeLocation]
+        codeLocations
     }
 
     private String findGradleExecutable(String sourcePath) {
@@ -95,7 +98,7 @@ class GradleBomTool extends BomTool {
         gradlePath
     }
 
-    DependencyNode extractRootProjectNode() {
+    List<DependencyNode> extractProjectNodes() {
         File initScriptFile = detectFileManager.createFile(BomToolType.GRADLE, 'init-detect.gradle')
         String initScriptContents = getClass().getResourceAsStream('/init-script-gradle').getText(StandardCharsets.UTF_8.name())
         initScriptContents = initScriptContents.replace('GRADLE_INSPECTOR_VERSION', detectConfiguration.getGradleInspectorVersion())
@@ -115,14 +118,28 @@ class GradleBomTool extends BomTool {
 
         File buildDirectory = new File(sourcePath, 'build')
         File blackduckDirectory = new File(buildDirectory, 'blackduck')
-        File dependencyNodeFile = new File(blackduckDirectory, 'dependencyNodes.json')
-        String dependencyNodeJson = dependencyNodeFile.getText(StandardCharsets.UTF_8.name())
-        DependencyNode rootProjectDependencyNode = gson.fromJson(dependencyNodeJson, DependencyNode.class)
+
+        List<DependencyNode> nodes = new ArrayList<>()
+
+        File[] dependencyNodeFiles = detectFileManager.findFiles(blackduckDirectory, '*_dependencyNodes.json')
+        dependencyNodeFiles.each {
+            logger.debug("Dependency Node file name: ${it.getName()}")
+            String dependencyNodeJson = it.getText(StandardCharsets.UTF_8.name())
+            DependencyNode projectDependencyNode = gson.fromJson(dependencyNodeJson, DependencyNode.class)
+            nodes.add(projectDependencyNode)
+        }
+        extractProjectInformation(blackduckDirectory)
 
         if (detectConfiguration.gradleCleanupBuildBlackduckDirectory) {
             blackduckDirectory.deleteDir()
         }
+        nodes
+    }
 
-        rootProjectDependencyNode
+    private void extractProjectInformation(File blackduckDirectory){
+        File projectInfoFile = new File(blackduckDirectory, 'ProjectInfo.txt')
+        String[] projectInfoLines = projectInfoFile.text.split(System.getProperty('line.separator'))
+        projectName = projectInfoLines[0]
+        projectVersion = projectInfoLines[1]
     }
 }
