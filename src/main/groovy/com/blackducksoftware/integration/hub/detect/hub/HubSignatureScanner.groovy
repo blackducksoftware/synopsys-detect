@@ -40,8 +40,6 @@ import com.blackducksoftware.integration.hub.model.view.ProjectVersionView
 import com.blackducksoftware.integration.hub.phonehome.IntegrationInfo
 import com.blackducksoftware.integration.hub.request.builder.ProjectRequestBuilder
 import com.blackducksoftware.integration.hub.scan.HubScanConfig
-import com.blackducksoftware.integration.hub.service.HubServicesFactory
-import com.blackducksoftware.integration.log.Slf4jIntLogger
 import com.blackducksoftware.integration.util.ResourceUtil
 
 @Component
@@ -74,27 +72,27 @@ class HubSignatureScanner {
         }
     }
 
-    public void scanPaths(HubServerConfig hubServerConfig, HubServicesFactory hubServicesFactory, DetectProject detectProject) {
-        Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
-        CLIDataService cliDataService = hubServicesFactory.createCLIDataService(slf4jIntLogger, 120000L)
-
+    public ProjectVersionView scanPaths(HubServerConfig hubServerConfig, CLIDataService cliDataService, DetectProject detectProject) {
+        ProjectVersionView projectVersionView = null
         if (detectProject.projectName && detectProject.projectVersionName && detectConfiguration.hubSignatureScannerPaths) {
             detectConfiguration.hubSignatureScannerPaths.each {
-                scanPath(cliDataService, hubServerConfig, new File(it).canonicalPath, detectProject)
+                projectVersionView = scanPath(cliDataService, hubServerConfig, new File(it).canonicalPath, detectProject)
             }
         } else {
             registeredPaths.each {
                 logger.info("Attempting to scan ${it} for ${detectProject.projectName}/${detectProject.projectVersionName}")
                 try {
-                    scanPath(cliDataService, hubServerConfig, it, detectProject)
+                    projectVersionView = scanPath(cliDataService, hubServerConfig, it, detectProject)
                 } catch (Exception e) {
                     logger.error("Not able to scan ${it}: ${e.message}")
                 }
             }
         }
+        return projectVersionView
     }
 
-    private void scanPath(CLIDataService cliDataService, HubServerConfig hubServerConfig, String canonicalPath, DetectProject detectProject) {
+    private ProjectVersionView scanPath(CLIDataService cliDataService, HubServerConfig hubServerConfig, String canonicalPath, DetectProject detectProject) {
+        ProjectVersionView projectVersionView = null
         try {
             ProjectRequestBuilder builder = new ProjectRequestBuilder()
             builder.setProjectName(detectProject.projectName)
@@ -126,10 +124,11 @@ class HubSignatureScanner {
 
             String hubDetectVersion = ResourceUtil.getResourceAsString('version.txt', StandardCharsets.UTF_8)
             IntegrationInfo integrationInfo = new IntegrationInfo('Hub-Detect', hubDetectVersion, hubDetectVersion)
-            ProjectVersionView projectVersionView = cliDataService.installAndRunControlledScan(hubServerConfig, hubScanConfig, projectRequest, false, integrationInfo)
+            projectVersionView = cliDataService.installAndRunControlledScan(hubServerConfig, hubScanConfig, projectRequest, false, integrationInfo)
             logger.info("${canonicalPath} was successfully scanned by the BlackDuck CLI.")
         } catch (Exception e) {
             logger.error("${detectProject.projectName}/${detectProject.projectVersionName} was not scanned by the BlackDuck CLI: ${e.message}")
         }
+        return projectVersionView
     }
 }
