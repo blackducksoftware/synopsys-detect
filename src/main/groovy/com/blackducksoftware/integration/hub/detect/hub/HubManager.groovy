@@ -27,26 +27,30 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
+import com.blackducksoftware.integration.hub.api.codelocation.CodeLocationRequestService
 import com.blackducksoftware.integration.hub.api.item.MetaService
 import com.blackducksoftware.integration.hub.api.project.ProjectRequestService
 import com.blackducksoftware.integration.hub.api.project.version.ProjectVersionRequestService
+import com.blackducksoftware.integration.hub.api.scan.ScanSummaryRequestService
 import com.blackducksoftware.integration.hub.builder.HubServerConfigBuilder
 import com.blackducksoftware.integration.hub.dataservice.policystatus.PolicyStatusDescription
 import com.blackducksoftware.integration.hub.dataservice.project.ProjectDataService
 import com.blackducksoftware.integration.hub.dataservice.project.ProjectVersionWrapper
 import com.blackducksoftware.integration.hub.dataservice.report.RiskReportDataService
+import com.blackducksoftware.integration.hub.dataservice.scan.ScanStatusDataService
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
 import com.blackducksoftware.integration.hub.exception.DoesNotExistException
 import com.blackducksoftware.integration.hub.global.HubServerConfig
 import com.blackducksoftware.integration.hub.model.request.ProjectRequest
+import com.blackducksoftware.integration.hub.model.view.CodeLocationView
 import com.blackducksoftware.integration.hub.model.view.ProjectVersionView
 import com.blackducksoftware.integration.hub.model.view.ProjectView
+import com.blackducksoftware.integration.hub.model.view.ScanSummaryView
 import com.blackducksoftware.integration.hub.request.builder.ProjectRequestBuilder
 import com.blackducksoftware.integration.hub.rest.RestConnection
 import com.blackducksoftware.integration.hub.service.HubServicesFactory
 import com.blackducksoftware.integration.log.Slf4jIntLogger
-import java.io.File;
 
 @Component
 class HubManager {
@@ -84,9 +88,8 @@ class HubManager {
 
         hubServerConfigBuilder.setAutoImportHttpsCertificates(detectConfiguration.getHubAutoImportCertificate())
         hubServerConfigBuilder.setLogger(slf4jIntLogger)
-		
+
         hubServerConfigBuilder.build()
-		
     }
 
     public int performPostActions(DetectProject detectProject, List<File> createdBdioFiles) {
@@ -95,27 +98,33 @@ class HubManager {
             Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
             HubServerConfig hubServerConfig = createHubServerConfig(slf4jIntLogger)
             HubServicesFactory hubServicesFactory = createHubServicesFactory(slf4jIntLogger, hubServerConfig)
+            ProjectVersionView projectVersionView = null
             if (createdBdioFiles) {
-                ensureProjectVersionExists(detectProject, hubServicesFactory.createProjectRequestService(slf4jIntLogger), hubServicesFactory.createProjectVersionRequestService(slf4jIntLogger))
+                projectVersionView = ensureProjectVersionExists(detectProject, hubServicesFactory.createProjectRequestService(slf4jIntLogger), hubServicesFactory.createProjectVersionRequestService(slf4jIntLogger))
                 bdioUploader.uploadBdioFiles(hubServerConfig, hubServicesFactory, createdBdioFiles)
             } else {
                 logger.debug('Did not create any bdio files.')
             }
             if (!detectConfiguration.getHubSignatureScannerDisabled()) {
-                hubSignatureScanner.scanPaths(hubServerConfig, hubServicesFactory, detectProject)
+                projectVersionView = hubSignatureScanner.scanPaths(hubServerConfig, hubServicesFactory.createCLIDataService(slf4jIntLogger, 120000L), detectProject)
             }
-
+            if (detectConfiguration.getPolicyCheck() || detectConfiguration.getRiskreportPDF()) {
+                waitForBomUpdate(hubServicesFactory.createProjectDataService(slf4jIntLogger), hubServicesFactory.createCodeLocationRequestService(slf4jIntLogger), hubServicesFactory.createMetaService(slf4jIntLogger),
+                        hubServicesFactory.createScanSummaryRequestService(), hubServicesFactory.createScanStatusDataService(slf4jIntLogger, detectConfiguration.getPolicyCheckTimeout()), projectVersionView)
+            }
             if (detectConfiguration.getPolicyCheck()) {
-                PolicyStatusDescription policyStatus = policyChecker.getPolicyStatus(hubServicesFactory, detectProject)
+                PolicyStatusDescription policyStatus = policyChecker.getPolicyStatus(hubServicesFactory.createPolicyStatusDataService(slf4jIntLogger), projectVersionView)
                 logger.info(policyStatus.policyStatusMessage)
                 if (policyStatus.getCountInViolation()?.value > 0) {
                     postActionResult = 1
                 }
             }
-			if (detectConfiguration.getDetectProperties().riskreportPDF) {
-				RiskReportDataService riskReportDataService = hubServicesFactory.createRiskReportDataService(slf4jIntLogger, 30000)
-				File pdfFile = riskReportDataService.createReportPdfFile(new File("."), detectProject.projectName, detectProject.projectVersionName)
-			}
+            if (detectConfiguration.getRiskreportPDF()) {
+                RiskReportDataService riskReportDataService = hubServicesFactory.createRiskReportDataService(slf4jIntLogger, 30000)
+                logger.info("Creating risk report pdf")
+                File pdfFile = riskReportDataService.createReportPdfFile(new File("."), detectProject.projectName, detectProject.projectVersionName)
+                logger.info("Created risk report pdf : ${pdfFile.getCanonicalPath()}")
+            }
             if (detectProject.getDetectCodeLocations() && !detectConfiguration.getHubSignatureScannerDisabled()) {
                 // only log BOM URL if we have updated it in some way
                 ProjectDataService projectDataService = hubServicesFactory.createProjectDataService(slf4jIntLogger)
@@ -136,7 +145,20 @@ class HubManager {
         postActionResult
     }
 
-    public void ensureProjectVersionExists(DetectProject detectProject, ProjectRequestService projectRequestService, ProjectVersionRequestService projectVersionRequestService) {
+    public void waitForBomUpdate(ProjectDataService projectDataService, CodeLocationRequestService codeLocationRequestService, MetaService metaService, ScanSummaryRequestService scanSummaryRequestService, ScanStatusDataService scanStatusDataService, ProjectVersionView version){
+        List<CodeLocationView> allCodeLocations = codeLocationRequestService.getAllCodeLocationsForProjectVersion(version)
+        List<ScanSummaryView> scanSummaryViews = []
+        allCodeLocations.each {
+            String scansLink = metaService.getFirstLinkSafely(it, MetaService.SCANS_LINK)
+            List<ScanSummaryView> codeLocationScanSummaryViews = scanSummaryRequestService.getAllScanSummaryItems(scansLink)
+            scanSummaryViews.addAll(codeLocationScanSummaryViews)
+        }
+        logger.info("Waiting for the BOM to be updated")
+        scanStatusDataService.assertScansFinished(scanSummaryViews)
+        logger.info("The BOM has been updated")
+    }
+
+    public ProjectVersionView ensureProjectVersionExists(DetectProject detectProject, ProjectRequestService projectRequestService, ProjectVersionRequestService projectVersionRequestService) {
         ProjectRequestBuilder builder = new ProjectRequestBuilder()
         builder.setProjectName(detectProject.getProjectName())
         builder.setVersionName(detectProject.getProjectVersionName())
@@ -151,11 +173,12 @@ class HubManager {
             final String projectURL = projectRequestService.createHubProject(projectRequest)
             project = projectRequestService.getItem(projectURL, ProjectView.class)
         }
+        ProjectVersionView projectVersionView = null
         try {
-            projectVersionRequestService.getProjectVersion(project, projectRequest.getVersionRequest().getVersionName())
+            projectVersionView = projectVersionRequestService.getProjectVersion(project, projectRequest.getVersionRequest().getVersionName())
         } catch (final DoesNotExistException e) {
             final String versionURL = projectVersionRequestService.createHubVersion(project, projectRequest.getVersionRequest())
-            projectVersionRequestService.getItem(versionURL, ProjectVersionView.class)
+            projectVersionView = projectVersionRequestService.getItem(versionURL, ProjectVersionView.class)
         }
     }
 }
