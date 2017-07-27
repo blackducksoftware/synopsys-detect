@@ -187,10 +187,6 @@ class DetectProperties {
     @Value('${detect.nuget.ignore.failure}')
     Boolean nugetInspectorIgnoreFailure
 
-    @ValueDescription(description="If true all maven projects will be aggregated into a single bom", defaultValue="true", group=DetectProperties.GROUP_MAVEN)
-    @Value('${detect.maven.aggregate}')
-    Boolean mavenAggregateBom
-
     @ValueDescription(description="The name of the dependency scope to include", group=DetectProperties.GROUP_MAVEN)
     @Value('${detect.maven.scope}')
     String mavenScope
@@ -202,10 +198,6 @@ class DetectProperties {
     @ValueDescription(description="The path of the Maven executable", group=DetectProperties.GROUP_MAVEN)
     @Value('${detect.maven.path}')
     String mavenPath
-
-    @ValueDescription(description="If true all nuget projects will be aggregated into a single bom", defaultValue="false", group=DetectProperties.GROUP_NUGET)
-    @Value('${detect.nuget.aggregate}')
-    Boolean nugetAggregateBom
 
     @ValueDescription(description="The path of the Nuget executable", group=DetectProperties.GROUP_NUGET)
     @Value('${detect.nuget.path}')
