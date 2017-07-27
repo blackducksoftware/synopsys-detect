@@ -62,7 +62,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.blackducksoftware.integration:hub-common:13.2.0-SNAPSHOT'
+    compile 'com.blackducksoftware.integration:hub-common:13.2.0'
 	compile 'com.blackducksoftware.integration:hub-common-rest:2.1.3'
     compile 'org.springframework.boot:spring-boot-starter'
     compile 'org.apache.maven.shared:maven-invoker:3.0.0'
