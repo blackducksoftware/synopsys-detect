@@ -77,4 +77,23 @@ class NugetBomTool extends BomTool {
         DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, root)
         [detectCodeLocation]
     }
+
+    List<DetectCodeLocation> createDetectCodeLocations(DependencyNode root) {
+        projectName = root.name
+        projectVersion = root.version
+
+        root.externalId = new NameVersionExternalId(Forge.NUGET, root.name, root.version)
+        if(!root.version) {
+            // root is a solution
+            List<DetectCodeLocation> detectCodeLocations = root.children.collect { project ->
+                // Set the source path of the DetectCodeLocation to the name of the node since we dont know the path of the project it came from
+                DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), project.name, project.name, project.version, null, project.externalId, project.children)
+                detectCodeLocation
+            }
+            return detectCodeLocations
+        } else {
+            DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, root)
+            return [detectCodeLocation]
+        }
+    }
 }
