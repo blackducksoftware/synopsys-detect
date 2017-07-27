@@ -187,10 +187,6 @@ class DetectProperties {
     @Value('${detect.nuget.ignore.failure}')
     Boolean nugetInspectorIgnoreFailure
 
-    @ValueDescription(description="If true all maven projects will be aggregated into a single bom", defaultValue="true", group=DetectProperties.GROUP_MAVEN)
-    @Value('${detect.maven.aggregate}')
-    Boolean mavenAggregateBom
-
     @ValueDescription(description="The name of the dependency scope to include", group=DetectProperties.GROUP_MAVEN)
     @Value('${detect.maven.scope}')
     String mavenScope
@@ -202,10 +198,6 @@ class DetectProperties {
     @ValueDescription(description="The path of the Maven executable", group=DetectProperties.GROUP_MAVEN)
     @Value('${detect.maven.path}')
     String mavenPath
-
-    @ValueDescription(description="If true all nuget projects will be aggregated into a single bom", defaultValue="false", group=DetectProperties.GROUP_NUGET)
-    @Value('${detect.nuget.aggregate}')
-    Boolean nugetAggregateBom
 
     @ValueDescription(description="The path of the Nuget executable", group=DetectProperties.GROUP_NUGET)
     @Value('${detect.nuget.path}')
@@ -262,14 +254,6 @@ class DetectProperties {
     @ValueDescription(description="Version of the Hub Docker Inspector to use", defaultValue="latest", group=DetectProperties.GROUP_DOCKER)
     @Value('${detect.docker.inspector.version}')
     String dockerInspectorVersion
-
-    @ValueDescription(description="Where the Hub Docker Inspector should be installed - will default to a 'docker-install' directory in the outputDirectoryPath", group=DetectProperties.GROUP_DOCKER)
-    @Value('${detect.docker.install.path}')
-    String dockerInstallPath
-
-    @ValueDescription(description="Where the Hub Docker Inspector will put the files it needs to do its processing - this directory could be cleared by the inspector, so it should not be shared by others - will default to 'sandbox' directory in the dockerInstallPath", group=DetectProperties.GROUP_DOCKER)
-    @Value('${detect.docker.sandbox.path}')
-    String dockerSandboxPath
 
     @ValueDescription(description="A saved docker image - must be a .tar file. For detect to run docker either this property or detect.docker.image must be set.", group=DetectProperties.GROUP_DOCKER)
     @Value('${detect.docker.tar}')

@@ -132,20 +132,6 @@ class DetectConfiguration {
     }
 
     private void configureForDocker() {
-        if (!detectProperties.dockerInstallPath) {
-            detectProperties.dockerInstallPath = detectProperties.outputDirectoryPath + File.separator + 'docker-install'
-        }
-
-        if (!detectProperties.dockerSandboxPath) {
-            detectProperties.dockerSandboxPath = detectProperties.dockerInstallPath + File.separator + 'sandbox'
-        }
-
-        File dockerInstallDirectory = new File(detectProperties.dockerInstallPath)
-        dockerInstallDirectory.mkdirs()
-
-        File dockerSandboxDirectory = new File(detectProperties.dockerSandboxPath)
-        dockerSandboxDirectory.mkdirs()
-
         allDetectPropertyKeys.each {
             if (it.startsWith(DOCKER_PROPERTY_PREFIX)) {
                 additionalDockerPropertyNames.add(it)
@@ -292,9 +278,6 @@ class DetectConfiguration {
     public boolean getNugetInspectorIgnoreFailure() {
         return BooleanUtils.toBoolean(detectProperties.nugetInspectorIgnoreFailure)
     }
-    public boolean getMavenAggregateBom() {
-        return BooleanUtils.toBoolean(detectProperties.mavenAggregateBom)
-    }
     public String getMavenScope() {
         return detectProperties.mavenScope
     }
@@ -303,9 +286,6 @@ class DetectConfiguration {
     }
     public String getMavenPath() {
         return detectProperties.mavenPath
-    }
-    public boolean getNugetAggregateBom() {
-        return BooleanUtils.toBoolean(detectProperties.nugetAggregateBom)
     }
     public String getNugetPath() {
         return detectProperties.nugetPath
@@ -348,12 +328,6 @@ class DetectConfiguration {
     }
     public String getDockerInspectorVersion() {
         return detectProperties.dockerInspectorVersion
-    }
-    public String getDockerInstallPath() {
-        return detectProperties.dockerInstallPath
-    }
-    public String getDockerSandboxPath() {
-        return detectProperties.dockerSandboxPath
     }
     public String getDockerTar() {
         return detectProperties.dockerTar
