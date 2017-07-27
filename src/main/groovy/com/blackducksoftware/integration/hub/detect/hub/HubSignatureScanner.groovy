@@ -82,7 +82,10 @@ class HubSignatureScanner {
             registeredPaths.each {
                 logger.info("Attempting to scan ${it} for ${detectProject.projectName}/${detectProject.projectVersionName}")
                 try {
-                    projectVersionView = scanPath(cliDataService, hubServerConfig, it, detectProject)
+                    ProjectVersionView scanProject = scanPath(cliDataService, hubServerConfig, it, detectProject)
+                    if (!projectVersionView) {
+                        projectVersionView = scanProject
+                    }
                 } catch (Exception e) {
                     logger.error("Not able to scan ${it}: ${e.message}")
                 }

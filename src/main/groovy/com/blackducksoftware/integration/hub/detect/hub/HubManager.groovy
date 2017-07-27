@@ -98,15 +98,17 @@ class HubManager {
             Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
             HubServerConfig hubServerConfig = createHubServerConfig(slf4jIntLogger)
             HubServicesFactory hubServicesFactory = createHubServicesFactory(slf4jIntLogger, hubServerConfig)
-            ProjectVersionView projectVersionView = null
+            ProjectVersionView projectVersionView = ensureProjectVersionExists(detectProject, hubServicesFactory.createProjectRequestService(slf4jIntLogger), hubServicesFactory.createProjectVersionRequestService(slf4jIntLogger))
             if (createdBdioFiles) {
-                projectVersionView = ensureProjectVersionExists(detectProject, hubServicesFactory.createProjectRequestService(slf4jIntLogger), hubServicesFactory.createProjectVersionRequestService(slf4jIntLogger))
                 bdioUploader.uploadBdioFiles(hubServerConfig, hubServicesFactory, createdBdioFiles)
             } else {
                 logger.debug('Did not create any bdio files.')
             }
             if (!detectConfiguration.getHubSignatureScannerDisabled()) {
-                projectVersionView = hubSignatureScanner.scanPaths(hubServerConfig, hubServicesFactory.createCLIDataService(slf4jIntLogger, 120000L), detectProject)
+                ProjectVersionView scanProject = hubSignatureScanner.scanPaths(hubServerConfig, hubServicesFactory.createCLIDataService(slf4jIntLogger, 120000L), detectProject)
+                if (!projectVersionView) {
+                    projectVersionView = scanProject
+                }
             }
             if (detectConfiguration.getPolicyCheck() || detectConfiguration.getRiskreportPDF()) {
                 waitForBomUpdate(hubServicesFactory.createProjectDataService(slf4jIntLogger), hubServicesFactory.createCodeLocationRequestService(slf4jIntLogger), hubServicesFactory.createMetaService(slf4jIntLogger),
