@@ -8,7 +8,6 @@ import com.blackducksoftware.integration.gradle.DependencyGatherer
 
 initscript {
     repositories {
-        mavenLocal()
         mavenCentral()
     }
     dependencies {
