@@ -22,8 +22,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.hub
 
-import java.nio.charset.StandardCharsets
-
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,12 +30,12 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.api.bom.BomImportRequestService
 import com.blackducksoftware.integration.hub.buildtool.BuildToolConstants
 import com.blackducksoftware.integration.hub.dataservice.phonehome.PhoneHomeDataService
+import com.blackducksoftware.integration.hub.detect.Application
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.global.HubServerConfig
 import com.blackducksoftware.integration.hub.phonehome.IntegrationInfo
 import com.blackducksoftware.integration.hub.service.HubServicesFactory
 import com.blackducksoftware.integration.log.Slf4jIntLogger
-import com.blackducksoftware.integration.util.ResourceUtil
 
 @Component
 class BdioUploader {
@@ -62,7 +60,7 @@ class BdioUploader {
             }
         }
 
-        String hubDetectVersion = ResourceUtil.getResourceAsString('version.txt', StandardCharsets.UTF_8)
+        String hubDetectVersion = Application.VERSION
         IntegrationInfo integrationInfo = new IntegrationInfo('Hub-Detect', hubDetectVersion, hubDetectVersion)
         phoneHomeDataService.phoneHome(hubServerConfig, integrationInfo)
     }

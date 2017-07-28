@@ -142,6 +142,7 @@ class DetectConfiguration {
     public void logConfiguration() {
         StringBuilder configurationBuilder = new StringBuilder()
         configurationBuilder.append('' + System.lineSeparator())
+        configurationBuilder.append("Detect Version: ${Application.VERSION}" + System.lineSeparator)
         configurationBuilder.append('Current property values:' + System.lineSeparator())
         configurationBuilder.append('-'.multiply(60) + System.lineSeparator())
         def propertyFields = DetectProperties.class.getDeclaredFields().findAll {
