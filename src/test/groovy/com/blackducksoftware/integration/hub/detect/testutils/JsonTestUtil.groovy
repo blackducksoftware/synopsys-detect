@@ -16,17 +16,23 @@ import java.nio.charset.StandardCharsets
 import org.apache.commons.io.IOUtils
 import org.skyscreamer.jsonassert.JSONAssert
 
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+
 class JsonTestUtil {
-    void testJsonResource(String expectedResourcePath, String actualJson) {
+    private final Gson gson = new GsonBuilder().setPrettyPrinting().create()
+
+    void testJsonResource(String expectedResourcePath, Object object) {
         final String expected = getResourceAsUTF8String(expectedResourcePath)
-        testJson(expected, actualJson)
+        final String actual = gson.toJson(object)
+        testJson(expected, actual)
     }
 
     void testJson(String expectedJson, String actualJson) {
         JSONAssert.assertEquals(expectedJson, actualJson, false)
     }
 
-    String getResourceAsUTF8String(String expectedResourcePath) {
-        IOUtils.toString(this.getClass().getResourceAsStream(expectedResourcePath), StandardCharsets.UTF_8)
+    String getResourceAsUTF8String(String resourcePath) {
+        IOUtils.toString(this.getClass().getResourceAsStream(resourcePath), StandardCharsets.UTF_8)
     }
 }

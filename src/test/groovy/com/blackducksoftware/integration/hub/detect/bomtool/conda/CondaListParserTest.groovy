@@ -21,13 +21,11 @@ import com.blackducksoftware.integration.hub.detect.testutils.JsonTestUtil
 import com.google.gson.GsonBuilder
 
 class CondaListParserTest {
-
-    private CondaListParser condaListParser
-    private JsonTestUtil jsonTestUtil = new JsonTestUtil()
+    private final CondaListParser condaListParser = new CondaListParser()
+    private final JsonTestUtil jsonTestUtil = new JsonTestUtil()
 
     @Before
     public void init() {
-        condaListParser = new CondaListParser()
         condaListParser.gson = new GsonBuilder().setPrettyPrinting().create()
     }
 
@@ -47,11 +45,10 @@ class CondaListParserTest {
 
     @Test
     public void smallParseTest() {
-        String condaInfoJson = jsonTestUtil.getResourceAsUTF8String('/conda/condaInfo.json')
-        String condaListJson = jsonTestUtil.getResourceAsUTF8String('/conda/condaListSmall.json')
+        final String condaInfoJson = jsonTestUtil.getResourceAsUTF8String('/conda/condaInfo.json')
+        final String condaListJson = jsonTestUtil.getResourceAsUTF8String('/conda/condaListSmall.json')
         Set<DependencyNode> dependencyNodes = condaListParser.parse(condaListJson, condaInfoJson)
-        assertEquals(12, dependencyNodes.size())
-        jsonTestUtil.testJsonResource('/conda/condaListSmallExpected.json', dependencyNodes.toString())
+        jsonTestUtil.testJsonResource('/conda/condaListSmallExpected.json', dependencyNodes)
     }
 
     @Test
@@ -59,7 +56,6 @@ class CondaListParserTest {
         String condaInfoJson = jsonTestUtil.getResourceAsUTF8String('/conda/condaInfo.json')
         String condaListJson = jsonTestUtil.getResourceAsUTF8String('/conda/condaListLarge.json')
         Set<DependencyNode> dependencyNodes = condaListParser.parse(condaListJson, condaInfoJson)
-        assertEquals(233, dependencyNodes.size())
-        jsonTestUtil.testJsonResource('/conda/condaListLargeExpected.json', dependencyNodes.toString())
+        jsonTestUtil.testJsonResource('/conda/condaListLargeExpected.json', dependencyNodes)
     }
 }
