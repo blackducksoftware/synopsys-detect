@@ -15,6 +15,7 @@ import org.junit.Before
 import org.junit.Test
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.testutils.JsonTestUtil
 
 public class CocoapodsPackagerTest {
@@ -23,20 +24,20 @@ public class CocoapodsPackagerTest {
 
     @Before
     void init() {
-        cocoapodsPackager.setPodLockParser(new PodLockParser())
+        cocoapodsPackager.nameVersionNodeTransformer = new NameVersionNodeTransformer()
     }
 
     @Test
     void simpleTest() {
         final String podlockText = jsonTestUtil.getResourceAsUTF8String('/cocoapods/simplePodfile.lock')
-        final Set<DependencyNode> projectDependencies = cocoapodsPackager.extractProjectDependencies(podlockText) as Set
+        final Set<DependencyNode> projectDependencies = cocoapodsPackager.extractDependencyNodes(podlockText)
         jsonTestUtil.testJsonResource('/cocoapods/simpleExpected.json', projectDependencies)
     }
 
     @Test
     void complexTest() {
         final String podlockText = jsonTestUtil.getResourceAsUTF8String('/cocoapods/complexPodfile.lock')
-        final Set<DependencyNode> projectDependencies = cocoapodsPackager.extractProjectDependencies(podlockText) as Set
+        final Set<DependencyNode> projectDependencies = cocoapodsPackager.extractDependencyNodes(podlockText)
         jsonTestUtil.testJsonResource('/cocoapods/complexExpected.json', projectDependencies)
     }
 }
