@@ -22,6 +22,8 @@
  */
 package com.blackducksoftware.integration.hub.detect
 
+import java.nio.charset.StandardCharsets
+
 import javax.annotation.PostConstruct
 
 import org.slf4j.Logger
@@ -42,12 +44,14 @@ import com.blackducksoftware.integration.hub.detect.help.ValueDescriptionAnnotat
 import com.blackducksoftware.integration.hub.detect.hub.HubManager
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil
+import com.blackducksoftware.integration.util.ResourceUtil
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
 @SpringBootApplication
 class Application {
     private final Logger logger = LoggerFactory.getLogger(Application.class)
+    public static final String VERSION = ResourceUtil.getResourceAsString('version.txt', StandardCharsets.UTF_8)
 
     @Autowired
     ValueDescriptionAnnotationFinder valueDescriptionAnnotationFinder
