@@ -74,7 +74,7 @@ class CocoapodsPackager {
                     nameVersionNodeBuilder.addChildNodeToParent(pod, root)
                     parentNode = pod
                 } else {
-                    if(parentNode.name != pod.name) {
+                    if (parentNode.name != pod.name) {
                         nameVersionNodeBuilder.addChildNodeToParent(pod, parentNode)
                     }
                 }
