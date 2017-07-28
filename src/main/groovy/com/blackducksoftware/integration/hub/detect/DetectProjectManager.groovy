@@ -137,7 +137,7 @@ class DetectProjectManager {
         List<File> bdioFiles = []
 
         File aggregateBdioFile = null
-        final SimpleBdioDocument aggregateBdioDocument = null
+        SimpleBdioDocument aggregateBdioDocument = null
         if (detectConfiguration.aggregateBomName) {
             aggregateBdioDocument = createAggregateSimpleBdioDocument(detectProject)
             final String filename = "${integrationEscapeUtil.escapeForUri(detectConfiguration.aggregateBomName)}.jsonld"
