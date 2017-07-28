@@ -4,14 +4,7 @@ import org.gradle.api.Task
 import org.gradle.api.execution.TaskExecutionListener
 import org.gradle.api.tasks.TaskState
 
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import com.google.gson.stream.JsonWriter
-
 import com.blackducksoftware.integration.gradle.DependencyGatherer
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 
 initscript {
     repositories {
@@ -19,7 +12,6 @@ initscript {
     }
     dependencies {
         classpath 'com.blackducksoftware.integration:integration-gradle-inspector:GRADLE_INSPECTOR_VERSION'
-        classpath 'com.google.code.gson:gson:2.7'
     }
 }
 
@@ -35,17 +27,14 @@ addListener(
                     executed = true
                 }
 
-                def dependencyGatherer = new DependencyGatherer()
-                DependencyNode rootProjectDependencyNode = dependencyGatherer.getFullyPopulatedRootNode(task.project, 'EXCLUDED_PROJECT_NAMES', 'INCLUDED_PROJECT_NAMES', 'EXCLUDED_CONFIGURATION_NAMES', 'INCLUDED_CONFIGURATION_NAMES')
                 File outputDirectory = new File(task.project.buildDir, 'blackduck')
                 outputDirectory.mkdirs()
-                File outputFile = new File(outputDirectory, 'dependencyNodes.json')
-                if (outputFile.exists()) {
-                    outputFile.delete()
-                }
-                Gson gson = new GsonBuilder().setPrettyPrinting().create()
-                JsonWriter jsonWriter = gson.newJsonWriter(new BufferedWriter(new FileWriter(outputFile)))
-                gson.toJson(rootProjectDependencyNode, DependencyNode.class, jsonWriter)
-                jsonWriter.close()
-            }
-        })
+               
+                def dependencyGatherer = new DependencyGatherer()
+                def rootProject = task.project
+                dependencyGatherer.createAllProjectDependencyFiles(rootProject, 'EXCLUDED_PROJECT_NAMES', 'INCLUDED_PROJECT_NAMES', 'EXCLUDED_CONFIGURATION_NAMES', 'INCLUDED_CONFIGURATION_NAMES', outputDirectory)
+
+                File projectInfoFile = new File(outputDirectory, "ProjectInfo.txt")
+                projectInfoFile.write("${rootProject.name.toString()}${System.getProperty('line.separator')}${rootProject.version.toString()}")
+           }
+       })
