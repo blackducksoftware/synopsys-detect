@@ -22,9 +22,7 @@
             "separator": ":"
           }
         },
-        "children": [
-          
-        ]
+        "children": []
       }
     ]
   },
@@ -51,9 +49,7 @@
             "separator": ":"
           }
         },
-        "children": [
-          
-        ]
+        "children": []
       }
     ]
   },
@@ -68,9 +64,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "AFOAuth1Client",
@@ -95,9 +89,7 @@
             "separator": ":"
           }
         },
-        "children": [
-          
-        ]
+        "children": []
       }
     ]
   },
@@ -112,9 +104,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "Analytics",
@@ -127,9 +117,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "AppHub",
@@ -154,9 +142,7 @@
             "separator": ":"
           }
         },
-        "children": [
-          
-        ]
+        "children": []
       }
     ]
   },
@@ -183,24 +169,7 @@
             "separator": ":"
           }
         },
-        "children": [
-          
-        ]
-      },
-      {
-        "name": "Adjust",
-        "version": "4.11.0",
-        "externalId": {
-          "name": "Adjust",
-          "version": "4.11.0",
-          "forge": {
-            "name": "cocoapods",
-            "separator": ":"
-          }
-        },
-        "children": [
-          
-        ]
+        "children": []
       },
       {
         "name": "RSSwizzle",
@@ -213,68 +182,7 @@
             "separator": ":"
           }
         },
-        "children": [
-          
-        ]
-      },
-      {
-        "name": "ReactiveCocoa",
-        "version": "2.5",
-        "externalId": {
-          "name": "ReactiveCocoa",
-          "version": "2.5",
-          "forge": {
-            "name": "cocoapods",
-            "separator": ":"
-          }
-        },
-        "children": [
-          
-        ]
-      },
-      {
-        "name": "HockeySDK-Source",
-        "version": "3.8.5",
-        "externalId": {
-          "name": "HockeySDK-Source",
-          "version": "3.8.5",
-          "forge": {
-            "name": "cocoapods",
-            "separator": ":"
-          }
-        },
-        "children": [
-          
-        ]
-      }
-    ]
-  },
-  {
-    "name": "ARAnalytics",
-    "version": "3.9.0",
-    "externalId": {
-      "name": "ARAnalytics",
-      "version": "3.9.0",
-      "forge": {
-        "name": "cocoapods",
-        "separator": ":"
-      }
-    },
-    "children": [
-      {
-        "name": "Analytics",
-        "version": "3.0.7",
-        "externalId": {
-          "name": "Analytics",
-          "version": "3.0.7",
-          "forge": {
-            "name": "cocoapods",
-            "separator": ":"
-          }
-        },
-        "children": [
-          
-        ]
+        "children": []
       },
       {
         "name": "Adjust",
@@ -287,24 +195,7 @@
             "separator": ":"
           }
         },
-        "children": [
-          
-        ]
-      },
-      {
-        "name": "RSSwizzle",
-        "version": "0.1.0",
-        "externalId": {
-          "name": "RSSwizzle",
-          "version": "0.1.0",
-          "forge": {
-            "name": "cocoapods",
-            "separator": ":"
-          }
-        },
-        "children": [
-          
-        ]
+        "children": []
       },
       {
         "name": "ReactiveCocoa",
@@ -317,9 +208,7 @@
             "separator": ":"
           }
         },
-        "children": [
-          
-        ]
+        "children": []
       },
       {
         "name": "HockeySDK-Source",
@@ -332,187 +221,7 @@
             "separator": ":"
           }
         },
-        "children": [
-          
-        ]
-      }
-    ]
-  },
-  {
-    "name": "ARAnalytics",
-    "version": "3.9.0",
-    "externalId": {
-      "name": "ARAnalytics",
-      "version": "3.9.0",
-      "forge": {
-        "name": "cocoapods",
-        "separator": ":"
-      }
-    },
-    "children": [
-      {
-        "name": "Analytics",
-        "version": "3.0.7",
-        "externalId": {
-          "name": "Analytics",
-          "version": "3.0.7",
-          "forge": {
-            "name": "cocoapods",
-            "separator": ":"
-          }
-        },
-        "children": [
-          
-        ]
-      },
-      {
-        "name": "Adjust",
-        "version": "4.11.0",
-        "externalId": {
-          "name": "Adjust",
-          "version": "4.11.0",
-          "forge": {
-            "name": "cocoapods",
-            "separator": ":"
-          }
-        },
-        "children": [
-          
-        ]
-      },
-      {
-        "name": "RSSwizzle",
-        "version": "0.1.0",
-        "externalId": {
-          "name": "RSSwizzle",
-          "version": "0.1.0",
-          "forge": {
-            "name": "cocoapods",
-            "separator": ":"
-          }
-        },
-        "children": [
-          
-        ]
-      },
-      {
-        "name": "ReactiveCocoa",
-        "version": "2.5",
-        "externalId": {
-          "name": "ReactiveCocoa",
-          "version": "2.5",
-          "forge": {
-            "name": "cocoapods",
-            "separator": ":"
-          }
-        },
-        "children": [
-          
-        ]
-      },
-      {
-        "name": "HockeySDK-Source",
-        "version": "3.8.5",
-        "externalId": {
-          "name": "HockeySDK-Source",
-          "version": "3.8.5",
-          "forge": {
-            "name": "cocoapods",
-            "separator": ":"
-          }
-        },
-        "children": [
-          
-        ]
-      }
-    ]
-  },
-  {
-    "name": "ARAnalytics",
-    "version": "3.9.0",
-    "externalId": {
-      "name": "ARAnalytics",
-      "version": "3.9.0",
-      "forge": {
-        "name": "cocoapods",
-        "separator": ":"
-      }
-    },
-    "children": [
-      {
-        "name": "Analytics",
-        "version": "3.0.7",
-        "externalId": {
-          "name": "Analytics",
-          "version": "3.0.7",
-          "forge": {
-            "name": "cocoapods",
-            "separator": ":"
-          }
-        },
-        "children": [
-          
-        ]
-      },
-      {
-        "name": "Adjust",
-        "version": "4.11.0",
-        "externalId": {
-          "name": "Adjust",
-          "version": "4.11.0",
-          "forge": {
-            "name": "cocoapods",
-            "separator": ":"
-          }
-        },
-        "children": [
-          
-        ]
-      },
-      {
-        "name": "RSSwizzle",
-        "version": "0.1.0",
-        "externalId": {
-          "name": "RSSwizzle",
-          "version": "0.1.0",
-          "forge": {
-            "name": "cocoapods",
-            "separator": ":"
-          }
-        },
-        "children": [
-          
-        ]
-      },
-      {
-        "name": "ReactiveCocoa",
-        "version": "2.5",
-        "externalId": {
-          "name": "ReactiveCocoa",
-          "version": "2.5",
-          "forge": {
-            "name": "cocoapods",
-            "separator": ":"
-          }
-        },
-        "children": [
-          
-        ]
-      },
-      {
-        "name": "HockeySDK-Source",
-        "version": "3.8.5",
-        "externalId": {
-          "name": "HockeySDK-Source",
-          "version": "3.8.5",
-          "forge": {
-            "name": "cocoapods",
-            "separator": ":"
-          }
-        },
-        "children": [
-          
-        ]
+        "children": []
       }
     ]
   },
@@ -527,9 +236,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "ARGenericTableViewController",
@@ -542,9 +249,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "ARTiledImageView",
@@ -569,9 +274,7 @@
             "separator": ":"
           }
         },
-        "children": [
-          
-        ]
+        "children": []
       }
     ]
   },
@@ -586,9 +289,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "Artsy+UIFonts",
@@ -601,9 +302,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "Artsy+UILabels",
@@ -618,21 +317,6 @@
     },
     "children": [
       {
-        "name": "Artsy+UIFonts",
-        "version": "3.1.1",
-        "externalId": {
-          "name": "Artsy+UIFonts",
-          "version": "3.1.1",
-          "forge": {
-            "name": "cocoapods",
-            "separator": ":"
-          }
-        },
-        "children": [
-          
-        ]
-      },
-      {
         "name": "Artsy+UIColors",
         "version": "3.1.0",
         "externalId": {
@@ -643,9 +327,20 @@
             "separator": ":"
           }
         },
-        "children": [
-          
-        ]
+        "children": []
+      },
+      {
+        "name": "Artsy+UIFonts",
+        "version": "3.1.1",
+        "externalId": {
+          "name": "Artsy+UIFonts",
+          "version": "3.1.1",
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
+        },
+        "children": []
       }
     ]
   },
@@ -672,9 +367,7 @@
             "separator": ":"
           }
         },
-        "children": [
-          
-        ]
+        "children": []
       },
       {
         "name": "Artsy+UIColors",
@@ -687,9 +380,7 @@
             "separator": ":"
           }
         },
-        "children": [
-          
-        ]
+        "children": []
       },
       {
         "name": "Artsy+UIFonts",
@@ -702,9 +393,7 @@
             "separator": ":"
           }
         },
-        "children": [
-          
-        ]
+        "children": []
       }
     ]
   },
@@ -719,9 +408,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "DHCShakeNotifier",
@@ -734,9 +421,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "EDColor",
@@ -749,9 +434,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "Emission",
@@ -776,9 +459,20 @@
             "separator": ":"
           }
         },
-        "children": [
-          
-        ]
+        "children": []
+      },
+      {
+        "name": "SDWebImage",
+        "version": "3.7.3",
+        "externalId": {
+          "name": "SDWebImage",
+          "version": "3.7.3",
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
+        },
+        "children": []
       },
       {
         "name": "Extraction",
@@ -803,23 +497,46 @@
                 "separator": ":"
               }
             },
-            "children": [
-              
-            ]
+            "children": []
           },
           {
-            "name": "Artsy+UIColors",
-            "version": "3.1.0",
+            "name": "FLKAutoLayout",
+            "version": "1.0.0",
             "externalId": {
-              "name": "Artsy+UIColors",
-              "version": "3.1.0",
+              "name": "FLKAutoLayout",
+              "version": "1.0.0",
+              "forge": {
+                "name": "cocoapods",
+                "separator": ":"
+              }
+            },
+            "children": []
+          },
+          {
+            "name": "ORStackView",
+            "version": "2.0.3",
+            "externalId": {
+              "name": "ORStackView",
+              "version": "2.0.3",
               "forge": {
                 "name": "cocoapods",
                 "separator": ":"
               }
             },
             "children": [
-              
+              {
+                "name": "FLKAutoLayout",
+                "version": "1.0.0",
+                "externalId": {
+                  "name": "FLKAutoLayout",
+                  "version": "1.0.0",
+                  "forge": {
+                    "name": "cocoapods",
+                    "separator": ":"
+                  }
+                },
+                "children": []
+              }
             ]
           },
           {
@@ -845,9 +562,7 @@
                     "separator": ":"
                   }
                 },
-                "children": [
-                  
-                ]
+                "children": []
               },
               {
                 "name": "Artsy+UIColors",
@@ -860,9 +575,7 @@
                     "separator": ":"
                   }
                 },
-                "children": [
-                  
-                ]
+                "children": []
               },
               {
                 "name": "Artsy+UIFonts",
@@ -875,26 +588,22 @@
                     "separator": ":"
                   }
                 },
-                "children": [
-                  
-                ]
+                "children": []
               }
             ]
           },
           {
-            "name": "FLKAutoLayout",
-            "version": "1.0.0",
+            "name": "Artsy+UIColors",
+            "version": "3.1.0",
             "externalId": {
-              "name": "FLKAutoLayout",
-              "version": "1.0.0",
+              "name": "Artsy+UIColors",
+              "version": "3.1.0",
               "forge": {
                 "name": "cocoapods",
                 "separator": ":"
               }
             },
-            "children": [
-              
-            ]
+            "children": []
           },
           {
             "name": "Artsy+UIFonts",
@@ -907,38 +616,7 @@
                 "separator": ":"
               }
             },
-            "children": [
-              
-            ]
-          },
-          {
-            "name": "ORStackView",
-            "version": "2.0.3",
-            "externalId": {
-              "name": "ORStackView",
-              "version": "2.0.3",
-              "forge": {
-                "name": "cocoapods",
-                "separator": ":"
-              }
-            },
-            "children": [
-              {
-                "name": "FLKAutoLayout",
-                "version": "1.0.0",
-                "externalId": {
-                  "name": "FLKAutoLayout",
-                  "version": "1.0.0",
-                  "forge": {
-                    "name": "cocoapods",
-                    "separator": ":"
-                  }
-                },
-                "children": [
-                  
-                ]
-              }
-            ]
+            "children": []
           }
         ]
       },
@@ -953,24 +631,7 @@
             "separator": ":"
           }
         },
-        "children": [
-          
-        ]
-      },
-      {
-        "name": "SDWebImage",
-        "version": "3.7.3",
-        "externalId": {
-          "name": "SDWebImage",
-          "version": "3.7.3",
-          "forge": {
-            "name": "cocoapods",
-            "separator": ":"
-          }
-        },
-        "children": [
-          
-        ]
+        "children": []
       }
     ]
   },
@@ -985,9 +646,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "Expecta+Snapshots",
@@ -1012,9 +671,7 @@
             "separator": ":"
           }
         },
-        "children": [
-          
-        ]
+        "children": []
       },
       {
         "name": "FBSnapshotTestCase",
@@ -1027,9 +684,7 @@
             "separator": ":"
           }
         },
-        "children": [
-          
-        ]
+        "children": []
       },
       {
         "name": "Expecta",
@@ -1042,9 +697,7 @@
             "separator": ":"
           }
         },
-        "children": [
-          
-        ]
+        "children": []
       }
     ]
   },
@@ -1071,23 +724,46 @@
             "separator": ":"
           }
         },
-        "children": [
-          
-        ]
+        "children": []
       },
       {
-        "name": "Artsy+UIColors",
-        "version": "3.1.0",
+        "name": "FLKAutoLayout",
+        "version": "1.0.0",
         "externalId": {
-          "name": "Artsy+UIColors",
-          "version": "3.1.0",
+          "name": "FLKAutoLayout",
+          "version": "1.0.0",
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "ORStackView",
+        "version": "2.0.3",
+        "externalId": {
+          "name": "ORStackView",
+          "version": "2.0.3",
           "forge": {
             "name": "cocoapods",
             "separator": ":"
           }
         },
         "children": [
-          
+          {
+            "name": "FLKAutoLayout",
+            "version": "1.0.0",
+            "externalId": {
+              "name": "FLKAutoLayout",
+              "version": "1.0.0",
+              "forge": {
+                "name": "cocoapods",
+                "separator": ":"
+              }
+            },
+            "children": []
+          }
         ]
       },
       {
@@ -1113,9 +789,7 @@
                 "separator": ":"
               }
             },
-            "children": [
-              
-            ]
+            "children": []
           },
           {
             "name": "Artsy+UIColors",
@@ -1128,9 +802,7 @@
                 "separator": ":"
               }
             },
-            "children": [
-              
-            ]
+            "children": []
           },
           {
             "name": "Artsy+UIFonts",
@@ -1143,26 +815,22 @@
                 "separator": ":"
               }
             },
-            "children": [
-              
-            ]
+            "children": []
           }
         ]
       },
       {
-        "name": "FLKAutoLayout",
-        "version": "1.0.0",
+        "name": "Artsy+UIColors",
+        "version": "3.1.0",
         "externalId": {
-          "name": "FLKAutoLayout",
-          "version": "1.0.0",
+          "name": "Artsy+UIColors",
+          "version": "3.1.0",
           "forge": {
             "name": "cocoapods",
             "separator": ":"
           }
         },
-        "children": [
-          
-        ]
+        "children": []
       },
       {
         "name": "Artsy+UIFonts",
@@ -1175,38 +843,7 @@
             "separator": ":"
           }
         },
-        "children": [
-          
-        ]
-      },
-      {
-        "name": "ORStackView",
-        "version": "2.0.3",
-        "externalId": {
-          "name": "ORStackView",
-          "version": "2.0.3",
-          "forge": {
-            "name": "cocoapods",
-            "separator": ":"
-          }
-        },
-        "children": [
-          {
-            "name": "FLKAutoLayout",
-            "version": "1.0.0",
-            "externalId": {
-              "name": "FLKAutoLayout",
-              "version": "1.0.0",
-              "forge": {
-                "name": "cocoapods",
-                "separator": ":"
-              }
-            },
-            "children": [
-              
-            ]
-          }
-        ]
+        "children": []
       }
     ]
   },
@@ -1233,9 +870,7 @@
             "separator": ":"
           }
         },
-        "children": [
-          
-        ]
+        "children": []
       }
     ]
   },
@@ -1274,9 +909,7 @@
                 "separator": ":"
               }
             },
-            "children": [
-              
-            ]
+            "children": []
           }
         ]
       }
@@ -1293,9 +926,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "FLKAutoLayout",
@@ -1308,9 +939,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "Forgeries",
@@ -1335,9 +964,7 @@
             "separator": ":"
           }
         },
-        "children": [
-          
-        ]
+        "children": []
       }
     ]
   },
@@ -1352,9 +979,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "Interstellar",
@@ -1367,9 +992,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "iRate",
@@ -1382,9 +1005,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "ISO8601DateFormatter",
@@ -1397,9 +1018,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "JLRoutes",
@@ -1412,9 +1031,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "JSBadgeView",
@@ -1427,9 +1044,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "JSDecoupledAppDelegate",
@@ -1442,9 +1057,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "JWTDecode",
@@ -1457,9 +1070,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "KSDeferred",
@@ -1472,9 +1083,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "Mantle",
@@ -1487,9 +1096,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "MARKRangeSlider",
@@ -1502,9 +1109,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "MMMarkdown",
@@ -1517,9 +1122,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "MultiDelegate",
@@ -1532,9 +1135,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "NAMapKit",
@@ -1559,9 +1160,7 @@
             "separator": ":"
           }
         },
-        "children": [
-          
-        ]
+        "children": []
       },
       {
         "name": "ARTiledImageView",
@@ -1586,9 +1185,7 @@
                 "separator": ":"
               }
             },
-            "children": [
-              
-            ]
+            "children": []
           }
         ]
       }
@@ -1605,9 +1202,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "Nimble-Snapshots",
@@ -1622,6 +1217,19 @@
     },
     "children": [
       {
+        "name": "Quick",
+        "version": "0.10.0",
+        "externalId": {
+          "name": "Quick",
+          "version": "0.10.0",
+          "forge": {
+            "name": "cocoapods",
+            "separator": ":"
+          }
+        },
+        "children": []
+      },
+      {
         "name": "FBSnapshotTestCase",
         "version": "2.1.4",
         "externalId": {
@@ -1632,9 +1240,7 @@
             "separator": ":"
           }
         },
-        "children": [
-          
-        ]
+        "children": []
       },
       {
         "name": "Nimble",
@@ -1647,24 +1253,7 @@
             "separator": ":"
           }
         },
-        "children": [
-          
-        ]
-      },
-      {
-        "name": "Quick",
-        "version": "0.10.0",
-        "externalId": {
-          "name": "Quick",
-          "version": "0.10.0",
-          "forge": {
-            "name": "cocoapods",
-            "separator": ":"
-          }
-        },
-        "children": [
-          
-        ]
+        "children": []
       }
     ]
   },
@@ -1679,9 +1268,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "ObjectiveSugar",
@@ -1694,9 +1281,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "OCMock",
@@ -1709,9 +1294,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "OHHTTPStubs",
@@ -1724,9 +1307,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "ORKeyboardReactingApplication",
@@ -1739,9 +1320,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "ORStackView",
@@ -1766,9 +1345,7 @@
             "separator": ":"
           }
         },
-        "children": [
-          
-        ]
+        "children": []
       }
     ]
   },
@@ -1783,9 +1360,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "React",
@@ -1798,9 +1373,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "ReactiveCocoa",
@@ -1813,9 +1386,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "SDWebImage",
@@ -1828,9 +1399,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "Specta",
@@ -1843,9 +1412,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "SSFadingScrollView",
@@ -1858,9 +1425,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "Starscream",
@@ -1873,9 +1438,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "SwiftyJSON",
@@ -1888,9 +1451,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "Then",
@@ -1903,9 +1464,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "UIAlertView+Blocks",
@@ -1918,9 +1477,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "UICKeyChainStore",
@@ -1933,9 +1490,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "UIView+BooleanAnimations",
@@ -1948,9 +1503,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "VCRURLConnection",
@@ -1963,9 +1516,7 @@
         "separator": ":"
       }
     },
-    "children": [
-      
-    ]
+    "children": []
   },
   {
     "name": "XCTest+OHHTTPStubSuiteCleanUp",
@@ -1990,9 +1541,7 @@
             "separator": ":"
           }
         },
-        "children": [
-          
-        ]
+        "children": []
       }
     ]
   }
