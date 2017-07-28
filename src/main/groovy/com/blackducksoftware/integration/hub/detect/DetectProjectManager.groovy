@@ -121,11 +121,10 @@ class DetectProjectManager {
                 }
             }
         }
-        if (!detectProject.projectName && !detectProject.projectVersionName) {
-            //if none of the bom tools could determine a project/version, use some reasonable defaults
-            detectProject.projectName = getProjectName(detectProject.projectName)
-            detectProject.projectVersionName = getProjectVersionName(detectProject.projectVersionName, detectProject.projectVersionHash)
-        }
+        //ensure that the project name is set, use some reasonable defaults
+        detectProject.projectName = getProjectName(detectProject.projectName)
+        detectProject.projectVersionName = getProjectVersionName(detectProject.projectVersionName, detectProject.projectVersionHash)
+
         if (!foundAnyBomTools) {
             logger.info("Could not find any tools to run - will register ${detectConfiguration.sourcePath} for signature scanning of ${detectProject.projectName}/${detectProject.projectVersionName}")
             hubSignatureScanner.registerPathToScan(detectConfiguration.sourceDirectory)
