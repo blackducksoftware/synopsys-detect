@@ -72,9 +72,26 @@ class NugetBomTool extends BomTool {
             logger.warn('Unable to extract any dependencies from nuget')
             return []
         }
+        createDetectCodeLocations(root)
+    }
 
+    List<DetectCodeLocation> createDetectCodeLocations(DependencyNode root) {
+        projectName = root.name
         root.externalId = new NameVersionExternalId(Forge.NUGET, root.name, root.version)
-        DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, root)
-        [detectCodeLocation]
+        if (!root.version) {
+            logger.debug("The root is a solution")
+            List<DetectCodeLocation> detectCodeLocations = root.children.collect { project ->
+                // Set the source path of the DetectCodeLocation to the name of the node since we dont know the path of the project it came from
+                DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), project.name, project.name, project.version, null, project.externalId, project.children)
+                detectCodeLocation
+            }
+            return detectCodeLocations
+        } else {
+            logger.debug("The root is a project")
+            projectVersion = root.version
+
+            DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, root)
+            return [detectCodeLocation]
+        }
     }
 }

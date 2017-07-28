@@ -39,6 +39,7 @@ public class SbtPackager {
         def aggregator = new SbtConfigurationAggregator()
 
         List<SbtConfigurationDependencyTree> configurations = reportFiles.collect { reportFile->
+            logger.debug("Parsing SBT report file : ${reportFile.getCanonicalPath()}")
             def xml = new XmlSlurper().parse(reportFile)
             def report = parser.parseReportFromXml(xml)
             def tree = resolver.resolveReportDependencies(report)

@@ -52,6 +52,9 @@ abstract class BomTool {
     abstract BomToolType getBomToolType()
     abstract boolean isBomToolApplicable()
 
+    String projectName
+    String projectVersion
+
     /**
      * A BomTool is responsible for doing its best to create at least one, but possibly many, DetectCodeLocations.
      */
