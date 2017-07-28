@@ -339,6 +339,10 @@ class DetectProperties {
     @Value('${detect.bom.aggregate.name}')
     String aggregateBomName
 
+    @ValueDescription (description="When set to true, a Black Duck risk report in PDF form will be created in your source directory", defaultValue='false', group=DetectProperties.GROUP_PROJECT_INFO)
+    @Value('${detect.risk.report.pdf}')
+    Boolean riskreportPDF
+
     @ValueDescription(description="The path of the conda executable", group=DetectProperties.GROUP_CONDA)
     @Value('${detect.conda.path}')
     String condaPath
