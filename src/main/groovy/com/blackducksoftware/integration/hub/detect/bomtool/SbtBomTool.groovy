@@ -66,9 +66,9 @@ class SbtBomTool extends BomTool {
         int depth = detectConfiguration.getSearchDepth()
         List<File> sbtFiles = detectFileManager.findFilesToDepth(sourcePath, BUILD_SBT_FILENAME, depth)
 
-        List<DetectCodeLocation> codeLocations = new ArrayList<DetectCodeLocation>()
-
-        sbtFiles.each { sbtFile ->
+        String projectName = ''
+        String projectVersion = ''
+        List<DetectCodeLocation> codeLocations = sbtFiles.collect { sbtFile ->
             logger.debug("Found SBT build file : ${sbtFile.getCanonicalPath()}")
             def sbtDirectory = sbtFile.getParentFile()
             def reportPath = new File(sbtDirectory, REPORT_FILE_DIRECTORY)
@@ -77,6 +77,7 @@ class SbtBomTool extends BomTool {
 
             DependencyNode node = sbtPackager.makeDependencyNode(reportFiles, included, excluded)
 
+            DetectCodeLocation detectCodeLocation = null
             if (node == null) {
                 logger.warn("No dependencies could be generated for report folder: ${reportPath}")
             } else {
@@ -84,9 +85,9 @@ class SbtBomTool extends BomTool {
                     projectName = node.name
                     projectVersion = node.version
                 }
-                def detectCodeLocation = new DetectCodeLocation(getBomToolType(), sbtDirectory.getCanonicalPath(), node)
-                codeLocations.add(detectCodeLocation)
+                detectCodeLocation = new DetectCodeLocation(getBomToolType(), sbtDirectory.getCanonicalPath(), projectName, projectVersion, null, node.externalId, node.children)
             }
+            detectCodeLocation
         }
 
         if (!codeLocations) {
