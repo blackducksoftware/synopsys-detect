@@ -30,6 +30,7 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenExternalId
+import com.blackducksoftware.integration.hub.detect.Application
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
 
@@ -54,7 +55,7 @@ class MavenCodeLocationPackager {
         previousLineWasEmpty = true
         level = 0
 
-        for (String line : mavenOutputText.split('\n')) {
+        for (String line : mavenOutputText.split(Application.LINE_SEPARATOR)) {
             if (!line.startsWith("[INFO]")) {
                 continue
             }
