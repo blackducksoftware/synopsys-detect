@@ -35,7 +35,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableMa
 
 @Component
 class PythonEnvironmentHandler {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass())
+    private final Logger logger = LoggerFactory.getLogger(PythonEnvironmentHandler.class)
     private final String VIRTUAL_ENV_NAME = 'venv'
 
     @Autowired

@@ -35,7 +35,7 @@ import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeT
 
 @Component
 class PipInspectorTreeParser {
-    final Logger logger = LoggerFactory.getLogger(this.getClass())
+    final Logger logger = LoggerFactory.getLogger(PipInspectorTreeParser.class)
 
     public static final String SEPERATOR = '=='
     public static final String UNKNOWN_PROJECT_NAME = 'n?'
