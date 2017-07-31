@@ -68,13 +68,13 @@ class PipInspectorTreeParserTest {
     @Test
     void validParseTest() {
         def space = PipInspectorTreeParser.INDENTATION
-        def seperator = PipInspectorTreeParser.SEPERATOR
+        def separator = PipInspectorTreeParser.SEPERATOR
         def child1Name = 'apple'
         def child1Version = '5.3.2'
-        def child1Full = child1Name + seperator + child1Version
+        def child1Full = child1Name + separator + child1Version
         def child2Name = 'orange'
         def child2Version = '4.3.1'
-        def child2Full = child2Name + seperator + child2Version
+        def child2Full = child2Name + separator + child2Version
         def validText = """
         ${fullName}
         ${space + child1Full}
