@@ -33,6 +33,6 @@ class JsonTestUtil {
     }
 
     String getResourceAsUTF8String(String resourcePath) {
-        ResourceUtil.getResourceAsString(resourcePath, StandardCharsets.UTF_8)
+        ResourceUtil.getResourceAsString(resourcePath, StandardCharsets.UTF_8.toString())
     }
 }

@@ -24,8 +24,8 @@ class CpanPackagerTest {
     private final JsonTestUtil jsonTestUtil = new JsonTestUtil()
     private final CpanPackager cpanPackager = new CpanPackager()
 
-    private final String cpanListText = jsonTestUtil.getResourceAsUTF8String('/cpan/cpanList.txt')
-    private final String showDepsText = jsonTestUtil.getResourceAsUTF8String('/cpan/showDeps.txt')
+    private final String cpanListText = jsonTestUtil.getResourceAsUTF8String('cpan/cpanList.txt')
+    private final String showDepsText = jsonTestUtil.getResourceAsUTF8String('cpan/showDeps.txt')
 
     @Before
     public void init() {
@@ -46,6 +46,6 @@ class CpanPackagerTest {
     @Test
     public void makeDependencyNodesTest() {
         Set<DependencyNode> dependencyNodes = cpanPackager.makeDependencyNodes(cpanListText, showDepsText)
-        jsonTestUtil.testJsonResource('/cpan/expectedDependencyNodes.json', dependencyNodes)
+        jsonTestUtil.testJsonResource('cpan/expectedDependencyNodes.json', dependencyNodes)
     }
 }

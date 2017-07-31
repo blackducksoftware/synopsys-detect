@@ -29,15 +29,15 @@ public class CocoapodsPackagerTest {
 
     @Test
     void simpleTest() {
-        final String podlockText = jsonTestUtil.getResourceAsUTF8String('/cocoapods/simplePodfile.lock')
+        final String podlockText = jsonTestUtil.getResourceAsUTF8String('cocoapods/simplePodfile.lock')
         final Set<DependencyNode> projectDependencies = cocoapodsPackager.extractDependencyNodes(podlockText)
-        jsonTestUtil.testJsonResource('/cocoapods/simpleExpected.json', projectDependencies)
+        jsonTestUtil.testJsonResource('cocoapods/simpleExpected.json', projectDependencies)
     }
 
     @Test
     void complexTest() {
-        final String podlockText = jsonTestUtil.getResourceAsUTF8String('/cocoapods/complexPodfile.lock')
+        final String podlockText = jsonTestUtil.getResourceAsUTF8String('cocoapods/complexPodfile.lock')
         final Set<DependencyNode> projectDependencies = cocoapodsPackager.extractDependencyNodes(podlockText)
-        jsonTestUtil.testJsonResource('/cocoapods/complexExpected.json', projectDependencies)
+        jsonTestUtil.testJsonResource('cocoapods/complexExpected.json', projectDependencies)
     }
 }
