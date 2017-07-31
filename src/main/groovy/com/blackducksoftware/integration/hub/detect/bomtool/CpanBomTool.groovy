@@ -80,7 +80,7 @@ class CpanBomTool extends BomTool {
         ExecutableOutput showdepsOutput = executableRunner.runExe(cpanmExecutablePath, '--showdeps', '.')
         String showdeps = showdepsOutput.getStandardOutput()
 
-        Set<DependencyNode> dependenciesSet = cpanPackager.makeDependencyNodes(detectConfiguration.sourceDirectory, listText, showdeps)
+        Set<DependencyNode> dependenciesSet = cpanPackager.makeDependencyNodes(listText, showdeps)
         ExternalId externalId = new PathExternalId(CPAN_FORGE, detectConfiguration.sourcePath)
         def detectCodeLocation = new DetectCodeLocation(BomToolType.CPAN, detectConfiguration.sourcePath, '', '', '', externalId, dependenciesSet)
 
