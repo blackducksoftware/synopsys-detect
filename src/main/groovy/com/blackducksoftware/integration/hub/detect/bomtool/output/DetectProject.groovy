@@ -59,16 +59,16 @@ class DetectProject {
         detectCodeLocations.add(detectCodeLocation)
     }
 
-    public String getCodeLocationName(DetectFileManager detectFileManager, final BomToolType bomToolType, final String sourcePath, String suffix) {
+    public String getCodeLocationName(DetectFileManager detectFileManager, final BomToolType bomToolType, final String sourcePath, String prefix, String suffix) {
         String finalSourcePathPiece = detectFileManager.extractFinalPieceFromPath(sourcePath)
-        String codeLocation = String.format('%s/%s/%s/%s %s', bomToolType.toString(), finalSourcePathPiece, projectName, projectVersionName, suffix)
+        String codeLocation = String.format('%s/%s/%s/%s/%s %s', prefix, bomToolType.toString(), finalSourcePathPiece, projectName, projectVersionName, suffix)
         codeLocation
     }
 
-    public String getCodeLocationName(DetectFileManager detectFileManager, final String canonicalProjectSourcePath, final String canonicalCodeLocationSourcePath, String suffix) {
+    public String getCodeLocationName(DetectFileManager detectFileManager, final String canonicalProjectSourcePath, final String canonicalCodeLocationSourcePath, String prefix, String suffix) {
         String finalProjectSourcePathPiece = detectFileManager.extractFinalPieceFromPath(canonicalProjectSourcePath)
-        String sourcePath = canonicalCodeLocationSourcePath.replace(canonicalProjectSourcePath, finalProjectSourcePathPiece);
-        String codeLocation = String.format('%s/%s/%s %s', sourcePath, projectName, projectVersionName, suffix)
+        String sourcePath = canonicalCodeLocationSourcePath.replace(canonicalProjectSourcePath, finalProjectSourcePathPiece)
+        String codeLocation = String.format('%s/%s/%s/%s %s', prefix, sourcePath, projectName, projectVersionName, suffix)
         codeLocation
     }
 

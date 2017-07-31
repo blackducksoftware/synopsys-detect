@@ -231,6 +231,9 @@ class DetectConfiguration {
     public String getProjectVersionName() {
         return detectProperties.projectVersionName?.trim()
     }
+    public String getProjectCodeLocationPrefix() {
+        return detectProperties.projectCodeLocationPrefix?.trim()
+    }
     public boolean getProjectLevelMatchAdjustments() {
         return BooleanUtils.toBoolean(detectProperties.projectLevelMatchAdjustments)
     }

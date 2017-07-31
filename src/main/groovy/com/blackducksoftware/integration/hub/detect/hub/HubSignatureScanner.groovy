@@ -116,7 +116,7 @@ class HubSignatureScanner {
             hubScanConfigBuilder.cleanupLogsOnSuccess = detectConfiguration.cleanupBomToolFiles
             hubScanConfigBuilder.dryRun = detectConfiguration.hubSignatureScannerDryRun
 
-            final String codeLocationName = detectProject.getCodeLocationName(detectFileManager, detectConfiguration.sourcePath, canonicalPath, 'Hub Detect Scan')
+            final String codeLocationName = detectProject.getCodeLocationName(detectFileManager, detectConfiguration.sourcePath, canonicalPath, detectConfiguration.getProjectCodeLocationPrefix(), 'Hub Detect Scan')
             hubScanConfigBuilder.codeLocationAlias = codeLocationName
 
             if (detectConfiguration.hubSignatureScannerExclusionPatterns) {
