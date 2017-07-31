@@ -13,9 +13,9 @@ package com.blackducksoftware.integration.hub.detect.testutils
 
 import java.nio.charset.StandardCharsets
 
-import org.apache.commons.io.IOUtils
 import org.skyscreamer.jsonassert.JSONAssert
 
+import com.blackducksoftware.integration.util.ResourceUtil
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
@@ -33,6 +33,6 @@ class JsonTestUtil {
     }
 
     String getResourceAsUTF8String(String resourcePath) {
-        IOUtils.toString(this.getClass().getResourceAsStream(resourcePath), StandardCharsets.UTF_8)
+        ResourceUtil.getResourceAsString(resourcePath, StandardCharsets.UTF_8)
     }
 }
