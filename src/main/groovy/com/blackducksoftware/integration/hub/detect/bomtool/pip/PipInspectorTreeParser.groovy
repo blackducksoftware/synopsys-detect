@@ -35,12 +35,11 @@ import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeT
 
 @Component
 class PipInspectorTreeParser {
-    final Logger logger = LoggerFactory.getLogger(this.getClass())
+    final Logger logger = LoggerFactory.getLogger(PipInspectorTreeParser.class)
 
     public static final String SEPERATOR = '=='
-    public static final String UNKNOWN_PROJECT_NAME = "n?"
-    public static final String UNKNOWN_PROJECT_VERSION = "v?"
-    public static final String UNKNOWN_PROJECT = UNKNOWN_PROJECT_NAME + SEPERATOR + UNKNOWN_PROJECT_VERSION
+    public static final String UNKNOWN_PROJECT_NAME = 'n?'
+    public static final String UNKNOWN_PROJECT_VERSION = 'v?'
     public static final String UNKNOWN_REQUIREMENTS_PREFIX = 'r?'
     public static final String UNKNOWN_PACKAGE_PREFIX = '--'
     public static final String INDENTATION = ' '.multiply(4)
@@ -57,13 +56,13 @@ class PipInspectorTreeParser {
                 continue
             }
 
-            if (line.startsWith(UNKNOWN_REQUIREMENTS_PREFIX)) {
+            if (line.trim().startsWith(UNKNOWN_REQUIREMENTS_PREFIX)) {
                 String path = line.replace(UNKNOWN_REQUIREMENTS_PREFIX, '').trim()
                 logger.info("Pip inspector could not locate requirements file @ ${path}")
                 continue
             }
 
-            if (line.startsWith(UNKNOWN_PACKAGE_PREFIX)) {
+            if (line.trim().startsWith(UNKNOWN_PACKAGE_PREFIX)) {
                 String packageName = line.replace(UNKNOWN_PACKAGE_PREFIX, '').trim()
                 logger.info("Pip inspector could not resolve the package: ${packageName}")
                 continue

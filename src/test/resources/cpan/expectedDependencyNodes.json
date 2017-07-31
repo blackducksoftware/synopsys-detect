@@ -1,0 +1,28 @@
+[
+  {
+    "name": "ExtUtils-MakeMaker",
+    "version": "7.24",
+    "externalId": {
+      "name": "ExtUtils-MakeMaker",
+      "version": "7.24",
+      "forge": {
+        "name": "cpan",
+        "separator": "-"
+      }
+    },
+    "children": []
+  },
+  {
+    "name": "Test-More",
+    "version": "1.302073",
+    "externalId": {
+      "name": "Test-More",
+      "version": "1.302073",
+      "forge": {
+        "name": "cpan",
+        "separator": "-"
+      }
+    },
+    "children": []
+  }
+]
