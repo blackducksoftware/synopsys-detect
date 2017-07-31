@@ -32,9 +32,12 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
+import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
+import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput
@@ -63,7 +66,7 @@ class NugetInspectorPackager {
     @Autowired
     NameVersionNodeTransformer nameVersionNodeTransformer
 
-    DependencyNode makeDependencyNode(String sourcePath, File nugetExecutable) {
+    List<DetectCodeLocation> makeDetectCodeLocations(String sourcePath, File nugetExecutable) {
         def outputDirectory = new File(detectConfiguration.outputDirectory, 'nuget')
         def sourceDirectory = new File(sourcePath)
         String inspectorExePath = getInspectorExePath(sourceDirectory, outputDirectory, nugetExecutable)
@@ -87,17 +90,19 @@ class NugetInspectorPackager {
         def hubNugetInspectorExecutable = new Executable(sourceDirectory, inspectorExePath, options)
         ExecutableOutput executableOutput = executableRunner.execute(hubNugetInspectorExecutable)
 
-        def dependencyNodeFile = detectFileManager.findFile(outputDirectory, '*_dependency_node.json')
-        if (!dependencyNodeFile) {
+        def dependencyNodeFiles = detectFileManager.findFiles(outputDirectory, '*_dependency_node.json')
+        if (!dependencyNodeFiles) {
             return null
         }
-        final String dependencyNodeJson = dependencyNodeFile.getText(StandardCharsets.UTF_8.name())
-        final NugetNode nugetNode = gson.fromJson(dependencyNodeJson, NugetNode.class)
-        registerScanPaths(nugetNode)
+        List<DetectCodeLocation> codeLocations = dependencyNodeFiles.collect {
+            final String dependencyNodeJson = it.getText(StandardCharsets.UTF_8.name())
+            final NugetNode nugetNode = gson.fromJson(dependencyNodeJson, NugetNode.class)
+            registerScanPaths(nugetNode)
 
-        DependencyNode dependencyNode = nameVersionNodeTransformer.createDependencyNode(Forge.NUGET, nugetNode)
+            DetectCodeLocation detectCodeLocation = createDetectCodeLocation(nugetNode)
+        }
         FileUtils.deleteDirectory(outputDirectory)
-        return dependencyNode
+        return codeLocations
     }
 
     private void registerScanPaths(NugetNode nugetNode){
@@ -138,5 +143,22 @@ class NugetInspectorPackager {
 
         Executable installExecutable = new Executable(sourceDirectory, nugetExecutable.absolutePath, options)
         executableRunner.execute(installExecutable)
+    }
+
+    public DetectCodeLocation createDetectCodeLocation(NugetNode nugetNode) {
+        def externalId = new NameVersionExternalId(Forge.NUGET, nugetNode.name, nugetNode.version)
+        DependencyNode dependencyNode = nameVersionNodeTransformer.createDependencyNode(nugetNode)
+        String projectName = ''
+        String projectVersionName = ''
+        if (NodeType.SOLUTION == nugetNode.type) {
+            projectName = nugetNode.artifact
+            projectVersionName = nugetNode.children?.get(0)?.version
+        } else if (NodeType.PROJECT == nugetNode.type) {
+            projectName = nugetNode.artifact
+            projectVersionName = nugetNode.version
+        }
+        DetectCodeLocation detectCodeLocation = new DetectCodeLocation(BomToolType.NUGET, nugetNode.sourcePath, projectName, projectVersionName, null, externalId, dependencyNode.children)
+
+        dependencyNode
     }
 }

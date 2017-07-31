@@ -27,9 +27,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorPackager
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
@@ -67,31 +64,11 @@ class NugetBomTool extends BomTool {
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
-        DependencyNode root = nugetInspectorPackager.makeDependencyNode(sourcePath, new File(nugetExecutable))
-        if (!root) {
+        List<DetectCodeLocation> codeLocations = nugetInspectorPackager.makeDetectCodeLocations(sourcePath, new File(nugetExecutable))
+        if (!codeLocations) {
             logger.warn('Unable to extract any dependencies from nuget')
             return []
         }
-        createDetectCodeLocations(root)
-    }
-
-    List<DetectCodeLocation> createDetectCodeLocations(DependencyNode root) {
-        projectName = root.name
-        root.externalId = new NameVersionExternalId(Forge.NUGET, root.name, root.version)
-        if (!root.version) {
-            logger.debug("The root is a solution")
-            List<DetectCodeLocation> detectCodeLocations = root.children.collect { project ->
-                // Set the source path of the DetectCodeLocation to the name of the node since we dont know the path of the project it came from
-                DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), project.name, project.name, project.version, null, project.externalId, project.children)
-                detectCodeLocation
-            }
-            return detectCodeLocations
-        } else {
-            logger.debug("The root is a project")
-            projectVersion = root.version
-
-            DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, root)
-            return [detectCodeLocation]
-        }
+        codeLocations
     }
 }
