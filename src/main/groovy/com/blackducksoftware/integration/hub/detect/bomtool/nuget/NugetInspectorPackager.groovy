@@ -94,22 +94,9 @@ class NugetInspectorPackager {
         if (!dependencyNodeFiles) {
             return null
         }
-        List<DetectCodeLocation> codeLocations = dependencyNodeFiles.collect {
-            final String dependencyNodeJson = it.getText(StandardCharsets.UTF_8.name())
-            final NugetNode nugetNode = gson.fromJson(dependencyNodeJson, NugetNode.class)
-            registerScanPaths(nugetNode)
-
-            DetectCodeLocation detectCodeLocation = createDetectCodeLocation(nugetNode)
-        }
+        List<DetectCodeLocation> codeLocations = dependencyNodeFiles.collect { createDetectCodeLocation(it) }
         FileUtils.deleteDirectory(outputDirectory)
         return codeLocations
-    }
-
-    private void registerScanPaths(NugetNode nugetNode){
-        nugetNode.outputPaths?.each {
-            hubSignatureScanner.registerPathToScan(new File(it))
-        }
-        nugetNode.children?.each { registerScanPaths(it) }
     }
 
     private String getInspectorExePath(File sourceDirectory, File outputDirectory, File nugetExecutable) {
@@ -145,7 +132,23 @@ class NugetInspectorPackager {
         executableRunner.execute(installExecutable)
     }
 
-    public DetectCodeLocation createDetectCodeLocation(NugetNode nugetNode) {
+    public DetectCodeLocation createDetectCodeLocation(File dependencyNodeFile) {
+        final String dependencyNodeJson = dependencyNodeFile.getText(StandardCharsets.UTF_8.name())
+        final NugetNode nugetNode = gson.fromJson(dependencyNodeJson, NugetNode.class)
+        registerScanPaths(nugetNode)
+
+        createDetectCodeLocationFromNode(nugetNode)
+    }
+
+    private void registerScanPaths(NugetNode nugetNode){
+        nugetNode.outputPaths?.each {
+            hubSignatureScanner?.registerPathToScan(new File(it))
+        }
+        nugetNode.children?.each { registerScanPaths(it) }
+    }
+
+
+    private DetectCodeLocation createDetectCodeLocationFromNode(NugetNode nugetNode) {
         def externalId = new NameVersionExternalId(Forge.NUGET, nugetNode.name, nugetNode.version)
         DependencyNode dependencyNode = nameVersionNodeTransformer.createDependencyNode(nugetNode)
         String projectName = ''
