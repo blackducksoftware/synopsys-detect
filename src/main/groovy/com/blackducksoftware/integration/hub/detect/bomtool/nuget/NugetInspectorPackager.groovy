@@ -168,8 +168,7 @@ class NugetInspectorPackager {
                 if (!projectVersionName) {
                     projectVersionName = node.version
                 }
-                def externalId = new NameVersionExternalId(Forge.NUGET, projectName, projectVersionName)
-                new DetectCodeLocation(BomToolType.NUGET, sourcePath, projectName, projectVersionName, null, externalId, dependencyNode.children)
+                new DetectCodeLocation(BomToolType.NUGET, sourcePath, projectName, projectVersionName, null, new NameVersionExternalId(Forge.NUGET, projectName, projectVersionName), dependencyNode.children)
             }
         } else if (NodeType.PROJECT == nugetNode.type || (!nugetNode.type && nugetNode.version)) {
             DependencyNode dependencyNode = nameVersionNodeTransformer.createDependencyNode(Forge.NUGET, nugetNode)
@@ -182,9 +181,8 @@ class NugetInspectorPackager {
             } else {
                 sourcePath = projectName
             }
-            def externalId = new NameVersionExternalId(Forge.NUGET, projectName, projectVersionName)
             return [
-                new DetectCodeLocation(BomToolType.NUGET, sourcePath, projectName, projectVersionName, null, externalId, dependencyNode.children)
+                new DetectCodeLocation(BomToolType.NUGET, sourcePath, projectName, projectVersionName, null, new NameVersionExternalId(Forge.NUGET, projectName, projectVersionName), dependencyNode.children)
             ]
         }
     }
