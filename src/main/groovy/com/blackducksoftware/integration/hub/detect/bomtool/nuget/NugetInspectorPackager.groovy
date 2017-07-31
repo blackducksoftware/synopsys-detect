@@ -132,7 +132,7 @@ class NugetInspectorPackager {
         executableRunner.execute(installExecutable)
     }
 
-    public DetectCodeLocation createDetectCodeLocation(File dependencyNodeFile) {
+    public List<DetectCodeLocation> createDetectCodeLocation(File dependencyNodeFile) {
         final String dependencyNodeJson = dependencyNodeFile.getText(StandardCharsets.UTF_8.name())
         final NugetNode nugetNode = gson.fromJson(dependencyNodeJson, NugetNode.class)
         registerScanPaths(nugetNode)
@@ -148,20 +148,44 @@ class NugetInspectorPackager {
     }
 
 
-    private DetectCodeLocation createDetectCodeLocationFromNode(NugetNode nugetNode) {
-        def externalId = new NameVersionExternalId(Forge.NUGET, nugetNode.name, nugetNode.version)
-        DependencyNode dependencyNode = nameVersionNodeTransformer.createDependencyNode(nugetNode)
+    private List<DetectCodeLocation> createDetectCodeLocationFromNode(NugetNode nugetNode) {
         String projectName = ''
         String projectVersionName = ''
-        if (NodeType.SOLUTION == nugetNode.type) {
+        // The second part of the if statements are to support < 1.2.0 versions of the Nuget inspector
+        if (NodeType.SOLUTION == nugetNode.type || (!nugetNode.type && !nugetNode.version)) {
             projectName = nugetNode.artifact
-            projectVersionName = nugetNode.children?.get(0)?.version
-        } else if (NodeType.PROJECT == nugetNode.type) {
+            // List<DetectCodeLocation> codeLocations = new ArrayList<>()
+            // for (NugetNode node : nugetNode.children) {
+            return nugetNode.children.collect { node ->
+                DependencyNode dependencyNode = nameVersionNodeTransformer.createDependencyNode(Forge.NUGET, node)
+                String sourcePath = null
+                if (node.sourcePath) {
+                    // this field was added to the inspector after 1.1.0
+                    sourcePath = node.sourcePath
+                } else {
+                    sourcePath = node.artifact
+                }
+                if (!projectVersionName) {
+                    projectVersionName = node.version
+                }
+                def externalId = new NameVersionExternalId(Forge.NUGET, projectName, projectVersionName)
+                new DetectCodeLocation(BomToolType.NUGET, sourcePath, projectName, projectVersionName, null, externalId, dependencyNode.children)
+            }
+        } else if (NodeType.PROJECT == nugetNode.type || (!nugetNode.type && nugetNode.version)) {
+            DependencyNode dependencyNode = nameVersionNodeTransformer.createDependencyNode(Forge.NUGET, nugetNode)
             projectName = nugetNode.artifact
             projectVersionName = nugetNode.version
+            String sourcePath = ''
+            if (nugetNode.sourcePath) {
+                // this field was added after 1.1.0
+                sourcePath = nugetNode.sourcePath
+            } else {
+                sourcePath = projectName
+            }
+            def externalId = new NameVersionExternalId(Forge.NUGET, projectName, projectVersionName)
+            return [
+                new DetectCodeLocation(BomToolType.NUGET, sourcePath, projectName, projectVersionName, null, externalId, dependencyNode.children)
+            ]
         }
-        DetectCodeLocation detectCodeLocation = new DetectCodeLocation(BomToolType.NUGET, nugetNode.sourcePath, projectName, projectVersionName, null, externalId, dependencyNode.children)
-
-        dependencyNode
     }
 }
