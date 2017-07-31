@@ -30,11 +30,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.PipInspectorTreeParser
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.PythonEnvironment
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.PythonEnvironmentHandler
-import com.blackducksoftware.integration.hub.detect.type.BomToolType
+import com.blackducksoftware.integration.hub.detect.model.BomToolType
+import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 
 @Component

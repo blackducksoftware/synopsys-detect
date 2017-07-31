@@ -39,7 +39,7 @@ import com.blackducksoftware.integration.hub.dataservice.project.ProjectVersionW
 import com.blackducksoftware.integration.hub.dataservice.report.RiskReportDataService
 import com.blackducksoftware.integration.hub.dataservice.scan.ScanStatusDataService
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
-import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
+import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.exception.DoesNotExistException
 import com.blackducksoftware.integration.hub.global.HubServerConfig
 import com.blackducksoftware.integration.hub.model.request.ProjectRequest

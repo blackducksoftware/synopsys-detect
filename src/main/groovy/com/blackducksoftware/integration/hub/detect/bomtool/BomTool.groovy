@@ -26,9 +26,9 @@ import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.beans.factory.annotation.Autowired
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
-import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
+import com.blackducksoftware.integration.hub.detect.model.BomToolType
+import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
-import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
@@ -51,9 +51,6 @@ abstract class BomTool {
 
     abstract BomToolType getBomToolType()
     abstract boolean isBomToolApplicable()
-
-    String projectName
-    String projectVersion
 
     /**
      * A BomTool is responsible for doing its best to create at least one, but possibly many, DetectCodeLocations.

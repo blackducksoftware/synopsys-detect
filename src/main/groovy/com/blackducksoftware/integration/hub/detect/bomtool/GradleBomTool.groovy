@@ -30,10 +30,9 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
-import com.blackducksoftware.integration.hub.detect.type.BomToolType
+import com.blackducksoftware.integration.hub.detect.model.BomToolType
+import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.google.gson.Gson
@@ -70,11 +69,7 @@ class GradleBomTool extends BomTool {
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
-        List<DependencyNode> projectNodes = extractProjectNodes()
-        List<DetectCodeLocation> codeLocations = projectNodes.collect {
-            // Set the source path of the DetectCodeLocation to the name of the node since we dont know the path of the project it came from
-            new DetectCodeLocation(getBomToolType(), it.name, it.name, it.version, null, it.externalId, it.children)
-        }
+        List<DetectCodeLocation> codeLocations = extractCodeLocationsFromGradle()
         File[] additionalTargets = detectFileManager.findFilesToDepth(detectConfiguration.sourceDirectory, 'build', detectConfiguration.searchDepth)
         if (additionalTargets) {
             additionalTargets.each { hubSignatureScanner.registerPathToScan(it) }
@@ -96,7 +91,7 @@ class GradleBomTool extends BomTool {
         gradlePath
     }
 
-    List<DependencyNode> extractProjectNodes() {
+    List<DetectCodeLocation> extractCodeLocationsFromGradle() {
         File initScriptFile = detectFileManager.createFile(BomToolType.GRADLE, 'init-detect.gradle')
         String initScriptContents = getClass().getResourceAsStream('/init-script-gradle').getText(StandardCharsets.UTF_8.name())
         initScriptContents = initScriptContents.replace('GRADLE_INSPECTOR_VERSION', detectConfiguration.getGradleInspectorVersion())
@@ -117,27 +112,15 @@ class GradleBomTool extends BomTool {
         File buildDirectory = new File(sourcePath, 'build')
         File blackduckDirectory = new File(buildDirectory, 'blackduck')
 
-        List<DependencyNode> nodes = new ArrayList<>()
-
-        File[] dependencyNodeFiles = detectFileManager.findFiles(blackduckDirectory, '*_dependencyNodes.json')
-        dependencyNodeFiles.each {
-            logger.debug("Dependency Node file name: ${it.getName()}")
-            String dependencyNodeJson = it.getText(StandardCharsets.UTF_8.name())
-            DependencyNode projectDependencyNode = gson.fromJson(dependencyNodeJson, DependencyNode.class)
-            nodes.add(projectDependencyNode)
+        File[] codeLocationFiles = detectFileManager.findFiles(blackduckDirectory, '*_detectCodeLocation.json')
+        List<DetectCodeLocation> codeLocations = codeLocationFiles.collect {
+            logger.debug("Code Location file name: ${it.getName()}")
+            String codeLocationJson = it.getText(StandardCharsets.UTF_8.name())
+            gson.fromJson(codeLocationJson, DetectCodeLocation.class)
         }
-        extractProjectInformation(blackduckDirectory)
-
         if (detectConfiguration.gradleCleanupBuildBlackduckDirectory) {
             blackduckDirectory.deleteDir()
         }
-        nodes
-    }
-
-    private void extractProjectInformation(File blackduckDirectory){
-        File projectInfoFile = new File(blackduckDirectory, 'ProjectInfo.txt')
-        String[] projectInfoLines = projectInfoFile.text.split(System.getProperty('line.separator'))
-        projectName = projectInfoLines[0]
-        projectVersion = projectInfoLines[1]
+        codeLocations
     }
 }

@@ -37,7 +37,7 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import com.blackducksoftware.integration.hub.detect.bomtool.DockerBomTool
 import com.blackducksoftware.integration.hub.detect.exception.DetectException
-import com.blackducksoftware.integration.hub.detect.type.BomToolType
+import com.blackducksoftware.integration.hub.detect.model.BomToolType
 
 @Component
 class DetectConfiguration {

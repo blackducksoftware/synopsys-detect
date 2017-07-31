@@ -28,9 +28,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.bomtool.packagist.PackagistParser
-import com.blackducksoftware.integration.hub.detect.type.BomToolType
+import com.blackducksoftware.integration.hub.detect.model.BomToolType
+import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 
 @Component
 class PackagistBomTool extends BomTool {

@@ -30,9 +30,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerProperties
-import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
-import com.blackducksoftware.integration.hub.detect.type.BomToolType
+import com.blackducksoftware.integration.hub.detect.model.BomToolType
+import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 

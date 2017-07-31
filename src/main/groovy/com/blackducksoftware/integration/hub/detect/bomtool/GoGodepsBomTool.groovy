@@ -32,8 +32,8 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.PathExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.go.godep.GoGodepsParser
-import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
-import com.blackducksoftware.integration.hub.detect.type.BomToolType
+import com.blackducksoftware.integration.hub.detect.model.BomToolType
+import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.google.gson.Gson
 
 @Component

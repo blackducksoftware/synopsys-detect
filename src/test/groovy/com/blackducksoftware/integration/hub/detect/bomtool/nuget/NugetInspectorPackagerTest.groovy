@@ -3,7 +3,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool.nuget
 import org.junit.Test
 import org.skyscreamer.jsonassert.JSONAssert
 
-import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
+import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder

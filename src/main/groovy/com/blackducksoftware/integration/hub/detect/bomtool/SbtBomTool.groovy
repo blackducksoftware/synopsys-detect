@@ -27,9 +27,9 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.SbtPackager
-import com.blackducksoftware.integration.hub.detect.type.BomToolType
+import com.blackducksoftware.integration.hub.detect.model.BomToolType
+import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 
 @Component
 class SbtBomTool extends BomTool {

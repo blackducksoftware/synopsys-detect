@@ -32,8 +32,8 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.PathExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.cran.PackratPackager
-import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
-import com.blackducksoftware.integration.hub.detect.type.BomToolType
+import com.blackducksoftware.integration.hub.detect.model.BomToolType
+import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 
 @Component
 class CranBomTool extends BomTool {

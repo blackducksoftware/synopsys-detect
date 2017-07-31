@@ -8,6 +8,7 @@ import com.blackducksoftware.integration.gradle.DependencyGatherer
 
 initscript {
     repositories {
+    	mavenLocal()
         mavenCentral()
     }
     dependencies {
@@ -32,9 +33,6 @@ addListener(
                
                 def dependencyGatherer = new DependencyGatherer()
                 def rootProject = task.project
-                dependencyGatherer.createAllProjectDependencyFiles(rootProject, 'EXCLUDED_PROJECT_NAMES', 'INCLUDED_PROJECT_NAMES', 'EXCLUDED_CONFIGURATION_NAMES', 'INCLUDED_CONFIGURATION_NAMES', outputDirectory)
-
-                File projectInfoFile = new File(outputDirectory, "ProjectInfo.txt")
-                projectInfoFile.write("${rootProject.name.toString()}${System.getProperty('line.separator')}${rootProject.version.toString()}")
+                dependencyGatherer.createAllCodeLocationFiles(rootProject, 'EXCLUDED_PROJECT_NAMES', 'INCLUDED_PROJECT_NAMES', 'EXCLUDED_CONFIGURATION_NAMES', 'INCLUDED_CONFIGURATION_NAMES', outputDirectory)
            }
        })

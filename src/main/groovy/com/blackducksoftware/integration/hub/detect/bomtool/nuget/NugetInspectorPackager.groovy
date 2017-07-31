@@ -24,7 +24,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.nuget
 
 import java.nio.charset.StandardCharsets
 
-import org.apache.commons.io.FileUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -34,13 +33,11 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
-import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
+import com.blackducksoftware.integration.hub.detect.model.BomToolType
+import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
-import com.blackducksoftware.integration.hub.detect.type.BomToolType
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
-import com.blackducksoftware.integration.hub.detect.util.executable.Executable
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
 import com.google.gson.Gson
 
@@ -66,71 +63,6 @@ class NugetInspectorPackager {
     @Autowired
     NameVersionNodeTransformer nameVersionNodeTransformer
 
-    List<DetectCodeLocation> makeDetectCodeLocations(String sourcePath, File nugetExecutable) {
-        def outputDirectory = new File(detectConfiguration.outputDirectory, 'nuget')
-        def sourceDirectory = new File(sourcePath)
-        String inspectorExePath = getInspectorExePath(sourceDirectory, outputDirectory, nugetExecutable)
-
-        if (!inspectorExePath) {
-            return null
-        }
-
-        def options =  [
-            "--target_path=${sourcePath}",
-            "--output_directory=${outputDirectory.getAbsolutePath()}",
-            "--ignore_failure=${detectConfiguration.getNugetInspectorIgnoreFailure()}"
-        ]
-        if (detectConfiguration.getNugetInspectorExcludedModules()) {
-            options += "--excluded_modules=${detectConfiguration.getNugetInspectorExcludedModules()}"
-        }
-        if (logger.traceEnabled) {
-            options += "-v"
-        }
-
-        def hubNugetInspectorExecutable = new Executable(sourceDirectory, inspectorExePath, options)
-        ExecutableOutput executableOutput = executableRunner.execute(hubNugetInspectorExecutable)
-
-        def dependencyNodeFiles = detectFileManager.findFiles(outputDirectory, '*_dependency_node.json')
-        if (!dependencyNodeFiles) {
-            return null
-        }
-        List<DetectCodeLocation> codeLocations = dependencyNodeFiles.collect { createDetectCodeLocation(it) }
-        FileUtils.deleteDirectory(outputDirectory)
-        return codeLocations
-    }
-
-    private String getInspectorExePath(File sourceDirectory, File outputDirectory, File nugetExecutable) {
-        File inspectorVersionDirectory = new File(outputDirectory, "${detectConfiguration.getNugetInspectorPackageName()}.${detectConfiguration.getNugetInspectorPackageVersion()}")
-        File toolsDirectory = new File(inspectorVersionDirectory, 'tools')
-        File inspectorExe = new File(toolsDirectory, "${detectConfiguration.getNugetInspectorPackageName()}.exe")
-
-        //if we can't find the inspector where we expect to, attempt to install it from nuget.org
-        if (inspectorExe == null || !inspectorExe.exists()) {
-            installInspectorFromNugetDotOrg(sourceDirectory, outputDirectory, nugetExecutable)
-            inspectorExe = new File(toolsDirectory, "${detectConfiguration.getNugetInspectorPackageName()}.exe")
-        }
-
-        if (inspectorExe == null || !inspectorExe.exists()) {
-            logger.error("Could not find the ${detectConfiguration.getNugetInspectorPackageName()} version:${detectConfiguration.getNugetInspectorPackageVersion()} even after an install attempt.")
-            return null
-        }
-
-        return inspectorExe.absolutePath
-    }
-
-    private ExecutableOutput installInspectorFromNugetDotOrg(File sourceDirectory, File outputDirectory, File nugetExecutable) {
-        def options =  [
-            'install',
-            detectConfiguration.getNugetInspectorPackageName(),
-            '-Version',
-            detectConfiguration.getNugetInspectorPackageVersion(),
-            '-OutputDirectory',
-            outputDirectory.absolutePath
-        ]
-
-        Executable installExecutable = new Executable(sourceDirectory, nugetExecutable.absolutePath, options)
-        executableRunner.execute(installExecutable)
-    }
 
     public List<DetectCodeLocation> createDetectCodeLocation(File dependencyNodeFile) {
         final String dependencyNodeJson = dependencyNodeFile.getText(StandardCharsets.UTF_8.name())
