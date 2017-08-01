@@ -123,7 +123,7 @@ class DetectProjectManager {
         }
         //ensure that the project name is set, use some reasonable defaults
         detectProject.projectName = getProjectName(detectProject.projectName)
-        detectProject.projectVersionName = getProjectVersionName(detectProject.projectVersionName, detectProject.projectVersionHash)
+        detectProject.projectVersionName = getProjectVersionName(detectProject.projectVersionName)
 
         if (!foundAnyBomTools) {
             logger.info("Could not find any tools to run - will register ${detectConfiguration.sourcePath} for signature scanning of ${detectProject.projectName}/${detectProject.projectVersionName}")
@@ -223,7 +223,7 @@ class DetectProjectManager {
         projectName
     }
 
-    String getProjectVersionName(final String defaultVersionName, final String bomToolFileHash) {
+    String getProjectVersionName(final String defaultVersionName) {
         String projectVersion = defaultVersionName?.trim()
 
         if (detectConfiguration.getProjectVersionName()) {
