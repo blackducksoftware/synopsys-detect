@@ -85,7 +85,7 @@ class SbtBomTool extends BomTool {
                     projectName = node.name
                     projectVersion = node.version
                 }
-                detectCodeLocation = new DetectCodeLocation(getBomToolType(), sbtDirectory.getCanonicalPath(), projectName, projectVersion, null, node.externalId, node.children)
+                detectCodeLocation = new DetectCodeLocation(getBomToolType(), sbtDirectory.getCanonicalPath(), projectName, projectVersion, node.externalId, node.children)
             }
             detectCodeLocation
         }
