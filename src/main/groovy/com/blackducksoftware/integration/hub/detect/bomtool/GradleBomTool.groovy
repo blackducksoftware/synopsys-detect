@@ -70,6 +70,7 @@ class GradleBomTool extends BomTool {
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
         List<DetectCodeLocation> codeLocations = extractCodeLocationsFromGradle()
+
         File[] additionalTargets = detectFileManager.findFilesToDepth(detectConfiguration.sourceDirectory, 'build', detectConfiguration.searchDepth)
         if (additionalTargets) {
             additionalTargets.each { hubSignatureScanner.registerPathToScan(it) }

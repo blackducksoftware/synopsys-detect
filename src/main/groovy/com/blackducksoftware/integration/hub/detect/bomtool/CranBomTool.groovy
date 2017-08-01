@@ -68,7 +68,7 @@ class CranBomTool extends BomTool {
         Set<DependencyNode> dependenciesSet = new HashSet<>(dependencies)
         ExternalId externalId = new PathExternalId(CRAN, sourcePath)
 
-        def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, projectName, projectVersion, '', externalId, dependenciesSet)
+        def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, projectName, projectVersion, externalId, dependenciesSet)
         [codeLocation]
     }
 }

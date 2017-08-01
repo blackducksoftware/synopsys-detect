@@ -76,7 +76,7 @@ public class SbtConfigurationAggregator {
         if (uniqueThings.size == 1) {
             result = uniqueThings.first()
         } else if (uniqueThings.size == 0) {
-            logger.error("Could not find any ${thingType} in ivy reports!")
+            logger.warn("Could not find any ${thingType} in ivy reports!")
         } else if (uniqueThings.size > 1) {
             logger.error("Found more than 1 unique ${thingType} in ivy reports: ${uniqueThings}!")
         }

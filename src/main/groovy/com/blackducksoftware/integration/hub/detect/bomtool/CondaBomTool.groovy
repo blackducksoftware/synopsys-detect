@@ -84,7 +84,7 @@ class CondaBomTool extends BomTool {
 
         Set<DependencyNode> dependenciesSet = condaListParser.parse(listJsonText, infoJsonText)
         ExternalId externalId = new PathExternalId(Forge.ANACONDA, detectConfiguration.sourcePath)
-        def detectCodeLocation = new DetectCodeLocation(BomToolType.CONDA, detectConfiguration.sourcePath, '', '', '', externalId, dependenciesSet)
+        def detectCodeLocation = new DetectCodeLocation(BomToolType.CONDA, detectConfiguration.sourcePath, '', '', externalId, dependenciesSet)
 
         [detectCodeLocation]
     }
