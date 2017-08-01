@@ -90,7 +90,7 @@ class SbtBomTool extends BomTool {
         }
 
         if (!codeLocations) {
-            logger.error("Unable to find any dependency information.")
+            logger.warn("Unable to find any dependency information.")
             return []
         } else {
             return codeLocations
