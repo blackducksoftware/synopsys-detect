@@ -383,12 +383,6 @@ class DetectConfiguration {
     public String getSbtIncludedConfigurationNames() {
         return detectProperties.sbtIncludedConfigurationNames
     }
-    public boolean getHashVersion() {
-        return BooleanUtils.toBoolean(detectProperties.getHashVersion())
-    }
-    public boolean getShortHash() {
-        return BooleanUtils.toBoolean(detectProperties.getShortHash())
-    }
     public String getVersionTimeFormat() {
         return detectProperties.versionTimeFormat?.trim()
     }

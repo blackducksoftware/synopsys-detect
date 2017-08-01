@@ -74,7 +74,7 @@ class GradleBomTool extends BomTool {
         List<DependencyNode> projectNodes = extractProjectNodes()
         projectNodes.each {
             // Set the source path of the DetectCodeLocation to the name of the node since we dont know the path of the project it came from
-            DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), it.name, it.name, it.version, null, it.externalId, it.children)
+            DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), it.name, it.name, it.version, it.externalId, it.children)
             codeLocations.add(detectCodeLocation)
         }
         File[] additionalTargets = detectFileManager.findFilesToDepth(detectConfiguration.sourceDirectory, 'build', detectConfiguration.searchDepth)

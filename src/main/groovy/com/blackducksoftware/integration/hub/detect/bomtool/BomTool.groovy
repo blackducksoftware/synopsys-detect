@@ -22,7 +22,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool
 
-import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.beans.factory.annotation.Autowired
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
@@ -69,17 +68,5 @@ abstract class BomTool {
 
     File getSourceDirectory() {
         detectConfiguration.sourceDirectory
-    }
-
-    String getHash(String text) {
-        if (detectConfiguration.getHashVersion()) {
-            def version = DigestUtils.sha1Hex(text.getBytes())
-            if (detectConfiguration.getShortHash()) {
-                version = version.substring(0, 7)
-            }
-            return version
-        }
-
-        ''
     }
 }

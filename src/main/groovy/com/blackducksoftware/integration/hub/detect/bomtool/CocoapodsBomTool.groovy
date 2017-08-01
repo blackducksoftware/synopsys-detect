@@ -57,9 +57,8 @@ class CocoapodsBomTool extends BomTool {
         List<DependencyNode> projectDependencies = cocoapodsPackager.extractProjectDependencies(podLockText)
         Set<DependencyNode> dependenciesSet = new HashSet<>(projectDependencies)
         ExternalId externalId = new PathExternalId(Forge.COCOAPODS, sourcePath)
-        String hash = getHash(podLockText)
 
-        def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, '', '', hash, externalId, dependenciesSet)
+        def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, '', '', externalId, dependenciesSet)
         [codeLocation]
     }
 }

@@ -33,7 +33,6 @@ class DetectCodeLocation {
     private final String sourcePath
     private final String bomToolProjectName
     private final String bomToolProjectVersionName
-    private final String bomToolFileHash
     private final ExternalId bomToolProjectExternalId
     private final Set<DependencyNode> dependencies
 
@@ -44,13 +43,12 @@ class DetectCodeLocation {
         this.dependencies = dependencies
     }
 
-    DetectCodeLocation(BomToolType bomToolType, String sourcePath, String bomToolProjectName, String bomToolProjectVersionName, String bomToolFileHash,
+    DetectCodeLocation(BomToolType bomToolType, String sourcePath, String bomToolProjectName, String bomToolProjectVersionName,
     ExternalId bomToolProjectExternalId, Set<DependencyNode> dependencies) {
         this.bomToolType = bomToolType
         this.sourcePath = sourcePath
         this.bomToolProjectName = bomToolProjectName
         this.bomToolProjectVersionName = bomToolProjectVersionName
-        this.bomToolFileHash = bomToolFileHash
         this.bomToolProjectExternalId = bomToolProjectExternalId
         this.dependencies = dependencies
     }
@@ -92,10 +90,6 @@ class DetectCodeLocation {
 
     String getBomToolProjectVersionName() {
         bomToolProjectVersionName
-    }
-
-    String getBomToolFileHash() {
-        bomToolFileHash
     }
 
     ExternalId getBomToolProjectExternalId() {
