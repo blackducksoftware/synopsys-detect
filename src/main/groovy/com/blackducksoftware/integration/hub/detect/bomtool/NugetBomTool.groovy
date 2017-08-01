@@ -82,7 +82,7 @@ class NugetBomTool extends BomTool {
             logger.debug("The root is a solution")
             List<DetectCodeLocation> detectCodeLocations = root.children.collect { project ->
                 // Set the source path of the DetectCodeLocation to the name of the node since we dont know the path of the project it came from
-                DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), project.name, project.name, project.version, null, project.externalId, project.children)
+                DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), project.name, project.name, project.version, project.externalId, project.children)
                 detectCodeLocation
             }
             return detectCodeLocations

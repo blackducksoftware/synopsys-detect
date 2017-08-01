@@ -132,7 +132,7 @@ class MavenCodeLocationPackager {
         if (!sourcePath.endsWith(dependencyNode.name)) {
             codeLocationSourcePath += '/' + dependencyNode.name
         }
-        currentCodeLocation = new DetectCodeLocation(BomToolType.MAVEN, codeLocationSourcePath, dependencyNode.name, dependencyNode.version, null, dependencyNode.externalId, new HashSet<>())
+        currentCodeLocation = new DetectCodeLocation(BomToolType.MAVEN, codeLocationSourcePath, dependencyNode.name, dependencyNode.version, dependencyNode.externalId, new HashSet<>())
         codeLocations.add(currentCodeLocation)
     }
 

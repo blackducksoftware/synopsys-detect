@@ -48,10 +48,10 @@ public class SbtPackager {
             filter.shouldInclude(tree.configuration)
         }
 
-        if (configurations.size() <= 0) {
+        if (configurations.size() > 0) {
             logger.warn("No sbt configurations were included.")
+            return null
         }
-
         aggregator.aggregateConfigurations(configurations)
     }
 }
