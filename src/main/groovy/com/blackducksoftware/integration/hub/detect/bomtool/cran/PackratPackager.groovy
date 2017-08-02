@@ -59,7 +59,6 @@ public class PackratPackager {
         String versionLine = lines.find { it.contains('Version: ') }
 
         if (versionLine != null) {
-            versionLine.replace
             return versionLine.replace('Version: ', '').trim()
         }
 
