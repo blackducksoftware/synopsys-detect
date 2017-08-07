@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.detect.Application
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 
 
@@ -34,14 +35,14 @@ public class PackratPackager {
     private final NameVersionNodeTransformer nameVersionNodeTransformer
 
     public List<DependencyNode> extractProjectDependencies(final String packratLock) {
-        def packRatNodeParser = new PackRatNodeParser();
+        def packRatNodeParser = new PackRatNodeParser()
         List<DependencyNode> dependencies = packRatNodeParser.parseProjectDependencies(nameVersionNodeTransformer, packratLock)
 
         dependencies
     }
 
     public String getProjectName(final String descriptionContents) {
-        String[] lines = descriptionContents.split('\n')
+        String[] lines = descriptionContents.split(Application.LINE_SEPARATOR)
         String name
 
         for (String line : lines) {
@@ -55,7 +56,7 @@ public class PackratPackager {
     }
 
     public String getVersion(String descriptionContents) {
-        String[] lines = descriptionContents.split('\n')
+        String[] lines = descriptionContents.split(Application.LINE_SEPARATOR)
         String versionLine = lines.find { it.contains('Version: ') }
 
         if (versionLine != null) {

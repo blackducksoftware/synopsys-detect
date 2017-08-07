@@ -24,6 +24,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool.cpan
 
 import org.springframework.stereotype.Component
 
+import com.blackducksoftware.integration.hub.detect.Application
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
 
@@ -32,7 +33,7 @@ class CpanListParser {
     public Map<String, NameVersionNode> parse(String listText) {
         Map<String, NameVersionNode> moduleMap = [:]
 
-        for (String line: listText.split('\n')) {
+        for (String line: listText.split(Application.LINE_SEPARATOR)) {
             if (!line.trim()) {
                 continue
             }

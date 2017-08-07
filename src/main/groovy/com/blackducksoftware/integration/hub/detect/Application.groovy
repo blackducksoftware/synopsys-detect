@@ -52,6 +52,7 @@ import com.google.gson.GsonBuilder
 class Application {
     private final Logger logger = LoggerFactory.getLogger(Application.class)
     public static final String VERSION = ResourceUtil.getResourceAsString('version.txt', StandardCharsets.UTF_8)
+    public static final String LINE_SEPARATOR = System.getProperty('line.separator')
 
     @Autowired
     ValueDescriptionAnnotationFinder valueDescriptionAnnotationFinder

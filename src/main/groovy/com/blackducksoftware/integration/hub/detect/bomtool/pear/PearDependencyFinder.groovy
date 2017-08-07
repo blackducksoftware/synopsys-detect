@@ -30,6 +30,7 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+import com.blackducksoftware.integration.hub.detect.Application
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.bomtool.PearBomTool
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
@@ -66,7 +67,7 @@ class PearDependencyFinder {
 
     private List<String> findDependencyNames(String list) {
         def nameList = []
-        String[] content = list.split('\n')
+        String[] content = list.split(Application.LINE_SEPARATOR)
 
         if (content.size() > 5) {
             def listing = content[5..-1]
@@ -94,7 +95,7 @@ class PearDependencyFinder {
 
     private Set<DependencyNode> createPearDependencyNodeFromList(String list, List<String> dependencyNames) {
         Set<DependencyNode> childrenNodes = []
-        String[] dependencyList = list.split('\n')
+        String[] dependencyList = list.split(Application.LINE_SEPARATOR)
 
         if (dependencyList.size() > 3) {
             def listing = dependencyList[3..-1]

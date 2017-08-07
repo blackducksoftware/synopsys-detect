@@ -140,11 +140,11 @@ class DetectConfiguration {
     }
 
     public void logConfiguration() {
-        StringBuilder configurationBuilder = new StringBuilder()
-        configurationBuilder.append('' + System.lineSeparator())
-        configurationBuilder.append("Detect Version: ${Application.VERSION}" + System.lineSeparator)
-        configurationBuilder.append('Current property values:' + System.lineSeparator())
-        configurationBuilder.append('-'.multiply(60) + System.lineSeparator())
+        List<String> configurationPieces = []
+        configurationPieces.add('')
+        configurationPieces.add("Detect Version: ${Application.VERSION}")
+        configurationPieces.add('Current property values:')
+        configurationPieces.add('-'.multiply(60))
         def propertyFields = DetectProperties.class.getDeclaredFields().findAll {
             int modifiers = it.modifiers
             !Modifier.isStatic(modifiers) && Modifier.isPrivate(modifiers)
@@ -163,13 +163,14 @@ class DetectConfiguration {
                 if (fieldName.toLowerCase().contains('password')) {
                     fieldValue = '*'.multiply(fieldValue.length())
                 }
-                configurationBuilder.append("${fieldName} = ${fieldValue}" + System.lineSeparator())
+                configurationPieces.add("${fieldName} = ${fieldValue}")
             }
             it.accessible = false
         }
-        configurationBuilder.append('-'.multiply(60) + System.lineSeparator())
-        configurationBuilder.append('' + System.lineSeparator())
-        logger.info(configurationBuilder.toString())
+        configurationPieces.add('-'.multiply(60))
+        configurationPieces.add('')
+        String configurationMessage = configurationPieces.join(System.lineSeparator())
+        logger.info(configurationMessage)
     }
 
     private int convertInt(Integer integerObj) {
