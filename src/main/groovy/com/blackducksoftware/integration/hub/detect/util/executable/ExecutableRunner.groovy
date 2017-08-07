@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
+import com.blackducksoftware.integration.hub.detect.Application
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 
 @Component
@@ -69,7 +70,7 @@ public class ExecutableRunner {
 
         String line
         while ((line = bufferedReader.readLine()) != null) {
-            stringBuilder.append(line + "\n")
+            stringBuilder.append(line + Application.LINE_SEPARATOR)
             logger.info(line)
         }
         return stringBuilder.toString()

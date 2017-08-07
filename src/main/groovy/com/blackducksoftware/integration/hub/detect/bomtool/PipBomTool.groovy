@@ -30,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.detect.Application
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.PipInspectorTreeParser
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.PythonEnvironment
@@ -111,7 +112,7 @@ class PipBomTool extends BomTool {
                     setupFile.absolutePath,
                     '--name'
                 ])
-                String[] output = executableRunner.execute(findProjectNameExecutable).standardOutput.split('\n')
+                String[] output = executableRunner.execute(findProjectNameExecutable).standardOutput.split(Application.LINE_SEPARATOR)
                 projectName = output[output.length - 1].trim()
             }
             pipInspectorOptions += "--projectname=${projectName}"

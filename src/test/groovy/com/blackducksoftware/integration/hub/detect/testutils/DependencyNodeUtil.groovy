@@ -19,7 +19,7 @@ class DependencyNodeUtil {
 
     void buildNodeString(StringBuilder stringBuilder, int currentLevel, DependencyNode node) {
         String prefix = '  '.multiply(currentLevel)
-        stringBuilder.append(prefix + node.externalId.createExternalId() + '\n')
+        stringBuilder.append(prefix + node.externalId.createExternalId() + Application.LINE_SEPARATOR)
         node.children.each {
             buildNodeString(stringBuilder, currentLevel + 1, it)
         }

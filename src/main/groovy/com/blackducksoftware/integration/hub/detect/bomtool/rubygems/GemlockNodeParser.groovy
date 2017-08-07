@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
+import com.blackducksoftware.integration.hub.detect.Application
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeBuilder
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
@@ -50,7 +51,7 @@ class GemlockNodeParser {
         currentParent = null
 
         List<DependencyNode> projectDependencies = []
-        String[] lines = gemfileLockContents.split('\n')
+        String[] lines = gemfileLockContents.split(Application.LINE_SEPARATOR)
         for (String line : lines) {
             if (!line?.trim()) {
                 inSpecsSection = false

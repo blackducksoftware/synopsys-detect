@@ -31,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.detect.Application
 import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.type.BomToolType
@@ -138,7 +139,7 @@ class GradleBomTool extends BomTool {
 
     private void extractProjectInformation(File blackduckDirectory){
         File projectInfoFile = new File(blackduckDirectory, 'ProjectInfo.txt')
-        String[] projectInfoLines = projectInfoFile.text.split(System.getProperty('line.separator'))
+        String[] projectInfoLines = projectInfoFile.text.split(Application.LINE_SEPARATOR)
         projectName = projectInfoLines[0]
         projectVersion = projectInfoLines[1]
     }
