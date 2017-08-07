@@ -111,6 +111,7 @@ class DockerBomTool extends BomTool {
         path += File.pathSeparator + dockerExecutableFile.parentFile.absolutePath
         Map<String, String> environmentVariables = [PATH: path]
         environmentVariables.put('BD_HUB_PASSWORD', detectConfiguration.hubPassword)
+        environmentVariables.put('SCAN_CLI_OPTS', dockerProperties.dockerProxyEnvironmentVariable())
 
         List<String> bashArguments = [
             "-c",
