@@ -20,25 +20,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.type;
+package com.blackducksoftware.integration.hub.detect.bomtool.nuget;
 
-public enum BomToolType {
-    CARTHAGE,
-    COCOAPODS,
-    CONDA,
-    CPAN,
-    CRAN,
-    DOCKER,
-    GO_DEP,
-    GO_GODEP,
-    GO_VNDR,
-    GRADLE,
-    MAVEN,
-    NPM,
-    NUGET,
-    PACKAGIST,
-    PEAR,
-    PIP,
-    RUBYGEMS,
-    SBT;
+import com.google.gson.annotations.SerializedName;
+
+public enum NodeType {
+    @SerializedName("Solution")
+    SOLUTION,
+    @SerializedName("Project")
+    PROJECT,
+    @SerializedName("Dependency")
+    DEPENDENCY;
 }
