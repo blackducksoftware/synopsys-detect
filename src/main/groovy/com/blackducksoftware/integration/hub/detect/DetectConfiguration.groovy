@@ -221,10 +221,10 @@ class DetectConfiguration {
         return convertInt(detectProperties.searchDepth)
     }
     public String getExcludedBomToolTypes() {
-        return detectProperties.excludedBomToolTypes
+        return detectProperties.excludedBomToolTypes?.toUpperCase()
     }
     public String getIncludedBomToolTypes() {
-        return detectProperties.includedBomToolTypes
+        return detectProperties.includedBomToolTypes?.toUpperCase()
     }
     public String getProjectName() {
         return detectProperties.projectName?.trim()

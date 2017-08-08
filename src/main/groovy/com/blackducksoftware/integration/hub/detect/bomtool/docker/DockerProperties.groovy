@@ -36,10 +36,6 @@ class DockerProperties {
         dockerProperties.setProperty('hub.url', detectConfiguration.getHubUrl())
         dockerProperties.setProperty('hub.timeout', detectConfiguration.getHubTimeout().toString())
         dockerProperties.setProperty('hub.username', detectConfiguration.getHubUsername())
-        dockerProperties.setProperty('hub.proxy.host', detectConfiguration.getHubProxyHost())
-        dockerProperties.setProperty('hub.proxy.port', detectConfiguration.getHubProxyPort().toString())
-        dockerProperties.setProperty('hub.proxy.username', detectConfiguration.getHubProxyUsername())
-        dockerProperties.setProperty('hub.proxy.password', detectConfiguration.getHubProxyPassword())
         dockerProperties.setProperty('hub.project.name', detectConfiguration.getProjectName())
         dockerProperties.setProperty('hub.project.version', detectConfiguration.getProjectVersionName())
         dockerProperties.setProperty('logging.level.com.blackducksoftware', detectConfiguration.getLoggingLevel())
@@ -48,6 +44,23 @@ class DockerProperties {
             String dockerKey = propertyName[DetectConfiguration.DOCKER_PROPERTY_PREFIX.length()..-1]
             addDockerProperty(dockerProperties, propertyName, dockerKey)
         }
+    }
+
+    public String dockerProxyEnvironmentVariable(){
+        String proxyEnvironmentVariable = null
+        if(detectConfiguration.getHubProxyHost()){
+            proxyEnvironmentVariable = "-Dhttp.proxy.host=${detectConfiguration.getHubProxyHost()}"
+        }
+        if(detectConfiguration.getHubProxyPort()){
+            proxyEnvironmentVariable = "${proxyEnvironmentVariable} -Dhttp.proxy.port=${detectConfiguration.getHubProxyPort()}"
+        }
+        if(detectConfiguration.getHubProxyUsername()){
+            proxyEnvironmentVariable = "${proxyEnvironmentVariable} -Dhttp.proxy.username=${detectConfiguration.getHubProxyUsername()}"
+        }
+        if(detectConfiguration.getHubProxyPassword()){
+            proxyEnvironmentVariable = "${proxyEnvironmentVariable} -Dhttp.proxy.password=${detectConfiguration.getHubProxyPassword()}"
+        }
+        proxyEnvironmentVariable
     }
 
     private String addDockerProperty(Properties dockerProperties, String key, String dockerKey) {
