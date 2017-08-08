@@ -388,8 +388,14 @@ class DetectConfiguration {
     public String getSbtIncludedConfigurationNames() {
         return detectProperties.sbtIncludedConfigurationNames
     }
-    public String getVersionTimeFormat() {
-        return detectProperties.versionTimeFormat?.trim()
+    public String getDefaultProjectVersionScheme() {
+        return detectProperties.defaultProjectVersionScheme?.trim()
+    }
+    public String getDefaultProjectVersionText() {
+        return detectProperties.defaultProjectVersionText?.trim()
+    }
+    public String getDefaultProjectVersionTimeformat() {
+        return detectProperties.defaultProjectVersionTimeformat?.trim()
     }
     public String getAggregateBomName() {
         return detectProperties.aggregateBomName?.trim()

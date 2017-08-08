@@ -22,6 +22,9 @@
  */
 package com.blackducksoftware.integration.hub.detect
 
+import org.joda.time.DateTime
+import org.joda.time.DateTimeZone
+import org.joda.time.format.DateTimeFormat
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -226,10 +229,16 @@ class DetectProjectManager {
     String getProjectVersionName(final String defaultVersionName) {
         String projectVersion = defaultVersionName?.trim()
 
-        if (detectConfiguration.getProjectVersionName()) {
-            projectVersion = detectConfiguration.getProjectVersionName()
+        if (detectConfiguration.projectVersionName) {
+            projectVersion = detectConfiguration.projectVersionName
         } else if (!projectVersion) {
-            projectVersion = 'Detect Unknown Version'
+            if ('timestamp' == detectConfiguration.defaultProjectVersionScheme) {
+                String timeformat = detectConfiguration.defaultProjectVersionTimeformat
+                String timeString = DateTimeFormat.forPattern(timeformat).withZoneUTC().print(DateTime.now().withZone(DateTimeZone.UTC))
+                projectVersion = timeString
+            } else {
+                projectVersion = detectConfiguration.defaultProjectVersionText
+            }
         }
 
         projectVersion

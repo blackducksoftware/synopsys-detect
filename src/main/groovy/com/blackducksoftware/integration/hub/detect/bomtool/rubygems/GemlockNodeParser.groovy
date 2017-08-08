@@ -51,7 +51,7 @@ class GemlockNodeParser {
         currentParent = null
 
         List<DependencyNode> projectDependencies = []
-        String[] lines = gemfileLockContents.split(Application.LINE_SEPARATOR)
+        String[] lines = gemfileLockContents.split(System.lineSeparator())
         for (String line : lines) {
             if (!line?.trim()) {
                 inSpecsSection = false

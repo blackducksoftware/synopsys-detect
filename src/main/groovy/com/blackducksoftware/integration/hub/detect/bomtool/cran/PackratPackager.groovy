@@ -42,7 +42,7 @@ public class PackratPackager {
     }
 
     public String getProjectName(final String descriptionContents) {
-        String[] lines = descriptionContents.split(Application.LINE_SEPARATOR)
+        String[] lines = descriptionContents.split(System.lineSeparator())
         String name
 
         for (String line : lines) {
@@ -56,7 +56,7 @@ public class PackratPackager {
     }
 
     public String getVersion(String descriptionContents) {
-        String[] lines = descriptionContents.split(Application.LINE_SEPARATOR)
+        String[] lines = descriptionContents.split(System.lineSeparator())
         String versionLine = lines.find { it.contains('Version: ') }
 
         if (versionLine != null) {

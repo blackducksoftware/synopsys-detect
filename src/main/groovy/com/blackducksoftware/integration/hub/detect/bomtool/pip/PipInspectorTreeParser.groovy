@@ -38,7 +38,7 @@ import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeT
 class PipInspectorTreeParser {
     final Logger logger = LoggerFactory.getLogger(PipInspectorTreeParser.class)
 
-    public static final String SEPERATOR = '=='
+    public static final String SEPARATOR = '=='
     public static final String UNKNOWN_PROJECT_NAME = 'n?'
     public static final String UNKNOWN_PROJECT_VERSION = 'v?'
     public static final String UNKNOWN_REQUIREMENTS_PREFIX = 'r?'
@@ -46,7 +46,7 @@ class PipInspectorTreeParser {
     public static final String INDENTATION = ' '.multiply(4)
 
     DependencyNode parse(NameVersionNodeTransformer nameVersionNodeTransformer, String treeText) {
-        def lines = treeText.trim().split(Application.LINE_SEPARATOR).toList()
+        def lines = treeText.trim().split(System.lineSeparator()).toList()
 
         def nodeBuilder = null
         Stack<NameVersionNode> tree = new Stack<>()
@@ -69,7 +69,7 @@ class PipInspectorTreeParser {
                 continue
             }
 
-            if (line.contains(SEPERATOR) && !nodeBuilder) {
+            if (line.contains(SEPARATOR) && !nodeBuilder) {
                 NameVersionNode projectNode = lineToNode(line)
                 tree.push(projectNode)
                 nodeBuilder = new NameVersionNodeBuilder(projectNode)
@@ -108,10 +108,10 @@ class PipInspectorTreeParser {
     }
 
     NameVersionNode lineToNode(String line) {
-        if (!line.contains(SEPERATOR)) {
+        if (!line.contains(SEPARATOR)) {
             return null
         }
-        def segments = line.split(SEPERATOR)
+        def segments = line.split(SEPARATOR)
         def node = new NameVersionNodeImpl()
         node.name = segments[0].trim()
         node.version = segments[1].trim()
