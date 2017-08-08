@@ -7,7 +7,8 @@ Hub Detect offers package management level analysis combined with signature scan
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) [![Black Duck Security Risk](https://copilot.blackducksoftware.com/github/groups/blackducksoftware/locations/hub-detect/public/results/branches/master/badge-risk.svg)](https://copilot.blackducksoftware.com/github/groups/blackducksoftware/locations/hub-detect/public/results/branches/master)
 
 ## Where can I get the latest release? ##
-Available from GitHub by running:  bash <(curl -s https://blackducksoftware.github.io/hub-detect/hub-detect.sh)
+Available from GitHub by running:  
+bash <(curl -s https://blackducksoftware.github.io/hub-detect/hub-detect.sh)
 
 ## Documentation 
 
