@@ -29,7 +29,7 @@ class PipInspectorTreeParserTest {
 
     private String name = 'pip'
     private String version = '1.0.0'
-    private String fullName = name + PipInspectorTreeParser.SEPERATOR + version
+    private String fullName = name + PipInspectorTreeParser.SEPARATOR + version
     private String line1 = PipInspectorTreeParser.INDENTATION + fullName
     private String line2 = PipInspectorTreeParser.INDENTATION.multiply(2) + line1
     private String line3 = 'invalid line'
@@ -70,14 +70,14 @@ class PipInspectorTreeParserTest {
         final String name = PipInspectorTreeParser.UNKNOWN_PROJECT_NAME
         final String version = PipInspectorTreeParser.UNKNOWN_PROJECT_VERSION
         final String space = PipInspectorTreeParser.INDENTATION
-        final String child1Text = 'apple' + PipInspectorTreeParser.SEPERATOR + '5.3.2'
-        final String child2Text = 'orange' + PipInspectorTreeParser.SEPERATOR + '4.3.1'
-        final String child3Text = 'pear' + PipInspectorTreeParser.SEPERATOR + '9.8.7'
+        final String child1Text = 'apple' + PipInspectorTreeParser.SEPARATOR + '5.3.2'
+        final String child2Text = 'orange' + PipInspectorTreeParser.SEPARATOR + '4.3.1'
+        final String child3Text = 'pear' + PipInspectorTreeParser.SEPARATOR + '9.8.7'
         final String validText = """
 ${PipInspectorTreeParser.UNKNOWN_REQUIREMENTS_PREFIX} reqs.txt
 ${PipInspectorTreeParser.UNKNOWN_PACKAGE_PREFIX} UnkownPackageName
 
-${name + PipInspectorTreeParser.SEPERATOR + version}
+${name + PipInspectorTreeParser.SEPARATOR + version}
 ${space + child1Text}
 ${space*2 + child3Text}
 ${space + child2Text}

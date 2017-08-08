@@ -55,7 +55,7 @@ class MavenCodeLocationPackager {
         previousLineWasEmpty = true
         level = 0
 
-        for (String line : mavenOutputText.split(Application.LINE_SEPARATOR)) {
+        for (String line : mavenOutputText.split(System.lineSeparator())) {
             if (!line.startsWith("[INFO]")) {
                 continue
             }

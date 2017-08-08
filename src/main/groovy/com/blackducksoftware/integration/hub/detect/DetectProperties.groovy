@@ -327,9 +327,17 @@ class DetectProperties {
     @Value('${detect.sbt.included.configurations}')
     String sbtIncludedConfigurationNames
 
-    @ValueDescription(description="The timestamp format to use as default project version", defaultValue='yyyy-MM-dd\'T\'HH:mm:ss.SSS', group=DetectProperties.GROUP_PROJECT_INFO)
-    @Value('${detect.project.version.timeformat}')
-    String versionTimeFormat
+    @ValueDescription(description="The scheme to use when the package managers can not determine a version, either 'text' or 'timestamp'", defaultValue='text', group=DetectProperties.GROUP_PROJECT_INFO)
+    @Value('${detect.default.project.version.scheme}')
+    String defaultProjectVersionScheme
+
+    @ValueDescription(description="The text to use as the default project version", defaultValue='Detect Unknown Version', group=DetectProperties.GROUP_PROJECT_INFO)
+    @Value('${detect.default.project.version.text}')
+    String defaultProjectVersionText
+
+    @ValueDescription(description="The timestamp format to use as the default project version", defaultValue='yyyy-MM-dd\'T\'HH:mm:ss.SSS', group=DetectProperties.GROUP_PROJECT_INFO)
+    @Value('${detect.default.project.version.timeformat}')
+    String defaultProjectVersionTimeformat
 
     @ValueDescription(description="If set, this will aggregate all the BOMs to create a single BDIO file with the name provided. For Co-Pilot use only", group=DetectProperties.GROUP_PROJECT_INFO)
     @Value('${detect.bom.aggregate.name}')
