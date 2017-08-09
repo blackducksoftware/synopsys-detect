@@ -1,5 +1,5 @@
 ## Overview ##
-In development.  Come back soon.
+Hub Detect offers package management level analysis combined with signature scanning.
 
 ## Build ##
 [![Build Status](https://travis-ci.org/blackducksoftware/hub-gradle-plugin.svg?branch=master)](https://travis-ci.org/blackducksoftware/hub-detect)
@@ -7,8 +7,9 @@ In development.  Come back soon.
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) [![Black Duck Security Risk](https://copilot.blackducksoftware.com/github/groups/blackducksoftware/locations/hub-detect/public/results/branches/master/badge-risk.svg)](https://copilot.blackducksoftware.com/github/groups/blackducksoftware/locations/hub-detect/public/results/branches/master)
 
 ## Where can I get the latest release? ##
-In dev.
+Available from GitHub by running:  
+bash <(curl -s https://blackducksoftware.github.io/hub-detect/hub-detect.sh)
 
 ## Documentation 
 
-All documentation is located on our public [Black Duck Confluence](https://github.com/blackducksoftware/hub-detect/wiki)
+All documentation is located on our public [Black Duck Confluence](https://blackducksoftware.atlassian.net/wiki/spaces/INTDOCS/pages/49131875/Hub+Detect)

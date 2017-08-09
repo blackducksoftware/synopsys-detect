@@ -100,7 +100,8 @@ class DockerBomTool extends BomTool {
         if (detectConfiguration.dockerImage) {
             imageArgument = detectConfiguration.dockerImage
         } else {
-            imageArgument = detectConfiguration.dockerTar
+            File dockerTarFile = new File(detectConfiguration.dockerTar)
+            imageArgument = dockerTarFile.getCanonicalPath()
             usingTarFile = true
         }
 
