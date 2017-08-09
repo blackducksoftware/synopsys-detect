@@ -28,6 +28,7 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
+import com.blackducksoftware.integration.hub.detect.Application
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeBuilder
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
@@ -35,18 +36,17 @@ import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeT
 
 @Component
 class PipInspectorTreeParser {
-    final Logger logger = LoggerFactory.getLogger(this.getClass())
+    final Logger logger = LoggerFactory.getLogger(PipInspectorTreeParser.class)
 
-    public static final String SEPERATOR = '=='
-    public static final String UNKNOWN_PROJECT_NAME = "n?"
-    public static final String UNKNOWN_PROJECT_VERSION = "v?"
-    public static final String UNKNOWN_PROJECT = UNKNOWN_PROJECT_NAME + SEPERATOR + UNKNOWN_PROJECT_VERSION
+    public static final String SEPARATOR = '=='
+    public static final String UNKNOWN_PROJECT_NAME = 'n?'
+    public static final String UNKNOWN_PROJECT_VERSION = 'v?'
     public static final String UNKNOWN_REQUIREMENTS_PREFIX = 'r?'
     public static final String UNKNOWN_PACKAGE_PREFIX = '--'
     public static final String INDENTATION = ' '.multiply(4)
 
     DependencyNode parse(NameVersionNodeTransformer nameVersionNodeTransformer, String treeText) {
-        def lines = treeText.trim().split('\n').toList()
+        def lines = treeText.trim().split(System.lineSeparator()).toList()
 
         def nodeBuilder = null
         Stack<NameVersionNode> tree = new Stack<>()
@@ -57,19 +57,19 @@ class PipInspectorTreeParser {
                 continue
             }
 
-            if (line.startsWith(UNKNOWN_REQUIREMENTS_PREFIX)) {
+            if (line.trim().startsWith(UNKNOWN_REQUIREMENTS_PREFIX)) {
                 String path = line.replace(UNKNOWN_REQUIREMENTS_PREFIX, '').trim()
                 logger.info("Pip inspector could not locate requirements file @ ${path}")
                 continue
             }
 
-            if (line.startsWith(UNKNOWN_PACKAGE_PREFIX)) {
+            if (line.trim().startsWith(UNKNOWN_PACKAGE_PREFIX)) {
                 String packageName = line.replace(UNKNOWN_PACKAGE_PREFIX, '').trim()
                 logger.info("Pip inspector could not resolve the package: ${packageName}")
                 continue
             }
 
-            if (line.contains(SEPERATOR) && !nodeBuilder) {
+            if (line.contains(SEPARATOR) && !nodeBuilder) {
                 NameVersionNode projectNode = lineToNode(line)
                 tree.push(projectNode)
                 nodeBuilder = new NameVersionNodeBuilder(projectNode)
@@ -108,10 +108,10 @@ class PipInspectorTreeParser {
     }
 
     NameVersionNode lineToNode(String line) {
-        if (!line.contains(SEPERATOR)) {
+        if (!line.contains(SEPARATOR)) {
             return null
         }
-        def segments = line.split(SEPERATOR)
+        def segments = line.split(SEPARATOR)
         def node = new NameVersionNodeImpl()
         node.name = segments[0].trim()
         node.version = segments[1].trim()

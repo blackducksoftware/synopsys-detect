@@ -37,7 +37,7 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import com.blackducksoftware.integration.hub.detect.bomtool.DockerBomTool
 import com.blackducksoftware.integration.hub.detect.exception.DetectException
-import com.blackducksoftware.integration.hub.detect.type.BomToolType
+import com.blackducksoftware.integration.hub.detect.model.BomToolType
 
 @Component
 class DetectConfiguration {
@@ -140,10 +140,11 @@ class DetectConfiguration {
     }
 
     public void logConfiguration() {
-        StringBuilder configurationBuilder = new StringBuilder()
-        configurationBuilder.append('' + System.lineSeparator())
-        configurationBuilder.append('Current property values:' + System.lineSeparator())
-        configurationBuilder.append('-'.multiply(60) + System.lineSeparator())
+        List<String> configurationPieces = []
+        configurationPieces.add('')
+        configurationPieces.add("Detect Version: ${Application.VERSION}")
+        configurationPieces.add('Current property values:')
+        configurationPieces.add('-'.multiply(60))
         def propertyFields = DetectProperties.class.getDeclaredFields().findAll {
             int modifiers = it.modifiers
             !Modifier.isStatic(modifiers) && Modifier.isPrivate(modifiers)
@@ -162,13 +163,14 @@ class DetectConfiguration {
                 if (fieldName.toLowerCase().contains('password')) {
                     fieldValue = '*'.multiply(fieldValue.length())
                 }
-                configurationBuilder.append("${fieldName} = ${fieldValue}" + System.lineSeparator())
+                configurationPieces.add("${fieldName} = ${fieldValue}")
             }
             it.accessible = false
         }
-        configurationBuilder.append('-'.multiply(60) + System.lineSeparator())
-        configurationBuilder.append('' + System.lineSeparator())
-        logger.info(configurationBuilder.toString())
+        configurationPieces.add('-'.multiply(60))
+        configurationPieces.add('')
+        String configurationMessage = configurationPieces.join(System.lineSeparator())
+        logger.info(configurationMessage)
     }
 
     private int convertInt(Integer integerObj) {
@@ -219,16 +221,19 @@ class DetectConfiguration {
         return convertInt(detectProperties.searchDepth)
     }
     public String getExcludedBomToolTypes() {
-        return detectProperties.excludedBomToolTypes
+        return detectProperties.excludedBomToolTypes?.toUpperCase()
     }
     public String getIncludedBomToolTypes() {
-        return detectProperties.includedBomToolTypes
+        return detectProperties.includedBomToolTypes?.toUpperCase()
     }
     public String getProjectName() {
         return detectProperties.projectName?.trim()
     }
     public String getProjectVersionName() {
         return detectProperties.projectVersionName?.trim()
+    }
+    public String getProjectCodeLocationPrefix() {
+        return detectProperties.projectCodeLocationPrefix?.trim()
     }
     public boolean getProjectLevelMatchAdjustments() {
         return BooleanUtils.toBoolean(detectProperties.projectLevelMatchAdjustments)
@@ -383,8 +388,14 @@ class DetectConfiguration {
     public String getSbtIncludedConfigurationNames() {
         return detectProperties.sbtIncludedConfigurationNames
     }
-    public String getVersionTimeFormat() {
-        return detectProperties.versionTimeFormat?.trim()
+    public String getDefaultProjectVersionScheme() {
+        return detectProperties.defaultProjectVersionScheme?.trim()
+    }
+    public String getDefaultProjectVersionText() {
+        return detectProperties.defaultProjectVersionText?.trim()
+    }
+    public String getDefaultProjectVersionTimeformat() {
+        return detectProperties.defaultProjectVersionTimeformat?.trim()
     }
     public String getAggregateBomName() {
         return detectProperties.aggregateBomName?.trim()

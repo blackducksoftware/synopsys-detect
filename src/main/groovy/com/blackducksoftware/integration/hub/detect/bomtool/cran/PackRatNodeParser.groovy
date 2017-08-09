@@ -20,16 +20,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.cran;
+package com.blackducksoftware.integration.hub.detect.bomtool.cran
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
+import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.detect.Application
 import com.blackducksoftware.integration.hub.detect.bomtool.CranBomTool
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode;
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeBuilder;
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl;
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeBuilder
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 
 public class PackRatNodeParser {
@@ -46,22 +47,22 @@ public class PackRatNodeParser {
         directDependencyNames = new HashSet<>()
         currentParent = null
 
-        String[] lines = packratLockContents.split('\n')
-        String name;
-        String version;
+        String[] lines = packratLockContents.split(System.lineSeparator())
+        String name
+        String version
         List<DependencyNode> projectDependencies = []
-        boolean newDependency = false;
+        boolean newDependency = false
 
         for (String line : lines) {
             if (line.contains('Package: ')){
-                name = line.replace('Package: ', '').trim();
+                name = line.replace('Package: ', '').trim()
                 directDependencyNames.add(name)
-                newDependency = true;
+                newDependency = true
                 continue
             }
 
             if (line.contains('Version: ')) {
-                version = line.replace('Version: ', '').trim();
+                version = line.replace('Version: ', '').trim()
                 NameVersionNode node = this.createNameVersionNodeImpl(name, version)
                 nameVersionNodeBuilder.addChildNodeToParent(node, rootNameVersionNode)
             }
@@ -69,7 +70,7 @@ public class PackRatNodeParser {
             currentParent = this.createNameVersionNodeImpl(name, version)
 
             if (line.contains('Requires: ')) {
-                String[] parts = line.replace('Requires: ','').split(',');
+                String[] parts = line.replace('Requires: ','').split(',')
                 for (int i; i < parts.size(); i++){
                     NameVersionNode node = this.createNameVersionNodeImpl(parts[i].trim(), '')
                     nameVersionNodeBuilder.addChildNodeToParent(node, currentParent)

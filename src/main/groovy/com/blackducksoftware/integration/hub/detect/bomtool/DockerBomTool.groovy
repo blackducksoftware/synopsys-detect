@@ -30,9 +30,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerProperties
-import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
-import com.blackducksoftware.integration.hub.detect.type.BomToolType
+import com.blackducksoftware.integration.hub.detect.model.BomToolType
+import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 
@@ -112,6 +112,7 @@ class DockerBomTool extends BomTool {
         path += File.pathSeparator + dockerExecutableFile.parentFile.absolutePath
         Map<String, String> environmentVariables = [PATH: path]
         environmentVariables.put('BD_HUB_PASSWORD', detectConfiguration.hubPassword)
+        environmentVariables.put('SCAN_CLI_OPTS', dockerProperties.dockerProxyEnvironmentVariable())
 
         List<String> bashArguments = [
             "-c",

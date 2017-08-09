@@ -27,88 +27,99 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeBuilder
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 
 @Component
 class CocoapodsPackager {
     @Autowired
-    PodLockParser podLockParser
+    NameVersionNodeTransformer nameVersionNodeTransformer
 
-    List<DependencyNode> extractProjectDependencies(final String podLockText) {
-        final PodLock podLock = podLockParser.parse(podLockText)
-        if (podLock == null) {
-            return []
-        }
+    public Set<DependencyNode> extractDependencyNodes(final String podLockText) {
+        List<NameVersionNode> nameVersionNodes = parse(podLockText)
 
-        collapseSubpods(podLock)
-
-        List<DependencyNode> dependencies = podTransformer(podLock.dependencies)
-        dependencies
+        nameVersionNodes.collect { nameVersionNodeTransformer.createDependencyNode(Forge.COCOAPODS, it) } as Set
     }
 
-    List<DependencyNode> podTransformer(List<Pod> pods) {
-        def nodes = []
-        pods.each { pod ->
-            ExternalId externalId = new NameVersionExternalId(Forge.COCOAPODS, pod.name, pod.version)
-            List<DependencyNode> children = podTransformer(pod.children)
-            nodes += new DependencyNode(pod.name, pod.version, externalId, children as Set)
-        }
+    private List<NameVersionNode> parse(final String podLockText) {
+        final List<NameVersionNode> directDependencies = []
+        final NameVersionNode root = new NameVersionNodeImpl()
+        root.name = 'hub_detect_root'
+        final def nameVersionNodeBuilder = new NameVersionNodeBuilder(root)
 
-        nodes
-    }
+        NameVersionNode parentNode = root
+        boolean podsSection = false
+        boolean dependenciesSection = false
+        for (String line: podLockText.split(System.getProperty('line.separator'))) {
+            if (!line.trim()) {
+                continue
+            }
 
-    void collapseSubpods(PodLock podlock) {
-        Map<String, List<Pod>> allPods = podlock.pods.groupBy({ pod -> getCleanPodName(pod) })
-        List<Pod> finalPods = []
-        allPods.each { name, pods ->
-            // Set the default masterPod as the first pod
-            Pod masterPod = pods[0]
-            masterPod.name = getCleanPodName(pods[0])
-            List<Pod> children = []
-            pods.each { pod ->
-                if (!isFakePod(pod)) {
-                    masterPod = pod
+            if (!podsSection && line.trim() == 'PODS:') {
+                dependenciesSection = false
+                podsSection = true
+                continue
+            }
+
+            if (!dependenciesSection && line.trim() == 'DEPENDENCIES:') {
+                podsSection = false
+                dependenciesSection = true
+                continue
+            }
+
+            int lineLevel = getLevel(line)
+            if (lineLevel == 0) {
+                podsSection = false
+                dependenciesSection = false
+            }
+
+            if (!podsSection && !dependenciesSection) {
+                continue
+            }
+
+            NameVersionNode pod = lineToNameVersionNode(line)
+            if (podsSection) {
+                if (lineLevel == 1) {
+                    nameVersionNodeBuilder.addChildNodeToParent(pod, root)
+                    parentNode = pod
+                } else {
+                    if (parentNode.name != pod.name) {
+                        nameVersionNodeBuilder.addChildNodeToParent(pod, parentNode)
+                    }
                 }
-                children += pod.children.findAll { child -> getCleanPodName(child) != masterPod.name}
+            } else if (dependenciesSection) {
+                directDependencies.add(pod)
             }
-            masterPod.children = children
-            if (!masterPod.version) {
-                masterPod.version = masterPod.children[0].version
-            }
-
-            finalPods += masterPod
         }
-        podlock.pods = finalPods
+        Map<String, NameVersionNode> allDependendencies = nameVersionNodeBuilder.getNameToNodeMap()
 
-        Map<String, Pod> finalPodsMap = [:]
-        finalPods.each { pod ->
-            finalPodsMap[pod.name] = pod
-        }
-
-        finalPods.each { collapsePod(finalPodsMap, it) }
-
-        Map<String, List<Pod>> newPods = finalPodsMap
-        List<Pod> finalDependencies = []
-        podlock.dependencies.each {
-            finalDependencies += newPods[getCleanPodName(it)]
-        }
-        podlock.dependencies = finalDependencies
+        directDependencies.collect { allDependendencies[it.name] }
     }
 
-    void collapsePod(Map<String, Pod> pods, Pod pod) {
-        Set<Pod> newChildren = new HashSet<>()
-        pod.children.each {
-            newChildren += pods[getCleanPodName(it)]
+    private NameVersionNode lineToNameVersionNode(final String line) {
+        String clean = line.replaceFirst('- ', '').replace(':','')
+        String version = null
+        boolean fuzzyVersion = clean.contains('~>') || clean.contains('>') || clean.contains('=') || clean.contains('<')
+        if (clean.contains('(') && clean.contains(')') && !fuzzyVersion) {
+            version = clean.substring(clean.indexOf('(') + 1, clean.indexOf(')' - 1)).trim()
         }
-        pod.children = newChildren as List
+        clean = clean.replaceAll('\\(.*\\)', '').trim()
+        def nameVersionNode = new NameVersionNodeImpl()
+        // Grab the first section to aggregate sub-pods
+        nameVersionNode.name = clean.split('/')[0].trim()
+        nameVersionNode.version = version
+
+        nameVersionNode
     }
 
-    boolean isFakePod(Pod pod) {
-        pod.name.contains('/')
-    }
-
-    String getCleanPodName(Pod pod) {
-        pod.name.split('/')[0].trim()
+    private int getLevel(String line) {
+        if (line.startsWith('  - ')) {
+            return 1
+        } else if (line.startsWith('    - ')) {
+            return 2
+        }
+        return 0
     }
 }

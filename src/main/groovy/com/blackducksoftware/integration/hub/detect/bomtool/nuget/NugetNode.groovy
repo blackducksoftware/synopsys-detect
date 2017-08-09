@@ -41,6 +41,12 @@ class NugetNode implements NameVersionNode {
     @SerializedName('OutputPaths')
     List<String> outputPaths
 
+    @SerializedName('SourcePath')
+    String sourcePath
+
+    @SerializedName('Type')
+    NodeType type
+
     String getName() {
         artifact
     }

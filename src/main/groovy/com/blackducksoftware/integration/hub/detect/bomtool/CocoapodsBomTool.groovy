@@ -32,8 +32,8 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.PathExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.CocoapodsPackager
-import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
-import com.blackducksoftware.integration.hub.detect.type.BomToolType
+import com.blackducksoftware.integration.hub.detect.model.BomToolType
+import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 @Component
 class CocoapodsBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(CocoapodsBomTool.class)
@@ -54,8 +54,7 @@ class CocoapodsBomTool extends BomTool {
     List<DetectCodeLocation> extractDetectCodeLocations() {
         final String podLockText = new File(sourcePath, PODFILE_LOCK_FILENAME).text
 
-        List<DependencyNode> projectDependencies = cocoapodsPackager.extractProjectDependencies(podLockText)
-        Set<DependencyNode> dependenciesSet = new HashSet<>(projectDependencies)
+        Set<DependencyNode> dependencyNodes = cocoapodsPackager.extractDependencyNodes(podLockText)
         ExternalId externalId = new PathExternalId(Forge.COCOAPODS, sourcePath)
 
         def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, '', '', externalId, dependenciesSet)

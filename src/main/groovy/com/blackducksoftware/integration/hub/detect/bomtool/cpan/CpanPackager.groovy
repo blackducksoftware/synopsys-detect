@@ -28,17 +28,14 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.detect.Application
 import com.blackducksoftware.integration.hub.detect.bomtool.CpanBomTool
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
 
 @Component
 class CpanPackager {
     private final Logger logger = LoggerFactory.getLogger(CpanPackager.class)
-
-    @Autowired
-    ExecutableRunner executableRunner
 
     @Autowired
     CpanListParser cpanListParser
@@ -46,7 +43,7 @@ class CpanPackager {
     @Autowired
     NameVersionNodeTransformer nameVersionNodeTransformer
 
-    public Set<DependencyNode> makeDependencyNodes(File sourceDirectory, String cpanListText, String directDependenciesText) {
+    public Set<DependencyNode> makeDependencyNodes(String cpanListText, String directDependenciesText) {
         Map<String, NameVersionNode> allModules = cpanListParser.parse(cpanListText)
         List<String> directModuleNames = getDirectModuleNames(directDependenciesText)
 
@@ -56,7 +53,7 @@ class CpanPackager {
             if (nameVersionNode) {
                 nameVersionNode.name = nameVersionNode.name.replace('::', '-')
                 DependencyNode module = nameVersionNodeTransformer.createDependencyNode(CpanBomTool.CPAN_FORGE, nameVersionNode)
-                dependencyNodes += module
+                dependencyNodes.add(module)
             } else {
                 logger.warn("Could node find resolved version for module: ${moduleName}")
             }
@@ -67,11 +64,11 @@ class CpanPackager {
 
     private List<String> getDirectModuleNames(String directDependenciesText) {
         List<String> modules = []
-        for (String line : directDependenciesText.split('\n')) {
+        for (String line : directDependenciesText.split(System.lineSeparator())) {
             if (!line?.trim()) {
                 continue
             }
-            if (line.contains('-->') || (line.contains(' ... ') && line.contains('Configuring'))) {
+            if (line.contains('-->') || ((line.contains(' ... ') && line.contains('Configuring')))) {
                 continue
             }
             modules += line.split('~')[0].trim()

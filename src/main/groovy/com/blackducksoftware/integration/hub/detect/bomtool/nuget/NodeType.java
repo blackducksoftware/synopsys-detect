@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (C) 2017 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
  *
@@ -20,18 +20,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.cocoapods
+package com.blackducksoftware.integration.hub.detect.bomtool.nuget;
 
-import org.apache.commons.lang3.builder.RecursiveToStringStyle
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder
+import com.google.gson.annotations.SerializedName;
 
-class Pod {
-    String name
-    String version
-    List<Pod> children = []
-
-    @Override
-    public String toString() {
-        return ReflectionToStringBuilder.toString(this, RecursiveToStringStyle.JSON_STYLE)
-    }
+public enum NodeType {
+    @SerializedName("Solution")
+    SOLUTION,
+    @SerializedName("Project")
+    PROJECT,
+    @SerializedName("Dependency")
+    DEPENDENCY;
 }

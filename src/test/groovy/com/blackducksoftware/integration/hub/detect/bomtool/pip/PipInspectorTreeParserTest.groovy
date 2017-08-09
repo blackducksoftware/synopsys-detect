@@ -29,7 +29,7 @@ class PipInspectorTreeParserTest {
 
     private String name = 'pip'
     private String version = '1.0.0'
-    private String fullName = name + PipInspectorTreeParser.SEPERATOR + version
+    private String fullName = name + PipInspectorTreeParser.SEPARATOR + version
     private String line1 = PipInspectorTreeParser.INDENTATION + fullName
     private String line2 = PipInspectorTreeParser.INDENTATION.multiply(2) + line1
     private String line3 = 'invalid line'
@@ -67,34 +67,29 @@ class PipInspectorTreeParserTest {
 
     @Test
     void validParseTest() {
-        def space = PipInspectorTreeParser.INDENTATION
-        def seperator = PipInspectorTreeParser.SEPERATOR
-        def child1Name = 'apple'
-        def child1Version = '5.3.2'
-        def child1Full = child1Name + seperator + child1Version
-        def child2Name = 'orange'
-        def child2Version = '4.3.1'
-        def child2Full = child2Name + seperator + child2Version
-        def validText = """
-        ${fullName}
-        ${space + child1Full}
-        ${space + child2Full}
-        """
+        final String name = PipInspectorTreeParser.UNKNOWN_PROJECT_NAME
+        final String version = PipInspectorTreeParser.UNKNOWN_PROJECT_VERSION
+        final String space = PipInspectorTreeParser.INDENTATION
+        final String child1Text = 'apple' + PipInspectorTreeParser.SEPARATOR + '5.3.2'
+        final String child2Text = 'orange' + PipInspectorTreeParser.SEPARATOR + '4.3.1'
+        final String child3Text = 'pear' + PipInspectorTreeParser.SEPARATOR + '9.8.7'
+        final String validText = """
+${PipInspectorTreeParser.UNKNOWN_REQUIREMENTS_PREFIX} reqs.txt
+${PipInspectorTreeParser.UNKNOWN_PACKAGE_PREFIX} UnkownPackageName
+
+${name + PipInspectorTreeParser.SEPARATOR + version}
+${space + child1Text}
+${space*2 + child3Text}
+${space + child2Text}
+${space + child3Text}
+"""
 
         DependencyNode root = parser.parse(nameVersionNodeTransformer, validText)
-        ExternalId expectedExternalId = new NameVersionExternalId(Forge.PYPI, name, version)
-        Assert.assertEquals(name, root.name)
-        Assert.assertEquals(version, root.version)
+        ExternalId expectedExternalId = new NameVersionExternalId(Forge.PYPI, '', '')
+        Assert.assertEquals('', root.name)
+        Assert.assertEquals('', root.version)
         Assert.assertEquals(expectedExternalId, root.externalId)
-
-        Assert.assertEquals(2, root.children.size())
-        int foundCount = 0
-        for (DependencyNode child : root.children) {
-            if (child.name == child1Name || child.name == child2Name) {
-                foundCount++
-            }
-        }
-        Assert.assertEquals(2, foundCount)
+        Assert.assertEquals(3, root.children.size())
     }
 
     @Test

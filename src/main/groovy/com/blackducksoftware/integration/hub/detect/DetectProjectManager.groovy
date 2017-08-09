@@ -22,6 +22,9 @@
  */
 package com.blackducksoftware.integration.hub.detect
 
+import org.joda.time.DateTime
+import org.joda.time.DateTimeZone
+import org.joda.time.format.DateTimeFormat
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -38,10 +41,10 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.BdioProject
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.SimpleBdioDocument
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
-import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectCodeLocation
-import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
-import com.blackducksoftware.integration.hub.detect.type.BomToolType
+import com.blackducksoftware.integration.hub.detect.model.BomToolType
+import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
+import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil
@@ -100,10 +103,6 @@ class DetectProjectManager {
                     logger.info("${bomToolTypeString} applies given the current configuration.")
                     foundAnyBomTools = true
                     List<DetectCodeLocation> codeLocations = bomTool.extractDetectCodeLocations()
-                    if (!detectProject.projectName && !detectProject.projectVersionName && bomTool.projectName && bomTool.projectVersion) {
-                        detectProject.projectName = bomTool.projectName
-                        detectProject.projectVersionName = bomTool.projectVersion
-                    }
                     if (codeLocations != null && codeLocations.size() > 0) {
                         detectProject.addAllDetectCodeLocations(codeLocations)
                     } else {
@@ -137,7 +136,7 @@ class DetectProjectManager {
         List<File> bdioFiles = []
 
         File aggregateBdioFile = null
-        final SimpleBdioDocument aggregateBdioDocument = null
+        SimpleBdioDocument aggregateBdioDocument = null
         if (detectConfiguration.aggregateBomName) {
             aggregateBdioDocument = createAggregateSimpleBdioDocument(detectProject)
             final String filename = "${integrationEscapeUtil.escapeForUri(detectConfiguration.aggregateBomName)}.jsonld"
@@ -151,14 +150,18 @@ class DetectProjectManager {
             if (detectConfiguration.aggregateBomName) {
                 aggregateBdioDocument.components.addAll(dependencyNodeTransformer.addComponentsGraph(aggregateBdioDocument.project, it.dependencies))
             } else {
-                final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(detectProject, it)
-                final String filename = it.createBdioFilename(integrationEscapeUtil, detectFileManager, detectProject.projectName, detectProject.projectVersionName)
-                final File outputFile = new File(detectConfiguration.getOutputDirectory(), filename)
-                if (outputFile.exists()) {
-                    outputFile.delete()
+                if (it.dependencies) {
+                    final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(detectProject, it)
+                    final String filename = it.createBdioFilename(integrationEscapeUtil, detectFileManager.extractFinalPieceFromPath(it.sourcePath), detectProject.projectName, detectProject.projectVersionName)
+                    final File outputFile = new File(detectConfiguration.getOutputDirectory(), filename)
+                    if (outputFile.exists()) {
+                        outputFile.delete()
+                    }
+                    final File createdBdioFile = writeSimpleBdioDocument(outputFile, simpleBdioDocument)
+                    bdioFiles.add(createdBdioFile)
+                } else {
+                    logger.debug("Could not find any dependencies for code location ${it.sourcePath}")
                 }
-                final File createdBdioFile = writeSimpleBdioDocument(outputFile, simpleBdioDocument)
-                bdioFiles.add(createdBdioFile)
             }
         }
 
@@ -174,7 +177,7 @@ class DetectProjectManager {
     }
 
     private SimpleBdioDocument createSimpleBdioDocument(DetectProject detectProject, DetectCodeLocation detectCodeLocation) {
-        final String codeLocationName = detectProject.getCodeLocationName(detectFileManager, detectCodeLocation.bomToolType, detectCodeLocation.sourcePath, 'Hub Detect Tool')
+        final String codeLocationName = detectProject.getCodeLocationName(detectCodeLocation.bomToolType, detectFileManager.extractFinalPieceFromPath(detectCodeLocation.sourcePath), detectConfiguration.getProjectCodeLocationPrefix(), 'Hub Detect Tool')
         final String projectId = detectCodeLocation.bomToolProjectExternalId.createDataId()
         final BdioExternalIdentifier projectExternalIdentifier = bdioPropertyHelper.createExternalIdentifier(detectCodeLocation.bomToolProjectExternalId)
 
@@ -226,10 +229,16 @@ class DetectProjectManager {
     String getProjectVersionName(final String defaultVersionName) {
         String projectVersion = defaultVersionName?.trim()
 
-        if (detectConfiguration.getProjectVersionName()) {
-            projectVersion = detectConfiguration.getProjectVersionName()
+        if (detectConfiguration.projectVersionName) {
+            projectVersion = detectConfiguration.projectVersionName
         } else if (!projectVersion) {
-            projectVersion = 'Detect Unknown Version'
+            if ('timestamp' == detectConfiguration.defaultProjectVersionScheme) {
+                String timeformat = detectConfiguration.defaultProjectVersionTimeformat
+                String timeString = DateTimeFormat.forPattern(timeformat).withZoneUTC().print(DateTime.now().withZone(DateTimeZone.UTC))
+                projectVersion = timeString
+            } else {
+                projectVersion = detectConfiguration.defaultProjectVersionText
+            }
         }
 
         projectVersion

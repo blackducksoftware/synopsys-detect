@@ -45,17 +45,17 @@ class CondaListParserTest {
 
     @Test
     public void smallParseTest() {
-        final String condaInfoJson = jsonTestUtil.getResourceAsUTF8String('/conda/condaInfo.json')
-        final String condaListJson = jsonTestUtil.getResourceAsUTF8String('/conda/condaListSmall.json')
+        final String condaInfoJson = jsonTestUtil.getResourceAsUTF8String('conda/condaInfo.json')
+        final String condaListJson = jsonTestUtil.getResourceAsUTF8String('conda/condaListSmall.json')
         Set<DependencyNode> dependencyNodes = condaListParser.parse(condaListJson, condaInfoJson)
-        jsonTestUtil.testJsonResource('/conda/condaListSmallExpected.json', dependencyNodes)
+        jsonTestUtil.testJsonResource('conda/condaListSmallExpected.json', dependencyNodes)
     }
 
     @Test
     public void largeParseTest() {
-        String condaInfoJson = jsonTestUtil.getResourceAsUTF8String('/conda/condaInfo.json')
-        String condaListJson = jsonTestUtil.getResourceAsUTF8String('/conda/condaListLarge.json')
+        String condaInfoJson = jsonTestUtil.getResourceAsUTF8String('conda/condaInfo.json')
+        String condaListJson = jsonTestUtil.getResourceAsUTF8String('conda/condaListLarge.json')
         Set<DependencyNode> dependencyNodes = condaListParser.parse(condaListJson, condaInfoJson)
-        jsonTestUtil.testJsonResource('/conda/condaListLargeExpected.json', dependencyNodes)
+        jsonTestUtil.testJsonResource('conda/condaListLargeExpected.json', dependencyNodes)
     }
 }

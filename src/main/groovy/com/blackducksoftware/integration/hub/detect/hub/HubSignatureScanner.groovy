@@ -32,7 +32,7 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.builder.HubScanConfigBuilder
 import com.blackducksoftware.integration.hub.dataservice.cli.CLIDataService
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
-import com.blackducksoftware.integration.hub.detect.bomtool.output.DetectProject
+import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.global.HubServerConfig
 import com.blackducksoftware.integration.hub.model.request.ProjectRequest
@@ -116,7 +116,7 @@ class HubSignatureScanner {
             hubScanConfigBuilder.cleanupLogsOnSuccess = detectConfiguration.cleanupBomToolFiles
             hubScanConfigBuilder.dryRun = detectConfiguration.hubSignatureScannerDryRun
 
-            final String codeLocationName = detectProject.getCodeLocationName(detectFileManager, detectConfiguration.sourcePath, canonicalPath, 'Hub Detect Scan')
+            final String codeLocationName = detectProject.getCodeLocationName(detectConfiguration.sourcePath, canonicalPath, detectFileManager.extractFinalPieceFromPath(detectConfiguration.sourcePath), detectConfiguration.getProjectCodeLocationPrefix(), 'Hub Detect Scan')
             hubScanConfigBuilder.codeLocationAlias = codeLocationName
 
             if (detectConfiguration.hubSignatureScannerExclusionPatterns) {
