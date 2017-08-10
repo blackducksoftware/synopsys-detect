@@ -35,7 +35,7 @@ public class SbtPackager {
     public DependencyNode makeDependencyNode(List<File> reportFiles, String include, String exclude) {
         def parser = new SbtReportParser()
         def resolver = new SbtDependencyResolver()
-        def filter = new ExcludedIncludedFilter(include, exclude)
+        def filter = new ExcludedIncludedFilter(exclude, include)
         def aggregator = new SbtConfigurationAggregator()
 
         List<SbtConfigurationDependencyTree> configurations = reportFiles.collect { reportFile->
@@ -44,12 +44,17 @@ public class SbtPackager {
             def report = parser.parseReportFromXml(xml)
             def tree = resolver.resolveReportDependencies(report)
             tree
-        }.findAll { tree ->
+        };
+
+        def includedConfigurations = configurations.findAll { tree ->
             filter.shouldInclude(tree.configuration)
         }
 
         if (configurations.size() <= 0) {
-            logger.warn("No sbt configurations were included.")
+            logger.warn("No sbt configurations were found in report folder.")
+            return null
+        }else if (includedConfigurations.size() <= 0){
+            logger.warn("Although ${configurations.size()} configs were found, none were included.")
             return null
         }
         aggregator.aggregateConfigurations(configurations)

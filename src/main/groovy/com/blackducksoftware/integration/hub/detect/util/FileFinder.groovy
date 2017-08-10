@@ -118,6 +118,30 @@ class FileFinder {
         return files
     }
 
+    private File[] findDirectoriesContainingDirectoriesToDepth(final File sourceDirectory, final String directoryPattern, int maxDepth) {
+        findDirectoriesContainingDirectoriesToDepthRecursive(sourceDirectory, directoryPattern, 0, maxDepth);
+    }
+
+    private File[] findDirectoriesContainingDirectoriesToDepthRecursive(final File sourceDirectory, final String directoryPattern, int currentDepth, int maxDepth) {
+
+        def files = [];
+        if (currentDepth > maxDepth || !sourceDirectory.isDirectory()) {
+            return files
+        }
+
+        sourceDirectory.listFiles().each {
+            if (it.isDirectory()){
+                if (FilenameUtils.wildcardMatchOnSystem(it.getName(), directoryPattern)){
+                    files.add(it);
+                }else{
+                    files.addAll(findDirectoriesContainingDirectoriesToDepthRecursive(it, directoryPattern, currentDepth + 1, maxDepth));
+                }
+            }
+        };
+
+        return files;
+    }
+
     File[] findDirectoriesContainingFilesToDepth(final File sourceDirectory, final String filenamePattern, int maxDepth) {
         return findDirectoriesContainingFilesRecursive(sourceDirectory, filenamePattern, 0, maxDepth)
     }

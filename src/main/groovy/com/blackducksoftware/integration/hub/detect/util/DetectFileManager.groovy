@@ -135,6 +135,14 @@ class DetectFileManager {
         return fileFinder.findFilesToDepth(sourceDirectory, filenamePattern, maxDepth)
     }
 
+    public File[] findDirectoriesContainingDirectoriesToDepth(String sourceDirectory, String filenamePattern, int maxDepth) {
+        return fileFinder.findDirectoriesContainingDirectoriesToDepth(new File(sourceDirectory), filenamePattern, maxDepth)
+    }
+
+    public File[] findDirectoriesContainingDirectoriesToDepth(File sourceDirectory, String filenamePattern, int maxDepth) {
+        return fileFinder.findDirectoriesContainingDirectoriesToDepth(sourceDirectory, filenamePattern, maxDepth)
+    }
+
     public File[] findDirectoriesContainingFilesToDepth(File sourceDirectory, String filenamePattern, int maxDepth) {
         return fileFinder.findDirectoriesContainingFilesToDepth(sourceDirectory, filenamePattern, maxDepth)
     }

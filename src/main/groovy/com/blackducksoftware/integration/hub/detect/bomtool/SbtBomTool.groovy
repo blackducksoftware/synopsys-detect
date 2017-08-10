@@ -37,6 +37,8 @@ class SbtBomTool extends BomTool {
 
     static final String BUILD_SBT_FILENAME = 'build.sbt'
     static final String REPORT_FILE_DIRECTORY = "${File.separator}target${File.separator}resolution-cache${File.separator}reports"
+    static final String REPORT_SEARCH_PATTERN = 'resolution-cache'
+    static final String REPORT_DIRECTORY = "reports"
     static final String REPORT_FILE_PATTERN = '*.xml'
 
     SbtPackager sbtPackager = new SbtPackager()
@@ -47,13 +49,9 @@ class SbtBomTool extends BomTool {
 
     boolean isBomToolApplicable() {
         String buildDotSbt = detectFileManager.findFile(sourcePath, BUILD_SBT_FILENAME)
-        boolean reportsExist = detectFileManager.directoryExists(sourcePath, REPORT_FILE_DIRECTORY)
 
-        if (buildDotSbt && reportsExist) {
+        if (buildDotSbt) {
             return true
-        } else if (buildDotSbt) {
-            logger.warn("This is an sbt project but no artifacts were detected at : ${REPORT_FILE_DIRECTORY}")
-            return false
         } else {
             return false
         }
@@ -65,33 +63,59 @@ class SbtBomTool extends BomTool {
 
         int depth = detectConfiguration.getSearchDepth()
         List<File> sbtFiles = detectFileManager.findFilesToDepth(sourcePath, BUILD_SBT_FILENAME, depth)
+        List<File> resolutionCaches = detectFileManager.findDirectoriesContainingDirectoriesToDepth(sourcePath, REPORT_SEARCH_PATTERN, depth)
 
-        String projectName = ''
-        String projectVersion = ''
-        List<DetectCodeLocation> codeLocations = sbtFiles.collect { sbtFile ->
+        List<DetectCodeLocation> codeLocations = new ArrayList<DetectCodeLocation>()
+        List<String> usedReports = new ArrayList<String>();
+
+        sbtFiles.each { sbtFile ->
             logger.debug("Found SBT build file : ${sbtFile.getCanonicalPath()}")
             def sbtDirectory = sbtFile.getParentFile()
             def reportPath = new File(sbtDirectory, REPORT_FILE_DIRECTORY)
 
             List<File> reportFiles = detectFileManager.findFiles(reportPath, REPORT_FILE_PATTERN)
+            usedReports.add(reportPath.getCanonicalPath());
 
-            DependencyNode node = sbtPackager.makeDependencyNode(reportFiles, included, excluded)
+            if (reportFiles == null || reportFiles.size() <= 0){
+                logger.warn("Found a build.sbt ${sbtFile.getCanonicalPath()}, but no reports: ${reportPath}")
+            }else{
+                DependencyNode node = sbtPackager.makeDependencyNode(reportFiles, included, excluded)
 
-            DetectCodeLocation detectCodeLocation = null
-            if (node == null) {
-                logger.warn("No dependencies could be generated for report folder: ${reportPath}")
-            } else {
-                if (sbtDirectory.path.equals(sourcePath)) {
-                    projectName = node.name
-                    projectVersion = node.version
+                if (node == null) {
+                    logger.info("No dependencies were generated for report folder: ${reportPath}")
+                } else {
+                    def detectCodeLocation = new DetectCodeLocation(getBomToolType(), sbtDirectory.getCanonicalPath(), node)
+                    codeLocations.add(detectCodeLocation)
                 }
-                detectCodeLocation = new DetectCodeLocation(getBomToolType(), sbtDirectory.getCanonicalPath(), projectName, projectVersion, node.externalId, node.children)
             }
-            detectCodeLocation
+        }
+
+        resolutionCaches.each { resCache ->
+            File reportPath = new File(resCache, REPORT_DIRECTORY);
+            String canonical = reportPath.getCanonicalPath();
+            if (usedReports.contains(canonical)){
+                logger.debug("Skipping already processed report folder: " + canonical);
+            }else{
+                usedReports.add(canonical);
+                List<File> reportFiles = detectFileManager.findFiles(reportPath, REPORT_FILE_PATTERN)
+                if (reportFiles == null || reportFiles.size() <= 0){
+                    logger.warn("No reports were found in resolution-cache: ${resCache}")
+                }else{
+                    DependencyNode node = sbtPackager.makeDependencyNode(reportFiles, included, excluded)
+
+                    if (node == null) {
+                        logger.warn("No dependencies were generated for report folder: ${reportPath}")
+                    } else {
+                        logger.debug("Found report folder: ${reportPath}")
+                        def detectCodeLocation = new DetectCodeLocation(getBomToolType(), resCache.getParentFile().getCanonicalPath(), node)
+                        codeLocations.add(detectCodeLocation)
+                    }
+                }
+            }
         }
 
         if (!codeLocations) {
-            logger.warn("Unable to find any dependency information.")
+            logger.error("Unable to find any dependency information.")
             return []
         } else {
             return codeLocations
