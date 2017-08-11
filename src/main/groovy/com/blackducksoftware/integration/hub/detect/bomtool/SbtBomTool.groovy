@@ -183,7 +183,7 @@ class SbtBomTool extends BomTool {
                 } else {
                     logger.debug("Found ${aggregateNodes.size()} aggregate dependencies in report folder: ${reportPath}")
                     aggregateNodes.each{ aggregateNode ->
-                        logger.error("Generated root node of ${aggregateNode.name} ${aggregateNode.version} ")
+                        logger.debug("Generated root node of ${aggregateNode.name} ${aggregateNode.version} ")
 
                         def module = new SbtModule(aggregateNode, source.getCanonicalPath())
                         modules.add(module)
