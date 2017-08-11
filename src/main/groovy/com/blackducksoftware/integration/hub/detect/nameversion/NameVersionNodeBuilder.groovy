@@ -47,11 +47,11 @@ class NameVersionNodeBuilder {
         }
 
         if (child.version?.trim() && !nameToNodeMap[child.name].version?.trim()) {
-            nameToNodeMap[child.name].version = child.version
+            nameToNodeMap.put(child.name, child)
         }
 
         if (parent.version?.trim() && !nameToNodeMap[parent.name].version?.trim()) {
-            nameToNodeMap[parent.name].version = parent.version
+            nameToNodeMap.put(parent.name, parent)
         }
 
         nameToNodeMap[parent.name].children.add(nameToNodeMap[child.name])
