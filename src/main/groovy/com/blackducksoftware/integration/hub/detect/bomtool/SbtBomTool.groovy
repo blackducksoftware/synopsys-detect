@@ -24,6 +24,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
@@ -32,6 +33,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.PathEx
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.SbtModule
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.SbtPackager
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.SbtProject
+import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 
@@ -47,6 +49,9 @@ class SbtBomTool extends BomTool {
     static final String PROJECT_FOLDER = 'project'
 
     SbtPackager sbtPackager = new SbtPackager()
+
+    @Autowired
+    HubSignatureScanner hubSignatureScanner
 
     BomToolType getBomToolType() {
         return BomToolType.SBT
@@ -153,6 +158,15 @@ class SbtBomTool extends BomTool {
             File reportPath = new File(resCache, REPORT_DIRECTORY)
             def foundModules = extractReportModules(reportPath, resCache.getParentFile(), included, excluded, usedReports)
             modules.addAll(foundModules)
+        }
+
+        File[] additionalTargets = detectFileManager.findFilesToDepth(sourcePath, 'target', depth)
+        if (additionalTargets) {
+            additionalTargets.each {
+                if (!isInProject(it, sourcePath)) {
+                    hubSignatureScanner.registerPathToScan(it)
+                }
+            }
         }
 
         modules
