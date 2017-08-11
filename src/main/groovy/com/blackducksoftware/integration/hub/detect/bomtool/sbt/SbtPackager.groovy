@@ -32,7 +32,7 @@ import com.blackducksoftware.integration.util.ExcludedIncludedFilter
 public class SbtPackager {
     private final Logger logger = LoggerFactory.getLogger(SbtPackager.class)
 
-    public DependencyNode makeDependencyNode(List<File> reportFiles, String include, String exclude) {
+    public List<DependencyNode> makeDependencyNodeAggregates(List<File> reportFiles, String include, String exclude) {
         def parser = new SbtReportParser()
         def resolver = new SbtDependencyResolver()
         def filter = new ExcludedIncludedFilter(exclude, include)
@@ -57,6 +57,7 @@ public class SbtPackager {
             logger.warn("Although ${configurations.size()} configs were found, none were included.")
             return null
         }
+
         aggregator.aggregateConfigurations(configurations)
     }
 }
