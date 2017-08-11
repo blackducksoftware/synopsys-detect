@@ -19,7 +19,7 @@ import com.blackducksoftware.integration.util.ResourceUtil
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
-class JsonTestUtil {
+class TestUtil {
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create()
 
     void testJsonResource(String expectedResourcePath, Object object) {
@@ -33,6 +33,9 @@ class JsonTestUtil {
     }
 
     String getResourceAsUTF8String(String resourcePath) {
+        if(resourcePath.startsWith('/')) {
+            resourcePath = resourcePath.replaceFirst('/', '')
+        }
         ResourceUtil.getResourceAsString(resourcePath, StandardCharsets.UTF_8.toString())
     }
 }

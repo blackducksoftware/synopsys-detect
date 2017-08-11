@@ -16,10 +16,10 @@ import org.junit.Test
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
-import com.blackducksoftware.integration.hub.detect.testutils.JsonTestUtil
+import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 
 public class CocoapodsPackagerTest {
-    private final JsonTestUtil jsonTestUtil= new JsonTestUtil()
+    private final TestUtil testUtil= new TestUtil()
     private final CocoapodsPackager cocoapodsPackager = new CocoapodsPackager()
 
     @Before
@@ -29,15 +29,15 @@ public class CocoapodsPackagerTest {
 
     @Test
     void simpleTest() {
-        final String podlockText = jsonTestUtil.getResourceAsUTF8String('cocoapods/simplePodfile.lock')
+        final String podlockText = testUtil.getResourceAsUTF8String('cocoapods/simplePodfile.lock')
         final Set<DependencyNode> projectDependencies = cocoapodsPackager.extractDependencyNodes(podlockText)
-        jsonTestUtil.testJsonResource('cocoapods/simpleExpected.json', projectDependencies)
+        testUtil.testJsonResource('cocoapods/simpleExpected.json', projectDependencies)
     }
 
     @Test
     void complexTest() {
-        final String podlockText = jsonTestUtil.getResourceAsUTF8String('cocoapods/complexPodfile.lock')
+        final String podlockText = testUtil.getResourceAsUTF8String('cocoapods/complexPodfile.lock')
         final Set<DependencyNode> projectDependencies = cocoapodsPackager.extractDependencyNodes(podlockText)
-        jsonTestUtil.testJsonResource('cocoapods/complexExpected.json', projectDependencies)
+        testUtil.testJsonResource('cocoapods/complexExpected.json', projectDependencies)
     }
 }

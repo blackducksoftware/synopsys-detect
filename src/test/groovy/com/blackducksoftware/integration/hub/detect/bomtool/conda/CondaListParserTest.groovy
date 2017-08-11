@@ -17,12 +17,12 @@ import org.junit.Before
 import org.junit.Test
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.detect.testutils.JsonTestUtil
+import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 import com.google.gson.GsonBuilder
 
 class CondaListParserTest {
     private final CondaListParser condaListParser = new CondaListParser()
-    private final JsonTestUtil jsonTestUtil = new JsonTestUtil()
+    private final TestUtil testUtil = new TestUtil()
 
     @Before
     public void init() {
@@ -45,17 +45,17 @@ class CondaListParserTest {
 
     @Test
     public void smallParseTest() {
-        final String condaInfoJson = jsonTestUtil.getResourceAsUTF8String('conda/condaInfo.json')
-        final String condaListJson = jsonTestUtil.getResourceAsUTF8String('conda/condaListSmall.json')
+        final String condaInfoJson = testUtil.getResourceAsUTF8String('conda/condaInfo.json')
+        final String condaListJson = testUtil.getResourceAsUTF8String('conda/condaListSmall.json')
         Set<DependencyNode> dependencyNodes = condaListParser.parse(condaListJson, condaInfoJson)
-        jsonTestUtil.testJsonResource('conda/condaListSmallExpected.json', dependencyNodes)
+        testUtil.testJsonResource('conda/condaListSmallExpected.json', dependencyNodes)
     }
 
     @Test
     public void largeParseTest() {
-        String condaInfoJson = jsonTestUtil.getResourceAsUTF8String('conda/condaInfo.json')
-        String condaListJson = jsonTestUtil.getResourceAsUTF8String('conda/condaListLarge.json')
+        String condaInfoJson = testUtil.getResourceAsUTF8String('conda/condaInfo.json')
+        String condaListJson = testUtil.getResourceAsUTF8String('conda/condaListLarge.json')
         Set<DependencyNode> dependencyNodes = condaListParser.parse(condaListJson, condaInfoJson)
-        jsonTestUtil.testJsonResource('conda/condaListLargeExpected.json', dependencyNodes)
+        testUtil.testJsonResource('conda/condaListLargeExpected.json', dependencyNodes)
     }
 }
