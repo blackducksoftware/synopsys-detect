@@ -161,15 +161,26 @@ class SbtBomTool extends BomTool {
         }
 
         File[] additionalTargets = detectFileManager.findFilesToDepth(sourcePath, 'target', depth)
+        List<File> scanned = new ArrayList<File>();
         if (additionalTargets) {
             additionalTargets.each {
-                if (!isInProject(it, sourcePath)) {
+                if (!isInProject(it, sourcePath) && isNotChildOfScanned(it, scanned)) {
                     hubSignatureScanner.registerPathToScan(it)
+                    scanned.add(it)
                 }
             }
         }
 
         modules
+    }
+
+    Boolean isNotChildOfScanned(File folder, List<File> scanned) {
+        for(def scan : scanned){
+            if (folder.getCanonicalPath().startsWith(scan.getCanonicalPath())) {
+                return false
+            }
+        }
+        return true
     }
 
     Boolean isInProject(File file, String sourcePath){
