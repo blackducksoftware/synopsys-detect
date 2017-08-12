@@ -47,11 +47,19 @@ class NameVersionNodeBuilder {
         }
 
         if (child.version?.trim() && !nameToNodeMap[child.name].version?.trim()) {
-            nameToNodeMap.put(child.name, child)
+            nameToNodeMap[child.name].version = child.version
         }
 
         if (parent.version?.trim() && !nameToNodeMap[parent.name].version?.trim()) {
-            nameToNodeMap.put(parent.name, parent)
+            nameToNodeMap[parent.name].version = parent.version
+        }
+
+        if (child.link && !nameToNodeMap[child.name].link) {
+            nameToNodeMap[child.name].link = child.link
+        }
+
+        if (parent.link && !nameToNodeMap[parent.name].link) {
+            nameToNodeMap[parent.name].link = parent.link
         }
 
         nameToNodeMap[parent.name].children.add(nameToNodeMap[child.name])

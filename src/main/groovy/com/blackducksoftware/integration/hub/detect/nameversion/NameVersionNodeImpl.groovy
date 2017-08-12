@@ -29,6 +29,7 @@ class NameVersionNodeImpl implements NameVersionNode {
     String name
     String version
     List<NameVersionNodeImpl> children = []
+    NameVersionNode link
 
     @Override
     String toString() {

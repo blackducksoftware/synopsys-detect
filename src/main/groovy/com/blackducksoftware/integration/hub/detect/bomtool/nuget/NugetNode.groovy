@@ -47,6 +47,9 @@ class NugetNode implements NameVersionNode {
     @SerializedName('Type')
     NodeType type
 
+    // Unused
+    NameVersionNode link
+
     String getName() {
         artifact
     }

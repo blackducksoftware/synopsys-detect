@@ -68,7 +68,11 @@ class YarnPackager {
             }
         }
 
-        rootNode.children.collect { nameVersionNodeLinkedTransformer(it) } as Set
+        Map<String, DependencyNode> allNodes = [:]
+        def nodes = rootNode.children.collect { nameVersionNodeLinkedTransformer(allNodes, it) } as Set
+        println (sum/totalCounter)
+
+        nodes
     }
 
     private int getLineLevel(String line) {
@@ -91,7 +95,7 @@ class YarnPackager {
     }
 
     private NameVersionNode dependencyLineToNameVersionNode(String line) {
-        final NameVersionNode nameVersionNode = new LinkNameVersionNode()
+        final NameVersionNode nameVersionNode = new NameVersionNodeImpl()
         nameVersionNode.name = line.trim().replace(' ', '@').replaceAll('"', '')
 
         nameVersionNode
@@ -104,38 +108,44 @@ class YarnPackager {
         NameVersionNode linkedNameVersionNode = new NameVersionNodeImpl()
         linkedNameVersionNode.name = cleanFuzzyName(fuzzyNames[0])
 
-        List<NameVersionNode> nodes = []
         fuzzyNames.each {
-            LinkNameVersionNode nameVersionNode = new LinkNameVersionNode()
+            def nameVersionNode = new NameVersionNodeImpl()
             nameVersionNode.name = it.trim().replace(':', '')
-            nameVersionNode.version = 'LINKED'
             nameVersionNode.link = linkedNameVersionNode
-            nodes += nameVersionNode
-        }
-
-        for(NameVersionNode nameVersionNode : nodes) {
             nameVersionNodeBuilder.addChildNodeToParent(nameVersionNode, root)
         }
 
         linkedNameVersionNode
     }
 
-    private DependencyNode nameVersionNodeLinkedTransformer(NameVersionNode nameVersionNode) {
-        String name = nameVersionNode.name
-        String version = nameVersionNode.version
-        List<NameVersionNode> children = nameVersionNode.children
-        if(nameVersionNode instanceof LinkNameVersionNode) {
-            NameVersionNode link = ((LinkNameVersionNode) nameVersionNode).link
-            name = link.name
-            version = link.version
-            children = link.children
+    int stackSize = 0
+    int sum = 0
+    int totalCounter = 0
+    private DependencyNode nameVersionNodeLinkedTransformer(Map<String, DependencyNode> allNodes, NameVersionNode nameVersionNode) {
+        NameVersionNode link = nameVersionNode.getLink()
+        String name = nameVersionNode.link ? link.name : nameVersionNode.name
+        String version = nameVersionNode.link ? link.version : nameVersionNode.version
+        List<NameVersionNode> children = nameVersionNode.link ? link.children : nameVersionNode.children
+
+        String mapName = "${name}/${version}"
+        DependencyNode existing = allNodes[mapName]
+        if(existing) {
+            return existing
         }
 
         def externalId = new NameVersionExternalId(Forge.NPM, name, version)
         def dependencyNode = new DependencyNode(name, version, externalId)
-        nameVersionNode.children.each {
-            children.add(nameVersionNodeLinkedTransformer(it))
+
+        println dependencyNode.name + " : " + stackSize
+        stackSize++
+        totalCounter++
+        sum+= stackSize
+        children.each {
+            dependencyNode.children.add(nameVersionNodeLinkedTransformer(allNodes, it))
         }
+        stackSize--
+
+        allNodes.put(mapName, dependencyNode)
 
         dependencyNode
     }
