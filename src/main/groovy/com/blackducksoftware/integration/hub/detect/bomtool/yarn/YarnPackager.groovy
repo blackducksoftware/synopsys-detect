@@ -11,6 +11,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.yarn
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -24,6 +26,8 @@ import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeT
 
 @Component
 class YarnPackager {
+    private final Logger logger = LoggerFactory.getLogger(YarnPackager.class)
+
     @Autowired
     NameVersionNodeTransformer nameVersionNodeTransformer
 
@@ -68,9 +72,8 @@ class YarnPackager {
             }
         }
 
-        Map<String, DependencyNode> allNodes = [:]
-        def nodes = rootNode.children.collect { nameVersionNodeLinkedTransformer(allNodes, it) } as Set
-        println (sum/totalCounter)
+        Stack<String> cyclicalStack = new Stack<>()
+        def nodes = rootNode.children.collect { nameVersionNodeLinkedTransformer(cyclicalStack, it) } as Set
 
         nodes
     }
@@ -118,34 +121,29 @@ class YarnPackager {
         linkedNameVersionNode
     }
 
-    int stackSize = 0
-    int sum = 0
-    int totalCounter = 0
-    private DependencyNode nameVersionNodeLinkedTransformer(Map<String, DependencyNode> allNodes, NameVersionNode nameVersionNode) {
+    private DependencyNode nameVersionNodeLinkedTransformer(Stack<String> cyclicalStack, NameVersionNode nameVersionNode) {
         NameVersionNode link = nameVersionNode.getLink()
         String name = nameVersionNode.link ? link.name : nameVersionNode.name
         String version = nameVersionNode.link ? link.version : nameVersionNode.version
         List<NameVersionNode> children = nameVersionNode.link ? link.children : nameVersionNode.children
 
-        String mapName = "${name}/${version}"
-        DependencyNode existing = allNodes[mapName]
-        if(existing) {
-            return existing
+        if(cyclicalStack.contains(name)) {
+            return null
         }
+        cyclicalStack.push(name)
 
         def externalId = new NameVersionExternalId(Forge.NPM, name, version)
         def dependencyNode = new DependencyNode(name, version, externalId)
 
-        println dependencyNode.name + " : " + stackSize
-        stackSize++
-        totalCounter++
-        sum+= stackSize
         children.each {
-            dependencyNode.children.add(nameVersionNodeLinkedTransformer(allNodes, it))
+            DependencyNode child = nameVersionNodeLinkedTransformer(cyclicalStack, it)
+            if(child) {
+                dependencyNode.children.add(child)
+            } else {
+                logger.info("Cyclical depdency [${it.name}] detected")
+            }
         }
-        stackSize--
-
-        allNodes.put(mapName, dependencyNode)
+        cyclicalStack.pop()
 
         dependencyNode
     }
