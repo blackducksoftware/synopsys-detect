@@ -409,4 +409,7 @@ class DetectConfiguration {
     public Boolean getRiskreportPDF() {
         return detectProperties.riskreportPDF
     }
+    public String getRiskreportPDFOutputDirectory() {
+        return detectProperties.riskreportPDFOutputDirectory
+    }
 }

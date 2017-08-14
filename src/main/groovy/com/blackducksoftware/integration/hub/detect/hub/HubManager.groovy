@@ -124,7 +124,7 @@ class HubManager {
             if (detectConfiguration.getRiskreportPDF()) {
                 RiskReportDataService riskReportDataService = hubServicesFactory.createRiskReportDataService(slf4jIntLogger, 30000)
                 logger.info("Creating risk report pdf")
-                File pdfFile = riskReportDataService.createReportPdfFile(new File("."), detectProject.projectName, detectProject.projectVersionName)
+                File pdfFile = riskReportDataService.createReportPdfFile(new File(detectConfiguration.getRiskreportPDFOutputDirectory()), detectProject.projectName, detectProject.projectVersionName)
                 logger.info("Created risk report pdf : ${pdfFile.getCanonicalPath()}")
             }
             if (detectProject.getDetectCodeLocations() && !detectConfiguration.getHubSignatureScannerDisabled()) {
