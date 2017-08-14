@@ -22,6 +22,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.cpan
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
@@ -29,6 +31,8 @@ import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeI
 
 @Component
 class CpanListParser {
+    private final Logger logger = LoggerFactory.getLogger(CpanListParser.class)
+
     public Map<String, NameVersionNode> parse(String listText) {
         Map<String, NameVersionNode> moduleMap = [:]
 
@@ -37,15 +41,19 @@ class CpanListParser {
                 continue
             }
 
-            if(!line.contains('\t')) {
+            if(line.count('\t') != 1 || line.trim().contains(' ')) {
                 continue
             }
 
-            String[] module = line.split('\t')
-            def nameVersionNode = new NameVersionNodeImpl()
-            nameVersionNode.name = module[0].trim()
-            nameVersionNode.version = module[1].trim()
-            moduleMap[nameVersionNode.name] = nameVersionNode
+            try {
+                String[] module = line.split('\t')
+                def nameVersionNode = new NameVersionNodeImpl()
+                nameVersionNode.name = module[0].trim()
+                nameVersionNode.version = module[1].trim()
+                moduleMap[nameVersionNode.name] = nameVersionNode
+            } catch (IndexOutOfBoundsException indexOutOfBoundsException) {
+                logger.debug("Failed to handle the following line:${line}")
+            }
         }
 
         moduleMap
