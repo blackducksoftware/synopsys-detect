@@ -42,7 +42,7 @@ class YarnBomTool extends BomTool {
 
     @Override
     public BomToolType getBomToolType() {
-        BomToolType.SBT
+        BomToolType.YARN
     }
 
     @Override
