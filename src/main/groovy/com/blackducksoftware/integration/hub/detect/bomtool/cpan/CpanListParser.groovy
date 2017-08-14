@@ -24,7 +24,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.cpan
 
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.detect.Application
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
 
@@ -35,6 +34,10 @@ class CpanListParser {
 
         for (String line: listText.split(System.lineSeparator())) {
             if (!line.trim()) {
+                continue
+            }
+
+            if(!line.contains('\t')) {
                 continue
             }
 
