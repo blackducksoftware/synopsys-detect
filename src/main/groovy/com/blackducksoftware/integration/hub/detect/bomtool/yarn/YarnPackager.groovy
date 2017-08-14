@@ -11,14 +11,11 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.yarn
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeBuilder
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
@@ -26,8 +23,6 @@ import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeT
 
 @Component
 class YarnPackager {
-    private final Logger logger = LoggerFactory.getLogger(YarnPackager.class)
-
     @Autowired
     NameVersionNodeTransformer nameVersionNodeTransformer
 
@@ -72,10 +67,7 @@ class YarnPackager {
             }
         }
 
-        Stack<String> cyclicalStack = new Stack<>()
-        def nodes = rootNode.children.collect { nameVersionNodeLinkedTransformer(cyclicalStack, it) } as Set
-
-        nodes
+        rootNode.children.collect { nameVersionNodeTransformer.createDependencyNode(Forge.NPM, it) } as Set
     }
 
     private int getLineLevel(String line) {
@@ -119,32 +111,5 @@ class YarnPackager {
         }
 
         linkedNameVersionNode
-    }
-
-    private DependencyNode nameVersionNodeLinkedTransformer(Stack<String> cyclicalStack, NameVersionNode nameVersionNode) {
-        NameVersionNode link = nameVersionNode.getLink()
-        String name = nameVersionNode.link ? link.name : nameVersionNode.name
-        String version = nameVersionNode.link ? link.version : nameVersionNode.version
-        List<NameVersionNode> children = nameVersionNode.link ? link.children : nameVersionNode.children
-
-        if(cyclicalStack.contains(name)) {
-            return null
-        }
-        cyclicalStack.push(name)
-
-        def externalId = new NameVersionExternalId(Forge.NPM, name, version)
-        def dependencyNode = new DependencyNode(name, version, externalId)
-
-        children.each {
-            DependencyNode child = nameVersionNodeLinkedTransformer(cyclicalStack, it)
-            if(child) {
-                dependencyNode.children.add(child)
-            } else {
-                logger.info("Cyclical depdency [${it.name}] detected")
-            }
-        }
-        cyclicalStack.pop()
-
-        dependencyNode
     }
 }
