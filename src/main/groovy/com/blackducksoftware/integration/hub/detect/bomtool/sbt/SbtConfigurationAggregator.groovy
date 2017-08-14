@@ -32,54 +32,39 @@ import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtConfig
 public class SbtConfigurationAggregator {
     private final Logger logger = LoggerFactory.getLogger(SbtConfigurationAggregator.class)
 
-    DependencyNode aggregateConfigurations(List<SbtConfigurationDependencyTree> configurations) {
-        def name = findSharedName(configurations)
-        def org = findSharedOrg(configurations)
-        def version = findSharedVersion(configurations)
+    List<DependencyNode> aggregateConfigurations(List<SbtConfigurationDependencyTree> configurations) {
+        def aggregates = uniqueAggregates(configurations)
 
-        if (name == null || org == null || version == null) {
-            return null
+        def nodes = aggregates.collect{ aggregate ->
+            DependencyNode root = new DependencyNode(new MavenExternalId(aggregate.org, aggregate.name, aggregate.version))
+            root.name = aggregate.name
+            root.version = aggregate.version
+            root.children = new ArrayList<DependencyNode>()
+            configurations.each {config ->
+                if (configurationToAggregate(config).equals(aggregate)){
+                    root.children += config.rootNode.children
+                }
+            }
+            root
         }
 
-        DependencyNode root = new DependencyNode(new MavenExternalId(org, name, version))
-        root.name = name
-        root.version = version
-        root.children = new ArrayList<DependencyNode>()
-        configurations.each {config ->
-            root.children += config.rootNode.children
+        return nodes
+    }
+
+    SbtAggregate configurationToAggregate(SbtConfigurationDependencyTree config) {
+        def id = config.rootNode.externalId as MavenExternalId
+        def aggregate = new SbtAggregate(config.rootNode.name, id.group, config.rootNode.version)
+        return aggregate
+    }
+
+    List<SbtAggregate> uniqueAggregates(List<SbtConfigurationDependencyTree> configurations){
+        List<SbtAggregate> found = new ArrayList<SbtAggregate>()
+        configurations.each{config ->
+            def aggregate = configurationToAggregate(config)
+            if (!found.contains(aggregate)){
+                found.add(aggregate)
+            }
         }
-
-        return root
-    }
-
-    String findSharedName(List<SbtConfigurationDependencyTree> configurations) {
-        def names = configurations.collect { config -> config.rootNode.name }
-        firstUniqueOrLogError(names, "configuration name")
-    }
-
-    String findSharedOrg(List<SbtConfigurationDependencyTree> configurations) {
-        def orgs = configurations.collect { config ->
-            def id = config.rootNode.externalId as MavenExternalId
-            id.group
-        }
-        firstUniqueOrLogError(orgs, "organisation")
-    }
-
-    String findSharedVersion(List<SbtConfigurationDependencyTree> configurations) {
-        def versions = configurations.collect { config -> config.rootNode.version }
-        firstUniqueOrLogError(versions, "version")
-    }
-
-    String firstUniqueOrLogError(List<String> things, String thingType) {
-        def uniqueThings = things.toUnique()
-        def result = null
-        if (uniqueThings.size == 1) {
-            result = uniqueThings.first()
-        } else if (uniqueThings.size == 0) {
-            logger.warn("Could not find any ${thingType} in ivy reports!")
-        } else if (uniqueThings.size > 1) {
-            logger.error("Found more than 1 unique ${thingType} in ivy reports: ${uniqueThings}!")
-        }
-        result
+        return found;
     }
 }
