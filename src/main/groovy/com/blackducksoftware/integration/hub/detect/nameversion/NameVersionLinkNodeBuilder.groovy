@@ -76,7 +76,7 @@ class NameVersionLinkNodeBuilder {
     }
 
     private NameVersionNode resolveLink(final Stack<String> cyclicalStack, final NameVersionLinkNode nameVersionLinkNode) {
-        if(cyclicalStack.contains(nameVersionLinkNode.name)) {
+        if (cyclicalStack.contains(nameVersionLinkNode.name)) {
             logger.debug("Cyclical depdency detected: ${nameVersionLinkNode.name}")
             return null
         }
@@ -87,13 +87,13 @@ class NameVersionLinkNodeBuilder {
             nameVersionNode = resolveLink(cyclicalStack, nameVersionLinkNode.link)
         }
 
-        if(!nameVersionNode && (nameVersionLinkNode.version || nameVersionLinkNode == root)){
+        if (!nameVersionNode && (nameVersionLinkNode.version || nameVersionLinkNode == root)){
             nameVersionNode = new NameVersionNodeImpl()
             nameVersionNode.name = nameVersionLinkNode.name
             nameVersionNode.version = nameVersionLinkNode.version
             nameVersionLinkNode.children.each {
                 NameVersionNode child = resolveLink(cyclicalStack, it)
-                if(child) {
+                if (child) {
                     nameVersionNode.children.add(child)
                 }
             }

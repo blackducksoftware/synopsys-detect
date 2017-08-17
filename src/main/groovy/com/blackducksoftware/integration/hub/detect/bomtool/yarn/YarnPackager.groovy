@@ -50,18 +50,18 @@ class YarnPackager {
                 continue
             }
 
-            if(level == 1 && line.trim().startsWith('version')) {
+            if (level == 1 && line.trim().startsWith('version')) {
                 String fieldName = line.trim().split(' ')[0]
                 currentNode.version = line.trim().substring(fieldName.length()).replaceAll('"','').trim()
                 continue
             }
 
-            if(level == 1 && line.trim() == 'dependencies:') {
+            if (level == 1 && line.trim() == 'dependencies:') {
                 dependenciesStarted = true
                 continue
             }
 
-            if(level == 2 && dependenciesStarted) {
+            if (level == 2 && dependenciesStarted) {
                 NameVersionLinkNode dependency = dependencyLineToNameVersionLinkNode(line)
                 nameVersionLinkNodeBuilder.addChildNodeToParent(dependency, currentNode)
                 continue

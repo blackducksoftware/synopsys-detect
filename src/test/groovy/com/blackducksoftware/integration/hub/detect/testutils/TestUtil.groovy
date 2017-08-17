@@ -33,7 +33,7 @@ class TestUtil {
     }
 
     String getResourceAsUTF8String(String resourcePath) {
-        if(resourcePath.startsWith('/')) {
+        if (resourcePath.startsWith('/')) {
             resourcePath = resourcePath.replaceFirst('/', '')
         }
         ResourceUtil.getResourceAsString(resourcePath, StandardCharsets.UTF_8.toString())
