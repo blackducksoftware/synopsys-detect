@@ -9,3 +9,4 @@ build/
 .idea
 classes/
 version.txt
+src/main/resources/onprem/*

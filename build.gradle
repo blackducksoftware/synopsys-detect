@@ -25,6 +25,8 @@ tasks.withType(GroovyCompile) { options.encoding = 'UTF-8' }
 group = 'com.blackducksoftware.integration'
 
 version = '1.1.0-SNAPSHOT'
+def gradleInspectorVersion = '0.2.1'
+def nugetInspectorVersion = '1.1.0'
 
 def versionFile = new File("${projectDir}/src/main/resources/version.txt")
 versionFile.delete()
@@ -53,7 +55,37 @@ build {
         shellScriptFile.delete()
         shellScriptFile << shellScriptContents
         shellScriptFile.setExecutable(true)
+        
+        // Download inspectors and scanners to resources for on prem use
+        String[] requiredProperties = ['hub.url', 'hub.username', 'hub.password']
+        boolean hasAllProperties = true
+        for(String requiredProperty : requiredProperties) {
+            if(!project.hasProperty(requiredProperty)) {
+                hasAllProperties
+                break
+            }
+        }
+        
+        final def onpremResourcesDirectory = new File("${projectDir}/src/main/resources/onprem")
+        if(project.hasProperty('onprem') && onprem?.trim().toLowerCase() == 'true') {
+            // Download nuget inspector
+            final def nugetInspectorUrl = "https://www.nuget.org/api/v2/package/IntegrationNugetInspector/${nugetInspectorVersion}"
+            fetchFile(new File(onpremResourcesDirectory, 'nuget/nugetInspector.nupkg'), nugetInspectorUrl)
+            
+            // Download gradle inspector
+        
+        }
     }
+}
+
+void fetchFile(File outputFile, String url) {
+    if (outputFile.exists()) {
+        return
+    }
+    if(!outputFile.getParentFile().exists()) {
+        outputFile.getParentFile().mkdirs()
+    }
+    new URL(url).withInputStream{ i -> outputFile.withOutputStream{ it << i }}
 }
 
 repositories {
@@ -70,6 +102,7 @@ dependencies {
     compile 'com.esotericsoftware.yamlbeans:yamlbeans:1.11'
     compile 'com.moandjiezana.toml:toml4j:0.7.1'
     compile 'org.codehaus.groovy:groovy-all:2.4.11'
+    runtime "com.blackducksoftware.integration:integration-gradle-inspector:${gradleInspectorVersion}"
 
     testCompile 'org.springframework.boot:spring-boot-starter-test'
 }
