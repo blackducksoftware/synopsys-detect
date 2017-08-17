@@ -54,14 +54,6 @@ class NameVersionNodeBuilder {
             nameToNodeMap[parent.name].version = parent.version
         }
 
-        if (child.link && !nameToNodeMap[child.name].link) {
-            nameToNodeMap[child.name].link = child.link
-        }
-
-        if (parent.link && !nameToNodeMap[parent.name].link) {
-            nameToNodeMap[parent.name].link = parent.link
-        }
-
         nameToNodeMap[parent.name].children.add(nameToNodeMap[child.name])
     }
 }

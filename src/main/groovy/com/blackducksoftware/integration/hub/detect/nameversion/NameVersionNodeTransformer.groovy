@@ -22,8 +22,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.nameversion
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
@@ -32,35 +30,12 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVe
 
 @Component
 class NameVersionNodeTransformer {
-    private final Logger logger = LoggerFactory.getLogger(NameVersionNodeTransformer.class)
-
     public DependencyNode createDependencyNode(Forge forge, NameVersionNode nameVersionNode) {
-        Stack<String> cyclicalStack = new Stack<>()
-
-        createDependencyNodeHelper(forge, cyclicalStack, nameVersionNode)
-    }
-
-    private DependencyNode createDependencyNodeHelper(Forge forge, Stack<String> cyclicalStack, NameVersionNode nameVersionNode) {
-        final NameVersionNode link = nameVersionNode.getLink()
-        final String name = nameVersionNode.link ? link.name : nameVersionNode.name
-        final String version = nameVersionNode.link ? link.version : nameVersionNode.version
-        final List<NameVersionNode> children = nameVersionNode.link ? link.children : nameVersionNode.children
-        final def externalId = new NameVersionExternalId(forge, name, version)
-        final def dependencyNode = new DependencyNode(name, version, externalId)
-
-        if(cyclicalStack.contains(name)) {
-            return null
+        def externalId = new NameVersionExternalId(forge, nameVersionNode.name, nameVersionNode.version)
+        def dependencyNode = new DependencyNode(nameVersionNode.name, nameVersionNode.version, externalId)
+        nameVersionNode.children.each {
+            dependencyNode.children.add(createDependencyNode(forge, it))
         }
-        cyclicalStack.push(name)
-        children.each {
-            DependencyNode child = createDependencyNodeHelper(forge, cyclicalStack, it)
-            if(child) {
-                dependencyNode.children.add(child)
-            } else {
-                logger.info("Cyclical depdency [${it.name}] detected")
-            }
-        }
-        cyclicalStack.pop()
 
         dependencyNode
     }

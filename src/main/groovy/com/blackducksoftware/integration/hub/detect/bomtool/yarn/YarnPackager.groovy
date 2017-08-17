@@ -16,9 +16,9 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionLinkNode
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionLinkNodeBuilder
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeBuilder
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 
 @Component
@@ -27,10 +27,10 @@ class YarnPackager {
     NameVersionNodeTransformer nameVersionNodeTransformer
 
     public Set<DependencyNode> parse(String yarnLockText) {
-        def rootNode = new NameVersionNodeImpl()
+        def rootNode = new NameVersionLinkNode()
         rootNode.name = ''
         rootNode.version = ''
-        def nameVersionNodeBuilder = new NameVersionNodeBuilder(rootNode)
+        def nameVersionLinkNodeBuilder = new NameVersionLinkNodeBuilder(rootNode)
 
         NameVersionNode currentNode = null
         boolean dependenciesStarted = false
@@ -45,13 +45,14 @@ class YarnPackager {
 
             int level = getLineLevel(line)
             if (level == 0) {
-                currentNode = lineToNameVersionNode(nameVersionNodeBuilder, rootNode, line)
+                currentNode = lineToNameVersionLinkNode(nameVersionLinkNodeBuilder, rootNode, line)
                 dependenciesStarted = false
                 continue
             }
 
             if(level == 1 && line.trim().startsWith('version')) {
-                currentNode.version = line.trim().split(' ')[1].replaceAll('"','').trim()
+                String fieldName = line.trim().split(' ')[0]
+                currentNode.version = line.trim().substring(fieldName.length()).replaceAll('"','').trim()
                 continue
             }
 
@@ -61,13 +62,13 @@ class YarnPackager {
             }
 
             if(level == 2 && dependenciesStarted) {
-                NameVersionNode dependency = dependencyLineToNameVersionNode(line)
-                nameVersionNodeBuilder.addChildNodeToParent(dependency, currentNode)
+                NameVersionLinkNode dependency = dependencyLineToNameVersionLinkNode(line)
+                nameVersionLinkNodeBuilder.addChildNodeToParent(dependency, currentNode)
                 continue
             }
         }
 
-        rootNode.children.collect { nameVersionNodeTransformer.createDependencyNode(Forge.NPM, it) } as Set
+        nameVersionLinkNodeBuilder.build().children.collect { nameVersionNodeTransformer.createDependencyNode(Forge.NPM, it) } as Set
     }
 
     private int getLineLevel(String line) {
@@ -82,32 +83,36 @@ class YarnPackager {
 
     // Example: "mime-types@^2.1.12" becomes "mime-types"
     private String cleanFuzzyName(String fuzzyName) {
-        String cleanName = fuzzyName.replaceAll('"', '')
+        String cleanName = fuzzyName.replace('"', '')
         String version = cleanName.split('@')[-1]
-        String name = cleanName[0..cleanName.indexOf(version) - 2]
+        String name = cleanName[0..cleanName.indexOf(version) - 2].trim()
 
         name
     }
 
-    private NameVersionNode dependencyLineToNameVersionNode(String line) {
-        final NameVersionNode nameVersionNode = new NameVersionNodeImpl()
-        nameVersionNode.name = line.trim().replace(' ', '@').replaceAll('"', '')
+    private NameVersionLinkNode dependencyLineToNameVersionLinkNode(String line) {
+        final NameVersionLinkNode nameVersionNode = new NameVersionLinkNode()
+        nameVersionNode.name = line.trim().replaceFirst(' ', '@').replace('"', '')
 
         nameVersionNode
     }
 
-    private NameVersionNode lineToNameVersionNode(NameVersionNodeBuilder nameVersionNodeBuilder, NameVersionNode root, String line) {
-        String cleanLine = line.replaceAll('"', '')
-        List<String> fuzzyNames = line.split(',').collect { it.trim() }
+    private NameVersionLinkNode lineToNameVersionLinkNode(NameVersionLinkNodeBuilder nameVersionLinkNodeBuilder, NameVersionLinkNode root, String line) {
+        String cleanLine = line.replace('"', '').replace(':', '')
+        List<String> fuzzyNames = cleanLine.split(',').collect { it.trim() }
 
-        NameVersionNode linkedNameVersionNode = new NameVersionNodeImpl()
+        if (fuzzyNames.isEmpty()) {
+            return null
+        }
+
+        NameVersionLinkNode linkedNameVersionNode = new NameVersionLinkNode()
         linkedNameVersionNode.name = cleanFuzzyName(fuzzyNames[0])
 
         fuzzyNames.each {
-            def nameVersionNode = new NameVersionNodeImpl()
-            nameVersionNode.name = it.trim().replace(':', '')
-            nameVersionNode.link = linkedNameVersionNode
-            nameVersionNodeBuilder.addChildNodeToParent(nameVersionNode, root)
+            def nameVersionLinkNode = new NameVersionLinkNode()
+            nameVersionLinkNode.name = it
+            nameVersionLinkNode.link = linkedNameVersionNode
+            nameVersionLinkNodeBuilder.addChildNodeToParent(nameVersionLinkNode, root)
         }
 
         linkedNameVersionNode
