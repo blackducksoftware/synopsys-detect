@@ -175,7 +175,7 @@ class SbtBomTool extends BomTool {
     }
 
     Boolean isNotChildOfScanned(File folder, List<File> scanned) {
-        for(def scan : scanned){
+        for (def scan : scanned){
             if (folder.getCanonicalPath().startsWith(scan.getCanonicalPath())) {
                 return false
             }

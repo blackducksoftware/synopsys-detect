@@ -33,9 +33,16 @@ class TestUtil {
     }
 
     String getResourceAsUTF8String(String resourcePath) {
-        if(resourcePath.startsWith('/')) {
+        if (resourcePath.startsWith('/')) {
             resourcePath = resourcePath.replaceFirst('/', '')
         }
         ResourceUtil.getResourceAsString(resourcePath, StandardCharsets.UTF_8.toString())
+    }
+
+    void createExpectedFile(String resourcePath, Object expectedObject) {
+        final String expectedJson = gson.toJson(expectedObject)
+        final File outputFile = new File('src/test/resources', resourcePath)
+        outputFile.delete()
+        outputFile << expectedJson
     }
 }
