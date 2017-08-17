@@ -110,7 +110,7 @@ class HubManager {
                     projectVersionView = scanProject
                 }
             }
-            if (detectConfiguration.getPolicyCheck() || detectConfiguration.getRiskreportPDF()) {
+            if (detectConfiguration.getPolicyCheck() || detectConfiguration.getRiskreportPDF() || detectConfiguration.getNoticeReport()) {
                 waitForBomUpdate(hubServicesFactory.createProjectDataService(slf4jIntLogger), hubServicesFactory.createCodeLocationRequestService(slf4jIntLogger), hubServicesFactory.createMetaService(slf4jIntLogger),
                         hubServicesFactory.createScanSummaryRequestService(), hubServicesFactory.createScanStatusDataService(slf4jIntLogger, detectConfiguration.getPolicyCheckTimeout()), projectVersionView)
             }
@@ -126,6 +126,14 @@ class HubManager {
                 logger.info("Creating risk report pdf")
                 File pdfFile = riskReportDataService.createReportPdfFile(new File("."), detectProject.projectName, detectProject.projectVersionName)
                 logger.info("Created risk report pdf : ${pdfFile.getCanonicalPath()}")
+            }
+            if (detectConfiguration.getNoticeReport()) {
+                RiskReportDataService riskReportDataService = hubServicesFactory.createRiskReportDataService(slf4jIntLogger, 30000)
+                logger.info("Creating notice report")
+                File noticeFile = riskReportDataService.createNoticesReportFile(new File("."), detectProject.projectName, detectProject.projectVersionName);
+                if (noticeFile != null){
+                    logger.info("Created notice report : ${noticeFile.getCanonicalPath()}")
+                }
             }
             if (detectProject.getDetectCodeLocations() && !detectConfiguration.getHubSignatureScannerDisabled()) {
                 // only log BOM URL if we have updated it in some way
