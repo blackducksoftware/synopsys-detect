@@ -66,33 +66,7 @@ build {
         shellScriptFile.delete()
         shellScriptFile << shellScriptContents
         shellScriptFile.setExecutable(true)
-        
-        // Download inspectors and scanners to resources for on prem use
-        String[] requiredProperties = ['hub.url', 'hub.username', 'hub.password']
-        boolean hasAllProperties = true
-        for(String requiredProperty : requiredProperties) {
-            if(!project.hasProperty(requiredProperty)) {
-                hasAllProperties
-                break
-            }
-        }
-
-        // Download nuget inspector
-        if(runAirgap) {
-            final def nugetInspectorUrl = "https://www.nuget.org/api/v2/package/IntegrationNugetInspector/${nugetInspectorVersion}"
-            fetchFile(new File(nugetAirgapPath, 'nugetInspector.nupkg'), nugetInspectorUrl)
-        }
     }
-}
-
-void fetchFile(File outputFile, String url) {
-    if (outputFile.exists()) {
-        return
-    }
-    if(!outputFile.getParentFile().exists()) {
-        outputFile.getParentFile().mkdirs()
-    }
-    new URL(url).withInputStream{ i -> outputFile.withOutputStream{ it << i }}
 }
 
 repositories {
@@ -135,15 +109,32 @@ license {
 
 tasks.licenseMain.dependsOn(licenseFormatMain)
 
+void fetchFile(File outputFile, String url) {
+    if (outputFile.exists()) {
+        return
+    }
+    if(!outputFile.getParentFile().exists()) {
+        outputFile.getParentFile().mkdirs()
+    }
+    new URL(url).withInputStream{ i -> outputFile.withOutputStream{ it << i }}
+}
+
 task cleanAirgapDependencies(type: Delete) {
     delete fileTree(gradleAirgapPath)
 }
 
-task downloadAirgapDependencies(type: Copy) {
+task downloadGradleAirgapDependencies(type: Copy) {
     from configurations.airgapConfig
     into gradleAirgapPath
 }
 
+task downloadNugetAirgapDependencies {
+    doLast {
+        final def nugetInspectorUrl = "https://www.nuget.org/api/v2/package/IntegrationNugetInspector/${nugetInspectorVersion}"
+        fetchFile(new File(nugetAirgapPath, 'nugetInspector.nupkg'), nugetInspectorUrl)
+    }
+}
+
 task updateAirgapDependencies {
-    dependsOn cleanAirgapDependencies, downloadAirgapDependencies
+    dependsOn cleanAirgapDependencies, downloadGradleAirgapDependencies, downloadNugetAirgapDependencies
 }
