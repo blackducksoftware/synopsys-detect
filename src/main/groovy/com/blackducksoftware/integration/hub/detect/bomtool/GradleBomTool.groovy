@@ -95,6 +95,8 @@ class GradleBomTool extends BomTool {
     List<DetectCodeLocation> extractCodeLocationsFromGradle() {
         File initScriptFile = detectFileManager.createFile(BomToolType.GRADLE, 'init-detect.gradle')
         String initScriptContents = getClass().getResourceAsStream('/init-script-gradle').getText(StandardCharsets.UTF_8.name())
+        initScriptContents = initScriptContents.replace('RUN_AIRGAP', 'true')
+        initScriptContents = initScriptContents.replace('AIRGAP_LIBS_DIRECTORY_PATH', new File('./build/libs/airgap/gradle').getCanonicalPath())
         initScriptContents = initScriptContents.replace('GRADLE_INSPECTOR_VERSION', detectConfiguration.getGradleInspectorVersion())
         initScriptContents = initScriptContents.replace('EXCLUDED_PROJECT_NAMES', detectConfiguration.getGradleExcludedProjectNames())
         initScriptContents = initScriptContents.replace('INCLUDED_PROJECT_NAMES', detectConfiguration.getGradleIncludedProjectNames())
