@@ -95,6 +95,10 @@ class DetectProperties {
     @Value('${blackduck.hub.auto.import.cert}')
     Boolean hubAutoImportCertificate
 
+    @ValueDescription(description="This can disable any Hub communication - if true, Detect will not upload BDIO files, it will not check policies, and it will not download and install the signature scanner.", defaultValue="false", group=DetectProperties.GROUP_HUB_CONFIGURATION)
+    @Value('${blackduck.hub.offline.mode}')
+    Boolean hubOfflineMode
+
     @ValueDescription(description = "Source path to inspect", group=DetectProperties.GROUP_PATHS)
     @Value('${detect.source.path}')
     String sourcePath
@@ -302,6 +306,10 @@ class DetectProperties {
     @ValueDescription(description="Set to true to disable the Hub Signature Scanner.", defaultValue="false", group=DetectProperties.GROUP_SIGNATURE_SCANNER)
     @Value('${detect.hub.signature.scanner.disabled}')
     Boolean hubSignatureScannerDisabled
+
+    @ValueDescription(description="To use a local signature scanner, set its location with this property. If this is used, a download of the signature scanner from the Hub will not be attempted.", group=DetectProperties.GROUP_SIGNATURE_SCANNER)
+    @Value('${detect.hub.signature.scanner.local.path}')
+    String hubSignatureScannerLocalPath
 
     @ValueDescription(description="Set this value to false if you would like to exclude your dev requires dependencies when ran", defaultValue='true', group=DetectProperties.GROUP_PACKAGIST)
     @Value('${detect.packagist.include.dev.dependencies}')

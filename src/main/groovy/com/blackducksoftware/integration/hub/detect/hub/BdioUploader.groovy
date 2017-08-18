@@ -34,8 +34,6 @@ import com.blackducksoftware.integration.hub.detect.Application
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.global.HubServerConfig
 import com.blackducksoftware.integration.hub.phonehome.IntegrationInfo
-import com.blackducksoftware.integration.hub.service.HubServicesFactory
-import com.blackducksoftware.integration.log.Slf4jIntLogger
 
 @Component
 class BdioUploader {
@@ -44,14 +42,7 @@ class BdioUploader {
     @Autowired
     DetectConfiguration detectConfiguration
 
-    @Autowired
-    HubManager hubManager
-
-    void uploadBdioFiles(HubServerConfig hubServerConfig, HubServicesFactory hubServicesFactory, List<File> createdBdioFiles) {
-        Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
-        BomImportRequestService bomImportRequestService = hubServicesFactory.createBomImportRequestService()
-        PhoneHomeDataService phoneHomeDataService = hubServicesFactory.createPhoneHomeDataService(slf4jIntLogger)
-
+    void uploadBdioFiles(HubServerConfig hubServerConfig, BomImportRequestService bomImportRequestService, PhoneHomeDataService phoneHomeDataService, List<File> createdBdioFiles) {
         createdBdioFiles.each { file ->
             logger.info("uploading ${file.name} to ${detectConfiguration.getHubUrl()}")
             bomImportRequestService.importBomFile(file, BuildToolConstants.BDIO_FILE_MEDIA_TYPE)

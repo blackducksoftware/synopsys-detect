@@ -208,6 +208,9 @@ class DetectConfiguration {
     public String getHubProxyPassword() {
         return detectProperties.hubProxyPassword
     }
+    public boolean getHubOfflineMode() {
+        return BooleanUtils.toBoolean(detectProperties.hubOfflineMode)
+    }
     public boolean getHubAutoImportCertificate() {
         return BooleanUtils.toBoolean(detectProperties.hubAutoImportCertificate)
     }
@@ -363,6 +366,9 @@ class DetectConfiguration {
     }
     public List<String> getHubSignatureScannerPathsToExclude() {
         return excludedScanPaths
+    }
+    public String getHubSignatureScannerLocalPath() {
+        return detectProperties.hubSignatureScannerLocalPath
     }
     public boolean getPackagistIncludeDevDependencies() {
         return BooleanUtils.toBoolean(detectProperties.packagistIncludeDevDependencies)
