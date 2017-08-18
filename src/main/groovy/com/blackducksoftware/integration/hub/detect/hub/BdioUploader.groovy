@@ -33,9 +33,10 @@ import com.blackducksoftware.integration.hub.dataservice.phonehome.PhoneHomeData
 import com.blackducksoftware.integration.hub.detect.Application
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.global.HubServerConfig
-import com.blackducksoftware.integration.hub.phonehome.IntegrationInfo
 import com.blackducksoftware.integration.hub.service.HubServicesFactory
 import com.blackducksoftware.integration.log.Slf4jIntLogger
+import com.blackducksoftware.integration.phonehome.PhoneHomeRequestBody
+import com.blackducksoftware.integration.phonehome.PhoneHomeRequestBodyBuilder
 
 @Component
 class BdioUploader {
@@ -61,7 +62,16 @@ class BdioUploader {
         }
 
         String hubDetectVersion = Application.VERSION
-        IntegrationInfo integrationInfo = new IntegrationInfo('Hub-Detect', hubDetectVersion, hubDetectVersion)
-        phoneHomeDataService.phoneHome(hubServerConfig, integrationInfo)
+        PhoneHomeRequestBodyBuilder phoneHomeRequestBodyBuilder = phoneHomeDataService.createInitialPhoneHomeRequestBodyBuilder()
+        phoneHomeRequestBodyBuilder.setThirdPartyName('Hub-Detect')
+        phoneHomeRequestBodyBuilder.setThirdPartyVersion(hubDetectVersion)
+        phoneHomeRequestBodyBuilder.setPluginVersion(hubDetectVersion)
+        PhoneHomeRequestBody phoneHomeRequestBody = PhoneHomeRequestBody.DO_NOT_PHONE_HOME
+        try {
+            phoneHomeRequestBody = phoneHomeRequestBodyBuilder.build()
+        } catch(Exception e) {
+            logger.debug(e.getMessage())
+        }
+        phoneHomeDataService.phoneHome(phoneHomeRequestBody)
     }
 }
