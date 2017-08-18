@@ -1,3 +1,5 @@
+import groovy.json.JsonBuilder
+
 buildscript {
     repositories {
         mavenCentral()
@@ -24,20 +26,24 @@ tasks.withType(GroovyCompile) { options.encoding = 'UTF-8' }
 
 group = 'com.blackducksoftware.integration'
 
+// Detect version
 version = '1.1.0-SNAPSHOT'
 
-def versionFile = new File("${projectDir}/src/main/resources/version.txt")
-versionFile.delete()
-versionFile << version
-
-// Air gap
+// Human's must change this here and in DetectProperties for every update
 final String gradleInspectorVersion = '0.2.1'
 final String nugetInspectorVersion = '1.1.0'
-final String airgapPath = "${buildDir}/libs/airgap"
-final String gradleAirgapPath = "${airgapPath}/gradle"
-final String nugetAirgapPath = "${airgapPath}/nuget"
 
-boolean runAirgap = project.hasProperty('airgap') && (airgap.trim().toLowerCase() == 'true')
+final String gradleAirgapPath = "${buildDir}/libs/airgap/gradle"
+final String nugetAirgapPath = "${buildDir}/libs/airgap/nuget"
+
+// BuildInfo - A json payload usable by detect for information from the build
+JsonBuilder jsonBuilder = new JsonBuilder()
+jsonBuilder {
+    detect version
+}
+final def buildConfigurationFile = new File("${projectDir}/src/main/resources/buildInfo.json")
+buildConfigurationFile.delete()
+buildConfigurationFile << jsonBuilder.toPrettyString()
 
 // the override.snaphot property should be set to true for a CI build so
 // that the version is omitted from a snapshot build artifact

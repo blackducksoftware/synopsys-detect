@@ -23,6 +23,7 @@
 package com.blackducksoftware.integration.hub.detect
 
 import java.lang.reflect.Modifier
+import java.nio.charset.StandardCharsets
 
 import org.apache.commons.lang3.BooleanUtils
 import org.apache.commons.lang3.StringUtils
@@ -38,6 +39,8 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import com.blackducksoftware.integration.hub.detect.bomtool.DockerBomTool
 import com.blackducksoftware.integration.hub.detect.exception.DetectException
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
+import com.blackducksoftware.integration.util.ResourceUtil
+import com.google.gson.Gson
 
 @Component
 class DetectConfiguration {
@@ -55,6 +58,11 @@ class DetectConfiguration {
     @Autowired
     DockerBomTool dockerBomTool
 
+    @Autowired
+    Gson gson
+
+    public BuildInfo buildInfo
+
     File sourceDirectory
     File outputDirectory
     Set<String> allDetectPropertyKeys = new HashSet<>()
@@ -66,6 +74,8 @@ class DetectConfiguration {
     List<String> excludedScanPaths = []
 
     void init() {
+        buildInfo = gson.fromJson(ResourceUtil.getResourceAsString('buildInfo.json', StandardCharsets.UTF_8.toString()), BuildInfo.class)
+
         if (!detectProperties.sourcePath) {
             usingDefaultSourcePath = true
             detectProperties.sourcePath = System.getProperty('user.dir')
@@ -142,7 +152,7 @@ class DetectConfiguration {
     public void logConfiguration() {
         List<String> configurationPieces = []
         configurationPieces.add('')
-        configurationPieces.add("Detect Version: ${Application.VERSION}")
+        configurationPieces.add("Detect Version: ${buildInfo.version}")
         configurationPieces.add('Current property values:')
         configurationPieces.add('-'.multiply(60))
         def propertyFields = DetectProperties.class.getDeclaredFields().findAll {

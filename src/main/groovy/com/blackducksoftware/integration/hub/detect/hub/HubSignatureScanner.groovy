@@ -125,7 +125,7 @@ class HubSignatureScanner {
 
             HubScanConfig hubScanConfig = hubScanConfigBuilder.build()
 
-            String hubDetectVersion = ResourceUtil.getResourceAsString('version.txt', StandardCharsets.UTF_8)
+            String hubDetectVersion = detectConfiguration.buildInfo.detectVersion
             IntegrationInfo integrationInfo = new IntegrationInfo('Hub-Detect', hubDetectVersion, hubDetectVersion)
             projectVersionView = cliDataService.installAndRunControlledScan(hubServerConfig, hubScanConfig, projectRequest, false, integrationInfo)
             logger.info("${canonicalPath} was successfully scanned by the BlackDuck CLI.")

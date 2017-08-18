@@ -7,7 +7,6 @@ import org.gradle.api.tasks.TaskState
 import com.blackducksoftware.integration.gradle.DependencyGatherer
 
 initscript {
-    
     def airgapDirectory = new File('AIRGAP_LIBS_DIRECTORY_PATH')
     boolean runAirgap = RUN_AIRGAP
     if (runAirgap && !airgapDirectory.exists()) {
@@ -17,7 +16,7 @@ initscript {
         println "Running air gapped. Using jars in ${airgapDirectory.getCanonicalPath()}"
     }
     repositories {
-        if(runAirgap) {
+        if (runAirgap) {
             flatDir {
                 dirs airgapDirectory.getCanonicalPath()
             }
@@ -26,9 +25,9 @@ initscript {
             mavenCentral()
         }
     }
-    
+
     dependencies {
-        if(runAirgap) {
+        if (runAirgap) {
             airgapDirectory.eachFile {
                 String fileName = it.name.find('.*\\.jar')?.replace('.jar', '')
                 if (fileName) {

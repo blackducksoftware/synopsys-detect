@@ -8,5 +8,4 @@ build/
 .DS_Store
 .idea
 classes/
-version.txt
-src/main/resources/onprem/*
+buildInfo.json
