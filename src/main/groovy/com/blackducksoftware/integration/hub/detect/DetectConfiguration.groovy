@@ -152,7 +152,7 @@ class DetectConfiguration {
     public void logConfiguration() {
         List<String> configurationPieces = []
         configurationPieces.add('')
-        configurationPieces.add("Detect Version: ${buildInfo.version}")
+        configurationPieces.add("Detect Version: ${buildInfo.detectVersion}")
         configurationPieces.add('Current property values:')
         configurationPieces.add('-'.multiply(60))
         def propertyFields = DetectProperties.class.getDeclaredFields().findAll {
@@ -421,5 +421,8 @@ class DetectConfiguration {
     }
     public String getRiskreportPdfOutputDirectory() {
         return detectProperties.riskreportPdfOutputDirectory
+    }
+    public String getGradleInspectorAirgapPath() {
+        return detectProperties.gradleInspectorAirgapPath
     }
 }

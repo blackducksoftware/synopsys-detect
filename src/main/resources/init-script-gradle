@@ -7,18 +7,17 @@ import org.gradle.api.tasks.TaskState
 import com.blackducksoftware.integration.gradle.DependencyGatherer
 
 initscript {
-    def airgapDirectory = new File('AIRGAP_LIBS_DIRECTORY_PATH')
-    boolean runAirgap = RUN_AIRGAP
-    if (runAirgap && !airgapDirectory.exists()) {
-        runAirgap = false
-        println "Could not run air gapped because libs were not in expected directory: ${airgapDirectory.getCanonicalPath()}"
-    } else if (runAirgap) {
-        println "Running air gapped. Using jars in ${airgapDirectory.getCanonicalPath()}"
+    String airgapLibsPath = 'AIRGAP_LIBS_DIRECTORY_PATH'
+    if (airgapLibsPath) {
+        println "Running air gapped from ${airgapLibsPath}"
+    } else {
+        println 'Running in online mode'
     }
+    
     repositories {
-        if (runAirgap) {
+        if (airgapLibsPath) {
             flatDir {
-                dirs airgapDirectory.getCanonicalPath()
+                dirs airgapLibsPath
             }
         } else {
             mavenLocal()
@@ -27,8 +26,8 @@ initscript {
     }
 
     dependencies {
-        if (runAirgap) {
-            airgapDirectory.eachFile {
+        if (airgapLibsPath) {
+            new File(airgapLibsPath).eachFile {
                 String fileName = it.name.find('.*\\.jar')?.replace('.jar', '')
                 if (fileName) {
                     classpath name: fileName
