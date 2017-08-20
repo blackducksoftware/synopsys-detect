@@ -425,4 +425,7 @@ class DetectConfiguration {
     public String getGradleInspectorAirgapPath() {
         return detectProperties.gradleInspectorAirgapPath
     }
+    public String getNugetInspectorAirgapPath() {
+        return detectProperties.nugetInspectorAirgapPath
+    }
 }

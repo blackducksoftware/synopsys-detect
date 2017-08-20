@@ -362,5 +362,9 @@ class DetectProperties {
     @ValueDescription(description="The path to the directory containing the air gap dependencies for the gradle inspector", group=DetectProperties.GROUP_GRADLE)
     @Value('${detect.gradle.inspector.airgap.path}')
     String gradleInspectorAirgapPath
+
+    @ValueDescription(description="The path to the nuget inspector nupkg", group=DetectProperties.GROUP_NUGET)
+    @Value('${detect.nuget.inspector.airgap.path}')
+    String nugetInspectorAirgapPath
 }
 
