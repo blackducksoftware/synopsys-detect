@@ -46,6 +46,9 @@ class NpmBomTool extends BomTool {
     @Autowired
     NpmCliDependencyFinder cliDependencyFinder
 
+    @Autowired
+    YarnBomTool yarnBomTool
+
     @Override
     public BomToolType getBomToolType() {
         BomToolType.NPM
@@ -53,6 +56,10 @@ class NpmBomTool extends BomTool {
 
     @Override
     public boolean isBomToolApplicable() {
+        if (yarnBomTool.isBomToolApplicable()) {
+            return false;
+        }
+
         boolean containsNodeModules = detectFileManager.containsAllFiles(sourcePath, NODE_MODULES)
         boolean containsPackageJson = detectFileManager.containsAllFiles(sourcePath, PACKAGE_JSON)
 
@@ -72,8 +79,12 @@ class NpmBomTool extends BomTool {
         File npmLsOutputFile = detectFileManager.createFile(BomToolType.NPM, NpmBomTool.OUTPUT_FILE)
         File npmLsErrorFile = detectFileManager.createFile(BomToolType.NPM, NpmBomTool.ERROR_FILE)
         executableRunner.runExeToFile(npmExePath, npmLsOutputFile, npmLsErrorFile, 'ls', '-json')
+        
+        if (npmLsErrorFile.length() > 0) {
+            logger.warn("Error when running npm ls -json command\n${npmLsErrorFile.text}")
+        }
 
-        if (npmLsErrorFile.length() == 0) {
+        if(npmLsOutputFile.length() > 0) {
             if (logger.debugEnabled) {
                 def npmVersion = executableRunner.runExe(npmExePath, '-version')
             }
@@ -82,7 +93,7 @@ class NpmBomTool extends BomTool {
 
             return [detectCodeLocation]
         } else {
-            logger.error("Error when running npm ls -json command\n${npmLsErrorFile.text}")
+            logger.info("No information after running npm ls -json")
         }
 
         []
