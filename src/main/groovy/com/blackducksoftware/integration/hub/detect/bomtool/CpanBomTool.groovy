@@ -42,7 +42,6 @@ class CpanBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(CpanBomTool.class)
 
     public static Forge CPAN_FORGE = new Forge('cpan', '-')
-    public static final String CPAN_FILENAME= 'cpanfile'
 
     @Autowired
     CpanPackager cpanPackager
@@ -57,7 +56,7 @@ class CpanBomTool extends BomTool {
 
     @Override
     public boolean isBomToolApplicable() {
-        def containsFiles = detectFileManager.containsAllFiles(sourcePath, CPAN_FILENAME)
+        def containsFiles = detectFileManager.containsAllFiles(sourcePath, 'Makefile.PL')
         if (containsFiles) {
             cpanExecutablePath = executableManager.getPathOfExecutable(ExecutableType.CPAN, detectConfiguration.getCpanPath())
             cpanmExecutablePath = executableManager.getPathOfExecutable(ExecutableType.CPANM, detectConfiguration.getCpanmPath())

@@ -44,7 +44,8 @@ build {
         def shellScriptTemplateFile = new File("${projectDir}/src/main/resources/hub-detect-sh")
         def shellScriptContents = shellScriptTemplateFile.getText('UTF-8')
         if (!version.contains('SNAPSHOT')) {
-            shellScriptContents = shellScriptContents.replaceFirst("DETECT_LATEST_RELEASE_VERSION=\\S*\n", "DETECT_LATEST_RELEASE_VERSION=\"${version}\"\n")
+            String latestReleaseVersion = 'DETECT_LATEST_RELEASE_VERSION=\\${DETECT_LATEST_RELEASE_VERSION:-' + "${version}" + '}\n'
+            shellScriptContents = shellScriptContents.replaceFirst("DETECT_LATEST_RELEASE_VERSION=\\S*\n", latestReleaseVersion)
             shellScriptTemplateFile.delete()
             shellScriptTemplateFile << shellScriptContents
         }
@@ -62,7 +63,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.blackducksoftware.integration:hub-detect-model:0.0.2'
+    compile 'com.blackducksoftware.integration:hub-detect-model:0.0.3'
     compile 'com.blackducksoftware.integration:hub-common:13.3.0'
     compile 'org.springframework.boot:spring-boot-starter'
     compile 'org.apache.maven.shared:maven-invoker:3.0.0'

@@ -412,7 +412,10 @@ class DetectConfiguration {
     public String getCondaEnvironmentName() {
         return detectProperties.condaEnvironmentName?.trim()
     }
-    public Boolean getRiskreportPDF() {
-        return detectProperties.riskreportPDF
+    public Boolean getRiskreportPdf() {
+        return detectProperties.riskreportPdf
+    }
+    public String getRiskreportPdfOutputDirectory() {
+        return detectProperties.riskreportPdfOutputDirectory
     }
 }

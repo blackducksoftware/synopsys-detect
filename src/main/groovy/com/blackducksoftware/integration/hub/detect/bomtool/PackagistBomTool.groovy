@@ -22,6 +22,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool
 
+import java.nio.charset.StandardCharsets
+
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -59,10 +61,10 @@ class PackagistBomTool extends BomTool {
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
-        File composerJsonFile = new File(sourcePath, 'composer.json')
-        File composerLockFile = new File(sourcePath, 'composer.lock')
+        String composerJsonText = new File(sourcePath, 'composer.json').getText(StandardCharsets.UTF_8)
+        String composerLockText = new File(sourcePath, 'composer.lock').getText(StandardCharsets.UTF_8)
 
-        DependencyNode rootDependencyNode = packagistParser.getDependencyNodeFromProject(composerJsonFile, composerLockFile)
+        DependencyNode rootDependencyNode = packagistParser.getDependencyNodeFromProject(composerJsonText, composerLockText)
         def detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, rootDependencyNode)
 
         [detectCodeLocation]

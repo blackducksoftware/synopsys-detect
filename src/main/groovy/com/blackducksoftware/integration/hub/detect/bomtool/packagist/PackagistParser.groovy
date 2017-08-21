@@ -32,7 +32,6 @@ import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import com.google.gson.stream.JsonReader
 
 @Component
 class PackagistParser {
@@ -41,14 +40,14 @@ class PackagistParser {
     @Autowired
     DetectConfiguration detectConfiguration
 
-    public DependencyNode getDependencyNodeFromProject(File composerJsonFile, File composerLockFile) {
-        JsonObject composerJsonObject = new JsonParser().parse(new JsonReader(new FileReader(composerJsonFile))).getAsJsonObject()
+    public DependencyNode getDependencyNodeFromProject(String composerJsonText, String composerLockText) {
+        JsonObject composerJsonObject = new JsonParser().parse(composerJsonText)
         String projectName = composerJsonObject.get('name')?.getAsString()
         String projectVersion = composerJsonObject.get('version')?.getAsString()
 
         def rootDependencyNode = new DependencyNode(projectName, projectVersion, new NameVersionExternalId(packagistForge, projectName, projectVersion))
 
-        JsonObject composerLockObject = new JsonParser().parse(new JsonReader(new FileReader(composerLockFile))).getAsJsonObject()
+        JsonObject composerLockObject = new JsonParser().parse(composerLockText)
         JsonArray packagistPackages = composerLockObject.get('packages')?.getAsJsonArray()
         List<String> startingPackages = getStartingPackages(composerJsonObject, false)
 

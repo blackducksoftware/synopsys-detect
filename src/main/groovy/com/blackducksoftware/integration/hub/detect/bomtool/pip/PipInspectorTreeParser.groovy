@@ -121,7 +121,7 @@ class PipInspectorTreeParser {
 
     int getCurrentIndentation(String line) {
         int currentIndentation = 0
-        while(line.startsWith(INDENTATION)) {
+        while (line.startsWith(INDENTATION)) {
             currentIndentation++
             line = line.replaceFirst(INDENTATION, '')
         }

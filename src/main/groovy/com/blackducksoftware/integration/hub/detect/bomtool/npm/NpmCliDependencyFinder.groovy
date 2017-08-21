@@ -37,7 +37,6 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import com.google.gson.stream.JsonReader
 
 @Component
 class NpmCliDependencyFinder {
@@ -64,7 +63,7 @@ class NpmCliDependencyFinder {
     public DependencyNode generateDependencyNode(File npmLsOutputFile) {
         if (npmLsOutputFile?.length() > 0) {
             logger.info("Generating results from npm ls -json")
-            return convertNpmJsonFileToDependencyNode(npmLsOutputFile)
+            return convertNpmJsonFileToDependencyNode(npmLsOutputFile.text)
         } else {
             logger.error("Ran into an issue creating and writing to file")
         }
@@ -72,8 +71,8 @@ class NpmCliDependencyFinder {
         []
     }
 
-    private DependencyNode convertNpmJsonFileToDependencyNode(File NpmLsOutFile) {
-        JsonObject npmJson = new JsonParser().parse(new JsonReader(new FileReader(NpmLsOutFile))).getAsJsonObject()
+    private DependencyNode convertNpmJsonFileToDependencyNode(String npmLsOutput) {
+        JsonObject npmJson = new JsonParser().parse(npmLsOutput)
 
         String projectName = npmJson.getAsJsonPrimitive(JSON_NAME)?.getAsString()
         String projectVersion = npmJson.getAsJsonPrimitive(JSON_VERSION)?.getAsString()

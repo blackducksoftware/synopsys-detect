@@ -16,9 +16,11 @@ import org.junit.Test
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.DetectProperties
+import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 
 class PearDependencyTest {
-    def PearDependencyFinder pearDependencyFinder = new PearDependencyFinder()
+    private PearDependencyFinder pearDependencyFinder = new PearDependencyFinder()
+    private TestUtil testUtil = new TestUtil()
 
     @Test
     public void findDependencyNamesTest() {
@@ -28,7 +30,7 @@ class PearDependencyTest {
         detectConfiguration.detectProperties = detectProperties
         pearDependencyFinder.detectConfiguration = detectConfiguration
 
-        def dependenciesList = new File(getClass().getResource('/pear/dependencies-list.txt').getFile()).text
+        def dependenciesList = testUtil.getResourceAsUTF8String('/pear/dependencies-list.txt')
 
         List<String> actual = pearDependencyFinder.findDependencyNames(dependenciesList)
         List<String> expected = [
@@ -47,7 +49,7 @@ class PearDependencyTest {
 
     @Test
     public void createPearDependencyNodeFromListTest() {
-        def installedPackages = new File(getClass().getResource('/pear/installed-packages.txt').getFile()).text
+        def installedPackages = testUtil.getResourceAsUTF8String('/pear/installed-packages.txt')
 
         def dependencyNames = [
             'Archive_Tar',
@@ -55,7 +57,7 @@ class PearDependencyTest {
             'Structures_Graph'
         ]
         def actual = pearDependencyFinder.createPearDependencyNodeFromList(installedPackages, dependencyNames)
-        def expected = new File(getClass().getResource('/pear/dependency-node-list.txt').getFile()).text
+        def expected = testUtil.getResourceAsUTF8String('/pear/dependency-node-list.txt')
 
         Assert.assertTrue(actual.toString().equals(expected))
     }

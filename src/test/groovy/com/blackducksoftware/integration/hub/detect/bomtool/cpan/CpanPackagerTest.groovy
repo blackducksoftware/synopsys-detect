@@ -18,14 +18,14 @@ import org.junit.Test
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
-import com.blackducksoftware.integration.hub.detect.testutils.JsonTestUtil
+import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 
 class CpanPackagerTest {
-    private final JsonTestUtil jsonTestUtil = new JsonTestUtil()
+    private final TestUtil testUtil = new TestUtil()
     private final CpanPackager cpanPackager = new CpanPackager()
 
-    private final String cpanListText = jsonTestUtil.getResourceAsUTF8String('cpan/cpanList.txt')
-    private final String showDepsText = jsonTestUtil.getResourceAsUTF8String('cpan/showDeps.txt')
+    private final String cpanListText = testUtil.getResourceAsUTF8String('cpan/cpanList.txt')
+    private final String showDepsText = testUtil.getResourceAsUTF8String('cpan/showDeps.txt')
 
     @Before
     public void init() {
@@ -46,6 +46,6 @@ class CpanPackagerTest {
     @Test
     public void makeDependencyNodesTest() {
         Set<DependencyNode> dependencyNodes = cpanPackager.makeDependencyNodes(cpanListText, showDepsText)
-        jsonTestUtil.testJsonResource('cpan/expectedDependencyNodes.json', dependencyNodes)
+        testUtil.testJsonResource('cpan/expectedDependencyNodes.json', dependencyNodes)
     }
 }

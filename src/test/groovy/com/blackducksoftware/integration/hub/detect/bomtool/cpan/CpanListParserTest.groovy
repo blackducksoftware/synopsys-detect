@@ -26,6 +26,9 @@ class CpanListParserTest {
         String cpanList = '''
 Test::More\t1.2.3
 Test::Less\t1.2.4
+This is an invalid line
+This\t1\t1also\t1invalid
+Invalid
 '''
         Map<String, NameVersionNode> nodeMap = cpanListParser.parse(cpanList)
         assertEquals(2, nodeMap.size())
