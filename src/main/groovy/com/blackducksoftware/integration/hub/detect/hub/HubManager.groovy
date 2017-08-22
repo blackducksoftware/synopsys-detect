@@ -76,6 +76,7 @@ class HubManager {
             ProjectRequestService projectRequestService = hubServiceWrapper.createProjectRequestService()
             ProjectVersionRequestService projectVersionRequestService = hubServiceWrapper.createProjectVersionRequestService()
             ProjectVersionView projectVersionView = ensureProjectVersionExists(detectProject, projectRequestService, projectVersionRequestService)
+
             if (createdBdioFiles) {
                 HubServerConfig hubServerConfig = hubServiceWrapper.hubServerConfig
                 BomImportRequestService bomImportRequestService = hubServiceWrapper.createBomImportRequestService()
@@ -90,7 +91,8 @@ class HubManager {
             //                    projectVersionView = scanProject
             //                }
             //            }
-            if (detectConfiguration.getPolicyCheck() || detectConfiguration.getRiskreportPdf()) {
+
+            if (detectConfiguration.getPolicyCheck() || detectConfiguration.getRiskreportPdf() || detectConfiguration.getNoticesReport()) {
                 ProjectDataService projectDataService = hubServiceWrapper.createProjectDataService()
                 CodeLocationRequestService codeLocationRequestService = hubServiceWrapper.createCodeLocationRequestService()
                 MetaService metaService = hubServiceWrapper.createMetaService()
@@ -114,6 +116,15 @@ class HubManager {
                 logger.info("Creating risk report pdf")
                 File pdfFile = riskReportDataService.createReportPdfFile(new File("."), detectProject.projectName, detectProject.projectVersionName)
                 logger.info("Created risk report pdf : ${pdfFile.getCanonicalPath()}")
+            }
+
+            if (detectConfiguration.getNoticeReport()) {
+                RiskReportDataService riskReportDataService = hubServicesFactory.createRiskReportDataService(slf4jIntLogger, 30000)
+                logger.info("Creating notice report")
+                File noticeFile = riskReportDataService.createNoticesReportFile(new File("."), detectProject.projectName, detectProject.projectVersionName);
+                if (noticeFile != null){
+                    logger.info("Created notice report : ${noticeFile.getCanonicalPath()}")
+                }
             }
 
             if (detectProject.getDetectCodeLocations() && !detectConfiguration.getHubSignatureScannerDisabled()) {

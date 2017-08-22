@@ -359,6 +359,10 @@ class DetectProperties {
     @Value('${detect.risk.report.pdf.path}')
     String riskreportPdfOutputDirectory
 
+    @ValueDescription (description="When set to true, a Black Duck notice report in text form will be created in your source directory", defaultValue='false', group=DetectProperties.GROUP_PROJECT_INFO)
+    @Value('${detect.notice.report}')
+    Boolean noticeReport
+
     @ValueDescription(description="The path of the conda executable", group=DetectProperties.GROUP_CONDA)
     @Value('${detect.conda.path}')
     String condaPath

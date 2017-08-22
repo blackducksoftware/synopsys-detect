@@ -37,7 +37,6 @@ import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.global.HubServerConfig
 import com.blackducksoftware.integration.hub.model.request.ProjectRequest
 import com.blackducksoftware.integration.hub.model.view.ProjectVersionView
-import com.blackducksoftware.integration.hub.phonehome.IntegrationInfo
 import com.blackducksoftware.integration.hub.request.builder.ProjectRequestBuilder
 import com.blackducksoftware.integration.hub.scan.HubScanConfig
 import com.blackducksoftware.integration.util.ResourceUtil
@@ -126,8 +125,7 @@ class HubSignatureScanner {
             HubScanConfig hubScanConfig = hubScanConfigBuilder.build()
 
             String hubDetectVersion = ResourceUtil.getResourceAsString('version.txt', StandardCharsets.UTF_8)
-            IntegrationInfo integrationInfo = new IntegrationInfo('Hub-Detect', hubDetectVersion, hubDetectVersion)
-            projectVersionView = cliDataService.installAndRunControlledScan(hubServerConfig, hubScanConfig, projectRequest, false, integrationInfo)
+            projectVersionView = cliDataService.installAndRunControlledScan(hubServerConfig, hubScanConfig, projectRequest, false, 'Hub-Detect', hubDetectVersion, hubDetectVersion)
             logger.info("${canonicalPath} was successfully scanned by the BlackDuck CLI.")
         } catch (Exception e) {
             logger.error("${detectProject.projectName}/${detectProject.projectVersionName} was not scanned by the BlackDuck CLI: ${e.message}")
