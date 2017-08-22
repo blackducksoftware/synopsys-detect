@@ -33,7 +33,6 @@ import com.blackducksoftware.integration.hub.dataservice.phonehome.PhoneHomeData
 import com.blackducksoftware.integration.hub.detect.Application
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.global.HubServerConfig
-import com.blackducksoftware.integration.hub.phonehome.IntegrationInfo
 
 @Component
 class BdioUploader {

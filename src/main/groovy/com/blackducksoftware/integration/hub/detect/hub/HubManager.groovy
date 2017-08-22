@@ -84,9 +84,13 @@ class HubManager {
             } else {
                 logger.debug('Did not create any bdio files.')
             }
-<<<<<<< HEAD
-
-            if (detectConfiguration.getPolicyCheck() || detectConfiguration.getRiskreportPDF()) {
+            //            if (!detectConfiguration.getHubSignatureScannerDisabled()) {
+            //                ProjectVersionView scanProject = hubSignatureScanner.scanPaths(hubServerConfig, hubServicesFactory.createCLIDataService(slf4jIntLogger, 120000L), detectProject)
+            //                if (!projectVersionView) {
+            //                    projectVersionView = scanProject
+            //                }
+            //            }
+            if (detectConfiguration.getPolicyCheck() || detectConfiguration.getRiskreportPdf()) {
                 ProjectDataService projectDataService = hubServiceWrapper.createProjectDataService()
                 CodeLocationRequestService codeLocationRequestService = hubServiceWrapper.createCodeLocationRequestService()
                 MetaService metaService = hubServiceWrapper.createMetaService()
@@ -94,18 +98,8 @@ class HubManager {
                 ScanStatusDataService scanStatusDataService = hubServiceWrapper.createScanStatusDataService()
 
                 waitForBomUpdate(projectDataService, codeLocationRequestService, metaService, scanSummaryRequestService, scanStatusDataService, projectVersionView)
-=======
-            if (!detectConfiguration.getHubSignatureScannerDisabled()) {
-                ProjectVersionView scanProject = hubSignatureScanner.scanPaths(hubServerConfig, hubServicesFactory.createCLIDataService(slf4jIntLogger, 120000L), detectProject)
-                if (!projectVersionView) {
-                    projectVersionView = scanProject
-                }
             }
-            if (detectConfiguration.getPolicyCheck() || detectConfiguration.getRiskreportPdf()) {
-                waitForBomUpdate(hubServicesFactory.createProjectDataService(slf4jIntLogger), hubServicesFactory.createCodeLocationRequestService(slf4jIntLogger), hubServicesFactory.createMetaService(slf4jIntLogger),
-                        hubServicesFactory.createScanSummaryRequestService(), hubServicesFactory.createScanStatusDataService(slf4jIntLogger, detectConfiguration.getPolicyCheckTimeout()), projectVersionView)
->>>>>>> 3c46da30068f677299b9bc861c4c6185a2a25ce6
-            }
+
             if (detectConfiguration.getPolicyCheck()) {
                 PolicyStatusDataService policyStatusDataService = hubServiceWrapper.createPolicyStatusDataService()
                 PolicyStatusDescription policyStatus = policyChecker.getPolicyStatus(policyStatusDataService, projectVersionView)
@@ -114,17 +108,14 @@ class HubManager {
                     postActionResult = 1
                 }
             }
-<<<<<<< HEAD
-            if (detectConfiguration.getRiskreportPDF()) {
-                RiskReportDataService riskReportDataService = hubServiceWrapper.createRiskReportDataService()
-=======
+
             if (detectConfiguration.getRiskreportPdf()) {
-                RiskReportDataService riskReportDataService = hubServicesFactory.createRiskReportDataService(slf4jIntLogger, 30000)
->>>>>>> 3c46da30068f677299b9bc861c4c6185a2a25ce6
+                RiskReportDataService riskReportDataService = hubServiceWrapper.createRiskReportDataService()
                 logger.info("Creating risk report pdf")
-                File pdfFile = riskReportDataService.createReportPdfFile(new File(detectConfiguration.getRiskreportPdfOutputDirectory()), detectProject.projectName, detectProject.projectVersionName)
+                File pdfFile = riskReportDataService.createReportPdfFile(new File("."), detectProject.projectName, detectProject.projectVersionName)
                 logger.info("Created risk report pdf : ${pdfFile.getCanonicalPath()}")
             }
+
             if (detectProject.getDetectCodeLocations() && !detectConfiguration.getHubSignatureScannerDisabled()) {
                 // only log BOM URL if we have updated it in some way
                 ProjectDataService projectDataService = hubServiceWrapper.createProjectDataService()
