@@ -57,6 +57,7 @@ class NpmBomTool extends BomTool {
     @Override
     public boolean isBomToolApplicable() {
         if (yarnBomTool.isBomToolApplicable()) {
+            logger.debug("Not running npm bomtool because Yarn is applicable");
             return false;
         }
 
@@ -79,7 +80,7 @@ class NpmBomTool extends BomTool {
         File npmLsOutputFile = detectFileManager.createFile(BomToolType.NPM, NpmBomTool.OUTPUT_FILE)
         File npmLsErrorFile = detectFileManager.createFile(BomToolType.NPM, NpmBomTool.ERROR_FILE)
         executableRunner.runExeToFile(npmExePath, npmLsOutputFile, npmLsErrorFile, 'ls', '-json')
-        
+
         if (npmLsErrorFile.length() > 0) {
             logger.warn("Error when running npm ls -json command\n${npmLsErrorFile.text}")
         }
