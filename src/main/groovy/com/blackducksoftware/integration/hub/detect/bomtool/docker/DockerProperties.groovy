@@ -48,16 +48,16 @@ class DockerProperties {
 
     public String dockerProxyEnvironmentVariable(){
         String proxyEnvironmentVariable = null
-        if(detectConfiguration.getHubProxyHost()){
+        if (detectConfiguration.getHubProxyHost()){
             proxyEnvironmentVariable = "-Dhttp.proxy.host=${detectConfiguration.getHubProxyHost()}"
         }
-        if(detectConfiguration.getHubProxyPort()){
+        if (detectConfiguration.getHubProxyPort()){
             proxyEnvironmentVariable = "${proxyEnvironmentVariable} -Dhttp.proxy.port=${detectConfiguration.getHubProxyPort()}"
         }
-        if(detectConfiguration.getHubProxyUsername()){
+        if (detectConfiguration.getHubProxyUsername()){
             proxyEnvironmentVariable = "${proxyEnvironmentVariable} -Dhttp.proxy.username=${detectConfiguration.getHubProxyUsername()}"
         }
-        if(detectConfiguration.getHubProxyPassword()){
+        if (detectConfiguration.getHubProxyPassword()){
             proxyEnvironmentVariable = "${proxyEnvironmentVariable} -Dhttp.proxy.password=${detectConfiguration.getHubProxyPassword()}"
         }
         proxyEnvironmentVariable

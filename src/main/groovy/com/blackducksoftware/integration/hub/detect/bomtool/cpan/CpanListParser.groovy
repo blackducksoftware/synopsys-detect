@@ -41,7 +41,7 @@ class CpanListParser {
                 continue
             }
 
-            if(line.count('\t') != 1 || line.trim().contains(' ')) {
+            if (line.count('\t') != 1 || line.trim().contains(' ')) {
                 continue
             }
 
