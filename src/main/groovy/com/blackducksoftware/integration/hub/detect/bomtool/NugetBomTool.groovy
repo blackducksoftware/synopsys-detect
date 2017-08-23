@@ -69,7 +69,7 @@ class NugetBomTool extends BomTool {
     List<DetectCodeLocation> extractDetectCodeLocations() {
         def outputDirectory = new File(detectConfiguration.outputDirectory, 'nuget')
         def sourceDirectory = new File(sourcePath)
-        String inspectorExePath = getInspectorExePath(sourceDirectory, outputDirectory, nugetExecutable)
+        String inspectorExePath = installInspector(sourceDirectory, outputDirectory, nugetExecutable)
 
         if (!inspectorExePath) {
             return null
@@ -104,59 +104,42 @@ class NugetBomTool extends BomTool {
         codeLocations
     }
 
-    private String getInspectorExePath(File sourceDirectory, File outputDirectory, File nugetExecutable) {
-        File inspectorVersionDirectory = new File(outputDirectory, "${detectConfiguration.getNugetInspectorPackageName()}.${detectConfiguration.getNugetInspectorPackageVersion()}")
-        File toolsDirectory = new File(inspectorVersionDirectory, 'tools')
-        File inspectorExe = new File(toolsDirectory, "${detectConfiguration.getNugetInspectorPackageName()}.exe")
+    private String installInspector(File sourceDirectory, File outputDirectory, File nugetExecutable) {
+        final File inspectorVersionDirectory = new File(outputDirectory, "${detectConfiguration.getNugetInspectorPackageName()}.${detectConfiguration.getNugetInspectorPackageVersion()}")
+        final File toolsDirectory = new File(inspectorVersionDirectory, 'tools')
+        final File inspectorExe = new File(toolsDirectory, "${detectConfiguration.getNugetInspectorPackageName()}.exe")
+
+        final def nugetOptions = [
+            'install',
+            detectConfiguration.getNugetInspectorPackageName(),
+            '-OutputDirectory',
+            outputDirectory.getCanonicalPath()
+        ]
 
         // Install from nupkg file if one is provided
         if(detectConfiguration.getNugetInspectorAirGapPath()?.trim()) {
             logger.info('Running air gapped with ${detectConfiguration.getNugetInspectorAirGapPath()}')
-            File nupkgFile = new File(detectConfiguration.getNugetInspectorAirGapPath())
-            installNugetFromNupkg(nupkgFile, toolsDirectory, nugetExecutable)
+            final File nupkgFile = new File(detectConfiguration.getNugetInspectorAirGapPath())
+            nugetOptions.addAll([
+                '-Source',
+                nupkgFile.getCanonicalPath()
+            ])
+        } else if (!inspectorExe.exists()) {
+            logger.info('Running online. Pulling from nuget')
+            nugetOptions.addAll([
+                '-Version',
+                detectConfiguration.getNugetInspectorPackageVersion()
+            ])
         }
 
-        //if we can't find the inspector where we expect to, attempt to install it from nuget.org
-        if (!inspectorExe.exists()) {
-            installInspectorFromNugetDotOrg(sourceDirectory, outputDirectory, nugetExecutable)
-        }
-
-        if (!inspectorExe.exists()) {
+        if (inspectorExe.exists()) {
+            Executable installInspectorExecutable = new Executable(detectConfiguration.sourceDirectory, nugetExecutable, nugetOptions)
+            executableRunner.execute(installInspectorExecutable)
+        } else {
             logger.error("Could not find the ${detectConfiguration.getNugetInspectorPackageName()} version:${detectConfiguration.getNugetInspectorPackageVersion()} even after an install attempt.")
             return null
         }
 
-        return inspectorExe.absolutePath
-    }
-
-    private ExecutableOutput installNugetFromNupkg(File nupkgFile, File outputDirectory) {
-        def options = [
-            'install',
-            detectConfiguration.getNugetInspectorPackageName(),
-            '-Source',
-            nupkgFile.getCanonicalPath(),
-            '-OutputDirectory',
-            outputDirectory.getCanonicalPath()
-        ]
-
-        nugetInstall(options)
-    }
-
-    private ExecutableOutput installInspectorFromNugetDotOrg(File outputDirectory) {
-        def options =  [
-            'install',
-            detectConfiguration.getNugetInspectorPackageName(),
-            '-Version',
-            detectConfiguration.getNugetInspectorPackageVersion(),
-            '-OutputDirectory',
-            outputDirectory.getCanonicalPath()
-        ]
-
-        nugetInstall(options)
-    }
-
-    private ExecutableOutput nugetInstall(List<String> options) {
-        Executable installInspectorExecutable = new Executable(detectConfiguration.sourceDirectory, nugetExecutable, options)
-        executableRunner.execute(installInspectorExecutable)
+        inspectorExe.getCanonicalPath()
     }
 }
