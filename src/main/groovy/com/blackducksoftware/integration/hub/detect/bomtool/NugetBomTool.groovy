@@ -66,13 +66,14 @@ class NugetBomTool extends BomTool {
         nugetExecutable && (containsSolutionFile || containsProjectFile)
     }
 
+    @Override
     List<DetectCodeLocation> extractDetectCodeLocations() {
         def outputDirectory = new File(detectConfiguration.outputDirectory, 'nuget')
         def sourceDirectory = new File(sourcePath)
         String inspectorExePath = installInspector(sourceDirectory, outputDirectory, nugetExecutable)
 
         if (!inspectorExePath) {
-            return null
+            return []
         }
 
         def options =  [
@@ -101,6 +102,7 @@ class NugetBomTool extends BomTool {
             logger.warn('Unable to extract any dependencies from nuget')
             return []
         }
+
         codeLocations
     }
 
@@ -118,14 +120,14 @@ class NugetBomTool extends BomTool {
 
         // Install from nupkg file if one is provided
         if(detectConfiguration.getNugetInspectorAirGapPath()?.trim()) {
-            logger.info('Running air gapped with ${detectConfiguration.getNugetInspectorAirGapPath()}')
+            logger.debug('Running air gapped with ${detectConfiguration.getNugetInspectorAirGapPath()}')
             final File nupkgFile = new File(detectConfiguration.getNugetInspectorAirGapPath())
             nugetOptions.addAll([
                 '-Source',
                 nupkgFile.getCanonicalPath()
             ])
         } else if (!inspectorExe.exists()) {
-            logger.info('Running online. Pulling from nuget')
+            logger.debug('Running online. Pulling from nuget')
             nugetOptions.addAll([
                 '-Version',
                 detectConfiguration.getNugetInspectorPackageVersion()
@@ -136,7 +138,7 @@ class NugetBomTool extends BomTool {
             Executable installInspectorExecutable = new Executable(detectConfiguration.sourceDirectory, nugetExecutable, nugetOptions)
             executableRunner.execute(installInspectorExecutable)
         } else {
-            logger.error("Could not find the ${detectConfiguration.getNugetInspectorPackageName()} version:${detectConfiguration.getNugetInspectorPackageVersion()} even after an install attempt.")
+            logger.warn("Could not find the ${detectConfiguration.getNugetInspectorPackageName()} version:${detectConfiguration.getNugetInspectorPackageVersion()} even after an install attempt.")
             return null
         }
 
