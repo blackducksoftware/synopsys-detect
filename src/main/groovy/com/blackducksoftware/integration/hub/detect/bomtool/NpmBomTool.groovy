@@ -46,6 +46,9 @@ class NpmBomTool extends BomTool {
     @Autowired
     NpmCliDependencyFinder cliDependencyFinder
 
+    @Autowired
+    YarnBomTool yarnBomTool
+
     @Override
     public BomToolType getBomToolType() {
         BomToolType.NPM
@@ -53,6 +56,11 @@ class NpmBomTool extends BomTool {
 
     @Override
     public boolean isBomToolApplicable() {
+        if (yarnBomTool.isBomToolApplicable()) {
+            logger.debug("Not running npm bomtool because Yarn is applicable")
+            return false
+        }
+
         boolean containsNodeModules = detectFileManager.containsAllFiles(sourcePath, NODE_MODULES)
         boolean containsPackageJson = detectFileManager.containsAllFiles(sourcePath, PACKAGE_JSON)
 
@@ -65,7 +73,12 @@ class NpmBomTool extends BomTool {
             }
         }
 
-        containsNodeModules && npmExePath
+        boolean isApplicable = containsNodeModules && npmExePath
+        if (isApplicable) {
+            logger.debug("Npm version ${executableRunner.runExe(npmExePath, '-version').standardOutput}")
+        }
+
+        isApplicable
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
@@ -73,16 +86,18 @@ class NpmBomTool extends BomTool {
         File npmLsErrorFile = detectFileManager.createFile(BomToolType.NPM, NpmBomTool.ERROR_FILE)
         executableRunner.runExeToFile(npmExePath, npmLsOutputFile, npmLsErrorFile, 'ls', '-json')
 
-        if (npmLsErrorFile.length() == 0) {
-            if (logger.debugEnabled) {
-                def npmVersion = executableRunner.runExe(npmExePath, '-version')
+        if (npmLsOutputFile.length() > 0) {
+            if (npmLsErrorFile.length() > 0) {
+                logger.debug("Error when running npm ls -json command\n${npmLsErrorFile.text}")
             }
             def dependencyNode = cliDependencyFinder.generateDependencyNode(npmLsOutputFile)
             def detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, dependencyNode)
 
             return [detectCodeLocation]
-        } else {
+        } else if (npmLsErrorFile.length() > 0) {
             logger.error("Error when running npm ls -json command\n${npmLsErrorFile.text}")
+        } else {
+            logger.warn("Nothing returned from npm ls -json command");
         }
 
         []

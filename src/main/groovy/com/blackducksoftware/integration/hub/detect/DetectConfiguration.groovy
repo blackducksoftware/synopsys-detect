@@ -422,6 +422,9 @@ class DetectConfiguration {
     public String getRiskreportPdfOutputDirectory() {
         return detectProperties.riskreportPdfOutputDirectory
     }
+    public Boolean getNoticeReport() {
+        return detectProperties.noticeReport
+    }
     public String getGradleInspectorAirGapPath() {
         return detectProperties.gradleInspectorAirGapPath?.trim()
     }
