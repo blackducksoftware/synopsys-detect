@@ -110,7 +110,7 @@ class HubManager {
                     projectVersionView = scanProject
                 }
             }
-            if (detectConfiguration.getPolicyCheck() || detectConfiguration.getRiskreportPdf() || detectConfiguration.getNoticesReport()) {
+            if (detectConfiguration.getPolicyCheck() || detectConfiguration.getRiskreportPdf() || detectConfiguration.getNoticeReport()) {
                 waitForBomUpdate(hubServicesFactory.createProjectDataService(slf4jIntLogger), hubServicesFactory.createCodeLocationRequestService(slf4jIntLogger), hubServicesFactory.createMetaService(slf4jIntLogger),
                         hubServicesFactory.createScanSummaryRequestService(), hubServicesFactory.createScanStatusDataService(slf4jIntLogger, detectConfiguration.getPolicyCheckTimeout()), projectVersionView)
             }
