@@ -117,7 +117,7 @@ void fetchFile(File outputFile, String url) {
     if (outputFile.exists()) {
         return
     }
-    if(!outputFile.getParentFile().exists()) {
+    if (!outputFile.getParentFile().exists()) {
         outputFile.getParentFile().mkdirs()
     }
     new URL(url).withInputStream{ i -> outputFile.withOutputStream{ it << i }}

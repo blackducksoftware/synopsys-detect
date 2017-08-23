@@ -135,14 +135,14 @@ class NugetBomTool extends BomTool {
             ])
         }
 
-        if(!inspectorExe.exists()) {
+        if (!inspectorExe.exists()) {
             Executable installInspectorExecutable = new Executable(detectConfiguration.sourceDirectory, nugetExecutablePath, nugetOptions)
             executableRunner.execute(installInspectorExecutable)
         } else {
             logger.info("Existing nuget inspector found at ${inspectorExe.getCanonicalPath()}")
         }
 
-        if(!inspectorExe.exists()) {
+        if (!inspectorExe.exists()) {
             logger.warn("Could not find the ${detectConfiguration.getNugetInspectorPackageName()} version:${detectConfiguration.getNugetInspectorPackageVersion()} even after an install attempt.")
             return null
         }
