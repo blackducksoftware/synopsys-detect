@@ -82,10 +82,13 @@ class NugetBomTool extends BomTool {
             "--ignore_failure=${detectConfiguration.getNugetInspectorIgnoreFailure()}"
         ]
         if (detectConfiguration.getNugetInspectorExcludedModules()) {
-            options += "--excluded_modules=${detectConfiguration.getNugetInspectorExcludedModules()}"
+            options.add("--excluded_modules=${detectConfiguration.getNugetInspectorExcludedModules()}")
+        }
+        if (detectConfiguration.getNugetPackagesRepoUrl()) {
+            options.add("--packages_repo_url=${detectConfiguration.getNugetPackagesRepoUrl()}")
         }
         if (logger.traceEnabled) {
-            options += "-v"
+            options.add('-v')
         }
 
         def hubNugetInspectorExecutable = new Executable(sourceDirectory, inspectorExePath, options)
