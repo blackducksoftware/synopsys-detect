@@ -366,5 +366,9 @@ class DetectProperties {
     @ValueDescription(description="The path to the nuget inspector nupkg", group=DetectProperties.GROUP_NUGET)
     @Value('${detect.nuget.inspector.air.gap.path}')
     String nugetInspectorAirGapPath
+
+    @ValueDescription(description="The source for nuget packages", defaultValue='https://www.nuget.org/api/v2/', group=DetectProperties.GROUP_NUGET)
+    @Value('${detect.nuget.packages.repo.url}')
+    String nugetPackagesRepoUrl
 }
 

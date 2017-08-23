@@ -423,9 +423,12 @@ class DetectConfiguration {
         return detectProperties.riskreportPdfOutputDirectory
     }
     public String getGradleInspectorAirGapPath() {
-        return detectProperties.gradleInspectorAirGapPath
+        return detectProperties.gradleInspectorAirGapPath?.trim()
     }
     public String getNugetInspectorAirGapPath() {
-        return detectProperties.nugetInspectorAirGapPath
+        return detectProperties.nugetInspectorAirGapPath?.trim()
+    }
+    public String getNugetPackagesRepoUrl() {
+        return detectProperties.nugetPackagesRepoUrl?.trim()
     }
 }

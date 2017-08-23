@@ -106,7 +106,7 @@ class NugetBomTool extends BomTool {
         codeLocations
     }
 
-    private String installInspector(File sourceDirectory, File outputDirectory, File nugetExecutable) {
+    private String installInspector(File sourceDirectory, File outputDirectory, String nugetExecutablePath) {
         final File inspectorVersionDirectory = new File(outputDirectory, "${detectConfiguration.getNugetInspectorPackageName()}.${detectConfiguration.getNugetInspectorPackageVersion()}")
         final File toolsDirectory = new File(inspectorVersionDirectory, 'tools')
         final File inspectorExe = new File(toolsDirectory, "${detectConfiguration.getNugetInspectorPackageName()}.exe")
@@ -129,12 +129,14 @@ class NugetBomTool extends BomTool {
             logger.debug('Running online. Resolving through nuget')
             nugetOptions.addAll([
                 '-Version',
-                detectConfiguration.getNugetInspectorPackageVersion()
+                detectConfiguration.getNugetInspectorPackageVersion(),
+                '-Source',
+                detectConfiguration.getNugetPackagesRepoUrl()
             ])
         }
 
         if(!inspectorExe.exists()) {
-            Executable installInspectorExecutable = new Executable(detectConfiguration.sourceDirectory, nugetExecutable, nugetOptions)
+            Executable installInspectorExecutable = new Executable(detectConfiguration.sourceDirectory, nugetExecutablePath, nugetOptions)
             executableRunner.execute(installInspectorExecutable)
         } else {
             logger.info("Existing nuget inspector found at ${inspectorExe.getCanonicalPath()}")
