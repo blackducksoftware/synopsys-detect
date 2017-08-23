@@ -12,6 +12,7 @@ import com.blackducksoftware.integration.hub.api.project.ProjectRequestService
 import com.blackducksoftware.integration.hub.api.project.version.ProjectVersionRequestService
 import com.blackducksoftware.integration.hub.api.scan.ScanSummaryRequestService
 import com.blackducksoftware.integration.hub.builder.HubServerConfigBuilder
+import com.blackducksoftware.integration.hub.dataservice.cli.CLIDataService
 import com.blackducksoftware.integration.hub.dataservice.phonehome.PhoneHomeDataService
 import com.blackducksoftware.integration.hub.dataservice.policystatus.PolicyStatusDataService
 import com.blackducksoftware.integration.hub.dataservice.project.ProjectDataService
@@ -85,6 +86,10 @@ class HubServiceWrapper {
 
     RiskReportDataService createRiskReportDataService() {
         hubServicesFactory.createRiskReportDataService(slf4jIntLogger, 30000)
+    }
+
+    CLIDataService createCliDataService() {
+        hubServicesFactory.createCLIDataService(slf4jIntLogger, 120000L)
     }
 
     private HubServicesFactory createHubServicesFactory(Slf4jIntLogger slf4jIntLogger, HubServerConfig hubServerConfig) {

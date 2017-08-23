@@ -367,8 +367,8 @@ class DetectConfiguration {
     public List<String> getHubSignatureScannerPathsToExclude() {
         return excludedScanPaths
     }
-    public String getHubSignatureScannerLocalPath() {
-        return detectProperties.hubSignatureScannerLocalPath
+    public String getHubSignatureScannerOfflineLocalPath() {
+        return detectProperties.hubSignatureScannerOfflineLocalPath
     }
     public boolean getPackagistIncludeDevDependencies() {
         return BooleanUtils.toBoolean(detectProperties.packagistIncludeDevDependencies)
@@ -412,13 +412,13 @@ class DetectConfiguration {
     public String getCondaEnvironmentName() {
         return detectProperties.condaEnvironmentName?.trim()
     }
-    public Boolean getRiskreportPdf() {
-        return detectProperties.riskreportPdf
+    public Boolean getRiskReportPdf() {
+        return detectProperties.riskReportPdf
     }
-    public String getRiskreportPdfOutputDirectory() {
-        return detectProperties.riskreportPdfOutputDirectory
+    public String getRiskReportPdfOutputDirectory() {
+        return detectProperties.riskReportPdfOutputDirectory
     }
-    public Boolean getNoticeReport() {
-        return detectProperties.noticeReport
+    public Boolean getNoticesReport() {
+        return detectProperties.noticesReport
     }
 }

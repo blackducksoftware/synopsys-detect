@@ -33,6 +33,7 @@ import com.blackducksoftware.integration.hub.api.item.MetaService
 import com.blackducksoftware.integration.hub.api.project.ProjectRequestService
 import com.blackducksoftware.integration.hub.api.project.version.ProjectVersionRequestService
 import com.blackducksoftware.integration.hub.api.scan.ScanSummaryRequestService
+import com.blackducksoftware.integration.hub.dataservice.cli.CLIDataService
 import com.blackducksoftware.integration.hub.dataservice.phonehome.PhoneHomeDataService
 import com.blackducksoftware.integration.hub.dataservice.policystatus.PolicyStatusDataService
 import com.blackducksoftware.integration.hub.dataservice.policystatus.PolicyStatusDescription
@@ -70,29 +71,35 @@ class HubManager {
     @Autowired
     HubServiceWrapper hubServiceWrapper
 
-    public int performPostActions(DetectProject detectProject, List<File> createdBdioFiles) {
+    public ProjectVersionView updateHubProjectVersion(DetectProject detectProject, List<File> createdBdioFiles) {
+        ProjectRequestService projectRequestService = hubServiceWrapper.createProjectRequestService()
+        ProjectVersionRequestService projectVersionRequestService = hubServiceWrapper.createProjectVersionRequestService()
+        ProjectVersionView projectVersionView = ensureProjectVersionExists(detectProject, projectRequestService, projectVersionRequestService)
+
+        if (createdBdioFiles) {
+            HubServerConfig hubServerConfig = hubServiceWrapper.hubServerConfig
+            BomImportRequestService bomImportRequestService = hubServiceWrapper.createBomImportRequestService()
+            PhoneHomeDataService phoneHomeDataService = hubServiceWrapper.createPhoneHomeDataService()
+            bdioUploader.uploadBdioFiles(hubServerConfig, bomImportRequestService, phoneHomeDataService, createdBdioFiles)
+        } else {
+            logger.debug('Did not create any bdio files.')
+        }
+
+        if (!detectConfiguration.getHubSignatureScannerDisabled()) {
+            HubServerConfig hubServerConfig = hubServiceWrapper.hubServerConfig
+            CLIDataService cliDataService = hubServiceWrapper.createCliDataService()
+            ProjectVersionView scanProject = hubSignatureScanner.scanPaths(hubServerConfig, cliDataService, detectProject)
+            if (!projectVersionView) {
+                projectVersionView = scanProject
+            }
+        }
+    }
+
+    public int performPostHubActions(DetectProject detectProject, ProjectVersionView projectVersionView) {
         def postActionResult = 0
         try {
-            ProjectRequestService projectRequestService = hubServiceWrapper.createProjectRequestService()
-            ProjectVersionRequestService projectVersionRequestService = hubServiceWrapper.createProjectVersionRequestService()
-            ProjectVersionView projectVersionView = ensureProjectVersionExists(detectProject, projectRequestService, projectVersionRequestService)
 
-            if (createdBdioFiles) {
-                HubServerConfig hubServerConfig = hubServiceWrapper.hubServerConfig
-                BomImportRequestService bomImportRequestService = hubServiceWrapper.createBomImportRequestService()
-                PhoneHomeDataService phoneHomeDataService = hubServiceWrapper.createPhoneHomeDataService()
-                bdioUploader.uploadBdioFiles(hubServerConfig, bomImportRequestService, phoneHomeDataService, createdBdioFiles)
-            } else {
-                logger.debug('Did not create any bdio files.')
-            }
-            //            if (!detectConfiguration.getHubSignatureScannerDisabled()) {
-            //                ProjectVersionView scanProject = hubSignatureScanner.scanPaths(hubServerConfig, hubServicesFactory.createCLIDataService(slf4jIntLogger, 120000L), detectProject)
-            //                if (!projectVersionView) {
-            //                    projectVersionView = scanProject
-            //                }
-            //            }
-
-            if (detectConfiguration.getPolicyCheck() || detectConfiguration.getRiskreportPdf() || detectConfiguration.getNoticesReport()) {
+            if (detectConfiguration.getPolicyCheck() || detectConfiguration.getRiskReportPdf() || detectConfiguration.getNoticesReport()) {
                 ProjectDataService projectDataService = hubServiceWrapper.createProjectDataService()
                 CodeLocationRequestService codeLocationRequestService = hubServiceWrapper.createCodeLocationRequestService()
                 MetaService metaService = hubServiceWrapper.createMetaService()
@@ -111,15 +118,15 @@ class HubManager {
                 }
             }
 
-            if (detectConfiguration.getRiskreportPdf()) {
+            if (detectConfiguration.getRiskReportPdf()) {
                 RiskReportDataService riskReportDataService = hubServiceWrapper.createRiskReportDataService()
                 logger.info("Creating risk report pdf")
                 File pdfFile = riskReportDataService.createReportPdfFile(new File("."), detectProject.projectName, detectProject.projectVersionName)
                 logger.info("Created risk report pdf : ${pdfFile.getCanonicalPath()}")
             }
 
-            if (detectConfiguration.getNoticeReport()) {
-                RiskReportDataService riskReportDataService = hubServicesFactory.createRiskReportDataService(slf4jIntLogger, 30000)
+            if (detectConfiguration.getNoticesReport()) {
+                RiskReportDataService riskReportDataService = hubServiceWrapper.createRiskReportDataService()
                 logger.info("Creating notice report")
                 File noticeFile = riskReportDataService.createNoticesReportFile(new File("."), detectProject.projectName, detectProject.projectVersionName);
                 if (noticeFile != null){

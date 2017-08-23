@@ -308,8 +308,8 @@ class DetectProperties {
     Boolean hubSignatureScannerDisabled
 
     @ValueDescription(description="To use a local signature scanner, set its location with this property. If this is used, a download of the signature scanner from the Hub will not be attempted.", group=DetectProperties.GROUP_SIGNATURE_SCANNER)
-    @Value('${detect.hub.signature.scanner.local.path}')
-    String hubSignatureScannerLocalPath
+    @Value('${detect.hub.signature.scanner.offline.local.path}')
+    String hubSignatureScannerOfflineLocalPath
 
     @ValueDescription(description="Set this value to false if you would like to exclude your dev requires dependencies when ran", defaultValue='true', group=DetectProperties.GROUP_PACKAGIST)
     @Value('${detect.packagist.include.dev.dependencies}')
@@ -353,15 +353,15 @@ class DetectProperties {
 
     @ValueDescription (description="When set to true, a Black Duck risk report in PDF form will be created", defaultValue='false', group=DetectProperties.GROUP_PROJECT_INFO)
     @Value('${detect.risk.report.pdf}')
-    Boolean riskreportPdf
+    Boolean riskReportPdf
 
     @ValueDescription (description="The output directory for risk report in PDF. Default is the source directory", defaultValue='.', group=DetectProperties.GROUP_PROJECT_INFO)
     @Value('${detect.risk.report.pdf.path}')
-    String riskreportPdfOutputDirectory
+    String riskReportPdfOutputDirectory
 
-    @ValueDescription (description="When set to true, a Black Duck notice report in text form will be created in your source directory", defaultValue='false', group=DetectProperties.GROUP_PROJECT_INFO)
-    @Value('${detect.notice.report}')
-    Boolean noticeReport
+    @ValueDescription (description="When set to true, a Black Duck notices report in text form will be created in your source directory", defaultValue='false', group=DetectProperties.GROUP_PROJECT_INFO)
+    @Value('${detect.notices.report}')
+    Boolean noticesReport
 
     @ValueDescription(description="The path of the conda executable", group=DetectProperties.GROUP_CONDA)
     @Value('${detect.conda.path}')

@@ -41,8 +41,10 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.Extern
 import com.blackducksoftware.integration.hub.detect.help.HelpPrinter
 import com.blackducksoftware.integration.hub.detect.help.ValueDescriptionAnnotationFinder
 import com.blackducksoftware.integration.hub.detect.hub.HubManager
+import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager
+import com.blackducksoftware.integration.hub.model.view.ProjectVersionView
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil
 import com.blackducksoftware.integration.util.ResourceUtil
 import com.google.gson.Gson
@@ -80,6 +82,9 @@ class Application {
     @Autowired
     HubManager hubManager
 
+    @Autowired
+    HubSignatureScanner hubSignatureScanner
+
     static void main(final String[] args) {
         new SpringApplicationBuilder(Application.class).logStartupInfo(false).run(args)
     }
@@ -98,8 +103,13 @@ class Application {
             }
             DetectProject detectProject = detectProjectManager.createDetectProject()
             List<File> createdBdioFiles = detectProjectManager.createBdioFiles(detectProject)
-            int postResult = hubManager.performPostActions(detectProject, createdBdioFiles)
-            System.exit(postResult)
+            if (!detectConfiguration.hubOfflineMode) {
+                ProjectVersionView projectVersionView = hubManager.updateHubProjectVersion(detectProject, createdBdioFiles)
+                int postResult = hubManager.performPostHubActions(detectProject, projectVersionView)
+                System.exit(postResult)
+            } else {
+                hubSignatureScanner.scanPathsOffline(detectProject)
+            }
         }
     }
 
