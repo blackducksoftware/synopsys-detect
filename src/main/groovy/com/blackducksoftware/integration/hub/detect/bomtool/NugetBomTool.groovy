@@ -118,26 +118,29 @@ class NugetBomTool extends BomTool {
             outputDirectory.getCanonicalPath()
         ]
 
-        // Install from nupkg file if one is provided
-        if(detectConfiguration.getNugetInspectorAirGapPath()?.trim()) {
-            logger.debug('Running air gapped with ${detectConfiguration.getNugetInspectorAirGapPath()}')
+        if (detectConfiguration.getNugetInspectorAirGapPath()?.trim()) {
+            logger.debug("Running air gapped with ${detectConfiguration.getNugetInspectorAirGapPath()}")
             final File nupkgFile = new File(detectConfiguration.getNugetInspectorAirGapPath())
             nugetOptions.addAll([
                 '-Source',
                 nupkgFile.getCanonicalPath()
             ])
-        } else if (!inspectorExe.exists()) {
-            logger.debug('Running online. Pulling from nuget')
+        } else {
+            logger.debug('Running online. Resolving through nuget')
             nugetOptions.addAll([
                 '-Version',
                 detectConfiguration.getNugetInspectorPackageVersion()
             ])
         }
 
-        if (inspectorExe.exists()) {
+        if(!inspectorExe.exists()) {
             Executable installInspectorExecutable = new Executable(detectConfiguration.sourceDirectory, nugetExecutable, nugetOptions)
             executableRunner.execute(installInspectorExecutable)
         } else {
+            logger.info("Existing nuget inspector found at ${inspectorExe.getCanonicalPath()}")
+        }
+
+        if(!inspectorExe.exists()) {
             logger.warn("Could not find the ${detectConfiguration.getNugetInspectorPackageName()} version:${detectConfiguration.getNugetInspectorPackageVersion()} even after an install attempt.")
             return null
         }
