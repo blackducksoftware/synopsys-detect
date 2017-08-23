@@ -22,8 +22,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.hub
 
-import java.nio.charset.StandardCharsets
-
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -40,7 +38,6 @@ import com.blackducksoftware.integration.hub.model.view.ProjectVersionView
 import com.blackducksoftware.integration.hub.phonehome.IntegrationInfo
 import com.blackducksoftware.integration.hub.request.builder.ProjectRequestBuilder
 import com.blackducksoftware.integration.hub.scan.HubScanConfig
-import com.blackducksoftware.integration.util.ResourceUtil
 
 @Component
 class HubSignatureScanner {
@@ -125,7 +122,7 @@ class HubSignatureScanner {
 
             HubScanConfig hubScanConfig = hubScanConfigBuilder.build()
 
-            String hubDetectVersion = detectConfiguration.buildInfo.detectVersion
+            String hubDetectVersion = detectConfiguration.getBuildInfo().getDetectVersion()
             IntegrationInfo integrationInfo = new IntegrationInfo('Hub-Detect', hubDetectVersion, hubDetectVersion)
             projectVersionView = cliDataService.installAndRunControlledScan(hubServerConfig, hubScanConfig, projectRequest, false, integrationInfo)
             logger.info("${canonicalPath} was successfully scanned by the BlackDuck CLI.")

@@ -61,7 +61,7 @@ class DetectConfiguration {
     @Autowired
     Gson gson
 
-    public BuildInfo buildInfo
+    BuildInfo buildInfo
 
     File sourceDirectory
     File outputDirectory
@@ -152,7 +152,7 @@ class DetectConfiguration {
     public void logConfiguration() {
         List<String> configurationPieces = []
         configurationPieces.add('')
-        configurationPieces.add("Detect Version: ${buildInfo.detectVersion}")
+        configurationPieces.add("Detect Version: ${buildInfo.getDetectVersion()}")
         configurationPieces.add('Current property values:')
         configurationPieces.add('-'.multiply(60))
         def propertyFields = DetectProperties.class.getDeclaredFields().findAll {
@@ -422,10 +422,10 @@ class DetectConfiguration {
     public String getRiskreportPdfOutputDirectory() {
         return detectProperties.riskreportPdfOutputDirectory
     }
-    public String getGradleInspectorAirgapPath() {
-        return detectProperties.gradleInspectorAirgapPath
+    public String getGradleInspectorAirGapPath() {
+        return detectProperties.gradleInspectorAirGapPath
     }
-    public String getNugetInspectorAirgapPath() {
-        return detectProperties.nugetInspectorAirgapPath
+    public String getNugetInspectorAirGapPath() {
+        return detectProperties.nugetInspectorAirGapPath
     }
 }

@@ -59,7 +59,7 @@ class BdioUploader {
             }
         }
 
-        String hubDetectVersion = detectConfiguration.buildInfo.detectVersion
+        String hubDetectVersion = detectConfiguration.getBuildInfo().getDetectVersion()
         IntegrationInfo integrationInfo = new IntegrationInfo('Hub-Detect', hubDetectVersion, hubDetectVersion)
         phoneHomeDataService.phoneHome(hubServerConfig, integrationInfo)
     }

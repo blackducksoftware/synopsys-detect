@@ -110,8 +110,9 @@ class NugetBomTool extends BomTool {
         File inspectorExe = new File(toolsDirectory, "${detectConfiguration.getNugetInspectorPackageName()}.exe")
 
         // Install from nupkg file if one is provided
-        if(detectConfiguration.getNugetInspectorAirgapPath()?.trim()) {
-            File nupkgFile = new File(detectConfiguration.getNugetInspectorAirgapPath())
+        if(detectConfiguration.getNugetInspectorAirGapPath()?.trim()) {
+            logger.info('Running air gapped with ${detectConfiguration.getNugetInspectorAirGapPath()}')
+            File nupkgFile = new File(detectConfiguration.getNugetInspectorAirGapPath())
             installNugetFromNupkg(nupkgFile, toolsDirectory, nugetExecutable)
         }
 

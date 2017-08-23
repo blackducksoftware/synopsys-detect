@@ -360,11 +360,11 @@ class DetectProperties {
     String condaEnvironmentName
 
     @ValueDescription(description="The path to the directory containing the air gap dependencies for the gradle inspector", group=DetectProperties.GROUP_GRADLE)
-    @Value('${detect.gradle.inspector.airgap.path}')
-    String gradleInspectorAirgapPath
+    @Value('${detect.gradle.inspector.air.gap.path}')
+    String gradleInspectorAirGapPath
 
     @ValueDescription(description="The path to the nuget inspector nupkg", group=DetectProperties.GROUP_NUGET)
-    @Value('${detect.nuget.inspector.airgap.path}')
-    String nugetInspectorAirgapPath
+    @Value('${detect.nuget.inspector.air.gap.path}')
+    String nugetInspectorAirGapPath
 }
 
