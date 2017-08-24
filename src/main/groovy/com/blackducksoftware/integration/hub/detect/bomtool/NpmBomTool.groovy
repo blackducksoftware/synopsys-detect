@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmCliDependencyFinder
+import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
@@ -48,6 +49,9 @@ class NpmBomTool extends BomTool {
 
     @Autowired
     YarnBomTool yarnBomTool
+
+    @Autowired
+    HubSignatureScanner hubSignatureScanner
 
     @Override
     public BomToolType getBomToolType() {
@@ -93,6 +97,7 @@ class NpmBomTool extends BomTool {
             def dependencyNode = cliDependencyFinder.generateDependencyNode(npmLsOutputFile)
             def detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, dependencyNode)
 
+            hubSignatureScanner.registerPathToScan(sourceDirectory, NODE_MODULES)
             return [detectCodeLocation]
         } else if (npmLsErrorFile.length() > 0) {
             logger.error("Error when running npm ls -json command\n${npmLsErrorFile.text}")
