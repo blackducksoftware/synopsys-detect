@@ -20,39 +20,54 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.nuget
+package com.blackducksoftware.integration.hub.detect.bomtool.nuget.model
 
 import org.apache.commons.lang3.builder.RecursiveToStringStyle
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder
 
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
 import com.google.gson.annotations.SerializedName
 
-class NugetNode implements NameVersionNode {
-    @SerializedName('Artifact')
-    String artifact
+class NugetPackageId {
+    @SerializedName('Name')
+    String name
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((version == null) ? 0 : version.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof NugetPackageId)) {
+            return false;
+        }
+        NugetPackageId other = (NugetPackageId) obj;
+        if (name == null) {
+            if (other.name != null) {
+                return false;
+            }
+        } else if (!name.equals(other.name)) {
+            return false;
+        }
+        if (version == null) {
+            if (other.version != null) {
+                return false;
+            }
+        } else if (!version.equals(other.version)) {
+            return false;
+        }
+        return true;
+    }
 
     @SerializedName('Version')
     String version
-
-    @SerializedName('Children')
-    List<NugetNode> children
-
-    @SerializedName('OutputPaths')
-    List<String> outputPaths
-
-    @SerializedName('SourcePath')
-    String sourcePath
-
-    @SerializedName('Type')
-    NodeType type
-
-    String getName() {
-        artifact
-    }
-    void setName(String name) {
-        artifact = name
-    }
 
     @Override
     String toString() {
