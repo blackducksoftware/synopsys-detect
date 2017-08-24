@@ -41,7 +41,7 @@ public class SbtConfigurationAggregator {
             root.version = aggregate.version
             root.children = new ArrayList<DependencyNode>()
             configurations.each {config ->
-                if (configurationToAggregate(config).equals(aggregate)){
+                if (configurationEqualsAggregate(config, aggregate)){
                     root.children += config.rootNode.children
                 }
             }
@@ -49,6 +49,17 @@ public class SbtConfigurationAggregator {
         }
 
         return nodes
+    }
+
+    boolean configurationEqualsAggregate(SbtConfigurationDependencyTree config, SbtAggregate aggregate) {
+
+        def namesMatch = config.rootNode.name == aggregate.name
+        def versionsMatch = config.rootNode == aggregate.version
+
+        def id = config.rootNode.externalId as MavenExternalId
+        def groupsMatch = id.group == aggregate.org
+
+        return namesMatch && groupsMatch && versionsMatch
     }
 
     SbtAggregate configurationToAggregate(SbtConfigurationDependencyTree config) {
@@ -65,6 +76,6 @@ public class SbtConfigurationAggregator {
                 found.add(aggregate)
             }
         }
-        return found;
+        return found
     }
 }
