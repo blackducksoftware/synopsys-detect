@@ -69,12 +69,12 @@ class CondaBomTool extends BomTool {
     public List<DetectCodeLocation> extractDetectCodeLocations() {
         List<String> condaListOptions = ['list']
         if (detectConfiguration.getCondaEnvironmentName()) {
-            condaListOptions += [
+            condaListOptions.add([
                 '-n',
                 detectConfiguration.getCondaEnvironmentName()
-            ]
+            ])
         }
-        condaListOptions += '--json'
+        condaListOptions.add('--json')
         Executable condaListExecutable = new Executable(sourceDirectory, condaExecutablePath, condaListOptions)
         ExecutableOutput condaListOutput = executableRunner.execute(condaListExecutable)
         String listJsonText = condaListOutput.getStandardOutput()
@@ -84,7 +84,7 @@ class CondaBomTool extends BomTool {
 
         Set<DependencyNode> dependenciesSet = condaListParser.parse(listJsonText, infoJsonText)
         ExternalId externalId = new PathExternalId(Forge.ANACONDA, detectConfiguration.sourcePath)
-        def detectCodeLocation = new DetectCodeLocation(BomToolType.CONDA, detectConfiguration.sourcePath, '', '', externalId, dependenciesSet)
+        def detectCodeLocation = new DetectCodeLocation(BomToolType.CONDA, detectConfiguration.sourcePath, externalId, dependenciesSet)
 
         [detectCodeLocation]
     }

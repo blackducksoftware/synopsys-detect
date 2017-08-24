@@ -42,7 +42,7 @@ public class SbtConfigurationAggregator {
             root.children = new ArrayList<DependencyNode>()
             configurations.each {config ->
                 if (configurationToAggregate(config).equals(aggregate)){
-                    root.children += config.rootNode.children
+                    root.children.add(config.rootNode.children)
                 }
             }
             root
@@ -65,6 +65,6 @@ public class SbtConfigurationAggregator {
                 found.add(aggregate)
             }
         }
-        return found;
+        return found
     }
 }

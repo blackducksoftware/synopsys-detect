@@ -30,7 +30,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.detect.Application
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.PipInspectorTreeParser
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.PythonEnvironment
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.PythonEnvironmentHandler
@@ -101,7 +100,7 @@ class PipBomTool extends BomTool {
         // Install requirements file and add it as an option for the inspector
         if (detectConfiguration.requirementsFilePath) {
             def requirementsFile = new File(detectConfiguration.requirementsFilePath)
-            pipInspectorOptions += "--requirements=${requirementsFile.absolutePath}"
+            pipInspectorOptions.add("--requirements=${requirementsFile.absolutePath}")
         }
 
         // Install project if it can find one and pass its name to the inspector
@@ -115,7 +114,7 @@ class PipBomTool extends BomTool {
                 String[] output = executableRunner.execute(findProjectNameExecutable).standardOutput.split(System.lineSeparator())
                 projectName = output[output.length - 1].trim()
             }
-            pipInspectorOptions += "--projectname=${projectName}"
+            pipInspectorOptions.add("--projectname=${projectName}")
         }
 
         def pipInspector = new Executable(sourceDirectory, pythonPath, pipInspectorOptions)
