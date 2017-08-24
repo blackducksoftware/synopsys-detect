@@ -80,7 +80,7 @@ class SbtBomTool extends BomTool {
         List<DetectCodeLocation> codeLocations = new ArrayList<DetectCodeLocation>()
 
         project.modules.each { module ->
-            DetectCodeLocation codeLocation = new DetectCodeLocation(getBomToolType(), module.root.name, project.projectName, project.projectVersion, project.projectExternalId, module.root.children)
+            DetectCodeLocation codeLocation = new DetectCodeLocation(getBomToolType(), module.root.name, project.projectName, project.projectVersion, project.projectExternalId, [module.root] as Set)
             codeLocations.add(codeLocation)
         }
 
