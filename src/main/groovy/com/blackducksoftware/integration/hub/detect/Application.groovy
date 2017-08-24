@@ -38,9 +38,11 @@ import com.blackducksoftware.integration.hub.bdio.simple.BdioNodeFactory
 import com.blackducksoftware.integration.hub.bdio.simple.BdioPropertyHelper
 import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeTransformer
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.detect.exception.DetectException
 import com.blackducksoftware.integration.hub.detect.help.HelpPrinter
 import com.blackducksoftware.integration.hub.detect.help.ValueDescriptionAnnotationFinder
 import com.blackducksoftware.integration.hub.detect.hub.HubManager
+import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager
@@ -83,6 +85,9 @@ class Application {
     HubManager hubManager
 
     @Autowired
+    HubServiceWrapper hubServiceWrapper
+
+    @Autowired
     HubSignatureScanner hubSignatureScanner
 
     static void main(final String[] args) {
@@ -91,25 +96,31 @@ class Application {
 
     @PostConstruct
     void init() {
-        valueDescriptionAnnotationFinder.init()
-        if ('-h' in applicationArguments.getSourceArgs() || '--help' in applicationArguments.getSourceArgs()) {
-            helpPrinter.printHelpMessage(System.out)
-        } else {
-            detectConfiguration.init()
-            executableManager.init()
-            logger.info('Configuration processed completely.')
-            if (Boolean.FALSE == detectConfiguration.suppressConfigurationOutput) {
-                detectConfiguration.logConfiguration()
-            }
-            DetectProject detectProject = detectProjectManager.createDetectProject()
-            List<File> createdBdioFiles = detectProjectManager.createBdioFiles(detectProject)
-            if (!detectConfiguration.hubOfflineMode) {
-                ProjectVersionView projectVersionView = hubManager.updateHubProjectVersion(detectProject, createdBdioFiles)
-                int postResult = hubManager.performPostHubActions(detectProject, projectVersionView)
-                System.exit(postResult)
+        try {
+            valueDescriptionAnnotationFinder.init()
+            if ('-h' in applicationArguments.getSourceArgs() || '--help' in applicationArguments.getSourceArgs()) {
+                helpPrinter.printHelpMessage(System.out)
             } else {
-                hubSignatureScanner.scanPathsOffline(detectProject)
+                detectConfiguration.init()
+                executableManager.init()
+                logger.info('Configuration processed completely.')
+                if (Boolean.FALSE == detectConfiguration.suppressConfigurationOutput) {
+                    detectConfiguration.logConfiguration()
+                }
+                DetectProject detectProject = detectProjectManager.createDetectProject()
+                List<File> createdBdioFiles = detectProjectManager.createBdioFiles(detectProject)
+                if (!detectConfiguration.hubOfflineMode) {
+                    hubServiceWrapper.init()
+                    ProjectVersionView projectVersionView = hubManager.updateHubProjectVersion(detectProject, createdBdioFiles)
+                    int postResult = hubManager.performPostHubActions(detectProject, projectVersionView)
+                    System.exit(postResult)
+                } else {
+                    hubSignatureScanner.scanPathsOffline(detectProject)
+                }
             }
+        } catch (DetectException e) {
+            logger.error('An unrecoverable error occurred - most likely this is due to your environment and/or configuration. Please double check the Hub Detect documentation: https://blackducksoftware.atlassian.net/wiki/x/Y7HtAg')
+            logger.error(e.getMessage())
         }
     }
 

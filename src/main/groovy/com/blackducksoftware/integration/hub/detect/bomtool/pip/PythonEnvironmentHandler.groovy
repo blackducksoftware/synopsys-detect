@@ -62,8 +62,8 @@ class PythonEnvironmentHandler {
 
         systemEnvironment.pythonType = pythonExecutableType
         systemEnvironment.pipType = pipExecutableType
-        systemEnvironment.pythonPath = findExecutable(null, detectConfiguration.pythonPath, pythonExecutableType)
-        systemEnvironment.pipPath = findExecutable(null, detectConfiguration.pipPath, pipExecutableType)
+        systemEnvironment.pythonPath = findExecutable(detectConfiguration.pythonPath, pythonExecutableType)
+        systemEnvironment.pipPath = findExecutable(detectConfiguration.pipPath, pipExecutableType)
 
         if (SystemUtils.IS_OS_WINDOWS) {
             binFolderName = 'Scripts'
@@ -105,15 +105,11 @@ class PythonEnvironmentHandler {
         existing
     }
 
-    private String findExecutable(String path, String executablePath, ExecutableType commandType) {
+    private String findExecutable(String executablePath, ExecutableType commandType) {
         if (StringUtils.isNotBlank(executablePath)) {
             executablePath
         } else {
-            if (StringUtils.isBlank(path)) {
-                executableManager.getPathOfExecutable(commandType)
-            } else {
-                executableManager.getPathOfExecutableFromRelativePath(path, commandType)
-            }
+            executableManager.getPathOfExecutable(commandType)
         }
     }
 }

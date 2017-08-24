@@ -1,3 +1,25 @@
+/*
+ * Copyright (C) 2017 Black Duck Software, Inc.
+ * http://www.blackducksoftware.com/
+ *
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package com.blackducksoftware.integration.hub.detect.hub
 
 import org.slf4j.Logger
@@ -6,7 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.HubSupportHelper
-import com.blackducksoftware.integration.hub.builder.HubScanConfigBuilder
 import com.blackducksoftware.integration.hub.cli.SimpleScanService
 import com.blackducksoftware.integration.hub.global.HubCredentials
 import com.blackducksoftware.integration.hub.global.HubServerConfig
@@ -27,7 +48,8 @@ class OfflineScanner {
 
         def offlineCredentials = createOfflineCredentials()
 
-        def hubServerConfig = new HubServerConfig(new URL('http://www.blackducksoftware.com'), 0, offlineCredentials, null, true)
+        //        def hubServerConfig = new HubServerConfig(new URL('http://www.blackducksoftware.com'), 0, offlineCredentials, null, true)
+        def hubServerConfig = new HubServerConfig(null, 0, null, null, false)
 
         def hubSupportHelper = new HubSupportHelper()
         hubSupportHelper.setHub3_7Support()
@@ -36,29 +58,12 @@ class OfflineScanner {
         def ciEnvironmentVariables = new CIEnvironmentVariables()
         ciEnvironmentVariables.putAll(System.getenv())
 
-        def hubScanConfigBuilder = createHubScanConfigBuilder()
-        hubScanConfig.scanTargetPaths.each { hubScanConfigBuilder.addScanTargetPath(it) }
-
-        HubScanConfig hubScanConfigToUse = hubScanConfigBuilder.build()
-
-        def simpleScanService = new SimpleScanService(intLogger, gson, hubServerConfig, hubSupportHelper, ciEnvironmentVariables, hubScanConfigToUse, null, null)
+        def simpleScanService = new SimpleScanService(intLogger, gson, hubServerConfig, hubSupportHelper, ciEnvironmentVariables, hubScanConfig, null, null)
         simpleScanService.setupAndExecuteScan()
     }
 
     public HubCredentials createOfflineCredentials() {
         def credentials = new HubCredentials('', 'notblank')
         credentials
-    }
-
-    private HubScanConfigBuilder createHubScanConfigBuilder() {
-        HubScanConfigBuilder hubScanConfigBuilder = new HubScanConfigBuilder()
-        hubScanConfigBuilder.scanMemory = '4096'
-        //        hubScanConfigBuilder.toolsDir = new File('/Users/ekerwin/Documents/scanners/offline')
-        hubScanConfigBuilder.toolsDir = new File('/Users/ekerwin/blackduck/signature_scanner/tools')
-        hubScanConfigBuilder.workingDirectory = new File('/Users/ekerwin/Documents/working/offline')
-        hubScanConfigBuilder.cleanupLogsOnSuccess = false
-        hubScanConfigBuilder.dryRun = true
-
-        hubScanConfigBuilder
     }
 }
