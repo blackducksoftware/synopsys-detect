@@ -69,7 +69,7 @@ class NugetBomTool extends BomTool {
     List<DetectCodeLocation> extractDetectCodeLocations() {
         def outputDirectory = new File(detectConfiguration.outputDirectory, 'nuget')
         def sourceDirectory = new File(sourcePath)
-        String inspectorExePath = getInspectorExePath(sourceDirectory, outputDirectory, nugetExecutable)
+        String inspectorExePath = getInspectorExePath(sourceDirectory, outputDirectory, new File(nugetExecutable))
 
         if (!inspectorExePath) {
             return null
