@@ -41,6 +41,7 @@ class NugetBomTool extends BomTool {
 
     static final String SOLUTION_PATTERN = '*.sln'
     static final String PROJECT_PATTERN = '*.*proj'
+    static final String INSPECTOR_OUTPUT_PATTERN ='*_inspection.json'
 
     @Autowired
     NugetInspectorPackager nugetInspectorPackager
@@ -83,7 +84,7 @@ class NugetBomTool extends BomTool {
         ]
         if (detectConfiguration.getNugetInspectorExcludedModules()) {
             options.add("--excluded_modules=${detectConfiguration.getNugetInspectorExcludedModules()}")
-        }
+        } 
         if (detectConfiguration.getNugetPackagesRepoUrl()) {
             options.add("--packages_repo_url=${detectConfiguration.getNugetPackagesRepoUrl()}")
         }

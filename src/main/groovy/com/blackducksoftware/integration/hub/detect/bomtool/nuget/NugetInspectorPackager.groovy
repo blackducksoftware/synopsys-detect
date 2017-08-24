@@ -22,17 +22,17 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.nuget
 
-import java.nio.charset.StandardCharsets
-
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
+import com.blackducksoftware.integration.hub.detect.bomtool.nuget.model.NugetContainer
+import com.blackducksoftware.integration.hub.detect.bomtool.nuget.model.NugetContainerType
+import com.blackducksoftware.integration.hub.detect.bomtool.nuget.model.NugetInspection
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
@@ -40,6 +40,7 @@ import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeT
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
 import com.google.gson.Gson
+import com.google.gson.stream.JsonReader
 
 @Component
 class NugetInspectorPackager {
@@ -65,56 +66,55 @@ class NugetInspectorPackager {
 
 
     public List<DetectCodeLocation> createDetectCodeLocation(File dependencyNodeFile) {
-        final String dependencyNodeJson = dependencyNodeFile.getText(StandardCharsets.UTF_8.name())
-        final NugetNode nugetNode = gson.fromJson(dependencyNodeJson, NugetNode.class)
-        registerScanPaths(nugetNode)
+        final InputStream inputStream = new FileInputStream(dependencyNodeFile)
+        final InputStreamReader streamReader = new InputStreamReader(inputStream, "UTF-8")
+        final JsonReader reader = new JsonReader(streamReader)
+        final NugetInspection nugetInspection = gson.fromJson(reader, NugetInspection.class)
+        def codeLocations = new ArrayList<DetectCodeLocation>();
+        nugetInspection.containers.each {
+            registerScanPaths(it)
+            codeLocations.addAll(createDetectCodeLocationFromNugetContainer(it))
+        }
 
-        createDetectCodeLocationFromNode(nugetNode)
+        codeLocations
     }
 
-    private void registerScanPaths(NugetNode nugetNode){
-        nugetNode.outputPaths?.each {
+    private void registerScanPaths(NugetContainer nugetContainer){
+        nugetContainer.outputPaths?.each {
             hubSignatureScanner?.registerPathToScan(new File(it))
         }
-        nugetNode.children?.each { registerScanPaths(it) }
+        nugetContainer.children?.each { registerScanPaths(it) }
     }
 
 
-    private List<DetectCodeLocation> createDetectCodeLocationFromNode(NugetNode nugetNode) {
+    private List<DetectCodeLocation> createDetectCodeLocationFromNugetContainer(NugetContainer nugetContainer) {
         String projectName = ''
         String projectVersionName = ''
-        // The second part of the if statements are to support < 1.2.0 versions of the Nuget inspector
-        if (NodeType.SOLUTION == nugetNode.type || (!nugetNode.type && !nugetNode.version)) {
-            projectName = nugetNode.artifact
-            // List<DetectCodeLocation> codeLocations = new ArrayList<>()
-            // for (NugetNode node : nugetNode.children) {
-            return nugetNode.children.collect { node ->
-                DependencyNode dependencyNode = nameVersionNodeTransformer.createDependencyNode(Forge.NUGET, node)
-                String sourcePath = null
-                if (node.sourcePath) {
-                    // this field was added to the inspector after 1.1.0
-                    sourcePath = node.sourcePath
-                } else {
-                    sourcePath = node.artifact
-                }
+        if (NugetContainerType.SOLUTION == nugetContainer.type) {
+            projectName = nugetContainer.name
+            projectVersionName = nugetContainer.version
+            def codeLocations = nugetContainer.children.collect { container ->
+                def builder = new NugetDependencyNodeBuilder()
+                builder.AddPackageSets(container.packages)
+                def children = builder.CreateDependencyNodes(container.dependencies)
+                def sourcePath = container.sourcePath
+
                 if (!projectVersionName) {
-                    projectVersionName = node.version
+                    projectVersionName = container.version
                 }
-                new DetectCodeLocation(BomToolType.NUGET, sourcePath, projectName, projectVersionName, new NameVersionExternalId(Forge.NUGET, projectName, projectVersionName), dependencyNode.children)
+                new DetectCodeLocation(BomToolType.NUGET, sourcePath, projectName, projectVersionName, new NameVersionExternalId(Forge.NUGET, projectName, projectVersionName), children)
             }
-        } else if (NodeType.PROJECT == nugetNode.type || (!nugetNode.type && nugetNode.version)) {
-            DependencyNode dependencyNode = nameVersionNodeTransformer.createDependencyNode(Forge.NUGET, nugetNode)
-            projectName = nugetNode.artifact
-            projectVersionName = nugetNode.version
-            String sourcePath = ''
-            if (nugetNode.sourcePath) {
-                // this field was added after 1.1.0
-                sourcePath = nugetNode.sourcePath
-            } else {
-                sourcePath = projectName
-            }
+            return codeLocations
+        } else if (NugetContainerType.PROJECT == nugetContainer.type) {
+            projectName = nugetContainer.name
+            projectVersionName = nugetContainer.version
+            String sourcePath = nugetContainer.sourcePath
+            def builder = new NugetDependencyNodeBuilder()
+            builder.AddPackageSets(nugetContainer.packages)
+            def children = builder.CreateDependencyNodes(nugetContainer.dependencies)
+
             return [
-                new DetectCodeLocation(BomToolType.NUGET, sourcePath, projectName, projectVersionName, new NameVersionExternalId(Forge.NUGET, projectName, projectVersionName), dependencyNode.children)
+                new DetectCodeLocation(BomToolType.NUGET, sourcePath, projectName, projectVersionName, new NameVersionExternalId(Forge.NUGET, projectName, projectVersionName), children)
             ]
         }
     }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2017 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
  *
@@ -20,15 +20,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.nuget;
+package com.blackducksoftware.integration.hub.detect.bomtool.nuget.model
 
-import com.google.gson.annotations.SerializedName;
+import org.apache.commons.lang3.builder.RecursiveToStringStyle
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder
 
-public enum NodeType {
-    @SerializedName("Solution")
-    SOLUTION,
-    @SerializedName("Project")
-    PROJECT,
-    @SerializedName("Dependency")
-    DEPENDENCY;
+import com.google.gson.annotations.SerializedName
+
+class NugetInspection {
+    @SerializedName('Name')
+    String name
+
+    @SerializedName('Version')
+    String version
+
+    @SerializedName('Containers')
+    List<NugetContainer> containers = new ArrayList<NugetContainer>()
+
+    @Override
+    String toString() {
+        return ReflectionToStringBuilder.toString(this, RecursiveToStringStyle.JSON_STYLE)
+    }
 }

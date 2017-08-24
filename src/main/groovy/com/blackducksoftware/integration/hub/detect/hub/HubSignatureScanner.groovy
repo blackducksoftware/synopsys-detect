@@ -51,9 +51,11 @@ class HubSignatureScanner {
     @Autowired
     DetectFileManager detectFileManager
 
-    private List<String> registeredPaths = []
+    private Set<String> registeredPaths = []
 
-    public void registerPathToScan(File file) {
+    private List<String> registeredPathsToExclude = []
+
+    public void registerPathToScan(File file, String... fileNamesToExclude) {
         String matchingExcludedPath = detectConfiguration.hubSignatureScannerPathsToExclude.find {
             file.canonicalPath.startsWith(it)
         }
@@ -63,6 +65,22 @@ class HubSignatureScanner {
         } else if (file.exists() && (file.isFile() || file.isDirectory())) {
             logger.info("Registering path ${file.canonicalPath} to scan")
             registeredPaths.add(file.canonicalPath)
+            if (fileNamesToExclude) {
+                for (String fileNameToExclude : fileNamesToExclude) {
+                    File fileToExclude = detectFileManager.findFile(file, fileNameToExclude)
+                    if (fileToExclude) {
+                        String pattern = fileToExclude.getCanonicalPath().replace(file.canonicalPath, '')
+                        if (pattern.contains('\\\\')) {
+                            pattern = pattern.replace('\\\\', '/')
+                        }
+                        if (pattern.contains('\\')) {
+                            pattern = pattern.replace('\\', '/')
+                        }
+                        pattern = pattern + '/'
+                        registeredPathsToExclude.add(pattern)
+                    }
+                }
+            }
         } else {
             logger.warn("Tried to register a scan for ${file.canonicalPath} but it doesn't appear to exist or it isn't a file or directory.")
         }
@@ -117,6 +135,8 @@ class HubSignatureScanner {
 
             if (detectConfiguration.hubSignatureScannerExclusionPatterns) {
                 hubScanConfigBuilder.setExcludePatterns(detectConfiguration.hubSignatureScannerExclusionPatterns)
+            } else if (registeredPathsToExclude){
+                hubScanConfigBuilder.setExcludePatterns(registeredPathsToExclude as String[])
             }
 
             HubScanConfig hubScanConfig = hubScanConfigBuilder.build()
