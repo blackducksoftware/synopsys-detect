@@ -91,8 +91,8 @@ class MavenBomTool extends BomTool {
         if (StringUtils.isNotBlank(detectConfiguration.getMavenPath())) {
             return detectConfiguration.getMavenPath()
         }
+        String wrapperPath = executableManager.getPathOfExecutableFromRelativePath(sourcePath, ExecutableType.MVNW)
 
-        String wrapperPath = executableManager.getPathOfExecutable(ExecutableType.MVNW)
         if (wrapperPath) {
             return wrapperPath
         }
