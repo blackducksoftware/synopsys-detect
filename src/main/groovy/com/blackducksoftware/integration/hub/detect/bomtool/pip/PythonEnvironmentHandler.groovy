@@ -22,7 +22,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.pip
 
-import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.SystemUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -30,7 +29,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
-import com.blackducksoftware.integration.hub.detect.DetectProperties
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager
 
@@ -38,9 +36,6 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableMa
 class PythonEnvironmentHandler {
     private final Logger logger = LoggerFactory.getLogger(PythonEnvironmentHandler.class)
     private final String VIRTUAL_ENV_NAME = 'venv'
-
-    @Autowired
-    DetectProperties detectProperties
 
     @Autowired
     DetectConfiguration detectConfiguration
@@ -66,8 +61,8 @@ class PythonEnvironmentHandler {
 
         systemEnvironment.pythonType = pythonExecutableType
         systemEnvironment.pipType = pipExecutableType
-        systemEnvironment.pythonPath = findExecutable(null, detectConfiguration.pythonPath, pythonExecutableType)
-        systemEnvironment.pipPath = findExecutable(null, detectConfiguration.pipPath, pipExecutableType)
+        systemEnvironment.pythonPath = executableManager.getExecutablePath(pythonExecutableType, true, detectConfiguration.pythonPath)
+        systemEnvironment.pipPath = executableManager.getExecutablePath(pipExecutableType, true, detectConfiguration.pipPath)
 
         if (SystemUtils.IS_OS_WINDOWS) {
             binFolderName = 'Scripts'
@@ -107,17 +102,5 @@ class PythonEnvironmentHandler {
         }
 
         existing
-    }
-
-    private String findExecutable(String path, String executablePath, ExecutableType commandType) {
-        if (StringUtils.isNotBlank(executablePath)) {
-            executablePath
-        } else {
-            if (StringUtils.isBlank(path)) {
-                executableManager.getExecutablePath(commandType, true, detectProperties.sourcePath)
-            } else {
-                executableManager.getExecutablePath(commandType, false, path)
-            }
-        }
     }
 }
