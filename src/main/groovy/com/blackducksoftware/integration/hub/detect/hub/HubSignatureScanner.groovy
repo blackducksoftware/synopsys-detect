@@ -150,6 +150,10 @@ class HubSignatureScanner {
             HubScanConfigBuilder hubScanConfigBuilder = createScanConfigBuilder(detectProject, canonicalPath)
             hubScanConfigBuilder.setDryRun(true)
 
+            if (detectConfiguration.hubSignatureScannerOfflineLocalPath) {
+                hubScanConfigBuilder.toolsDir = detectConfiguration.hubSignatureScannerOfflineLocalPath
+            }
+
             HubScanConfig hubScanConfig = hubScanConfigBuilder.build()
 
             offlineScanner.offlineScan(hubScanConfig)
