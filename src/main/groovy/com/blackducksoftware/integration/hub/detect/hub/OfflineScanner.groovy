@@ -29,7 +29,6 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.HubSupportHelper
 import com.blackducksoftware.integration.hub.cli.SimpleScanService
-import com.blackducksoftware.integration.hub.global.HubCredentials
 import com.blackducksoftware.integration.hub.global.HubServerConfig
 import com.blackducksoftware.integration.hub.scan.HubScanConfig
 import com.blackducksoftware.integration.log.Slf4jIntLogger
@@ -46,9 +45,6 @@ class OfflineScanner {
     void offlineScan(HubScanConfig hubScanConfig) {
         def intLogger = new Slf4jIntLogger(logger)
 
-        def offlineCredentials = createOfflineCredentials()
-
-        //        def hubServerConfig = new HubServerConfig(new URL('http://www.blackducksoftware.com'), 0, offlineCredentials, null, true)
         def hubServerConfig = new HubServerConfig(null, 0, null, null, false)
 
         def hubSupportHelper = new HubSupportHelper()
@@ -60,10 +56,5 @@ class OfflineScanner {
 
         def simpleScanService = new SimpleScanService(intLogger, gson, hubServerConfig, hubSupportHelper, ciEnvironmentVariables, hubScanConfig, null, null)
         simpleScanService.setupAndExecuteScan()
-    }
-
-    public HubCredentials createOfflineCredentials() {
-        def credentials = new HubCredentials('', 'notblank')
-        credentials
     }
 }
