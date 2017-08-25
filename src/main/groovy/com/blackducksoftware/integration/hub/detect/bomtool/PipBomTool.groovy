@@ -80,9 +80,12 @@ class PipBomTool extends BomTool {
 
         PythonEnvironment pythonEnvironment = virtualEnvironmentHandler.getEnvironment(detectConfiguration.virtualEnvPath)
         DependencyNode projectNode = makeDependencyNode(pythonEnvironment)
-        def codeLocation = new DetectCodeLocation(BomToolType.PIP, sourcePath, projectNode)
+        if (projectNode) {
+            def codeLocation = new DetectCodeLocation(BomToolType.PIP, sourcePath, projectNode)
+            return [codeLocation]
+        }
 
-        [codeLocation]
+        []
     }
 
     DependencyNode makeDependencyNode(PythonEnvironment pythonEnvironment) {
@@ -105,14 +108,14 @@ class PipBomTool extends BomTool {
 
         // Install project if it can find one and pass its name to the inspector
         if (setupFile) {
-            def projectName = detectConfiguration.pipProjectName
+            def projectName = detectConfiguration.getPipProjectName()
             if (!projectName) {
                 def findProjectNameExecutable = new Executable(sourceDirectory, pythonPath, [
                     setupFile.absolutePath,
                     '--name'
                 ])
                 String[] output = executableRunner.execute(findProjectNameExecutable).standardOutput.split('\n')
-                projectName = output[output.length - 1].trim()
+                projectName = output[output.length - 1].replace('_', '-').trim()
             }
             pipInspectorOptions += "--projectname=${projectName}"
         }

@@ -300,7 +300,7 @@ class DetectConfiguration {
         return BooleanUtils.toBoolean(detectProperties.pearNotRequiredDependencies)
     }
     public String getPipProjectName() {
-        return detectProperties.pipProjectName
+        return detectProperties.pipProjectName?.trim()
     }
     public boolean getPipThreeOverride() {
         return BooleanUtils.toBoolean(detectProperties.pipThreeOverride)
