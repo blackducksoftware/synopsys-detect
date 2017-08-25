@@ -421,4 +421,7 @@ class DetectConfiguration {
     public Boolean getNoticesReport() {
         return detectProperties.noticesReport
     }
+    public String getNoticesReportOutputDirectory() {
+        return detectProperties.noticesReportOutputDirectory
+    }
 }

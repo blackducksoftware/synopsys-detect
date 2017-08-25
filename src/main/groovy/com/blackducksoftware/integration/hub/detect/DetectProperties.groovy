@@ -363,6 +363,10 @@ class DetectProperties {
     @Value('${detect.notices.report}')
     Boolean noticesReport
 
+    @ValueDescription (description="The output directory for notices report. Default is the source directory", defaultValue='.', group=DetectProperties.GROUP_PROJECT_INFO)
+    @Value('${detect.notices.report.path}')
+    String noticesReportOutputDirectory
+
     @ValueDescription(description="The path of the conda executable", group=DetectProperties.GROUP_CONDA)
     @Value('${detect.conda.path}')
     String condaPath

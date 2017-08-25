@@ -121,16 +121,16 @@ class HubManager {
             if (detectConfiguration.getRiskReportPdf()) {
                 RiskReportDataService riskReportDataService = hubServiceWrapper.createRiskReportDataService()
                 logger.info("Creating risk report pdf")
-                File pdfFile = riskReportDataService.createReportPdfFile(new File("."), detectProject.projectName, detectProject.projectVersionName)
+                File pdfFile = riskReportDataService.createReportPdfFile(detectConfiguration.riskReportPdfOutputDirectory, detectProject.projectName, detectProject.projectVersionName)
                 logger.info("Created risk report pdf : ${pdfFile.getCanonicalPath()}")
             }
 
             if (detectConfiguration.getNoticesReport()) {
                 RiskReportDataService riskReportDataService = hubServiceWrapper.createRiskReportDataService()
-                logger.info("Creating notice report")
-                File noticeFile = riskReportDataService.createNoticesReportFile(new File("."), detectProject.projectName, detectProject.projectVersionName);
-                if (noticeFile != null){
-                    logger.info("Created notice report : ${noticeFile.getCanonicalPath()}")
+                logger.info("Creating notices report")
+                File noticesFile = riskReportDataService.createNoticesReportFile(detectConfiguration.noticesReportOutputDirectory, detectProject.projectName, detectProject.projectVersionName);
+                if (noticesFile != null){
+                    logger.info("Created notices report : ${noticesFile.getCanonicalPath()}")
                 }
             }
 
