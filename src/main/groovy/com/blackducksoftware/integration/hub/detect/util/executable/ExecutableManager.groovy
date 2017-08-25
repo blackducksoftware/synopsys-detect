@@ -67,7 +67,7 @@ class ExecutableManager {
     }
 
     String getExecutablePath(ExecutableType executableType, boolean searchSystemPath, String path) {
-        getExecutable(path, executableType, searchSystemPath)?.absolutePath
+        getExecutable(executableType, searchSystemPath, path)?.absolutePath
     }
 
     File getExecutable(ExecutableType executableType, boolean searchSystemPath, String path) {
