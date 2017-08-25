@@ -30,7 +30,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
-import com.blackducksoftware.integration.hub.detect.DetectProperties
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager
 
@@ -38,9 +37,6 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableMa
 class PythonEnvironmentHandler {
     private final Logger logger = LoggerFactory.getLogger(PythonEnvironmentHandler.class)
     private final String VIRTUAL_ENV_NAME = 'venv'
-
-    @Autowired
-    DetectProperties detectProperties
 
     @Autowired
     DetectConfiguration detectConfiguration
@@ -114,7 +110,7 @@ class PythonEnvironmentHandler {
             executablePath
         } else {
             if (StringUtils.isBlank(path)) {
-                executableManager.getExecutablePath(commandType, true, detectProperties.sourcePath)
+                executableManager.getExecutablePath(commandType, true, detectConfiguration.sourcePath)
             } else {
                 executableManager.getExecutablePath(commandType, false, path)
             }
