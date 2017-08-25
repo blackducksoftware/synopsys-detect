@@ -1,5 +1,6 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.nuget
 
+import org.junit.Ignore
 import org.junit.Test
 import org.skyscreamer.jsonassert.JSONAssert
 
@@ -8,6 +9,7 @@ import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeT
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
+@Ignore
 public class NugetInspectorPackagerTest {
     public Gson gson = new GsonBuilder().setPrettyPrinting().create()
 
