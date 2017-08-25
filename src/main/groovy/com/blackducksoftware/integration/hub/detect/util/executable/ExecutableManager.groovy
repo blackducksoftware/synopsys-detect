@@ -75,7 +75,7 @@ class ExecutableManager {
         String searchPath = path.trim()
         File executableFile = findExecutableFileFromPath(searchPath, executable)
         if (searchSystemPath && !executableFile) {
-            executableFile = findExecutableFileFromSystemPath(executableType)
+            executableFile = findExecutableFileFromSystemPath(executable)
         }
 
         executableFile
