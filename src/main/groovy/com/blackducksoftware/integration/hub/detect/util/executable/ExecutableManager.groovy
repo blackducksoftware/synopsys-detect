@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
@@ -36,9 +35,6 @@ import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 @Component
 class ExecutableManager {
     private final Logger logger = LoggerFactory.getLogger(ExecutableManager.class)
-
-    @Autowired
-    DetectConfiguration detectConfiguration
 
     @Autowired
     DetectFileManager detectFileManager
@@ -75,7 +71,7 @@ class ExecutableManager {
         String searchPath = path.trim()
         File executableFile = findExecutableFileFromPath(searchPath, executable)
         if (searchSystemPath && !executableFile) {
-            executableFile = findExecutableFileFromSystemPath(executableType)
+            executableFile = findExecutableFileFromSystemPath(executable)
         }
 
         executableFile
