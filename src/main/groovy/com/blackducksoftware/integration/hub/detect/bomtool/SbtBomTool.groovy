@@ -67,8 +67,6 @@ class SbtBomTool extends BomTool {
         }
     }
 
-
-
     List<DetectCodeLocation> extractDetectCodeLocations() {
         String included = detectConfiguration.getSbtIncludedConfigurationNames()
         String excluded = detectConfiguration.getSbtExcludedConfigurationNames()
@@ -96,27 +94,27 @@ class SbtBomTool extends BomTool {
         def rawModules = extractModules(depth, included, excluded)
         def modules = rawModules.findAll{ it.root != null }
         def skipped = rawModules.size() - modules.size()
-        if (skipped > 0){
+        if (skipped > 0) {
             logger.error("Skipped ${skipped}")
         }
         def result = new SbtProject()
         result.bomToolType = getBomToolType()
         result.modules = modules
 
-        if (modules.size() == 1){
+        if (modules.size() == 1) {
             result.projectName = modules[0].root.name
             result.projectVersion = modules[0].root.version
             result.projectExternalId = modules[0].root.externalId
-        }else{
+        } else {
             logger.warn("Found more than one root project, using source path for project name.")
             result.projectName = detectFileManager.extractFinalPieceFromPath(sourcePath)
             result.projectVersion = findFirstModuleVersion(modules, result.projectName, "root")
             result.projectExternalId = new PathExternalId(Forge.MAVEN, sourcePath)
 
-            if (result.projectVersion == null && modules.size() > 1){
+            if (result.projectVersion == null && modules.size() > 1) {
                 logger.warn("Getting version from first project: " + modules[0].root.name)
                 result.projectVersion = modules[0].root.version
-            }else{
+            } else {
                 logger.info("Using the source path or root task for version.")
             }
         }
@@ -124,18 +122,16 @@ class SbtBomTool extends BomTool {
         result
     }
 
-
     String findFirstModuleVersion(List<SbtModule> modules, String... names) {
         String version = null
         modules.each{
-            if (version == null && it.root != null && names.contains(it.root.name)){
+            if (version == null && it.root != null && names.contains(it.root.name)) {
                 logger.debug("Matched ${it.root.name} to project version.")
                 version = it.root.version
             }
         }
         return version
     }
-
 
     List<SbtModule> extractModules(int depth, String included, String excluded) {
         List<File> sbtFiles = detectFileManager.findFilesToDepth(sourcePath, BUILD_SBT_FILENAME, depth)
@@ -161,7 +157,7 @@ class SbtBomTool extends BomTool {
         }
 
         File[] additionalTargets = detectFileManager.findFilesToDepth(sourcePath, 'target', depth)
-        List<File> scanned = new ArrayList<File>();
+        List<File> scanned = new ArrayList<File>()
         if (additionalTargets) {
             additionalTargets.each {
                 if (!isInProject(it, sourcePath) && isNotChildOfScanned(it, scanned)) {
@@ -175,7 +171,7 @@ class SbtBomTool extends BomTool {
     }
 
     Boolean isNotChildOfScanned(File folder, List<File> scanned) {
-        for (def scan : scanned){
+        for (def scan : scanned) {
             if (folder.getCanonicalPath().startsWith(scan.getCanonicalPath())) {
                 return false
             }
@@ -183,7 +179,7 @@ class SbtBomTool extends BomTool {
         return true
     }
 
-    Boolean isInProject(File file, String sourcePath){
+    Boolean isInProject(File file, String sourcePath) {
         def projectPath = new File(sourcePath, PROJECT_FOLDER)
         return file.getCanonicalPath().startsWith(projectPath.getCanonicalPath())
     }
@@ -191,16 +187,16 @@ class SbtBomTool extends BomTool {
     List<SbtModule> extractReportModules(File reportPath, File source, String included, String excluded, List<File> usedReports) {
         List<SbtModule> modules = new ArrayList<SbtModule>()
         String canonical = reportPath.getCanonicalPath()
-        if (usedReports.contains(canonical)){
+        if (usedReports.contains(canonical)) {
             logger.debug("Skipping already processed report folder: " + canonical)
-        }else if (isInProject(reportPath, sourcePath)){
+        } else if (isInProject(reportPath, sourcePath)) {
             logger.debug("Skipping reports in project folder: ${reportPath.getCanonicalPath()}")
-        }else{
+        } else {
             usedReports.add(canonical)
             List<File> reportFiles = detectFileManager.findFiles(reportPath, REPORT_FILE_PATTERN)
-            if (reportFiles == null || reportFiles.size() <= 0){
+            if (reportFiles == null || reportFiles.size() <= 0) {
                 logger.debug("No reports were found in: ${reportPath}")
-            }else{
+            } else {
                 List<DependencyNode> aggregateNodes = sbtPackager.makeDependencyNodeAggregates(reportFiles, included, excluded)
 
                 if (aggregateNodes == null) {

@@ -129,7 +129,7 @@ class HubManager {
                 RiskReportDataService riskReportDataService = hubServiceWrapper.createRiskReportDataService()
                 logger.info("Creating notice report")
                 File noticeFile = riskReportDataService.createNoticesReportFile(new File("."), detectProject.projectName, detectProject.projectVersionName);
-                if (noticeFile != null){
+                if (noticeFile != null) {
                     logger.info("Created notice report : ${noticeFile.getCanonicalPath()}")
                 }
             }
@@ -163,7 +163,7 @@ class HubManager {
         }
     }
 
-    public void waitForBomUpdate(ProjectDataService projectDataService, CodeLocationRequestService codeLocationRequestService, MetaService metaService, ScanSummaryRequestService scanSummaryRequestService, ScanStatusDataService scanStatusDataService, ProjectVersionView version){
+    public void waitForBomUpdate(ProjectDataService projectDataService, CodeLocationRequestService codeLocationRequestService, MetaService metaService, ScanSummaryRequestService scanSummaryRequestService, ScanStatusDataService scanStatusDataService, ProjectVersionView version) {
         List<CodeLocationView> allCodeLocations = codeLocationRequestService.getAllCodeLocationsForProjectVersion(version)
         List<ScanSummaryView> scanSummaryViews = []
         allCodeLocations.each {

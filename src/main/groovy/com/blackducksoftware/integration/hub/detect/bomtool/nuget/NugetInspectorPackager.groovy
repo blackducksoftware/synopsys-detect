@@ -72,7 +72,7 @@ class NugetInspectorPackager {
         createDetectCodeLocationFromNode(nugetNode)
     }
 
-    private void registerScanPaths(NugetNode nugetNode){
+    private void registerScanPaths(NugetNode nugetNode) {
         nugetNode.outputPaths?.each {
             hubSignatureScanner?.registerPathToScan(new File(it))
         }

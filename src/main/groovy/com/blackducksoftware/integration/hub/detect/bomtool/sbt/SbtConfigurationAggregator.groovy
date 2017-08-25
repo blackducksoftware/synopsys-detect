@@ -41,7 +41,7 @@ public class SbtConfigurationAggregator {
             root.version = aggregate.version
             root.children = new ArrayList<DependencyNode>()
             configurations.each {config ->
-                if (configurationToAggregate(config).equals(aggregate)){
+                if (configurationToAggregate(config).equals(aggregate)) {
                     root.children += config.rootNode.children
                 }
             }
@@ -57,11 +57,11 @@ public class SbtConfigurationAggregator {
         return aggregate
     }
 
-    List<SbtAggregate> uniqueAggregates(List<SbtConfigurationDependencyTree> configurations){
+    List<SbtAggregate> uniqueAggregates(List<SbtConfigurationDependencyTree> configurations) {
         List<SbtAggregate> found = new ArrayList<SbtAggregate>()
         configurations.each{config ->
             def aggregate = configurationToAggregate(config)
-            if (!found.contains(aggregate)){
+            if (!found.contains(aggregate)) {
                 found.add(aggregate)
             }
         }

@@ -54,7 +54,7 @@ public class PackRatNodeParser {
         boolean newDependency = false
 
         for (String line : lines) {
-            if (line.contains('Package: ')){
+            if (line.contains('Package: ')) {
                 name = line.replace('Package: ', '').trim()
                 directDependencyNames.add(name)
                 newDependency = true
@@ -71,7 +71,7 @@ public class PackRatNodeParser {
 
             if (line.contains('Requires: ')) {
                 String[] parts = line.replace('Requires: ','').split(',')
-                for (int i; i < parts.size(); i++){
+                for (int i; i < parts.size(); i++) {
                     NameVersionNode node = this.createNameVersionNodeImpl(parts[i].trim(), '')
                     nameVersionNodeBuilder.addChildNodeToParent(node, currentParent)
                 }
