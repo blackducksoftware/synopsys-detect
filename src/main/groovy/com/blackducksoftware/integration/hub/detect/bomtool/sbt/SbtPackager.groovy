@@ -58,6 +58,6 @@ public class SbtPackager {
             return null
         }
 
-        aggregator.aggregateConfigurations(configurations)
+        aggregator.aggregateConfigurations(includedConfigurations)
     }
 }

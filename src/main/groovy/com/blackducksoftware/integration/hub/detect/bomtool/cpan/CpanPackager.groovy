@@ -28,7 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.detect.Application
 import com.blackducksoftware.integration.hub.detect.bomtool.CpanBomTool
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
@@ -71,7 +70,7 @@ class CpanPackager {
             if (line.contains('-->') || ((line.contains(' ... ') && line.contains('Configuring')))) {
                 continue
             }
-            modules += line.split('~')[0].trim()
+            modules.add(line.split('~')[0].trim())
         }
 
         modules

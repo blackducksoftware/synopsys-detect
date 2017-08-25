@@ -41,6 +41,7 @@ class NugetBomTool extends BomTool {
 
     static final String SOLUTION_PATTERN = '*.sln'
     static final String PROJECT_PATTERN = '*.*proj'
+    static final String INSPECTOR_OUTPUT_PATTERN ='*_inspection.json'
 
     @Autowired
     NugetInspectorPackager nugetInspectorPackager
@@ -69,7 +70,7 @@ class NugetBomTool extends BomTool {
     List<DetectCodeLocation> extractDetectCodeLocations() {
         def outputDirectory = new File(detectConfiguration.outputDirectory, 'nuget')
         def sourceDirectory = new File(sourcePath)
-        String inspectorExePath = getInspectorExePath(sourceDirectory, outputDirectory, nugetExecutable)
+        String inspectorExePath = getInspectorExePath(sourceDirectory, outputDirectory, new File(nugetExecutable))
 
         if (!inspectorExePath) {
             return null
@@ -81,10 +82,10 @@ class NugetBomTool extends BomTool {
             "--ignore_failure=${detectConfiguration.getNugetInspectorIgnoreFailure()}"
         ]
         if (detectConfiguration.getNugetInspectorExcludedModules()) {
-            options += "--excluded_modules=${detectConfiguration.getNugetInspectorExcludedModules()}"
+            options.add("--excluded_modules=${detectConfiguration.getNugetInspectorExcludedModules()}")
         }
         if (logger.traceEnabled) {
-            options += "-v"
+            options.add("-v")
         }
 
         def hubNugetInspectorExecutable = new Executable(sourceDirectory, inspectorExePath, options)
