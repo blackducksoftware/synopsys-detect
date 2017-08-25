@@ -78,7 +78,7 @@ class NugetInspectorPackager {
         codeLocations
     }
 
-    private void registerScanPaths(NugetContainer nugetContainer){
+    private void registerScanPaths(NugetContainer nugetContainer) {
         nugetContainer.outputPaths?.each {
             hubSignatureScanner?.registerPathToScan(new File(it))
         }

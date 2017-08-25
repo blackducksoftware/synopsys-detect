@@ -36,10 +36,10 @@ public class NugetDependencyNodeBuilder {
     public NugetDependencyNodeBuilder() {
     }
 
-    public void AddPackageSets(List<NugetPackageSet> sets){
+    public void AddPackageSets(List<NugetPackageSet> sets) {
         packageSets.addAll(sets);
     }
-    public void AddPackageSet(NugetPackageSet set){
+    public void AddPackageSet(NugetPackageSet set) {
         packageSets.add(set);
     }
 
@@ -54,7 +54,7 @@ public class NugetDependencyNodeBuilder {
 
     public DependencyNode GetOrCreate(NugetPackageId id) {
         def node = nodeMap.getOrDefault(id, null)
-        if (node == null){
+        if (node == null) {
             def externalId = new NameVersionExternalId(Forge.NUGET, id.name, id.version)
             node = new DependencyNode(id.name, id.version, externalId)
             nodeMap.put(id, node);
