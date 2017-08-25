@@ -66,11 +66,11 @@ class ExecutableManager {
         executableType.getExecutable(currentOs)
     }
 
-    String getExecutablePath(ExecutableType executableType, boolean searchSystemPath, String path){
+    String getExecutablePath(ExecutableType executableType, boolean searchSystemPath, String path) {
         getExecutable(path, executableType, searchSystemPath)?.absolutePath
     }
 
-    File getExecutable(ExecutableType executableType, boolean searchSystemPath, String path){
+    File getExecutable(ExecutableType executableType, boolean searchSystemPath, String path) {
         String executable = getExecutableName(executableType)
         String searchPath = path.trim()
         File executableFile = findExecutableFileFromPath(searchPath, executable)
