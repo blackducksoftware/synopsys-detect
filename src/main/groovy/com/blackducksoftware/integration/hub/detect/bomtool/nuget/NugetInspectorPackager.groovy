@@ -64,7 +64,6 @@ class NugetInspectorPackager {
     @Autowired
     NameVersionNodeTransformer nameVersionNodeTransformer
 
-
     public List<DetectCodeLocation> createDetectCodeLocation(File dependencyNodeFile) {
         final InputStream inputStream = new FileInputStream(dependencyNodeFile)
         final InputStreamReader streamReader = new InputStreamReader(inputStream, "UTF-8")
@@ -85,7 +84,6 @@ class NugetInspectorPackager {
         }
         nugetContainer.children?.each { registerScanPaths(it) }
     }
-
 
     private List<DetectCodeLocation> createDetectCodeLocationFromNugetContainer(NugetContainer nugetContainer) {
         String projectName = ''

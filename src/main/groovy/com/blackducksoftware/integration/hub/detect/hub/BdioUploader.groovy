@@ -44,14 +44,7 @@ class BdioUploader {
     @Autowired
     DetectConfiguration detectConfiguration
 
-    @Autowired
-    HubManager hubManager
-
-    void uploadBdioFiles(HubServerConfig hubServerConfig, HubServicesFactory hubServicesFactory, List<File> createdBdioFiles) {
-        Slf4jIntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
-        BomImportRequestService bomImportRequestService = hubServicesFactory.createBomImportRequestService()
-        PhoneHomeDataService phoneHomeDataService = hubServicesFactory.createPhoneHomeDataService(slf4jIntLogger)
-
+    void uploadBdioFiles(HubServerConfig hubServerConfig, BomImportRequestService bomImportRequestService, PhoneHomeDataService phoneHomeDataService, List<File> createdBdioFiles) {
         createdBdioFiles.each { file ->
             logger.info("uploading ${file.name} to ${detectConfiguration.getHubUrl()}")
             bomImportRequestService.importBomFile(file, BuildToolConstants.BDIO_FILE_MEDIA_TYPE)
