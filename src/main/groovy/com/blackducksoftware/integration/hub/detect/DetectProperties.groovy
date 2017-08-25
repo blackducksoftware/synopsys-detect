@@ -307,7 +307,7 @@ class DetectProperties {
     @Value('${detect.hub.signature.scanner.disabled}')
     Boolean hubSignatureScannerDisabled
 
-    @ValueDescription(description="To use a local signature scanner, set its location with this property. If this is used, a download of the signature scanner from the Hub will not be attempted.", group=DetectProperties.GROUP_SIGNATURE_SCANNER)
+    @ValueDescription(description="To use a local signature scanner, set its location with this property. This will be the path that contains the 'Hub_Scan_Installation' directory where the signature scanner was unzipped.", group=DetectProperties.GROUP_SIGNATURE_SCANNER)
     @Value('${detect.hub.signature.scanner.offline.local.path}')
     String hubSignatureScannerOfflineLocalPath
 
