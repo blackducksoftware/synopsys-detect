@@ -151,7 +151,7 @@ class HubSignatureScanner {
             hubScanConfigBuilder.setDryRun(true)
 
             if (detectConfiguration.hubSignatureScannerOfflineLocalPath) {
-                hubScanConfigBuilder.toolsDir = detectConfiguration.hubSignatureScannerOfflineLocalPath
+                hubScanConfigBuilder.toolsDir = new File(detectConfiguration.hubSignatureScannerOfflineLocalPath)
             }
 
             HubScanConfig hubScanConfig = hubScanConfigBuilder.build()
