@@ -84,7 +84,7 @@ class NugetBomTool extends BomTool {
         ]
         if (detectConfiguration.getNugetInspectorExcludedModules()) {
             options.add("--excluded_modules=${detectConfiguration.getNugetInspectorExcludedModules()}")
-        } 
+        }
         if (detectConfiguration.getNugetPackagesRepoUrl()) {
             options.add("--packages_repo_url=${detectConfiguration.getNugetPackagesRepoUrl()}")
         }
@@ -95,13 +95,13 @@ class NugetBomTool extends BomTool {
         def hubNugetInspectorExecutable = new Executable(sourceDirectory, inspectorExePath, options)
         ExecutableOutput executableOutput = executableRunner.execute(hubNugetInspectorExecutable)
 
-        def dependencyNodeFiles = detectFileManager.findFiles(outputDirectory, '*_dependency_node.json')
-        if (!dependencyNodeFiles) {
-            return null
+        def dependencyNodeFiles = detectFileManager.findFiles(outputDirectory, INSPECTOR_OUTPUT_PATTERN)
+        List<DetectCodeLocation> codeLocations = dependencyNodeFiles?.collectMany { nugetInspectorPackager.createDetectCodeLocation(it) }
+        try {
+            FileUtils.deleteDirectory(outputDirectory)
+        }catch (Exception e){
+            logger.warn("Unable to clean up nuget files: ${outputDirectory}")
         }
-        List<DetectCodeLocation> codeLocations = dependencyNodeFiles.collect { nugetInspectorPackager.createDetectCodeLocation(it) }
-        FileUtils.deleteDirectory(outputDirectory)
-
         if (!codeLocations) {
             logger.warn('Unable to extract any dependencies from nuget')
             return []
@@ -125,10 +125,7 @@ class NugetBomTool extends BomTool {
         if (detectConfiguration.getNugetInspectorAirGapPath()?.trim()) {
             logger.debug("Running air gapped with ${detectConfiguration.getNugetInspectorAirGapPath()}")
             final File nupkgFile = new File(detectConfiguration.getNugetInspectorAirGapPath())
-            nugetOptions.addAll([
-                '-Source',
-                nupkgFile.getCanonicalPath()
-            ])
+            nugetOptions.addAll(['-Source', nupkgFile.getCanonicalPath()])
         } else {
             logger.debug('Running online. Resolving through nuget')
             nugetOptions.addAll([
