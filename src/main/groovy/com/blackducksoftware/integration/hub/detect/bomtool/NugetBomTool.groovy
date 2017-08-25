@@ -124,8 +124,11 @@ class NugetBomTool extends BomTool {
 
         if (detectConfiguration.getNugetInspectorAirGapPath()?.trim()) {
             logger.debug("Running air gapped with ${detectConfiguration.getNugetInspectorAirGapPath()}")
-            final File nupkgFile = new File(detectConfiguration.getNugetInspectorAirGapPath())
-            nugetOptions.addAll(['-Source', nupkgFile.getCanonicalPath()])
+            final File nupkgParentDirectory = new File(detectConfiguration.getNugetInspectorAirGapPath()).getParentFile()
+            nugetOptions.addAll([
+                '-Source',
+                nupkgParentDirectory.getCanonicalPath()
+            ])
         } else {
             logger.debug('Running online. Resolving through nuget')
             nugetOptions.addAll([
@@ -133,7 +136,7 @@ class NugetBomTool extends BomTool {
                 detectConfiguration.getNugetInspectorPackageVersion(),
                 '-Source',
                 detectConfiguration.getNugetPackagesRepoUrl()
-            ])
+            ]) 
         }
 
         if (!inspectorExe.exists()) {
