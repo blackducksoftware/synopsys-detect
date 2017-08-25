@@ -40,7 +40,7 @@ class CondaListParser {
     Gson gson
 
     Set<DependencyNode> parse(String listJsonText, String infoJsonText) {
-        final Type listType = new TypeToken<ArrayList<CondaListElement>>(){}.getType()
+        final Type listType = new TypeToken<ArrayList<CondaListElement>>() {}.getType()
         final List<CondaListElement> condaList = gson.fromJson(listJsonText, listType)
         final CondaInfo condaInfo = gson.fromJson(infoJsonText, CondaInfo.class)
         final String platform = condaInfo.platform

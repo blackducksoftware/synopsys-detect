@@ -28,7 +28,7 @@ class SbtModule {
     public String sourcePath
     public DependencyNode root
 
-    public SbtModule(DependencyNode root, String sourcePath){
+    public SbtModule(DependencyNode root, String sourcePath) {
         this.sourcePath = sourcePath
         this.root = root
     }

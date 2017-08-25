@@ -95,6 +95,10 @@ class DetectProperties {
     @Value('${blackduck.hub.auto.import.cert}')
     Boolean hubAutoImportCertificate
 
+    @ValueDescription(description="This can disable any Hub communication - if true, Detect will not upload BDIO files, it will not check policies, and it will not download and install the signature scanner.", defaultValue="false", group=DetectProperties.GROUP_HUB_CONFIGURATION)
+    @Value('${blackduck.hub.offline.mode}')
+    Boolean hubOfflineMode
+
     @ValueDescription(description = "Source path to inspect", group=DetectProperties.GROUP_PATHS)
     @Value('${detect.source.path}')
     String sourcePath
@@ -303,6 +307,10 @@ class DetectProperties {
     @Value('${detect.hub.signature.scanner.disabled}')
     Boolean hubSignatureScannerDisabled
 
+    @ValueDescription(description="To use a local signature scanner, set its location with this property. This will be the path that contains the 'Hub_Scan_Installation' directory where the signature scanner was unzipped.", group=DetectProperties.GROUP_SIGNATURE_SCANNER)
+    @Value('${detect.hub.signature.scanner.offline.local.path}')
+    String hubSignatureScannerOfflineLocalPath
+
     @ValueDescription(description="Set this value to false if you would like to exclude your dev requires dependencies when ran", defaultValue='true', group=DetectProperties.GROUP_PACKAGIST)
     @Value('${detect.packagist.include.dev.dependencies}')
     Boolean packagistIncludeDevDependencies
@@ -345,15 +353,19 @@ class DetectProperties {
 
     @ValueDescription (description="When set to true, a Black Duck risk report in PDF form will be created", defaultValue='false', group=DetectProperties.GROUP_PROJECT_INFO)
     @Value('${detect.risk.report.pdf}')
-    Boolean riskreportPdf
+    Boolean riskReportPdf
 
     @ValueDescription (description="The output directory for risk report in PDF. Default is the source directory", defaultValue='.', group=DetectProperties.GROUP_PROJECT_INFO)
     @Value('${detect.risk.report.pdf.path}')
-    String riskreportPdfOutputDirectory
+    String riskReportPdfOutputDirectory
 
-    @ValueDescription (description="When set to true, a Black Duck notice report in text form will be created in your source directory", defaultValue='false', group=DetectProperties.GROUP_PROJECT_INFO)
-    @Value('${detect.notice.report}')
-    Boolean noticeReport
+    @ValueDescription (description="When set to true, a Black Duck notices report in text form will be created in your source directory", defaultValue='false', group=DetectProperties.GROUP_PROJECT_INFO)
+    @Value('${detect.notices.report}')
+    Boolean noticesReport
+
+    @ValueDescription (description="The output directory for notices report. Default is the source directory", defaultValue='.', group=DetectProperties.GROUP_PROJECT_INFO)
+    @Value('${detect.notices.report.path}')
+    String noticesReportOutputDirectory
 
     @ValueDescription(description="The path of the conda executable", group=DetectProperties.GROUP_CONDA)
     @Value('${detect.conda.path}')

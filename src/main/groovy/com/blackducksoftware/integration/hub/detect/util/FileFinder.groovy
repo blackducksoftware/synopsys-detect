@@ -130,10 +130,10 @@ class FileFinder {
         }
 
         sourceDirectory.listFiles().each {
-            if (it.isDirectory()){
-                if (FilenameUtils.wildcardMatchOnSystem(it.getName(), directoryPattern)){
+            if (it.isDirectory()) {
+                if (FilenameUtils.wildcardMatchOnSystem(it.getName(), directoryPattern)) {
                     files.add(it);
-                }else{
+                } else {
                     files.addAll(findDirectoriesContainingDirectoriesToDepthRecursive(it, directoryPattern, currentDepth + 1, maxDepth));
                 }
             }

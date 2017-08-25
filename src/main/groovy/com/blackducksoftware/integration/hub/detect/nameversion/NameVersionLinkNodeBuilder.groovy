@@ -87,7 +87,7 @@ class NameVersionLinkNodeBuilder {
             nameVersionNode = resolveLink(cyclicalStack, nameVersionLinkNode.link)
         }
 
-        if (!nameVersionNode && (nameVersionLinkNode.version || nameVersionLinkNode == root)){
+        if (!nameVersionNode && (nameVersionLinkNode.version || nameVersionLinkNode == root)) {
             nameVersionNode = new NameVersionNodeImpl()
             nameVersionNode.name = nameVersionLinkNode.name
             nameVersionNode.version = nameVersionLinkNode.version
