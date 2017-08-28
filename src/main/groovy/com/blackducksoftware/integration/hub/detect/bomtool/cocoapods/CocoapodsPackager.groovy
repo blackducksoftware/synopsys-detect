@@ -1,25 +1,3 @@
-/*
- * Copyright (C) 2017 Black Duck Software, Inc.
- * http://www.blackducksoftware.com/
- *
- *
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
 package com.blackducksoftware.integration.hub.detect.bomtool.cocoapods
 
 import org.springframework.beans.factory.annotation.Autowired
@@ -27,104 +5,98 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
+import com.blackducksoftware.integration.hub.detect.nameversion.LinkMetadata
+import com.blackducksoftware.integration.hub.detect.nameversion.Metadata
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeBuilder
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper
 
 @Component
 class CocoapodsPackager {
+    final List<String> fuzzyVersionIdentifiers = ['>', '<', '~>', '=']
+
     @Autowired
     NameVersionNodeTransformer nameVersionNodeTransformer
 
-    private final String PODS_SECTION = 'PODS'
-    private final String DEPENDENCIES_SECTION = 'DEPENDENCIES'
-    private final String EXTERNAL_SOURCES_SECTION = 'EXTERNAL SOURCES'
-
     public Set<DependencyNode> extractDependencyNodes(final String podLockText) {
-        List<NameVersionNode> nameVersionNodes = parse(podLockText)
+        YAMLMapper mapper = new YAMLMapper()
+        PodfileLock podfileLock = mapper.readValue(podLockText, PodfileLock.class)
 
-        nameVersionNodes.collect { nameVersionNodeTransformer.createDependencyNode(Forge.COCOAPODS, it) } as Set
+        def root = new NameVersionNodeImpl()
+        root.name = "detectRootNode - ${UUID.randomUUID()}"
+        NameVersionNodeBuilder builder = new NameVersionNodeBuilder(root)
+
+        podfileLock.pods.each { podToNameVersionNode(builder, it) }
+
+        podfileLock.dependencies.each {
+            def child = new NameVersionNodeImpl([name: cleanPodName(it.name)])
+            builder.addChildNodeToParent(child, root)
+        }
+
+        podfileLock.externalSources?.sources.each { source ->
+            Metadata metadata = getMetadata(builder, source.name)
+
+            if (source.git && source.git.contains('github')) {
+                // Change the forge to GitHub when there is better KB support
+                metadata.setForge(Forge.COCOAPODS)
+            } else if (source.path && source.path.contains('node_modules')) {
+                metadata.setForge(Forge.NPM)
+            }
+
+            builder.setMetadata(cleanPodName(source.name), metadata)
+        }
+
+
+
+        builder.build().children.collect { nameVersionNodeTransformer.createDependencyNode(Forge.COCOAPODS, it) } as Set
     }
 
-    private List<NameVersionNode> parse(final String podLockText) {
-        final List<NameVersionNode> directDependencies = []
-        final NameVersionNode root = new NameVersionNodeImpl()
-        root.name = 'hub_detect_root'
-        final def nameVersionNodeBuilder = new NameVersionNodeBuilder(root)
-
-        NameVersionNode parentNode = root
-        String section = null
-        for (String line: podLockText.split(System.getProperty('line.separator'))) {
-            if (!line.trim()) {
-                continue
-            }
-
-            if (line.trim() == 'PODS:') {
-                section = PODS_SECTION
-                continue
-            }
-
-            if (line.trim() == 'DEPENDENCIES:') {
-                section = DEPENDENCIES_SECTION
-                continue
-            }
-
-            if (line.trim() == 'EXTERNAL SOURCES:') {
-                section = EXTERNAL_SOURCES_SECTION
-                continue
-            }
-
-            int lineLevel = getLevel(line)
-            if (lineLevel == 0) {
-                section = null
-            }
-
-            if (!section) {
-                continue
-            }
-
-            NameVersionNode pod = lineToNameVersionNode(line)
-            if (section == PODS_SECTION) {
-                if (lineLevel == 1) {
-                    nameVersionNodeBuilder.addChildNodeToParent(pod, root)
-                    parentNode = pod
-                } else {
-                    if (parentNode.name != pod.name) {
-                        nameVersionNodeBuilder.addChildNodeToParent(pod, parentNode)
-                    }
-                }
-            } else if (dependenciesSection) {
-                directDependencies.add(pod)
-            }
-        }
-        Map<String, NameVersionNode> allDependendencies = nameVersionNodeBuilder.getNameToNodeMap()
-
-        directDependencies.collect { allDependendencies[it.name] }
-    }
-
-    private NameVersionNode lineToNameVersionNode(final String line) {
-        String clean = line.replaceFirst('- ', '').replace(':','')
-        String version = null
-        boolean fuzzyVersion = clean.contains('~>') || clean.contains('>') || clean.contains('=') || clean.contains('<')
-        if (clean.contains('(') && clean.contains(')') && !fuzzyVersion) {
-            version = clean.substring(clean.indexOf('(') + 1, clean.indexOf(')' - 1)).trim()
-        }
-        clean = clean.replaceAll('\\(.*\\)', '').trim()
+    private NameVersionNode podToNameVersionNode(NameVersionNodeBuilder builder, Pod pod) {
         def nameVersionNode = new NameVersionNodeImpl()
-        // Grab the first section to aggregate sub-pods
-        nameVersionNode.name = clean.split('/')[0].trim()
-        nameVersionNode.version = version
+        nameVersionNode.name = cleanPodName(pod.name)
+        pod.cleanName = nameVersionNode.name
+        String[] segments = pod.name.split(' ')
+        if (segments.length > 1) {
+            String version = segments[1]
+            version = version.replace('(','').replace(')','').trim()
+            if (!isVersionFuzzy(version)) {
+                nameVersionNode.version = version
+            }
+        }
+
+        pod.dependencies.each { builder.addChildNodeToParent(podToNameVersionNode(builder, new Pod(it)), nameVersionNode) }
+
+        if (pod.dependencies.isEmpty()) {
+            builder.addToCache(nameVersionNode)
+        }
+
+        if (nameVersionNode.name.contains('/')) {
+            String linkNodeName = nameVersionNode.name.split('/')[0].trim()
+            def linkNode = builder.addToCache(new NameVersionNodeImpl([name: linkNodeName]))
+            LinkMetadata metadata = getMetadata(builder, nameVersionNode.name)
+            metadata.linkNode = linkNode
+            builder.setMetadata(nameVersionNode.name, metadata)
+        }
 
         nameVersionNode
     }
 
-    private int getLevel(String line) {
-        if (line.startsWith('  - ')) {
-            return 1
-        } else if (line.startsWith('    - ')) {
-            return 2
+    private LinkMetadata getMetadata(NameVersionNodeBuilder builder, String name) {
+        LinkMetadata metadata = (LinkMetadata) builder.getMetadata(cleanPodName(name))
+        if(!metadata) {
+            metadata = new LinkMetadata()
         }
-        return 0
+
+        metadata
+    }
+
+    private boolean isVersionFuzzy(String versionName) {
+        fuzzyVersionIdentifiers.any { versionName.contains(it) }
+    }
+
+    private String cleanPodName(String rawPodName) {
+        rawPodName?.split(' ')[0].trim()
     }
 }
