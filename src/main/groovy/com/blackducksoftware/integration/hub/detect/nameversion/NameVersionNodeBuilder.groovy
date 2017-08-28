@@ -56,4 +56,14 @@ class NameVersionNodeBuilder {
 
         nameToNodeMap[parent.name].children.add(nameToNodeMap[child.name])
     }
+
+    public boolean addToGraph(final NameVersionNode nameVersionNode) {
+        if (!nameToNodeMap.containsKey(nameVersionNode.name)) {
+            nameToNodeMap.put(nameVersionNode.name, nameVersionNode)
+        }
+
+        if (nameVersionNode.version?.trim() && !nameToNodeMap[nameVersionNode.name].version?.trim()) {
+            nameToNodeMap[nameVersionNode.name].version = nameVersionNode.version
+        }
+    }
 }

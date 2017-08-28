@@ -37,6 +37,10 @@ class CocoapodsPackager {
     @Autowired
     NameVersionNodeTransformer nameVersionNodeTransformer
 
+    private final String PODS_SECTION = 'PODS'
+    private final String DEPENDENCIES_SECTION = 'DEPENDENCIES'
+    private final String EXTERNAL_SOURCES_SECTION = 'EXTERNAL SOURCES'
+
     public Set<DependencyNode> extractDependencyNodes(final String podLockText) {
         List<NameVersionNode> nameVersionNodes = parse(podLockText)
 
@@ -50,37 +54,38 @@ class CocoapodsPackager {
         final def nameVersionNodeBuilder = new NameVersionNodeBuilder(root)
 
         NameVersionNode parentNode = root
-        boolean podsSection = false
-        boolean dependenciesSection = false
+        String section = null
         for (String line: podLockText.split(System.getProperty('line.separator'))) {
             if (!line.trim()) {
                 continue
             }
 
-            if (!podsSection && line.trim() == 'PODS:') {
-                dependenciesSection = false
-                podsSection = true
+            if (line.trim() == 'PODS:') {
+                section = PODS_SECTION
                 continue
             }
 
-            if (!dependenciesSection && line.trim() == 'DEPENDENCIES:') {
-                podsSection = false
-                dependenciesSection = true
+            if (line.trim() == 'DEPENDENCIES:') {
+                section = DEPENDENCIES_SECTION
+                continue
+            }
+
+            if (line.trim() == 'EXTERNAL SOURCES:') {
+                section = EXTERNAL_SOURCES_SECTION
                 continue
             }
 
             int lineLevel = getLevel(line)
             if (lineLevel == 0) {
-                podsSection = false
-                dependenciesSection = false
+                section = null
             }
 
-            if (!podsSection && !dependenciesSection) {
+            if (!section) {
                 continue
             }
 
             NameVersionNode pod = lineToNameVersionNode(line)
-            if (podsSection) {
+            if (section == PODS_SECTION) {
                 if (lineLevel == 1) {
                     nameVersionNodeBuilder.addChildNodeToParent(pod, root)
                     parentNode = pod

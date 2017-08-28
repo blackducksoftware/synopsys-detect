@@ -31,7 +31,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.PathExternalId
-import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.CocoapodsPackager
+import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.CocoapodsPackager2
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 @Component
@@ -41,7 +41,7 @@ class CocoapodsBomTool extends BomTool {
     public static final String PODFILE_LOCK_FILENAME= 'Podfile.lock'
 
     @Autowired
-    CocoapodsPackager cocoapodsPackager
+    CocoapodsPackager2 cocoapodsPackager
 
     BomToolType getBomToolType() {
         return BomToolType.COCOAPODS

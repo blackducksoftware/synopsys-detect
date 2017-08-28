@@ -29,6 +29,7 @@ class NameVersionLinkNode implements NameVersionNode {
     String name
     String version
     List<NameVersionLinkNode> children = []
+    Metadata metadata
     NameVersionNode link
 
     @Override
