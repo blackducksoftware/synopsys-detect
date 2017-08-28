@@ -9,14 +9,11 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.cocoapods
+package com.blackducksoftware.integration.hub.detect.nameversion
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.detect.nameversion.Metadata
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
 
-class CocoapodsMetadata implements Metadata {
+class LinkMetadata implements Metadata {
     Forge forge
-    String source
     NameVersionNode linkNode
 }

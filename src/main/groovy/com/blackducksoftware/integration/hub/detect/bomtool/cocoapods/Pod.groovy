@@ -18,6 +18,7 @@ import groovy.transform.ToString
 @ToString(includePackage=false, includeFields=true)
 class Pod {
     String name
+    String cleanName
     List<String> dependencies = []
 
     public Pod() {

@@ -22,14 +22,18 @@
  */
 package com.blackducksoftware.integration.hub.detect.nameversion
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+
 /**
  * This class should be used to construct node graphs where you don't
  * always have a defined version for each dependency, but will EVENTUALLY find
  * a defined version, as in Gemfile.lock files.
  */
 class NameVersionNodeBuilder {
-    final Map<String, NameVersionNode> nameToNodeMap = [:]
+    final Logger logger = LoggerFactory.getLogger(NameVersionNodeBuilder.class)
 
+    final Map<String, NameVersionNode> nameToNodeMap = [:]
     final NameVersionNode root
 
     public NameVersionNodeBuilder(final NameVersionNode root) {
@@ -38,26 +42,18 @@ class NameVersionNodeBuilder {
     }
 
     public void addChildNodeToParent(final NameVersionNode child, final NameVersionNode parent) {
-        if (!nameToNodeMap.containsKey(child.name)) {
-            nameToNodeMap.put(child.name, child)
-        }
-
-        if (!nameToNodeMap.containsKey(parent.name)) {
-            nameToNodeMap.put(parent.name, parent)
-        }
-
-        if (child.version?.trim() && !nameToNodeMap[child.name].version?.trim()) {
-            nameToNodeMap[child.name].version = child.version
-        }
-
-        if (parent.version?.trim() && !nameToNodeMap[parent.name].version?.trim()) {
-            nameToNodeMap[parent.name].version = parent.version
-        }
+        addToCache(child)
+        addToCache(parent)
 
         nameToNodeMap[parent.name].children.add(nameToNodeMap[child.name])
     }
 
-    public boolean addToGraph(final NameVersionNode nameVersionNode) {
+    public NameVersionNode addToCache(final NameVersionNode nameVersionNode) {
+        if (!nameVersionNode.name?.trim()) {
+            logger.debug("A component must have a name to be added to the graph. The supplied component is invalid: ${nameVersionNode.toString()}")
+            return null
+        }
+
         if (!nameToNodeMap.containsKey(nameVersionNode.name)) {
             nameToNodeMap.put(nameVersionNode.name, nameVersionNode)
         }
@@ -65,5 +61,19 @@ class NameVersionNodeBuilder {
         if (nameVersionNode.version?.trim() && !nameToNodeMap[nameVersionNode.name].version?.trim()) {
             nameToNodeMap[nameVersionNode.name].version = nameVersionNode.version
         }
+
+        nameToNodeMap[nameVersionNode.name]
+    }
+
+    public Metadata getMetadata(String nodeName){
+        nameToNodeMap[nodeName]?.getMetadata()
+    }
+
+    public void setMetadata(String nodeName, Metadata metadata) {
+        nameToNodeMap[nodeName]?.setMetadata(metadata)
+    }
+
+    public NameVersionNode build() {
+        root
     }
 }

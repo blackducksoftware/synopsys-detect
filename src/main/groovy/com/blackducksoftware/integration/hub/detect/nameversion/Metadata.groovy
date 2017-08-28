@@ -15,4 +15,6 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 
 interface Metadata {
     public Forge getForge()
+
+    public void setForge(Forge forge)
 }

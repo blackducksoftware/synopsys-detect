@@ -26,12 +26,6 @@ class PodSource {
     @JsonProperty(':git')
     String git
 
-    @JsonProperty(':tag')
-    String tag
-
-    @JsonProperty(':commit')
-    String commit
-
     @JsonProperty(':path')
     String path
 }
