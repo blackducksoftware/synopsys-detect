@@ -58,8 +58,8 @@ class CpanBomTool extends BomTool {
     public boolean isBomToolApplicable() {
         def containsFiles = detectFileManager.containsAllFiles(sourcePath, 'Makefile.PL')
         if (containsFiles) {
-            cpanExecutablePath = getExecutablePath(ExecutableType.CPAN, true, detectConfiguration.getCpanPath())
-            cpanmExecutablePath = getExecutablePath(ExecutableType.CPANM, true, detectConfiguration.getCpanmPath())
+            cpanExecutablePath = findExecutablePath(ExecutableType.CPAN, true, detectConfiguration.getCpanPath())
+            cpanmExecutablePath = findExecutablePath(ExecutableType.CPANM, true, detectConfiguration.getCpanmPath())
             if (!cpanExecutablePath) {
                 logger.warn("Could not find the ${executableManager.getExecutableName(ExecutableType.CPAN)} executable")
             }
