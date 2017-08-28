@@ -62,10 +62,9 @@ class PythonEnvironmentHandler {
         systemEnvironment.pythonType = pythonExecutableType
         systemEnvironment.pipType = pipExecutableType
 
-        if (!detectConfiguration.pythonPath?.trim()) {
+        systemEnvironment.pythonPath = detectConfiguration.pythonPath
+        if (!systemEnvironment.pythonPath?.trim()) {
             systemEnvironment.pythonPath = executableManager.getExecutablePath(pythonExecutableType, true, detectConfiguration.sourcePath)
-        } else {
-            systemEnvironment.pythonPath = detectConfiguration.pythonPath
         }
 
         systemEnvironment.pipPath = detectConfiguration.pipPath
