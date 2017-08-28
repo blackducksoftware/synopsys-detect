@@ -62,8 +62,8 @@ class DockerBomTool extends BomTool {
         if (!propertiesOk) {
             logger.debug('The docker properties are not sufficient to run')
         } else {
-            dockerExecutablePath = executableManager.getExecutablePath(ExecutableType.DOCKER, true, detectConfiguration.dockerPath)
-            bashExecutablePath = executableManager.getExecutablePath(ExecutableType.BASH, true, detectConfiguration.bashPath)
+            dockerExecutablePath = getExecutablePath(ExecutableType.DOCKER, true, detectConfiguration.dockerPath)
+            bashExecutablePath = getExecutablePath(ExecutableType.BASH, true, detectConfiguration.bashPath)
             if (!dockerExecutablePath) {
                 logger.warn("Could not find a ${executableManager.getExecutableName(ExecutableType.DOCKER)} executable")
             }

@@ -61,8 +61,17 @@ class PythonEnvironmentHandler {
 
         systemEnvironment.pythonType = pythonExecutableType
         systemEnvironment.pipType = pipExecutableType
-        systemEnvironment.pythonPath = executableManager.getExecutablePath(pythonExecutableType, true, detectConfiguration.pythonPath)
-        systemEnvironment.pipPath = executableManager.getExecutablePath(pipExecutableType, true, detectConfiguration.pipPath)
+
+        if (!detectConfiguration.pythonPath?.trim()) {
+            systemEnvironment.pythonPath = executableManager.getExecutablePath(pythonExecutableType, true, detectConfiguration.sourcePath)
+        } else {
+            systemEnvironment.pythonPath = detectConfiguration.pythonPath
+        }
+
+        systemEnvironment.pipPath = detectConfiguration.pipPath
+        if (!systemEnvironment.pipPath?.trim()) {
+            systemEnvironment.pipPath = executableManager.getExecutablePath(pipExecutableType, true, detectConfiguration.sourcePath)
+        }
 
         if (SystemUtils.IS_OS_WINDOWS) {
             binFolderName = 'Scripts'
