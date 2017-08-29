@@ -150,13 +150,15 @@ class HubSignatureScanner {
             HubScanConfigBuilder hubScanConfigBuilder = createScanConfigBuilder(detectProject, canonicalPath)
             hubScanConfigBuilder.setDryRun(true)
 
-            if (detectConfiguration.hubSignatureScannerOfflineLocalPath) {
-                hubScanConfigBuilder.toolsDir = new File(detectConfiguration.hubSignatureScannerOfflineLocalPath)
+            if (!detectConfiguration.hubSignatureScannerOfflineLocalPath) {
+                File scannerDirectory = detectFileManager.createDirectory('signature_scanner')
+                File toolsDirectory = detectFileManager.createDirectory(scannerDirectory, 'tools')
+                hubScanConfigBuilder.toolsDir = toolsDirectory
             }
 
             HubScanConfig hubScanConfig = hubScanConfigBuilder.build()
 
-            offlineScanner.offlineScan(hubScanConfig)
+            offlineScanner.offlineScan(hubScanConfig, detectConfiguration.hubSignatureScannerOfflineLocalPath)
         } catch (Exception e) {
             logger.error("${detectProject.projectName}/${detectProject.projectVersionName} - ${canonicalPath} was not scanned by the BlackDuck CLI: ${e.message}")
         }
