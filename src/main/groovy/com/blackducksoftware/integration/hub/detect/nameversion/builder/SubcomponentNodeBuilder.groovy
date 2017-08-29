@@ -39,6 +39,15 @@ class SubcomponentNodeBuilder extends LinkedNameVersionNodeBuilder {
         super.build()
     }
 
+    /**
+     * The use for this is because the KB currently does not support sub components in
+     * cocoapods. Until such time we must collapse sub commponents into their super component
+     *
+     * Takes the children of a NameVersionNode and moves them to the super component.
+     * Subcomponents should have a link to the superComponent in the metadata.
+     * The superComponents should have all subcomponents in their metadata.
+     * All superComponents should be added the the superComponents list.
+     */
     public NameVersionNode collapseSubcomponents(NameVersionNode nameVersionNode) {
         if (nameVersionNode?.metadata instanceof SubcomponentMetadata) {
             SubcomponentMetadata metadata = nameVersionNode.metadata as SubcomponentMetadata
