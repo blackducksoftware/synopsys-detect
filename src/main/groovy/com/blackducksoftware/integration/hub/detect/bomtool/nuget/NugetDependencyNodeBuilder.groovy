@@ -36,23 +36,23 @@ public class NugetDependencyNodeBuilder {
     public NugetDependencyNodeBuilder() {
     }
 
-    public void AddPackageSets(List<NugetPackageSet> sets) {
+    public void addPackageSets(List<NugetPackageSet> sets) {
         packageSets.addAll(sets);
     }
-    public void AddPackageSet(NugetPackageSet set) {
+    public void addPackageSet(NugetPackageSet set) {
         packageSets.add(set);
     }
 
-    public Set<DependencyNode> CreateDependencyNodes(List<NugetPackageId> packageDependencies) {
+    public Set<DependencyNode> createDependencyNodes(List<NugetPackageId> packageDependencies) {
         def nodes = new HashSet<DependencyNode>()
         packageDependencies.each {
-            nodes.add(GetOrCreate(it))
+            nodes.add(getOrCreateDependencyNode(it))
         }
         nodes
     }
 
 
-    public DependencyNode GetOrCreate(NugetPackageId id) {
+    public DependencyNode getOrCreateDependencyNode(NugetPackageId id) {
         def node = nodeMap.getOrDefault(id, null)
         if (node == null) {
             def externalId = new NameVersionExternalId(Forge.NUGET, id.name, id.version)
@@ -64,7 +64,7 @@ public class NugetDependencyNodeBuilder {
                 set.packageId.equals(id)
             }
 
-            def nodeChildren = packageSet.dependencies.collect{ child ->  GetOrCreate(child) }
+            def nodeChildren = packageSet.dependencies.collect{ child ->  getOrCreateDependencyNode(child) }
 
             node.children.addAll(nodeChildren)
 
@@ -73,7 +73,7 @@ public class NugetDependencyNodeBuilder {
                 set.dependencies.contains(packageSet.packageId) //all packages that depend on me. so parent.children -> me
             }
 
-            parents.each{pkg -> GetOrCreate(pkg.packageId).children.add(node)}
+            parents.each{pkg -> getOrCreateDependencyNode(pkg.packageId).children.add(node)}
         }
 
         node

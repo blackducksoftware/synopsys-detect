@@ -9,7 +9,6 @@ import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeT
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
-
 public class NugetInspectorPackagerTest {
     public Gson gson = new GsonBuilder().setPrettyPrinting().create()
 

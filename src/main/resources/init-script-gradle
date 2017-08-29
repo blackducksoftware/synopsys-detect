@@ -7,12 +7,35 @@ import org.gradle.api.tasks.TaskState
 import com.blackducksoftware.integration.gradle.DependencyGatherer
 
 initscript {
-    repositories {
-        mavenLocal()
-        mavenCentral()
+    String airgapLibsPath = 'AIRGAP_LIBS_DIRECTORY_PATH'
+    if (airgapLibsPath) {
+        println "Running air gapped from ${airgapLibsPath}"
+    } else {
+        println 'Running in online mode'
     }
+    
+    repositories {
+        if (airgapLibsPath) {
+            flatDir {
+                dirs airgapLibsPath
+            }
+        } else {
+            mavenLocal()
+            mavenCentral()
+        }
+    }
+
     dependencies {
-        classpath 'com.blackducksoftware.integration:integration-gradle-inspector:GRADLE_INSPECTOR_VERSION'
+        if (airgapLibsPath) {
+            new File(airgapLibsPath).eachFile {
+                String fileName = it.name.find('.*\\.jar')?.replace('.jar', '')
+                if (fileName) {
+                    classpath name: fileName
+                }
+            }
+        } else {
+            classpath 'com.blackducksoftware.integration:integration-gradle-inspector:GRADLE_INSPECTOR_VERSION'
+        }
     }
 }
 

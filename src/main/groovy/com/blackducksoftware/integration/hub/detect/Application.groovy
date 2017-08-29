@@ -55,7 +55,6 @@ import com.google.gson.GsonBuilder
 @SpringBootApplication
 class Application {
     private final Logger logger = LoggerFactory.getLogger(Application.class)
-    public static final String VERSION = ResourceUtil.getResourceAsString('version.txt', StandardCharsets.UTF_8)
 
     @Autowired
     ValueDescriptionAnnotationFinder valueDescriptionAnnotationFinder

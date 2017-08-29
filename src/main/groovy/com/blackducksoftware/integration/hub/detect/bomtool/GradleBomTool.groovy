@@ -24,7 +24,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool
 
 import java.nio.charset.StandardCharsets
 
-import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -79,15 +78,11 @@ class GradleBomTool extends BomTool {
     }
 
     private String findGradleExecutable(String sourcePath) {
-        String gradlePath = detectConfiguration.getGradlePath()
-        if (StringUtils.isBlank(gradlePath)) {
-            logger.debug('detect.gradle.path not set in config - first try to find the gradle wrapper')
-            gradlePath = executableManager.getPathOfExecutableFromRelativePath(sourcePath, ExecutableType.GRADLEW)
-        }
+        String gradlePath = findExecutablePath(ExecutableType.GRADLEW, false, detectConfiguration.getGradlePath())
 
-        if (StringUtils.isBlank(gradlePath)) {
+        if (!gradlePath) {
             logger.debug('gradle wrapper not found - trying to find gradle on the PATH')
-            gradlePath = executableManager.getPathOfExecutable(ExecutableType.GRADLE)
+            gradlePath = executableManager.getExecutablePath(ExecutableType.GRADLE, true, sourcePath)
         }
         gradlePath
     }
@@ -100,6 +95,12 @@ class GradleBomTool extends BomTool {
         initScriptContents = initScriptContents.replace('INCLUDED_PROJECT_NAMES', detectConfiguration.getGradleIncludedProjectNames())
         initScriptContents = initScriptContents.replace('EXCLUDED_CONFIGURATION_NAMES', detectConfiguration.getGradleExcludedConfigurationNames())
         initScriptContents = initScriptContents.replace('INCLUDED_CONFIGURATION_NAMES', detectConfiguration.getGradleIncludedConfigurationNames())
+
+        String airgapLibsDirectoryPath = ''
+        if (detectConfiguration.getGradleInspectorAirGapPath()) {
+            airgapLibsDirectoryPath = new File(detectConfiguration.getGradleInspectorAirGapPath()).getCanonicalPath()
+        }
+        initScriptContents = initScriptContents.replace('AIRGAP_LIBS_DIRECTORY_PATH', airgapLibsDirectoryPath)
 
         detectFileManager.writeToFile(initScriptFile, initScriptContents)
         String initScriptPath = initScriptFile.absolutePath
