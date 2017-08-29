@@ -101,6 +101,12 @@ class GradleBomTool extends BomTool {
         initScriptContents = initScriptContents.replace('EXCLUDED_CONFIGURATION_NAMES', detectConfiguration.getGradleExcludedConfigurationNames())
         initScriptContents = initScriptContents.replace('INCLUDED_CONFIGURATION_NAMES', detectConfiguration.getGradleIncludedConfigurationNames())
 
+        String airgapLibsDirectoryPath = ''
+        if (detectConfiguration.getGradleInspectorAirGapPath()) {
+            airgapLibsDirectoryPath = new File(detectConfiguration.getGradleInspectorAirGapPath()).getCanonicalPath()
+        }
+        initScriptContents = initScriptContents.replace('AIRGAP_LIBS_DIRECTORY_PATH', airgapLibsDirectoryPath)
+
         detectFileManager.writeToFile(initScriptFile, initScriptContents)
         String initScriptPath = initScriptFile.absolutePath
         logger.info("using ${initScriptPath} as the path for the gradle init script")

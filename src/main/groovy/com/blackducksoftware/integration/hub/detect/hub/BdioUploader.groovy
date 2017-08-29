@@ -30,7 +30,6 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.api.bom.BomImportRequestService
 import com.blackducksoftware.integration.hub.buildtool.BuildToolConstants
 import com.blackducksoftware.integration.hub.dataservice.phonehome.PhoneHomeDataService
-import com.blackducksoftware.integration.hub.detect.Application
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.global.HubServerConfig
 import com.blackducksoftware.integration.hub.service.HubServicesFactory
@@ -53,7 +52,7 @@ class BdioUploader {
             }
         }
 
-        String hubDetectVersion = Application.VERSION
+        String hubDetectVersion = detectConfiguration.getBuildInfo().getDetectVersion()
         PhoneHomeRequestBody phoneHomeRequestBody = phoneHomeDataService.buildPhoneHomeRequestBody('Hub-Detect', hubDetectVersion, hubDetectVersion)
         phoneHomeDataService.phoneHome(phoneHomeRequestBody)
     }

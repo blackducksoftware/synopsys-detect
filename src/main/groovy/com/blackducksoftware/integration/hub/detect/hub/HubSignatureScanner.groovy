@@ -22,8 +22,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.hub
 
-import java.nio.charset.StandardCharsets
-
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -39,7 +37,6 @@ import com.blackducksoftware.integration.hub.model.request.ProjectRequest
 import com.blackducksoftware.integration.hub.model.view.ProjectVersionView
 import com.blackducksoftware.integration.hub.request.builder.ProjectRequestBuilder
 import com.blackducksoftware.integration.hub.scan.HubScanConfig
-import com.blackducksoftware.integration.util.ResourceUtil
 
 @Component
 class HubSignatureScanner {
@@ -136,7 +133,7 @@ class HubSignatureScanner {
             HubScanConfigBuilder hubScanConfigBuilder = createScanConfigBuilder(detectProject, canonicalPath)
             HubScanConfig hubScanConfig = hubScanConfigBuilder.build()
 
-            String hubDetectVersion = ResourceUtil.getResourceAsString('version.txt', StandardCharsets.UTF_8)
+            String hubDetectVersion = detectConfiguration.getBuildInfo().getDetectVersion()
             projectVersionView = cliDataService.installAndRunControlledScan(hubServerConfig, hubScanConfig, projectRequest, false, 'Hub-Detect', hubDetectVersion, hubDetectVersion)
             logger.info("${canonicalPath} was successfully scanned by the BlackDuck CLI.")
         } catch (Exception e) {
@@ -157,7 +154,6 @@ class HubSignatureScanner {
             }
 
             HubScanConfig hubScanConfig = hubScanConfigBuilder.build()
-
             offlineScanner.offlineScan(hubScanConfig, detectConfiguration.hubSignatureScannerOfflineLocalPath)
         } catch (Exception e) {
             logger.error("${detectProject.projectName}/${detectProject.projectVersionName} - ${canonicalPath} was not scanned by the BlackDuck CLI: ${e.message}")

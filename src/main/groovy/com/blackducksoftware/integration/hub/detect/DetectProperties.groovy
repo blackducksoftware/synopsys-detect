@@ -374,5 +374,17 @@ class DetectProperties {
     @ValueDescription(description="The name of the anaconda environment used by your project", group=DetectProperties.GROUP_CONDA)
     @Value('${detect.conda.environment.name}')
     String condaEnvironmentName
+
+    @ValueDescription(description="The path to the directory containing the air gap dependencies for the gradle inspector", group=DetectProperties.GROUP_GRADLE)
+    @Value('${detect.gradle.inspector.air.gap.path}')
+    String gradleInspectorAirGapPath
+
+    @ValueDescription(description="The path to the nuget inspector nupkg", group=DetectProperties.GROUP_NUGET)
+    @Value('${detect.nuget.inspector.air.gap.path}')
+    String nugetInspectorAirGapPath
+
+    @ValueDescription(description="The source for nuget packages", defaultValue='https://www.nuget.org/api/v2/', group=DetectProperties.GROUP_NUGET)
+    @Value('${detect.nuget.packages.repo.url}')
+    String nugetPackagesRepoUrl
 }
 
