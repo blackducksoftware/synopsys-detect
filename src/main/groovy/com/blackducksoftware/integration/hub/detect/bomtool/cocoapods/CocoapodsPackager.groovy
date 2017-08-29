@@ -1,3 +1,25 @@
+/*
+ * Copyright (C) 2017 Black Duck Software, Inc.
+ * http://www.blackducksoftware.com/
+ *
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package com.blackducksoftware.integration.hub.detect.bomtool.cocoapods
 
 import org.springframework.beans.factory.annotation.Autowired
@@ -10,7 +32,8 @@ import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeI
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.nameversion.NodeMetadata
 import com.blackducksoftware.integration.hub.detect.nameversion.builder.NameVersionNodeBuilderImpl
-import com.blackducksoftware.integration.hub.detect.nameversion.metadata.LinkMetadata
+import com.blackducksoftware.integration.hub.detect.nameversion.builder.SubcomponentNodeBuilder
+import com.blackducksoftware.integration.hub.detect.nameversion.metadata.SubcomponentMetadata
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper
 
 @Component
@@ -26,9 +49,9 @@ class CocoapodsPackager {
 
         def root = new NameVersionNodeImpl()
         root.name = "detectRootNode - ${UUID.randomUUID()}"
-        NameVersionNodeBuilderImpl builder = new NameVersionNodeBuilderImpl(root)
+        def builder = new SubcomponentNodeBuilder(root)
 
-        podfileLock.pods.each { podToNameVersionNode(builder, it) }
+        podfileLock.pods.each { buildNameVersionNode(builder, it) }
 
         podfileLock.dependencies.each {
             def child = new NameVersionNodeImpl([name: cleanPodName(it.name)])
@@ -36,7 +59,7 @@ class CocoapodsPackager {
         }
 
         podfileLock.externalSources?.sources.each { source ->
-            NodeMetadata nodeMetadata = getMetadata(builder, source.name)
+            NodeMetadata nodeMetadata = createMetadata(builder, source.name)
 
             if (source.git && source.git.contains('github')) {
                 // Change the forge to GitHub when there is better KB support
@@ -44,17 +67,13 @@ class CocoapodsPackager {
             } else if (source.path && source.path.contains('node_modules')) {
                 nodeMetadata.setForge(Forge.NPM)
             }
-
-            builder.setMetadata(cleanPodName(source.name), nodeMetadata)
         }
-
-
 
         builder.build().children.collect { nameVersionNodeTransformer.createDependencyNode(Forge.COCOAPODS, it) } as Set
     }
 
-    private NameVersionNode podToNameVersionNode(NameVersionNodeBuilderImpl builder, Pod pod) {
-        def nameVersionNode = new NameVersionNodeImpl()
+    private NameVersionNode buildNameVersionNode(SubcomponentNodeBuilder builder, Pod pod) {
+        NameVersionNode nameVersionNode = new NameVersionNodeImpl()
         nameVersionNode.name = cleanPodName(pod.name)
         pod.cleanName = nameVersionNode.name
         String[] segments = pod.name.split(' ')
@@ -66,27 +85,32 @@ class CocoapodsPackager {
             }
         }
 
-        pod.dependencies.each { builder.addChildNodeToParent(podToNameVersionNode(builder, new Pod(it)), nameVersionNode) }
+        pod.dependencies.each { builder.addChildNodeToParent(buildNameVersionNode(builder, new Pod(it)), nameVersionNode) }
 
         if (pod.dependencies.isEmpty()) {
             builder.addToCache(nameVersionNode)
         }
 
         if (nameVersionNode.name.contains('/')) {
-            String linkNodeName = nameVersionNode.name.split('/')[0].trim()
-            def linkNode = builder.addToCache(new NameVersionNodeImpl([name: linkNodeName]))
-            LinkMetadata linkMetadata = getMetadata(builder, nameVersionNode.name)
-            linkMetadata.linkNode = linkNode
-            builder.setMetadata(nameVersionNode.name, linkMetadata)
+            String superNodeName = nameVersionNode.name.split('/')[0].trim()
+            def superNode = builder.addToCache(new NameVersionNodeImpl([name: superNodeName]))
+            SubcomponentMetadata superNodeMetadata = createMetadata(builder, superNode.name)
+            superNodeMetadata.subcomponents.add(nameVersionNode)
+
+            SubcomponentMetadata subcomponentMetadata = createMetadata(builder, nameVersionNode.name)
+            subcomponentMetadata.linkNode = superNode
+
+            builder.superComponents.add(superNode)
         }
 
         nameVersionNode
     }
 
-    private LinkMetadata getMetadata(NameVersionNodeBuilderImpl builder, String name) {
-        LinkMetadata metadata = builder.getNodeMetadata(cleanPodName(name)) as LinkMetadata
+    private SubcomponentMetadata createMetadata(NameVersionNodeBuilderImpl builder, String name) {
+        SubcomponentMetadata metadata = builder.getNodeMetadata(cleanPodName(name)) as SubcomponentMetadata
         if (!metadata) {
-            metadata = new LinkMetadata()
+            metadata = new SubcomponentMetadata()
+            builder.setMetadata(name, metadata)
         }
 
         metadata
