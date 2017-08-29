@@ -54,9 +54,11 @@ class HubSignatureScanner {
     @Autowired
     DetectFileManager detectFileManager
 
-    private Set<String> registeredPaths = []
+    @Autowired
+    OfflineScanner offlineScanner
 
-    private List<String> registeredPathsToExclude = []
+    private Set<String> registeredPaths = []
+    private Set<String> registeredPathsToExclude = []
 
     public void registerPathToScan(File file, String... fileNamesToExclude) {
         String matchingExcludedPath = detectConfiguration.hubSignatureScannerPathsToExclude.find {
@@ -98,17 +100,26 @@ class HubSignatureScanner {
         } else {
             registeredPaths.each {
                 logger.info("Attempting to scan ${it} for ${detectProject.projectName}/${detectProject.projectVersionName}")
-                try {
-                    ProjectVersionView scanProject = scanPath(cliDataService, hubServerConfig, it, detectProject)
-                    if (!projectVersionView) {
-                        projectVersionView = scanProject
-                    }
-                } catch (Exception e) {
-                    logger.error("Not able to scan ${it}: ${e.message}")
+                ProjectVersionView scanProject = scanPath(cliDataService, hubServerConfig, it, detectProject)
+                if (!projectVersionView) {
+                    projectVersionView = scanProject
                 }
             }
         }
         return projectVersionView
+    }
+
+    public void scanPathsOffline(DetectProject detectProject) {
+        if (detectProject.projectName && detectProject.projectVersionName && detectConfiguration.hubSignatureScannerPaths) {
+            detectConfiguration.hubSignatureScannerPaths.each {
+                scanPathOffline(new File(it).canonicalPath, detectProject)
+            }
+        } else {
+            registeredPaths.each {
+                logger.info("Attempting to scan ${it} for ${detectProject.projectName}/${detectProject.projectVersionName}")
+                scanPathOffline(it, detectProject)
+            }
+        }
     }
 
     private ProjectVersionView scanPath(CLIDataService cliDataService, HubServerConfig hubServerConfig, String canonicalPath, DetectProject detectProject) {
@@ -122,34 +133,58 @@ class HubSignatureScanner {
             builder.setDistribution(detectConfiguration.projectVersionDistribution)
             ProjectRequest projectRequest = builder.build()
 
-            File scannerDirectory = detectFileManager.createDirectory('signature_scanner')
-            File toolsDirectory = detectFileManager.createDirectory(scannerDirectory, 'tools')
-
-            HubScanConfigBuilder hubScanConfigBuilder = new HubScanConfigBuilder()
-            hubScanConfigBuilder.scanMemory = detectConfiguration.hubSignatureScannerMemory
-            hubScanConfigBuilder.toolsDir = toolsDirectory
-            hubScanConfigBuilder.workingDirectory = scannerDirectory
-            hubScanConfigBuilder.addScanTargetPath(canonicalPath)
-            hubScanConfigBuilder.cleanupLogsOnSuccess = detectConfiguration.cleanupBomToolFiles
-            hubScanConfigBuilder.dryRun = detectConfiguration.hubSignatureScannerDryRun
-
-            final String codeLocationName = detectProject.getCodeLocationName(detectConfiguration.sourcePath, canonicalPath, detectFileManager.extractFinalPieceFromPath(detectConfiguration.sourcePath), detectConfiguration.getProjectCodeLocationPrefix(), 'Hub Detect Scan')
-            hubScanConfigBuilder.codeLocationAlias = codeLocationName
-
-            if (detectConfiguration.hubSignatureScannerExclusionPatterns) {
-                hubScanConfigBuilder.setExcludePatterns(detectConfiguration.hubSignatureScannerExclusionPatterns)
-            } else if (registeredPathsToExclude){
-                hubScanConfigBuilder.setExcludePatterns(registeredPathsToExclude as String[])
-            }
-
+            HubScanConfigBuilder hubScanConfigBuilder = createScanConfigBuilder(detectProject, canonicalPath)
             HubScanConfig hubScanConfig = hubScanConfigBuilder.build()
 
             String hubDetectVersion = ResourceUtil.getResourceAsString('version.txt', StandardCharsets.UTF_8)
             projectVersionView = cliDataService.installAndRunControlledScan(hubServerConfig, hubScanConfig, projectRequest, false, 'Hub-Detect', hubDetectVersion, hubDetectVersion)
             logger.info("${canonicalPath} was successfully scanned by the BlackDuck CLI.")
         } catch (Exception e) {
-            logger.error("${detectProject.projectName}/${detectProject.projectVersionName} was not scanned by the BlackDuck CLI: ${e.message}")
+            logger.error("${detectProject.projectName}/${detectProject.projectVersionName} - ${canonicalPath} was not scanned by the BlackDuck CLI: ${e.message}")
         }
         return projectVersionView
+    }
+
+    private void scanPathOffline(String canonicalPath, DetectProject detectProject) {
+        try {
+            HubScanConfigBuilder hubScanConfigBuilder = createScanConfigBuilder(detectProject, canonicalPath)
+            hubScanConfigBuilder.setDryRun(true)
+
+            if (!detectConfiguration.hubSignatureScannerOfflineLocalPath) {
+                File scannerDirectory = detectFileManager.createDirectory('signature_scanner')
+                File toolsDirectory = detectFileManager.createDirectory(scannerDirectory, 'tools')
+                hubScanConfigBuilder.toolsDir = toolsDirectory
+            }
+
+            HubScanConfig hubScanConfig = hubScanConfigBuilder.build()
+
+            offlineScanner.offlineScan(hubScanConfig, detectConfiguration.hubSignatureScannerOfflineLocalPath)
+        } catch (Exception e) {
+            logger.error("${detectProject.projectName}/${detectProject.projectVersionName} - ${canonicalPath} was not scanned by the BlackDuck CLI: ${e.message}")
+        }
+    }
+
+    private HubScanConfigBuilder createScanConfigBuilder(DetectProject detectProject, String canonicalPath) {
+        File scannerDirectory = detectFileManager.createDirectory('signature_scanner')
+        File toolsDirectory = detectFileManager.createDirectory(scannerDirectory, 'tools')
+
+        HubScanConfigBuilder hubScanConfigBuilder = new HubScanConfigBuilder()
+        hubScanConfigBuilder.scanMemory = detectConfiguration.hubSignatureScannerMemory
+        hubScanConfigBuilder.toolsDir = toolsDirectory
+        hubScanConfigBuilder.workingDirectory = scannerDirectory
+        hubScanConfigBuilder.addScanTargetPath(canonicalPath)
+        hubScanConfigBuilder.cleanupLogsOnSuccess = detectConfiguration.cleanupBomToolFiles
+        hubScanConfigBuilder.dryRun = detectConfiguration.hubSignatureScannerDryRun
+
+        final String codeLocationName = detectProject.getCodeLocationName(detectConfiguration.sourcePath, canonicalPath, detectFileManager.extractFinalPieceFromPath(detectConfiguration.sourcePath), detectConfiguration.getProjectCodeLocationPrefix(), 'Hub Detect Scan')
+        hubScanConfigBuilder.codeLocationAlias = codeLocationName
+
+        if (detectConfiguration.hubSignatureScannerExclusionPatterns) {
+            hubScanConfigBuilder.setExcludePatterns(detectConfiguration.hubSignatureScannerExclusionPatterns)
+        } else if (registeredPathsToExclude) {
+            hubScanConfigBuilder.setExcludePatterns(registeredPathsToExclude as String[])
+        }
+
+        hubScanConfigBuilder
     }
 }

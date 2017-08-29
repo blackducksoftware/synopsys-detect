@@ -22,6 +22,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.nuget
 
+import java.nio.charset.StandardCharsets
+
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -40,7 +42,6 @@ import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeT
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
 import com.google.gson.Gson
-import com.google.gson.stream.JsonReader
 
 @Component
 class NugetInspectorPackager {
@@ -64,12 +65,10 @@ class NugetInspectorPackager {
     @Autowired
     NameVersionNodeTransformer nameVersionNodeTransformer
 
-
     public List<DetectCodeLocation> createDetectCodeLocation(File dependencyNodeFile) {
-        final InputStream inputStream = new FileInputStream(dependencyNodeFile)
-        final InputStreamReader streamReader = new InputStreamReader(inputStream, "UTF-8")
-        final JsonReader reader = new JsonReader(streamReader)
-        final NugetInspection nugetInspection = gson.fromJson(reader, NugetInspection.class)
+        String text = dependencyNodeFile.getText(StandardCharsets.UTF_8.name());
+        NugetInspection nugetInspection = gson.fromJson(text, NugetInspection.class)
+
         def codeLocations = new ArrayList<DetectCodeLocation>();
         nugetInspection.containers.each {
             registerScanPaths(it)
@@ -79,13 +78,12 @@ class NugetInspectorPackager {
         codeLocations
     }
 
-    private void registerScanPaths(NugetContainer nugetContainer){
+    private void registerScanPaths(NugetContainer nugetContainer) {
         nugetContainer.outputPaths?.each {
             hubSignatureScanner?.registerPathToScan(new File(it))
         }
         nugetContainer.children?.each { registerScanPaths(it) }
     }
-
 
     private List<DetectCodeLocation> createDetectCodeLocationFromNugetContainer(NugetContainer nugetContainer) {
         String projectName = ''
@@ -95,8 +93,8 @@ class NugetInspectorPackager {
             projectVersionName = nugetContainer.version
             def codeLocations = nugetContainer.children.collect { container ->
                 def builder = new NugetDependencyNodeBuilder()
-                builder.AddPackageSets(container.packages)
-                def children = builder.CreateDependencyNodes(container.dependencies)
+                builder.addPackageSets(container.packages)
+                def children = builder.createDependencyNodes(container.dependencies)
                 def sourcePath = container.sourcePath
 
                 if (!projectVersionName) {
@@ -110,8 +108,8 @@ class NugetInspectorPackager {
             projectVersionName = nugetContainer.version
             String sourcePath = nugetContainer.sourcePath
             def builder = new NugetDependencyNodeBuilder()
-            builder.AddPackageSets(nugetContainer.packages)
-            def children = builder.CreateDependencyNodes(nugetContainer.dependencies)
+            builder.addPackageSets(nugetContainer.packages)
+            def children = builder.createDependencyNodes(nugetContainer.dependencies)
 
             return [
                 new DetectCodeLocation(BomToolType.NUGET, sourcePath, projectName, projectVersionName, new NameVersionExternalId(Forge.NUGET, projectName, projectVersionName), children)

@@ -91,7 +91,7 @@ class NugetBomTool extends BomTool {
         def hubNugetInspectorExecutable = new Executable(sourceDirectory, inspectorExePath, options)
         ExecutableOutput executableOutput = executableRunner.execute(hubNugetInspectorExecutable)
 
-        def dependencyNodeFiles = detectFileManager.findFiles(outputDirectory, '*_dependency_node.json')
+        def dependencyNodeFiles = detectFileManager.findFiles(outputDirectory, INSPECTOR_OUTPUT_PATTERN)
         if (!dependencyNodeFiles) {
             return null
         }

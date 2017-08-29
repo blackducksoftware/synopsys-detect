@@ -53,7 +53,7 @@ public class SbtPackager {
         if (configurations.size() <= 0) {
             logger.warn("No sbt configurations were found in report folder.")
             return null
-        }else if (includedConfigurations.size() <= 0){
+        } else if (includedConfigurations.size() <= 0) {
             logger.warn("Although ${configurations.size()} configs were found, none were included.")
             return null
         }

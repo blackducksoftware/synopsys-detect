@@ -9,10 +9,10 @@ import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeT
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
-@Ignore
 public class NugetInspectorPackagerTest {
     public Gson gson = new GsonBuilder().setPrettyPrinting().create()
 
+    @Ignore
     @Test
     public void createCodeLocationConsoleApp() throws IOException {
         //output from < 1.1.0 or the Nuget inspector
@@ -21,7 +21,7 @@ public class NugetInspectorPackagerTest {
         def expectedOutputFile = new File(getClass().getResource("/nuget/ConsoleApp1_Output.json").getFile())
         createCodeLocation(dependencyNodeFile, expectedOutputFile)
     }
-
+    @Ignore
     @Test
     public void createCodeLocationIntegrationNugetInspector() throws IOException {
         //output from < 1.1.0 or the Nuget inspector
@@ -30,7 +30,7 @@ public class NugetInspectorPackagerTest {
         def expectedOutputFile = new File(getClass().getResource("/nuget/integration-nuget-inspector_Output.json").getFile())
         createCodeLocation(dependencyNodeFile, expectedOutputFile)
     }
-
+    @Ignore
     @Test
     public void createCodeLocationLDServiceDashboard() throws IOException {
         //output from >= 1.1.0 or the Nuget inspector
@@ -39,7 +39,7 @@ public class NugetInspectorPackagerTest {
         def expectedOutputFile = new File(getClass().getResource("/nuget/LDService.Dashboard_Output.json").getFile())
         createCodeLocation(dependencyNodeFile, expectedOutputFile)
     }
-
+    @Ignore
     @Test
     public void createCodeLocationLDService() throws IOException {
         //output from >= 1.1.0 or the Nuget inspector
