@@ -22,7 +22,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.pip
 
-import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.SystemUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -62,8 +61,16 @@ class PythonEnvironmentHandler {
 
         systemEnvironment.pythonType = pythonExecutableType
         systemEnvironment.pipType = pipExecutableType
-        systemEnvironment.pythonPath = findExecutable(detectConfiguration.pythonPath, pythonExecutableType)
-        systemEnvironment.pipPath = findExecutable(detectConfiguration.pipPath, pipExecutableType)
+
+        systemEnvironment.pythonPath = detectConfiguration.pythonPath
+        if (!systemEnvironment.pythonPath?.trim()) {
+            systemEnvironment.pythonPath = executableManager.getExecutablePath(pythonExecutableType, true, detectConfiguration.sourcePath)
+        }
+
+        systemEnvironment.pipPath = detectConfiguration.pipPath
+        if (!systemEnvironment.pipPath?.trim()) {
+            systemEnvironment.pipPath = executableManager.getExecutablePath(pipExecutableType, true, detectConfiguration.sourcePath)
+        }
 
         if (SystemUtils.IS_OS_WINDOWS) {
             binFolderName = 'Scripts'
@@ -103,13 +110,5 @@ class PythonEnvironmentHandler {
         }
 
         existing
-    }
-
-    private String findExecutable(String executablePath, ExecutableType commandType) {
-        if (StringUtils.isNotBlank(executablePath)) {
-            executablePath
-        } else {
-            executableManager.getPathOfExecutable(commandType)
-        }
     }
 }

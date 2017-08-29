@@ -56,7 +56,7 @@ class CondaBomTool extends BomTool {
     public boolean isBomToolApplicable() {
         def containsFiles = detectFileManager.containsAllFiles(sourcePath, 'environment.yml')
         if (containsFiles) {
-            condaExecutablePath = executableManager.getPathOfExecutable(ExecutableType.CONDA, detectConfiguration.getCondaPath())
+            condaExecutablePath = findExecutablePath(ExecutableType.CONDA, true, detectConfiguration.getCondaPath())
             if (!condaExecutablePath) {
                 logger.warn("Could not find the ${executableManager.getExecutableName(ExecutableType.CONDA)} executable")
             }

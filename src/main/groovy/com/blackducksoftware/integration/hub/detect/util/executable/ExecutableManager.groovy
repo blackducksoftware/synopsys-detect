@@ -58,56 +58,31 @@ class ExecutableManager {
         }
     }
 
-    String getPathOfExecutable(ExecutableType executableType) {
-        File executableFile = getExecutable(executableType)
-
-        if (executableFile == null) {
-            logger.debug("Expected to find an executable of type ${executableType.toString()} but none was found")
-            return null
-        }
-        return executableFile.absolutePath
-    }
-
-    String getPathOfExecutable(ExecutableType executableType, String defaultPath) {
-        if (defaultPath?.trim()) {
-            if (findExecutableFile(defaultPath.trim())) {
-                return defaultPath.trim()
-            }
-        }
-
-        getPathOfExecutable(executableType)
-    }
-
     String getExecutableName(ExecutableType executableType) {
         executableType.getExecutable(currentOs)
     }
 
-    File getExecutable(ExecutableType executableType) {
-        String executable = executableType.getExecutable(currentOs)
-        File executableFile = findExecutableFile(executable)
+    String getExecutablePath(ExecutableType executableType, boolean searchSystemPath, String path) {
+        getExecutable(executableType, searchSystemPath, path)?.absolutePath
+    }
+
+    File getExecutable(ExecutableType executableType, boolean searchSystemPath, String path) {
+        String executable = getExecutableName(executableType)
+        String searchPath = path.trim()
+        File executableFile = findExecutableFileFromPath(searchPath, executable)
+        if (searchSystemPath && !executableFile) {
+            executableFile = findExecutableFileFromSystemPath(executable)
+        }
 
         executableFile
     }
 
-    String getPathOfExecutableFromRelativePath(String path, ExecutableType executableType) {
-        File executableFile = getExecutableFromRelativePath(path, executableType)
-
-        null == executableFile ? null : executableFile.absolutePath
-    }
-
-    File getExecutableFromRelativePath(String path, ExecutableType executableType) {
-        String executable = executableType.getExecutable(currentOs)
-        File executableFile = findExecutableFileFromRelativePath(path, executable)
-
-        executableFile
-    }
-
-    private File findExecutableFile(final String executable) {
+    private File findExecutableFileFromSystemPath(final String executable) {
         String systemPath = System.getenv("PATH")
-        return findExecutableFileFromRelativePath(systemPath, executable)
+        return findExecutableFileFromPath(systemPath, executable)
     }
 
-    private File findExecutableFileFromRelativePath(final String path, String executable) {
+    private File findExecutableFileFromPath(final String path, String executable) {
         for (String pathPiece : path.split(File.pathSeparator)) {
             File foundFile = detectFileManager.findFile(pathPiece, executable)
             if (foundFile && foundFile.canExecute()) {
