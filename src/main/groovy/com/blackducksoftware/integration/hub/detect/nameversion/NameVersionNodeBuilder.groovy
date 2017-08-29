@@ -62,6 +62,10 @@ class NameVersionNodeBuilder {
             nameToNodeMap[nameVersionNode.name].version = nameVersionNode.version
         }
 
+        if (nameVersionNode.metadata && !nameToNodeMap[nameVersionNode.name].metadata) {
+            nameToNodeMap[nameVersionNode.name].metadata = nameVersionNode.metadata
+        }
+
         nameToNodeMap[nameVersionNode.name]
     }
 

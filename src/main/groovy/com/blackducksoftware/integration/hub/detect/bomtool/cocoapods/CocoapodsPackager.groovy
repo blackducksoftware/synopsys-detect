@@ -85,7 +85,7 @@ class CocoapodsPackager {
 
     private LinkMetadata getMetadata(NameVersionNodeBuilder builder, String name) {
         LinkMetadata metadata = (LinkMetadata) builder.getMetadata(cleanPodName(name))
-        if(!metadata) {
+        if (!metadata) {
             metadata = new LinkMetadata()
         }
 

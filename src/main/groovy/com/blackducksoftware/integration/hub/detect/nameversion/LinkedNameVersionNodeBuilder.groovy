@@ -17,21 +17,64 @@ class LinkedNameVersionNodeBuilder extends NameVersionNodeBuilder {
         super(root)
     }
 
+    //    @Override
+    //    public NameVersionNode addToCache(final NameVersionNode nameVersionNode) {
+    //        NameVersionNode added = super.addToCache(nameVersionNode)
+    //
+    //        LinkMetadata linkMetadata = getLinkMetadata(added)
+    //        if (linkMetadata?.linkNode) {
+    //            added = addToCache(linkMetadata.linkNode)
+    //        }
+    //
+    //        added
+    //    }
+
     @Override
     public NameVersionNode build() {
-        resolveLinks(root)
+        Stack<NameVersionNode> cyclicalStack = new Stack<>()
+
+        resolveLinks(cyclicalStack, root)
     }
 
-    private NameVersionNode resolveLinks(NameVersionNode nameVersionNode) {
-        NameVersionNode resolvedNode = nameVersionNode
-
-        if (nameVersionNode.metadata && nameVersionNode.metadata instanceof LinkMetadata) {
-            LinkMetadata metadata = (LinkMetadata) nameVersionNode.metadata
-            if (metadata.linkNode) {
-                resolvedNode = resolveLinks(metadata.linkNode)
-            }
+    private NameVersionNode resolveLinks(Stack<String> cyclicalStack, NameVersionNode nameVersionNode) {
+        if (!nameVersionNode) {
+            return null
         }
 
+        if (cyclicalStack.contains(nameVersionNode.name)) {
+            logger.debug("Cyclical depdency detected: ${nameVersionNode.name}")
+            return null
+        }
+        cyclicalStack.push(nameVersionNode.name)
+
+        NameVersionNode resolvedNode = nameVersionNode
+        LinkMetadata metadata = getLinkMetadata(nameVersionNode)
+        if (metadata?.linkNode) {
+            resolvedNode = resolveLinks(cyclicalStack, metadata.linkNode)
+        }
+
+        if (resolvedNode) {
+            List<NameVersionNode> resolvedChildren = []
+            resolvedNode.children.each {
+                NameVersionNode resolvedChild = resolveLinks(cyclicalStack, it)
+                if (resolvedChild) {
+                    resolvedChildren.add(resolvedChild)
+                }
+            }
+            resolvedNode.children = resolvedChildren
+        } else {
+            resolvedNode = nameVersionNode
+        }
+        cyclicalStack.pop()
+
         resolvedNode
+    }
+
+    private LinkMetadata getLinkMetadata(NameVersionNode nameVersionNode) {
+        if (nameVersionNode.metadata instanceof LinkMetadata) {
+            return nameVersionNode.metadata as LinkMetadata
+        }
+
+        null
     }
 }

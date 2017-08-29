@@ -27,9 +27,11 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionLinkNode
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionLinkNodeBuilder
+import com.blackducksoftware.integration.hub.detect.nameversion.LinkMetadata
+import com.blackducksoftware.integration.hub.detect.nameversion.LinkedNameVersionNodeBuilder
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeBuilder
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 
 @Component
@@ -38,10 +40,9 @@ class YarnPackager {
     NameVersionNodeTransformer nameVersionNodeTransformer
 
     public Set<DependencyNode> parse(String yarnLockText) {
-        def rootNode = new NameVersionLinkNode()
-        rootNode.name = ''
-        rootNode.version = ''
-        def nameVersionLinkNodeBuilder = new NameVersionLinkNodeBuilder(rootNode)
+        def rootNode = new NameVersionNodeImpl()
+        rootNode.name = "detectRootNode - ${UUID.randomUUID()}"
+        def nameVersionLinkNodeBuilder = new LinkedNameVersionNodeBuilder(rootNode)
 
         NameVersionNode currentNode = null
         boolean dependenciesStarted = false
@@ -56,7 +57,7 @@ class YarnPackager {
 
             int level = getLineLevel(line)
             if (level == 0) {
-                currentNode = lineToNameVersionLinkNode(nameVersionLinkNodeBuilder, rootNode, line)
+                currentNode = lineToNameVersionNode(nameVersionLinkNodeBuilder, rootNode, line)
                 dependenciesStarted = false
                 continue
             }
@@ -73,7 +74,7 @@ class YarnPackager {
             }
 
             if (level == 2 && dependenciesStarted) {
-                NameVersionLinkNode dependency = dependencyLineToNameVersionLinkNode(line)
+                NameVersionNode dependency = dependencyLineToNameVersionNode(line)
                 nameVersionLinkNodeBuilder.addChildNodeToParent(dependency, currentNode)
                 continue
             }
@@ -101,14 +102,14 @@ class YarnPackager {
         name
     }
 
-    private NameVersionLinkNode dependencyLineToNameVersionLinkNode(String line) {
-        final NameVersionLinkNode nameVersionNode = new NameVersionLinkNode()
+    private NameVersionNode dependencyLineToNameVersionNode(String line) {
+        final NameVersionNode nameVersionNode = new NameVersionNodeImpl()
         nameVersionNode.name = line.trim().replaceFirst(' ', '@').replace('"', '')
 
         nameVersionNode
     }
 
-    private NameVersionLinkNode lineToNameVersionLinkNode(NameVersionLinkNodeBuilder nameVersionLinkNodeBuilder, NameVersionLinkNode root, String line) {
+    private NameVersionNode lineToNameVersionNode(NameVersionNodeBuilder linkedNameVersionNodeBuilder, NameVersionNode root, String line) {
         String cleanLine = line.replace('"', '').replace(':', '')
         List<String> fuzzyNames = cleanLine.split(',').collect { it.trim() }
 
@@ -116,14 +117,16 @@ class YarnPackager {
             return null
         }
 
-        NameVersionLinkNode linkedNameVersionNode = new NameVersionLinkNode()
+        String name = cleanFuzzyName(fuzzyNames[0])
+
+        NameVersionNode linkedNameVersionNode = new NameVersionNodeImpl()
         linkedNameVersionNode.name = cleanFuzzyName(fuzzyNames[0])
 
         fuzzyNames.each {
-            def nameVersionLinkNode = new NameVersionLinkNode()
+            def nameVersionLinkNode = new NameVersionNodeImpl()
             nameVersionLinkNode.name = it
-            nameVersionLinkNode.link = linkedNameVersionNode
-            nameVersionLinkNodeBuilder.addChildNodeToParent(nameVersionLinkNode, root)
+            nameVersionLinkNode.metadata = new LinkMetadata(linkNode: linkedNameVersionNode)
+            linkedNameVersionNodeBuilder.addChildNodeToParent(nameVersionLinkNode, root)
         }
 
         linkedNameVersionNode
