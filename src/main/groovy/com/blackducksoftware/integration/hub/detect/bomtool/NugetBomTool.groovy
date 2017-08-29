@@ -102,6 +102,7 @@ class NugetBomTool extends BomTool {
         }catch (Exception e){
             logger.warn("Unable to clean up nuget files: ${outputDirectory}")
         }
+
         if (!codeLocations) {
             logger.warn('Unable to extract any dependencies from nuget')
             return []
@@ -136,7 +137,7 @@ class NugetBomTool extends BomTool {
                 detectConfiguration.getNugetInspectorPackageVersion(),
                 '-Source',
                 detectConfiguration.getNugetPackagesRepoUrl()
-            ]) 
+            ])
         }
 
         if (!inspectorExe.exists()) {
