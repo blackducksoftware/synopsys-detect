@@ -1,4 +1,4 @@
 ## Hub Detect Landing Page ##
 
-Download latest pack-man from here.
+Download latest Detect from here.
 
