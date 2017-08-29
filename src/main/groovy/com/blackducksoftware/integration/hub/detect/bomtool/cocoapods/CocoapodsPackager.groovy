@@ -5,12 +5,12 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.detect.nameversion.LinkMetadata
-import com.blackducksoftware.integration.hub.detect.nameversion.Metadata
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeBuilder
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
+import com.blackducksoftware.integration.hub.detect.nameversion.NodeMetadata
+import com.blackducksoftware.integration.hub.detect.nameversion.builder.NameVersionNodeBuilderImpl
+import com.blackducksoftware.integration.hub.detect.nameversion.metadata.LinkMetadata
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper
 
 @Component
@@ -26,7 +26,7 @@ class CocoapodsPackager {
 
         def root = new NameVersionNodeImpl()
         root.name = "detectRootNode - ${UUID.randomUUID()}"
-        NameVersionNodeBuilder builder = new NameVersionNodeBuilder(root)
+        NameVersionNodeBuilderImpl builder = new NameVersionNodeBuilderImpl(root)
 
         podfileLock.pods.each { podToNameVersionNode(builder, it) }
 
@@ -36,16 +36,16 @@ class CocoapodsPackager {
         }
 
         podfileLock.externalSources?.sources.each { source ->
-            Metadata metadata = getMetadata(builder, source.name)
+            NodeMetadata nodeMetadata = getMetadata(builder, source.name)
 
             if (source.git && source.git.contains('github')) {
                 // Change the forge to GitHub when there is better KB support
-                metadata.setForge(Forge.COCOAPODS)
+                nodeMetadata.setForge(Forge.COCOAPODS)
             } else if (source.path && source.path.contains('node_modules')) {
-                metadata.setForge(Forge.NPM)
+                nodeMetadata.setForge(Forge.NPM)
             }
 
-            builder.setMetadata(cleanPodName(source.name), metadata)
+            builder.setMetadata(cleanPodName(source.name), nodeMetadata)
         }
 
 
@@ -53,7 +53,7 @@ class CocoapodsPackager {
         builder.build().children.collect { nameVersionNodeTransformer.createDependencyNode(Forge.COCOAPODS, it) } as Set
     }
 
-    private NameVersionNode podToNameVersionNode(NameVersionNodeBuilder builder, Pod pod) {
+    private NameVersionNode podToNameVersionNode(NameVersionNodeBuilderImpl builder, Pod pod) {
         def nameVersionNode = new NameVersionNodeImpl()
         nameVersionNode.name = cleanPodName(pod.name)
         pod.cleanName = nameVersionNode.name
@@ -75,16 +75,16 @@ class CocoapodsPackager {
         if (nameVersionNode.name.contains('/')) {
             String linkNodeName = nameVersionNode.name.split('/')[0].trim()
             def linkNode = builder.addToCache(new NameVersionNodeImpl([name: linkNodeName]))
-            LinkMetadata metadata = getMetadata(builder, nameVersionNode.name)
-            metadata.linkNode = linkNode
-            builder.setMetadata(nameVersionNode.name, metadata)
+            LinkMetadata linkMetadata = getMetadata(builder, nameVersionNode.name)
+            linkMetadata.linkNode = linkNode
+            builder.setMetadata(nameVersionNode.name, linkMetadata)
         }
 
         nameVersionNode
     }
 
-    private LinkMetadata getMetadata(NameVersionNodeBuilder builder, String name) {
-        LinkMetadata metadata = (LinkMetadata) builder.getMetadata(cleanPodName(name))
+    private LinkMetadata getMetadata(NameVersionNodeBuilderImpl builder, String name) {
+        LinkMetadata metadata = builder.getNodeMetadata(cleanPodName(name)) as LinkMetadata
         if (!metadata) {
             metadata = new LinkMetadata()
         }

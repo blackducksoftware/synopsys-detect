@@ -29,15 +29,15 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.detect.Application
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeBuilder
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
+import com.blackducksoftware.integration.hub.detect.nameversion.builder.NameVersionNodeBuilderImpl
 
 class GemlockNodeParser {
     private final Logger logger = LoggerFactory.getLogger(GemlockNodeParser.class)
 
     private NameVersionNode rootNameVersionNode
-    private NameVersionNodeBuilder nameVersionNodeBuilder
+    private NameVersionNodeBuilderImpl nameVersionNodeBuilder
     private HashSet<String> directDependencyNames
     private NameVersionNode currentParent
 
@@ -46,7 +46,7 @@ class GemlockNodeParser {
 
     List<DependencyNode> parseProjectDependencies(NameVersionNodeTransformer nameVersionNodeTransformer, final String gemfileLockContents) {
         rootNameVersionNode = new NameVersionNodeImpl([name: 'gemfileLockRoot'])
-        nameVersionNodeBuilder = new NameVersionNodeBuilder(rootNameVersionNode)
+        nameVersionNodeBuilder = new NameVersionNodeBuilderImpl(rootNameVersionNode)
         directDependencyNames = new HashSet<>()
         currentParent = null
 

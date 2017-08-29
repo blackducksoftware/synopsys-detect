@@ -27,12 +27,12 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.detect.nameversion.LinkMetadata
-import com.blackducksoftware.integration.hub.detect.nameversion.LinkedNameVersionNodeBuilder
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeBuilder
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
+import com.blackducksoftware.integration.hub.detect.nameversion.builder.LinkedNameVersionNodeBuilder
+import com.blackducksoftware.integration.hub.detect.nameversion.builder.NameVersionNodeBuilderImpl
+import com.blackducksoftware.integration.hub.detect.nameversion.metadata.LinkMetadata
 
 @Component
 class YarnPackager {
@@ -109,7 +109,7 @@ class YarnPackager {
         nameVersionNode
     }
 
-    private NameVersionNode lineToNameVersionNode(NameVersionNodeBuilder linkedNameVersionNodeBuilder, NameVersionNode root, String line) {
+    private NameVersionNode lineToNameVersionNode(NameVersionNodeBuilderImpl nameVersionNodeBuilder, NameVersionNode root, String line) {
         String cleanLine = line.replace('"', '').replace(':', '')
         List<String> fuzzyNames = cleanLine.split(',').collect { it.trim() }
 
@@ -126,7 +126,7 @@ class YarnPackager {
             def nameVersionLinkNode = new NameVersionNodeImpl()
             nameVersionLinkNode.name = it
             nameVersionLinkNode.metadata = new LinkMetadata(linkNode: linkedNameVersionNode)
-            linkedNameVersionNodeBuilder.addChildNodeToParent(nameVersionLinkNode, root)
+            nameVersionNodeBuilder.addChildNodeToParent(nameVersionLinkNode, root)
         }
 
         linkedNameVersionNode

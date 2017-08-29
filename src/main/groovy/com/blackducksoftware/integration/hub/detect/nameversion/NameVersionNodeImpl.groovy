@@ -29,7 +29,7 @@ class NameVersionNodeImpl implements NameVersionNode {
     String name
     String version
     List<NameVersionNodeImpl> children = []
-    Metadata metadata
+    NodeMetadata metadata
 
     @Override
     String toString() {
