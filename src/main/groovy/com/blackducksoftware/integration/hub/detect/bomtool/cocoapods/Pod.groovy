@@ -25,7 +25,9 @@ package com.blackducksoftware.integration.hub.detect.bomtool.cocoapods
 import com.fasterxml.jackson.annotation.JsonAnySetter
 
 import groovy.transform.ToString
+import groovy.transform.TypeChecked
 
+@TypeChecked
 @ToString(includePackage=false, includeFields=true)
 class Pod {
     String name

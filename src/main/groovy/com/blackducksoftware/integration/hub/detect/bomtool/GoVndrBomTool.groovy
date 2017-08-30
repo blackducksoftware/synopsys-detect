@@ -33,7 +33,10 @@ import com.blackducksoftware.integration.hub.detect.bomtool.go.vndr.VndrParser
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 
+import groovy.transform.TypeChecked
+
 @Component
+@TypeChecked
 class GoVndrBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(GoVndrBomTool.class)
 

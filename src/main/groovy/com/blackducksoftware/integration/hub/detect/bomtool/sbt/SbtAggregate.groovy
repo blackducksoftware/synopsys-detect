@@ -22,6 +22,9 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.sbt
 
+import groovy.transform.TypeChecked
+
+@TypeChecked
 public class SbtAggregate {
     public String name
     public String org
@@ -42,11 +45,11 @@ public class SbtAggregate {
     }
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + ((org == null) ? 0 : org.hashCode());
-        result = prime * result + ((version == null) ? 0 : version.hashCode());
-        return result;
+        final int prime = 31
+        int result = 1
+        result = prime * result + ((name == null) ? 0 : name.hashCode())
+        result = prime * result + ((org == null) ? 0 : org.hashCode())
+        result = prime * result + ((version == null) ? 0 : version.hashCode())
+        return result
     }
 }

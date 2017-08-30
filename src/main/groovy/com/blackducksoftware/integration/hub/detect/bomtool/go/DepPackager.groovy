@@ -35,7 +35,10 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException
 import com.google.gson.Gson
 
+import groovy.transform.TypeChecked
+
 @Component
+@TypeChecked
 class DepPackager {
     private final Logger logger = LoggerFactory.getLogger(DepPackager.class)
 

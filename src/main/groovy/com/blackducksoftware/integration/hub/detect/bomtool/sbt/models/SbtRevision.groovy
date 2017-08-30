@@ -22,6 +22,9 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.sbt.models
 
+import groovy.transform.TypeChecked
+
+@TypeChecked
 public class SbtRevision {
     String name
 

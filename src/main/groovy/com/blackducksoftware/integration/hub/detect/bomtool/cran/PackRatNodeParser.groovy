@@ -26,13 +26,15 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.detect.Application
 import com.blackducksoftware.integration.hub.detect.bomtool.CranBomTool
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.nameversion.builder.NameVersionNodeBuilderImpl
 
+import groovy.transform.TypeChecked
+
+@TypeChecked
 public class PackRatNodeParser {
     private final Logger logger = LoggerFactory.getLogger(PackRatNodeParser.class)
 

@@ -36,7 +36,10 @@ import com.blackducksoftware.integration.log.Slf4jIntLogger
 import com.blackducksoftware.integration.util.CIEnvironmentVariables
 import com.google.gson.Gson
 
+import groovy.transform.TypeChecked
+
 @Component
+@TypeChecked
 class OfflineScanner {
     private static final Logger logger = LoggerFactory.getLogger(OfflineScanner.class)
 

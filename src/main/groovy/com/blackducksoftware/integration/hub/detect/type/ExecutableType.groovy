@@ -22,6 +22,9 @@
  */
 package com.blackducksoftware.integration.hub.detect.type
 
+import groovy.transform.TypeChecked
+
+@TypeChecked
 enum ExecutableType {
     BASH([(OperatingSystemType.WINDOWS): 'bash.exe', (OperatingSystemType.LINUX): 'bash']),
     CONDA([(OperatingSystemType.WINDOWS): 'conda.exe', (OperatingSystemType.LINUX): 'conda']),

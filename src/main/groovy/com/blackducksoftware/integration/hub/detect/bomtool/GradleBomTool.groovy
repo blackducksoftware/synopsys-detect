@@ -36,7 +36,10 @@ import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.google.gson.Gson
 
+import groovy.transform.TypeChecked
+
 @Component
+@TypeChecked
 class GradleBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(GradleBomTool.class)
 
@@ -72,7 +75,7 @@ class GradleBomTool extends BomTool {
 
         File[] additionalTargets = detectFileManager.findFilesToDepth(detectConfiguration.sourceDirectory, 'build', detectConfiguration.searchDepth)
         if (additionalTargets) {
-            additionalTargets.each { hubSignatureScanner.registerPathToScan(it) }
+            additionalTargets.each { File file -> hubSignatureScanner.registerPathToScan(file) }
         }
         codeLocations
     }
@@ -107,7 +110,7 @@ class GradleBomTool extends BomTool {
         logger.info("using ${initScriptPath} as the path for the gradle init script")
         Executable executable = new Executable(sourceDirectory, gradleExecutable, [
             detectConfiguration.getGradleBuildCommand(),
-            "--init-script=${initScriptPath}"
+            "--init-script=${initScriptPath}" as String
         ])
         executableRunner.execute(executable)
 
@@ -115,9 +118,9 @@ class GradleBomTool extends BomTool {
         File blackduckDirectory = new File(buildDirectory, 'blackduck')
 
         File[] codeLocationFiles = detectFileManager.findFiles(blackduckDirectory, '*_detectCodeLocation.json')
-        List<DetectCodeLocation> codeLocations = codeLocationFiles.collect {
-            logger.debug("Code Location file name: ${it.getName()}")
-            String codeLocationJson = it.getText(StandardCharsets.UTF_8.toString())
+        List<DetectCodeLocation> codeLocations = codeLocationFiles.collect { File file ->
+            logger.debug("Code Location file name: ${file.getName()}")
+            String codeLocationJson = file.getText(StandardCharsets.UTF_8.toString())
             gson.fromJson(codeLocationJson, DetectCodeLocation.class)
         }
         if (detectConfiguration.gradleCleanupBuildBlackduckDirectory) {

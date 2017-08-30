@@ -28,13 +28,16 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.detect.Application
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeBuilder
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.nameversion.builder.NameVersionNodeBuilderImpl
 
+import groovy.transform.TypeChecked
+
 @Component
+@TypeChecked
 class PipInspectorTreeParser {
     final Logger logger = LoggerFactory.getLogger(PipInspectorTreeParser.class)
 
@@ -48,7 +51,7 @@ class PipInspectorTreeParser {
     DependencyNode parse(NameVersionNodeTransformer nameVersionNodeTransformer, String treeText) {
         def lines = treeText.trim().split(System.lineSeparator()).toList()
 
-        def nodeBuilder = null
+        NameVersionNodeBuilder nodeBuilder = null
         Stack<NameVersionNode> tree = new Stack<>()
 
         int indentation = 0

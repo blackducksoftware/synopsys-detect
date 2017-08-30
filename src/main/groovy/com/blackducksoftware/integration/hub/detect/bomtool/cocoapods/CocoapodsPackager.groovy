@@ -36,7 +36,10 @@ import com.blackducksoftware.integration.hub.detect.nameversion.builder.Subcompo
 import com.blackducksoftware.integration.hub.detect.nameversion.metadata.SubcomponentMetadata
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper
 
+import groovy.transform.TypeChecked
+
 @Component
+@TypeChecked
 class CocoapodsPackager {
     final List<String> fuzzyVersionIdentifiers = ['>', '<', '~>', '=']
 
@@ -69,7 +72,7 @@ class CocoapodsPackager {
             }
         }
 
-        builder.build().children.collect { nameVersionNodeTransformer.createDependencyNode(Forge.COCOAPODS, it) } as Set
+        builder.build().children.collect { nameVersionNodeTransformer.createDependencyNode(Forge.COCOAPODS, it as NameVersionNode) } as Set
     }
 
     private NameVersionNode buildNameVersionNode(SubcomponentNodeBuilder builder, Pod pod) {

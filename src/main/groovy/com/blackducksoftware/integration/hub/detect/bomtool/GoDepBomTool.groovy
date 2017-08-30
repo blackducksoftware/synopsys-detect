@@ -38,7 +38,10 @@ import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 
+import groovy.transform.TypeChecked
+
 @Component
+@TypeChecked
 class GoDepBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(GoDepBomTool.class)
 

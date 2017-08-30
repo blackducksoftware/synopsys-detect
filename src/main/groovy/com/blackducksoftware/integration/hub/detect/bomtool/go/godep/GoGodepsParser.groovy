@@ -28,20 +28,23 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVe
 import com.blackducksoftware.integration.hub.detect.bomtool.GoDepBomTool
 import com.google.gson.Gson
 
+import groovy.transform.TypeChecked
+
+@TypeChecked
 class GoGodepsParser {
     private final Gson gson
 
     public GoGodepsParser(Gson gson) {
-        this.gson = gson;
+        this.gson = gson
     }
 
     public List<DependencyNode> extractProjectDependencies(String goDepContents) {
         GodepsFile goDepsFile = gson.fromJson(goDepContents, GodepsFile.class)
         List<DependencyNode> children = []
-        goDepsFile.deps.each {
+        goDepsFile.deps.each { GodepDependency dep ->
             def version = ''
-            if (it.comment?.trim()) {
-                version = it.comment.trim()
+            if (dep.comment?.trim()) {
+                version = dep.comment.trim()
                 //TODO test with kubernetes
                 if (version.matches('.*-.*-.*')) {
                     //v1.6-27-23859436879234678  should be changed to v1.6
@@ -49,10 +52,10 @@ class GoGodepsParser {
                     version = version.substring(0, version.lastIndexOf('-'))
                 }
             } else {
-                version = it.rev.trim()
+                version = dep.rev.trim()
             }
-            final ExternalId dependencyExternalId = new NameVersionExternalId(GoDepBomTool.GOLANG, it.importPath, version)
-            final DependencyNode dependency = new DependencyNode(it.importPath, version, dependencyExternalId)
+            final ExternalId dependencyExternalId = new NameVersionExternalId(GoDepBomTool.GOLANG, dep.importPath, version)
+            final DependencyNode dependency = new DependencyNode(dep.importPath, version, dependencyExternalId)
             children.add(dependency)
         }
         children

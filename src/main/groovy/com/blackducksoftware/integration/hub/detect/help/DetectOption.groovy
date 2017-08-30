@@ -20,8 +20,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.help;
+package com.blackducksoftware.integration.hub.detect.help
 
+import groovy.transform.TypeChecked
+
+@TypeChecked
 public class DetectOption {
     final String key
     final String description

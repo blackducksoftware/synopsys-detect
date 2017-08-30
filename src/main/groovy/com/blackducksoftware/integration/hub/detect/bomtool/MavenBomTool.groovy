@@ -36,7 +36,10 @@ import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput
 
+import groovy.transform.TypeChecked
+
 @Component
+@TypeChecked
 class MavenBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(MavenBomTool.class)
 
@@ -72,7 +75,7 @@ class MavenBomTool extends BomTool {
     List<DetectCodeLocation> extractDetectCodeLocations() {
         def arguments = ["dependency:tree"]
         if (detectConfiguration.getMavenScope()?.trim()) {
-            arguments.add("-Dscope=${detectConfiguration.getMavenScope()}")
+            arguments.add("-Dscope=${detectConfiguration.getMavenScope()}" as String)
         }
         final Executable mvnExecutable = new Executable(detectConfiguration.sourceDirectory, mvnExecutable, arguments)
         final ExecutableOutput mvnOutput = executableRunner.execute(mvnExecutable)
@@ -81,7 +84,7 @@ class MavenBomTool extends BomTool {
 
         File[] additionalTargets = detectFileManager.findFilesToDepth(detectConfiguration.sourceDirectory, 'target', detectConfiguration.searchDepth)
         if (additionalTargets) {
-            additionalTargets.each { hubSignatureScanner.registerPathToScan(it) }
+            additionalTargets.each { File target -> hubSignatureScanner.registerPathToScan(target) }
         }
 
         codeLocations

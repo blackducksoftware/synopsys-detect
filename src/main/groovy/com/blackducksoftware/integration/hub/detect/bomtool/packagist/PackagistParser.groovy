@@ -33,7 +33,10 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 
+import groovy.transform.TypeChecked
+
 @Component
+@TypeChecked
 class PackagistParser {
     private Forge packagistForge = new Forge('packagist', ':')
 
@@ -41,13 +44,13 @@ class PackagistParser {
     DetectConfiguration detectConfiguration
 
     public DependencyNode getDependencyNodeFromProject(String composerJsonText, String composerLockText) {
-        JsonObject composerJsonObject = new JsonParser().parse(composerJsonText)
+        JsonObject composerJsonObject = new JsonParser().parse(composerJsonText) as JsonObject
         String projectName = composerJsonObject.get('name')?.getAsString()
         String projectVersion = composerJsonObject.get('version')?.getAsString()
 
         def rootDependencyNode = new DependencyNode(projectName, projectVersion, new NameVersionExternalId(packagistForge, projectName, projectVersion))
 
-        JsonObject composerLockObject = new JsonParser().parse(composerLockText)
+        JsonObject composerLockObject = new JsonParser().parse(composerLockText) as JsonObject
         JsonArray packagistPackages = composerLockObject.get('packages')?.getAsJsonArray()
         List<String> startingPackages = getStartingPackages(composerJsonObject, false)
 

@@ -42,7 +42,10 @@ import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.util.ResourceUtil
 import com.google.gson.Gson
 
+import groovy.transform.TypeChecked
+
 @Component
+@TypeChecked
 class DetectConfiguration {
     private final Logger logger = LoggerFactory.getLogger(DetectProperties.class)
 
@@ -107,7 +110,7 @@ class DetectConfiguration {
         mutablePropertySources.each { propertySource ->
             if (propertySource instanceof EnumerablePropertySource) {
                 EnumerablePropertySource enumerablePropertySource = (EnumerablePropertySource) propertySource
-                enumerablePropertySource.propertyNames.each { propertyName ->
+                enumerablePropertySource.propertyNames.each { String propertyName ->
                     if (propertyName && propertyName.startsWith(DETECT_PROPERTY_PREFIX)) {
                         allDetectPropertyKeys.add(propertyName)
                     }
@@ -120,8 +123,8 @@ class DetectConfiguration {
         }
 
         if (detectProperties.hubSignatureScannerRelativePathsToExclude) {
-            detectProperties.hubSignatureScannerRelativePathsToExclude.each {
-                excludedScanPaths.add(new File(sourceDirectory, it).getCanonicalPath())
+            detectProperties.hubSignatureScannerRelativePathsToExclude.each { String path ->
+                excludedScanPaths.add(new File(sourceDirectory, path).getCanonicalPath())
             }
         }
     }
@@ -152,7 +155,7 @@ class DetectConfiguration {
     public void logConfiguration() {
         List<String> configurationPieces = []
         configurationPieces.add('')
-        configurationPieces.add("Detect Version: ${buildInfo.getDetectVersion()}")
+        configurationPieces.add("Detect Version: ${buildInfo.getDetectVersion()}" as String)
         configurationPieces.add('Current property values:')
         configurationPieces.add('-'.multiply(60))
         def propertyFields = DetectProperties.class.getDeclaredFields().findAll {
@@ -167,13 +170,13 @@ class DetectConfiguration {
             String fieldName = it.name
             Object fieldValue = it.get(detectProperties)
             if (it.type.isArray()) {
-                fieldValue = fieldValue.join(', ')
+                fieldValue = (fieldValue as String[]).join(', ')
             }
             if (fieldName && fieldValue && 'metaClass' != fieldName) {
                 if (fieldName.toLowerCase().contains('password')) {
-                    fieldValue = '*'.multiply(fieldValue.length())
+                    fieldValue = '*'.multiply((fieldValue as String).length())
                 }
-                configurationPieces.add("${fieldName} = ${fieldValue}")
+                configurationPieces.add("${fieldName} = ${fieldValue}" as String)
             }
             it.accessible = false
         }

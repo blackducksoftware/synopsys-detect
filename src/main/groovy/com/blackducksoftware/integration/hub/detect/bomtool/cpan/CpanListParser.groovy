@@ -29,7 +29,10 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
 
+import groovy.transform.TypeChecked
+
 @Component
+@TypeChecked
 class CpanListParser {
     private final Logger logger = LoggerFactory.getLogger(CpanListParser.class)
 

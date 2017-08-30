@@ -25,9 +25,9 @@ package com.blackducksoftware.integration.hub.detect.nameversion.builder
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
 import com.blackducksoftware.integration.hub.detect.nameversion.metadata.LinkMetadata
 
-import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 
-@CompileStatic
+@TypeChecked
 class LinkedNameVersionNodeBuilder extends NameVersionNodeBuilderImpl {
 
     public LinkedNameVersionNodeBuilder(NameVersionNode root) {
@@ -66,8 +66,8 @@ class LinkedNameVersionNodeBuilder extends NameVersionNodeBuilderImpl {
 
         if (resolvedNode) {
             List<NameVersionNode> resolvedChildren = []
-            resolvedNode.children.each {
-                NameVersionNode resolvedChild = resolveLinks(cyclicalNames, cyclicalStack, it)
+            for (NameVersionNode child : resolvedNode.children) {
+                NameVersionNode resolvedChild = resolveLinks(cyclicalNames, cyclicalStack, child)
                 if (resolvedChild) {
                     resolvedChildren.add(resolvedChild)
                 }

@@ -35,7 +35,10 @@ import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput
 
+import groovy.transform.TypeChecked
+
 @Component
+@TypeChecked
 class NugetBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(NugetBomTool.class)
 
@@ -77,16 +80,16 @@ class NugetBomTool extends BomTool {
             return []
         }
 
-        def options =  [
-            "--target_path=${sourcePath}",
-            "--output_directory=${outputDirectory.getAbsolutePath()}",
-            "--ignore_failure=${detectConfiguration.getNugetInspectorIgnoreFailure()}"
+        List<String> options =  [
+            "--target_path=${sourcePath}" as String,
+            "--output_directory=${outputDirectory.getAbsolutePath()}" as String,
+            "--ignore_failure=${detectConfiguration.getNugetInspectorIgnoreFailure()}" as String
         ]
         if (detectConfiguration.getNugetInspectorExcludedModules()) {
-            options.add("--excluded_modules=${detectConfiguration.getNugetInspectorExcludedModules()}")
+            options.add("--excluded_modules=${detectConfiguration.getNugetInspectorExcludedModules()}" as String)
         }
         if (detectConfiguration.getNugetPackagesRepoUrl()) {
-            options.add("--packages_repo_url=${detectConfiguration.getNugetPackagesRepoUrl()}")
+            options.add("--packages_repo_url=${detectConfiguration.getNugetPackagesRepoUrl()}" as String)
         }
         if (logger.traceEnabled) {
             options.add('-v')

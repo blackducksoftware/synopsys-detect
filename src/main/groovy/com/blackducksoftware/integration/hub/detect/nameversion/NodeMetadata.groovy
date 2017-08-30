@@ -24,6 +24,9 @@ package com.blackducksoftware.integration.hub.detect.nameversion
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 
+import groovy.transform.TypeChecked
+
+@TypeChecked
 interface NodeMetadata {
     public Forge getForge()
 

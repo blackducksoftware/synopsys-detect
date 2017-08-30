@@ -20,12 +20,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.sbt.models;
+package com.blackducksoftware.integration.hub.detect.bomtool.sbt.models
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode;
+import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 
-public class SbtConfigurationDependencyTree {
-    String configuration;
+import groovy.transform.TypeChecked
 
-    DependencyNode rootNode;
+@TypeChecked
+class SbtConfigurationDependencyTree {
+    String configuration
+
+    DependencyNode rootNode
 }

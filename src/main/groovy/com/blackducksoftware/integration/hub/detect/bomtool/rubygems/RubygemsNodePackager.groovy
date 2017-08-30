@@ -28,7 +28,10 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 
+import groovy.transform.TypeChecked
+
 @Component
+@TypeChecked
 public class RubygemsNodePackager {
     @Autowired
     NameVersionNodeTransformer nameVersionNodeTransformer

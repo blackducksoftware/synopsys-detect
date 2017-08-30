@@ -28,19 +28,22 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVe
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.model.NugetPackageId
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.model.NugetPackageSet
 
+import groovy.transform.TypeChecked
+
+@TypeChecked
 public class NugetDependencyNodeBuilder {
 
-    final List<NugetPackageSet> packageSets = new ArrayList<NugetPackageSet>();
-    final Map<NugetPackageId, DependencyNode> nodeMap = new HashMap<>();
+    final List<NugetPackageSet> packageSets = new ArrayList<NugetPackageSet>()
+    final Map<NugetPackageId, DependencyNode> nodeMap = new HashMap<>()
 
     public NugetDependencyNodeBuilder() {
     }
 
     public void addPackageSets(List<NugetPackageSet> sets) {
-        packageSets.addAll(sets);
+        packageSets.addAll(sets)
     }
     public void addPackageSet(NugetPackageSet set) {
-        packageSets.add(set);
+        packageSets.add(set)
     }
 
     public Set<DependencyNode> createDependencyNodes(List<NugetPackageId> packageDependencies) {
@@ -53,11 +56,11 @@ public class NugetDependencyNodeBuilder {
 
 
     public DependencyNode getOrCreateDependencyNode(NugetPackageId id) {
-        def node = nodeMap.getOrDefault(id, null)
+        def node = nodeMap.get(id, null)
         if (node == null) {
             def externalId = new NameVersionExternalId(Forge.NUGET, id.name, id.version)
             node = new DependencyNode(id.name, id.version, externalId)
-            nodeMap.put(id, node);
+            nodeMap.put(id, node)
 
             //restore children
             def packageSet = packageSets.find{ set ->

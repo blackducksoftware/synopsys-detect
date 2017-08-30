@@ -22,7 +22,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.help
 
-import org.apache.commons.lang3.StringUtils
+import java.lang.reflect.Field
+
 import org.apache.commons.lang3.math.NumberUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -33,7 +34,10 @@ import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
 import org.springframework.stereotype.Component
 
+import groovy.transform.TypeChecked
+
 @Component
+@TypeChecked
 public class ValueDescriptionAnnotationFinder implements ApplicationContextAware {
     private final Logger logger = LoggerFactory.getLogger(ValueDescriptionAnnotationFinder.class)
 
@@ -48,13 +52,13 @@ public class ValueDescriptionAnnotationFinder implements ApplicationContextAware
 
     public void init() {
         Map<String, DetectOption> detectOptionsMap = [:]
-        applicationContext.beanDefinitionNames.each { beanName ->
+        applicationContext.beanDefinitionNames.each { String beanName ->
             final Object obj = applicationContext.getBean(beanName)
             Class<?> objClz = obj.getClass()
             if (AopUtils.isAopProxy(obj)) {
                 objClz = AopUtils.getTargetClass(obj)
             }
-            objClz.declaredFields.each { field ->
+            objClz.declaredFields.each { Field field ->
                 if (field.isAnnotationPresent(ValueDescription.class)) {
                     String key = ''
                     String description = ''
@@ -73,22 +77,22 @@ public class ValueDescriptionAnnotationFinder implements ApplicationContextAware
                     } else {
                         key = valueDescription.key().trim()
                     }
-                    field.setAccessible(true);
+                    field.setAccessible(true)
                     Object fieldValue = field.get(obj)
                     if (defaultValue?.trim()) {
                         try {
                             Class type = field.getType()
-                            if (String.class.equals(type) && StringUtils.isBlank(fieldValue)) {
-                                field.set(obj, defaultValue);
-                            } else if (Integer.class.equals(type) && fieldValue == null) {
-                                field.set(obj, NumberUtils.toInt(defaultValue));
-                            } else if (Long.class.equals(type) && fieldValue == null) {
-                                field.set(obj, NumberUtils.toLong(defaultValue));
-                            } else if (Boolean.class.equals(type) && fieldValue == null) {
-                                field.set(obj, Boolean.parseBoolean(defaultValue));
+                            if (String.class == type && fieldValue == null) {
+                                field.set(obj, defaultValue)
+                            } else if (Integer.class == type && fieldValue == null) {
+                                field.set(obj, NumberUtils.toInt(defaultValue))
+                            } else if (Long.class == type && fieldValue == null) {
+                                field.set(obj, NumberUtils.toLong(defaultValue))
+                            } else if (Boolean.class == type && fieldValue == null) {
+                                field.set(obj, Boolean.parseBoolean(defaultValue))
                             }
                         } catch (final IllegalAccessException e) {
-                            logger.error(String.format("Could not set defaultValue on field %s with %s: %s", field.getName(), defaultValue, e.getMessage()));
+                            logger.error(String.format("Could not set defaultValue on field %s with %s: %s", field.getName(), defaultValue, e.getMessage()))
                         }
                     }
                     if (!detectOptionsMap.containsKey(key)) {

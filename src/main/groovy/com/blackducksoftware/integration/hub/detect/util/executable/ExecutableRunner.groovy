@@ -29,10 +29,12 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.detect.Application
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 
+import groovy.transform.TypeChecked
+
 @Component
+@TypeChecked
 public class ExecutableRunner {
     private final Logger logger = LoggerFactory.getLogger(ExecutableRunner.class)
 
@@ -82,7 +84,7 @@ public class ExecutableRunner {
     }
 
     public ExecutableOutput runExe(final String exePath, final String... args) {
-        def exe = new Executable(detectConfiguration.getSourceDirectory(), exePath, args.toList())
+        def exe = new Executable(detectConfiguration.sourceDirectory, exePath, args.toList())
         execute(exe)
     }
 }

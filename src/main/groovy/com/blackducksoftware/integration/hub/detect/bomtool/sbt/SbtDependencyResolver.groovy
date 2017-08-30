@@ -28,6 +28,9 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenE
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtConfigurationDependencyTree
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtReport
 
+import groovy.transform.TypeChecked
+
+@TypeChecked
 public class SbtDependencyResolver {
     public SbtConfigurationDependencyTree resolveReportDependencies(SbtReport report) {
         def rootId = new MavenExternalId(report.organisation, report.module, report.revision)

@@ -27,6 +27,9 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder
 
 import com.google.gson.annotations.SerializedName
 
+import groovy.transform.TypeChecked
+
+@TypeChecked
 class NugetContainer {
     @SerializedName('Name')
     String name

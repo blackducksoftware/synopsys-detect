@@ -34,7 +34,11 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.PathEx
 import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.CocoapodsPackager
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
+
+import groovy.transform.TypeChecked
+
 @Component
+@TypeChecked
 class CocoapodsBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(CocoapodsBomTool.class)
 

@@ -24,6 +24,9 @@ package com.blackducksoftware.integration.hub.detect.bomtool.conda
 
 import com.google.gson.annotations.SerializedName
 
+import groovy.transform.TypeChecked
+
+@TypeChecked
 class CondaInfo {
     @SerializedName("platform")
     String platform

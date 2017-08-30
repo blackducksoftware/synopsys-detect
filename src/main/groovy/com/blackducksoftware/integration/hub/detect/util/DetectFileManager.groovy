@@ -31,7 +31,10 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 
+import groovy.transform.TypeChecked
+
 @Component
+@TypeChecked
 class DetectFileManager {
     private final Logger logger = LoggerFactory.getLogger(DetectFileManager.class)
 
@@ -128,7 +131,7 @@ class DetectFileManager {
     }
 
     public File[] findFilesToDepth(String sourceDirectory, String filenamePattern, int maxDepth) {
-        return findFilesToDepth(new File(sourceDirectory), filenamePattern, maxDepth);
+        return findFilesToDepth(new File(sourceDirectory), filenamePattern, maxDepth)
     }
 
     public File[] findFilesToDepth(File sourceDirectory, String filenamePattern, int maxDepth) {
