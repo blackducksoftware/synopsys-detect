@@ -27,7 +27,10 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
+import groovy.transform.TypeChecked
+
 @Component
+@TypeChecked
 class FileFinder {
     private final Logger logger = LoggerFactory.getLogger(FileFinder.class)
 
@@ -105,17 +108,17 @@ class FileFinder {
     private File[] findFilesRecursive(final File sourceDirectory, final String filenamePattern, int currentDepth, int maxDepth) {
         def files = []
         if (currentDepth > maxDepth || !sourceDirectory.isDirectory()) {
-            return files
+            return files as File[]
         }
-        sourceDirectory.listFiles().each {
-            if (FilenameUtils.wildcardMatchOnSystem(it.getName(), filenamePattern)) {
-                files.add(it)
+        sourceDirectory.listFiles().each { File file ->
+            if (FilenameUtils.wildcardMatchOnSystem(file.getName(), filenamePattern)) {
+                files.add(file)
             }
-            if (it.isDirectory()) {
-                files.addAll(findFilesRecursive(it, filenamePattern, currentDepth + 1, maxDepth))
+            if (file.isDirectory()) {
+                files.addAll(findFilesRecursive(file, filenamePattern, currentDepth + 1, maxDepth))
             }
         }
-        return files
+        return files as File[]
     }
 
     private File[] findDirectoriesContainingDirectoriesToDepth(final File sourceDirectory, final String directoryPattern, int maxDepth) {
@@ -126,20 +129,20 @@ class FileFinder {
 
         def files = []
         if (currentDepth > maxDepth || !sourceDirectory.isDirectory()) {
-            return files
+            return files as File[]
         }
 
-        sourceDirectory.listFiles().each {
-            if (it.isDirectory()) {
-                if (FilenameUtils.wildcardMatchOnSystem(it.getName(), directoryPattern)) {
-                    files.add(it)
+        sourceDirectory.listFiles().each { File file ->
+            if (file.isDirectory()) {
+                if (FilenameUtils.wildcardMatchOnSystem(file.getName(), directoryPattern)) {
+                    files.add(file)
                 } else {
-                    files.addAll(findDirectoriesContainingDirectoriesToDepthRecursive(it, directoryPattern, currentDepth + 1, maxDepth))
+                    files.addAll(findDirectoriesContainingDirectoriesToDepthRecursive(file, directoryPattern, currentDepth + 1, maxDepth))
                 }
             }
         }
 
-        return files
+        return files as File[]
     }
 
     File[] findDirectoriesContainingFilesToDepth(final File sourceDirectory, final String filenamePattern, int maxDepth) {
@@ -149,7 +152,7 @@ class FileFinder {
     private File[] findDirectoriesContainingFilesRecursive(final File sourceDirectory, final String filenamePattern, int currentDepth, int maxDepth) {
         def files = new HashSet<File>()
         if (currentDepth > maxDepth || !sourceDirectory.isDirectory()) {
-            return files
+            return files as File[]
         }
         for (File file : sourceDirectory.listFiles()) {
             if (file.isDirectory()) {
@@ -158,6 +161,6 @@ class FileFinder {
                 files.add(sourceDirectory)
             }
         }
-        return new ArrayList<File>(files)
+        return new ArrayList<File>(files) as File[]
     }
 }
