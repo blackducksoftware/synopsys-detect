@@ -66,7 +66,7 @@ class NugetInspectorPackager {
     NameVersionNodeTransformer nameVersionNodeTransformer
 
     public List<DetectCodeLocation> createDetectCodeLocation(File dependencyNodeFile) {
-        String text = dependencyNodeFile.getText(StandardCharsets.UTF_8.name());
+        String text = dependencyNodeFile.getText(StandardCharsets.UTF_8.toString());
         NugetInspection nugetInspection = gson.fromJson(text, NugetInspection.class)
 
         def codeLocations = new ArrayList<DetectCodeLocation>();

@@ -90,7 +90,7 @@ class PipBomTool extends BomTool {
         String pythonPath = pythonEnvironment.pythonPath
         def setupFile = detectFileManager.findFile(sourceDirectory, 'setup.py')
 
-        String inpsectorScriptContents = getClass().getResourceAsStream("/${INSPECTOR_NAME}").getText(StandardCharsets.UTF_8.name())
+        String inpsectorScriptContents = getClass().getResourceAsStream("/${INSPECTOR_NAME}").getText(StandardCharsets.UTF_8.toString())
         def inspectorScript = detectFileManager.createFile(BomToolType.PIP, INSPECTOR_NAME)
         detectFileManager.writeToFile(inspectorScript, inpsectorScriptContents)
         def pipInspectorOptions = [

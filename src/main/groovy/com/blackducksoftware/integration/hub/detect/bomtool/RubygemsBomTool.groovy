@@ -58,7 +58,7 @@ class RubygemsBomTool extends BomTool {
         File sourceDirectory = detectConfiguration.sourceDirectory
 
         def gemlockFile = new File(sourceDirectory, GEMFILE_LOCK_FILENAME)
-        String gemlockText = gemlockFile.getText(StandardCharsets.UTF_8.name())
+        String gemlockText = gemlockFile.getText(StandardCharsets.UTF_8.toString())
 
         List<DependencyNode> dependencies = rubygemsNodePackager.extractProjectDependencies(gemlockText)
         Set<DependencyNode> dependenciesSet = new HashSet<>(dependencies)

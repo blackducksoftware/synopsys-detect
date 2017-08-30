@@ -89,7 +89,7 @@ class GradleBomTool extends BomTool {
 
     List<DetectCodeLocation> extractCodeLocationsFromGradle() {
         File initScriptFile = detectFileManager.createFile(BomToolType.GRADLE, 'init-detect.gradle')
-        String initScriptContents = getClass().getResourceAsStream('/init-script-gradle').getText(StandardCharsets.UTF_8.name())
+        String initScriptContents = getClass().getResourceAsStream('/init-script-gradle').getText(StandardCharsets.UTF_8.toString())
         initScriptContents = initScriptContents.replace('GRADLE_INSPECTOR_VERSION', detectConfiguration.getGradleInspectorVersion())
         initScriptContents = initScriptContents.replace('EXCLUDED_PROJECT_NAMES', detectConfiguration.getGradleExcludedProjectNames())
         initScriptContents = initScriptContents.replace('INCLUDED_PROJECT_NAMES', detectConfiguration.getGradleIncludedProjectNames())
@@ -117,7 +117,7 @@ class GradleBomTool extends BomTool {
         File[] codeLocationFiles = detectFileManager.findFiles(blackduckDirectory, '*_detectCodeLocation.json')
         List<DetectCodeLocation> codeLocations = codeLocationFiles.collect {
             logger.debug("Code Location file name: ${it.getName()}")
-            String codeLocationJson = it.getText(StandardCharsets.UTF_8.name())
+            String codeLocationJson = it.getText(StandardCharsets.UTF_8.toString())
             gson.fromJson(codeLocationJson, DetectCodeLocation.class)
         }
         if (detectConfiguration.gradleCleanupBuildBlackduckDirectory) {

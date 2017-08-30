@@ -58,12 +58,12 @@ class CranBomTool extends BomTool {
         String projectVersion = ''
         if (detectFileManager.containsAllFiles(sourcePath,'DESCRIPTION')) {
             def descriptionFile = new File(sourceDirectory, 'DESCRIPTION')
-            String descriptionText = descriptionFile.getText(StandardCharsets.UTF_8.name())
+            String descriptionText = descriptionFile.getText(StandardCharsets.UTF_8.toString())
             projectName = packratPackager.getProjectName(descriptionText)
             projectVersion = packratPackager.getVersion(descriptionText)
         }
 
-        String packratLockText = packratLockFile[0].getText(StandardCharsets.UTF_8.name())
+        String packratLockText = packratLockFile[0].getText(StandardCharsets.UTF_8.toString())
         List<DependencyNode> dependencies = packratPackager.extractProjectDependencies(packratLockText)
         Set<DependencyNode> dependenciesSet = new HashSet<>(dependencies)
         ExternalId externalId = new PathExternalId(CRAN, sourcePath)
