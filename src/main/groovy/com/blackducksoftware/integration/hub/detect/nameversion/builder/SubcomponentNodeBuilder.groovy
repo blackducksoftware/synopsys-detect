@@ -25,6 +25,7 @@ package com.blackducksoftware.integration.hub.detect.nameversion.builder
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
 import com.blackducksoftware.integration.hub.detect.nameversion.metadata.SubcomponentMetadata
 
+@groovy.transform.CompileStatic
 class SubcomponentNodeBuilder extends LinkedNameVersionNodeBuilder {
     List<NameVersionNode> superComponents = []
 

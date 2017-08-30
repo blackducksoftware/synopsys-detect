@@ -29,6 +29,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtConfigurationDependencyTree
 
+@groovy.transform.CompileStatic
 public class SbtConfigurationAggregator {
     private final Logger logger = LoggerFactory.getLogger(SbtConfigurationAggregator.class)
 
@@ -39,7 +40,7 @@ public class SbtConfigurationAggregator {
             DependencyNode root = new DependencyNode(new MavenExternalId(aggregate.org, aggregate.name, aggregate.version))
             root.name = aggregate.name
             root.version = aggregate.version
-            root.children = new ArrayList<DependencyNode>()
+            root.children = new HashSet<DependencyNode>()
             configurations.each {config ->
                 if (configurationEqualsAggregate(config, aggregate)) {
                     root.children.addAll(config.rootNode.children)

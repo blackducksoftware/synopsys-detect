@@ -24,6 +24,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool.conda
 
 import com.google.gson.annotations.SerializedName
 
+@groovy.transform.CompileStatic
 class CondaListElement {
     @SerializedName("name")
     String name

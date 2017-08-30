@@ -36,6 +36,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 import com.google.gson.Gson
 
 @Component
+@groovy.transform.CompileStatic
 class DepPackager {
     private final Logger logger = LoggerFactory.getLogger(DepPackager.class)
 

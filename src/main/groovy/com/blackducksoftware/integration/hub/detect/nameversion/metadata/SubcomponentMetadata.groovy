@@ -27,6 +27,7 @@ import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
 import groovy.transform.ToString
 
 @ToString
+@groovy.transform.CompileStatic
 class SubcomponentMetadata extends LinkMetadata {
     List<NameVersionNode> subcomponents = []
 }

@@ -22,6 +22,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.util.executable
 
+@groovy.transform.CompileStatic
 class ExecutableOutput {
     final String standardOutput
     final String errorOutput

@@ -39,6 +39,7 @@ import com.blackducksoftware.integration.hub.request.builder.ProjectRequestBuild
 import com.blackducksoftware.integration.hub.scan.HubScanConfig
 
 @Component
+@groovy.transform.CompileStatic
 class HubSignatureScanner {
     private final Logger logger = LoggerFactory.getLogger(HubSignatureScanner.class)
 
@@ -91,8 +92,8 @@ class HubSignatureScanner {
     public ProjectVersionView scanPaths(HubServerConfig hubServerConfig, CLIDataService cliDataService, DetectProject detectProject) {
         ProjectVersionView projectVersionView = null
         if (detectProject.projectName && detectProject.projectVersionName && detectConfiguration.hubSignatureScannerPaths) {
-            detectConfiguration.hubSignatureScannerPaths.each {
-                projectVersionView = scanPath(cliDataService, hubServerConfig, new File(it).canonicalPath, detectProject)
+            detectConfiguration.hubSignatureScannerPaths.each { String path ->
+                projectVersionView = scanPath(cliDataService, hubServerConfig, new File(path).canonicalPath, detectProject)
             }
         } else {
             registeredPaths.each {
@@ -108,8 +109,8 @@ class HubSignatureScanner {
 
     public void scanPathsOffline(DetectProject detectProject) {
         if (detectProject.projectName && detectProject.projectVersionName && detectConfiguration.hubSignatureScannerPaths) {
-            detectConfiguration.hubSignatureScannerPaths.each {
-                scanPathOffline(new File(it).canonicalPath, detectProject)
+            detectConfiguration.hubSignatureScannerPaths.each { String path ->
+                scanPathOffline(new File(path).canonicalPath, detectProject)
             }
         } else {
             registeredPaths.each {

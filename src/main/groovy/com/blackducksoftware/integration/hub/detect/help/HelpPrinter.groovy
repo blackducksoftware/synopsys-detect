@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
+@groovy.transform.CompileStatic
 class HelpPrinter {
     @Autowired
     ValueDescriptionAnnotationFinder valueDescriptionAnnotationFinder
@@ -66,7 +67,7 @@ class HelpPrinter {
         helpMessagePieces.add('\t--<property name>=<value>')
         helpMessagePieces.add('')
 
-        printStream.println(StringUtils.join(helpMessagePieces, System.getProperty("line.separator")))
+        printStream.println(helpMessagePieces.join(System.getProperty("line.separator")))
     }
 
     private String formatColumns(List<String> columns, int... columnWidths) {

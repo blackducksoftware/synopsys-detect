@@ -25,11 +25,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.detect.Application
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 
-
 @Component
+@groovy.transform.CompileStatic
 public class PackratPackager {
     @Autowired
     private final NameVersionNodeTransformer nameVersionNodeTransformer

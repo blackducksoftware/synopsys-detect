@@ -38,6 +38,7 @@ import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 
 @Component
+@groovy.transform.CompileStatic
 class SbtBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(SbtBomTool.class)
 
@@ -134,16 +135,16 @@ class SbtBomTool extends BomTool {
     }
 
     List<SbtModule> extractModules(int depth, String included, String excluded) {
-        List<File> sbtFiles = detectFileManager.findFilesToDepth(sourcePath, BUILD_SBT_FILENAME, depth)
-        List<File> resolutionCaches = detectFileManager.findDirectoriesContainingDirectoriesToDepth(sourcePath, REPORT_SEARCH_PATTERN, depth)
+        List<File> sbtFiles = detectFileManager.findFilesToDepth(sourcePath, BUILD_SBT_FILENAME, depth) as List
+        List<File> resolutionCaches = detectFileManager.findDirectoriesContainingDirectoriesToDepth(sourcePath, REPORT_SEARCH_PATTERN, depth) as List
 
         List<SbtModule> modules = new ArrayList<SbtModule>()
-        List<String> usedReports = new ArrayList<String>()
+        List<File> usedReports = new ArrayList<File>()
 
         sbtFiles.each { sbtFile ->
             logger.debug("Found SBT build file : ${sbtFile.getCanonicalPath()}")
-            def sbtDirectory = sbtFile.getParentFile()
-            def reportPath = new File(sbtDirectory, REPORT_FILE_DIRECTORY)
+            File sbtDirectory = sbtFile.getParentFile()
+            File reportPath = new File(sbtDirectory, REPORT_FILE_DIRECTORY)
 
             def foundModules = extractReportModules(reportPath, sbtDirectory, included, excluded, usedReports)
             modules.addAll(foundModules)
@@ -156,13 +157,13 @@ class SbtBomTool extends BomTool {
             modules.addAll(foundModules)
         }
 
-        File[] additionalTargets = detectFileManager.findFilesToDepth(sourcePath, 'target', depth)
+        List<File> additionalTargets = detectFileManager.findFilesToDepth(sourcePath, 'target', depth) as List
         List<File> scanned = new ArrayList<File>()
         if (additionalTargets) {
-            additionalTargets.each {
-                if (!isInProject(it, sourcePath) && isNotChildOfScanned(it, scanned)) {
-                    hubSignatureScanner.registerPathToScan(it)
-                    scanned.add(it)
+            additionalTargets.each { file ->
+                if (!isInProject(file, sourcePath) && isNotChildOfScanned(file, scanned)) {
+                    hubSignatureScanner.registerPathToScan(file)
+                    scanned.add(file)
                 }
             }
         }
@@ -192,8 +193,8 @@ class SbtBomTool extends BomTool {
         } else if (isInProject(reportPath, sourcePath)) {
             logger.debug("Skipping reports in project folder: ${reportPath.getCanonicalPath()}")
         } else {
-            usedReports.add(canonical)
-            List<File> reportFiles = detectFileManager.findFiles(reportPath, REPORT_FILE_PATTERN)
+            usedReports.add(reportPath)
+            List<File> reportFiles = detectFileManager.findFiles(reportPath, REPORT_FILE_PATTERN) as List
             if (reportFiles == null || reportFiles.size() <= 0) {
                 logger.debug("No reports were found in: ${reportPath}")
             } else {

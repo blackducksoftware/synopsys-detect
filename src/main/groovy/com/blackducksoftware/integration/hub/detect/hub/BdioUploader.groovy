@@ -32,11 +32,10 @@ import com.blackducksoftware.integration.hub.buildtool.BuildToolConstants
 import com.blackducksoftware.integration.hub.dataservice.phonehome.PhoneHomeDataService
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.global.HubServerConfig
-import com.blackducksoftware.integration.hub.service.HubServicesFactory
-import com.blackducksoftware.integration.log.Slf4jIntLogger
 import com.blackducksoftware.integration.phonehome.PhoneHomeRequestBody
 
 @Component
+@groovy.transform.CompileStatic
 class BdioUploader {
     private final Logger logger = LoggerFactory.getLogger(BdioUploader.class)
 

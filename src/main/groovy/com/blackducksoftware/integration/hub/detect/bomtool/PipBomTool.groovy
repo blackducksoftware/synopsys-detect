@@ -38,6 +38,7 @@ import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 
 @Component
+@groovy.transform.CompileStatic
 class PipBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(PipBomTool.class)
 
@@ -100,7 +101,7 @@ class PipBomTool extends BomTool {
         // Install requirements file and add it as an option for the inspector
         if (detectConfiguration.requirementsFilePath) {
             def requirementsFile = new File(detectConfiguration.requirementsFilePath)
-            pipInspectorOptions.add("--requirements=${requirementsFile.absolutePath}")
+            pipInspectorOptions.add("--requirements=${requirementsFile.absolutePath}" as String)
         }
 
         // Install project if it can find one and pass its name to the inspector
@@ -114,7 +115,7 @@ class PipBomTool extends BomTool {
                 String[] output = executableRunner.execute(findProjectNameExecutable).standardOutput.split(System.lineSeparator())
                 projectName = output[output.length - 1].trim()
             }
-            pipInspectorOptions.add("--projectname=${projectName}")
+            pipInspectorOptions.add("--projectname=${projectName}" as String)
         }
 
         def pipInspector = new Executable(sourceDirectory, pythonPath, pipInspectorOptions)

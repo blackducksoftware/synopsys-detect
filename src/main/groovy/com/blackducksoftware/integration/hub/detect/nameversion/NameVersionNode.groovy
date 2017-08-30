@@ -22,6 +22,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.nameversion
 
+@groovy.transform.CompileStatic
 interface NameVersionNode {
     public String getName()
     public String getVersion()

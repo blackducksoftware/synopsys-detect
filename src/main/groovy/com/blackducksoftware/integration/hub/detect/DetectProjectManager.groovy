@@ -50,6 +50,7 @@ import com.blackducksoftware.integration.util.ExcludedIncludedFilter
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil
 import com.google.gson.Gson
 
+// No type checking to access read-only property
 @Component
 class DetectProjectManager {
     private final Logger logger = LoggerFactory.getLogger(DetectProjectManager.class)

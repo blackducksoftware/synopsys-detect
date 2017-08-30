@@ -37,6 +37,7 @@ import com.blackducksoftware.integration.util.CIEnvironmentVariables
 import com.google.gson.Gson
 
 @Component
+@groovy.transform.TypeChecked // Type checked to access private method
 class OfflineScanner {
     private static final Logger logger = LoggerFactory.getLogger(OfflineScanner.class)
 

@@ -24,6 +24,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool.go
 
 import com.google.gson.annotations.SerializedName
 
+@groovy.transform.CompileStatic
 class GopkgLock {
     // see https://github.com/golang/dep/blob/master/lock.go for the source of the lock file
     List<Project> projects

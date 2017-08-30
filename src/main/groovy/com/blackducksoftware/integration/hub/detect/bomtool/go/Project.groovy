@@ -22,6 +22,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.go
 
+@groovy.transform.CompileStatic
 class Project {
     String name
     String branch

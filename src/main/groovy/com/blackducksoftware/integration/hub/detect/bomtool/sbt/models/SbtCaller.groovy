@@ -22,6 +22,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.sbt.models
 
+@groovy.transform.CompileStatic
 public class SbtCaller {
     String callerOrganisation
 

@@ -35,6 +35,7 @@ import com.blackducksoftware.integration.hub.detect.nameversion.builder.NameVers
 import com.blackducksoftware.integration.hub.detect.nameversion.metadata.LinkMetadata
 
 @Component
+@groovy.transform.CompileStatic
 class YarnPackager {
     @Autowired
     NameVersionNodeTransformer nameVersionNodeTransformer
@@ -80,7 +81,9 @@ class YarnPackager {
             }
         }
 
-        nameVersionLinkNodeBuilder.build().children.collect { nameVersionNodeTransformer.createDependencyNode(Forge.NPM, it) } as Set
+        nameVersionLinkNodeBuilder.build().children.collect {
+            nameVersionNodeTransformer.createDependencyNode(Forge.NPM, it)
+        } as Set
     }
 
     private int getLineLevel(String line) {
@@ -111,16 +114,16 @@ class YarnPackager {
 
     private NameVersionNode lineToNameVersionNode(NameVersionNodeBuilderImpl nameVersionNodeBuilder, NameVersionNode root, String line) {
         String cleanLine = line.replace('"', '').replace(':', '')
-        List<String> fuzzyNames = cleanLine.split(',').collect { it.trim() }
+        List<String> fuzzyNames = cleanLine.split(',').collect { String name -> name.trim() }
 
         if (fuzzyNames.isEmpty()) {
             return null
         }
 
-        String name = cleanFuzzyName(fuzzyNames[0])
+        String name = cleanFuzzyName(fuzzyNames[0] as String)
 
         NameVersionNode linkedNameVersionNode = new NameVersionNodeImpl()
-        linkedNameVersionNode.name = cleanFuzzyName(fuzzyNames[0])
+        linkedNameVersionNode.name = cleanFuzzyName(fuzzyNames[0] as String)
 
         fuzzyNames.each {
             def nameVersionLinkNode = new NameVersionNodeImpl()

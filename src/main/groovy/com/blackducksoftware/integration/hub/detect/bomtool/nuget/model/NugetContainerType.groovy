@@ -24,9 +24,10 @@ package com.blackducksoftware.integration.hub.detect.bomtool.nuget.model
 
 import com.google.gson.annotations.SerializedName
 
+@groovy.transform.CompileStatic
 public enum NugetContainerType {
     @SerializedName("Solution")
     SOLUTION,
     @SerializedName("Project")
-    PROJECT;
+    PROJECT
 }

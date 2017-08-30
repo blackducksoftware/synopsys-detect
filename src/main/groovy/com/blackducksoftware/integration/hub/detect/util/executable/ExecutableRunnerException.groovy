@@ -22,6 +22,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.util.executable
 
+@groovy.transform.CompileStatic
 class ExecutableRunnerException extends Exception {
     ExecutableRunnerException(final Throwable innerException) {
         super(innerException)

@@ -27,6 +27,7 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder
 
 import com.google.gson.annotations.SerializedName
 
+@groovy.transform.CompileStatic
 class NugetPackageId {
     @SerializedName('Name')
     String name
@@ -36,37 +37,37 @@ class NugetPackageId {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((name == null) ? 0 : name.toLowerCase().hashCode());
-        result = prime * result + ((version == null) ? 0 : version.toLowerCase().hashCode());
-        return result;
+        final int prime = 31
+        int result = 1
+        result = prime * result + ((name == null) ? 0 : name.toLowerCase().hashCode())
+        result = prime * result + ((version == null) ? 0 : version.toLowerCase().hashCode())
+        return result
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
-            return false;
+            return false
         }
         if (!(obj instanceof NugetPackageId)) {
-            return false;
+            return false
         }
-        NugetPackageId other = (NugetPackageId) obj;
+        NugetPackageId other = (NugetPackageId) obj
         if (name == null) {
             if (other.name != null) {
-                return false;
+                return false
             }
         } else if (!name.equalsIgnoreCase(other.name)) {
-            return false;
+            return false
         }
         if (version == null) {
             if (other.version != null) {
-                return false;
+                return false
             }
         } else if (!version.equalsIgnoreCase(other.version)) {
-            return false;
+            return false
         }
-        return true;
+        return true
     }
 
 

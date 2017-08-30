@@ -29,6 +29,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
 
 @Component
+@groovy.transform.CompileStatic
 class NameVersionNodeTransformer {
     public DependencyNode createDependencyNode(Forge defaultForge, NameVersionNode nameVersionNode) {
         final Forge forge = nameVersionNode.metadata?.forge ? nameVersionNode.metadata.forge : defaultForge

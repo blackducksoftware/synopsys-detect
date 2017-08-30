@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect;
+package com.blackducksoftware.integration.hub.detect
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
@@ -31,9 +31,10 @@ import com.google.gson.TypeAdapter
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
 
+@groovy.transform.CompileStatic
 class ExternalIdTypeAdapter extends TypeAdapter<ExternalId> {
-    def forgeMap = [cocoapods: Forge.COCOAPODS, maven: Forge.MAVEN, npm: Forge.NPM, pypi: Forge.PYPI, rubygems: Forge.RUBYGEMS]
-    def gson = new Gson()
+    Map<String, Forge> forgeMap = [cocoapods: Forge.COCOAPODS, maven: Forge.MAVEN, npm: Forge.NPM, pypi: Forge.PYPI, rubygems: Forge.RUBYGEMS]
+    Gson gson = new Gson()
 
     @Override
     void write(final JsonWriter jsonWriter, final ExternalId value) throws IOException {

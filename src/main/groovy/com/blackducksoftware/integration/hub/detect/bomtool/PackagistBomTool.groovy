@@ -35,6 +35,7 @@ import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 
 @Component
+@groovy.transform.CompileStatic
 class PackagistBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(PackagistBomTool.class)
 
@@ -61,8 +62,8 @@ class PackagistBomTool extends BomTool {
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
-        String composerJsonText = new File(sourcePath, 'composer.json').getText(StandardCharsets.UTF_8)
-        String composerLockText = new File(sourcePath, 'composer.lock').getText(StandardCharsets.UTF_8)
+        String composerJsonText = new File(sourcePath, 'composer.json').getText(StandardCharsets.UTF_8.toString())
+        String composerLockText = new File(sourcePath, 'composer.lock').getText(StandardCharsets.UTF_8.toString())
 
         DependencyNode rootDependencyNode = packagistParser.getDependencyNodeFromProject(composerJsonText, composerLockText)
         def detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, rootDependencyNode)

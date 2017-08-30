@@ -27,13 +27,14 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.Extern
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.GoDepBomTool
 
+@groovy.transform.CompileStatic
 class VndrParser {
     public List<DependencyNode> parseVendorConf(String vendorConfContents) {
         List<DependencyNode> nodes = new ArrayList<>()
         String contents = vendorConfContents.trim()
         def lines = contents.split(System.lineSeparator())
         //TODO test against moby
-        lines.each { line ->
+        lines.each { String line ->
             if (line?.trim() && !line.startsWith('#')) {
                 def parts = line.split(' ')
                 final ExternalId dependencyExternalId = new NameVersionExternalId(GoDepBomTool.GOLANG, parts[0], parts[1])

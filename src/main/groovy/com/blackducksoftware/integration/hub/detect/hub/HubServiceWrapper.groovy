@@ -46,17 +46,17 @@ import com.blackducksoftware.integration.hub.detect.exception.DetectException
 import com.blackducksoftware.integration.hub.global.HubServerConfig
 import com.blackducksoftware.integration.hub.rest.RestConnection
 import com.blackducksoftware.integration.hub.service.HubServicesFactory
-import com.blackducksoftware.integration.log.IntLogger
 import com.blackducksoftware.integration.log.Slf4jIntLogger
 
 @Component
+@groovy.transform.CompileStatic
 class HubServiceWrapper {
     private final Logger logger = LoggerFactory.getLogger(HubServiceWrapper.class)
 
     @Autowired
     DetectConfiguration detectConfiguration
 
-    IntLogger slf4jIntLogger
+    Slf4jIntLogger slf4jIntLogger
     HubServerConfig hubServerConfig
     HubServicesFactory hubServicesFactory
 

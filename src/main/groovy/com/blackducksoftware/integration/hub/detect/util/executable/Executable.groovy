@@ -24,11 +24,12 @@ package com.blackducksoftware.integration.hub.detect.util.executable
 
 import org.apache.commons.lang3.StringUtils
 
+@groovy.transform.CompileStatic
 class Executable {
     File workingDirectory
-    def environmentVariables = [:]
+    Map<String, String> environmentVariables = [:]
     String executablePath
-    def executableArguments = []
+    List<String> executableArguments = []
 
     Executable(File workingDirectory, final String executablePath, List<String> executableArguments) {
         this.workingDirectory = workingDirectory
@@ -45,7 +46,7 @@ class Executable {
 
     ProcessBuilder createProcessBuilder() {
         def processBuilderArguments = createProcessBuilderArguments()
-        ProcessBuilder processBuilder = new ProcessBuilder(processBuilderArguments);
+        ProcessBuilder processBuilder = new ProcessBuilder(processBuilderArguments)
         processBuilder.directory(workingDirectory)
         def processBuilderEnvironment = processBuilder.environment()
         System.getenv().each { key, value ->

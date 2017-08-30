@@ -53,6 +53,7 @@ import com.blackducksoftware.integration.hub.model.view.ScanSummaryView
 import com.blackducksoftware.integration.hub.request.builder.ProjectRequestBuilder
 
 @Component
+@groovy.transform.CompileStatic
 class HubManager {
     private final Logger logger = LoggerFactory.getLogger(HubManager.class)
 
@@ -121,14 +122,14 @@ class HubManager {
             if (detectConfiguration.getRiskReportPdf()) {
                 RiskReportDataService riskReportDataService = hubServiceWrapper.createRiskReportDataService()
                 logger.info("Creating risk report pdf")
-                File pdfFile = riskReportDataService.createReportPdfFile(detectConfiguration.riskReportPdfOutputDirectory, detectProject.projectName, detectProject.projectVersionName)
+                File pdfFile = riskReportDataService.createReportPdfFile(new File(detectConfiguration.riskReportPdfOutputDirectory), detectProject.projectName, detectProject.projectVersionName)
                 logger.info("Created risk report pdf : ${pdfFile.getCanonicalPath()}")
             }
 
             if (detectConfiguration.getNoticesReport()) {
                 RiskReportDataService riskReportDataService = hubServiceWrapper.createRiskReportDataService()
                 logger.info("Creating notices report")
-                File noticesFile = riskReportDataService.createNoticesReportFile(detectConfiguration.noticesReportOutputDirectory, detectProject.projectName, detectProject.projectVersionName);
+                File noticesFile = riskReportDataService.createNoticesReportFile(new File(detectConfiguration.noticesReportOutputDirectory), detectProject.projectName, detectProject.projectVersionName)
                 if (noticesFile != null) {
                     logger.info("Created notices report : ${noticesFile.getCanonicalPath()}")
                 }
@@ -152,15 +153,6 @@ class HubManager {
             logger.debug(e.getMessage(), e)
         }
         postActionResult
-    }
-
-    private void performScan(DetectProject detectProject) {
-        if (!detectConfiguration.getHubSignatureScannerDisabled()) {
-            ProjectVersionView scanProject = hubSignatureScanner.scanPaths(hubServerConfig, hubServicesFactory.createCLIDataService(slf4jIntLogger, 120000L), detectProject)
-            if (!projectVersionView) {
-                projectVersionView = scanProject
-            }
-        }
     }
 
     public void waitForBomUpdate(ProjectDataService projectDataService, CodeLocationRequestService codeLocationRequestService, MetaService metaService, ScanSummaryRequestService scanSummaryRequestService, ScanStatusDataService scanStatusDataService, ProjectVersionView version) {

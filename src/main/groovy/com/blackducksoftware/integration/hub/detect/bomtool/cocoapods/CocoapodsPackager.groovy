@@ -37,6 +37,7 @@ import com.blackducksoftware.integration.hub.detect.nameversion.metadata.Subcomp
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper
 
 @Component
+@groovy.transform.CompileStatic
 class CocoapodsPackager {
     final List<String> fuzzyVersionIdentifiers = ['>', '<', '~>', '=']
 

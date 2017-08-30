@@ -29,6 +29,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 
 @Component
+@groovy.transform.CompileStatic
 public class RubygemsNodePackager {
     @Autowired
     NameVersionNodeTransformer nameVersionNodeTransformer

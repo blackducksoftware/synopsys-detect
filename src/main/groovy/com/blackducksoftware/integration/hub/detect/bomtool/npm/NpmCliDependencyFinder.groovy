@@ -22,6 +22,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.npm
 
+import java.util.Map.Entry
+
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -35,10 +37,12 @@ import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeT
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
 import com.google.gson.Gson
+import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 
 @Component
+@groovy.transform.CompileStatic
 class NpmCliDependencyFinder {
     private final Logger logger = LoggerFactory.getLogger(NpmCliDependencyFinder.class)
     private static final String JSON_NAME = 'name'
@@ -68,11 +72,11 @@ class NpmCliDependencyFinder {
             logger.error("Ran into an issue creating and writing to file")
         }
 
-        []
+        null
     }
 
     private DependencyNode convertNpmJsonFileToDependencyNode(String npmLsOutput) {
-        JsonObject npmJson = new JsonParser().parse(npmLsOutput)
+        JsonObject npmJson = new JsonParser().parse(npmLsOutput) as JsonObject
 
         String projectName = npmJson.getAsJsonPrimitive(JSON_NAME)?.getAsString()
         String projectVersion = npmJson.getAsJsonPrimitive(JSON_VERSION)?.getAsString()
@@ -86,11 +90,12 @@ class NpmCliDependencyFinder {
     }
 
     private void populateChildren(DependencyNode parentDependencyNode, JsonObject parentNodeChildren) {
-        def elements = parentNodeChildren?.entrySet()
-        elements?.each {
+        Set<Entry<String, JsonElement>> elements = parentNodeChildren?.entrySet()
+        elements?.each { Entry<String, JsonElement> it ->
+            JsonElement element = it.value as JsonElement
             String name = it.key
-            String version = it.value.getAsJsonPrimitive(JSON_VERSION)?.getAsString()
-            JsonObject children = it.value.getAsJsonObject(JSON_DEPENDENCIES)
+            String version = element.getAsJsonPrimitive()?.getAsString()
+            JsonObject children = element.getAsJsonObject()
 
             def externalId = new NameVersionExternalId(Forge.NPM, name, version)
             def newNode = new DependencyNode(name, version, externalId)

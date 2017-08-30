@@ -24,6 +24,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool.sbt
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 
+@groovy.transform.CompileStatic
 class SbtModule {
     public String sourcePath
     public DependencyNode root

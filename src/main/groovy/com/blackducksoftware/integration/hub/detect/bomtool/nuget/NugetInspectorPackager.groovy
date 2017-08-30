@@ -44,6 +44,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 import com.google.gson.Gson
 
 @Component
+@groovy.transform.CompileStatic
 class NugetInspectorPackager {
     private final Logger logger = LoggerFactory.getLogger(NugetInspectorPackager.class)
 
@@ -66,10 +67,10 @@ class NugetInspectorPackager {
     NameVersionNodeTransformer nameVersionNodeTransformer
 
     public List<DetectCodeLocation> createDetectCodeLocation(File dependencyNodeFile) {
-        String text = dependencyNodeFile.getText(StandardCharsets.UTF_8.name());
+        String text = dependencyNodeFile.getText(StandardCharsets.UTF_8.name())
         NugetInspection nugetInspection = gson.fromJson(text, NugetInspection.class)
 
-        def codeLocations = new ArrayList<DetectCodeLocation>();
+        def codeLocations = new ArrayList<DetectCodeLocation>()
         nugetInspection.containers.each {
             registerScanPaths(it)
             codeLocations.addAll(createDetectCodeLocationFromNugetContainer(it))

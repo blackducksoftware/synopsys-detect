@@ -23,9 +23,10 @@
 package com.blackducksoftware.integration.hub.detect.nameversion.metadata
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.detect.nameversion.NodeMetadata
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
+import com.blackducksoftware.integration.hub.detect.nameversion.NodeMetadata
 
+@groovy.transform.CompileStatic
 class LinkMetadata implements NodeMetadata {
     Forge forge
     NameVersionNode linkNode

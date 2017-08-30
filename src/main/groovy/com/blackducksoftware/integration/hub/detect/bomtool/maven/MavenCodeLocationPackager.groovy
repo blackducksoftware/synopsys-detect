@@ -30,11 +30,11 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenExternalId
-import com.blackducksoftware.integration.hub.detect.Application
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 
 @Component
+@groovy.transform.CompileStatic
 class MavenCodeLocationPackager {
     public static final Pattern gavRegex = Pattern.compile('(.*?):(.*?):(.*?):([^:\\n\\r]*)(:(.*))*')
 

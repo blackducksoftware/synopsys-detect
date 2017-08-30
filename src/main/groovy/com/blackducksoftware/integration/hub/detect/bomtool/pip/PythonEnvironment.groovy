@@ -24,6 +24,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool.pip
 
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 
+@groovy.transform.CompileStatic
 class PythonEnvironment {
     ExecutableType pythonType
     ExecutableType pipType

@@ -35,17 +35,18 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
 @Component
+@groovy.transform.CompileStatic
 class CondaListParser {
     @Autowired
     Gson gson
 
     Set<DependencyNode> parse(String listJsonText, String infoJsonText) {
         final Type listType = new TypeToken<ArrayList<CondaListElement>>() {}.getType()
-        final List<CondaListElement> condaList = gson.fromJson(listJsonText, listType)
+        final List<CondaListElement> condaList = gson.fromJson(listJsonText, listType) as List<CondaListElement>
         final CondaInfo condaInfo = gson.fromJson(infoJsonText, CondaInfo.class)
         final String platform = condaInfo.platform
 
-        condaList.collect { condaListElementToDependencyNodeTransformer(platform, it) }
+        condaList.collect { condaListElementToDependencyNodeTransformer(platform, it) } as Set
     }
 
     DependencyNode condaListElementToDependencyNodeTransformer(String platform, CondaListElement element) {

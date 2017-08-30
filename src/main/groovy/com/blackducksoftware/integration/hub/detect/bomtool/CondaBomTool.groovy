@@ -39,6 +39,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput
 
 @Component
+@groovy.transform.CompileStatic
 class CondaBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(CondaBomTool.class)
 
@@ -69,7 +70,7 @@ class CondaBomTool extends BomTool {
     public List<DetectCodeLocation> extractDetectCodeLocations() {
         List<String> condaListOptions = ['list']
         if (detectConfiguration.getCondaEnvironmentName()) {
-            condaListOptions.add([
+            condaListOptions.addAll([
                 '-n',
                 detectConfiguration.getCondaEnvironmentName()
             ])

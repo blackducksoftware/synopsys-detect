@@ -37,7 +37,10 @@ import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput
 
+import groovy.transform.CompileStatic
+
 @Component
+@groovy.transform.CompileStatic
 class CpanBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(CpanBomTool.class)
 

@@ -29,6 +29,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtConfigurationDependencyTree
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter
 
+@groovy.transform.CompileStatic
 public class SbtPackager {
     private final Logger logger = LoggerFactory.getLogger(SbtPackager.class)
 
@@ -44,7 +45,7 @@ public class SbtPackager {
             def report = parser.parseReportFromXml(xml)
             def tree = resolver.resolveReportDependencies(report)
             tree
-        };
+        }
 
         def includedConfigurations = configurations.findAll { tree ->
             filter.shouldInclude(tree.configuration)
