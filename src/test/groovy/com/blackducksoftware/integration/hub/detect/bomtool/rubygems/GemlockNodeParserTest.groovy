@@ -16,7 +16,7 @@ class GemlockNodeParserTest {
 
     @Test
     public void testParsingSmallGemfileLock() {
-        String gemfileLockContents = getClass().getResourceAsStream('/rubygems/small_gemfile_lock').getText(StandardCharsets.UTF_8.name())
+        String gemfileLockContents = getClass().getResourceAsStream('/rubygems/small_gemfile_lock').getText(StandardCharsets.UTF_8.toString())
         NameVersionNodeTransformer nameVersionNodeTransformer = new NameVersionNodeTransformer()
         GemlockNodeParser gemlockNodeParser = new GemlockNodeParser()
         List<DependencyNode> dependencyNodes = gemlockNodeParser.parseProjectDependencies(nameVersionNodeTransformer, gemfileLockContents)
