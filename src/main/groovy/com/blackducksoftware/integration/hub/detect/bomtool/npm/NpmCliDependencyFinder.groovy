@@ -42,7 +42,6 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 
 @Component
-
 class NpmCliDependencyFinder {
     private final Logger logger = LoggerFactory.getLogger(NpmCliDependencyFinder.class)
     private static final String JSON_NAME = 'name'

@@ -39,7 +39,6 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOu
 import groovy.util.slurpersupport.GPathResult
 
 @Component
-//@groovy.transform.TypeChecked
 class PearBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(PearBomTool.class)
 
@@ -79,7 +78,7 @@ class PearBomTool extends BomTool {
         File packageFile = detectFileManager.findFile(sourcePath, PACKAGE_XML_FILENAME)
         GPathResult packageXml = new XmlSlurper().parseText(packageFile.text)
         String rootName = packageXml.name
-        String rootVersion = packageXml.version.result
+        String rootVersion = packageXml.version.release
 
         Set<DependencyNode> childDependencyNodes = pearDependencyFinder.parsePearDependencyList(pearListing, pearDependencies)
         def detectCodeLocation = new DetectCodeLocation(
