@@ -17,9 +17,11 @@ import org.junit.Before
 import org.junit.Test
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionLinkNode
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionLinkNodeBuilder
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
+import com.blackducksoftware.integration.hub.detect.nameversion.builder.LinkedNameVersionNodeBuilder
+import com.blackducksoftware.integration.hub.detect.nameversion.metadata.LinkMetadata
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 
 class YarnPackagerTest {
@@ -57,29 +59,29 @@ class YarnPackagerTest {
 
     @Test
     public void dependencyLineToNameVersionLinkNodeTest() {
-        NameVersionLinkNode NameVersionLinkNode1 = yarnPackager.dependencyLineToNameVersionLinkNode('    name version')
-        assertEquals('name@version', NameVersionLinkNode1.name)
-        assertNull(NameVersionLinkNode1.version)
+        NameVersionNode nameVersionNode1 = yarnPackager.dependencyLineToNameVersionNode('    name version')
+        assertEquals('name@version', nameVersionNode1.name)
+        assertNull(nameVersionNode1.version)
 
-        NameVersionLinkNode NameVersionLinkNode2 = yarnPackager.dependencyLineToNameVersionLinkNode('name version')
-        assertEquals('name@version', NameVersionLinkNode2.name)
-        assertNull(NameVersionLinkNode2.version)
+        NameVersionNode nameVersionNode2 = yarnPackager.dependencyLineToNameVersionNode('name version')
+        assertEquals('name@version', nameVersionNode2.name)
+        assertNull(nameVersionNode2.version)
 
-        NameVersionLinkNode NameVersionLinkNode3 = yarnPackager.dependencyLineToNameVersionLinkNode('name')
-        assertEquals('name', NameVersionLinkNode3.name)
-        assertNull(NameVersionLinkNode3.version)
+        NameVersionNode nameVersionNode3 = yarnPackager.dependencyLineToNameVersionNode('name')
+        assertEquals('name', nameVersionNode3.name)
+        assertNull(nameVersionNode3.version)
 
-        NameVersionLinkNode NameVersionLinkNode4 = yarnPackager.dependencyLineToNameVersionLinkNode('"@gulp-sourcemaps/identity-map" "1.X"')
-        assertEquals('@gulp-sourcemaps/identity-map@1.X', NameVersionLinkNode4.name)
-        assertNull(NameVersionLinkNode4.version)
+        NameVersionNode nameVersionNode4 = yarnPackager.dependencyLineToNameVersionNode('"@gulp-sourcemaps/identity-map" "1.X"')
+        assertEquals('@gulp-sourcemaps/identity-map@1.X', nameVersionNode4.name)
+        assertNull(nameVersionNode4.version)
     }
 
     @Test
     public void lineToNameVersionLinkNodeSingleTest() {
-        final def root = new NameVersionLinkNode()
-        final def nameVersionLinkNodeBuilder = new NameVersionLinkNodeBuilder(root)
+        final def root = new NameVersionNodeImpl(name: 'test')
+        final def nameVersionLinkNodeBuilder = new LinkedNameVersionNodeBuilder(root)
         final String line = '"@types/node@^6.0.46":'
-        final NameVersionLinkNode result = yarnPackager.lineToNameVersionLinkNode(nameVersionLinkNodeBuilder, root, line)
+        final NameVersionNode result = yarnPackager.lineToNameVersionNode(nameVersionLinkNodeBuilder, root, line)
 
         assertEquals('@types/node', result.name)
 
@@ -87,15 +89,15 @@ class YarnPackagerTest {
         assertEquals('@types/node@^6.0.46', root.children[0].name)
         assertNull(root.children[0].version)
         assertEquals(0, root.children[0].children.size())
-        assertEquals(result, root.children[0].link)
+        assertEquals(result, ((LinkMetadata) root.children[0].metadata).linkNode)
     }
 
     @Test
     public void lineToNameVersionLinkNodeMultipleTest() {
-        final def root = new NameVersionLinkNode()
-        final def nameVersionLinkNodeBuilder = new NameVersionLinkNodeBuilder(root)
+        final def root = new NameVersionNodeImpl()
+        final def nameVersionLinkNodeBuilder = new LinkedNameVersionNodeBuilder(root)
         final String line = 'acorn@^4.0.3, acorn@^4.0.4:'
-        final NameVersionLinkNode result = yarnPackager.lineToNameVersionLinkNode(nameVersionLinkNodeBuilder, root, line)
+        final NameVersionNode result = yarnPackager.lineToNameVersionNode(nameVersionLinkNodeBuilder, root, line)
 
         assertEquals('acorn', result.name)
         assertEquals(2, root.children.size())
@@ -103,11 +105,11 @@ class YarnPackagerTest {
         assertEquals('acorn@^4.0.3', root.children[0].name)
         assertNull(root.children[0].version)
         assertEquals(0, root.children[0].children.size())
-        assertEquals(result, root.children[0].link)
+        assertEquals(result, ((LinkMetadata) root.children[0].metadata).linkNode)
 
         assertEquals('acorn@^4.0.4', root.children[1].name)
         assertNull(root.children[1].version)
         assertEquals(0, root.children[1].children.size())
-        assertEquals(result, root.children[1].link)
+        assertEquals(result, ((LinkMetadata) root.children[1].metadata).linkNode)
     }
 }

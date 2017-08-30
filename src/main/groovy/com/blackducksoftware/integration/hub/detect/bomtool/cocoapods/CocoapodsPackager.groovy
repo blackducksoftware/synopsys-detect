@@ -28,98 +28,99 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeBuilder
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
+import com.blackducksoftware.integration.hub.detect.nameversion.NodeMetadata
+import com.blackducksoftware.integration.hub.detect.nameversion.builder.NameVersionNodeBuilderImpl
+import com.blackducksoftware.integration.hub.detect.nameversion.builder.SubcomponentNodeBuilder
+import com.blackducksoftware.integration.hub.detect.nameversion.metadata.SubcomponentMetadata
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper
 
 @Component
 class CocoapodsPackager {
+    final List<String> fuzzyVersionIdentifiers = ['>', '<', '~>', '=']
+
     @Autowired
     NameVersionNodeTransformer nameVersionNodeTransformer
 
     public Set<DependencyNode> extractDependencyNodes(final String podLockText) {
-        List<NameVersionNode> nameVersionNodes = parse(podLockText)
+        YAMLMapper mapper = new YAMLMapper()
+        PodfileLock podfileLock = mapper.readValue(podLockText, PodfileLock.class)
 
-        nameVersionNodes.collect { nameVersionNodeTransformer.createDependencyNode(Forge.COCOAPODS, it) } as Set
-    }
+        def root = new NameVersionNodeImpl()
+        root.name = "detectRootNode - ${UUID.randomUUID()}"
+        def builder = new SubcomponentNodeBuilder(root)
 
-    private List<NameVersionNode> parse(final String podLockText) {
-        final List<NameVersionNode> directDependencies = []
-        final NameVersionNode root = new NameVersionNodeImpl()
-        root.name = 'hub_detect_root'
-        final def nameVersionNodeBuilder = new NameVersionNodeBuilder(root)
+        podfileLock.pods.each { buildNameVersionNode(builder, it) }
 
-        NameVersionNode parentNode = root
-        boolean podsSection = false
-        boolean dependenciesSection = false
-        for (String line: podLockText.split(System.getProperty('line.separator'))) {
-            if (!line.trim()) {
-                continue
-            }
+        podfileLock.dependencies.each {
+            def child = new NameVersionNodeImpl([name: cleanPodName(it.name)])
+            builder.addChildNodeToParent(child, root)
+        }
 
-            if (!podsSection && line.trim() == 'PODS:') {
-                dependenciesSection = false
-                podsSection = true
-                continue
-            }
+        podfileLock.externalSources?.sources.each { source ->
+            NodeMetadata nodeMetadata = createMetadata(builder, source.name)
 
-            if (!dependenciesSection && line.trim() == 'DEPENDENCIES:') {
-                podsSection = false
-                dependenciesSection = true
-                continue
-            }
-
-            int lineLevel = getLevel(line)
-            if (lineLevel == 0) {
-                podsSection = false
-                dependenciesSection = false
-            }
-
-            if (!podsSection && !dependenciesSection) {
-                continue
-            }
-
-            NameVersionNode pod = lineToNameVersionNode(line)
-            if (podsSection) {
-                if (lineLevel == 1) {
-                    nameVersionNodeBuilder.addChildNodeToParent(pod, root)
-                    parentNode = pod
-                } else {
-                    if (parentNode.name != pod.name) {
-                        nameVersionNodeBuilder.addChildNodeToParent(pod, parentNode)
-                    }
-                }
-            } else if (dependenciesSection) {
-                directDependencies.add(pod)
+            if (source.git && source.git.contains('github')) {
+                // Change the forge to GitHub when there is better KB support
+                nodeMetadata.setForge(Forge.COCOAPODS)
+            } else if (source.path && source.path.contains('node_modules')) {
+                nodeMetadata.setForge(Forge.NPM)
             }
         }
-        Map<String, NameVersionNode> allDependendencies = nameVersionNodeBuilder.getNameToNodeMap()
 
-        directDependencies.collect { allDependendencies[it.name] }
+        builder.build().children.collect { nameVersionNodeTransformer.createDependencyNode(Forge.COCOAPODS, it) } as Set
     }
 
-    private NameVersionNode lineToNameVersionNode(final String line) {
-        String clean = line.replaceFirst('- ', '').replace(':','')
-        String version = null
-        boolean fuzzyVersion = clean.contains('~>') || clean.contains('>') || clean.contains('=') || clean.contains('<')
-        if (clean.contains('(') && clean.contains(')') && !fuzzyVersion) {
-            version = clean.substring(clean.indexOf('(') + 1, clean.indexOf(')' - 1)).trim()
+    private NameVersionNode buildNameVersionNode(SubcomponentNodeBuilder builder, Pod pod) {
+        NameVersionNode nameVersionNode = new NameVersionNodeImpl()
+        nameVersionNode.name = cleanPodName(pod.name)
+        pod.cleanName = nameVersionNode.name
+        String[] segments = pod.name.split(' ')
+        if (segments.length > 1) {
+            String version = segments[1]
+            version = version.replace('(','').replace(')','').trim()
+            if (!isVersionFuzzy(version)) {
+                nameVersionNode.version = version
+            }
         }
-        clean = clean.replaceAll('\\(.*\\)', '').trim()
-        def nameVersionNode = new NameVersionNodeImpl()
-        // Grab the first section to aggregate sub-pods
-        nameVersionNode.name = clean.split('/')[0].trim()
-        nameVersionNode.version = version
+
+        pod.dependencies.each { builder.addChildNodeToParent(buildNameVersionNode(builder, new Pod(it)), nameVersionNode) }
+
+        if (pod.dependencies.isEmpty()) {
+            builder.addToCache(nameVersionNode)
+        }
+
+        if (nameVersionNode.name.contains('/')) {
+            String superNodeName = nameVersionNode.name.split('/')[0].trim()
+            def superNode = builder.addToCache(new NameVersionNodeImpl([name: superNodeName]))
+            SubcomponentMetadata superNodeMetadata = createMetadata(builder, superNode.name)
+            superNodeMetadata.subcomponents.add(nameVersionNode)
+
+            SubcomponentMetadata subcomponentMetadata = createMetadata(builder, nameVersionNode.name)
+            subcomponentMetadata.linkNode = superNode
+
+            builder.superComponents.add(superNode)
+        }
 
         nameVersionNode
     }
 
-    private int getLevel(String line) {
-        if (line.startsWith('  - ')) {
-            return 1
-        } else if (line.startsWith('    - ')) {
-            return 2
+    private SubcomponentMetadata createMetadata(NameVersionNodeBuilderImpl builder, String name) {
+        SubcomponentMetadata metadata = builder.getNodeMetadata(cleanPodName(name)) as SubcomponentMetadata
+        if (!metadata) {
+            metadata = new SubcomponentMetadata()
+            builder.setMetadata(name, metadata)
         }
-        return 0
+
+        metadata
+    }
+
+    private boolean isVersionFuzzy(String versionName) {
+        fuzzyVersionIdentifiers.any { versionName.contains(it) }
+    }
+
+    private String cleanPodName(String rawPodName) {
+        rawPodName?.split(' ')[0].trim()
     }
 }

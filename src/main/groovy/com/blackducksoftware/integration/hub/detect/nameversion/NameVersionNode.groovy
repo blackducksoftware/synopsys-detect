@@ -26,8 +26,10 @@ interface NameVersionNode {
     public String getName()
     public String getVersion()
     public List<? extends NameVersionNode> getChildren()
+    public NodeMetadata getMetadata()
 
     public void setName(String name)
     public void setVersion(String version)
     public void setChildren(List<? extends NameVersionNode> children)
+    public void setMetadata(NodeMetadata metadata)
 }

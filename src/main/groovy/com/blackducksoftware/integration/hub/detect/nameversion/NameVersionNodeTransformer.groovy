@@ -30,11 +30,12 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVe
 
 @Component
 class NameVersionNodeTransformer {
-    public DependencyNode createDependencyNode(Forge forge, NameVersionNode nameVersionNode) {
+    public DependencyNode createDependencyNode(Forge defaultForge, NameVersionNode nameVersionNode) {
+        final Forge forge = nameVersionNode.metadata?.forge ? nameVersionNode.metadata.forge : defaultForge
         def externalId = new NameVersionExternalId(forge, nameVersionNode.name, nameVersionNode.version)
         def dependencyNode = new DependencyNode(nameVersionNode.name, nameVersionNode.version, externalId)
         nameVersionNode.children.each {
-            dependencyNode.children.add(createDependencyNode(forge, it))
+            dependencyNode.children.add(createDependencyNode(defaultForge, it))
         }
 
         dependencyNode
