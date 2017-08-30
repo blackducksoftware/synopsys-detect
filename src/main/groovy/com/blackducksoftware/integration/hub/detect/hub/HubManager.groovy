@@ -53,7 +53,7 @@ import com.blackducksoftware.integration.hub.model.view.ScanSummaryView
 import com.blackducksoftware.integration.hub.request.builder.ProjectRequestBuilder
 
 @Component
-@groovy.transform.CompileStatic
+@groovy.transform.TypeChecked
 class HubManager {
     private final Logger logger = LoggerFactory.getLogger(HubManager.class)
 

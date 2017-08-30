@@ -34,7 +34,7 @@ import com.blackducksoftware.integration.hub.detect.nameversion.NodeMetadata
  * always have a defined version for each dependency, but will EVENTUALLY find
  * a defined version, as in Gemfile.lock files.
  */
-@groovy.transform.CompileStatic
+@groovy.transform.TypeChecked
 class NameVersionNodeBuilderImpl implements NameVersionNodeBuilder {
     final Logger logger = LoggerFactory.getLogger(NameVersionNodeBuilderImpl.class)
 

@@ -27,7 +27,7 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder
 
 import com.google.gson.annotations.SerializedName
 
-@groovy.transform.CompileStatic
+@groovy.transform.TypeChecked
 class NugetPackageId {
     @SerializedName('Name')
     String name

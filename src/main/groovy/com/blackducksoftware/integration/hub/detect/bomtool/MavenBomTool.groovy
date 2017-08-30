@@ -37,7 +37,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput
 
 @Component
-@groovy.transform.CompileStatic
+@groovy.transform.TypeChecked
 class MavenBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(MavenBomTool.class)
 

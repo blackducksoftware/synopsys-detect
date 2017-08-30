@@ -25,7 +25,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool.sbt
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 
-@groovy.transform.CompileStatic
+@groovy.transform.TypeChecked
 class SbtProject {
     public String projectName
     public String projectVersion

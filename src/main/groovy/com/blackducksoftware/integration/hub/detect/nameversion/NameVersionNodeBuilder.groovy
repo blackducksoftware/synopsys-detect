@@ -22,7 +22,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.nameversion
 
-@groovy.transform.CompileStatic
+@groovy.transform.TypeChecked
 interface NameVersionNodeBuilder {
     public NameVersionNode getRoot()
     public NameVersionNode build()

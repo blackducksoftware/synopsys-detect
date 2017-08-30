@@ -39,7 +39,7 @@ import com.blackducksoftware.integration.hub.request.builder.ProjectRequestBuild
 import com.blackducksoftware.integration.hub.scan.HubScanConfig
 
 @Component
-@groovy.transform.CompileStatic
+@groovy.transform.TypeChecked
 class HubSignatureScanner {
     private final Logger logger = LoggerFactory.getLogger(HubSignatureScanner.class)
 

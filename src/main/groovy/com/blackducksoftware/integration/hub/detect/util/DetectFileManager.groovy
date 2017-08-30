@@ -32,7 +32,7 @@ import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 
 @Component
-@groovy.transform.CompileStatic
+@groovy.transform.TypeChecked
 class DetectFileManager {
     private final Logger logger = LoggerFactory.getLogger(DetectFileManager.class)
 

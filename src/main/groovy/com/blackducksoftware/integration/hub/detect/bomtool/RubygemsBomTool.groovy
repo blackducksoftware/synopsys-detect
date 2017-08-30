@@ -38,7 +38,7 @@ import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 
 @Component
-@groovy.transform.CompileStatic
+@groovy.transform.TypeChecked
 class RubygemsBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(RubygemsBomTool.class)
 

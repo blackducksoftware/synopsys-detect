@@ -22,7 +22,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.type;
 
-@groovy.transform.CompileStatic
+@groovy.transform.TypeChecked
 public enum OperatingSystemType {
     LINUX,
     MAC,

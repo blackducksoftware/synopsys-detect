@@ -32,7 +32,7 @@ import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeI
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.nameversion.builder.NameVersionNodeBuilderImpl
 
-@groovy.transform.CompileStatic
+@groovy.transform.TypeChecked
 class GemlockNodeParser {
     private final Logger logger = LoggerFactory.getLogger(GemlockNodeParser.class)
 

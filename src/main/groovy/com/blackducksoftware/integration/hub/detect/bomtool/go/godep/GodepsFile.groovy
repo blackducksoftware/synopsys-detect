@@ -24,7 +24,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool.go.godep
 
 import com.google.gson.annotations.SerializedName
 
-@groovy.transform.CompileStatic
+@groovy.transform.TypeChecked
 class GodepsFile {
     @SerializedName("ImportPath")
     String importPath

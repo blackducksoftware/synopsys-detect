@@ -27,7 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-@groovy.transform.CompileStatic
+@groovy.transform.TypeChecked
 class HelpPrinter {
     @Autowired
     ValueDescriptionAnnotationFinder valueDescriptionAnnotationFinder

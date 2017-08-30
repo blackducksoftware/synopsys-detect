@@ -36,7 +36,7 @@ import com.blackducksoftware.integration.hub.model.view.ProjectVersionView
 import com.blackducksoftware.integration.hub.model.view.VersionBomPolicyStatusView
 
 @Component
-@groovy.transform.CompileStatic
+@groovy.transform.TypeChecked
 class PolicyChecker {
     private final Logger logger = LoggerFactory.getLogger(PolicyChecker.class)
 

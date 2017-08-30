@@ -36,7 +36,7 @@ import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 
 @Component
-@groovy.transform.CompileStatic
+@groovy.transform.TypeChecked
 class CranBomTool extends BomTool {
     public static final Forge CRAN = new Forge('cran', '/')
 

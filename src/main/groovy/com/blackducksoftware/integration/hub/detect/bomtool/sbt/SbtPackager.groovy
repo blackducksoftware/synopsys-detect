@@ -29,7 +29,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtConfigurationDependencyTree
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter
 
-@groovy.transform.CompileStatic
+@groovy.transform.TypeChecked
 public class SbtPackager {
     private final Logger logger = LoggerFactory.getLogger(SbtPackager.class)
 

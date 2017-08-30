@@ -35,7 +35,7 @@ import com.blackducksoftware.integration.hub.global.HubServerConfig
 import com.blackducksoftware.integration.phonehome.PhoneHomeRequestBody
 
 @Component
-@groovy.transform.CompileStatic
+@groovy.transform.TypeChecked
 class BdioUploader {
     private final Logger logger = LoggerFactory.getLogger(BdioUploader.class)
 

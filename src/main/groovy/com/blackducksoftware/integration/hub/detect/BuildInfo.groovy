@@ -24,7 +24,7 @@ package com.blackducksoftware.integration.hub.detect
 
 import com.google.gson.annotations.SerializedName
 
-@groovy.transform.CompileStatic
+@groovy.transform.TypeChecked
 class BuildInfo {
     @SerializedName("detect")
     final String detectVersion

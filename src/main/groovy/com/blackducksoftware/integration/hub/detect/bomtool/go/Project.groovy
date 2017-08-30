@@ -22,7 +22,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.go
 
-@groovy.transform.CompileStatic
+@groovy.transform.TypeChecked
 class Project {
     String name
     String branch

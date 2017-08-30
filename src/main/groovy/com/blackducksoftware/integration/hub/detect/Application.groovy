@@ -50,7 +50,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
 @SpringBootApplication
-@groovy.transform.CompileStatic
+@groovy.transform.TypeChecked
 class Application {
     private final Logger logger = LoggerFactory.getLogger(Application.class)
 

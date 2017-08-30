@@ -28,7 +28,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 import groovy.transform.ToString
 
-@groovy.transform.CompileStatic
+@groovy.transform.TypeChecked
 @ToString(includePackage=false, includeFields=true, ignoreNulls=true)
 @JsonIgnoreProperties(ignoreUnknown = true)
 class PodSource {

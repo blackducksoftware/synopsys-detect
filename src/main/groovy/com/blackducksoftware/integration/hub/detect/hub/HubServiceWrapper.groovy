@@ -49,7 +49,7 @@ import com.blackducksoftware.integration.hub.service.HubServicesFactory
 import com.blackducksoftware.integration.log.Slf4jIntLogger
 
 @Component
-@groovy.transform.CompileStatic
+@groovy.transform.TypeChecked
 class HubServiceWrapper {
     private final Logger logger = LoggerFactory.getLogger(HubServiceWrapper.class)
 

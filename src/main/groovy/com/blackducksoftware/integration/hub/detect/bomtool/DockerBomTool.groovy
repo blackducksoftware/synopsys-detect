@@ -37,7 +37,7 @@ import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 
 @Component
-@groovy.transform.CompileStatic
+@groovy.transform.TypeChecked
 class DockerBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(DockerBomTool.class)
 

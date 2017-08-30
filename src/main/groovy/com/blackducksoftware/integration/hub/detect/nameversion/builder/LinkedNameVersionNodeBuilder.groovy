@@ -27,7 +27,7 @@ import com.blackducksoftware.integration.hub.detect.nameversion.metadata.LinkMet
 
 import groovy.transform.CompileStatic
 
-@groovy.transform.CompileStatic
+@groovy.transform.TypeChecked
 class LinkedNameVersionNodeBuilder extends NameVersionNodeBuilderImpl {
 
     public LinkedNameVersionNodeBuilder(NameVersionNode root) {

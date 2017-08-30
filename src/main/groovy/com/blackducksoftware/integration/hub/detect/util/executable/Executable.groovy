@@ -24,7 +24,7 @@ package com.blackducksoftware.integration.hub.detect.util.executable
 
 import org.apache.commons.lang3.StringUtils
 
-@groovy.transform.CompileStatic
+@groovy.transform.TypeChecked
 class Executable {
     File workingDirectory
     Map<String, String> environmentVariables = [:]

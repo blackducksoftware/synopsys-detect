@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonAnySetter
 
 import groovy.transform.ToString
 
-@groovy.transform.CompileStatic
+@groovy.transform.TypeChecked
 @ToString(includePackage=false, includeFields=true)
 class ExternalSources {
     List<PodSource> sources = []

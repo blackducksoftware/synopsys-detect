@@ -33,7 +33,7 @@ import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager
 
 @Component
-@groovy.transform.CompileStatic
+@groovy.transform.TypeChecked
 class PythonEnvironmentHandler {
     private final Logger logger = LoggerFactory.getLogger(PythonEnvironmentHandler.class)
     private final String VIRTUAL_ENV_NAME = 'venv'

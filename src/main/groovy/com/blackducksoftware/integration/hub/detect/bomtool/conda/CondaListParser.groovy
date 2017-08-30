@@ -35,7 +35,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
 @Component
-@groovy.transform.CompileStatic
+@groovy.transform.TypeChecked
 class CondaListParser {
     @Autowired
     Gson gson

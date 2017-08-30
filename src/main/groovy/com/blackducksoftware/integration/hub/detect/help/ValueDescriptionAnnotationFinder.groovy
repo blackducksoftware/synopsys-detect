@@ -35,7 +35,7 @@ import org.springframework.context.ApplicationContextAware
 import org.springframework.stereotype.Component
 
 @Component
-@groovy.transform.CompileStatic
+@groovy.transform.TypeChecked
 public class ValueDescriptionAnnotationFinder implements ApplicationContextAware {
     private final Logger logger = LoggerFactory.getLogger(ValueDescriptionAnnotationFinder.class)
 

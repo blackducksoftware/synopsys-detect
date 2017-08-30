@@ -32,7 +32,7 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 
 @Component
-@groovy.transform.CompileStatic
+@groovy.transform.TypeChecked
 public class ExecutableRunner {
     private final Logger logger = LoggerFactory.getLogger(ExecutableRunner.class)
 

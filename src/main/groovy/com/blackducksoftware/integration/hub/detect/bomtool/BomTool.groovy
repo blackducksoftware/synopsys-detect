@@ -33,7 +33,7 @@ import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
 
-@groovy.transform.CompileStatic
+@groovy.transform.TypeChecked
 abstract class BomTool {
     @Autowired
     DetectConfiguration detectConfiguration

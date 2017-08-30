@@ -28,7 +28,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVe
 import com.blackducksoftware.integration.hub.detect.bomtool.GoDepBomTool
 import com.moandjiezana.toml.Toml
 
-@groovy.transform.CompileStatic
+@groovy.transform.TypeChecked
 class GopkgLockParser {
     public List<DependencyNode> parseDepLock(String depLockContents) {
         List<DependencyNode> nodes = new ArrayList<>()

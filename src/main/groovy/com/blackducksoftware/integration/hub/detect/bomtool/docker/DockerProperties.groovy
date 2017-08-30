@@ -28,7 +28,7 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 
 @Component
-@groovy.transform.CompileStatic
+@groovy.transform.TypeChecked
 class DockerProperties {
     @Autowired
     DetectConfiguration detectConfiguration

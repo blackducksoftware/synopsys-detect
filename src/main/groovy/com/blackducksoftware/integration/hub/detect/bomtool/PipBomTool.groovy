@@ -38,7 +38,7 @@ import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 
 @Component
-@groovy.transform.CompileStatic
+@groovy.transform.TypeChecked
 class PipBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(PipBomTool.class)
 

@@ -43,7 +43,7 @@ import com.blackducksoftware.integration.util.ResourceUtil
 import com.google.gson.Gson
 
 @Component
-@groovy.transform.CompileStatic
+@groovy.transform.TypeChecked
 class DetectConfiguration {
     private final Logger logger = LoggerFactory.getLogger(DetectProperties.class)
 

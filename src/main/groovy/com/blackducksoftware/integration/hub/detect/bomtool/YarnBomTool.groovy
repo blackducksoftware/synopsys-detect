@@ -36,7 +36,7 @@ import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 
 @Component
-@groovy.transform.CompileStatic
+@groovy.transform.TypeChecked
 class YarnBomTool extends BomTool {
     @Autowired
     YarnPackager yarnPackager

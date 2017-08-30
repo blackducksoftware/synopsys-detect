@@ -24,7 +24,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool.go
 
 import com.google.gson.annotations.SerializedName
 
-@groovy.transform.CompileStatic
+@groovy.transform.TypeChecked
 class SolveMeta {
     @SerializedName("inputs-digest")
     String inputsDigest

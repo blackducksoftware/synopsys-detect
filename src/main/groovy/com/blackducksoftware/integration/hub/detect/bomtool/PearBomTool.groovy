@@ -39,7 +39,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOu
 import groovy.util.slurpersupport.GPathResult
 
 @Component
-//@groovy.transform.CompileStatic
+//@groovy.transform.TypeChecked
 class PearBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(PearBomTool.class)
 

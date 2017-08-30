@@ -30,7 +30,7 @@ import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
 
 @Component
-@groovy.transform.CompileStatic
+@groovy.transform.TypeChecked
 class CpanListParser {
     private final Logger logger = LoggerFactory.getLogger(CpanListParser.class)
 

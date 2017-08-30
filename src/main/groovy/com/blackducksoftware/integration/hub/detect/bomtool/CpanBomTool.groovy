@@ -40,7 +40,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOu
 import groovy.transform.CompileStatic
 
 @Component
-@groovy.transform.CompileStatic
+@groovy.transform.TypeChecked
 class CpanBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(CpanBomTool.class)
 

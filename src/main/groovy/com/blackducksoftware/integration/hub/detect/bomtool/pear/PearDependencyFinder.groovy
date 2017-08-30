@@ -37,7 +37,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOu
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
 
 @Component
-@groovy.transform.CompileStatic
+@groovy.transform.TypeChecked
 class PearDependencyFinder {
     private final Logger logger = LoggerFactory.getLogger(PearDependencyFinder.class)
 

@@ -34,7 +34,7 @@ import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 
 @Component
-@groovy.transform.CompileStatic
+@groovy.transform.TypeChecked
 class NpmBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(NpmBomTool.class)
 

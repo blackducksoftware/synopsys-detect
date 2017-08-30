@@ -44,7 +44,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 import com.google.gson.Gson
 
 @Component
-@groovy.transform.CompileStatic
+@groovy.transform.TypeChecked
 class NugetInspectorPackager {
     private final Logger logger = LoggerFactory.getLogger(NugetInspectorPackager.class)
 
