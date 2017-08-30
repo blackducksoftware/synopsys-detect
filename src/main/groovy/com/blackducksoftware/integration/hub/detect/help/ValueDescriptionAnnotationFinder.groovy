@@ -56,7 +56,6 @@ public class ValueDescriptionAnnotationFinder implements ApplicationContextAware
             final Object obj = applicationContext.getBean(beanName)
             Class<?> objClz = obj.getClass()
             if (AopUtils.isAopProxy(obj)) {
-                objClz = AopUtils.getTargetClass(obj)
             }
             objClz.declaredFields.each { Field field ->
                 if (field.isAnnotationPresent(ValueDescription.class)) {
@@ -82,7 +81,7 @@ public class ValueDescriptionAnnotationFinder implements ApplicationContextAware
                     if (defaultValue?.trim()) {
                         try {
                             Class type = field.getType()
-                            if (String.class == type && fieldValue == null) {
+                            if (String.class == type && !(fieldValue as String)?.trim()) {
                                 field.set(obj, defaultValue)
                             } else if (Integer.class == type && fieldValue == null) {
                                 field.set(obj, NumberUtils.toInt(defaultValue))
