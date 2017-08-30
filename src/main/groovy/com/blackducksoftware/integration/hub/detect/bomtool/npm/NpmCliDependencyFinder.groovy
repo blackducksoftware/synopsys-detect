@@ -42,7 +42,7 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 
 @Component
-@groovy.transform.CompileStatic
+
 class NpmCliDependencyFinder {
     private final Logger logger = LoggerFactory.getLogger(NpmCliDependencyFinder.class)
     private static final String JSON_NAME = 'name'
@@ -92,10 +92,10 @@ class NpmCliDependencyFinder {
     private void populateChildren(DependencyNode parentDependencyNode, JsonObject parentNodeChildren) {
         Set<Entry<String, JsonElement>> elements = parentNodeChildren?.entrySet()
         elements?.each { Entry<String, JsonElement> it ->
-            JsonElement element = it.value as JsonElement
+            JsonObject element = it.value as JsonObject
             String name = it.key
-            String version = element.getAsJsonPrimitive()?.getAsString()
-            JsonObject children = element.getAsJsonObject()
+            String version = element.getAsJsonPrimitive(JSON_VERSION)?.getAsString()
+            JsonObject children = element.getAsJsonObject(JSON_DEPENDENCIES)
 
             def externalId = new NameVersionExternalId(Forge.NPM, name, version)
             def newNode = new DependencyNode(name, version, externalId)
