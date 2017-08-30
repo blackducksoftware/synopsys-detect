@@ -22,7 +22,9 @@
  */
 package com.blackducksoftware.integration.hub.detect.util.executable
 
-@groovy.transform.TypeChecked
+import groovy.transform.TypeChecked
+
+@TypeChecked
 class ExecutableOutput {
     final String standardOutput
     final String errorOutput

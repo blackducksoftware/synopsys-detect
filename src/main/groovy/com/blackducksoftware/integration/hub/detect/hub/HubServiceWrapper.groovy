@@ -48,8 +48,10 @@ import com.blackducksoftware.integration.hub.rest.RestConnection
 import com.blackducksoftware.integration.hub.service.HubServicesFactory
 import com.blackducksoftware.integration.log.Slf4jIntLogger
 
+import groovy.transform.TypeChecked
+
 @Component
-@groovy.transform.TypeChecked
+@TypeChecked
 class HubServiceWrapper {
     private final Logger logger = LoggerFactory.getLogger(HubServiceWrapper.class)
 

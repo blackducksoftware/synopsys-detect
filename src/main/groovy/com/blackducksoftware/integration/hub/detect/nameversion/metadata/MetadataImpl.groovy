@@ -25,7 +25,9 @@ package com.blackducksoftware.integration.hub.detect.nameversion.metadata
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.detect.nameversion.NodeMetadata
 
-@groovy.transform.TypeChecked
+import groovy.transform.TypeChecked
+
+@TypeChecked
 class MetadataImpl implements NodeMetadata {
     Forge forge
 }

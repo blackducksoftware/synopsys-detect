@@ -42,8 +42,10 @@ import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.util.ResourceUtil
 import com.google.gson.Gson
 
+import groovy.transform.TypeChecked
+
 @Component
-@groovy.transform.TypeChecked
+@TypeChecked
 class DetectConfiguration {
     private final Logger logger = LoggerFactory.getLogger(DetectProperties.class)
 

@@ -32,8 +32,10 @@ import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 
+import groovy.transform.TypeChecked
+
 @Component
-@groovy.transform.TypeChecked
+@TypeChecked
 class ExecutableManager {
     private final Logger logger = LoggerFactory.getLogger(ExecutableManager.class)
 

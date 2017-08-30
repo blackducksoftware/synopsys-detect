@@ -34,8 +34,10 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVe
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
+import groovy.transform.TypeChecked
+
 @Component
-@groovy.transform.TypeChecked
+@TypeChecked
 class CondaListParser {
     @Autowired
     Gson gson

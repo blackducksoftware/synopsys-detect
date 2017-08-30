@@ -34,8 +34,10 @@ import com.blackducksoftware.integration.hub.detect.nameversion.builder.LinkedNa
 import com.blackducksoftware.integration.hub.detect.nameversion.builder.NameVersionNodeBuilderImpl
 import com.blackducksoftware.integration.hub.detect.nameversion.metadata.LinkMetadata
 
+import groovy.transform.TypeChecked
+
 @Component
-@groovy.transform.TypeChecked
+@TypeChecked
 class YarnPackager {
     @Autowired
     NameVersionNodeTransformer nameVersionNodeTransformer

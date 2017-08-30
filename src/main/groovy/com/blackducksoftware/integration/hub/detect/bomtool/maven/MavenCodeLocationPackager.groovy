@@ -33,8 +33,10 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenE
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 
+import groovy.transform.TypeChecked
+
 @Component
-@groovy.transform.TypeChecked
+@TypeChecked
 class MavenCodeLocationPackager {
     public static final Pattern gavRegex = Pattern.compile('(.*?):(.*?):(.*?):([^:\\n\\r]*)(:(.*))*')
 

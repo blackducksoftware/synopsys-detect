@@ -28,7 +28,9 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVe
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.model.NugetPackageId
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.model.NugetPackageSet
 
-@groovy.transform.TypeChecked
+import groovy.transform.TypeChecked
+
+@TypeChecked
 public class NugetDependencyNodeBuilder {
 
     final List<NugetPackageSet> packageSets = new ArrayList<NugetPackageSet>()

@@ -25,7 +25,9 @@ package com.blackducksoftware.integration.hub.detect.bomtool.cocoapods
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 
-@groovy.transform.TypeChecked
+import groovy.transform.TypeChecked
+
+@TypeChecked
 @JsonIgnoreProperties(ignoreUnknown = true)
 class PodfileLock {
     @JsonProperty('PODS')

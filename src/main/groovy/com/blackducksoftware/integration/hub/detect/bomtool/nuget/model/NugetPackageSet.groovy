@@ -27,7 +27,9 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder
 
 import com.google.gson.annotations.SerializedName
 
-@groovy.transform.TypeChecked
+import groovy.transform.TypeChecked
+
+@TypeChecked
 class NugetPackageSet {
     @SerializedName('PackageId')
     NugetPackageId packageId

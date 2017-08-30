@@ -27,8 +27,10 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.detect.help.ValueDescription
 
+import groovy.transform.TypeChecked
+
 @Component
-@groovy.transform.TypeChecked
+@TypeChecked
 class DetectProperties {
     private static final String GROUP_HUB_CONFIGURATION = 'hub configuration'
     private static final String GROUP_LOGGING = 'logging'

@@ -22,7 +22,9 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.sbt
 
-@groovy.transform.TypeChecked
+import groovy.transform.TypeChecked
+
+@TypeChecked
 public class SbtAggregate {
     public String name
     public String org

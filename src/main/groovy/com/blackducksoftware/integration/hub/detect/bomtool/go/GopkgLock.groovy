@@ -24,7 +24,9 @@ package com.blackducksoftware.integration.hub.detect.bomtool.go
 
 import com.google.gson.annotations.SerializedName
 
-@groovy.transform.TypeChecked
+import groovy.transform.TypeChecked
+
+@TypeChecked
 class GopkgLock {
     // see https://github.com/golang/dep/blob/master/lock.go for the source of the lock file
     List<Project> projects

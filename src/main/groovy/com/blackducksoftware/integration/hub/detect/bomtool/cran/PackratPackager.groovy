@@ -27,8 +27,10 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 
+import groovy.transform.TypeChecked
+
 @Component
-@groovy.transform.TypeChecked
+@TypeChecked
 public class PackratPackager {
     @Autowired
     private final NameVersionNodeTransformer nameVersionNodeTransformer

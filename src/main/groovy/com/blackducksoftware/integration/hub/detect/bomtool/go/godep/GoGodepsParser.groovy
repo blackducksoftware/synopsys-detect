@@ -28,7 +28,9 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVe
 import com.blackducksoftware.integration.hub.detect.bomtool.GoDepBomTool
 import com.google.gson.Gson
 
-@groovy.transform.TypeChecked
+import groovy.transform.TypeChecked
+
+@TypeChecked
 class GoGodepsParser {
     private final Gson gson
 

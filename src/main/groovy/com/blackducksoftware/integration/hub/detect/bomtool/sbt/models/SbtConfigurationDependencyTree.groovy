@@ -24,7 +24,9 @@ package com.blackducksoftware.integration.hub.detect.bomtool.sbt.models
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 
-@groovy.transform.TypeChecked
+import groovy.transform.TypeChecked
+
+@TypeChecked
 class SbtConfigurationDependencyTree {
     String configuration
 

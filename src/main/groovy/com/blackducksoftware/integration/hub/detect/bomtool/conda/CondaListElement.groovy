@@ -24,7 +24,9 @@ package com.blackducksoftware.integration.hub.detect.bomtool.conda
 
 import com.google.gson.annotations.SerializedName
 
-@groovy.transform.TypeChecked
+import groovy.transform.TypeChecked
+
+@TypeChecked
 class CondaListElement {
     @SerializedName("name")
     String name

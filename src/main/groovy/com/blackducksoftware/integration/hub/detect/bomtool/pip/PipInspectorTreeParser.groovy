@@ -34,8 +34,10 @@ import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeI
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.nameversion.builder.NameVersionNodeBuilderImpl
 
+import groovy.transform.TypeChecked
+
 @Component
-@groovy.transform.TypeChecked
+@TypeChecked
 class PipInspectorTreeParser {
     final Logger logger = LoggerFactory.getLogger(PipInspectorTreeParser.class)
 

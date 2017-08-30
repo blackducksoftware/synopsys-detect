@@ -41,7 +41,10 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 
+import groovy.transform.TypeChecked
+
 @Component
+@TypeChecked
 class NpmCliDependencyFinder {
     private final Logger logger = LoggerFactory.getLogger(NpmCliDependencyFinder.class)
     private static final String JSON_NAME = 'name'

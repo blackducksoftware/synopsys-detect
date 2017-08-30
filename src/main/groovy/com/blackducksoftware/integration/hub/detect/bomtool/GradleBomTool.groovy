@@ -36,8 +36,10 @@ import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.google.gson.Gson
 
+import groovy.transform.TypeChecked
+
 @Component
-@groovy.transform.TypeChecked
+@TypeChecked
 class GradleBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(GradleBomTool.class)
 

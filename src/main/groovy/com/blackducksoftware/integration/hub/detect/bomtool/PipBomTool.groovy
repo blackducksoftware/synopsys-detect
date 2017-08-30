@@ -37,8 +37,10 @@ import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 
+import groovy.transform.TypeChecked
+
 @Component
-@groovy.transform.TypeChecked
+@TypeChecked
 class PipBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(PipBomTool.class)
 

@@ -22,7 +22,9 @@
  */
 package com.blackducksoftware.integration.hub.detect.exception;
 
-@groovy.transform.TypeChecked
+import groovy.transform.TypeChecked;
+
+@TypeChecked
 public class DetectException extends Exception {
     public DetectException() {
         super();

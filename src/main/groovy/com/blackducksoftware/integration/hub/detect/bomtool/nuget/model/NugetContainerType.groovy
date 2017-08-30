@@ -24,7 +24,9 @@ package com.blackducksoftware.integration.hub.detect.bomtool.nuget.model
 
 import com.google.gson.annotations.SerializedName
 
-@groovy.transform.TypeChecked
+import groovy.transform.TypeChecked
+
+@TypeChecked
 public enum NugetContainerType {
     @SerializedName("Solution")
     SOLUTION,

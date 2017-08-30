@@ -49,8 +49,10 @@ import com.blackducksoftware.integration.util.IntegrationEscapeUtil
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
+import groovy.transform.TypeChecked
+
+@TypeChecked
 @SpringBootApplication
-@groovy.transform.TypeChecked
 class Application {
     private final Logger logger = LoggerFactory.getLogger(Application.class)
 

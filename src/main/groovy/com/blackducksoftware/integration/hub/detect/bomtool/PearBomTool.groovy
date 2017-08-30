@@ -36,6 +36,7 @@ import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput
 
+import groovy.transform.TypeChecked
 import groovy.util.slurpersupport.GPathResult
 
 @Component
@@ -57,6 +58,7 @@ class PearBomTool extends BomTool {
     }
 
     @Override
+    @TypeChecked
     public boolean isBomToolApplicable() {
         boolean containsPackageXml = detectFileManager.containsAllFiles(sourcePath, PACKAGE_XML_FILENAME)
 

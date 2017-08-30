@@ -35,8 +35,10 @@ import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.CocoapodsP
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 
+import groovy.transform.TypeChecked
+
 @Component
-@groovy.transform.TypeChecked
+@TypeChecked
 class CocoapodsBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(CocoapodsBomTool.class)
 

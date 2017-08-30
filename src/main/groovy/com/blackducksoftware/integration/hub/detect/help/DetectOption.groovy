@@ -22,7 +22,9 @@
  */
 package com.blackducksoftware.integration.hub.detect.help
 
-@groovy.transform.TypeChecked
+import groovy.transform.TypeChecked
+
+@TypeChecked
 public class DetectOption {
     final String key
     final String description

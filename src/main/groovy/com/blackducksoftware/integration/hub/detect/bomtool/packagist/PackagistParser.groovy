@@ -33,8 +33,10 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 
+import groovy.transform.TypeChecked
+
 @Component
-@groovy.transform.TypeChecked
+@TypeChecked
 class PackagistParser {
     private Forge packagistForge = new Forge('packagist', ':')
 

@@ -36,8 +36,10 @@ import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.google.gson.Gson
 
+import groovy.transform.TypeChecked
+
 @Component
-@groovy.transform.TypeChecked
+@TypeChecked
 class GoGodepsBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(GoGodepsBomTool.class)
 

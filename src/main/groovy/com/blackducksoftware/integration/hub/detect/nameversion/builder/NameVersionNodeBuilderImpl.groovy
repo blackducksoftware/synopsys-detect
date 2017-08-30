@@ -29,12 +29,14 @@ import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeBuilder
 import com.blackducksoftware.integration.hub.detect.nameversion.NodeMetadata
 
+import groovy.transform.TypeChecked
+
 /**
  * This class should be used to construct node graphs where you don't
  * always have a defined version for each dependency, but will EVENTUALLY find
  * a defined version, as in Gemfile.lock files.
  */
-@groovy.transform.TypeChecked
+@TypeChecked
 class NameVersionNodeBuilderImpl implements NameVersionNodeBuilder {
     final Logger logger = LoggerFactory.getLogger(NameVersionNodeBuilderImpl.class)
 
