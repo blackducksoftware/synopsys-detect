@@ -196,7 +196,7 @@ class DetectProjectManager {
 
         final SimpleBdioDocument simpleBdioDocument = new SimpleBdioDocument()
         simpleBdioDocument.billOfMaterials = bdioBillOfMaterials
-        simpleBdioDocument.project = project
+        simpleBdioDocument.project = project 
         simpleBdioDocument.components = bdioComponents
 
         simpleBdioDocument
