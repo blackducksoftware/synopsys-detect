@@ -5,7 +5,7 @@
     {
       "Name": "LDService",
       "Type": "Solution",
-      "SourcePath": "C:\\Users\\jpiscitelli\\Documents\\node\\detect-tests\\temp\\nuget\\packages-config\\target\\LDService.sln",
+      "SourcePath": "LDService.sln",
       "OutputPaths": [],
       "Packages": [],
       "Dependencies": [],
@@ -14,10 +14,10 @@
           "Name": "LDService.Persistence.Tests",
           "Version": "1.0.0.0",
           "Type": "Project",
-          "SourcePath": "C:\\Users\\jpiscitelli\\Documents\\node\\detect-tests\\temp\\nuget\\packages-config\\target\\Tests\\LDService.Persistence.Tests\\LDService.Persistence.Tests.csproj",
+          "SourcePath": "Tests\\LDService.Persistence.Tests\\LDService.Persistence.Tests.csproj",
           "OutputPaths": [
-            "C:\\Users\\jpiscitelli\\Documents\\node\\detect-tests\\temp\\nuget\\packages-config\\target\\Tests\\LDService.Persistence.Tests\\bin\\Debug\\",
-            "C:\\Users\\jpiscitelli\\Documents\\node\\detect-tests\\temp\\nuget\\packages-config\\target\\Tests\\LDService.Persistence.Tests\\bin\\Release\\"
+            "Tests\\LDService.Persistence.Tests\\bin\\Debug\\",
+            "Tests\\LDService.Persistence.Tests\\bin\\Release\\"
           ],
           "Packages": [
             {
@@ -84,10 +84,10 @@
           "Name": "LDService.SyncService.Tests",
           "Version": "1.0.0.0",
           "Type": "Project",
-          "SourcePath": "C:\\Users\\jpiscitelli\\Documents\\node\\detect-tests\\temp\\nuget\\packages-config\\target\\Tests\\LDService.SyncService.Tests\\LDService.SyncService.Tests.csproj",
+          "SourcePath": "Tests\\LDService.SyncService.Tests\\LDService.SyncService.Tests.csproj",
           "OutputPaths": [
-            "C:\\Users\\jpiscitelli\\Documents\\node\\detect-tests\\temp\\nuget\\packages-config\\target\\Tests\\LDService.SyncService.Tests\\bin\\Debug\\",
-            "C:\\Users\\jpiscitelli\\Documents\\node\\detect-tests\\temp\\nuget\\packages-config\\target\\Tests\\LDService.SyncService.Tests\\bin\\Release\\"
+            "Tests\\LDService.SyncService.Tests\\bin\\Debug\\",
+            "Tests\\LDService.SyncService.Tests\\bin\\Release\\"
           ],
           "Packages": [
             {
@@ -472,10 +472,10 @@
           "Name": "LDService.Tests.Common",
           "Version": "1.0.0.0",
           "Type": "Project",
-          "SourcePath": "C:\\Users\\jpiscitelli\\Documents\\node\\detect-tests\\temp\\nuget\\packages-config\\target\\Tests\\LDService.Tests.Common\\LDService.Tests.Common.csproj",
+          "SourcePath": "Tests\\LDService.Tests.Common\\LDService.Tests.Common.csproj",
           "OutputPaths": [
-            "C:\\Users\\jpiscitelli\\Documents\\node\\detect-tests\\temp\\nuget\\packages-config\\target\\Tests\\LDService.Tests.Common\\bin\\Debug\\",
-            "C:\\Users\\jpiscitelli\\Documents\\node\\detect-tests\\temp\\nuget\\packages-config\\target\\Tests\\LDService.Tests.Common\\bin\\Release\\"
+            "Tests\\LDService.Tests.Common\\bin\\Debug\\",
+            "Tests\\LDService.Tests.Common\\bin\\Release\\"
           ],
           "Packages": [],
           "Dependencies": [],
@@ -485,11 +485,11 @@
           "Name": "LDService.Common",
           "Version": "1.0.0.0",
           "Type": "Project",
-          "SourcePath": "C:\\Users\\jpiscitelli\\Documents\\node\\detect-tests\\temp\\nuget\\packages-config\\target\\LDService.Common\\LDService.Common.csproj",
+          "SourcePath": "LDService.Common\\LDService.Common.csproj",
           "OutputPaths": [
-            "C:\\Users\\jpiscitelli\\Documents\\node\\detect-tests\\temp\\nuget\\packages-config\\target\\LDService.Common\\bin\\Debug\\",
-            "C:\\Users\\jpiscitelli\\Documents\\node\\detect-tests\\temp\\nuget\\packages-config\\target\\LDService.Common\\bin\\Release\\",
-            "C:\\Users\\jpiscitelli\\Documents\\node\\detect-tests\\temp\\nuget\\packages-config\\target\\LDService.Common\\bin\\ReleaseSigned\\"
+            "LDService.Common\\bin\\Debug\\",
+            "LDService.Common\\bin\\Release\\",
+            "LDService.Common\\bin\\ReleaseSigned\\"
           ],
           "Packages": [
             {
@@ -689,11 +689,11 @@
           "Name": "LDService.Dashboard",
           "Version": "1.0.0.0",
           "Type": "Project",
-          "SourcePath": "C:\\Users\\jpiscitelli\\Documents\\node\\detect-tests\\temp\\nuget\\packages-config\\target\\LDService.Dashboard\\LDService.Dashboard.csproj",
+          "SourcePath": "LDService.Dashboard\\LDService.Dashboard.csproj",
           "OutputPaths": [
-            "C:\\Users\\jpiscitelli\\Documents\\node\\detect-tests\\temp\\nuget\\packages-config\\target\\LDService.Dashboard\\bin\\Debug\\",
-            "C:\\Users\\jpiscitelli\\Documents\\node\\detect-tests\\temp\\nuget\\packages-config\\target\\LDService.Dashboard\\bin\\Release\\",
-            "C:\\Users\\jpiscitelli\\Documents\\node\\detect-tests\\temp\\nuget\\packages-config\\target\\LDService.Dashboard\\bin\\ReleaseSigned\\"
+            "LDService.Dashboard\\bin\\Debug\\",
+            "LDService.Dashboard\\bin\\Release\\",
+            "LDService.Dashboard\\bin\\ReleaseSigned\\"
           ],
           "Packages": [
             {
@@ -949,11 +949,11 @@
           "Name": "LDService.SyncService",
           "Version": "1.0.0.0",
           "Type": "Project",
-          "SourcePath": "C:\\Users\\jpiscitelli\\Documents\\node\\detect-tests\\temp\\nuget\\packages-config\\target\\LDService.SyncService\\LDService.SyncService.csproj",
+          "SourcePath": "LDService.SyncService\\LDService.SyncService.csproj",
           "OutputPaths": [
-            "C:\\Users\\jpiscitelli\\Documents\\node\\detect-tests\\temp\\nuget\\packages-config\\target\\LDService.SyncService\\bin\\Debug\\",
-            "C:\\Users\\jpiscitelli\\Documents\\node\\detect-tests\\temp\\nuget\\packages-config\\target\\LDService.SyncService\\bin\\Release\\",
-            "C:\\Users\\jpiscitelli\\Documents\\node\\detect-tests\\temp\\nuget\\packages-config\\target\\LDService.SyncService\\bin\\ReleaseSigned\\"
+            "LDService.SyncService\\bin\\Debug\\",
+            "LDService.SyncService\\bin\\Release\\",
+            "LDService.SyncService\\bin\\ReleaseSigned\\"
           ],
           "Packages": [
             {
@@ -1396,11 +1396,11 @@
           "Name": "LDService.Persistence",
           "Version": "1.0.0.0",
           "Type": "Project",
-          "SourcePath": "C:\\Users\\jpiscitelli\\Documents\\node\\detect-tests\\temp\\nuget\\packages-config\\target\\LDService.Persistence\\LDService.Persistence.csproj",
+          "SourcePath": "LDService.Persistence\\LDService.Persistence.csproj",
           "OutputPaths": [
-            "C:\\Users\\jpiscitelli\\Documents\\node\\detect-tests\\temp\\nuget\\packages-config\\target\\LDService.Persistence\\bin\\Debug\\",
-            "C:\\Users\\jpiscitelli\\Documents\\node\\detect-tests\\temp\\nuget\\packages-config\\target\\LDService.Persistence\\bin\\Release\\",
-            "C:\\Users\\jpiscitelli\\Documents\\node\\detect-tests\\temp\\nuget\\packages-config\\target\\LDService.Persistence\\bin\\ReleaseSigned\\"
+            "LDService.Persistence\\bin\\Debug\\",
+            "LDService.Persistence\\bin\\Release\\",
+            "LDService.Persistence\\bin\\ReleaseSigned\\"
           ],
           "Packages": [
             {
@@ -1456,7 +1456,7 @@
           "Name": "LDServiceSetup",
           "Version": "1.0.0-",
           "Type": "Project",
-          "SourcePath": "C:\\Users\\jpiscitelli\\Documents\\node\\detect-tests\\temp\\nuget\\packages-config\\target\\Installer\\LDService.Setup\\LDServiceSetup.wixproj",
+          "SourcePath": "Installer\\LDService.Setup\\LDServiceSetup.wixproj",
           "OutputPaths": [],
           "Packages": [],
           "Dependencies": [],
@@ -1466,7 +1466,7 @@
           "Name": "LDServiceSetupX64",
           "Version": "1.0.0-",
           "Type": "Project",
-          "SourcePath": "C:\\Users\\jpiscitelli\\Documents\\node\\detect-tests\\temp\\nuget\\packages-config\\target\\Installer\\LDService.SetupX64\\LDServiceSetupX64.wixproj",
+          "SourcePath": "Installer\\LDService.SetupX64\\LDServiceSetupX64.wixproj",
           "OutputPaths": [],
           "Packages": [],
           "Dependencies": [],
@@ -1476,7 +1476,7 @@
           "Name": "LDService.Bootstrapper",
           "Version": "1.0.0-",
           "Type": "Project",
-          "SourcePath": "C:\\Users\\jpiscitelli\\Documents\\node\\detect-tests\\temp\\nuget\\packages-config\\target\\Installer\\LDService.Bootstrapper\\LDService.Bootstrapper.wixproj",
+          "SourcePath": "Installer\\LDService.Bootstrapper\\LDService.Bootstrapper.wixproj",
           "OutputPaths": [],
           "Packages": [],
           "Dependencies": [],
@@ -1486,11 +1486,11 @@
           "Name": "LDService.InstallerUI",
           "Version": "1.0.0.0",
           "Type": "Project",
-          "SourcePath": "C:\\Users\\jpiscitelli\\Documents\\node\\detect-tests\\temp\\nuget\\packages-config\\target\\Installer\\LDService.InstallerUI\\LDService.InstallerUI.csproj",
+          "SourcePath": "Installer\\LDService.InstallerUI\\LDService.InstallerUI.csproj",
           "OutputPaths": [
-            "C:\\Users\\jpiscitelli\\Documents\\node\\detect-tests\\temp\\nuget\\packages-config\\target\\Installer\\LDService.InstallerUI\\bin\\Debug\\",
-            "C:\\Users\\jpiscitelli\\Documents\\node\\detect-tests\\temp\\nuget\\packages-config\\target\\Installer\\LDService.InstallerUI\\bin\\Release\\",
-            "C:\\Users\\jpiscitelli\\Documents\\node\\detect-tests\\temp\\nuget\\packages-config\\target\\Installer\\LDService.InstallerUI\\bin\\ReleaseSigned\\"
+            "Installer\\LDService.InstallerUI\\bin\\Debug\\",
+            "Installer\\LDService.InstallerUI\\bin\\Release\\",
+            "Installer\\LDService.InstallerUI\\bin\\ReleaseSigned\\"
           ],
           "Packages": [
             {
@@ -1656,10 +1656,10 @@
           "Name": "LDService.Common.Tests",
           "Version": "1.0.0.0",
           "Type": "Project",
-          "SourcePath": "C:\\Users\\jpiscitelli\\Documents\\node\\detect-tests\\temp\\nuget\\packages-config\\target\\Tests\\LDService.Common.Tests\\LDService.Common.Tests.csproj",
+          "SourcePath": "Tests\\LDService.Common.Tests\\LDService.Common.Tests.csproj",
           "OutputPaths": [
-            "C:\\Users\\jpiscitelli\\Documents\\node\\detect-tests\\temp\\nuget\\packages-config\\target\\Tests\\LDService.Common.Tests\\bin\\Debug\\",
-            "C:\\Users\\jpiscitelli\\Documents\\node\\detect-tests\\temp\\nuget\\packages-config\\target\\Tests\\LDService.Common.Tests\\bin\\Release\\"
+            "Tests\\LDService.Common.Tests\\bin\\Debug\\",
+            "Tests\\LDService.Common.Tests\\bin\\Release\\"
           ],
           "Packages": [
             {
@@ -1715,11 +1715,11 @@
           "Name": "ndMirror.AddPrivilege",
           "Version": "1.0.0.0",
           "Type": "Project",
-          "SourcePath": "C:\\Users\\jpiscitelli\\Documents\\node\\detect-tests\\temp\\nuget\\packages-config\\target\\ndMirror.AddPrivilege\\ndMirror.AddPrivilege.csproj",
+          "SourcePath": "ndMirror.AddPrivilege\\ndMirror.AddPrivilege.csproj",
           "OutputPaths": [
-            "C:\\Users\\jpiscitelli\\Documents\\node\\detect-tests\\temp\\nuget\\packages-config\\target\\ndMirror.AddPrivilege\\bin\\Debug\\",
-            "C:\\Users\\jpiscitelli\\Documents\\node\\detect-tests\\temp\\nuget\\packages-config\\target\\ndMirror.AddPrivilege\\bin\\Release\\",
-            "C:\\Users\\jpiscitelli\\Documents\\node\\detect-tests\\temp\\nuget\\packages-config\\target\\ndMirror.AddPrivilege\\bin\\ReleaseSigned\\"
+            "ndMirror.AddPrivilege\\bin\\Debug\\",
+            "ndMirror.AddPrivilege\\bin\\Release\\",
+            "ndMirror.AddPrivilege\\bin\\ReleaseSigned\\"
           ],
           "Packages": [],
           "Dependencies": [],
