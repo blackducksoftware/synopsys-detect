@@ -56,6 +56,7 @@ public class ValueDescriptionAnnotationFinder implements ApplicationContextAware
             final Object obj = applicationContext.getBean(beanName)
             Class<?> objClz = obj.getClass()
             if (AopUtils.isAopProxy(obj)) {
+                objClz = AopUtils.getTargetClass(obj)
             }
             objClz.declaredFields.each { Field field ->
                 if (field.isAnnotationPresent(ValueDescription.class)) {
