@@ -62,6 +62,10 @@ class DetectProperties {
     @Value('${detect.cleanup.bdio.files}')
     Boolean cleanupBdioFiles
 
+    @ValueDescription(description="Test the connection to the Hub with the current configuration", defaultValue="false", group=DetectProperties.GROUP_HUB_CONFIGURATION)
+    @Value('${detect.test.connection}')
+    Boolean testConnection
+
     @ValueDescription(description="URL of the Hub server", group=DetectProperties.GROUP_HUB_CONFIGURATION)
     @Value('${blackduck.hub.url}')
     String hubUrl

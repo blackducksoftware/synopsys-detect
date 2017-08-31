@@ -106,6 +106,10 @@ class Application {
                 if (Boolean.FALSE == detectConfiguration.suppressConfigurationOutput) {
                     detectConfiguration.logConfiguration()
                 }
+                if (Boolean.TRUE == detectConfiguration.testConnection) {
+                    detectConfiguration.testHubConnection()
+                    return
+                }
                 DetectProject detectProject = detectProjectManager.createDetectProject()
                 List<File> createdBdioFiles = detectProjectManager.createBdioFiles(detectProject)
                 if (!detectConfiguration.hubOfflineMode) {

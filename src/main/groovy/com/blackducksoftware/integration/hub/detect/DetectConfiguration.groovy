@@ -35,10 +35,15 @@ import org.springframework.core.env.EnumerablePropertySource
 import org.springframework.core.env.MutablePropertySources
 import org.springframework.stereotype.Component
 
+import com.blackducksoftware.integration.exception.IntegrationException
+import com.blackducksoftware.integration.hub.builder.HubServerConfigBuilder
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import com.blackducksoftware.integration.hub.detect.bomtool.DockerBomTool
 import com.blackducksoftware.integration.hub.detect.exception.DetectException
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
+import com.blackducksoftware.integration.hub.global.HubServerConfig
+import com.blackducksoftware.integration.hub.rest.RestConnection
+import com.blackducksoftware.integration.log.Slf4jIntLogger
 import com.blackducksoftware.integration.util.ResourceUtil
 import com.google.gson.Gson
 
@@ -186,6 +191,34 @@ class DetectConfiguration {
         logger.info(configurationMessage)
     }
 
+    public void testHubConnection() {
+        logger.info("Attempting connection to the Hub")
+        final HubServerConfigBuilder hubServerConfigBuilder = new HubServerConfigBuilder()
+        hubServerConfigBuilder.setHubUrl(getHubUrl())
+        hubServerConfigBuilder.setUsername(getHubUsername())
+        hubServerConfigBuilder.setPassword(getHubPassword())
+        hubServerConfigBuilder.setTimeout(getHubTimeout())
+        hubServerConfigBuilder.setAutoImportHttpsCertificates(getHubAutoImportCertificate())
+
+        hubServerConfigBuilder.setProxyHost(getHubProxyHost())
+        hubServerConfigBuilder.setProxyPort(getHubProxyPort())
+        hubServerConfigBuilder.setProxyUsername(getHubProxyUsername())
+        hubServerConfigBuilder.setProxyPassword(getHubProxyPassword())
+        try {
+            final HubServerConfig hubServerConfig = hubServerConfigBuilder.build()
+
+            final RestConnection connection = hubServerConfig.createCredentialsRestConnection(new Slf4jIntLogger(logger))
+            connection.connect()
+            logger.info("Connection to the Hub was successful")
+        } catch (IllegalStateException e) {
+            // failed to build the server configuration
+            logger.error(e.getMessage(),e)
+        } catch (IntegrationException e) {
+            // could not reach the Hub server or the credentials were invalid
+            logger.error("There was a problem connecting to the Hub : ${e.getMessage()}", e)
+        }
+    }
+
     private int convertInt(Integer integerObj) {
         return integerObj == null ? 0 : integerObj.intValue()
     }
@@ -196,6 +229,9 @@ class DetectConfiguration {
 
     public boolean getCleanupBdioFiles() {
         return BooleanUtils.toBoolean(detectProperties.cleanupBdioFiles)
+    }
+    public boolean getTestConnection() {
+        return BooleanUtils.toBoolean(detectProperties.testConnection)
     }
     public String getHubUrl() {
         return detectProperties.hubUrl
