@@ -1,7 +1,7 @@
 [
   {
     "bomToolType": "NUGET",
-    "sourcePath": "LDService.Persistence.Tests",
+    "sourcePath": "Tests\\LDService.Persistence.Tests\\LDService.Persistence.Tests.csproj",
     "bomToolProjectName": "LDService",
     "bomToolProjectVersionName": "1.0.0.0",
     "bomToolProjectExternalId": {
@@ -13,6 +13,19 @@
       }
     },
     "dependencies": [
+      {
+        "name": "NUnit",
+        "version": "3.7.1",
+        "externalId": {
+          "name": "NUnit",
+          "version": "3.7.1",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
       {
         "name": "NUnit.Extension.TeamCityEventListener",
         "version": "1.0.2",
@@ -40,11 +53,11 @@
         "children": []
       },
       {
-        "name": "NUnit",
-        "version": "3.7.1",
+        "name": "NUnit.ConsoleRunner",
+        "version": "3.6.1",
         "externalId": {
-          "name": "NUnit",
-          "version": "3.7.1",
+          "name": "NUnit.ConsoleRunner",
+          "version": "3.6.1",
           "forge": {
             "name": "nuget",
             "separator": "/"
@@ -64,25 +77,12 @@
           }
         },
         "children": []
-      },
-      {
-        "name": "NUnit.ConsoleRunner",
-        "version": "3.6.1",
-        "externalId": {
-          "name": "NUnit.ConsoleRunner",
-          "version": "3.6.1",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
       }
     ]
   },
   {
     "bomToolType": "NUGET",
-    "sourcePath": "LDService.SyncService.Tests",
+    "sourcePath": "Tests\\LDService.SyncService.Tests\\LDService.SyncService.Tests.csproj",
     "bomToolProjectName": "LDService",
     "bomToolProjectVersionName": "1.0.0.0",
     "bomToolProjectExternalId": {
@@ -95,11 +95,250 @@
     },
     "dependencies": [
       {
-        "name": "EntityFramework",
-        "version": "6.1.3",
+        "name": "System.Linq.Expressions",
+        "version": "4.3.0",
         "externalId": {
-          "name": "EntityFramework",
-          "version": "6.1.3",
+          "name": "System.Linq.Expressions",
+          "version": "4.3.0",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "System.Threading.Tasks",
+        "version": "4.3.0",
+        "externalId": {
+          "name": "System.Threading.Tasks",
+          "version": "4.3.0",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "NLog.Extended",
+        "version": "4.0.0.1",
+        "externalId": {
+          "name": "NLog.Extended",
+          "version": "4.0.0.1",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": [
+          {
+            "name": "NLog",
+            "version": "4.4.11",
+            "externalId": {
+              "name": "NLog",
+              "version": "4.4.11",
+              "forge": {
+                "name": "nuget",
+                "separator": "/"
+              }
+            },
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "Newtonsoft.Json",
+        "version": "10.0.3",
+        "externalId": {
+          "name": "Newtonsoft.Json",
+          "version": "10.0.3",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "Microsoft.Net.Http",
+        "version": "2.2.29",
+        "externalId": {
+          "name": "Microsoft.Net.Http",
+          "version": "2.2.29",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": [
+          {
+            "name": "Microsoft.Bcl",
+            "version": "1.1.10",
+            "externalId": {
+              "name": "Microsoft.Bcl",
+              "version": "1.1.10",
+              "forge": {
+                "name": "nuget",
+                "separator": "/"
+              }
+            },
+            "children": [
+              {
+                "name": "Microsoft.Bcl.Build",
+                "version": "1.0.21",
+                "externalId": {
+                  "name": "Microsoft.Bcl.Build",
+                  "version": "1.0.21",
+                  "forge": {
+                    "name": "nuget",
+                    "separator": "/"
+                  }
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "name": "Microsoft.Bcl.Build",
+            "version": "1.0.21",
+            "externalId": {
+              "name": "Microsoft.Bcl.Build",
+              "version": "1.0.21",
+              "forge": {
+                "name": "nuget",
+                "separator": "/"
+              }
+            },
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "Hangfire.Core",
+        "version": "1.6.14",
+        "externalId": {
+          "name": "Hangfire.Core",
+          "version": "1.6.14",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "System.Linq",
+        "version": "4.3.0",
+        "externalId": {
+          "name": "System.Linq",
+          "version": "4.3.0",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "EntityFrameworkTesting.NSubstitute",
+        "version": "1.2.0",
+        "externalId": {
+          "name": "EntityFrameworkTesting.NSubstitute",
+          "version": "1.2.0",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": [
+          {
+            "name": "NSubstitute",
+            "version": "1.10.0",
+            "externalId": {
+              "name": "NSubstitute",
+              "version": "1.10.0",
+              "forge": {
+                "name": "nuget",
+                "separator": "/"
+              }
+            },
+            "children": []
+          },
+          {
+            "name": "EntityFrameworkTesting",
+            "version": "1.2.0",
+            "externalId": {
+              "name": "EntityFrameworkTesting",
+              "version": "1.2.0",
+              "forge": {
+                "name": "nuget",
+                "separator": "/"
+              }
+            },
+            "children": [
+              {
+                "name": "EntityFramework",
+                "version": "6.1.3",
+                "externalId": {
+                  "name": "EntityFramework",
+                  "version": "6.1.3",
+                  "forge": {
+                    "name": "nuget",
+                    "separator": "/"
+                  }
+                },
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "System.Runtime",
+        "version": "4.3.0",
+        "externalId": {
+          "name": "System.Runtime",
+          "version": "4.3.0",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "NUnit.Extension.TeamCityEventListener",
+        "version": "1.0.2",
+        "externalId": {
+          "name": "NUnit.Extension.TeamCityEventListener",
+          "version": "1.0.2",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "System.Diagnostics.Debug",
+        "version": "4.3.0",
+        "externalId": {
+          "name": "System.Diagnostics.Debug",
+          "version": "4.3.0",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "System.IO",
+        "version": "4.3.0",
+        "externalId": {
+          "name": "System.IO",
+          "version": "4.3.0",
           "forge": {
             "name": "nuget",
             "separator": "/"
@@ -121,10 +360,23 @@
         "children": []
       },
       {
-        "name": "System.Linq.Expressions",
+        "name": "NUnit.ConsoleRunner",
+        "version": "3.6.1",
+        "externalId": {
+          "name": "NUnit.ConsoleRunner",
+          "version": "3.6.1",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "System.Threading",
         "version": "4.3.0",
         "externalId": {
-          "name": "System.Linq.Expressions",
+          "name": "System.Threading",
           "version": "4.3.0",
           "forge": {
             "name": "nuget",
@@ -134,11 +386,11 @@
         "children": []
       },
       {
-        "name": "NetDocuments.Rest.Client",
-        "version": "2.2.1.8695",
+        "name": "Owin",
+        "version": "1.0.0",
         "externalId": {
-          "name": "NetDocuments.Rest.Client",
-          "version": "2.2.1.8695",
+          "name": "Owin",
+          "version": "1.0.0",
           "forge": {
             "name": "nuget",
             "separator": "/"
@@ -147,10 +399,10 @@
         "children": []
       },
       {
-        "name": "System.Collections.Concurrent",
+        "name": "System.Collections",
         "version": "4.3.0",
         "externalId": {
-          "name": "System.Collections.Concurrent",
+          "name": "System.Collections",
           "version": "4.3.0",
           "forge": {
             "name": "nuget",
@@ -160,49 +412,10 @@
         "children": []
       },
       {
-        "name": "NSubstitute",
-        "version": "1.10.0.0",
-        "externalId": {
-          "name": "NSubstitute",
-          "version": "1.10.0.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "NLog.Extended",
-        "version": "4.0.0.1",
-        "externalId": {
-          "name": "NLog.Extended",
-          "version": "4.0.0.1",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "Microsoft.Bcl",
-        "version": "1.1.10",
-        "externalId": {
-          "name": "Microsoft.Bcl",
-          "version": "1.1.10",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.Reflection.TypeExtensions",
+        "name": "System.Runtime.Extensions",
         "version": "4.3.0",
         "externalId": {
-          "name": "System.Reflection.TypeExtensions",
+          "name": "System.Runtime.Extensions",
           "version": "4.3.0",
           "forge": {
             "name": "nuget",
@@ -225,219 +438,38 @@
         "children": []
       },
       {
-        "name": "NUnit.ConsoleRunner",
-        "version": "3.6.1",
-        "externalId": {
-          "name": "NUnit.ConsoleRunner",
-          "version": "3.6.1",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "EntityFrameworkTesting.NSubstitute",
-        "version": "1.2.0",
-        "externalId": {
-          "name": "EntityFrameworkTesting.NSubstitute",
-          "version": "1.2.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.Diagnostics.Debug",
+        "name": "System.Reflection.TypeExtensions",
         "version": "4.3.0",
         "externalId": {
-          "name": "System.Diagnostics.Debug",
+          "name": "System.Reflection.TypeExtensions",
           "version": "4.3.0",
           "forge": {
             "name": "nuget",
             "separator": "/"
           }
         },
-        "children": []
-      },
-      {
-        "name": "System.Runtime.Extensions",
-        "version": "4.3.0",
-        "externalId": {
-          "name": "System.Runtime.Extensions",
-          "version": "4.3.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
+        "children": [
+          {
+            "name": "System.Reflection",
+            "version": "4.3.0",
+            "externalId": {
+              "name": "System.Reflection",
+              "version": "4.3.0",
+              "forge": {
+                "name": "nuget",
+                "separator": "/"
+              }
+            },
+            "children": []
           }
-        },
-        "children": []
+        ]
       },
       {
-        "name": "System.Reflection",
-        "version": "4.3.0",
+        "name": "NetDocuments.Rest.Client",
+        "version": "2.2.1.8695",
         "externalId": {
-          "name": "System.Reflection",
-          "version": "4.3.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.IO",
-        "version": "4.3.0",
-        "externalId": {
-          "name": "System.IO",
-          "version": "4.3.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "Microsoft.Bcl.Build",
-        "version": "1.0.21",
-        "externalId": {
-          "name": "Microsoft.Bcl.Build",
-          "version": "1.0.21",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "Newtonsoft.Json",
-        "version": "10.0.3",
-        "externalId": {
-          "name": "Newtonsoft.Json",
-          "version": "10.0.3",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.Collections",
-        "version": "4.3.0",
-        "externalId": {
-          "name": "System.Collections",
-          "version": "4.3.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "NUnit.Extension.TeamCityEventListener",
-        "version": "1.0.2",
-        "externalId": {
-          "name": "NUnit.Extension.TeamCityEventListener",
-          "version": "1.0.2",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.Reflection.Extensions",
-        "version": "4.3.0",
-        "externalId": {
-          "name": "System.Reflection.Extensions",
-          "version": "4.3.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "Microsoft.Net.Http",
-        "version": "2.2.29",
-        "externalId": {
-          "name": "Microsoft.Net.Http",
-          "version": "2.2.29",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.Threading.Tasks",
-        "version": "4.3.0",
-        "externalId": {
-          "name": "System.Threading.Tasks",
-          "version": "4.3.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "Hangfire.Core",
-        "version": "1.6.14",
-        "externalId": {
-          "name": "Hangfire.Core",
-          "version": "1.6.14",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "Owin",
-        "version": "1.0",
-        "externalId": {
-          "name": "Owin",
-          "version": "1.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.Globalization",
-        "version": "4.3.0",
-        "externalId": {
-          "name": "System.Globalization",
-          "version": "4.3.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.Runtime",
-        "version": "4.3.0",
-        "externalId": {
-          "name": "System.Runtime",
-          "version": "4.3.0",
+          "name": "NetDocuments.Rest.Client",
+          "version": "2.2.1.8695",
           "forge": {
             "name": "nuget",
             "separator": "/"
@@ -459,23 +491,10 @@
         "children": []
       },
       {
-        "name": "EntityFrameworkTesting",
-        "version": "1.2.0",
-        "externalId": {
-          "name": "EntityFrameworkTesting",
-          "version": "1.2.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.Linq",
+        "name": "System.Globalization",
         "version": "4.3.0",
         "externalId": {
-          "name": "System.Linq",
+          "name": "System.Globalization",
           "version": "4.3.0",
           "forge": {
             "name": "nuget",
@@ -485,10 +504,10 @@
         "children": []
       },
       {
-        "name": "System.Threading",
+        "name": "System.Reflection.Extensions",
         "version": "4.3.0",
         "externalId": {
-          "name": "System.Threading",
+          "name": "System.Reflection.Extensions",
           "version": "4.3.0",
           "forge": {
             "name": "nuget",
@@ -498,11 +517,11 @@
         "children": []
       },
       {
-        "name": "NLog",
-        "version": "4.4.11",
+        "name": "System.Collections.Concurrent",
+        "version": "4.3.0",
         "externalId": {
-          "name": "NLog",
-          "version": "4.4.11",
+          "name": "System.Collections.Concurrent",
+          "version": "4.3.0",
           "forge": {
             "name": "nuget",
             "separator": "/"
@@ -527,7 +546,7 @@
   },
   {
     "bomToolType": "NUGET",
-    "sourcePath": "LDService.Tests.Common",
+    "sourcePath": "Tests\\LDService.Tests.Common\\LDService.Tests.Common.csproj",
     "bomToolProjectName": "LDService",
     "bomToolProjectVersionName": "1.0.0.0",
     "bomToolProjectExternalId": {
@@ -542,7 +561,7 @@
   },
   {
     "bomToolType": "NUGET",
-    "sourcePath": "LDService.Common",
+    "sourcePath": "LDService.Common\\LDService.Common.csproj",
     "bomToolProjectName": "LDService",
     "bomToolProjectVersionName": "1.0.0.0",
     "bomToolProjectExternalId": {
@@ -555,153 +574,10 @@
     },
     "dependencies": [
       {
-        "name": "SimpleInjector",
-        "version": "4.0.8",
-        "externalId": {
-          "name": "SimpleInjector",
-          "version": "4.0.8",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.Reflection.Extensions",
-        "version": "4.3.0",
-        "externalId": {
-          "name": "System.Reflection.Extensions",
-          "version": "4.3.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
         "name": "System.Linq.Expressions",
         "version": "4.3.0",
         "externalId": {
           "name": "System.Linq.Expressions",
-          "version": "4.3.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.Threading.Tasks",
-        "version": "4.3.0",
-        "externalId": {
-          "name": "System.Threading.Tasks",
-          "version": "4.3.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.Collections.Concurrent",
-        "version": "4.3.0",
-        "externalId": {
-          "name": "System.Collections.Concurrent",
-          "version": "4.3.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.Reflection.TypeExtensions",
-        "version": "4.3.0",
-        "externalId": {
-          "name": "System.Reflection.TypeExtensions",
-          "version": "4.3.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.Globalization",
-        "version": "4.3.0",
-        "externalId": {
-          "name": "System.Globalization",
-          "version": "4.3.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "Ensure.That",
-        "version": "5.0.0",
-        "externalId": {
-          "name": "Ensure.That",
-          "version": "5.0.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.Runtime",
-        "version": "4.3.0",
-        "externalId": {
-          "name": "System.Runtime",
-          "version": "4.3.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.Diagnostics.Debug",
-        "version": "4.3.0",
-        "externalId": {
-          "name": "System.Diagnostics.Debug",
-          "version": "4.3.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.Runtime.Extensions",
-        "version": "4.3.0",
-        "externalId": {
-          "name": "System.Runtime.Extensions",
-          "version": "4.3.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.Reflection",
-        "version": "4.3.0",
-        "externalId": {
-          "name": "System.Reflection",
           "version": "4.3.0",
           "forge": {
             "name": "nuget",
@@ -724,6 +600,98 @@
         "children": []
       },
       {
+        "name": "System.Threading.Tasks",
+        "version": "4.3.0",
+        "externalId": {
+          "name": "System.Threading.Tasks",
+          "version": "4.3.0",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "SimpleInjector",
+        "version": "4.0.8",
+        "externalId": {
+          "name": "SimpleInjector",
+          "version": "4.0.8",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "System.Threading",
+        "version": "4.3.0",
+        "externalId": {
+          "name": "System.Threading",
+          "version": "4.3.0",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "System.Collections",
+        "version": "4.3.0",
+        "externalId": {
+          "name": "System.Collections",
+          "version": "4.3.0",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "System.Runtime.Extensions",
+        "version": "4.3.0",
+        "externalId": {
+          "name": "System.Runtime.Extensions",
+          "version": "4.3.0",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "System.Reflection.TypeExtensions",
+        "version": "4.3.0",
+        "externalId": {
+          "name": "System.Reflection.TypeExtensions",
+          "version": "4.3.0",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": [
+          {
+            "name": "System.Reflection",
+            "version": "4.3.0",
+            "externalId": {
+              "name": "System.Reflection",
+              "version": "4.3.0",
+              "forge": {
+                "name": "nuget",
+                "separator": "/"
+              }
+            },
+            "children": []
+          }
+        ]
+      },
+      {
         "name": "System.Linq",
         "version": "4.3.0",
         "externalId": {
@@ -737,10 +705,36 @@
         "children": []
       },
       {
-        "name": "System.Threading",
+        "name": "System.Runtime",
         "version": "4.3.0",
         "externalId": {
-          "name": "System.Threading",
+          "name": "System.Runtime",
+          "version": "4.3.0",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "System.Globalization",
+        "version": "4.3.0",
+        "externalId": {
+          "name": "System.Globalization",
+          "version": "4.3.0",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "System.Reflection.Extensions",
+        "version": "4.3.0",
+        "externalId": {
+          "name": "System.Reflection.Extensions",
           "version": "4.3.0",
           "forge": {
             "name": "nuget",
@@ -763,11 +757,37 @@
         "children": []
       },
       {
-        "name": "System.Collections",
+        "name": "System.Diagnostics.Debug",
         "version": "4.3.0",
         "externalId": {
-          "name": "System.Collections",
+          "name": "System.Diagnostics.Debug",
           "version": "4.3.0",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "System.Collections.Concurrent",
+        "version": "4.3.0",
+        "externalId": {
+          "name": "System.Collections.Concurrent",
+          "version": "4.3.0",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "Ensure.That",
+        "version": "5.0.0",
+        "externalId": {
+          "name": "Ensure.That",
+          "version": "5.0.0",
           "forge": {
             "name": "nuget",
             "separator": "/"
@@ -779,7 +799,7 @@
   },
   {
     "bomToolType": "NUGET",
-    "sourcePath": "LDService.Dashboard",
+    "sourcePath": "LDService.Dashboard\\LDService.Dashboard.csproj",
     "bomToolProjectName": "LDService",
     "bomToolProjectVersionName": "1.0.0.0",
     "bomToolProjectExternalId": {
@@ -792,11 +812,273 @@
     },
     "dependencies": [
       {
+        "name": "System.Linq.Expressions",
+        "version": "4.3.0",
+        "externalId": {
+          "name": "System.Linq.Expressions",
+          "version": "4.3.0",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "System.IO",
+        "version": "4.3.0",
+        "externalId": {
+          "name": "System.IO",
+          "version": "4.3.0",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "System.Threading.Tasks",
+        "version": "4.3.0",
+        "externalId": {
+          "name": "System.Threading.Tasks",
+          "version": "4.3.0",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "SimpleInjector",
+        "version": "4.0.8",
+        "externalId": {
+          "name": "SimpleInjector",
+          "version": "4.0.8",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "Newtonsoft.Json",
+        "version": "10.0.3",
+        "externalId": {
+          "name": "Newtonsoft.Json",
+          "version": "10.0.3",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "System.Threading",
+        "version": "4.3.0",
+        "externalId": {
+          "name": "System.Threading",
+          "version": "4.3.0",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "System.Collections",
+        "version": "4.3.0",
+        "externalId": {
+          "name": "System.Collections",
+          "version": "4.3.0",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "System.Runtime.Extensions",
+        "version": "4.3.0",
+        "externalId": {
+          "name": "System.Runtime.Extensions",
+          "version": "4.3.0",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "System.Reflection.TypeExtensions",
+        "version": "4.3.0",
+        "externalId": {
+          "name": "System.Reflection.TypeExtensions",
+          "version": "4.3.0",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": [
+          {
+            "name": "System.Reflection",
+            "version": "4.3.0",
+            "externalId": {
+              "name": "System.Reflection",
+              "version": "4.3.0",
+              "forge": {
+                "name": "nuget",
+                "separator": "/"
+              }
+            },
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "System.Linq",
+        "version": "4.3.0",
+        "externalId": {
+          "name": "System.Linq",
+          "version": "4.3.0",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "System.Runtime",
+        "version": "4.3.0",
+        "externalId": {
+          "name": "System.Runtime",
+          "version": "4.3.0",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "System.Globalization",
+        "version": "4.3.0",
+        "externalId": {
+          "name": "System.Globalization",
+          "version": "4.3.0",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "System.Reflection.Extensions",
+        "version": "4.3.0",
+        "externalId": {
+          "name": "System.Reflection.Extensions",
+          "version": "4.3.0",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
         "name": "Nancy.Viewengines.Razor",
         "version": "1.4.3",
         "externalId": {
           "name": "Nancy.Viewengines.Razor",
           "version": "1.4.3",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": [
+          {
+            "name": "Microsoft.AspNet.Razor",
+            "version": "3.2.3",
+            "externalId": {
+              "name": "Microsoft.AspNet.Razor",
+              "version": "3.2.3",
+              "forge": {
+                "name": "nuget",
+                "separator": "/"
+              }
+            },
+            "children": []
+          },
+          {
+            "name": "Nancy",
+            "version": "1.4.3",
+            "externalId": {
+              "name": "Nancy",
+              "version": "1.4.3",
+              "forge": {
+                "name": "nuget",
+                "separator": "/"
+              }
+            },
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "NLog",
+        "version": "4.4.11",
+        "externalId": {
+          "name": "NLog",
+          "version": "4.4.11",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "System.Diagnostics.Debug",
+        "version": "4.3.0",
+        "externalId": {
+          "name": "System.Diagnostics.Debug",
+          "version": "4.3.0",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "System.Collections.Concurrent",
+        "version": "4.3.0",
+        "externalId": {
+          "name": "System.Collections.Concurrent",
+          "version": "4.3.0",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "Ensure.That",
+        "version": "5.0.0",
+        "externalId": {
+          "name": "Ensure.That",
+          "version": "5.0.0",
           "forge": {
             "name": "nuget",
             "separator": "/"
@@ -816,272 +1098,12 @@
           }
         },
         "children": []
-      },
-      {
-        "name": "SimpleInjector",
-        "version": "4.0.8",
-        "externalId": {
-          "name": "SimpleInjector",
-          "version": "4.0.8",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.Reflection.Extensions",
-        "version": "4.3.0",
-        "externalId": {
-          "name": "System.Reflection.Extensions",
-          "version": "4.3.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.Linq.Expressions",
-        "version": "4.3.0",
-        "externalId": {
-          "name": "System.Linq.Expressions",
-          "version": "4.3.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.Threading.Tasks",
-        "version": "4.3.0",
-        "externalId": {
-          "name": "System.Threading.Tasks",
-          "version": "4.3.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.Collections.Concurrent",
-        "version": "4.3.0",
-        "externalId": {
-          "name": "System.Collections.Concurrent",
-          "version": "4.3.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.Reflection.TypeExtensions",
-        "version": "4.3.0",
-        "externalId": {
-          "name": "System.Reflection.TypeExtensions",
-          "version": "4.3.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.Globalization",
-        "version": "4.3.0",
-        "externalId": {
-          "name": "System.Globalization",
-          "version": "4.3.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "Ensure.That",
-        "version": "5.0.0",
-        "externalId": {
-          "name": "Ensure.That",
-          "version": "5.0.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.Runtime",
-        "version": "4.3.0",
-        "externalId": {
-          "name": "System.Runtime",
-          "version": "4.3.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.Diagnostics.Debug",
-        "version": "4.3.0",
-        "externalId": {
-          "name": "System.Diagnostics.Debug",
-          "version": "4.3.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.Runtime.Extensions",
-        "version": "4.3.0",
-        "externalId": {
-          "name": "System.Runtime.Extensions",
-          "version": "4.3.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.Reflection",
-        "version": "4.3.0",
-        "externalId": {
-          "name": "System.Reflection",
-          "version": "4.3.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "Microsoft.AspNet.Razor",
-        "version": "3.2.3",
-        "externalId": {
-          "name": "Microsoft.AspNet.Razor",
-          "version": "3.2.3",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.IO",
-        "version": "4.3.0",
-        "externalId": {
-          "name": "System.IO",
-          "version": "4.3.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.Linq",
-        "version": "4.3.0",
-        "externalId": {
-          "name": "System.Linq",
-          "version": "4.3.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.Threading",
-        "version": "4.3.0",
-        "externalId": {
-          "name": "System.Threading",
-          "version": "4.3.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "Nancy",
-        "version": "1.4.3",
-        "externalId": {
-          "name": "Nancy",
-          "version": "1.4.3",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "NLog",
-        "version": "4.4.11",
-        "externalId": {
-          "name": "NLog",
-          "version": "4.4.11",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "Newtonsoft.Json",
-        "version": "10.0.3",
-        "externalId": {
-          "name": "Newtonsoft.Json",
-          "version": "10.0.3",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.Collections",
-        "version": "4.3.0",
-        "externalId": {
-          "name": "System.Collections",
-          "version": "4.3.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
       }
     ]
   },
   {
     "bomToolType": "NUGET",
-    "sourcePath": "LDService.SyncService",
+    "sourcePath": "LDService.SyncService\\LDService.SyncService.csproj",
     "bomToolProjectName": "LDService",
     "bomToolProjectVersionName": "1.0.0.0",
     "bomToolProjectExternalId": {
@@ -1094,218 +1116,10 @@
     },
     "dependencies": [
       {
-        "name": "EntityFramework",
-        "version": "6.1.3",
-        "externalId": {
-          "name": "EntityFramework",
-          "version": "6.1.3",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "SimpleInjector",
-        "version": "4.0.8",
-        "externalId": {
-          "name": "SimpleInjector",
-          "version": "4.0.8",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
         "name": "System.Linq.Expressions",
         "version": "4.3.0",
         "externalId": {
           "name": "System.Linq.Expressions",
-          "version": "4.3.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "NetDocuments.Rest.Client",
-        "version": "2.2.1.8695",
-        "externalId": {
-          "name": "NetDocuments.Rest.Client",
-          "version": "2.2.1.8695",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.Collections.Concurrent",
-        "version": "4.3.0",
-        "externalId": {
-          "name": "System.Collections.Concurrent",
-          "version": "4.3.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "Microsoft.Owin",
-        "version": "3.1.0",
-        "externalId": {
-          "name": "Microsoft.Owin",
-          "version": "3.1.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "Microsoft.Bcl",
-        "version": "1.1.10",
-        "externalId": {
-          "name": "Microsoft.Bcl",
-          "version": "1.1.10",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "NLog.Extended",
-        "version": "4.0.0.1",
-        "externalId": {
-          "name": "NLog.Extended",
-          "version": "4.0.0.1",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "Z.EntityFramework.Plus.EF6",
-        "version": "1.6.2",
-        "externalId": {
-          "name": "Z.EntityFramework.Plus.EF6",
-          "version": "1.6.2",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.Reflection.TypeExtensions",
-        "version": "4.3.0",
-        "externalId": {
-          "name": "System.Reflection.TypeExtensions",
-          "version": "4.3.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "Microsoft.AspNet.WebApi.Client",
-        "version": "5.2.3",
-        "externalId": {
-          "name": "Microsoft.AspNet.WebApi.Client",
-          "version": "5.2.3",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "Ensure.That",
-        "version": "5.0.0",
-        "externalId": {
-          "name": "Ensure.That",
-          "version": "5.0.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "Nancy.Owin",
-        "version": "1.4.1",
-        "externalId": {
-          "name": "Nancy.Owin",
-          "version": "1.4.1",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.Diagnostics.Debug",
-        "version": "4.3.0",
-        "externalId": {
-          "name": "System.Diagnostics.Debug",
-          "version": "4.3.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.Runtime.Extensions",
-        "version": "4.3.0",
-        "externalId": {
-          "name": "System.Runtime.Extensions",
-          "version": "4.3.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.Reflection",
-        "version": "4.3.0",
-        "externalId": {
-          "name": "System.Reflection",
-          "version": "4.3.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.IO",
-        "version": "4.3.0",
-        "externalId": {
-          "name": "System.IO",
           "version": "4.3.0",
           "forge": {
             "name": "nuget",
@@ -1328,37 +1142,51 @@
         "children": []
       },
       {
+        "name": "System.Threading.Tasks",
+        "version": "4.3.0",
+        "externalId": {
+          "name": "System.Threading.Tasks",
+          "version": "4.3.0",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "NLog.Extended",
+        "version": "4.0.0.1",
+        "externalId": {
+          "name": "NLog.Extended",
+          "version": "4.0.0.1",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": [
+          {
+            "name": "NLog",
+            "version": "4.4.11",
+            "externalId": {
+              "name": "NLog",
+              "version": "4.4.11",
+              "forge": {
+                "name": "nuget",
+                "separator": "/"
+              }
+            },
+            "children": []
+          }
+        ]
+      },
+      {
         "name": "Hangfire.SqlServer",
         "version": "1.6.14",
         "externalId": {
           "name": "Hangfire.SqlServer",
           "version": "1.6.14",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "NLog.Schema",
-        "version": "4.4.11",
-        "externalId": {
-          "name": "NLog.Schema",
-          "version": "4.4.11",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "Microsoft.Bcl.Build",
-        "version": "1.0.21",
-        "externalId": {
-          "name": "Microsoft.Bcl.Build",
-          "version": "1.0.21",
           "forge": {
             "name": "nuget",
             "separator": "/"
@@ -1380,45 +1208,6 @@
         "children": []
       },
       {
-        "name": "System.Collections",
-        "version": "4.3.0",
-        "externalId": {
-          "name": "System.Collections",
-          "version": "4.3.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "Topshelf",
-        "version": "4.0.3",
-        "externalId": {
-          "name": "Topshelf",
-          "version": "4.0.3",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.Reflection.Extensions",
-        "version": "4.3.0",
-        "externalId": {
-          "name": "System.Reflection.Extensions",
-          "version": "4.3.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
         "name": "Microsoft.Net.Http",
         "version": "2.2.29",
         "externalId": {
@@ -1429,20 +1218,88 @@
             "separator": "/"
           }
         },
-        "children": []
+        "children": [
+          {
+            "name": "Microsoft.Bcl",
+            "version": "1.1.10",
+            "externalId": {
+              "name": "Microsoft.Bcl",
+              "version": "1.1.10",
+              "forge": {
+                "name": "nuget",
+                "separator": "/"
+              }
+            },
+            "children": [
+              {
+                "name": "Microsoft.Bcl.Build",
+                "version": "1.0.21",
+                "externalId": {
+                  "name": "Microsoft.Bcl.Build",
+                  "version": "1.0.21",
+                  "forge": {
+                    "name": "nuget",
+                    "separator": "/"
+                  }
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "name": "Microsoft.Bcl.Build",
+            "version": "1.0.21",
+            "externalId": {
+              "name": "Microsoft.Bcl.Build",
+              "version": "1.0.21",
+              "forge": {
+                "name": "nuget",
+                "separator": "/"
+              }
+            },
+            "children": []
+          }
+        ]
       },
       {
-        "name": "System.Threading.Tasks",
-        "version": "4.3.0",
+        "name": "Topshelf.NLog",
+        "version": "4.0.3",
         "externalId": {
-          "name": "System.Threading.Tasks",
-          "version": "4.3.0",
+          "name": "Topshelf.NLog",
+          "version": "4.0.3",
           "forge": {
             "name": "nuget",
             "separator": "/"
           }
         },
-        "children": []
+        "children": [
+          {
+            "name": "Topshelf",
+            "version": "4.0.3",
+            "externalId": {
+              "name": "Topshelf",
+              "version": "4.0.3",
+              "forge": {
+                "name": "nuget",
+                "separator": "/"
+              }
+            },
+            "children": []
+          },
+          {
+            "name": "NLog",
+            "version": "4.4.11",
+            "externalId": {
+              "name": "NLog",
+              "version": "4.4.11",
+              "forge": {
+                "name": "nuget",
+                "separator": "/"
+              }
+            },
+            "children": []
+          }
+        ]
       },
       {
         "name": "Hangfire.Core",
@@ -1458,23 +1315,10 @@
         "children": []
       },
       {
-        "name": "Owin",
-        "version": "1.0",
-        "externalId": {
-          "name": "Owin",
-          "version": "1.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.Globalization",
+        "name": "System.Linq",
         "version": "4.3.0",
         "externalId": {
-          "name": "System.Globalization",
+          "name": "System.Linq",
           "version": "4.3.0",
           "forge": {
             "name": "nuget",
@@ -1497,11 +1341,11 @@
         "children": []
       },
       {
-        "name": "Topshelf.NLog",
-        "version": "4.0.3",
+        "name": "System.Diagnostics.Debug",
+        "version": "4.3.0",
         "externalId": {
-          "name": "Topshelf.NLog",
-          "version": "4.0.3",
+          "name": "System.Diagnostics.Debug",
+          "version": "4.3.0",
           "forge": {
             "name": "nuget",
             "separator": "/"
@@ -1510,11 +1354,37 @@
         "children": []
       },
       {
-        "name": "System.Linq",
+        "name": "Z.EntityFramework.Plus.EF6",
+        "version": "1.6.2",
+        "externalId": {
+          "name": "Z.EntityFramework.Plus.EF6",
+          "version": "1.6.2",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "System.IO",
         "version": "4.3.0",
         "externalId": {
-          "name": "System.Linq",
+          "name": "System.IO",
           "version": "4.3.0",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "SimpleInjector",
+        "version": "4.0.8",
+        "externalId": {
+          "name": "SimpleInjector",
+          "version": "4.0.8",
           "forge": {
             "name": "nuget",
             "separator": "/"
@@ -1536,6 +1406,137 @@
         "children": []
       },
       {
+        "name": "System.Collections",
+        "version": "4.3.0",
+        "externalId": {
+          "name": "System.Collections",
+          "version": "4.3.0",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "System.Runtime.Extensions",
+        "version": "4.3.0",
+        "externalId": {
+          "name": "System.Runtime.Extensions",
+          "version": "4.3.0",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "Microsoft.AspNet.WebApi.Client",
+        "version": "5.2.3",
+        "externalId": {
+          "name": "Microsoft.AspNet.WebApi.Client",
+          "version": "5.2.3",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "System.Reflection.TypeExtensions",
+        "version": "4.3.0",
+        "externalId": {
+          "name": "System.Reflection.TypeExtensions",
+          "version": "4.3.0",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": [
+          {
+            "name": "System.Reflection",
+            "version": "4.3.0",
+            "externalId": {
+              "name": "System.Reflection",
+              "version": "4.3.0",
+              "forge": {
+                "name": "nuget",
+                "separator": "/"
+              }
+            },
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "NetDocuments.Rest.Client",
+        "version": "2.2.1.8695",
+        "externalId": {
+          "name": "NetDocuments.Rest.Client",
+          "version": "2.2.1.8695",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "NLog.Schema",
+        "version": "4.4.11",
+        "externalId": {
+          "name": "NLog.Schema",
+          "version": "4.4.11",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "System.Globalization",
+        "version": "4.3.0",
+        "externalId": {
+          "name": "System.Globalization",
+          "version": "4.3.0",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "System.Reflection.Extensions",
+        "version": "4.3.0",
+        "externalId": {
+          "name": "System.Reflection.Extensions",
+          "version": "4.3.0",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "EntityFramework",
+        "version": "6.1.3",
+        "externalId": {
+          "name": "EntityFramework",
+          "version": "6.1.3",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
         "name": "Microsoft.Owin.Hosting",
         "version": "3.1.0",
         "externalId": {
@@ -1546,14 +1547,95 @@
             "separator": "/"
           }
         },
-        "children": []
+        "children": [
+          {
+            "name": "Microsoft.Owin",
+            "version": "3.1.0",
+            "externalId": {
+              "name": "Microsoft.Owin",
+              "version": "3.1.0",
+              "forge": {
+                "name": "nuget",
+                "separator": "/"
+              }
+            },
+            "children": [
+              {
+                "name": "Owin",
+                "version": "1.0.0",
+                "externalId": {
+                  "name": "Owin",
+                  "version": "1.0.0",
+                  "forge": {
+                    "name": "nuget",
+                    "separator": "/"
+                  }
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "name": "Owin",
+            "version": "1.0.0",
+            "externalId": {
+              "name": "Owin",
+              "version": "1.0.0",
+              "forge": {
+                "name": "nuget",
+                "separator": "/"
+              }
+            },
+            "children": []
+          }
+        ]
       },
       {
-        "name": "Nancy",
-        "version": "1.4.3",
+        "name": "Nancy.Owin",
+        "version": "1.4.1",
         "externalId": {
-          "name": "Nancy",
-          "version": "1.4.3",
+          "name": "Nancy.Owin",
+          "version": "1.4.1",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": [
+          {
+            "name": "Owin",
+            "version": "1.0.0",
+            "externalId": {
+              "name": "Owin",
+              "version": "1.0.0",
+              "forge": {
+                "name": "nuget",
+                "separator": "/"
+              }
+            },
+            "children": []
+          },
+          {
+            "name": "Nancy",
+            "version": "1.4.3",
+            "externalId": {
+              "name": "Nancy",
+              "version": "1.4.3",
+              "forge": {
+                "name": "nuget",
+                "separator": "/"
+              }
+            },
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "System.Collections.Concurrent",
+        "version": "4.3.0",
+        "externalId": {
+          "name": "System.Collections.Concurrent",
+          "version": "4.3.0",
           "forge": {
             "name": "nuget",
             "separator": "/"
@@ -1562,11 +1644,11 @@
         "children": []
       },
       {
-        "name": "NLog",
-        "version": "4.4.11",
+        "name": "Ensure.That",
+        "version": "5.0.0",
         "externalId": {
-          "name": "NLog",
-          "version": "4.4.11",
+          "name": "Ensure.That",
+          "version": "5.0.0",
           "forge": {
             "name": "nuget",
             "separator": "/"
@@ -1578,7 +1660,7 @@
   },
   {
     "bomToolType": "NUGET",
-    "sourcePath": "LDService.Persistence",
+    "sourcePath": "LDService.Persistence\\LDService.Persistence.csproj",
     "bomToolProjectName": "LDService",
     "bomToolProjectVersionName": "1.0.0.0",
     "bomToolProjectExternalId": {
@@ -1646,7 +1728,7 @@
   },
   {
     "bomToolType": "NUGET",
-    "sourcePath": "LDServiceSetup",
+    "sourcePath": "Installer\\LDService.Setup\\LDServiceSetup.wixproj",
     "bomToolProjectName": "LDService",
     "bomToolProjectVersionName": "1.0.0.0",
     "bomToolProjectExternalId": {
@@ -1661,7 +1743,7 @@
   },
   {
     "bomToolType": "NUGET",
-    "sourcePath": "LDServiceSetupX64",
+    "sourcePath": "Installer\\LDService.SetupX64\\LDServiceSetupX64.wixproj",
     "bomToolProjectName": "LDService",
     "bomToolProjectVersionName": "1.0.0.0",
     "bomToolProjectExternalId": {
@@ -1676,7 +1758,7 @@
   },
   {
     "bomToolType": "NUGET",
-    "sourcePath": "LDService.Bootstrapper",
+    "sourcePath": "Installer\\LDService.Bootstrapper\\LDService.Bootstrapper.wixproj",
     "bomToolProjectName": "LDService",
     "bomToolProjectVersionName": "1.0.0.0",
     "bomToolProjectExternalId": {
@@ -1691,7 +1773,7 @@
   },
   {
     "bomToolType": "NUGET",
-    "sourcePath": "LDService.InstallerUI",
+    "sourcePath": "Installer\\LDService.InstallerUI\\LDService.InstallerUI.csproj",
     "bomToolProjectName": "LDService",
     "bomToolProjectVersionName": "1.0.0.0",
     "bomToolProjectExternalId": {
@@ -1703,19 +1785,6 @@
       }
     },
     "dependencies": [
-      {
-        "name": "EntityFramework",
-        "version": "6.1.3",
-        "externalId": {
-          "name": "EntityFramework",
-          "version": "6.1.3",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
       {
         "name": "Tulpep.ActiveDirectoryObjectPicker",
         "version": "2.1.106",
@@ -1730,11 +1799,63 @@
         "children": []
       },
       {
+        "name": "Hangfire.SqlServer",
+        "version": "1.6.14",
+        "externalId": {
+          "name": "Hangfire.SqlServer",
+          "version": "1.6.14",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "Newtonsoft.Json",
+        "version": "10.0.3",
+        "externalId": {
+          "name": "Newtonsoft.Json",
+          "version": "10.0.3",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
         "name": "Extended.Wpf.Toolkit",
-        "version": "3.0",
+        "version": "3.0.0",
         "externalId": {
           "name": "Extended.Wpf.Toolkit",
-          "version": "3.0",
+          "version": "3.0.0",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "Owin",
+        "version": "1.0.0",
+        "externalId": {
+          "name": "Owin",
+          "version": "1.0.0",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "Nancy",
+        "version": "1.4.3",
+        "externalId": {
+          "name": "Nancy",
+          "version": "1.4.3",
           "forge": {
             "name": "nuget",
             "separator": "/"
@@ -1756,11 +1877,11 @@
         "children": []
       },
       {
-        "name": "Owin",
-        "version": "1.0",
+        "name": "NLog.Schema",
+        "version": "4.4.11",
         "externalId": {
-          "name": "Owin",
-          "version": "1.0",
+          "name": "NLog.Schema",
+          "version": "4.4.11",
           "forge": {
             "name": "nuget",
             "separator": "/"
@@ -1769,11 +1890,24 @@
         "children": []
       },
       {
-        "name": "Ensure.That",
-        "version": "5.0.0",
+        "name": "EntityFramework",
+        "version": "6.1.3",
         "externalId": {
-          "name": "Ensure.That",
-          "version": "5.0.0",
+          "name": "EntityFramework",
+          "version": "6.1.3",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "NLog",
+        "version": "4.4.11",
+        "externalId": {
+          "name": "NLog",
+          "version": "4.4.11",
           "forge": {
             "name": "nuget",
             "separator": "/"
@@ -1796,23 +1930,10 @@
       },
       {
         "name": "DataConnectionDialog",
-        "version": "1.2",
+        "version": "1.2.0",
         "externalId": {
           "name": "DataConnectionDialog",
-          "version": "1.2",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "Hangfire.SqlServer",
-        "version": "1.6.14",
-        "externalId": {
-          "name": "Hangfire.SqlServer",
-          "version": "1.6.14",
+          "version": "1.2.0",
           "forge": {
             "name": "nuget",
             "separator": "/"
@@ -1834,50 +1955,11 @@
         "children": []
       },
       {
-        "name": "NLog.Schema",
-        "version": "4.4.11",
+        "name": "Ensure.That",
+        "version": "5.0.0",
         "externalId": {
-          "name": "NLog.Schema",
-          "version": "4.4.11",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "Nancy",
-        "version": "1.4.3",
-        "externalId": {
-          "name": "Nancy",
-          "version": "1.4.3",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "NLog",
-        "version": "4.4.11",
-        "externalId": {
-          "name": "NLog",
-          "version": "4.4.11",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "Newtonsoft.Json",
-        "version": "10.0.3",
-        "externalId": {
-          "name": "Newtonsoft.Json",
-          "version": "10.0.3",
+          "name": "Ensure.That",
+          "version": "5.0.0",
           "forge": {
             "name": "nuget",
             "separator": "/"
@@ -1889,7 +1971,7 @@
   },
   {
     "bomToolType": "NUGET",
-    "sourcePath": "LDService.Common.Tests",
+    "sourcePath": "Tests\\LDService.Common.Tests\\LDService.Common.Tests.csproj",
     "bomToolProjectName": "LDService",
     "bomToolProjectVersionName": "1.0.0.0",
     "bomToolProjectExternalId": {
@@ -1901,19 +1983,6 @@
       }
     },
     "dependencies": [
-      {
-        "name": "NUnit.Extension.TeamCityEventListener",
-        "version": "1.0.2",
-        "externalId": {
-          "name": "NUnit.Extension.TeamCityEventListener",
-          "version": "1.0.2",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
       {
         "name": "NUnit",
         "version": "3.7.1",
@@ -1928,11 +1997,11 @@
         "children": []
       },
       {
-        "name": "NUnit.Extension.NUnitProjectLoader",
-        "version": "3.5.0",
+        "name": "NUnit.Extension.TeamCityEventListener",
+        "version": "1.0.2",
         "externalId": {
-          "name": "NUnit.Extension.NUnitProjectLoader",
-          "version": "3.5.0",
+          "name": "NUnit.Extension.TeamCityEventListener",
+          "version": "1.0.2",
           "forge": {
             "name": "nuget",
             "separator": "/"
@@ -1952,12 +2021,25 @@
           }
         },
         "children": []
+      },
+      {
+        "name": "NUnit.Extension.NUnitProjectLoader",
+        "version": "3.5.0",
+        "externalId": {
+          "name": "NUnit.Extension.NUnitProjectLoader",
+          "version": "3.5.0",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
       }
     ]
   },
   {
     "bomToolType": "NUGET",
-    "sourcePath": "ndMirror.AddPrivilege",
+    "sourcePath": "ndMirror.AddPrivilege\\ndMirror.AddPrivilege.csproj",
     "bomToolProjectName": "LDService",
     "bomToolProjectVersionName": "1.0.0.0",
     "bomToolProjectExternalId": {

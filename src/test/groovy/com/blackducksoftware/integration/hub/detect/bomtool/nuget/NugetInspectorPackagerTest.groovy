@@ -1,6 +1,5 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.nuget
 
-import org.junit.Ignore
 import org.junit.Test
 import org.skyscreamer.jsonassert.JSONAssert
 
@@ -12,39 +11,16 @@ import com.google.gson.GsonBuilder
 public class NugetInspectorPackagerTest {
     public Gson gson = new GsonBuilder().setPrettyPrinting().create()
 
-    @Ignore
-    @Test
-    public void createCodeLocationConsoleApp() throws IOException {
-        //output from < 1.1.0 or the Nuget inspector
-        // project
-        def dependencyNodeFile = new File(getClass().getResource("/nuget/ConsoleApp1_dependency_node.json").getFile())
-        def expectedOutputFile = new File(getClass().getResource("/nuget/ConsoleApp1_Output.json").getFile())
-        createCodeLocation(dependencyNodeFile, expectedOutputFile)
-    }
-    @Ignore
-    @Test
-    public void createCodeLocationIntegrationNugetInspector() throws IOException {
-        //output from < 1.1.0 or the Nuget inspector
-        //solution
-        def dependencyNodeFile = new File(getClass().getResource("/nuget/integration-nuget-inspector_dependency_node.json").getFile())
-        def expectedOutputFile = new File(getClass().getResource("/nuget/integration-nuget-inspector_Output.json").getFile())
-        createCodeLocation(dependencyNodeFile, expectedOutputFile)
-    }
-    @Ignore
     @Test
     public void createCodeLocationLDServiceDashboard() throws IOException {
-        //output from >= 1.1.0 or the Nuget inspector
-        // project
-        def dependencyNodeFile = new File(getClass().getResource("/nuget/LDService.Dashboard_dependency_node.json").getFile())
+        def dependencyNodeFile = new File(getClass().getResource("/nuget/LDService.Dashboard_inspection.json").getFile())
         def expectedOutputFile = new File(getClass().getResource("/nuget/LDService.Dashboard_Output.json").getFile())
         createCodeLocation(dependencyNodeFile, expectedOutputFile)
     }
-    @Ignore
+
     @Test
     public void createCodeLocationLDService() throws IOException {
-        //output from >= 1.1.0 or the Nuget inspector
-        //solution
-        def dependencyNodeFile = new File(getClass().getResource("/nuget/LDService_dependency_node.json").getFile())
+        def dependencyNodeFile = new File(getClass().getResource("/nuget/LDService_inspection.json").getFile())
         def expectedOutputFile = new File(getClass().getResource("/nuget/LDService_Output.json").getFile())
         createCodeLocation(dependencyNodeFile, expectedOutputFile)
     }

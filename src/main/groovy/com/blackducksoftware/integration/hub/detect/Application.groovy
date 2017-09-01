@@ -117,7 +117,7 @@ class Application {
                     ProjectVersionView projectVersionView = hubManager.updateHubProjectVersion(detectProject, createdBdioFiles)
                     int postResult = hubManager.performPostHubActions(detectProject, projectVersionView)
                     System.exit(postResult)
-                } else {
+                } else if (!detectConfiguration.hubSignatureScannerDisabled){
                     hubSignatureScanner.scanPathsOffline(detectProject)
                 }
             }

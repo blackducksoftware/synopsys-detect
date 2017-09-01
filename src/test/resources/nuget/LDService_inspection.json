@@ -1,0 +1,1731 @@
+{
+  "Name": "Nuget Inspector Inspection Result",
+  "Version": "1.0.0",
+  "Containers": [
+    {
+      "Name": "LDService",
+      "Type": "Solution",
+      "SourcePath": "LDService.sln",
+      "OutputPaths": [],
+      "Packages": [],
+      "Dependencies": [],
+      "Children": [
+        {
+          "Name": "LDService.Persistence.Tests",
+          "Version": "1.0.0.0",
+          "Type": "Project",
+          "SourcePath": "Tests\\LDService.Persistence.Tests\\LDService.Persistence.Tests.csproj",
+          "OutputPaths": [
+            "Tests\\LDService.Persistence.Tests\\bin\\Debug\\",
+            "Tests\\LDService.Persistence.Tests\\bin\\Release\\"
+          ],
+          "Packages": [
+            {
+              "PackageId": {
+                "Name": "EntityFramework",
+                "Version": "6.1.3"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "NUnit",
+                "Version": "3.7.1"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "NUnit.ConsoleRunner",
+                "Version": "3.6.1"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "NUnit.Extension.NUnitProjectLoader",
+                "Version": "3.5.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "NUnit.Extension.TeamCityEventListener",
+                "Version": "1.0.2"
+              },
+              "Dependencies": []
+            }
+          ],
+          "Dependencies": [
+            {
+              "Name": "EntityFramework",
+              "Version": "6.1.3"
+            },
+            {
+              "Name": "NUnit",
+              "Version": "3.7.1"
+            },
+            {
+              "Name": "NUnit.ConsoleRunner",
+              "Version": "3.6.1"
+            },
+            {
+              "Name": "NUnit.Extension.NUnitProjectLoader",
+              "Version": "3.5.0"
+            },
+            {
+              "Name": "NUnit.Extension.TeamCityEventListener",
+              "Version": "1.0.2"
+            }
+          ],
+          "Children": []
+        },
+        {
+          "Name": "LDService.SyncService.Tests",
+          "Version": "1.0.0.0",
+          "Type": "Project",
+          "SourcePath": "Tests\\LDService.SyncService.Tests\\LDService.SyncService.Tests.csproj",
+          "OutputPaths": [
+            "Tests\\LDService.SyncService.Tests\\bin\\Debug\\",
+            "Tests\\LDService.SyncService.Tests\\bin\\Release\\"
+          ],
+          "Packages": [
+            {
+              "PackageId": {
+                "Name": "EntityFramework",
+                "Version": "6.1.3"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "EntityFrameworkTesting",
+                "Version": "1.2.0"
+              },
+              "Dependencies": [
+                {
+                  "Name": "EntityFramework",
+                  "Version": "6.1.3"
+                }
+              ]
+            },
+            {
+              "PackageId": {
+                "Name": "EntityFrameworkTesting.NSubstitute",
+                "Version": "1.2.0"
+              },
+              "Dependencies": [
+                {
+                  "Name": "EntityFrameworkTesting",
+                  "Version": "1.2.0"
+                },
+                {
+                  "Name": "NSubstitute",
+                  "Version": "1.10.0"
+                }
+              ]
+            },
+            {
+              "PackageId": {
+                "Name": "NSubstitute",
+                "Version": "1.10.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "Hangfire.Core",
+                "Version": "1.6.14"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "Microsoft.AspNet.WebApi.Client",
+                "Version": "5.2.3"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "Microsoft.Bcl",
+                "Version": "1.1.10"
+              },
+              "Dependencies": [
+                {
+                  "Name": "Microsoft.Bcl.Build",
+                  "Version": "1.0.21"
+                }
+              ]
+            },
+            {
+              "PackageId": {
+                "Name": "Microsoft.Bcl.Build",
+                "Version": "1.0.21"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "Microsoft.Net.Http",
+                "Version": "2.2.29"
+              },
+              "Dependencies": [
+                {
+                  "Name": "Microsoft.Bcl",
+                  "Version": "1.1.10"
+                },
+                {
+                  "Name": "Microsoft.Bcl.Build",
+                  "Version": "1.0.21"
+                }
+              ]
+            },
+            {
+              "PackageId": {
+                "Name": "NetDocuments.Rest.Client",
+                "Version": "2.2.1.8695"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "Newtonsoft.Json",
+                "Version": "10.0.3"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "NLog",
+                "Version": "4.4.11"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "NLog.Extended",
+                "Version": "4.0.0.1"
+              },
+              "Dependencies": [
+                {
+                  "Name": "NLog",
+                  "Version": "4.4.11"
+                }
+              ]
+            },
+            {
+              "PackageId": {
+                "Name": "NUnit",
+                "Version": "3.7.1"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "NUnit.ConsoleRunner",
+                "Version": "3.6.1"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "NUnit.Extension.NUnitProjectLoader",
+                "Version": "3.5.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "NUnit.Extension.TeamCityEventListener",
+                "Version": "1.0.2"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "Owin",
+                "Version": "1.0.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "SimpleInjector",
+                "Version": "4.0.8"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Collections",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Collections.Concurrent",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Diagnostics.Debug",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Globalization",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.IO",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Linq",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Linq.Expressions",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Reflection",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Reflection.Extensions",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Reflection.TypeExtensions",
+                "Version": "4.3.0"
+              },
+              "Dependencies": [
+                {
+                  "Name": "System.Reflection",
+                  "Version": "4.3.0"
+                }
+              ]
+            },
+            {
+              "PackageId": {
+                "Name": "System.Runtime",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Runtime.Extensions",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Threading",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Threading.Tasks",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            }
+          ],
+          "Dependencies": [
+            {
+              "Name": "EntityFrameworkTesting.NSubstitute",
+              "Version": "1.2.0"
+            },
+            {
+              "Name": "Hangfire.Core",
+              "Version": "1.6.14"
+            },
+            {
+              "Name": "Microsoft.AspNet.WebApi.Client",
+              "Version": "5.2.3"
+            },
+            {
+              "Name": "Microsoft.Net.Http",
+              "Version": "2.2.29"
+            },
+            {
+              "Name": "NetDocuments.Rest.Client",
+              "Version": "2.2.1.8695"
+            },
+            {
+              "Name": "Newtonsoft.Json",
+              "Version": "10.0.3"
+            },
+            {
+              "Name": "NLog.Extended",
+              "Version": "4.0.0.1"
+            },
+            {
+              "Name": "NUnit",
+              "Version": "3.7.1"
+            },
+            {
+              "Name": "NUnit.ConsoleRunner",
+              "Version": "3.6.1"
+            },
+            {
+              "Name": "NUnit.Extension.NUnitProjectLoader",
+              "Version": "3.5.0"
+            },
+            {
+              "Name": "NUnit.Extension.TeamCityEventListener",
+              "Version": "1.0.2"
+            },
+            {
+              "Name": "Owin",
+              "Version": "1.0.0"
+            },
+            {
+              "Name": "SimpleInjector",
+              "Version": "4.0.8"
+            },
+            {
+              "Name": "System.Collections",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Collections.Concurrent",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Diagnostics.Debug",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Globalization",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.IO",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Linq",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Linq.Expressions",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Reflection.Extensions",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Reflection.TypeExtensions",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Runtime",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Runtime.Extensions",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Threading",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Threading.Tasks",
+              "Version": "4.3.0"
+            }
+          ],
+          "Children": []
+        },
+        {
+          "Name": "LDService.Tests.Common",
+          "Version": "1.0.0.0",
+          "Type": "Project",
+          "SourcePath": "Tests\\LDService.Tests.Common\\LDService.Tests.Common.csproj",
+          "OutputPaths": [
+            "Tests\\LDService.Tests.Common\\bin\\Debug\\",
+            "Tests\\LDService.Tests.Common\\bin\\Release\\"
+          ],
+          "Packages": [],
+          "Dependencies": [],
+          "Children": []
+        },
+        {
+          "Name": "LDService.Common",
+          "Version": "1.0.0.0",
+          "Type": "Project",
+          "SourcePath": "LDService.Common\\LDService.Common.csproj",
+          "OutputPaths": [
+            "LDService.Common\\bin\\Debug\\",
+            "LDService.Common\\bin\\Release\\",
+            "LDService.Common\\bin\\ReleaseSigned\\"
+          ],
+          "Packages": [
+            {
+              "PackageId": {
+                "Name": "Ensure.That",
+                "Version": "5.0.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "NLog",
+                "Version": "4.4.11"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "SimpleInjector",
+                "Version": "4.0.8"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Collections",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Collections.Concurrent",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Diagnostics.Debug",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Globalization",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.IO",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Linq",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Linq.Expressions",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Reflection",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Reflection.Extensions",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Reflection.TypeExtensions",
+                "Version": "4.3.0"
+              },
+              "Dependencies": [
+                {
+                  "Name": "System.Reflection",
+                  "Version": "4.3.0"
+                }
+              ]
+            },
+            {
+              "PackageId": {
+                "Name": "System.Runtime",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Runtime.Extensions",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Threading",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Threading.Tasks",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            }
+          ],
+          "Dependencies": [
+            {
+              "Name": "Ensure.That",
+              "Version": "5.0.0"
+            },
+            {
+              "Name": "NLog",
+              "Version": "4.4.11"
+            },
+            {
+              "Name": "SimpleInjector",
+              "Version": "4.0.8"
+            },
+            {
+              "Name": "System.Collections",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Collections.Concurrent",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Diagnostics.Debug",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Globalization",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.IO",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Linq",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Linq.Expressions",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Reflection.Extensions",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Reflection.TypeExtensions",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Runtime",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Runtime.Extensions",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Threading",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Threading.Tasks",
+              "Version": "4.3.0"
+            }
+          ],
+          "Children": []
+        },
+        {
+          "Name": "LDService.Dashboard",
+          "Version": "1.0.0.0",
+          "Type": "Project",
+          "SourcePath": "LDService.Dashboard\\LDService.Dashboard.csproj",
+          "OutputPaths": [
+            "LDService.Dashboard\\bin\\Debug\\",
+            "LDService.Dashboard\\bin\\Release\\",
+            "LDService.Dashboard\\bin\\ReleaseSigned\\"
+          ],
+          "Packages": [
+            {
+              "PackageId": {
+                "Name": "Ensure.That",
+                "Version": "5.0.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "Microsoft.AspNet.Razor",
+                "Version": "3.2.3"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "Nancy",
+                "Version": "1.4.3"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "Nancy.Viewengines.Razor",
+                "Version": "1.4.3"
+              },
+              "Dependencies": [
+                {
+                  "Name": "Nancy",
+                  "Version": "1.4.3"
+                },
+                {
+                  "Name": "Microsoft.AspNet.Razor",
+                  "Version": "3.2.3"
+                }
+              ]
+            },
+            {
+              "PackageId": {
+                "Name": "Newtonsoft.Json",
+                "Version": "10.0.3"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "NLog",
+                "Version": "4.4.11"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "RazorEngine",
+                "Version": "3.10.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "SimpleInjector",
+                "Version": "4.0.8"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Collections",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Collections.Concurrent",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Diagnostics.Debug",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Globalization",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.IO",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Linq",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Linq.Expressions",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Reflection",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Reflection.Extensions",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Reflection.TypeExtensions",
+                "Version": "4.3.0"
+              },
+              "Dependencies": [
+                {
+                  "Name": "System.Reflection",
+                  "Version": "4.3.0"
+                }
+              ]
+            },
+            {
+              "PackageId": {
+                "Name": "System.Runtime",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Runtime.Extensions",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Threading",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Threading.Tasks",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            }
+          ],
+          "Dependencies": [
+            {
+              "Name": "Ensure.That",
+              "Version": "5.0.0"
+            },
+            {
+              "Name": "Nancy.Viewengines.Razor",
+              "Version": "1.4.3"
+            },
+            {
+              "Name": "Newtonsoft.Json",
+              "Version": "10.0.3"
+            },
+            {
+              "Name": "NLog",
+              "Version": "4.4.11"
+            },
+            {
+              "Name": "RazorEngine",
+              "Version": "3.10.0"
+            },
+            {
+              "Name": "SimpleInjector",
+              "Version": "4.0.8"
+            },
+            {
+              "Name": "System.Collections",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Collections.Concurrent",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Diagnostics.Debug",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Globalization",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.IO",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Linq",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Linq.Expressions",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Reflection.Extensions",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Reflection.TypeExtensions",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Runtime",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Runtime.Extensions",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Threading",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Threading.Tasks",
+              "Version": "4.3.0"
+            }
+          ],
+          "Children": []
+        },
+        {
+          "Name": "LDService.SyncService",
+          "Version": "1.0.0.0",
+          "Type": "Project",
+          "SourcePath": "LDService.SyncService\\LDService.SyncService.csproj",
+          "OutputPaths": [
+            "LDService.SyncService\\bin\\Debug\\",
+            "LDService.SyncService\\bin\\Release\\",
+            "LDService.SyncService\\bin\\ReleaseSigned\\"
+          ],
+          "Packages": [
+            {
+              "PackageId": {
+                "Name": "Ensure.That",
+                "Version": "5.0.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "EntityFramework",
+                "Version": "6.1.3"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "Hangfire.Core",
+                "Version": "1.6.14"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "Hangfire.SqlServer",
+                "Version": "1.6.14"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "Microsoft.AspNet.WebApi.Client",
+                "Version": "5.2.3"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "Microsoft.Bcl",
+                "Version": "1.1.10"
+              },
+              "Dependencies": [
+                {
+                  "Name": "Microsoft.Bcl.Build",
+                  "Version": "1.0.21"
+                }
+              ]
+            },
+            {
+              "PackageId": {
+                "Name": "Microsoft.Bcl.Build",
+                "Version": "1.0.21"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "Microsoft.Net.Http",
+                "Version": "2.2.29"
+              },
+              "Dependencies": [
+                {
+                  "Name": "Microsoft.Bcl",
+                  "Version": "1.1.10"
+                },
+                {
+                  "Name": "Microsoft.Bcl.Build",
+                  "Version": "1.0.21"
+                }
+              ]
+            },
+            {
+              "PackageId": {
+                "Name": "Microsoft.Owin",
+                "Version": "3.1.0"
+              },
+              "Dependencies": [
+                {
+                  "Name": "Owin",
+                  "Version": "1.0.0"
+                }
+              ]
+            },
+            {
+              "PackageId": {
+                "Name": "Owin",
+                "Version": "1.0.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "Microsoft.Owin.Host.HttpListener",
+                "Version": "3.1.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "Microsoft.Owin.Hosting",
+                "Version": "3.1.0"
+              },
+              "Dependencies": [
+                {
+                  "Name": "Owin",
+                  "Version": "1.0.0"
+                },
+                {
+                  "Name": "Microsoft.Owin",
+                  "Version": "3.1.0"
+                }
+              ]
+            },
+            {
+              "PackageId": {
+                "Name": "Nancy",
+                "Version": "1.4.3"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "Nancy.Owin",
+                "Version": "1.4.1"
+              },
+              "Dependencies": [
+                {
+                  "Name": "Nancy",
+                  "Version": "1.4.3"
+                },
+                {
+                  "Name": "Owin",
+                  "Version": "1.0.0"
+                }
+              ]
+            },
+            {
+              "PackageId": {
+                "Name": "NetDocuments.Rest.Client",
+                "Version": "2.2.1.8695"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "Newtonsoft.Json",
+                "Version": "10.0.3"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "NLog",
+                "Version": "4.4.11"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "NLog.Extended",
+                "Version": "4.0.0.1"
+              },
+              "Dependencies": [
+                {
+                  "Name": "NLog",
+                  "Version": "4.4.11"
+                }
+              ]
+            },
+            {
+              "PackageId": {
+                "Name": "NLog.Schema",
+                "Version": "4.4.11"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "SimpleInjector",
+                "Version": "4.0.8"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Collections",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Collections.Concurrent",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Diagnostics.Debug",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Globalization",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.IO",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Linq",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Linq.Expressions",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Reflection",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Reflection.Extensions",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Reflection.TypeExtensions",
+                "Version": "4.3.0"
+              },
+              "Dependencies": [
+                {
+                  "Name": "System.Reflection",
+                  "Version": "4.3.0"
+                }
+              ]
+            },
+            {
+              "PackageId": {
+                "Name": "System.Runtime",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Runtime.Extensions",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Threading",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "System.Threading.Tasks",
+                "Version": "4.3.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "Topshelf",
+                "Version": "4.0.3"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "Topshelf.NLog",
+                "Version": "4.0.3"
+              },
+              "Dependencies": [
+                {
+                  "Name": "Topshelf",
+                  "Version": "4.0.3"
+                },
+                {
+                  "Name": "NLog",
+                  "Version": "4.4.11"
+                }
+              ]
+            },
+            {
+              "PackageId": {
+                "Name": "Z.EntityFramework.Plus.EF6",
+                "Version": "1.6.2"
+              },
+              "Dependencies": []
+            }
+          ],
+          "Dependencies": [
+            {
+              "Name": "Ensure.That",
+              "Version": "5.0.0"
+            },
+            {
+              "Name": "EntityFramework",
+              "Version": "6.1.3"
+            },
+            {
+              "Name": "Hangfire.Core",
+              "Version": "1.6.14"
+            },
+            {
+              "Name": "Hangfire.SqlServer",
+              "Version": "1.6.14"
+            },
+            {
+              "Name": "Microsoft.AspNet.WebApi.Client",
+              "Version": "5.2.3"
+            },
+            {
+              "Name": "Microsoft.Net.Http",
+              "Version": "2.2.29"
+            },
+            {
+              "Name": "Microsoft.Owin.Host.HttpListener",
+              "Version": "3.1.0"
+            },
+            {
+              "Name": "Microsoft.Owin.Hosting",
+              "Version": "3.1.0"
+            },
+            {
+              "Name": "Nancy.Owin",
+              "Version": "1.4.1"
+            },
+            {
+              "Name": "NetDocuments.Rest.Client",
+              "Version": "2.2.1.8695"
+            },
+            {
+              "Name": "Newtonsoft.Json",
+              "Version": "10.0.3"
+            },
+            {
+              "Name": "NLog.Extended",
+              "Version": "4.0.0.1"
+            },
+            {
+              "Name": "NLog.Schema",
+              "Version": "4.4.11"
+            },
+            {
+              "Name": "SimpleInjector",
+              "Version": "4.0.8"
+            },
+            {
+              "Name": "System.Collections",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Collections.Concurrent",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Diagnostics.Debug",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Globalization",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.IO",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Linq",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Linq.Expressions",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Reflection.Extensions",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Reflection.TypeExtensions",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Runtime",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Runtime.Extensions",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Threading",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "System.Threading.Tasks",
+              "Version": "4.3.0"
+            },
+            {
+              "Name": "Topshelf.NLog",
+              "Version": "4.0.3"
+            },
+            {
+              "Name": "Z.EntityFramework.Plus.EF6",
+              "Version": "1.6.2"
+            }
+          ],
+          "Children": []
+        },
+        {
+          "Name": "LDService.Persistence",
+          "Version": "1.0.0.0",
+          "Type": "Project",
+          "SourcePath": "LDService.Persistence\\LDService.Persistence.csproj",
+          "OutputPaths": [
+            "LDService.Persistence\\bin\\Debug\\",
+            "LDService.Persistence\\bin\\Release\\",
+            "LDService.Persistence\\bin\\ReleaseSigned\\"
+          ],
+          "Packages": [
+            {
+              "PackageId": {
+                "Name": "Ensure.That",
+                "Version": "5.0.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "EntityFramework",
+                "Version": "6.1.3"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "Newtonsoft.Json",
+                "Version": "10.0.3"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "NLog",
+                "Version": "4.4.11"
+              },
+              "Dependencies": []
+            }
+          ],
+          "Dependencies": [
+            {
+              "Name": "Ensure.That",
+              "Version": "5.0.0"
+            },
+            {
+              "Name": "EntityFramework",
+              "Version": "6.1.3"
+            },
+            {
+              "Name": "Newtonsoft.Json",
+              "Version": "10.0.3"
+            },
+            {
+              "Name": "NLog",
+              "Version": "4.4.11"
+            }
+          ],
+          "Children": []
+        },
+        {
+          "Name": "LDServiceSetup",
+          "Version": "1.0.0-",
+          "Type": "Project",
+          "SourcePath": "Installer\\LDService.Setup\\LDServiceSetup.wixproj",
+          "OutputPaths": [],
+          "Packages": [],
+          "Dependencies": [],
+          "Children": []
+        },
+        {
+          "Name": "LDServiceSetupX64",
+          "Version": "1.0.0-",
+          "Type": "Project",
+          "SourcePath": "Installer\\LDService.SetupX64\\LDServiceSetupX64.wixproj",
+          "OutputPaths": [],
+          "Packages": [],
+          "Dependencies": [],
+          "Children": []
+        },
+        {
+          "Name": "LDService.Bootstrapper",
+          "Version": "1.0.0-",
+          "Type": "Project",
+          "SourcePath": "Installer\\LDService.Bootstrapper\\LDService.Bootstrapper.wixproj",
+          "OutputPaths": [],
+          "Packages": [],
+          "Dependencies": [],
+          "Children": []
+        },
+        {
+          "Name": "LDService.InstallerUI",
+          "Version": "1.0.0.0",
+          "Type": "Project",
+          "SourcePath": "Installer\\LDService.InstallerUI\\LDService.InstallerUI.csproj",
+          "OutputPaths": [
+            "Installer\\LDService.InstallerUI\\bin\\Debug\\",
+            "Installer\\LDService.InstallerUI\\bin\\Release\\",
+            "Installer\\LDService.InstallerUI\\bin\\ReleaseSigned\\"
+          ],
+          "Packages": [
+            {
+              "PackageId": {
+                "Name": "DataConnectionDialog",
+                "Version": "1.2.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "Ensure.That",
+                "Version": "5.0.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "EntityFramework",
+                "Version": "6.1.3"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "Expression.Blend.Sdk",
+                "Version": "1.0.2"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "Extended.Wpf.Toolkit",
+                "Version": "3.0.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "Hangfire.Core",
+                "Version": "1.6.14"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "Hangfire.SqlServer",
+                "Version": "1.6.14"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "Nancy",
+                "Version": "1.4.3"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "Newtonsoft.Json",
+                "Version": "10.0.3"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "NLog",
+                "Version": "4.4.11"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "NLog.Schema",
+                "Version": "4.4.11"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "Owin",
+                "Version": "1.0.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "SimpleImpersonation",
+                "Version": "2.0.1"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "Tulpep.ActiveDirectoryObjectPicker",
+                "Version": "2.1.106"
+              },
+              "Dependencies": []
+            }
+          ],
+          "Dependencies": [
+            {
+              "Name": "DataConnectionDialog",
+              "Version": "1.2.0"
+            },
+            {
+              "Name": "Ensure.That",
+              "Version": "5.0.0"
+            },
+            {
+              "Name": "EntityFramework",
+              "Version": "6.1.3"
+            },
+            {
+              "Name": "Expression.Blend.Sdk",
+              "Version": "1.0.2"
+            },
+            {
+              "Name": "Extended.Wpf.Toolkit",
+              "Version": "3.0.0"
+            },
+            {
+              "Name": "Hangfire.Core",
+              "Version": "1.6.14"
+            },
+            {
+              "Name": "Hangfire.SqlServer",
+              "Version": "1.6.14"
+            },
+            {
+              "Name": "Nancy",
+              "Version": "1.4.3"
+            },
+            {
+              "Name": "Newtonsoft.Json",
+              "Version": "10.0.3"
+            },
+            {
+              "Name": "NLog",
+              "Version": "4.4.11"
+            },
+            {
+              "Name": "NLog.Schema",
+              "Version": "4.4.11"
+            },
+            {
+              "Name": "Owin",
+              "Version": "1.0.0"
+            },
+            {
+              "Name": "SimpleImpersonation",
+              "Version": "2.0.1"
+            },
+            {
+              "Name": "Tulpep.ActiveDirectoryObjectPicker",
+              "Version": "2.1.106"
+            }
+          ],
+          "Children": []
+        },
+        {
+          "Name": "LDService.Common.Tests",
+          "Version": "1.0.0.0",
+          "Type": "Project",
+          "SourcePath": "Tests\\LDService.Common.Tests\\LDService.Common.Tests.csproj",
+          "OutputPaths": [
+            "Tests\\LDService.Common.Tests\\bin\\Debug\\",
+            "Tests\\LDService.Common.Tests\\bin\\Release\\"
+          ],
+          "Packages": [
+            {
+              "PackageId": {
+                "Name": "NUnit",
+                "Version": "3.7.1"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "NUnit.ConsoleRunner",
+                "Version": "3.6.1"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "NUnit.Extension.NUnitProjectLoader",
+                "Version": "3.5.0"
+              },
+              "Dependencies": []
+            },
+            {
+              "PackageId": {
+                "Name": "NUnit.Extension.TeamCityEventListener",
+                "Version": "1.0.2"
+              },
+              "Dependencies": []
+            }
+          ],
+          "Dependencies": [
+            {
+              "Name": "NUnit",
+              "Version": "3.7.1"
+            },
+            {
+              "Name": "NUnit.ConsoleRunner",
+              "Version": "3.6.1"
+            },
+            {
+              "Name": "NUnit.Extension.NUnitProjectLoader",
+              "Version": "3.5.0"
+            },
+            {
+              "Name": "NUnit.Extension.TeamCityEventListener",
+              "Version": "1.0.2"
+            }
+          ],
+          "Children": []
+        },
+        {
+          "Name": "ndMirror.AddPrivilege",
+          "Version": "1.0.0.0",
+          "Type": "Project",
+          "SourcePath": "ndMirror.AddPrivilege\\ndMirror.AddPrivilege.csproj",
+          "OutputPaths": [
+            "ndMirror.AddPrivilege\\bin\\Debug\\",
+            "ndMirror.AddPrivilege\\bin\\Release\\",
+            "ndMirror.AddPrivilege\\bin\\ReleaseSigned\\"
+          ],
+          "Packages": [],
+          "Dependencies": [],
+          "Children": []
+        }
+      ]
+    }
+  ]
+}

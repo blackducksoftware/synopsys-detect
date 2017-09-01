@@ -30,7 +30,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.CranBomTool
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
-import com.blackducksoftware.integration.hub.detect.nameversion.builder.NameVersionNodeBuilderImpl
+import com.blackducksoftware.integration.hub.detect.nameversion.builder.NameVersionNodeBuilder
 
 import groovy.transform.TypeChecked
 
@@ -39,13 +39,13 @@ public class PackRatNodeParser {
     private final Logger logger = LoggerFactory.getLogger(PackRatNodeParser.class)
 
     private NameVersionNode rootNameVersionNode
-    private NameVersionNodeBuilderImpl nameVersionNodeBuilder
+    private NameVersionNodeBuilder nameVersionNodeBuilder
     private HashSet<String> directDependencyNames
     private NameVersionNode currentParent
 
     List<DependencyNode> parseProjectDependencies(NameVersionNodeTransformer nameVersionNodeTransformer, final String packratLockContents) {
         rootNameVersionNode = new NameVersionNodeImpl([name: 'packratLockFileRoot'])
-        nameVersionNodeBuilder = new NameVersionNodeBuilderImpl(rootNameVersionNode)
+        nameVersionNodeBuilder = new NameVersionNodeBuilder(rootNameVersionNode)
         directDependencyNames = new HashSet<>()
         currentParent = null
 

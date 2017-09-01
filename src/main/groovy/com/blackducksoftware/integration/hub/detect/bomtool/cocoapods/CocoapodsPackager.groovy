@@ -31,7 +31,7 @@ import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.nameversion.NodeMetadata
-import com.blackducksoftware.integration.hub.detect.nameversion.builder.NameVersionNodeBuilderImpl
+import com.blackducksoftware.integration.hub.detect.nameversion.builder.NameVersionNodeBuilder
 import com.blackducksoftware.integration.hub.detect.nameversion.builder.SubcomponentNodeBuilder
 import com.blackducksoftware.integration.hub.detect.nameversion.metadata.SubcomponentMetadata
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper
@@ -109,7 +109,7 @@ class CocoapodsPackager {
         nameVersionNode
     }
 
-    private SubcomponentMetadata createMetadata(NameVersionNodeBuilderImpl builder, String name) {
+    private SubcomponentMetadata createMetadata(NameVersionNodeBuilder builder, String name) {
         SubcomponentMetadata metadata = builder.getNodeMetadata(cleanPodName(name)) as SubcomponentMetadata
         if (!metadata) {
             metadata = new SubcomponentMetadata()

@@ -1,0 +1,271 @@
+{
+  "Name": "Nuget Inspector Inspection Result",
+  "Version": "1.0.0",
+  "Containers": [
+    {
+      "Name": "LDService.Dashboard",
+      "Version": "1.0.0.0",
+      "Type": "Project",
+      "SourcePath": "LDService.Dashboard.csproj",
+      "OutputPaths": [
+        "LDService.Dashboard\\bin\\Debug\\",
+        "LDService.Dashboard\\bin\\Release\\",
+        "LDService.Dashboard\\bin\\ReleaseSigned\\"
+      ],
+      "Packages": [
+        {
+          "PackageId": {
+            "Name": "Ensure.That",
+            "Version": "5.0.0"
+          },
+          "Dependencies": []
+        },
+        {
+          "PackageId": {
+            "Name": "Microsoft.AspNet.Razor",
+            "Version": "3.2.3"
+          },
+          "Dependencies": []
+        },
+        {
+          "PackageId": {
+            "Name": "Nancy",
+            "Version": "1.4.3"
+          },
+          "Dependencies": []
+        },
+        {
+          "PackageId": {
+            "Name": "Nancy.Viewengines.Razor",
+            "Version": "1.4.3"
+          },
+          "Dependencies": [
+            {
+              "Name": "Nancy",
+              "Version": "1.4.3"
+            },
+            {
+              "Name": "Microsoft.AspNet.Razor",
+              "Version": "3.2.3"
+            }
+          ]
+        },
+        {
+          "PackageId": {
+            "Name": "Newtonsoft.Json",
+            "Version": "10.0.3"
+          },
+          "Dependencies": []
+        },
+        {
+          "PackageId": {
+            "Name": "NLog",
+            "Version": "4.4.11"
+          },
+          "Dependencies": []
+        },
+        {
+          "PackageId": {
+            "Name": "RazorEngine",
+            "Version": "3.10.0"
+          },
+          "Dependencies": [
+            {
+              "Name": "Microsoft.AspNet.Razor",
+              "Version": "3.2.3"
+            }
+          ]
+        },
+        {
+          "PackageId": {
+            "Name": "SimpleInjector",
+            "Version": "4.0.8"
+          },
+          "Dependencies": []
+        },
+        {
+          "PackageId": {
+            "Name": "System.Collections",
+            "Version": "4.3.0"
+          },
+          "Dependencies": []
+        },
+        {
+          "PackageId": {
+            "Name": "System.Collections.Concurrent",
+            "Version": "4.3.0"
+          },
+          "Dependencies": []
+        },
+        {
+          "PackageId": {
+            "Name": "System.Diagnostics.Debug",
+            "Version": "4.3.0"
+          },
+          "Dependencies": []
+        },
+        {
+          "PackageId": {
+            "Name": "System.Globalization",
+            "Version": "4.3.0"
+          },
+          "Dependencies": []
+        },
+        {
+          "PackageId": {
+            "Name": "System.IO",
+            "Version": "4.3.0"
+          },
+          "Dependencies": []
+        },
+        {
+          "PackageId": {
+            "Name": "System.Linq",
+            "Version": "4.3.0"
+          },
+          "Dependencies": []
+        },
+        {
+          "PackageId": {
+            "Name": "System.Linq.Expressions",
+            "Version": "4.3.0"
+          },
+          "Dependencies": []
+        },
+        {
+          "PackageId": {
+            "Name": "System.Reflection",
+            "Version": "4.3.0"
+          },
+          "Dependencies": []
+        },
+        {
+          "PackageId": {
+            "Name": "System.Reflection.Extensions",
+            "Version": "4.3.0"
+          },
+          "Dependencies": []
+        },
+        {
+          "PackageId": {
+            "Name": "System.Reflection.TypeExtensions",
+            "Version": "4.3.0"
+          },
+          "Dependencies": [
+            {
+              "Name": "System.Reflection",
+              "Version": "4.3.0"
+            }
+          ]
+        },
+        {
+          "PackageId": {
+            "Name": "System.Runtime",
+            "Version": "4.3.0"
+          },
+          "Dependencies": []
+        },
+        {
+          "PackageId": {
+            "Name": "System.Runtime.Extensions",
+            "Version": "4.3.0"
+          },
+          "Dependencies": []
+        },
+        {
+          "PackageId": {
+            "Name": "System.Threading",
+            "Version": "4.3.0"
+          },
+          "Dependencies": []
+        },
+        {
+          "PackageId": {
+            "Name": "System.Threading.Tasks",
+            "Version": "4.3.0"
+          },
+          "Dependencies": []
+        }
+      ],
+      "Dependencies": [
+        {
+          "Name": "Ensure.That",
+          "Version": "5.0.0"
+        },
+        {
+          "Name": "Nancy.Viewengines.Razor",
+          "Version": "1.4.3"
+        },
+        {
+          "Name": "Newtonsoft.Json",
+          "Version": "10.0.3"
+        },
+        {
+          "Name": "NLog",
+          "Version": "4.4.11"
+        },
+        {
+          "Name": "RazorEngine",
+          "Version": "3.10.0"
+        },
+        {
+          "Name": "SimpleInjector",
+          "Version": "4.0.8"
+        },
+        {
+          "Name": "System.Collections",
+          "Version": "4.3.0"
+        },
+        {
+          "Name": "System.Collections.Concurrent",
+          "Version": "4.3.0"
+        },
+        {
+          "Name": "System.Diagnostics.Debug",
+          "Version": "4.3.0"
+        },
+        {
+          "Name": "System.Globalization",
+          "Version": "4.3.0"
+        },
+        {
+          "Name": "System.IO",
+          "Version": "4.3.0"
+        },
+        {
+          "Name": "System.Linq",
+          "Version": "4.3.0"
+        },
+        {
+          "Name": "System.Linq.Expressions",
+          "Version": "4.3.0"
+        },
+        {
+          "Name": "System.Reflection.Extensions",
+          "Version": "4.3.0"
+        },
+        {
+          "Name": "System.Reflection.TypeExtensions",
+          "Version": "4.3.0"
+        },
+        {
+          "Name": "System.Runtime",
+          "Version": "4.3.0"
+        },
+        {
+          "Name": "System.Runtime.Extensions",
+          "Version": "4.3.0"
+        },
+        {
+          "Name": "System.Threading",
+          "Version": "4.3.0"
+        },
+        {
+          "Name": "System.Threading.Tasks",
+          "Version": "4.3.0"
+        }
+      ],
+      "Children": []
+    }
+  ]
+}

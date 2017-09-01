@@ -1,7 +1,7 @@
 [
   {
     "bomToolType": "NUGET",
-    "sourcePath": "LDService.Dashboard",
+    "sourcePath": "LDService.Dashboard.csproj",
     "bomToolProjectName": "LDService.Dashboard",
     "bomToolProjectVersionName": "1.0.0.0",
     "bomToolProjectExternalId": {
@@ -24,39 +24,40 @@
             "separator": "/"
           }
         },
-        "children": []
-      },
-      {
-        "name": "RazorEngine",
-        "version": "3.10.0",
-        "externalId": {
-          "name": "RazorEngine",
-          "version": "3.10.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
+        "children": [
+          {
+            "name": "Microsoft.AspNet.Razor",
+            "version": "3.2.3",
+            "externalId": {
+              "name": "Microsoft.AspNet.Razor",
+              "version": "3.2.3",
+              "forge": {
+                "name": "nuget",
+                "separator": "/"
+              }
+            },
+            "children": []
+          },
+          {
+            "name": "Nancy",
+            "version": "1.4.3",
+            "externalId": {
+              "name": "Nancy",
+              "version": "1.4.3",
+              "forge": {
+                "name": "nuget",
+                "separator": "/"
+              }
+            },
+            "children": []
           }
-        },
-        "children": []
+        ]
       },
       {
-        "name": "SimpleInjector",
-        "version": "4.0.8",
-        "externalId": {
-          "name": "SimpleInjector",
-          "version": "4.0.8",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.Reflection.Extensions",
+        "name": "System.Linq.Expressions",
         "version": "4.3.0",
         "externalId": {
-          "name": "System.Reflection.Extensions",
+          "name": "System.Linq.Expressions",
           "version": "4.3.0",
           "forge": {
             "name": "nuget",
@@ -66,10 +67,10 @@
         "children": []
       },
       {
-        "name": "System.Linq.Expressions",
+        "name": "System.IO",
         "version": "4.3.0",
         "externalId": {
-          "name": "System.Linq.Expressions",
+          "name": "System.IO",
           "version": "4.3.0",
           "forge": {
             "name": "nuget",
@@ -92,10 +93,36 @@
         "children": []
       },
       {
-        "name": "System.Collections.Concurrent",
+        "name": "SimpleInjector",
+        "version": "4.0.8",
+        "externalId": {
+          "name": "SimpleInjector",
+          "version": "4.0.8",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "Newtonsoft.Json",
+        "version": "10.0.3",
+        "externalId": {
+          "name": "Newtonsoft.Json",
+          "version": "10.0.3",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "System.Threading",
         "version": "4.3.0",
         "externalId": {
-          "name": "System.Collections.Concurrent",
+          "name": "System.Threading",
           "version": "4.3.0",
           "forge": {
             "name": "nuget",
@@ -105,62 +132,10 @@
         "children": []
       },
       {
-        "name": "System.Reflection.TypeExtensions",
+        "name": "System.Collections",
         "version": "4.3.0",
         "externalId": {
-          "name": "System.Reflection.TypeExtensions",
-          "version": "4.3.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.Globalization",
-        "version": "4.3.0",
-        "externalId": {
-          "name": "System.Globalization",
-          "version": "4.3.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "Ensure.That",
-        "version": "5.0.0",
-        "externalId": {
-          "name": "Ensure.That",
-          "version": "5.0.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.Runtime",
-        "version": "4.3.0",
-        "externalId": {
-          "name": "System.Runtime",
-          "version": "4.3.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
-      },
-      {
-        "name": "System.Diagnostics.Debug",
-        "version": "4.3.0",
-        "externalId": {
-          "name": "System.Diagnostics.Debug",
+          "name": "System.Collections",
           "version": "4.3.0",
           "forge": {
             "name": "nuget",
@@ -183,43 +158,31 @@
         "children": []
       },
       {
-        "name": "System.Reflection",
+        "name": "System.Reflection.TypeExtensions",
         "version": "4.3.0",
         "externalId": {
-          "name": "System.Reflection",
+          "name": "System.Reflection.TypeExtensions",
           "version": "4.3.0",
           "forge": {
             "name": "nuget",
             "separator": "/"
           }
         },
-        "children": []
-      },
-      {
-        "name": "Microsoft.AspNet.Razor",
-        "version": "3.2.3",
-        "externalId": {
-          "name": "Microsoft.AspNet.Razor",
-          "version": "3.2.3",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
+        "children": [
+          {
+            "name": "System.Reflection",
+            "version": "4.3.0",
+            "externalId": {
+              "name": "System.Reflection",
+              "version": "4.3.0",
+              "forge": {
+                "name": "nuget",
+                "separator": "/"
+              }
+            },
+            "children": []
           }
-        },
-        "children": []
-      },
-      {
-        "name": "System.IO",
-        "version": "4.3.0",
-        "externalId": {
-          "name": "System.IO",
-          "version": "4.3.0",
-          "forge": {
-            "name": "nuget",
-            "separator": "/"
-          }
-        },
-        "children": []
+        ]
       },
       {
         "name": "System.Linq",
@@ -235,10 +198,10 @@
         "children": []
       },
       {
-        "name": "System.Threading",
+        "name": "System.Runtime",
         "version": "4.3.0",
         "externalId": {
-          "name": "System.Threading",
+          "name": "System.Runtime",
           "version": "4.3.0",
           "forge": {
             "name": "nuget",
@@ -248,11 +211,24 @@
         "children": []
       },
       {
-        "name": "Nancy",
-        "version": "1.4.3",
+        "name": "System.Globalization",
+        "version": "4.3.0",
         "externalId": {
-          "name": "Nancy",
-          "version": "1.4.3",
+          "name": "System.Globalization",
+          "version": "4.3.0",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "System.Reflection.Extensions",
+        "version": "4.3.0",
+        "externalId": {
+          "name": "System.Reflection.Extensions",
+          "version": "4.3.0",
           "forge": {
             "name": "nuget",
             "separator": "/"
@@ -274,11 +250,11 @@
         "children": []
       },
       {
-        "name": "Newtonsoft.Json",
-        "version": "10.0.3",
+        "name": "System.Diagnostics.Debug",
+        "version": "4.3.0",
         "externalId": {
-          "name": "Newtonsoft.Json",
-          "version": "10.0.3",
+          "name": "System.Diagnostics.Debug",
+          "version": "4.3.0",
           "forge": {
             "name": "nuget",
             "separator": "/"
@@ -287,10 +263,10 @@
         "children": []
       },
       {
-        "name": "System.Collections",
+        "name": "System.Collections.Concurrent",
         "version": "4.3.0",
         "externalId": {
-          "name": "System.Collections",
+          "name": "System.Collections.Concurrent",
           "version": "4.3.0",
           "forge": {
             "name": "nuget",
@@ -298,6 +274,46 @@
           }
         },
         "children": []
+      },
+      {
+        "name": "Ensure.That",
+        "version": "5.0.0",
+        "externalId": {
+          "name": "Ensure.That",
+          "version": "5.0.0",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": []
+      },
+      {
+        "name": "RazorEngine",
+        "version": "3.10.0",
+        "externalId": {
+          "name": "RazorEngine",
+          "version": "3.10.0",
+          "forge": {
+            "name": "nuget",
+            "separator": "/"
+          }
+        },
+        "children": [
+          {
+            "name": "Microsoft.AspNet.Razor",
+            "version": "3.2.3",
+            "externalId": {
+              "name": "Microsoft.AspNet.Razor",
+              "version": "3.2.3",
+              "forge": {
+                "name": "nuget",
+                "separator": "/"
+              }
+            },
+            "children": []
+          }
+        ]
       }
     ]
   }
