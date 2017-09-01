@@ -141,7 +141,7 @@ class SbtBomTool extends BomTool {
         List<File> resolutionCaches = detectFileManager.findDirectoriesContainingDirectoriesToDepth(sourcePath, REPORT_SEARCH_PATTERN, depth) as List
 
         List<SbtModule> modules = new ArrayList<SbtModule>()
-        List<File> usedReports = new ArrayList<File>()
+        List<String> usedReports = new ArrayList<String>()
 
         sbtFiles.each { sbtFile ->
             logger.debug("Found SBT build file : ${sbtFile.getCanonicalPath()}")
@@ -187,7 +187,7 @@ class SbtBomTool extends BomTool {
         return file.getCanonicalPath().startsWith(projectPath.getCanonicalPath())
     }
 
-    List<SbtModule> extractReportModules(File reportPath, File source, String included, String excluded, List<File> usedReports) {
+    List<SbtModule> extractReportModules(File reportPath, File source, String included, String excluded, List<String> usedReports) {
         List<SbtModule> modules = new ArrayList<SbtModule>()
         String canonical = reportPath.getCanonicalPath()
         if (usedReports.contains(canonical)) {
@@ -195,7 +195,7 @@ class SbtBomTool extends BomTool {
         } else if (isInProject(reportPath, sourcePath)) {
             logger.debug("Skipping reports in project folder: ${reportPath.getCanonicalPath()}")
         } else {
-            usedReports.add(reportPath)
+            usedReports.add(canonical)
             List<File> reportFiles = detectFileManager.findFiles(reportPath, REPORT_FILE_PATTERN) as List
             if (reportFiles == null || reportFiles.size() <= 0) {
                 logger.debug("No reports were found in: ${reportPath}")
