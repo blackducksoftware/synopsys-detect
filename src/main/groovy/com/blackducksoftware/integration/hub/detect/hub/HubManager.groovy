@@ -78,7 +78,6 @@ class HubManager {
         ProjectRequestService projectRequestService = hubServiceWrapper.createProjectRequestService()
         ProjectVersionRequestService projectVersionRequestService = hubServiceWrapper.createProjectVersionRequestService()
         ProjectVersionView projectVersionView = ensureProjectVersionExists(detectProject, projectRequestService, projectVersionRequestService)
-        logger.trace("Version name ${projectVersionView.versionName}")
         if (createdBdioFiles) {
             HubServerConfig hubServerConfig = hubServiceWrapper.hubServerConfig
             BomImportRequestService bomImportRequestService = hubServiceWrapper.createBomImportRequestService()
@@ -96,7 +95,6 @@ class HubManager {
                 projectVersionView = scanProject
             }
         }
-        logger.trace("Version name ${projectVersionView.versionName}")
         return projectVersionView
     }
 
