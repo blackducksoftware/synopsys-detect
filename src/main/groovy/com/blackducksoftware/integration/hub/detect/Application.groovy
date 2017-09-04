@@ -99,27 +99,30 @@ class Application {
             valueDescriptionAnnotationFinder.init()
             if ('-h' in applicationArguments.getSourceArgs() || '--help' in applicationArguments.getSourceArgs()) {
                 helpPrinter.printHelpMessage(System.out)
-            } else {
-                detectConfiguration.init()
-                executableManager.init()
-                logger.info('Configuration processed completely.')
-                if (Boolean.FALSE == detectConfiguration.suppressConfigurationOutput) {
-                    detectConfiguration.logConfiguration()
-                }
-                if (Boolean.TRUE == detectConfiguration.testConnection) {
-                    detectConfiguration.testHubConnection()
-                    return
-                }
-                DetectProject detectProject = detectProjectManager.createDetectProject()
-                List<File> createdBdioFiles = detectProjectManager.createBdioFiles(detectProject)
-                if (!detectConfiguration.hubOfflineMode) {
-                    hubServiceWrapper.init()
-                    ProjectVersionView projectVersionView = hubManager.updateHubProjectVersion(detectProject, createdBdioFiles)
-                    int postResult = hubManager.performPostHubActions(detectProject, projectVersionView)
-                    System.exit(postResult)
-                } else if (!detectConfiguration.hubSignatureScannerDisabled){
-                    hubSignatureScanner.scanPathsOffline(detectProject)
-                }
+                return
+            }
+
+            detectConfiguration.init()
+            executableManager.init()
+            logger.info('Configuration processed completely.')
+            if (!detectConfiguration.suppressConfigurationOutput) {
+                detectConfiguration.logConfiguration()
+            }
+
+            if (detectConfiguration.testConnection) {
+                hubServiceWrapper.testHubConnection()
+                return
+            }
+
+            DetectProject detectProject = detectProjectManager.createDetectProject()
+            List<File> createdBdioFiles = detectProjectManager.createBdioFiles(detectProject)
+            if (!detectConfiguration.hubOfflineMode) {
+                hubServiceWrapper.init()
+                ProjectVersionView projectVersionView = hubManager.updateHubProjectVersion(detectProject, createdBdioFiles)
+                int postResult = hubManager.performPostHubActions(detectProject, projectVersionView)
+                System.exit(postResult)
+            } else if (!detectConfiguration.hubSignatureScannerDisabled){
+                hubSignatureScanner.scanPathsOffline(detectProject)
             }
         } catch (DetectException e) {
             logger.error('An unrecoverable error occurred - most likely this is due to your environment and/or configuration. Please double check the Hub Detect documentation: https://blackducksoftware.atlassian.net/wiki/x/Y7HtAg')
