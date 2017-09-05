@@ -94,7 +94,7 @@ class NpmBomTool extends BomTool {
                 logger.warn("Could not find a ${executableManager.getExecutableName(ExecutableType.NPM)} executable")
             } else {
 				logger.debug("Npm version ${executableRunner.runExe(npmExePath, '-version').standardOutput}")
-			}
+			} 
         } else if (containsPackageLockJson) {
             logger.info("Using ${PACKAGE_LOCK_JSON}")
         } else if (shrinkwrapJson) {
