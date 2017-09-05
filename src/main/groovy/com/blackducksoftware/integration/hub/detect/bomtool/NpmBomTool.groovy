@@ -93,8 +93,8 @@ class NpmBomTool extends BomTool {
             if (!npmExePath) {
                 logger.warn("Could not find a ${executableManager.getExecutableName(ExecutableType.NPM)} executable")
             } else {
-				logger.debug("Npm version ${executableRunner.runExe(npmExePath, '-version').standardOutput}")
-			} 
+                logger.debug("Npm version ${executableRunner.runExe(npmExePath, '-version').standardOutput}")
+            }
         } else if (containsPackageLockJson) {
             logger.info("Using ${PACKAGE_LOCK_JSON}")
         } else if (shrinkwrapJson) {
@@ -108,16 +108,16 @@ class NpmBomTool extends BomTool {
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
-		List<DetectCodeLocation> codeLocations= []
-		if (npmExePath) {
-			codeLocations.addAll(extractFromCommand())
-		}else if (packageLockJson) {
+        List<DetectCodeLocation> codeLocations= []
+        if (npmExePath) {
+            codeLocations.addAll(extractFromCommand())
+        }else if (packageLockJson) {
             codeLocations.addAll(extractFromLockFile(packageLockJson))
         } else if (shrinkwrapJson) {
             codeLocations.addAll(extractFromLockFile(shrinkwrapJson))
         }
 
-		codeLocations
+        codeLocations
     }
 
     private List<DetectCodeLocation> extractFromLockFile(File lockFile) {
