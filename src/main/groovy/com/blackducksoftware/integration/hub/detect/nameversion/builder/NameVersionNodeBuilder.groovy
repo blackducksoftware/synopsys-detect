@@ -26,7 +26,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeBuilder
 import com.blackducksoftware.integration.hub.detect.nameversion.NodeMetadata
 
 import groovy.transform.TypeChecked
@@ -37,13 +36,13 @@ import groovy.transform.TypeChecked
  * a defined version, as in Gemfile.lock files.
  */
 @TypeChecked
-class NameVersionNodeBuilderImpl implements NameVersionNodeBuilder {
-    final Logger logger = LoggerFactory.getLogger(NameVersionNodeBuilderImpl.class)
+class NameVersionNodeBuilder {
+    final Logger logger = LoggerFactory.getLogger(NameVersionNodeBuilder.class)
 
     final Map<String, NameVersionNode> nameToNodeMap = [:]
     final NameVersionNode root
 
-    public NameVersionNodeBuilderImpl(final NameVersionNode root) {
+    public NameVersionNodeBuilder(final NameVersionNode root) {
         this.root = root
         nameToNodeMap.put(root.name, root)
     }

@@ -78,7 +78,6 @@ class HubManager {
         ProjectRequestService projectRequestService = hubServiceWrapper.createProjectRequestService()
         ProjectVersionRequestService projectVersionRequestService = hubServiceWrapper.createProjectVersionRequestService()
         ProjectVersionView projectVersionView = ensureProjectVersionExists(detectProject, projectRequestService, projectVersionRequestService)
-
         if (createdBdioFiles) {
             HubServerConfig hubServerConfig = hubServiceWrapper.hubServerConfig
             BomImportRequestService bomImportRequestService = hubServiceWrapper.createBomImportRequestService()
@@ -96,6 +95,7 @@ class HubManager {
                 projectVersionView = scanProject
             }
         }
+        return projectVersionView
     }
 
     public int performPostHubActions(DetectProject detectProject, ProjectVersionView projectVersionView) {

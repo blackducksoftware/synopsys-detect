@@ -29,10 +29,9 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeBuilder
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
-import com.blackducksoftware.integration.hub.detect.nameversion.builder.NameVersionNodeBuilderImpl
+import com.blackducksoftware.integration.hub.detect.nameversion.builder.NameVersionNodeBuilder
 
 import groovy.transform.TypeChecked
 
@@ -75,7 +74,7 @@ class PipInspectorTreeParser {
             if (line.contains(SEPARATOR) && !nodeBuilder) {
                 NameVersionNode projectNode = lineToNode(line)
                 tree.push(projectNode)
-                nodeBuilder = new NameVersionNodeBuilderImpl(projectNode)
+                nodeBuilder = new NameVersionNodeBuilder(projectNode)
                 continue
             }
 
