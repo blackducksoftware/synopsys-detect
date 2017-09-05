@@ -482,4 +482,7 @@ class DetectConfiguration {
     public String getNugetPackagesRepoUrl() {
         return detectProperties.nugetPackagesRepoUrl?.trim()
     }
+    public String getGradleInspectorRepositoryUrl() {
+        return detectProperties.gradleInspectorRepositoryUrl?.trim()
+    }
 }

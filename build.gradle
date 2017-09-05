@@ -91,6 +91,7 @@ dependencies {
     compile 'com.esotericsoftware.yamlbeans:yamlbeans:1.11'
     compile 'com.moandjiezana.toml:toml4j:0.7.1'
     compile 'org.codehaus.groovy:groovy-all:2.4.11'
+	compile 'org.freemarker:freemarker:2.3.26-incubating'
 
     compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.0'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.9.0'

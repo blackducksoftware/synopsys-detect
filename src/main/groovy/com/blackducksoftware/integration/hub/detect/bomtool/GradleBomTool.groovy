@@ -36,6 +36,8 @@ import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.google.gson.Gson
 
+import freemarker.template.Configuration
+import freemarker.template.Template
 import groovy.transform.TypeChecked
 
 @Component
@@ -50,6 +52,9 @@ class GradleBomTool extends BomTool {
 
     @Autowired
     HubSignatureScanner hubSignatureScanner
+
+    @Autowired
+    Configuration configuration
 
     private String gradleExecutable
 
@@ -92,20 +97,25 @@ class GradleBomTool extends BomTool {
 
     List<DetectCodeLocation> extractCodeLocationsFromGradle() {
         File initScriptFile = detectFileManager.createFile(BomToolType.GRADLE, 'init-detect.gradle')
-        String initScriptContents = getClass().getResourceAsStream('/init-script-gradle').getText(StandardCharsets.UTF_8.toString())
-        initScriptContents = initScriptContents.replace('GRADLE_INSPECTOR_VERSION', detectConfiguration.getGradleInspectorVersion())
-        initScriptContents = initScriptContents.replace('EXCLUDED_PROJECT_NAMES', detectConfiguration.getGradleExcludedProjectNames())
-        initScriptContents = initScriptContents.replace('INCLUDED_PROJECT_NAMES', detectConfiguration.getGradleIncludedProjectNames())
-        initScriptContents = initScriptContents.replace('EXCLUDED_CONFIGURATION_NAMES', detectConfiguration.getGradleExcludedConfigurationNames())
-        initScriptContents = initScriptContents.replace('INCLUDED_CONFIGURATION_NAMES', detectConfiguration.getGradleIncludedConfigurationNames())
-
-        String airgapLibsDirectoryPath = ''
+        final Map<String, String> model = [
+            'gradleInspectorVersion' : detectConfiguration.getGradleInspectorVersion(),
+            'excludedProjectNames' : detectConfiguration.getGradleExcludedProjectNames(),
+            'includedProjectNames' : detectConfiguration.getGradleIncludedProjectNames(),
+            'excludedConfigurationNames' : detectConfiguration.getGradleExcludedConfigurationNames(),
+            'includedConfigurationNames' : detectConfiguration.getGradleIncludedConfigurationNames()
+        ]
         if (detectConfiguration.getGradleInspectorAirGapPath()) {
-            airgapLibsDirectoryPath = new File(detectConfiguration.getGradleInspectorAirGapPath()).getCanonicalPath()
+            model.put('airGapLibsPath', new File(detectConfiguration.getGradleInspectorAirGapPath()).getCanonicalPath())
         }
-        initScriptContents = initScriptContents.replace('AIRGAP_LIBS_DIRECTORY_PATH', airgapLibsDirectoryPath)
+        if (detectConfiguration.getGradleInspectorRepositoryUrl()) {
+            model.put('customRepositoryUrl', detectConfiguration.getGradleInspectorRepositoryUrl())
+        }
 
-        detectFileManager.writeToFile(initScriptFile, initScriptContents)
+        final Template initScriptTemplate = configuration.getTemplate('init-script-gradle.ftl')
+        initScriptFile.withWriter('UTF-8') {
+            initScriptTemplate.process(model, it)
+        }
+
         String initScriptPath = initScriptFile.absolutePath
         logger.info("using ${initScriptPath} as the path for the gradle init script")
         Executable executable = new Executable(sourceDirectory, gradleExecutable, [
