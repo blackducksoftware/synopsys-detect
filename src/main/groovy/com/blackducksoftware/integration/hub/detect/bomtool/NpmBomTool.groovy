@@ -86,36 +86,38 @@ class NpmBomTool extends BomTool {
         boolean containsPackageLockJson = packageLockJson
         boolean containsShrinkwrapJson = shrinkwrapJson
 
-        if (containsPackageLockJson) {
-            logger.info("Using ${PACKAGE_LOCK_JSON}")
-        } else if (shrinkwrapJson) {
-            logger.info("Using ${SHRINKWRAP_JSON}")
-        } else if (containsPackageJson && !containsNodeModules) {
+        if (containsPackageJson && !containsNodeModules) {
             logger.warn("package.json was located in ${sourcePath}, but the node_modules folder was NOT located. Please run 'npm install' in that location and try again.")
         } else if (containsPackageJson && containsNodeModules) {
             npmExePath = findExecutablePath(ExecutableType.NPM, true, detectConfiguration.getNpmPath())
             if (!npmExePath) {
                 logger.warn("Could not find a ${executableManager.getExecutableName(ExecutableType.NPM)} executable")
-            }
+            } else {
+				logger.debug("Npm version ${executableRunner.runExe(npmExePath, '-version').standardOutput}")
+			}
+        } else if (containsPackageLockJson) {
+            logger.info("Using ${PACKAGE_LOCK_JSON}")
+        } else if (shrinkwrapJson) {
+            logger.info("Using ${SHRINKWRAP_JSON}")
         }
 
         boolean lockFileIsApplicable = containsShrinkwrapJson || containsPackageLockJson
         boolean isApplicable =  lockFileIsApplicable || (containsNodeModules && npmExePath)
-        if (!lockFileIsApplicable && isApplicable) {
-            logger.debug("Npm version ${executableRunner.runExe(npmExePath, '-version').standardOutput}")
-        }
 
         isApplicable
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
-        if (packageLockJson) {
-            return extractFromLockFile(packageLockJson)
+		List<DetectCodeLocation> codeLocations= []
+		if (npmExePath) {
+			codeLocations.addAll(extractFromCommand())
+		}else if (packageLockJson) {
+            codeLocations.addAll(extractFromLockFile(packageLockJson))
         } else if (shrinkwrapJson) {
-            return extractFromLockFile(shrinkwrapJson)
+            codeLocations.addAll(extractFromLockFile(shrinkwrapJson))
         }
 
-        extractFromCommand()
+		codeLocations
     }
 
     private List<DetectCodeLocation> extractFromLockFile(File lockFile) {
