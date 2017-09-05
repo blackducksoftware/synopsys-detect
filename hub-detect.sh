@@ -8,7 +8,7 @@ DETECT_LATEST_SNAPSHOT=hub-detect-latest-SNAPSHOT.jar
 
 # This value should be automatically updated by the
 # gradle build process for a non-snapshot build.
-DETECT_LATEST_RELEASE_VERSION=${DETECT_LATEST_RELEASE_VERSION:-1.0.1}
+DETECT_LATEST_RELEASE_VERSION="1.0.1"
 DETECT_LATEST_RELEASE="hub-detect-${DETECT_LATEST_RELEASE_VERSION}.jar"
 
 # If you would like to enable the shell script to use
@@ -25,14 +25,7 @@ DETECT_USE_SNAPSHOT=${DETECT_USE_SNAPSHOT:-0}
 
 DETECT_JAR_PATH=${DETECT_JAR_PATH:-/tmp}
 
-# If you want to pass any java options to the
-# invocation, specify DETECT_JAVA_OPTS in your
-# environment. For example, to specify a 6 gigabyte
-# heap size, you would set DETECT_JAVA_OPTS=-Xmx6G.
-
-DETECT_JAVA_OPTS=${DETECT_JAVA_OPTS:-}
-
-SCRIPT_ARGS="$@"
+JAVAOPTS="$@"
 
 run() {
   get_detect
@@ -77,20 +70,15 @@ get_detect() {
 }
 
 run_detect() {
-  JAVACMD="java ${DETECT_JAVA_OPTS} -jar ${DETECT_DESTINATION}"
-  echo "running detect: ${JAVACMD} ${SCRIPT_ARGS}"
-
-  # first, silently delete (-f ignores missing
-  # files) any existing shell script, then create
-  # the one we will run
-  rm -f $DETECT_JAR_PATH/hub-detect-java.sh
+  JAVACMD="java -jar ${DETECT_DESTINATION}"
+  echo "running detect: ${JAVACMD} ${JAVAOPTS}"
+  rm $DETECT_JAR_PATH/hub-detect-java.sh
   echo "#!/bin/sh" >> $DETECT_JAR_PATH/hub-detect-java.sh
   echo "" >> $DETECT_JAR_PATH/hub-detect-java.sh
-  echo $JAVACMD $SCRIPT_ARGS >> $DETECT_JAR_PATH/hub-detect-java.sh
+  echo $JAVACMD $JAVAOPTS >> $DETECT_JAR_PATH/hub-detect-java.sh
   source $DETECT_JAR_PATH/hub-detect-java.sh
   RESULT=$?
   echo "Result code of ${RESULT}, exiting"
-  rm -f $DETECT_JAR_PATH/hub-detect-java.sh
   exit $RESULT
 }
 
