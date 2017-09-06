@@ -111,7 +111,7 @@ class NpmBomTool extends BomTool {
         List<DetectCodeLocation> codeLocations= []
         if (npmExePath) {
             codeLocations.addAll(extractFromCommand())
-        }else if (packageLockJson) {
+        } else if (packageLockJson) {
             codeLocations.addAll(extractFromLockFile(packageLockJson))
         } else if (shrinkwrapJson) {
             codeLocations.addAll(extractFromLockFile(shrinkwrapJson))
