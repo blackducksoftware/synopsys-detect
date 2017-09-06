@@ -24,7 +24,7 @@ tasks.withType(GroovyCompile) { options.encoding = 'UTF-8' }
 
 group = 'com.blackducksoftware.integration'
 
-version = '1.0.1'
+version = '1.0.2-SNAPSHOT'
 
 def versionFile = new File("${projectDir}/src/main/resources/version.txt")
 versionFile.delete()
@@ -62,7 +62,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.blackducksoftware.integration:hub-common:13.2.2'
+    compile 'com.blackducksoftware.integration:hub-common:14.5.0'
     compile 'org.springframework.boot:spring-boot-starter'
     compile 'org.apache.maven.shared:maven-invoker:3.0.0'
     compile 'com.esotericsoftware.yamlbeans:yamlbeans:1.11'

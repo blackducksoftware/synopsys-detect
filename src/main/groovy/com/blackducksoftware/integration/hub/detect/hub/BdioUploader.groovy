@@ -34,9 +34,9 @@ import com.blackducksoftware.integration.hub.buildtool.BuildToolConstants
 import com.blackducksoftware.integration.hub.dataservice.phonehome.PhoneHomeDataService
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.global.HubServerConfig
-import com.blackducksoftware.integration.hub.phonehome.IntegrationInfo
 import com.blackducksoftware.integration.hub.service.HubServicesFactory
 import com.blackducksoftware.integration.log.Slf4jIntLogger
+import com.blackducksoftware.integration.phonehome.PhoneHomeRequestBody
 import com.blackducksoftware.integration.util.ResourceUtil
 
 @Component
@@ -63,7 +63,7 @@ class BdioUploader {
         }
 
         String hubDetectVersion = ResourceUtil.getResourceAsString('version.txt', StandardCharsets.UTF_8)
-        IntegrationInfo integrationInfo = new IntegrationInfo('Hub-Detect', hubDetectVersion, hubDetectVersion)
-        phoneHomeDataService.phoneHome(hubServerConfig, integrationInfo)
+        PhoneHomeRequestBody phoneHomeRequestBody = phoneHomeDataService.buildPhoneHomeRequestBody('Hub-Detect', hubDetectVersion, hubDetectVersion)
+        phoneHomeDataService.phoneHome(phoneHomeRequestBody)
     }
 }
