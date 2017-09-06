@@ -16,4 +16,13 @@ public class NpmOutputParserTest {
 
         testUtil.testJsonResource('/npm/npmParseOutput.json', node)
     }
+
+    @Test
+    public void npmBdioCreation() throws IOException {
+        def parser = new NpmCliDependencyFinder()
+        String testIn = testUtil.getResourceAsUTF8String('/npm/code_jam_ui.json')
+        DependencyNode node = parser.convertNpmJsonFileToDependencyNode(testIn)
+
+        testUtil.testJsonResource('/npm/code_jam_ui_output.json', node)
+    }
 }

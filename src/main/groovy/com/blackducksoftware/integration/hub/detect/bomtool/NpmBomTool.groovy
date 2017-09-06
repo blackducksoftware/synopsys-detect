@@ -48,7 +48,7 @@ class NpmBomTool extends BomTool {
     private String npmExePath
 
     @Autowired
-    NpmCliDependencyFinder cliDependencyFinder
+    NpmCliDependencyFinder npmCliDependencyFinder
 
     @Autowired
     YarnBomTool yarnBomTool
@@ -97,7 +97,7 @@ class NpmBomTool extends BomTool {
             if (npmLsErrorFile.length() > 0) {
                 logger.debug("Error when running npm ls -json command\n${npmLsErrorFile.text}")
             }
-            def dependencyNode = cliDependencyFinder.generateDependencyNode(npmLsOutputFile)
+            def dependencyNode = npmCliDependencyFinder.generateDependencyNode(npmLsOutputFile)
             def detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, dependencyNode)
 
             hubSignatureScanner.registerPathToScan(sourceDirectory, NODE_MODULES)
