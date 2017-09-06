@@ -154,7 +154,7 @@ class DetectProjectManager {
                 if (it.dependencies) {
                     final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(detectProject, it)
                     final String filename = it.createBdioFilename(integrationEscapeUtil, detectFileManager.extractFinalPieceFromPath(it.sourcePath), detectProject.projectName, detectProject.projectVersionName)
-                    final File outputFile = new File(detectConfiguration.getOutputDirectory(), filename)
+                    final File outputFile = new File((File)detectConfiguration.getOutputDirectory(), filename)
                     if (outputFile.exists()) {
                         outputFile.delete()
                     }
