@@ -115,7 +115,7 @@ class PipBomTool extends BomTool {
                     '--name'
                 ])
                 String[] output = executableRunner.execute(findProjectNameExecutable).standardOutput.split(System.lineSeparator())
-                projectName = output[output.length - 1].trim()
+                projectName = output[output.length - 1].replace('_', '-').trim()
             }
             pipInspectorOptions.add("--projectname=${projectName}" as String)
         }
