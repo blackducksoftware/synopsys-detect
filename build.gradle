@@ -33,8 +33,9 @@ version = '1.1.0-SNAPSHOT'
 final String gradleInspectorVersion = '0.2.1'
 final String nugetInspectorVersion = '2.0.0'
 
-final String gradleAirgapPath = "${buildDir}/libs/airgap/gradle"
-final String nugetAirgapPath = "${buildDir}/libs/airgap/nuget"
+final String buildArtifactFolder = "${buildDir}/libs/"
+final String gradleAirGapPath = "${buildArtifactFolder}/gradleJars"
+
 
 // BuildInfo - A json payload usable by detect for information from the build
 JsonBuilder jsonBuilder = new JsonBuilder()
@@ -55,7 +56,7 @@ sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
 build {
-    finalizedBy 'updateAirgapDependencies'
+    finalizedBy 'updateAirGapDependencies'
     
     doLast {
         def shellScriptTemplateFile = new File("${projectDir}/src/main/resources/hub-detect-sh")
@@ -80,7 +81,7 @@ repositories {
 }
 
 configurations {
-    airgapConfig
+    airGapConfig
 }
 
 dependencies {
@@ -97,7 +98,7 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-databind:2.9.0'
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.9.0'
     
-    airgapConfig "com.blackducksoftware.integration:integration-gradle-inspector:${gradleInspectorVersion}"
+    airGapConfig "com.blackducksoftware.integration:integration-gradle-inspector:${gradleInspectorVersion}"
 
     testCompile 'org.springframework.boot:spring-boot-starter-test'
 }
@@ -128,22 +129,20 @@ void fetchFile(File outputFile, String url) {
     new URL(url).withInputStream{ i -> outputFile.withOutputStream{ it << i }}
 }
 
-task cleanAirgapDependencies(type: Delete) {
-    delete fileTree(gradleAirgapPath)
-}
+task zipGradleAirGapDepndencies(type: Zip) {
+	from configurations.airGapConfig
+	include '*.jar'
+	archiveName "GradleInspectorAirGap_${gradleInspectorVersion}.zip"
+	destinationDir(file(buildArtifactFolder))
+} 
 
-task downloadGradleAirgapDependencies(type: Copy) {
-    from configurations.airgapConfig
-    into gradleAirgapPath
-}
-
-task downloadNugetAirgapDependencies {
+task downloadNugetAirGapDependencies {
     doLast {
         final def nugetInspectorUrl = "https://www.nuget.org/api/v2/package/IntegrationNugetInspector/${nugetInspectorVersion}"
-        fetchFile(new File(nugetAirgapPath, 'nugetInspector.nupkg'), nugetInspectorUrl)
+        fetchFile(new File(buildArtifactFolder, "NugetInspector_${nugetInspectorVersion}.nupkg"), nugetInspectorUrl)
     }
 }
 
-task updateAirgapDependencies {
-    dependsOn cleanAirgapDependencies, downloadGradleAirgapDependencies, downloadNugetAirgapDependencies
+task updateAirGapDependencies {
+    dependsOn downloadNugetAirGapDependencies, zipGradleAirGapDepndencies
 }

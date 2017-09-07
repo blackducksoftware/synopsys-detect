@@ -27,6 +27,13 @@ import com.blackducksoftware.integration.hub.detect.nameversion.metadata.LinkMet
 
 import groovy.transform.TypeChecked
 
+/**
+ * This class allows you to link one node to another using the LinkMetadata class
+ * This means when the builder builds the graph, if a node has a link in its metadata,
+ * it will return the link as the resolved node instead of the original.
+ * This class can also be used for package managers that allow cyclical dependencies
+ */
+
 @TypeChecked
 class LinkedNameVersionNodeBuilder extends NameVersionNodeBuilder {
 
