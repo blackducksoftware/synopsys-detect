@@ -38,8 +38,6 @@ import groovy.transform.TypeChecked
 @Component
 @TypeChecked
 class MavenCodeLocationPackager {
-    public static final Pattern gavRegex = Pattern.compile('(.*?):(.*?):(.*?):([^:\\n\\r]*)(:(.*))*')
-
     public static final List<String> indentationStrings = ['+- ', '|  ', '\\- ', '   ']
 
     private List<DetectCodeLocation> codeLocations = []
@@ -58,17 +56,18 @@ class MavenCodeLocationPackager {
         level = 0
 
         for (String line : mavenOutputText.split(System.lineSeparator())) {
-            if (!line.startsWith("[INFO]")) {
+            if (line ==~ /\[.*INFO.*\]/) {
                 continue
             }
 
-            line = line.replace("[INFO] ", "")
+            String[] groups = (line =~ /.*INFO.*? (.*)/)[0] as String[]
+            line = groups[1]
             if (!line.trim()) {
                 previousLineWasEmpty = true
                 continue
             }
 
-            if (line.startsWith('--- maven-dependency-plugin') && previousLineWasEmpty) {
+            if ((line ==~ /.*---.*maven-dependency-plugin.*/) && previousLineWasEmpty) {
                 parsingProjectSection = true
                 previousLineWasEmpty = false
                 continue
@@ -153,10 +152,7 @@ class MavenCodeLocationPackager {
     }
 
     DependencyNode textToDependencyNode(final String componentText) {
-        Matcher gavMatcher = gavRegex.matcher(componentText)
-        if (!gavMatcher.find()) {
-            return null
-        }
+        Matcher gavMatcher = componentText =~ /(.*?):(.*?):(.*?):([^:]*)(:(.*))*/
 
         String group = gavMatcher.group(1)
         String artifact = gavMatcher.group(2)

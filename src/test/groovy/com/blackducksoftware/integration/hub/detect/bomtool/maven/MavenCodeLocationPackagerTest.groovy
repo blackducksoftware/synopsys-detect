@@ -15,21 +15,21 @@ class MavenCodeLocationPackagerTest {
     @Test
     public void extractCodeLocationsTest() {
         final String mavenOutputText = testUtil.getResourceAsUTF8String('/maven/sonarStashOutput.txt')
-        createNewCodeLocationTest(mavenOutputText)
+        createNewCodeLocationTest(mavenOutputText, '/maven/sonarStashCodeLocation.json')
     }
 
     @Test
     public void extractCodeLocationsCorruptTest() {
         final String mavenOutputText = testUtil.getResourceAsUTF8String('/maven/sonarStashCorruptOutput.txt')
-        createNewCodeLocationTest(mavenOutputText)
+        createNewCodeLocationTest(mavenOutputText, '/maven/sonarStashCorruptCodeLocation.json')
     }
 
-    private void createNewCodeLocationTest(String mavenOutputText) {
+    private void createNewCodeLocationTest(String mavenOutputText, String expectedResourcePath) {
         def mavenCodeLocationPackager = new MavenCodeLocationPackager()
         List<DetectCodeLocation> codeLocations = mavenCodeLocationPackager.extractCodeLocations('/test/path', mavenOutputText)
         assertEquals(1, codeLocations.size())
         DetectCodeLocation codeLocation = codeLocations[0]
 
-        testUtil.testJsonResource('/maven/sonarStashCodeLocation.json', codeLocation)
+        testUtil.testJsonResource(expectedResourcePath, codeLocation)
     }
 }
