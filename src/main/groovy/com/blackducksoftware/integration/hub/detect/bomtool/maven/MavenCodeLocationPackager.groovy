@@ -25,6 +25,8 @@ package com.blackducksoftware.integration.hub.detect.bomtool.maven
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
@@ -38,6 +40,8 @@ import groovy.transform.TypeChecked
 @Component
 @TypeChecked
 class MavenCodeLocationPackager {
+    Logger logger = LoggerFactory.getLogger(MavenCodeLocationPackager.class)
+
     public static final List<String> indentationStrings = ['+- ', '|  ', '\\- ', '   ']
 
     private List<DetectCodeLocation> codeLocations = []
@@ -153,6 +157,10 @@ class MavenCodeLocationPackager {
 
     DependencyNode textToDependencyNode(final String componentText) {
         Matcher gavMatcher = componentText =~ /(.*?):(.*?):(.*?):([^:]*)(:(.*))*/
+        if (!gavMatcher.matches()) {
+            logger.debug("${componentText} does not match pattern ${gavMatcher.pattern().toString()}")
+            return null
+        }
 
         String group = gavMatcher.group(1)
         String artifact = gavMatcher.group(2)
