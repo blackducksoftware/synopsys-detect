@@ -84,7 +84,7 @@ class GemlockNodeParser {
         }
 
         directDependencyNames.each { directDependencyName ->
-            NameVersionNode nameVersionNode = nameVersionNodeBuilder.nameToNodeMap[directDependencyName]
+            NameVersionNode nameVersionNode = nameVersionNodeBuilder.nodeCache[directDependencyName]
             if (nameVersionNode) {
                 DependencyNode directDependencyNode = nameVersionNodeTransformer.createDependencyNode(Forge.RUBYGEMS, nameVersionNode)
                 projectDependencies.add(directDependencyNode)

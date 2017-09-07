@@ -81,7 +81,7 @@ public class PackRatNodeParser {
         }
 
         directDependencyNames.each { directDependencyName ->
-            NameVersionNode nameVersionNode = nameVersionNodeBuilder.nameToNodeMap[directDependencyName]
+            NameVersionNode nameVersionNode = nameVersionNodeBuilder.nodeCache[directDependencyName]
             if (nameVersionNode) {
                 DependencyNode directDependencyNode = nameVersionNodeTransformer.createDependencyNode(CranBomTool.CRAN, nameVersionNode)
                 projectDependencies.add(directDependencyNode)
