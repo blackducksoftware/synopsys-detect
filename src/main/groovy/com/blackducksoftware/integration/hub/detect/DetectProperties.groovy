@@ -158,7 +158,7 @@ class DetectProperties {
     @Value('${detect.project.response.timeout}')
     Long projectResponseTimeout
 
-    @ValueDescription(description="Version of the Gradle Inspector", defaultValue="0.2.1", group=DetectProperties.GROUP_GRADLE)
+    @ValueDescription(description="Version of the Gradle Inspector", defaultValue="0.2.2", group=DetectProperties.GROUP_GRADLE)
     @Value('${detect.gradle.inspector.version}')
     String gradleInspectorVersion
 
