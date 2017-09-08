@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmCliDependencyFinder
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmLockfilePackager
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
@@ -62,6 +63,9 @@ class NpmBomTool extends BomTool {
 
     @Autowired
     HubSignatureScanner hubSignatureScanner
+
+    @Autowired
+    DetectConfiguration detectConfiguration
 
     private File packageLockJson
     private File shrinkwrapJson
@@ -131,7 +135,12 @@ class NpmBomTool extends BomTool {
     private List<DetectCodeLocation> extractFromCommand() {
         File npmLsOutputFile = detectFileManager.createFile(BomToolType.NPM, NpmBomTool.OUTPUT_FILE)
         File npmLsErrorFile = detectFileManager.createFile(BomToolType.NPM, NpmBomTool.ERROR_FILE)
-        executableRunner.runExeToFile(npmExePath, npmLsOutputFile, npmLsErrorFile, 'ls', '-json')
+        if (detectConfiguration.npmIncludeDevDependencies) {
+            executableRunner.runExeToFile(npmExePath, npmLsOutputFile, npmLsErrorFile, 'ls', '-json')
+        } else {
+            executableRunner.runExeToFile(npmExePath, npmLsOutputFile, npmLsErrorFile, 'ls', '-json', '-prod')
+        }
+
 
         if (npmLsOutputFile.length() > 0) {
             if (npmLsErrorFile.length() > 0) {

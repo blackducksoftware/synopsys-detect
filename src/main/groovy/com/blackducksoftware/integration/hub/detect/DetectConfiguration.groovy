@@ -317,6 +317,9 @@ class DetectConfiguration {
     public String getNpmPath() {
         return detectProperties.npmPath
     }
+    public boolean getNpmIncludeDevDependencies() {
+        return BooleanUtils.toBoolean(detectProperties.npmIncludeDevDependencies)
+    }
     public String getPearPath() {
         return detectProperties.pearPath
     }

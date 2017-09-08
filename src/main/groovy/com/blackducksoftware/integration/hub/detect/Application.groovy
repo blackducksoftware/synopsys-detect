@@ -48,6 +48,7 @@ import com.blackducksoftware.integration.hub.model.view.ProjectVersionView
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+
 import freemarker.template.Configuration
 import groovy.transform.TypeChecked
 
@@ -116,7 +117,7 @@ class Application {
 
             DetectProject detectProject = detectProjectManager.createDetectProject()
             List<File> createdBdioFiles = detectProjectManager.createBdioFiles(detectProject)
-            if (!detectConfiguration.hubOfflineMode) {
+            if (!detectConfiguration.hubOfflineMode && createdBdioFiles) {
                 hubServiceWrapper.init()
                 ProjectVersionView projectVersionView = hubManager.updateHubProjectVersion(detectProject, createdBdioFiles)
                 int postResult = hubManager.performPostHubActions(detectProject, projectVersionView)

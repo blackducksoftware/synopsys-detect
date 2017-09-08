@@ -238,6 +238,10 @@ class DetectProperties {
     @Value('${detect.npm.path}')
     String npmPath
 
+    @ValueDescription(description="Set this value to false if you would like to exclude your dev dependencies when ran", defaultValue='true', group=DetectProperties.GROUP_NPM)
+    @Value('${detect.npm.include.dev.dependencies}')
+    String npmIncludeDevDependencies
+
     @ValueDescription(description="The path of the pear executable", group=DetectProperties.GROUP_PEAR)
     @Value('${detect.pear.path}')
     String pearPath
@@ -367,7 +371,7 @@ class DetectProperties {
     String riskReportPdfOutputDirectory
 
     @ValueDescription (description="Timeout for the Hub's risk report response. When changing this value, keep in mind the generation of risk reports can take some time.", defaultValue="300000", group=DetectProperties.GROUP_PROJECT_INFO)
-    @Value('${detect.risk.timeout}')
+    @Value('${detect.risk.report.timeout}')
     Long riskReportTimeout
 
     @ValueDescription (description="When set to true, a Black Duck notices report in text form will be created in your source directory", defaultValue='false', group=DetectProperties.GROUP_PROJECT_INFO)
