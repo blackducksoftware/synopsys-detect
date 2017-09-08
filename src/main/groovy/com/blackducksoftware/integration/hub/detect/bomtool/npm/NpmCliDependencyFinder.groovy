@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
+import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeBuilder
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
@@ -81,12 +82,13 @@ class NpmCliDependencyFinder {
         def externalId = new NameVersionExternalId(Forge.NPM, projectName, projectVersion)
         def dependencyNode = new DependencyNode(projectName, projectVersion, externalId)
 
-        populateChildren(dependencyNode, npmJson.getAsJsonObject(JSON_DEPENDENCIES))
+        DependencyNodeBuilder dependencyNodeBuilder = new DependencyNodeBuilder(dependencyNode)
+        populateChildren(dependencyNodeBuilder, dependencyNode, npmJson.getAsJsonObject(JSON_DEPENDENCIES))
 
         dependencyNode
     }
 
-    private void populateChildren(DependencyNode parentDependencyNode, JsonObject parentNodeChildren) {
+    private void populateChildren(DependencyNodeBuilder dependencyNodeBuilder, DependencyNode parentDependencyNode, JsonObject parentNodeChildren) {
         def elements = parentNodeChildren?.entrySet()
         elements?.each {
             String name = it.key
@@ -96,8 +98,8 @@ class NpmCliDependencyFinder {
             def externalId = new NameVersionExternalId(Forge.NPM, name, version)
             def newNode = new DependencyNode(name, version, externalId)
 
-            populateChildren(newNode, children)
-            parentDependencyNode.children.add(newNode)
+            populateChildren(dependencyNodeBuilder, newNode, children)
+            dependencyNodeBuilder.addChildNodeWithParents(newNode, [parentDependencyNode])
         }
     }
 }
