@@ -154,9 +154,9 @@ class DetectProperties {
     @Value('${detect.policy.check}')
     Boolean policyCheck
 
-    @ValueDescription(description="Timeout for the Hub's policy check response. When changing this value, keep in mind the checking of policies might have to wait for a new scan to process which can take some time.", defaultValue="300000", group=DetectProperties.GROUP_POLICY_CHECK)
-    @Value('${detect.policy.check.timeout}')
-    Long policyCheckTimeout
+    @ValueDescription(description="Timeout for response from the hub regarding your project (i.e. risk reports and policy check). When changing this value, keep in mind the checking of policies might have to wait for a new scan to process which can take some time.", defaultValue="300000", group=DetectProperties.GROUP_PROJECT_INFO)
+    @Value('${detect.project.response.timeout}')
+    Long projectResponseTimeout
 
     @ValueDescription(description="Version of the Gradle Inspector", defaultValue="0.2.1", group=DetectProperties.GROUP_GRADLE)
     @Value('${detect.gradle.inspector.version}')
@@ -369,10 +369,6 @@ class DetectProperties {
     @ValueDescription (description="The output directory for risk report in PDF. Default is the source directory", defaultValue='.', group=DetectProperties.GROUP_PROJECT_INFO)
     @Value('${detect.risk.report.pdf.path}')
     String riskReportPdfOutputDirectory
-
-    @ValueDescription (description="Timeout for the Hub's risk report response. When changing this value, keep in mind the generation of risk reports can take some time.", defaultValue="300000", group=DetectProperties.GROUP_PROJECT_INFO)
-    @Value('${detect.risk.report.timeout}')
-    Long riskReportTimeout
 
     @ValueDescription (description="When set to true, a Black Duck notices report in text form will be created in your source directory", defaultValue='false', group=DetectProperties.GROUP_PROJECT_INFO)
     @Value('${detect.notices.report}')

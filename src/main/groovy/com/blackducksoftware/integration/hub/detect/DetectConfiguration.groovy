@@ -266,8 +266,8 @@ class DetectConfiguration {
     public boolean getPolicyCheck() {
         return BooleanUtils.toBoolean(detectProperties.policyCheck)
     }
-    public long getPolicyCheckTimeout() {
-        return convertLong(detectProperties.policyCheckTimeout)
+    public long getProjectResponseTimeout() {
+        return convertLong(detectProperties.getProjectResponseTimeout())
     }
     public String getGradleInspectorVersion() {
         return detectProperties.gradleInspectorVersion
@@ -436,9 +436,6 @@ class DetectConfiguration {
     }
     public String getRiskReportPdfOutputDirectory() {
         return detectProperties.riskReportPdfOutputDirectory
-    }
-    public long getRiskReportTimeout() {
-        return convertLong(detectProperties.riskReportTimeout)
     }
     public Boolean getNoticesReport() {
         return detectProperties.noticesReport
