@@ -131,7 +131,7 @@ class HubServiceWrapper {
     }
 
     RiskReportDataService createRiskReportDataService() {
-        hubServicesFactory.createRiskReportDataService(slf4jIntLogger, 30000)
+        hubServicesFactory.createRiskReportDataService(slf4jIntLogger, detectConfiguration.getRiskReportTimeout())
     }
 
     CLIDataService createCliDataService() {

@@ -434,6 +434,9 @@ class DetectConfiguration {
     public String getRiskReportPdfOutputDirectory() {
         return detectProperties.riskReportPdfOutputDirectory
     }
+    public long getRiskReportTimeout() {
+        return convertLong(detectProperties.riskReportTimeout)
+    }
     public Boolean getNoticesReport() {
         return detectProperties.noticesReport
     }

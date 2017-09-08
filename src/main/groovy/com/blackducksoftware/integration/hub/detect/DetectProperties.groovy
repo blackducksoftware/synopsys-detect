@@ -366,6 +366,10 @@ class DetectProperties {
     @Value('${detect.risk.report.pdf.path}')
     String riskReportPdfOutputDirectory
 
+    @ValueDescription (description="Timeout for the Hub's risk report response. When changing this value, keep in mind the generation of risk reports can take some time.", defaultValue="300000", group=DetectProperties.GROUP_PROJECT_INFO)
+    @Value('${detect.risk.timeout}')
+    Long riskReportTimeout
+
     @ValueDescription (description="When set to true, a Black Duck notices report in text form will be created in your source directory", defaultValue='false', group=DetectProperties.GROUP_PROJECT_INFO)
     @Value('${detect.notices.report}')
     Boolean noticesReport
