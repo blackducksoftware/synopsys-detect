@@ -123,7 +123,7 @@ class HubServiceWrapper {
     }
 
     ScanStatusDataService createScanStatusDataService() {
-        hubServicesFactory.createScanStatusDataService(slf4jIntLogger, detectConfiguration.getProjectResponseTimeout())
+        hubServicesFactory.createScanStatusDataService(slf4jIntLogger, detectConfiguration.getPolicyCheckTimeout())
     }
 
     PolicyStatusDataService createPolicyStatusDataService() {
@@ -131,7 +131,7 @@ class HubServiceWrapper {
     }
 
     RiskReportDataService createRiskReportDataService() {
-        hubServicesFactory.createRiskReportDataService(slf4jIntLogger, detectConfiguration.getProjectResponseTimeout())
+        hubServicesFactory.createRiskReportDataService(slf4jIntLogger, 30000)
     }
 
     CLIDataService createCliDataService() {

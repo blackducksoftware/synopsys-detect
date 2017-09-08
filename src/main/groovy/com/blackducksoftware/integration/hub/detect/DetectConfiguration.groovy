@@ -266,8 +266,8 @@ class DetectConfiguration {
     public boolean getPolicyCheck() {
         return BooleanUtils.toBoolean(detectProperties.policyCheck)
     }
-    public long getProjectResponseTimeout() {
-        return convertLong(detectProperties.getProjectResponseTimeout())
+    public long getPolicyCheckTimeout() {
+        return convertLong(detectProperties.policyCheckTimeout)
     }
     public String getGradleInspectorVersion() {
         return detectProperties.gradleInspectorVersion
