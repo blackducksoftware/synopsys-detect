@@ -158,6 +158,11 @@ class DetectProperties {
     @Value('${detect.policy.check}')
     Boolean policyCheck
 
+    @Deprecated
+    @ValueDescription(description="Timeout for the Hub's policy check response. When changing this value, keep in mind the checking of policies might have to wait for a new scan to process which can take some time.", defaultValue="300000", group=DetectProperties.GROUP_POLICY_CHECK)
+    @Value('${detect.policy.check.timeout}')
+    Long policyCheckTimeout
+
     @ValueDescription(description="Version of the Gradle Inspector", defaultValue="0.2.2", group=DetectProperties.GROUP_GRADLE)
     @Value('${detect.gradle.inspector.version}')
     String gradleInspectorVersion

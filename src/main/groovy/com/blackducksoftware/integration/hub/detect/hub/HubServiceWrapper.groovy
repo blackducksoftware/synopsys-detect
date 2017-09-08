@@ -123,7 +123,7 @@ class HubServiceWrapper {
     }
 
     ScanStatusDataService createScanStatusDataService() {
-        hubServicesFactory.createScanStatusDataService(slf4jIntLogger, detectConfiguration.getProjectResponseTimeout())
+        hubServicesFactory.createScanStatusDataService(slf4jIntLogger, detectConfiguration.getPolicyCheckTimeout())
     }
 
     PolicyStatusDataService createPolicyStatusDataService() {

@@ -269,6 +269,13 @@ class DetectConfiguration {
     public boolean getPolicyCheck() {
         return BooleanUtils.toBoolean(detectProperties.policyCheck)
     }
+    @Deprecated
+    public long getPolicyCheckTimeout() {
+        if (!getProjectResponseTimeout()) {
+            convertLong(detectProperties.policyCheckTimeout)
+        }
+        return getProjectResponseTimeout()
+    }
     public String getGradleInspectorVersion() {
         return detectProperties.gradleInspectorVersion
     }
