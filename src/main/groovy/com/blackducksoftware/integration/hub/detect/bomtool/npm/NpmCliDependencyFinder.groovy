@@ -26,17 +26,12 @@ import java.util.Map.Entry
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
+import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeBuilder
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
-import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
@@ -50,21 +45,6 @@ class NpmCliDependencyFinder {
     private static final String JSON_NAME = 'name'
     private static final String JSON_VERSION = 'version'
     private static final String JSON_DEPENDENCIES = 'dependencies'
-
-    @Autowired
-    Gson gson
-
-    @Autowired
-    NameVersionNodeTransformer nodeTransformer
-
-    @Autowired
-    DetectConfiguration detectConfiguration
-
-    @Autowired
-    DetectFileManager detectFileManager
-
-    @Autowired
-    ExecutableRunner executableRunner
 
     public DependencyNode generateDependencyNode(File npmLsOutputFile) {
         if (npmLsOutputFile?.length() > 0) {
@@ -86,12 +66,13 @@ class NpmCliDependencyFinder {
         def externalId = new NameVersionExternalId(Forge.NPM, projectName, projectVersion)
         def dependencyNode = new DependencyNode(projectName, projectVersion, externalId)
 
-        populateChildren(dependencyNode, npmJson.getAsJsonObject(JSON_DEPENDENCIES))
+        DependencyNodeBuilder dependencyNodeBuilder = new DependencyNodeBuilder(dependencyNode)
+        populateChildren(dependencyNodeBuilder, dependencyNode, npmJson.getAsJsonObject(JSON_DEPENDENCIES))
 
         dependencyNode
     }
 
-    private void populateChildren(DependencyNode parentDependencyNode, JsonObject parentNodeChildren) {
+    private void populateChildren(DependencyNodeBuilder dependencyNodeBuilder, DependencyNode parentDependencyNode, JsonObject parentNodeChildren) {
         Set<Entry<String, JsonElement>> elements = parentNodeChildren?.entrySet()
         elements?.each { Entry<String, JsonElement> it ->
             JsonObject element = it.value as JsonObject
@@ -102,8 +83,8 @@ class NpmCliDependencyFinder {
             def externalId = new NameVersionExternalId(Forge.NPM, name, version)
             def newNode = new DependencyNode(name, version, externalId)
 
-            populateChildren(newNode, children)
-            parentDependencyNode.children.add(newNode)
+            populateChildren(dependencyNodeBuilder, newNode, children)
+            dependencyNodeBuilder.addChildNodeWithParents(newNode, [parentDependencyNode])
         }
     }
 }
