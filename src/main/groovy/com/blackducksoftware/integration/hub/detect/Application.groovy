@@ -117,7 +117,7 @@ class Application {
 
             DetectProject detectProject = detectProjectManager.createDetectProject()
             List<File> createdBdioFiles = detectProjectManager.createBdioFiles(detectProject)
-            if (!detectConfiguration.hubOfflineMode && createdBdioFiles) {
+            if (!detectConfiguration.hubOfflineMode) {
                 hubServiceWrapper.init()
                 ProjectVersionView projectVersionView = hubManager.updateHubProjectVersion(detectProject, createdBdioFiles)
                 int postResult = hubManager.performPostHubActions(detectProject, projectVersionView)
