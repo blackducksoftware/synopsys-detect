@@ -159,8 +159,7 @@ class Application {
     @Bean
     Configuration configuration() {
         final Configuration configuration = new Configuration(Configuration.VERSION_2_3_26)
-        final File applicationPropertiesFile = new File(getClass().getResource('/application.properties').toURI())
-        configuration.setDirectoryForTemplateLoading(applicationPropertiesFile.getParentFile())
+        configuration.setClassForTemplateLoading(Application.class, '/')
         configuration.setDefaultEncoding('UTF-8')
         configuration.setLogTemplateExceptions(true)
 
