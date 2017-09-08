@@ -30,7 +30,7 @@ group = 'com.blackducksoftware.integration'
 version = '1.1.0-SNAPSHOT'
 
 // Human's must change this here and in DetectProperties for every update
-final String gradleInspectorVersion = '0.2.1'
+final String gradleInspectorVersion = '0.2.2'
 final String nugetInspectorVersion = '2.0.0'
 
 final String gradleAirgapPath = "${buildDir}/libs/airgap/gradle"
@@ -84,8 +84,8 @@ configurations {
 }
 
 dependencies {
-    compile 'com.blackducksoftware.integration:hub-detect-model:0.0.3'
-    compile 'com.blackducksoftware.integration:hub-common:14.5.0'
+    compile 'com.blackducksoftware.integration:hub-detect-model:0.0.4'
+    compile 'com.blackducksoftware.integration:hub-common:14.5.1'
     compile 'org.springframework.boot:spring-boot-starter'
     compile 'org.apache.maven.shared:maven-invoker:3.0.0'
     compile 'com.esotericsoftware.yamlbeans:yamlbeans:1.11'
