@@ -238,6 +238,10 @@ class DetectProperties {
     @Value('${detect.npm.path}')
     String npmPath
 
+    @ValueDescription(description="Set this value to false if you would like to exclude your dev dependencies when ran", defaultValue='true', group=DetectProperties.GROUP_NPM)
+    @Value('${detect.npm.include.dev.dependencies}')
+    String npmIncludeDevDependencies
+
     @ValueDescription(description="The path of the pear executable", group=DetectProperties.GROUP_PEAR)
     @Value('${detect.pear.path}')
     String pearPath

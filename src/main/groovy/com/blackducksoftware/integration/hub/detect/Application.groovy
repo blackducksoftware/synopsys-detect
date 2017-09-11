@@ -48,6 +48,7 @@ import com.blackducksoftware.integration.hub.model.view.ProjectVersionView
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+
 import freemarker.template.Configuration
 import groovy.transform.TypeChecked
 
