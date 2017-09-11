@@ -29,6 +29,8 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
+import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.detect.bomtool.docker.DependencyNodePackager
 import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerProperties
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
@@ -44,6 +46,9 @@ class DockerBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(DockerBomTool.class)
 
     static final URL LATEST_URL = new URL('https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector.sh')
+
+    @Autowired
+    DependencyNodePackager dependencyNodePackager
 
     @Autowired
     DockerProperties dockerProperties
@@ -114,14 +119,13 @@ class DockerBomTool extends BomTool {
         File dockerExecutableFile = new File(dockerExecutablePath)
         path += File.pathSeparator + dockerExecutableFile.parentFile.absolutePath
         Map<String, String> environmentVariables = [PATH: path]
-        environmentVariables.put('BD_HUB_PASSWORD', detectConfiguration.hubPassword)
-        environmentVariables.put('SCAN_CLI_OPTS', dockerProperties.dockerProxyEnvironmentVariable())
 
         List<String> bashArguments = [
             "-c",
-            "${shellScriptFile.absolutePath} --spring.config.location=\"${dockerPropertiesDirectory.getAbsolutePath()}\" ${imageArgument}" as String
+            "${shellScriptFile.absolutePath} --spring.config.location=\"${dockerPropertiesDirectory.getAbsolutePath()}\" ${imageArgument}" as String,
+            '--dry-run=true',
+            "--output.path=${dockerPropertiesDirectory.getAbsolutePath()}" as String
         ]
-
         Executable dockerExecutable = new Executable(shellScriptFile.parentFile, environmentVariables, bashExecutablePath, bashArguments)
         executableRunner.execute(dockerExecutable)
 
@@ -129,7 +133,10 @@ class DockerBomTool extends BomTool {
             hubSignatureScanner.registerPathToScan(new File(detectConfiguration.dockerTar))
         }
 
-        //At least for the moment, there is no way of running the hub-docker-inspector to generate the files only, so it currently handles all uploading
-        []
+        File dependencyNodeJsonFile = detectFileManager.findFile(dockerPropertiesDirectory, '*_dependencies.json')
+        DependencyNode dependencyNode = dependencyNodePackager.parse(dependencyNodeJsonFile.getText())
+        DetectCodeLocation codeLocation = new DetectCodeLocation(BomToolType.DOCKER, imageArgument, dependencyNode)
+        
+        [codeLocation]
     }
 }
