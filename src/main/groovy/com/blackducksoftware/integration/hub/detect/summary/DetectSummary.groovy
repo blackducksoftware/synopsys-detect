@@ -37,7 +37,6 @@ class DetectSummary {
     private Map<BomToolType, Result> bomToolResults = new HashMap<>()
     private Map<File, Result> scanResults = new HashMap<>()
 
-
     public void addApplicableBomToolType(BomToolType bomToolType) {
         bomToolResults.put(bomToolType, Result.FAILURE)
     }
