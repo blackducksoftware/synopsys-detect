@@ -45,6 +45,8 @@ import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
+import com.blackducksoftware.integration.hub.detect.summary.DetectSummary
+import com.blackducksoftware.integration.hub.detect.summary.Result
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil
@@ -82,6 +84,9 @@ class DetectProjectManager {
     @Autowired
     DetectFileManager detectFileManager
 
+    @Autowired
+    DetectSummary detectSummary
+
     private boolean foundAnyBomTools
 
     public DetectProject createDetectProject() {
@@ -102,12 +107,15 @@ class DetectProjectManager {
 
                 if (bomTool.isBomToolApplicable() && detectConfiguration.shouldRun(bomTool)) {
                     logger.info("${bomToolTypeString} applies given the current configuration.")
+                    detectSummary.addApplicableBomToolType(bomTool.getBomToolType())
                     foundAnyBomTools = true
                     List<DetectCodeLocation> codeLocations = bomTool.extractDetectCodeLocations()
                     if (codeLocations != null && codeLocations.size() > 0) {
+                        detectSummary.setBomToolResult(bomTool.getBomToolType(), Result.SUCCESS)
                         detectProject.addAllDetectCodeLocations(codeLocations)
                     } else {
                         logger.error("Did not find any projects from ${bomToolTypeString} even though it applied.")
+                        detectSummary.setBomToolResult(bomTool.getBomToolType(), Result.FAILURE)
                     }
                 }
             } catch (final Exception e) {

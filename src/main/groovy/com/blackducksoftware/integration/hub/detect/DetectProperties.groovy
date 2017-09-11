@@ -58,6 +58,10 @@ class DetectProperties {
     @Value('${detect.suppress.configuration.output}')
     Boolean suppressConfigurationOutput
 
+    @ValueDescription(description="If true, the default behavior of printing the Detect Results will be suppressed.", defaultValue="false", group=DetectProperties.GROUP_LOGGING)
+    @Value('${detect.suppress.results.output}')
+    Boolean suppressResultsOutput
+
     @ValueDescription(description="If true the bdio files will be deleted after upload", defaultValue="true", group=DetectProperties.GROUP_CLEANUP)
     @Value('${detect.cleanup.bdio.files}')
     Boolean cleanupBdioFiles
