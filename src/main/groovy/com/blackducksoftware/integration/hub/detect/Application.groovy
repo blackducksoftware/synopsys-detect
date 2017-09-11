@@ -43,8 +43,10 @@ import com.blackducksoftware.integration.hub.detect.hub.HubManager
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
+import com.blackducksoftware.integration.hub.detect.summary.DetectSummary
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager
 import com.blackducksoftware.integration.hub.model.view.ProjectVersionView
+import com.blackducksoftware.integration.log.Slf4jIntLogger
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -90,12 +92,16 @@ class Application {
     @Autowired
     HubSignatureScanner hubSignatureScanner
 
+    @Autowired
+    DetectSummary detectSummary
+
     static void main(final String[] args) {
         new SpringApplicationBuilder(Application.class).logStartupInfo(false).run(args)
     }
 
     @PostConstruct
     void init() {
+        int postResult = 0
         try {
             valueDescriptionAnnotationFinder.init()
             if ('-h' in applicationArguments.getSourceArgs() || '--help' in applicationArguments.getSourceArgs()) {
@@ -120,15 +126,19 @@ class Application {
             if (!detectConfiguration.hubOfflineMode) {
                 hubServiceWrapper.init()
                 ProjectVersionView projectVersionView = hubManager.updateHubProjectVersion(detectProject, createdBdioFiles)
-                int postResult = hubManager.performPostHubActions(detectProject, projectVersionView)
-                System.exit(postResult)
+                postResult = hubManager.performPostHubActions(detectProject, projectVersionView)
             } else if (!detectConfiguration.hubSignatureScannerDisabled){
                 hubSignatureScanner.scanPathsOffline(detectProject)
             }
         } catch (DetectException e) {
+            detectSummary.setOverallFailure()
             logger.error('An unrecoverable error occurred - most likely this is due to your environment and/or configuration. Please double check the Hub Detect documentation: https://blackducksoftware.atlassian.net/wiki/x/Y7HtAg')
             logger.error(e.getMessage())
         }
+        if (!detectConfiguration.suppressResultsOutput) {
+            detectSummary.logResults(new Slf4jIntLogger(logger))
+        }
+        System.exit(postResult)
     }
 
     @Bean
