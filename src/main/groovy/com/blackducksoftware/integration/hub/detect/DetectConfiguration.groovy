@@ -374,6 +374,9 @@ class DetectConfiguration {
     public boolean getSuppressConfigurationOutput() {
         return BooleanUtils.toBoolean(detectProperties.suppressConfigurationOutput)
     }
+    public boolean getSuppressResultsOutput() {
+        return BooleanUtils.toBoolean(detectProperties.suppressResultsOutput)
+    }
     public boolean getHubSignatureScannerDryRun() {
         return detectProperties.hubSignatureScannerDryRun
     }

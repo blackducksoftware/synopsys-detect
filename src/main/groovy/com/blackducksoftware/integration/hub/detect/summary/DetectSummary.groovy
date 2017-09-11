@@ -55,14 +55,21 @@ class DetectSummary {
     }
 
     public void logResults(IntLogger logger) {
+        Result overallResult = Result.SUCCESS;
+        if (bomToolResults.containsValue(Result.FAILURE) || scanResults.containsValue(Result.FAILURE)) {
+            overallResult = Result.FAILURE
+        }
+
         logger.info("")
         logger.info("======== Detect Results ========")
         for (Entry<BomToolType, Result> entry : bomToolResults.entrySet()) {
-            logger.info("${entry.getKey()} : ${entry.getValue()}")
+            logger.info("${entry.getKey().toString()} : ${entry.getValue().toString()}")
         }
         for (Entry<File, Result> entry : scanResults.entrySet()) {
-            logger.info("Scan Target ${entry.getKey()} : ${entry.getValue()}")
+            logger.info("Scan Target ${entry.getKey().getAbsolutePath()} : ${entry.getValue().toString()}")
         }
+        logger.info("")
+        logger.info("Overall Status : ${overallResult.toString()}")
         logger.info("================================")
         logger.info("")
     }
