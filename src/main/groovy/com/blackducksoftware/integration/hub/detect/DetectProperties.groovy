@@ -150,16 +150,11 @@ class DetectProperties {
     @Value('${detect.project.version.distribution}')
     String projectVersionDistribution
 
-    @ValueDescription(description="Timeout for response from the hub regarding your project (i.e. risk reports and policy check). When changing this value, keep in mind the checking of policies might have to wait for a new scan to process which can take some time.", defaultValue="300000", group=DetectProperties.GROUP_PROJECT_INFO)
-    @Value('${detect.project.response.timeout}')
-    Long projectResponseTimeout
-
     @ValueDescription(description = "Set to true if you would like a policy check from the hub for your project. False by default", defaultValue="false", group=DetectProperties.GROUP_POLICY_CHECK)
     @Value('${detect.policy.check}')
     Boolean policyCheck
 
-    @Deprecated
-    @ValueDescription(description="Timeout for the Hub's policy check response. When changing this value, keep in mind the checking of policies might have to wait for a new scan to process which can take some time.", defaultValue="300000", group=DetectProperties.GROUP_POLICY_CHECK)
+    @ValueDescription(description="Timeout for response from the hub regarding your project (i.e. risk reports and policy check). When changing this value, keep in mind the checking of policies might have to wait for a new scan to process which can take some time.", defaultValue="300000", group=DetectProperties.GROUP_POLICY_CHECK)
     @Value('${detect.policy.check.timeout}')
     Long policyCheckTimeout
 

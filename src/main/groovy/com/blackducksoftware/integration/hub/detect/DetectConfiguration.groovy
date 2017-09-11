@@ -263,18 +263,11 @@ class DetectConfiguration {
     public String getProjectVersionDistribution() {
         return detectProperties.projectVersionDistribution?.trim()
     }
-    public long getProjectResponseTimeout() {
-        return convertLong(detectProperties.projectResponseTimeout)
-    }
     public boolean getPolicyCheck() {
         return BooleanUtils.toBoolean(detectProperties.policyCheck)
     }
-    @Deprecated
     public long getPolicyCheckTimeout() {
-        if (!getProjectResponseTimeout()) {
-            convertLong(detectProperties.policyCheckTimeout)
-        }
-        return getProjectResponseTimeout()
+        return convertLong(detectProperties.policyCheckTimeout)
     }
     public String getGradleInspectorVersion() {
         return detectProperties.gradleInspectorVersion
