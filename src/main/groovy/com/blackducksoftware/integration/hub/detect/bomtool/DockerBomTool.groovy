@@ -113,7 +113,7 @@ class DockerBomTool extends BomTool {
             usingTarFile = true
         }
 
-        File dockerPropertiesDirectory =  dockerPropertiesFile.getParentFile()
+        File dockerBomToolDirectory =  dockerPropertiesFile.getParentFile()
 
         String path = System.getenv('PATH')
         File dockerExecutableFile = new File(dockerExecutablePath)
@@ -122,21 +122,29 @@ class DockerBomTool extends BomTool {
 
         List<String> bashArguments = [
             "-c",
-            "${shellScriptFile.absolutePath} --spring.config.location=\"${dockerPropertiesDirectory.getAbsolutePath()}\" ${imageArgument}" as String,
+            "${shellScriptFile.absolutePath} --spring.config.location=\"${dockerBomToolDirectory.getAbsolutePath()}\" ${imageArgument}" as String,
             '--dry-run=true',
-            "--output.path=${dockerPropertiesDirectory.getAbsolutePath()}" as String
+            "--output.path=${dockerBomToolDirectory.getAbsolutePath()}" as String,
+            "--output.include.containerfilesystem=${!usingTarFile}" as String
         ]
         Executable dockerExecutable = new Executable(shellScriptFile.parentFile, environmentVariables, bashExecutablePath, bashArguments)
         executableRunner.execute(dockerExecutable)
 
         if (usingTarFile) {
             hubSignatureScanner.registerPathToScan(new File(detectConfiguration.dockerTar))
+        } else {
+            File producedTarFile = detectFileManager.findFile(dockerBomToolDirectory, '*.tar')
+            if (producedTarFile) {
+                hubSignatureScanner.registerPathToScan(producedTarFile)
+            } else {
+                logger.debug("No tar file found. Expected docker-inspector to produce tar file in ${dockerBomToolDirectory.getCanonicalPath()}")
+            }
         }
 
-        File dependencyNodeJsonFile = detectFileManager.findFile(dockerPropertiesDirectory, '*_dependencies.json')
+        File dependencyNodeJsonFile = detectFileManager.findFile(dockerBomToolDirectory, '*_dependencies.json')
         DependencyNode dependencyNode = dependencyNodePackager.parse(dependencyNodeJsonFile.getText())
         DetectCodeLocation codeLocation = new DetectCodeLocation(BomToolType.DOCKER, imageArgument, dependencyNode)
-        
+
         [codeLocation]
     }
 }
