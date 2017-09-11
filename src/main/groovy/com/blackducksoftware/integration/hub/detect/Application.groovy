@@ -131,6 +131,7 @@ class Application {
                 hubSignatureScanner.scanPathsOffline(detectProject)
             }
         } catch (DetectException e) {
+            detectSummary.setOverallFailure()
             logger.error('An unrecoverable error occurred - most likely this is due to your environment and/or configuration. Please double check the Hub Detect documentation: https://blackducksoftware.atlassian.net/wiki/x/Y7HtAg')
             logger.error(e.getMessage())
         }

@@ -36,6 +36,7 @@ import groovy.transform.TypeChecked
 class DetectSummary {
     private Map<BomToolType, Result> bomToolResults = new HashMap<>()
     private Map<File, Result> scanResults = new HashMap<>()
+    Result overallResult = null;
 
     public void addApplicableBomToolType(BomToolType bomToolType) {
         bomToolResults.put(bomToolType, Result.FAILURE)
@@ -53,10 +54,17 @@ class DetectSummary {
         scanResults.put(scanPath, result)
     }
 
+    public void setOverallFailure() {
+        overallResult = Result.FAILURE
+    }
+
     public void logResults(IntLogger logger) {
-        Result overallResult = Result.SUCCESS;
-        if (bomToolResults.containsValue(Result.FAILURE) || scanResults.containsValue(Result.FAILURE)) {
-            overallResult = Result.FAILURE
+        if (overallResult == null) {
+            if (bomToolResults.containsValue(Result.FAILURE) || scanResults.containsValue(Result.FAILURE)) {
+                overallResult = Result.FAILURE
+            } else {
+                overallResult = Result.SUCCESS
+            }
         }
 
         logger.info("")
