@@ -43,11 +43,14 @@ import com.blackducksoftware.integration.hub.detect.hub.HubManager
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
+import com.blackducksoftware.integration.hub.detect.summary.DetectSummary
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager
 import com.blackducksoftware.integration.hub.model.view.ProjectVersionView
+import com.blackducksoftware.integration.log.Slf4jIntLogger
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+
 import freemarker.template.Configuration
 import groovy.transform.TypeChecked
 
@@ -89,6 +92,9 @@ class Application {
     @Autowired
     HubSignatureScanner hubSignatureScanner
 
+    @Autowired
+    DetectSummary detectSummary
+
     static void main(final String[] args) {
         new SpringApplicationBuilder(Application.class).logStartupInfo(false).run(args)
     }
@@ -128,6 +134,7 @@ class Application {
             logger.error('An unrecoverable error occurred - most likely this is due to your environment and/or configuration. Please double check the Hub Detect documentation: https://blackducksoftware.atlassian.net/wiki/x/Y7HtAg')
             logger.error(e.getMessage())
         }
+        detectSummary.logResults(new Slf4jIntLogger(logger))
     }
 
     @Bean
