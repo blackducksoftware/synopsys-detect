@@ -35,7 +35,11 @@ class DockerProperties {
     @Autowired
     DetectConfiguration detectConfiguration
 
-    public void fillInDockerProperties(Properties dockerProperties) {
+    public void fillInDockerProperties(Properties dockerProperties, File bomToolOutputDirectory) {
+        dockerProperties.setProperty('logging.level.com.blackducksoftware', detectConfiguration.getLoggingLevel())
+        dockerProperties.setProperty('dry.run', 'true')
+        dockerProperties.setProperty('output.path', bomToolOutputDirectory.getAbsolutePath())
+        dockerProperties.setProperty('output.include.containerfilesystem', 'true')
         dockerProperties.setProperty('logging.level.com.blackducksoftware', detectConfiguration.getLoggingLevel())
 
         detectConfiguration.additionalDockerPropertyNames.each { propertyName ->

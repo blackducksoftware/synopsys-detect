@@ -99,8 +99,9 @@ class DockerBomTool extends BomTool {
         }
 
         File dockerPropertiesFile = detectFileManager.createFile(BomToolType.DOCKER, 'application.properties')
+        File dockerBomToolDirectory =  dockerPropertiesFile.getParentFile()
         Properties dockerProps = new Properties()
-        dockerProperties.fillInDockerProperties(dockerProps)
+        dockerProperties.fillInDockerProperties(dockerProps, dockerBomToolDirectory)
         dockerProps.store(dockerPropertiesFile.newOutputStream(), "")
 
         boolean usingTarFile = false
@@ -113,7 +114,7 @@ class DockerBomTool extends BomTool {
             usingTarFile = true
         }
 
-        File dockerBomToolDirectory =  dockerPropertiesFile.getParentFile()
+
 
         String path = System.getenv('PATH')
         File dockerExecutableFile = new File(dockerExecutablePath)
@@ -122,10 +123,7 @@ class DockerBomTool extends BomTool {
 
         List<String> bashArguments = [
             "-c",
-            "${shellScriptFile.absolutePath} --spring.config.location=\"${dockerBomToolDirectory.getAbsolutePath()}\" ${imageArgument}" as String,
-            '--dry-run=true',
-            "--output.path=${dockerBomToolDirectory.getAbsolutePath()}" as String,
-            "--output.include.containerfilesystem=${!usingTarFile}" as String
+            "${shellScriptFile.absolutePath} --spring.config.location=\"${dockerPropertiesFile.getAbsolutePath()}\" --dry.run=true ${imageArgument}" as String
         ]
         Executable dockerExecutable = new Executable(shellScriptFile.parentFile, environmentVariables, bashExecutablePath, bashArguments)
         executableRunner.execute(dockerExecutable)
@@ -133,7 +131,7 @@ class DockerBomTool extends BomTool {
         if (usingTarFile) {
             hubSignatureScanner.registerPathToScan(new File(detectConfiguration.dockerTar))
         } else {
-            File producedTarFile = detectFileManager.findFile(dockerBomToolDirectory, '*.tar')
+            File producedTarFile = detectFileManager.findFile(dockerBomToolDirectory, '*.tar.gz')
             if (producedTarFile) {
                 hubSignatureScanner.registerPathToScan(producedTarFile)
             } else {
