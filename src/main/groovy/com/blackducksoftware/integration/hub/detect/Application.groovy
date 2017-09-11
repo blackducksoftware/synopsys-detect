@@ -101,6 +101,7 @@ class Application {
 
     @PostConstruct
     void init() {
+        int postResult = 0
         try {
             valueDescriptionAnnotationFinder.init()
             if ('-h' in applicationArguments.getSourceArgs() || '--help' in applicationArguments.getSourceArgs()) {
@@ -125,8 +126,7 @@ class Application {
             if (!detectConfiguration.hubOfflineMode) {
                 hubServiceWrapper.init()
                 ProjectVersionView projectVersionView = hubManager.updateHubProjectVersion(detectProject, createdBdioFiles)
-                int postResult = hubManager.performPostHubActions(detectProject, projectVersionView)
-                System.exit(postResult)
+                postResult = hubManager.performPostHubActions(detectProject, projectVersionView)
             } else if (!detectConfiguration.hubSignatureScannerDisabled){
                 hubSignatureScanner.scanPathsOffline(detectProject)
             }
@@ -135,6 +135,7 @@ class Application {
             logger.error(e.getMessage())
         }
         detectSummary.logResults(new Slf4jIntLogger(logger))
+        System.exit(postResult)
     }
 
     @Bean
