@@ -21,25 +21,19 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.cran
 
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
+import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraph
 
 import groovy.transform.TypeChecked
 
 @Component
 @TypeChecked
 public class PackratPackager {
-    @Autowired
-    private final NameVersionNodeTransformer nameVersionNodeTransformer
 
-    public List<DependencyNode> extractProjectDependencies(final String packratLock) {
+    public DependencyGraph extractProjectDependencies(final String packratLock) {
         def packRatNodeParser = new PackRatNodeParser()
-        List<DependencyNode> dependencies = packRatNodeParser.parseProjectDependencies(nameVersionNodeTransformer, packratLock)
-
-        dependencies
+        packRatNodeParser.parseProjectDependencies(packratLock)
     }
 
     public String getProjectName(final String descriptionContents) {

@@ -25,8 +25,11 @@ package com.blackducksoftware.integration.hub.detect.bomtool.cocoapods
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.simple.MutableDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.simple.MutableMapDependencyGraph
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
+import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
@@ -46,7 +49,10 @@ class CocoapodsPackager {
     @Autowired
     NameVersionNodeTransformer nameVersionNodeTransformer
 
-    public Set<DependencyNode> extractDependencyNodes(final String podLockText) {
+    @Autowired
+    DetectConfiguration detectConfiguration
+
+    public DependencyGraph extractDependencyGraph(final String podLockText) {
         YAMLMapper mapper = new YAMLMapper()
         PodfileLock podfileLock = mapper.readValue(podLockText, PodfileLock.class)
 
@@ -72,7 +78,14 @@ class CocoapodsPackager {
             }
         }
 
-        builder.build().children.collect { nameVersionNodeTransformer.createDependencyNode(Forge.COCOAPODS, it as NameVersionNode) } as Set
+        MutableDependencyGraph graph = new MutableMapDependencyGraph()
+
+        builder.build().children.each {
+            def childDependency = nameVersionNodeTransformer.addNameVersionNodeToDependencyGraph(graph, Forge.COCOAPODS, it as NameVersionNode);
+            graph.addChildToRoot(childDependency)
+        }
+
+        graph;
     }
 
     private NameVersionNode buildNameVersionNode(SubcomponentNodeBuilder builder, Pod pod) {

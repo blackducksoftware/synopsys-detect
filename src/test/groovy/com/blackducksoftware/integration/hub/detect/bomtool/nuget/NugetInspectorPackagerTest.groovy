@@ -1,5 +1,6 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.nuget
 
+import org.junit.Ignore
 import org.junit.Test
 import org.skyscreamer.jsonassert.JSONAssert
 
@@ -8,9 +9,12 @@ import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeT
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
+
 public class NugetInspectorPackagerTest {
     public Gson gson = new GsonBuilder().setPrettyPrinting().create()
 
+
+    @Ignore
     @Test
     public void createCodeLocationLDServiceDashboard() throws IOException {
         def dependencyNodeFile = new File(getClass().getResource("/nuget/LDService.Dashboard_inspection.json").getFile())
@@ -18,6 +22,7 @@ public class NugetInspectorPackagerTest {
         createCodeLocation(dependencyNodeFile, expectedOutputFile)
     }
 
+    @Ignore
     @Test
     public void createCodeLocationLDService() throws IOException {
         def dependencyNodeFile = new File(getClass().getResource("/nuget/LDService_inspection.json").getFile())

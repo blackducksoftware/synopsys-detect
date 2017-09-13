@@ -25,8 +25,8 @@ package com.blackducksoftware.integration.hub.detect.bomtool.sbt
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtConfigurationDependencyTree
+import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtDependencyModule
+import com.blackducksoftware.integration.hub.detect.bomtool.sbt.reports.parse.SbtReportParser
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter
 
 import groovy.transform.TypeChecked
@@ -35,32 +35,32 @@ import groovy.transform.TypeChecked
 public class SbtPackager {
     private final Logger logger = LoggerFactory.getLogger(SbtPackager.class)
 
-    public List<DependencyNode> makeDependencyNodeAggregates(List<File> reportFiles, String include, String exclude) {
+    public List<SbtDependencyModule> makeModuleAggregate(List<File> reportFiles, String include, String exclude) {
         def parser = new SbtReportParser()
         def resolver = new SbtDependencyResolver()
         def filter = new ExcludedIncludedFilter(exclude, include)
-        def aggregator = new SbtConfigurationAggregator()
+        def aggregator = new SbtModuleAggregator()
 
-        List<SbtConfigurationDependencyTree> configurations = reportFiles.collect { reportFile->
+        List<SbtDependencyModule> modules = reportFiles.collect { reportFile->
             logger.debug("Parsing SBT report file : ${reportFile.getCanonicalPath()}")
             def xml = new XmlSlurper().parse(reportFile)
             def report = parser.parseReportFromXml(xml)
-            def tree = resolver.resolveReportDependencies(report)
+            def tree = resolver.resolveReport(report)
             tree
         }
 
-        def includedConfigurations = configurations.findAll { tree ->
-            filter.shouldInclude(tree.configuration)
+        def includedModules = modules.findAll { module ->
+            filter.shouldInclude(module.configuration)
         }
 
-        if (configurations.size() <= 0) {
+        if (modules.size() <= 0) {
             logger.warn("No sbt configurations were found in report folder.")
             return null
-        } else if (includedConfigurations.size() <= 0) {
-            logger.warn("Although ${configurations.size()} configs were found, none were included.")
+        } else if (includedModules.size() <= 0) {
+            logger.warn("Although ${modules.size()} configs were found, none were included.")
             return null
         }
 
-        aggregator.aggregateConfigurations(includedConfigurations)
+        aggregator.aggregateModules(includedModules)
     }
 }

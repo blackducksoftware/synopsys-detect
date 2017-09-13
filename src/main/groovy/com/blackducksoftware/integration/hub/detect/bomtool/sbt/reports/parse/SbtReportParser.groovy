@@ -20,12 +20,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.sbt
+package com.blackducksoftware.integration.hub.detect.bomtool.sbt.reports.parse
 
-import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtCaller
-import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtModule
-import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtReport
-import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtRevision
+
+import com.blackducksoftware.integration.hub.detect.bomtool.sbt.reports.model.SbtCaller
+import com.blackducksoftware.integration.hub.detect.bomtool.sbt.reports.model.SbtModule
+import com.blackducksoftware.integration.hub.detect.bomtool.sbt.reports.model.SbtReport
+import com.blackducksoftware.integration.hub.detect.bomtool.sbt.reports.model.SbtRevision
 
 import groovy.util.slurpersupport.GPathResult
 

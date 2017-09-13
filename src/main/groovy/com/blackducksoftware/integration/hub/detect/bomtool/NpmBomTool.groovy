@@ -97,8 +97,7 @@ class NpmBomTool extends BomTool {
             if (npmLsErrorFile.length() > 0) {
                 logger.debug("Error when running npm ls -json command\n${npmLsErrorFile.text}")
             }
-            def dependencyNode = npmCliDependencyFinder.generateDependencyNode(npmLsOutputFile)
-            def detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, dependencyNode)
+            def detectCodeLocation = npmCliDependencyFinder.generateCodeLocation(sourcePath, npmLsOutputFile)
 
             hubSignatureScanner.registerPathToScan(sourceDirectory, NODE_MODULES)
             return [detectCodeLocation]

@@ -16,8 +16,9 @@ import static org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraph
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
+import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphTestUtil
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 
 class CpanPackagerTest {
@@ -45,7 +46,8 @@ class CpanPackagerTest {
 
     @Test
     public void makeDependencyNodesTest() {
-        Set<DependencyNode> dependencyNodes = cpanPackager.makeDependencyNodes(cpanListText, showDepsText)
-        testUtil.testJsonResource('cpan/expectedDependencyNodes.json', dependencyNodes)
+        DependencyGraph dependencyGraph = cpanPackager.makeDependencyGraph(cpanListText, showDepsText)
+
+        DependencyGraphTestUtil.assertGraph('/cpan/expectedDependencyNodes_graph.json', dependencyGraph);
     }
 }

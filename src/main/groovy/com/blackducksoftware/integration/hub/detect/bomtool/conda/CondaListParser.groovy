@@ -27,7 +27,10 @@ import java.lang.reflect.Type
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.simple.MutableDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.simple.MutableMapDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.simple.model.Dependency
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
@@ -42,20 +45,26 @@ class CondaListParser {
     @Autowired
     Gson gson
 
-    Set<DependencyNode> parse(String listJsonText, String infoJsonText) {
+    DependencyGraph parse(String listJsonText, String infoJsonText) {
         final Type listType = new TypeToken<ArrayList<CondaListElement>>() {}.getType()
         final List<CondaListElement> condaList = gson.fromJson(listJsonText, listType) as List<CondaListElement>
         final CondaInfo condaInfo = gson.fromJson(infoJsonText, CondaInfo.class)
         final String platform = condaInfo.platform
 
-        condaList.collect { condaListElementToDependencyNodeTransformer(platform, it) } as Set
+        MutableDependencyGraph graph = new MutableMapDependencyGraph();
+
+        condaList.each {
+            graph.addChildToRoot(condaListElementToDependency(platform, it))
+        }
+
+        graph
     }
 
-    DependencyNode condaListElementToDependencyNodeTransformer(String platform, CondaListElement element) {
+    Dependency condaListElementToDependency(String platform, CondaListElement element) {
         String name = element.name
         String version = "${element.version}-${element.buildString}-${platform}"
         ExternalId externalId = new NameVersionExternalId(Forge.ANACONDA, name, version)
 
-        new DependencyNode(name, version, externalId)
+        new Dependency(name, version, externalId)
     }
 }

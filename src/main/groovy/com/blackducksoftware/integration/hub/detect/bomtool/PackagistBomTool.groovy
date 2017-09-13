@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraph
 import com.blackducksoftware.integration.hub.detect.bomtool.packagist.PackagistParser
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
@@ -67,8 +67,7 @@ class PackagistBomTool extends BomTool {
         String composerJsonText = new File(sourcePath, 'composer.json').getText(StandardCharsets.UTF_8.toString())
         String composerLockText = new File(sourcePath, 'composer.lock').getText(StandardCharsets.UTF_8.toString())
 
-        DependencyNode rootDependencyNode = packagistParser.getDependencyNodeFromProject(composerJsonText, composerLockText)
-        def detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, rootDependencyNode)
+        def detectCodeLocation = packagistParser.getDependencyGraphFromProject(sourcePath, composerJsonText, composerLockText)
 
         [detectCodeLocation]
     }

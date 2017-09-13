@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraph
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
@@ -51,13 +51,13 @@ class DepPackager {
     @Autowired
     DetectConfiguration detectConfiguration
 
-    public List<DependencyNode> makeDependencyNodes(final String sourcePath, String goDepExecutable) {
+    public DependencyGraph makeDependencyGraph(final String sourcePath, String goDepExecutable) {
         GopkgLockParser gopkgLockParser = new GopkgLockParser()
         String goDepContents = getGopkgLockContents(new File(sourcePath), goDepExecutable)
         if (goDepContents?.trim()) {
             return gopkgLockParser.parseDepLock(goDepContents)
         }
-        return []
+        return null
     }
 
     private String getGopkgLockContents(File file, String goDepExecutable) {

@@ -27,7 +27,10 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.simple.MutableDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.simple.MutableMapDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.simple.model.Dependency
 import com.blackducksoftware.integration.hub.detect.bomtool.CpanBomTool
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
@@ -45,23 +48,24 @@ class CpanPackager {
     @Autowired
     NameVersionNodeTransformer nameVersionNodeTransformer
 
-    public Set<DependencyNode> makeDependencyNodes(String cpanListText, String directDependenciesText) {
+    public DependencyGraph makeDependencyGraph(String cpanListText, String directDependenciesText) {
         Map<String, NameVersionNode> allModules = cpanListParser.parse(cpanListText)
         List<String> directModuleNames = getDirectModuleNames(directDependenciesText)
 
-        Set<DependencyNode> dependencyNodes = []
+        MutableDependencyGraph graph = new MutableMapDependencyGraph();
+
         directModuleNames.each { moduleName ->
             def nameVersionNode = allModules[moduleName]
             if (nameVersionNode) {
                 nameVersionNode.name = nameVersionNode.name.replace('::', '-')
-                DependencyNode module = nameVersionNodeTransformer.createDependencyNode(CpanBomTool.CPAN_FORGE, nameVersionNode)
-                dependencyNodes.add(module)
+                Dependency module = nameVersionNodeTransformer.addNameVersionNodeToDependencyGraph(graph, CpanBomTool.CPAN_FORGE, nameVersionNode)
+                graph.addChildToRoot(module)
             } else {
                 logger.warn("Could node find resolved version for module: ${moduleName}")
             }
         }
 
-        dependencyNodes
+        graph
     }
 
     private List<String> getDirectModuleNames(String directDependenciesText) {

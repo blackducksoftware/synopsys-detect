@@ -27,7 +27,9 @@ import java.util.regex.Pattern
 
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.MutableDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.simple.MutableMapDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.simple.model.Dependency
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenExternalId
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
@@ -43,15 +45,19 @@ class MavenCodeLocationPackager {
     public static final List<String> indentationStrings = ['+- ', '|  ', '\\- ', '   ']
 
     private List<DetectCodeLocation> codeLocations = []
+    private MutableDependencyGraph currentGraph = null
     private DetectCodeLocation currentCodeLocation = null
-    private Stack<DependencyNode> dependencyParentStack = new Stack<>()
+
+    private Stack<Dependency> dependencyParentStack = new Stack<>()
     private boolean parsingProjectSection
     private boolean previousLineWasEmpty
     private int level
 
     public List<DetectCodeLocation> extractCodeLocations(String sourcePath, String mavenOutputText) {
         codeLocations = []
+        currentGraph = null
         currentCodeLocation = null
+
         dependencyParentStack = new Stack<>()
         parsingProjectSection = false
         previousLineWasEmpty = true
@@ -96,33 +102,34 @@ class MavenCodeLocationPackager {
 
             int previousLevel = level
             String cleanedLine = calculateCurrentLevelAndCleanLine(line)
-            DependencyNode dependencyNode = textToDependencyNode(cleanedLine)
-            if (!dependencyNode) {
+            Dependency dependency = textToDependencyNode(cleanedLine)
+            if (!dependency) {
                 continue
             }
 
             if (level == 1) {
                 //a direct dependency, clear the stack and add this as a potential parent for the next line
-                currentCodeLocation.dependencies.add(dependencyNode)
+                currentGraph.addChildToRoot(dependency)
                 dependencyParentStack.clear()
-                dependencyParentStack.push(dependencyNode)
+                dependencyParentStack.push(dependency)
             } else {
                 //level should be greater than 1
                 if (level == previousLevel) {
                     //a sibling of the previous dependency
                     dependencyParentStack.pop()
-                    dependencyParentStack.peek().children.add(dependencyNode)
-                    dependencyParentStack.push(dependencyNode)
+                    currentGraph.addParentWithChild(dependencyParentStack.peek(), dependency);
+                    dependencyParentStack.push(dependency)
                 } else if (level > previousLevel) {
                     //a child of the previous dependency
-                    dependencyParentStack.peek().children.add(dependencyNode)
-                    dependencyParentStack.push(dependencyNode)
+                    currentGraph.addParentWithChild(dependencyParentStack.peek(), dependency);
+                    dependencyParentStack.push(dependency)
                 } else {
                     //a child of a dependency further back than 1 line
                     previousLevel.downto(level) { dependencyParentStack.pop() }
-                    dependencyParentStack.peek().children.add(dependencyNode)
-                    dependencyParentStack.push(dependencyNode)
+                    currentGraph.addParentWithChild(dependencyParentStack.peek(), dependency);
+                    dependencyParentStack.push(dependency)
                 }
+
             }
         }
 
@@ -130,12 +137,13 @@ class MavenCodeLocationPackager {
     }
 
     void createNewCodeLocation(String sourcePath, String line) {
-        DependencyNode dependencyNode = textToDependencyNode(line)
+        Dependency dependencyNode = textToDependencyNode(line)
         String codeLocationSourcePath = sourcePath
         if (!sourcePath.endsWith(dependencyNode.name)) {
             codeLocationSourcePath += '/' + dependencyNode.name
         }
-        currentCodeLocation = new DetectCodeLocation(BomToolType.MAVEN, codeLocationSourcePath, dependencyNode.name, dependencyNode.version, dependencyNode.externalId, new HashSet<>())
+        currentGraph = new MutableMapDependencyGraph();
+        currentCodeLocation = new DetectCodeLocation(BomToolType.MAVEN, codeLocationSourcePath, dependencyNode.name, dependencyNode.version, dependencyNode.externalId, currentGraph)
         codeLocations.add(currentCodeLocation)
     }
 
@@ -152,7 +160,7 @@ class MavenCodeLocationPackager {
         return cleanedLine
     }
 
-    DependencyNode textToDependencyNode(final String componentText) {
+    Dependency textToDependencyNode(final String componentText) {
         Matcher gavMatcher = gavRegex.matcher(componentText)
         if (!gavMatcher.find()) {
             return null
@@ -163,7 +171,7 @@ class MavenCodeLocationPackager {
         String version = gavMatcher.group(4)
 
         ExternalId externalId = new MavenExternalId(group, artifact, version)
-        def node = new DependencyNode(artifact, version, externalId)
+        def node = new Dependency(artifact, version, externalId)
         return node
     }
 }

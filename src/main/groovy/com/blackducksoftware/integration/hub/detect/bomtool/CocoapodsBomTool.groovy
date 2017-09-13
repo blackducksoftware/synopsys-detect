@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.PathExternalId
@@ -58,10 +58,10 @@ class CocoapodsBomTool extends BomTool {
     List<DetectCodeLocation> extractDetectCodeLocations() {
         final String podLockText = new File(sourcePath, PODFILE_LOCK_FILENAME).text
 
-        Set<DependencyNode> dependencyNodes = cocoapodsPackager.extractDependencyNodes(podLockText)
+        DependencyGraph dependencyGraph = cocoapodsPackager.extractDependencyGraph(podLockText)
         ExternalId externalId = new PathExternalId(Forge.COCOAPODS, sourcePath)
 
-        def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, externalId, dependencyNodes)
+        def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, externalId, dependencyGraph)
         [codeLocation]
     }
 }

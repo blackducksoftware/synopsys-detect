@@ -33,12 +33,15 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.simple.BdioNodeFactory
 import com.blackducksoftware.integration.hub.bdio.simple.BdioPropertyHelper
 import com.blackducksoftware.integration.hub.bdio.simple.BdioWriter
-import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeTransformer
+import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraphCombiner
+import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraphTransformer
+import com.blackducksoftware.integration.hub.bdio.simple.MutableDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.simple.MutableMapDependencyGraph
 import com.blackducksoftware.integration.hub.bdio.simple.model.BdioBillOfMaterials
 import com.blackducksoftware.integration.hub.bdio.simple.model.BdioComponent
 import com.blackducksoftware.integration.hub.bdio.simple.model.BdioExternalIdentifier
 import com.blackducksoftware.integration.hub.bdio.simple.model.BdioProject
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.SimpleBdioDocument
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
@@ -50,7 +53,11 @@ import com.blackducksoftware.integration.util.ExcludedIncludedFilter
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil
 import com.google.gson.Gson
 
+import groovy.transform.TypeChecked
+
+
 // No type checking to access read-only property
+@TypeChecked
 @Component
 class DetectProjectManager {
     private final Logger logger = LoggerFactory.getLogger(DetectProjectManager.class)
@@ -65,7 +72,7 @@ class DetectProjectManager {
     BdioNodeFactory bdioNodeFactory
 
     @Autowired
-    DependencyNodeTransformer dependencyNodeTransformer
+    DependencyGraphTransformer dependencyGraphTransformer
 
     @Autowired
     Gson gson
@@ -85,7 +92,9 @@ class DetectProjectManager {
     private boolean foundAnyBomTools
 
     public DetectProject createDetectProject() {
-        DetectProject detectProject = new DetectProject()
+
+        //ensure that the project name is set, use some reasonable defaults
+        DetectProject detectProject = new DetectProject(getDefaultProjectName(), getDefaultProjectVersionName())
 
         String excludedBomTools = detectConfiguration.excludedBomToolTypes
         String includedBomTools = detectConfiguration.includedBomToolTypes
@@ -121,9 +130,6 @@ class DetectProjectManager {
                 }
             }
         }
-        //ensure that the project name is set, use some reasonable defaults
-        detectProject.projectName = getProjectName(detectProject.projectName)
-        detectProject.projectVersionName = getProjectVersionName(detectProject.projectVersionName)
 
         if (!foundAnyBomTools) {
             logger.info("No package managers were detected - will register ${detectConfiguration.sourcePath} for signature scanning of ${detectProject.projectName}/${detectProject.projectVersionName}")
@@ -147,11 +153,18 @@ class DetectProjectManager {
             }
         }
 
+        MutableDependencyGraph aggregateGraph = new MutableMapDependencyGraph()
+        DependencyGraphCombiner combiner = new DependencyGraphCombiner()
+
         detectProject.detectCodeLocations.each {
             if (detectConfiguration.aggregateBomName) {
-                aggregateBdioDocument.components.addAll(dependencyNodeTransformer.addComponentsGraph(aggregateBdioDocument.project, it.dependencies))
+                combiner.addGraphAsChildrenToRoot(aggregateGraph, it.dependencyGraph);
+                //def components = dependencyGraphTransformer.transformDependencyGraph(it.dependencyGraph, aggregateBdioDocument.project)
+
+                //def components = dependencyGraphTransformer.addComponentsGraph(aggregateBdioDocument.project, it.dependencies)
+                //aggregateBdioDocument.components.addAll(components)
             } else {
-                if (it.dependencies) {
+                if (it.dependencyGraph) {
                     final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(detectProject, it)
                     final String filename = it.createBdioFilename(integrationEscapeUtil, detectFileManager.extractFinalPieceFromPath(it.sourcePath), detectProject.projectName, detectProject.projectVersionName)
                     final File outputFile = new File((File)detectConfiguration.getOutputDirectory(), filename)
@@ -167,6 +180,8 @@ class DetectProjectManager {
         }
 
         if (aggregateBdioFile != null && aggregateBdioDocument != null) {
+            def components = dependencyGraphTransformer.transformDependencyGraph(aggregateGraph, aggregateBdioDocument.project)
+            aggregateBdioDocument.components.addAll(components)
             writeSimpleBdioDocument(aggregateBdioFile, aggregateBdioDocument)
         }
 
@@ -174,7 +189,7 @@ class DetectProjectManager {
     }
 
     private SimpleBdioDocument createAggregateSimpleBdioDocument(DetectProject detectProject) {
-        createSimpleBdioDocument(detectProject, '', detectProject.projectName, bdioPropertyHelper.createExternalIdentifier('', detectProject.projectName), [] as Set)
+        createSimpleBdioDocument(detectProject, '', detectProject.projectName, bdioPropertyHelper.createExternalIdentifier('', detectProject.projectName), new MutableMapDependencyGraph())
     }
 
     private SimpleBdioDocument createSimpleBdioDocument(DetectProject detectProject, DetectCodeLocation detectCodeLocation) {
@@ -182,17 +197,17 @@ class DetectProjectManager {
         final String projectId = detectCodeLocation.bomToolProjectExternalId.createDataId()
         final BdioExternalIdentifier projectExternalIdentifier = bdioPropertyHelper.createExternalIdentifier(detectCodeLocation.bomToolProjectExternalId)
 
-        createSimpleBdioDocument(detectProject, codeLocationName, projectId, projectExternalIdentifier, detectCodeLocation.dependencies)
+        createSimpleBdioDocument(detectProject, codeLocationName, projectId, projectExternalIdentifier, detectCodeLocation.dependencyGraph)
     }
 
-    private SimpleBdioDocument createSimpleBdioDocument(DetectProject detectProject, String codeLocationName, String projectId, BdioExternalIdentifier projectExternalIdentifier, Set<DependencyNode> dependencies) {
+    private SimpleBdioDocument createSimpleBdioDocument(DetectProject detectProject, String codeLocationName, String projectId, BdioExternalIdentifier projectExternalIdentifier, DependencyGraph dependencyGraph) {
         final String projectName = detectProject.projectName
         final String projectVersionName = detectProject.projectVersionName
 
         final BdioBillOfMaterials bdioBillOfMaterials = bdioNodeFactory.createBillOfMaterials(codeLocationName, projectName, projectVersionName)
         final BdioProject project = bdioNodeFactory.createProject(projectName, projectVersionName, projectId, projectExternalIdentifier)
 
-        final List<BdioComponent> bdioComponents = dependencyNodeTransformer.addComponentsGraph(project, dependencies)
+        final List<BdioComponent> bdioComponents = dependencyGraphTransformer.transformDependencyGraph(dependencyGraph, project)
 
         final SimpleBdioDocument simpleBdioDocument = new SimpleBdioDocument()
         simpleBdioDocument.billOfMaterials = bdioBillOfMaterials
@@ -214,35 +229,27 @@ class DetectProjectManager {
         outputFile
     }
 
-    String getProjectName(final String defaultProjectName) {
-        String projectName = defaultProjectName?.trim()
-
+    String getDefaultProjectName() {
         if (detectConfiguration.getProjectName()) {
-            projectName = detectConfiguration.getProjectName()
-        } else if (!projectName && detectConfiguration.sourcePath) {
-            String finalSourcePathPiece = detectFileManager.extractFinalPieceFromPath(detectConfiguration.sourcePath)
-            projectName = finalSourcePathPiece
+            detectConfiguration.getProjectName()
+        } else if (detectConfiguration.sourcePath) {
+            detectFileManager.extractFinalPieceFromPath(detectConfiguration.sourcePath)
+        }else{
+            ''
         }
-
-        projectName
     }
 
-    String getProjectVersionName(final String defaultVersionName) {
-        String projectVersion = defaultVersionName?.trim()
-
+    String getDefaultProjectVersionName() {
         if (detectConfiguration.projectVersionName) {
-            projectVersion = detectConfiguration.projectVersionName
-        } else if (!projectVersion) {
+            detectConfiguration.projectVersionName
+        } else {
             if ('timestamp' == detectConfiguration.defaultProjectVersionScheme) {
                 String timeformat = detectConfiguration.defaultProjectVersionTimeformat
-                String timeString = DateTimeFormat.forPattern(timeformat).withZoneUTC().print(DateTime.now().withZone(DateTimeZone.UTC))
-                projectVersion = timeString
+                DateTimeFormat.forPattern(timeformat).withZoneUTC().print(DateTime.now().withZone(DateTimeZone.UTC))
             } else {
-                projectVersion = detectConfiguration.defaultProjectVersionText
+                detectConfiguration.defaultProjectVersionText
             }
         }
-
-        projectVersion
     }
 
 }

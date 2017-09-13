@@ -22,41 +22,50 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.sbt
 
-import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeBuilder
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+
+
+import com.blackducksoftware.integration.hub.bdio.simple.MutableDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.simple.MutableMapDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.simple.model.Dependency
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenExternalId
-import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtConfigurationDependencyTree
-import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtReport
+import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtDependencyModule
+import com.blackducksoftware.integration.hub.detect.bomtool.sbt.reports.model.SbtReport
 
 import groovy.transform.TypeChecked
 
 @TypeChecked
 public class SbtDependencyResolver {
-    public SbtConfigurationDependencyTree resolveReportDependencies(SbtReport report) {
+    public SbtDependencyModule resolveReport(SbtReport report) {
         def rootId = new MavenExternalId(report.organisation, report.module, report.revision)
-        def root = new DependencyNode(report.module, report.revision, rootId )
+        List<SbtDependencyModule> modules = new ArrayList<>();
 
-        def builder = new DependencyNodeBuilder(root)
+        MutableDependencyGraph graph = new MutableMapDependencyGraph()
 
         report.dependencies.each { module ->
             module.revisions.each { revision ->
                 def id = new MavenExternalId(module.organisation, module.name, revision.name)
-                def node = new DependencyNode(module.name, revision.name, id)
+                def parent = new Dependency(module.name, revision.name, id)
 
-                List<DependencyNode> children = new ArrayList<DependencyNode>()
                 revision.callers.each { caller ->
                     def childId = new MavenExternalId(caller.callerOrganisation, caller.callerName, caller.callerRevision)
-                    def childNode = new DependencyNode(caller.callerName, caller.callerRevision, childId)
-                    children.add(childNode)
+                    def child = new Dependency(caller.callerName, caller.callerRevision, childId)
+                    if (rootId.equals(childId)){
+                        graph.addChildToRoot(child);
+                    }else{
+                        graph.addParentWithChild(parent, child)
+                    }
                 }
-
-                builder.addChildNodeWithParents(node, children)
             }
         }
 
-        def config = new SbtConfigurationDependencyTree()
-        config.rootNode = root
-        config.configuration = report.configuration
-        config
+        def module = new SbtDependencyModule()
+        module.name = report.getModule()
+        module.version = report.getRevision()
+        module.org = report.getOrganisation()
+
+        module.graph = graph;
+        module.configuration = report.configuration
+
+        module
     }
 }

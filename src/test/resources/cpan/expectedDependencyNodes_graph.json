@@ -1,0 +1,20 @@
+{
+  "externalDataIdRelationships": {
+    "data:cpan/ExtUtils_MakeMaker/7_24": [],
+    "data:cpan/Test_More/1_302073": []
+  },
+  "dependencySummaries": {
+    "data:cpan/ExtUtils_MakeMaker/7_24": {
+      "name": "ExtUtils-MakeMaker",
+      "version": "7.24"
+    },
+    "data:cpan/Test_More/1_302073": {
+      "name": "Test-More",
+      "version": "1.302073"
+    }
+  },
+  "rootExternalDataIds": [
+    "data:cpan/ExtUtils_MakeMaker/7_24",
+    "data:cpan/Test_More/1_302073"
+  ]
+}

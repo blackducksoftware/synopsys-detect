@@ -22,13 +22,17 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.sbt.models
 
+import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraph
+
 import groovy.transform.TypeChecked
 
 @TypeChecked
-public class SbtModule {
-    String organisation
+class SbtGraph {
+    public String sourcePath
+    public DependencyGraph graph
 
-    String name
-
-    List<SbtRevision> revisions
+    public SbtModule(DependencyGraph graph, String sourcePath) {
+        this.sourcePath = sourcePath
+        this.graph = graph
+    }
 }

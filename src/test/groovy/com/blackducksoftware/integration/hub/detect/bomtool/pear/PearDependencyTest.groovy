@@ -16,6 +16,7 @@ import org.junit.Test
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.DetectProperties
+import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphTestUtil
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 
 class PearDependencyTest {
@@ -56,9 +57,8 @@ class PearDependencyTest {
             'Console_Getopt',
             'Structures_Graph'
         ]
-        def actual = pearDependencyFinder.createPearDependencyNodeFromList(installedPackages, dependencyNames)
-        def expected = testUtil.getResourceAsUTF8String('/pear/dependency-node-list.txt')
+        def actual = pearDependencyFinder.createPearDependencyGraphFromList(installedPackages, dependencyNames)
 
-        Assert.assertTrue(actual.toString().equals(expected))
+        DependencyGraphTestUtil.assertGraph('/pear/dependency-node-list_graph.json', actual);
     }
 }

@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.sbt.models
+package com.blackducksoftware.integration.hub.detect.bomtool.sbt.reports.model
 
 import groovy.transform.TypeChecked
 

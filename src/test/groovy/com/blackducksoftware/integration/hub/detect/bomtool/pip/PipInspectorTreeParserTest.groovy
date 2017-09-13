@@ -15,10 +15,7 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 
@@ -84,12 +81,12 @@ ${space + child2Text}
 ${space + child3Text}
 """
 
-        DependencyNode root = parser.parse(nameVersionNodeTransformer, validText)
-        ExternalId expectedExternalId = new NameVersionExternalId(Forge.PYPI, '', '')
-        Assert.assertEquals('', root.name)
-        Assert.assertEquals('', root.version)
-        Assert.assertEquals(expectedExternalId, root.externalId)
-        Assert.assertEquals(3, root.children.size())
+        DetectCodeLocation codeLocation = parser.parse(nameVersionNodeTransformer, "source", validText)
+
+        Assert.assertEquals(codeLocation.bomToolProjectName, '')
+        Assert.assertEquals(codeLocation.bomToolProjectVersionName, '')
+
+        Assert.assertEquals(3, codeLocation.dependencyGraph.getRootDependencies().size())
     }
 
     @Test
@@ -98,7 +95,7 @@ ${space + child3Text}
         i am not a valid file
         the result should be null
         """
-        DependencyNode root = parser.parse(nameVersionNodeTransformer, invalidText)
-        Assert.assertNull(root)
+        DetectCodeLocation codeLocation = parser.parse(nameVersionNodeTransformer, "source", invalidText)
+        Assert.assertNull(codeLocation)
     }
 }

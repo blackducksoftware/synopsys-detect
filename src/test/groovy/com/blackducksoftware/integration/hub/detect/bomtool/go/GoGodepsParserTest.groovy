@@ -15,12 +15,13 @@ import java.nio.charset.StandardCharsets
 
 import org.apache.commons.io.IOUtils
 import org.junit.Test
-import org.skyscreamer.jsonassert.JSONAssert
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.simple.model.Dependency
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.GoDepBomTool
 import com.blackducksoftware.integration.hub.detect.bomtool.go.godep.GoGodepsParser
+import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphTestUtil
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
@@ -31,13 +32,12 @@ public class GoGodepsParserTest {
     public void goDepParserTest() throws IOException {
         final GoGodepsParser goDepParser = new GoGodepsParser(gson)
         final String goDepOutput = IOUtils.toString(getClass().getResourceAsStream("/go/Go_Godeps.json"), StandardCharsets.UTF_8)
-        final List<DependencyNode> projectDependencies = goDepParser.extractProjectDependencies(goDepOutput)
-        final String actual = gson.toJson(projectDependencies)
-        final String expected = IOUtils.toString(getClass().getResourceAsStream("/go/Go_GodepsParserExpected.json"), StandardCharsets.UTF_8)
-        JSONAssert.assertEquals(expected, actual, false)
+        final DependencyGraph dependencyGraph = goDepParser.extractProjectDependencies(goDepOutput)
+
+        DependencyGraphTestUtil.assertGraph('/go/Go_GodepsParserExpected_graph.json', dependencyGraph);
     }
 
-    private void fixVersion(final DependencyNode node, final String newVersion) {
+    private void fixVersion(final Dependency node, final String newVersion) {
         node.version = newVersion
         node.externalId = new NameVersionExternalId(GoDepBomTool.GOLANG, node.name, newVersion)
     }

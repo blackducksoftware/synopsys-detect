@@ -22,7 +22,10 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.go.vndr
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.simple.MutableDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.simple.MutableMapDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.simple.model.Dependency
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.GoDepBomTool
@@ -31,8 +34,8 @@ import groovy.transform.TypeChecked
 
 @TypeChecked
 class VndrParser {
-    public List<DependencyNode> parseVendorConf(String vendorConfContents) {
-        List<DependencyNode> nodes = new ArrayList<>()
+    public DependencyGraph parseVendorConf(String vendorConfContents) {
+        MutableDependencyGraph graph = new MutableMapDependencyGraph();
         String contents = vendorConfContents.trim()
         def lines = contents.split(System.lineSeparator())
         //TODO test against moby
@@ -40,11 +43,11 @@ class VndrParser {
             if (line?.trim() && !line.startsWith('#')) {
                 def parts = line.split(' ')
                 final ExternalId dependencyExternalId = new NameVersionExternalId(GoDepBomTool.GOLANG, parts[0], parts[1])
-                final DependencyNode dependency = new DependencyNode(parts[0], parts[1], dependencyExternalId)
-                nodes.add(dependency)
+                final Dependency dependency = new Dependency(parts[0], parts[1], dependencyExternalId)
+                graph.addChildToRoot(dependency);
             }
         }
 
-        return nodes
+        return graph
     }
 }

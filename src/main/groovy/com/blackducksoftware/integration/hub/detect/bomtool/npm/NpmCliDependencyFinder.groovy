@@ -28,9 +28,13 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.MutableDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.simple.MutableMapDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.simple.model.Dependency
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+import com.blackducksoftware.integration.hub.detect.model.BomToolType
+import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
@@ -45,10 +49,10 @@ class NpmCliDependencyFinder {
     private static final String JSON_VERSION = 'version'
     private static final String JSON_DEPENDENCIES = 'dependencies'
 
-    public DependencyNode generateDependencyNode(File npmLsOutputFile) {
+    public DetectCodeLocation generateCodeLocation(String sourcePath, File npmLsOutputFile) {
         if (npmLsOutputFile?.length() > 0) {
             logger.info("Generating results from npm ls -json")
-            return convertNpmJsonFileToDependencyNode(npmLsOutputFile.text)
+            return convertNpmJsonFileToCodeLocation(sourcePath, npmLsOutputFile.text)
         } else {
             logger.error("Ran into an issue creating and writing to file")
         }
@@ -56,21 +60,20 @@ class NpmCliDependencyFinder {
         null
     }
 
-    private DependencyNode convertNpmJsonFileToDependencyNode(String npmLsOutput) {
+    private DetectCodeLocation convertNpmJsonFileToCodeLocation(String sourcePath, String npmLsOutput) {
         JsonObject npmJson = new JsonParser().parse(npmLsOutput) as JsonObject
+        MutableDependencyGraph graph = new MutableMapDependencyGraph();
 
         String projectName = npmJson.getAsJsonPrimitive(JSON_NAME)?.getAsString()
         String projectVersion = npmJson.getAsJsonPrimitive(JSON_VERSION)?.getAsString()
 
+        populateChildren(graph, null, npmJson.getAsJsonObject(JSON_DEPENDENCIES), true)
+
         def externalId = new NameVersionExternalId(Forge.NPM, projectName, projectVersion)
-        def dependencyNode = new DependencyNode(projectName, projectVersion, externalId)
-
-        populateChildren(dependencyNode, npmJson.getAsJsonObject(JSON_DEPENDENCIES))
-
-        dependencyNode
+        new DetectCodeLocation(BomToolType.NPM, sourcePath, projectName, projectVersion, externalId, graph)
     }
 
-    private void populateChildren(DependencyNode parentDependencyNode, JsonObject parentNodeChildren) {
+    private void populateChildren(MutableDependencyGraph graph, Dependency parentDependency, JsonObject parentNodeChildren, Boolean root) {
         Set<Entry<String, JsonElement>> elements = parentNodeChildren?.entrySet()
         elements?.each { Entry<String, JsonElement> it ->
             JsonObject element = it.value as JsonObject
@@ -79,10 +82,14 @@ class NpmCliDependencyFinder {
             JsonObject children = element.getAsJsonObject(JSON_DEPENDENCIES)
 
             def externalId = new NameVersionExternalId(Forge.NPM, name, version)
-            def newNode = new DependencyNode(name, version, externalId)
+            def child = new Dependency(name, version, externalId)
 
-            populateChildren(newNode, children)
-            parentDependencyNode.children.add(newNode)
+            populateChildren(graph, child, children, false)
+            if (root){
+                graph.addChildToRoot(child)
+            }else{
+                graph.addParentWithChild(parentDependency, child)
+            }
         }
     }
 }

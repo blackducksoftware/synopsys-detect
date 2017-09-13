@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.pear.PearDependencyFinder
@@ -82,14 +82,14 @@ class PearBomTool extends BomTool {
         String rootName = packageXml.name
         String rootVersion = packageXml.version.release
 
-        Set<DependencyNode> childDependencyNodes = pearDependencyFinder.parsePearDependencyList(pearListing, pearDependencies)
+        DependencyGraph dependencyGraph = pearDependencyFinder.parsePearDependencyGraph(pearListing, pearDependencies)
         def detectCodeLocation = new DetectCodeLocation(
                 getBomToolType(),
                 sourcePath,
                 rootName,
                 rootVersion,
                 new NameVersionExternalId(PEAR, rootName, rootVersion),
-                childDependencyNodes
+                dependencyGraph
                 )
 
         [detectCodeLocation]

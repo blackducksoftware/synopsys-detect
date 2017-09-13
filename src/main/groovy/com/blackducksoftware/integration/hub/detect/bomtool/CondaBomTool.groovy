@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.PathExternalId
@@ -72,10 +72,7 @@ class CondaBomTool extends BomTool {
     public List<DetectCodeLocation> extractDetectCodeLocations() {
         List<String> condaListOptions = ['list']
         if (detectConfiguration.getCondaEnvironmentName()) {
-            condaListOptions.addAll([
-                '-n',
-                detectConfiguration.getCondaEnvironmentName()
-            ])
+            condaListOptions.addAll(['-n', detectConfiguration.getCondaEnvironmentName()])
         }
         condaListOptions.add('--json')
         Executable condaListExecutable = new Executable(sourceDirectory, condaExecutablePath, condaListOptions)
@@ -85,9 +82,9 @@ class CondaBomTool extends BomTool {
         ExecutableOutput condaInfoOutput = executableRunner.runExe(condaExecutablePath, 'info', '--json')
         String infoJsonText = condaInfoOutput.getStandardOutput()
 
-        Set<DependencyNode> dependenciesSet = condaListParser.parse(listJsonText, infoJsonText)
+        DependencyGraph dependencyGraph = condaListParser.parse(listJsonText, infoJsonText)
         ExternalId externalId = new PathExternalId(Forge.ANACONDA, detectConfiguration.sourcePath)
-        def detectCodeLocation = new DetectCodeLocation(BomToolType.CONDA, detectConfiguration.sourcePath, externalId, dependenciesSet)
+        def detectCodeLocation = new DetectCodeLocation(BomToolType.CONDA, detectConfiguration.sourcePath, externalId, dependencyGraph)
 
         [detectCodeLocation]
     }

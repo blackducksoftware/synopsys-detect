@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.PathExternalId
@@ -82,9 +82,9 @@ class CpanBomTool extends BomTool {
         ExecutableOutput showdepsOutput = executableRunner.runExe(cpanmExecutablePath, '--showdeps', '.')
         String showdeps = showdepsOutput.getStandardOutput()
 
-        Set<DependencyNode> dependenciesSet = cpanPackager.makeDependencyNodes(listText, showdeps)
+        DependencyGraph dependencyGraph = cpanPackager.makeDependencyGraph(listText, showdeps)
         ExternalId externalId = new PathExternalId(CPAN_FORGE, detectConfiguration.sourcePath)
-        def detectCodeLocation = new DetectCodeLocation(BomToolType.CPAN, detectConfiguration.sourcePath, externalId, dependenciesSet)
+        def detectCodeLocation = new DetectCodeLocation(BomToolType.CPAN, detectConfiguration.sourcePath, externalId, dependencyGraph)
 
         [detectCodeLocation]
     }

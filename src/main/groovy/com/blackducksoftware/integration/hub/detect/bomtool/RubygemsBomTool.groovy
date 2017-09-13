@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.PathExternalId
@@ -63,11 +63,10 @@ class RubygemsBomTool extends BomTool {
         def gemlockFile = new File(sourceDirectory, GEMFILE_LOCK_FILENAME)
         String gemlockText = gemlockFile.getText(StandardCharsets.UTF_8.toString())
 
-        List<DependencyNode> dependencies = rubygemsNodePackager.extractProjectDependencies(gemlockText)
-        Set<DependencyNode> dependenciesSet = new HashSet<>(dependencies)
+        DependencyGraph dependencyGraph = rubygemsNodePackager.extractProjectDependencies(gemlockText)
         ExternalId externalId = new PathExternalId(Forge.RUBYGEMS, sourcePath)
 
-        def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, externalId, dependenciesSet)
+        def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, externalId, dependencyGraph)
         [codeLocation]
     }
 }

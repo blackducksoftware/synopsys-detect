@@ -20,36 +20,31 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.sbt
+package com.blackducksoftware.integration.hub.detect.bomtool.sbt.models
+
+import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraph
 
 import groovy.transform.TypeChecked
 
 @TypeChecked
-public class SbtAggregate {
+class SbtDependencyModule {
+    public String sourcePath
     public String name
-    public String org
     public String version
-    public SbtAggregate(String name, String org, String version) {
-        this.name = name
-        this.org = org
-        this.version = version
-    }
-    @Override
-    public boolean equals(Object object) {
-        if (object != null && object instanceof SbtAggregate) {
-            SbtAggregate thing = (SbtAggregate) object
-            return thing.name == this.name && thing.org == this.org && thing.version == this.version
-        }
+    public String org
+    public DependencyGraph graph
 
-        return false
+    public String configuration = null //if this is from a specific configuration
+
+    public SbtDependencyModule(){
+
     }
-    @Override
-    public int hashCode() {
-        final int prime = 31
-        int result = 1
-        result = prime * result + ((name == null) ? 0 : name.hashCode())
-        result = prime * result + ((org == null) ? 0 : org.hashCode())
-        result = prime * result + ((version == null) ? 0 : version.hashCode())
-        return result
+    public SbtDependencyModule(String name, String version, String org, DependencyGraph graph, String sourcePath) {
+        this.sourcePath = sourcePath
+        this.graph = graph
+
+        this.org = org
+        this.name = name
+        this.version = version
     }
 }

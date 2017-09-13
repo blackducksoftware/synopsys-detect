@@ -25,7 +25,10 @@ package com.blackducksoftware.integration.hub.detect.bomtool.rubygems
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.simple.MutableDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.simple.MutableMapDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.simple.model.Dependency
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
@@ -46,13 +49,12 @@ class GemlockNodeParser {
     private boolean inSpecsSection = false
     private boolean inDependenciesSection = false
 
-    List<DependencyNode> parseProjectDependencies(NameVersionNodeTransformer nameVersionNodeTransformer, final String gemfileLockContents) {
+    DependencyGraph parseProjectDependencies(NameVersionNodeTransformer nameVersionNodeTransformer, final String gemfileLockContents) {
         rootNameVersionNode = new NameVersionNodeImpl([name: 'gemfileLockRoot'])
         nameVersionNodeBuilder = new NameVersionNodeBuilder(rootNameVersionNode)
         directDependencyNames = new HashSet<>()
         currentParent = null
 
-        List<DependencyNode> projectDependencies = []
         String[] lines = gemfileLockContents.split(System.lineSeparator())
         for (String line : lines) {
             if (!line?.trim()) {
@@ -83,17 +85,19 @@ class GemlockNodeParser {
             }
         }
 
+        MutableDependencyGraph graph = new MutableMapDependencyGraph()
+
         directDependencyNames.each { directDependencyName ->
             NameVersionNode nameVersionNode = nameVersionNodeBuilder.nameToNodeMap[directDependencyName]
             if (nameVersionNode) {
-                DependencyNode directDependencyNode = nameVersionNodeTransformer.createDependencyNode(Forge.RUBYGEMS, nameVersionNode)
-                projectDependencies.add(directDependencyNode)
+                Dependency directDependency = nameVersionNodeTransformer.addNameVersionNodeToDependencyGraph(graph, Forge.RUBYGEMS, nameVersionNode)
+                graph.addChildToRoot(directDependency)
             } else {
                 logger.debug("Could not find ${directDependencyName} in the populated map.")
             }
         }
 
-        projectDependencies
+        graph
     }
 
     private void parseSpecsSectionLine(String line) {

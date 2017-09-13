@@ -100,10 +100,13 @@ class NugetBomTool extends BomTool {
 
         def dependencyNodeFiles = detectFileManager.findFiles(outputDirectory, INSPECTOR_OUTPUT_PATTERN)
         List<DetectCodeLocation> codeLocations = dependencyNodeFiles?.collectMany { nugetInspectorPackager.createDetectCodeLocation(it) }
-        try {
-            FileUtils.deleteDirectory(outputDirectory)
-        }catch (Exception e){
-            logger.warn("Unable to clean up nuget files: ${outputDirectory}")
+
+        if (detectConfiguration.cleanupBomToolFiles){
+            try {
+                FileUtils.deleteDirectory(outputDirectory)
+            }catch (Exception e){
+                logger.warn("Unable to clean up nuget files: ${outputDirectory}")
+            }
         }
 
         if (!codeLocations) {
@@ -129,10 +132,7 @@ class NugetBomTool extends BomTool {
         if (detectConfiguration.getNugetInspectorAirGapPath()?.trim()) {
             logger.debug("Running air gapped with ${detectConfiguration.getNugetInspectorAirGapPath()}")
             final File nupkgParentDirectory = new File(detectConfiguration.getNugetInspectorAirGapPath()).getParentFile()
-            nugetOptions.addAll([
-                '-Source',
-                nupkgParentDirectory.getCanonicalPath()
-            ])
+            nugetOptions.addAll(['-Source', nupkgParentDirectory.getCanonicalPath()])
         } else {
             logger.debug('Running online. Resolving through nuget')
             nugetOptions.addAll([

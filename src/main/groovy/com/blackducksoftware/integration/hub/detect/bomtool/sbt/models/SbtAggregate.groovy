@@ -25,8 +25,31 @@ package com.blackducksoftware.integration.hub.detect.bomtool.sbt.models
 import groovy.transform.TypeChecked
 
 @TypeChecked
-public class SbtRevision {
-    String name
+public class SbtAggregate {
+    public String name
+    public String org
+    public String version
+    public SbtAggregate(String name, String org, String version) {
+        this.name = name
+        this.org = org
+        this.version = version
+    }
+    @Override
+    public boolean equals(Object object) {
+        if (object != null && object instanceof SbtAggregate) {
+            SbtAggregate thing = (SbtAggregate) object
+            return thing.name == this.name && thing.org == this.org && thing.version == this.version
+        }
 
-    List<SbtCaller> callers
+        return false
+    }
+    @Override
+    public int hashCode() {
+        final int prime = 31
+        int result = 1
+        result = prime * result + ((name == null) ? 0 : name.hashCode())
+        result = prime * result + ((org == null) ? 0 : org.hashCode())
+        result = prime * result + ((version == null) ? 0 : version.hashCode())
+        return result
+    }
 }

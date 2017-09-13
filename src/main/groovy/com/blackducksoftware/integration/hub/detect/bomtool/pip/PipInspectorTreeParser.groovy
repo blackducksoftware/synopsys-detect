@@ -26,8 +26,11 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+import com.blackducksoftware.integration.hub.detect.model.BomToolType
+import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
@@ -47,8 +50,8 @@ class PipInspectorTreeParser {
     public static final String UNKNOWN_PACKAGE_PREFIX = '--'
     public static final String INDENTATION = ' '.multiply(4)
 
-    DependencyNode parse(NameVersionNodeTransformer nameVersionNodeTransformer, String treeText) {
-        def lines = treeText.trim().split(System.lineSeparator()).toList()
+    DetectCodeLocation parse(NameVersionNodeTransformer nameVersionNodeTransformer, String sourcePath, String treeText) {
+        def lines = treeText.trim().split("\\r?\\n").toList()
 
         NameVersionNodeBuilder nodeBuilder = null
         Stack<NameVersionNode> tree = new Stack<>()
@@ -103,10 +106,12 @@ class PipInspectorTreeParser {
                 projectNode.name = ''
                 projectNode.version = ''
             }
-            return nameVersionNodeTransformer.createDependencyNode(Forge.PYPI, projectNode)
+            DependencyGraph graph = nameVersionNodeTransformer.createDependencyGraph(Forge.PYPI, projectNode, false)
+            def eid = new NameVersionExternalId(Forge.PYPI, projectNode.name, projectNode.version);
+            new DetectCodeLocation(BomToolType.PIP, sourcePath, projectNode.name, projectNode.version, eid, graph);
+        }else{
+            null
         }
-
-        null
     }
 
     NameVersionNode lineToNode(String line) {

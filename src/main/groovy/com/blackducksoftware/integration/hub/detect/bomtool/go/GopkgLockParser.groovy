@@ -22,7 +22,10 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.go
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.simple.MutableDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.simple.MutableMapDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.simple.model.Dependency
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.GoDepBomTool
@@ -32,8 +35,8 @@ import groovy.transform.TypeChecked
 
 @TypeChecked
 class GopkgLockParser {
-    public List<DependencyNode> parseDepLock(String depLockContents) {
-        List<DependencyNode> nodes = new ArrayList<>()
+    public DependencyGraph parseDepLock(String depLockContents) {
+        MutableDependencyGraph graph = new MutableMapDependencyGraph()
         GopkgLock gopkgLock = new Toml().read(depLockContents).to(GopkgLock.class)
 
         for (Project project : gopkgLock.projects) {
@@ -53,11 +56,11 @@ class GopkgLockParser {
                     packageName = packageName.replaceAll('golang.org/x/', '')
                 }
                 final ExternalId dependencyExternalId = new NameVersionExternalId(GoDepBomTool.GOLANG, packageName, version)
-                final DependencyNode dependency = new DependencyNode(packageName, version, dependencyExternalId)
-                nodes.add(dependency)
+                final Dependency dependency = new Dependency(packageName, version, dependencyExternalId)
+                graph.addChildToRoot(dependency)
             }
         }
 
-        return nodes
+        return graph
     }
 }

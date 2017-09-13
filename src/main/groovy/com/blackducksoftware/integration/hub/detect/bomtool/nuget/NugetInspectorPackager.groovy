@@ -97,7 +97,7 @@ class NugetInspectorPackager {
             def codeLocations = nugetContainer.children.collect { container ->
                 def builder = new NugetDependencyNodeBuilder()
                 builder.addPackageSets(container.packages)
-                def children = builder.createDependencyNodes(container.dependencies)
+                def children = builder.createDependencyGraph(container.dependencies)
                 def sourcePath = container.sourcePath
 
                 if (!projectVersionName) {
@@ -112,7 +112,7 @@ class NugetInspectorPackager {
             String sourcePath = nugetContainer.sourcePath
             def builder = new NugetDependencyNodeBuilder()
             builder.addPackageSets(nugetContainer.packages)
-            def children = builder.createDependencyNodes(nugetContainer.dependencies)
+            def children = builder.createDependencyGraph(nugetContainer.dependencies)
 
             return [
                 new DetectCodeLocation(BomToolType.NUGET, sourcePath, projectName, projectVersionName, new NameVersionExternalId(Forge.NUGET, projectName, projectVersionName), children)

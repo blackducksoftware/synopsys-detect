@@ -22,7 +22,10 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.go.godep
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.simple.MutableDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.simple.MutableMapDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.simple.model.Dependency
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.GoDepBomTool
@@ -38,9 +41,9 @@ class GoGodepsParser {
         this.gson = gson
     }
 
-    public List<DependencyNode> extractProjectDependencies(String goDepContents) {
+    public DependencyGraph extractProjectDependencies(String goDepContents) {
         GodepsFile goDepsFile = gson.fromJson(goDepContents, GodepsFile.class)
-        List<DependencyNode> children = []
+        MutableDependencyGraph graph = new MutableMapDependencyGraph();
         goDepsFile.deps.each { GodepDependency dep ->
             def version = ''
             if (dep.comment?.trim()) {
@@ -55,9 +58,9 @@ class GoGodepsParser {
                 version = dep.rev.trim()
             }
             final ExternalId dependencyExternalId = new NameVersionExternalId(GoDepBomTool.GOLANG, dep.importPath, version)
-            final DependencyNode dependency = new DependencyNode(dep.importPath, version, dependencyExternalId)
-            children.add(dependency)
+            final Dependency dependency = new Dependency(dep.importPath, version, dependencyExternalId)
+            graph.addChildToRoot(dependency);
         }
-        children
+        graph
     }
 }

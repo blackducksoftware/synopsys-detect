@@ -27,7 +27,7 @@ import java.nio.charset.StandardCharsets
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.PathExternalId
@@ -67,11 +67,10 @@ class CranBomTool extends BomTool {
         }
 
         String packratLockText = packratLockFile[0].getText(StandardCharsets.UTF_8.toString())
-        List<DependencyNode> dependencies = packratPackager.extractProjectDependencies(packratLockText)
-        Set<DependencyNode> dependenciesSet = new HashSet<>(dependencies)
+        DependencyGraph dependencyGraph = packratPackager.extractProjectDependencies(packratLockText)
         ExternalId externalId = new PathExternalId(CRAN, sourcePath)
 
-        def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, projectName, projectVersion, externalId, dependenciesSet)
+        def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, projectName, projectVersion, externalId, dependencyGraph)
         [codeLocation]
     }
 }
