@@ -114,7 +114,7 @@ license {
     ext.year = Calendar.getInstance().get(Calendar.YEAR)
     ignoreFailures = true
     includes (["**/*.groovy", "**/*.java"])
-    exclude "/src/test/*"
+    excludes (["/src/test/*.groovy", "src/test/*.java"])
 }
 
 tasks.licenseMain.dependsOn(licenseFormatMain)
