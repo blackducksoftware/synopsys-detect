@@ -132,15 +132,16 @@ class DockerBomTool extends BomTool {
         if (usingTarFile) {
             hubSignatureScanner.registerPathToScan(new File(detectConfiguration.dockerTar))
         } else {
-            File producedTarFile = detectFileManager.findFile(dockerBomToolDirectory, '*.tar.gz')
+            String fileNamePattern = '*.tar.gz'
+            File producedTarFile = detectFileManager.findFile(dockerBomToolDirectory, fileNamePattern)
             if (producedTarFile) {
                 hubSignatureScanner.registerPathToScan(producedTarFile)
             } else {
-                logger.debug("No tar file found. Expected docker-inspector to produce tar file in ${dockerBomToolDirectory.getCanonicalPath()}")
+                logger.debug("No files found matching pattern [${fileNamePattern}]. Expected docker-inspector to produce file in ${dockerBomToolDirectory.getCanonicalPath()}")
             }
         }
 
-        File dependencyNodeJsonFile = detectFileManager.findFile(dockerBomToolDirectory, '*dependencies.json')
+        File dependencyNodeJsonFile = detectFileManager.findFile(dockerBomToolDirectory, '*_dependencies.json')
         String codeLocationJson = dependencyNodeJsonFile.getText(StandardCharsets.UTF_8.toString())
         DetectCodeLocation codeLocation = gson.fromJson(codeLocationJson, DetectCodeLocation.class)
 
