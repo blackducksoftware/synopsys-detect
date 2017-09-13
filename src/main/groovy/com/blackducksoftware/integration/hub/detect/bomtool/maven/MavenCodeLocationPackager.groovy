@@ -60,6 +60,7 @@ class MavenCodeLocationPackager {
         level = 0
         for (String line : mavenOutputText.split(System.lineSeparator())) {
             if (!(line ==~ /\[.*INFO.*\].*/)) {
+                // If the line does not start with [INFO] and have content, we will ignore it
                 continue
             }
 
