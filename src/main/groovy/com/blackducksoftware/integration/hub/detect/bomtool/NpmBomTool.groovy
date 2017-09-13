@@ -35,6 +35,7 @@ import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
+import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 
 import groovy.transform.TypeChecked
 
@@ -69,6 +70,7 @@ class NpmBomTool extends BomTool {
 
     private File packageLockJson
     private File shrinkwrapJson
+    private Executable npmLsExe
 
     @Override
     public BomToolType getBomToolType() {
@@ -95,9 +97,14 @@ class NpmBomTool extends BomTool {
         } else if (containsPackageJson && containsNodeModules) {
             npmExePath = findExecutablePath(ExecutableType.NPM, true, detectConfiguration.getNpmPath())
             if (!npmExePath) {
-                logger.warn("Could not find a ${executableManager.getExecutableName(ExecutableType.NPM)} executable")
+                logger.warn("Could not find an ${executableManager.getExecutableName(ExecutableType.NPM)} executable")
             } else {
-                logger.debug("Npm version ${executableRunner.runExe(npmExePath, '-version').standardOutput}")
+                npmLsExe = new Executable(new File(sourcePath), npmExePath, ['-version'])
+                String npmNodePath = detectConfiguration.getNpmNodePath()
+                if (npmNodePath) {
+                    npmLsExe.environmentVariables.put('PATH', npmNodePath)
+                }
+                logger.debug("Npm version ${executableRunner.execute(npmLsExe).standardOutput}")
             }
         } else if (containsPackageLockJson) {
             logger.info("Using ${PACKAGE_LOCK_JSON}")
@@ -135,12 +142,14 @@ class NpmBomTool extends BomTool {
     private List<DetectCodeLocation> extractFromCommand() {
         File npmLsOutputFile = detectFileManager.createFile(BomToolType.NPM, NpmBomTool.OUTPUT_FILE)
         File npmLsErrorFile = detectFileManager.createFile(BomToolType.NPM, NpmBomTool.ERROR_FILE)
-        if (detectConfiguration.npmIncludeDevDependencies) {
-            executableRunner.runExeToFile(npmExePath, npmLsOutputFile, npmLsErrorFile, 'ls', '-json')
-        } else {
-            executableRunner.runExeToFile(npmExePath, npmLsOutputFile, npmLsErrorFile, 'ls', '-json', '-prod')
-        }
+        boolean includeDevDeps = detectConfiguration.npmIncludeDevDependencies
+        def exeArgs = ['ls', '-json']
 
+        if (!includeDevDeps) {
+            exeArgs + '-prod'
+        }
+        npmLsExe.setExecutableArguments(exeArgs)
+        executableRunner.executeToFile(npmLsExe, npmLsOutputFile, npmLsErrorFile)
 
         if (npmLsOutputFile.length() > 0) {
             if (npmLsErrorFile.length() > 0) {

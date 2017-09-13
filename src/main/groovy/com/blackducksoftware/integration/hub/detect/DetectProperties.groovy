@@ -246,6 +246,10 @@ class DetectProperties {
     @Value('${detect.npm.include.dev.dependencies}')
     String npmIncludeDevDependencies
 
+    @ValueDescription(description="The environment path of the node executable that is used by Npm. Used when running detect in a virtual environment", group=DetectProperties.GROUP_NPM)
+    @Value('${detect.npm.node.path}')
+    String npmNodePath
+
     @ValueDescription(description="The path of the pear executable", group=DetectProperties.GROUP_PEAR)
     @Value('${detect.pear.path}')
     String pearPath

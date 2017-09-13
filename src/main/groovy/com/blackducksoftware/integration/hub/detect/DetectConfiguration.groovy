@@ -320,6 +320,9 @@ class DetectConfiguration {
     public boolean getNpmIncludeDevDependencies() {
         return BooleanUtils.toBoolean(detectProperties.npmIncludeDevDependencies)
     }
+    public String getNpmNodePath() {
+        return detectProperties.npmNodePath
+    }
     public String getPearPath() {
         return detectProperties.pearPath
     }
