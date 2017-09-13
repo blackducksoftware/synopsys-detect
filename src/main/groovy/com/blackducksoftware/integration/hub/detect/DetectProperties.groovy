@@ -218,6 +218,14 @@ class DetectProperties {
     @Value('${detect.maven.path}')
     String mavenPath
 
+    @ValueDescription(description="The names of the module to exclude", group=DetectProperties.GROUP_MAVEN)
+    @Value('${detect.maven.excluded.modules}')
+    String mavenExcludedModuleNames
+
+    @ValueDescription( description="The names of the module to include", group=DetectProperties.GROUP_MAVEN)
+    @Value('${detect.maven.included.modules}')
+    String mavenIncludedModuleNames
+
     @ValueDescription(description="The path of the Nuget executable", group=DetectProperties.GROUP_NUGET)
     @Value('${detect.nuget.path}')
     String nugetPath
