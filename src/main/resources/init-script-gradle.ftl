@@ -8,7 +8,9 @@ import com.blackducksoftware.integration.gradle.DependencyGatherer
 
 initscript {
 <#if airGapLibsPath??>
-    println "Running air gapped from ${airGapLibsPath}"
+    println 'Running air gapped from ${airGapLibsPath}'
+<#elseif customRepositoryUrl??>
+    println 'Running in online mode with url: ${customRepositoryUrl}'
 <#else>
     println 'Running in online mode'
 </#if>
