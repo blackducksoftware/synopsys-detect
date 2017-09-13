@@ -101,6 +101,8 @@ class NpmBomTool extends BomTool {
             } else {
                 npmLsExe = new Executable(new File(sourcePath), npmExePath, ['-version'])
                 String npmNodePath = detectConfiguration.getNpmNodePath()
+                int lastSlashIndex = npmNodePath.lastIndexOf('/')
+                npmNodePath = npmNodePath.substring(0, lastSlashIndex)
                 if (npmNodePath) {
                     npmLsExe.environmentVariables.put('PATH', npmNodePath)
                 }
@@ -146,7 +148,7 @@ class NpmBomTool extends BomTool {
         def exeArgs = ['ls', '-json']
 
         if (!includeDevDeps) {
-            exeArgs + '-prod'
+            exeArgs.add('-prod')
         }
         npmLsExe.setExecutableArguments(exeArgs)
         executableRunner.executeToFile(npmLsExe, npmLsOutputFile, npmLsErrorFile)
