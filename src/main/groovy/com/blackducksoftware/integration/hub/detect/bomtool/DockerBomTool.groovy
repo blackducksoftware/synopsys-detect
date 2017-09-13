@@ -30,14 +30,13 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.detect.bomtool.docker.DependencyNodePackager
 import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerProperties
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
-
+import com.google.gson.Gson
 import groovy.transform.TypeChecked
 
 @Component
@@ -47,8 +46,10 @@ class DockerBomTool extends BomTool {
 
     static final URL LATEST_URL = new URL('https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector.sh')
 
+    static final String FORGE_SEPARATOR = ":"
+
     @Autowired
-    DependencyNodePackager dependencyNodePackager
+    Gson gson
 
     @Autowired
     DockerProperties dockerProperties
@@ -123,7 +124,7 @@ class DockerBomTool extends BomTool {
 
         List<String> bashArguments = [
             "-c",
-            "${shellScriptFile.absolutePath} --spring.config.location=\"${dockerPropertiesFile.getAbsolutePath()}\" --dry.run=true ${imageArgument}" as String
+            "${shellScriptFile.absolutePath} --spring.config.location=\"${dockerBomToolDirectory.getAbsolutePath()}\" --dry.run=true ${imageArgument}" as String
         ]
         Executable dockerExecutable = new Executable(shellScriptFile.parentFile, environmentVariables, bashExecutablePath, bashArguments)
         executableRunner.execute(dockerExecutable)
@@ -139,9 +140,9 @@ class DockerBomTool extends BomTool {
             }
         }
 
-        File dependencyNodeJsonFile = detectFileManager.findFile(dockerBomToolDirectory, '*_dependencies.json')
-        DependencyNode dependencyNode = dependencyNodePackager.parse(dependencyNodeJsonFile.getText())
-        DetectCodeLocation codeLocation = new DetectCodeLocation(BomToolType.DOCKER, imageArgument, dependencyNode)
+        File dependencyNodeJsonFile = detectFileManager.findFile(dockerBomToolDirectory, '*dependencies.json')
+        String codeLocationJson = dependencyNodeJsonFile.getText(StandardCharsets.UTF_8.toString())
+        DetectCodeLocation codeLocation = gson.fromJson(codeLocationJson, DetectCodeLocation.class)
 
         [codeLocation]
     }
