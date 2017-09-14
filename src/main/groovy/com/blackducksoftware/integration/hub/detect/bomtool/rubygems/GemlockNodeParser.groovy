@@ -88,7 +88,7 @@ class GemlockNodeParser {
         MutableDependencyGraph graph = new MutableMapDependencyGraph()
 
         directDependencyNames.each { directDependencyName ->
-            NameVersionNode nameVersionNode = nameVersionNodeBuilder.nameToNodeMap[directDependencyName]
+            NameVersionNode nameVersionNode = nameVersionNodeBuilder.nodeCache[directDependencyName]
             if (nameVersionNode) {
                 Dependency directDependency = nameVersionNodeTransformer.addNameVersionNodeToDependencyGraph(graph, Forge.RUBYGEMS, nameVersionNode)
                 graph.addChildToRoot(directDependency)

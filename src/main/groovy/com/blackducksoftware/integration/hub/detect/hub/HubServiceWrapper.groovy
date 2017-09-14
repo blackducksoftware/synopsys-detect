@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.exception.EncryptionException
+import com.blackducksoftware.integration.exception.IntegrationException
 import com.blackducksoftware.integration.hub.api.bom.BomImportRequestService
 import com.blackducksoftware.integration.hub.api.codelocation.CodeLocationRequestService
 import com.blackducksoftware.integration.hub.api.item.MetaService
@@ -46,6 +47,7 @@ import com.blackducksoftware.integration.hub.detect.exception.DetectException
 import com.blackducksoftware.integration.hub.global.HubServerConfig
 import com.blackducksoftware.integration.hub.rest.RestConnection
 import com.blackducksoftware.integration.hub.service.HubServicesFactory
+import com.blackducksoftware.integration.log.IntLogger
 import com.blackducksoftware.integration.log.Slf4jIntLogger
 
 import groovy.transform.TypeChecked
@@ -69,6 +71,22 @@ class HubServiceWrapper {
             hubServicesFactory = createHubServicesFactory(slf4jIntLogger, hubServerConfig)
         } catch (IllegalStateException | EncryptionException e) {
             throw new DetectException("Not able to initialize Hub connection: ${e.message}")
+        }
+    }
+
+    public void testHubConnection() {
+        logger.info("Attempting connection to the Hub")
+        try {
+            IntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
+            HubServerConfig hubServerConfig = createHubServerConfig(slf4jIntLogger)
+
+            final RestConnection connection = hubServerConfig.createCredentialsRestConnection(slf4jIntLogger)
+            connection.connect()
+            logger.info("Connection to the Hub was successful")
+        } catch (IllegalStateException e) {
+            logger.error("Failed to build the server configuration: ${e.message}", e)
+        } catch (IntegrationException e) {
+            logger.error("Could not reach the Hub server or the credentials were invalid: ${e.message}", e)
         }
     }
 
@@ -113,7 +131,7 @@ class HubServiceWrapper {
     }
 
     RiskReportDataService createRiskReportDataService() {
-        hubServicesFactory.createRiskReportDataService(slf4jIntLogger, 30000)
+        hubServicesFactory.createRiskReportDataService(slf4jIntLogger, detectConfiguration.getPolicyCheckTimeout())
     }
 
     CLIDataService createCliDataService() {

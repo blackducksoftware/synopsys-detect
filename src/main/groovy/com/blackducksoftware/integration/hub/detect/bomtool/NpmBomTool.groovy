@@ -27,11 +27,15 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
+import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmCliDependencyFinder
+import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmLockfilePackager
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
+import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 
 import groovy.transform.TypeChecked
 
@@ -42,6 +46,8 @@ class NpmBomTool extends BomTool {
 
     public static final String NODE_MODULES = 'node_modules'
     public static final String PACKAGE_JSON = 'package.json'
+    public static final String PACKAGE_LOCK_JSON = 'package-lock.json'
+    public static final String SHRINKWRAP_JSON = 'npm-shrinkwrap.json'
     public static final String OUTPUT_FILE = 'detect_npm_proj_dependencies.json'
     public static final String ERROR_FILE = 'detect_npm_error.json'
 
@@ -51,10 +57,20 @@ class NpmBomTool extends BomTool {
     NpmCliDependencyFinder npmCliDependencyFinder
 
     @Autowired
+    NpmLockfilePackager npmLockfilePackager
+
+    @Autowired
     YarnBomTool yarnBomTool
 
     @Autowired
     HubSignatureScanner hubSignatureScanner
+
+    @Autowired
+    DetectConfiguration detectConfiguration
+
+    private File packageLockJson
+    private File shrinkwrapJson
+    private Executable npmLsExe
 
     @Override
     public BomToolType getBomToolType() {
@@ -68,30 +84,74 @@ class NpmBomTool extends BomTool {
             return false
         }
 
+        packageLockJson = detectFileManager.findFile(sourcePath, PACKAGE_LOCK_JSON)
+        shrinkwrapJson = detectFileManager.findFile(sourcePath, SHRINKWRAP_JSON)
+
         boolean containsNodeModules = detectFileManager.containsAllFiles(sourcePath, NODE_MODULES)
         boolean containsPackageJson = detectFileManager.containsAllFiles(sourcePath, PACKAGE_JSON)
+        boolean containsPackageLockJson = packageLockJson
+        boolean containsShrinkwrapJson = shrinkwrapJson
 
         if (containsPackageJson && !containsNodeModules) {
             logger.warn("package.json was located in ${sourcePath}, but the node_modules folder was NOT located. Please run 'npm install' in that location and try again.")
         } else if (containsPackageJson && containsNodeModules) {
             npmExePath = findExecutablePath(ExecutableType.NPM, true, detectConfiguration.getNpmPath())
             if (!npmExePath) {
-                logger.warn("Could not find a ${executableManager.getExecutableName(ExecutableType.NPM)} executable")
+                logger.warn("Could not find an ${executableManager.getExecutableName(ExecutableType.NPM)} executable")
+            } else {
+                npmLsExe = new Executable(new File(sourcePath), npmExePath, ['-version'])
+                String npmNodePath = detectConfiguration.getNpmNodePath()
+                int lastSlashIndex = npmNodePath.lastIndexOf('/')
+                npmNodePath = npmNodePath.substring(0, lastSlashIndex)
+                if (npmNodePath) {
+                    npmLsExe.environmentVariables.put('PATH', npmNodePath)
+                }
+                logger.debug("Npm version ${executableRunner.execute(npmLsExe).standardOutput}")
             }
+        } else if (containsPackageLockJson) {
+            logger.info("Using ${PACKAGE_LOCK_JSON}")
+        } else if (shrinkwrapJson) {
+            logger.info("Using ${SHRINKWRAP_JSON}")
         }
 
-        boolean isApplicable = containsNodeModules && npmExePath
-        if (isApplicable) {
-            logger.debug("Npm version ${executableRunner.runExe(npmExePath, '-version').standardOutput}")
-        }
+        boolean lockFileIsApplicable = containsShrinkwrapJson || containsPackageLockJson
+        boolean isApplicable =  lockFileIsApplicable || (containsNodeModules && npmExePath)
 
         isApplicable
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
+        List<DetectCodeLocation> codeLocations= []
+        if (npmExePath) {
+            codeLocations.addAll(extractFromCommand())
+        } else if (packageLockJson) {
+            codeLocations.addAll(extractFromLockFile(packageLockJson))
+        } else if (shrinkwrapJson) {
+            codeLocations.addAll(extractFromLockFile(shrinkwrapJson))
+        }
+
+        codeLocations
+    }
+
+    private List<DetectCodeLocation> extractFromLockFile(File lockFile) {
+        String lockFileText = lockFile.getText()
+        DependencyNode npmProjectNode = npmLockfilePackager.parse(lockFileText)
+        def detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, npmProjectNode)
+
+        [detectCodeLocation]
+    }
+
+    private List<DetectCodeLocation> extractFromCommand() {
         File npmLsOutputFile = detectFileManager.createFile(BomToolType.NPM, NpmBomTool.OUTPUT_FILE)
         File npmLsErrorFile = detectFileManager.createFile(BomToolType.NPM, NpmBomTool.ERROR_FILE)
-        executableRunner.runExeToFile(npmExePath, npmLsOutputFile, npmLsErrorFile, 'ls', '-json')
+        boolean includeDevDeps = detectConfiguration.npmIncludeDevDependencies
+        def exeArgs = ['ls', '-json']
+
+        if (!includeDevDeps) {
+            exeArgs.add('-prod')
+        }
+        npmLsExe.setExecutableArguments(exeArgs)
+        executableRunner.executeToFile(npmLsExe, npmLsOutputFile, npmLsErrorFile)
 
         if (npmLsOutputFile.length() > 0) {
             if (npmLsErrorFile.length() > 0) {

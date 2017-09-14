@@ -57,7 +57,7 @@ class HelpPrinter {
                 group = currentGroup
             }
             def bodyColumns = [
-                detectValue.getKey(),
+                "--" + detectValue.getKey(),
                 detectValue.getDefaultValue(),
                 detectValue.getDescription()
             ]

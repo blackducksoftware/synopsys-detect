@@ -1,0 +1,108 @@
+[[1;34mINFO[m] Scanning for projects...
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;34mINFO[m] [1mBuilding Stash 1.3.0-SNAPSHOT[m
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-dependency-plugin:2.8:tree[m [1m(default-cli)[m @ [36msonar-stash-plugin[0;1m ---[m
+[[1;34mINFO[m] org.sonar:sonar-stash-plugin:sonar-plugin:1.3.0-SNAPSHOT
+[[1;34mINFO[m] +- org.codehaus.sonar:sonar-plugin-api:jar:4.5.4:provided
+[[1;34mINFO[m] |  +- com.google.code.findbugs:jsr305:jar:1.3.9:provided
+[[1;34mINFO[m] |  +- org.codehaus.sonar:sonar-check-api:jar:4.5.4:provided
+[[1;34mINFO[m] |  +- org.codehaus.sonar:sonar-colorizer:jar:4.5.4:provided
+[[1;34mINFO[m] |  |  \- org.codehaus.sonar:sonar-channel:jar:4.1:provided
+[[1;34mINFO[m] |  +- org.codehaus.sonar:sonar-duplications:jar:4.5.4:provided
+[[1;34mINFO[m] |  +- org.codehaus.sonar:sonar-graph:jar:4.5.4:provided
+[[1;34mINFO[m] |  |  \- commons-lang:commons-lang:jar:2.6:provided
+[[1;34mINFO[m] |  +- org.codehaus.sonar:sonar-squid:jar:4.1:provided
+[[1;34mINFO[m] |  |  +- commons-io:commons-io:jar:2.4:provided
+[[1;34mINFO[m] |  |  \- org.picocontainer:picocontainer:jar:2.14.3:provided
+[[1;34mINFO[m] |  +- org.hibernate:hibernate-annotations:jar:3.4.0.GA:provided
+[[1;34mINFO[m] |  |  +- org.hibernate:ejb3-persistence:jar:1.0.2.GA:provided
+[[1;34mINFO[m] |  |  +- org.hibernate:hibernate-commons-annotations:jar:3.1.0.GA:provided
+[[1;34mINFO[m] |  |  \- dom4j:dom4j:jar:1.6.1:provided
+[[1;34mINFO[m] |  |     \- xml-apis:xml-apis:jar:1.0.b2:provided
+[[1;34mINFO[m] |  +- commons-configuration:commons-configuration:jar:1.6:provided
+[[1;34mINFO[m] |  |  \- commons-collections:commons-collections:jar:3.2.1:provided
+[[1;34mINFO[m] |  +- commons-codec:commons-codec:jar:1.8:provided
+[[1;34mINFO[m] |  +- org.slf4j:jcl-over-slf4j:jar:1.7.5:provided
+[[1;34mINFO[m] |  +- org.slf4j:log4j-over-slf4j:jar:1.7.5:provided
+[[1;34mINFO[m] |  +- com.thoughtworks.xstream:xstream:jar:1.3.1:provided
+[[1;34mINFO[m] |  +- xpp3:xpp3:jar:1.1.3.3:provided
+[[1;34mINFO[m] |  +- org.codehaus.woodstox:woodstox-core-lgpl:jar:4.4.0:provided
+[[1;34mINFO[m] |  |  \- javax.xml.stream:stax-api:jar:1.0-2:provided
+[[1;34mINFO[m] |  +- org.codehaus.woodstox:stax2-api:jar:3.1.4:provided
+[[1;34mINFO[m] |  \- org.codehaus.staxmate:staxmate:jar:2.0.1:provided
+[[1;34mINFO[m] +- com.github.cliftonlabs:json-simple:jar:2.1.2:compile
+[[1;34mINFO[m] +- org.asynchttpclient:async-http-client:jar:2.0.28:compile
+[[1;34mINFO[m] |  +- org.asynchttpclient:async-http-client-netty-utils:jar:2.0.28:compile
+[[1;34mINFO[m] |  |  \- io.netty:netty-buffer:jar:4.0.44.Final:compile
+[[1;34mINFO[m] |  +- io.netty:netty-codec-http:jar:4.0.44.Final:compile
+[[1;34mINFO[m] |  |  +- io.netty:netty-codec:jar:4.0.44.Final:compile
+[[1;34mINFO[m] |  |  \- io.netty:netty-handler:jar:4.0.44.Final:compile
+[[1;34mINFO[m] |  +- io.netty:netty-transport-native-epoll:jar:linux-x86_64:4.0.44.Final:compile
+[[1;34mINFO[m] |  |  +- io.netty:netty-common:jar:4.0.44.Final:compile
+[[1;34mINFO[m] |  |  \- io.netty:netty-transport:jar:4.0.44.Final:compile
+[[1;34mINFO[m] |  +- org.asynchttpclient:netty-resolver-dns:jar:2.0.28:compile
+[[1;34mINFO[m] |  |  +- org.asynchttpclient:netty-resolver:jar:2.0.28:compile
+[[1;34mINFO[m] |  |  \- org.asynchttpclient:netty-codec-dns:jar:2.0.28:compile
+[[1;34mINFO[m] |  +- org.reactivestreams:reactive-streams:jar:1.0.0:compile
+[[1;34mINFO[m] |  +- com.typesafe.netty:netty-reactive-streams:jar:1.0.8:compile
+[[1;34mINFO[m] |  \- org.javassist:javassist:jar:3.21.0-GA:compile
+[[1;34mINFO[m] +- com.google.guava:guava:jar:19.0:provided
+[[1;34mINFO[m] +- org.slf4j:slf4j-api:jar:1.7.5:provided
+[[1;34mINFO[m] +- junit:junit:jar:4.12:test
+[[1;34mINFO[m] |  \- org.hamcrest:hamcrest-core:jar:1.3:test
+[[1;34mINFO[m] +- org.mockito:mockito-core:jar:1.9.5:test
+[[1;34mINFO[m] |  \- org.objenesis:objenesis:jar:1.0:test
+[[1;34mINFO[m] +- org.slf4j:slf4j-jdk14:jar:1.8.0-alpha2:test
+[[1;34mINFO[m] +- com.github.tomakehurst:wiremock:jar:2.6.0:test
+[[1;34mINFO[m] |  +- org.eclipse.jetty:jetty-server:jar:9.2.13.v20150730:test
+[[1;34mINFO[m] |  |  +- javax.servlet:javax.servlet-api:jar:3.1.0:test
+[[1;34mINFO[m] |  |  +- org.eclipse.jetty:jetty-http:jar:9.2.13.v20150730:test
+[[1;34mINFO[m] |  |  \- org.eclipse.jetty:jetty-io:jar:9.2.13.v20150730:test
+[[1;34mINFO[m] |  +- org.eclipse.jetty:jetty-servlet:jar:9.2.13.v20150730:test
+[[1;34mINFO[m] |  |  \- org.eclipse.jetty:jetty-security:jar:9.2.13.v20150730:test
+[[1;34mINFO[m] |  +- org.eclipse.jetty:jetty-servlets:jar:9.2.13.v20150730:test
+[[1;34mINFO[m] |  |  +- org.eclipse.jetty:jetty-continuation:jar:9.2.13.v20150730:test
+[[1;34mINFO[m] |  |  \- org.eclipse.jetty:jetty-util:jar:9.2.13.v20150730:test
+[[1;34mINFO[m] |  +- org.eclipse.jetty:jetty-webapp:jar:9.2.13.v20150730:test
+[[1;34mINFO[m] |  |  \- org.eclipse.jetty:jetty-xml:jar:9.2.13.v20150730:test
+[[1;34mINFO[m] |  +- com.fasterxml.jackson.core:jackson-core:jar:2.6.1:test
+[[1;34mINFO[m] |  +- com.fasterxml.jackson.core:jackson-annotations:jar:2.6.1:test
+[[1;34mINFO[m] |  +- com.fasterxml.jackson.core:jackson-databind:jar:2.6.1:test
+[[1;34mINFO[m] |  +- org.apache.httpcomponents:httpclient:jar:4.5.1:test
+[[1;34mINFO[m] |  |  +- org.apache.httpcomponents:httpcore:jar:4.4.3:test
+[[1;34mINFO[m] |  |  \- commons-logging:commons-logging:jar:1.2:test
+[[1;34mINFO[m] |  +- org.xmlunit:xmlunit-core:jar:2.3.0:test
+[[1;34mINFO[m] |  +- org.xmlunit:xmlunit-legacy:jar:2.3.0:test
+[[1;34mINFO[m] |  +- com.jayway.jsonpath:json-path:jar:2.2.0:test
+[[1;34mINFO[m] |  |  \- net.minidev:json-smart:jar:2.2.1:test
+[[1;34mINFO[m] |  |     \- net.minidev:accessors-smart:jar:1.1:test
+[[1;34mINFO[m] |  |        \- org.ow2.asm:asm:jar:5.0.3:test
+[[1;34mINFO[m] |  +- net.sf.jopt-simple:jopt-simple:jar:4.9:test
+[[1;34mINFO[m] |  +- org.apache.commons:commons-lang3:jar:3.4:test
+[[1;34mINFO[m] |  +- com.flipkart.zjsonpatch:zjsonpatch:jar:0.3.0:test
+[[1;34mINFO[m] |  |  \- org.apache.commons:commons-collections4:jar:4.1:test
+[[1;34mINFO[m] |  \- com.github.jknack:handlebars:jar:4.0.6:test
+[[1;34mINFO[m] |     \- org.antlr:antlr4-runtime:jar:4.5.1-1:test
+[[1;34mINFO[m] +- com.github.stefanbirkner:system-rules:jar:1.16.0:test
+[[1;34mINFO[m] \- org.apache.maven:maven-project:jar:2.0.6:test
+[[1;34mINFO[m]    +- org.apache.maven:maven-settings:jar:2.0.6:test
+[[1;34mINFO[m]    +- org.apache.maven:maven-profile:jar:2.0.6:test
+[[1;34mINFO[m]    +- org.apache.maven:maven-model:jar:2.0.6:test
+[[1;34mINFO[m]    +- org.apache.maven:maven-artifact-manager:jar:2.0.6:test
+[[1;34mINFO[m]    |  +- org.apache.maven:maven-repository-metadata:jar:2.0.6:test
+[[1;34mINFO[m]    |  \- org.apache.maven.wagon:wagon-provider-api:jar:1.0-beta-2:test
+[[1;34mINFO[m]    +- org.apache.maven:maven-plugin-registry:jar:2.0.6:test
+[[1;34mINFO[m]    +- org.codehaus.plexus:plexus-utils:jar:1.4.1:test
+[[1;34mINFO[m]    +- org.apache.maven:maven-artifact:jar:2.0.6:test
+[[1;34mINFO[m]    \- org.codehaus.plexus:plexus-container-default:jar:1.0-alpha-9-stable-1:test
+[[1;34mINFO[m]       \- classworlds:classworlds:jar:1.1-alpha-2:test
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;34mINFO[m] [1;32mBUILD SUCCESS[m
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;34mINFO[m] Total time: 1.069 s
+[[1;34mINFO[m] Finished at: 2017-08-31T08:00:20Z
+[[1;34mINFO[m] Final Memory: 20M/609M
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m

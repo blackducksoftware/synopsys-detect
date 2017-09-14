@@ -39,19 +39,19 @@ import groovy.transform.TypeChecked
 class NameVersionNodeBuilder {
     final Logger logger = LoggerFactory.getLogger(NameVersionNodeBuilder.class)
 
-    final Map<String, NameVersionNode> nameToNodeMap = [:]
+    final Map<String, NameVersionNode> nodeCache = [:]
     final NameVersionNode root
 
     public NameVersionNodeBuilder(final NameVersionNode root) {
         this.root = root
-        nameToNodeMap.put(root.name, root)
+        nodeCache.put(root.name, root)
     }
 
     public void addChildNodeToParent(final NameVersionNode child, final NameVersionNode parent) {
         addToCache(child)
         addToCache(parent)
 
-        nameToNodeMap[parent.name].children.add(nameToNodeMap[child.name])
+        nodeCache[parent.name].children.add(nodeCache[child.name])
     }
 
     public NameVersionNode addToCache(final NameVersionNode nameVersionNode) {
@@ -60,27 +60,27 @@ class NameVersionNodeBuilder {
             return null
         }
 
-        if (!nameToNodeMap.containsKey(nameVersionNode.name)) {
-            nameToNodeMap.put(nameVersionNode.name, nameVersionNode)
+        if (!nodeCache.containsKey(nameVersionNode.name)) {
+            nodeCache.put(nameVersionNode.name, nameVersionNode)
         }
 
-        if (nameVersionNode.version?.trim() && !nameToNodeMap[nameVersionNode.name].version?.trim()) {
-            nameToNodeMap[nameVersionNode.name].version = nameVersionNode.version
+        if (nameVersionNode.version?.trim() && !nodeCache[nameVersionNode.name].version?.trim()) {
+            nodeCache[nameVersionNode.name].version = nameVersionNode.version
         }
 
-        if (nameVersionNode.metadata && !nameToNodeMap[nameVersionNode.name].metadata) {
-            nameToNodeMap[nameVersionNode.name].metadata = nameVersionNode.metadata
+        if (nameVersionNode.metadata && !nodeCache[nameVersionNode.name].metadata) {
+            nodeCache[nameVersionNode.name].metadata = nameVersionNode.metadata
         }
 
-        nameToNodeMap[nameVersionNode.name]
+        nodeCache[nameVersionNode.name]
     }
 
     public NodeMetadata getNodeMetadata(String nodeName) {
-        nameToNodeMap[nodeName]?.getMetadata()
+        nodeCache[nodeName]?.getMetadata()
     }
 
     public void setMetadata(String nodeName, NodeMetadata metadata) {
-        nameToNodeMap[nodeName]?.setMetadata(metadata)
+        nodeCache[nodeName]?.setMetadata(metadata)
     }
 
     public NameVersionNode build() {
