@@ -114,7 +114,7 @@ license {
     ext.year = Calendar.getInstance().get(Calendar.YEAR)
     ignoreFailures = true
     includes (["**/*.groovy", "**/*.java"])
-    exclude "/src/test/*"
+    excludes (["/src/test/*.groovy", "src/test/*.java"])
 }
 
 tasks.licenseMain.dependsOn(licenseFormatMain)
@@ -129,7 +129,7 @@ void fetchFile(File outputFile, String url) {
     new URL(url).withInputStream{ i -> outputFile.withOutputStream{ it << i }}
 }
 
-task zipGradleAirGapDepndencies(type: Zip) {
+task zipGradleAirGapDependencies(type: Zip) {
 	from configurations.airGapConfig
 	include '*.jar'
 	archiveName "GradleInspectorAirGap_${gradleInspectorVersion}.zip"
@@ -144,5 +144,5 @@ task downloadNugetAirGapDependencies {
 }
 
 task updateAirGapDependencies {
-    dependsOn downloadNugetAirGapDependencies, zipGradleAirGapDepndencies
+    dependsOn downloadNugetAirGapDependencies, zipGradleAirGapDependencies
 }

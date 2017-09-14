@@ -100,10 +100,12 @@ class NugetBomTool extends BomTool {
 
         def dependencyNodeFiles = detectFileManager.findFiles(outputDirectory, INSPECTOR_OUTPUT_PATTERN)
         List<DetectCodeLocation> codeLocations = dependencyNodeFiles?.collectMany { nugetInspectorPackager.createDetectCodeLocation(it) }
-        try {
-            FileUtils.deleteDirectory(outputDirectory)
-        }catch (Exception e){
-            logger.warn("Unable to clean up nuget files: ${outputDirectory}")
+        if (detectConfiguration.cleanupBomToolFiles) {
+            try {
+                FileUtils.deleteDirectory(outputDirectory)
+            }catch (Exception e){
+                logger.warn("Unable to clean up nuget files: ${outputDirectory}")
+            }
         }
 
         if (!codeLocations) {

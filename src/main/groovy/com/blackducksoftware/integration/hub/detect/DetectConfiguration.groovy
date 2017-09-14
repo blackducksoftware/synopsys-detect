@@ -311,6 +311,12 @@ class DetectConfiguration {
     public String getMavenPath() {
         return detectProperties.mavenPath
     }
+    public String getMavenExcludedModuleNames() {
+        return detectProperties.mavenExcludedModuleNames
+    }
+    public String getMavenIncludedModuleNames() {
+        return detectProperties.mavenIncludedModuleNames
+    }
     public String getNugetPath() {
         return detectProperties.nugetPath
     }
@@ -319,6 +325,9 @@ class DetectConfiguration {
     }
     public boolean getNpmIncludeDevDependencies() {
         return BooleanUtils.toBoolean(detectProperties.npmIncludeDevDependencies)
+    }
+    public String getNpmNodePath() {
+        return detectProperties.npmNodePath
     }
     public String getPearPath() {
         return detectProperties.pearPath
