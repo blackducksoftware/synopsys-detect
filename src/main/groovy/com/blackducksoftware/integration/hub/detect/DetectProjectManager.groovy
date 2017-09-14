@@ -163,7 +163,13 @@ class DetectProjectManager {
             } else {
                 if (it.dependencies) {
                     final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(detectProject, it)
-                    final String filename = it.createBdioFilename(integrationEscapeUtil, detectFileManager.extractFinalPieceFromPath(it.sourcePath), detectProject.projectName, detectProject.projectVersionName)
+                    String projectPath = detectFileManager.extractFinalPieceFromPath(it.sourcePath)
+                    String projectName = detectProject.projectName
+                    String projectVersionName = detectProject.projectVersionName
+                    projectPath = hashStringIfNeeded(projectPath, 100)
+                    projectName = hashStringIfNeeded(projectName, 100)
+                    projectVersionName = hashStringIfNeeded(projectVersionName, 50)
+                    final String filename = it.createBdioFilename(integrationEscapeUtil, projectPath, projectName, projectVersionName)
                     final File outputFile = new File(detectConfiguration.getOutputDirectory(), filename)
                     if (outputFile.exists()) {
                         outputFile.delete()
@@ -181,6 +187,16 @@ class DetectProjectManager {
         }
 
         bdioFiles
+    }
+
+    private String hashStringIfNeeded(String stringToShorten, int maxLength) {
+        String shortenedString = stringToShorten
+        if (shortenedString.length() > maxLength) {
+            shortenedString = String.valueOf(shortenedString.hashCode())
+            logger.info("Shortended ${stringToShorten} to ${shortenedString} due to character limit of ${maxLength}.")
+        }
+
+        shortenedString
     }
 
     private SimpleBdioDocument createAggregateSimpleBdioDocument(DetectProject detectProject) {
