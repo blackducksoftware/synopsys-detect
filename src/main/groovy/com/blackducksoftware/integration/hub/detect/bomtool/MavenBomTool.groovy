@@ -80,7 +80,9 @@ class MavenBomTool extends BomTool {
         final Executable mvnExecutable = new Executable(detectConfiguration.sourceDirectory, mvnExecutable, arguments)
         final ExecutableOutput mvnOutput = executableRunner.execute(mvnExecutable)
 
-        List<DetectCodeLocation> codeLocations = mavenCodeLocationPackager.extractCodeLocations(sourcePath, mvnOutput.standardOutput)
+        String excludedModules = detectConfiguration.getMavenExcludedModuleNames()
+        String includedModules = detectConfiguration.getMavenIncludedModuleNames()
+        List<DetectCodeLocation> codeLocations = mavenCodeLocationPackager.extractCodeLocations(sourcePath, mvnOutput.standardOutput, excludedModules, includedModules)
 
         File[] additionalTargets = detectFileManager.findFilesToDepth(detectConfiguration.sourceDirectory, 'target', detectConfiguration.searchDepth)
         if (additionalTargets) {
