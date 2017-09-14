@@ -91,9 +91,9 @@ class ExternalIdTypeAdapter extends TypeAdapter<ExternalId> {
         if (Forge.MAVEN.equals(forge)) {
             return new MavenExternalId(otherProperties.get("group"), otherProperties.get("name"), otherProperties.get("version"))
         } else if (nameVerionForgeMap.containsKey(forge.name)) {
-            return new NameVersionExternalId(forge, otherProperties.get("name"), otherProperties.get("version"))
+            return new NameVersionExternalId(nameVerionForgeMap.get(forge.name), otherProperties.get("name"), otherProperties.get("version"))
         } else if (dockerForgeMap.containsKey(forge.name)){
-            return new ArchitectureExternalId(forge, otherProperties.get("name"), otherProperties.get("version"), otherProperties.get("architecture"))
+            return new ArchitectureExternalId(dockerForgeMap.get(forge.name), otherProperties.get("name"), otherProperties.get("version"), otherProperties.get("architecture"))
         }
         return null
     }

@@ -45,8 +45,10 @@ class DockerBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(DockerBomTool.class)
 
     static final URL LATEST_URL = new URL('https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector.sh')
+    static final String FORGE_SEPARATOR = "/"
 
-    static final String FORGE_SEPARATOR = ":"
+    final String tarFileNamePattern = '*.tar.gz'
+    final String dependenciesFileNamePattern = '*_dependencies.json'
 
     @Autowired
     Gson gson
@@ -132,19 +134,27 @@ class DockerBomTool extends BomTool {
         if (usingTarFile) {
             hubSignatureScanner.registerPathToScan(new File(detectConfiguration.dockerTar))
         } else {
-            String fileNamePattern = '*.tar.gz'
-            File producedTarFile = detectFileManager.findFile(dockerBomToolDirectory, fileNamePattern)
+            File producedTarFile = detectFileManager.findFile(dockerBomToolDirectory, tarFileNamePattern)
             if (producedTarFile) {
                 hubSignatureScanner.registerPathToScan(producedTarFile)
             } else {
-                logger.debug("No files found matching pattern [${fileNamePattern}]. Expected docker-inspector to produce file in ${dockerBomToolDirectory.getCanonicalPath()}")
+                logMissingFile(dockerBomToolDirectory, tarFileNamePattern)
             }
         }
 
-        File dependencyNodeJsonFile = detectFileManager.findFile(dockerBomToolDirectory, '*_dependencies.json')
-        String codeLocationJson = dependencyNodeJsonFile.getText(StandardCharsets.UTF_8.toString())
-        DetectCodeLocation codeLocation = gson.fromJson(codeLocationJson, DetectCodeLocation.class)
+        File dependencyNodeJsonFile = detectFileManager.findFile(dockerBomToolDirectory, dependenciesFileNamePattern)
+        if (dependencyNodeJsonFile) {
+            String codeLocationJson = dependencyNodeJsonFile.getText(StandardCharsets.UTF_8.toString())
+            DetectCodeLocation codeLocation = gson.fromJson(codeLocationJson, DetectCodeLocation.class)
+            return [codeLocation]
+        } else {
+            logMissingFile(dockerBomToolDirectory, dependenciesFileNamePattern)
+        }
 
-        [codeLocation]
+        []
+    }
+
+    private void logMissingFile(File searchDirectory, String fileNamePattern) {
+        logger.debug("No files found matching pattern [${fileNamePattern}]. Expected docker-inspector to produce file in ${searchDirectory.getCanonicalPath()}")
     }
 }
