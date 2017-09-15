@@ -58,7 +58,7 @@ class MavenCodeLocationPackager {
         level = 0
 
         for (String line : mavenOutputText.split(System.lineSeparator())) {
-            if (!line.startsWith("[INFO]")) {
+            if (!line.startsWith("[INFO]") || line.startsWith("[INFO] Downloaded: ") || line.startsWith("[INFO] Downloading: ")) {
                 continue
             }
 
