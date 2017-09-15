@@ -206,6 +206,10 @@ class DetectProperties {
     @Value('${detect.maven.scope}')
     String mavenScope
 
+    @ValueDescription(description="Maven build command", defaultValue="dependency:tree -B", group=DetectProperties.GROUP_MAVEN)
+    @Value('${detect.maven.build.command}')
+    String mavenBuildCommand
+
     @ValueDescription(description="Path of the Gradle executable", group=DetectProperties.GROUP_GRADLE)
     @Value('${detect.gradle.path}')
     String gradlePath

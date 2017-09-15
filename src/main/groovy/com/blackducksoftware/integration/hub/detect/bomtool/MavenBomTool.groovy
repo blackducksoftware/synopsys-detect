@@ -73,7 +73,7 @@ class MavenBomTool extends BomTool {
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
-        def arguments = ["dependency:tree"]
+        def arguments = detectConfiguration.getMavenBuildCommand().split(' ') as List
         if (detectConfiguration.getMavenScope()?.trim()) {
             arguments.add("-Dscope=${detectConfiguration.getMavenScope()}" as String)
         }
