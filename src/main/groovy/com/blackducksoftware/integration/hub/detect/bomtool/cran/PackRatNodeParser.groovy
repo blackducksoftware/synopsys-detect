@@ -25,12 +25,14 @@ package com.blackducksoftware.integration.hub.detect.bomtool.cran
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.simple.LazyExternalIdDependencyGraphBuilder
+import com.blackducksoftware.integration.hub.bdio.simple.model.dependencyid.DependencyId
+import com.blackducksoftware.integration.hub.bdio.simple.model.dependencyid.NameDependencyId
+import com.blackducksoftware.integration.hub.bdio.simple.model.dependencyid.NameVersionDependencyId
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.CranBomTool
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
-import com.blackducksoftware.integration.hub.detect.nameversion.builder.NameVersionNodeBuilder
 
 import groovy.transform.TypeChecked
 
@@ -38,62 +40,45 @@ import groovy.transform.TypeChecked
 public class PackRatNodeParser {
     private final Logger logger = LoggerFactory.getLogger(PackRatNodeParser.class)
 
-    private NameVersionNode rootNameVersionNode
-    private NameVersionNodeBuilder nameVersionNodeBuilder
-    private HashSet<String> directDependencyNames
-    private NameVersionNode currentParent
+    DependencyGraph parseProjectDependencies(final String packratLockContents) {
+        LazyExternalIdDependencyGraphBuilder graphBuilder = new LazyExternalIdDependencyGraphBuilder();
 
-    List<DependencyNode> parseProjectDependencies(NameVersionNodeTransformer nameVersionNodeTransformer, final String packratLockContents) {
-        rootNameVersionNode = new NameVersionNodeImpl([name: 'packratLockFileRoot'])
-        nameVersionNodeBuilder = new NameVersionNodeBuilder(rootNameVersionNode)
-        directDependencyNames = new HashSet<>()
-        currentParent = null
+        DependencyId currentParent = null
 
         String[] lines = packratLockContents.split(System.lineSeparator())
         String name
         String version
-        List<DependencyNode> projectDependencies = []
-        boolean newDependency = false
 
         for (String line : lines) {
             if (line.contains('Package: ')) {
                 name = line.replace('Package: ', '').trim()
-                directDependencyNames.add(name)
-                newDependency = true
+                currentParent = new NameDependencyId(name);
+                graphBuilder.setDependencyName(currentParent, name);
+                graphBuilder.addChildToRoot(currentParent);
+                version = null;
                 continue
             }
 
             if (line.contains('Version: ')) {
                 version = line.replace('Version: ', '').trim()
-                NameVersionNode node = this.createNameVersionNodeImpl(name, version)
-                nameVersionNodeBuilder.addChildNodeToParent(node, rootNameVersionNode)
+                graphBuilder.setDependencyVersion(currentParent, version);
+                DependencyId realId = new NameVersionDependencyId(name, version);
+                ExternalId externalId = new NameVersionExternalId(CranBomTool.CRAN, name, version)
+                graphBuilder.setDependencyAsAlias(realId, currentParent);
+                graphBuilder.setDependencyInfo(realId, name, version, externalId)
             }
 
-            currentParent = this.createNameVersionNodeImpl(name, version)
+            currentParent = new NameVersionDependencyId(name, version)
 
             if (line.contains('Requires: ')) {
                 String[] parts = line.replace('Requires: ','').split(',')
                 for (int i; i < parts.size(); i++) {
-                    NameVersionNode node = this.createNameVersionNodeImpl(parts[i].trim(), '')
-                    nameVersionNodeBuilder.addChildNodeToParent(node, currentParent)
+                    String childName = parts[i].trim()
+                    graphBuilder.addParentWithChild(currentParent, new NameDependencyId(childName))
                 }
             }
         }
 
-        directDependencyNames.each { directDependencyName ->
-            NameVersionNode nameVersionNode = nameVersionNodeBuilder.nodeCache[directDependencyName]
-            if (nameVersionNode) {
-                DependencyNode directDependencyNode = nameVersionNodeTransformer.createDependencyNode(CranBomTool.CRAN, nameVersionNode)
-                projectDependencies.add(directDependencyNode)
-            } else {
-                logger.error("Could not find ${directDependencyName} in the populated map.")
-            }
-        }
-
-        projectDependencies
-    }
-
-    private NameVersionNode createNameVersionNodeImpl(String name, String version) {
-        return new NameVersionNodeImpl([name: name, version: version])
+        graphBuilder.build()
     }
 }

@@ -27,7 +27,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmCliDependencyFinder
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmLockfilePackager
@@ -135,8 +134,7 @@ class NpmBomTool extends BomTool {
 
     private List<DetectCodeLocation> extractFromLockFile(File lockFile) {
         String lockFileText = lockFile.getText()
-        DependencyNode npmProjectNode = npmLockfilePackager.parse(lockFileText)
-        def detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, npmProjectNode)
+        DetectCodeLocation detectCodeLocation = npmLockfilePackager.parse(sourcePath, lockFileText)
 
         [detectCodeLocation]
     }
