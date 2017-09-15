@@ -29,9 +29,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
-import com.blackducksoftware.integration.hub.detect.bomtool.PearBomTool
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
@@ -109,7 +109,7 @@ class PearDependencyFinder {
                 String packageVersion = dependencyInfo[1].trim()
 
                 if (dependencyInfo && dependencyNames.contains(packageName)) {
-                    def newNode = new DependencyNode(packageName, packageVersion, new NameVersionExternalId(PearBomTool.PEAR, packageName, packageVersion))
+                    def newNode = new DependencyNode(packageName, packageVersion, new NameVersionExternalId(Forge.PEAR, packageName, packageVersion))
 
                     childrenNodes.add(newNode)
                 }

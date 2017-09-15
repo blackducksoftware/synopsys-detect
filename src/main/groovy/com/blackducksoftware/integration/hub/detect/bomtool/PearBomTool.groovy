@@ -43,8 +43,6 @@ import groovy.util.slurpersupport.GPathResult
 class PearBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(PearBomTool.class)
 
-    static final Forge PEAR = new Forge('pear', '/')
-
     static final String PACKAGE_XML_FILENAME = 'package.xml'
 
     private String pearExePath
@@ -88,7 +86,7 @@ class PearBomTool extends BomTool {
                 sourcePath,
                 rootName,
                 rootVersion,
-                new NameVersionExternalId(PEAR, rootName, rootVersion),
+                new NameVersionExternalId(Forge.PEAR, rootName, rootVersion),
                 childDependencyNodes
                 )
 
