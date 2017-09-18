@@ -317,6 +317,9 @@ class DetectConfiguration {
     public String getMavenIncludedModuleNames() {
         return detectProperties.mavenIncludedModuleNames
     }
+    public String getMavenBuildCommand() {
+        return detectProperties.mavenBuildCommand
+    }
     public String getNugetPath() {
         return detectProperties.nugetPath
     }
