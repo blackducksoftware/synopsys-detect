@@ -22,19 +22,17 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool
 
-import java.nio.charset.StandardCharsets
-
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
+import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleDependenciesParser
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
-import com.google.gson.Gson
 
 import freemarker.template.Configuration
 import freemarker.template.Template
@@ -47,14 +45,13 @@ class GradleBomTool extends BomTool {
 
     static final String BUILD_GRADLE_FILENAME = 'build.gradle'
 
-    @Autowired
-    Gson gson
-
-    @Autowired
     HubSignatureScanner hubSignatureScanner
 
     @Autowired
     Configuration configuration
+
+    @Autowired
+    GradleDependenciesParser gradleDependenciesParser
 
     private String gradleExecutable
 
@@ -127,11 +124,12 @@ class GradleBomTool extends BomTool {
         File buildDirectory = new File(sourcePath, 'build')
         File blackduckDirectory = new File(buildDirectory, 'blackduck')
 
-        File[] codeLocationFiles = detectFileManager.findFiles(blackduckDirectory, '*_detectCodeLocation.txt')
+        // TODO check that this is the correct file name pattern
+        File[] codeLocationFiles = detectFileManager.findFiles(blackduckDirectory, '*_dependencyGraph.txt')
+
         List<DetectCodeLocation> codeLocations = codeLocationFiles.collect { File file ->
-            logger.debug("Code Location file name: ${file.getName()}")
-            String codeLocationJson = file.getText(StandardCharsets.UTF_8.toString())
-            gson.fromJson(codeLocationJson, DetectCodeLocation.class)
+            logger.debug("Parsing dependency graph : ${file.getName()}")
+            gradleDependenciesParser.parseDependencies(file.newInputStream())
         }
         if (detectConfiguration.gradleCleanupBuildBlackduckDirectory) {
             blackduckDirectory.deleteDir()
