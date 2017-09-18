@@ -188,7 +188,7 @@ class DetectProjectManager {
     }
 
     private SimpleBdioDocument createSimpleBdioDocument(DetectProject detectProject, DetectCodeLocation detectCodeLocation) {
-        final String codeLocationName = detectProject.getCodeLocationName(detectCodeLocation.bomToolType, detectFileManager.extractFinalPieceFromPath(detectCodeLocation.sourcePath), detectConfiguration.getProjectCodeLocationPrefix(), 'Hub Detect Tool')
+        final String codeLocationName = getCodeLocationName(detectCodeLocation.bomToolType, detectFileManager.extractFinalPieceFromPath(detectCodeLocation.sourcePath), detectConfiguration.getProjectCodeLocationPrefix(), 'Hub Detect Tool')
         final String projectId = detectCodeLocation.bomToolProjectExternalId.createDataId()
         final BdioExternalIdentifier projectExternalIdentifier = bdioPropertyHelper.createExternalIdentifier(detectCodeLocation.bomToolProjectExternalId)
 
@@ -222,6 +222,14 @@ class DetectProjectManager {
         logger.info("BDIO Generated: " + outputFile.getAbsolutePath())
 
         outputFile
+    }
+
+    private String getCodeLocationName(final BomToolType bomToolType, DetectCodeLocation detectCodeLocation, String finalSourcePathPiece, String prefix, CodeLocationType codeLocationType) {
+        String codeLocation = String.format('%s/%s/%s %s/%s', finalSourcePathPiece, detectCodeLocation.bomToolProjectName, detectCodeLocation.bomToolProjectVersionName, bomToolType.toString().toLowerCase(), codeLocationType.toString().toLowerCase())
+        if (prefix) {
+            codeLocation = String.format('%s/%s', prefix, codeLocation)
+        }
+        codeLocation
     }
 
     String getProjectName(final String defaultProjectName) {
