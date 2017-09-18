@@ -55,7 +55,7 @@ public class DetectProjectManagerTest {
         String longVersion = StringUtils.repeat('b', 250)
         String longName = StringUtils.repeat('c', 250)
         String actual = detectProjectManager.createBdioFilename(BomToolType.NPM, longPath, longName, longVersion)
-        String expected = "NPM_ec4c72e67030b524f1187eac0c5e6b75c0bc9617_bc7ea19d315b641ceab79270a3dfd7254d15ce0e_b5d5e3e0fcccfb49d704a1e10bc97ce9761a14fe_bdio.jsonld"
+        String expected = "NPM_ec4c72e67030b52_bc7ea19d315b641_b5d5e3e0fcccfb4_bdio.jsonld"
         Assert.assertEquals(expected, actual)
     }
 }

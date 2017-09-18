@@ -197,6 +197,9 @@ class DetectProjectManager {
         String filename = generateFilename(bomToolType, finalSourcePathPiece, projectName, projectVersionName)
         for (int i = 0; (filename.length() >= 255) && (i < 3); i++) {
             names[i] = DigestUtils.sha1Hex(names[i])
+            if (names[i].length() > 15) {
+                names[i] = names[i].substring(0, 15)
+            }
 
             filename = generateFilename(bomToolType, names[0], names[1], names[2])
         }
