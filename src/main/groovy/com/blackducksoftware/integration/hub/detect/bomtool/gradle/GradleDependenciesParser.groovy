@@ -8,8 +8,11 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeBuilder
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenExternalId
-import com.blackducksoftware.integration.util.ExcludedIncludedFilter
+import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 
+import groovy.transform.TypeChecked
+
+@TypeChecked
 @Component
 class GradleDependenciesParser {
     private final Logger logger = LoggerFactory.getLogger(GradleDependenciesParser.class)
