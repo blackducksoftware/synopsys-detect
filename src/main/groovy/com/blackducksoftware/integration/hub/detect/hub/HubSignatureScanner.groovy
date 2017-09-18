@@ -30,6 +30,7 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.builder.HubScanConfigBuilder
 import com.blackducksoftware.integration.hub.dataservice.cli.CLIDataService
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
+import com.blackducksoftware.integration.hub.detect.model.CodeLocationType
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.summary.DetectSummary
 import com.blackducksoftware.integration.hub.detect.summary.Result

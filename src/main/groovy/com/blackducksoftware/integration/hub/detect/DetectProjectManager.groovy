@@ -43,6 +43,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.SimpleBdioDocumen
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
+import com.blackducksoftware.integration.hub.detect.model.CodeLocationType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.summary.DetectSummary
@@ -224,7 +225,7 @@ class DetectProjectManager {
         outputFile
     }
 
-    private String getCodeLocationName(final BomToolType bomToolType, DetectCodeLocation detectCodeLocation, String finalSourcePathPiece, String prefix, CodeLocationType codeLocationType) {
+    private String getCodeLocationName(final BomToolType bomToolType, DetectCodeLocation detectCodeLocation, String finalSourcePathPiece, String prefix, CodeLocationType codeLocationType ) {
         String codeLocation = String.format('%s/%s/%s %s/%s', finalSourcePathPiece, detectCodeLocation.bomToolProjectName, detectCodeLocation.bomToolProjectVersionName, bomToolType.toString().toLowerCase(), codeLocationType.toString().toLowerCase())
         if (prefix) {
             codeLocation = String.format('%s/%s', prefix, codeLocation)

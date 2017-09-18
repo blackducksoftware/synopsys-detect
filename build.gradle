@@ -85,7 +85,7 @@ configurations {
 }
 
 dependencies {
-    compile 'com.blackducksoftware.integration:hub-detect-model:0.0.4'
+    compile 'com.blackducksoftware.integration:hub-detect-model:0.1.0'
     compile 'com.blackducksoftware.integration:hub-common:14.5.1'
     compile 'org.springframework.boot:spring-boot-starter'
     compile 'org.apache.maven.shared:maven-invoker:3.0.0'
