@@ -127,7 +127,7 @@ class GradleBomTool extends BomTool {
         File buildDirectory = new File(sourcePath, 'build')
         File blackduckDirectory = new File(buildDirectory, 'blackduck')
 
-        File[] codeLocationFiles = detectFileManager.findFiles(blackduckDirectory, '*_detectCodeLocation.json')
+        File[] codeLocationFiles = detectFileManager.findFiles(blackduckDirectory, '*_detectCodeLocation.txt')
         List<DetectCodeLocation> codeLocations = codeLocationFiles.collect { File file ->
             logger.debug("Code Location file name: ${file.getName()}")
             String codeLocationJson = file.getText(StandardCharsets.UTF_8.toString())
