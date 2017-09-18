@@ -25,7 +25,6 @@ import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeT
 class PipInspectorTreeParserTest {
 
     private PipInspectorTreeParser parser
-    private NameVersionNodeTransformer nameVersionNodeTransformer
 
     private String name = 'pip'
     private String version = '1.0.0'
@@ -37,7 +36,7 @@ class PipInspectorTreeParserTest {
     @Before
     void init() {
         parser = new PipInspectorTreeParser()
-        nameVersionNodeTransformer = new NameVersionNodeTransformer()
+        parser.nameVersionNodeTransformer =  new NameVersionNodeTransformer()
     }
 
     @Test
@@ -84,7 +83,7 @@ ${space + child2Text}
 ${space + child3Text}
 """
 
-        DependencyNode root = parser.parse(nameVersionNodeTransformer, validText)
+        DependencyNode root = parser.parse(validText)
         ExternalId expectedExternalId = new NameVersionExternalId(Forge.PYPI, '', '')
         Assert.assertEquals('', root.name)
         Assert.assertEquals('', root.version)
@@ -98,7 +97,7 @@ ${space + child3Text}
         i am not a valid file
         the result should be null
         """
-        DependencyNode root = parser.parse(nameVersionNodeTransformer, invalidText)
+        DependencyNode root = parser.parse(invalidText)
         Assert.assertNull(root)
     }
 }
