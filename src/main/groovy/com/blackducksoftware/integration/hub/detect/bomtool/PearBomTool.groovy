@@ -28,7 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraph
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.pear.PearDependencyFinder
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
@@ -42,8 +41,6 @@ import groovy.util.slurpersupport.GPathResult
 @Component
 class PearBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(PearBomTool.class)
-
-    static final Forge PEAR = new Forge('pear', '/')
 
     static final String PACKAGE_XML_FILENAME = 'package.xml'
 
@@ -88,7 +85,7 @@ class PearBomTool extends BomTool {
                 sourcePath,
                 rootName,
                 rootVersion,
-                new NameVersionExternalId(PEAR, rootName, rootVersion),
+                new NameVersionExternalId(Forge.PEAR, rootName, rootVersion),
                 dependencyGraph
                 )
 

@@ -42,7 +42,6 @@ import groovy.transform.TypeChecked
 @Component
 @TypeChecked
 class PackagistParser {
-    private Forge packagistForge = new Forge('packagist', ':')
 
     @Autowired
     DetectConfiguration detectConfiguration
@@ -66,7 +65,7 @@ class PackagistParser {
         }
         convertFromJsonToDependency(graph, null, startingPackages, packagistPackages, true)
 
-        def eid = new NameVersionExternalId(packagistForge, projectName, projectVersion);
+        def eid = new NameVersionExternalId(Forge.PACKAGIST, projectName, projectVersion);
         new DetectCodeLocation(BomToolType.PACKAGIST, sourcePath,projectName, projectVersion, eid, graph)
     }
 
@@ -81,7 +80,7 @@ class PackagistParser {
             if (currentPackages.contains(currentRowPackageName)) {
                 String currentRowPackageVersion = it.getAt('version').toString().replace('"', '')
 
-                Dependency child = new Dependency(currentRowPackageName, currentRowPackageVersion, new NameVersionExternalId(packagistForge, currentRowPackageName, currentRowPackageVersion))
+                Dependency child = new Dependency(currentRowPackageName, currentRowPackageVersion, new NameVersionExternalId(Forge.PACKAGIST, currentRowPackageName, currentRowPackageVersion))
 
                 convertFromJsonToDependency(graph, child, getStartingPackages(it.getAsJsonObject(), false), jsonArray, false)
                 if (root){
