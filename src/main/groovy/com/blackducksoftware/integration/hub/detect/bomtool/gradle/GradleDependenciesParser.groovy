@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeBuilder
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenExternalId
+import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 
 import groovy.transform.TypeChecked
@@ -23,26 +24,40 @@ class GradleDependenciesParser {
     static final String WINNING_VERSION_INDICATOR = ' -> '
 
     DetectCodeLocation parseDependencies(InputStream dependenciesInputStream) {
-        DependencyNodeBuilder dependencyNodeBuilder = new DependencyNodeBuilder(rootProject)
+
+        //TODO get root project information
+        String rootProjectSourcePath = ""
+        String rootProjectGroup  = ""
+        String rootProjectName  = ""
+        String rootProjectVersionName  = ""
+
+        //TODO get project information
+        String projectSourcePath = ""
+        String projectGroup = ""
+        String projectName = ""
+        String projectVersionName = ""
+
+        DependencyNode tempRoot = new DependencyNode("project", "version", new MavenExternalId("group", "project", "version"))
+
+        DependencyNodeBuilder dependencyNodeBuilder = new DependencyNodeBuilder(tempRoot)
         boolean processingConfiguration = false
         String configurationName = null
         String previousLine = null
-        def nodeStack = new Stack()
-        nodeStack.push(rootProject)
-        def previousNode = null
+        Stack<DependencyNode> nodeStack = new Stack<>()
+        nodeStack.push(tempRoot)
+        DependencyNode previousNode = null
         int treeLevel = 0
 
-        String[] lines = dependencies.split('\n')
-        for (String line : lines) {
+        dependenciesInputStream.eachLine("UTF-8"){ line ->
             if (StringUtils.isBlank(line)) {
                 processingConfiguration = false
                 configurationName = null
                 previousLine = null
                 nodeStack = new Stack()
-                nodeStack.push(rootProject)
+                nodeStack.push(tempRoot)
                 previousNode = null
                 treeLevel = 0
-                continue
+                return
             }
             if (!processingConfiguration && line.startsWith(FIRST_COMPONENT_OF_CONFIGURATION)) {
                 processingConfiguration = true
@@ -51,18 +66,13 @@ class GradleDependenciesParser {
             }
             if (!processingConfiguration) {
                 previousLine = line
-                continue
-            }
-
-            if (!configurationFilter.shouldInclude(configurationName)) {
-                previousLine = line
-                continue
+                return
             }
 
             DependencyNode lineNode = createDependencyNodeFromOutputLine(line)
             if (lineNode == null) {
                 previousLine = line
-                continue
+                return
             }
 
             int lineTreeLevel = StringUtils.countMatches(line, '    ')
@@ -78,6 +88,10 @@ class GradleDependenciesParser {
             treeLevel = lineTreeLevel
             previousLine = line
         }
+
+        //TODO create the correct DetectCodeLocation, is there/should there be a difference between a single standalone Gradle Project vs. a multi Gradle project structure?
+        new DetectCodeLocation(BomToolType.GRADLE, projectSourcePath, rootProjectName, rootProjectVersionName,
+                new MavenExternalId(rootProjectGroup, rootProjectName, rootProjectVersionName), tempRoot.children)
     }
 
     DependencyNode createDependencyNodeFromOutputLine(String outputLine) {
@@ -97,7 +111,10 @@ class GradleDependenciesParser {
             cleanedOutput = cleanedOutput[0..(-1 * (SEEN_ELSEWHERE_SUFFIX.length() + 1))]
         }
 
-        def (group, artifact, version) = cleanedOutput.split(':')
+        String[] gav = cleanedOutput.split(':')
+        String group = gav[0]
+        String artifact = gav[1]
+        String version = gav[2]
         if (version.contains(WINNING_VERSION_INDICATOR)) {
             int winningVersionIndex = version.indexOf(WINNING_VERSION_INDICATOR) + WINNING_VERSION_INDICATOR.length()
             version = version[winningVersionIndex..-1]
