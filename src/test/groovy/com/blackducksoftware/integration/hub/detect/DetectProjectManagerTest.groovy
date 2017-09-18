@@ -1,10 +1,14 @@
 package com.blackducksoftware.integration.hub.detect
 
+import org.apache.commons.lang3.StringUtils
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.joda.time.format.DateTimeFormat
 import org.junit.Assert
 import org.junit.Test
+
+import com.blackducksoftware.integration.hub.detect.model.BomToolType
+import com.blackducksoftware.integration.util.IntegrationEscapeUtil
 
 public class DetectProjectManagerTest {
     @Test
@@ -32,5 +36,26 @@ public class DetectProjectManagerTest {
         detectProperties.projectVersionName = 'actual'
         String version = detectProjectManager.getProjectVersionName('')
         Assert.assertEquals('actual', version)
+    }
+
+    @Test
+    void testProjectFileName() {
+        def detectProjectManager = new DetectProjectManager()
+        detectProjectManager.integrationEscapeUtil = new IntegrationEscapeUtil()
+        String actual = detectProjectManager.createBdioFilename(BomToolType.NPM, "test", "short", "name")
+        String expected = "NPM_short_name_test_bdio.jsonld"
+        Assert.assertEquals(expected, actual)
+    }
+
+    @Test
+    void testProjectLongFileName() {
+        def detectProjectManager = new DetectProjectManager()
+        detectProjectManager.integrationEscapeUtil = new IntegrationEscapeUtil()
+        String longPath = StringUtils.repeat('a', 250)
+        String longVersion = StringUtils.repeat('b', 250)
+        String longName = StringUtils.repeat('c', 250)
+        String actual = detectProjectManager.createBdioFilename(BomToolType.NPM, longPath, longName, longVersion)
+        String expected = "NPM_ec4c72e67030b524f1187eac0c5e6b75c0bc9617_bc7ea19d315b641ceab79270a3dfd7254d15ce0e_b5d5e3e0fcccfb49d704a1e10bc97ce9761a14fe_bdio.jsonld"
+        Assert.assertEquals(expected, actual)
     }
 }
