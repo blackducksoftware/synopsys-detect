@@ -185,7 +185,7 @@ class HubSignatureScanner {
         hubScanConfigBuilder.cleanupLogsOnSuccess = detectConfiguration.cleanupBomToolFiles
         hubScanConfigBuilder.dryRun = detectConfiguration.hubSignatureScannerDryRun
 
-        final String codeLocationName = getCodeLocationName(detectProject, canonicalPath, detectConfiguration.getProjectCodeLocationPrefix(), CodeLocationType.SCAN)
+        final String codeLocationName = getCodeLocationName(detectProject, canonicalPath)
         hubScanConfigBuilder.codeLocationAlias = codeLocationName
 
         if (detectConfiguration.hubSignatureScannerExclusionPatterns) {
@@ -197,9 +197,11 @@ class HubSignatureScanner {
         hubScanConfigBuilder
     }
 
-    private String getCodeLocationName(DetectProject detectProject, final String canonicalCodeLocationSourcePath, String prefix, CodeLocationType codeLocationType) {
-        String sourcePath = canonicalCodeLocationSourcePath.replace(detectConfiguration.sourcePath, detectFileManager.extractFinalPieceFromPath(detectConfiguration.sourcePath))
-        String codeLocation = String.format('%s/%s/%s %s', sourcePath, detectProject.getProjectName(), detectProject.getProjectVersionName(), codeLocationType.toString().toLowerCase())
+    private String getCodeLocationName(DetectProject detectProject, final String canonicalCodeLocationSourcePath) {
+        String finalPathPiece = detectFileManager.extractFinalPieceFromPath(detectConfiguration.sourcePath)
+        String sourcePath = canonicalCodeLocationSourcePath.replace(detectConfiguration.sourcePath, finalPathPiece)
+        String codeLocation = String.format('%s/%s/%s %s', sourcePath, detectProject.getProjectName(), detectProject.getProjectVersionName(), CodeLocationType.SCAN.toString().toLowerCase())
+        String prefix = detectConfiguration.getProjectCodeLocationPrefix()
         if (prefix) {
             codeLocation = String.format('%s/%s', prefix, codeLocation)
         }
