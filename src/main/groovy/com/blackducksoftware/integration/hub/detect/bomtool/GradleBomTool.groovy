@@ -124,7 +124,6 @@ class GradleBomTool extends BomTool {
         File buildDirectory = new File(sourcePath, 'build')
         File blackduckDirectory = new File(buildDirectory, 'blackduck')
 
-        // TODO check that this is the correct file name pattern
         File[] codeLocationFiles = detectFileManager.findFiles(blackduckDirectory, '*_dependencyGraph.txt')
 
         List<DetectCodeLocation> codeLocations = codeLocationFiles.collect { File file ->

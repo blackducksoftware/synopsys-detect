@@ -23,23 +23,21 @@ class GradleDependenciesParser {
     static final String SEEN_ELSEWHERE_SUFFIX = ' (*)'
     static final String WINNING_VERSION_INDICATOR = ' -> '
 
+    String rootProjectSourcePath = ""
+    String rootProjectGroup  = ""
+    String rootProjectName  = ""
+    String rootProjectVersionName  = ""
+
+    String projectSourcePath = ""
+    String projectGroup = ""
+    String projectName = ""
+    String projectVersionName = ""
+
     DetectCodeLocation parseDependencies(InputStream dependenciesInputStream) {
-
-        //TODO get root project information
-        String rootProjectSourcePath = ""
-        String rootProjectGroup  = ""
-        String rootProjectName  = ""
-        String rootProjectVersionName  = ""
-
-        //TODO get project information
-        String projectSourcePath = ""
-        String projectGroup = ""
-        String projectName = ""
-        String projectVersionName = ""
-
         DependencyNode tempRoot = new DependencyNode("project", "version", new MavenExternalId("group", "project", "version"))
 
         DependencyNodeBuilder dependencyNodeBuilder = new DependencyNodeBuilder(tempRoot)
+        boolean processingMetaData = false
         boolean processingConfiguration = false
         String configurationName = null
         String previousLine = null
@@ -48,7 +46,23 @@ class GradleDependenciesParser {
         DependencyNode previousNode = null
         int treeLevel = 0
 
-        dependenciesInputStream.eachLine("UTF-8"){ line ->
+        dependenciesInputStream.eachLine("UTF-8") { line ->
+            /**
+             * The meta data section will be at the end of the file after all of the 'gradle dependencies' output
+             */
+            if (line.startsWith('DETECT META DATA START')) {
+                processingMetaData = true
+                return
+            }
+            if (line.startsWith('DETECT META DATA END')) {
+                processingMetaData = false
+                return
+            }
+            if (processingMetaData) {
+                processMetaDataLine(line)
+                return
+            }
+
             if (StringUtils.isBlank(line)) {
                 processingConfiguration = false
                 configurationName = null
@@ -92,6 +106,13 @@ class GradleDependenciesParser {
         //TODO create the correct DetectCodeLocation, is there/should there be a difference between a single standalone Gradle Project vs. a multi Gradle project structure?
         new DetectCodeLocation(BomToolType.GRADLE, projectSourcePath, rootProjectName, rootProjectVersionName,
                 new MavenExternalId(rootProjectGroup, rootProjectName, rootProjectVersionName), tempRoot.children)
+
+        //TODO I think this is actually what you're after
+        new DetectCodeLocation(BomToolType.GRADLE, projectSourcePath, projectName, projectVersionName,
+                new MavenExternalId(projectGroup, projectName, projectVersionName), tempRoot.children)
+        // I think the root project info should be communicated up to the bom tool, and eventually
+        // DetectProject, but using the code location to get it there is probably not the best choice.
+        // When we want to name the code location, we should keep it accurate. But it is 10PM and I'm exhausted. :)
     }
 
     DependencyNode createDependencyNodeFromOutputLine(String outputLine) {
@@ -121,5 +142,25 @@ class GradleDependenciesParser {
         }
 
         new DependencyNode(artifact, version, new MavenExternalId(group, artifact, version))
+    }
+
+    private void processMetaDataLine(String metaDataLine) {
+        if (metaDataLine.startsWith('rootProjectPath:')) {
+            rootProjectSourcePath = metaDataLine.substring('rootProjectPath:'.length()).trim()
+        } else if (metaDataLine.startsWith('rootProjectGroup:')) {
+            rootProjectGroup = metaDataLine.substring('rootProjectGroup:'.length()).trim()
+        } else if (metaDataLine.startsWith('rootProjectName:')) {
+            rootProjectName = metaDataLine.substring('rootProjectName:'.length()).trim()
+        } else if (metaDataLine.startsWith('rootProjectVersion:')) {
+            rootProjectVersionName = metaDataLine.substring('rootProjectVersion:'.length()).trim()
+        } else if (metaDataLine.startsWith('projectPath:')) {
+            projectSourcePath = metaDataLine.substring('projectPath:'.length()).trim()
+        } else if (metaDataLine.startsWith('projectGroup:')) {
+            projectGroup = metaDataLine.substring('projectGroup:'.length()).trim()
+        } else if (metaDataLine.startsWith('projectName:')) {
+            projectName = metaDataLine.substring('projectName:'.length()).trim()
+        } else if (metaDataLine.startsWith('projectVersion:')) {
+            projectVersionName = metaDataLine.substring('projectVersion:'.length()).trim()
+        }
     }
 }
