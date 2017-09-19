@@ -10,6 +10,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenExternalId
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
+import com.blackducksoftware.integration.hub.detect.model.DetectProject
 
 import groovy.transform.TypeChecked
 
@@ -33,7 +34,7 @@ class GradleDependenciesParser {
     String projectName = ""
     String projectVersionName = ""
 
-    DetectCodeLocation parseDependencies(InputStream dependenciesInputStream) {
+    DetectCodeLocation parseDependencies(DetectProject detectProject, InputStream dependenciesInputStream) {
         DependencyNode tempRoot = new DependencyNode("project", "version", new MavenExternalId("group", "project", "version"))
 
         DependencyNodeBuilder dependencyNodeBuilder = new DependencyNodeBuilder(tempRoot)
@@ -103,16 +104,11 @@ class GradleDependenciesParser {
             previousLine = line
         }
 
-        //TODO create the correct DetectCodeLocation, is there/should there be a difference between a single standalone Gradle Project vs. a multi Gradle project structure?
-        new DetectCodeLocation(BomToolType.GRADLE, projectSourcePath, rootProjectName, rootProjectVersionName,
-                new MavenExternalId(rootProjectGroup, rootProjectName, rootProjectVersionName), tempRoot.children)
+        detectProject.setProjectNameIfNotSet(rootProjectName)
+        detectProject.setProjectVersionNameIfNotSet(rootProjectVersionName)
 
-        //TODO I think this is actually what you're after
         new DetectCodeLocation(BomToolType.GRADLE, projectSourcePath, projectName, projectVersionName,
                 new MavenExternalId(projectGroup, projectName, projectVersionName), tempRoot.children)
-        // I think the root project info should be communicated up to the bom tool, and eventually
-        // DetectProject, but using the code location to get it there is probably not the best choice.
-        // When we want to name the code location, we should keep it accurate. But it is 10PM and I'm exhausted. :)
     }
 
     DependencyNode createDependencyNodeFromOutputLine(String outputLine) {

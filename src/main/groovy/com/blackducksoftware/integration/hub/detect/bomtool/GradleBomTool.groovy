@@ -31,6 +31,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleDepende
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
+import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 
@@ -72,8 +73,8 @@ class GradleBomTool extends BomTool {
         buildGradle && gradleExecutable
     }
 
-    List<DetectCodeLocation> extractDetectCodeLocations() {
-        List<DetectCodeLocation> codeLocations = extractCodeLocationsFromGradle()
+    List<DetectCodeLocation> extractDetectCodeLocations(DetectProject detectProject) {
+        List<DetectCodeLocation> codeLocations = extractCodeLocationsFromGradle(detectProject)
 
         File[] additionalTargets = detectFileManager.findFilesToDepth(detectConfiguration.sourceDirectory, 'build', detectConfiguration.searchDepth)
         if (additionalTargets) {
@@ -92,7 +93,7 @@ class GradleBomTool extends BomTool {
         gradlePath
     }
 
-    List<DetectCodeLocation> extractCodeLocationsFromGradle() {
+    List<DetectCodeLocation> extractCodeLocationsFromGradle(DetectProject detectProject) {
         File initScriptFile = detectFileManager.createFile(BomToolType.GRADLE, 'init-detect.gradle')
         final Map<String, String> model = [
             'gradleInspectorVersion' : detectConfiguration.getGradleInspectorVersion(),
@@ -128,7 +129,7 @@ class GradleBomTool extends BomTool {
 
         List<DetectCodeLocation> codeLocations = codeLocationFiles.collect { File file ->
             logger.debug("Parsing dependency graph : ${file.getName()}")
-            gradleDependenciesParser.parseDependencies(file.newInputStream())
+            gradleDependenciesParser.parseDependencies(detectProject, file.newInputStream())
         }
         if (detectConfiguration.gradleCleanupBuildBlackduckDirectory) {
             blackduckDirectory.deleteDir()
