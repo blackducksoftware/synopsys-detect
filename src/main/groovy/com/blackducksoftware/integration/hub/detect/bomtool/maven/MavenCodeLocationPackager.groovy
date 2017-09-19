@@ -34,6 +34,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.Extern
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenExternalId
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
+import com.blackducksoftware.integration.util.ExcludedIncludedFilter
 
 import groovy.transform.TypeChecked
 
@@ -48,35 +49,31 @@ class MavenCodeLocationPackager {
     private DetectCodeLocation currentCodeLocation = null
     private Stack<DependencyNode> dependencyParentStack = new Stack<>()
     private boolean parsingProjectSection
-    private boolean previousLineWasEmpty
     private int level
 
-    public List<DetectCodeLocation> extractCodeLocations(String sourcePath, String mavenOutputText) {
+    public List<DetectCodeLocation> extractCodeLocations(String sourcePath, String mavenOutputText, String excludedModules, String includedModules) {
+        ExcludedIncludedFilter filter = new ExcludedIncludedFilter(excludedModules, includedModules)
         codeLocations = []
         currentCodeLocation = null
         dependencyParentStack = new Stack<>()
         parsingProjectSection = false
-        previousLineWasEmpty = true
         level = 0
-
         for (String line : mavenOutputText.split(System.lineSeparator())) {
-            if (line ==~ /\[.*INFO.*\]/) {
+            if (!(line ==~ /\[.*INFO.*\].*/) || line ==~ /\[.*INFO.*\].*Downloaded:.*/ || line ==~ /\[.*INFO.*\].*Downloading:.*/) {
+                // If the line does not start with [INFO] and have content, we will ignore it
+                // We also ignore lines for downloads
                 continue
             }
 
             String[] groups = (line =~ /.*INFO.*? (.*)/)[0] as String[]
             line = groups[1]
             if (!line.trim()) {
-                previousLineWasEmpty = true
                 continue
             }
-
-            if ((line ==~ /.*---.*maven-dependency-plugin.*/) && previousLineWasEmpty) {
+            if (line ==~ /.*---.*maven-dependency-plugin.*/) {
                 parsingProjectSection = true
-                previousLineWasEmpty = false
                 continue
             }
-            previousLineWasEmpty = false
 
             if (!parsingProjectSection) {
                 continue
@@ -84,7 +81,16 @@ class MavenCodeLocationPackager {
 
             if (parsingProjectSection && currentCodeLocation == null) {
                 //this is the first line of a new code location, the following lines will be the tree of dependencies for this code location
-                createNewCodeLocation(sourcePath, line)
+                DetectCodeLocation detectCodeLocation = createNewCodeLocation(sourcePath, line)
+                if (filter.shouldInclude(detectCodeLocation.getBomToolProjectName())) {
+                    this.currentCodeLocation = detectCodeLocation
+                    codeLocations.add(detectCodeLocation)
+                } else {
+                    currentCodeLocation = null
+                    dependencyParentStack.clear()
+                    parsingProjectSection = false
+                    level = 0
+                }
                 continue
             }
 
@@ -104,27 +110,29 @@ class MavenCodeLocationPackager {
                 continue
             }
 
-            if (level == 1) {
-                //a direct dependency, clear the stack and add this as a potential parent for the next line
-                currentCodeLocation.dependencies.add(dependencyNode)
-                dependencyParentStack.clear()
-                dependencyParentStack.push(dependencyNode)
-            } else {
-                //level should be greater than 1
-                if (level == previousLevel) {
-                    //a sibling of the previous dependency
-                    dependencyParentStack.pop()
-                    dependencyParentStack.peek().children.add(dependencyNode)
-                    dependencyParentStack.push(dependencyNode)
-                } else if (level > previousLevel) {
-                    //a child of the previous dependency
-                    dependencyParentStack.peek().children.add(dependencyNode)
+            if (currentCodeLocation != null) {
+                if (level == 1) {
+                    //a direct dependency, clear the stack and add this as a potential parent for the next line
+                    currentCodeLocation.dependencies.add(dependencyNode)
+                    dependencyParentStack.clear()
                     dependencyParentStack.push(dependencyNode)
                 } else {
-                    //a child of a dependency further back than 1 line
-                    previousLevel.downto(level) { dependencyParentStack.pop() }
-                    dependencyParentStack.peek().children.add(dependencyNode)
-                    dependencyParentStack.push(dependencyNode)
+                    //level should be greater than 1
+                    if (level == previousLevel) {
+                        //a sibling of the previous dependency
+                        dependencyParentStack.pop()
+                        dependencyParentStack.peek().children.add(dependencyNode)
+                        dependencyParentStack.push(dependencyNode)
+                    } else if (level > previousLevel) {
+                        //a child of the previous dependency
+                        dependencyParentStack.peek().children.add(dependencyNode)
+                        dependencyParentStack.push(dependencyNode)
+                    } else {
+                        //a child of a dependency further back than 1 line
+                        previousLevel.downto(level) { dependencyParentStack.pop() }
+                        dependencyParentStack.peek().children.add(dependencyNode)
+                        dependencyParentStack.push(dependencyNode)
+                    }
                 }
             }
         }
@@ -132,14 +140,13 @@ class MavenCodeLocationPackager {
         codeLocations
     }
 
-    void createNewCodeLocation(String sourcePath, String line) {
+    DetectCodeLocation createNewCodeLocation(String sourcePath, String line) {
         DependencyNode dependencyNode = textToDependencyNode(line)
         String codeLocationSourcePath = sourcePath
         if (!sourcePath.endsWith(dependencyNode.name)) {
             codeLocationSourcePath += '/' + dependencyNode.name
         }
-        currentCodeLocation = new DetectCodeLocation(BomToolType.MAVEN, codeLocationSourcePath, dependencyNode.name, dependencyNode.version, dependencyNode.externalId, new HashSet<>())
-        codeLocations.add(currentCodeLocation)
+        new DetectCodeLocation(BomToolType.MAVEN, codeLocationSourcePath, dependencyNode.name, dependencyNode.version, dependencyNode.externalId, new HashSet<>())
     }
 
     String calculateCurrentLevelAndCleanLine(String line) {

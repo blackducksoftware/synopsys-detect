@@ -311,11 +311,26 @@ class DetectConfiguration {
     public String getMavenPath() {
         return detectProperties.mavenPath
     }
+    public String getMavenExcludedModuleNames() {
+        return detectProperties.mavenExcludedModuleNames
+    }
+    public String getMavenIncludedModuleNames() {
+        return detectProperties.mavenIncludedModuleNames
+    }
+    public String getMavenBuildCommand() {
+        return detectProperties.mavenBuildCommand
+    }
     public String getNugetPath() {
         return detectProperties.nugetPath
     }
     public String getNpmPath() {
         return detectProperties.npmPath
+    }
+    public boolean getNpmIncludeDevDependencies() {
+        return BooleanUtils.toBoolean(detectProperties.npmIncludeDevDependencies)
+    }
+    public String getNpmNodePath() {
+        return detectProperties.npmNodePath
     }
     public String getPearPath() {
         return detectProperties.pearPath
@@ -370,6 +385,9 @@ class DetectConfiguration {
     }
     public boolean getSuppressConfigurationOutput() {
         return BooleanUtils.toBoolean(detectProperties.suppressConfigurationOutput)
+    }
+    public boolean getSuppressResultsOutput() {
+        return BooleanUtils.toBoolean(detectProperties.suppressResultsOutput)
     }
     public boolean getHubSignatureScannerDryRun() {
         return detectProperties.hubSignatureScannerDryRun

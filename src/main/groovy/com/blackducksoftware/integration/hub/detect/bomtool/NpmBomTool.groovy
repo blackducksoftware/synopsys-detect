@@ -28,12 +28,14 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmCliDependencyFinder
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmLockfilePackager
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
+import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 
 import groovy.transform.TypeChecked
 
@@ -63,8 +65,12 @@ class NpmBomTool extends BomTool {
     @Autowired
     HubSignatureScanner hubSignatureScanner
 
+    @Autowired
+    DetectConfiguration detectConfiguration
+
     private File packageLockJson
     private File shrinkwrapJson
+    private Executable npmLsExe
 
     @Override
     public BomToolType getBomToolType() {
@@ -91,9 +97,16 @@ class NpmBomTool extends BomTool {
         } else if (containsPackageJson && containsNodeModules) {
             npmExePath = findExecutablePath(ExecutableType.NPM, true, detectConfiguration.getNpmPath())
             if (!npmExePath) {
-                logger.warn("Could not find a ${executableManager.getExecutableName(ExecutableType.NPM)} executable")
+                logger.warn("Could not find an ${executableManager.getExecutableName(ExecutableType.NPM)} executable")
             } else {
-                logger.debug("Npm version ${executableRunner.runExe(npmExePath, '-version').standardOutput}")
+                npmLsExe = new Executable(new File(sourcePath), npmExePath, ['-version'])
+                String npmNodePath = detectConfiguration.getNpmNodePath()
+                int lastSlashIndex = npmNodePath.lastIndexOf('/')
+                npmNodePath = npmNodePath.substring(0, lastSlashIndex)
+                if (npmNodePath) {
+                    npmLsExe.environmentVariables.put('PATH', npmNodePath)
+                }
+                logger.debug("Npm version ${executableRunner.execute(npmLsExe).standardOutput}")
             }
         } else if (containsPackageLockJson) {
             logger.info("Using ${PACKAGE_LOCK_JSON}")
@@ -131,7 +144,14 @@ class NpmBomTool extends BomTool {
     private List<DetectCodeLocation> extractFromCommand() {
         File npmLsOutputFile = detectFileManager.createFile(BomToolType.NPM, NpmBomTool.OUTPUT_FILE)
         File npmLsErrorFile = detectFileManager.createFile(BomToolType.NPM, NpmBomTool.ERROR_FILE)
-        executableRunner.runExeToFile(npmExePath, npmLsOutputFile, npmLsErrorFile, 'ls', '-json')
+        boolean includeDevDeps = detectConfiguration.npmIncludeDevDependencies
+        def exeArgs = ['ls', '-json']
+
+        if (!includeDevDeps) {
+            exeArgs.add('-prod')
+        }
+        npmLsExe.setExecutableArguments(exeArgs)
+        executableRunner.executeToFile(npmLsExe, npmLsOutputFile, npmLsErrorFile)
 
         if (npmLsOutputFile.length() > 0) {
             if (npmLsErrorFile.length() > 0) {

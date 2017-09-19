@@ -58,6 +58,10 @@ class DetectProperties {
     @Value('${detect.suppress.configuration.output}')
     Boolean suppressConfigurationOutput
 
+    @ValueDescription(description="If true, the default behavior of printing the Detect Results will be suppressed.", defaultValue="false", group=DetectProperties.GROUP_LOGGING)
+    @Value('${detect.suppress.results.output}')
+    Boolean suppressResultsOutput
+
     @ValueDescription(description="If true the bdio files will be deleted after upload", defaultValue="true", group=DetectProperties.GROUP_CLEANUP)
     @Value('${detect.cleanup.bdio.files}')
     Boolean cleanupBdioFiles
@@ -190,7 +194,7 @@ class DetectProperties {
     @Value('${detect.nuget.inspector.name}')
     String nugetInspectorPackageName
 
-    @ValueDescription(description="Version of the Nuget Inspector", defaultValue="2.1.0", group=DetectProperties.GROUP_NUGET)
+    @ValueDescription(description="Version of the Nuget Inspector", defaultValue="2.1.2", group=DetectProperties.GROUP_NUGET)
     @Value('${detect.nuget.inspector.version}')
     String nugetInspectorPackageVersion
 
@@ -206,6 +210,10 @@ class DetectProperties {
     @Value('${detect.maven.scope}')
     String mavenScope
 
+    @ValueDescription(description="Maven build command", defaultValue="dependency:tree", group=DetectProperties.GROUP_MAVEN)
+    @Value('${detect.maven.build.command}')
+    String mavenBuildCommand
+
     @ValueDescription(description="Path of the Gradle executable", group=DetectProperties.GROUP_GRADLE)
     @Value('${detect.gradle.path}')
     String gradlePath
@@ -213,6 +221,14 @@ class DetectProperties {
     @ValueDescription(description="The path of the Maven executable", group=DetectProperties.GROUP_MAVEN)
     @Value('${detect.maven.path}')
     String mavenPath
+
+    @ValueDescription(description="The names of the module to exclude", group=DetectProperties.GROUP_MAVEN)
+    @Value('${detect.maven.excluded.modules}')
+    String mavenExcludedModuleNames
+
+    @ValueDescription( description="The names of the module to include", group=DetectProperties.GROUP_MAVEN)
+    @Value('${detect.maven.included.modules}')
+    String mavenIncludedModuleNames
 
     @ValueDescription(description="The path of the Nuget executable", group=DetectProperties.GROUP_NUGET)
     @Value('${detect.nuget.path}')
@@ -237,6 +253,14 @@ class DetectProperties {
     @ValueDescription(description="The path of the Npm executable", group=DetectProperties.GROUP_NPM)
     @Value('${detect.npm.path}')
     String npmPath
+
+    @ValueDescription(description="Set this value to false if you would like to exclude your dev dependencies when ran", defaultValue='true', group=DetectProperties.GROUP_NPM)
+    @Value('${detect.npm.include.dev.dependencies}')
+    String npmIncludeDevDependencies
+
+    @ValueDescription(description="The path of the node executable that is used by Npm", group=DetectProperties.GROUP_NPM)
+    @Value('${detect.npm.node.path}')
+    String npmNodePath
 
     @ValueDescription(description="The path of the pear executable", group=DetectProperties.GROUP_PEAR)
     @Value('${detect.pear.path}')
