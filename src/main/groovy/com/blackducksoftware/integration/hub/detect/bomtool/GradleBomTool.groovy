@@ -46,6 +46,7 @@ class GradleBomTool extends BomTool {
 
     static final String BUILD_GRADLE_FILENAME = 'build.gradle'
 
+    @Autowired
     HubSignatureScanner hubSignatureScanner
 
     @Autowired

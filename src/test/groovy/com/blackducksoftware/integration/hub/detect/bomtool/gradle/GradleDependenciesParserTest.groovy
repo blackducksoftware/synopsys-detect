@@ -16,6 +16,7 @@ import static org.junit.Assert.*
 import org.junit.Test
 
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
+import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 import com.blackducksoftware.integration.util.ResourceUtil
 
@@ -24,13 +25,15 @@ class GradleDependenciesParserTest {
 
     @Test
     public void extractCodeLocationTest() {
-        createNewCodeLocationTest('gradle/dependencyGraph.txt', '/gradle/dependencyGraph-expected.json')
+        createNewCodeLocationTest('gradle/dependencyGraph.txt', '/gradle/dependencyGraph-expected.json', "", "")
     }
 
-    private void createNewCodeLocationTest(String gradleInspectorOutputResourcePath, String expectedResourcePath) {
+    private void createNewCodeLocationTest(String gradleInspectorOutputResourcePath, String expectedResourcePath, String rootProjectName, String rootProjectVersionName) {
+        DetectProject project = new DetectProject()
         def gradleDependenciesParser = new GradleDependenciesParser()
-        DetectCodeLocation codeLocation = gradleDependenciesParser.parseDependencies(ResourceUtil.getResourceAsStream(GradleDependenciesParserTest.class, gradleInspectorOutputResourcePath))
-
+        DetectCodeLocation codeLocation = gradleDependenciesParser.parseDependencies(project, ResourceUtil.getResourceAsStream(GradleDependenciesParserTest.class, gradleInspectorOutputResourcePath))
+        assertEquals(rootProjectName, project.getProjectName())
+        assertEquals(rootProjectVersionName, project.getProjectVersionName())
         testUtil.testJsonResource(expectedResourcePath, codeLocation)
     }
 }
