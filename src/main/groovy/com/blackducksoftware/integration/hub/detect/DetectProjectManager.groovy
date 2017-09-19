@@ -226,7 +226,7 @@ class DetectProjectManager {
     }
 
     private SimpleBdioDocument createSimpleBdioDocument(DetectProject detectProject, DetectCodeLocation detectCodeLocation) {
-        final String codeLocationName = getCodeLocationName(detectCodeLocation.bomToolType, detectCodeLocation, detectFileManager.extractFinalPieceFromPath(detectCodeLocation.sourcePath), detectConfiguration.getProjectCodeLocationPrefix(), CodeLocationType.BOM)
+        final String codeLocationName = getCodeLocationName(detectCodeLocation, detectConfiguration.getProjectCodeLocationPrefix(), CodeLocationType.BOM)
         final String projectId = detectCodeLocation.bomToolProjectExternalId.createDataId()
         final BdioExternalIdentifier projectExternalIdentifier = bdioPropertyHelper.createExternalIdentifier(detectCodeLocation.bomToolProjectExternalId)
 
@@ -262,8 +262,8 @@ class DetectProjectManager {
         outputFile
     }
 
-    private String getCodeLocationName(final BomToolType bomToolType, DetectCodeLocation detectCodeLocation, String finalSourcePathPiece, String prefix, CodeLocationType codeLocationType ) {
-        String codeLocation = String.format('%s/%s/%s %s/%s', finalSourcePathPiece, detectCodeLocation.bomToolProjectName, detectCodeLocation.bomToolProjectVersionName, bomToolType.toString().toLowerCase(), codeLocationType.toString().toLowerCase())
+    private String getCodeLocationName(DetectCodeLocation detectCodeLocation, String prefix, CodeLocationType codeLocationType ) {
+        String codeLocation = String.format('%s/%s/%s %s/%s', detectFileManager.extractFinalPieceFromPath(detectCodeLocation.sourcePath), detectCodeLocation.bomToolProjectName, detectCodeLocation.bomToolProjectVersionName, detectCodeLocation.bomToolType.toString().toLowerCase(), codeLocationType.toString().toLowerCase())
         if (prefix) {
             codeLocation = String.format('%s/%s', prefix, codeLocation)
         }
