@@ -91,11 +91,11 @@ class HubServiceWrapper {
     }
 
     ProjectRequestService createProjectRequestService() {
-        hubServicesFactory.createProjectRequestService(slf4jIntLogger)
+        hubServicesFactory.createProjectRequestService()
     }
 
     ProjectVersionRequestService createProjectVersionRequestService() {
-        hubServicesFactory.createProjectVersionRequestService(slf4jIntLogger)
+        hubServicesFactory.createProjectVersionRequestService()
     }
 
     BomImportRequestService createBomImportRequestService() {
@@ -103,19 +103,19 @@ class HubServiceWrapper {
     }
 
     PhoneHomeDataService createPhoneHomeDataService() {
-        hubServicesFactory.createPhoneHomeDataService(slf4jIntLogger)
+        hubServicesFactory.createPhoneHomeDataService()
     }
 
     ProjectDataService createProjectDataService() {
-        hubServicesFactory.createProjectDataService(slf4jIntLogger)
+        hubServicesFactory.createProjectDataService()
     }
 
     CodeLocationRequestService createCodeLocationRequestService() {
-        hubServicesFactory.createCodeLocationRequestService(slf4jIntLogger)
+        hubServicesFactory.createCodeLocationRequestService()
     }
 
     MetaService createMetaService() {
-        hubServicesFactory.createMetaService(slf4jIntLogger)
+        hubServicesFactory.createMetaService()
     }
 
     ScanSummaryRequestService createScanSummaryRequestService() {
@@ -123,19 +123,19 @@ class HubServiceWrapper {
     }
 
     ScanStatusDataService createScanStatusDataService() {
-        hubServicesFactory.createScanStatusDataService(slf4jIntLogger, detectConfiguration.getPolicyCheckTimeout())
+        hubServicesFactory.createScanStatusDataService(detectConfiguration.getPolicyCheckTimeout())
     }
 
     PolicyStatusDataService createPolicyStatusDataService() {
-        hubServicesFactory.createPolicyStatusDataService(slf4jIntLogger)
+        hubServicesFactory.createPolicyStatusDataService()
     }
 
     RiskReportDataService createRiskReportDataService() {
-        hubServicesFactory.createRiskReportDataService(slf4jIntLogger, detectConfiguration.getPolicyCheckTimeout())
+        hubServicesFactory.createRiskReportDataService(detectConfiguration.getPolicyCheckTimeout())
     }
 
     CLIDataService createCliDataService() {
-        hubServicesFactory.createCLIDataService(slf4jIntLogger, 120000L)
+        hubServicesFactory.createCLIDataService(120000L)
     }
 
     private HubServicesFactory createHubServicesFactory(Slf4jIntLogger slf4jIntLogger, HubServerConfig hubServerConfig) {
@@ -155,8 +155,7 @@ class HubServiceWrapper {
         hubServerConfigBuilder.setProxyPort(detectConfiguration.getHubProxyPort())
         hubServerConfigBuilder.setProxyUsername(detectConfiguration.getHubProxyUsername())
         hubServerConfigBuilder.setProxyPassword(detectConfiguration.getHubProxyPassword())
-
-        hubServerConfigBuilder.setAutoImportHttpsCertificates(detectConfiguration.getHubAutoImportCertificate())
+        hubServerConfigBuilder.setAlwaysTrustServerCertificate(detectConfiguration.getHubAlwaysTrustServerCertificate())
         hubServerConfigBuilder.setLogger(slf4jIntLogger)
 
         hubServerConfigBuilder.build()
