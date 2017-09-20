@@ -83,9 +83,13 @@ class PipBomTool extends BomTool {
 
         PythonEnvironment pythonEnvironment = virtualEnvironmentHandler.getEnvironment(detectConfiguration.virtualEnvPath)
         DependencyNode projectNode = makeDependencyNode(pythonEnvironment)
-        def codeLocation = new DetectCodeLocation(BomToolType.PIP, sourcePath, projectNode)
+        def codeLocations = []
+        if (projectNode && !(projectNode.name.equals('') && projectNode.version.equals('') && projectNode.children.empty)) {
+            def codeLocation = new DetectCodeLocation(BomToolType.PIP, sourcePath, projectNode)
+            codeLocations.add(codeLocation)
+        }
 
-        [codeLocation]
+        codeLocations
     }
 
     DependencyNode makeDependencyNode(PythonEnvironment pythonEnvironment) {
