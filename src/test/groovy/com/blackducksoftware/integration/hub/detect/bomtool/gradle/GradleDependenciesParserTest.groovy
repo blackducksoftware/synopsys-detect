@@ -23,6 +23,18 @@ import com.blackducksoftware.integration.util.ResourceUtil
 class GradleDependenciesParserTest {
     private TestUtil testUtil = new TestUtil()
 
+
+    @Test
+    public void getLineLevelTest() {
+        GradleDependenciesParser gradleDependenciesParser = new GradleDependenciesParser()
+        assertEquals(5, gradleDependenciesParser.getLineLevel('|    |         |    |    \\--- org.springframework:spring-core:4.3.5.RELEASE'))
+        assertEquals(3, gradleDependenciesParser.getLineLevel('|    |         \\--- com.squareup.okhttp3:okhttp:3.4.2 (*)'))
+        assertEquals(4, gradleDependenciesParser.getLineLevel('     |    |         \\--- org.ow2.asm:asm:5.0.3'))
+        assertEquals(1, gradleDependenciesParser.getLineLevel('     +--- org.hamcrest:hamcrest-core:1.3'))
+        assertEquals(0, gradleDependenciesParser.getLineLevel('+--- org.springframework.boot:spring-boot-starter: -> 1.4.3.RELEASE'))
+        assertEquals(0, gradleDependenciesParser.getLineLevel('\\--- org.apache.commons:commons-compress:1.13'))
+    }
+
     @Test
     public void extractCodeLocationTest() {
         createNewCodeLocationTest('gradle/dependencyGraph.txt', '/gradle/dependencyGraph-expected.json', "", "")
@@ -30,8 +42,9 @@ class GradleDependenciesParserTest {
 
     private void createNewCodeLocationTest(String gradleInspectorOutputResourcePath, String expectedResourcePath, String rootProjectName, String rootProjectVersionName) {
         DetectProject project = new DetectProject()
-        def gradleDependenciesParser = new GradleDependenciesParser()
+        GradleDependenciesParser gradleDependenciesParser = new GradleDependenciesParser()
         DetectCodeLocation codeLocation = gradleDependenciesParser.parseDependencies(project, ResourceUtil.getResourceAsStream(GradleDependenciesParserTest.class, gradleInspectorOutputResourcePath))
+
         assertEquals(rootProjectName, project.getProjectName())
         assertEquals(rootProjectVersionName, project.getProjectVersionName())
         testUtil.testJsonResource(expectedResourcePath, codeLocation)

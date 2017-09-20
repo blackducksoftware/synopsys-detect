@@ -41,10 +41,11 @@ import groovy.transform.TypeChecked
 class GradleDependenciesParser {
     private final Logger logger = LoggerFactory.getLogger(GradleDependenciesParser.class)
 
-    static final String FIRST_COMPONENT_OF_CONFIGURATION = '+---'
+    static final String DEPENDENCY_INDICATOR = '+---'
+    static final String LAST_CHILD_INDICATOR = '\\---'
     static final String COMPONENT_PREFIX = '--- '
     static final String SEEN_ELSEWHERE_SUFFIX = ' (*)'
-    static final String WINNING_VERSION_INDICATOR = ' -> '
+    static final String WINNING_INDICATOR = ' -> '
 
     String rootProjectSourcePath = ""
     String rootProjectGroup  = ""
@@ -96,9 +97,14 @@ class GradleDependenciesParser {
                 treeLevel = 0
                 return
             }
-            if (!processingConfiguration && line.startsWith(FIRST_COMPONENT_OF_CONFIGURATION)) {
+            if (!processingConfiguration && line.startsWith(DEPENDENCY_INDICATOR)) {
                 processingConfiguration = true
-                configurationName = previousLine.substring(0, previousLine.indexOf(' - ')).trim()
+                configurationName = previousLine
+                if(previousLine.contains(' -  ')) {
+                    configurationName = previousLine.substring(0, previousLine.indexOf(' - ')).trim()
+                } else {
+                    configurationName = previousLine.trim()
+                }
                 logger.info("processing of configuration ${configurationName} started")
             }
             if (!processingConfiguration) {
@@ -112,12 +118,12 @@ class GradleDependenciesParser {
                 return
             }
 
-            int lineTreeLevel = StringUtils.countMatches(line, '    ')
+            int lineTreeLevel = getLineLevel(line)
             if (lineTreeLevel == treeLevel + 1) {
                 nodeStack.push(previousNode)
             } else if (lineTreeLevel < treeLevel) {
                 (treeLevel - lineTreeLevel).times { nodeStack.pop() }
-            } else if (lineTreeLevel != treeLevel) {
+            }  else if (lineTreeLevel != treeLevel) {
                 logger.error "The tree level (${treeLevel}) and this line (${line}) with count ${lineTreeLevel} can't be reconciled."
             }
             dependencyNodeBuilder.addChildNodeWithParents(lineNode, [nodeStack.peek()])
@@ -133,31 +139,63 @@ class GradleDependenciesParser {
                 new MavenExternalId(projectGroup, projectName, projectVersionName), tempRoot.children)
     }
 
+    public int getLineLevel(String line) {
+        if (line.startsWith(DEPENDENCY_INDICATOR) || line.startsWith(LAST_CHILD_INDICATOR)) {
+            return 0
+        }
+        String modifiedLine = ""
+        int indexToCut = line.length()
+        if (line.contains(DEPENDENCY_INDICATOR)) {
+            indexToCut =line.indexOf(DEPENDENCY_INDICATOR)
+        } else if (line.contains(LAST_CHILD_INDICATOR)) {
+            indexToCut =line.indexOf(LAST_CHILD_INDICATOR)
+        }
+        modifiedLine = line.substring(0, indexToCut)
+        if (!modifiedLine.startsWith('|')) {
+            modifiedLine = '|' + modifiedLine
+        }
+        modifiedLine = modifiedLine.replace('     ', '    |')
+        modifiedLine = modifiedLine.replace('||', '|')
+        if (modifiedLine.endsWith('|')) {
+            try {
+                modifiedLine = modifiedLine.substring(0, modifiedLine.length() - 5)
+            } catch (Exception e) {
+                throw e
+            }
+        }
+        int matches = StringUtils.countMatches(modifiedLine, '|')
+
+        return matches
+    }
+
     DependencyNode createDependencyNodeFromOutputLine(String outputLine) {
         if (StringUtils.isBlank(outputLine) || !outputLine.contains(COMPONENT_PREFIX)) {
-            logger.warn 'No input was provided.'
             return null
         }
 
         String cleanedOutput = StringUtils.trimToEmpty(outputLine)
-        if (cleanedOutput.split(':').length != 3) {
-            logger.error "The line can not be reasonably split in to the neccessary parts: ${outputLine}"
-            return null
-        }
-
         cleanedOutput = cleanedOutput.substring(cleanedOutput.indexOf(COMPONENT_PREFIX) + COMPONENT_PREFIX.length())
         if (cleanedOutput.endsWith(SEEN_ELSEWHERE_SUFFIX)) {
             cleanedOutput = cleanedOutput[0..(-1 * (SEEN_ELSEWHERE_SUFFIX.length() + 1))]
         }
 
         String[] gav = cleanedOutput.split(':')
+        if (cleanedOutput.contains(WINNING_INDICATOR)) {
+            // WINNING_INDICATOR can point to an entire GAV not just a version
+            String winningSection = cleanedOutput.substring(cleanedOutput.indexOf(WINNING_INDICATOR) + WINNING_INDICATOR.length())
+            if(winningSection.contains(':')) {
+                gav = winningSection.split(':')
+            } else {
+                gav[2] = winningSection
+            }
+        }
+        if (gav.length != 3) {
+            logger.error "The line can not be reasonably split in to the neccessary parts: ${outputLine}"
+            return null
+        }
         String group = gav[0]
         String artifact = gav[1]
         String version = gav[2]
-        if (version.contains(WINNING_VERSION_INDICATOR)) {
-            int winningVersionIndex = version.indexOf(WINNING_VERSION_INDICATOR) + WINNING_VERSION_INDICATOR.length()
-            version = version[winningVersionIndex..-1]
-        }
 
         new DependencyNode(artifact, version, new MavenExternalId(group, artifact, version))
     }
