@@ -19,8 +19,6 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 
 class PipInspectorTreeParserTest {
 
@@ -36,7 +34,6 @@ class PipInspectorTreeParserTest {
     @Before
     void init() {
         parser = new PipInspectorTreeParser()
-        parser.nameVersionNodeTransformer = new NameVersionNodeTransformer()
     }
 
     @Test
@@ -50,17 +47,17 @@ class PipInspectorTreeParserTest {
 
     @Test
     void lineToNodeTest() {
-        NameVersionNode validNode1 = parser.lineToNode(line1)
+        DependencyNode validNode1 = parser.lineToNode(line1)
         Assert.assertEquals(name, validNode1.name)
         Assert.assertEquals(version, validNode1.version)
         Assert.assertTrue(validNode1.children.isEmpty())
 
-        NameVersionNode validNode2 = parser.lineToNode(line2)
+        DependencyNode validNode2 = parser.lineToNode(line2)
         Assert.assertEquals(validNode1.name, validNode2.name)
         Assert.assertEquals(validNode1.version, validNode2.version)
         Assert.assertEquals(validNode1.children, validNode2.children)
 
-        NameVersionNode invalidNode = parser.lineToNode(line3)
+        DependencyNode invalidNode = parser.lineToNode(line3)
         Assert.assertNull(invalidNode)
     }
 
