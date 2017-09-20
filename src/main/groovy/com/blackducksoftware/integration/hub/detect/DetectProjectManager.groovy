@@ -238,7 +238,10 @@ class DetectProjectManager {
 
         final BdioBillOfMaterials bdioBillOfMaterials = bdioNodeFactory.createBillOfMaterials(codeLocationName, projectName, projectVersionName)
         String hubDetectVersion = detectConfiguration.getBuildInfo().getDetectVersion()
-        bdioBillOfMaterials.customData.put('detectVersion', hubDetectVersion)
+        def detectVersionData = [
+            'detectVersion' : hubDetectVersion
+        ]
+        bdioBillOfMaterials.customData = detectVersionData
         final BdioProject project = bdioNodeFactory.createProject(projectName, projectVersionName, projectId, projectExternalIdentifier)
 
         final List<BdioComponent> bdioComponents = dependencyNodeTransformer.addComponentsGraph(project, dependencies)
