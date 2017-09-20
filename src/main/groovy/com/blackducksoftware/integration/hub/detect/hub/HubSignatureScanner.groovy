@@ -73,7 +73,9 @@ class HubSignatureScanner {
         if (matchingExcludedPath) {
             logger.info("Not registering excluded path ${file.canonicalPath} to scan")
         } else if (file.exists() && (file.isFile() || file.isDirectory())) {
-            detectSummary.addPathToBeScanned(file)
+            if (!detectConfiguration.hubSignatureScannerDisabled) {
+                detectSummary.addPathToBeScanned(file)
+            }
             logger.info("Registering path ${file.canonicalPath} to scan")
             registeredPaths.add(file.canonicalPath)
             if (fileNamesToExclude) {
