@@ -96,15 +96,17 @@ class PipBomTool extends BomTool {
     List<DetectCodeLocation> extractDetectCodeLocations() {
         File outputDirectory = detectFileManager.createDirectory(BomToolType.PIP)
         File setupFile = detectFileManager.findFile(sourceDirectory, SETUP_FILE_NAME)
-
         File inspectorScript = pipInspectorManager.extractInspectorScript()
         String inspectorOutput = pipInspectorManager.runInspector(sourceDirectory, pythonPath, inspectorScript, projectName, detectConfiguration.requirementsFilePath)
-
         DependencyNode projectNode = pipInspectorTreeParser.parse(inspectorOutput)
 
-        def codeLocation = new DetectCodeLocation(BomToolType.PIP, sourcePath, projectNode)
+        def codeLocations = []
+        if (projectNode && !(projectNode.name.equals('') && projectNode.version.equals('') && projectNode.children.empty)) {
+            def codeLocation = new DetectCodeLocation(BomToolType.PIP, sourcePath, projectNode)
+            codeLocations.add(codeLocation)
+        }
 
-        [codeLocation]
+        codeLocations
     }
 
     String getProjectName() {
