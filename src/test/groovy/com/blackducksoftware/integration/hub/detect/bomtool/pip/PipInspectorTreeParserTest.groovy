@@ -36,7 +36,7 @@ class PipInspectorTreeParserTest {
     @Before
     void init() {
         parser = new PipInspectorTreeParser()
-        parser.nameVersionNodeTransformer =  new NameVersionNodeTransformer()
+        parser.nameVersionNodeTransformer = new NameVersionNodeTransformer()
     }
 
     @Test
