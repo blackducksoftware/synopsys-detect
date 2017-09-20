@@ -70,6 +70,10 @@ class DetectProperties {
     @Value('${detect.test.connection}')
     Boolean testConnection
 
+    @ValueDescription(description="Timeout for response from the hub regarding your project (i.e. risk reports and policy check). When changing this value, keep in mind the checking of policies might have to wait for a new scan to process which can take some time.", defaultValue="300000", group=DetectProperties.GROUP_PROJECT_INFO)
+    @Value('${detect.api.timeout}')
+    Long apiTimeout
+
     @ValueDescription(description="URL of the Hub server", group=DetectProperties.GROUP_HUB_CONFIGURATION)
     @Value('${blackduck.hub.url}')
     String hubUrl
@@ -157,10 +161,6 @@ class DetectProperties {
     @ValueDescription(description = "Set to true if you would like a policy check from the hub for your project. False by default", defaultValue="false", group=DetectProperties.GROUP_POLICY_CHECK)
     @Value('${detect.policy.check}')
     Boolean policyCheck
-
-    @ValueDescription(description="Timeout for response from the hub regarding your project (i.e. risk reports and policy check). When changing this value, keep in mind the checking of policies might have to wait for a new scan to process which can take some time.", defaultValue="300000", group=DetectProperties.GROUP_POLICY_CHECK)
-    @Value('${detect.policy.check.timeout}')
-    Long policyCheckTimeout
 
     @ValueDescription(description="Version of the Gradle Inspector", defaultValue="0.2.2", group=DetectProperties.GROUP_GRADLE)
     @Value('${detect.gradle.inspector.version}')

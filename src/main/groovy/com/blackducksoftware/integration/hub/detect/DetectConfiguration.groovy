@@ -200,6 +200,9 @@ class DetectConfiguration {
     public boolean getTestConnection() {
         return BooleanUtils.toBoolean(detectProperties.testConnection)
     }
+    public long getApiTimeout() {
+        return convertLong(detectProperties.apiTimeout)
+    }
     public String getHubUrl() {
         return detectProperties.hubUrl
     }
@@ -265,9 +268,6 @@ class DetectConfiguration {
     }
     public boolean getPolicyCheck() {
         return BooleanUtils.toBoolean(detectProperties.policyCheck)
-    }
-    public long getPolicyCheckTimeout() {
-        return convertLong(detectProperties.policyCheckTimeout)
     }
     public String getGradleInspectorVersion() {
         return detectProperties.gradleInspectorVersion
