@@ -66,36 +66,38 @@ class HubSignatureScanner {
     private Set<String> registeredPathsToExclude = []
 
     public void registerPathToScan(File file, String... fileNamesToExclude) {
-        String matchingExcludedPath = detectConfiguration.hubSignatureScannerPathsToExclude.find {
-            file.canonicalPath.startsWith(it)
-        }
-
-        if (matchingExcludedPath) {
-            logger.info("Not registering excluded path ${file.canonicalPath} to scan")
-        } else if (file.exists() && (file.isFile() || file.isDirectory())) {
-            if (!detectConfiguration.hubSignatureScannerDisabled) {
-                detectSummary.addPathToBeScanned(file)
+        if (!detectConfiguration.hubSignatureScannerDisabled) {
+            String matchingExcludedPath = detectConfiguration.hubSignatureScannerPathsToExclude.find {
+                file.canonicalPath.startsWith(it)
             }
-            logger.info("Registering path ${file.canonicalPath} to scan")
-            registeredPaths.add(file.canonicalPath)
-            if (fileNamesToExclude) {
-                for (String fileNameToExclude : fileNamesToExclude) {
-                    File fileToExclude = detectFileManager.findFile(file, fileNameToExclude)
-                    if (fileToExclude) {
-                        String pattern = fileToExclude.getCanonicalPath().replace(file.canonicalPath, '')
-                        if (pattern.contains('\\\\')) {
-                            pattern = pattern.replace('\\\\', '/')
+
+            if (matchingExcludedPath) {
+                logger.info("Not registering excluded path ${file.canonicalPath} to scan")
+            } else if (file.exists() && (file.isFile() || file.isDirectory())) {
+                detectSummary.addPathToBeScanned(file)
+                logger.info("Registering path ${file.canonicalPath} to scan")
+                registeredPaths.add(file.canonicalPath)
+                if (fileNamesToExclude) {
+                    for (String fileNameToExclude : fileNamesToExclude) {
+                        File fileToExclude = detectFileManager.findFile(file, fileNameToExclude)
+                        if (fileToExclude) {
+                            String pattern = fileToExclude.getCanonicalPath().replace(file.canonicalPath, '')
+                            if (pattern.contains('\\\\')) {
+                                pattern = pattern.replace('\\\\', '/')
+                            }
+                            if (pattern.contains('\\')) {
+                                pattern = pattern.replace('\\', '/')
+                            }
+                            pattern = pattern + '/'
+                            registeredPathsToExclude.add(pattern)
                         }
-                        if (pattern.contains('\\')) {
-                            pattern = pattern.replace('\\', '/')
-                        }
-                        pattern = pattern + '/'
-                        registeredPathsToExclude.add(pattern)
                     }
                 }
+            } else {
+                logger.warn("Tried to register a scan for ${file.canonicalPath} but it doesn't appear to exist or it isn't a file or directory.")
             }
         } else {
-            logger.warn("Tried to register a scan for ${file.canonicalPath} but it doesn't appear to exist or it isn't a file or directory.")
+            logger.info("Not registering path ${file.canonicalPath}, scan is disabled")
         }
     }
 
