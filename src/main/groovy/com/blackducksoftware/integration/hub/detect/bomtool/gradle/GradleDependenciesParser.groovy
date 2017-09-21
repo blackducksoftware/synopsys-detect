@@ -100,7 +100,7 @@ class GradleDependenciesParser {
             if (!processingConfiguration && line.startsWith(DEPENDENCY_INDICATOR)) {
                 processingConfiguration = true
                 configurationName = previousLine
-                if(previousLine.contains(' -  ')) {
+                if (previousLine.contains(' -  ')) {
                     configurationName = previousLine.substring(0, previousLine.indexOf(' - ')).trim()
                 } else {
                     configurationName = previousLine.trim()
@@ -183,7 +183,7 @@ class GradleDependenciesParser {
         if (cleanedOutput.contains(WINNING_INDICATOR)) {
             // WINNING_INDICATOR can point to an entire GAV not just a version
             String winningSection = cleanedOutput.substring(cleanedOutput.indexOf(WINNING_INDICATOR) + WINNING_INDICATOR.length())
-            if(winningSection.contains(':')) {
+            if (winningSection.contains(':')) {
                 gav = winningSection.split(':')
             } else {
                 gav[2] = winningSection
