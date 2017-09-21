@@ -157,11 +157,7 @@ class GradleDependenciesParser {
         modifiedLine = modifiedLine.replace('     ', '    |')
         modifiedLine = modifiedLine.replace('||', '|')
         if (modifiedLine.endsWith('|')) {
-            try {
-                modifiedLine = modifiedLine.substring(0, modifiedLine.length() - 5)
-            } catch (Exception e) {
-                throw e
-            }
+            modifiedLine = modifiedLine.substring(0, modifiedLine.length() - 5)
         }
         int matches = StringUtils.countMatches(modifiedLine, '|')
 
