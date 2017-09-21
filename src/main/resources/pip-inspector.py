@@ -114,5 +114,4 @@ def resolve_package_by_name(package_name):
         node.children = node.children + [child_node]
     return node
 
-
 main()
