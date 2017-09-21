@@ -23,7 +23,6 @@ import com.blackducksoftware.integration.util.ResourceUtil
 class GradleDependenciesParserTest {
     private TestUtil testUtil = new TestUtil()
 
-
     @Test
     public void getLineLevelTest() {
         GradleDependenciesParser gradleDependenciesParser = new GradleDependenciesParser()
