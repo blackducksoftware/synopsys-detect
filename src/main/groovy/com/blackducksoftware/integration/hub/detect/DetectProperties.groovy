@@ -107,8 +107,8 @@ class DetectProperties {
     String hubProxyPassword
 
     @ValueDescription(description="If true, automatically trust the certificate for the current run of Detect only", defaultValue="false", group=DetectProperties.GROUP_HUB_CONFIGURATION)
-    @Value('${blackduck.hub.always.trust.server.cert}')
-    Boolean hubAlwaysTrustServerCertificate
+    @Value('${blackduck.hub.trust.cert}')
+    Boolean hubTrustCertificate
 
     @ValueDescription(description="This can disable any Hub communication - if true, Detect will not upload BDIO files, it will not check policies, and it will not download and install the signature scanner.", defaultValue="false", group=DetectProperties.GROUP_HUB_CONFIGURATION)
     @Value('${blackduck.hub.offline.mode}')

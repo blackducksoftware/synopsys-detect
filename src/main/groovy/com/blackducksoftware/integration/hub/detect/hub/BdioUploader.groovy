@@ -47,7 +47,7 @@ class BdioUploader {
     void uploadBdioFiles(HubServerConfig hubServerConfig, BomImportRequestService bomImportRequestService, PhoneHomeDataService phoneHomeDataService, List<File> createdBdioFiles) {
         createdBdioFiles.each { file ->
             logger.info("uploading ${file.name} to ${detectConfiguration.getHubUrl()}")
-            bomImportRequestService.importBomFile(file, 'application/ld+json')
+            bomImportRequestService.importBomFile(file)
             if (detectConfiguration.getCleanupBdioFiles()) {
                 file.delete()
             }
