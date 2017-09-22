@@ -42,7 +42,7 @@ import groovy.transform.TypeChecked
 
 @TypeChecked
 class ExternalIdTypeAdapter extends TypeAdapter<ExternalId> {
-    Map<String, Forge> nameVerionForgeMap = [
+    Map<String, Forge> nameVersionForgeMap = [
         anaconda: Forge.ANACONDA,
         cocoapods: Forge.COCOAPODS,
         cpan: CpanBomTool.CPAN_FORGE,
@@ -90,8 +90,8 @@ class ExternalIdTypeAdapter extends TypeAdapter<ExternalId> {
 
         if (Forge.MAVEN.equals(forge)) {
             return new MavenExternalId(otherProperties.get("group"), otherProperties.get("name"), otherProperties.get("version"))
-        } else if (nameVerionForgeMap.containsKey(forge.name)) {
-            return new NameVersionExternalId(nameVerionForgeMap.get(forge.name), otherProperties.get("name"), otherProperties.get("version"))
+        } else if (nameVersionForgeMap.containsKey(forge.name)) {
+            return new NameVersionExternalId(nameVersionForgeMap.get(forge.name), otherProperties.get("name"), otherProperties.get("version"))
         } else if (dockerForgeMap.containsKey(forge.name)){
             return new ArchitectureExternalId(dockerForgeMap.get(forge.name), otherProperties.get("name"), otherProperties.get("version"), otherProperties.get("architecture"))
         }
