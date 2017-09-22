@@ -341,17 +341,11 @@ class DetectConfiguration {
     public String getPipProjectName() {
         return detectProperties.pipProjectName
     }
-    public boolean getPipThreeOverride() {
-        return BooleanUtils.toBoolean(detectProperties.pipThreeOverride)
+    public boolean getPythonThreeOverride() {
+        return BooleanUtils.toBoolean(detectProperties.pythonThreeOverride)
     }
     public String getPythonPath() {
         return detectProperties.pythonPath
-    }
-    public String getPipPath() {
-        return detectProperties.pipPath
-    }
-    public String getVirtualEnvPath() {
-        return detectProperties.virtualEnvPath
     }
     public String getRequirementsFilePath() {
         return detectProperties.requirementsFilePath

@@ -238,17 +238,13 @@ class DetectProperties {
     @Value('${detect.pip.project.name}')
     String pipProjectName
 
-    @ValueDescription(description="If true will use pip3 if available on class path", defaultValue="false", group=DetectProperties.GROUP_PIP)
-    @Value('${detect.pip.pip3}')
-    Boolean pipThreeOverride
+    @ValueDescription(description="If true will use Python 3 if available on class path", defaultValue="false", group=DetectProperties.GROUP_PYTHON)
+    @Value('${detect.python.python3}')
+    Boolean pythonThreeOverride
 
     @ValueDescription(description="The path of the Python executable", group=DetectProperties.GROUP_PYTHON)
     @Value('${detect.python.path}')
     String pythonPath
-
-    @ValueDescription(description="The path of the Pip executable", group=DetectProperties.GROUP_PIP)
-    @Value('${detect.pip.path}')
-    String pipPath
 
     @ValueDescription(description="The path of the Npm executable", group=DetectProperties.GROUP_NPM)
     @Value('${detect.npm.path}')
@@ -269,10 +265,6 @@ class DetectProperties {
     @ValueDescription(description="Set to true if you would like to include the not required packages", defaultValue='false', group=DetectProperties.GROUP_PEAR)
     @Value('${detect.pear.not.required.dependencies}')
     Boolean pearNotRequiredDependencies
-
-    @ValueDescription(description="The path to a user's virtual environment", group=DetectProperties.GROUP_PIP)
-    @Value('${detect.pip.virtualEnv.path}')
-    String virtualEnvPath
 
     @ValueDescription(description="The path of the requirements.txt file", group=DetectProperties.GROUP_PIP)
     @Value('${detect.pip.requirements.path}')
