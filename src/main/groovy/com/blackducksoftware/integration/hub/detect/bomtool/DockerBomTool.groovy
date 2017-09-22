@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerProperties
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
@@ -37,6 +36,7 @@ import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.google.gson.Gson
+
 import groovy.transform.TypeChecked
 
 @Component
@@ -103,9 +103,7 @@ class DockerBomTool extends BomTool {
 
         File dockerPropertiesFile = detectFileManager.createFile(BomToolType.DOCKER, 'application.properties')
         File dockerBomToolDirectory =  dockerPropertiesFile.getParentFile()
-        Properties dockerProps = new Properties()
-        dockerProperties.fillInDockerProperties(dockerProps, dockerBomToolDirectory)
-        dockerProps.store(dockerPropertiesFile.newOutputStream(), "")
+        dockerProperties.populatePropertiesFile(dockerPropertiesFile, dockerBomToolDirectory)
 
         boolean usingTarFile = false
         String imageArgument = ''
@@ -116,8 +114,6 @@ class DockerBomTool extends BomTool {
             imageArgument = dockerTarFile.getCanonicalPath()
             usingTarFile = true
         }
-
-
 
         String path = System.getenv('PATH')
         File dockerExecutableFile = new File(dockerExecutablePath)

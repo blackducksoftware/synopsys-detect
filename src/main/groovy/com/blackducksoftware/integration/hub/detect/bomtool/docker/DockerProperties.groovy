@@ -35,7 +35,9 @@ class DockerProperties {
     @Autowired
     DetectConfiguration detectConfiguration
 
-    public void fillInDockerProperties(Properties dockerProperties, File bomToolOutputDirectory) {
+    public void populatePropertiesFile(File dockerPropertiesFile, File bomToolOutputDirectory) {
+        Properties dockerProperties = new Properties()
+
         dockerProperties.setProperty('logging.level.com.blackducksoftware', detectConfiguration.getLoggingLevel())
         dockerProperties.setProperty('dry.run', 'true')
         dockerProperties.setProperty('output.path', bomToolOutputDirectory.getAbsolutePath())
@@ -46,6 +48,8 @@ class DockerProperties {
             String dockerKey = propertyName[DetectConfiguration.DOCKER_PROPERTY_PREFIX.length()..-1]
             addDockerProperty(dockerProperties, propertyName, dockerKey)
         }
+
+        dockerProperties.store(dockerPropertiesFile.newOutputStream(), "")
     }
 
     private String addDockerProperty(Properties dockerProperties, String key, String dockerKey) {
