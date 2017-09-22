@@ -22,6 +22,7 @@
  */
 package com.blackducksoftware.integration.hub.detect
 
+import org.apache.commons.codec.digest.DigestUtils
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.joda.time.format.DateTimeFormat
@@ -158,7 +159,10 @@ class DetectProjectManager {
             } else {
                 if (it.dependencies) {
                     final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(detectProject, it)
-                    final String filename = it.createBdioFilename(integrationEscapeUtil, detectFileManager.extractFinalPieceFromPath(it.sourcePath), detectProject.projectName, detectProject.projectVersionName)
+                    String projectPath = detectFileManager.extractFinalPieceFromPath(it.sourcePath)
+                    String projectName = detectProject.projectName
+                    String projectVersionName = detectProject.projectVersionName
+                    final String filename = createBdioFilename(it.bomToolType, projectPath, projectName, projectVersionName)
                     final File outputFile = new File(detectConfiguration.getOutputDirectory(), filename)
                     if (outputFile.exists()) {
                         outputFile.delete()
@@ -176,6 +180,39 @@ class DetectProjectManager {
         }
 
         bdioFiles
+    }
+
+    private String createBdioFilename(BomToolType bomToolType, String finalSourcePathPiece, String projectName, String projectVersionName) {
+        def names = [
+            finalSourcePathPiece,
+            projectName,
+            projectVersionName
+        ]
+        names.sort { -it.size() }
+        String filename = generateFilename(bomToolType, finalSourcePathPiece, projectName, projectVersionName)
+        for (int i = 0; (filename.length() >= 255) && (i < 3); i++) {
+            names[i] = DigestUtils.sha1Hex(names[i])
+            if (names[i].length() > 15) {
+                names[i] = names[i].substring(0, 15)
+            }
+
+            filename = generateFilename(bomToolType, names[0], names[1], names[2])
+        }
+
+        filename
+    }
+
+    private String generateFilename(BomToolType bomToolType, String finalSourcePathPiece, String projectName, String projectVersionName) {
+        List<String> safePieces = [
+            bomToolType.toString(),
+            projectName,
+            projectVersionName,
+            finalSourcePathPiece,
+            'bdio'
+        ].collect { integrationEscapeUtil.escapeForUri(it) }
+
+        String filename = safePieces.iterator().join('_') + '.jsonld'
+        filename
     }
 
     private SimpleBdioDocument createAggregateSimpleBdioDocument(DetectProject detectProject) {

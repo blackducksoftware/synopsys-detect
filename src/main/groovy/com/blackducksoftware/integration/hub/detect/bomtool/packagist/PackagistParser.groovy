@@ -38,8 +38,6 @@ import groovy.transform.TypeChecked
 @Component
 @TypeChecked
 class PackagistParser {
-    public static final Forge PACKAGIST = new Forge('packagist', ':')
-
     @Autowired
     DetectConfiguration detectConfiguration
 
@@ -48,7 +46,7 @@ class PackagistParser {
         String projectName = composerJsonObject.get('name')?.getAsString()
         String projectVersion = composerJsonObject.get('version')?.getAsString()
 
-        def rootDependencyNode = new DependencyNode(projectName, projectVersion, new NameVersionExternalId(PACKAGIST, projectName, projectVersion))
+        def rootDependencyNode = new DependencyNode(projectName, projectVersion, new NameVersionExternalId(Forge.PACKAGIST, projectName, projectVersion))
 
         JsonObject composerLockObject = new JsonParser().parse(composerLockText) as JsonObject
         JsonArray packagistPackages = composerLockObject.get('packages')?.getAsJsonArray()
@@ -76,7 +74,7 @@ class PackagistParser {
             if (currentPackages.contains(currentRowPackageName)) {
                 String currentRowPackageVersion = it.getAt('version').toString().replace('"', '')
 
-                DependencyNode childNode = new DependencyNode(currentRowPackageName, currentRowPackageVersion, new NameVersionExternalId(PACKAGIST, currentRowPackageName, currentRowPackageVersion))
+                DependencyNode childNode = new DependencyNode(currentRowPackageName, currentRowPackageVersion, new NameVersionExternalId(Forge.PACKAGIST, currentRowPackageName, currentRowPackageVersion))
 
                 convertFromJsonToDependencyNode(childNode, getStartingPackages(it.getAsJsonObject(), false), jsonArray)
                 parentNode.children.add(childNode)
