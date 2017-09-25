@@ -262,9 +262,9 @@ class DetectProperties {
     @Value('${detect.pear.path}')
     String pearPath
 
-    @ValueDescription(description="Set to true if you would like to include the not required packages", defaultValue='false', group=DetectProperties.GROUP_PEAR)
-    @Value('${detect.pear.not.required.dependencies}')
-    Boolean pearNotRequiredDependencies
+    @ValueDescription(description="Set to true if you would like to include only required packages", defaultValue='false', group=DetectProperties.GROUP_PEAR)
+    @Value('${detect.pear.only.required.deps}')
+    Boolean pearOnlyRequiredDependencies
 
     @ValueDescription(description="The path of the requirements.txt file", group=DetectProperties.GROUP_PIP)
     @Value('${detect.pip.requirements.path}')

@@ -335,8 +335,8 @@ class DetectConfiguration {
     public String getPearPath() {
         return detectProperties.pearPath
     }
-    public boolean getPearNotRequiredDependencies() {
-        return BooleanUtils.toBoolean(detectProperties.pearNotRequiredDependencies)
+    public boolean getPearOnlyRequiredDependencies() {
+        return BooleanUtils.toBoolean(detectProperties.pearOnlyRequiredDependencies)
     }
     public String getPipProjectName() {
         return detectProperties.pipProjectName
