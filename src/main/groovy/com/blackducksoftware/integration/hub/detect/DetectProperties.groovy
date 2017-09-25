@@ -162,7 +162,7 @@ class DetectProperties {
     @Value('${detect.policy.check.timeout}')
     Long policyCheckTimeout
 
-    @ValueDescription(description="Version of the Gradle Inspector", defaultValue="0.2.2", group=DetectProperties.GROUP_GRADLE)
+    @ValueDescription(description="Version of the Gradle Inspector", defaultValue="0.3.0", group=DetectProperties.GROUP_GRADLE)
     @Value('${detect.gradle.inspector.version}')
     String gradleInspectorVersion
 
