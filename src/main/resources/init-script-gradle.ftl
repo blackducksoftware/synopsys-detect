@@ -61,7 +61,7 @@ addListener(
 
             def dependencyGatherer = new DependencyGatherer()
             def rootProject = task.project
-            dependencyGatherer.createAllCodeLocationFiles(rootProject, '${excludedProjectNames}', '${includedProjectNames}', '${excludedConfigurationNames}', '${includedConfigurationNames}', outputDirectory)
+            dependencyGatherer.createAllDependencyGraphFiles(rootProject, '${excludedProjectNames}', '${includedProjectNames}', '${excludedConfigurationNames}', '${includedConfigurationNames}', outputDirectory)
         }
     }
 )

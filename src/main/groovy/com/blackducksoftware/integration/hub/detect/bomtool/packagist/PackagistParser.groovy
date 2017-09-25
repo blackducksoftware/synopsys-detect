@@ -38,7 +38,6 @@ import groovy.transform.TypeChecked
 @Component
 @TypeChecked
 class PackagistParser {
-
     @Autowired
     DetectConfiguration detectConfiguration
 
