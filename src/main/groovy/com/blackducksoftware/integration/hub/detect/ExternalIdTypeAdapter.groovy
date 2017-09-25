@@ -49,8 +49,8 @@ class ExternalIdTypeAdapter extends TypeAdapter<ExternalId> {
         cran: CranBomTool.CRAN,
         golang: GoDepBomTool.GOLANG,
         npm: Forge.NPM,
-        packagist: PackagistParser.PACKAGIST,
-        pear: PearBomTool.PEAR,
+        packagist: Forge.PACKAGIST,
+        pear: Forge.PEAR,
         pypi: Forge.PYPI,
         rubygems: Forge.RUBYGEMS
     ]
