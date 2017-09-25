@@ -35,6 +35,7 @@ import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
+import com.google.gson.Gson
 
 import groovy.transform.TypeChecked
 
@@ -44,6 +45,13 @@ class DockerBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(DockerBomTool.class)
 
     static final URL LATEST_URL = new URL('https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector.sh')
+    static final String FORGE_SEPARATOR = "/"
+
+    final String tarFileNamePattern = '*.tar.gz'
+    final String dependenciesFileNamePattern = '*_dependencies.json'
+
+    @Autowired
+    Gson gson
 
     @Autowired
     DockerProperties dockerProperties
@@ -94,9 +102,8 @@ class DockerBomTool extends BomTool {
         }
 
         File dockerPropertiesFile = detectFileManager.createFile(BomToolType.DOCKER, 'application.properties')
-        Properties dockerProps = new Properties()
-        dockerProperties.fillInDockerProperties(dockerProps)
-        dockerProps.store(dockerPropertiesFile.newOutputStream(), "")
+        File dockerBomToolDirectory =  dockerPropertiesFile.getParentFile()
+        dockerProperties.populatePropertiesFile(dockerPropertiesFile, dockerBomToolDirectory)
 
         boolean usingTarFile = false
         String imageArgument = ''
@@ -108,28 +115,42 @@ class DockerBomTool extends BomTool {
             usingTarFile = true
         }
 
-        File dockerPropertiesDirectory =  dockerPropertiesFile.getParentFile()
-
         String path = System.getenv('PATH')
         File dockerExecutableFile = new File(dockerExecutablePath)
         path += File.pathSeparator + dockerExecutableFile.parentFile.absolutePath
         Map<String, String> environmentVariables = [PATH: path]
-        environmentVariables.put('BD_HUB_PASSWORD', detectConfiguration.hubPassword)
-        environmentVariables.put('SCAN_CLI_OPTS', dockerProperties.dockerProxyEnvironmentVariable())
 
         List<String> bashArguments = [
             "-c",
-            "${shellScriptFile.absolutePath} --spring.config.location=\"${dockerPropertiesDirectory.getAbsolutePath()}\" ${imageArgument}" as String
+            "${shellScriptFile.absolutePath} --spring.config.location=\"${dockerBomToolDirectory.getAbsolutePath()}\" --dry.run=true ${imageArgument}" as String
         ]
-
         Executable dockerExecutable = new Executable(shellScriptFile.parentFile, environmentVariables, bashExecutablePath, bashArguments)
         executableRunner.execute(dockerExecutable)
 
         if (usingTarFile) {
             hubSignatureScanner.registerPathToScan(new File(detectConfiguration.dockerTar))
+        } else {
+            File producedTarFile = detectFileManager.findFile(dockerBomToolDirectory, tarFileNamePattern)
+            if (producedTarFile) {
+                hubSignatureScanner.registerPathToScan(producedTarFile)
+            } else {
+                logMissingFile(dockerBomToolDirectory, tarFileNamePattern)
+            }
         }
 
-        //At least for the moment, there is no way of running the hub-docker-inspector to generate the files only, so it currently handles all uploading
+        File dependencyNodeJsonFile = detectFileManager.findFile(dockerBomToolDirectory, dependenciesFileNamePattern)
+        if (dependencyNodeJsonFile) {
+            String codeLocationJson = dependencyNodeJsonFile.getText(StandardCharsets.UTF_8.toString())
+            DetectCodeLocation codeLocation = gson.fromJson(codeLocationJson, DetectCodeLocation.class)
+            return [codeLocation]
+        } else {
+            logMissingFile(dockerBomToolDirectory, dependenciesFileNamePattern)
+        }
+
         []
+    }
+
+    private void logMissingFile(File searchDirectory, String fileNamePattern) {
+        logger.debug("No files found matching pattern [${fileNamePattern}]. Expected docker-inspector to produce file in ${searchDirectory.getCanonicalPath()}")
     }
 }

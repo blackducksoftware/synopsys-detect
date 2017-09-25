@@ -35,35 +35,21 @@ class DockerProperties {
     @Autowired
     DetectConfiguration detectConfiguration
 
-    public void fillInDockerProperties(Properties dockerProperties) {
-        dockerProperties.setProperty('hub.url', detectConfiguration.getHubUrl())
-        dockerProperties.setProperty('hub.timeout', detectConfiguration.getHubTimeout().toString())
-        dockerProperties.setProperty('hub.username', detectConfiguration.getHubUsername())
-        dockerProperties.setProperty('hub.project.name', detectConfiguration.getProjectName())
-        dockerProperties.setProperty('hub.project.version', detectConfiguration.getProjectVersionName())
+    public void populatePropertiesFile(File dockerPropertiesFile, File bomToolOutputDirectory) {
+        Properties dockerProperties = new Properties()
+
+        dockerProperties.setProperty('logging.level.com.blackducksoftware', detectConfiguration.getLoggingLevel())
+        dockerProperties.setProperty('dry.run', 'true')
+        dockerProperties.setProperty('output.path', bomToolOutputDirectory.getAbsolutePath())
+        dockerProperties.setProperty('output.include.containerfilesystem', 'true')
         dockerProperties.setProperty('logging.level.com.blackducksoftware', detectConfiguration.getLoggingLevel())
 
         detectConfiguration.additionalDockerPropertyNames.each { propertyName ->
             String dockerKey = propertyName[DetectConfiguration.DOCKER_PROPERTY_PREFIX.length()..-1]
             addDockerProperty(dockerProperties, propertyName, dockerKey)
         }
-    }
 
-    public String dockerProxyEnvironmentVariable() {
-        String proxyEnvironmentVariable = null
-        if (detectConfiguration.getHubProxyHost()) {
-            proxyEnvironmentVariable = "-Dhttp.proxy.host=${detectConfiguration.getHubProxyHost()}"
-        }
-        if (detectConfiguration.getHubProxyPort()) {
-            proxyEnvironmentVariable = "${proxyEnvironmentVariable} -Dhttp.proxy.port=${detectConfiguration.getHubProxyPort()}"
-        }
-        if (detectConfiguration.getHubProxyUsername()) {
-            proxyEnvironmentVariable = "${proxyEnvironmentVariable} -Dhttp.proxy.username=${detectConfiguration.getHubProxyUsername()}"
-        }
-        if (detectConfiguration.getHubProxyPassword()) {
-            proxyEnvironmentVariable = "${proxyEnvironmentVariable} -Dhttp.proxy.password=${detectConfiguration.getHubProxyPassword()}"
-        }
-        proxyEnvironmentVariable
+        dockerProperties.store(dockerPropertiesFile.newOutputStream(), "")
     }
 
     private String addDockerProperty(Properties dockerProperties, String key, String dockerKey) {

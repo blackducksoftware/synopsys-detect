@@ -23,9 +23,16 @@
 package com.blackducksoftware.integration.hub.detect
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ArchitectureExternalId
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenExternalId
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+import com.blackducksoftware.integration.hub.detect.bomtool.CpanBomTool
+import com.blackducksoftware.integration.hub.detect.bomtool.CranBomTool
+import com.blackducksoftware.integration.hub.detect.bomtool.DockerBomTool
+import com.blackducksoftware.integration.hub.detect.bomtool.GoDepBomTool
+import com.blackducksoftware.integration.hub.detect.bomtool.PearBomTool
+import com.blackducksoftware.integration.hub.detect.bomtool.packagist.PackagistParser
 import com.google.gson.Gson
 import com.google.gson.TypeAdapter
 import com.google.gson.stream.JsonReader
@@ -35,7 +42,28 @@ import groovy.transform.TypeChecked
 
 @TypeChecked
 class ExternalIdTypeAdapter extends TypeAdapter<ExternalId> {
-    Map<String, Forge> forgeMap = [cocoapods: Forge.COCOAPODS, maven: Forge.MAVEN, npm: Forge.NPM, pypi: Forge.PYPI, rubygems: Forge.RUBYGEMS]
+    Map<String, Forge> nameVersionForgeMap = [
+        anaconda: Forge.ANACONDA,
+        cocoapods: Forge.COCOAPODS,
+        cpan: CpanBomTool.CPAN_FORGE,
+        cran: CranBomTool.CRAN,
+        golang: GoDepBomTool.GOLANG,
+        npm: Forge.NPM,
+        packagist: PackagistParser.PACKAGIST,
+        pear: PearBomTool.PEAR,
+        pypi: Forge.PYPI,
+        rubygems: Forge.RUBYGEMS
+    ]
+    Map<String, Forge> dockerForgeMap = [
+        centos: new Forge('centos', DockerBomTool.FORGE_SEPARATOR),
+        fedora: new Forge('fedora', DockerBomTool.FORGE_SEPARATOR),
+        redhat: new Forge('redhat', DockerBomTool.FORGE_SEPARATOR),
+        ubuntu: new Forge('ubuntu', DockerBomTool.FORGE_SEPARATOR),
+        debian: new Forge('debian', DockerBomTool.FORGE_SEPARATOR),
+        busybox: new Forge('busybox', DockerBomTool.FORGE_SEPARATOR),
+        alpine: new Forge('alpine', DockerBomTool.FORGE_SEPARATOR)
+    ]
+
     Gson gson = new Gson()
 
     @Override
@@ -62,8 +90,10 @@ class ExternalIdTypeAdapter extends TypeAdapter<ExternalId> {
 
         if (Forge.MAVEN.equals(forge)) {
             return new MavenExternalId(otherProperties.get("group"), otherProperties.get("name"), otherProperties.get("version"))
-        } else if (forgeMap.containsKey(forge.name)) {
-            return new NameVersionExternalId(forge, otherProperties.get("name"), otherProperties.get("version"))
+        } else if (nameVersionForgeMap.containsKey(forge.name)) {
+            return new NameVersionExternalId(nameVersionForgeMap.get(forge.name), otherProperties.get("name"), otherProperties.get("version"))
+        } else if (dockerForgeMap.containsKey(forge.name)){
+            return new ArchitectureExternalId(dockerForgeMap.get(forge.name), otherProperties.get("name"), otherProperties.get("version"), otherProperties.get("architecture"))
         }
         return null
     }
