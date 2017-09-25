@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
+import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
@@ -61,6 +62,13 @@ abstract class BomTool {
     //    abstract List<DetectCodeLocation> extractDetectCodeLocations()
     List<DetectCodeLocation> extractDetectCodeLocations() {
         []
+    }
+
+    /**
+     * BomTool's should override this method if they can determine the correct project name and version
+     */
+    List<DetectCodeLocation> extractDetectCodeLocations(DetectProject detectProject) {
+        extractDetectCodeLocations()
     }
 
     String getSourcePath() {

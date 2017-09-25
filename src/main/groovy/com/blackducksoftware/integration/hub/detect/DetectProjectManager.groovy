@@ -110,7 +110,7 @@ class DetectProjectManager {
                     logger.info("${bomToolTypeString} applies given the current configuration.")
                     detectSummary.addApplicableBomToolType(bomTool.getBomToolType())
                     foundAnyBomTools = true
-                    List<DetectCodeLocation> codeLocations = bomTool.extractDetectCodeLocations()
+                    List<DetectCodeLocation> codeLocations = bomTool.extractDetectCodeLocations(detectProject)
                     if (codeLocations != null && codeLocations.size() > 0) {
                         detectSummary.setBomToolResult(bomTool.getBomToolType(), Result.SUCCESS)
                         detectProject.addAllDetectCodeLocations(codeLocations)
@@ -225,7 +225,7 @@ class DetectProjectManager {
     }
 
     private SimpleBdioDocument createSimpleBdioDocument(DetectProject detectProject, DetectCodeLocation detectCodeLocation) {
-        final String codeLocationName = detectProject.getCodeLocationName(detectCodeLocation.bomToolType, detectFileManager.extractFinalPieceFromPath(detectCodeLocation.sourcePath), detectConfiguration.getProjectCodeLocationPrefix(), 'Hub Detect Tool')
+        final String codeLocationName = detectProject.getBomToolCodeLocationName(detectCodeLocation.bomToolType, detectFileManager.extractFinalPieceFromPath(detectCodeLocation.sourcePath), detectConfiguration.getProjectCodeLocationPrefix())
         final String projectId = detectCodeLocation.bomToolProjectExternalId.createDataId()
         final BdioExternalIdentifier projectExternalIdentifier = bdioPropertyHelper.createExternalIdentifier(detectCodeLocation.bomToolProjectExternalId)
 
