@@ -27,7 +27,6 @@ import sys
 import getopt
 import pip
 
-
 def main():
     try:
         opts, args = getopt.getopt(sys.argv[1:], 'p:r', ['projectname=', 'requirements='])
@@ -40,15 +39,15 @@ def main():
     requirements_path = None
 
     for opt, arg in opts:
-        if opt in ('--projectname'):
+        if opt in '--projectname':
             project_name = arg
-        elif opt in ('--requirements'):
+        elif opt in '--requirements':
             requirements_path = arg
 
     project = None
 
     if project_name is not None:
-        project = resolve_package_by_name(project_name)
+        project = resolve_package_by_name(project_name, [])
 
     if project is None:
         project = DependencyNode()
@@ -61,7 +60,7 @@ def main():
             requirements = pip.req.parse_requirements(requirements_path, session=pip.download.PipSession())
             for req in requirements:
                 try:
-                    requirement = resolve_package_by_name(req.req.name)
+                    requirement = resolve_package_by_name(req.req.name, [])
                     if requirement is None:
                         raise Exception()
                     project.children = project.children + [requirement]
@@ -102,16 +101,17 @@ def get_package_by_name(package_name):
 
 
 # Returns a DependencyNode
-def resolve_package_by_name(package_name):
+def resolve_package_by_name(package_name, history):
     node = DependencyNode()
     package = get_package_by_name(package_name)
     if package is None:
         return None
     node.name = package.project_name
     node.version = package.version
-    for req in package.requires():
-        child_node = resolve_package_by_name(req.key)
-        node.children = node.children + [child_node]
+    if package_name.lower() not in history:
+        for req in package.requires():
+            child_node = resolve_package_by_name(req.key, history + [package_name.lower()])
+            node.children = node.children + [child_node]
     return node
 
 main()
