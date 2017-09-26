@@ -22,20 +22,24 @@
  */
 package com.blackducksoftware.integration.hub.detect.nameversion
 
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalIdFactory
 
 import groovy.transform.TypeChecked
 
 @Component
 @TypeChecked
 class NameVersionNodeTransformer {
+    @Autowired
+    ExternalIdFactory externalIdFactory
+
     public DependencyNode createDependencyNode(Forge defaultForge, NameVersionNode nameVersionNode) {
         final Forge forge = nameVersionNode.metadata?.forge ? nameVersionNode.metadata.forge : defaultForge
-        def externalId = new NameVersionExternalId(forge, nameVersionNode.name, nameVersionNode.version)
+        def externalId = externalIdFactory.createNameVersionExternalId(forge, nameVersionNode.name, nameVersionNode.version)
         def dependencyNode = new DependencyNode(nameVersionNode.name, nameVersionNode.version, externalId)
         nameVersionNode.children.each {
             dependencyNode.children.add(createDependencyNode(defaultForge, it))

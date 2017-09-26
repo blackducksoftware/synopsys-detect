@@ -29,7 +29,6 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.PathExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.SbtModule
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.SbtPackager
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.SbtProject
@@ -112,7 +111,7 @@ class SbtBomTool extends BomTool {
             logger.warn("Found more than one root project, using source path for project name.")
             result.projectName = detectFileManager.extractFinalPieceFromPath(sourcePath)
             result.projectVersion = findFirstModuleVersion(modules, result.projectName, "root")
-            result.projectExternalId = new PathExternalId(Forge.MAVEN, sourcePath)
+            result.projectExternalId = externalIdFactory.createPathExternalId(Forge.MAVEN, sourcePath)
 
             if (result.projectVersion == null && modules.size() > 1) {
                 logger.warn("Getting version from first project: " + modules[0].root.name)

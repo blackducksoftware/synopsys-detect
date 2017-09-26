@@ -30,7 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.model.NugetContainer
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.model.NugetContainerType
@@ -68,6 +68,9 @@ class NugetInspectorPackager {
     @Autowired
     NameVersionNodeTransformer nameVersionNodeTransformer
 
+    @Autowired
+    ExternalIdFactory externalIdFactory
+
     public List<DetectCodeLocation> createDetectCodeLocation(File dependencyNodeFile) {
         String text = dependencyNodeFile.getText(StandardCharsets.UTF_8.toString())
         NugetInspection nugetInspection = gson.fromJson(text, NugetInspection.class)
@@ -103,7 +106,7 @@ class NugetInspectorPackager {
                 if (!projectVersionName) {
                     projectVersionName = container.version
                 }
-                new DetectCodeLocation(BomToolType.NUGET, sourcePath, projectName, projectVersionName, new NameVersionExternalId(Forge.NUGET, projectName, projectVersionName), children)
+                new DetectCodeLocation(BomToolType.NUGET, sourcePath, projectName, projectVersionName, externalIdFactory.createNameVersionExternalId(Forge.NUGET, projectName, projectVersionName), children)
             }
             return codeLocations
         } else if (NugetContainerType.PROJECT == nugetContainer.type) {
@@ -115,7 +118,7 @@ class NugetInspectorPackager {
             def children = builder.createDependencyNodes(nugetContainer.dependencies)
 
             return [
-                new DetectCodeLocation(BomToolType.NUGET, sourcePath, projectName, projectVersionName, new NameVersionExternalId(Forge.NUGET, projectName, projectVersionName), children)
+                new DetectCodeLocation(BomToolType.NUGET, sourcePath, projectName, projectVersionName, externalIdFactory.createNameVersionExternalId(Forge.NUGET, projectName, projectVersionName), children)
             ]
         }
     }

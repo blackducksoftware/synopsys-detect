@@ -27,8 +27,8 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.PathExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.go.vndr.VndrParser
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
@@ -59,7 +59,7 @@ class GoVndrBomTool extends BomTool {
         def vendorConf = new File(sourcePath, VNDR_CONF_FILENAME)
         List<DependencyNode> dependencies = vndrParser.parseVendorConf(vendorConf.text)
         Set<DependencyNode> dependenciesSet = new HashSet<>(dependencies)
-        ExternalId externalId = new PathExternalId(GoDepBomTool.GOLANG, sourcePath)
+        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.GOLANG, sourcePath)
 
         def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, externalId, dependenciesSet)
         [codeLocation]

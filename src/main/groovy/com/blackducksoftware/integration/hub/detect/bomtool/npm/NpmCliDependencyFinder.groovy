@@ -26,12 +26,13 @@ import java.util.Map.Entry
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeBuilder
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalIdFactory
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
@@ -46,6 +47,9 @@ class NpmCliDependencyFinder {
     private static final String JSON_NAME = 'name'
     private static final String JSON_VERSION = 'version'
     private static final String JSON_DEPENDENCIES = 'dependencies'
+
+    @Autowired
+    ExternalIdFactory externalIdFactory
 
     public DependencyNode generateDependencyNode(File npmLsOutputFile) {
         if (npmLsOutputFile?.length() > 0) {
@@ -64,7 +68,7 @@ class NpmCliDependencyFinder {
         String projectName = npmJson.getAsJsonPrimitive(JSON_NAME)?.getAsString()
         String projectVersion = npmJson.getAsJsonPrimitive(JSON_VERSION)?.getAsString()
 
-        def externalId = new NameVersionExternalId(Forge.NPM, projectName, projectVersion)
+        def externalId = externalIdFactory.createNameVersionExternalId(Forge.NPM, projectName, projectVersion)
         def dependencyNode = new DependencyNode(projectName, projectVersion, externalId)
 
         DependencyNodeBuilder dependencyNodeBuilder = new DependencyNodeBuilder(dependencyNode)
@@ -81,7 +85,7 @@ class NpmCliDependencyFinder {
             String version = element.getAsJsonPrimitive(JSON_VERSION)?.getAsString()
             JsonObject children = element.getAsJsonObject(JSON_DEPENDENCIES)
 
-            def externalId = new NameVersionExternalId(Forge.NPM, name, version)
+            def externalId = externalIdFactory.createNameVersionExternalId(Forge.NPM, name, version)
             def newNode = new DependencyNode(name, version, externalId)
 
             populateChildren(dependencyNodeBuilder, newNode, children)

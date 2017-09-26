@@ -29,7 +29,6 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.pear.PearDependencyFinder
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
@@ -86,7 +85,7 @@ class PearBomTool extends BomTool {
                 sourcePath,
                 rootName,
                 rootVersion,
-                new NameVersionExternalId(Forge.PEAR, rootName, rootVersion),
+                externalIdFactory.createNameVersionExternalId(Forge.PEAR, rootName, rootVersion),
                 childDependencyNodes
                 )
 

@@ -30,7 +30,6 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.PathExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.cpan.CpanPackager
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
@@ -43,8 +42,6 @@ import groovy.transform.TypeChecked
 @TypeChecked
 class CpanBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(CpanBomTool.class)
-
-    public static Forge CPAN_FORGE = new Forge('cpan', '-')
 
     @Autowired
     CpanPackager cpanPackager
@@ -83,8 +80,8 @@ class CpanBomTool extends BomTool {
         String showdeps = showdepsOutput.getStandardOutput()
 
         Set<DependencyNode> dependenciesSet = cpanPackager.makeDependencyNodes(listText, showdeps)
-        ExternalId externalId = new PathExternalId(CPAN_FORGE, detectConfiguration.sourcePath)
-        def detectCodeLocation = new DetectCodeLocation(BomToolType.CPAN, detectConfiguration.sourcePath, externalId, dependenciesSet)
+        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.CPAN, sourcePath)
+        def detectCodeLocation = new DetectCodeLocation(BomToolType.CPAN, sourcePath, externalId, dependenciesSet)
 
         [detectCodeLocation]
     }

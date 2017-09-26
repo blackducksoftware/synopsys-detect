@@ -22,16 +22,21 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.go
 
+import org.springframework.beans.factory.annotation.Autowired
+
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
-import com.blackducksoftware.integration.hub.detect.bomtool.GoDepBomTool
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalIdFactory
 import com.moandjiezana.toml.Toml
 
 import groovy.transform.TypeChecked
 
 @TypeChecked
 class GopkgLockParser {
+    @Autowired
+    ExternalIdFactory externalIdFactory
+
     public List<DependencyNode> parseDepLock(String depLockContents) {
         List<DependencyNode> nodes = new ArrayList<>()
         GopkgLock gopkgLock = new Toml().read(depLockContents).to(GopkgLock.class)
@@ -52,7 +57,7 @@ class GopkgLockParser {
                 if (packageName.startsWith('golang.org/x/')) {
                     packageName = packageName.replaceAll('golang.org/x/', '')
                 }
-                final ExternalId dependencyExternalId = new NameVersionExternalId(GoDepBomTool.GOLANG, packageName, version)
+                final ExternalId dependencyExternalId = externalIdFactory.createNameVersionExternalId(Forge.GOLANG, packageName, version)
                 final DependencyNode dependency = new DependencyNode(packageName, version, dependencyExternalId)
                 nodes.add(dependency)
             }

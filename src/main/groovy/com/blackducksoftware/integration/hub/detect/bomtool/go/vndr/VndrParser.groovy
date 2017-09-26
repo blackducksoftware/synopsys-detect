@@ -22,15 +22,20 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.go.vndr
 
+import org.springframework.beans.factory.annotation.Autowired
+
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
-import com.blackducksoftware.integration.hub.detect.bomtool.GoDepBomTool
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalIdFactory
 
 import groovy.transform.TypeChecked
 
 @TypeChecked
 class VndrParser {
+    @Autowired
+    ExternalIdFactory externalIdFactory
+
     public List<DependencyNode> parseVendorConf(String vendorConfContents) {
         List<DependencyNode> nodes = new ArrayList<>()
         String contents = vendorConfContents.trim()
@@ -39,7 +44,7 @@ class VndrParser {
         lines.each { String line ->
             if (line?.trim() && !line.startsWith('#')) {
                 def parts = line.split(' ')
-                final ExternalId dependencyExternalId = new NameVersionExternalId(GoDepBomTool.GOLANG, parts[0], parts[1])
+                final ExternalId dependencyExternalId = externalIdFactory.createNameVersionExternalId(Forge.GOLANG, parts[0], parts[1])
                 final DependencyNode dependency = new DependencyNode(parts[0], parts[1], dependencyExternalId)
                 nodes.add(dependency)
             }

@@ -18,7 +18,7 @@ import org.junit.Test
 import org.skyscreamer.jsonassert.JSONAssert
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.bomtool.GoDepBomTool
 import com.blackducksoftware.integration.hub.detect.bomtool.go.godep.GoGodepsParser
 import com.google.gson.Gson
@@ -38,7 +38,8 @@ public class GoGodepsParserTest {
     }
 
     private void fixVersion(final DependencyNode node, final String newVersion) {
+        ExternalIdFactory externalIdFactory = new ExternalIdFactory()
         node.version = newVersion
-        node.externalId = new NameVersionExternalId(GoDepBomTool.GOLANG, node.name, newVersion)
+        node.externalId = externalIdFactory.createNameVersionExternalId(GoDepBomTool.GOLANG, node.name, newVersion)
     }
 }

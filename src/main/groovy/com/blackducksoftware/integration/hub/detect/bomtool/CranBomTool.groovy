@@ -30,7 +30,6 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.PathExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.cran.PackratPackager
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
@@ -40,8 +39,6 @@ import groovy.transform.TypeChecked
 @Component
 @TypeChecked
 class CranBomTool extends BomTool {
-    public static final Forge CRAN = new Forge('cran', '/')
-
     @Autowired
     PackratPackager packratPackager
 
@@ -69,7 +66,7 @@ class CranBomTool extends BomTool {
         String packratLockText = packratLockFile[0].getText(StandardCharsets.UTF_8.toString())
         List<DependencyNode> dependencies = packratPackager.extractProjectDependencies(packratLockText)
         Set<DependencyNode> dependenciesSet = new HashSet<>(dependencies)
-        ExternalId externalId = new PathExternalId(CRAN, sourcePath)
+        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.CRAN, sourcePath)
 
         def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, projectName, projectVersion, externalId, dependenciesSet)
         [codeLocation]

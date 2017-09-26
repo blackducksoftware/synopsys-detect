@@ -28,7 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.detect.bomtool.CpanBomTool
+import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 
@@ -54,7 +54,7 @@ class CpanPackager {
             def nameVersionNode = allModules[moduleName]
             if (nameVersionNode) {
                 nameVersionNode.name = nameVersionNode.name.replace('::', '-')
-                DependencyNode module = nameVersionNodeTransformer.createDependencyNode(CpanBomTool.CPAN_FORGE, nameVersionNode)
+                DependencyNode module = nameVersionNodeTransformer.createDependencyNode(Forge.CPAN, nameVersionNode)
                 dependencyNodes.add(module)
             } else {
                 logger.warn("Could node find resolved version for module: ${moduleName}")

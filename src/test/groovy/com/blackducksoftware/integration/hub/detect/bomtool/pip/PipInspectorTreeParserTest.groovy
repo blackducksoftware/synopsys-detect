@@ -18,7 +18,7 @@ import org.junit.Test
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 
@@ -67,6 +67,7 @@ class PipInspectorTreeParserTest {
 
     @Test
     void validParseTest() {
+        ExternalIdFactory externalIdFactory = new ExternalIdFactory()
         final String name = PipInspectorTreeParser.UNKNOWN_PROJECT_NAME
         final String version = PipInspectorTreeParser.UNKNOWN_PROJECT_VERSION
         final String space = PipInspectorTreeParser.INDENTATION
@@ -85,7 +86,7 @@ ${space + child3Text}
 """
 
         DependencyNode root = parser.parse(nameVersionNodeTransformer, validText)
-        ExternalId expectedExternalId = new NameVersionExternalId(Forge.PYPI, '', '')
+        ExternalId expectedExternalId = externalIdFactory.createNameVersionExternalId(Forge.PYPI, '', '')
         Assert.assertEquals('', root.name)
         Assert.assertEquals('', root.version)
         Assert.assertEquals(expectedExternalId, root.externalId)

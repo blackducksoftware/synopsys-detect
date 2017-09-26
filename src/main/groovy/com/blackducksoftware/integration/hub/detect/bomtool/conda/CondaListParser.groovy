@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalIdFactory
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -41,6 +41,9 @@ import groovy.transform.TypeChecked
 class CondaListParser {
     @Autowired
     Gson gson
+
+    @Autowired
+    ExternalIdFactory externalIdFactory
 
     Set<DependencyNode> parse(String listJsonText, String infoJsonText) {
         final Type listType = new TypeToken<ArrayList<CondaListElement>>() {}.getType()
@@ -54,7 +57,7 @@ class CondaListParser {
     DependencyNode condaListElementToDependencyNodeTransformer(String platform, CondaListElement element) {
         String name = element.name
         String version = "${element.version}-${element.buildString}-${platform}"
-        ExternalId externalId = new NameVersionExternalId(Forge.ANACONDA, name, version)
+        ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.ANACONDA, name, version)
 
         new DependencyNode(name, version, externalId)
     }

@@ -27,11 +27,12 @@ import java.util.regex.Pattern
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenExternalId
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter
@@ -50,6 +51,9 @@ class MavenCodeLocationPackager {
     private Stack<DependencyNode> dependencyParentStack = new Stack<>()
     private boolean parsingProjectSection
     private int level
+
+    @Autowired
+    ExternalIdFactory externalIdFactory
 
     public List<DetectCodeLocation> extractCodeLocations(String sourcePath, String mavenOutputText, String excludedModules, String includedModules) {
         ExcludedIncludedFilter filter = new ExcludedIncludedFilter(excludedModules, includedModules)
@@ -173,7 +177,7 @@ class MavenCodeLocationPackager {
         String artifact = gavMatcher.group(2)
         String version = gavMatcher.group(4)
 
-        ExternalId externalId = new MavenExternalId(group, artifact, version)
+        ExternalId externalId = externalIdFactory.createMavenExternalId(group, artifact, version)
         def node = new DependencyNode(artifact, version, externalId)
         return node
     }

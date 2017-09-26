@@ -32,7 +32,6 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.PathExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.rubygems.RubygemsNodePackager
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
@@ -65,7 +64,7 @@ class RubygemsBomTool extends BomTool {
 
         List<DependencyNode> dependencies = rubygemsNodePackager.extractProjectDependencies(gemlockText)
         Set<DependencyNode> dependenciesSet = new HashSet<>(dependencies)
-        ExternalId externalId = new PathExternalId(Forge.RUBYGEMS, sourcePath)
+        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.RUBYGEMS, sourcePath)
 
         def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, externalId, dependenciesSet)
         [codeLocation]

@@ -26,7 +26,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.detect.bomtool.CranBomTool
+import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
@@ -83,7 +83,7 @@ public class PackRatNodeParser {
         directDependencyNames.each { directDependencyName ->
             NameVersionNode nameVersionNode = nameVersionNodeBuilder.nodeCache[directDependencyName]
             if (nameVersionNode) {
-                DependencyNode directDependencyNode = nameVersionNodeTransformer.createDependencyNode(CranBomTool.CRAN, nameVersionNode)
+                DependencyNode directDependencyNode = nameVersionNodeTransformer.createDependencyNode(Forge.CRAN, nameVersionNode)
                 projectDependencies.add(directDependencyNode)
             } else {
                 logger.error("Could not find ${directDependencyName} in the populated map.")

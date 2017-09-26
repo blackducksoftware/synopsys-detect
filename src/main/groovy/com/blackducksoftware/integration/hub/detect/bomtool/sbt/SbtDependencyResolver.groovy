@@ -22,9 +22,11 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.sbt
 
+import org.springframework.beans.factory.annotation.Autowired
+
 import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeBuilder
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenExternalId
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtConfigurationDependencyTree
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtReport
 
@@ -32,20 +34,23 @@ import groovy.transform.TypeChecked
 
 @TypeChecked
 public class SbtDependencyResolver {
+    @Autowired
+    ExternalIdFactory externalIdFactory
+
     public SbtConfigurationDependencyTree resolveReportDependencies(SbtReport report) {
-        def rootId = new MavenExternalId(report.organisation, report.module, report.revision)
+        def rootId = externalIdFactory.createMavenExternalId(report.organisation, report.module, report.revision)
         def root = new DependencyNode(report.module, report.revision, rootId )
 
         def builder = new DependencyNodeBuilder(root)
 
         report.dependencies.each { module ->
             module.revisions.each { revision ->
-                def id = new MavenExternalId(module.organisation, module.name, revision.name)
+                def id = externalIdFactory.createMavenExternalId(module.organisation, module.name, revision.name)
                 def node = new DependencyNode(module.name, revision.name, id)
 
                 List<DependencyNode> children = new ArrayList<DependencyNode>()
                 revision.callers.each { caller ->
-                    def childId = new MavenExternalId(caller.callerOrganisation, caller.callerName, caller.callerRevision)
+                    def childId = externalIdFactory.createMavenExternalId(caller.callerOrganisation, caller.callerName, caller.callerRevision)
                     def childNode = new DependencyNode(caller.callerName, caller.callerRevision, childId)
                     children.add(childNode)
                 }

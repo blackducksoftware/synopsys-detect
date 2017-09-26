@@ -30,7 +30,6 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.PathExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.conda.CondaListParser
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
@@ -86,7 +85,7 @@ class CondaBomTool extends BomTool {
         String infoJsonText = condaInfoOutput.getStandardOutput()
 
         Set<DependencyNode> dependenciesSet = condaListParser.parse(listJsonText, infoJsonText)
-        ExternalId externalId = new PathExternalId(Forge.ANACONDA, detectConfiguration.sourcePath)
+        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.ANACONDA, sourcePath)
         def detectCodeLocation = new DetectCodeLocation(BomToolType.CONDA, detectConfiguration.sourcePath, externalId, dependenciesSet)
 
         [detectCodeLocation]

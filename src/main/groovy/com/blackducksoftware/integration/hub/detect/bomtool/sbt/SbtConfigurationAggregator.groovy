@@ -24,9 +24,11 @@ package com.blackducksoftware.integration.hub.detect.bomtool.sbt
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenExternalId
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtConfigurationDependencyTree
 
 import groovy.transform.TypeChecked
@@ -35,14 +37,17 @@ import groovy.transform.TypeChecked
 public class SbtConfigurationAggregator {
     private final Logger logger = LoggerFactory.getLogger(SbtConfigurationAggregator.class)
 
+    @Autowired
+    ExternalIdFactory externalIdFactory
+
     List<DependencyNode> aggregateConfigurations(List<SbtConfigurationDependencyTree> configurations) {
         def aggregates = uniqueAggregates(configurations)
 
         def nodes = aggregates.collect{ aggregate ->
-            DependencyNode root = new DependencyNode(new MavenExternalId(aggregate.org, aggregate.name, aggregate.version))
+            DependencyNode root = new DependencyNode(externalIdFactory.createMavenExternalId(aggregate.org, aggregate.name, aggregate.version))
             root.name = aggregate.name
             root.version = aggregate.version
-            root.children = new HashSet<DependencyNode>()
+            root.children = new LinkedHashSet<DependencyNode>()
             configurations.each {config ->
                 if (configurationEqualsAggregate(config, aggregate)) {
                     root.children.addAll(config.rootNode.children)
@@ -58,14 +63,14 @@ public class SbtConfigurationAggregator {
         def namesMatch = config.rootNode.name == aggregate.name
         def versionsMatch = config.rootNode.version == aggregate.version
 
-        def id = config.rootNode.externalId as MavenExternalId
+        def id = config.rootNode.externalId as ExternalId
         def groupsMatch = id.group == aggregate.org
 
         return namesMatch && groupsMatch && versionsMatch
     }
 
     SbtAggregate configurationToAggregate(SbtConfigurationDependencyTree config) {
-        def id = config.rootNode.externalId as MavenExternalId
+        def id = config.rootNode.externalId as ExternalId
         def aggregate = new SbtAggregate(config.rootNode.name, id.group, config.rootNode.version)
         return aggregate
     }

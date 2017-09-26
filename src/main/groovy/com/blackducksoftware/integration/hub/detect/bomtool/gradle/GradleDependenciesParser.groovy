@@ -25,11 +25,12 @@ package com.blackducksoftware.integration.hub.detect.bomtool.gradle
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeBuilder
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenExternalId
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
@@ -57,8 +58,11 @@ class GradleDependenciesParser {
     String projectName = ""
     String projectVersionName = ""
 
+    @Autowired
+    ExternalIdFactory externalIdFactory
+
     DetectCodeLocation parseDependencies(DetectProject detectProject, InputStream dependenciesInputStream) {
-        DependencyNode tempRoot = new DependencyNode("project", "version", new MavenExternalId("group", "project", "version"))
+        DependencyNode tempRoot = new DependencyNode("project", "version", externalIdFactory.createMavenExternalId("group", "project", "version"))
 
         DependencyNodeBuilder dependencyNodeBuilder = new DependencyNodeBuilder(tempRoot)
         boolean processingMetaData = false
@@ -136,7 +140,7 @@ class GradleDependenciesParser {
         detectProject.setProjectVersionNameIfNotSet(rootProjectVersionName)
 
         new DetectCodeLocation(BomToolType.GRADLE, projectSourcePath, projectName, projectVersionName,
-                new MavenExternalId(projectGroup, projectName, projectVersionName), tempRoot.children)
+                externalIdFactory.createMavenExternalId(projectGroup, projectName, projectVersionName), tempRoot.children)
     }
 
     public int getLineLevel(String line) {
@@ -193,7 +197,7 @@ class GradleDependenciesParser {
         String artifact = gav[1]
         String version = gav[2]
 
-        new DependencyNode(artifact, version, new MavenExternalId(group, artifact, version))
+        new DependencyNode(artifact, version, externalIdFactory.createMavenExternalId(group, artifact, version))
     }
 
     private void processMetaDataLine(String metaDataLine) {

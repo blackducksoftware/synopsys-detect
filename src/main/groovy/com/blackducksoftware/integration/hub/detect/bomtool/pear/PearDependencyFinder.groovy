@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput
@@ -51,6 +51,9 @@ class PearDependencyFinder {
 
     @Autowired
     DetectConfiguration detectConfiguration
+
+    @Autowired
+    ExternalIdFactory externalIdFactory
 
     public Set<DependencyNode> parsePearDependencyList(ExecutableOutput pearListing, ExecutableOutput pearDependencies) {
         Set<DependencyNode> childNodes = []
@@ -109,7 +112,7 @@ class PearDependencyFinder {
                 String packageVersion = dependencyInfo[1].trim()
 
                 if (dependencyInfo && dependencyNames.contains(packageName)) {
-                    def newNode = new DependencyNode(packageName, packageVersion, new NameVersionExternalId(Forge.PEAR, packageName, packageVersion))
+                    def newNode = new DependencyNode(packageName, packageVersion, externalIdFactory.createNameVersionExternalId(Forge.PEAR, packageName, packageVersion))
 
                     childrenNodes.add(newNode)
                 }

@@ -22,10 +22,12 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.go.godep
 
+import org.springframework.beans.factory.annotation.Autowired
+
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
-import com.blackducksoftware.integration.hub.detect.bomtool.GoDepBomTool
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalIdFactory
 import com.google.gson.Gson
 
 import groovy.transform.TypeChecked
@@ -33,6 +35,9 @@ import groovy.transform.TypeChecked
 @TypeChecked
 class GoGodepsParser {
     private final Gson gson
+
+    @Autowired
+    ExternalIdFactory externalIdFactory
 
     public GoGodepsParser(Gson gson) {
         this.gson = gson
@@ -54,7 +59,7 @@ class GoGodepsParser {
             } else {
                 version = dep.rev.trim()
             }
-            final ExternalId dependencyExternalId = new NameVersionExternalId(GoDepBomTool.GOLANG, dep.importPath, version)
+            final ExternalId dependencyExternalId = externalIdFactory.createNameVersionExternalId(Forge.GOLANG, dep.importPath, version)
             final DependencyNode dependency = new DependencyNode(dep.importPath, version, dependencyExternalId)
             children.add(dependency)
         }
