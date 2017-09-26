@@ -22,6 +22,7 @@
  */
 package com.blackducksoftware.integration.hub.detect
 
+import org.apache.commons.codec.digest.DigestUtils
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.joda.time.format.DateTimeFormat
@@ -33,15 +34,12 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.simple.BdioNodeFactory
 import com.blackducksoftware.integration.hub.bdio.simple.BdioPropertyHelper
 import com.blackducksoftware.integration.hub.bdio.simple.BdioWriter
-import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraph
-import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraphCombiner
-import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraphTransformer
-import com.blackducksoftware.integration.hub.bdio.simple.MutableDependencyGraph
-import com.blackducksoftware.integration.hub.bdio.simple.MutableMapDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeTransformer
 import com.blackducksoftware.integration.hub.bdio.simple.model.BdioBillOfMaterials
 import com.blackducksoftware.integration.hub.bdio.simple.model.BdioComponent
 import com.blackducksoftware.integration.hub.bdio.simple.model.BdioExternalIdentifier
 import com.blackducksoftware.integration.hub.bdio.simple.model.BdioProject
+import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.SimpleBdioDocument
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
@@ -55,11 +53,7 @@ import com.blackducksoftware.integration.util.ExcludedIncludedFilter
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil
 import com.google.gson.Gson
 
-import groovy.transform.TypeChecked
-
-
 // No type checking to access read-only property
-@TypeChecked
 @Component
 class DetectProjectManager {
     private final Logger logger = LoggerFactory.getLogger(DetectProjectManager.class)
@@ -74,7 +68,7 @@ class DetectProjectManager {
     BdioNodeFactory bdioNodeFactory
 
     @Autowired
-    DependencyGraphTransformer dependencyGraphTransformer
+    DependencyNodeTransformer dependencyNodeTransformer
 
     @Autowired
     Gson gson
@@ -97,9 +91,7 @@ class DetectProjectManager {
     private boolean foundAnyBomTools
 
     public DetectProject createDetectProject() {
-
-        //ensure that the project name is set, use some reasonable defaults
-        DetectProject detectProject = new DetectProject(getDefaultProjectName(), getDefaultProjectVersionName())
+        DetectProject detectProject = new DetectProject()
 
         String excludedBomTools = detectConfiguration.excludedBomToolTypes
         String includedBomTools = detectConfiguration.includedBomToolTypes
@@ -118,18 +110,13 @@ class DetectProjectManager {
                     logger.info("${bomToolTypeString} applies given the current configuration.")
                     detectSummary.addApplicableBomToolType(bomTool.getBomToolType())
                     foundAnyBomTools = true
-                    List<DetectCodeLocation> codeLocations = bomTool.extractDetectCodeLocations()
+                    List<DetectCodeLocation> codeLocations = bomTool.extractDetectCodeLocations(detectProject)
                     if (codeLocations != null && codeLocations.size() > 0) {
                         detectSummary.setBomToolResult(bomTool.getBomToolType(), Result.SUCCESS)
                         detectProject.addAllDetectCodeLocations(codeLocations)
                     } else {
-                        //currently, Docker creates and uploads the bdio files itself, so there's nothing for Detect to do
-                        if (BomToolType.DOCKER != bomToolType) {
-                            logger.error("Did not find any projects from ${bomToolTypeString} even though it applied.")
-                        } else {
-                            // FIXME when Detect runs Docker inspector in Dry run, only SUCCESS if the bdio files from the inspector are created
-                            detectSummary.setBomToolResult(bomTool.getBomToolType(), Result.SUCCESS)
-                        }
+                        logger.error("Did not find any projects from ${bomToolTypeString} even though it applied.")
+                        detectSummary.setBomToolResult(bomTool.getBomToolType(), Result.FAILURE)
                     }
                 }
             } catch (final Exception e) {
@@ -140,6 +127,9 @@ class DetectProjectManager {
                 }
             }
         }
+        //ensure that the project name is set, use some reasonable defaults
+        detectProject.projectName = getProjectName(detectProject.projectName)
+        detectProject.projectVersionName = getProjectVersionName(detectProject.projectVersionName)
 
         if (!foundAnyBomTools) {
             logger.info("No package managers were detected - will register ${detectConfiguration.sourcePath} for signature scanning of ${detectProject.projectName}/${detectProject.projectVersionName}")
@@ -163,21 +153,17 @@ class DetectProjectManager {
             }
         }
 
-        MutableDependencyGraph aggregateGraph = new MutableMapDependencyGraph()
-        DependencyGraphCombiner combiner = new DependencyGraphCombiner()
-
         detectProject.detectCodeLocations.each {
             if (detectConfiguration.aggregateBomName) {
-                combiner.addGraphAsChildrenToRoot(aggregateGraph, it.dependencyGraph);
-                //def components = dependencyGraphTransformer.transformDependencyGraph(it.dependencyGraph, aggregateBdioDocument.project)
-
-                //def components = dependencyGraphTransformer.addComponentsGraph(aggregateBdioDocument.project, it.dependencies)
-                //aggregateBdioDocument.components.addAll(components)
+                aggregateBdioDocument.components.addAll(dependencyNodeTransformer.addComponentsGraph(aggregateBdioDocument.project, it.dependencies))
             } else {
-                if (it.dependencyGraph) {
+                if (it.dependencies) {
                     final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(detectProject, it)
-                    final String filename = it.createBdioFilename(integrationEscapeUtil, detectFileManager.extractFinalPieceFromPath(it.sourcePath), detectProject.projectName, detectProject.projectVersionName)
-                    final File outputFile = new File((File)detectConfiguration.getOutputDirectory(), filename)
+                    String projectPath = detectFileManager.extractFinalPieceFromPath(it.sourcePath)
+                    String projectName = detectProject.projectName
+                    String projectVersionName = detectProject.projectVersionName
+                    final String filename = createBdioFilename(it.bomToolType, projectPath, projectName, projectVersionName)
+                    final File outputFile = new File(detectConfiguration.getOutputDirectory(), filename)
                     if (outputFile.exists()) {
                         outputFile.delete()
                     }
@@ -190,34 +176,65 @@ class DetectProjectManager {
         }
 
         if (aggregateBdioFile != null && aggregateBdioDocument != null) {
-            def components = dependencyGraphTransformer.transformDependencyGraph(aggregateGraph, aggregateBdioDocument.project)
-            aggregateBdioDocument.components.addAll(components)
             writeSimpleBdioDocument(aggregateBdioFile, aggregateBdioDocument)
         }
 
         bdioFiles
     }
 
+    private String createBdioFilename(BomToolType bomToolType, String finalSourcePathPiece, String projectName, String projectVersionName) {
+        def names = [
+            finalSourcePathPiece,
+            projectName,
+            projectVersionName
+        ]
+        names.sort { -it.size() }
+        String filename = generateFilename(bomToolType, finalSourcePathPiece, projectName, projectVersionName)
+        for (int i = 0; (filename.length() >= 255) && (i < 3); i++) {
+            names[i] = DigestUtils.sha1Hex(names[i])
+            if (names[i].length() > 15) {
+                names[i] = names[i].substring(0, 15)
+            }
+
+            filename = generateFilename(bomToolType, names[0], names[1], names[2])
+        }
+
+        filename
+    }
+
+    private String generateFilename(BomToolType bomToolType, String finalSourcePathPiece, String projectName, String projectVersionName) {
+        List<String> safePieces = [
+            bomToolType.toString(),
+            projectName,
+            projectVersionName,
+            finalSourcePathPiece,
+            'bdio'
+        ].collect { integrationEscapeUtil.escapeForUri(it) }
+
+        String filename = safePieces.iterator().join('_') + '.jsonld'
+        filename
+    }
+
     private SimpleBdioDocument createAggregateSimpleBdioDocument(DetectProject detectProject) {
-        createSimpleBdioDocument(detectProject, '', detectProject.projectName, bdioPropertyHelper.createExternalIdentifier('', detectProject.projectName), new MutableMapDependencyGraph())
+        createSimpleBdioDocument(detectProject, '', detectProject.projectName, bdioPropertyHelper.createExternalIdentifier('', detectProject.projectName), [] as Set)
     }
 
     private SimpleBdioDocument createSimpleBdioDocument(DetectProject detectProject, DetectCodeLocation detectCodeLocation) {
-        final String codeLocationName = detectProject.getCodeLocationName(detectCodeLocation.bomToolType, detectFileManager.extractFinalPieceFromPath(detectCodeLocation.sourcePath), detectConfiguration.getProjectCodeLocationPrefix(), 'Hub Detect Tool')
+        final String codeLocationName = detectProject.getBomToolCodeLocationName(detectCodeLocation.bomToolType, detectFileManager.extractFinalPieceFromPath(detectCodeLocation.sourcePath), detectConfiguration.getProjectCodeLocationPrefix())
         final String projectId = detectCodeLocation.bomToolProjectExternalId.createDataId()
         final BdioExternalIdentifier projectExternalIdentifier = bdioPropertyHelper.createExternalIdentifier(detectCodeLocation.bomToolProjectExternalId)
 
-        createSimpleBdioDocument(detectProject, codeLocationName, projectId, projectExternalIdentifier, detectCodeLocation.dependencyGraph)
+        createSimpleBdioDocument(detectProject, codeLocationName, projectId, projectExternalIdentifier, detectCodeLocation.dependencies)
     }
 
-    private SimpleBdioDocument createSimpleBdioDocument(DetectProject detectProject, String codeLocationName, String projectId, BdioExternalIdentifier projectExternalIdentifier, DependencyGraph dependencyGraph) {
+    private SimpleBdioDocument createSimpleBdioDocument(DetectProject detectProject, String codeLocationName, String projectId, BdioExternalIdentifier projectExternalIdentifier, Set<DependencyNode> dependencies) {
         final String projectName = detectProject.projectName
         final String projectVersionName = detectProject.projectVersionName
 
         final BdioBillOfMaterials bdioBillOfMaterials = bdioNodeFactory.createBillOfMaterials(codeLocationName, projectName, projectVersionName)
         final BdioProject project = bdioNodeFactory.createProject(projectName, projectVersionName, projectId, projectExternalIdentifier)
 
-        final List<BdioComponent> bdioComponents = dependencyGraphTransformer.transformDependencyGraph(dependencyGraph, project)
+        final List<BdioComponent> bdioComponents = dependencyNodeTransformer.addComponentsGraph(project, dependencies)
 
         final SimpleBdioDocument simpleBdioDocument = new SimpleBdioDocument()
         simpleBdioDocument.billOfMaterials = bdioBillOfMaterials
@@ -239,27 +256,35 @@ class DetectProjectManager {
         outputFile
     }
 
-    String getDefaultProjectName() {
+    String getProjectName(final String defaultProjectName) {
+        String projectName = defaultProjectName?.trim()
+
         if (detectConfiguration.getProjectName()) {
-            detectConfiguration.getProjectName()
-        } else if (detectConfiguration.sourcePath) {
-            detectFileManager.extractFinalPieceFromPath(detectConfiguration.sourcePath)
-        }else{
-            ''
+            projectName = detectConfiguration.getProjectName()
+        } else if (!projectName && detectConfiguration.sourcePath) {
+            String finalSourcePathPiece = detectFileManager.extractFinalPieceFromPath(detectConfiguration.sourcePath)
+            projectName = finalSourcePathPiece
         }
+
+        projectName
     }
 
-    String getDefaultProjectVersionName() {
+    String getProjectVersionName(final String defaultVersionName) {
+        String projectVersion = defaultVersionName?.trim()
+
         if (detectConfiguration.projectVersionName) {
-            detectConfiguration.projectVersionName
-        } else {
+            projectVersion = detectConfiguration.projectVersionName
+        } else if (!projectVersion) {
             if ('timestamp' == detectConfiguration.defaultProjectVersionScheme) {
                 String timeformat = detectConfiguration.defaultProjectVersionTimeformat
-                DateTimeFormat.forPattern(timeformat).withZoneUTC().print(DateTime.now().withZone(DateTimeZone.UTC))
+                String timeString = DateTimeFormat.forPattern(timeformat).withZoneUTC().print(DateTime.now().withZone(DateTimeZone.UTC))
+                projectVersion = timeString
             } else {
-                detectConfiguration.defaultProjectVersionText
+                projectVersion = detectConfiguration.defaultProjectVersionText
             }
         }
+
+        projectVersion
     }
 
 }

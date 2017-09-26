@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
+import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.PipInspectorTreeParser
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.PythonEnvironment
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.PythonEnvironmentHandler
@@ -81,12 +82,17 @@ class PipBomTool extends BomTool {
         def sourcePath = sourcePath
 
         PythonEnvironment pythonEnvironment = virtualEnvironmentHandler.getEnvironment(detectConfiguration.virtualEnvPath)
-        DetectCodeLocation codeLocation = makeCodeLocation(pythonEnvironment)
+        DependencyNode projectNode = makeDependencyNode(pythonEnvironment)
+        def codeLocations = []
+        if (projectNode && !(projectNode.name.equals('') && projectNode.version.equals('') && projectNode.children.empty)) {
+            def codeLocation = new DetectCodeLocation(BomToolType.PIP, sourcePath, projectNode)
+            codeLocations.add(codeLocation)
+        }
 
-        [codeLocation]
+        codeLocations
     }
 
-    DetectCodeLocation makeCodeLocation(PythonEnvironment pythonEnvironment) {
+    DependencyNode makeDependencyNode(PythonEnvironment pythonEnvironment) {
         String pipPath = pythonEnvironment.pipPath
         String pythonPath = pythonEnvironment.pythonPath
         def setupFile = detectFileManager.findFile(sourceDirectory, 'setup.py')
@@ -94,7 +100,9 @@ class PipBomTool extends BomTool {
         String inpsectorScriptContents = getClass().getResourceAsStream("/${INSPECTOR_NAME}").getText(StandardCharsets.UTF_8.toString())
         def inspectorScript = detectFileManager.createFile(BomToolType.PIP, INSPECTOR_NAME)
         detectFileManager.writeToFile(inspectorScript, inpsectorScriptContents)
-        def pipInspectorOptions = [inspectorScript.absolutePath]
+        def pipInspectorOptions = [
+            inspectorScript.absolutePath
+        ]
 
         // Install requirements file and add it as an option for the inspector
         if (detectConfiguration.requirementsFilePath) {
@@ -106,7 +114,10 @@ class PipBomTool extends BomTool {
         if (setupFile) {
             def projectName = detectConfiguration.pipProjectName
             if (!projectName) {
-                def findProjectNameExecutable = new Executable(sourceDirectory, pythonPath, [setupFile.absolutePath, '--name'])
+                def findProjectNameExecutable = new Executable(sourceDirectory, pythonPath, [
+                    setupFile.absolutePath,
+                    '--name'
+                ])
                 String[] output = executableRunner.execute(findProjectNameExecutable).standardOutput.split(System.lineSeparator())
                 projectName = output[output.length - 1].replace('_', '-').trim()
             }
@@ -116,6 +127,6 @@ class PipBomTool extends BomTool {
         def pipInspector = new Executable(sourceDirectory, pythonPath, pipInspectorOptions)
         def inspectorOutput = executableRunner.execute(pipInspector).standardOutput
 
-        pipInspectorTreeParser.parse(nameVersionNodeTransformer, sourcePath, inspectorOutput)
+        pipInspectorTreeParser.parse(nameVersionNodeTransformer, inspectorOutput)
     }
 }

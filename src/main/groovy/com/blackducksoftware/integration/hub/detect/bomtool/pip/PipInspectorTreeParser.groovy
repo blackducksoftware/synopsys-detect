@@ -47,6 +47,7 @@ class PipInspectorTreeParser {
     public static final String UNKNOWN_PROJECT_NAME = 'n?'
     public static final String UNKNOWN_PROJECT_VERSION = 'v?'
     public static final String UNKNOWN_REQUIREMENTS_PREFIX = 'r?'
+    public static final String UNPARSEABLE_REQUIREMENTS_PREFIX = 'p?'
     public static final String UNKNOWN_PACKAGE_PREFIX = '--'
     public static final String INDENTATION = ' '.multiply(4)
 
@@ -64,7 +65,13 @@ class PipInspectorTreeParser {
 
             if (line.trim().startsWith(UNKNOWN_REQUIREMENTS_PREFIX)) {
                 String path = line.replace(UNKNOWN_REQUIREMENTS_PREFIX, '').trim()
-                logger.info("Pip inspector could not locate requirements file @ ${path}")
+                logger.info("Pip inspector could not find requirements file @ ${path}")
+                continue
+            }
+
+            if (line.trim().startsWith(UNPARSEABLE_REQUIREMENTS_PREFIX)) {
+                String path = line.replace(UNPARSEABLE_REQUIREMENTS_PREFIX, '').trim()
+                logger.info("Pip inspector could not parse requirements file @ ${path}")
                 continue
             }
 

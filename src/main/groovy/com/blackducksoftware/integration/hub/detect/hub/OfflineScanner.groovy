@@ -59,7 +59,7 @@ class OfflineScanner {
         ciEnvironmentVariables.putAll(System.getenv())
 
         def simpleScanService = new SimpleScanService(intLogger, gson, hubServerConfig, hubSupportHelper, ciEnvironmentVariables, hubScanConfig, null, null)
-        if(hubSignatureScannerOfflineLocalPath){
+        if (hubSignatureScannerOfflineLocalPath) {
             OfflineCLILocation cliLocation = new OfflineCLILocation(intLogger, new File(hubSignatureScannerOfflineLocalPath))
             simpleScanService.setupAndExecuteScan(cliLocation)
         } else {

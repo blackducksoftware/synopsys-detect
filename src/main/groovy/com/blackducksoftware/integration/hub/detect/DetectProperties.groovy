@@ -162,7 +162,7 @@ class DetectProperties {
     @Value('${detect.policy.check.timeout}')
     Long policyCheckTimeout
 
-    @ValueDescription(description="Version of the Gradle Inspector", defaultValue="0.2.2", group=DetectProperties.GROUP_GRADLE)
+    @ValueDescription(description="Version of the Gradle Inspector", defaultValue="0.3.0", group=DetectProperties.GROUP_GRADLE)
     @Value('${detect.gradle.inspector.version}')
     String gradleInspectorVersion
 
@@ -209,6 +209,10 @@ class DetectProperties {
     @ValueDescription(description="The name of the dependency scope to include", group=DetectProperties.GROUP_MAVEN)
     @Value('${detect.maven.scope}')
     String mavenScope
+
+    @ValueDescription(description="Maven build command", defaultValue="dependency:tree", group=DetectProperties.GROUP_MAVEN)
+    @Value('${detect.maven.build.command}')
+    String mavenBuildCommand
 
     @ValueDescription(description="Path of the Gradle executable", group=DetectProperties.GROUP_GRADLE)
     @Value('${detect.gradle.path}')
