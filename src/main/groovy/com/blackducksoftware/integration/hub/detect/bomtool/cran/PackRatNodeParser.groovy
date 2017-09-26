@@ -49,7 +49,7 @@ public class PackRatNodeParser {
         directDependencyNames = new HashSet<>()
         currentParent = null
 
-        String[] lines = packratLockContents.split(System.lineSeparator())
+        String[] lines = packratLockContents.split('\n')
         String name
         String version
         List<DependencyNode> projectDependencies = []

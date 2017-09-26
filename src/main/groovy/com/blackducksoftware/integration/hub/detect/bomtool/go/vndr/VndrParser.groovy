@@ -34,13 +34,13 @@ class VndrParser {
     public List<DependencyNode> parseVendorConf(String vendorConfContents) {
         List<DependencyNode> nodes = new ArrayList<>()
         String contents = vendorConfContents.trim()
-        def lines = contents.split(System.lineSeparator())
+        def lines = contents.split('\n')
         //TODO test against moby
         lines.each { String line ->
             if (line?.trim() && !line.startsWith('#')) {
                 def parts = line.split(' ')
-                final ExternalId dependencyExternalId = new NameVersionExternalId(GoDepBomTool.GOLANG, parts[0], parts[1])
-                final DependencyNode dependency = new DependencyNode(parts[0], parts[1], dependencyExternalId)
+                final ExternalId dependencyExternalId = new NameVersionExternalId(GoDepBomTool.GOLANG, parts[0].trim(), parts[1].trim())
+                final DependencyNode dependency = new DependencyNode(parts[0].trim(), parts[1].trim(), dependencyExternalId)
                 nodes.add(dependency)
             }
         }

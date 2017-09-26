@@ -69,7 +69,7 @@ class PearDependencyFinder {
 
     private List<String> findDependencyNames(String list) {
         def nameList = []
-        String[] content = list.split(System.lineSeparator())
+        String[] content = list.split('\n')
 
         if (content.size() > 5) {
             def listing = content[5..-1]
@@ -97,7 +97,7 @@ class PearDependencyFinder {
 
     private Set<DependencyNode> createPearDependencyNodeFromList(String list, List<String> dependencyNames) {
         Set<DependencyNode> childrenNodes = []
-        String[] dependencyList = list.split(System.lineSeparator())
+        String[] dependencyList = list.split('\n')
 
         if (dependencyList.size() > 3) {
             def listing = dependencyList[3..-1]

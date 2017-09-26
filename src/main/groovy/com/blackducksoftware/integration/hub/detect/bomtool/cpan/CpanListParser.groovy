@@ -39,7 +39,7 @@ class CpanListParser {
     public Map<String, NameVersionNode> parse(String listText) {
         Map<String, NameVersionNode> moduleMap = [:]
 
-        for (String line: listText.split(System.lineSeparator())) {
+        for (String line: listText.split('\n')) {
             if (!line.trim()) {
                 continue
             }
@@ -49,7 +49,7 @@ class CpanListParser {
             }
 
             try {
-                String[] module = line.split('\t')
+                String[] module = line.trim().split('\t')
                 def nameVersionNode = new NameVersionNodeImpl()
                 nameVersionNode.name = module[0].trim()
                 nameVersionNode.version = module[1].trim()

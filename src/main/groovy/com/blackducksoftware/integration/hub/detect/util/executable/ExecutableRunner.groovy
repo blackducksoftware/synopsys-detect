@@ -72,7 +72,7 @@ public class ExecutableRunner {
 
         String line
         while ((line = bufferedReader.readLine()) != null) {
-            stringBuilder.append(line + System.lineSeparator())
+            stringBuilder.append(line + '\n')
             logger.info(line)
         }
         return stringBuilder.toString()
