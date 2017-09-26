@@ -101,9 +101,11 @@ class NpmBomTool extends BomTool {
             } else {
                 npmLsExe = new Executable(new File(sourcePath), npmExePath, ['-version'])
                 String npmNodePath = detectConfiguration.getNpmNodePath()
-                int lastSlashIndex = npmNodePath.lastIndexOf('/')
-                npmNodePath = npmNodePath.substring(0, lastSlashIndex)
-                if (npmNodePath) {
+                if (!npmNodePath.isEmpty()) {
+                    int lastSlashIndex = npmNodePath.lastIndexOf('/')
+                    if (lastSlashIndex >= 0) {
+                        npmNodePath = npmNodePath.substring(0, lastSlashIndex)
+                    }
                     npmLsExe.environmentVariables.put('PATH', npmNodePath)
                 }
                 logger.debug("Npm version ${executableRunner.execute(npmLsExe).standardOutput}")
