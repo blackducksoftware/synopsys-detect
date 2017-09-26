@@ -35,7 +35,7 @@ import org.springframework.context.annotation.Bean
 import com.blackducksoftware.integration.hub.bdio.simple.BdioNodeFactory
 import com.blackducksoftware.integration.hub.bdio.simple.BdioPropertyHelper
 import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeTransformer
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.exception.DetectException
 import com.blackducksoftware.integration.hub.detect.help.HelpPrinter
 import com.blackducksoftware.integration.hub.detect.help.ValueDescriptionAnnotationFinder
@@ -143,7 +143,7 @@ class Application {
 
     @Bean
     Gson gson() {
-        new GsonBuilder().setPrettyPrinting().registerTypeAdapter(ExternalId.class, new ExternalIdTypeAdapter()).create()
+        new GsonBuilder().setPrettyPrinting().create()
     }
 
     @Bean
@@ -164,6 +164,11 @@ class Application {
     @Bean
     IntegrationEscapeUtil integrationEscapeUtil() {
         new IntegrationEscapeUtil()
+    }
+
+    @Bean
+    ExternalIdFactory externalIdFactory() {
+        new ExternalIdFactory()
     }
 
     @Bean

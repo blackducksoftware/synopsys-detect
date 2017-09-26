@@ -30,7 +30,6 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.PathExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.CocoapodsPackager
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
@@ -59,7 +58,7 @@ class CocoapodsBomTool extends BomTool {
         final String podLockText = new File(sourcePath, PODFILE_LOCK_FILENAME).text
 
         Set<DependencyNode> dependencyNodes = cocoapodsPackager.extractDependencyNodes(podLockText)
-        ExternalId externalId = new PathExternalId(Forge.COCOAPODS, sourcePath)
+        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.COCOAPODS, sourcePath)
 
         def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, externalId, dependencyNodes)
         [codeLocation]
