@@ -158,7 +158,7 @@ class DetectProperties {
     @Value('${detect.policy.check.timeout}')
     Long policyCheckTimeout
 
-    @ValueDescription(description="Version of the Gradle Inspector", defaultValue="0.2.2", group=DetectProperties.GROUP_GRADLE)
+    @ValueDescription(description="Version of the Gradle Inspector", defaultValue="0.3.0", group=DetectProperties.GROUP_GRADLE)
     @Value('${detect.gradle.inspector.version}')
     String gradleInspectorVersion
 
@@ -397,5 +397,8 @@ class DetectProperties {
     @ValueDescription(description="The source for nuget packages", defaultValue='https://www.nuget.org/api/v2/', group=DetectProperties.GROUP_NUGET)
     @Value('${detect.nuget.packages.repo.url}')
     String nugetPackagesRepoUrl
-}
 
+    @ValueDescription(description="The respository gradle should use to look for the gradle inspector", group=DetectProperties.GROUP_GRADLE)
+    @Value('${detect.gradle.inspector.repository.url}')
+    String gradleInspectorRepositoryUrl
+}

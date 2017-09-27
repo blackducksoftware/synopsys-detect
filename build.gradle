@@ -1,9 +1,7 @@
 import groovy.json.JsonBuilder
 
 buildscript {
-    repositories {
-        mavenCentral()
-    }
+    repositories { mavenCentral() }
 
     dependencies {
         classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.5.2.RELEASE'
@@ -38,9 +36,7 @@ final String nugetAirgapPath = "${buildDir}/libs/airgap/nuget"
 
 // BuildInfo - A json payload usable by detect for information from the build
 JsonBuilder jsonBuilder = new JsonBuilder()
-jsonBuilder {
-    detect version
-}
+jsonBuilder { detect version }
 final def buildConfigurationFile = new File("${projectDir}/src/main/resources/buildInfo.json")
 buildConfigurationFile.delete()
 buildConfigurationFile << jsonBuilder.toPrettyString()
@@ -56,7 +52,7 @@ targetCompatibility = 1.7
 
 build {
     finalizedBy 'updateAirgapDependencies'
-    
+
     doLast {
         def shellScriptTemplateFile = new File("${projectDir}/src/main/resources/hub-detect-sh")
         def shellScriptContents = shellScriptTemplateFile.getText('UTF-8')
@@ -79,23 +75,21 @@ repositories {
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
 }
 
-configurations {
-    airgapConfig
-}
+configurations { airgapConfig }
 
 dependencies {
-    compile 'com.blackducksoftware.integration:hub-detect-model:0.0.4'
     compile 'com.blackducksoftware.integration:hub-common:14.5.1'
     compile 'org.springframework.boot:spring-boot-starter'
     compile 'org.apache.maven.shared:maven-invoker:3.0.0'
     compile 'com.esotericsoftware.yamlbeans:yamlbeans:1.11'
     compile 'com.moandjiezana.toml:toml4j:0.7.1'
     compile 'org.codehaus.groovy:groovy-all:2.4.11'
+    compile 'org.freemarker:freemarker:2.3.26-incubating'
 
     compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.0'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.9.0'
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.9.0'
-    
+
     airgapConfig "com.blackducksoftware.integration:integration-gradle-inspector:${gradleInspectorVersion}"
 
     testCompile 'org.springframework.boot:spring-boot-starter-test'
@@ -127,9 +121,7 @@ void fetchFile(File outputFile, String url) {
     new URL(url).withInputStream{ i -> outputFile.withOutputStream{ it << i }}
 }
 
-task cleanAirgapDependencies(type: Delete) {
-    delete fileTree(gradleAirgapPath)
-}
+task cleanAirgapDependencies(type: Delete) { delete fileTree(gradleAirgapPath) }
 
 task downloadGradleAirgapDependencies(type: Copy) {
     from configurations.airgapConfig
@@ -143,6 +135,4 @@ task downloadNugetAirgapDependencies {
     }
 }
 
-task updateAirgapDependencies {
-    dependsOn cleanAirgapDependencies, downloadGradleAirgapDependencies, downloadNugetAirgapDependencies
-}
+task updateAirgapDependencies { dependsOn cleanAirgapDependencies, downloadGradleAirgapDependencies, downloadNugetAirgapDependencies }

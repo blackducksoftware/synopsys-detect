@@ -22,20 +22,21 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool
 
-import java.nio.charset.StandardCharsets
-
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
+import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleDependenciesParser
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
+import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
-import com.google.gson.Gson
 
+import freemarker.template.Configuration
+import freemarker.template.Template
 import groovy.transform.TypeChecked
 
 @Component
@@ -46,10 +47,13 @@ class GradleBomTool extends BomTool {
     static final String BUILD_GRADLE_FILENAME = 'build.gradle'
 
     @Autowired
-    Gson gson
+    HubSignatureScanner hubSignatureScanner
 
     @Autowired
-    HubSignatureScanner hubSignatureScanner
+    Configuration configuration
+
+    @Autowired
+    GradleDependenciesParser gradleDependenciesParser
 
     private String gradleExecutable
 
@@ -70,8 +74,8 @@ class GradleBomTool extends BomTool {
         buildGradle && gradleExecutable
     }
 
-    List<DetectCodeLocation> extractDetectCodeLocations() {
-        List<DetectCodeLocation> codeLocations = extractCodeLocationsFromGradle()
+    List<DetectCodeLocation> extractDetectCodeLocations(DetectProject detectProject) {
+        List<DetectCodeLocation> codeLocations = extractCodeLocationsFromGradle(detectProject)
 
         File[] additionalTargets = detectFileManager.findFilesToDepth(detectConfiguration.sourceDirectory, 'build', detectConfiguration.searchDepth)
         if (additionalTargets) {
@@ -90,22 +94,27 @@ class GradleBomTool extends BomTool {
         gradlePath
     }
 
-    List<DetectCodeLocation> extractCodeLocationsFromGradle() {
+    List<DetectCodeLocation> extractCodeLocationsFromGradle(DetectProject detectProject) {
         File initScriptFile = detectFileManager.createFile(BomToolType.GRADLE, 'init-detect.gradle')
-        String initScriptContents = getClass().getResourceAsStream('/init-script-gradle').getText(StandardCharsets.UTF_8.toString())
-        initScriptContents = initScriptContents.replace('GRADLE_INSPECTOR_VERSION', detectConfiguration.getGradleInspectorVersion())
-        initScriptContents = initScriptContents.replace('EXCLUDED_PROJECT_NAMES', detectConfiguration.getGradleExcludedProjectNames())
-        initScriptContents = initScriptContents.replace('INCLUDED_PROJECT_NAMES', detectConfiguration.getGradleIncludedProjectNames())
-        initScriptContents = initScriptContents.replace('EXCLUDED_CONFIGURATION_NAMES', detectConfiguration.getGradleExcludedConfigurationNames())
-        initScriptContents = initScriptContents.replace('INCLUDED_CONFIGURATION_NAMES', detectConfiguration.getGradleIncludedConfigurationNames())
-
-        String airgapLibsDirectoryPath = ''
+        final Map<String, String> model = [
+            'gradleInspectorVersion' : detectConfiguration.getGradleInspectorVersion(),
+            'excludedProjectNames' : detectConfiguration.getGradleExcludedProjectNames(),
+            'includedProjectNames' : detectConfiguration.getGradleIncludedProjectNames(),
+            'excludedConfigurationNames' : detectConfiguration.getGradleExcludedConfigurationNames(),
+            'includedConfigurationNames' : detectConfiguration.getGradleIncludedConfigurationNames()
+        ]
         if (detectConfiguration.getGradleInspectorAirGapPath()) {
-            airgapLibsDirectoryPath = new File(detectConfiguration.getGradleInspectorAirGapPath()).getCanonicalPath()
+            model.put('airGapLibsPath', new File(detectConfiguration.getGradleInspectorAirGapPath()).getCanonicalPath())
         }
-        initScriptContents = initScriptContents.replace('AIRGAP_LIBS_DIRECTORY_PATH', airgapLibsDirectoryPath)
+        if (detectConfiguration.getGradleInspectorRepositoryUrl()) {
+            model.put('customRepositoryUrl', detectConfiguration.getGradleInspectorRepositoryUrl())
+        }
 
-        detectFileManager.writeToFile(initScriptFile, initScriptContents)
+        final Template initScriptTemplate = configuration.getTemplate('init-script-gradle.ftl')
+        initScriptFile.withWriter('UTF-8') {
+            initScriptTemplate.process(model, it)
+        }
+
         String initScriptPath = initScriptFile.absolutePath
         logger.info("using ${initScriptPath} as the path for the gradle init script")
         Executable executable = new Executable(sourceDirectory, gradleExecutable, [
@@ -117,11 +126,11 @@ class GradleBomTool extends BomTool {
         File buildDirectory = new File(sourcePath, 'build')
         File blackduckDirectory = new File(buildDirectory, 'blackduck')
 
-        File[] codeLocationFiles = detectFileManager.findFiles(blackduckDirectory, '*_detectCodeLocation.json')
+        File[] codeLocationFiles = detectFileManager.findFiles(blackduckDirectory, '*_dependencyGraph.txt')
+
         List<DetectCodeLocation> codeLocations = codeLocationFiles.collect { File file ->
-            logger.debug("Code Location file name: ${file.getName()}")
-            String codeLocationJson = file.getText(StandardCharsets.UTF_8.toString())
-            gson.fromJson(codeLocationJson, DetectCodeLocation.class)
+            logger.debug("Parsing dependency graph : ${file.getName()}")
+            gradleDependenciesParser.parseDependencies(detectProject, file.newInputStream())
         }
         if (detectConfiguration.gradleCleanupBuildBlackduckDirectory) {
             blackduckDirectory.deleteDir()
