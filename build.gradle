@@ -25,7 +25,7 @@ tasks.withType(GroovyCompile) { options.encoding = 'UTF-8' }
 group = 'com.blackducksoftware.integration'
 
 // Detect version
-version = '1.2.0-SNAPSHOT'
+version = '1.2.0-RC'
 
 // Human's must change this here and in DetectProperties for every update
 final String gradleInspectorVersion = '0.3.0'
