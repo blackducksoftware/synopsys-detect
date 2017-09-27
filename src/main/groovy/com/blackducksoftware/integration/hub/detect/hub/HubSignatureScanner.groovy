@@ -189,7 +189,9 @@ class HubSignatureScanner {
         hubScanConfigBuilder.cleanupLogsOnSuccess = detectConfiguration.cleanupBomToolFiles
         hubScanConfigBuilder.dryRun = detectConfiguration.hubSignatureScannerDryRun
 
-        final String codeLocationName = detectProject.getScanCodeLocationName(detectConfiguration.sourcePath, canonicalPath, detectFileManager.extractFinalPieceFromPath(detectConfiguration.sourcePath), detectConfiguration.getProjectCodeLocationPrefix())
+        String sourcePath = canonicalPath.replace(detectConfiguration.sourcePath, detectFileManager.extractFinalPieceFromPath(detectConfiguration.sourcePath));
+        String codeLocationName = detectProject.getCodeLocationName(sourcePath, null, CodeLocationType.SCAN, detectConfiguration.getProjectCodeLocationPrefix(), detectConfiguration.getProjectCodeLocationSuffix())
+        //        final String codeLocationName = detectProject.getScanCodeLocationName(detectConfiguration.sourcePath, canonicalPath, detectFileManager.extractFinalPieceFromPath(detectConfiguration.sourcePath), detectConfiguration.getProjectCodeLocationPrefix())
         hubScanConfigBuilder.codeLocationAlias = codeLocationName
 
         if (detectConfiguration.hubSignatureScannerExclusionPatterns) {
@@ -199,16 +201,5 @@ class HubSignatureScanner {
         }
 
         hubScanConfigBuilder
-    }
-
-    private String getCodeLocationName(DetectProject detectProject, final String canonicalCodeLocationSourcePath) {
-        String finalPathPiece = detectFileManager.extractFinalPieceFromPath(detectConfiguration.sourcePath)
-        String sourcePath = canonicalCodeLocationSourcePath.replace(detectConfiguration.sourcePath, finalPathPiece)
-        String codeLocation = String.format('%s/%s/%s %s', sourcePath, detectProject.getProjectName(), detectProject.getProjectVersionName(), CodeLocationType.SCAN.toString().toLowerCase())
-        String prefix = detectConfiguration.getProjectCodeLocationPrefix()
-        if (prefix) {
-            codeLocation = String.format('%s/%s', prefix, codeLocation)
-        }
-        codeLocation
     }
 }

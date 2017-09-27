@@ -142,6 +142,10 @@ class DetectProperties {
     @Value('${detect.project.codelocation.prefix}')
     String projectCodeLocationPrefix
 
+    @ValueDescription(description = "A suffix to the name of the codelocations created by Detect.", defaultValue='', group=DetectProperties.GROUP_PROJECT_INFO)
+    @Value('${detect.project.codelocation.suffix}')
+    String projectCodeLocationSuffix
+
     @ValueDescription(description = "An override for the Project level matches.", defaultValue="true", group=DetectProperties.GROUP_PROJECT_INFO)
     @Value('${detect.project.level.adjustments}')
     String projectLevelMatchAdjustments
