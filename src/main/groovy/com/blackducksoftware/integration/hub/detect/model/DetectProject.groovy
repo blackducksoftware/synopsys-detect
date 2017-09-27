@@ -61,8 +61,9 @@ class DetectProject {
         detectCodeLocations
     }
 
+    //the implementation of these methods should NOT be changed - doing so will result in the code locations being added to the BOM instead of replacing the BOM
     public String getBomToolCodeLocationName(final BomToolType bomToolType, String finalSourcePathPiece, String prefix) {
-        String codeLocation = String.format('%s/%s/%s/%s %s', bomToolType.toString(), finalSourcePathPiece, projectName, projectVersionName, CodeLocationType.BOM.toString())
+        String codeLocation = String.format('%s/%s/%s/%s %s', bomToolType.toString(), finalSourcePathPiece, projectName, projectVersionName, 'Hub Detect Tool')
         if (prefix) {
             codeLocation = String.format('%s/%s', prefix, codeLocation)
         }
@@ -71,7 +72,7 @@ class DetectProject {
 
     public String getScanCodeLocationName(final String canonicalProjectSourcePath, final String canonicalCodeLocationSourcePath, String finalSourcePathPiece, String prefix) {
         String sourcePath = canonicalCodeLocationSourcePath.replace(canonicalProjectSourcePath, finalSourcePathPiece);
-        String codeLocation = String.format('%s/%s/%s %s', sourcePath, projectName, projectVersionName, CodeLocationType.SCAN.toString())
+        String codeLocation = String.format('%s/%s/%s %s', sourcePath, projectName, projectVersionName, 'Hub Detect Scan')
         if (prefix) {
             codeLocation = String.format('%s/%s', prefix, codeLocation)
         }
