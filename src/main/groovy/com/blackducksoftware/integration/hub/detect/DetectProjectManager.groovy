@@ -42,6 +42,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.BdioProject
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.SimpleBdioDocument
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
+import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.CodeLocationType
@@ -50,6 +51,7 @@ import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.summary.DetectSummary
 import com.blackducksoftware.integration.hub.detect.summary.Result
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
+import com.blackducksoftware.integration.hub.model.view.CodeLocationView
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil
 import com.google.gson.Gson
@@ -88,6 +90,9 @@ class DetectProjectManager {
 
     @Autowired
     DetectSummary detectSummary
+
+    @Autowired
+    HubServiceWrapper hubServiceWrapper
 
     private boolean foundAnyBomTools
 
@@ -222,6 +227,11 @@ class DetectProjectManager {
 
     private SimpleBdioDocument createSimpleBdioDocument(DetectProject detectProject, DetectCodeLocation detectCodeLocation) {
         String codeLocationName = detectProject.getCodeLocationName(detectFileManager.extractFinalPieceFromPath(detectCodeLocation.sourcePath), detectCodeLocation.bomToolType, CodeLocationType.BOM, detectConfiguration.getProjectCodeLocationPrefix(), detectConfiguration.getProjectCodeLocationSuffix())
+        String oldCodeLocationName = detectProject.getBomToolCodeLocationName(detectCodeLocation.bomToolType, detectFileManager.extractFinalPieceFromPath(detectCodeLocation.sourcePath), detectConfiguration.getProjectCodeLocationPrefix())
+        CodeLocationView codeLocationView = hubServiceWrapper.createCodeLocationRequestService().getCodeLocationByName(oldCodeLocationName)
+        if (codeLocationView) {
+            logger.warn("Found same code location with old naming pattern: ${oldCodeLocationName}. You may remove old code location if desired")
+        }
         final String projectId = detectCodeLocation.bomToolProjectExternalId.createDataId()
         final BdioExternalIdentifier projectExternalIdentifier = bdioPropertyHelper.createExternalIdentifier(detectCodeLocation.bomToolProjectExternalId)
 
