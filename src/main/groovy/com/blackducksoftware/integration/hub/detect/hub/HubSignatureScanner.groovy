@@ -30,6 +30,7 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.builder.HubScanConfigBuilder
 import com.blackducksoftware.integration.hub.dataservice.cli.CLIDataService
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
+import com.blackducksoftware.integration.hub.detect.model.CodeLocationType
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.summary.DetectSummary
 import com.blackducksoftware.integration.hub.detect.summary.Result
@@ -198,5 +199,16 @@ class HubSignatureScanner {
         }
 
         hubScanConfigBuilder
+    }
+
+    private String getCodeLocationName(DetectProject detectProject, final String canonicalCodeLocationSourcePath) {
+        String finalPathPiece = detectFileManager.extractFinalPieceFromPath(detectConfiguration.sourcePath)
+        String sourcePath = canonicalCodeLocationSourcePath.replace(detectConfiguration.sourcePath, finalPathPiece)
+        String codeLocation = String.format('%s/%s/%s %s', sourcePath, detectProject.getProjectName(), detectProject.getProjectVersionName(), CodeLocationType.SCAN.toString().toLowerCase())
+        String prefix = detectConfiguration.getProjectCodeLocationPrefix()
+        if (prefix) {
+            codeLocation = String.format('%s/%s', prefix, codeLocation)
+        }
+        codeLocation
     }
 }

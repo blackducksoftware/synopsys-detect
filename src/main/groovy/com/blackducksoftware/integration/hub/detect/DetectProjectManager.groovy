@@ -44,6 +44,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.SimpleBdioDocumen
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
+import com.blackducksoftware.integration.hub.detect.model.CodeLocationType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.summary.DetectSummary
@@ -254,6 +255,16 @@ class DetectProjectManager {
         logger.info("BDIO Generated: " + outputFile.getAbsolutePath())
 
         outputFile
+    }
+
+    private String getCodeLocationName(DetectCodeLocation detectCodeLocation) {
+        String finalPathPiece = detectFileManager.extractFinalPieceFromPath(detectCodeLocation.sourcePath)
+        String codeLocation = String.format('%s/%s/%s %s/%s', finalPathPiece, detectCodeLocation.bomToolProjectName, detectCodeLocation.bomToolProjectVersionName, detectCodeLocation.bomToolType.toString().toLowerCase(), CodeLocationType.BOM.toString().toLowerCase())
+        String prefix = detectConfiguration.getProjectCodeLocationPrefix()
+        if (prefix) {
+            codeLocation = String.format('%s/%s', prefix, codeLocation)
+        }
+        codeLocation
     }
 
     String getProjectName(final String defaultProjectName) {
