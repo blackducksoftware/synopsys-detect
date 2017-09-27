@@ -27,10 +27,10 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraph
-import com.blackducksoftware.integration.hub.bdio.simple.MutableDependencyGraph
-import com.blackducksoftware.integration.hub.bdio.simple.MutableMapDependencyGraph
-import com.blackducksoftware.integration.hub.bdio.simple.model.Dependency
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
 import com.blackducksoftware.integration.hub.detect.bomtool.CpanBomTool
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
@@ -53,7 +53,6 @@ class CpanPackager {
         List<String> directModuleNames = getDirectModuleNames(directDependenciesText)
 
         MutableDependencyGraph graph = new MutableMapDependencyGraph();
-
         directModuleNames.each { moduleName ->
             def nameVersionNode = allModules[moduleName]
             if (nameVersionNode) {

@@ -3,8 +3,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool.rubygems
 import java.nio.charset.StandardCharsets
 
 import org.junit.Test
-
-import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphTestUtil
 import com.google.gson.Gson

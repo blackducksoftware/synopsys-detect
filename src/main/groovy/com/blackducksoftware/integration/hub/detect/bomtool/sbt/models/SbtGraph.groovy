@@ -21,8 +21,7 @@
  * under the License.
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.sbt.models
-
-import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 
 import groovy.transform.TypeChecked
 

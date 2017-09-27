@@ -25,9 +25,9 @@ package com.blackducksoftware.integration.hub.detect.bomtool.sbt
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraphCombiner
-import com.blackducksoftware.integration.hub.bdio.simple.MutableDependencyGraph
-import com.blackducksoftware.integration.hub.bdio.simple.MutableMapDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphCombiner
+import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtAggregate
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtDependencyModule
 

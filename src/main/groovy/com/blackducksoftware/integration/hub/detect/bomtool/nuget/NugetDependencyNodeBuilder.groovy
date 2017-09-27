@@ -21,13 +21,12 @@
  * under the License.
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.nuget
-
-import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraph
-import com.blackducksoftware.integration.hub.bdio.simple.MutableDependencyGraph
-import com.blackducksoftware.integration.hub.bdio.simple.MutableMapDependencyGraph
-import com.blackducksoftware.integration.hub.bdio.simple.model.Dependency
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.Forge
+import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.model.NugetPackageId
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.model.NugetPackageSet
 
@@ -38,9 +37,11 @@ public class NugetDependencyNodeBuilder {
 
     final List<NugetPackageSet> packageSets = new ArrayList<NugetPackageSet>()
 
-    public NugetDependencyNodeBuilder() {
-    }
 
+    public ExternalIdFactory externalIdFactory;
+    public NugetDependencyNodeBuilder(ExternalIdFactory externalIdFactory){
+        this.externalIdFactory = externalIdFactory;
+    }
 
     public void addPackageSets(List<NugetPackageSet> sets) {
         packageSets.addAll(sets)
@@ -66,7 +67,7 @@ public class NugetDependencyNodeBuilder {
     }
 
     private Dependency convertPackageId(NugetPackageId id){
-        def externalId = new NameVersionExternalId(Forge.NUGET, id.name, id.version)
+        def externalId = externalIdFactory.createNameVersionExternalId(Forge.NUGET, id.name, id.version)
         def node = new Dependency(id.name, id.version, externalId)
         node
     }

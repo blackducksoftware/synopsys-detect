@@ -13,8 +13,7 @@ package com.blackducksoftware.integration.hub.detect.testutils
 
 import com.blackducksoftware.integration.hub.bdio.simple.BdioNodeFactory
 import com.blackducksoftware.integration.hub.bdio.simple.BdioPropertyHelper
-import com.blackducksoftware.integration.hub.bdio.simple.BdioWriter
-import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraphTransformer
+import com.blackducksoftware.integration.hub.bdio.simple.BdioWriterimport com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer
 import com.blackducksoftware.integration.hub.bdio.simple.RecursiveDependencyGraphTransformer
 import com.blackducksoftware.integration.hub.bdio.simple.model.BdioBillOfMaterials
 import com.blackducksoftware.integration.hub.bdio.simple.model.BdioComponent

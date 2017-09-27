@@ -1,11 +1,9 @@
 package com.blackducksoftware.integration.hub.detect
 
 import com.blackducksoftware.integration.hub.bdio.simple.BdioNodeFactory
-import com.blackducksoftware.integration.hub.bdio.simple.BdioPropertyHelper
-import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraph
-import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraphTransformer
+import com.blackducksoftware.integration.hub.bdio.simple.BdioPropertyHelperimport com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphimport com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer
 import com.blackducksoftware.integration.hub.bdio.simple.RecursiveDependencyGraphTransformer
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmCliDependencyFinder
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation

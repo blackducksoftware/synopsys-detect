@@ -25,6 +25,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool.sbt
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtDependencyModule
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.reports.parse.SbtReportParser
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter
@@ -35,9 +36,15 @@ import groovy.transform.TypeChecked
 public class SbtPackager {
     private final Logger logger = LoggerFactory.getLogger(SbtPackager.class)
 
+    public ExternalIdFactory externalIdFactory;
+    public SbtPackager(ExternalIdFactory externalIdFactory){
+        this.externalIdFactory = externalIdFactory;
+    }
+    
+    
     public List<SbtDependencyModule> makeModuleAggregate(List<File> reportFiles, String include, String exclude) {
         def parser = new SbtReportParser()
-        def resolver = new SbtDependencyResolver()
+        def resolver = new SbtDependencyResolver(externalIdFactory)
         def filter = new ExcludedIncludedFilter(exclude, include)
         def aggregator = new SbtModuleAggregator()
 

@@ -22,7 +22,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.nameversion.metadata
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
+import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.detect.nameversion.NodeMetadata
 
 import groovy.transform.TypeChecked

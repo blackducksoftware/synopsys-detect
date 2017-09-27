@@ -24,18 +24,23 @@ package com.blackducksoftware.integration.hub.detect.nameversion
 
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraph
-import com.blackducksoftware.integration.hub.bdio.simple.MutableDependencyGraph
-import com.blackducksoftware.integration.hub.bdio.simple.MutableMapDependencyGraph
-import com.blackducksoftware.integration.hub.bdio.simple.model.Dependency
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.Forge
+import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 
 import groovy.transform.TypeChecked
 
 @Component
 @TypeChecked
 class NameVersionNodeTransformer {
+    public ExternalIdFactory externalIdFactory;
+    public NameVersionNodeTransformer(ExternalIdFactory externalIdFactory){
+        this.externalIdFactory = externalIdFactory;
+    }
+
     public DependencyGraph createDependencyGraph(Forge defaultForge, NameVersionNode nameVersionNode) {
         return createDependencyGraph(defaultForge, nameVersionNode, true)
     }
@@ -55,7 +60,7 @@ class NameVersionNodeTransformer {
 
     public Dependency addNameVersionNodeToDependencyGraph(MutableDependencyGraph graph, Forge defaultForge, NameVersionNode nameVersionNode) {
         final Forge forge = nameVersionNode.metadata?.forge ? nameVersionNode.metadata.forge : defaultForge
-        def externalId = new NameVersionExternalId(forge, nameVersionNode.name, nameVersionNode.version)
+        def externalId = externalIdFactory.createNameVersionExternalId(forge, nameVersionNode.name, nameVersionNode.version)
         def parentDependency = new Dependency(nameVersionNode.name, nameVersionNode.version, externalId)
 
         nameVersionNode.children.each {

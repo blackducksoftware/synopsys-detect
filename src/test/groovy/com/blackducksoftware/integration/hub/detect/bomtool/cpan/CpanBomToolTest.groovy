@@ -13,9 +13,8 @@ package com.blackducksoftware.integration.hub.detect.bomtool.cpan
 
 import org.junit.Before
 import org.junit.Test
-
-import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraph
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.PathExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.CpanBomTool
 import com.blackducksoftware.integration.hub.detect.model.BomToolType

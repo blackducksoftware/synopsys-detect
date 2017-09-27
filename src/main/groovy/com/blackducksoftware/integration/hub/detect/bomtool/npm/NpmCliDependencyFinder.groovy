@@ -28,11 +28,11 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.MutableDependencyGraph
-import com.blackducksoftware.integration.hub.bdio.simple.MutableMapDependencyGraph
-import com.blackducksoftware.integration.hub.bdio.simple.model.Dependency
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.Forge
+import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.google.gson.JsonElement
@@ -49,6 +49,11 @@ class NpmCliDependencyFinder {
     private static final String JSON_NAME = 'name'
     private static final String JSON_VERSION = 'version'
     private static final String JSON_DEPENDENCIES = 'dependencies'
+
+    public ExternalIdFactory externalIdFactory;
+    public NpmCliDependencyFinder(ExternalIdFactory externalIdFactory){
+        this.externalIdFactory = externalIdFactory;
+    }
 
     public DetectCodeLocation generateCodeLocation(String sourcePath, File npmLsOutputFile) {
         if (npmLsOutputFile?.length() > 0) {
@@ -69,7 +74,7 @@ class NpmCliDependencyFinder {
 
         populateChildren(graph, null, npmJson.getAsJsonObject(JSON_DEPENDENCIES), true)
 
-        def externalId = new NameVersionExternalId(Forge.NPM, projectName, projectVersion)
+        def externalId = externalIdFactory.createNameVersionExternalId(Forge.NPM, projectName, projectVersion)
 
         new DetectCodeLocation(BomToolType.NPM, sourcePath, projectName, projectVersion, externalId, graph)
     }
@@ -81,7 +86,7 @@ class NpmCliDependencyFinder {
             String version = element.getAsJsonPrimitive(JSON_VERSION)?.getAsString()
             JsonObject children = element.getAsJsonObject(JSON_DEPENDENCIES)
 
-            def externalId = new NameVersionExternalId(Forge.NPM, name, version)
+            def externalId = externalIdFactory.createNameVersionExternalId(Forge.NPM, name, version)
             def child = new Dependency(name, version, externalId)
 
             populateChildren(graph, child, children, false)

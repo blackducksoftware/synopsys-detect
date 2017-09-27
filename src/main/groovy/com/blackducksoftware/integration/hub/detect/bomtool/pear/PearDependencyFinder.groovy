@@ -28,12 +28,12 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraph
-import com.blackducksoftware.integration.hub.bdio.simple.MutableDependencyGraph
-import com.blackducksoftware.integration.hub.bdio.simple.MutableMapDependencyGraph
-import com.blackducksoftware.integration.hub.bdio.simple.model.Dependency
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.Forge
+import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput
@@ -54,7 +54,11 @@ class PearDependencyFinder {
 
     @Autowired
     DetectConfiguration detectConfiguration
+    
+    @Autowired
+    ExternalIdFactory externalIdFactory
 
+    
     public DependencyGraph parsePearDependencyList(ExecutableOutput pearListing, ExecutableOutput pearDependencies) {
         DependencyGraph graph = new MutableMapDependencyGraph();
 
@@ -113,7 +117,7 @@ class PearDependencyFinder {
                 String packageVersion = dependencyInfo[1].trim()
 
                 if (dependencyInfo && dependencyNames.contains(packageName)) {
-                    def child = new Dependency(packageName, packageVersion, new NameVersionExternalId(Forge.PEAR, packageName, packageVersion))
+                    def child = new Dependency(packageName, packageVersion, externalIdFactory.createNameVersionExternalId(Forge.PEAR, packageName, packageVersion))
 
                     graph.addChildToRoot(child);
                 }

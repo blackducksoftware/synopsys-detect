@@ -21,13 +21,12 @@
  * under the License.
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.go
-
-import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraph
-import com.blackducksoftware.integration.hub.bdio.simple.MutableDependencyGraph
-import com.blackducksoftware.integration.hub.bdio.simple.MutableMapDependencyGraph
-import com.blackducksoftware.integration.hub.bdio.simple.model.Dependency
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.bomtool.GoDepBomTool
 import com.moandjiezana.toml.Toml
 
@@ -35,6 +34,11 @@ import groovy.transform.TypeChecked
 
 @TypeChecked
 class GopkgLockParser {
+    public ExternalIdFactory externalIdFactory;
+    public GopkgLockParser(ExternalIdFactory externalIdFactory){
+        this.externalIdFactory = externalIdFactory;
+    }
+
     public DependencyGraph parseDepLock(String depLockContents) {
         MutableDependencyGraph graph = new MutableMapDependencyGraph()
         GopkgLock gopkgLock = new Toml().read(depLockContents).to(GopkgLock.class)
@@ -55,7 +59,7 @@ class GopkgLockParser {
                 if (packageName.startsWith('golang.org/x/')) {
                     packageName = packageName.replaceAll('golang.org/x/', '')
                 }
-                final ExternalId dependencyExternalId = new NameVersionExternalId(GoDepBomTool.GOLANG, packageName, version)
+                final ExternalId dependencyExternalId = externalIdFactory.createNameVersionExternalId(GoDepBomTool.GOLANG, packageName, version)
                 final Dependency dependency = new Dependency(packageName, version, dependencyExternalId)
                 graph.addChildToRoot(dependency)
             }

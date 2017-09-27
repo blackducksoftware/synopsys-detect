@@ -100,9 +100,7 @@ class PipBomTool extends BomTool {
         String inpsectorScriptContents = getClass().getResourceAsStream("/${INSPECTOR_NAME}").getText(StandardCharsets.UTF_8.toString())
         def inspectorScript = detectFileManager.createFile(BomToolType.PIP, INSPECTOR_NAME)
         detectFileManager.writeToFile(inspectorScript, inpsectorScriptContents)
-        def pipInspectorOptions = [
-            inspectorScript.absolutePath
-        ]
+        def pipInspectorOptions = [inspectorScript.absolutePath]
 
         // Install requirements file and add it as an option for the inspector
         if (detectConfiguration.requirementsFilePath) {
@@ -114,10 +112,7 @@ class PipBomTool extends BomTool {
         if (setupFile) {
             def projectName = detectConfiguration.pipProjectName
             if (!projectName) {
-                def findProjectNameExecutable = new Executable(sourceDirectory, pythonPath, [
-                    setupFile.absolutePath,
-                    '--name'
-                ])
+                def findProjectNameExecutable = new Executable(sourceDirectory, pythonPath, [setupFile.absolutePath, '--name'])
                 String[] output = executableRunner.execute(findProjectNameExecutable).standardOutput.split(System.lineSeparator())
                 projectName = output[output.length - 1].replace('_', '-').trim()
             }

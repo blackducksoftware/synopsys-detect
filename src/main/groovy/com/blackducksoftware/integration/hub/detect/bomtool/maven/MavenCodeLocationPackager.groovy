@@ -29,11 +29,11 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.MutableDependencyGraph
-import com.blackducksoftware.integration.hub.bdio.simple.MutableMapDependencyGraph
-import com.blackducksoftware.integration.hub.bdio.simple.model.Dependency
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenExternalId
+import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter
@@ -53,6 +53,11 @@ class MavenCodeLocationPackager {
     private boolean parsingProjectSection
     private int level
     private MutableDependencyGraph currentGraph = null
+
+    public ExternalIdFactory externalIdFactory;
+    public MavenCodeLocationPackager(ExternalIdFactory externalIdFactory){
+        this.externalIdFactory = externalIdFactory;
+    }
 
     public List<DetectCodeLocation> extractCodeLocations(String sourcePath, String mavenOutputText, String excludedModules, String includedModules) {
         ExcludedIncludedFilter filter = new ExcludedIncludedFilter(excludedModules, includedModules)
@@ -178,7 +183,7 @@ class MavenCodeLocationPackager {
         String artifact = gavMatcher.group(2)
         String version = gavMatcher.group(4)
 
-        ExternalId externalId = new MavenExternalId(group, artifact, version)
+        ExternalId externalId = externalIdFactory.createMavenExternalId(group, artifact, version)
         return new Dependency(artifact, version, externalId)
     }
 }

@@ -23,7 +23,8 @@ package com.blackducksoftware.integration.hub.detect.bomtool.cran
 
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 
 import groovy.transform.TypeChecked
 
@@ -31,8 +32,14 @@ import groovy.transform.TypeChecked
 @TypeChecked
 public class PackratPackager {
 
+    public ExternalIdFactory externalIdFactory;
+    public PackratPackager(ExternalIdFactory externalIdFactory){
+        this.externalIdFactory = externalIdFactory;
+    }
+
+
     public DependencyGraph extractProjectDependencies(final String packratLock) {
-        def packRatNodeParser = new PackRatNodeParser()
+        def packRatNodeParser = new PackRatNodeParser(externalIdFactory)
         packRatNodeParser.parseProjectDependencies(packratLock)
     }
 

@@ -16,8 +16,7 @@ import java.nio.charset.StandardCharsets
 import org.apache.commons.io.IOUtils
 import org.junit.Assert
 import org.junit.Test
-
-import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.detect.bomtool.go.vndr.VndrParser
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphTestUtil
 import com.google.gson.Gson

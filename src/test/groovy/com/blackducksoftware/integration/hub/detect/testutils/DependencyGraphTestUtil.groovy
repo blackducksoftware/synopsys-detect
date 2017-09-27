@@ -1,8 +1,7 @@
 package com.blackducksoftware.integration.hub.detect.testutils
 
 import static org.junit.Assert.*
-
-import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.simple.graph.DependencyGraphSummarizer
 import com.blackducksoftware.integration.hub.bdio.simple.graph.GraphSummary
 import com.google.gson.Gson

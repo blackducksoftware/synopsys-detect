@@ -27,9 +27,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenExternalId
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.PathExternalId
+import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.SbtPackager
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtDependencyModule
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtProject

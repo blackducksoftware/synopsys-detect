@@ -26,9 +26,9 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraph
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.Forge
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
@@ -51,6 +51,10 @@ class PipInspectorTreeParser {
     public static final String UNKNOWN_PACKAGE_PREFIX = '--'
     public static final String INDENTATION = ' '.multiply(4)
 
+    public ExternalIdFactory externalIdFactory;
+    public PipInspectorTreeParser(ExternalIdFactory externalIdFactory){
+        this.externalIdFactory = externalIdFactory;
+    }
     DetectCodeLocation parse(NameVersionNodeTransformer nameVersionNodeTransformer, String sourcePath, String treeText) {
         def lines = treeText.trim().split("\\r?\\n").toList()
 
@@ -114,7 +118,7 @@ class PipInspectorTreeParser {
                 projectNode.version = ''
             }
             DependencyGraph graph = nameVersionNodeTransformer.createDependencyGraph(Forge.PYPI, projectNode, false)
-            def eid = new NameVersionExternalId(Forge.PYPI, projectNode.name, projectNode.version);
+            def eid = externalIdFactory.createNameVersionExternalId(Forge.PYPI, projectNode.name, projectNode.version);
             new DetectCodeLocation(BomToolType.PIP, sourcePath, projectNode.name, projectNode.version, eid, graph);
         }else{
             null

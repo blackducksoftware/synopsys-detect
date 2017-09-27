@@ -32,11 +32,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.builder.SpringApplicationBuilder
 import org.springframework.context.annotation.Bean
 
-import com.blackducksoftware.integration.hub.bdio.simple.BdioNodeFactory
-import com.blackducksoftware.integration.hub.bdio.simple.BdioPropertyHelper
-import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraphTransformer
-import com.blackducksoftware.integration.hub.bdio.simple.RecursiveDependencyGraphTransformer
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.bdio.BdioNodeFactory
+import com.blackducksoftware.integration.hub.bdio.BdioPropertyHelper
+import com.blackducksoftware.integration.hub.bdio.graph.transformer.DependencyGraphTransformer
+import com.blackducksoftware.integration.hub.bdio.graph.transformer.RecursiveDependencyGraphTransformer
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.detect.exception.DetectException
 import com.blackducksoftware.integration.hub.detect.help.HelpPrinter
 import com.blackducksoftware.integration.hub.detect.help.ValueDescriptionAnnotationFinder
@@ -144,7 +144,7 @@ class Application {
 
     @Bean
     Gson gson() {
-        new GsonBuilder().setPrettyPrinting().registerTypeAdapter(ExternalId.class, new ExternalIdTypeAdapter()).create()
+        new GsonBuilder().setPrettyPrinting().create()
     }
 
     @Bean

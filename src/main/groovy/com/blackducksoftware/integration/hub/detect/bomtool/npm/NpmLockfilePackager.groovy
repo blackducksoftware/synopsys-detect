@@ -25,10 +25,10 @@ package com.blackducksoftware.integration.hub.detect.bomtool.npm
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraph
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.Forge
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
@@ -49,6 +49,9 @@ class NpmLockfilePackager {
     @Autowired
     NameVersionNodeTransformer nameVersionNodeTransformer
 
+    @Autowired
+    ExternalIdFactory externalIdFactory
+
     public DetectCodeLocation parse(String sourcePath, String lockFileText) {
         NpmProject npmProject = gson.fromJson(lockFileText, NpmProject.class)
 
@@ -65,7 +68,7 @@ class NpmLockfilePackager {
             }
         }
 
-        ExternalId projectId = new NameVersionExternalId(Forge.NPM, npmProject.name, npmProject.version)
+        ExternalId projectId = externalIdFactory.createNameVersionExternalId(Forge.NPM, npmProject.name, npmProject.version)
         DependencyGraph graph = nameVersionNodeTransformer.createDependencyGraph(Forge.NPM, builder.build(), false)
         DetectCodeLocation codeLocation = new DetectCodeLocation(BomToolType.NPM, sourcePath, npmProject.name, npmProject.version, projectId, graph);
     }

@@ -25,11 +25,11 @@ package com.blackducksoftware.integration.hub.detect.bomtool.packagist
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.MutableDependencyGraph
-import com.blackducksoftware.integration.hub.bdio.simple.MutableMapDependencyGraph
-import com.blackducksoftware.integration.hub.bdio.simple.model.Dependency
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.Forge
+import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
@@ -44,6 +44,11 @@ import groovy.transform.TypeChecked
 class PackagistParser {
     @Autowired
     DetectConfiguration detectConfiguration
+
+    @Autowired
+    ExternalIdFactory externalIdFactory
+
+
 
     public DetectCodeLocation getDependencyGraphFromProject(String sourcePath, String composerJsonText, String composerLockText) {
         MutableDependencyGraph graph = new MutableMapDependencyGraph();
@@ -64,7 +69,7 @@ class PackagistParser {
         }
         convertFromJsonToDependency(graph, null, startingPackages, packagistPackages, true)
 
-        def eid = new NameVersionExternalId(Forge.PACKAGIST, projectName, projectVersion);
+        def eid = externalIdFactory.createNameVersionExternalId(Forge.PACKAGIST, projectName, projectVersion);
         new DetectCodeLocation(BomToolType.PACKAGIST, sourcePath,projectName, projectVersion, eid, graph)
     }
 
@@ -79,7 +84,7 @@ class PackagistParser {
             if (currentPackages.contains(currentRowPackageName)) {
                 String currentRowPackageVersion = it.getAt('version').toString().replace('"', '')
 
-                Dependency child = new Dependency(currentRowPackageName, currentRowPackageVersion, new NameVersionExternalId(Forge.PACKAGIST, currentRowPackageName, currentRowPackageVersion))
+                Dependency child = new Dependency(currentRowPackageName, currentRowPackageVersion, externalIdFactory.createNameVersionExternalId(Forge.PACKAGIST, currentRowPackageName, currentRowPackageVersion))
 
                 convertFromJsonToDependency(graph, child, getStartingPackages(it.getAsJsonObject(), false), jsonArray, false)
                 if (root){

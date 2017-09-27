@@ -28,7 +28,8 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
@@ -50,9 +51,12 @@ class DepPackager {
 
     @Autowired
     DetectConfiguration detectConfiguration
+ 
+    @Autowired
+    ExternalIdFactory externalIdFactory
 
     public DependencyGraph makeDependencyGraph(final String sourcePath, String goDepExecutable) {
-        GopkgLockParser gopkgLockParser = new GopkgLockParser()
+        GopkgLockParser gopkgLockParser = new GopkgLockParser(externalIdFactory)
         String goDepContents = getGopkgLockContents(new File(sourcePath), goDepExecutable)
         if (goDepContents?.trim()) {
             return gopkgLockParser.parseDepLock(goDepContents)

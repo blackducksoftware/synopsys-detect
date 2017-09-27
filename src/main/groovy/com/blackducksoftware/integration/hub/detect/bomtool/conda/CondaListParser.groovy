@@ -27,13 +27,13 @@ import java.lang.reflect.Type
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.DependencyGraph
-import com.blackducksoftware.integration.hub.bdio.simple.MutableDependencyGraph
-import com.blackducksoftware.integration.hub.bdio.simple.MutableMapDependencyGraph
-import com.blackducksoftware.integration.hub.bdio.simple.model.Dependency
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.Forge
+import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -44,6 +44,9 @@ import groovy.transform.TypeChecked
 class CondaListParser {
     @Autowired
     Gson gson
+
+    @Autowired
+    ExternalIdFactory externalIdFactory
 
     DependencyGraph parse(String listJsonText, String infoJsonText) {
         final Type listType = new TypeToken<ArrayList<CondaListElement>>() {}.getType()
@@ -63,7 +66,7 @@ class CondaListParser {
     Dependency condaListElementToDependency(String platform, CondaListElement element) {
         String name = element.name
         String version = "${element.version}-${element.buildString}-${platform}"
-        ExternalId externalId = new NameVersionExternalId(Forge.ANACONDA, name, version)
+        ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.ANACONDA, name, version)
 
         new Dependency(name, version, externalId)
     }

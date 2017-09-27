@@ -22,7 +22,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.sbt.models
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 
 import groovy.transform.TypeChecked
