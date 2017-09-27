@@ -59,7 +59,6 @@ abstract class BomTool {
     /**
      * A BomTool is responsible for doing its best to create at least one, but possibly many, DetectCodeLocations.
      */
-    //    abstract List<DetectCodeLocation> extractDetectCodeLocations()
     List<DetectCodeLocation> extractDetectCodeLocations() {
         []
     }
