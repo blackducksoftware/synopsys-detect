@@ -81,7 +81,7 @@ class PearDependencyFinder {
                 String dependencyRequired = dependencyInfo[0].trim()
 
                 if (dependencyName) {
-                    if (detectConfiguration.getPearNotRequiredDependencies()) {
+                    if (!detectConfiguration.getPearOnlyRequiredDependencies()) {
                         nameList.add(dependencyName.split('/')[-1])
                     } else {
                         if (BooleanUtils.toBoolean(dependencyRequired)) {

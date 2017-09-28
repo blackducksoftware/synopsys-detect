@@ -25,7 +25,7 @@ class PearDependencyTest {
     @Test
     public void findDependencyNamesTest() {
         DetectProperties detectProperties = new DetectProperties()
-        detectProperties.pearNotRequiredDependencies = false
+        detectProperties.pearOnlyRequiredDependencies = true
         DetectConfiguration detectConfiguration = new DetectConfiguration()
         detectConfiguration.detectProperties = detectProperties
         pearDependencyFinder.detectConfiguration = detectConfiguration

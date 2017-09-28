@@ -28,11 +28,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.api.bom.BomImportRequestService
-import com.blackducksoftware.integration.hub.buildtool.BuildToolConstants
 import com.blackducksoftware.integration.hub.dataservice.phonehome.PhoneHomeDataService
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.global.HubServerConfig
 import com.blackducksoftware.integration.phonehome.PhoneHomeRequestBody
+import com.blackducksoftware.integration.phonehome.enums.ThirdPartyName
 
 import groovy.transform.TypeChecked
 
@@ -47,14 +47,14 @@ class BdioUploader {
     void uploadBdioFiles(HubServerConfig hubServerConfig, BomImportRequestService bomImportRequestService, PhoneHomeDataService phoneHomeDataService, List<File> createdBdioFiles) {
         createdBdioFiles.each { file ->
             logger.info("uploading ${file.name} to ${detectConfiguration.getHubUrl()}")
-            bomImportRequestService.importBomFile(file, BuildToolConstants.BDIO_FILE_MEDIA_TYPE)
+            bomImportRequestService.importBomFile(file)
             if (detectConfiguration.getCleanupBdioFiles()) {
                 file.delete()
             }
         }
 
         String hubDetectVersion = detectConfiguration.getBuildInfo().getDetectVersion()
-        PhoneHomeRequestBody phoneHomeRequestBody = phoneHomeDataService.buildPhoneHomeRequestBody('Hub-Detect', hubDetectVersion, hubDetectVersion)
+        PhoneHomeRequestBody phoneHomeRequestBody = phoneHomeDataService.createInitialPhoneHomeRequestBodyBuilder(ThirdPartyName.DETECT, hubDetectVersion, hubDetectVersion).buildObject()
         phoneHomeDataService.phoneHome(phoneHomeRequestBody)
     }
 }
