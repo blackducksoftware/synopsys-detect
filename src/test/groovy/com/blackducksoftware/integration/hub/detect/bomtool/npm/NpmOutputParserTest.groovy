@@ -3,6 +3,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool.npm
 import org.junit.Test
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 
 public class NpmOutputParserTest {
@@ -11,6 +12,7 @@ public class NpmOutputParserTest {
     @Test
     public void npmCliDependencyFinder() throws IOException {
         def parser = new NpmCliDependencyFinder()
+        parser.externalIdFactory = new ExternalIdFactory()
         String testIn = testUtil.getResourceAsUTF8String('/npm/packman_proj_dependencies.json')
         DependencyNode node = parser.convertNpmJsonFileToDependencyNode(testIn)
 

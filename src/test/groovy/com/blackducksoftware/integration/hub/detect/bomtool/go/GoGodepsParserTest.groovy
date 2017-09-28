@@ -30,6 +30,7 @@ public class GoGodepsParserTest {
     @Test
     public void goDepParserTest() throws IOException {
         final GoGodepsParser goDepParser = new GoGodepsParser(gson)
+        goDepParser.externalIdFactory = new ExternalIdFactory()
         final String goDepOutput = IOUtils.toString(getClass().getResourceAsStream("/go/Go_Godeps.json"), StandardCharsets.UTF_8)
         final List<DependencyNode> projectDependencies = goDepParser.extractProjectDependencies(goDepOutput)
         final String actual = gson.toJson(projectDependencies)

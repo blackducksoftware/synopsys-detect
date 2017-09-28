@@ -10,6 +10,7 @@ import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeTransform
 import com.blackducksoftware.integration.hub.bdio.simple.model.BdioComponent
 import com.blackducksoftware.integration.hub.bdio.simple.model.BdioProject
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.google.gson.Gson
@@ -37,9 +38,12 @@ public class NugetInspectorPackagerTest {
         def dependencyNodeFile = new File(getClass().getResource("/nuget/dwCheckApi_inspection_martin.json").getFile())
         def expectedOutputFile = new File(getClass().getResource("/nuget/LDService_Output.json").getFile())
         //createCodeLocation(dependencyNodeFile, expectedOutputFile)
+        NameVersionNodeTransformer nameVersionNodeTransformer = new NameVersionNodeTransformer()
+        nameVersionNodeTransformer.externalIdFactory = new ExternalIdFactory()
         def packager = new NugetInspectorPackager()
         packager.gson = new Gson()
-        packager.nameVersionNodeTransformer = new NameVersionNodeTransformer()
+        packager.nameVersionNodeTransformer = nameVersionNodeTransformer
+        packager.externalIdFactory = nameVersionNodeTransformer.externalIdFactory
         List<DetectCodeLocation> codeLocations = packager.createDetectCodeLocation(dependencyNodeFile)
 
         for (DetectCodeLocation codeLocation : codeLocations){
@@ -57,10 +61,13 @@ public class NugetInspectorPackagerTest {
     }
 
     private void createCodeLocation(File dependencyNodeFile, File expectedOutputFile) throws IOException {
+        NameVersionNodeTransformer nameVersionNodeTransformer = new NameVersionNodeTransformer()
+        nameVersionNodeTransformer.externalIdFactory = new ExternalIdFactory()
         def packager = new NugetInspectorPackager()
 
         packager.gson = new Gson()
-        packager.nameVersionNodeTransformer = new NameVersionNodeTransformer()
+        packager.nameVersionNodeTransformer = nameVersionNodeTransformer
+        packager.externalIdFactory = nameVersionNodeTransformer.externalIdFactory
 
         List<DetectCodeLocation> codeLocation = packager.createDetectCodeLocation(dependencyNodeFile)
         String actual = gson.toJson(codeLocation)

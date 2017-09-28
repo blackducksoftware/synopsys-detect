@@ -4,6 +4,7 @@ import org.junit.Before
 import org.junit.Test
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 import com.google.gson.GsonBuilder
@@ -15,9 +16,13 @@ class NpmLockfilePackagerTest {
     @Before
     public void init() {
         testUtil = new TestUtil()
+
+        NameVersionNodeTransformer nameVersionNodeTransformer = new NameVersionNodeTransformer()
+        nameVersionNodeTransformer.externalIdFactory = new ExternalIdFactory()
+
         npmLockfilePackager = new NpmLockfilePackager()
         npmLockfilePackager.gson = new GsonBuilder().setPrettyPrinting().create()
-        npmLockfilePackager.nameVersionNodeTransformer = new NameVersionNodeTransformer()
+        npmLockfilePackager.nameVersionNodeTransformer = nameVersionNodeTransformer
     }
 
     @Test

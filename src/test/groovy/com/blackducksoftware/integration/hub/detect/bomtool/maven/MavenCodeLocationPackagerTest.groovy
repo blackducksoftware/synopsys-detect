@@ -4,6 +4,7 @@ import static org.junit.Assert.*
 
 import org.junit.Test
 
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 
@@ -46,6 +47,7 @@ class MavenCodeLocationPackagerTest {
 
     private void createNewCodeLocationTest(String mavenOutputText, String expectedResourcePath, int numberOfCodeLocations, String excludedModules, String includedModules) {
         def mavenCodeLocationPackager = new MavenCodeLocationPackager()
+        mavenCodeLocationPackager.externalIdFactory = new ExternalIdFactory()
         List<DetectCodeLocation> codeLocations = mavenCodeLocationPackager.extractCodeLocations('/test/path', mavenOutputText, excludedModules, includedModules)
         assertEquals(numberOfCodeLocations, codeLocations.size())
         DetectCodeLocation codeLocation = codeLocations[0]

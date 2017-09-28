@@ -17,6 +17,7 @@ import org.junit.Before
 import org.junit.Test
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
@@ -30,7 +31,9 @@ class YarnPackagerTest {
 
     @Before
     public void init() {
-        yarnPackager.nameVersionNodeTransformer = new NameVersionNodeTransformer()
+        NameVersionNodeTransformer nameVersionNodeTransformer = new NameVersionNodeTransformer()
+        nameVersionNodeTransformer.externalIdFactory = new ExternalIdFactory()
+        yarnPackager.nameVersionNodeTransformer = nameVersionNodeTransformer
     }
 
     @Test

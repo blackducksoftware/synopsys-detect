@@ -123,7 +123,7 @@ class HubServiceWrapper {
     }
 
     ScanStatusDataService createScanStatusDataService() {
-        hubServicesFactory.createScanStatusDataService(detectConfiguration.getPolicyCheckTimeout())
+        hubServicesFactory.createScanStatusDataService(detectConfiguration.getApiTimeout())
     }
 
     PolicyStatusDataService createPolicyStatusDataService() {
@@ -131,7 +131,7 @@ class HubServiceWrapper {
     }
 
     RiskReportDataService createRiskReportDataService() {
-        hubServicesFactory.createRiskReportDataService(detectConfiguration.getPolicyCheckTimeout())
+        hubServicesFactory.createRiskReportDataService(detectConfiguration.getApiTimeout())
     }
 
     CLIDataService createCliDataService() {
@@ -155,8 +155,7 @@ class HubServiceWrapper {
         hubServerConfigBuilder.setProxyPort(detectConfiguration.getHubProxyPort())
         hubServerConfigBuilder.setProxyUsername(detectConfiguration.getHubProxyUsername())
         hubServerConfigBuilder.setProxyPassword(detectConfiguration.getHubProxyPassword())
-
-        hubServerConfigBuilder.setAutoImportHttpsCertificates(detectConfiguration.getHubAutoImportCertificate())
+        hubServerConfigBuilder.setAlwaysTrustServerCertificate(detectConfiguration.getHubTrustCertificate())
         hubServerConfigBuilder.setLogger(slf4jIntLogger)
 
         hubServerConfigBuilder.build()

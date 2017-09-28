@@ -99,6 +99,7 @@ class NugetInspectorPackager {
             projectVersionName = nugetContainer.version
             def codeLocations = nugetContainer.children.collect { container ->
                 def builder = new NugetDependencyNodeBuilder()
+                builder.externalIdFactory = externalIdFactory
                 builder.addPackageSets(container.packages)
                 def children = builder.createDependencyNodes(container.dependencies)
                 def sourcePath = container.sourcePath
@@ -114,6 +115,7 @@ class NugetInspectorPackager {
             projectVersionName = nugetContainer.version
             String sourcePath = nugetContainer.sourcePath
             def builder = new NugetDependencyNodeBuilder()
+            builder.externalIdFactory = externalIdFactory
             builder.addPackageSets(nugetContainer.packages)
             def children = builder.createDependencyNodes(nugetContainer.dependencies)
 

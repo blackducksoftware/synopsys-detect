@@ -17,6 +17,7 @@ import org.junit.Before
 import org.junit.Test
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 
@@ -30,7 +31,9 @@ class CpanPackagerTest {
     @Before
     public void init() {
         cpanPackager.cpanListParser = new CpanListParser()
-        cpanPackager.nameVersionNodeTransformer = new NameVersionNodeTransformer()
+        NameVersionNodeTransformer nameVersionNodeTransformer = new NameVersionNodeTransformer()
+        nameVersionNodeTransformer.externalIdFactory = new ExternalIdFactory()
+        cpanPackager.nameVersionNodeTransformer = nameVersionNodeTransformer
     }
 
     @Test

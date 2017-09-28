@@ -17,6 +17,7 @@ import org.junit.Before
 import org.junit.Test
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 import com.google.gson.GsonBuilder
 
@@ -27,6 +28,7 @@ class CondaListParserTest {
     @Before
     public void init() {
         condaListParser.gson = new GsonBuilder().setPrettyPrinting().create()
+        condaListParser.externalIdFactory = new ExternalIdFactory()
     }
 
     @Test

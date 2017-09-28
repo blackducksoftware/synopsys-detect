@@ -12,20 +12,29 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.pear
 
 import org.junit.Assert
+import org.junit.Before
 import org.junit.Test
 
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.DetectProperties
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 
 class PearDependencyTest {
-    private PearDependencyFinder pearDependencyFinder = new PearDependencyFinder()
-    private TestUtil testUtil = new TestUtil()
+    private PearDependencyFinder pearDependencyFinder
+    private TestUtil testUtil
+
+    @Before
+    public void init() {
+        pearDependencyFinder = new PearDependencyFinder()
+        pearDependencyFinder.externalIdFactory = new ExternalIdFactory()
+        testUtil = new TestUtil()
+    }
 
     @Test
     public void findDependencyNamesTest() {
         DetectProperties detectProperties = new DetectProperties()
-        detectProperties.pearNotRequiredDependencies = false
+        detectProperties.pearOnlyRequiredDependencies = true
         DetectConfiguration detectConfiguration = new DetectConfiguration()
         detectConfiguration.detectProperties = detectProperties
         pearDependencyFinder.detectConfiguration = detectConfiguration
@@ -59,6 +68,6 @@ class PearDependencyTest {
         def actual = pearDependencyFinder.createPearDependencyNodeFromList(installedPackages, dependencyNames)
         def expected = testUtil.getResourceAsUTF8String('/pear/dependency-node-list.txt')
 
-        Assert.assertTrue(actual.toString().equals(expected))
+        testUtil.testJson(expected, actual.toString())
     }
 }

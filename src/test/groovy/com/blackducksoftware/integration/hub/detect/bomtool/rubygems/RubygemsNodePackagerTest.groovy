@@ -20,6 +20,7 @@ import org.junit.Test
 import org.skyscreamer.jsonassert.JSONAssert
 
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -30,6 +31,7 @@ class RubygemsNodePackagerTest {
     @Test
     public void packagerTest() throws JSONException, IOException, URISyntaxException {
         final NameVersionNodeTransformer nameVersionNodeTransformer = new NameVersionNodeTransformer()
+        nameVersionNodeTransformer.externalIdFactory = new ExternalIdFactory()
         final String sourcePath = "/rubygems/"
         final String expected = IOUtils.toString(getClass().getResourceAsStream("/rubygems/expectedPackager.json"),
                 StandardCharsets.UTF_8)
