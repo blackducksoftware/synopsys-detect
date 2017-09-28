@@ -55,19 +55,19 @@ class GemlockNodeParser {
         List<DependencyNode> projectDependencies = []
         String[] lines = gemfileLockContents.split('\n')
         lines.each{
-            String line = ((String) it).trim()
+            String line = it
             if (!line.trim()) {
                 inSpecsSection = false
                 inDependenciesSection = false
                 return
             }
 
-            if (!inSpecsSection && '  specs:' == line) {
+            if (!inSpecsSection && 'specs:'.equals(line.trim())) {
                 inSpecsSection = true
                 return
             }
 
-            if (!inDependenciesSection && 'DEPENDENCIES' == line) {
+            if (!inDependenciesSection && 'DEPENDENCIES'.equals(line.trim())) {
                 inDependenciesSection = true
                 return
             }
