@@ -22,8 +22,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.nuget
 
-import org.springframework.beans.factory.annotation.Autowired
-
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalIdFactory
@@ -38,10 +36,10 @@ public class NugetDependencyNodeBuilder {
     final List<NugetPackageSet> packageSets = new ArrayList<NugetPackageSet>()
     final Map<NugetPackageId, DependencyNode> nodeMap = new HashMap<>()
 
-    @Autowired
     ExternalIdFactory externalIdFactory
 
-    public NugetDependencyNodeBuilder() {
+    public NugetDependencyNodeBuilder(ExternalIdFactory externalIdFactory) {
+        this.externalIdFactory = externalIdFactory
     }
 
     public void addPackageSets(List<NugetPackageSet> sets) {
