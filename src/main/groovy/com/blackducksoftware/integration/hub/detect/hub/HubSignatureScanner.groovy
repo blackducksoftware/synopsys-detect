@@ -37,7 +37,6 @@ import com.blackducksoftware.integration.hub.detect.summary.Result
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.global.HubServerConfig
 import com.blackducksoftware.integration.hub.model.request.ProjectRequest
-import com.blackducksoftware.integration.hub.model.view.CodeLocationView
 import com.blackducksoftware.integration.hub.model.view.ProjectVersionView
 import com.blackducksoftware.integration.hub.request.builder.ProjectRequestBuilder
 import com.blackducksoftware.integration.hub.scan.HubScanConfig
@@ -63,9 +62,6 @@ class HubSignatureScanner {
 
     @Autowired
     DetectSummary detectSummary
-
-    @Autowired
-    HubServiceWrapper hubServiceWrapper
 
     private Set<String> registeredPaths = []
     private Set<String> registeredPathsToExclude = []
@@ -196,10 +192,7 @@ class HubSignatureScanner {
         String sourcePath = canonicalPath.replace(detectConfiguration.sourcePath, detectFileManager.extractFinalPieceFromPath(detectConfiguration.sourcePath));
         String codeLocationName = detectProject.getCodeLocationName(sourcePath, null, CodeLocationType.SCAN, detectConfiguration.getProjectCodeLocationPrefix(), detectConfiguration.getProjectCodeLocationSuffix())
         String oldCodeLocationName = detectProject.getScanCodeLocationName(detectConfiguration.sourcePath, canonicalPath, detectFileManager.extractFinalPieceFromPath(detectConfiguration.sourcePath), detectConfiguration.getProjectCodeLocationPrefix())
-        CodeLocationView codeLocationView = hubServiceWrapper.createCodeLocationRequestService().getCodeLocationByName(oldCodeLocationName)
-        if (codeLocationView) {
-            logger.warn("Found same code location with old naming pattern: ${oldCodeLocationName}. You may remove old code location if desired")
-        }
+        detectProject.logOldCodeLocationNameExists(oldCodeLocationName, "Found same code location with old naming pattern: ${oldCodeLocationName}. You may remove old code location if desired")
         hubScanConfigBuilder.codeLocationAlias = codeLocationName
 
         if (detectConfiguration.hubSignatureScannerExclusionPatterns) {
