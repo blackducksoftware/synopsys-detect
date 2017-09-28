@@ -42,7 +42,6 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.BdioProject
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.SimpleBdioDocument
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
-import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.CodeLocationType
@@ -89,9 +88,6 @@ class DetectProjectManager {
 
     @Autowired
     DetectSummary detectSummary
-
-    @Autowired
-    HubServiceWrapper hubServiceWrapper
 
     private boolean foundAnyBomTools
 
