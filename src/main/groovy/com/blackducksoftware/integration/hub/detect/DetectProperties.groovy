@@ -70,6 +70,10 @@ class DetectProperties {
     @Value('${detect.test.connection}')
     Boolean testConnection
 
+    @ValueDescription(description="Timeout for response from the hub regarding your project (i.e. risk reports and policy check). When changing this value, keep in mind the checking of policies might have to wait for a new scan to process which can take some time.", defaultValue="300000", group=DetectProperties.GROUP_PROJECT_INFO)
+    @Value('${detect.api.timeout}')
+    Long apiTimeout
+
     @ValueDescription(description="URL of the Hub server", group=DetectProperties.GROUP_HUB_CONFIGURATION)
     @Value('${blackduck.hub.url}')
     String hubUrl
@@ -102,9 +106,9 @@ class DetectProperties {
     @Value('${blackduck.hub.proxy.password}')
     String hubProxyPassword
 
-    @ValueDescription(description="If true the Hub https certificate will be automatically imported", defaultValue="false", group=DetectProperties.GROUP_HUB_CONFIGURATION)
-    @Value('${blackduck.hub.auto.import.cert}')
-    Boolean hubAutoImportCertificate
+    @ValueDescription(description="If true, automatically trust the certificate for the current run of Detect only", defaultValue="false", group=DetectProperties.GROUP_HUB_CONFIGURATION)
+    @Value('${blackduck.hub.trust.cert}')
+    Boolean hubTrustCertificate
 
     @ValueDescription(description="This can disable any Hub communication - if true, Detect will not upload BDIO files, it will not check policies, and it will not download and install the signature scanner.", defaultValue="false", group=DetectProperties.GROUP_HUB_CONFIGURATION)
     @Value('${blackduck.hub.offline.mode}')
@@ -157,10 +161,6 @@ class DetectProperties {
     @ValueDescription(description = "Set to true if you would like a policy check from the hub for your project. False by default", defaultValue="false", group=DetectProperties.GROUP_POLICY_CHECK)
     @Value('${detect.policy.check}')
     Boolean policyCheck
-
-    @ValueDescription(description="Timeout for response from the hub regarding your project (i.e. risk reports and policy check). When changing this value, keep in mind the checking of policies might have to wait for a new scan to process which can take some time.", defaultValue="300000", group=DetectProperties.GROUP_POLICY_CHECK)
-    @Value('${detect.policy.check.timeout}')
-    Long policyCheckTimeout
 
     @ValueDescription(description="Version of the Gradle Inspector", defaultValue="0.3.0", group=DetectProperties.GROUP_GRADLE)
     @Value('${detect.gradle.inspector.version}')
@@ -238,17 +238,13 @@ class DetectProperties {
     @Value('${detect.pip.project.name}')
     String pipProjectName
 
-    @ValueDescription(description="If true will use pip3 if available on class path", defaultValue="false", group=DetectProperties.GROUP_PIP)
-    @Value('${detect.pip.pip3}')
-    Boolean pipThreeOverride
+    @ValueDescription(description="If true will use Python 3 if available on class path", defaultValue="false", group=DetectProperties.GROUP_PYTHON)
+    @Value('${detect.python.python3}')
+    Boolean pythonThreeOverride
 
     @ValueDescription(description="The path of the Python executable", group=DetectProperties.GROUP_PYTHON)
     @Value('${detect.python.path}')
     String pythonPath
-
-    @ValueDescription(description="The path of the Pip executable", group=DetectProperties.GROUP_PIP)
-    @Value('${detect.pip.path}')
-    String pipPath
 
     @ValueDescription(description="The path of the Npm executable", group=DetectProperties.GROUP_NPM)
     @Value('${detect.npm.path}')
@@ -266,13 +262,9 @@ class DetectProperties {
     @Value('${detect.pear.path}')
     String pearPath
 
-    @ValueDescription(description="Set to true if you would like to include the not required packages", defaultValue='false', group=DetectProperties.GROUP_PEAR)
-    @Value('${detect.pear.not.required.dependencies}')
-    Boolean pearNotRequiredDependencies
-
-    @ValueDescription(description="The path to a user's virtual environment", group=DetectProperties.GROUP_PIP)
-    @Value('${detect.pip.virtualEnv.path}')
-    String virtualEnvPath
+    @ValueDescription(description="Set to true if you would like to include only required packages", defaultValue='false', group=DetectProperties.GROUP_PEAR)
+    @Value('${detect.pear.only.required.deps}')
+    Boolean pearOnlyRequiredDependencies
 
     @ValueDescription(description="The path of the requirements.txt file", group=DetectProperties.GROUP_PIP)
     @Value('${detect.pip.requirements.path}')

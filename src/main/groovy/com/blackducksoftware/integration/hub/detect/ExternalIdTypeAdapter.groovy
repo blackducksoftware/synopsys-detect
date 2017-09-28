@@ -31,8 +31,6 @@ import com.blackducksoftware.integration.hub.detect.bomtool.CpanBomTool
 import com.blackducksoftware.integration.hub.detect.bomtool.CranBomTool
 import com.blackducksoftware.integration.hub.detect.bomtool.DockerBomTool
 import com.blackducksoftware.integration.hub.detect.bomtool.GoDepBomTool
-import com.blackducksoftware.integration.hub.detect.bomtool.PearBomTool
-import com.blackducksoftware.integration.hub.detect.bomtool.packagist.PackagistParser
 import com.google.gson.Gson
 import com.google.gson.TypeAdapter
 import com.google.gson.stream.JsonReader
