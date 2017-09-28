@@ -24,10 +24,12 @@ package com.blackducksoftware.integration.hub.detect.bomtool
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.bomtool.go.vndr.VndrParser
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
@@ -40,6 +42,10 @@ class GoVndrBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(GoVndrBomTool.class)
 
     public static final String VNDR_CONF_FILENAME= 'vendor.conf'
+
+
+    @Autowired
+    ExternalIdFactory externalIdFactory
 
     @Override
     public BomToolType getBomToolType() {
@@ -54,10 +60,10 @@ class GoVndrBomTool extends BomTool {
     List<DetectCodeLocation> extractDetectCodeLocations() {
         File sourceDirectory = detectConfiguration.sourceDirectory
 
-        VndrParser vndrParser = new VndrParser()
+        VndrParser vndrParser = new VndrParser(externalIdFactory)
         def vendorConf = new File(sourcePath, VNDR_CONF_FILENAME)
         DependencyGraph dependencyGraph = vndrParser.parseVendorConf(vendorConf.text)
-        ExternalId externalId = new PathExternalId(GoDepBomTool.GOLANG, sourcePath)
+        ExternalId externalId = externalIdFactory.createPathExternalId(GoDepBomTool.GOLANG, sourcePath)
 
         def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, externalId, dependencyGraph)
         [codeLocation]

@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.model.Forge
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.SbtPackager
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtDependencyModule
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtProject
@@ -49,10 +50,11 @@ class SbtBomTool extends BomTool {
     static final String REPORT_FILE_PATTERN = '*.xml'
     static final String PROJECT_FOLDER = 'project'
 
-    SbtPackager sbtPackager = new SbtPackager()
-
     @Autowired
     HubSignatureScanner hubSignatureScanner
+
+    @Autowired
+    ExternalIdFactory externalIdFactory
 
     BomToolType getBomToolType() {
         return BomToolType.SBT
@@ -105,12 +107,12 @@ class SbtBomTool extends BomTool {
         if (modules.size() == 1) {
             result.projectName = modules[0].name
             result.projectVersion = modules[0].version
-            result.projectExternalId = new MavenExternalId(modules[0].org, modules[0].name, modules[0].version)
+            result.projectExternalId = externalIdFactory.createMavenExternalId(modules[0].org, modules[0].name, modules[0].version)
         } else {
             logger.warn("Found more than one root project, using source path for project name.")
             result.projectName = detectFileManager.extractFinalPieceFromPath(sourcePath)
             result.projectVersion = findFirstModuleVersion(modules, result.projectName, "root")
-            result.projectExternalId = new PathExternalId(Forge.MAVEN, sourcePath)
+            result.projectExternalId = externalIdFactory.createPathExternalId(Forge.MAVEN, sourcePath)
 
             if (result.projectVersion == null && modules.size() > 1) {
                 logger.warn("Getting version from first project: " + modules[0].name)
@@ -198,6 +200,7 @@ class SbtBomTool extends BomTool {
             if (reportFiles == null || reportFiles.size() <= 0) {
                 logger.debug("No reports were found in: ${reportPath}")
             } else {
+                SbtPackager sbtPackager = new SbtPackager(externalIdFactory);
                 List<SbtDependencyModule> aggregatedModules = sbtPackager.makeModuleAggregate(reportFiles, included, excluded)
 
                 if (aggregatedModules == null) {

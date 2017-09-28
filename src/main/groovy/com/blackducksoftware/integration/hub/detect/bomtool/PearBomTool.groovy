@@ -22,13 +22,18 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.Forge
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.bomtool.pear.PearDependencyFinder
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
+import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput
 
 import groovy.transform.TypeChecked
@@ -44,6 +49,9 @@ class PearBomTool extends BomTool {
 
     @Autowired
     PearDependencyFinder pearDependencyFinder
+
+    @Autowired
+    ExternalIdFactory externalIdFactory
 
     @Override
     public BomToolType getBomToolType() {
@@ -81,7 +89,7 @@ class PearBomTool extends BomTool {
                 sourcePath,
                 rootName,
                 rootVersion,
-                new NameVersionExternalId(Forge.PEAR, rootName, rootVersion),
+                externalIdFactory.createNameVersionExternalId(Forge.PEAR, rootName, rootVersion),
                 dependencyGraph
                 )
 

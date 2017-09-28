@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.PipInspectorTreeParser
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.PythonEnvironment
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.PythonEnvironmentHandler
@@ -52,6 +52,9 @@ class PipBomTool extends BomTool {
 
     @Autowired
     PythonEnvironmentHandler virtualEnvironmentHandler
+
+    @Autowired
+    ExternalIdFactory externalIdFactory
 
     BomToolType getBomToolType() {
         BomToolType.PIP
@@ -82,17 +85,16 @@ class PipBomTool extends BomTool {
         def sourcePath = sourcePath
 
         PythonEnvironment pythonEnvironment = virtualEnvironmentHandler.getEnvironment(detectConfiguration.virtualEnvPath)
-        DependencyNode projectNode = makeDependencyNode(pythonEnvironment)
         def codeLocations = []
-        if (projectNode && !(projectNode.name.equals('') && projectNode.version.equals('') && projectNode.children.empty)) {
-            def codeLocation = new DetectCodeLocation(BomToolType.PIP, sourcePath, projectNode)
-            codeLocations.add(codeLocation)
+        DetectCodeLocation codeLocation = makeCodeLocation(pythonEnvironment)
+        if (codeLocation != null){
+            codeLocations.add(codeLocation);
         }
 
         codeLocations
     }
 
-    DependencyNode makeDependencyNode(PythonEnvironment pythonEnvironment) {
+    DetectCodeLocation makeCodeLocation(PythonEnvironment pythonEnvironment) {
         String pipPath = pythonEnvironment.pipPath
         String pythonPath = pythonEnvironment.pythonPath
         def setupFile = detectFileManager.findFile(sourceDirectory, 'setup.py')
@@ -122,6 +124,6 @@ class PipBomTool extends BomTool {
         def pipInspector = new Executable(sourceDirectory, pythonPath, pipInspectorOptions)
         def inspectorOutput = executableRunner.execute(pipInspector).standardOutput
 
-        pipInspectorTreeParser.parse(nameVersionNodeTransformer, inspectorOutput)
+        pipInspectorTreeParser.parse(nameVersionNodeTransformer, sourcePath, inspectorOutput)
     }
 }

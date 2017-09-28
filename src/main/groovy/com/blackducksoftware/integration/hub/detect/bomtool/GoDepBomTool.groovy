@@ -22,14 +22,21 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool
 
+import org.apache.commons.lang3.StringUtils
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.bomtool.go.DepPackager
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
+import com.blackducksoftware.integration.hub.detect.type.ExecutableType
+import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 
 import groovy.transform.TypeChecked
 
@@ -52,6 +59,9 @@ class GoDepBomTool extends BomTool {
 
     @Autowired
     DepPackager goPackager
+
+    @Autowired
+    ExternalIdFactory externalIdFactory
 
     @Override
     public BomToolType getBomToolType() {
@@ -89,7 +99,7 @@ class GoDepBomTool extends BomTool {
         String goDepExecutable = findGoDepExecutable()
 
         DependencyGraph graph = goPackager.makeDependencyGraph(sourcePath, goDepExecutable)
-        ExternalId externalId = new PathExternalId(GOLANG, sourcePath)
+        ExternalId externalId = externalIdFactory.createPathExternalId(GOLANG, sourcePath)
         DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, externalId, graph)
 
         [detectCodeLocation]

@@ -92,7 +92,7 @@ class HubServiceWrapper {
 
     ProjectRequestService createProjectRequestService() {
         hubServicesFactory.createProjectRequestService(slf4jIntLogger)
-    } 
+    }
 
     ProjectVersionRequestService createProjectVersionRequestService() {
         hubServicesFactory.createProjectVersionRequestService(slf4jIntLogger)

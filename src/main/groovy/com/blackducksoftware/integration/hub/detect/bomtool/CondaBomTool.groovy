@@ -22,14 +22,20 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.bomtool.conda.CondaListParser
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
+import com.blackducksoftware.integration.hub.detect.type.ExecutableType
+import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput
 
 import groovy.transform.TypeChecked
@@ -41,6 +47,10 @@ class CondaBomTool extends BomTool {
 
     @Autowired
     CondaListParser condaListParser
+
+    @Autowired
+    ExternalIdFactory externalIdFactory
+
 
     private String condaExecutablePath
 
@@ -77,7 +87,7 @@ class CondaBomTool extends BomTool {
         String infoJsonText = condaInfoOutput.getStandardOutput()
 
         DependencyGraph dependencyGraph = condaListParser.parse(listJsonText, infoJsonText)
-        ExternalId externalId = new PathExternalId(Forge.ANACONDA, detectConfiguration.sourcePath)
+        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.ANACONDA, detectConfiguration.sourcePath)
         def detectCodeLocation = new DetectCodeLocation(BomToolType.CONDA, detectConfiguration.sourcePath, externalId, dependencyGraph)
 
         [detectCodeLocation]
