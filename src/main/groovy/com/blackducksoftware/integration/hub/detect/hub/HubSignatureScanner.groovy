@@ -190,9 +190,9 @@ class HubSignatureScanner {
         hubScanConfigBuilder.dryRun = detectConfiguration.hubSignatureScannerDryRun
 
         String sourcePath = canonicalPath.replace(detectConfiguration.sourcePath, detectFileManager.extractFinalPieceFromPath(detectConfiguration.sourcePath));
-        String codeLocationName = detectProject.getCodeLocationName(sourcePath, null, CodeLocationType.SCAN, detectConfiguration.getProjectCodeLocationPrefix(), detectConfiguration.getProjectCodeLocationSuffix())
+        String codeLocationName = detectProject.getScanCodeLocationName(sourcePath, detectConfiguration.getProjectCodeLocationPrefix(), detectConfiguration.getProjectCodeLocationSuffix())
         String oldCodeLocationName = detectProject.getScanCodeLocationName(detectConfiguration.sourcePath, canonicalPath, detectFileManager.extractFinalPieceFromPath(detectConfiguration.sourcePath), detectConfiguration.getProjectCodeLocationPrefix())
-        detectProject.logOldCodeLocationNameExists(oldCodeLocationName, "Found same code location with old naming pattern: ${oldCodeLocationName}. You may remove old code location if desired")
+        hubManager.logOldCodeLocationNameExists(oldCodeLocationName, "Found same code location with old naming pattern: ${oldCodeLocationName}. You may remove old code location if desired")
         hubScanConfigBuilder.codeLocationAlias = codeLocationName
 
         if (detectConfiguration.hubSignatureScannerExclusionPatterns) {

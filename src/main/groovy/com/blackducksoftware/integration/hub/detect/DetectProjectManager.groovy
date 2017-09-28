@@ -42,9 +42,9 @@ import com.blackducksoftware.integration.hub.bdio.simple.model.BdioProject
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.SimpleBdioDocument
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
+import com.blackducksoftware.integration.hub.detect.hub.HubManager
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
-import com.blackducksoftware.integration.hub.detect.model.CodeLocationType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.summary.DetectSummary
@@ -88,6 +88,9 @@ class DetectProjectManager {
 
     @Autowired
     DetectSummary detectSummary
+
+    @Autowired
+    HubManager hubManager
 
     private boolean foundAnyBomTools
 
@@ -159,10 +162,10 @@ class DetectProjectManager {
                 aggregateBdioDocument.components.addAll(dependencyNodeTransformer.addComponentsGraph(aggregateBdioDocument.project, it.dependencies))
             } else {
                 if (it.dependencies) {
-                    String codeLocationName = detectProject.getCodeLocationName(detectFileManager.extractFinalPieceFromPath(it.sourcePath), it.bomToolType, CodeLocationType.BOM, detectConfiguration.getProjectCodeLocationPrefix(), detectConfiguration.getProjectCodeLocationSuffix())
+                    String codeLocationName = detectProject.getBomToolCodeLocationName(detectFileManager.extractFinalPieceFromPath(it.sourcePath), it.bomToolType, detectConfiguration.getProjectCodeLocationPrefix(), detectConfiguration.getProjectCodeLocationSuffix())
                     String oldCodeLocationName = detectProject.getBomToolCodeLocationName(it.bomToolType, detectFileManager.extractFinalPieceFromPath(it.sourcePath), detectConfiguration.getProjectCodeLocationPrefix())
-                    detectProject.logOldCodeLocationNameExists(oldCodeLocationName, "Found same code location with old naming pattern: ${oldCodeLocationName}. You may remove old code location if desired")
-                    final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(detectProject, it)
+                    hubManager.logOldCodeLocationNameExists(oldCodeLocationName, "Found same code location with old naming pattern: ${oldCodeLocationName}. You may remove old code location if desired")
+                    final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(detectProject, it, codeLocationName)
                     String projectPath = detectFileManager.extractFinalPieceFromPath(it.sourcePath)
                     String projectName = detectProject.projectName
                     String projectVersionName = detectProject.projectVersionName
@@ -223,7 +226,7 @@ class DetectProjectManager {
         createSimpleBdioDocument(detectProject, '', detectProject.projectName, bdioPropertyHelper.createExternalIdentifier('', detectProject.projectName), [] as Set)
     }
 
-    private SimpleBdioDocument createSimpleBdioDocument(DetectProject detectProject, DetectCodeLocation detectCodeLocation) {
+    private SimpleBdioDocument createSimpleBdioDocument(DetectProject detectProject, DetectCodeLocation detectCodeLocation, String codeLocationName) {
         final String projectId = detectCodeLocation.bomToolProjectExternalId.createDataId()
         final BdioExternalIdentifier projectExternalIdentifier = bdioPropertyHelper.createExternalIdentifier(detectCodeLocation.bomToolProjectExternalId)
 

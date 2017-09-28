@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
+import com.blackducksoftware.integration.exception.IntegrationException
 import com.blackducksoftware.integration.hub.api.bom.BomImportRequestService
 import com.blackducksoftware.integration.hub.api.codelocation.CodeLocationRequestService
 import com.blackducksoftware.integration.hub.api.item.MetaService
@@ -191,6 +192,18 @@ class HubManager {
         } catch (final DoesNotExistException e) {
             final String versionURL = projectVersionRequestService.createHubVersion(project, projectRequest.getVersionRequest())
             projectVersionView = projectVersionRequestService.getItem(versionURL, ProjectVersionView.class)
+        }
+    }
+
+    public boolean logOldCodeLocationNameExists(String oldCodeLocationName, String message) {
+        try {
+            CodeLocationView codeLocationView = hubServiceWrapper.createCodeLocationRequestService().getCodeLocationByName(oldCodeLocationName)
+            if (message) {
+                logger.warn(message)
+            }
+            return true
+        } catch (IntegrationException e) {
+            return false
         }
     }
 }

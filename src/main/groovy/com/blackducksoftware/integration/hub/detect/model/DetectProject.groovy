@@ -26,13 +26,11 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 
-import com.blackducksoftware.integration.exception.IntegrationException
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper
-import com.blackducksoftware.integration.hub.model.view.CodeLocationView
 
 class DetectProject {
-    private String projectName
-    private String projectVersionName
+    String projectName
+    String projectVersionName
     private List<DetectCodeLocation> detectCodeLocations = []
 
     private final Logger logger = LoggerFactory.getLogger(getClass())
@@ -94,7 +92,15 @@ class DetectProject {
         codeLocation
     }
 
-    public String getCodeLocationName(String sourcePathPiece, BomToolType bomToolType, CodeLocationType codeLocationType, String prefix, String suffix) {
+    public String getBomToolCodeLocationName(String sourcePathPiece, BomToolType bomToolType, String prefix, String suffix) {
+        getCodeLocationName(sourcePathPiece, bomToolType, CodeLocationType.BOM, prefix, suffix)
+    }
+
+    public String getScanCodeLocationName(String sourcePathPiece, String prefix, String suffix) {
+        getCodeLocationName(sourcePathPiece, null, CodeLocationType.SCAN, prefix, suffix)
+    }
+
+    private String getCodeLocationName(String sourcePathPiece, BomToolType bomToolType, CodeLocationType codeLocationType, String prefix, String suffix) {
         String codeLocation = String.format('%s/%s/%s', sourcePathPiece, projectName, projectVersionName)
         if (prefix) {
             codeLocation = String.format('%s/%s', prefix, codeLocation)
@@ -108,17 +114,5 @@ class DetectProject {
         }
         codeLocation = String.format('%s %s', codeLocation, endPiece)
         codeLocation
-    }
-
-    public boolean logOldCodeLocationNameExists(String oldCodeLocationName, String message) {
-        try {
-            CodeLocationView codeLocationView = hubServiceWrapper.createCodeLocationRequestService().getCodeLocationByName(oldCodeLocationName)
-            if (message) {
-                logger.warn(message)
-            }
-            return true
-        } catch (IntegrationException e) {
-            return false
-        }
     }
 }
