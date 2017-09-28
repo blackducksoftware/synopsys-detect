@@ -26,42 +26,33 @@ import groovy.transform.TypeChecked
 
 @TypeChecked
 enum ExecutableType {
-    BASH([(OperatingSystemType.WINDOWS): 'bash.exe', (OperatingSystemType.LINUX): 'bash']),
-    CONDA([(OperatingSystemType.WINDOWS): 'conda.exe', (OperatingSystemType.LINUX): 'conda']),
-    CPAN([(OperatingSystemType.WINDOWS): 'cpan.bat', (OperatingSystemType.LINUX): 'cpan']),
-    CPANM([(OperatingSystemType.WINDOWS): 'cpanm.bat', (OperatingSystemType.LINUX): 'cpanm']),
-    DOCKER([(OperatingSystemType.WINDOWS): 'docker.exe', (OperatingSystemType.LINUX): 'docker']),
-    GO([(OperatingSystemType.WINDOWS): 'go.exe', (OperatingSystemType.LINUX): 'go']),
-    GO_DEP([(OperatingSystemType.WINDOWS): 'dep.exe', (OperatingSystemType.LINUX): 'dep']),
-    GRADLE([(OperatingSystemType.WINDOWS): 'gradle.bat', (OperatingSystemType.LINUX): 'gradle']),
-    GRADLEW([(OperatingSystemType.WINDOWS): 'gradlew.bat', (OperatingSystemType.LINUX): 'gradlew']),
-    MVN([(OperatingSystemType.WINDOWS): 'mvn.cmd', (OperatingSystemType.LINUX): 'mvn']),
-    MVNW([(OperatingSystemType.WINDOWS): 'mvnw.bat', (OperatingSystemType.LINUX): 'mvnw']),
-    NPM([(OperatingSystemType.WINDOWS): 'npm.cmd', (OperatingSystemType.LINUX): 'npm']),
-    NUGET([(OperatingSystemType.WINDOWS): 'nuget.exe', (OperatingSystemType.LINUX): 'nuget']),
-    PEAR([(OperatingSystemType.WINDOWS): 'pear.bat', (OperatingSystemType.LINUX): 'pear']),
-    PERL([(OperatingSystemType.WINDOWS): 'perl.bat', (OperatingSystemType.LINUX): 'perl']),
-    PIP([(OperatingSystemType.WINDOWS): 'pip.exe', (OperatingSystemType.LINUX): 'pip']),
-    PIP3([(OperatingSystemType.WINDOWS): 'pip3.exe', (OperatingSystemType.LINUX): 'pip3']),
-    PYTHON([(OperatingSystemType.WINDOWS): 'python.exe', (OperatingSystemType.LINUX): 'python']),
-    PYTHON3([(OperatingSystemType.WINDOWS): 'python3.exe', (OperatingSystemType.LINUX): 'python3']),
-    VIRTUALENV([(OperatingSystemType.WINDOWS): 'virtualenv.exe', (OperatingSystemType.LINUX): 'virtualenv'])
+    BASH('bash'),
+    CONDA('conda'),
+    CPAN('cpan'),
+    CPANM('cpanm'),
+    DOCKER('docker'),
+    GO('go'),
+    GO_DEP('dep'),
+    GRADLE('gradle'),
+    GRADLEW('gradlew'),
+    MVN('mvn'),
+    MVNW('mvnw'),
+    NPM('npm'),
+    NUGET('nuget'),
+    PEAR('pear'),
+    PERL('perl'),
+    PIP('pip'),
+    PIP3('pip3'),
+    PYTHON('python'),
+    PYTHON3('python3')
 
-    private Map<OperatingSystemType, String> osToExecutableMap = [:]
+    private String executableName
 
-    private ExecutableType(Map<OperatingSystemType, String> osToExecutableMap) {
-        this.osToExecutableMap.putAll(osToExecutableMap)
+    private ExecutableType(String executableName) {
+        this.executableName = executableName
     }
 
-    /**
-     * If an operating system specific executable is not present, the linux executable, which could itself not be present, will be returned.
-     */
-    public String getExecutable(OperatingSystemType operatingSystemType) {
-        String osSpecificExecutable = osToExecutableMap[operatingSystemType]
-        if (osSpecificExecutable) {
-            return osSpecificExecutable
-        } else {
-            return osToExecutableMap[OperatingSystemType.LINUX]
-        }
+    public String getExecutable() {
+        return executableName
     }
 }

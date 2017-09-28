@@ -62,7 +62,7 @@ class ExecutableManager {
     }
 
     String getExecutableName(ExecutableType executableType) {
-        executableType.getExecutable(currentOs)
+        executableType.getExecutable()
     }
 
     String getExecutablePath(ExecutableType executableType, boolean searchSystemPath, String path) {
@@ -86,10 +86,19 @@ class ExecutableManager {
     }
 
     private File findExecutableFileFromPath(final String path, String executable) {
+        def executables = (currentOs == OperatingSystemType.WINDOWS) ? [
+            executable+".cmd",
+            executable+".bat",
+            executable+".exe"
+        ]
+        : [executable]
+
         for (String pathPiece : path.split(File.pathSeparator)) {
-            File foundFile = detectFileManager.findFile(pathPiece, executable)
-            if (foundFile && foundFile.canExecute()) {
-                return foundFile
+            for(String possibleExecutable : executables) {
+                File foundFile = detectFileManager.findFile(pathPiece, possibleExecutable)
+                if (foundFile && foundFile.canExecute()) {
+                    return foundFile
+                }
             }
         }
         null
