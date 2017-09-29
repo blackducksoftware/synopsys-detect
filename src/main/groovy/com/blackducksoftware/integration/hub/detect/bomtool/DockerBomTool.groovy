@@ -100,6 +100,7 @@ class DockerBomTool extends BomTool {
             if (!'latest'.equals(detectConfiguration.dockerInspectorVersion)) {
                 hubDockerInspectorShellScriptUrl = new URL("https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector-${detectConfiguration.dockerInspectorVersion}.sh")
             }
+            logger.info("Getting the Docker inspector shell script from ${hubDockerInspectorShellScriptUrl.toURI().toString()}")
             UnauthenticatedRestConnection restConnection = new UnauthenticatedRestConnection(new Slf4jIntLogger(logger), hubDockerInspectorShellScriptUrl, detectConfiguration.getHubTimeout())
             restConnection.alwaysTrustServerCertificate = detectConfiguration.hubTrustCertificate
             HttpUrl httpUrl = restConnection.createHttpUrl()
