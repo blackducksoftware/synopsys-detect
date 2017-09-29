@@ -87,6 +87,7 @@ class DockerBomTool extends BomTool {
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
+        File workingDirectory = detectFileManager.createDirectory(getBomToolType())
         File shellScriptFile
         if (detectConfiguration.dockerInspectorPath) {
             shellScriptFile = new File(detectConfiguration.dockerInspectorPath)
@@ -96,11 +97,10 @@ class DockerBomTool extends BomTool {
                 hubDockerInspectorShellScriptUrl = new URL("https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector-${detectConfiguration.dockerInspectorVersion}.sh")
             }
             String shellScriptContents = hubDockerInspectorShellScriptUrl.openStream().getText(StandardCharsets.UTF_8.toString())
-            shellScriptFile = detectFileManager.createFile(BomToolType.DOCKER, "hub-docker-inspector-${detectConfiguration.dockerInspectorVersion}.sh")
+            shellScriptFile = detectFileManager.createFile(workingDirectory, "hub-docker-inspector-${detectConfiguration.dockerInspectorVersion}.sh")
             detectFileManager.writeToFile(shellScriptFile, shellScriptContents)
             shellScriptFile.setExecutable(true)
         }
-        File workingDirectory = detectFileManager.createDirectory(getBomToolType())
 
         File dockerPropertiesFile = detectFileManager.createFile(workingDirectory, 'application.properties')
         dockerProperties.populatePropertiesFile(dockerPropertiesFile, workingDirectory)
