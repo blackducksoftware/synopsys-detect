@@ -191,8 +191,7 @@ class HubSignatureScanner {
 
         String sourcePath = canonicalPath.replace(detectConfiguration.sourcePath, detectFileManager.extractFinalPieceFromPath(detectConfiguration.sourcePath));
         String codeLocationName = detectProject.getScanCodeLocationName(sourcePath, detectConfiguration.getProjectCodeLocationPrefix(), detectConfiguration.getProjectCodeLocationSuffix())
-        String oldCodeLocationName = detectProject.getScanCodeLocationName(detectConfiguration.sourcePath, canonicalPath, detectFileManager.extractFinalPieceFromPath(detectConfiguration.sourcePath), detectConfiguration.getProjectCodeLocationPrefix())
-        hubManager.logOldCodeLocationNameExists(oldCodeLocationName, "Found same code location with old naming pattern: ${oldCodeLocationName}. You may remove old code location if desired")
+        def test = hubManager.logOldCodeLocationNameExists(detectProject, null, CodeLocationType.SCAN, detectFileManager.extractFinalPieceFromPath(detectConfiguration.sourcePath), canonicalPath, detectConfiguration.sourcePath, detectConfiguration.getProjectCodeLocationPrefix())
         hubScanConfigBuilder.codeLocationAlias = codeLocationName
 
         if (detectConfiguration.hubSignatureScannerExclusionPatterns) {

@@ -45,6 +45,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import com.blackducksoftware.integration.hub.detect.hub.HubManager
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
+import com.blackducksoftware.integration.hub.detect.model.CodeLocationType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.summary.DetectSummary
@@ -163,8 +164,7 @@ class DetectProjectManager {
             } else {
                 if (it.dependencies) {
                     String codeLocationName = detectProject.getBomToolCodeLocationName(detectFileManager.extractFinalPieceFromPath(it.sourcePath), it.bomToolType, detectConfiguration.getProjectCodeLocationPrefix(), detectConfiguration.getProjectCodeLocationSuffix())
-                    String oldCodeLocationName = detectProject.getBomToolCodeLocationName(it.bomToolType, detectFileManager.extractFinalPieceFromPath(it.sourcePath), detectConfiguration.getProjectCodeLocationPrefix())
-                    hubManager.logOldCodeLocationNameExists(oldCodeLocationName, "Found same code location with old naming pattern: ${oldCodeLocationName}. You may remove old code location if desired")
+                    def test = hubManager.logOldCodeLocationNameExists(detectProject, it.bomToolType, CodeLocationType.BOM, detectFileManager.extractFinalPieceFromPath(it.sourcePath), '', '', detectConfiguration.getProjectCodeLocationPrefix())
                     final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(detectProject, it, codeLocationName)
                     String projectPath = detectFileManager.extractFinalPieceFromPath(it.sourcePath)
                     String projectName = detectProject.projectName
