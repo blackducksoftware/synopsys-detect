@@ -27,10 +27,10 @@ import java.nio.charset.StandardCharsets
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.PathExternalId
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.Forge
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.bomtool.cran.PackratPackager
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
@@ -40,10 +40,11 @@ import groovy.transform.TypeChecked
 @Component
 @TypeChecked
 class CranBomTool extends BomTool {
-    public static final Forge CRAN = new Forge('cran', '/')
-
     @Autowired
     PackratPackager packratPackager
+
+    @Autowired
+    ExternalIdFactory externalIdFactory
 
     BomToolType getBomToolType() {
         return BomToolType.CRAN
@@ -67,11 +68,10 @@ class CranBomTool extends BomTool {
         }
 
         String packratLockText = packratLockFile[0].getText(StandardCharsets.UTF_8.toString())
-        List<DependencyNode> dependencies = packratPackager.extractProjectDependencies(packratLockText)
-        Set<DependencyNode> dependenciesSet = new HashSet<>(dependencies)
-        ExternalId externalId = new PathExternalId(CRAN, sourcePath)
+        DependencyGraph dependencyGraph = packratPackager.extractProjectDependencies(packratLockText)
+        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.CRAN, sourcePath)
 
-        def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, projectName, projectVersion, externalId, dependenciesSet)
+        def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, projectName, projectVersion, externalId, dependencyGraph)
         [codeLocation]
     }
 }

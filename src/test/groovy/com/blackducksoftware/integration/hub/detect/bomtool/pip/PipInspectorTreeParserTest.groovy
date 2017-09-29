@@ -18,11 +18,13 @@ import org.junit.Test
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 
 class PipInspectorTreeParserTest {
 
     private PipInspectorTreeParser parser
+    private TestUtil testUtil = new TestUtil()
 
     private String name = 'pip'
     private String version = '1.0.0'
@@ -34,6 +36,7 @@ class PipInspectorTreeParserTest {
     @Before
     void init() {
         parser = new PipInspectorTreeParser()
+        parser.externalIdFactory = new ExternalIdFactory()
     }
 
     @Test
@@ -63,8 +66,8 @@ class PipInspectorTreeParserTest {
 
     @Test
     void validParseTest() {
-        final String name = PipInspectorTreeParser.UNKNOWN_PROJECT_NAME
-        final String version = PipInspectorTreeParser.UNKNOWN_PROJECT_VERSION
+        final String name = 'name'
+        final String version = 'version'
         final String space = PipInspectorTreeParser.INDENTATION
         final String child1Text = 'apple' + PipInspectorTreeParser.SEPARATOR + '5.3.2'
         final String child2Text = 'orange' + PipInspectorTreeParser.SEPARATOR + '4.3.1'
@@ -81,10 +84,10 @@ ${space + child3Text}
 """
 
         DependencyNode root = parser.parse(validText)
-        ExternalId expectedExternalId = new NameVersionExternalId(Forge.PYPI, '', '')
-        Assert.assertEquals('', root.name)
-        Assert.assertEquals('', root.version)
-        Assert.assertEquals(expectedExternalId, root.externalId)
+        ExternalId expectedExternalId = parser.externalIdFactory.createNameVersionExternalId(Forge.PYPI, 'name', 'version')
+        Assert.assertEquals('name', root.name)
+        Assert.assertEquals('version', root.version)
+        testUtil.testJson(expectedExternalId.toString(), root.externalId.toString())
         Assert.assertEquals(3, root.children.size())
     }
 

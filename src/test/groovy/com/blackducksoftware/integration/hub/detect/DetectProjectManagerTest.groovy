@@ -26,15 +26,15 @@ public class DetectProjectManagerTest {
         detectProjectManager.detectConfiguration = detectConfiguration
 
         String timeString = DateTimeFormat.forPattern('yyyy-MM-dd\'T\'HH:mm:ss.SSS').withZoneUTC().print(DateTime.now().withZone(DateTimeZone.UTC))
-        String defaultTimestampVersion = detectProjectManager.getProjectVersionName('')
+        String defaultTimestampVersion = detectProjectManager.getDefaultProjectVersionName()
         Assert.assertTrue(defaultTimestampVersion.startsWith(timeString[0..10]))
 
         detectProperties.defaultProjectVersionScheme = 'text'
-        String defaultTextVersion = detectProjectManager.getProjectVersionName('')
+        String defaultTextVersion = detectProjectManager.getDefaultProjectVersionName()
         Assert.assertEquals('default', defaultTextVersion)
 
         detectProperties.projectVersionName = 'actual'
-        String version = detectProjectManager.getProjectVersionName('')
+        String version = detectProjectManager.getDefaultProjectVersionName()
         Assert.assertEquals('actual', version)
     }
 

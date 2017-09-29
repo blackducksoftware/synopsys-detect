@@ -24,12 +24,15 @@ package com.blackducksoftware.integration.hub.detect.bomtool.pip
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeBuilder
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.Forge
+import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.detect.model.BomToolType
+import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 
 import groovy.transform.TypeChecked
 
@@ -46,11 +49,16 @@ class PipInspectorTreeParser {
     public static final String UNKNOWN_PACKAGE_PREFIX = '--'
     public static final String INDENTATION = ' '.multiply(4)
 
-    DependencyNode parse(String treeText) {
+    @Autowired
+    ExternalIdFactory externalIdFactory
+
+    DetectCodeLocation parse(String treeText, String sourcePath) {
         def lines = treeText.trim().split(System.lineSeparator()).toList()
 
-        DependencyNodeBuilder dependencyNodeBuilder = null
-        Stack<DependencyNode> tree = new Stack<>()
+        MutableMapDependencyGraph dependencyGraph = null
+        Stack<Dependency> tree = new Stack<>()
+
+        Dependency project = null
 
         int indentation = 0
         for (String line: lines) {
@@ -76,19 +84,18 @@ class PipInspectorTreeParser {
                 continue
             }
 
-            if (line.contains(SEPARATOR) && !dependencyNodeBuilder) {
-                DependencyNode projectNode = lineToNode(line)
-                tree.push(projectNode)
-                dependencyNodeBuilder = new DependencyNodeBuilder(projectNode)
+            if (line.contains(SEPARATOR) && !dependencyGraph) {
+                dependencyGraph = new MutableMapDependencyGraph();
+                project = lineToDependency(line)
                 continue
             }
 
-            if (!dependencyNodeBuilder) {
+            if (!dependencyGraph) {
                 continue
             }
 
             int currentIndentation = getCurrentIndentation(line)
-            DependencyNode node = lineToNode(line)
+            Dependency next = lineToDependency(line)
             if (currentIndentation == indentation) {
                 tree.pop()
             } else {
@@ -96,19 +103,25 @@ class PipInspectorTreeParser {
                     tree.pop()
                 }
             }
-            dependencyNodeBuilder.addChildNodeWithParents(node, [tree.peek()])
+
+            if (tree.size() > 0){
+                dependencyGraph.addChildWithParents(next, [tree.peek()])
+            }else{
+                dependencyGraph.addChildrenToRoot(next);
+            }
+
             indentation = currentIndentation
-            tree.push(node)
+            tree.push(next)
         }
 
-        if (dependencyNodeBuilder) {
-            return dependencyNodeBuilder.root
+        if (project && !(project.name.equals('') && project.version.equals('') && dependencyGraph && dependencyGraph.getRootDependencyExternalIds().empty)) {
+            new DetectCodeLocation(BomToolType.PIP, sourcePath, project.externalId, dependencyGraph)
+        }else {
+            null
         }
-
-        null
     }
 
-    DependencyNode lineToNode(String line) {
+    Dependency lineToDependency(String line) {
         if (!line.contains(SEPARATOR)) {
             return null
         }
@@ -117,8 +130,8 @@ class PipInspectorTreeParser {
         name = name.equals(UNKNOWN_PROJECT_NAME) ? '' : name
         String version = segments[1].trim()
         version = version.equals(UNKNOWN_PROJECT_VERSION) ? '' : version
-        def externalId = new NameVersionExternalId(Forge.PYPI, name, version)
-        def node = new DependencyNode(name, version, externalId)
+        def externalId = externalIdFactory.createNameVersionExternalId(Forge.PYPI, name, version)
+        def node = new Dependency(name, version, externalId)
 
         node
     }

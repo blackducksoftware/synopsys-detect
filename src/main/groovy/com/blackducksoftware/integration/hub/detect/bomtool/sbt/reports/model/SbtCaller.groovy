@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2017 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
  *
@@ -20,15 +20,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.sbt.models
-
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+package com.blackducksoftware.integration.hub.detect.bomtool.sbt.reports.model
 
 import groovy.transform.TypeChecked
 
 @TypeChecked
-class SbtConfigurationDependencyTree {
-    String configuration
+public class SbtCaller {
+    String callerOrganisation
 
-    DependencyNode rootNode
+    String callerName
+
+    String callerRevision
 }

@@ -16,7 +16,8 @@ import static org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
@@ -30,13 +31,15 @@ class YarnPackagerTest {
 
     @Before
     public void init() {
-        yarnPackager.nameVersionNodeTransformer = new NameVersionNodeTransformer()
+        NameVersionNodeTransformer nameVersionNodeTransformer = new NameVersionNodeTransformer()
+        nameVersionNodeTransformer.externalIdFactory = new ExternalIdFactory()
+        yarnPackager.nameVersionNodeTransformer = nameVersionNodeTransformer
     }
 
     @Test
     public void parseTest() {
         String yarnLockText = testUtil.getResourceAsUTF8String('yarn/yarn.lock')
-        Set<DependencyNode> dependencyNodes = yarnPackager.parse(yarnLockText)
+        Set<Dependency> dependencyNodes = yarnPackager.parse(yarnLockText)
         testUtil.testJsonResource('yarn/expected.json', dependencyNodes)
     }
 

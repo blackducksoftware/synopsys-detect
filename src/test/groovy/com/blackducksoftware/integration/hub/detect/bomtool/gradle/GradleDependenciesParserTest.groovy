@@ -15,6 +15,7 @@ import static org.junit.Assert.*
 
 import org.junit.Test
 
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
@@ -42,6 +43,7 @@ class GradleDependenciesParserTest {
     private void createNewCodeLocationTest(String gradleInspectorOutputResourcePath, String expectedResourcePath, String rootProjectName, String rootProjectVersionName) {
         DetectProject project = new DetectProject()
         GradleDependenciesParser gradleDependenciesParser = new GradleDependenciesParser()
+        gradleDependenciesParser.externalIdFactory = new ExternalIdFactory()
         DetectCodeLocation codeLocation = gradleDependenciesParser.parseDependencies(project, ResourceUtil.getResourceAsStream(GradleDependenciesParserTest.class, gradleInspectorOutputResourcePath))
 
         assertEquals(rootProjectName, project.getProjectName())

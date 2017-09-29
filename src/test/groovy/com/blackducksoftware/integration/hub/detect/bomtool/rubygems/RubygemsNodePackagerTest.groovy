@@ -17,10 +17,10 @@ import org.apache.commons.io.IOUtils
 import org.json.JSONException
 import org.junit.Assert
 import org.junit.Test
-import org.skyscreamer.jsonassert.JSONAssert
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
+import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphTestUtil
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
@@ -30,18 +30,15 @@ class RubygemsNodePackagerTest {
     @Test
     public void packagerTest() throws JSONException, IOException, URISyntaxException {
         final NameVersionNodeTransformer nameVersionNodeTransformer = new NameVersionNodeTransformer()
-        final String sourcePath = "/rubygems/"
         final String expected = IOUtils.toString(getClass().getResourceAsStream("/rubygems/expectedPackager.json"),
                 StandardCharsets.UTF_8)
         final String actualText = IOUtils.toString(getClass().getResourceAsStream("/rubygems/Gemfile.lock"),
                 StandardCharsets.UTF_8)
         final RubygemsNodePackager rubygemsNodePackager = new RubygemsNodePackager()
         rubygemsNodePackager.nameVersionNodeTransformer = nameVersionNodeTransformer
-        final List<DependencyNode> projects = rubygemsNodePackager.extractProjectDependencies(actualText)
-        Assert.assertEquals(8, projects.size())
+        final DependencyGraph projects = rubygemsNodePackager.extractProjectDependencies(actualText)
+        Assert.assertEquals(8, projects.getRootDependencies().size())
 
-        final String actual = gson.toJson(projects)
-        System.out.println(actual)
-        JSONAssert.assertEquals(expected, actual, false)
+        DependencyGraphTestUtil.assertGraph('/rubygems/expectedPackager_graph.json', projects);
     }
 }

@@ -27,9 +27,9 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.Forge
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.bomtool.pear.PearDependencyFinder
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
@@ -49,6 +49,9 @@ class PearBomTool extends BomTool {
 
     @Autowired
     PearDependencyFinder pearDependencyFinder
+
+    @Autowired
+    ExternalIdFactory externalIdFactory
 
     @Override
     public BomToolType getBomToolType() {
@@ -80,14 +83,14 @@ class PearBomTool extends BomTool {
         String rootName = packageXml.name
         String rootVersion = packageXml.version.release
 
-        Set<DependencyNode> childDependencyNodes = pearDependencyFinder.parsePearDependencyList(pearListing, pearDependencies)
+        DependencyGraph dependencyGraph = pearDependencyFinder.parsePearDependencyGraph(pearListing, pearDependencies)
         def detectCodeLocation = new DetectCodeLocation(
                 getBomToolType(),
                 sourcePath,
                 rootName,
                 rootVersion,
-                new NameVersionExternalId(Forge.PEAR, rootName, rootVersion),
-                childDependencyNodes
+                externalIdFactory.createNameVersionExternalId(Forge.PEAR, rootName, rootVersion),
+                dependencyGraph
                 )
 
         [detectCodeLocation]
