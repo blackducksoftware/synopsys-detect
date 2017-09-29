@@ -91,8 +91,13 @@ public class ExecutableManager {
         return findExecutableFileFromPath(systemPath, executable);
     }
 
-    private File findExecutableFileFromPath(final String path, final String executable) {
-        final List<String> executables = (currentOs == OperatingSystemType.WINDOWS) ? Arrays.asList(executable + ".cmd", executable + ".bat", executable + ".exe") : Arrays.asList(executable);
+    private File findExecutableFileFromPath(final String path, final String executableName) {
+        final List<String> executables;
+        if (currentOs == OperatingSystemType.WINDOWS) {
+            executables = Arrays.asList(executableName + ".cmd", executableName + ".bat", executableName + ".exe");
+        } else {
+            executables = Arrays.asList(executableName);
+        }
 
         for (final String pathPiece : path.split(File.pathSeparator)) {
             for (final String possibleExecutable : executables) {
