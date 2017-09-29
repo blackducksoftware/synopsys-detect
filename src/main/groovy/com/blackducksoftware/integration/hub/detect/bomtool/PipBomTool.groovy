@@ -27,7 +27,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.PipInspectorManager
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.PipInspectorTreeParser
@@ -98,11 +97,10 @@ class PipBomTool extends BomTool {
         File setupFile = detectFileManager.findFile(sourceDirectory, SETUP_FILE_NAME)
         File inspectorScript = pipInspectorManager.extractInspectorScript()
         String inspectorOutput = pipInspectorManager.runInspector(sourceDirectory, pythonPath, inspectorScript, projectName, detectConfiguration.requirementsFilePath)
-        DependencyNode projectNode = pipInspectorTreeParser.parse(inspectorOutput)
+        def codeLocation = pipInspectorTreeParser.parse(inspectorOutput, sourcePath)
 
         def codeLocations = []
-        if (projectNode && !(projectNode.name.equals('') && projectNode.version.equals('') && projectNode.children.empty)) {
-            def codeLocation = new DetectCodeLocation(BomToolType.PIP, sourcePath, projectNode)
+        if (codeLocation != null) {
             codeLocations.add(codeLocation)
         }
 

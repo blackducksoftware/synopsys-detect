@@ -27,11 +27,13 @@ import java.nio.file.Files
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.PathExternalId
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.Forge
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.bomtool.go.vndr.VndrParser
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
@@ -44,6 +46,10 @@ class GoVndrBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(GoVndrBomTool.class)
 
     public static final String VNDR_CONF_FILENAME= 'vendor.conf'
+
+
+    @Autowired
+    ExternalIdFactory externalIdFactory
 
     @Override
     public BomToolType getBomToolType() {
@@ -58,14 +64,13 @@ class GoVndrBomTool extends BomTool {
     List<DetectCodeLocation> extractDetectCodeLocations() {
         File sourceDirectory = detectConfiguration.sourceDirectory
 
-        VndrParser vndrParser = new VndrParser()
+        VndrParser vndrParser = new VndrParser(externalIdFactory)
         def vendorConf = new File(sourcePath, VNDR_CONF_FILENAME)
         List<String> venderConfContents = Files.readAllLines(vendorConf.toPath(), StandardCharsets.UTF_8)
-        List<DependencyNode> dependencies = vndrParser.parseVendorConf(venderConfContents)
-        Set<DependencyNode> dependenciesSet = new HashSet<>(dependencies)
-        ExternalId externalId = new PathExternalId(GoDepBomTool.GOLANG, sourcePath)
+        DependencyGraph dependencyGraph = vndrParser.parseVendorConf(venderConfContents)
+        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.GOLANG, sourcePath)
 
-        def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, externalId, dependenciesSet)
+        def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, externalId, dependencyGraph)
         [codeLocation]
     }
 }

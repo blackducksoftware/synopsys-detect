@@ -1,10 +1,17 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.packagist
 
+import org.junit.Assert
 import org.junit.Test
 
+<<<<<<< HEAD
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalIdFactory
+=======
+>>>>>>> master
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.DetectProperties
+import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
+import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphTestUtil
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 
 class PackagistTest {
@@ -18,12 +25,16 @@ class PackagistTest {
         detectConfiguration.detectProperties = detectProperties
 
         final PackagistParser packagistParser = new PackagistParser()
+        packagistParser.externalIdFactory = new ExternalIdFactory()
         packagistParser.detectConfiguration = detectConfiguration
 
         final String composerLockText = testUtil.getResourceAsUTF8String('/packagist/composer.lock')
         final String composerJsonText = testUtil.getResourceAsUTF8String('/packagist/composer.json')
-        DependencyNode dependencyNode = packagistParser.getDependencyNodeFromProject(composerJsonText, composerLockText)
+        DetectCodeLocation codeLocation = packagistParser.getDependencyGraphFromProject("source", composerJsonText, composerLockText)
 
-        testUtil.testJsonResource('/packagist/PackagistTestDependencyNode.txt', dependencyNode)
+        Assert.assertEquals(codeLocation.bomToolProjectName, "clue/graph-composer");
+        Assert.assertEquals(codeLocation.bomToolProjectVersionName, "1.0.0");
+
+        DependencyGraphTestUtil.assertGraph('/packagist/PackagistTestDependencyNode_graph.json', codeLocation.dependencyGraph);
     }
 }

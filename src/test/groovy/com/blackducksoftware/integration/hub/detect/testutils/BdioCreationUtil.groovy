@@ -11,15 +11,15 @@
  */
 package com.blackducksoftware.integration.hub.detect.testutils
 
-import com.blackducksoftware.integration.hub.bdio.simple.BdioNodeFactory
-import com.blackducksoftware.integration.hub.bdio.simple.BdioPropertyHelper
-import com.blackducksoftware.integration.hub.bdio.simple.BdioWriter
-import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeTransformer
-import com.blackducksoftware.integration.hub.bdio.simple.model.BdioBillOfMaterials
-import com.blackducksoftware.integration.hub.bdio.simple.model.BdioComponent
-import com.blackducksoftware.integration.hub.bdio.simple.model.BdioExternalIdentifier
-import com.blackducksoftware.integration.hub.bdio.simple.model.BdioProject
-import com.blackducksoftware.integration.hub.bdio.simple.model.SimpleBdioDocument
+import com.blackducksoftware.integration.hub.bdio.BdioNodeFactory
+import com.blackducksoftware.integration.hub.bdio.BdioPropertyHelper
+import com.blackducksoftware.integration.hub.bdio.BdioWriter
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer
+import com.blackducksoftware.integration.hub.bdio.model.BdioBillOfMaterials
+import com.blackducksoftware.integration.hub.bdio.model.BdioComponent
+import com.blackducksoftware.integration.hub.bdio.model.BdioExternalIdentifier
+import com.blackducksoftware.integration.hub.bdio.model.BdioProject
+import com.blackducksoftware.integration.hub.bdio.model.SimpleBdioDocument
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -29,14 +29,14 @@ class BdioCreationUtil {
     private Gson gson
     private BdioPropertyHelper bdioPropertyHelper
     private BdioNodeFactory bdioNodeFactory
-    private DependencyNodeTransformer dependencyNodeTransformer
+    private DependencyGraphTransformer dependencyGraphTransformer
 
 
     public BdioCreationUtil() {
         gson = new GsonBuilder().setPrettyPrinting().create()
         bdioPropertyHelper = new BdioPropertyHelper()
         bdioNodeFactory = new BdioNodeFactory(bdioPropertyHelper)
-        dependencyNodeTransformer = new DependencyNodeTransformer(bdioNodeFactory, bdioPropertyHelper)
+        dependencyGraphTransformer = new DependencyGraphTransformer(bdioNodeFactory, bdioPropertyHelper)
     }
 
     public File createBdioDocument(File outputFile, DetectCodeLocation detectCodeLocation) {
@@ -54,7 +54,7 @@ class BdioCreationUtil {
         final BdioExternalIdentifier projectExternalIdentifier = bdioPropertyHelper.createExternalIdentifier(detectCodeLocation.bomToolProjectExternalId)
         final BdioProject project = bdioNodeFactory.createProject(projectName, projectVersionName, String.format("uuid:%s", UUID.randomUUID()), projectExternalIdentifier)
 
-        final List<BdioComponent> bdioComponents = dependencyNodeTransformer.addComponentsGraph(project, detectCodeLocation.dependencies)
+        final List<BdioComponent> bdioComponents = dependencyGraphTransformer.transformDependencyGraph(project, detectCodeLocation.dependencyGraph)
 
         final SimpleBdioDocument simpleBdioDocument = new SimpleBdioDocument()
         simpleBdioDocument.billOfMaterials = bdioBillOfMaterials

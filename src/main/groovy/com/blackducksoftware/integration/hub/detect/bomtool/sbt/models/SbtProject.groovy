@@ -22,13 +22,16 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.sbt.models
 
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.detect.model.BomToolType
+
 import groovy.transform.TypeChecked
 
 @TypeChecked
-public class SbtCaller {
-    String callerOrganisation
-
-    String callerName
-
-    String callerRevision
+class SbtProject {
+    public String projectName
+    public String projectVersion
+    public ExternalId projectExternalId
+    public BomToolType bomToolType
+    public List<SbtDependencyModule> modules
 }

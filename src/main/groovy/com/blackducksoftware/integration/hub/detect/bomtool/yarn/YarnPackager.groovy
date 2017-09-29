@@ -25,8 +25,11 @@ package com.blackducksoftware.integration.hub.detect.bomtool.yarn
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.Forge
+import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
@@ -42,7 +45,7 @@ class YarnPackager {
     @Autowired
     NameVersionNodeTransformer nameVersionNodeTransformer
 
-    public Set<DependencyNode> parse(List<String> yarnLockText) {
+    public DependencyGraph parse(List<String> yarnLockText) {
         def rootNode = new NameVersionNodeImpl()
         rootNode.name = "detectRootNode - ${UUID.randomUUID()}"
         def nameVersionLinkNodeBuilder = new LinkedNameVersionNodeBuilder(rootNode)
@@ -83,9 +86,14 @@ class YarnPackager {
             }
         }
 
-        nameVersionLinkNodeBuilder.build().children.collect {
-            nameVersionNodeTransformer.createDependencyNode(Forge.NPM, it)
-        } as Set
+        MutableDependencyGraph graph = new MutableMapDependencyGraph()
+
+        nameVersionLinkNodeBuilder.build().children.each {
+            Dependency root = nameVersionNodeTransformer.addNameVersionNodeToDependencyGraph(graph, Forge.NPM, it)
+            graph.addChildToRoot(root)
+        }
+
+        graph
     }
 
     private int getLineLevel(String line) {
