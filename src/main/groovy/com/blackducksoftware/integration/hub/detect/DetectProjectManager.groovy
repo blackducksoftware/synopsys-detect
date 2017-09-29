@@ -35,7 +35,7 @@ import com.blackducksoftware.integration.hub.bdio.BdioNodeFactory
 import com.blackducksoftware.integration.hub.bdio.BdioPropertyHelper
 import com.blackducksoftware.integration.hub.bdio.BdioWriter
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
-import com.blackducksoftware.integration.hub.bdio.graph.transformer.DependencyGraphTransformer
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer
 import com.blackducksoftware.integration.hub.bdio.model.BdioBillOfMaterials
 import com.blackducksoftware.integration.hub.bdio.model.BdioExternalIdentifier
 import com.blackducksoftware.integration.hub.bdio.model.BdioProject
@@ -61,7 +61,7 @@ class DetectProjectManager {
     DetectConfiguration detectConfiguration
 
     @Autowired
-    BdioPropertyHelper bdioPropertyHelper
+    BdioPropertyHelper bdioPropertyHelper 
 
     @Autowired
     BdioNodeFactory bdioNodeFactory
