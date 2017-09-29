@@ -34,8 +34,7 @@ import org.springframework.context.annotation.Bean
 
 import com.blackducksoftware.integration.hub.bdio.BdioNodeFactory
 import com.blackducksoftware.integration.hub.bdio.BdioPropertyHelper
-import com.blackducksoftware.integration.hub.bdio.graph.transformer.DependencyGraphTransformer
-import com.blackducksoftware.integration.hub.bdio.graph.transformer.RecursiveDependencyGraphTransformer
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.exception.DetectException
 import com.blackducksoftware.integration.hub.detect.help.HelpPrinter
@@ -166,7 +165,7 @@ class Application {
 
     @Bean
     DependencyGraphTransformer dependencyNodeTransformer() {
-        new RecursiveDependencyGraphTransformer(bdioNodeFactory(), bdioPropertyHelper())
+        new DependencyGraphTransformer(bdioNodeFactory(), bdioPropertyHelper())
     }
 
     @Bean
