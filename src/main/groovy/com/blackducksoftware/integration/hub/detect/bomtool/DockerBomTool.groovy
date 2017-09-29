@@ -87,7 +87,6 @@ class DockerBomTool extends BomTool {
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
-        File workingDirectory = detectFileManager.createDirectory(getBomToolType())
         File shellScriptFile
         if (detectConfiguration.dockerInspectorPath) {
             shellScriptFile = new File(detectConfiguration.dockerInspectorPath)
@@ -97,13 +96,15 @@ class DockerBomTool extends BomTool {
                 hubDockerInspectorShellScriptUrl = new URL("https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector-${detectConfiguration.dockerInspectorVersion}.sh")
             }
             String shellScriptContents = hubDockerInspectorShellScriptUrl.openStream().getText(StandardCharsets.UTF_8.toString())
-            shellScriptFile = detectFileManager.createFile(workingDirectory, "hub-docker-inspector-${detectConfiguration.dockerInspectorVersion}.sh")
+            shellScriptFile = detectFileManager.createFile(getBomToolType(), "hub-docker-inspector-${detectConfiguration.dockerInspectorVersion}.sh")
             detectFileManager.writeToFile(shellScriptFile, shellScriptContents)
             shellScriptFile.setExecutable(true)
         }
 
-        File dockerPropertiesFile = detectFileManager.createFile(workingDirectory, 'application.properties')
-        dockerProperties.populatePropertiesFile(dockerPropertiesFile, workingDirectory)
+        File dockerPropertiesFile = detectFileManager.createFile(getBomToolType(), 'application.properties')
+        File dockerBomToolDirectory =  dockerPropertiesFile.getParentFile()
+        dockerProperties.populatePropertiesFile(dockerPropertiesFile, dockerBomToolDirectory)
+
 
         boolean usingTarFile = false
         String imageArgument = ''
@@ -122,29 +123,29 @@ class DockerBomTool extends BomTool {
 
         List<String> bashArguments = [
             "-c",
-            "${shellScriptFile.absolutePath} --spring.config.location=\"${workingDirectory.getAbsolutePath()}\" --dry.run=true ${imageArgument}" as String
+            "${shellScriptFile.absolutePath} --spring.config.location=\"${dockerBomToolDirectory.getAbsolutePath()}\" --dry.run=true ${imageArgument}" as String
         ]
-        Executable dockerExecutable = new Executable(workingDirectory, environmentVariables, bashExecutablePath, bashArguments)
+        Executable dockerExecutable = new Executable(dockerBomToolDirectory, environmentVariables, bashExecutablePath, bashArguments)
         executableRunner.execute(dockerExecutable)
 
         if (usingTarFile) {
             hubSignatureScanner.registerPathToScan(new File(detectConfiguration.dockerTar))
         } else {
-            File producedTarFile = detectFileManager.findFile(workingDirectory, tarFileNamePattern)
+            File producedTarFile = detectFileManager.findFile(dockerBomToolDirectory, tarFileNamePattern)
             if (producedTarFile) {
                 hubSignatureScanner.registerPathToScan(producedTarFile)
             } else {
-                logMissingFile(workingDirectory, tarFileNamePattern)
+                logMissingFile(dockerBomToolDirectory, tarFileNamePattern)
             }
         }
 
-        File dependencyNodeJsonFile = detectFileManager.findFile(workingDirectory, dependenciesFileNamePattern)
+        File dependencyNodeJsonFile = detectFileManager.findFile(dockerBomToolDirectory, dependenciesFileNamePattern)
         if (dependencyNodeJsonFile) {
             String codeLocationJson = dependencyNodeJsonFile.getText(StandardCharsets.UTF_8.toString())
             DetectCodeLocation codeLocation = gson.fromJson(codeLocationJson, DetectCodeLocation.class)
             return [codeLocation]
         } else {
-            logMissingFile(workingDirectory, dependenciesFileNamePattern)
+            logMissingFile(dockerBomToolDirectory, dependenciesFileNamePattern)
         }
 
         []

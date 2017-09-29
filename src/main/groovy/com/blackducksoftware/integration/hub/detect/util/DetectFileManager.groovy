@@ -22,6 +22,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.util
 
+import org.apache.commons.io.FileUtils
 import org.apache.commons.io.FilenameUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -44,6 +45,16 @@ class DetectFileManager {
     @Autowired
     FileFinder fileFinder
 
+    private List<File> directoriesToCleanup = new ArrayList<>()
+
+    public void cleanupDirectories() {
+        if(directoriesToCleanup) {
+            for(File directory : directoriesToCleanup) {
+                FileUtils.deleteDirectory(directory)
+            }
+        }
+    }
+
     File createDirectory(BomToolType bomToolType) {
         createDirectory(bomToolType.toString().toLowerCase())
     }
@@ -56,10 +67,7 @@ class DetectFileManager {
         def newDirectory = new File(directory, newDirectoryName)
         newDirectory.mkdir()
         if (detectConfiguration.cleanupBomToolFiles) {
-            newDirectory.deleteOnExit()
-            for(File file : newDirectory.listFiles()) {
-                file.deleteOnExit()
-            }
+            directoriesToCleanup.add(newDirectory)
         }
 
         newDirectory
