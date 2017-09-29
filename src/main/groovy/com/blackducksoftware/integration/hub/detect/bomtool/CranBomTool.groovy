@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.bomtool.cran.PackratPackager
@@ -68,7 +69,7 @@ class CranBomTool extends BomTool {
 
         String packratLockText = packratLockFile[0].getText(StandardCharsets.UTF_8.toString())
         DependencyGraph dependencyGraph = packratPackager.extractProjectDependencies(packratLockText)
-        ExternalId externalId = externalIdFactory.createPathExternalId(CRAN, sourcePath)
+        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.CRAN, sourcePath)
 
         def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, projectName, projectVersion, externalId, dependencyGraph)
         [codeLocation]
