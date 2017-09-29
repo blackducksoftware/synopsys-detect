@@ -22,6 +22,9 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool
 
+import java.nio.charset.StandardCharsets
+import java.nio.file.Files
+
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -57,7 +60,8 @@ class GoVndrBomTool extends BomTool {
 
         VndrParser vndrParser = new VndrParser()
         def vendorConf = new File(sourcePath, VNDR_CONF_FILENAME)
-        List<DependencyNode> dependencies = vndrParser.parseVendorConf(vendorConf.text)
+        List<String> venderConfContents = Files.readAllLines(vendorConf.toPath(), StandardCharsets.UTF_8)
+        List<DependencyNode> dependencies = vndrParser.parseVendorConf(venderConfContents)
         Set<DependencyNode> dependenciesSet = new HashSet<>(dependencies)
         ExternalId externalId = new PathExternalId(GoDepBomTool.GOLANG, sourcePath)
 

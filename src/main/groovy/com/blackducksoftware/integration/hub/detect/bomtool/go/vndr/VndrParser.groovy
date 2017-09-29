@@ -31,12 +31,10 @@ import groovy.transform.TypeChecked
 
 @TypeChecked
 class VndrParser {
-    public List<DependencyNode> parseVendorConf(String vendorConfContents) {
+    public List<DependencyNode> parseVendorConf(List<String> vendorConfContents) {
         List<DependencyNode> nodes = new ArrayList<>()
-        String contents = vendorConfContents.trim()
-        def lines = contents.split('\n')
         //TODO test against moby
-        lines.each { String line ->
+        vendorConfContents.each { String line ->
             if (line?.trim() && !line.startsWith('#')) {
                 def parts = line.split(' ')
                 final ExternalId dependencyExternalId = new NameVersionExternalId(GoDepBomTool.GOLANG, parts[0].trim(), parts[1].trim())

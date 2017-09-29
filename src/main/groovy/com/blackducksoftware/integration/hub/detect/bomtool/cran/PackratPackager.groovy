@@ -35,18 +35,17 @@ public class PackratPackager {
     @Autowired
     private final NameVersionNodeTransformer nameVersionNodeTransformer
 
-    public List<DependencyNode> extractProjectDependencies(final String packratLock) {
+    public List<DependencyNode> extractProjectDependencies(final List<String> packratLockContents) {
         def packRatNodeParser = new PackRatNodeParser()
-        List<DependencyNode> dependencies = packRatNodeParser.parseProjectDependencies(nameVersionNodeTransformer, packratLock)
+        List<DependencyNode> dependencies = packRatNodeParser.parseProjectDependencies(nameVersionNodeTransformer, packratLockContents)
 
         dependencies
     }
 
-    public String getProjectName(final String descriptionContents) {
-        String[] lines = descriptionContents.split('\n')
+    public String getProjectName(final List<String> descriptionContents) {
         String name
 
-        for (String line : lines) {
+        for (String line : descriptionContents) {
             if (line.contains('Package: ')) {
                 name = line.replace('Package: ', '').trim()
                 break
@@ -56,9 +55,8 @@ public class PackratPackager {
         name
     }
 
-    public String getVersion(String descriptionContents) {
-        String[] lines = descriptionContents.split('\n')
-        String versionLine = lines.find { it.contains('Version: ') }
+    public String getVersion(final List<String> descriptionContents) {
+        String versionLine = descriptionContents.find { it.contains('Version: ') }
 
         if (versionLine != null) {
             return versionLine.replace('Version: ', '').trim()

@@ -31,7 +31,7 @@ class ExecutableRunnerException extends Exception {
     }
 
     ExecutableRunnerException(final ExecutableOutput executableOutput) {
-        super("${executableOutput.standardOutput}\n\n${executableOutput.errorOutput}")
+        super("${executableOutput.standardOutput}${System.lineSeparator}${System.lineSeparator}${executableOutput.errorOutput}")
     }
 
     ExecutableRunnerException(String exceptionOutput) {

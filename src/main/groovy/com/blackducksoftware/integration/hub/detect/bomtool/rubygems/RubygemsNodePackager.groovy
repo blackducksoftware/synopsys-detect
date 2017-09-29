@@ -36,7 +36,7 @@ public class RubygemsNodePackager {
     @Autowired
     NameVersionNodeTransformer nameVersionNodeTransformer
 
-    public List<DependencyNode> extractProjectDependencies(final String gemlock) {
+    public List<DependencyNode> extractProjectDependencies(final List<String> gemlock) {
         def gemlockNodeParser = new GemlockNodeParser()
         List<DependencyNode> dependencies = gemlockNodeParser.parseProjectDependencies(nameVersionNodeTransformer, gemlock)
 

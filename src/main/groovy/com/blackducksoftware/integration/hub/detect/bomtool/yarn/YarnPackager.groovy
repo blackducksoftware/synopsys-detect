@@ -42,14 +42,14 @@ class YarnPackager {
     @Autowired
     NameVersionNodeTransformer nameVersionNodeTransformer
 
-    public Set<DependencyNode> parse(String yarnLockText) {
+    public Set<DependencyNode> parse(List<String> yarnLockText) {
         def rootNode = new NameVersionNodeImpl()
         rootNode.name = "detectRootNode - ${UUID.randomUUID()}"
         def nameVersionLinkNodeBuilder = new LinkedNameVersionNodeBuilder(rootNode)
 
         NameVersionNode currentNode = null
         boolean dependenciesStarted = false
-        for (String line : yarnLockText.split('\n')) {
+        for (String line : yarnLockText) {
             if (!line.trim()) {
                 continue
             }

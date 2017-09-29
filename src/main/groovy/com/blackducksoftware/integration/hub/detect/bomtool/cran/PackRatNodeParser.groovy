@@ -43,19 +43,18 @@ public class PackRatNodeParser {
     private HashSet<String> directDependencyNames
     private NameVersionNode currentParent
 
-    List<DependencyNode> parseProjectDependencies(NameVersionNodeTransformer nameVersionNodeTransformer, final String packratLockContents) {
+    List<DependencyNode> parseProjectDependencies(NameVersionNodeTransformer nameVersionNodeTransformer, final List<String> packratLockContents) {
         rootNameVersionNode = new NameVersionNodeImpl([name: 'packratLockFileRoot'])
         nameVersionNodeBuilder = new NameVersionNodeBuilder(rootNameVersionNode)
         directDependencyNames = new HashSet<>()
         currentParent = null
 
-        String[] lines = packratLockContents.split('\n')
         String name
         String version
         List<DependencyNode> projectDependencies = []
         boolean newDependency = false
 
-        for (String line : lines) {
+        for (String line : packratLockContents) {
             if (line.contains('Package: ')) {
                 name = line.replace('Package: ', '').trim()
                 directDependencyNames.add(name)

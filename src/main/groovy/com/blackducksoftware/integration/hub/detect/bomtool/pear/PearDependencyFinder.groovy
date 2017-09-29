@@ -60,16 +60,15 @@ class PearDependencyFinder {
         } else if (!pearDependencies.standardOutput || !pearListing.standardOutput) {
             logger.error("No information retrieved from running pear commands")
         } else {
-            def nameList = findDependencyNames(pearDependencies.standardOutput)
-            childNodes = createPearDependencyNodeFromList(pearListing.standardOutput, nameList)
+            def nameList = findDependencyNames(pearDependencies.standardOutputAsList)
+            childNodes = createPearDependencyNodeFromList(pearListing.standardOutputAsList, nameList)
         }
 
         childNodes
     }
 
-    private List<String> findDependencyNames(String list) {
+    private List<String> findDependencyNames(List<String> content) {
         def nameList = []
-        String[] content = list.split('\n')
 
         if (content.size() > 5) {
             def listing = content[5..-1]
@@ -95,9 +94,8 @@ class PearDependencyFinder {
         nameList
     }
 
-    private Set<DependencyNode> createPearDependencyNodeFromList(String list, List<String> dependencyNames) {
+    private Set<DependencyNode> createPearDependencyNodeFromList(List<String> dependencyList, List<String> dependencyNames) {
         Set<DependencyNode> childrenNodes = []
-        String[] dependencyList = list.split('\n')
 
         if (dependencyList.size() > 3) {
             def listing = dependencyList[3..-1]
