@@ -24,23 +24,50 @@ package com.blackducksoftware.integration.hub.detect.nameversion
 
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.Forge
+import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 
 import groovy.transform.TypeChecked
 
 @Component
 @TypeChecked
 class NameVersionNodeTransformer {
-    public DependencyNode createDependencyNode(Forge defaultForge, NameVersionNode nameVersionNode) {
+    public ExternalIdFactory externalIdFactory;
+    public NameVersionNodeTransformer(ExternalIdFactory externalIdFactory){
+        this.externalIdFactory = externalIdFactory;
+    }
+
+    public DependencyGraph createDependencyGraph(Forge defaultForge, NameVersionNode nameVersionNode) {
+        return createDependencyGraph(defaultForge, nameVersionNode, true)
+    }
+
+    public DependencyGraph createDependencyGraph(Forge defaultForge, NameVersionNode nameVersionNode, Boolean rootIsRealRoot) {
+        MutableDependencyGraph graph = new MutableMapDependencyGraph()
+
+        def root = addNameVersionNodeToDependencyGraph(graph, defaultForge, nameVersionNode)
+
+        if (rootIsRealRoot){
+            graph.addChildToRoot(root);
+        }else{
+            graph.addChildrenToRoot(graph.getChildrenForParent(root))
+        }
+        return graph
+    }
+
+    public Dependency addNameVersionNodeToDependencyGraph(MutableDependencyGraph graph, Forge defaultForge, NameVersionNode nameVersionNode) {
         final Forge forge = nameVersionNode.metadata?.forge ? nameVersionNode.metadata.forge : defaultForge
-        def externalId = new NameVersionExternalId(forge, nameVersionNode.name, nameVersionNode.version)
-        def dependencyNode = new DependencyNode(nameVersionNode.name, nameVersionNode.version, externalId)
+        def externalId = externalIdFactory.createNameVersionExternalId(forge, nameVersionNode.name, nameVersionNode.version)
+        def parentDependency = new Dependency(nameVersionNode.name, nameVersionNode.version, externalId)
+
         nameVersionNode.children.each {
-            dependencyNode.children.add(createDependencyNode(defaultForge, it))
+            def childDependency = addNameVersionNodeToDependencyGraph(graph, defaultForge, it);
+            graph.addParentWithChild(parentDependency, childDependency);
         }
 
-        dependencyNode
+        parentDependency
     }
 }

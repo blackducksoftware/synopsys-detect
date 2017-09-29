@@ -27,10 +27,9 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.PathExternalId
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.bomtool.cpan.CpanPackager
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
@@ -44,10 +43,12 @@ import groovy.transform.TypeChecked
 class CpanBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(CpanBomTool.class)
 
-    public static Forge CPAN_FORGE = new Forge('cpan', '-')
-
     @Autowired
     CpanPackager cpanPackager
+
+
+    @Autowired
+    ExternalIdFactory externalIdFactory
 
     private String cpanExecutablePath
     private String cpanmExecutablePath
@@ -82,9 +83,9 @@ class CpanBomTool extends BomTool {
         ExecutableOutput showdepsOutput = executableRunner.runExe(cpanmExecutablePath, '--showdeps', '.')
         String showdeps = showdepsOutput.getStandardOutput()
 
-        Set<DependencyNode> dependenciesSet = cpanPackager.makeDependencyNodes(listText, showdeps)
-        ExternalId externalId = new PathExternalId(CPAN_FORGE, detectConfiguration.sourcePath)
-        def detectCodeLocation = new DetectCodeLocation(BomToolType.CPAN, detectConfiguration.sourcePath, externalId, dependenciesSet)
+        DependencyGraph dependencyGraph = cpanPackager.makeDependencyGraph(listText, showdeps)
+        ExternalId externalId = externalIdFactory.createPathExternalId(CPAN_FORGE, detectConfiguration.sourcePath)
+        def detectCodeLocation = new DetectCodeLocation(BomToolType.CPAN, detectConfiguration.sourcePath, externalId, dependencyGraph)
 
         [detectCodeLocation]
     }

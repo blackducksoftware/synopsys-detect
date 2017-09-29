@@ -22,8 +22,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.model
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 
 class DetectCodeLocation {
     private final BomToolType bomToolType
@@ -31,32 +31,23 @@ class DetectCodeLocation {
     private final String bomToolProjectName
     private final String bomToolProjectVersionName
     private final ExternalId bomToolProjectExternalId
-    private final Set<DependencyNode> dependencies
+    private final DependencyGraph dependencyGraph
 
-    DetectCodeLocation(BomToolType bomToolType, String sourcePath, ExternalId bomToolProjectExternalId, Set<DependencyNode> dependencies) {
+    DetectCodeLocation(BomToolType bomToolType, String sourcePath, ExternalId bomToolProjectExternalId, DependencyGraph dependencyGraph) {
         this.bomToolType = bomToolType
         this.sourcePath = sourcePath
         this.bomToolProjectExternalId = bomToolProjectExternalId
-        this.dependencies = dependencies
+        this.dependencyGraph = dependencyGraph
     }
 
     DetectCodeLocation(BomToolType bomToolType, String sourcePath, String bomToolProjectName, String bomToolProjectVersionName,
-    ExternalId bomToolProjectExternalId, Set<DependencyNode> dependencies) {
+    ExternalId bomToolProjectExternalId, DependencyGraph dependencyGraph) {
         this.bomToolType = bomToolType
         this.sourcePath = sourcePath
         this.bomToolProjectName = bomToolProjectName
         this.bomToolProjectVersionName = bomToolProjectVersionName
         this.bomToolProjectExternalId = bomToolProjectExternalId
-        this.dependencies = dependencies
-    }
-
-    DetectCodeLocation(final BomToolType bomToolType, final String sourcePath, final DependencyNode rootDependencyNode) {
-        this.bomToolType = bomToolType
-        this.sourcePath = sourcePath
-        this.bomToolProjectName = rootDependencyNode.name
-        this.bomToolProjectVersionName = rootDependencyNode.version
-        this.bomToolProjectExternalId = rootDependencyNode.externalId
-        this.dependencies = rootDependencyNode.children
+        this.dependencyGraph = dependencyGraph
     }
 
     BomToolType getBomToolType() {
@@ -79,7 +70,7 @@ class DetectCodeLocation {
         bomToolProjectExternalId
     }
 
-    Set<DependencyNode> getDependencies() {
-        dependencies
+    DependencyGraph getDependencyGraph() {
+        dependencyGraph
     }
 }

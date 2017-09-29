@@ -28,10 +28,10 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.PathExternalId
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.Forge
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.bomtool.go.DepPackager
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
@@ -59,6 +59,9 @@ class GoDepBomTool extends BomTool {
 
     @Autowired
     DepPackager goPackager
+
+    @Autowired
+    ExternalIdFactory externalIdFactory
 
     @Override
     public BomToolType getBomToolType() {
@@ -95,9 +98,9 @@ class GoDepBomTool extends BomTool {
     List<DetectCodeLocation> extractDetectCodeLocations() {
         String goDepExecutable = findGoDepExecutable()
 
-        List<DependencyNode> dependencies = goPackager.makeDependencyNodes(sourcePath, goDepExecutable)
-        ExternalId externalId = new PathExternalId(GOLANG, sourcePath)
-        DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, externalId, new HashSet(dependencies))
+        DependencyGraph graph = goPackager.makeDependencyGraph(sourcePath, goDepExecutable)
+        ExternalId externalId = externalIdFactory.createPathExternalId(GOLANG, sourcePath)
+        DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, externalId, graph)
 
         [detectCodeLocation]
     }
@@ -124,20 +127,11 @@ class GoDepBomTool extends BomTool {
         def goOutputDirectory = goDep.getParentFile()
         goOutputDirectory.mkdirs()
         logger.debug("Retrieving the Go Dep tool")
-        Executable getGoDep = new Executable(goOutputDirectory, goExecutable, [
-            'get',
-            '-u',
-            '-v',
-            '-d',
-            'github.com/golang/dep/cmd/dep'
-        ])
+        Executable getGoDep = new Executable(goOutputDirectory, goExecutable, ['get', '-u', '-v', '-d', 'github.com/golang/dep/cmd/dep'])
         executableRunner.execute(getGoDep)
 
         logger.debug("Building the Go Dep tool in ${goOutputDirectory}")
-        Executable buildGoDep = new Executable(goOutputDirectory, goExecutable, [
-            'build',
-            'github.com/golang/dep/cmd/dep'
-        ])
+        Executable buildGoDep = new Executable(goOutputDirectory, goExecutable, ['build', 'github.com/golang/dep/cmd/dep'])
         executableRunner.execute(buildGoDep)
         goDep.getAbsolutePath()
     }

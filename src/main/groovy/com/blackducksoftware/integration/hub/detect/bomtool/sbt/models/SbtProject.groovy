@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2017 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
  *
@@ -22,13 +22,16 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.sbt.models
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.detect.model.BomToolType
 
 import groovy.transform.TypeChecked
 
 @TypeChecked
-class SbtConfigurationDependencyTree {
-    String configuration
-
-    DependencyNode rootNode
+class SbtProject {
+    public String projectName
+    public String projectVersion
+    public ExternalId projectExternalId
+    public BomToolType bomToolType
+    public List<SbtDependencyModule> modules
 }

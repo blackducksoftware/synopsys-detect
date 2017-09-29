@@ -18,14 +18,13 @@ import org.junit.Test
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 
 class PipInspectorTreeParserTest {
 
     private PipInspectorTreeParser parser
-    private NameVersionNodeTransformer nameVersionNodeTransformer
+    private TestUtil testUtil = new TestUtil()
 
     private String name = 'pip'
     private String version = '1.0.0'
@@ -37,7 +36,7 @@ class PipInspectorTreeParserTest {
     @Before
     void init() {
         parser = new PipInspectorTreeParser()
-        nameVersionNodeTransformer = new NameVersionNodeTransformer()
+        parser.externalIdFactory = new ExternalIdFactory()
     }
 
     @Test
@@ -51,24 +50,24 @@ class PipInspectorTreeParserTest {
 
     @Test
     void lineToNodeTest() {
-        NameVersionNode validNode1 = parser.lineToNode(line1)
+        DependencyNode validNode1 = parser.lineToNode(line1)
         Assert.assertEquals(name, validNode1.name)
         Assert.assertEquals(version, validNode1.version)
         Assert.assertTrue(validNode1.children.isEmpty())
 
-        NameVersionNode validNode2 = parser.lineToNode(line2)
+        DependencyNode validNode2 = parser.lineToNode(line2)
         Assert.assertEquals(validNode1.name, validNode2.name)
         Assert.assertEquals(validNode1.version, validNode2.version)
         Assert.assertEquals(validNode1.children, validNode2.children)
 
-        NameVersionNode invalidNode = parser.lineToNode(line3)
+        DependencyNode invalidNode = parser.lineToNode(line3)
         Assert.assertNull(invalidNode)
     }
 
     @Test
     void validParseTest() {
-        final String name = PipInspectorTreeParser.UNKNOWN_PROJECT_NAME
-        final String version = PipInspectorTreeParser.UNKNOWN_PROJECT_VERSION
+        final String name = 'name'
+        final String version = 'version'
         final String space = PipInspectorTreeParser.INDENTATION
         final String child1Text = 'apple' + PipInspectorTreeParser.SEPARATOR + '5.3.2'
         final String child2Text = 'orange' + PipInspectorTreeParser.SEPARATOR + '4.3.1'
@@ -84,11 +83,11 @@ ${space + child2Text}
 ${space + child3Text}
 """
 
-        DependencyNode root = parser.parse(nameVersionNodeTransformer, validText)
-        ExternalId expectedExternalId = new NameVersionExternalId(Forge.PYPI, '', '')
-        Assert.assertEquals('', root.name)
-        Assert.assertEquals('', root.version)
-        Assert.assertEquals(expectedExternalId, root.externalId)
+        DependencyNode root = parser.parse(validText)
+        ExternalId expectedExternalId = parser.externalIdFactory.createNameVersionExternalId(Forge.PYPI, 'name', 'version')
+        Assert.assertEquals('name', root.name)
+        Assert.assertEquals('version', root.version)
+        testUtil.testJson(expectedExternalId.toString(), root.externalId.toString())
         Assert.assertEquals(3, root.children.size())
     }
 
@@ -98,7 +97,7 @@ ${space + child3Text}
         i am not a valid file
         the result should be null
         """
-        DependencyNode root = parser.parse(nameVersionNodeTransformer, invalidText)
+        DependencyNode root = parser.parse(invalidText)
         Assert.assertNull(root)
     }
 }

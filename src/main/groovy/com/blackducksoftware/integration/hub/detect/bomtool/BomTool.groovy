@@ -24,6 +24,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool
 
 import org.springframework.beans.factory.annotation.Autowired
 
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
@@ -52,6 +53,9 @@ abstract class BomTool {
 
     @Autowired
     NameVersionNodeTransformer nameVersionNodeTransformer
+
+    @Autowired
+    ExternalIdFactory externalIdFactory
 
     abstract BomToolType getBomToolType()
     abstract boolean isBomToolApplicable()

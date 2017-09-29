@@ -20,16 +20,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.pip
-
-import com.blackducksoftware.integration.hub.detect.type.ExecutableType
+package com.blackducksoftware.integration.hub.detect.bomtool.sbt.reports.model
 
 import groovy.transform.TypeChecked
 
 @TypeChecked
-class PythonEnvironment {
-    ExecutableType pythonType
-    ExecutableType pipType
-    String pythonPath
-    String pipPath
+public class SbtRevision {
+    String name
+
+    List<SbtCaller> callers
 }

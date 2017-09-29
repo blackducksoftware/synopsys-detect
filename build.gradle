@@ -57,7 +57,7 @@ targetCompatibility = 1.7
 
 build {
     finalizedBy 'updateAirGapDependencies'
-    
+
     doLast {
         def shellScriptTemplateFile = new File("${projectDir}/src/main/resources/hub-detect-sh")
         def shellScriptContents = shellScriptTemplateFile.getText('UTF-8')
@@ -85,7 +85,7 @@ configurations {
 }
 
 dependencies {
-    compile 'com.blackducksoftware.integration:hub-common:14.5.1'
+    compile 'com.blackducksoftware.integration:hub-common:17.0.0'
     compile 'org.springframework.boot:spring-boot-starter'
     compile 'org.apache.maven.shared:maven-invoker:3.0.0'
     compile 'com.esotericsoftware.yamlbeans:yamlbeans:1.11'
@@ -96,7 +96,7 @@ dependencies {
     compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.0'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.9.0'
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.9.0'
-    
+
     airGapConfig "com.blackducksoftware.integration:integration-gradle-inspector:${gradleInspectorVersion}"
 
     testCompile 'org.springframework.boot:spring-boot-starter-test'
@@ -133,7 +133,7 @@ task zipGradleAirGapDependencies(type: Zip) {
 	include '*.jar'
 	archiveName "GradleInspectorAirGap_${gradleInspectorVersion}.zip"
 	destinationDir(file(buildArtifactFolder))
-} 
+}
 
 task downloadNugetAirGapDependencies {
     doLast {
