@@ -57,6 +57,9 @@ class DetectFileManager {
         newDirectory.mkdir()
         if (detectConfiguration.cleanupBomToolFiles) {
             newDirectory.deleteOnExit()
+            for(File file : newDirectory.listFiles()) {
+                file.deleteOnExit()
+            }
         }
 
         newDirectory

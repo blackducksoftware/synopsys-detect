@@ -100,10 +100,10 @@ class DockerBomTool extends BomTool {
             detectFileManager.writeToFile(shellScriptFile, shellScriptContents)
             shellScriptFile.setExecutable(true)
         }
+        File workingDirectory = detectFileManager.createDirectory(getBomToolType())
 
-        File dockerPropertiesFile = detectFileManager.createFile(BomToolType.DOCKER, 'application.properties')
-        File dockerBomToolDirectory =  dockerPropertiesFile.getParentFile()
-        dockerProperties.populatePropertiesFile(dockerPropertiesFile, dockerBomToolDirectory)
+        File dockerPropertiesFile = detectFileManager.createFile(workingDirectory, 'application.properties')
+        dockerProperties.populatePropertiesFile(dockerPropertiesFile, workingDirectory)
 
         boolean usingTarFile = false
         String imageArgument = ''
@@ -122,29 +122,29 @@ class DockerBomTool extends BomTool {
 
         List<String> bashArguments = [
             "-c",
-            "${shellScriptFile.absolutePath} --spring.config.location=\"${dockerBomToolDirectory.getAbsolutePath()}\" --dry.run=true ${imageArgument}" as String
+            "${shellScriptFile.absolutePath} --spring.config.location=\"${workingDirectory.getAbsolutePath()}\" --dry.run=true ${imageArgument}" as String
         ]
-        Executable dockerExecutable = new Executable(shellScriptFile.parentFile, environmentVariables, bashExecutablePath, bashArguments)
+        Executable dockerExecutable = new Executable(workingDirectory, environmentVariables, bashExecutablePath, bashArguments)
         executableRunner.execute(dockerExecutable)
 
         if (usingTarFile) {
             hubSignatureScanner.registerPathToScan(new File(detectConfiguration.dockerTar))
         } else {
-            File producedTarFile = detectFileManager.findFile(dockerBomToolDirectory, tarFileNamePattern)
+            File producedTarFile = detectFileManager.findFile(workingDirectory, tarFileNamePattern)
             if (producedTarFile) {
                 hubSignatureScanner.registerPathToScan(producedTarFile)
             } else {
-                logMissingFile(dockerBomToolDirectory, tarFileNamePattern)
+                logMissingFile(workingDirectory, tarFileNamePattern)
             }
         }
 
-        File dependencyNodeJsonFile = detectFileManager.findFile(dockerBomToolDirectory, dependenciesFileNamePattern)
+        File dependencyNodeJsonFile = detectFileManager.findFile(workingDirectory, dependenciesFileNamePattern)
         if (dependencyNodeJsonFile) {
             String codeLocationJson = dependencyNodeJsonFile.getText(StandardCharsets.UTF_8.toString())
             DetectCodeLocation codeLocation = gson.fromJson(codeLocationJson, DetectCodeLocation.class)
             return [codeLocation]
         } else {
-            logMissingFile(dockerBomToolDirectory, dependenciesFileNamePattern)
+            logMissingFile(workingDirectory, dependenciesFileNamePattern)
         }
 
         []
