@@ -48,8 +48,8 @@ class DetectFileManager {
     private List<File> directoriesToCleanup = new ArrayList<>()
 
     public void cleanupDirectories() {
-        if(directoriesToCleanup) {
-            for(File directory : directoriesToCleanup) {
+        if (directoriesToCleanup) {
+            for (File directory : directoriesToCleanup) {
                 FileUtils.deleteDirectory(directory)
             }
         }
