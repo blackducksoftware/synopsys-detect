@@ -1,0 +1,80 @@
+{
+  "externalDataIdRelationships": {
+    "data:anaconda/mkl/2017_0_3_0_osx_64": [],
+    "data:anaconda/numpy/1_13_1_py36_0_osx_64": [],
+    "data:anaconda/openssl/1_0_2l_0_osx_64": [],
+    "data:anaconda/pip/9_0_1_py36_1_osx_64": [],
+    "data:anaconda/python/3_6_1_2_osx_64": [],
+    "data:anaconda/readline/6_2_2_osx_64": [],
+    "data:anaconda/setuptools/27_2_0_py36_0_osx_64": [],
+    "data:anaconda/sqlite/3_13_0_0_osx_64": [],
+    "data:anaconda/tk/8_5_18_0_osx_64": [],
+    "data:anaconda/wheel/0_29_0_py36_0_osx_64": [],
+    "data:anaconda/xz/5_2_2_1_osx_64": [],
+    "data:anaconda/zlib/1_2_8_3_osx_64": []
+  },
+  "dependencySummaries": {
+    "data:anaconda/mkl/2017_0_3_0_osx_64": {
+      "name": "mkl",
+      "version": "2017.0.3-0-osx-64"
+    },
+    "data:anaconda/numpy/1_13_1_py36_0_osx_64": {
+      "name": "numpy",
+      "version": "1.13.1-py36_0-osx-64"
+    },
+    "data:anaconda/openssl/1_0_2l_0_osx_64": {
+      "name": "openssl",
+      "version": "1.0.2l-0-osx-64"
+    },
+    "data:anaconda/pip/9_0_1_py36_1_osx_64": {
+      "name": "pip",
+      "version": "9.0.1-py36_1-osx-64"
+    },
+    "data:anaconda/python/3_6_1_2_osx_64": {
+      "name": "python",
+      "version": "3.6.1-2-osx-64"
+    },
+    "data:anaconda/readline/6_2_2_osx_64": {
+      "name": "readline",
+      "version": "6.2-2-osx-64"
+    },
+    "data:anaconda/setuptools/27_2_0_py36_0_osx_64": {
+      "name": "setuptools",
+      "version": "27.2.0-py36_0-osx-64"
+    },
+    "data:anaconda/sqlite/3_13_0_0_osx_64": {
+      "name": "sqlite",
+      "version": "3.13.0-0-osx-64"
+    },
+    "data:anaconda/tk/8_5_18_0_osx_64": {
+      "name": "tk",
+      "version": "8.5.18-0-osx-64"
+    },
+    "data:anaconda/wheel/0_29_0_py36_0_osx_64": {
+      "name": "wheel",
+      "version": "0.29.0-py36_0-osx-64"
+    },
+    "data:anaconda/xz/5_2_2_1_osx_64": {
+      "name": "xz",
+      "version": "5.2.2-1-osx-64"
+    },
+    "data:anaconda/zlib/1_2_8_3_osx_64": {
+      "name": "zlib",
+      "version": "1.2.8-3-osx-64"
+    }
+  },
+  "rootExternalDataIds": [
+    "data:anaconda/mkl/2017_0_3_0_osx_64",
+    "data:anaconda/numpy/1_13_1_py36_0_osx_64",
+    "data:anaconda/openssl/1_0_2l_0_osx_64",
+    "data:anaconda/pip/9_0_1_py36_1_osx_64",
+    "data:anaconda/python/3_6_1_2_osx_64",
+    "data:anaconda/readline/6_2_2_osx_64",
+    "data:anaconda/setuptools/27_2_0_py36_0_osx_64",
+    "data:anaconda/sqlite/3_13_0_0_osx_64",
+    "data:anaconda/tk/8_5_18_0_osx_64",
+    "data:anaconda/wheel/0_29_0_py36_0_osx_64",
+    "data:anaconda/xz/5_2_2_1_osx_64",
+    "data:anaconda/zlib/1_2_8_3_osx_64"
+  ]
+}

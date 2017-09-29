@@ -15,13 +15,13 @@ import static org.junit.Assert.*
 
 import org.junit.Before
 import org.junit.Test
-
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.nameversion.builder.LinkedNameVersionNodeBuilder
 import com.blackducksoftware.integration.hub.detect.nameversion.metadata.LinkMetadata
+import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphTestUtil
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 
 class YarnPackagerTest {
@@ -36,8 +36,8 @@ class YarnPackagerTest {
     @Test
     public void parseTest() {
         String yarnLockText = testUtil.getResourceAsUTF8String('yarn/yarn.lock')
-        Set<DependencyNode> dependencyNodes = yarnPackager.parse(yarnLockText)
-        testUtil.testJsonResource('yarn/expected.json', dependencyNodes)
+        DependencyGraph dependencyGraph = yarnPackager.parse(yarnLockText)
+        DependencyGraphTestUtil.assertGraph('yarn/expected_graph.json', dependencyGraph);
     }
 
     @Test

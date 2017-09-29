@@ -25,8 +25,12 @@ package com.blackducksoftware.integration.hub.detect.bomtool.npm
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.Forge
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.detect.model.BomToolType
+import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
@@ -45,11 +49,14 @@ class NpmLockfilePackager {
     @Autowired
     NameVersionNodeTransformer nameVersionNodeTransformer
 
-    public DependencyNode parse(String lockFileText) {
+    @Autowired
+    ExternalIdFactory externalIdFactory
+
+    public DetectCodeLocation parse(String sourcePath, String lockFileText) {
         NpmProject npmProject = gson.fromJson(lockFileText, NpmProject.class)
 
         NameVersionNode root = new NameVersionNodeImpl([name: npmProject.name, version: npmProject.version])
-        NameVersionNodeBuilder builder = new LinkedNameVersionNodeBuilder(root) 
+        NameVersionNodeBuilder builder = new LinkedNameVersionNodeBuilder(root)
 
         npmProject.dependencies.each { name, npmDependency ->
             NameVersionNode dependency = new NameVersionNodeImpl([name: name, version: npmDependency.version])
@@ -61,6 +68,8 @@ class NpmLockfilePackager {
             }
         }
 
-        nameVersionNodeTransformer.createDependencyNode(Forge.NPM, builder.build())
+        ExternalId projectId = externalIdFactory.createNameVersionExternalId(Forge.NPM, npmProject.name, npmProject.version)
+        DependencyGraph graph = nameVersionNodeTransformer.createDependencyGraph(Forge.NPM, builder.build(), false)
+        DetectCodeLocation codeLocation = new DetectCodeLocation(BomToolType.NPM, sourcePath, npmProject.name, npmProject.version, projectId, graph);
     }
 }

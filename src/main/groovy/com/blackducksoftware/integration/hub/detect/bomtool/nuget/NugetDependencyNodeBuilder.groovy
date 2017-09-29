@@ -21,10 +21,12 @@
  * under the License.
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.nuget
-
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.Forge
+import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.model.NugetPackageId
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.model.NugetPackageSet
 
@@ -34,9 +36,11 @@ import groovy.transform.TypeChecked
 public class NugetDependencyNodeBuilder {
 
     final List<NugetPackageSet> packageSets = new ArrayList<NugetPackageSet>()
-    final Map<NugetPackageId, DependencyNode> nodeMap = new HashMap<>()
 
-    public NugetDependencyNodeBuilder() {
+
+    public ExternalIdFactory externalIdFactory;
+    public NugetDependencyNodeBuilder(ExternalIdFactory externalIdFactory){
+        this.externalIdFactory = externalIdFactory;
     }
 
     public void addPackageSets(List<NugetPackageSet> sets) {
@@ -46,39 +50,25 @@ public class NugetDependencyNodeBuilder {
         packageSets.add(set)
     }
 
-    public Set<DependencyNode> createDependencyNodes(List<NugetPackageId> packageDependencies) {
-        def nodes = new HashSet<DependencyNode>()
-        packageDependencies.each {
-            nodes.add(getOrCreateDependencyNode(it))
+    public DependencyGraph createDependencyGraph(List<NugetPackageId> packageDependencies) {
+        MutableDependencyGraph graph = new MutableMapDependencyGraph();
+
+        for (def packageSet : packageSets){
+            for (def id : packageSet.dependencies){
+                graph.addParentWithChild(convertPackageId(packageSet.getPackageId()), convertPackageId(id))
+            }
         }
-        nodes
+
+        packageDependencies.each {
+            graph.addChildToRoot(convertPackageId(it))
+        }
+
+        graph
     }
 
-
-    public DependencyNode getOrCreateDependencyNode(NugetPackageId id) {
-        def node = nodeMap.get(id, null)
-        if (node == null) {
-            def externalId = new NameVersionExternalId(Forge.NUGET, id.name, id.version)
-            node = new DependencyNode(id.name, id.version, externalId)
-            nodeMap.put(id, node)
-
-            //restore children
-            def packageSet = packageSets.find{ set ->
-                set.packageId.equals(id)
-            }
-
-            def nodeChildren = packageSet.dependencies.collect{ child ->  getOrCreateDependencyNode(child) }
-
-            node.children.addAll(nodeChildren)
-
-            //restore parents
-            def parents = packageSets.findAll{ set ->
-                set.dependencies.contains(packageSet.packageId) //all packages that depend on me. so parent.children -> me
-            }
-
-            parents.each{pkg -> getOrCreateDependencyNode(pkg.packageId).children.add(node)}
-        }
-
+    private Dependency convertPackageId(NugetPackageId id){
+        def externalId = externalIdFactory.createNameVersionExternalId(Forge.NUGET, id.name, id.version)
+        def node = new Dependency(id.name, id.version, externalId)
         node
     }
 }

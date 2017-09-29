@@ -28,9 +28,9 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.PathExternalId
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.bomtool.go.godep.GoGodepsParser
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
@@ -48,6 +48,9 @@ class GoGodepsBomTool extends BomTool {
     @Autowired
     Gson gson
 
+    @Autowired
+    ExternalIdFactory externalIdFactory
+
     @Override
     public BomToolType getBomToolType() {
         return BomToolType.GO_GODEP
@@ -59,15 +62,14 @@ class GoGodepsBomTool extends BomTool {
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
-        GoGodepsParser goDepParser = new GoGodepsParser(gson)
+        GoGodepsParser goDepParser = new GoGodepsParser(gson, externalIdFactory)
         def goDepsDirectory = new File(sourcePath, GODEPS_DIRECTORYNAME)
         def goDepsFile = new File(goDepsDirectory, "Godeps.json")
-        List<DependencyNode> dependencies = goDepParser.extractProjectDependencies(goDepsFile.text)
-        Set<DependencyNode> dependenciesSet = new HashSet<>(dependencies)
+        DependencyGraph dependencyGraph = goDepParser.extractProjectDependencies(goDepsFile.text)
 
-        ExternalId externalId = new PathExternalId(GoDepBomTool.GOLANG, sourcePath)
+        ExternalId externalId = externalIdFactory.createPathExternalId(GoDepBomTool.GOLANG, sourcePath)
 
-        def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, externalId, dependenciesSet)
+        def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, externalId, dependencyGraph)
         [codeLocation]
     }
 }

@@ -27,9 +27,11 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeBuilder
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.MavenExternalId
+import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
@@ -57,17 +59,23 @@ class GradleDependenciesParser {
     String projectName = ""
     String projectVersionName = ""
 
-    DetectCodeLocation parseDependencies(DetectProject detectProject, InputStream dependenciesInputStream) {
-        DependencyNode tempRoot = new DependencyNode("project", "version", new MavenExternalId("group", "project", "version"))
+    public ExternalIdFactory externalIdFactory;
 
-        DependencyNodeBuilder dependencyNodeBuilder = new DependencyNodeBuilder(tempRoot)
+    public GradleDependenciesParser(ExternalIdFactory externalIdFactory){
+        this.externalIdFactory = externalIdFactory;
+    }
+
+    DetectCodeLocation parseDependencies(DetectProject detectProject, InputStream dependenciesInputStream) {
+        //DependencyNode tempRoot = new DependencyNode("project", "version", externalIdFactory.createMavenExternalId("group", "project", "version"))
+
+        MutableDependencyGraph graph = new MutableMapDependencyGraph();
+        //DependencyNodeBuilder dependencyNodeBuilder = new DependencyNodeBuilder(tempRoot)
         boolean processingMetaData = false
         boolean processingConfiguration = false
         String configurationName = null
         String previousLine = null
-        Stack<DependencyNode> nodeStack = new Stack<>()
-        nodeStack.push(tempRoot)
-        DependencyNode previousNode = null
+        Stack<Dependency> nodeStack = new Stack<>()
+        Dependency previousNode = null
         int treeLevel = 0
 
         dependenciesInputStream.eachLine("UTF-8") { line ->
@@ -92,7 +100,6 @@ class GradleDependenciesParser {
                 configurationName = null
                 previousLine = null
                 nodeStack = new Stack()
-                nodeStack.push(tempRoot)
                 previousNode = null
                 treeLevel = 0
                 return
@@ -112,7 +119,7 @@ class GradleDependenciesParser {
                 return
             }
 
-            DependencyNode lineNode = createDependencyNodeFromOutputLine(line)
+            Dependency lineNode = createDependencyNodeFromOutputLine(line)
             if (lineNode == null) {
                 previousLine = line
                 return
@@ -126,7 +133,11 @@ class GradleDependenciesParser {
             }  else if (lineTreeLevel != treeLevel) {
                 logger.error "The tree level (${treeLevel}) and this line (${line}) with count ${lineTreeLevel} can't be reconciled."
             }
-            dependencyNodeBuilder.addChildNodeWithParents(lineNode, [nodeStack.peek()])
+            if (nodeStack.size() == 0){
+                graph.addChildToRoot(lineNode);
+            }else{
+                graph.addChildWithParents(lineNode, [nodeStack.peek()])
+            }
             previousNode = lineNode
             treeLevel = lineTreeLevel
             previousLine = line
@@ -135,8 +146,9 @@ class GradleDependenciesParser {
         detectProject.setProjectNameIfNotSet(rootProjectName)
         detectProject.setProjectVersionNameIfNotSet(rootProjectVersionName)
 
+        ExternalId id = externalIdFactory.createMavenExternalId(projectGroup, projectName, projectVersionName);
         new DetectCodeLocation(BomToolType.GRADLE, projectSourcePath, projectName, projectVersionName,
-                new MavenExternalId(projectGroup, projectName, projectVersionName), tempRoot.children)
+                id, graph)
     }
 
     public int getLineLevel(String line) {
@@ -164,7 +176,7 @@ class GradleDependenciesParser {
         return matches
     }
 
-    DependencyNode createDependencyNodeFromOutputLine(String outputLine) {
+    Dependency createDependencyNodeFromOutputLine(String outputLine) {
         if (StringUtils.isBlank(outputLine) || !outputLine.contains(COMPONENT_PREFIX)) {
             return null
         }
@@ -193,7 +205,7 @@ class GradleDependenciesParser {
         String artifact = gav[1]
         String version = gav[2]
 
-        new DependencyNode(artifact, version, new MavenExternalId(group, artifact, version))
+        new Dependency(artifact, version, externalIdFactory.createMavenExternalId(group, artifact, version))
     }
 
     private void processMetaDataLine(String metaDataLine) {
