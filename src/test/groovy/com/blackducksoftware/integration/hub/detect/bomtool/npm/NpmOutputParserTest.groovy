@@ -3,13 +3,9 @@ package com.blackducksoftware.integration.hub.detect.bomtool.npm
 import org.junit.Assert
 import org.junit.Test
 
-<<<<<<< HEAD
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalIdFactory
-=======
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphTestUtil
->>>>>>> master
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 
 public class NpmOutputParserTest {

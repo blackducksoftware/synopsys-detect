@@ -38,8 +38,10 @@ import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer
 import com.blackducksoftware.integration.hub.bdio.model.BdioBillOfMaterials
 import com.blackducksoftware.integration.hub.bdio.model.BdioExternalIdentifier
+import com.blackducksoftware.integration.hub.bdio.model.BdioNode
 import com.blackducksoftware.integration.hub.bdio.model.BdioProject
 import com.blackducksoftware.integration.hub.bdio.model.SimpleBdioDocument
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
@@ -52,8 +54,10 @@ import com.blackducksoftware.integration.util.ExcludedIncludedFilter
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil
 import com.google.gson.Gson
 
-// No type checking to access read-only property
+import groovy.transform.TypeChecked
+
 @Component
+@TypeChecked
 class DetectProjectManager {
     private final Logger logger = LoggerFactory.getLogger(DetectProjectManager.class)
 
@@ -61,7 +65,7 @@ class DetectProjectManager {
     DetectConfiguration detectConfiguration
 
     @Autowired
-    BdioPropertyHelper bdioPropertyHelper 
+    BdioPropertyHelper bdioPropertyHelper
 
     @Autowired
     BdioNodeFactory bdioNodeFactory
@@ -127,8 +131,8 @@ class DetectProjectManager {
             }
         }
         //ensure that the project name is set, use some reasonable defaults
-        detectProject.projectName = getProjectName(detectProject.projectName)
-        detectProject.projectVersionName = getProjectVersionName(detectProject.projectVersionName)
+        detectProject.setProjectNameIfNotSet(getProjectName(detectProject.projectName))
+        detectProject.setProjectNameIfNotSet(getProjectVersionName(detectProject.projectVersionName))
 
         if (!foundAnyBomTools) {
             logger.info("No package managers were detected - will register ${detectConfiguration.sourcePath} for signature scanning of ${detectProject.projectName}/${detectProject.projectVersionName}")
@@ -152,11 +156,13 @@ class DetectProjectManager {
             }
         }
 
+        Map<ExternalId, BdioNode> nodeMap = new HashMap<ExternalId, BdioNode>();
         detectProject.detectCodeLocations.each {
             if (detectConfiguration.aggregateBomName) {
-                aggregateBdioDocument.components.addAll(dependencyGraphTransformer.addComponentsGraph(aggregateBdioDocument.project, it.dependencies))
+                def components = dependencyGraphTransformer.transformDependencyGraph(it.dependencyGraph, aggregateBdioDocument.project, it.dependencyGraph.getRootDependencies(), nodeMap)
+                aggregateBdioDocument.components.addAll(components)
             } else {
-                if (it.dependencies) {
+                if (it.dependencyGraph) {
                     final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(detectProject, it)
                     String projectPath = detectFileManager.extractFinalPieceFromPath(it.sourcePath)
                     String projectName = detectProject.projectName
@@ -200,41 +206,46 @@ class DetectProjectManager {
     private String generateFilename(BomToolType bomToolType, String finalSourcePathPiece, String projectName, String projectVersionName) {
         List<String> safePieces = [bomToolType.toString(), projectName, projectVersionName, finalSourcePathPiece, 'bdio'].collect { integrationEscapeUtil.escapeForUri(it) }
 
-        String filename = safePieces.iterator().join('_') + '.jsonld'
+        String filename = (safePieces as Iterable).join('_') + '.jsonld'
         filename
     }
 
     private SimpleBdioDocument createAggregateSimpleBdioDocument(DetectProject detectProject) {
-        createSimpleBdioDocument(detectProject, '', detectProject.projectName, bdioPropertyHelper.createExternalIdentifier('', detectProject.projectName), [] as Set)
+        //we are hand making the aggregate because we don't have enough information to properly transform
+        //we could change transformer to also transform a graph even though it doesn't have enough information
+        //to rebuild the projects bdio nodes - but it seems like that is a waste of effort to save a few lines here.
+        String hubCodeLocationName = '';
+        String projectName = detectProject.getProjectName();
+        BdioExternalIdentifier externalIdentifier = bdioPropertyHelper.createExternalIdentifier('', detectProject.projectName)
+        final BdioBillOfMaterials billOfMaterials = bdioNodeFactory.createBillOfMaterials(hubCodeLocationName, projectName, '');
+
+        final String projectId = projectName;
+        final BdioProject project = bdioNodeFactory.createProject(projectName, '', projectId, externalIdentifier);
+
+        final SimpleBdioDocument simpleBdioDocument = new SimpleBdioDocument();
+        simpleBdioDocument.billOfMaterials = billOfMaterials;
+        simpleBdioDocument.project = project;
+        simpleBdioDocument
     }
 
     private SimpleBdioDocument createSimpleBdioDocument(DetectProject detectProject, DetectCodeLocation detectCodeLocation) {
         final String codeLocationName = detectProject.getBomToolCodeLocationName(detectCodeLocation.bomToolType, detectFileManager.extractFinalPieceFromPath(detectCodeLocation.sourcePath), detectConfiguration.getProjectCodeLocationPrefix())
         final String projectId = detectCodeLocation.bomToolProjectExternalId.createBdioId()
-        final BdioExternalIdentifier projectExternalIdentifier = bdioPropertyHelper.createExternalIdentifier(detectCodeLocation.bomToolProjectExternalId)
 
-        createSimpleBdioDocument(detectProject, codeLocationName, projectId, projectExternalIdentifier, detectCodeLocation.dependencies)
+        createSimpleBdioDocument(detectProject, codeLocationName, projectId, detectCodeLocation.bomToolProjectExternalId, detectCodeLocation.dependencyGraph)
     }
 
-    private SimpleBdioDocument createSimpleBdioDocument(DetectProject detectProject, String codeLocationName, String projectId, BdioExternalIdentifier projectExternalIdentifier, DependencyGraph dependencies) {
+    private SimpleBdioDocument createSimpleBdioDocument(DetectProject detectProject, String codeLocationName, String projectId, ExternalId projectExternalId, DependencyGraph dependencies) {
 
-        final BdioBillOfMaterials bdioBillOfMaterials = bdioNodeFactory.createBillOfMaterials(codeLocationName, projectName, projectVersionName)
+        final String projectName = detectProject.projectName
+        final String projectVersionName = detectProject.projectVersionName
+        final SimpleBdioDocument simpleBdioDocument = dependencyGraphTransformer.transformDependencyGraph(codeLocationName, projectName, projectVersionName, projectExternalId, dependencies)
+
         String hubDetectVersion = detectConfiguration.getBuildInfo().getDetectVersion()
         def detectVersionData = ['detectVersion' : hubDetectVersion]
-        bdioBillOfMaterials.customData = detectVersionData
-        final BdioProject project = bdioNodeFactory.createProject(projectName, projectVersionName, projectId, projectExternalIdentifier)
 
-        /*
-         final String projectName = detectProject.projectName
-         final String projectVersionName = detectProject.projectVersionName
-         final BdioBillOfMaterials bdioBillOfMaterials = bdioNodeFactory.createBillOfMaterials(codeLocationName, projectName, projectVersionName)
-         final BdioProject project = bdioNodeFactory.createProject(projectName, projectVersionName, projectId, projectExternalIdentifier)
-         final List<BdioComponent> bdioComponents = dependencyGraphTransformer.addComponentsGraph(project, dependencies)
-         final SimpleBdioDocument simpleBdioDocument = dependencyGraphTransformer.tran
-         simpleBdioDocument.billOfMaterials = bdioBillOfMaterials
-         simpleBdioDocument.project = project
-         simpleBdioDocument.components = bdioComponents
-         simpleBdioDocument */
+        simpleBdioDocument.billOfMaterials.customData = detectVersionData
+        simpleBdioDocument
     }
 
     private File writeSimpleBdioDocument(File outputFile, SimpleBdioDocument simpleBdioDocument) {
