@@ -24,19 +24,13 @@ package com.blackducksoftware.integration.hub.detect.model
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
-
-import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper
 
 class DetectProject {
-    String projectName
-    String projectVersionName
+    private String projectName
+    private String projectVersionName
     private List<DetectCodeLocation> detectCodeLocations = []
 
     private final Logger logger = LoggerFactory.getLogger(getClass())
-
-    @Autowired
-    HubServiceWrapper hubServiceWrapper
 
     public String getProjectName() {
         projectName
