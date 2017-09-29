@@ -27,19 +27,19 @@ import org.slf4j.LoggerFactory
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder
+import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.dependencyid.DependencyId
 import com.blackducksoftware.integration.hub.bdio.model.dependencyid.NameDependencyId
 import com.blackducksoftware.integration.hub.bdio.model.dependencyid.NameVersionDependencyId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 
 import groovy.transform.TypeChecked
 
 @TypeChecked
 public class PackRatNodeParser {
     private final Logger logger = LoggerFactory.getLogger(PackRatNodeParser.class)
-    
+
     public ExternalIdFactory externalIdFactory;
     public PackRatNodeParser(ExternalIdFactory externalIdFactory){
         this.externalIdFactory = externalIdFactory;
@@ -68,7 +68,7 @@ public class PackRatNodeParser {
                 version = line.replace('Version: ', '').trim()
                 graphBuilder.setDependencyVersion(currentParent, version);
                 DependencyId realId = new NameVersionDependencyId(name, version);
-                ExternalId externalId = externalIdFactory.createNameVersionExternalId(CranBomTool.CRAN, name, version)
+                ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.CRAN, name, version)
                 graphBuilder.setDependencyAsAlias(realId, currentParent);
                 graphBuilder.setDependencyInfo(realId, name, version, externalId)
             }

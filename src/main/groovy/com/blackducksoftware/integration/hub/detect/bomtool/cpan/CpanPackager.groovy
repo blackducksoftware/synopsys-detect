@@ -30,8 +30,8 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph
 import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 
@@ -57,7 +57,7 @@ class CpanPackager {
             def nameVersionNode = allModules[moduleName]
             if (nameVersionNode) {
                 nameVersionNode.name = nameVersionNode.name.replace('::', '-')
-                Dependency module = nameVersionNodeTransformer.addNameVersionNodeToDependencyGraph(graph, CpanBomTool.CPAN_FORGE, nameVersionNode)
+                Dependency module = nameVersionNodeTransformer.addNameVersionNodeToDependencyGraph(graph, Forge.CPAN, nameVersionNode)
                 graph.addChildToRoot(module)
             } else {
                 logger.warn("Could node find resolved version for module: ${moduleName}")
