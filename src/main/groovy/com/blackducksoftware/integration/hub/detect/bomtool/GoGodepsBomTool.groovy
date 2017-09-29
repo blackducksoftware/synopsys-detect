@@ -67,7 +67,7 @@ class GoGodepsBomTool extends BomTool {
         def goDepsFile = new File(goDepsDirectory, "Godeps.json")
         DependencyGraph dependencyGraph = goDepParser.extractProjectDependencies(goDepsFile.text)
 
-        ExternalId externalId = externalIdFactory.createPathExternalId(GoDepBomTool.GOLANG, sourcePath)
+        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.GOLANG, sourcePath)
 
         def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, externalId, dependencyGraph)
         [codeLocation]

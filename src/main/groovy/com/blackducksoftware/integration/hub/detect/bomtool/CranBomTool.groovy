@@ -40,8 +40,6 @@ import groovy.transform.TypeChecked
 @Component
 @TypeChecked
 class CranBomTool extends BomTool {
-    public static final Forge CRAN = new Forge('cran', '/')
-
     @Autowired
     PackratPackager packratPackager
 

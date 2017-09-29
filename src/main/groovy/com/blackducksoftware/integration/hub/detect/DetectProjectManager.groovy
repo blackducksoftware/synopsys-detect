@@ -208,7 +208,7 @@ class DetectProjectManager {
 
     private SimpleBdioDocument createSimpleBdioDocument(DetectProject detectProject, DetectCodeLocation detectCodeLocation) {
         final String codeLocationName = detectProject.getBomToolCodeLocationName(detectCodeLocation.bomToolType, detectFileManager.extractFinalPieceFromPath(detectCodeLocation.sourcePath), detectConfiguration.getProjectCodeLocationPrefix())
-        final String projectId = detectCodeLocation.bomToolProjectExternalId.createDataId()
+        final String projectId = detectCodeLocation.bomToolProjectExternalId.createBdioId()
         final BdioExternalIdentifier projectExternalIdentifier = bdioPropertyHelper.createExternalIdentifier(detectCodeLocation.bomToolProjectExternalId)
 
         createSimpleBdioDocument(detectProject, codeLocationName, projectId, projectExternalIdentifier, detectCodeLocation.dependencies)
@@ -216,6 +216,11 @@ class DetectProjectManager {
 
     private SimpleBdioDocument createSimpleBdioDocument(DetectProject detectProject, String codeLocationName, String projectId, BdioExternalIdentifier projectExternalIdentifier, DependencyGraph dependencies) {
 
+        final BdioBillOfMaterials bdioBillOfMaterials = bdioNodeFactory.createBillOfMaterials(codeLocationName, projectName, projectVersionName)
+        String hubDetectVersion = detectConfiguration.getBuildInfo().getDetectVersion()
+        def detectVersionData = ['detectVersion' : hubDetectVersion]
+        bdioBillOfMaterials.customData = detectVersionData
+        final BdioProject project = bdioNodeFactory.createProject(projectName, projectVersionName, projectId, projectExternalIdentifier)
 
         /*
          final String projectName = detectProject.projectName

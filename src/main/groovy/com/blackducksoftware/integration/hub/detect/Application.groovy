@@ -173,6 +173,11 @@ class Application {
     }
 
     @Bean
+    ExternalIdFactory externalIdFactory() {
+        new ExternalIdFactory()
+    }
+
+    @Bean
     Configuration configuration() {
         final Configuration configuration = new Configuration(Configuration.VERSION_2_3_26)
         configuration.setClassForTemplateLoading(Application.class, '/')

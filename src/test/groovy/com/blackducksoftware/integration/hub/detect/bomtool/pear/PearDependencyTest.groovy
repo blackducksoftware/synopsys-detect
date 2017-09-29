@@ -12,16 +12,25 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.pear
 
 import org.junit.Assert
+import org.junit.Before
 import org.junit.Test
 
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.DetectProperties
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphTestUtil
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 
 class PearDependencyTest {
-    private PearDependencyFinder pearDependencyFinder = new PearDependencyFinder()
-    private TestUtil testUtil = new TestUtil()
+    private PearDependencyFinder pearDependencyFinder
+    private TestUtil testUtil
+
+    @Before
+    public void init() {
+        pearDependencyFinder = new PearDependencyFinder()
+        pearDependencyFinder.externalIdFactory = new ExternalIdFactory()
+        testUtil = new TestUtil()
+    }
 
     @Test
     public void findDependencyNamesTest() {

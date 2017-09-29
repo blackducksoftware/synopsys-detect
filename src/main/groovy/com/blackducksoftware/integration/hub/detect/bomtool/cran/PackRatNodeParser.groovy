@@ -32,7 +32,7 @@ import com.blackducksoftware.integration.hub.bdio.model.dependencyid.NameDepende
 import com.blackducksoftware.integration.hub.bdio.model.dependencyid.NameVersionDependencyId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.bomtool.CranBomTool
+import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
 
 import groovy.transform.TypeChecked
 

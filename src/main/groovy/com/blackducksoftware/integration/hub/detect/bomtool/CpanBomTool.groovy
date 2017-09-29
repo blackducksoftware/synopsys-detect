@@ -44,8 +44,6 @@ import groovy.transform.TypeChecked
 class CpanBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(CpanBomTool.class)
 
-    public static Forge CPAN_FORGE = new Forge('cpan', '-')
-
     @Autowired
     CpanPackager cpanPackager
 

@@ -22,6 +22,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.nameversion
 
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph

@@ -24,12 +24,13 @@ package com.blackducksoftware.integration.hub.detect.bomtool.pip
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeBuilder
 import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalIdFactory
 
 import groovy.transform.TypeChecked
 
@@ -45,6 +46,9 @@ class PipInspectorTreeParser {
     public static final String UNPARSEABLE_REQUIREMENTS_PREFIX = 'p?'
     public static final String UNKNOWN_PACKAGE_PREFIX = '--'
     public static final String INDENTATION = ' '.multiply(4)
+
+    @Autowired
+    ExternalIdFactory externalIdFactory
 
     DependencyNode parse(String treeText) {
         def lines = treeText.trim().split(System.lineSeparator()).toList()
@@ -117,7 +121,7 @@ class PipInspectorTreeParser {
         name = name.equals(UNKNOWN_PROJECT_NAME) ? '' : name
         String version = segments[1].trim()
         version = version.equals(UNKNOWN_PROJECT_VERSION) ? '' : version
-        def externalId = new NameVersionExternalId(Forge.PYPI, name, version)
+        def externalId = externalIdFactory.createNameVersionExternalId(Forge.PYPI, name, version)
         def node = new DependencyNode(name, version, externalId)
 
         node

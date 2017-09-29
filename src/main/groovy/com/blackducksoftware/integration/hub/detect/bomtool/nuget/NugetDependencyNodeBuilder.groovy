@@ -21,7 +21,8 @@
  * under the License.
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.nuget
-import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph
 import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.Forge
