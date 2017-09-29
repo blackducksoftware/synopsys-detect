@@ -53,7 +53,7 @@ class BdioUploader {
             }
         }
 
-        String hubDetectVersion = detectConfiguration.getBuildInfo().getDetectVersion()
+        String hubDetectVersion = detectConfiguration.getBuildInfo().detectVersion
         PhoneHomeRequestBody phoneHomeRequestBody = phoneHomeDataService.createInitialPhoneHomeRequestBodyBuilder(ThirdPartyName.DETECT, hubDetectVersion, hubDetectVersion).build()
         phoneHomeDataService.phoneHome(phoneHomeRequestBody)
     }

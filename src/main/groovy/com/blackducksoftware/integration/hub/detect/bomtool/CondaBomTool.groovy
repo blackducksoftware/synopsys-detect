@@ -81,10 +81,10 @@ class CondaBomTool extends BomTool {
         condaListOptions.add('--json')
         Executable condaListExecutable = new Executable(sourceDirectory, condaExecutablePath, condaListOptions)
         ExecutableOutput condaListOutput = executableRunner.execute(condaListExecutable)
-        String listJsonText = condaListOutput.getStandardOutput()
+        String listJsonText = condaListOutput.standardOutput
 
         ExecutableOutput condaInfoOutput = executableRunner.runExe(condaExecutablePath, 'info', '--json')
-        String infoJsonText = condaInfoOutput.getStandardOutput()
+        String infoJsonText = condaInfoOutput.standardOutput
 
         DependencyGraph dependencyGraph = condaListParser.parse(listJsonText, infoJsonText)
         ExternalId externalId = externalIdFactory.createPathExternalId(Forge.ANACONDA, detectConfiguration.sourcePath)
