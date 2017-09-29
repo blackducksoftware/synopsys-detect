@@ -27,9 +27,9 @@ import java.util.regex.Pattern
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph
 import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
@@ -92,7 +92,8 @@ class MavenCodeLocationPackager {
 
             if (parsingProjectSection && currentCodeLocation == null) {
                 //this is the first line of a new code location, the following lines will be the tree of dependencies for this code location
-                DetectCodeLocation detectCodeLocation = createNewCodeLocation(sourcePath, line)
+                currentGraph = new MutableMapDependencyGraph();
+                DetectCodeLocation detectCodeLocation = createNewCodeLocation(sourcePath, line, currentGraph)
                 if (filter.shouldInclude(detectCodeLocation.getBomToolProjectName())) {
                     this.currentCodeLocation = detectCodeLocation
                     codeLocations.add(detectCodeLocation)
@@ -151,13 +152,13 @@ class MavenCodeLocationPackager {
         codeLocations
     }
 
-    DetectCodeLocation createNewCodeLocation(String sourcePath, String line) {
+    DetectCodeLocation createNewCodeLocation(String sourcePath, String line, DependencyGraph graph) {
         Dependency dependency = textToDependency(line)
         String codeLocationSourcePath = sourcePath
         if (!sourcePath.endsWith(dependency.name)) {
             codeLocationSourcePath += '/' + dependency.name
         }
-        new DetectCodeLocation(BomToolType.MAVEN, codeLocationSourcePath, dependency.name, dependency.version, dependency.externalId, null)
+        new DetectCodeLocation(BomToolType.MAVEN, codeLocationSourcePath, dependency.name, dependency.version, dependency.externalId, graph)
     }
 
     String calculateCurrentLevelAndCleanLine(String line) {
