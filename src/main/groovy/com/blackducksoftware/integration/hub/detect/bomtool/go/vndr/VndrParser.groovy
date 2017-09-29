@@ -22,34 +22,38 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.go.vndr
 
-import org.springframework.beans.factory.annotation.Autowired
-
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.detect.bomtool.GoDepBomTool
 
 import groovy.transform.TypeChecked
 
 @TypeChecked
 class VndrParser {
-    @Autowired
-    ExternalIdFactory externalIdFactory
 
-    public List<DependencyNode> parseVendorConf(String vendorConfContents) {
-        List<DependencyNode> nodes = new ArrayList<>()
+    public ExternalIdFactory externalIdFactory;
+    public VndrParser(ExternalIdFactory externalIdFactory){
+        this.externalIdFactory = externalIdFactory;
+    }
+
+    public DependencyGraph parseVendorConf(String vendorConfContents) {
+        MutableDependencyGraph graph = new MutableMapDependencyGraph();
         String contents = vendorConfContents.trim()
         def lines = contents.split(System.lineSeparator())
         //TODO test against moby
         lines.each { String line ->
             if (line?.trim() && !line.startsWith('#')) {
                 def parts = line.split(' ')
-                final ExternalId dependencyExternalId = externalIdFactory.createNameVersionExternalId(Forge.GOLANG, parts[0], parts[1])
-                final DependencyNode dependency = new DependencyNode(parts[0], parts[1], dependencyExternalId)
-                nodes.add(dependency)
+                final ExternalId dependencyExternalId = externalIdFactory.createNameVersionExternalId(GoDepBomTool.GOLANG, parts[0], parts[1])
+                final Dependency dependency = new Dependency(parts[0], parts[1], dependencyExternalId)
+                graph.addChildToRoot(dependency);
             }
         }
 
-        return nodes
+        return graph
     }
 }

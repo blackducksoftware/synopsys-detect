@@ -96,14 +96,15 @@ class DockerBomTool extends BomTool {
                 hubDockerInspectorShellScriptUrl = new URL("https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector-${detectConfiguration.dockerInspectorVersion}.sh")
             }
             String shellScriptContents = hubDockerInspectorShellScriptUrl.openStream().getText(StandardCharsets.UTF_8.toString())
-            shellScriptFile = detectFileManager.createFile(BomToolType.DOCKER, "hub-docker-inspector-${detectConfiguration.dockerInspectorVersion}.sh")
+            shellScriptFile = detectFileManager.createFile(getBomToolType(), "hub-docker-inspector-${detectConfiguration.dockerInspectorVersion}.sh")
             detectFileManager.writeToFile(shellScriptFile, shellScriptContents)
             shellScriptFile.setExecutable(true)
         }
 
-        File dockerPropertiesFile = detectFileManager.createFile(BomToolType.DOCKER, 'application.properties')
+        File dockerPropertiesFile = detectFileManager.createFile(getBomToolType(), 'application.properties')
         File dockerBomToolDirectory =  dockerPropertiesFile.getParentFile()
         dockerProperties.populatePropertiesFile(dockerPropertiesFile, dockerBomToolDirectory)
+
 
         boolean usingTarFile = false
         String imageArgument = ''
@@ -124,7 +125,7 @@ class DockerBomTool extends BomTool {
             "-c",
             "${shellScriptFile.absolutePath} --spring.config.location=\"${dockerBomToolDirectory.getAbsolutePath()}\" --dry.run=true --no.prompt=true ${imageArgument}" as String
         ]
-        Executable dockerExecutable = new Executable(shellScriptFile.parentFile, environmentVariables, bashExecutablePath, bashArguments)
+        Executable dockerExecutable = new Executable(dockerBomToolDirectory, environmentVariables, bashExecutablePath, bashArguments)
         executableRunner.execute(dockerExecutable)
 
         if (usingTarFile) {

@@ -32,10 +32,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.builder.SpringApplicationBuilder
 import org.springframework.context.annotation.Bean
 
-import com.blackducksoftware.integration.hub.bdio.simple.BdioNodeFactory
-import com.blackducksoftware.integration.hub.bdio.simple.BdioPropertyHelper
-import com.blackducksoftware.integration.hub.bdio.simple.DependencyNodeTransformer
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.bdio.BdioNodeFactory
+import com.blackducksoftware.integration.hub.bdio.BdioPropertyHelper
+import com.blackducksoftware.integration.hub.bdio.graph.transformer.DependencyGraphTransformer
+import com.blackducksoftware.integration.hub.bdio.graph.transformer.RecursiveDependencyGraphTransformer
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.detect.exception.DetectException
 import com.blackducksoftware.integration.hub.detect.help.HelpPrinter
 import com.blackducksoftware.integration.hub.detect.help.ValueDescriptionAnnotationFinder
@@ -44,6 +45,7 @@ import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.summary.DetectSummary
+import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager
 import com.blackducksoftware.integration.hub.model.view.ProjectVersionView
 import com.blackducksoftware.integration.log.Slf4jIntLogger
@@ -95,6 +97,9 @@ class Application {
     @Autowired
     DetectSummary detectSummary
 
+    @Autowired
+    DetectFileManager detectFileManager
+
     static void main(final String[] args) {
         new SpringApplicationBuilder(Application.class).logStartupInfo(false).run(args)
     }
@@ -138,6 +143,7 @@ class Application {
         if (!detectConfiguration.suppressResultsOutput) {
             detectSummary.logResults(new Slf4jIntLogger(logger))
         }
+        detectFileManager.cleanupDirectories()
         System.exit(postResult)
     }
 
@@ -157,8 +163,8 @@ class Application {
     }
 
     @Bean
-    DependencyNodeTransformer dependencyNodeTransformer() {
-        new DependencyNodeTransformer(bdioNodeFactory(), bdioPropertyHelper())
+    DependencyGraphTransformer dependencyNodeTransformer() {
+        new RecursiveDependencyGraphTransformer(bdioNodeFactory(), bdioPropertyHelper())
     }
 
     @Bean

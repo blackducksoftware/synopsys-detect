@@ -25,10 +25,14 @@ package com.blackducksoftware.integration.hub.detect.bomtool.packagist
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.Forge
+import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
+import com.blackducksoftware.integration.hub.detect.model.BomToolType
+import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
@@ -44,12 +48,14 @@ class PackagistParser {
     @Autowired
     ExternalIdFactory externalIdFactory
 
-    public DependencyNode getDependencyNodeFromProject(String composerJsonText, String composerLockText) {
+
+
+    public DetectCodeLocation getDependencyGraphFromProject(String sourcePath, String composerJsonText, String composerLockText) {
+        MutableDependencyGraph graph = new MutableMapDependencyGraph();
+
         JsonObject composerJsonObject = new JsonParser().parse(composerJsonText) as JsonObject
         String projectName = composerJsonObject.get('name')?.getAsString()
         String projectVersion = composerJsonObject.get('version')?.getAsString()
-
-        def rootDependencyNode = new DependencyNode(projectName, projectVersion, externalIdFactory.createNameVersionExternalId(Forge.PACKAGIST, projectName, projectVersion))
 
         JsonObject composerLockObject = new JsonParser().parse(composerLockText) as JsonObject
         JsonArray packagistPackages = composerLockObject.get('packages')?.getAsJsonArray()
@@ -61,12 +67,13 @@ class PackagistParser {
             List<String> startingDevPackages = getStartingPackages(composerJsonObject, true)
             startingPackages.addAll(startingDevPackages)
         }
-        convertFromJsonToDependencyNode(rootDependencyNode, startingPackages, packagistPackages)
+        convertFromJsonToDependency(graph, null, startingPackages, packagistPackages, true)
 
-        rootDependencyNode
+        def eid = externalIdFactory.createNameVersionExternalId(Forge.PACKAGIST, projectName, projectVersion);
+        new DetectCodeLocation(BomToolType.PACKAGIST, sourcePath,projectName, projectVersion, eid, graph)
     }
 
-    private void convertFromJsonToDependencyNode(DependencyNode parentNode, List<String> currentPackages, JsonArray jsonArray) {
+    private void convertFromJsonToDependency(MutableDependencyGraph graph, Dependency parent, List<String> currentPackages, JsonArray jsonArray, Boolean root) {
         if (!currentPackages) {
             return
         }
@@ -77,10 +84,14 @@ class PackagistParser {
             if (currentPackages.contains(currentRowPackageName)) {
                 String currentRowPackageVersion = it.getAt('version').toString().replace('"', '')
 
-                DependencyNode childNode = new DependencyNode(currentRowPackageName, currentRowPackageVersion, externalIdFactory.createNameVersionExternalId(Forge.PACKAGIST, currentRowPackageName, currentRowPackageVersion))
+                Dependency child = new Dependency(currentRowPackageName, currentRowPackageVersion, externalIdFactory.createNameVersionExternalId(Forge.PACKAGIST, currentRowPackageName, currentRowPackageVersion))
 
-                convertFromJsonToDependencyNode(childNode, getStartingPackages(it.getAsJsonObject(), false), jsonArray)
-                parentNode.children.add(childNode)
+                convertFromJsonToDependency(graph, child, getStartingPackages(it.getAsJsonObject(), false), jsonArray, false)
+                if (root){
+                    graph.addChildToRoot(child)
+                }else{
+                    graph.addParentWithChild(parent, child)
+                }
             }
         }
     }

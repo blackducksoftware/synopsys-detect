@@ -27,7 +27,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmCliDependencyFinder
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmLockfilePackager
@@ -54,7 +53,7 @@ class NpmBomTool extends BomTool {
     private String npmExePath
 
     @Autowired
-    NpmCliDependencyFinder cliDependencyFinder
+    NpmCliDependencyFinder npmCliDependencyFinder
 
     @Autowired
     NpmLockfilePackager npmLockfilePackager
@@ -137,8 +136,7 @@ class NpmBomTool extends BomTool {
 
     private List<DetectCodeLocation> extractFromLockFile(File lockFile) {
         String lockFileText = lockFile.getText()
-        DependencyNode npmProjectNode = npmLockfilePackager.parse(lockFileText)
-        def detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, npmProjectNode)
+        DetectCodeLocation detectCodeLocation = npmLockfilePackager.parse(sourcePath, lockFileText)
 
         [detectCodeLocation]
     }
@@ -159,8 +157,7 @@ class NpmBomTool extends BomTool {
             if (npmLsErrorFile.length() > 0) {
                 logger.debug("Error when running npm ls -json command\n${npmLsErrorFile.text}")
             }
-            def dependencyNode = cliDependencyFinder.generateDependencyNode(npmLsOutputFile)
-            def detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, dependencyNode)
+            def detectCodeLocation = npmCliDependencyFinder.generateCodeLocation(sourcePath, npmLsOutputFile)
 
             hubSignatureScanner.registerPathToScan(sourceDirectory, NODE_MODULES)
             return [detectCodeLocation]

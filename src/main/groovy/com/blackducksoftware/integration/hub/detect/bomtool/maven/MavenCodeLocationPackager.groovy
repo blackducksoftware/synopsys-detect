@@ -30,9 +30,11 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter
@@ -48,12 +50,15 @@ class MavenCodeLocationPackager {
 
     private List<DetectCodeLocation> codeLocations = []
     private DetectCodeLocation currentCodeLocation = null
-    private Stack<DependencyNode> dependencyParentStack = new Stack<>()
+    private Stack<Dependency> dependencyParentStack = new Stack<>()
     private boolean parsingProjectSection
     private int level
+    private MutableDependencyGraph currentGraph = null
 
-    @Autowired
-    ExternalIdFactory externalIdFactory
+    public ExternalIdFactory externalIdFactory;
+    public MavenCodeLocationPackager(ExternalIdFactory externalIdFactory){
+        this.externalIdFactory = externalIdFactory;
+    }
 
     public List<DetectCodeLocation> extractCodeLocations(String sourcePath, String mavenOutputText, String excludedModules, String includedModules) {
         ExcludedIncludedFilter filter = new ExcludedIncludedFilter(excludedModules, includedModules)
@@ -61,6 +66,8 @@ class MavenCodeLocationPackager {
         currentCodeLocation = null
         dependencyParentStack = new Stack<>()
         parsingProjectSection = false
+        currentGraph = new MutableMapDependencyGraph()
+
         level = 0
         for (String line : mavenOutputText.split(System.lineSeparator())) {
             if (!(line ==~ /\[.*INFO.*\].*/) || line ==~ /\[.*INFO.*\].*Downloaded:.*/ || line ==~ /\[.*INFO.*\].*Downloading:.*/) {
@@ -109,33 +116,33 @@ class MavenCodeLocationPackager {
 
             int previousLevel = level
             String cleanedLine = calculateCurrentLevelAndCleanLine(line)
-            DependencyNode dependencyNode = textToDependencyNode(cleanedLine)
-            if (!dependencyNode) {
+            Dependency dependency = textToDependency(cleanedLine)
+            if (!dependency) {
                 continue
             }
 
             if (currentCodeLocation != null) {
                 if (level == 1) {
                     //a direct dependency, clear the stack and add this as a potential parent for the next line
-                    currentCodeLocation.dependencies.add(dependencyNode)
+                    currentGraph.addChildToRoot(dependency)
                     dependencyParentStack.clear()
-                    dependencyParentStack.push(dependencyNode)
+                    dependencyParentStack.push(dependency)
                 } else {
                     //level should be greater than 1
                     if (level == previousLevel) {
                         //a sibling of the previous dependency
                         dependencyParentStack.pop()
-                        dependencyParentStack.peek().children.add(dependencyNode)
-                        dependencyParentStack.push(dependencyNode)
+                        currentGraph.addParentWithChild(dependencyParentStack.peek(), dependency);
+                        dependencyParentStack.push(dependency)
                     } else if (level > previousLevel) {
                         //a child of the previous dependency
-                        dependencyParentStack.peek().children.add(dependencyNode)
-                        dependencyParentStack.push(dependencyNode)
+                        currentGraph.addParentWithChild(dependencyParentStack.peek(), dependency);
+                        dependencyParentStack.push(dependency)
                     } else {
                         //a child of a dependency further back than 1 line
                         previousLevel.downto(level) { dependencyParentStack.pop() }
-                        dependencyParentStack.peek().children.add(dependencyNode)
-                        dependencyParentStack.push(dependencyNode)
+                        currentGraph.addParentWithChild(dependencyParentStack.peek(), dependency);
+                        dependencyParentStack.push(dependency)
                     }
                 }
             }
@@ -145,12 +152,12 @@ class MavenCodeLocationPackager {
     }
 
     DetectCodeLocation createNewCodeLocation(String sourcePath, String line) {
-        DependencyNode dependencyNode = textToDependencyNode(line)
+        Dependency dependency = textToDependency(line)
         String codeLocationSourcePath = sourcePath
-        if (!sourcePath.endsWith(dependencyNode.name)) {
-            codeLocationSourcePath += '/' + dependencyNode.name
+        if (!sourcePath.endsWith(dependency.name)) {
+            codeLocationSourcePath += '/' + dependency.name
         }
-        new DetectCodeLocation(BomToolType.MAVEN, codeLocationSourcePath, dependencyNode.name, dependencyNode.version, dependencyNode.externalId, new HashSet<>())
+        new DetectCodeLocation(BomToolType.MAVEN, codeLocationSourcePath, dependency.name, dependency.version, dependency.externalId, null)
     }
 
     String calculateCurrentLevelAndCleanLine(String line) {
@@ -166,7 +173,7 @@ class MavenCodeLocationPackager {
         return cleanedLine
     }
 
-    DependencyNode textToDependencyNode(final String componentText) {
+    Dependency textToDependency(final String componentText) {
         Matcher gavMatcher = componentText =~ /(.*?):(.*?):(.*?):([^:]*)(:(.*))*/
         if (!gavMatcher.matches()) {
             logger.debug("${componentText} does not match pattern ${gavMatcher.pattern().toString()}")
@@ -178,7 +185,6 @@ class MavenCodeLocationPackager {
         String version = gavMatcher.group(4)
 
         ExternalId externalId = externalIdFactory.createMavenExternalId(group, artifact, version)
-        def node = new DependencyNode(artifact, version, externalId)
-        return node
+        return new Dependency(artifact, version, externalId)
     }
 }
