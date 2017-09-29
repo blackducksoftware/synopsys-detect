@@ -35,9 +35,14 @@ import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
+import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnection
+import com.blackducksoftware.integration.log.Slf4jIntLogger
 import com.google.gson.Gson
 
 import groovy.transform.TypeChecked
+import okhttp3.HttpUrl
+import okhttp3.Request
+import okhttp3.Response
 
 @Component
 @TypeChecked
@@ -95,7 +100,20 @@ class DockerBomTool extends BomTool {
             if (!'latest'.equals(detectConfiguration.dockerInspectorVersion)) {
                 hubDockerInspectorShellScriptUrl = new URL("https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector-${detectConfiguration.dockerInspectorVersion}.sh")
             }
-            String shellScriptContents = hubDockerInspectorShellScriptUrl.openStream().getText(StandardCharsets.UTF_8.toString())
+            UnauthenticatedRestConnection restConnection = new UnauthenticatedRestConnection(new Slf4jIntLogger(logger), hubDockerInspectorShellScriptUrl, detectConfiguration.getHubTimeout())
+            restConnection.alwaysTrustServerCertificate = detectConfiguration.hubTrustCertificate
+            HttpUrl httpUrl = restConnection.createHttpUrl()
+            Request request = restConnection.createGetRequest(httpUrl)
+            String shellScriptContents = null
+            Response response = null
+            try {
+                response = restConnection.handleExecuteClientCall(request)
+                shellScriptContents =  response.body().string()
+            } finally {
+                if (response != null) {
+                    response.close()
+                }
+            }
             shellScriptFile = detectFileManager.createFile(getBomToolType(), "hub-docker-inspector-${detectConfiguration.dockerInspectorVersion}.sh")
             detectFileManager.writeToFile(shellScriptFile, shellScriptContents)
             shellScriptFile.setExecutable(true)
