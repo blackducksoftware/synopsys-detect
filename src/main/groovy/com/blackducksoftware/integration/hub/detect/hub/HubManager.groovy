@@ -212,7 +212,7 @@ class HubManager {
 
     private String generateOldCodeLocationName(DetectProject detectProject, BomToolType bomToolType, CodeLocationType codeLocationType, String sourcePath, String prefix) {
         if (CodeLocationType.SCAN.toString().equals(codeLocationType.toString())) {
-            return detectProject.getScanCodeLocationName(sourcePath, '', '', prefix)
+            return detectProject.getScanCodeLocationName('', '', sourcePath, prefix)
         } else if (CodeLocationType.BOM.toString().equals(codeLocationType.toString())) {
             return detectProject.getBomToolCodeLocationName(bomToolType, sourcePath, prefix)
         }
