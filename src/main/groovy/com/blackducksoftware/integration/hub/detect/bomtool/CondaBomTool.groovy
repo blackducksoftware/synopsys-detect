@@ -76,7 +76,10 @@ class CondaBomTool extends BomTool {
     public List<DetectCodeLocation> extractDetectCodeLocations() {
         List<String> condaListOptions = ['list']
         if (detectConfiguration.getCondaEnvironmentName()) {
-            condaListOptions.addAll(['-n', detectConfiguration.getCondaEnvironmentName()])
+            condaListOptions.addAll([
+                '-n',
+                detectConfiguration.getCondaEnvironmentName()
+            ])
         }
         condaListOptions.add('--json')
         Executable condaListExecutable = new Executable(sourceDirectory, condaExecutablePath, condaListOptions)
