@@ -63,7 +63,7 @@ class DetectProjectManager {
     DetectConfiguration detectConfiguration
 
     @Autowired
-    BdioPropertyHelper bdioPropertyHelper 
+    BdioPropertyHelper bdioPropertyHelper
 
     @Autowired
     BdioNodeFactory bdioNodeFactory

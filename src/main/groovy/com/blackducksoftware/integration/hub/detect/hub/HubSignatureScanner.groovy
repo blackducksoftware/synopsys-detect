@@ -40,6 +40,7 @@ import com.blackducksoftware.integration.hub.model.request.ProjectRequest
 import com.blackducksoftware.integration.hub.model.view.ProjectVersionView
 import com.blackducksoftware.integration.hub.request.builder.ProjectRequestBuilder
 import com.blackducksoftware.integration.hub.scan.HubScanConfig
+import com.blackducksoftware.integration.phonehome.enums.ThirdPartyName
 
 import groovy.transform.TypeChecked
 
@@ -148,7 +149,7 @@ class HubSignatureScanner {
             HubScanConfig hubScanConfig = hubScanConfigBuilder.build()
 
             String hubDetectVersion = detectConfiguration.getBuildInfo().detectVersion
-            projectVersionView = cliDataService.installAndRunControlledScan(hubServerConfig, hubScanConfig, projectRequest, false, 'Hub-Detect', hubDetectVersion, hubDetectVersion)
+            projectVersionView = cliDataService.installAndRunControlledScan(hubServerConfig, hubScanConfig, projectRequest, false, ThirdPartyName.DETECT, hubDetectVersion, hubDetectVersion)
             detectSummary.setPathScanResult(new File(canonicalPath), Result.SUCCESS)
             logger.info("${canonicalPath} was successfully scanned by the BlackDuck CLI.")
         } catch (Exception e) {
@@ -191,7 +192,7 @@ class HubSignatureScanner {
 
         String sourcePath = canonicalPath.replace(detectConfiguration.sourcePath, detectFileManager.extractFinalPieceFromPath(detectConfiguration.sourcePath));
         String codeLocationName = detectProject.getScanCodeLocationName(sourcePath, detectConfiguration.getProjectCodeLocationPrefix(), detectConfiguration.getProjectCodeLocationSuffix())
-        def test = hubManager.logOldCodeLocationNameExists(detectProject, null, CodeLocationType.SCAN, detectFileManager.extractFinalPieceFromPath(detectConfiguration.sourcePath), canonicalPath, detectConfiguration.sourcePath, detectConfiguration.getProjectCodeLocationPrefix())
+        hubManager.logOldCodeLocationNameExists(detectProject, null, CodeLocationType.SCAN, sourcePath, detectConfiguration.getProjectCodeLocationPrefix())
         hubScanConfigBuilder.codeLocationAlias = codeLocationName
 
         if (detectConfiguration.hubSignatureScannerExclusionPatterns) {

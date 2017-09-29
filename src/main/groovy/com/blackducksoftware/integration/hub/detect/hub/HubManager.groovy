@@ -197,9 +197,9 @@ class HubManager {
         }
     }
 
-    public boolean logOldCodeLocationNameExists(DetectProject detectProject, BomToolType bomToolType, CodeLocationType codeLocationType, String finalPieceFromPath, String canonicalPath, String sourcePath, String prefix) {
+    public boolean logOldCodeLocationNameExists(DetectProject detectProject, BomToolType bomToolType, CodeLocationType codeLocationType, String sourcePath, String prefix) {
         if (!detectConfiguration.hubOfflineMode) {
-            String oldCodeLocationName = generateOldCodeLocationName(detectProject, bomToolType, codeLocationType, finalPieceFromPath, canonicalPath, sourcePath, prefix)
+            String oldCodeLocationName = generateOldCodeLocationName(detectProject, bomToolType, codeLocationType, sourcePath, prefix)
             try {
                 CodeLocationView codeLocationView = hubServiceWrapper.createCodeLocationRequestService().getCodeLocationByName(oldCodeLocationName)
                 logger.warn("Found same code location with old naming pattern: ${oldCodeLocationName}. You may remove old code location if desired")
@@ -210,11 +210,11 @@ class HubManager {
         }
     }
 
-    private String generateOldCodeLocationName(DetectProject detectProject, BomToolType bomToolType, CodeLocationType codeLocationType, String finalPieceFromPath, String canonicalPath, String sourcePath, String prefix) {
+    private String generateOldCodeLocationName(DetectProject detectProject, BomToolType bomToolType, CodeLocationType codeLocationType, String sourcePath, String prefix) {
         if (CodeLocationType.SCAN.toString().equals(codeLocationType.toString())) {
-            return detectProject.getScanCodeLocationName(sourcePath, canonicalPath, finalPieceFromPath, prefix)
+            return detectProject.getScanCodeLocationName(sourcePath, '', '', prefix)
         } else if (CodeLocationType.BOM.toString().equals(codeLocationType.toString())) {
-            return detectProject.getBomToolCodeLocationName(bomToolType, finalPieceFromPath, prefix)
+            return detectProject.getBomToolCodeLocationName(bomToolType, sourcePath, prefix)
         }
 
         return ''

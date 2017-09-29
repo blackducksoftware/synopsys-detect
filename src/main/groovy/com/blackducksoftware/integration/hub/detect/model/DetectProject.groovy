@@ -22,15 +22,10 @@
  */
 package com.blackducksoftware.integration.hub.detect.model
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-
 class DetectProject {
     private String projectName
     private String projectVersionName
     private List<DetectCodeLocation> detectCodeLocations = []
-
-    private final Logger logger = LoggerFactory.getLogger(getClass())
 
     public String getProjectName() {
         projectName
