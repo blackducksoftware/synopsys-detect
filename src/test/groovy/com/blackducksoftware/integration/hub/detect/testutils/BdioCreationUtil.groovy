@@ -11,15 +11,15 @@
  */
 package com.blackducksoftware.integration.hub.detect.testutils
 
-import com.blackducksoftware.integration.hub.bdio.simple.BdioNodeFactory
-import com.blackducksoftware.integration.hub.bdio.simple.BdioPropertyHelper
-import com.blackducksoftware.integration.hub.bdio.simple.BdioWriterimport com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer
-import com.blackducksoftware.integration.hub.bdio.simple.RecursiveDependencyGraphTransformer
-import com.blackducksoftware.integration.hub.bdio.simple.model.BdioBillOfMaterials
-import com.blackducksoftware.integration.hub.bdio.simple.model.BdioComponent
-import com.blackducksoftware.integration.hub.bdio.simple.model.BdioExternalIdentifier
-import com.blackducksoftware.integration.hub.bdio.simple.model.BdioProject
-import com.blackducksoftware.integration.hub.bdio.simple.model.SimpleBdioDocument
+import com.blackducksoftware.integration.hub.bdio.BdioNodeFactory
+import com.blackducksoftware.integration.hub.bdio.BdioPropertyHelper
+import com.blackducksoftware.integration.hub.bdio.BdioWriter
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer
+import com.blackducksoftware.integration.hub.bdio.model.BdioBillOfMaterials
+import com.blackducksoftware.integration.hub.bdio.model.BdioComponent
+import com.blackducksoftware.integration.hub.bdio.model.BdioExternalIdentifier
+import com.blackducksoftware.integration.hub.bdio.model.BdioProject
+import com.blackducksoftware.integration.hub.bdio.model.SimpleBdioDocument
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -36,7 +36,7 @@ class BdioCreationUtil {
         gson = new GsonBuilder().setPrettyPrinting().create()
         bdioPropertyHelper = new BdioPropertyHelper()
         bdioNodeFactory = new BdioNodeFactory(bdioPropertyHelper)
-        dependencyGraphTransformer = new RecursiveDependencyGraphTransformer(bdioNodeFactory, bdioPropertyHelper)
+        dependencyGraphTransformer = new DependencyGraphTransformer(bdioNodeFactory, bdioPropertyHelper)
     }
 
     public File createBdioDocument(File outputFile, DetectCodeLocation detectCodeLocation) {

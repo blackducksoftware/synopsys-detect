@@ -150,7 +150,7 @@ class NpmBomTool extends BomTool {
         if (!includeDevDeps) {
             exeArgs.add('-prod')
         }
-        npmLsExe.setExecutableArguments(exeArgs)
+        npmLsExe.executableArguments = exeArgs
         executableRunner.executeToFile(npmLsExe, npmLsOutputFile, npmLsErrorFile)
 
         if (npmLsOutputFile.length() > 0) {

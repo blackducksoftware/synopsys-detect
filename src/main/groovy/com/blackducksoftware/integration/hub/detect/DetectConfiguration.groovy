@@ -155,7 +155,7 @@ class DetectConfiguration {
     public void logConfiguration() {
         List<String> configurationPieces = []
         configurationPieces.add('')
-        configurationPieces.add("Detect Version: ${buildInfo.getDetectVersion()}" as String)
+        configurationPieces.add("Detect Version: ${buildInfo.detectVersion}" as String)
         configurationPieces.add('Current property values:')
         configurationPieces.add('-'.multiply(60))
         def propertyFields = DetectProperties.class.getDeclaredFields().findAll {
