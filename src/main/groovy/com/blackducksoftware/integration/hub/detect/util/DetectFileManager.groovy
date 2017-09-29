@@ -50,7 +50,7 @@ class DetectFileManager {
     public void cleanupDirectories() {
         if (directoriesToCleanup) {
             for (File directory : directoriesToCleanup) {
-                FileUtils.deleteDirectory(directory)
+                FileUtils.deleteQuietly(directory)
             }
         }
     }
