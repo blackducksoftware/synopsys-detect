@@ -182,7 +182,7 @@ class DetectConfiguration {
         }
         configurationPieces.add('-'.multiply(60))
         configurationPieces.add('')
-        String configurationMessage = configurationPieces.join('\n')
+        String configurationMessage = configurationPieces.join(System.lineSeparator())
         logger.info(configurationMessage)
     }
 
