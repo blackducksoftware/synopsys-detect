@@ -15,9 +15,9 @@ import org.junit.Before
 import org.junit.Test
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.PathExternalId
-import com.blackducksoftware.integration.hub.detect.bomtool.CpanBomTool
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
@@ -31,6 +31,7 @@ class CpanBomToolTest {
     private final String cpanListOutputPath = "${sourcePath}/cpan-l-out.txt"
     private final String cpanmShowDepsOutputPath = "${sourcePath}/cpanm-showdeps-out.txt"
     private final String outputFilePath = "${sourcePath}/testOutput.jsonld"
+    private final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
 
     @Before
     public void init() {
@@ -45,7 +46,7 @@ class CpanBomToolTest {
 
         DependencyGraph dependencyGraph = cpanPackager.makeDependencyGraph(cpanListText, showDepsText)
 
-        ExternalId externalId = new PathExternalId(CpanBomTool.CPAN_FORGE, sourcePath)
+        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.CPAN, sourcePath)
         def detectCodeLocation = new DetectCodeLocation(BomToolType.CPAN, sourcePath, 'testBdio', 'output', externalId, dependencyGraph)
 
         bdioCreationUtil.createBdioDocument(new File(outputFilePath), detectCodeLocation)

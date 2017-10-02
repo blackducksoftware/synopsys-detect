@@ -24,7 +24,8 @@ package com.blackducksoftware.integration.hub.detect.bomtool.rubygems
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 
 import groovy.transform.TypeChecked
@@ -35,7 +36,7 @@ public class RubygemsNodePackager {
     @Autowired
     NameVersionNodeTransformer nameVersionNodeTransformer
 
-    public DependencyGraph extractProjectDependencies(final String gemlock) {
+    public DependencyGraph extractProjectDependencies(final List<String> gemlock) {
         def gemlockNodeParser = new GemlockNodeParser()
         DependencyGraph graph = gemlockNodeParser.parseProjectDependencies(nameVersionNodeTransformer, gemlock)
 

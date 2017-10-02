@@ -23,6 +23,7 @@
 package com.blackducksoftware.integration.hub.detect.bomtool
 
 import java.nio.charset.StandardCharsets
+import java.nio.file.Files
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -57,7 +58,8 @@ class YarnBomTool extends BomTool {
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
-        final String yarnLockText = detectFileManager.findFile(sourceDirectory, 'yarn.lock').getText(StandardCharsets.UTF_8.toString())
+        final File yarnLockFile = detectFileManager.findFile(sourceDirectory, 'yarn.lock')
+        final List<String> yarnLockText = Files.readAllLines(yarnLockFile.toPath(), StandardCharsets.UTF_8)
         final DependencyGraph dependencyGraph = yarnPackager.parse(yarnLockText)
         final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.NPM, sourcePath)
         final def detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, externalId, dependencyGraph)

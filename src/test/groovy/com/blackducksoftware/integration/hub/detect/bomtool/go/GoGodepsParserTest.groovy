@@ -17,8 +17,8 @@ import org.apache.commons.io.IOUtils
 import org.junit.Test
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
-import com.blackducksoftware.integration.hub.bdio.simple.model.Dependency
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.NameVersionExternalId
+import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.bomtool.GoDepBomTool
 import com.blackducksoftware.integration.hub.detect.bomtool.go.godep.GoGodepsParser
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphTestUtil
@@ -27,6 +27,7 @@ import com.google.gson.GsonBuilder
 
 public class GoGodepsParserTest {
     Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create()
+    ExternalIdFactory externalIdFactory = new ExternalIdFactory();
 
     @Test
     public void goDepParserTest() throws IOException {
@@ -39,6 +40,6 @@ public class GoGodepsParserTest {
 
     private void fixVersion(final Dependency node, final String newVersion) {
         node.version = newVersion
-        node.externalId = new NameVersionExternalId(GoDepBomTool.GOLANG, node.name, newVersion)
+        node.externalId = externalIdFactory.createNameVersionExternalId(GoDepBomTool.GOLANG, node.name, newVersion)
     }
 }

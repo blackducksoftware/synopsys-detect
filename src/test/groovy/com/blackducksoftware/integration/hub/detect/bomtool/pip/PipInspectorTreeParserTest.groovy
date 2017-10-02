@@ -15,10 +15,10 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.DependencyNode
-import com.blackducksoftware.integration.hub.bdio.simple.model.Forge
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.bdio.model.Forge
+import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 
 class PipInspectorTreeParserTest {
@@ -50,17 +50,17 @@ class PipInspectorTreeParserTest {
 
     @Test
     void lineToNodeTest() {
-        DependencyNode validNode1 = parser.lineToNode(line1)
+        Dependency validNode1 = parser.lineToDependency(line1)
         Assert.assertEquals(name, validNode1.name)
         Assert.assertEquals(version, validNode1.version)
         Assert.assertTrue(validNode1.children.isEmpty())
 
-        DependencyNode validNode2 = parser.lineToNode(line2)
+        Dependency validNode2 = parser.lineToDependency(line2)
         Assert.assertEquals(validNode1.name, validNode2.name)
         Assert.assertEquals(validNode1.version, validNode2.version)
         Assert.assertEquals(validNode1.children, validNode2.children)
 
-        DependencyNode invalidNode = parser.lineToNode(line3)
+        Dependency invalidNode = parser.lineToDependency(line3)
         Assert.assertNull(invalidNode)
     }
 
@@ -83,7 +83,7 @@ ${space + child2Text}
 ${space + child3Text}
 """
 
-        DependencyNode root = parser.parse(validText)
+        Dependency root = parser.parse(validText)
         ExternalId expectedExternalId = parser.externalIdFactory.createNameVersionExternalId(Forge.PYPI, 'name', 'version')
         Assert.assertEquals('name', root.name)
         Assert.assertEquals('version', root.version)
@@ -97,7 +97,7 @@ ${space + child3Text}
         i am not a valid file
         the result should be null
         """
-        DependencyNode root = parser.parse(invalidText)
+        Dependency root = parser.parse(invalidText)
         Assert.assertNull(root)
     }
 }

@@ -23,6 +23,7 @@
 package com.blackducksoftware.integration.hub.detect.bomtool
 
 import java.nio.charset.StandardCharsets
+import java.nio.file.Files
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -62,12 +63,12 @@ class CranBomTool extends BomTool {
         String projectVersion = ''
         if (detectFileManager.containsAllFiles(sourcePath,'DESCRIPTION')) {
             def descriptionFile = new File(sourceDirectory, 'DESCRIPTION')
-            String descriptionText = descriptionFile.getText(StandardCharsets.UTF_8.toString())
+            List<String> descriptionText = Files.readAllLines(descriptionFile.toPath(), StandardCharsets.UTF_8)
             projectName = packratPackager.getProjectName(descriptionText)
             projectVersion = packratPackager.getVersion(descriptionText)
         }
 
-        String packratLockText = packratLockFile[0].getText(StandardCharsets.UTF_8.toString())
+        List<String> packratLockText = Files.readAllLines(packratLockFile[0].toPath(), StandardCharsets.UTF_8)
         DependencyGraph dependencyGraph = packratPackager.extractProjectDependencies(packratLockText)
         ExternalId externalId = externalIdFactory.createPathExternalId(Forge.CRAN, sourcePath)
 
