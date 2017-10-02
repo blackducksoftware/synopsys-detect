@@ -1,11 +1,9 @@
 package com.blackducksoftware.integration.hub.detect
 
-import com.blackducksoftware.integration.hub.bdio.simple.BdioNodeFactory
-import com.blackducksoftware.integration.hub.bdio.simple.BdioPropertyHelperimport com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphimport com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer
-import com.blackducksoftware.integration.hub.bdio.simple.RecursiveDependencyGraphTransformer
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.bdio.BdioNodeFactory
+import com.blackducksoftware.integration.hub.bdio.BdioPropertyHelper
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmCliDependencyFinder
-import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
@@ -37,8 +35,7 @@ class TestNpmBdio {
         process.waitFor()
 
         NpmCliDependencyFinder npmCliDependencyFinder = new NpmCliDependencyFinder()
-        DependencyGraph dependencyGraph = npmCliDependencyFinder.generateDependencyGraph(stdOut)
-        DetectCodeLocation detectCodeLocation = new DetectCodeLocation(BomToolType.NPM, 'C:\\Users\\jpiscitelli\\Documents\\node\\test', dependencyGraph)
+        DetectCodeLocation detectCodeLocation = npmCliDependencyFinder.generateCodeLocation(stdOut, 'C:\\Users\\jpiscitelli\\Documents\\node\\test')
 
         DetectProject detectProject = new DetectProject()
         detectProject.projectName = 'ek unit test'
@@ -52,7 +49,7 @@ class TestNpmBdio {
         detectFileManager.detectConfiguration = detectConfiguration
         BdioPropertyHelper bdioPropertyHelper = new BdioPropertyHelper()
         BdioNodeFactory bdioNodeFactory = new BdioNodeFactory(bdioPropertyHelper)
-        DependencyGraphTransformer dependencyGraphTransformer = new RecursiveDependencyGraphTransformer(bdioNodeFactory, bdioPropertyHelper)
+        DependencyGraphTransformer dependencyGraphTransformer = new DependencyGraphTransformer(bdioNodeFactory, bdioPropertyHelper)
         IntegrationEscapeUtil integrationEscapeUtil = new IntegrationEscapeUtil()
 
         DetectProjectManager detectProjectManager = new DetectProjectManager()
@@ -62,7 +59,7 @@ class TestNpmBdio {
         detectProjectManager.bdioNodeFactory = bdioNodeFactory
         detectProjectManager.dependencyGraphTransformer = dependencyGraphTransformer
         detectProjectManager.integrationEscapeUtil = integrationEscapeUtil
-        detectProjectManager.gson = new GsonBuilder().setPrettyPrinting().registerTypeAdapter(ExternalId.class, new ExternalIdTypeAdapter()).create()
+        detectProjectManager.gson = new GsonBuilder().setPrettyPrinting()
 
         List<File> bdioFiles = detectProjectManager.createBdioFiles(detectProject)
         bdioFiles.each { println it.canonicalPath }
