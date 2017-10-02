@@ -68,8 +68,8 @@ class PipBomTool extends BomTool {
         def hasExecutables
         if (hasSetupToolsFile || hasRequirementsFile) {
             boolean hasPython = getPythonPath()
-            String pythonVersion = detectConfiguration.pythonThreeOverride ? "PYTHON" : "PYTHON3"
-            String pipVersion = detectConfiguration.pythonThreeOverride ? "PIP" : "PIP3"
+            String pythonVersion = detectConfiguration.pythonThreeOverride ? "PYTHON3" : "PYTHON"
+            String pipVersion = detectConfiguration.pythonThreeOverride ? "PIP3" : "PIP"
 
             if (!hasPython) {
                 logger.warn("Could not find a ${pythonVersion} executable")
