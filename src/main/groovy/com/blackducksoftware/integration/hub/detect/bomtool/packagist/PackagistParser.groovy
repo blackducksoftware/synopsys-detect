@@ -29,6 +29,7 @@ import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph
 import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
@@ -69,8 +70,14 @@ class PackagistParser {
         }
         convertFromJsonToDependency(graph, null, startingPackages, packagistPackages, true)
 
-        def eid = externalIdFactory.createNameVersionExternalId(Forge.PACKAGIST, projectName, projectVersion);
-        new DetectCodeLocation(BomToolType.PACKAGIST, sourcePath,projectName, projectVersion, eid, graph)
+        ExternalId projectExternalId;
+        if (projectName == null || projectVersion == null){
+            projectExternalId = externalIdFactory.createPathExternalId(Forge.PACKAGIST, sourcePath);
+        }else{
+            projectExternalId = externalIdFactory.createNameVersionExternalId(Forge.PACKAGIST, projectName, projectVersion);
+        }
+
+        new DetectCodeLocation(BomToolType.PACKAGIST, sourcePath, projectName, projectVersion, projectExternalId, graph)
     }
 
     private void convertFromJsonToDependency(MutableDependencyGraph graph, Dependency parent, List<String> currentPackages, JsonArray jsonArray, Boolean root) {
