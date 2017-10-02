@@ -35,22 +35,21 @@ import groovy.transform.TypeChecked
 @TypeChecked
 class VndrParser {
 
-    public ExternalIdFactory externalIdFactory;
+    public ExternalIdFactory externalIdFactory
     public VndrParser(ExternalIdFactory externalIdFactory){
-        this.externalIdFactory = externalIdFactory;
+        this.externalIdFactory = externalIdFactory
     }
 
-    public DependencyGraph parseVendorConf(String vendorConfContents) {
-        MutableDependencyGraph graph = new MutableMapDependencyGraph();
-        String contents = vendorConfContents.trim()
-        def lines = contents.split(System.lineSeparator())
+    public DependencyGraph parseVendorConf(List<String> vendorConfContents) {
+        MutableDependencyGraph graph = new MutableMapDependencyGraph()
         //TODO test against moby
-        lines.each { String line ->
+        vendorConfContents.each { String line ->
             if (line?.trim() && !line.startsWith('#')) {
                 def parts = line.split(' ')
+
                 final ExternalId dependencyExternalId = externalIdFactory.createNameVersionExternalId(GoDepBomTool.GOLANG, parts[0], parts[1])
                 final Dependency dependency = new Dependency(parts[0], parts[1], dependencyExternalId)
-                graph.addChildToRoot(dependency);
+                graph.addChildToRoot(dependency)
             }
         }
 

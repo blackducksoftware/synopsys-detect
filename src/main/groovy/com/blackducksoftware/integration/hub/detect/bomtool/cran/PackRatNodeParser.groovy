@@ -40,36 +40,35 @@ import groovy.transform.TypeChecked
 public class PackRatNodeParser {
     private final Logger logger = LoggerFactory.getLogger(PackRatNodeParser.class)
 
-    public ExternalIdFactory externalIdFactory;
+    public ExternalIdFactory externalIdFactory
     public PackRatNodeParser(ExternalIdFactory externalIdFactory){
-        this.externalIdFactory = externalIdFactory;
+        this.externalIdFactory = externalIdFactory
     }
 
-    DependencyGraph parseProjectDependencies(final String packratLockContents) {
-        LazyExternalIdDependencyGraphBuilder graphBuilder = new LazyExternalIdDependencyGraphBuilder();
+    DependencyGraph parseProjectDependencies(final List<String> packratLockContents) {
+        LazyExternalIdDependencyGraphBuilder graphBuilder = new LazyExternalIdDependencyGraphBuilder()
 
         DependencyId currentParent = null
 
-        String[] lines = packratLockContents.split(System.lineSeparator())
         String name
         String version
 
-        for (String line : lines) {
+        for (String line : packratLockContents) {
             if (line.contains('Package: ')) {
                 name = line.replace('Package: ', '').trim()
-                currentParent = new NameDependencyId(name);
-                graphBuilder.setDependencyName(currentParent, name);
-                graphBuilder.addChildToRoot(currentParent);
-                version = null;
+                currentParent = new NameDependencyId(name)
+                graphBuilder.setDependencyName(currentParent, name)
+                graphBuilder.addChildToRoot(currentParent)
+                version = null
                 continue
             }
 
             if (line.contains('Version: ')) {
                 version = line.replace('Version: ', '').trim()
-                graphBuilder.setDependencyVersion(currentParent, version);
-                DependencyId realId = new NameVersionDependencyId(name, version);
+                graphBuilder.setDependencyVersion(currentParent, version)
+                DependencyId realId = new NameVersionDependencyId(name, version)
                 ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.CRAN, name, version)
-                graphBuilder.setDependencyAsAlias(realId, currentParent);
+                graphBuilder.setDependencyAsAlias(realId, currentParent)
                 graphBuilder.setDependencyInfo(realId, name, version, externalId)
             }
 

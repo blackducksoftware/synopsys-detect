@@ -69,7 +69,7 @@ class MavenCodeLocationPackager {
         currentGraph = new MutableMapDependencyGraph()
 
         level = 0
-        for (String line : mavenOutputText.split(System.lineSeparator())) {
+        for (String line : mavenOutputText.split(System.lineSeparator)) {
             if (!(line ==~ /\[.*INFO.*\].*/) || line ==~ /\[.*INFO.*\].*Downloaded:.*/ || line ==~ /\[.*INFO.*\].*Downloading:.*/) {
                 // If the line does not start with [INFO] and have content, we will ignore it
                 // We also ignore lines for downloads
