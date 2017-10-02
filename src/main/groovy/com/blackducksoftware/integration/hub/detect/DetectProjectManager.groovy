@@ -132,7 +132,7 @@ class DetectProjectManager {
         }
         //ensure that the project name is set, use some reasonable defaults
         detectProject.setProjectNameIfNotSet(getProjectName(detectProject.projectName))
-        detectProject.setProjectNameIfNotSet(getProjectVersionName(detectProject.projectVersionName))
+        detectProject.setProjectVersionNameIfNotSet(getProjectVersionName(detectProject.projectVersionName))
 
         if (!foundAnyBomTools) {
             logger.info("No package managers were detected - will register ${detectConfiguration.sourcePath} for signature scanning of ${detectProject.projectName}/${detectProject.projectVersionName}")
