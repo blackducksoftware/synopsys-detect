@@ -67,8 +67,7 @@ class PearDependencyFinder {
         } else if (!pearDependencies.standardOutput || !pearListing.standardOutput) {
             logger.error("No information retrieved from running pear commands")
         } else {
-            def test = pearDependencies.standardOutputAsList
-            def nameList = findDependencyNames(test)
+            def nameList = findDependencyNames(pearDependencies.standardOutputAsList)
             graph = createPearDependencyGraphFromList(pearListing.standardOutputAsList, nameList)
         }
 
