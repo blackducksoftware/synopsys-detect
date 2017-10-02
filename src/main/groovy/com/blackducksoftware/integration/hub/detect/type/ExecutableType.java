@@ -20,26 +20,40 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.rubygems
+package com.blackducksoftware.integration.hub.detect.type;
 
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
+public enum ExecutableType {
+    BASH,
+    CONDA,
+    CPAN,
+    CPANM,
+    DOCKER,
+    GO,
+    GO_DEP("dep"),
+    GRADLE,
+    GRADLEW,
+    MVN,
+    MVNW,
+    NPM,
+    NUGET,
+    PEAR,
+    PERL,
+    PIP,
+    PIP3,
+    PYTHON,
+    PYTHON3;
 
-import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
+    private String executableName;
 
-import groovy.transform.TypeChecked
+    private ExecutableType() {
+        this.executableName = this.name().toLowerCase();
+    }
 
-@Component
-@TypeChecked
-public class RubygemsNodePackager {
-    @Autowired
-    NameVersionNodeTransformer nameVersionNodeTransformer
+    private ExecutableType(final String executableName) {
+        this.executableName = executableName;
+    }
 
-    public DependencyGraph extractProjectDependencies(final List<String> gemlock) {
-        def gemlockNodeParser = new GemlockNodeParser()
-        DependencyGraph graph = gemlockNodeParser.parseProjectDependencies(nameVersionNodeTransformer, gemlock)
-
-        graph
+    public String getExecutable() {
+        return executableName;
     }
 }

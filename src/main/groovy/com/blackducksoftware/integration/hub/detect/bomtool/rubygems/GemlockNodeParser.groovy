@@ -49,32 +49,31 @@ class GemlockNodeParser {
     private boolean inSpecsSection = false
     private boolean inDependenciesSection = false
 
-    DependencyGraph parseProjectDependencies(NameVersionNodeTransformer nameVersionNodeTransformer, final String gemfileLockContents) {
+    DependencyGraph parseProjectDependencies(NameVersionNodeTransformer nameVersionNodeTransformer, final List<String> gemfileLockLines) {
         rootNameVersionNode = new NameVersionNodeImpl([name: 'gemfileLockRoot'])
         nameVersionNodeBuilder = new NameVersionNodeBuilder(rootNameVersionNode)
         directDependencyNames = new HashSet<>()
         currentParent = null
 
-        String[] lines = gemfileLockContents.split(System.lineSeparator())
-        for (String line : lines) {
+        gemfileLockLines.each{ String line ->
             if (!line?.trim()) {
                 inSpecsSection = false
                 inDependenciesSection = false
-                continue
+                return
             }
 
-            if (!inSpecsSection && '  specs:' == line) {
+            if (!inSpecsSection && 'specs:'.equals(line.trim())) {
                 inSpecsSection = true
-                continue
+                return
             }
 
-            if (!inDependenciesSection && 'DEPENDENCIES' == line) {
+            if (!inDependenciesSection && 'DEPENDENCIES'.equals(line.trim())) {
                 inDependenciesSection = true
-                continue
+                return
             }
 
             if (!inSpecsSection && !inDependenciesSection) {
-                continue
+                return
             }
 
             //we are now either in the specs section or in the dependencies section

@@ -3,7 +3,13 @@ package com.blackducksoftware.integration.hub.detect.bomtool.nuget
 import org.junit.Test
 import org.skyscreamer.jsonassert.JSONAssert
 
-import com.blackducksoftware.integration.hub.bdio.simple.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.bdio.BdioNodeFactory
+import com.blackducksoftware.integration.hub.bdio.BdioPropertyHelper
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer
+import com.blackducksoftware.integration.hub.bdio.model.BdioComponent
+import com.blackducksoftware.integration.hub.bdio.model.BdioProject
+import com.blackducksoftware.integration.hub.bdio.model.Forge
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.google.gson.Gson
@@ -43,7 +49,7 @@ public class NugetInspectorPackagerTest {
             BdioPropertyHelper bdioPropertyHelper = new BdioPropertyHelper();
             BdioNodeFactory bdioNodeFactory = new BdioNodeFactory(bdioPropertyHelper);
 
-            DependencyNodeTransformer dependencyNodeTransformer = new DependencyNodeTransformer(bdioNodeFactory, bdioPropertyHelper);
+            DependencyGraphTransformer dependencyNodeTransformer = new DependencyGraphTransformer(bdioNodeFactory, bdioPropertyHelper);
 
             final BdioProject project = bdioNodeFactory.createProject(codeLocation.bomToolProjectName, codeLocation.bomToolProjectVersionName, codeLocation.bomToolProjectExternalId.createDataId(), Forge.NUGET.toString(), codeLocation.bomToolProjectExternalId.createDataId())
 

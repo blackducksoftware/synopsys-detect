@@ -54,29 +54,28 @@ class PearDependencyFinder {
 
     @Autowired
     DetectConfiguration detectConfiguration
-    
+
     @Autowired
     ExternalIdFactory externalIdFactory
 
-    
+
     public DependencyGraph parsePearDependencyList(ExecutableOutput pearListing, ExecutableOutput pearDependencies) {
-        DependencyGraph graph = new MutableMapDependencyGraph();
+        DependencyGraph graph = new MutableMapDependencyGraph()
 
         if (pearDependencies.errorOutput || pearListing.errorOutput) {
             logger.error("There was an error during execution.")
         } else if (!pearDependencies.standardOutput || !pearListing.standardOutput) {
             logger.error("No information retrieved from running pear commands")
         } else {
-            def nameList = findDependencyNames(pearDependencies.standardOutput)
-            graph = createPearDependencyGraphFromList(pearListing.standardOutput, nameList)
+            def nameList = findDependencyNames(pearDependencies.standardOutputAsList)
+            graph = createPearDependencyGraphFromList(pearListing.standardOutputAsList, nameList)
         }
 
         graph
     }
 
-    private List<String> findDependencyNames(String list) {
+    private List<String> findDependencyNames(List<String> content) {
         def nameList = []
-        String[] content = list.split(System.lineSeparator())
 
         if (content.size() > 5) {
             def listing = content[5..-1]
@@ -102,10 +101,9 @@ class PearDependencyFinder {
         nameList
     }
 
-    private DependencyGraph createPearDependencyGraphFromList(String list, List<String> dependencyNames) {
-        MutableDependencyGraph graph = new MutableMapDependencyGraph();
 
-        String[] dependencyList = list.split(System.lineSeparator())
+    private DependencyGraph createPearDependencyGraphFromList(List<String> dependencyList, List<String> dependencyNames) {
+        MutableDependencyGraph graph = new MutableMapDependencyGraph()
 
         if (dependencyList.size() > 3) {
             def listing = dependencyList[3..-1]
@@ -119,7 +117,7 @@ class PearDependencyFinder {
                 if (dependencyInfo && dependencyNames.contains(packageName)) {
                     def child = new Dependency(packageName, packageVersion, externalIdFactory.createNameVersionExternalId(Forge.PEAR, packageName, packageVersion))
 
-                    graph.addChildToRoot(child);
+                    graph.addChildToRoot(child)
                 }
             }
         }

@@ -68,8 +68,8 @@ class PipBomTool extends BomTool {
         def hasExecutables
         if (hasSetupToolsFile || hasRequirementsFile) {
             boolean hasPython = getPythonPath()
-            String pythonVersion = detectConfiguration.pythonThreeOverride ? "PYTHON" : "PYTHON3"
-            String pipVersion = detectConfiguration.pythonThreeOverride ? "PIP" : "PIP3"
+            String pythonVersion = detectConfiguration.pythonThreeOverride ? "PYTHON3" : "PYTHON"
+            String pipVersion = detectConfiguration.pythonThreeOverride ? "PIP3" : "PIP"
 
             if (!hasPython) {
                 logger.warn("Could not find a ${pythonVersion} executable")
@@ -112,9 +112,12 @@ class PipBomTool extends BomTool {
         def setupFile = detectFileManager.findFile(sourceDirectory, SETUP_FILE_NAME)
         if (setupFile) {
             if (!projectName) {
-                def findProjectNameExecutable = new Executable(sourceDirectory, pythonPath, [setupFile.absolutePath, '--name'])
-                String[] output = executableRunner.execute(findProjectNameExecutable).standardOutput.split(System.lineSeparator())
-                projectName = output[output.length - 1].replace('_', '-').trim()
+                def findProjectNameExecutable = new Executable(sourceDirectory, pythonPath, [
+                    setupFile.absolutePath,
+                    '--name'
+                ])
+                List<String> output = executableRunner.execute(findProjectNameExecutable).standardOutputAsList
+                projectName = output.get(output.size() - 1).replace('_', '-').trim()
             }
         }
 
