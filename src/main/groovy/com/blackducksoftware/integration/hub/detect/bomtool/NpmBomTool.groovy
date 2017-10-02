@@ -159,13 +159,15 @@ class NpmBomTool extends BomTool {
 
         if (npmLsOutputFile.length() > 0) {
             if (npmLsErrorFile.length() > 0) {
-                logger.debug("Error when running npm ls -json command\n${npmLsErrorFile.text}")
+                logger.debug("Error when running npm ls -json command")
+                logger.debug(npmLsErrorFile.text)
             }
             def detectCodeLocation = npmCliDependencyFinder.generateCodeLocation(sourcePath, npmLsOutputFile)
 
             return [detectCodeLocation]
         } else if (npmLsErrorFile.length() > 0) {
-            logger.error("Error when running npm ls -json command\n${npmLsErrorFile.text}")
+            logger.error("Error when running npm ls -json command")
+            logger.debug(npmLsErrorFile.text)
         } else {
             logger.warn("Nothing returned from npm ls -json command")
         }

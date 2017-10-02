@@ -45,14 +45,14 @@ class YarnPackager {
     @Autowired
     NameVersionNodeTransformer nameVersionNodeTransformer
 
-    public DependencyGraph parse(String yarnLockText) {
+    public DependencyGraph parse(List<String> yarnLockText) {
         def rootNode = new NameVersionNodeImpl()
         rootNode.name = "detectRootNode - ${UUID.randomUUID()}"
         def nameVersionLinkNodeBuilder = new LinkedNameVersionNodeBuilder(rootNode)
 
         NameVersionNode currentNode = null
         boolean dependenciesStarted = false
-        for (String line : yarnLockText.split(System.lineSeparator())) {
+        for (String line : yarnLockText) {
             if (!line.trim()) {
                 continue
             }
@@ -63,7 +63,7 @@ class YarnPackager {
 
             int level = getLineLevel(line)
             if (level == 0) {
-                currentNode = lineToNameVersionNode(nameVersionLinkNodeBuilder, rootNode, line)
+                currentNode = lineToNameVersionNode(nameVersionLinkNodeBuilder, rootNode, line.trim())
                 dependenciesStarted = false
                 continue
             }
