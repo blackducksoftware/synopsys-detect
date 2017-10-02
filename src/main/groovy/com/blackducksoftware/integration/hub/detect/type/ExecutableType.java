@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2017 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
  *
@@ -20,27 +20,40 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.exception;
+package com.blackducksoftware.integration.hub.detect.type;
 
-public class DetectException extends Exception {
-    public DetectException() {
-        super();
+public enum ExecutableType {
+    BASH,
+    CONDA,
+    CPAN,
+    CPANM,
+    DOCKER,
+    GO,
+    GO_DEP("dep"),
+    GRADLE,
+    GRADLEW,
+    MVN,
+    MVNW,
+    NPM,
+    NUGET,
+    PEAR,
+    PERL,
+    PIP,
+    PIP3,
+    PYTHON,
+    PYTHON3;
+
+    private String executableName;
+
+    private ExecutableType() {
+        this.executableName = this.name().toLowerCase();
     }
 
-    public DetectException(final String message, final Throwable cause, final boolean enableSuppression, final boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+    private ExecutableType(final String executableName) {
+        this.executableName = executableName;
     }
 
-    public DetectException(final String message, final Throwable cause) {
-        super(message, cause);
+    public String getExecutable() {
+        return executableName;
     }
-
-    public DetectException(final String message) {
-        super(message);
-    }
-
-    public DetectException(final Throwable cause) {
-        super(cause);
-    }
-
 }
