@@ -1,5 +1,7 @@
 package com.blackducksoftware.integration.hub.detect.testutils
 
+import org.junit.Assert
+
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.graph.summary.DependencyGraphSummarizer
 import com.blackducksoftware.integration.hub.bdio.graph.summary.GraphSummary
@@ -33,8 +35,8 @@ class DependencyGraphTestUtil {
         assertSet(expectedExistingRelationshipsIds, actualExistingRelationshipsIds);
 
         for (String key : expected.dependencySummaries.keySet()){
-            assertEquals(expected.dependencySummaries.get(key).name, actual.dependencySummaries.get(key).name);
-            assertEquals(expected.dependencySummaries.get(key).version, actual.dependencySummaries.get(key).version);
+            Assert.assertEquals(expected.dependencySummaries.get(key).name, actual.dependencySummaries.get(key).name);
+            Assert.assertEquals(expected.dependencySummaries.get(key).version, actual.dependencySummaries.get(key).version);
         }
         for (String key : expectedExistingRelationshipsIds){
             assertSet(expected.externalDataIdRelationships.get(key), actual.externalDataIdRelationships.get(key));
@@ -48,7 +50,7 @@ class DependencyGraphTestUtil {
         Set<String> extraActual = new HashSet<>(actual);
         extraActual.removeAll(expected)
 
-        assertEquals(0, missingExpected.size());
-        assertEquals(0, extraActual.size());
+        Assert.assertEquals(0, missingExpected.size());
+        Assert.assertEquals(0, extraActual.size());
     }
 }

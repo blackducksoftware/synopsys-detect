@@ -35,7 +35,7 @@ class ExecutableOutput {
     }
 
     public List<String> getStandardOutputAsList() {
-        Arrays.asList(errorOutput.split(System.lineSeparator))
+        Arrays.asList(standardOutput.split(System.lineSeparator))
     }
 
     public List<String> getErrorOutputAsList() {

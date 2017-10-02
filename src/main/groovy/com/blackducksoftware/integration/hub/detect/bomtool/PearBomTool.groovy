@@ -83,7 +83,7 @@ class PearBomTool extends BomTool {
         String rootName = packageXml.name
         String rootVersion = packageXml.version.release
 
-        DependencyGraph dependencyGraph = pearDependencyFinder.parsePearDependencyGraph(pearListing, pearDependencies)
+        DependencyGraph dependencyGraph = pearDependencyFinder.parsePearDependencyList(pearListing, pearDependencies)
         def detectCodeLocation = new DetectCodeLocation(
                 getBomToolType(),
                 sourcePath,

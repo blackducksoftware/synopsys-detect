@@ -20,6 +20,7 @@ public class NpmOutputParserTest {
 
         Assert.assertEquals(codeLocation.bomToolProjectName, "node-js");
         Assert.assertEquals(codeLocation.bomToolProjectVersionName, "0.2.0");
-        DependencyGraphTestUtil.assertGraph('/npm/npmParseOutput_graph.json', codeLocation.dependencyGraph);
+        def dependencyGraph = codeLocation.dependencyGraph
+        DependencyGraphTestUtil.assertGraph('/npm/npmParseOutput_graph.json', dependencyGraph);
     }
 }

@@ -19,12 +19,12 @@ class NpmLockfilePackagerTest {
     public void init() {
         testUtil = new TestUtil()
 
-        NameVersionNodeTransformer nameVersionNodeTransformer = new NameVersionNodeTransformer()
-        nameVersionNodeTransformer.externalIdFactory = new ExternalIdFactory()
+        def test = new ExternalIdFactory()
 
         npmLockfilePackager = new NpmLockfilePackager()
+        npmLockfilePackager.externalIdFactory = test
         npmLockfilePackager.gson = new GsonBuilder().setPrettyPrinting().create()
-        npmLockfilePackager.nameVersionNodeTransformer = nameVersionNodeTransformer
+        npmLockfilePackager.nameVersionNodeTransformer = new NameVersionNodeTransformer(test)
     }
 
     @Test
