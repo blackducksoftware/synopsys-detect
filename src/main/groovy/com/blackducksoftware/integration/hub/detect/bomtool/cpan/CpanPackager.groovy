@@ -48,11 +48,11 @@ class CpanPackager {
     @Autowired
     NameVersionNodeTransformer nameVersionNodeTransformer
 
-    public DependencyGraph makeDependencyGraph(String cpanListText, String directDependenciesText) {
+    public DependencyGraph makeDependencyGraph(List<String> cpanListText, List<String> directDependenciesText) {
         Map<String, NameVersionNode> allModules = cpanListParser.parse(cpanListText)
         List<String> directModuleNames = getDirectModuleNames(directDependenciesText)
 
-        MutableDependencyGraph graph = new MutableMapDependencyGraph();
+        MutableDependencyGraph graph = new MutableMapDependencyGraph()
         directModuleNames.each { moduleName ->
             def nameVersionNode = allModules[moduleName]
             if (nameVersionNode) {
@@ -67,9 +67,9 @@ class CpanPackager {
         graph
     }
 
-    private List<String> getDirectModuleNames(String directDependenciesText) {
+    private List<String> getDirectModuleNames(List<String> directDependenciesText) {
         List<String> modules = []
-        for (String line : directDependenciesText.split(System.lineSeparator)) {
+        for (String line : directDependenciesText) {
             if (!line?.trim()) {
                 continue
             }

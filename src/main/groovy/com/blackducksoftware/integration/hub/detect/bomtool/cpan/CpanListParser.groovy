@@ -36,10 +36,10 @@ import groovy.transform.TypeChecked
 class CpanListParser {
     private final Logger logger = LoggerFactory.getLogger(CpanListParser.class)
 
-    public Map<String, NameVersionNode> parse(String listText) {
+    public Map<String, NameVersionNode> parse(List<String> listText) {
         Map<String, NameVersionNode> moduleMap = [:]
 
-        for (String line: listText.split(System.lineSeparator)) {
+        for (String line: listText) {
             if (!line.trim()) {
                 continue
             }
