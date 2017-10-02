@@ -188,7 +188,11 @@ class DetectProjectManager {
     }
 
     private String createBdioFilename(BomToolType bomToolType, String finalSourcePathPiece, String projectName, String projectVersionName) {
-        def names = [finalSourcePathPiece, projectName, projectVersionName]
+        def names = [
+            finalSourcePathPiece,
+            projectName,
+            projectVersionName
+        ]
         names.sort { -it.size() }
         String filename = generateFilename(bomToolType, finalSourcePathPiece, projectName, projectVersionName)
         for (int i = 0; (filename.length() >= 255) && (i < 3); i++) {
@@ -204,7 +208,13 @@ class DetectProjectManager {
     }
 
     private String generateFilename(BomToolType bomToolType, String finalSourcePathPiece, String projectName, String projectVersionName) {
-        List<String> safePieces = [bomToolType.toString(), projectName, projectVersionName, finalSourcePathPiece, 'bdio'].collect { integrationEscapeUtil.escapeForUri(it) }
+        List<String> safePieces = [
+            bomToolType.toString(),
+            projectName,
+            projectVersionName,
+            finalSourcePathPiece,
+            'bdio'
+        ].collect { integrationEscapeUtil.escapeForUri(it) }
 
         String filename = (safePieces as Iterable).join('_') + '.jsonld'
         filename
@@ -241,7 +251,7 @@ class DetectProjectManager {
         final String projectVersionName = detectProject.projectVersionName
         final SimpleBdioDocument simpleBdioDocument = dependencyGraphTransformer.transformDependencyGraph(codeLocationName, projectName, projectVersionName, projectExternalId, dependencies)
 
-        String hubDetectVersion = detectConfiguration.getBuildInfo().getDetectVersion()
+        String hubDetectVersion = detectConfiguration.buildInfo.detectVersion
         def detectVersionData = ['detectVersion' : hubDetectVersion]
 
         simpleBdioDocument.billOfMaterials.customData = detectVersionData
