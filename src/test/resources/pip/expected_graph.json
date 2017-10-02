@@ -1,92 +1,92 @@
 {
   "externalDataIdRelationships": {
-    "data:pypi/blackduck_sample_project/0_0_9": [
-      "data:pypi/Delorean/0_6_0",
-      "data:pypi/pynamodb/2_1_5"
+    "http:pypi/blackduck_sample_project/0_0_9": [
+      "http:pypi/Delorean/0_6_0",
+      "http:pypi/pynamodb/2_1_5"
     ],
-    "data:pypi/Delorean/0_6_0": [
-      "data:pypi/pytz/2017_2",
-      "data:pypi/tzlocal/1_4",
-      "data:pypi/humanize/0_5_1",
-      "data:pypi/Babel/2_4_0",
-      "data:pypi/python_dateutil/2_6_0"
+    "http:pypi/Delorean/0_6_0": [
+      "http:pypi/pytz/2017_2",
+      "http:pypi/tzlocal/1_4",
+      "http:pypi/humanize/0_5_1",
+      "http:pypi/Babel/2_4_0",
+      "http:pypi/python_dateutil/2_6_0"
     ],
-    "data:pypi/pytz/2017_2": [],
-    "data:pypi/tzlocal/1_4": [
-      "data:pypi/pytz/2017_2"
+    "http:pypi/pytz/2017_2": [],
+    "http:pypi/tzlocal/1_4": [
+      "http:pypi/pytz/2017_2"
     ],
-    "data:pypi/humanize/0_5_1": [],
-    "data:pypi/Babel/2_4_0": [
-      "data:pypi/pytz/2017_2"
+    "http:pypi/humanize/0_5_1": [],
+    "http:pypi/Babel/2_4_0": [
+      "http:pypi/pytz/2017_2"
     ],
-    "data:pypi/python_dateutil/2_6_0": [
-      "data:pypi/six/1_10_0"
+    "http:pypi/python_dateutil/2_6_0": [
+      "http:pypi/six/1_10_0"
     ],
-    "data:pypi/six/1_10_0": [],
-    "data:pypi/pynamodb/2_1_5": [
-      "data:pypi/Delorean/0_6_0",
-      "data:pypi/botocore/1_5_44",
-      "data:pypi/six/1_10_0"
+    "http:pypi/six/1_10_0": [],
+    "http:pypi/pynamodb/2_1_5": [
+      "http:pypi/Delorean/0_6_0",
+      "http:pypi/botocore/1_5_44",
+      "http:pypi/six/1_10_0"
     ],
-    "data:pypi/botocore/1_5_44": [
-      "data:pypi/docutils/0_13_1",
-      "data:pypi/jmespath/0_9_2",
-      "data:pypi/python_dateutil/2_6_0"
+    "http:pypi/botocore/1_5_44": [
+      "http:pypi/docutils/0_13_1",
+      "http:pypi/jmespath/0_9_2",
+      "http:pypi/python_dateutil/2_6_0"
     ],
-    "data:pypi/docutils/0_13_1": [],
-    "data:pypi/jmespath/0_9_2": []
+    "http:pypi/docutils/0_13_1": [],
+    "http:pypi/jmespath/0_9_2": []
   },
   "dependencySummaries": {
-    "data:pypi/blackduck_sample_project/0_0_9": {
+    "http:pypi/blackduck_sample_project/0_0_9": {
       "name": "blackduck-sample-project",
       "version": "0.0.9"
     },
-    "data:pypi/Delorean/0_6_0": {
+    "http:pypi/Delorean/0_6_0": {
       "name": "Delorean",
       "version": "0.6.0"
     },
-    "data:pypi/pytz/2017_2": {
+    "http:pypi/pytz/2017_2": {
       "name": "pytz",
       "version": "2017.2"
     },
-    "data:pypi/tzlocal/1_4": {
+    "http:pypi/tzlocal/1_4": {
       "name": "tzlocal",
       "version": "1.4"
     },
-    "data:pypi/humanize/0_5_1": {
+    "http:pypi/humanize/0_5_1": {
       "name": "humanize",
       "version": "0.5.1"
     },
-    "data:pypi/Babel/2_4_0": {
+    "http:pypi/Babel/2_4_0": {
       "name": "Babel",
       "version": "2.4.0"
     },
-    "data:pypi/python_dateutil/2_6_0": {
+    "http:pypi/python_dateutil/2_6_0": {
       "name": "python-dateutil",
       "version": "2.6.0"
     },
-    "data:pypi/six/1_10_0": {
+    "http:pypi/six/1_10_0": {
       "name": "six",
       "version": "1.10.0"
     },
-    "data:pypi/pynamodb/2_1_5": {
+    "http:pypi/pynamodb/2_1_5": {
       "name": "pynamodb",
       "version": "2.1.5"
     },
-    "data:pypi/botocore/1_5_44": {
+    "http:pypi/botocore/1_5_44": {
       "name": "botocore",
       "version": "1.5.44"
     },
-    "data:pypi/docutils/0_13_1": {
+    "http:pypi/docutils/0_13_1": {
       "name": "docutils",
       "version": "0.13.1"
     },
-    "data:pypi/jmespath/0_9_2": {
+    "http:pypi/jmespath/0_9_2": {
       "name": "jmespath",
       "version": "0.9.2"
     }
   },
   "rootExternalDataIds": [
-    "data:pypi/blackduck_sample_project/0_0_9"
+    "http:pypi/blackduck_sample_project/0_0_9"
   ]
 }
