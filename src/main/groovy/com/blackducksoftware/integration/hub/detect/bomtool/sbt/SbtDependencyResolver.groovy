@@ -50,12 +50,12 @@ public class SbtDependencyResolver {
         report.dependencies.each { module ->
             module.revisions.each { revision ->
                 def id = externalIdFactory.createMavenExternalId(module.organisation, module.name, revision.name)
-                def parent = new Dependency(module.name, revision.name, id)
+                def child = new Dependency(module.name, revision.name, id)
 
                 revision.callers.each { caller ->
-                    def childId = externalIdFactory.createMavenExternalId(caller.callerOrganisation, caller.callerName, caller.callerRevision)
-                    def child = new Dependency(caller.callerName, caller.callerRevision, childId)
-                    if (rootId.equals(childId)){
+                    def parentId = externalIdFactory.createMavenExternalId(caller.callerOrganisation, caller.callerName, caller.callerRevision)
+                    def parent = new Dependency(caller.callerName, caller.callerRevision, parentId)
+                    if (rootId.equals(parentId)){
                         graph.addChildToRoot(child);
                     }else{
                         graph.addParentWithChild(parent, child)
