@@ -18,6 +18,7 @@ import org.junit.Assert
 import org.junit.Test
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphTestUtil
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -27,11 +28,11 @@ class GopkgLockParserTest {
 
     @Test
     public void gopkgParserTest() throws IOException {
-        final GopkgLockParser gopkgLockParser = new GopkgLockParser();
+        final GopkgLockParser gopkgLockParser = new GopkgLockParser(new ExternalIdFactory())
         final String gopkgLockContents = IOUtils.toString(getClass().getResourceAsStream("/go/Gopkg.lock"), StandardCharsets.UTF_8)
-        final DependencyGraph dependencyGraph = gopkgLockParser.parseDepLock(gopkgLockContents);
+        final DependencyGraph dependencyGraph = gopkgLockParser.parseDepLock(gopkgLockContents)
         Assert.assertNotNull(dependencyGraph)
 
-        DependencyGraphTestUtil.assertGraph('/go/Go_GopkgExpected_graph.json', dependencyGraph);
+        DependencyGraphTestUtil.assertGraph('/go/Go_GopkgExpected_graph.json', dependencyGraph)
     }
 }

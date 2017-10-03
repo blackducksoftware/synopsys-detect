@@ -1,5 +1,7 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.nuget
 
+import static org.junit.Assert.*
+
 import org.junit.Test
 import org.skyscreamer.jsonassert.JSONAssert
 
@@ -46,16 +48,16 @@ public class NugetInspectorPackagerTest {
         List<DetectCodeLocation> codeLocations = packager.createDetectCodeLocation(dependencyNodeFile)
 
         for (DetectCodeLocation codeLocation : codeLocations){
-            BdioPropertyHelper bdioPropertyHelper = new BdioPropertyHelper();
-            BdioNodeFactory bdioNodeFactory = new BdioNodeFactory(bdioPropertyHelper);
+            BdioPropertyHelper bdioPropertyHelper = new BdioPropertyHelper()
+            BdioNodeFactory bdioNodeFactory = new BdioNodeFactory(bdioPropertyHelper)
 
-            DependencyGraphTransformer dependencyNodeTransformer = new DependencyGraphTransformer(bdioNodeFactory, bdioPropertyHelper);
+            DependencyGraphTransformer dependencyNodeTransformer = new DependencyGraphTransformer(bdioNodeFactory, bdioPropertyHelper)
 
             final BdioProject project = bdioNodeFactory.createProject(codeLocation.bomToolProjectName, codeLocation.bomToolProjectVersionName, codeLocation.bomToolProjectExternalId.createDataId(), Forge.NUGET.toString(), codeLocation.bomToolProjectExternalId.createDataId())
 
             final List<BdioComponent> bdioComponents = dependencyNodeTransformer.addComponentsGraph(project, codeLocation.dependencies)
 
-            Assert.assertEquals(bdioComponents.size(), bdioComponents.size())
+            assertEquals(bdioComponents.size(), bdioComponents.size())
         }
     }
 
