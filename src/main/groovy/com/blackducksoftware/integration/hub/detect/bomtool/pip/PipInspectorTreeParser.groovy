@@ -133,6 +133,10 @@ class PipInspectorTreeParser {
         if (name.equals(UNKNOWN_PROJECT_NAME) || version.equals(UNKNOWN_PROJECT_VERSION) ){
             externalId = externalIdFactory.createPathExternalId(Forge.PYPI, sourcePath)
         }
+
+        name = name.equals(UNKNOWN_PROJECT_NAME) ? '' : name
+        version = version.equals(UNKNOWN_PROJECT_VERSION) ? '' : version
+
         def node = new Dependency(name, version, externalId)
 
         node
