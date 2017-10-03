@@ -71,8 +71,6 @@ class NugetInspectorPackager {
     @Autowired
     ExternalIdFactory externalIdFactory
 
-
-
     public List<DetectCodeLocation> createDetectCodeLocation(File dependencyNodeFile) {
         String text = dependencyNodeFile.getText(StandardCharsets.UTF_8.toString())
         NugetInspection nugetInspection = gson.fromJson(text, NugetInspection.class)
