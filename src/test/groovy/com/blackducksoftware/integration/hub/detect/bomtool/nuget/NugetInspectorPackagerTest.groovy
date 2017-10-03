@@ -53,9 +53,9 @@ public class NugetInspectorPackagerTest {
 
             DependencyGraphTransformer dependencyNodeTransformer = new DependencyGraphTransformer(bdioNodeFactory, bdioPropertyHelper)
 
-            final BdioProject project = bdioNodeFactory.createProject(codeLocation.bomToolProjectName, codeLocation.bomToolProjectVersionName, codeLocation.bomToolProjectExternalId.createDataId(), Forge.NUGET.toString(), codeLocation.bomToolProjectExternalId.createDataId())
+            final BdioProject project = bdioNodeFactory.createProject(codeLocation.bomToolProjectName, codeLocation.bomToolProjectVersionName, Forge.NUGET.toString(), codeLocation.bomToolProjectExternalId)
 
-            final List<BdioComponent> bdioComponents = dependencyNodeTransformer.addComponentsGraph(project, codeLocation.dependencies)
+            final List<BdioComponent> bdioComponents = dependencyNodeTransformer.addComponentsGraph(project, codeLocation.dependencyGraph)
 
             assertEquals(bdioComponents.size(), bdioComponents.size())
         }
