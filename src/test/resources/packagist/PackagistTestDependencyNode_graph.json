@@ -1,42 +1,42 @@
 {
   "externalDataIdRelationships": {
-    "data:packagist/graphp_graphviz/v0_2_1": [
-      "data:packagist/clue_graph/v0_9_0",
-      "data:packagist/graphp_algorithms/v0_8_1"
+    "http:packagist/graphp_graphviz/v0_2_1": [
+      "http:packagist/clue_graph/v0_9_0",
+      "http:packagist/graphp_algorithms/v0_8_1"
     ],
-    "data:packagist/clue_graph/v0_9_0": [],
-    "data:packagist/graphp_algorithms/v0_8_1": [
-      "data:packagist/clue_graph/v0_9_0"
+    "http:packagist/clue_graph/v0_9_0": [],
+    "http:packagist/graphp_algorithms/v0_8_1": [
+      "http:packagist/clue_graph/v0_9_0"
     ],
-    "data:packagist/symfony_console/v2_6_13": [],
-    "data:packagist/jms_composer_deps_analyzer/0_1_0": []
+    "http:packagist/symfony_console/v2_6_13": [],
+    "http:packagist/jms_composer_deps_analyzer/0_1_0": []
   },
   "dependencySummaries": {
-    "data:packagist/graphp_graphviz/v0_2_1": {
+    "http:packagist/graphp_graphviz/v0_2_1": {
       "name": "graphp/graphviz",
       "version": "v0.2.1"
     },
-    "data:packagist/clue_graph/v0_9_0": {
+    "http:packagist/clue_graph/v0_9_0": {
       "name": "clue/graph",
       "version": "v0.9.0"
     },
-    "data:packagist/graphp_algorithms/v0_8_1": {
+    "http:packagist/graphp_algorithms/v0_8_1": {
       "name": "graphp/algorithms",
       "version": "v0.8.1"
     },
-    "data:packagist/symfony_console/v2_6_13": {
+    "http:packagist/symfony_console/v2_6_13": {
       "name": "symfony/console",
       "version": "v2.6.13"
     },
-    "data:packagist/jms_composer_deps_analyzer/0_1_0": {
+    "http:packagist/jms_composer_deps_analyzer/0_1_0": {
       "name": "jms/composer-deps-analyzer",
       "version": "0.1.0"
     }
   },
   "rootExternalDataIds": [
-      "data:packagist/graphp_graphviz/v0_2_1",
-      "data:packagist/clue_graph/v0_9_0",
-      "data:packagist/symfony_console/v2_6_13",
-      "data:packagist/jms_composer_deps_analyzer/0_1_0"
+      "http:packagist/graphp_graphviz/v0_2_1",
+      "http:packagist/clue_graph/v0_9_0",
+      "http:packagist/symfony_console/v2_6_13",
+      "http:packagist/jms_composer_deps_analyzer/0_1_0"
   ]
 }

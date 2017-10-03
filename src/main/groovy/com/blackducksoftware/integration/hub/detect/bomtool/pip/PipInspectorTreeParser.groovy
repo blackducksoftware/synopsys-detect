@@ -86,7 +86,7 @@ class PipInspectorTreeParser {
 
             if (line.contains(SEPARATOR) && !dependencyGraph) {
                 dependencyGraph = new MutableMapDependencyGraph();
-                project = lineToDependency(line)
+                project = projectLineToDependency(line, sourcePath)
                 continue
             }
 
@@ -121,15 +121,31 @@ class PipInspectorTreeParser {
         }
     }
 
+    Dependency projectLineToDependency(String line, String sourcePath) {
+        if (!line.contains(SEPARATOR)) {
+            return null
+        }
+        def segments = line.split(SEPARATOR)
+        String name = segments[0].trim()
+        String version = segments[1].trim()
+
+        def externalId = externalIdFactory.createNameVersionExternalId(Forge.PYPI, name, version)
+        if (name.equals(UNKNOWN_PROJECT_NAME) || version.equals(UNKNOWN_PROJECT_VERSION) ){
+            externalId = externalIdFactory.createPathExternalId(Forge.PYPI, sourcePath)
+        }
+        def node = new Dependency(name, version, externalId)
+
+        node
+    }
+
     Dependency lineToDependency(String line) {
         if (!line.contains(SEPARATOR)) {
             return null
         }
         def segments = line.split(SEPARATOR)
         String name = segments[0].trim()
-        name = name.equals(UNKNOWN_PROJECT_NAME) ? '' : name
         String version = segments[1].trim()
-        version = version.equals(UNKNOWN_PROJECT_VERSION) ? '' : version
+
         def externalId = externalIdFactory.createNameVersionExternalId(Forge.PYPI, name, version)
         def node = new Dependency(name, version, externalId)
 

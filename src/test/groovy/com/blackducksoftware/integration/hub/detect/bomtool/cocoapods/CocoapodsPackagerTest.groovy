@@ -15,6 +15,7 @@ import org.junit.Before
 import org.junit.Test
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphTestUtil
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
@@ -25,7 +26,7 @@ public class CocoapodsPackagerTest {
 
     @Before
     void init() {
-        cocoapodsPackager.nameVersionNodeTransformer = new NameVersionNodeTransformer()
+        cocoapodsPackager.nameVersionNodeTransformer = new NameVersionNodeTransformer(new ExternalIdFactory())
     }
 
     @Test
