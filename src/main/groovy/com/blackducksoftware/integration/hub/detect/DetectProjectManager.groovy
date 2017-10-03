@@ -162,21 +162,21 @@ class DetectProjectManager {
                 def components = dependencyGraphTransformer.transformDependencyGraph(it.dependencyGraph, aggregateBdioDocument.project, it.dependencyGraph.getRootDependencies(), nodeMap)
                 aggregateBdioDocument.components.addAll(components)
             } else {
-                if (it.dependencyGraph) {
-                    final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(detectProject, it)
-                    String projectPath = detectFileManager.extractFinalPieceFromPath(it.sourcePath)
-                    String projectName = detectProject.projectName
-                    String projectVersionName = detectProject.projectVersionName
-                    final String filename = createBdioFilename(it.bomToolType, projectPath, projectName, projectVersionName)
-                    final File outputFile = new File(detectConfiguration.getOutputDirectory(), filename)
-                    if (outputFile.exists()) {
-                        outputFile.delete()
-                    }
-                    final File createdBdioFile = writeSimpleBdioDocument(outputFile, simpleBdioDocument)
-                    bdioFiles.add(createdBdioFile)
-                } else {
-                    logger.debug("Could not find any dependencies for code location ${it.sourcePath}")
+                if (it.dependencyGraph == null || it.dependencyGraph.getRootDependencies().size() <= 0) {
+                    logger.warn("Could not find any dependencies for code location ${it.sourcePath}")
                 }
+
+                final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(detectProject, it)
+                String projectPath = detectFileManager.extractFinalPieceFromPath(it.sourcePath)
+                String projectName = detectProject.projectName
+                String projectVersionName = detectProject.projectVersionName
+                final String filename = createBdioFilename(it.bomToolType, projectPath, projectName, projectVersionName)
+                final File outputFile = new File(detectConfiguration.getOutputDirectory(), filename)
+                if (outputFile.exists()) {
+                    outputFile.delete()
+                }
+                final File createdBdioFile = writeSimpleBdioDocument(outputFile, simpleBdioDocument)
+                bdioFiles.add(createdBdioFile)
             }
         }
 

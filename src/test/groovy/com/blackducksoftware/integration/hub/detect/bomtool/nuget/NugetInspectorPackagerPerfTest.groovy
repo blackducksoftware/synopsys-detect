@@ -1,6 +1,7 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.nuget
 
-import org.junit.Assert
+import static org.junit.Assert.*
+
 import org.junit.Test
 
 import com.blackducksoftware.integration.hub.bdio.BdioNodeFactory
@@ -35,8 +36,8 @@ public class NugetInspectorPackagerPerfTest {
 
         final bdioNode = bdioNodeFactory.createProject("test", "1.0.0", "bdioId", "forge", "externalId")
 
-        final List<BdioComponent> components = dependencyGraphTransformer.transformDependencyGraph(codeLocation.dependencyGraph, bdioNode)
+        final List<BdioComponent> components = dependencyGraphTransformer.transformDependencyGraph(codeLocation.dependencyGraph, bdioNode, codeLocation.dependencyGraph.rootDependencies, [:])
 
-        Assert.assertEquals(211, components.size())
+        assertEquals(211, components.size())
     }
 }

@@ -43,8 +43,8 @@ public class SbtModuleAggregator {
         aggregates.collect{ aggregate ->
             SbtDependencyModule aggregated = new SbtDependencyModule()
             aggregated.name = aggregate.name
-            aggregated.version = aggregate.name
-            aggregated.org = aggregate.name
+            aggregated.version = aggregate.version
+            aggregated.org = aggregate.org
 
             MutableDependencyGraph graph = new MutableMapDependencyGraph()
             aggregated.graph = graph
@@ -69,7 +69,7 @@ public class SbtModuleAggregator {
         return namesMatch && groupsMatch && versionsMatch
     }
 
-    SbtAggregate moduleurationToAggregate(SbtDependencyModule module) {
+    SbtAggregate moduleToAggregate(SbtDependencyModule module) {
         def aggregate = new SbtAggregate(module.name, module.org, module.version)
         return aggregate
     }
@@ -77,7 +77,7 @@ public class SbtModuleAggregator {
     List<SbtAggregate> uniqueAggregates(List<SbtDependencyModule> modules) {
         List<SbtAggregate> found = new ArrayList<SbtAggregate>()
         modules.each{module ->
-            def aggregate = moduleurationToAggregate(module)
+            def aggregate = moduleToAggregate(module)
             if (!found.contains(aggregate)) {
                 found.add(aggregate)
             }

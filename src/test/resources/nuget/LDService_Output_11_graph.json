@@ -1,0 +1,32 @@
+{
+  "externalDataIdRelationships": {
+    "http:nuget/NUnit/3_7_1": [],
+    "http:nuget/NUnit_Extension_TeamCityEventListener/1_0_2": [],
+    "http:nuget/NUnit_ConsoleRunner/3_6_1": [],
+    "http:nuget/NUnit_Extension_NUnitProjectLoader/3_5_0": []
+  },
+  "dependencySummaries": {
+    "http:nuget/NUnit/3_7_1": {
+      "name": "NUnit",
+      "version": "3.7.1"
+    },
+    "http:nuget/NUnit_Extension_TeamCityEventListener/1_0_2": {
+      "name": "NUnit.Extension.TeamCityEventListener",
+      "version": "1.0.2"
+    },
+    "http:nuget/NUnit_ConsoleRunner/3_6_1": {
+      "name": "NUnit.ConsoleRunner",
+      "version": "3.6.1"
+    },
+    "http:nuget/NUnit_Extension_NUnitProjectLoader/3_5_0": {
+      "name": "NUnit.Extension.NUnitProjectLoader",
+      "version": "3.5.0"
+    }
+  },
+  "rootExternalDataIds": [
+    "http:nuget/NUnit/3_7_1",
+    "http:nuget/NUnit_Extension_TeamCityEventListener/1_0_2",
+    "http:nuget/NUnit_ConsoleRunner/3_6_1",
+    "http:nuget/NUnit_Extension_NUnitProjectLoader/3_5_0"
+  ]
+}

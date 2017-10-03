@@ -79,7 +79,7 @@ public class ExecutableManager {
         final String executable = getExecutableName(executableType);
         final String searchPath = path.trim();
         File executableFile = findExecutableFileFromPath(searchPath, executable);
-        if (searchSystemPath && executableFile != null && !executableFile.exists()) {
+        if (searchSystemPath && (executableFile == null || !executableFile.exists())) {
             executableFile = findExecutableFileFromSystemPath(executable);
         }
 
