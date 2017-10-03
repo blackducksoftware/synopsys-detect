@@ -1,12 +1,13 @@
 package com.blackducksoftware.integration.hub.detect.testutils
 
+import static org.junit.Assert.*;
+
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.graph.summary.DependencyGraphSummarizer
 import com.blackducksoftware.integration.hub.bdio.graph.summary.GraphSummary
 import com.google.gson.Gson
 
 class DependencyGraphTestUtil {
-
     public static void assertGraph(String expectedResourceFile, DependencyGraph actualGraph) {
         DependencyGraphSummarizer summarizer = new DependencyGraphSummarizer(new Gson());
 
@@ -18,9 +19,7 @@ class DependencyGraphTestUtil {
         assertSummarries(expected, actual);
     }
 
-
     public static void assertSummarries(GraphSummary expected, GraphSummary actual) {
-
         assertSet(expected.rootExternalDataIds, actual.rootExternalDataIds);
         assertSet(expected.dependencySummaries.keySet(), actual.dependencySummaries.keySet());
 

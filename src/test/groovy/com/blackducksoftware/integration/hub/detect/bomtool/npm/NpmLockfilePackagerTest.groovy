@@ -25,6 +25,7 @@ class NpmLockfilePackagerTest {
         npmLockfilePackager = new NpmLockfilePackager()
         npmLockfilePackager.gson = new GsonBuilder().setPrettyPrinting().create()
         npmLockfilePackager.nameVersionNodeTransformer = nameVersionNodeTransformer
+        npmLockfilePackager.externalIdFactory = new ExternalIdFactory()
     }
 
     @Test

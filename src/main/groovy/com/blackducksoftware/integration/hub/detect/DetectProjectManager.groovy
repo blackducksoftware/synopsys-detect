@@ -246,7 +246,6 @@ class DetectProjectManager {
     }
 
     private SimpleBdioDocument createSimpleBdioDocument(DetectProject detectProject, String codeLocationName, String projectId, ExternalId projectExternalId, DependencyGraph dependencies) {
-
         final String projectName = detectProject.projectName
         final String projectVersionName = detectProject.projectVersionName
         final SimpleBdioDocument simpleBdioDocument = dependencyGraphTransformer.transformDependencyGraph(codeLocationName, projectName, projectVersionName, projectExternalId, dependencies)
