@@ -8,7 +8,7 @@ DETECT_LATEST_SNAPSHOT=hub-detect-latest-SNAPSHOT.jar
 
 # This value should be automatically updated by the
 # gradle build process for a non-snapshot build.
-DETECT_LATEST_RELEASE_VERSION=${DETECT_LATEST_RELEASE_VERSION:-1.2.0}
+DETECT_LATEST_RELEASE_VERSION=${DETECT_LATEST_RELEASE_VERSION:-1.1.1}
 DETECT_LATEST_RELEASE="hub-detect-${DETECT_LATEST_RELEASE_VERSION}.jar"
 
 # If you would like to enable the shell script to use
@@ -32,6 +32,13 @@ DETECT_JAR_PATH=${DETECT_JAR_PATH:-/tmp}
 
 DETECT_JAVA_OPTS=${DETECT_JAVA_OPTS:-}
 
+# If you want to pass any additional options to
+# curl, specify DETECT_CURL_OPTS in your environment.
+# For exmaple, to specify a proxy, you would set
+# DETECT_CURL_OPTS=--proxy http://myproxy:3128
+
+DETECT_CURL_OPTS=${DETECT_CURL_OPTS:-}
+
 SCRIPT_ARGS="$@"
 
 run() {
@@ -46,7 +53,7 @@ get_detect() {
     CURRENT_VERSION=$( <$VERSION_FILE_DESTINATION )
   fi
 
-  curl -o $VERSION_FILE_DESTINATION https://blackducksoftware.github.io/hub-detect/latest-commit-id.txt
+  curl $DETECT_CURL_OPTS -o $VERSION_FILE_DESTINATION https://blackducksoftware.github.io/hub-detect/latest-commit-id.txt
   LATEST_VERSION=$( <$VERSION_FILE_DESTINATION )
 
   if [ $DETECT_USE_SNAPSHOT -eq 1 ]; then
@@ -71,7 +78,7 @@ get_detect() {
 
   if [ $USE_REMOTE -eq 1 ]; then
     echo "getting ${DETECT_SOURCE} from remote"
-    curl -o $DETECT_DESTINATION https://blackducksoftware.github.io/hub-detect/$DETECT_SOURCE
+    curl $DETECT_CURL_OPTS -o $DETECT_DESTINATION https://blackducksoftware.github.io/hub-detect/$DETECT_SOURCE
     echo "saved ${DETECT_SOURCE} to ${DETECT_DESTINATION}"
   fi
 }
