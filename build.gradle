@@ -157,22 +157,22 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     from javadoc.destinationDir
 }
 
-task customSigning(dependsOn: ['javadocJar','sourcesJar']) {
+task customSigning(dependsOn: ['javadocJar', 'sourcesJar']) {
     doLast {
         File libDirectory = new File("${buildDir}/libs")
         File[] jarFiles = libDirectory.listFiles(new FilenameFilter() {
             @Override
             boolean accept(File dir, String name) {
-                if(name.endsWith(".jar")) {
+                if (name.endsWith(".jar")) {
                     return true
                 }
                 return false
             }
         })
-        println "signing jar files"
+        println "Signing Jar files"
         signing.sign(jarFiles)
         
-        pom{
+        pom {
             project {
                 name rootProject.name
                 description rootProject.description
