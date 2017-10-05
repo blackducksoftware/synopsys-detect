@@ -197,12 +197,24 @@ class HubManager {
         }
     }
 
-    public boolean logOldCodeLocationNameExists(DetectProject detectProject, BomToolType bomToolType, CodeLocationType codeLocationType, String sourcePath, String prefix) {
+    public CodeLocationView logOldCodeLocationNameExists(DetectProject detectProject, BomToolType bomToolType, CodeLocationType codeLocationType, String sourcePath, String prefix) {
         if (!detectConfiguration.hubOfflineMode) {
             String oldCodeLocationName = generateOldCodeLocationName(detectProject, bomToolType, codeLocationType, sourcePath, prefix)
             try {
                 CodeLocationView codeLocationView = hubServiceWrapper.createCodeLocationRequestService().getCodeLocationByName(oldCodeLocationName)
                 logger.warn("Found same code location with old naming pattern: ${oldCodeLocationName}. You may remove old code location if desired")
+                return codeLocationView
+            } catch (IntegrationException e) {
+                return null
+            }
+        }
+    }
+
+    public boolean deleteExistingCodeLocation(CodeLocationView codeLocationView) {
+        if (!detectConfiguration.hubOfflineMode) {
+            try {
+                hubServiceWrapper.createCodeLocationRequestService().deleteCodeLocation(codeLocationView);
+                logger.info("Deleted code location '${codeLocationView.name}'")
                 return true
             } catch (IntegrationException e) {
                 return false
