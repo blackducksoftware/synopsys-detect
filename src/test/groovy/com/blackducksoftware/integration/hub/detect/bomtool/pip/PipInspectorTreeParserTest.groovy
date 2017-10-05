@@ -83,6 +83,8 @@ ${space + child2Text}
 ${space + child3Text}
 """
 
+        validText = validText.split("\r?\n").join(System.lineSeparator)
+
         DetectCodeLocation root = parser.parse(validText, '')
         ExternalId expectedExternalId = parser.externalIdFactory.createNameVersionExternalId(Forge.PYPI, 'name', 'version')
         Assert.assertEquals('name', root.getBomToolProjectName())
@@ -97,6 +99,7 @@ ${space + child3Text}
         i am not a valid file
         the result should be null
         """
+        invalidText = invalidText.split("\r?\n").join(System.lineSeparator)
         DetectCodeLocation root = parser.parse(invalidText, '')
         Assert.assertNull(root)
     }

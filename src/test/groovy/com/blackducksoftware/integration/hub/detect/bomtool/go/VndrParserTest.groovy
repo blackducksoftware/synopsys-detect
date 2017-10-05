@@ -31,7 +31,8 @@ class VndrParserTest {
         final VndrParser vndrParser = new VndrParser()
         vndrParser.externalIdFactory = new ExternalIdFactory()
 
-        final List<String> vendorConfContents = testUtil.getResourceAsUTF8String('/go/vendor.conf').split('\n').toList()
+        def text = testUtil.getResourceAsUTF8String('/go/vendor.conf')
+        final List<String> vendorConfContents = text.split(System.lineSeparator).toList()
         final DependencyGraph dependencyGraph = vndrParser.parseVendorConf(vendorConfContents)
 
         Assert.assertNotNull(dependencyGraph)
