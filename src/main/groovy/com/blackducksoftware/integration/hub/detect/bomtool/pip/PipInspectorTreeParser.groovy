@@ -86,7 +86,7 @@ class PipInspectorTreeParser {
 
             if (line.contains(SEPARATOR) && !dependencyGraph) {
                 dependencyGraph = new MutableMapDependencyGraph();
-                project = lineToDependency(line)
+                project = projectLineToDependency(line, sourcePath)
                 continue
             }
 
@@ -106,7 +106,7 @@ class PipInspectorTreeParser {
 
             if (tree.size() > 0){
                 dependencyGraph.addChildWithParents(next, [tree.peek()])
-            }else{
+            } else {
                 dependencyGraph.addChildrenToRoot(next);
             }
 
@@ -115,10 +115,31 @@ class PipInspectorTreeParser {
         }
 
         if (project && !(project.name.equals('') && project.version.equals('') && dependencyGraph && dependencyGraph.getRootDependencyExternalIds().empty)) {
-            new DetectCodeLocation(BomToolType.PIP, sourcePath, project.externalId, dependencyGraph)
-        }else {
+            new DetectCodeLocation(BomToolType.PIP, sourcePath, project.name, project.version, project.externalId, dependencyGraph)
+        } else {
             null
         }
+    }
+
+    Dependency projectLineToDependency(String line, String sourcePath) {
+        if (!line.contains(SEPARATOR)) {
+            return null
+        }
+        def segments = line.split(SEPARATOR)
+        String name = segments[0].trim()
+        String version = segments[1].trim()
+
+        def externalId = externalIdFactory.createNameVersionExternalId(Forge.PYPI, name, version)
+        if (name.equals(UNKNOWN_PROJECT_NAME) || version.equals(UNKNOWN_PROJECT_VERSION) ){
+            externalId = externalIdFactory.createPathExternalId(Forge.PYPI, sourcePath)
+        }
+
+        name = name.equals(UNKNOWN_PROJECT_NAME) ? '' : name
+        version = version.equals(UNKNOWN_PROJECT_VERSION) ? '' : version
+
+        def node = new Dependency(name, version, externalId)
+
+        node
     }
 
     Dependency lineToDependency(String line) {
@@ -127,9 +148,8 @@ class PipInspectorTreeParser {
         }
         def segments = line.split(SEPARATOR)
         String name = segments[0].trim()
-        name = name.equals(UNKNOWN_PROJECT_NAME) ? '' : name
         String version = segments[1].trim()
-        version = version.equals(UNKNOWN_PROJECT_VERSION) ? '' : version
+
         def externalId = externalIdFactory.createNameVersionExternalId(Forge.PYPI, name, version)
         def node = new Dependency(name, version, externalId)
 

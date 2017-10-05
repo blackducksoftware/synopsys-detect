@@ -20,25 +20,40 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.util.executable
+package com.blackducksoftware.integration.hub.detect.type;
 
-import groovy.transform.TypeChecked
+public enum ExecutableType {
+    BASH,
+    CONDA,
+    CPAN,
+    CPANM,
+    DOCKER,
+    GO,
+    GO_DEP("dep"),
+    GRADLE,
+    GRADLEW,
+    MVN,
+    MVNW,
+    NPM,
+    NUGET,
+    PEAR,
+    PERL,
+    PIP,
+    PIP3,
+    PYTHON,
+    PYTHON3;
 
-@TypeChecked
-class ExecutableOutput {
-    final String standardOutput
-    final String errorOutput
+    private String executableName;
 
-    public ExecutableOutput(final String standardOutput, final String errorOutput) {
-        this.standardOutput = standardOutput
-        this.errorOutput = errorOutput
+    private ExecutableType() {
+        this.executableName = this.name().toLowerCase();
     }
 
-    public List<String> getStandardOutputAsList() {
-        Arrays.asList(standardOutput.split(System.lineSeparator))
+    private ExecutableType(final String executableName) {
+        this.executableName = executableName;
     }
 
-    public List<String> getErrorOutputAsList() {
-        Arrays.asList(errorOutput.split(System.lineSeparator))
+    public String getExecutable() {
+        return executableName;
     }
 }

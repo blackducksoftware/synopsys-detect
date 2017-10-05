@@ -18,6 +18,7 @@ import org.junit.Test
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphTestUtil
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 import com.google.gson.GsonBuilder
@@ -29,6 +30,7 @@ class CondaListParserTest {
     @Before
     public void init() {
         condaListParser.gson = new GsonBuilder().setPrettyPrinting().create()
+        condaListParser.externalIdFactory = new ExternalIdFactory()
     }
 
     @Test
@@ -51,7 +53,7 @@ class CondaListParserTest {
         final String condaListJson = testUtil.getResourceAsUTF8String('conda/condaListSmall.json')
         DependencyGraph dependencyGraph = condaListParser.parse(condaListJson, condaInfoJson)
 
-        DependencyGraphTestUtil.assertGraph('conda/condaListSmallExpected_graph.json', dependencyGraph);
+        DependencyGraphTestUtil.assertGraph('conda/condaListSmallExpected_graph.json', dependencyGraph)
     }
 
     @Test
@@ -60,6 +62,6 @@ class CondaListParserTest {
         String condaListJson = testUtil.getResourceAsUTF8String('conda/condaListLarge.json')
         DependencyGraph dependencyGraph = condaListParser.parse(condaListJson, condaInfoJson)
 
-        DependencyGraphTestUtil.assertGraph('conda/condaListLargeExpected_graph.json', dependencyGraph);
+        DependencyGraphTestUtil.assertGraph('conda/condaListLargeExpected_graph.json', dependencyGraph)
     }
 }

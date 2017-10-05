@@ -1,0 +1,213 @@
+{
+  "externalDataIdRelationships": {
+    "http:nuget/System_Linq_Expressions/4_3_0": [],
+    "http:nuget/System_Threading_Tasks/4_3_0": [],
+    "http:nuget/NLog_Extended/4_0_0_1": [
+      "http:nuget/NLog/4_4_11"
+    ],
+    "http:nuget/NLog/4_4_11": [],
+    "http:nuget/Newtonsoft_Json/10_0_3": [],
+    "http:nuget/Microsoft_Net_Http/2_2_29": [
+      "http:nuget/Microsoft_Bcl/1_1_10",
+      "http:nuget/Microsoft_Bcl_Build/1_0_21"
+    ],
+    "http:nuget/Microsoft_Bcl/1_1_10": [
+      "http:nuget/Microsoft_Bcl_Build/1_0_21"
+    ],
+    "http:nuget/Microsoft_Bcl_Build/1_0_21": [],
+    "http:nuget/Hangfire_Core/1_6_14": [],
+    "http:nuget/System_Linq/4_3_0": [],
+    "http:nuget/EntityFrameworkTesting_NSubstitute/1_2_0": [
+      "http:nuget/NSubstitute/1_10_0",
+      "http:nuget/EntityFrameworkTesting/1_2_0"
+    ],
+    "http:nuget/NSubstitute/1_10_0": [],
+    "http:nuget/EntityFrameworkTesting/1_2_0": [
+      "http:nuget/EntityFramework/6_1_3"
+    ],
+    "http:nuget/EntityFramework/6_1_3": [],
+    "http:nuget/System_Runtime/4_3_0": [],
+    "http:nuget/NUnit_Extension_TeamCityEventListener/1_0_2": [],
+    "http:nuget/System_Diagnostics_Debug/4_3_0": [],
+    "http:nuget/System_IO/4_3_0": [],
+    "http:nuget/SimpleInjector/4_0_8": [],
+    "http:nuget/NUnit_ConsoleRunner/3_6_1": [],
+    "http:nuget/System_Threading/4_3_0": [],
+    "http:nuget/Owin/1_0_0": [],
+    "http:nuget/System_Collections/4_3_0": [],
+    "http:nuget/System_Runtime_Extensions/4_3_0": [],
+    "http:nuget/Microsoft_AspNet_WebApi_Client/5_2_3": [],
+    "http:nuget/System_Reflection_TypeExtensions/4_3_0": [
+      "http:nuget/System_Reflection/4_3_0"
+    ],
+    "http:nuget/System_Reflection/4_3_0": [],
+    "http:nuget/NetDocuments_Rest_Client/2_2_1_8695": [],
+    "http:nuget/NUnit/3_7_1": [],
+    "http:nuget/System_Globalization/4_3_0": [],
+    "http:nuget/System_Reflection_Extensions/4_3_0": [],
+    "http:nuget/System_Collections_Concurrent/4_3_0": [],
+    "http:nuget/NUnit_Extension_NUnitProjectLoader/3_5_0": []
+  },
+  "dependencySummaries": {
+    "http:nuget/System_Linq_Expressions/4_3_0": {
+      "name": "System.Linq.Expressions",
+      "version": "4.3.0"
+    },
+    "http:nuget/System_Threading_Tasks/4_3_0": {
+      "name": "System.Threading.Tasks",
+      "version": "4.3.0"
+    },
+    "http:nuget/NLog_Extended/4_0_0_1": {
+      "name": "NLog.Extended",
+      "version": "4.0.0.1"
+    },
+    "http:nuget/NLog/4_4_11": {
+      "name": "NLog",
+      "version": "4.4.11"
+    },
+    "http:nuget/Newtonsoft_Json/10_0_3": {
+      "name": "Newtonsoft.Json",
+      "version": "10.0.3"
+    },
+    "http:nuget/Microsoft_Net_Http/2_2_29": {
+      "name": "Microsoft.Net.Http",
+      "version": "2.2.29"
+    },
+    "http:nuget/Microsoft_Bcl/1_1_10": {
+      "name": "Microsoft.Bcl",
+      "version": "1.1.10"
+    },
+    "http:nuget/Microsoft_Bcl_Build/1_0_21": {
+      "name": "Microsoft.Bcl.Build",
+      "version": "1.0.21"
+    },
+    "http:nuget/Hangfire_Core/1_6_14": {
+      "name": "Hangfire.Core",
+      "version": "1.6.14"
+    },
+    "http:nuget/System_Linq/4_3_0": {
+      "name": "System.Linq",
+      "version": "4.3.0"
+    },
+    "http:nuget/EntityFrameworkTesting_NSubstitute/1_2_0": {
+      "name": "EntityFrameworkTesting.NSubstitute",
+      "version": "1.2.0"
+    },
+    "http:nuget/NSubstitute/1_10_0": {
+      "name": "NSubstitute",
+      "version": "1.10.0"
+    },
+    "http:nuget/EntityFrameworkTesting/1_2_0": {
+      "name": "EntityFrameworkTesting",
+      "version": "1.2.0"
+    },
+    "http:nuget/EntityFramework/6_1_3": {
+      "name": "EntityFramework",
+      "version": "6.1.3"
+    },
+    "http:nuget/System_Runtime/4_3_0": {
+      "name": "System.Runtime",
+      "version": "4.3.0"
+    },
+    "http:nuget/NUnit_Extension_TeamCityEventListener/1_0_2": {
+      "name": "NUnit.Extension.TeamCityEventListener",
+      "version": "1.0.2"
+    },
+    "http:nuget/System_Diagnostics_Debug/4_3_0": {
+      "name": "System.Diagnostics.Debug",
+      "version": "4.3.0"
+    },
+    "http:nuget/System_IO/4_3_0": {
+      "name": "System.IO",
+      "version": "4.3.0"
+    },
+    "http:nuget/SimpleInjector/4_0_8": {
+      "name": "SimpleInjector",
+      "version": "4.0.8"
+    },
+    "http:nuget/NUnit_ConsoleRunner/3_6_1": {
+      "name": "NUnit.ConsoleRunner",
+      "version": "3.6.1"
+    },
+    "http:nuget/System_Threading/4_3_0": {
+      "name": "System.Threading",
+      "version": "4.3.0"
+    },
+    "http:nuget/Owin/1_0_0": {
+      "name": "Owin",
+      "version": "1.0.0"
+    },
+    "http:nuget/System_Collections/4_3_0": {
+      "name": "System.Collections",
+      "version": "4.3.0"
+    },
+    "http:nuget/System_Runtime_Extensions/4_3_0": {
+      "name": "System.Runtime.Extensions",
+      "version": "4.3.0"
+    },
+    "http:nuget/Microsoft_AspNet_WebApi_Client/5_2_3": {
+      "name": "Microsoft.AspNet.WebApi.Client",
+      "version": "5.2.3"
+    },
+    "http:nuget/System_Reflection_TypeExtensions/4_3_0": {
+      "name": "System.Reflection.TypeExtensions",
+      "version": "4.3.0"
+    },
+    "http:nuget/System_Reflection/4_3_0": {
+      "name": "System.Reflection",
+      "version": "4.3.0"
+    },
+    "http:nuget/NetDocuments_Rest_Client/2_2_1_8695": {
+      "name": "NetDocuments.Rest.Client",
+      "version": "2.2.1.8695"
+    },
+    "http:nuget/NUnit/3_7_1": {
+      "name": "NUnit",
+      "version": "3.7.1"
+    },
+    "http:nuget/System_Globalization/4_3_0": {
+      "name": "System.Globalization",
+      "version": "4.3.0"
+    },
+    "http:nuget/System_Reflection_Extensions/4_3_0": {
+      "name": "System.Reflection.Extensions",
+      "version": "4.3.0"
+    },
+    "http:nuget/System_Collections_Concurrent/4_3_0": {
+      "name": "System.Collections.Concurrent",
+      "version": "4.3.0"
+    },
+    "http:nuget/NUnit_Extension_NUnitProjectLoader/3_5_0": {
+      "name": "NUnit.Extension.NUnitProjectLoader",
+      "version": "3.5.0"
+    }
+  },
+  "rootExternalDataIds": [
+    "http:nuget/System_Linq_Expressions/4_3_0",
+    "http:nuget/System_Threading_Tasks/4_3_0",
+    "http:nuget/NLog_Extended/4_0_0_1",
+    "http:nuget/Newtonsoft_Json/10_0_3",
+    "http:nuget/Microsoft_Net_Http/2_2_29",
+    "http:nuget/Hangfire_Core/1_6_14",
+    "http:nuget/System_Linq/4_3_0",
+    "http:nuget/EntityFrameworkTesting_NSubstitute/1_2_0",
+    "http:nuget/System_Runtime/4_3_0",
+    "http:nuget/NUnit_Extension_TeamCityEventListener/1_0_2",
+    "http:nuget/System_Diagnostics_Debug/4_3_0",
+    "http:nuget/System_IO/4_3_0",
+    "http:nuget/SimpleInjector/4_0_8",
+    "http:nuget/NUnit_ConsoleRunner/3_6_1",
+    "http:nuget/System_Threading/4_3_0",
+    "http:nuget/Owin/1_0_0",
+    "http:nuget/System_Collections/4_3_0",
+    "http:nuget/System_Runtime_Extensions/4_3_0",
+    "http:nuget/Microsoft_AspNet_WebApi_Client/5_2_3",
+    "http:nuget/System_Reflection_TypeExtensions/4_3_0",
+    "http:nuget/NetDocuments_Rest_Client/2_2_1_8695",
+    "http:nuget/NUnit/3_7_1",
+    "http:nuget/System_Globalization/4_3_0",
+    "http:nuget/System_Reflection_Extensions/4_3_0",
+    "http:nuget/System_Collections_Concurrent/4_3_0",
+    "http:nuget/NUnit_Extension_NUnitProjectLoader/3_5_0"
+  ]
+}

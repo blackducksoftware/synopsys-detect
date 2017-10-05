@@ -104,7 +104,6 @@ class HubManager {
     public int performPostHubActions(DetectProject detectProject, ProjectVersionView projectVersionView) {
         def postActionResult = 0
         try {
-
             if (detectConfiguration.getPolicyCheck() || detectConfiguration.getRiskReportPdf() || detectConfiguration.getNoticesReport()) {
                 ProjectDataService projectDataService = hubServiceWrapper.createProjectDataService()
                 CodeLocationRequestService codeLocationRequestService = hubServiceWrapper.createCodeLocationRequestService()

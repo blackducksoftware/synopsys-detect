@@ -1,40 +1,40 @@
 {
   "externalDataIdRelationships": {
-    "data:npm/upper_case/1_1_3": [],
-    "data:npm/xml2js/0_4_17": [
-      "data:npm/sax/1_2_2",
-      "data:npm/xmlbuilder/4_2_1"
+    "http:npm/upper_case/1_1_3": [],
+    "http:npm/xml2js/0_4_17": [
+      "http:npm/sax/1_2_2",
+      "http:npm/xmlbuilder/4_2_1"
     ],
-    "data:npm/sax/1_2_2": [],
-    "data:npm/xmlbuilder/4_2_1": [
-      "data:npm/lodash/4_17_4"
+    "http:npm/sax/1_2_2": [],
+    "http:npm/xmlbuilder/4_2_1": [
+      "http:npm/lodash/4_17_4"
     ],
-    "data:npm/lodash/4_17_4": []
+    "http:npm/lodash/4_17_4": []
   },
   "dependencySummaries": {
-    "data:npm/upper_case/1_1_3": {
+    "http:npm/upper_case/1_1_3": {
       "name": "upper-case",
       "version": "1.1.3"
     },
-    "data:npm/xml2js/0_4_17": {
+    "http:npm/xml2js/0_4_17": {
       "name": "xml2js",
       "version": "0.4.17"
     },
-    "data:npm/sax/1_2_2": {
+    "http:npm/sax/1_2_2": {
       "name": "sax",
       "version": "1.2.2"
     },
-    "data:npm/xmlbuilder/4_2_1": {
+    "http:npm/xmlbuilder/4_2_1": {
       "name": "xmlbuilder",
       "version": "4.2.1"
     },
-    "data:npm/lodash/4_17_4": {
+    "http:npm/lodash/4_17_4": {
       "name": "lodash",
       "version": "4.17.4"
     }
   },
   "rootExternalDataIds": [
-      "data:npm/upper_case/1_1_3",
-      "data:npm/xml2js/0_4_17"
+      "http:npm/upper_case/1_1_3",
+      "http:npm/xml2js/0_4_17"
   ]
 }

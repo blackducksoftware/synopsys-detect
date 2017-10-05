@@ -30,7 +30,7 @@ This is an invalid line
 This\t1\t1also\t1invalid
 Invalid
 '''
-        Map<String, NameVersionNode> nodeMap = cpanListParser.parse(cpanList)
+        Map<String, NameVersionNode> nodeMap = cpanListParser.parse(cpanList.tokenize('\n'))
         assertEquals(2, nodeMap.size())
         assertNotNull(nodeMap['Test::More'])
         assertNotNull(nodeMap['Test::Less'])
