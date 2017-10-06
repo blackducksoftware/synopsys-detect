@@ -17,7 +17,7 @@ import com.google.gson.GsonBuilder
 public class NugetInspectorPackagerPerfTest {
     public Gson gson = new GsonBuilder().setPrettyPrinting().create()
 
-    @Test(timeout = 120000l)
+    @Test(timeout = 120000L)
     public void performanceTestNuget() throws IOException {
         def dependencyGraphFile = new File(getClass().getResource("/nuget/dwCheckApi_inspection.json").getFile())
 

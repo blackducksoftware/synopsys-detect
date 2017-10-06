@@ -49,7 +49,7 @@ public class NugetInspectorPackagerTest {
         createCodeLocation(dependencyNodeFile, expectedOutputFiles)
     }
 
-    @Test(timeout=5000l)
+    @Test(timeout=5000L)
     public void createCodeLocationDWService() throws IOException {
         def dependencyNodeFile = new File(getClass().getResource("/nuget/dwCheckApi_inspection_martin.json").getFile())
         NameVersionNodeTransformer nameVersionNodeTransformer = new NameVersionNodeTransformer()
