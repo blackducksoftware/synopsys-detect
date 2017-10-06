@@ -26,7 +26,6 @@ import java.util.Map.Entry
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph
@@ -87,14 +86,16 @@ class NpmCliDependencyFinder {
             String version = element.getAsJsonPrimitive(JSON_VERSION)?.getAsString()
             JsonObject children = element.getAsJsonObject(JSON_DEPENDENCIES)
 
-            def externalId = externalIdFactory.createNameVersionExternalId(Forge.NPM, name, version)
-            def child = new Dependency(name, version, externalId)
+            if (name != null && version != null) {
+                def externalId = externalIdFactory.createNameVersionExternalId(Forge.NPM, name, version)
+                def child = new Dependency(name, version, externalId)
 
-            populateChildren(graph, child, children, false)
-            if (root){
-                graph.addChildToRoot(child)
-            }else{
-                graph.addParentWithChild(parentDependency, child)
+                populateChildren(graph, child, children, false)
+                if (root){
+                    graph.addChildToRoot(child)
+                }else{
+                    graph.addParentWithChild(parentDependency, child)
+                }
             }
         }
     }
