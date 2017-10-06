@@ -64,7 +64,7 @@ public class NugetInspectorPackagerTest {
             BdioPropertyHelper bdioPropertyHelper = new BdioPropertyHelper()
             BdioNodeFactory bdioNodeFactory = new BdioNodeFactory(bdioPropertyHelper)
 
-            DependencyGraphTransformer dependencyNodeTransformer = new DependencyGraphTransformer(bdioNodeFactory, bdioPropertyHelper)
+            DependencyGraphTransformer dependencyNodeTransformer = new DependencyGraphTransformer(bdioPropertyHelper, bdioNodeFactory)
 
             def projectId = bdioPropertyHelper.createExternalIdentifier(codeLocation.bomToolProjectExternalId);
             final BdioProject project = bdioNodeFactory.createProject(codeLocation.bomToolProjectName, codeLocation.bomToolProjectVersionName, Forge.NUGET.toString(), projectId)
