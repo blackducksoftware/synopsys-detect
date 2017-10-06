@@ -65,6 +65,7 @@ class NpmCliDependencyFinder {
 
         null
     }
+
     private DetectCodeLocation convertNpmJsonFileToCodeLocation(String sourcePath, String npmLsOutput) {
         JsonObject npmJson = new JsonParser().parse(npmLsOutput) as JsonObject
         MutableDependencyGraph graph = new MutableMapDependencyGraph();
@@ -78,6 +79,7 @@ class NpmCliDependencyFinder {
 
         new DetectCodeLocation(BomToolType.NPM, sourcePath, projectName, projectVersion, externalId, graph)
     }
+
     private void populateChildren(MutableDependencyGraph graph, Dependency parentDependency, JsonObject parentNodeChildren, Boolean root) {
         Set<Entry<String, JsonElement>> elements = parentNodeChildren?.entrySet()
         elements?.each { Entry<String, JsonElement> it ->
@@ -91,9 +93,9 @@ class NpmCliDependencyFinder {
                 def child = new Dependency(name, version, externalId)
 
                 populateChildren(graph, child, children, false)
-                if (root){
+                if (root) {
                     graph.addChildToRoot(child)
-                }else{
+                } else {
                     graph.addParentWithChild(parentDependency, child)
                 }
             }
