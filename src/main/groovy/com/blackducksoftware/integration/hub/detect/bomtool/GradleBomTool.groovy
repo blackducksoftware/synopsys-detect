@@ -103,9 +103,13 @@ class GradleBomTool extends BomTool {
             'excludedConfigurationNames' : detectConfiguration.getGradleExcludedConfigurationNames(),
             'includedConfigurationNames' : detectConfiguration.getGradleIncludedConfigurationNames()
         ]
-        if (detectConfiguration.getGradleInspectorAirGapPath()) {
-            model.put('airGapLibsPath', new File(detectConfiguration.getGradleInspectorAirGapPath()).getCanonicalPath())
+
+        def detectJar = new File(System.getProperty('java.class.path'))
+        def airGapGradleInspectorDir = new File(detectJar.getParentFile(), "/airgap/gradle/")
+        if (airGapGradleInspectorDir.exists()) {
+            model.put('airGapLibsPath', airGapGradleInspectorDir.getCanonicalPath())
         }
+
         if (detectConfiguration.getGradleInspectorRepositoryUrl()) {
             model.put('customRepositoryUrl', detectConfiguration.getGradleInspectorRepositoryUrl())
         }

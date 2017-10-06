@@ -128,9 +128,11 @@ class NugetBomTool extends BomTool {
             outputDirectory.getCanonicalPath()
         ]
 
-        if (detectConfiguration.getNugetInspectorAirGapPath()?.trim()) {
-            logger.debug("Running air gapped with ${detectConfiguration.getNugetInspectorAirGapPath()}")
-            final File nupkgParentDirectory = new File(detectConfiguration.getNugetInspectorAirGapPath()).getParentFile()
+        def detectJar = new File(System.getProperty('java.class.path'))
+        def airGapNugetInspectorDir = new File(detectJar.getParentFile(), "/airgap/nuget/")
+        if (airGapNugetInspectorDir.exists()) {
+            logger.debug("Running in airgap mode. Resolving from local path")
+            final File nupkgParentDirectory = airGapNugetInspectorDir.getParentFile()
             nugetOptions.addAll([
                 '-Source',
                 nupkgParentDirectory.getCanonicalPath()

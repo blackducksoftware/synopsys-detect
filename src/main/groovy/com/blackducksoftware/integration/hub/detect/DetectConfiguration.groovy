@@ -452,12 +452,6 @@ class DetectConfiguration {
     public String getNoticesReportOutputDirectory() {
         return detectProperties.noticesReportOutputDirectory
     }
-    public String getGradleInspectorAirGapPath() {
-        return detectProperties.gradleInspectorAirGapPath?.trim()
-    }
-    public String getNugetInspectorAirGapPath() {
-        return detectProperties.nugetInspectorAirGapPath?.trim()
-    }
     public String getNugetPackagesRepoUrl() {
         return detectProperties.nugetPackagesRepoUrl?.trim()
     }

@@ -1,0 +1,55 @@
+import java.io.File
+
+final String buildArtifactFolder = "${buildDir}/libs"
+final String airGapFolder = "${buildArtifactFolder}/airgap"
+final String gradleAirGapPath = "${airGapFolder}/gradle/"
+final String nugetAirGapPath = "${airGapFolder}/nuget/"
+final String configAirGapPath = "${buildArtifactFolder}/config/"
+final String dockerAirGapPath = "${airGapFolder}/docker/"
+
+configurations {
+    airGap
+}
+
+dependencies {
+    airGap "com.blackducksoftware.integration:integration-gradle-inspector:+"
+}
+
+void fetchFile(File outputFile, String url) {
+    if (outputFile.exists()) {
+        return
+    }
+    if (!outputFile.getParentFile().exists()) {
+        outputFile.getParentFile().mkdirs()
+    }
+    new URL(url).withInputStream{ i -> outputFile.withOutputStream{ it << i }}
+}
+
+task downloadNugetInspector {
+    doLast {
+        final def nugetInspectorUrl = "https://www.nuget.org/api/v2/package/IntegrationNugetInspector/"
+        fetchFile(new File(nugetAirGapPath, "integrationnugetinspector.nupkg"), nugetInspectorUrl)
+    }
+}
+
+task copyGradleInspectorAndDependencies(type: Copy) {
+    from configurations.airGap
+    include '*.jar'
+    into gradleAirGapPath
+}
+
+task copyApplicationProperties(type: Copy) {
+    from 'src/main/resources/'
+    include 'application.properties'
+    into configAirGapPath
+}
+
+task createAirGapZip(type: Zip) {
+    dependsOn downloadNugetInspector, copyGradleInspectorAndDependencies, copyApplicationProperties, build
+    from buildArtifactFolder
+    include "${rootProject.name}-${version}.jar"
+    include 'airgap/*/*'
+    include 'config/*'
+    archiveName "${rootProject.name}-${version}-air-gap.zip"
+    destinationDir(file(buildArtifactFolder))
+}
