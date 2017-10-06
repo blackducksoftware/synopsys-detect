@@ -26,7 +26,6 @@ import java.util.Map.Entry
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph
@@ -66,6 +65,7 @@ class NpmCliDependencyFinder {
 
         null
     }
+
     private DetectCodeLocation convertNpmJsonFileToCodeLocation(String sourcePath, String npmLsOutput) {
         JsonObject npmJson = new JsonParser().parse(npmLsOutput) as JsonObject
         MutableDependencyGraph graph = new MutableMapDependencyGraph();
@@ -79,6 +79,7 @@ class NpmCliDependencyFinder {
 
         new DetectCodeLocation(BomToolType.NPM, sourcePath, projectName, projectVersion, externalId, graph)
     }
+
     private void populateChildren(MutableDependencyGraph graph, Dependency parentDependency, JsonObject parentNodeChildren, Boolean root) {
         Set<Entry<String, JsonElement>> elements = parentNodeChildren?.entrySet()
         elements?.each { Entry<String, JsonElement> it ->
@@ -87,14 +88,16 @@ class NpmCliDependencyFinder {
             String version = element.getAsJsonPrimitive(JSON_VERSION)?.getAsString()
             JsonObject children = element.getAsJsonObject(JSON_DEPENDENCIES)
 
-            def externalId = externalIdFactory.createNameVersionExternalId(Forge.NPM, name, version)
-            def child = new Dependency(name, version, externalId)
+            if (name != null && version != null) {
+                def externalId = externalIdFactory.createNameVersionExternalId(Forge.NPM, name, version)
+                def child = new Dependency(name, version, externalId)
 
-            populateChildren(graph, child, children, false)
-            if (root){
-                graph.addChildToRoot(child)
-            }else{
-                graph.addParentWithChild(parentDependency, child)
+                populateChildren(graph, child, children, false)
+                if (root) {
+                    graph.addChildToRoot(child)
+                } else {
+                    graph.addParentWithChild(parentDependency, child)
+                }
             }
         }
     }
