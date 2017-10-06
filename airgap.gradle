@@ -44,8 +44,45 @@ task copyApplicationProperties(type: Copy) {
     into configAirGapPath
 }
 
+task downloadDockerImages() {
+    doLast {
+        def dir = new File(dockerAirGapPath)
+        dir.mkdir()
+        exec {
+            commandLine "docker", "pull", "blackducksoftware/hub-docker-inspector-ubuntu:3.0.0"
+        }
+        exec {
+            commandLine "docker", "save", "-o", "${dockerAirGapPath}/hub-docker-inspector-ubuntu.tar", "blackducksoftware/hub-docker-inspector-ubuntu:3.0.0"
+        }
+        
+        exec {
+            commandLine "docker", "pull", "blackducksoftware/hub-docker-inspector-centos:3.0.0"
+        }
+        exec {
+            commandLine "docker", "save", "-o", "${dockerAirGapPath}/hub-docker-inspector-centos.tar", "blackducksoftware/hub-docker-inspector-centos:3.0.0"
+        }
+        
+        exec {
+            commandLine "docker", "pull", "blackducksoftware/hub-docker-inspector-alpine:3.0.0"
+        }
+        exec {
+            commandLine "docker", "save", "-o", "${dockerAirGapPath}/hub-docker-inspector-alpine.tar", "blackducksoftware/hub-docker-inspector-alpine:3.0.0"
+        }
+    }
+}
+
+task downloadDockerInspector() {
+    dependsOn downloadDockerImages
+    doLast {
+        final def dockerInspectorJarUrl = "https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector-3.0.0.jar"
+        fetchFile(new File(dockerAirGapPath, "hub-docker-inspector.jar"), dockerInspectorJarUrl)
+        final def dockerInspectorScriptUrl = "https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector-3.0.0.sh"
+        fetchFile(new File(dockerAirGapPath, "hub-docker-inspector.sh"), dockerInspectorScriptUrl)
+    }
+}
+
 task createAirGapZip(type: Zip) {
-    dependsOn downloadNugetInspector, copyGradleInspectorAndDependencies, copyApplicationProperties, build
+    dependsOn build, copyApplicationProperties, downloadNugetInspector, copyGradleInspectorAndDependencies, downloadDockerInspector
     from buildArtifactFolder
     include "${rootProject.name}-${version}.jar"
     include 'airgap/*/*'

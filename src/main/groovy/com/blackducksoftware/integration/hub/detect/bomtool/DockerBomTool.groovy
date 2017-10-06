@@ -93,8 +93,13 @@ class DockerBomTool extends BomTool {
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
         File shellScriptFile
+        def detectJar = new File(System.getProperty('java.class.path'))
+        def airGapHubDockerInspectorShellScript = new File(detectJar.getParentFile(), "/airgap/docker/hub-docker-inspector.sh")
+
         if (detectConfiguration.dockerInspectorPath) {
             shellScriptFile = new File(detectConfiguration.dockerInspectorPath)
+        } else if (airGapHubDockerInspectorShellScript.exists()) {
+            shellScriptFile = airGapHubDockerInspectorShellScript
         } else {
             URL hubDockerInspectorShellScriptUrl = LATEST_URL
             if (!'latest'.equals(detectConfiguration.dockerInspectorVersion)) {
