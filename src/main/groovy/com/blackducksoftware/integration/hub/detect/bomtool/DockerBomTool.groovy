@@ -96,11 +96,13 @@ class DockerBomTool extends BomTool {
         File shellScriptFile
         def detectJar = new File(System.getProperty('java.class.path'))
         def airGapHubDockerInspectorShellScript = new File(detectJar.getParentFile(), "/airgap/docker/hub-docker-inspector.sh")
+        def airGap = false
 
         if (detectConfiguration.dockerInspectorPath) {
             shellScriptFile = new File(detectConfiguration.dockerInspectorPath)
         } else if (airGapHubDockerInspectorShellScript.exists()) {
             shellScriptFile = airGapHubDockerInspectorShellScript
+            airGap = true
         } else {
             URL hubDockerInspectorShellScriptUrl = LATEST_URL
             if (!'latest'.equals(detectConfiguration.dockerInspectorVersion)) {
@@ -109,10 +111,10 @@ class DockerBomTool extends BomTool {
             logger.info("Getting the Docker inspector shell script from ${hubDockerInspectorShellScriptUrl.toURI().toString()}")
             UnauthenticatedRestConnection restConnection = new UnauthenticatedRestConnection(new Slf4jIntLogger(logger), hubDockerInspectorShellScriptUrl, detectConfiguration.getHubTimeout())
             restConnection.alwaysTrustServerCertificate = detectConfiguration.hubTrustCertificate
-            restConnection.proxyHost = detectConfiguration.getHubProxyHost();
-            restConnection.proxyPort = NumberUtils.toInt(detectConfiguration.getHubProxyPort());
-            restConnection.proxyUsername = detectConfiguration.getHubProxyUsername();
-            restConnection.proxyPassword = detectConfiguration.getHubProxyPassword();
+            restConnection.proxyHost = detectConfiguration.getHubProxyHost()
+            restConnection.proxyPort = NumberUtils.toInt(detectConfiguration.getHubProxyPort())
+            restConnection.proxyUsername = detectConfiguration.getHubProxyUsername()
+            restConnection.proxyPassword = detectConfiguration.getHubProxyPassword()
             HttpUrl httpUrl = restConnection.createHttpUrl()
             Request request = restConnection.createGetRequest(httpUrl)
             String shellScriptContents = null
@@ -154,6 +156,21 @@ class DockerBomTool extends BomTool {
             "-c",
             "${shellScriptFile.absolutePath} --spring.config.location=\"${dockerBomToolDirectory.getAbsolutePath()}\" --dry.run=true --no.prompt=true ${imageArgument}" as String
         ]
+        if (airGap) {
+            def airGapHubDockerInspectorJar = new File(detectJar.getParentFile(), "/airgap/docker/hub-docker-inspector.jar")
+            bashArguments.add((String) "--jar.path=${airGapHubDockerInspectorJar.getAbsolutePath()}")
+            for ( String os : ["ubuntu", "alpine", "centos"]) {
+                List<String> dockerImportArguments = [
+                    "-c",
+                    "docker",
+                    "import",
+                    "airgap/docker/hub-docker-inspector-${os}.tar" as String,
+                    "blackducksoftware/hub-docker-inspector-${os}:3.0.0" as String
+                ]
+                Executable dockerImportImageExecutable = new Executable(dockerBomToolDirectory, environmentVariables, bashExecutablePath, dockerImportArguments)
+                executableRunner.execute(dockerImportImageExecutable)
+            }
+        }
         Executable dockerExecutable = new Executable(dockerBomToolDirectory, environmentVariables, bashExecutablePath, bashArguments)
         executableRunner.execute(dockerExecutable)
 
