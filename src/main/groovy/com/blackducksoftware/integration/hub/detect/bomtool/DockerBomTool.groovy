@@ -154,18 +154,16 @@ class DockerBomTool extends BomTool {
 
         List<String> bashArguments = [
             "-c",
-            "${shellScriptFile.absolutePath} --spring.config.location=\"${dockerBomToolDirectory.getAbsolutePath()}\" --dry.run=true --no.prompt=true ${imageArgument}" as String
+            "\"${shellScriptFile.absolutePath}\" --spring.config.location=\"${dockerBomToolDirectory.getAbsolutePath()}\" --dry.run=true --no.prompt=true ${imageArgument}" as String
         ]
         if (airGap) {
             def airGapHubDockerInspectorJar = new File(detectJar.getParentFile(), "/airgap/docker/hub-docker-inspector.jar")
-            bashArguments.add((String) "--jar.path=${airGapHubDockerInspectorJar.getAbsolutePath()}")
+            bashArguments[1] = "\"${shellScriptFile.absolutePath}\" --spring.config.location=\"${dockerBomToolDirectory.getAbsolutePath()}\" --dry.run=true --no.prompt=true --jar.path=\"${airGapHubDockerInspectorJar.getAbsolutePath()}\" ${imageArgument}" as String
             for ( String os : ["ubuntu", "alpine", "centos"]) {
+                def dockerImage = new File(airGapHubDockerInspectorJar.getParentFile(), "hub-docker-inspector-${os}.tar")
                 List<String> dockerImportArguments = [
                     "-c",
-                    "docker",
-                    "import",
-                    "airgap/docker/hub-docker-inspector-${os}.tar" as String,
-                    "blackducksoftware/hub-docker-inspector-${os}:3.0.0" as String
+                    "docker load -i \"${dockerImage.getAbsolutePath()}\"" as String
                 ]
                 Executable dockerImportImageExecutable = new Executable(dockerBomToolDirectory, environmentVariables, bashExecutablePath, dockerImportArguments)
                 executableRunner.execute(dockerImportImageExecutable)

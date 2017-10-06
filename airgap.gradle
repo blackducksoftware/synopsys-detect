@@ -74,10 +74,15 @@ task downloadDockerImages() {
 task downloadDockerInspector() {
     dependsOn downloadDockerImages
     doLast {
+        def dockerInspectorJar = new File(dockerAirGapPath, "hub-docker-inspector.jar")
         final def dockerInspectorJarUrl = "https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector-3.0.0.jar"
-        fetchFile(new File(dockerAirGapPath, "hub-docker-inspector.jar"), dockerInspectorJarUrl)
+        fetchFile(dockerInspectorJar, dockerInspectorJarUrl)
+        dockerInspectorJar.setExecutable(true)
+        
+        def dockerInspectorScript = new File(dockerAirGapPath, "hub-docker-inspector.sh")
         final def dockerInspectorScriptUrl = "https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector-3.0.0.sh"
-        fetchFile(new File(dockerAirGapPath, "hub-docker-inspector.sh"), dockerInspectorScriptUrl)
+        fetchFile(dockerInspectorScript, dockerInspectorScriptUrl)
+        dockerInspectorScript.setExecutable(true)
     }
 }
 
