@@ -24,6 +24,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool
 
 import java.nio.charset.StandardCharsets
 
+import org.apache.commons.lang3.math.NumberUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -108,6 +109,10 @@ class DockerBomTool extends BomTool {
             logger.info("Getting the Docker inspector shell script from ${hubDockerInspectorShellScriptUrl.toURI().toString()}")
             UnauthenticatedRestConnection restConnection = new UnauthenticatedRestConnection(new Slf4jIntLogger(logger), hubDockerInspectorShellScriptUrl, detectConfiguration.getHubTimeout())
             restConnection.alwaysTrustServerCertificate = detectConfiguration.hubTrustCertificate
+            restConnection.proxyHost = detectConfiguration.getHubProxyHost();
+            restConnection.proxyPort = NumberUtils.toInt(detectConfiguration.getHubProxyPort());
+            restConnection.proxyUsername = detectConfiguration.getHubProxyUsername();
+            restConnection.proxyPassword = detectConfiguration.getHubProxyPassword();
             HttpUrl httpUrl = restConnection.createHttpUrl()
             Request request = restConnection.createGetRequest(httpUrl)
             String shellScriptContents = null

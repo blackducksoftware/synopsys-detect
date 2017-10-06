@@ -15,6 +15,7 @@ plugins {
     id 'groovy'
     id 'eclipse'
     id 'maven'
+    id 'signing'
     id 'org.springframework.boot' version '1.5.2.RELEASE'
     id 'jacoco'
     id 'com.github.kt3k.coveralls' version '2.8.1'
@@ -104,3 +105,62 @@ license {
 
 tasks.licenseMain.dependsOn(licenseFormatMain)
 
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+task customSigning(dependsOn: ['javadocJar', 'sourcesJar']) {
+    doLast {
+        File libDirectory = new File("${buildDir}/libs")
+        File[] jarFiles = libDirectory.listFiles(new FilenameFilter() {
+            @Override
+            boolean accept(File dir, String name) {
+                if (name.endsWith(".jar")) {
+                    return true
+                }
+                return false
+            }
+        })
+        println "Signing Jar files"
+        signing.sign(jarFiles)
+        
+        pom {
+            project {
+                name rootProject.name
+                description rootProject.description
+                url 'https://github.com/blackducksoftware/hub-detect'
+                packaging 'jar'
+                scm {
+                    connection 'scm:git:git://github.com/blackducksoftware/hub-detect.git'
+                    developerConnection 'scm:git:git@github.com:blackducksoftware/hub-detect.git'
+                    url 'https://www.github.com/blackducksoftware/hub-detect'
+                }
+                licenses {
+                    license {
+                        name 'Apache License 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0'
+                    }
+                }
+                developers {
+                    developer {
+                        id 'blackduckoss'
+                        name 'Black Duck OSS'
+                        email 'bdsoss@blackducksoftware.com'
+                        organization 'Black Duck Software, Inc.'
+                        organizationUrl 'http://www.blackducksoftware.com'
+                        roles { role 'developer' }
+                        timezone 'America/New_York'
+                    }
+                }
+            }
+        }.writeTo("${buildDir}/poms/${rootProject.name}-${rootProject.version}.pom")
+        File pomFile = file("${buildDir}/poms/${rootProject.name}-${rootProject.version}.pom")
+        signing.sign(pomFile)
+    }
+}
