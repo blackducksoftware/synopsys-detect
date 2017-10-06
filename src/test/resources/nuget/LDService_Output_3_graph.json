@@ -1,0 +1,111 @@
+{
+  "externalDataIdRelationships": {
+    "http:nuget/System_Linq_Expressions/4_3_0": [],
+    "http:nuget/System_IO/4_3_0": [],
+    "http:nuget/System_Threading_Tasks/4_3_0": [],
+    "http:nuget/SimpleInjector/4_0_8": [],
+    "http:nuget/System_Threading/4_3_0": [],
+    "http:nuget/System_Collections/4_3_0": [],
+    "http:nuget/System_Runtime_Extensions/4_3_0": [],
+    "http:nuget/System_Reflection_TypeExtensions/4_3_0": [
+      "http:nuget/System_Reflection/4_3_0"
+    ],
+    "http:nuget/System_Reflection/4_3_0": [],
+    "http:nuget/System_Linq/4_3_0": [],
+    "http:nuget/System_Runtime/4_3_0": [],
+    "http:nuget/System_Globalization/4_3_0": [],
+    "http:nuget/System_Reflection_Extensions/4_3_0": [],
+    "http:nuget/NLog/4_4_11": [],
+    "http:nuget/System_Diagnostics_Debug/4_3_0": [],
+    "http:nuget/System_Collections_Concurrent/4_3_0": [],
+    "http:nuget/Ensure_That/5_0_0": []
+  },
+  "dependencySummaries": {
+    "http:nuget/System_Linq_Expressions/4_3_0": {
+      "name": "System.Linq.Expressions",
+      "version": "4.3.0"
+    },
+    "http:nuget/System_IO/4_3_0": {
+      "name": "System.IO",
+      "version": "4.3.0"
+    },
+    "http:nuget/System_Threading_Tasks/4_3_0": {
+      "name": "System.Threading.Tasks",
+      "version": "4.3.0"
+    },
+    "http:nuget/SimpleInjector/4_0_8": {
+      "name": "SimpleInjector",
+      "version": "4.0.8"
+    },
+    "http:nuget/System_Threading/4_3_0": {
+      "name": "System.Threading",
+      "version": "4.3.0"
+    },
+    "http:nuget/System_Collections/4_3_0": {
+      "name": "System.Collections",
+      "version": "4.3.0"
+    },
+    "http:nuget/System_Runtime_Extensions/4_3_0": {
+      "name": "System.Runtime.Extensions",
+      "version": "4.3.0"
+    },
+    "http:nuget/System_Reflection_TypeExtensions/4_3_0": {
+      "name": "System.Reflection.TypeExtensions",
+      "version": "4.3.0"
+    },
+    "http:nuget/System_Reflection/4_3_0": {
+      "name": "System.Reflection",
+      "version": "4.3.0"
+    },
+    "http:nuget/System_Linq/4_3_0": {
+      "name": "System.Linq",
+      "version": "4.3.0"
+    },
+    "http:nuget/System_Runtime/4_3_0": {
+      "name": "System.Runtime",
+      "version": "4.3.0"
+    },
+    "http:nuget/System_Globalization/4_3_0": {
+      "name": "System.Globalization",
+      "version": "4.3.0"
+    },
+    "http:nuget/System_Reflection_Extensions/4_3_0": {
+      "name": "System.Reflection.Extensions",
+      "version": "4.3.0"
+    },
+    "http:nuget/NLog/4_4_11": {
+      "name": "NLog",
+      "version": "4.4.11"
+    },
+    "http:nuget/System_Diagnostics_Debug/4_3_0": {
+      "name": "System.Diagnostics.Debug",
+      "version": "4.3.0"
+    },
+    "http:nuget/System_Collections_Concurrent/4_3_0": {
+      "name": "System.Collections.Concurrent",
+      "version": "4.3.0"
+    },
+    "http:nuget/Ensure_That/5_0_0": {
+      "name": "Ensure.That",
+      "version": "5.0.0"
+    }
+  },
+  "rootExternalDataIds": [
+    "http:nuget/System_Linq_Expressions/4_3_0",
+    "http:nuget/System_IO/4_3_0",
+    "http:nuget/System_Threading_Tasks/4_3_0",
+    "http:nuget/SimpleInjector/4_0_8",
+    "http:nuget/System_Threading/4_3_0",
+    "http:nuget/System_Collections/4_3_0",
+    "http:nuget/System_Runtime_Extensions/4_3_0",
+    "http:nuget/System_Reflection_TypeExtensions/4_3_0",
+    "http:nuget/System_Linq/4_3_0",
+    "http:nuget/System_Runtime/4_3_0",
+    "http:nuget/System_Globalization/4_3_0",
+    "http:nuget/System_Reflection_Extensions/4_3_0",
+    "http:nuget/NLog/4_4_11",
+    "http:nuget/System_Diagnostics_Debug/4_3_0",
+    "http:nuget/System_Collections_Concurrent/4_3_0",
+    "http:nuget/Ensure_That/5_0_0"
+  ]
+}

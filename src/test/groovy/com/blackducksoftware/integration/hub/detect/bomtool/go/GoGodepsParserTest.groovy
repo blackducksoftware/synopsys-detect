@@ -27,15 +27,15 @@ import com.google.gson.GsonBuilder
 
 public class GoGodepsParserTest {
     Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create()
-    ExternalIdFactory externalIdFactory = new ExternalIdFactory();
+    ExternalIdFactory externalIdFactory = new ExternalIdFactory()
 
     @Test
     public void goDepParserTest() throws IOException {
-        final GoGodepsParser goDepParser = new GoGodepsParser(gson)
+        final GoGodepsParser goDepParser = new GoGodepsParser(gson, new ExternalIdFactory())
         final String goDepOutput = IOUtils.toString(getClass().getResourceAsStream("/go/Go_Godeps.json"), StandardCharsets.UTF_8)
         final DependencyGraph dependencyGraph = goDepParser.extractProjectDependencies(goDepOutput)
 
-        DependencyGraphTestUtil.assertGraph('/go/Go_GodepsParserExpected_graph.json', dependencyGraph);
+        DependencyGraphTestUtil.assertGraph('/go/Go_GodepsParserExpected_graph.json', dependencyGraph)
     }
 
     private void fixVersion(final Dependency node, final String newVersion) {

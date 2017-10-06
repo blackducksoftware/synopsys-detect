@@ -54,6 +54,14 @@ public class PackRatNodeParser {
         String version
 
         for (String line : packratLockContents) {
+            if (line.startsWith("PackratFormat:")){
+                continue;
+            }else if (line.startsWith("PackratVersion:")){
+                continue;
+            }else if (line.startsWith("RVersion:")){
+                continue;
+            }
+
             if (line.contains('Package: ')) {
                 name = line.replace('Package: ', '').trim()
                 currentParent = new NameDependencyId(name)
@@ -68,11 +76,10 @@ public class PackRatNodeParser {
                 graphBuilder.setDependencyVersion(currentParent, version)
                 DependencyId realId = new NameVersionDependencyId(name, version)
                 ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.CRAN, name, version)
-                graphBuilder.setDependencyAsAlias(realId, currentParent)
+                graphBuilder.setDependencyAsAlias(currentParent, realId)
                 graphBuilder.setDependencyInfo(realId, name, version, externalId)
+                currentParent = realId
             }
-
-            currentParent = new NameVersionDependencyId(name, version)
 
             if (line.contains('Requires: ')) {
                 String[] parts = line.replace('Requires: ','').split(',')

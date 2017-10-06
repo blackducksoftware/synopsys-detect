@@ -25,6 +25,7 @@ class TestUtil {
     void testJsonResource(String expectedResourcePath, Object object) {
         final String expected = getResourceAsUTF8String(expectedResourcePath)
         final String actual = gson.toJson(object)
+        println actual
         testJson(expected, actual)
     }
 

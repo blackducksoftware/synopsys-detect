@@ -11,6 +11,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.pip
 
+import static org.junit.Assert.*
+
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -19,10 +21,10 @@ import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 
 class PipInspectorTreeParserTest {
-
     private PipInspectorTreeParser parser
     private TestUtil testUtil = new TestUtil()
 
@@ -53,12 +55,10 @@ class PipInspectorTreeParserTest {
         Dependency validNode1 = parser.lineToDependency(line1)
         Assert.assertEquals(name, validNode1.name)
         Assert.assertEquals(version, validNode1.version)
-        Assert.assertTrue(validNode1.children.isEmpty())
 
         Dependency validNode2 = parser.lineToDependency(line2)
         Assert.assertEquals(validNode1.name, validNode2.name)
         Assert.assertEquals(validNode1.version, validNode2.version)
-        Assert.assertEquals(validNode1.children, validNode2.children)
 
         Dependency invalidNode = parser.lineToDependency(line3)
         Assert.assertNull(invalidNode)
@@ -83,12 +83,12 @@ ${space + child2Text}
 ${space + child3Text}
 """
 
-        Dependency root = parser.parse(validText)
+        DetectCodeLocation root = parser.parse(validText, '')
         ExternalId expectedExternalId = parser.externalIdFactory.createNameVersionExternalId(Forge.PYPI, 'name', 'version')
-        Assert.assertEquals('name', root.name)
-        Assert.assertEquals('version', root.version)
-        testUtil.testJson(expectedExternalId.toString(), root.externalId.toString())
-        Assert.assertEquals(3, root.children.size())
+        Assert.assertEquals('name', root.getBomToolProjectName())
+        Assert.assertEquals('version', root.getBomToolProjectVersionName())
+        testUtil.testJson(expectedExternalId.toString(), root.getBomToolProjectExternalId().toString())
+        Assert.assertEquals(3, root.getDependencyGraph().getRootDependencies().size())
     }
 
     @Test
@@ -97,7 +97,7 @@ ${space + child3Text}
         i am not a valid file
         the result should be null
         """
-        Dependency root = parser.parse(invalidText)
+        DetectCodeLocation root = parser.parse(invalidText, '')
         Assert.assertNull(root)
     }
 }

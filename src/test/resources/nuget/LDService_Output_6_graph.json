@@ -1,0 +1,32 @@
+{
+  "externalDataIdRelationships": {
+    "http:nuget/EntityFramework/6_1_3": [],
+    "http:nuget/NLog/4_4_11": [],
+    "http:nuget/Newtonsoft_Json/10_0_3": [],
+    "http:nuget/Ensure_That/5_0_0": []
+  },
+  "dependencySummaries": {
+    "http:nuget/EntityFramework/6_1_3": {
+      "name": "EntityFramework",
+      "version": "6.1.3"
+    },
+    "http:nuget/NLog/4_4_11": {
+      "name": "NLog",
+      "version": "4.4.11"
+    },
+    "http:nuget/Newtonsoft_Json/10_0_3": {
+      "name": "Newtonsoft.Json",
+      "version": "10.0.3"
+    },
+    "http:nuget/Ensure_That/5_0_0": {
+      "name": "Ensure.That",
+      "version": "5.0.0"
+    }
+  },
+  "rootExternalDataIds": [
+    "http:nuget/EntityFramework/6_1_3",
+    "http:nuget/NLog/4_4_11",
+    "http:nuget/Newtonsoft_Json/10_0_3",
+    "http:nuget/Ensure_That/5_0_0"
+  ]
+}

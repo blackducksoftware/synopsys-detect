@@ -1,12 +1,14 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.nuget
 
-import org.junit.Assert
+import static org.junit.Assert.*
+
 import org.junit.Test
 
 import com.blackducksoftware.integration.hub.bdio.BdioNodeFactory
 import com.blackducksoftware.integration.hub.bdio.BdioPropertyHelper
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer
 import com.blackducksoftware.integration.hub.bdio.model.BdioComponent
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.google.gson.Gson
@@ -22,19 +24,20 @@ public class NugetInspectorPackagerPerfTest {
         def packager = new NugetInspectorPackager()
 
         packager.gson = new Gson()
-        packager.nameVersionNodeTransformer = new NameVersionNodeTransformer()
+        packager.nameVersionNodeTransformer = new NameVersionNodeTransformer(new ExternalIdFactory())
+        packager.externalIdFactory = new ExternalIdFactory()
 
         List<DetectCodeLocation> codeLocations = packager.createDetectCodeLocation(dependencyGraphFile)
-        DetectCodeLocation codeLocation = codeLocations[0];
+        DetectCodeLocation codeLocation = codeLocations[0]
 
-        final BdioPropertyHelper bdioPropertyHelper = new BdioPropertyHelper();
-        final BdioNodeFactory bdioNodeFactory = new BdioNodeFactory(bdioPropertyHelper);
-        final DependencyGraphTransformer dependencyGraphTransformer = new DependencyGraphTransformer(bdioNodeFactory, bdioPropertyHelper);
+        final BdioPropertyHelper bdioPropertyHelper = new BdioPropertyHelper()
+        final BdioNodeFactory bdioNodeFactory = new BdioNodeFactory(bdioPropertyHelper)
+        final DependencyGraphTransformer dependencyGraphTransformer = new DependencyGraphTransformer(bdioNodeFactory, bdioPropertyHelper)
 
-        final bdioNode = bdioNodeFactory.createProject("test", "1.0.0", "bdioId", "forge", "externalId");
+        final bdioNode = bdioNodeFactory.createProject("test", "1.0.0", "bdioId", "forge", "externalId")
 
-        final List<BdioComponent> components = dependencyGraphTransformer.transformDependencyGraph(codeLocation.dependencyGraph, bdioNode);
+        final List<BdioComponent> components = dependencyGraphTransformer.transformDependencyGraph(codeLocation.dependencyGraph, bdioNode, codeLocation.dependencyGraph.rootDependencies, [:])
 
-        Assert.assertEquals(211, components.size())
+        assertEquals(211, components.size())
     }
 }

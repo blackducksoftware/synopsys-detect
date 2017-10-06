@@ -19,6 +19,7 @@ import org.junit.Assert
 import org.junit.Test
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphTestUtil
 import com.google.gson.Gson
@@ -29,16 +30,16 @@ class RubygemsNodePackagerTest {
 
     @Test
     public void packagerTest() throws JSONException, IOException, URISyntaxException {
-        final NameVersionNodeTransformer nameVersionNodeTransformer = new NameVersionNodeTransformer()
+        final NameVersionNodeTransformer nameVersionNodeTransformer = new NameVersionNodeTransformer(new ExternalIdFactory())
         final String expected = IOUtils.toString(getClass().getResourceAsStream("/rubygems/expectedPackager.json"),
                 StandardCharsets.UTF_8)
-        final String actualText = IOUtils.toString(getClass().getResourceAsStream("/rubygems/Gemfile.lock"),
-                StandardCharsets.UTF_8)
+        final List<String> actualText = IOUtils.toString(getClass().getResourceAsStream("/rubygems/Gemfile.lock"),
+                StandardCharsets.UTF_8).split("\n").toList()
         final RubygemsNodePackager rubygemsNodePackager = new RubygemsNodePackager()
         rubygemsNodePackager.nameVersionNodeTransformer = nameVersionNodeTransformer
         final DependencyGraph projects = rubygemsNodePackager.extractProjectDependencies(actualText)
         Assert.assertEquals(8, projects.getRootDependencies().size())
 
-        DependencyGraphTestUtil.assertGraph('/rubygems/expectedPackager_graph.json', projects);
+        DependencyGraphTestUtil.assertGraph('/rubygems/expectedPackager_graph.json', projects)
     }
 }

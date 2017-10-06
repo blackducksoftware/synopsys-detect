@@ -40,8 +40,7 @@ class DetectCodeLocation {
         this.dependencyGraph = dependencyGraph
     }
 
-    DetectCodeLocation(BomToolType bomToolType, String sourcePath, String bomToolProjectName, String bomToolProjectVersionName,
-    ExternalId bomToolProjectExternalId, DependencyGraph dependencyGraph) {
+    DetectCodeLocation(BomToolType bomToolType, String sourcePath, String bomToolProjectName, String bomToolProjectVersionName, ExternalId bomToolProjectExternalId, DependencyGraph dependencyGraph) {
         this.bomToolType = bomToolType
         this.sourcePath = sourcePath
         this.bomToolProjectName = bomToolProjectName
