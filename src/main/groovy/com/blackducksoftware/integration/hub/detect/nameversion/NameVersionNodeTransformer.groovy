@@ -37,6 +37,7 @@ import groovy.transform.TypeChecked
 @TypeChecked
 class NameVersionNodeTransformer {
     public ExternalIdFactory externalIdFactory;
+
     public NameVersionNodeTransformer(ExternalIdFactory externalIdFactory){
         this.externalIdFactory = externalIdFactory;
     }

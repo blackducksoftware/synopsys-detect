@@ -32,9 +32,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.builder.SpringApplicationBuilder
 import org.springframework.context.annotation.Bean
 
-import com.blackducksoftware.integration.hub.bdio.BdioNodeFactory
-import com.blackducksoftware.integration.hub.bdio.BdioPropertyHelper
-import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer
+import com.blackducksoftware.integration.hub.bdio.SimpleBdioFactory
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.exception.DetectException
 import com.blackducksoftware.integration.hub.detect.help.HelpPrinter
@@ -71,12 +69,6 @@ class Application {
 
     @Autowired
     DetectProjectManager detectProjectManager
-
-    @Autowired
-    BdioPropertyHelper bdioPropertyHelper
-
-    @Autowired
-    BdioNodeFactory bdioNodeFactory
 
     @Autowired
     ApplicationArguments applicationArguments
@@ -152,28 +144,18 @@ class Application {
     }
 
     @Bean
-    BdioPropertyHelper bdioPropertyHelper() {
-        new BdioPropertyHelper()
+    SimpleBdioFactory simpleBdioFactory() {
+        new SimpleBdioFactory()
     }
 
     @Bean
-    BdioNodeFactory bdioNodeFactory() {
-        new BdioNodeFactory(bdioPropertyHelper)
-    }
-
-    @Bean
-    DependencyGraphTransformer dependencyNodeTransformer() {
-        new DependencyGraphTransformer(bdioNodeFactory(), bdioPropertyHelper())
+    ExternalIdFactory externalIdFactory() {
+        simpleBdioFactory().getExternalIdFactory()
     }
 
     @Bean
     IntegrationEscapeUtil integrationEscapeUtil() {
         new IntegrationEscapeUtil()
-    }
-
-    @Bean
-    ExternalIdFactory externalIdFactory() {
-        new ExternalIdFactory()
     }
 
     @Bean
