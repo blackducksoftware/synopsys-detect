@@ -73,6 +73,9 @@ class DockerBomTool extends BomTool {
     @Autowired
     ExternalIdFactory externalIdFactory
 
+    @Autowired
+    BdioTransformer bdioTransformer
+
     private String dockerExecutablePath
     private String bashExecutablePath
 
@@ -183,7 +186,6 @@ class DockerBomTool extends BomTool {
                 IOUtils.closeQuietly(bdioReader);
             }
 
-            final BdioTransformer bdioTransformer = new BdioTransformer();
             final DependencyGraph dependencyGraph = bdioTransformer.transformToDependencyGraph(simpleBdioDocument.project, simpleBdioDocument.components);
 
             String projectName = simpleBdioDocument.project.name

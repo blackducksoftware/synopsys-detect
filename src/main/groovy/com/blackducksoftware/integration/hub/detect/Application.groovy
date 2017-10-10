@@ -32,6 +32,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.builder.SpringApplicationBuilder
 import org.springframework.context.annotation.Bean
 
+import com.blackducksoftware.integration.hub.bdio.BdioTransformer
 import com.blackducksoftware.integration.hub.bdio.SimpleBdioFactory
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.exception.DetectException
@@ -146,6 +147,11 @@ class Application {
     @Bean
     SimpleBdioFactory simpleBdioFactory() {
         new SimpleBdioFactory()
+    }
+
+    @Bean
+    BdioTransformer bdioTransformer() {
+        new BdioTransformer()
     }
 
     @Bean

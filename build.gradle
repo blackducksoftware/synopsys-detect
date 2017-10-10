@@ -201,4 +201,3 @@ task customSigning(dependsOn: ['javadocJar', 'sourcesJar']) {
         signing.sign(pomFile)
     }
 }
-
