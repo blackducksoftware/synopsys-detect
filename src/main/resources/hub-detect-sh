@@ -8,8 +8,7 @@ DETECT_LATEST_SNAPSHOT=hub-detect-latest-SNAPSHOT.jar
 
 # This value should be automatically updated by the
 # gradle build process for a non-snapshot build.
-DETECT_LATEST_RELEASE_VERSION=${DETECT_LATEST_RELEASE_VERSION:-1.2.0}
-DETECT_LATEST_RELEASE="hub-detect-${DETECT_LATEST_RELEASE_VERSION}.jar"
+DETECT_RELEASE_VERSION=${DETECT_LATEST_RELEASE_VERSION}
 
 # If you would like to enable the shell script to use
 # the latest snapshot instead of the latest release,
@@ -59,11 +58,17 @@ get_detect() {
   if [ $DETECT_USE_SNAPSHOT -eq 1 ]; then
     echo "will look for snapshot: ${DETECT_LATEST_SNAPSHOT}"
     DETECT_DESTINATION="${DETECT_JAR_PATH}/${DETECT_LATEST_SNAPSHOT}"
-    DETECT_SOURCE=$DETECT_LATEST_SNAPSHOT
+    DETECT_SOURCE="https://blackducksoftware.github.io/hub-detect/${DETECT_LATEST_SNAPSHOT}"
   else
-    echo "will look for release: ${DETECT_LATEST_RELEASE}"
-    DETECT_DESTINATION="${DETECT_JAR_PATH}/${DETECT_LATEST_RELEASE}"
-    DETECT_SOURCE=$DETECT_LATEST_RELEASE
+    if [ -z "${DETECT_RELEASE_VERSION}" ]; then
+      DETECT_SOURCE="http://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.blackducksoftware.integration&a=hub-detect&v=LATEST"
+      DETECT_DESTINATION="${DETECT_JAR_PATH}/hub-detect-latest.jar"
+      echo "will look for : ${DETECT_SOURCE}"
+    else
+      DETECT_SOURCE="http://repo2.maven.org/maven2/com/blackducksoftware/integration/hub-detect/${DETECT_RELEASE_VERSION}/hub-detect-${DETECT_RELEASE_VERSION}.jar"
+      DETECT_DESTINATION="${DETECT_JAR_PATH}/hub-detect-${DETECT_RELEASE_VERSION}.jar"
+      echo "will look for : ${DETECT_SOURCE}"
+    fi
   fi
 
   USE_REMOTE=1
@@ -78,7 +83,7 @@ get_detect() {
 
   if [ $USE_REMOTE -eq 1 ]; then
     echo "getting ${DETECT_SOURCE} from remote"
-    curl $DETECT_CURL_OPTS -o $DETECT_DESTINATION https://blackducksoftware.github.io/hub-detect/$DETECT_SOURCE
+    curl $DETECT_CURL_OPTS -L -o $DETECT_DESTINATION "${DETECT_SOURCE}"
     echo "saved ${DETECT_SOURCE} to ${DETECT_DESTINATION}"
   fi
 }
