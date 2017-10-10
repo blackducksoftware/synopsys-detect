@@ -32,7 +32,10 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.BdioReader
 import com.blackducksoftware.integration.hub.bdio.BdioTransformer
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.SimpleBdioDocument
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerProperties
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
@@ -66,6 +69,9 @@ class DockerBomTool extends BomTool {
 
     @Autowired
     HubSignatureScanner hubSignatureScanner
+
+    @Autowired
+    ExternalIdFactory externalIdFactory
 
     private String dockerExecutablePath
     private String bashExecutablePath
@@ -180,7 +186,14 @@ class DockerBomTool extends BomTool {
             final BdioTransformer bdioTransformer = new BdioTransformer();
             final DependencyGraph dependencyGraph = bdioTransformer.transformToDependencyGraph(simpleBdioDocument.project, simpleBdioDocument.components);
 
-            DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, 'dockerproject', 'dockerversion', null, dependencyGraph)
+            String projectName = simpleBdioDocument.project.name
+            String projectVersionName = simpleBdioDocument.project.version
+
+            Forge dockerForge = new Forge(simpleBdioDocument.project.bdioExternalIdentifier.forge, ExternalId.BDIO_ID_SEPARATOR)
+            String externalIdPath = simpleBdioDocument.project.bdioExternalIdentifier.externalId
+            ExternalId projectExternalId = externalIdFactory.createPathExternalId(dockerForge, externalIdPath)
+
+            DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, projectName, projectVersionName, projectExternalId, dependencyGraph)
             return [detectCodeLocation]
         } else {
             logMissingFile(dockerBomToolDirectory, dependenciesFilenamePattern)
