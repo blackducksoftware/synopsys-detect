@@ -76,7 +76,7 @@ public class PackRatNodeParser {
                 graphBuilder.setDependencyVersion(currentParent, version)
                 DependencyId realId = new NameVersionDependencyId(name, version)
                 ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.CRAN, name, version)
-                graphBuilder.setDependencyAsAlias(currentParent, realId)
+                graphBuilder.setDependencyAsAlias(realId, currentParent)
                 graphBuilder.setDependencyInfo(realId, name, version, externalId)
                 currentParent = realId
             }
