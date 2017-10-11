@@ -46,6 +46,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import com.blackducksoftware.integration.hub.detect.hub.HubManager
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
+import com.blackducksoftware.integration.hub.detect.model.CodeLocationType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.summary.DetectSummary
@@ -166,27 +167,13 @@ class DetectProjectManager {
                 def components = dependencyGraphTransformer.transformDependencyGraph(it.dependencyGraph, aggregateBdioDocument.project, it.dependencyGraph.getRootDependencies(), nodeMap)
                 aggregateBdioDocument.components.addAll(components)
             } else {
-                //                if (it.dependencyGraph) {
-                //                    String codeLocationName = detectProject.getBomToolCodeLocationName(detectFileManager.extractFinalPieceFromPath(it.sourcePath), it.bomToolType, detectConfiguration.getProjectCodeLocationPrefix(), detectConfiguration.getProjectCodeLocationSuffix())
-                //                    hubManager.logOldCodeLocationNameExists(detectProject, it.bomToolType, CodeLocationType.BOM, detectFileManager.extractFinalPieceFromPath(it.sourcePath), detectConfiguration.getProjectCodeLocationPrefix())
-                //                    final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(detectProject, it, codeLocationName)
-                //                    String projectPath = detectFileManager.extractFinalPieceFromPath(it.sourcePath)
-                //                    String projectName = detectProject.projectName
-                //                    String projectVersionName = detectProject.projectVersionName
-                //                    final String filename = createBdioFilename(it.bomToolType, projectPath, projectName, projectVersionName)
-                //                    final File outputFile = new File(detectConfiguration.getOutputDirectory(), filename)
-                //                    if (outputFile.exists()) {
-                //                        outputFile.delete()
-                //                    }
-                //                    final File createdBdioFile = writeSimpleBdioDocument(outputFile, simpleBdioDocument)
-                //                    bdioFiles.add(createdBdioFile)
-                //                } else {
-                //                    logger.debug("Could not find any dependencies for code location ${it.sourcePath}")
                 if (it.dependencyGraph == null || it.dependencyGraph.getRootDependencies().size() <= 0) {
                     logger.warn("Could not find any dependencies for code location ${it.sourcePath}")
                 }
 
-                final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(detectProject, it)
+                String codeLocationName = detectProject.getBomToolCodeLocationName(detectFileManager.extractFinalPieceFromPath(it.sourcePath), it.bomToolType, detectConfiguration.getProjectCodeLocationPrefix(), detectConfiguration.getProjectCodeLocationSuffix())
+                hubManager.logOldCodeLocationNameExists(detectProject, it.bomToolType, CodeLocationType.BOM, detectFileManager.extractFinalPieceFromPath(it.sourcePath), detectConfiguration.getProjectCodeLocationPrefix())
+                final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(detectProject, it, codeLocationName)
                 String projectPath = detectFileManager.extractFinalPieceFromPath(it.sourcePath)
                 String projectName = detectProject.projectName
                 String projectVersionName = detectProject.projectVersionName
