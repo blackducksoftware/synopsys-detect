@@ -74,48 +74,4 @@ class DetectProject {
     public List<DetectCodeLocation> getDetectCodeLocations() {
         detectCodeLocations
     }
-
-    //the implementation of these methods should NOT be changed - doing so will result in the code locations being added to the BOM instead of replacing the BOM
-    @Deprecated
-    public String getBomToolCodeLocationName(final BomToolType bomToolType, String finalSourcePathPiece, String prefix) {
-        String codeLocation = String.format('%s/%s/%s/%s %s', bomToolType.toString(), finalSourcePathPiece, projectName, projectVersionName, 'Hub Detect Tool')
-        if (prefix) {
-            codeLocation = String.format('%s/%s', prefix, codeLocation)
-        }
-        codeLocation
-    }
-
-    @Deprecated
-    public String getScanCodeLocationName(final String canonicalProjectSourcePath, final String canonicalCodeLocationSourcePath, String finalSourcePathPiece, String prefix) {
-        String sourcePath = canonicalCodeLocationSourcePath.replace(canonicalProjectSourcePath, finalSourcePathPiece);
-        String codeLocation = String.format('%s/%s/%s %s', sourcePath, projectName, projectVersionName, 'Hub Detect Scan')
-        if (prefix) {
-            codeLocation = String.format('%s/%s', prefix, codeLocation)
-        }
-        codeLocation
-    }
-
-    public String getBomToolCodeLocationName(String sourcePathPiece, BomToolType bomToolType, String prefix, String suffix) {
-        getCodeLocationName(sourcePathPiece, bomToolType, CodeLocationType.BOM, prefix, suffix)
-    }
-
-    public String getScanCodeLocationName(String sourcePathPiece, String prefix, String suffix) {
-        getCodeLocationName(sourcePathPiece, null, CodeLocationType.SCAN, prefix, suffix)
-    }
-
-    private String getCodeLocationName(String sourcePathPiece, BomToolType bomToolType, CodeLocationType codeLocationType, String prefix, String suffix) {
-        String codeLocation = String.format('%s/%s/%s', sourcePathPiece, projectName, projectVersionName)
-        if (prefix) {
-            codeLocation = String.format('%s/%s', prefix, codeLocation)
-        }
-        if (suffix) {
-            codeLocation = String.format('%s/%s', codeLocation, suffix)
-        }
-        String endPiece = codeLocationType.toString().toLowerCase()
-        if (bomToolType != null) {
-            endPiece = String.format('%s/%s', bomToolType.toString().toLowerCase(), endPiece)
-        }
-        codeLocation = String.format('%s %s', codeLocation, endPiece)
-        codeLocation
-    }
 }

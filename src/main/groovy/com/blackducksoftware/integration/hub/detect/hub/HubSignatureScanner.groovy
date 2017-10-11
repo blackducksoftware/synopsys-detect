@@ -29,8 +29,9 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.builder.HubScanConfigBuilder
 import com.blackducksoftware.integration.hub.dataservice.cli.CLIDataService
+import com.blackducksoftware.integration.hub.detect.CodeLocationNameService
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
-import com.blackducksoftware.integration.hub.detect.model.CodeLocationType
+import com.blackducksoftware.integration.hub.detect.model.CodeLocationName
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.summary.DetectSummary
 import com.blackducksoftware.integration.hub.detect.summary.Result
@@ -63,6 +64,9 @@ class HubSignatureScanner {
 
     @Autowired
     DetectSummary detectSummary
+
+    @Autowired
+    CodeLocationNameService codeLocationNameService
 
     private Set<String> registeredPaths = []
     private Set<String> registeredPathsToExclude = []
@@ -190,10 +194,14 @@ class HubSignatureScanner {
         hubScanConfigBuilder.cleanupLogsOnSuccess = detectConfiguration.cleanupBomToolFiles
         hubScanConfigBuilder.dryRun = detectConfiguration.hubSignatureScannerDryRun
 
-        String sourcePath = canonicalPath.replace(detectConfiguration.sourcePath, detectFileManager.extractFinalPieceFromPath(detectConfiguration.sourcePath));
-        String codeLocationName = detectProject.getScanCodeLocationName(sourcePath, detectConfiguration.getProjectCodeLocationPrefix(), detectConfiguration.getProjectCodeLocationSuffix())
-        hubManager.logOldCodeLocationNameExists(detectProject, null, CodeLocationType.SCAN, sourcePath, detectConfiguration.getProjectCodeLocationPrefix())
-        hubScanConfigBuilder.codeLocationAlias = codeLocationName
+        String projectName = detectProject.projectName
+        String projectVersionName = detectProject.projectVersionName
+        String sourcePath = detectConfiguration.sourcePath
+        String prefix = detectConfiguration.projectCodeLocationPrefix
+        String suffix = detectConfiguration.projectCodeLocationSuffix
+        CodeLocationName codeLocationName = codeLocationNameService.createScanName(sourcePath, canonicalPath, projectName, projectVersionName, prefix, suffix)
+        String codeLocationNameString = codeLocationNameService.generateScanVersion2(codeLocationName)
+        hubScanConfigBuilder.codeLocationAlias = codeLocationNameString
 
         if (detectConfiguration.hubSignatureScannerExclusionPatterns) {
             hubScanConfigBuilder.setExcludePatterns(detectConfiguration.hubSignatureScannerExclusionPatterns)

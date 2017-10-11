@@ -43,8 +43,6 @@ import com.blackducksoftware.integration.hub.dataservice.project.ProjectVersionW
 import com.blackducksoftware.integration.hub.dataservice.report.RiskReportDataService
 import com.blackducksoftware.integration.hub.dataservice.scan.ScanStatusDataService
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
-import com.blackducksoftware.integration.hub.detect.model.BomToolType
-import com.blackducksoftware.integration.hub.detect.model.CodeLocationType
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.exception.DoesNotExistException
 import com.blackducksoftware.integration.hub.global.HubServerConfig
@@ -196,12 +194,11 @@ class HubManager {
         }
     }
 
-    public CodeLocationView logOldCodeLocationNameExists(DetectProject detectProject, BomToolType bomToolType, CodeLocationType codeLocationType, String sourcePath, String prefix) {
+    public CodeLocationView logCodeLocationNameExists(String codeLocationName) {
         if (!detectConfiguration.hubOfflineMode) {
-            String oldCodeLocationName = generateOldCodeLocationName(detectProject, bomToolType, codeLocationType, sourcePath, prefix)
             try {
-                CodeLocationView codeLocationView = hubServiceWrapper.createCodeLocationRequestService().getCodeLocationByName(oldCodeLocationName)
-                logger.warn("Found same code location with old naming pattern: ${oldCodeLocationName}. You may remove old code location if desired")
+                CodeLocationView codeLocationView = hubServiceWrapper.createCodeLocationRequestService().getCodeLocationByName(codeLocationName)
+                logger.warn("Found a code location with a naming pattern that is no longer supported: ${codeLocationName}. This code location may need to be removed to avoid duplicate entries in the Bill of Materials.")
                 return codeLocationView
             } catch (IntegrationException e) {
                 return null
@@ -219,15 +216,5 @@ class HubManager {
                 return false
             }
         }
-    }
-
-    private String generateOldCodeLocationName(DetectProject detectProject, BomToolType bomToolType, CodeLocationType codeLocationType, String sourcePath, String prefix) {
-        if (CodeLocationType.SCAN.toString().equals(codeLocationType.toString())) {
-            return detectProject.getScanCodeLocationName('', '', sourcePath, prefix)
-        } else if (CodeLocationType.BOM.toString().equals(codeLocationType.toString())) {
-            return detectProject.getBomToolCodeLocationName(bomToolType, sourcePath, prefix)
-        }
-
-        return ''
     }
 }

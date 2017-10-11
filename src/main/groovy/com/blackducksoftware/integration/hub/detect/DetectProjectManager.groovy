@@ -42,7 +42,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import com.blackducksoftware.integration.hub.detect.hub.HubManager
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
-import com.blackducksoftware.integration.hub.detect.model.CodeLocationType
+import com.blackducksoftware.integration.hub.detect.model.CodeLocationName
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.summary.DetectSummary
@@ -85,6 +85,9 @@ class DetectProjectManager {
 
     @Autowired
     HubManager hubManager
+
+    @Autowired
+    CodeLocationNameService codeLocationNameService
 
     private boolean foundAnyBomTools
 
@@ -150,12 +153,14 @@ class DetectProjectManager {
                     logger.warn("Could not find any dependencies for code location ${it.sourcePath}")
                 }
 
-                String codeLocationName = detectProject.getBomToolCodeLocationName(detectFileManager.extractFinalPieceFromPath(it.sourcePath), it.bomToolType, detectConfiguration.getProjectCodeLocationPrefix(), detectConfiguration.getProjectCodeLocationSuffix())
-                hubManager.logOldCodeLocationNameExists(detectProject, it.bomToolType, CodeLocationType.BOM, detectFileManager.extractFinalPieceFromPath(it.sourcePath), detectConfiguration.getProjectCodeLocationPrefix())
-                final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(detectProject, it, codeLocationName)
+                String projectName = detectProject.getProjectName()
+                String projectVersionName = detectProject.getProjectVersionName()
+                String prefix = detectConfiguration.getProjectCodeLocationPrefix()
+                String suffix = detectConfiguration.getProjectCodeLocationSuffix()
+                CodeLocationName codeLocationName = codeLocationNameService.createBomToolName(it.sourcePath, projectName, projectVersionName, it.bomToolType, prefix, suffix)
+                String codeLocationNameString = codeLocationNameService.generateBomToolVersion2(codeLocationName)
+                final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(codeLocationNameString, detectProject, it)
                 String projectPath = detectFileManager.extractFinalPieceFromPath(it.sourcePath)
-                String projectName = detectProject.projectName
-                String projectVersionName = detectProject.projectVersionName
                 final String filename = createBdioFilename(it.bomToolType, projectPath, projectName, projectVersionName)
                 final File outputFile = new File(detectConfiguration.getOutputDirectory(), filename)
                 if (outputFile.exists()) {
@@ -223,17 +228,11 @@ class DetectProjectManager {
         createSimpleBdioDocument(codeLocationName, projectName, projectVersionName, projectExternalId, dependencyGraph)
     }
 
-<<<<<<< HEAD
-    private SimpleBdioDocument createSimpleBdioDocument(DetectProject detectProject, DetectCodeLocation detectCodeLocation, String codeLocationName) {
-        final String projectId = detectCodeLocation.bomToolProjectExternalId.createBdioId()
-=======
-    private SimpleBdioDocument createSimpleBdioDocument(DetectProject detectProject, DetectCodeLocation detectCodeLocation) {
-        final String codeLocationName = detectProject.getBomToolCodeLocationName(detectCodeLocation.bomToolType, detectFileManager.extractFinalPieceFromPath(detectCodeLocation.sourcePath), detectConfiguration.getProjectCodeLocationPrefix())
+    private SimpleBdioDocument createSimpleBdioDocument(String codeLocationName, DetectProject detectProject, DetectCodeLocation detectCodeLocation) {
         final String projectName = detectProject.projectName
         final String projectVersionName = detectProject.projectVersionName
         final ExternalId projectExternalId = detectCodeLocation.bomToolProjectExternalId
         final DependencyGraph dependencyGraph = detectCodeLocation.dependencyGraph
->>>>>>> 366b80ceebf8a5b5150e446dbddee23ebf81d471
 
         createSimpleBdioDocument(codeLocationName, projectName, projectVersionName, projectExternalId, dependencyGraph)
     }

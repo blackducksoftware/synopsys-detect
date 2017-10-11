@@ -19,7 +19,6 @@ import com.blackducksoftware.integration.hub.detect.model.CodeLocationType
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
 
 class DetectProjectTest {
-
     @Test
     public void getCodeLocationNameBomTest() {
         def detectProject = new DetectProject()
