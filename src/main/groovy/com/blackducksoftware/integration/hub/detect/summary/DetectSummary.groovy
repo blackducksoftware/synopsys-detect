@@ -73,7 +73,7 @@ class DetectSummary {
             logger.info("${entry.getKey().toString()} : ${entry.getValue().toString()}")
         }
         for (Entry<File, Result> entry : scanResults.entrySet()) {
-            logger.info("Scan Target ${entry.getKey().getAbsolutePath()} : ${entry.getValue().toString()}")
+            logger.info("Scan Target ${entry.getKey()} : ${entry.getValue().toString()}")
         }
         logger.info("")
         logger.info("Overall Status : ${overallResult.toString()}")
