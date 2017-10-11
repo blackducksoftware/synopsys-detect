@@ -194,14 +194,17 @@ class HubManager {
         }
     }
 
-    public CodeLocationView logCodeLocationNameExists(String codeLocationName) {
+    public void logCodeLocationNamesExists(List<String> codeLocationNames) {
         if (!detectConfiguration.hubOfflineMode) {
-            try {
-                CodeLocationView codeLocationView = hubServiceWrapper.createCodeLocationRequestService().getCodeLocationByName(codeLocationName)
-                logger.warn("Found a code location with a naming pattern that is no longer supported: ${codeLocationName}. This code location may need to be removed to avoid duplicate entries in the Bill of Materials.")
-                return codeLocationView
-            } catch (IntegrationException e) {
-                return null
+            for (String codeLocationName : codeLocationNames) {
+                try {
+                    CodeLocationView codeLocationView = hubServiceWrapper.createCodeLocationRequestService().getCodeLocationByName(codeLocationName)
+                    logger.warn("Found a code location with a naming pattern that is no longer supported: ${codeLocationName}. This code location may need to be removed to avoid duplicate entries in the Bill of Materials.")
+                } catch (DoesNotExistException e) {
+                    logger.debug("Didn't find the code location ${codeLocationName} - this is a GOOD thing!")
+                } catch (IntegrationException e) {
+                    logger.error("Error finding the code location name ${codeLocationName}: ${e.message}")
+                }
             }
         }
     }

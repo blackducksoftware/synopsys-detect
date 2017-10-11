@@ -200,7 +200,7 @@ class HubSignatureScanner {
         String prefix = detectConfiguration.projectCodeLocationPrefix
         String suffix = detectConfiguration.projectCodeLocationSuffix
         CodeLocationName codeLocationName = codeLocationNameService.createScanName(sourcePath, canonicalPath, projectName, projectVersionName, prefix, suffix)
-        String codeLocationNameString = codeLocationNameService.generateScanVersion2(codeLocationName)
+        String codeLocationNameString = codeLocationNameService.generateScanCurrent(codeLocationName)
         hubScanConfigBuilder.codeLocationAlias = codeLocationNameString
 
         if (detectConfiguration.hubSignatureScannerExclusionPatterns) {
