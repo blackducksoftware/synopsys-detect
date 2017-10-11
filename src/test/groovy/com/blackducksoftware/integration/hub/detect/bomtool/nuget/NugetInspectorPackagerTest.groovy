@@ -49,7 +49,7 @@ public class NugetInspectorPackagerTest {
         createCodeLocation(dependencyNodeFile, expectedOutputFiles)
     }
 
-    @Test(timeout=5000l)
+    @Test(timeout=5000L)
     public void createCodeLocationDWService() throws IOException {
         def dependencyNodeFile = new File(getClass().getResource("/nuget/dwCheckApi_inspection_martin.json").getFile())
         NameVersionNodeTransformer nameVersionNodeTransformer = new NameVersionNodeTransformer()
@@ -64,7 +64,7 @@ public class NugetInspectorPackagerTest {
             BdioPropertyHelper bdioPropertyHelper = new BdioPropertyHelper()
             BdioNodeFactory bdioNodeFactory = new BdioNodeFactory(bdioPropertyHelper)
 
-            DependencyGraphTransformer dependencyNodeTransformer = new DependencyGraphTransformer(bdioNodeFactory, bdioPropertyHelper)
+            DependencyGraphTransformer dependencyNodeTransformer = new DependencyGraphTransformer(bdioPropertyHelper, bdioNodeFactory)
 
             def projectId = bdioPropertyHelper.createExternalIdentifier(codeLocation.bomToolProjectExternalId);
             final BdioProject project = bdioNodeFactory.createProject(codeLocation.bomToolProjectName, codeLocation.bomToolProjectVersionName, Forge.NUGET.toString(), projectId)

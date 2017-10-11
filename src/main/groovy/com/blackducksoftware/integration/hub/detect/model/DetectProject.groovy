@@ -35,6 +35,20 @@ class DetectProject {
         projectVersionName
     }
 
+    /**
+     * Only the DetectProjectManager should invoke this method.
+     */
+    public void setProjectName(String projectName) {
+        this.projectName = projectName
+    }
+
+    /**
+     * Only the DetectProjectManager should invoke this method.
+     */
+    public void setProjectVersionName(String projectVersionName) {
+        this.projectVersionName = projectVersionName
+    }
+
     public void setProjectNameIfNotSet(String projectName) {
         if (!this.projectName) {
             this.projectName = projectName

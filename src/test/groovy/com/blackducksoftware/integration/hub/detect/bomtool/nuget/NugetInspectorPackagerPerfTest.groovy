@@ -17,7 +17,7 @@ import com.google.gson.GsonBuilder
 public class NugetInspectorPackagerPerfTest {
     public Gson gson = new GsonBuilder().setPrettyPrinting().create()
 
-    @Test(timeout = 120000l)
+    @Test(timeout = 120000L)
     public void performanceTestNuget() throws IOException {
         def dependencyGraphFile = new File(getClass().getResource("/nuget/dwCheckApi_inspection.json").getFile())
 
@@ -32,7 +32,7 @@ public class NugetInspectorPackagerPerfTest {
 
         final BdioPropertyHelper bdioPropertyHelper = new BdioPropertyHelper()
         final BdioNodeFactory bdioNodeFactory = new BdioNodeFactory(bdioPropertyHelper)
-        final DependencyGraphTransformer dependencyGraphTransformer = new DependencyGraphTransformer(bdioNodeFactory, bdioPropertyHelper)
+        final DependencyGraphTransformer dependencyGraphTransformer = new DependencyGraphTransformer(bdioPropertyHelper, bdioNodeFactory)
 
         final bdioNode = bdioNodeFactory.createProject("test", "1.0.0", "bdioId", "forge", "externalId")
 

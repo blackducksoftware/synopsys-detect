@@ -37,7 +37,7 @@ class GradleDependenciesParserTest {
 
     @Test
     public void extractCodeLocationTest() {
-        createNewCodeLocationTest('gradle/dependencyGraph.txt', '/gradle/dependencyGraph-expected.json', "", "")
+        createNewCodeLocationTest('gradle/dependencyGraph.txt', '/gradle/dependencyGraph-expected.json', "hub-detect", "2.0.0-SNAPSHOT")
     }
 
     private void createNewCodeLocationTest(String gradleInspectorOutputResourcePath, String expectedResourcePath, String rootProjectName, String rootProjectVersionName) {
