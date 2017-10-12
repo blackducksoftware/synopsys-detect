@@ -1,11 +1,11 @@
 import java.io.File
 
 final String buildArtifactFolder = "${buildDir}/libs"
-final String airGapFolder = "${buildArtifactFolder}/airgap"
-final String gradleAirGapPath = "${airGapFolder}/gradle/"
-final String nugetAirGapPath = "${airGapFolder}/nuget/"
-final String configAirGapPath = "${buildArtifactFolder}/config/"
-final String dockerAirGapPath = "${airGapFolder}/docker/"
+final String airGapFolder = "${buildArtifactFolder}/packaged-inspectors"
+final String gradleAirGapPath = "${airGapFolder}/gradle"
+final String nugetAirGapPath = "${airGapFolder}/nuget"
+final String configAirGapPath = "${buildArtifactFolder}/config"
+final String dockerAirGapPath = "${airGapFolder}/docker"
 
 configurations {
     airGap
@@ -49,40 +49,51 @@ task downloadDockerImages() {
         def dir = new File(dockerAirGapPath)
         dir.mkdir()
         exec {
-            commandLine "docker", "pull", "blackducksoftware/hub-docker-inspector-ubuntu:3.0.0"
+            commandLine "docker", "pull", "blackducksoftware/hub-docker-inspector-ubuntu:latest"
         }
         exec {
-            commandLine "docker", "save", "-o", "${dockerAirGapPath}/hub-docker-inspector-ubuntu.tar", "blackducksoftware/hub-docker-inspector-ubuntu:3.0.0"
-        }
-        
-        exec {
-            commandLine "docker", "pull", "blackducksoftware/hub-docker-inspector-centos:3.0.0"
-        }
-        exec {
-            commandLine "docker", "save", "-o", "${dockerAirGapPath}/hub-docker-inspector-centos.tar", "blackducksoftware/hub-docker-inspector-centos:3.0.0"
+            commandLine "docker", "save", "-o", "${dockerAirGapPath}/hub-docker-inspector-ubuntu.tar", "blackducksoftware/hub-docker-inspector-ubuntu:latest"
         }
         
         exec {
-            commandLine "docker", "pull", "blackducksoftware/hub-docker-inspector-alpine:3.0.0"
+            commandLine "docker", "pull", "blackducksoftware/hub-docker-inspector-centos:latest"
         }
         exec {
-            commandLine "docker", "save", "-o", "${dockerAirGapPath}/hub-docker-inspector-alpine.tar", "blackducksoftware/hub-docker-inspector-alpine:3.0.0"
+            commandLine "docker", "save", "-o", "${dockerAirGapPath}/hub-docker-inspector-centos.tar", "blackducksoftware/hub-docker-inspector-centos:latest"
+        }
+        
+        exec {
+            commandLine "docker", "pull", "blackducksoftware/hub-docker-inspector-alpine:latest"
+        }
+        exec {
+            commandLine "docker", "save", "-o", "${dockerAirGapPath}/hub-docker-inspector-alpine.tar", "blackducksoftware/hub-docker-inspector-alpine:latest"
         }
     }
 }
 
-task downloadDockerInspector() {
-    dependsOn downloadDockerImages
-    doLast {
-        def dockerInspectorJar = new File(dockerAirGapPath, "hub-docker-inspector.jar")
-        final def dockerInspectorJarUrl = "https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector-3.0.0.jar"
-        fetchFile(dockerInspectorJar, dockerInspectorJarUrl)
-        dockerInspectorJar.setExecutable(true)
-        
+task downloadDockerInspectorScript() {
+    doLast{
         def dockerInspectorScript = new File(dockerAirGapPath, "hub-docker-inspector.sh")
-        final def dockerInspectorScriptUrl = "https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector-3.0.0.sh"
-        fetchFile(dockerInspectorScript, dockerInspectorScriptUrl)
+        final def dockerInspectorScriptUrl = "https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector.sh"
+        fetchFile(dockerInspectorScript, dockerInspectorScriptUrl)              
         dockerInspectorScript.setExecutable(true)
+    }
+}
+
+task downloadDockerInspector() {
+    dependsOn downloadDockerImages, downloadDockerInspectorScript
+    doLast{
+        exec{
+            commandLine "bash", "${dockerAirGapPath}/hub-docker-inspector.sh", "--pulljar"
+        }
+        copy{
+            from '.'
+            include 'hub-docker-inspector-*.jar'
+            into dockerAirGapPath
+        }
+        delete fileTree('.'){
+            include 'hub-docker-inspector-*.jar'
+        }
     }
 }
 
@@ -90,7 +101,7 @@ task createAirGapZip(type: Zip) {
     dependsOn build, copyApplicationProperties, downloadNugetInspector, copyGradleInspectorAndDependencies, downloadDockerInspector
     from buildArtifactFolder
     include "${rootProject.name}-${version}.jar"
-    include 'airgap/*/*'
+    include 'packaged-inspectors/*/*'
     include 'config/*'
     archiveName "${rootProject.name}-${version}-air-gap.zip"
     destinationDir(file(buildArtifactFolder))
