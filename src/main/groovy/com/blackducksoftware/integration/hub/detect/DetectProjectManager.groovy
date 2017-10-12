@@ -39,7 +39,6 @@ import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.SimpleBdioDocument
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
-import com.blackducksoftware.integration.hub.detect.hub.HubManager
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.CodeLocationName
@@ -82,9 +81,6 @@ class DetectProjectManager {
 
     @Autowired
     DetectSummary detectSummary
-
-    @Autowired
-    HubManager hubManager
 
     @Autowired
     CodeLocationNameService codeLocationNameService

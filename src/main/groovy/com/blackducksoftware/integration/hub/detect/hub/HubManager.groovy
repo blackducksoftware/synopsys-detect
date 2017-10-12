@@ -194,7 +194,7 @@ class HubManager {
         }
     }
 
-    public void logCodeLocationNamesExists(List<String> codeLocationNames) {
+    public void manageExistingCodeLocations(List<String> codeLocationNames) {
         if (!detectConfiguration.hubOfflineMode) {
             for (String codeLocationName : codeLocationNames) {
                 try {
@@ -205,18 +205,6 @@ class HubManager {
                 } catch (IntegrationException e) {
                     logger.error("Error finding the code location name ${codeLocationName}: ${e.message}")
                 }
-            }
-        }
-    }
-
-    public boolean deleteExistingCodeLocation(CodeLocationView codeLocationView) {
-        if (!detectConfiguration.hubOfflineMode) {
-            try {
-                hubServiceWrapper.createCodeLocationRequestService().deleteCodeLocation(codeLocationView);
-                logger.info("Deleted code location '${codeLocationView.name}'")
-                return true
-            } catch (IntegrationException e) {
-                return false
             }
         }
     }

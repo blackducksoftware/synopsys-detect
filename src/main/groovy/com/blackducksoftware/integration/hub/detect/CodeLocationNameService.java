@@ -62,7 +62,7 @@ public class CodeLocationNameService {
         final List<String> possiblePreviousCodeLocations = new ArrayList<>();
         possiblePreviousCodeLocations.add(generateBomToolVersion1(codeLocationName));
         possiblePreviousCodeLocations.add(generateBomToolVersion2(codeLocationName));
-        hubManager.logCodeLocationNamesExists(possiblePreviousCodeLocations);
+        hubManager.manageExistingCodeLocations(possiblePreviousCodeLocations);
 
         final String finalSourcePathPiece = detectFileManager.extractFinalPieceFromPath(codeLocationName.getSourcePath());
         final String projectName = codeLocationName.getProjectName();
@@ -81,7 +81,7 @@ public class CodeLocationNameService {
         final List<String> possiblePreviousCodeLocations = new ArrayList<>();
         possiblePreviousCodeLocations.add(generateScanVersion1(codeLocationName));
         possiblePreviousCodeLocations.add(generateScanVersion2(codeLocationName));
-        hubManager.logCodeLocationNamesExists(possiblePreviousCodeLocations);
+        hubManager.manageExistingCodeLocations(possiblePreviousCodeLocations);
 
         final String cleanedTargetPath = cleanScanTargetPath(codeLocationName);
         final String projectName = codeLocationName.getProjectName();
