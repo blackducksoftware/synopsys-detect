@@ -74,7 +74,7 @@ class HubSignatureScanner {
             if (matchingExcludedPath) {
                 logger.info("Not registering excluded path ${file.canonicalPath} to scan")
             } else if (file.exists() && (file.isFile() || file.isDirectory())) {
-                detectSummary.addPathToBeScanned(file)
+                detectSummary.addPathToBeScanned(file.getCanonicalPath())
                 logger.info("Registering path ${file.canonicalPath} to scan")
                 registeredPaths.add(file.canonicalPath)
                 if (fileNamesToExclude) {
@@ -148,7 +148,7 @@ class HubSignatureScanner {
 
             String hubDetectVersion = detectConfiguration.getBuildInfo().detectVersion
             projectVersionView = cliDataService.installAndRunControlledScan(hubServerConfig, hubScanConfig, projectRequest, false, 'Hub-Detect', hubDetectVersion, hubDetectVersion)
-            detectSummary.setPathScanResult(new File(canonicalPath), Result.SUCCESS)
+            detectSummary.setPathScanResult(canonicalPath, Result.SUCCESS)
             logger.info("${canonicalPath} was successfully scanned by the BlackDuck CLI.")
         } catch (Exception e) {
             logger.error("${detectProject.projectName}/${detectProject.projectVersionName} - ${canonicalPath} was not scanned by the BlackDuck CLI: ${e.message}")
@@ -169,7 +169,7 @@ class HubSignatureScanner {
 
             HubScanConfig hubScanConfig = hubScanConfigBuilder.build()
             offlineScanner.offlineScan(hubScanConfig, detectConfiguration.hubSignatureScannerOfflineLocalPath)
-            detectSummary.setPathScanResult(new File(canonicalPath), Result.SUCCESS)
+            detectSummary.setPathScanResult(canonicalPath, Result.SUCCESS)
             logger.info("${canonicalPath} was successfully scanned by the BlackDuck CLI.")
         } catch (Exception e) {
             logger.error("${detectProject.projectName}/${detectProject.projectVersionName} - ${canonicalPath} was not scanned by the BlackDuck CLI: ${e.message}")

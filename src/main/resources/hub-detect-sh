@@ -2,41 +2,38 @@
 
 # This value should not be updated - the Jenkins
 # build process will, for ANY snapshot build,
-# override the latest snapshot jar.
-
+# override the hub-detect-latest-SNAPSHOT.jar file on
+# gh-pages.
 DETECT_LATEST_SNAPSHOT=hub-detect-latest-SNAPSHOT.jar
 
-# This value should be automatically updated by the
-# gradle build process for a non-snapshot build.
-DETECT_LATEST_RELEASE_VERSION=${DETECT_LATEST_RELEASE_VERSION:-1.2.0}
-DETECT_LATEST_RELEASE="hub-detect-${DETECT_LATEST_RELEASE_VERSION}.jar"
+# DETECT_LATEST_RELEASE_VERSION should be set in your
+# environment if you wish to use a version different
+# from LATEST.
+DETECT_RELEASE_VERSION=${DETECT_LATEST_RELEASE_VERSION}
 
 # If you would like to enable the shell script to use
 # the latest snapshot instead of the latest release,
 # specify DETECT_USE_SNAPSHOT=1 in your environment.
 # The default is to NOT use snapshots. If you enable
-# snapshots, the jar file will always be downloaded.
-
+# snapshots, the jar file will be downloaded whenever
+# a new commit is added to the master branch.
 DETECT_USE_SNAPSHOT=${DETECT_USE_SNAPSHOT:-0}
 
 # To override the default location of /tmp, specify
 # your own DETECT_JAR_PATH in your environment and
 # *that* location will be used.
-
 DETECT_JAR_PATH=${DETECT_JAR_PATH:-/tmp}
 
 # If you want to pass any java options to the
 # invocation, specify DETECT_JAVA_OPTS in your
 # environment. For example, to specify a 6 gigabyte
 # heap size, you would set DETECT_JAVA_OPTS=-Xmx6G.
-
 DETECT_JAVA_OPTS=${DETECT_JAVA_OPTS:-}
 
 # If you want to pass any additional options to
 # curl, specify DETECT_CURL_OPTS in your environment.
 # For exmaple, to specify a proxy, you would set
 # DETECT_CURL_OPTS=--proxy http://myproxy:3128
-
 DETECT_CURL_OPTS=${DETECT_CURL_OPTS:-}
 
 SCRIPT_ARGS="$@"
@@ -59,11 +56,17 @@ get_detect() {
   if [ $DETECT_USE_SNAPSHOT -eq 1 ]; then
     echo "will look for snapshot: ${DETECT_LATEST_SNAPSHOT}"
     DETECT_DESTINATION="${DETECT_JAR_PATH}/${DETECT_LATEST_SNAPSHOT}"
-    DETECT_SOURCE=$DETECT_LATEST_SNAPSHOT
+    DETECT_SOURCE="https://blackducksoftware.github.io/hub-detect/${DETECT_LATEST_SNAPSHOT}"
   else
-    echo "will look for release: ${DETECT_LATEST_RELEASE}"
-    DETECT_DESTINATION="${DETECT_JAR_PATH}/${DETECT_LATEST_RELEASE}"
-    DETECT_SOURCE=$DETECT_LATEST_RELEASE
+    if [ -z "${DETECT_RELEASE_VERSION}" ]; then
+      DETECT_SOURCE="http://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.blackducksoftware.integration&a=hub-detect&v=LATEST"
+      FILE_NAME=$(curl -Ls -w %{url_effective} -o /dev/null "http://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.blackducksoftware.integration&a=hub-detect&v=LATEST" | awk -F/ '{print $NF}')
+      DETECT_DESTINATION="${DETECT_JAR_PATH}/${FILE_NAME}"
+    else
+      DETECT_SOURCE="http://repo2.maven.org/maven2/com/blackducksoftware/integration/hub-detect/${DETECT_RELEASE_VERSION}/hub-detect-${DETECT_RELEASE_VERSION}.jar"
+      DETECT_DESTINATION="${DETECT_JAR_PATH}/hub-detect-${DETECT_RELEASE_VERSION}.jar"
+    fi
+    echo "will look for : ${DETECT_SOURCE}"
   fi
 
   USE_REMOTE=1
@@ -78,7 +81,7 @@ get_detect() {
 
   if [ $USE_REMOTE -eq 1 ]; then
     echo "getting ${DETECT_SOURCE} from remote"
-    curl $DETECT_CURL_OPTS -o $DETECT_DESTINATION https://blackducksoftware.github.io/hub-detect/$DETECT_SOURCE
+    curl $DETECT_CURL_OPTS -L -o $DETECT_DESTINATION "${DETECT_SOURCE}"
     echo "saved ${DETECT_SOURCE} to ${DETECT_DESTINATION}"
   fi
 }

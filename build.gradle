@@ -1,9 +1,7 @@
 import groovy.json.JsonBuilder
 
 buildscript {
-    repositories {
-        mavenCentral()
-    }
+    repositories { mavenCentral() }
 
     dependencies {
         classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.5.2.RELEASE'
@@ -34,9 +32,7 @@ apply from: 'airgap.gradle'
 
 // BuildInfo - A json payload usable by detect for information from the build
 JsonBuilder jsonBuilder = new JsonBuilder()
-jsonBuilder {
-    detect version
-}
+jsonBuilder { detect version }
 final def buildConfigurationFile = new File("${projectDir}/src/main/resources/buildInfo.json")
 buildConfigurationFile.delete()
 buildConfigurationFile << jsonBuilder.toPrettyString()
@@ -74,7 +70,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.blackducksoftware.integration:hub-common:17.0.0'
+    compile 'com.blackducksoftware.integration:hub-common:18.0.0'
     compile 'org.springframework.boot:spring-boot-starter'
     compile 'org.apache.maven.shared:maven-invoker:3.0.0'
     compile 'com.esotericsoftware.yamlbeans:yamlbeans:1.11'
@@ -100,7 +96,10 @@ license {
     ext.year = Calendar.getInstance().get(Calendar.YEAR)
     ignoreFailures = true
     includes (["**/*.groovy", "**/*.java"])
-    excludes (["/src/test/*.groovy", "src/test/*.java"])
+    excludes ([
+        "/src/test/*.groovy",
+        "src/test/*.java"
+    ])
 }
 
 tasks.licenseMain.dependsOn(licenseFormatMain)
@@ -119,17 +118,17 @@ task customSigning(dependsOn: ['javadocJar', 'sourcesJar']) {
     doLast {
         File libDirectory = new File("${buildDir}/libs")
         File[] jarFiles = libDirectory.listFiles(new FilenameFilter() {
-            @Override
-            boolean accept(File dir, String name) {
-                if (name.endsWith(".jar")) {
-                    return true
-                }
-                return false
-            }
-        })
+                    @Override
+                    boolean accept(File dir, String name) {
+                        if (name.endsWith(".jar")) {
+                            return true
+                        }
+                        return false
+                    }
+                })
         println "Signing Jar files"
         signing.sign(jarFiles)
-        
+
         pom {
             project {
                 name rootProject.name
