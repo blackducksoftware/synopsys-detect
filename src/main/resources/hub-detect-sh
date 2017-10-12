@@ -60,7 +60,7 @@ get_detect() {
   else
     if [ -z "${DETECT_RELEASE_VERSION}" ]; then
       DETECT_SOURCE="http://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.blackducksoftware.integration&a=hub-detect&v=LATEST"
-      FILE_NAME=$(curl -Ls -w %{url_effective} -o /dev/null "http://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.blackducksoftware.integration&a=hub-detect&v=LATEST" | rev | cut -d '/' -f 1 | rev)
+      FILE_NAME=$(curl -Ls -w %{url_effective} -o /dev/null "http://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.blackducksoftware.integration&a=hub-detect&v=LATEST" | awk -F/ '{print $NF}')
       DETECT_DESTINATION="${DETECT_JAR_PATH}/${FILE_NAME}"
     else
       DETECT_SOURCE="http://repo2.maven.org/maven2/com/blackducksoftware/integration/hub-detect/${DETECT_RELEASE_VERSION}/hub-detect-${DETECT_RELEASE_VERSION}.jar"
