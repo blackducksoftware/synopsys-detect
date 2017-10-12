@@ -111,7 +111,8 @@ def resolve_package_by_name(package_name, history):
     if package_name.lower() not in history:
         for req in package.requires():
             child_node = resolve_package_by_name(req.key, history + [package_name.lower()])
-            node.children = node.children + [child_node]
+            if child_node is not None:
+                node.children = node.children + [child_node]
     return node
 
 main()
