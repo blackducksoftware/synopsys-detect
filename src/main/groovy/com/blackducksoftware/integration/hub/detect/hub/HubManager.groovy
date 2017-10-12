@@ -201,7 +201,7 @@ class HubManager {
                     CodeLocationView codeLocationView = hubServiceWrapper.createCodeLocationRequestService().getCodeLocationByName(codeLocationName)
                     logger.warn("Found a code location with a naming pattern that is no longer supported: ${codeLocationName}. This code location may need to be removed to avoid duplicate entries in the Bill of Materials.")
                 } catch (DoesNotExistException e) {
-                    logger.debug("Didn't find the code location ${codeLocationName} - this is a GOOD thing!")
+                    logger.debug("Didn't find the code location ${codeLocationName} - this is a good thing!")
                 } catch (IntegrationException e) {
                     logger.error("Error finding the code location name ${codeLocationName}: ${e.message}")
                 }
