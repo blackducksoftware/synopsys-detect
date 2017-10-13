@@ -196,10 +196,20 @@ class HubManager {
 
     public void manageExistingCodeLocations(List<String> codeLocationNames) {
         if (!detectConfiguration.hubOfflineMode) {
+            CodeLocationRequestService codeLocationRequestService = hubServiceWrapper.createCodeLocationRequestService()
             for (String codeLocationName : codeLocationNames) {
                 try {
-                    CodeLocationView codeLocationView = hubServiceWrapper.createCodeLocationRequestService().getCodeLocationByName(codeLocationName)
-                    logger.warn("Found a code location with a naming pattern that is no longer supported: ${codeLocationName}. This code location may need to be removed to avoid duplicate entries in the Bill of Materials.")
+                    CodeLocationView codeLocationView = codeLocationRequestService.getCodeLocationByName(codeLocationName)
+                    if (detectConfiguration.projectCodeLocationDeleteOldNames) {
+                        try {
+                            codeLocationRequestService.deleteCodeLocation(codeLocationView);
+                            logger.info("Deleted code location '${codeLocationName}'")
+                        } catch (IntegrationException e) {
+                            logger.error("Not able to delete the code location '${codeLocationName}': ${e.message}")
+                        }
+                    } else {
+                        logger.warn("Found a code location with a naming pattern that is no longer supported: ${codeLocationName}. This code location may need to be removed to avoid duplicate entries in the Bill of Materials. You can run with --detect.project.codelocation.delete.old.names=true which will automatically delete these code locations, but please USE CAUTION.")
+                    }
                 } catch (DoesNotExistException e) {
                     logger.debug("Didn't find the code location ${codeLocationName} - this is a good thing!")
                 } catch (IntegrationException e) {

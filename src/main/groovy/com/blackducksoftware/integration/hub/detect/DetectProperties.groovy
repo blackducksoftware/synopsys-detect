@@ -150,6 +150,10 @@ class DetectProperties {
     @Value('${detect.project.codelocation.suffix}')
     String projectCodeLocationSuffix
 
+    @ValueDescription(description = "If set to true, when an old code location format is found in the Hub, instead of logging a warning, the code location will be deleted. USE WITH CAUTION - THIS CAN DELETE CODE LOCATIONS IN THE HUB.", defaultValue='false', group=DetectProperties.GROUP_PROJECT_INFO)
+    @Value('${detect.project.codelocation.delete.old.names}')
+    Boolean projectCodeLocationDeleteOldNames
+
     @ValueDescription(description = "An override for the Project level matches.", defaultValue="true", group=DetectProperties.GROUP_PROJECT_INFO)
     @Value('${detect.project.level.adjustments}')
     String projectLevelMatchAdjustments
