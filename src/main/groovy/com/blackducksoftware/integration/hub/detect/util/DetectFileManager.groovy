@@ -45,7 +45,7 @@ class DetectFileManager {
     @Autowired
     FileFinder fileFinder
 
-    private List<File> directoriesToCleanup = new ArrayList<>()
+    private Set<File> directoriesToCleanup = new LinkedHashSet<>()
 
     public void cleanupDirectories() {
         if (directoriesToCleanup) {
@@ -56,17 +56,25 @@ class DetectFileManager {
     }
 
     File createDirectory(BomToolType bomToolType) {
-        createDirectory(bomToolType.toString().toLowerCase())
+        createDirectory(bomToolType.toString().toLowerCase(), true)
     }
 
     File createDirectory(String directoryName) {
-        createDirectory(detectConfiguration.outputDirectory, directoryName)
+        createDirectory(detectConfiguration.outputDirectory, directoryName, true)
     }
 
     File createDirectory(File directory, String newDirectoryName) {
+        createDirectory(directory, newDirectoryName, true)
+    }
+
+    File createDirectory(String directoryName, boolean allowDelete) {
+        createDirectory(detectConfiguration.outputDirectory, directoryName, allowDelete)
+    }
+
+    File createDirectory(File directory, String newDirectoryName, boolean allowDelete) {
         def newDirectory = new File(directory, newDirectoryName)
         newDirectory.mkdir()
-        if (detectConfiguration.cleanupBomToolFiles) {
+        if (detectConfiguration.cleanupBomToolFiles && allowDelete) {
             directoriesToCleanup.add(newDirectory)
         }
 
@@ -117,8 +125,8 @@ class DetectFileManager {
 
     boolean directoryExists(final String sourcePath, final String relativePath) {
         final File sourceDirectory = new File(sourcePath)
-        final File relDirectory = new File(sourceDirectory, relativePath)
-        return relDirectory.isDirectory()
+        final File relativeDirectory = new File(sourceDirectory, relativePath)
+        return relativeDirectory.isDirectory()
     }
 
     public boolean containsAllFiles(String sourcePath, String... filenamePatterns) {

@@ -29,9 +29,9 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.builder.HubScanConfigBuilder
 import com.blackducksoftware.integration.hub.dataservice.cli.CLIDataService
-import com.blackducksoftware.integration.hub.detect.CodeLocationNameService
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
-import com.blackducksoftware.integration.hub.detect.model.CodeLocationName
+import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationName
+import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationNameService
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.summary.DetectSummary
 import com.blackducksoftware.integration.hub.detect.summary.Result
@@ -183,8 +183,8 @@ class HubSignatureScanner {
     }
 
     private HubScanConfigBuilder createScanConfigBuilder(DetectProject detectProject, String canonicalPath) {
-        File scannerDirectory = detectFileManager.createDirectory('signature_scanner')
-        File toolsDirectory = detectFileManager.createDirectory(scannerDirectory, 'tools')
+        File scannerDirectory = detectFileManager.createDirectory('signature_scanner', false)
+        File toolsDirectory = detectFileManager.createDirectory(scannerDirectory, 'tools', false)
 
         HubScanConfigBuilder hubScanConfigBuilder = new HubScanConfigBuilder()
         hubScanConfigBuilder.scanMemory = detectConfiguration.hubSignatureScannerMemory

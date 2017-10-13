@@ -15,21 +15,25 @@ import static org.junit.Assert.*
 
 import org.junit.Test
 
-import com.blackducksoftware.integration.hub.detect.hub.HubManager
+import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationName
+import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationNameProvider
+import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationNameProvider1
+import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationNameProvider2
+import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationNameProvider3
+import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationNameService
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
-import com.blackducksoftware.integration.hub.detect.model.CodeLocationName
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 
 class CodeLocationNameServiceTest {
+    def codeLocationNameService = new CodeLocationNameService()
+
     @Test
     public void testScanVersion1() {
         String expected = 'hub-common-rest/target/hub-common-rest/2.5.1-SNAPSHOT Hub Detect Scan'
 
-        HubManager hubManager = [manageExistingCodeLocations: {}] as HubManager
         DetectFileManager detectFileManager = [extractFinalPieceFromPath: { 'hub-common-rest' }] as DetectFileManager
-        CodeLocationNameService codeLocationNameService = new CodeLocationNameService()
-        codeLocationNameService.hubManager = hubManager
-        codeLocationNameService.detectFileManager = detectFileManager
+        CodeLocationNameProvider codeLocationNameProvider = new CodeLocationNameProvider1()
+        codeLocationNameProvider.detectFileManager = detectFileManager
 
         String sourcePath = '/Users/ekerwin/Documents/source/integration/hub-common-rest'
         String scanTargetPath = '/Users/ekerwin/Documents/source/integration/hub-common-rest/target'
@@ -38,7 +42,7 @@ class CodeLocationNameServiceTest {
         String prefix = ''
         String suffix = ''
         CodeLocationName codeLocationName = codeLocationNameService.createScanName(sourcePath, scanTargetPath, projectName, projectVersionName, prefix, suffix)
-        String actual = codeLocationNameService.generateScanVersion1(codeLocationName)
+        String actual = codeLocationNameProvider.generateScanName(codeLocationName)
 
         assertEquals(expected, actual)
     }
@@ -47,11 +51,9 @@ class CodeLocationNameServiceTest {
     public void testScanVersion2() {
         String expected = 'hub-common-rest/target/hub-common-rest/2.5.1-SNAPSHOT SCAN'
 
-        HubManager hubManager = [manageExistingCodeLocations: {}] as HubManager
         DetectFileManager detectFileManager = [extractFinalPieceFromPath: { 'hub-common-rest' }] as DetectFileManager
-        CodeLocationNameService codeLocationNameService = new CodeLocationNameService()
-        codeLocationNameService.hubManager = hubManager
-        codeLocationNameService.detectFileManager = detectFileManager
+        CodeLocationNameProvider codeLocationNameProvider = new CodeLocationNameProvider2()
+        codeLocationNameProvider.detectFileManager = detectFileManager
 
         String sourcePath = '/Users/ekerwin/Documents/source/integration/hub-common-rest'
         String scanTargetPath = '/Users/ekerwin/Documents/source/integration/hub-common-rest/target'
@@ -60,7 +62,7 @@ class CodeLocationNameServiceTest {
         String prefix = ''
         String suffix = ''
         CodeLocationName codeLocationName = codeLocationNameService.createScanName(sourcePath, scanTargetPath, projectName, projectVersionName, prefix, suffix)
-        String actual = codeLocationNameService.generateScanVersion2(codeLocationName)
+        String actual = codeLocationNameProvider.generateScanName(codeLocationName)
 
         assertEquals(expected, actual)
     }
@@ -69,11 +71,9 @@ class CodeLocationNameServiceTest {
     public void testScanVersion3() {
         String expected = 'hub-common-rest/target/hub-common-rest/2.5.1-SNAPSHOT scan'
 
-        HubManager hubManager = [manageExistingCodeLocations: {}] as HubManager
         DetectFileManager detectFileManager = [extractFinalPieceFromPath: { 'hub-common-rest' }] as DetectFileManager
-        CodeLocationNameService codeLocationNameService = new CodeLocationNameService()
-        codeLocationNameService.hubManager = hubManager
-        codeLocationNameService.detectFileManager = detectFileManager
+        CodeLocationNameProvider codeLocationNameProvider = new CodeLocationNameProvider3()
+        codeLocationNameProvider.detectFileManager = detectFileManager
 
         String sourcePath = '/Users/ekerwin/Documents/source/integration/hub-common-rest'
         String scanTargetPath = '/Users/ekerwin/Documents/source/integration/hub-common-rest/target'
@@ -82,7 +82,7 @@ class CodeLocationNameServiceTest {
         String prefix = ''
         String suffix = ''
         CodeLocationName codeLocationName = codeLocationNameService.createScanName(sourcePath, scanTargetPath, projectName, projectVersionName, prefix, suffix)
-        String actual = codeLocationNameService.generateScanCurrent(codeLocationName)
+        String actual = codeLocationNameProvider.generateScanName(codeLocationName)
 
         assertEquals(expected, actual)
     }
@@ -91,11 +91,9 @@ class CodeLocationNameServiceTest {
     public void testBomVersion1() {
         String expected = 'NPM/hub-common-rest/hub-common-rest/2.5.1-SNAPSHOT Hub Detect Tool'
 
-        HubManager hubManager = [manageExistingCodeLocations: {}] as HubManager
         DetectFileManager detectFileManager = [extractFinalPieceFromPath: { 'hub-common-rest' }] as DetectFileManager
-        CodeLocationNameService codeLocationNameService = new CodeLocationNameService()
-        codeLocationNameService.hubManager = hubManager
-        codeLocationNameService.detectFileManager = detectFileManager
+        CodeLocationNameProvider codeLocationNameProvider = new CodeLocationNameProvider1()
+        codeLocationNameProvider.detectFileManager = detectFileManager
 
         String sourcePath = '/Users/ekerwin/Documents/source/integration/hub-common-rest'
         String projectName = 'hub-common-rest'
@@ -103,7 +101,7 @@ class CodeLocationNameServiceTest {
         String prefix = ''
         String suffix = ''
         CodeLocationName codeLocationName = codeLocationNameService.createBomToolName(sourcePath, projectName, projectVersionName, BomToolType.NPM, prefix, suffix)
-        String actual = codeLocationNameService.generateBomToolVersion1(codeLocationName)
+        String actual = codeLocationNameProvider.generateBomToolName(codeLocationName)
 
         assertEquals(expected, actual)
     }
@@ -112,11 +110,9 @@ class CodeLocationNameServiceTest {
     public void testBomVersion2() {
         String expected = 'NPM/hub-common-rest/hub-common-rest/2.5.1-SNAPSHOT BOM'
 
-        HubManager hubManager = [manageExistingCodeLocations: {}] as HubManager
         DetectFileManager detectFileManager = [extractFinalPieceFromPath: { 'hub-common-rest' }] as DetectFileManager
-        CodeLocationNameService codeLocationNameService = new CodeLocationNameService()
-        codeLocationNameService.hubManager = hubManager
-        codeLocationNameService.detectFileManager = detectFileManager
+        CodeLocationNameProvider codeLocationNameProvider = new CodeLocationNameProvider2()
+        codeLocationNameProvider.detectFileManager = detectFileManager
 
         String sourcePath = '/Users/ekerwin/Documents/source/integration/hub-common-rest'
         String projectName = 'hub-common-rest'
@@ -124,7 +120,7 @@ class CodeLocationNameServiceTest {
         String prefix = ''
         String suffix = ''
         CodeLocationName codeLocationName = codeLocationNameService.createBomToolName(sourcePath, projectName, projectVersionName, BomToolType.NPM, prefix, suffix)
-        String actual = codeLocationNameService.generateBomToolVersion2(codeLocationName)
+        String actual = codeLocationNameProvider.generateBomToolName(codeLocationName)
 
         assertEquals(expected, actual)
     }
@@ -133,11 +129,9 @@ class CodeLocationNameServiceTest {
     public void testBomVersion3() {
         String expected = 'hub-common-rest/hub-common-rest/2.5.1-SNAPSHOT npm/bom'
 
-        HubManager hubManager = [manageExistingCodeLocations: {}] as HubManager
-        DetectFileManager detectFileManager = [extractFinalPieceFromPath: {'hub-common-rest'}] as DetectFileManager
-        CodeLocationNameService codeLocationNameService = new CodeLocationNameService()
-        codeLocationNameService.hubManager = hubManager
-        codeLocationNameService.detectFileManager = detectFileManager
+        DetectFileManager detectFileManager = [extractFinalPieceFromPath: { 'hub-common-rest' }] as DetectFileManager
+        CodeLocationNameProvider codeLocationNameProvider = new CodeLocationNameProvider3()
+        codeLocationNameProvider.detectFileManager = detectFileManager
 
         String sourcePath = '/Users/ekerwin/Documents/source/integration/hub-common-rest'
         String projectName = 'hub-common-rest'
@@ -145,7 +139,7 @@ class CodeLocationNameServiceTest {
         String prefix = ''
         String suffix = ''
         CodeLocationName codeLocationName = codeLocationNameService.createBomToolName(sourcePath, projectName, projectVersionName, BomToolType.NPM, prefix, suffix)
-        String actual = codeLocationNameService.generateBomToolCurrent(codeLocationName)
+        String actual = codeLocationNameProvider.generateBomToolName(codeLocationName)
 
         assertEquals(expected, actual)
     }
