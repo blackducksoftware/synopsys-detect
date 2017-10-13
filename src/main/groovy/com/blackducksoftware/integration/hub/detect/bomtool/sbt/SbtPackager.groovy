@@ -33,16 +33,16 @@ import com.blackducksoftware.integration.util.ExcludedIncludedFilter
 import groovy.transform.TypeChecked
 
 @TypeChecked
-public class SbtPackager {
+class SbtPackager {
     private final Logger logger = LoggerFactory.getLogger(SbtPackager.class)
 
-    public ExternalIdFactory externalIdFactory;
-    public SbtPackager(ExternalIdFactory externalIdFactory){
+    ExternalIdFactory externalIdFactory;
+
+    SbtPackager(ExternalIdFactory externalIdFactory){
         this.externalIdFactory = externalIdFactory;
     }
-    
-    
-    public List<SbtDependencyModule> makeModuleAggregate(List<File> reportFiles, String include, String exclude) {
+
+    List<SbtDependencyModule> makeModuleAggregate(List<File> reportFiles, String include, String exclude) {
         def parser = new SbtReportParser()
         def resolver = new SbtDependencyResolver(externalIdFactory)
         def filter = new ExcludedIncludedFilter(exclude, include)

@@ -257,6 +257,12 @@ class DetectConfiguration {
     public String getProjectCodeLocationPrefix() {
         return detectProperties.projectCodeLocationPrefix?.trim()
     }
+    public String getProjectCodeLocationSuffix() {
+        return detectProperties.projectCodeLocationSuffix?.trim()
+    }
+    public String getProjectCodeLocationDeleteOldNames() {
+        return BooleanUtils.toBoolean(detectProperties.projectCodeLocationDeleteOldNames)
+    }
     public boolean getProjectLevelMatchAdjustments() {
         return BooleanUtils.toBoolean(detectProperties.projectLevelMatchAdjustments)
     }

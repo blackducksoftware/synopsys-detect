@@ -30,6 +30,8 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.builder.HubScanConfigBuilder
 import com.blackducksoftware.integration.hub.dataservice.cli.CLIDataService
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
+import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationName
+import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationNameService
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.summary.DetectSummary
 import com.blackducksoftware.integration.hub.detect.summary.Result
@@ -39,6 +41,7 @@ import com.blackducksoftware.integration.hub.model.request.ProjectRequest
 import com.blackducksoftware.integration.hub.model.view.ProjectVersionView
 import com.blackducksoftware.integration.hub.request.builder.ProjectRequestBuilder
 import com.blackducksoftware.integration.hub.scan.HubScanConfig
+import com.blackducksoftware.integration.phonehome.enums.ThirdPartyName
 
 import groovy.transform.TypeChecked
 
@@ -61,6 +64,9 @@ class HubSignatureScanner {
 
     @Autowired
     DetectSummary detectSummary
+
+    @Autowired
+    CodeLocationNameService codeLocationNameService
 
     private Set<String> registeredPaths = []
     private Set<String> registeredPathsToExclude = []
@@ -147,7 +153,7 @@ class HubSignatureScanner {
             HubScanConfig hubScanConfig = hubScanConfigBuilder.build()
 
             String hubDetectVersion = detectConfiguration.getBuildInfo().detectVersion
-            projectVersionView = cliDataService.installAndRunControlledScan(hubServerConfig, hubScanConfig, projectRequest, false, 'Hub-Detect', hubDetectVersion, hubDetectVersion)
+            projectVersionView = cliDataService.installAndRunControlledScan(hubServerConfig, hubScanConfig, projectRequest, false, ThirdPartyName.DETECT, hubDetectVersion, hubDetectVersion)
             detectSummary.setPathScanResult(canonicalPath, Result.SUCCESS)
             logger.info("${canonicalPath} was successfully scanned by the BlackDuck CLI.")
         } catch (Exception e) {
@@ -177,8 +183,8 @@ class HubSignatureScanner {
     }
 
     private HubScanConfigBuilder createScanConfigBuilder(DetectProject detectProject, String canonicalPath) {
-        File scannerDirectory = detectFileManager.createDirectory('signature_scanner')
-        File toolsDirectory = detectFileManager.createDirectory(scannerDirectory, 'tools')
+        File scannerDirectory = detectFileManager.createDirectory('signature_scanner', false)
+        File toolsDirectory = detectFileManager.createDirectory(scannerDirectory, 'tools', false)
 
         HubScanConfigBuilder hubScanConfigBuilder = new HubScanConfigBuilder()
         hubScanConfigBuilder.scanMemory = detectConfiguration.hubSignatureScannerMemory
@@ -188,8 +194,14 @@ class HubSignatureScanner {
         hubScanConfigBuilder.cleanupLogsOnSuccess = detectConfiguration.cleanupBomToolFiles
         hubScanConfigBuilder.dryRun = detectConfiguration.hubSignatureScannerDryRun
 
-        final String codeLocationName = detectProject.getScanCodeLocationName(detectConfiguration.sourcePath, canonicalPath, detectFileManager.extractFinalPieceFromPath(detectConfiguration.sourcePath), detectConfiguration.getProjectCodeLocationPrefix())
-        hubScanConfigBuilder.codeLocationAlias = codeLocationName
+        String projectName = detectProject.projectName
+        String projectVersionName = detectProject.projectVersionName
+        String sourcePath = detectConfiguration.sourcePath
+        String prefix = detectConfiguration.projectCodeLocationPrefix
+        String suffix = detectConfiguration.projectCodeLocationSuffix
+        CodeLocationName codeLocationName = codeLocationNameService.createScanName(sourcePath, canonicalPath, projectName, projectVersionName, prefix, suffix)
+        String codeLocationNameString = codeLocationNameService.generateScanCurrent(codeLocationName)
+        hubScanConfigBuilder.codeLocationAlias = codeLocationNameString
 
         if (detectConfiguration.hubSignatureScannerExclusionPatterns) {
             hubScanConfigBuilder.setExcludePatterns(detectConfiguration.hubSignatureScannerExclusionPatterns)

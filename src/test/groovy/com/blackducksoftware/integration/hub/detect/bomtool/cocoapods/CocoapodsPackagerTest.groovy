@@ -38,8 +38,8 @@ public class CocoapodsPackagerTest {
 
     @Test
     void complexTest() {
-        //final String podlockText = testUtil.getResourceAsUTF8String('cocoapods/complexPodfile.lock')
-        //final DependencyGraph projectDependencies = cocoapodsPackager.extractDependencyGraph(podlockText)
-        //testUtil.testJsonResource('cocoapods/complexExpected.json', projectDependencies)
+        final String podlockText = testUtil.getResourceAsUTF8String('cocoapods/complexPodfile.lock')
+        final DependencyGraph projectDependencies = cocoapodsPackager.extractDependencyGraph(podlockText)
+        DependencyGraphTestUtil.assertGraph('cocoapods/complexExpected_graph.json', projectDependencies);
     }
 }
