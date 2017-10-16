@@ -47,7 +47,6 @@ class CpanBomTool extends BomTool {
     @Autowired
     CpanPackager cpanPackager
 
-
     @Autowired
     ExternalIdFactory externalIdFactory
 

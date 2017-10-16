@@ -118,10 +118,12 @@ class Application {
                 return
             }
 
+            if (!detectConfiguration.hubOfflineMode) {
+                hubServiceWrapper.init()
+            }
             DetectProject detectProject = detectProjectManager.createDetectProject()
             List<File> createdBdioFiles = detectProjectManager.createBdioFiles(detectProject)
             if (!detectConfiguration.hubOfflineMode) {
-                hubServiceWrapper.init()
                 ProjectVersionView projectVersionView = hubManager.updateHubProjectVersion(detectProject, createdBdioFiles)
                 postResult = hubManager.performPostHubActions(detectProject, projectVersionView)
             } else if (!detectConfiguration.hubSignatureScannerDisabled){

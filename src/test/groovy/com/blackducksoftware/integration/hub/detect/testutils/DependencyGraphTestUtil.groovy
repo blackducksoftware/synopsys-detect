@@ -6,6 +6,7 @@ import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.graph.summary.DependencyGraphSummarizer
 import com.blackducksoftware.integration.hub.bdio.graph.summary.GraphSummary
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 
 class DependencyGraphTestUtil {
     public static void assertGraph(String expectedResourceFile, DependencyGraph actualGraph) {
@@ -16,12 +17,13 @@ class DependencyGraphTestUtil {
 
         GraphSummary expected = summarizer.fromJson(json);
         GraphSummary actual = summarizer.fromGraph(actualGraph)
+        println new GsonBuilder().setPrettyPrinting().create().toJson(actual)
         assertSummarries(expected, actual);
     }
 
     public static void assertSummarries(GraphSummary expected, GraphSummary actual) {
-        assertSet(expected.rootExternalDataIds, actual.rootExternalDataIds);
-        assertSet(expected.dependencySummaries.keySet(), actual.dependencySummaries.keySet());
+        assertSet(expected.rootExternalDataIds, actual.rootExternalDataIds, "Root external ids");
+        assertSet(expected.dependencySummaries.keySet(), actual.dependencySummaries.keySet(), "Dependencies in graph");
 
         def expectedRelationshipIds = expected.externalDataIdRelationships.keySet()
         def expectedExistingRelationshipsIds = expectedRelationshipIds.findAll{ key -> expected.externalDataIdRelationships.get(key) != null && expected.externalDataIdRelationships.get(key).size() > 0}
@@ -29,25 +31,25 @@ class DependencyGraphTestUtil {
         def actualRelationshipIds = actual.externalDataIdRelationships.keySet()
         def actualExistingRelationshipsIds = actualRelationshipIds.findAll{ key -> actual.externalDataIdRelationships.get(key) != null && actual.externalDataIdRelationships.get(key).size() > 0}
 
-        assertSet(expectedExistingRelationshipsIds, actualExistingRelationshipsIds);
+        assertSet(expectedExistingRelationshipsIds, actualExistingRelationshipsIds, "Existing relationships");
 
         for (String key : expected.dependencySummaries.keySet()){
             assertEquals(expected.dependencySummaries.get(key).name, actual.dependencySummaries.get(key).name);
             assertEquals(expected.dependencySummaries.get(key).version, actual.dependencySummaries.get(key).version);
         }
         for (String key : expectedExistingRelationshipsIds){
-            assertSet(expected.externalDataIdRelationships.get(key), actual.externalDataIdRelationships.get(key));
+            assertSet(expected.externalDataIdRelationships.get(key), actual.externalDataIdRelationships.get(key), "External data id relationships for " + key);
         }
     }
 
-    public static <T> void assertSet (Set<T> expected, Set<T> actual) {
+    public static <T> void assertSet (Set<T> expected, Set<T> actual, String title) {
         Set<String> missingExpected = new HashSet<>(expected);
         missingExpected.removeAll(actual)
 
         Set<String> extraActual = new HashSet<>(actual);
         extraActual.removeAll(expected)
 
-        assertEquals(0, missingExpected.size());
-        assertEquals(0, extraActual.size());
+        assertTrue(title + ": Found missing expected " + missingExpected.toString(), missingExpected.size() == 0);
+        assertTrue(title + ": Found extra actual " + extraActual.toString(), extraActual.size() == 0);
     }
 }
