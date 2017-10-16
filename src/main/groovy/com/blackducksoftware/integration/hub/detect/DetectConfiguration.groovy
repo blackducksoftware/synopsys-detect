@@ -37,6 +37,8 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import com.blackducksoftware.integration.hub.detect.bomtool.DockerBomTool
+import com.blackducksoftware.integration.hub.detect.bomtool.GradleBomTool
+import com.blackducksoftware.integration.hub.detect.bomtool.NugetBomTool
 import com.blackducksoftware.integration.hub.detect.exception.DetectException
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.util.ResourceUtil
@@ -62,12 +64,19 @@ class DetectConfiguration {
     DockerBomTool dockerBomTool
 
     @Autowired
+    NugetBomTool nugetBomTool
+
+    @Autowired
+    GradleBomTool gradleBomTool
+
+    @Autowired
     Gson gson
 
     BuildInfo buildInfo
 
     File sourceDirectory
     File outputDirectory
+
     Set<String> allDetectPropertyKeys = new HashSet<>()
     Set<String> additionalDockerPropertyNames = new HashSet<>()
 
@@ -129,6 +138,14 @@ class DetectConfiguration {
         }
     }
 
+    private void configureForDocker() {
+        allDetectPropertyKeys.each {
+            if (it.startsWith(DOCKER_PROPERTY_PREFIX)) {
+                additionalDockerPropertyNames.add(it)
+            }
+        }
+    }
+
     /**
      * If the default source path is being used AND docker is configured, don't run unless the tool is docker
      */
@@ -144,12 +161,17 @@ class DetectConfiguration {
         configurableEnvironment.getProperty(key)
     }
 
-    private void configureForDocker() {
-        allDetectPropertyKeys.each {
-            if (it.startsWith(DOCKER_PROPERTY_PREFIX)) {
-                additionalDockerPropertyNames.add(it)
+    public String guessDetectJarLocation() {
+        String containsDetectJarRegex = "hub-detect-[^\\\\/]+\\.jar"
+        String javaClassPath = System.getProperty("java.class.path")
+        if(javaClassPath?.matches(containsDetectJarRegex)) {
+            for(String classPathChunk : javaClassPath.split(System.getProperty("path.separator"))) {
+                if(classPathChunk?.matches(containsDetectJarRegex)) {
+                    return classPathChunk
+                }
             }
         }
+        return ""
     }
 
     public void logConfiguration() {
@@ -175,6 +197,19 @@ class DetectConfiguration {
             if (fieldName && fieldValue && 'metaClass' != fieldName) {
                 if (fieldName.toLowerCase().contains('password')) {
                     fieldValue = '*'.multiply((fieldValue as String).length())
+                }
+                if (fieldName.toLowerCase().contains('inspector') && fieldName.toLowerCase().contains('version') && ('latest').equalsIgnoreCase((fieldValue as String)?.trim())) {
+                    String version
+                    if (fieldName.toLowerCase().contains('docker') && dockerBomTool.isBomToolApplicable()) {
+                        version = dockerBomTool.getInspectorVersion()
+                    } else if (fieldName.toLowerCase().contains('nuget') && nugetBomTool.isBomToolApplicable()) {
+                        version = nugetBomTool.getInspectorVersion()
+                    } else if (fieldName.toLowerCase().contains('gradle') && gradleBomTool.isBomToolApplicable()) {
+                        version = gradleBomTool.getInspectorVersion()
+                    }
+                    if (version) {
+                        fieldValue = "latest (${version})" as String
+                    }
                 }
                 configurationPieces.add("${fieldName} = ${fieldValue}" as String)
             }
@@ -451,6 +486,48 @@ class DetectConfiguration {
     }
     public String getNoticesReportOutputDirectory() {
         return detectProperties.noticesReportOutputDirectory
+    }
+    public String getDockerInspectorAirGapPath() {
+        if (!detectProperties.dockerInspectorAirGapPath?.trim()) {
+            try {
+                File detectJar = new File(guessDetectJarLocation())
+                File inspectorsDirectory = new File(detectJar.getParentFile(), "packaged-inspectors")
+                File dockerAirGapDirectory = new File(inspectorsDirectory, "docker")
+                return dockerAirGapDirectory.getCanonicalPath()
+            } catch (final Exception e) {
+                logger.trace("Exception encountered when guessing air gap path for docker, returning the detect property instead")
+                logger.trace(e.getMessage())
+            }
+        }
+        return detectProperties.dockerInspectorAirGapPath
+    }
+    public String getGradleInspectorAirGapPath() {
+        if (!detectProperties.gradleInspectorAirGapPath?.trim()) {
+            try {
+                File detectJar = new File(guessDetectJarLocation())
+                File inspectorsDirectory = new File(detectJar.getParentFile(), "packaged-inspectors")
+                File gradleAirGapDirectory = new File(inspectorsDirectory, "gradle")
+                return gradleAirGapDirectory.getCanonicalPath()
+            } catch (final Exception e) {
+                logger.trace("Exception encountered when guessing air gap path for gradle, returning the detect property instead")
+                logger.trace(e.getMessage())
+            }
+        }
+        return detectProperties.gradleInspectorAirGapPath
+    }
+    public String getNugetInspectorAirGapPath() {
+        if (!detectProperties.nugetInspectorAirGapPath?.trim()) {
+            try {
+                File detectJar = new File(guessDetectJarLocation())
+                File inspectorsDirectory = new File(detectJar.getParentFile(), "packaged-inspectors")
+                File nugetAirGapDirectory = new File(inspectorsDirectory, "nuget")
+                return nugetAirGapDirectory.getCanonicalPath()
+            } catch (final Exception e) {
+                logger.trace("Exception encountered when guessing air gap path for nuget, returning the detect property instead")
+                logger.trace(e.getMessage())
+            }
+        }
+        return detectProperties.nugetInspectorAirGapPath
     }
     public String getNugetPackagesRepoUrl() {
         return detectProperties.nugetPackagesRepoUrl?.trim()

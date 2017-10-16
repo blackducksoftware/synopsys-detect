@@ -49,7 +49,9 @@ class NugetBomTool extends BomTool {
     @Autowired
     NugetInspectorPackager nugetInspectorPackager
 
-    String nugetExecutable
+    private String nugetExecutable
+    private String nugetInspectorExecutable
+    private File outputDirectory
 
     BomToolType getBomToolType() {
         return BomToolType.NUGET
@@ -65,6 +67,7 @@ class NugetBomTool extends BomTool {
             if (!nugetExecutable) {
                 logger.warn("Could not find a ${executableManager.getExecutableName(ExecutableType.NUGET)} executable")
             }
+            outputDirectory = new File(detectConfiguration.outputDirectory, 'nuget')
         }
 
         nugetExecutable && (containsSolutionFile || containsProjectFile)
@@ -72,17 +75,13 @@ class NugetBomTool extends BomTool {
 
     @Override
     List<DetectCodeLocation> extractDetectCodeLocations() {
-        def outputDirectory = new File(detectConfiguration.outputDirectory, 'nuget')
-        def sourceDirectory = new File(sourcePath)
-        String inspectorExePath = installInspector(sourceDirectory, outputDirectory, nugetExecutable)
-
-        if (!inspectorExePath) {
+        if (!nugetInspectorExecutable) {
             return []
         }
 
         List<String> options =  [
             "--target_path=${sourcePath}" as String,
-            "--output_directory=${outputDirectory.getAbsolutePath()}" as String,
+            "--output_directory=${outputDirectory.getCanonicalPath()}" as String,
             "--ignore_failure=${detectConfiguration.getNugetInspectorIgnoreFailure()}" as String
         ]
         if (detectConfiguration.getNugetInspectorExcludedModules()) {
@@ -95,7 +94,7 @@ class NugetBomTool extends BomTool {
             options.add('-v')
         }
 
-        def hubNugetInspectorExecutable = new Executable(sourceDirectory, inspectorExePath, options)
+        def hubNugetInspectorExecutable = new Executable(sourceDirectory, nugetInspectorExecutable, options)
         ExecutableOutput executableOutput = executableRunner.execute(hubNugetInspectorExecutable)
 
         def dependencyNodeFiles = detectFileManager.findFiles(outputDirectory, INSPECTOR_OUTPUT_PATTERN)
@@ -116,7 +115,17 @@ class NugetBomTool extends BomTool {
         codeLocations
     }
 
-    private String installInspector(File sourceDirectory, File outputDirectory, String nugetExecutablePath) {
+    public String getInspectorVersion() {
+        if (!nugetInspectorExecutable) {
+            nugetInspectorExecutable = installInspector()
+        }
+        final def nugetOptions = []
+        Executable getInspectorVersionExecutable = new Executable(detectConfiguration.sourceDirectory, nugetExecutable, nugetOptions)
+
+        executableRunner.execute(getInspectorVersionExecutable).standardOutput
+    }
+
+    private String installInspector() {
         final File inspectorVersionDirectory = new File(outputDirectory, "${detectConfiguration.getNugetInspectorPackageName()}.${detectConfiguration.getNugetInspectorPackageVersion()}")
         final File toolsDirectory = new File(inspectorVersionDirectory, 'tools')
         final File inspectorExe = new File(toolsDirectory, "${detectConfiguration.getNugetInspectorPackageName()}.exe")
@@ -128,14 +137,12 @@ class NugetBomTool extends BomTool {
             outputDirectory.getCanonicalPath()
         ]
 
-        def detectJar = new File(System.getProperty('java.class.path'))
-        def airGapNugetInspectorDir = new File(detectJar.getParentFile(), "/airgap/nuget/")
-        if (airGapNugetInspectorDir.exists()) {
+        def airGapNugetInspectorDirectory = new File(detectConfiguration.getNugetInspectorAirGapPath())
+        if (airGapNugetInspectorDirectory.exists()) {
             logger.debug("Running in airgap mode. Resolving from local path")
-            final File nupkgParentDirectory = airGapNugetInspectorDir.getParentFile()
             nugetOptions.addAll([
                 '-Source',
-                nupkgParentDirectory.getCanonicalPath()
+                detectConfiguration.getNugetInspectorAirGapPath()
             ])
         } else {
             logger.debug('Running online. Resolving through nuget')
@@ -148,7 +155,7 @@ class NugetBomTool extends BomTool {
         }
 
         if (!inspectorExe.exists()) {
-            Executable installInspectorExecutable = new Executable(detectConfiguration.sourceDirectory, nugetExecutablePath, nugetOptions)
+            Executable installInspectorExecutable = new Executable(detectConfiguration.sourceDirectory, nugetExecutable, nugetOptions)
             executableRunner.execute(installInspectorExecutable)
         } else {
             logger.info("Existing nuget inspector found at ${inspectorExe.getCanonicalPath()}")

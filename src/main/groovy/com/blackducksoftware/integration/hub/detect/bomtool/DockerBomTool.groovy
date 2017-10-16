@@ -78,6 +78,8 @@ class DockerBomTool extends BomTool {
 
     private String dockerExecutablePath
     private String bashExecutablePath
+    private File dockerInspectorShellScript
+    private String inspectorVersion
 
     @Override
     public BomToolType getBomToolType() {
@@ -103,17 +105,127 @@ class DockerBomTool extends BomTool {
         dockerExecutablePath && bashExecutablePath && propertiesOk
     }
 
+    @Override
     List<DetectCodeLocation> extractDetectCodeLocations() {
+        File dockerPropertiesFile = detectFileManager.createFile(getBomToolType(), 'application.properties')
+        File dockerBomToolDirectory =  dockerPropertiesFile.getParentFile()
+        dockerProperties.populatePropertiesFile(dockerPropertiesFile, dockerBomToolDirectory)
+
+        if(!dockerInspectorShellScript) {
+            dockerInspectorShellScript = getShellScript()
+        }
+
+        boolean usingTarFile = false
+        String imageArgument = ''
+        if (detectConfiguration.dockerImage) {
+            imageArgument = detectConfiguration.dockerImage
+        } else {
+            File dockerTarFile = new File(detectConfiguration.dockerTar)
+            imageArgument = dockerTarFile.getCanonicalPath()
+            usingTarFile = true
+        }
+
+        String path = System.getenv('PATH')
+        File dockerExecutableFile = new File(dockerExecutablePath)
+        path += File.pathSeparator + dockerExecutableFile.parentFile.getCanonicalPath()
+        Map<String, String> environmentVariables = [PATH: path]
+
+        List<String> bashArguments = [
+            "-c",
+            "\"${dockerInspectorShellScript.getCanonicalPath()}\" --spring.config.location=\"${dockerBomToolDirectory.getCanonicalPath()}\" --dry.run=true --no.prompt=true ${imageArgument}" as String
+        ]
+        def airGapHubDockerInspectorJar = new File("${detectConfiguration.getDockerInspectorAirGapPath()}", "hub-docker-inspector-${inspectorVersion}.jar")
+        if(airGapHubDockerInspectorJar.exists()) {
+            try {
+                for ( String os : ["ubuntu", "alpine", "centos"]) {
+                    def dockerImage = new File(airGapHubDockerInspectorJar.getParentFile(), "hub-docker-inspector-${os}.tar")
+                    List<String> dockerImportArguments = [
+                        "-c",
+                        "docker load -i \"${dockerImage.getCanonicalPath()}\"" as String
+                    ]
+                    bashArguments[1] = "\"${dockerInspectorShellScript.getCanonicalPath()}\" --spring.config.location=\"${dockerBomToolDirectory.getCanonicalPath()}\" --dry.run=true --no.prompt=true --jar.path=\"${airGapHubDockerInspectorJar.getCanonicalPath()}\" ${imageArgument}" as String
+                    Executable dockerImportImageExecutable = new Executable(dockerBomToolDirectory, environmentVariables, bashExecutablePath, dockerImportArguments)
+                    executableRunner.execute(dockerImportImageExecutable)
+                }
+            } catch (Exception e) {
+                logger.trace("Exception encountered when resolving paths for docker air gap, running in online mode instead")
+                logger.trace(e.getMessage())
+            }
+        }
+        Executable dockerExecutable = new Executable(dockerBomToolDirectory, environmentVariables, bashExecutablePath, bashArguments)
+        executableRunner.execute(dockerExecutable)
+
+        if (usingTarFile) {
+            hubSignatureScanner.registerPathToScan(new File(detectConfiguration.dockerTar))
+        } else {
+            File producedTarFile = detectFileManager.findFile(dockerBomToolDirectory, tarFilenamePattern)
+            if (producedTarFile) {
+                hubSignatureScanner.registerPathToScan(producedTarFile)
+            } else {
+                logMissingFile(dockerBomToolDirectory, tarFilenamePattern)
+            }
+        }
+
+        File bdioFile = detectFileManager.findFile(dockerBomToolDirectory, dependenciesFilenamePattern)
+        if (bdioFile) {
+            SimpleBdioDocument simpleBdioDocument = null
+            BdioReader bdioReader = null
+            try {
+                final InputStream dockerOutputInputStream = new FileInputStream(bdioFile)
+                bdioReader = new BdioReader(gson, dockerOutputInputStream)
+                simpleBdioDocument = bdioReader.readSimpleBdioDocument()
+            } finally {
+                IOUtils.closeQuietly(bdioReader)
+            }
+
+            final DependencyGraph dependencyGraph = bdioTransformer.transformToDependencyGraph(simpleBdioDocument.project, simpleBdioDocument.components)
+
+            String projectName = simpleBdioDocument.project.name
+            String projectVersionName = simpleBdioDocument.project.version
+
+            Forge dockerForge = new Forge(simpleBdioDocument.project.bdioExternalIdentifier.forge, ExternalId.BDIO_ID_SEPARATOR)
+            String externalIdPath = simpleBdioDocument.project.bdioExternalIdentifier.externalId
+            ExternalId projectExternalId = externalIdFactory.createPathExternalId(dockerForge, externalIdPath)
+
+            DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, projectName, projectVersionName, projectExternalId, dependencyGraph)
+            return [detectCodeLocation]
+        } else {
+            logMissingFile(dockerBomToolDirectory, dependenciesFilenamePattern)
+        }
+
+        []
+    }
+
+    String getInspectorVersion() {
+        if ('latest'.equalsIgnoreCase(detectConfiguration.getDockerInspectorVersion())) {
+            if (!inspectorVersion) {
+                File dockerPropertiesFile = detectFileManager.createFile(getBomToolType(), 'application.properties')
+                File dockerBomToolDirectory =  dockerPropertiesFile.getParentFile()
+                if(!dockerInspectorShellScript) {
+                    dockerInspectorShellScript = getShellScript()
+                }
+                List<String> bashArguments = [
+                    "-c",
+                    "\"${dockerInspectorShellScript.getCanonicalPath()}\" --version" as String
+                ]
+                Executable getDockerInspectorVersion = new Executable(dockerBomToolDirectory, bashExecutablePath, bashArguments)
+
+                inspectorVersion = executableRunner.execute(getDockerInspectorVersion).standardOutput.split(" ")[1]
+            }
+        } else {
+            inspectorVersion = detectConfiguration.getDockerInspectorVersion()
+        }
+        inspectorVersion
+    }
+
+    private File getShellScript() {
         File shellScriptFile
-        def detectJar = new File(System.getProperty('java.class.path'))
-        def airGapHubDockerInspectorShellScript = new File(detectJar.getParentFile(), "/airgap/docker/hub-docker-inspector.sh")
-        def airGap = false
+        def airGapHubDockerInspectorShellScript = new File("${detectConfiguration.getDockerInspectorAirGapPath()}", "hub-docker-inspector.sh")
 
         if (detectConfiguration.dockerInspectorPath) {
             shellScriptFile = new File(detectConfiguration.dockerInspectorPath)
         } else if (airGapHubDockerInspectorShellScript.exists()) {
             shellScriptFile = airGapHubDockerInspectorShellScript
-            airGap = true
         } else {
             URL hubDockerInspectorShellScriptUrl = LATEST_URL
             if (!'latest'.equals(detectConfiguration.dockerInspectorVersion)) {
@@ -142,86 +254,7 @@ class DockerBomTool extends BomTool {
             detectFileManager.writeToFile(shellScriptFile, shellScriptContents)
             shellScriptFile.setExecutable(true)
         }
-
-        File dockerPropertiesFile = detectFileManager.createFile(getBomToolType(), 'application.properties')
-        File dockerBomToolDirectory =  dockerPropertiesFile.getParentFile()
-        dockerProperties.populatePropertiesFile(dockerPropertiesFile, dockerBomToolDirectory)
-
-
-        boolean usingTarFile = false
-        String imageArgument = ''
-        if (detectConfiguration.dockerImage) {
-            imageArgument = detectConfiguration.dockerImage
-        } else {
-            File dockerTarFile = new File(detectConfiguration.dockerTar)
-            imageArgument = dockerTarFile.getCanonicalPath()
-            usingTarFile = true
-        }
-
-        String path = System.getenv('PATH')
-        File dockerExecutableFile = new File(dockerExecutablePath)
-        path += File.pathSeparator + dockerExecutableFile.parentFile.absolutePath
-        Map<String, String> environmentVariables = [PATH: path]
-
-        List<String> bashArguments = [
-            "-c",
-            "\"${shellScriptFile.absolutePath}\" --spring.config.location=\"${dockerBomToolDirectory.getAbsolutePath()}\" --dry.run=true --no.prompt=true ${imageArgument}" as String
-        ]
-        if (airGap) {
-            def airGapHubDockerInspectorJar = new File(detectJar.getParentFile(), "/airgap/docker/hub-docker-inspector.jar")
-            bashArguments[1] = "\"${shellScriptFile.absolutePath}\" --spring.config.location=\"${dockerBomToolDirectory.getAbsolutePath()}\" --dry.run=true --no.prompt=true --jar.path=\"${airGapHubDockerInspectorJar.getAbsolutePath()}\" ${imageArgument}" as String
-            for ( String os : ["ubuntu", "alpine", "centos"]) {
-                def dockerImage = new File(airGapHubDockerInspectorJar.getParentFile(), "hub-docker-inspector-${os}.tar")
-                List<String> dockerImportArguments = [
-                    "-c",
-                    "docker load -i \"${dockerImage.getAbsolutePath()}\"" as String
-                ]
-                Executable dockerImportImageExecutable = new Executable(dockerBomToolDirectory, environmentVariables, bashExecutablePath, dockerImportArguments)
-                executableRunner.execute(dockerImportImageExecutable)
-            }
-        }
-        Executable dockerExecutable = new Executable(dockerBomToolDirectory, environmentVariables, bashExecutablePath, bashArguments)
-        executableRunner.execute(dockerExecutable)
-
-        if (usingTarFile) {
-            hubSignatureScanner.registerPathToScan(new File(detectConfiguration.dockerTar))
-        } else {
-            File producedTarFile = detectFileManager.findFile(dockerBomToolDirectory, tarFilenamePattern)
-            if (producedTarFile) {
-                hubSignatureScanner.registerPathToScan(producedTarFile)
-            } else {
-                logMissingFile(dockerBomToolDirectory, tarFilenamePattern)
-            }
-        }
-
-        File bdioFile = detectFileManager.findFile(dockerBomToolDirectory, dependenciesFilenamePattern)
-        if (bdioFile) {
-            SimpleBdioDocument simpleBdioDocument = null;
-            BdioReader bdioReader = null;
-            try {
-                final InputStream dockerOutputInputStream = new FileInputStream(bdioFile)
-                bdioReader = new BdioReader(gson, dockerOutputInputStream);
-                simpleBdioDocument = bdioReader.readSimpleBdioDocument();
-            } finally {
-                IOUtils.closeQuietly(bdioReader);
-            }
-
-            final DependencyGraph dependencyGraph = bdioTransformer.transformToDependencyGraph(simpleBdioDocument.project, simpleBdioDocument.components);
-
-            String projectName = simpleBdioDocument.project.name
-            String projectVersionName = simpleBdioDocument.project.version
-
-            Forge dockerForge = new Forge(simpleBdioDocument.project.bdioExternalIdentifier.forge, ExternalId.BDIO_ID_SEPARATOR)
-            String externalIdPath = simpleBdioDocument.project.bdioExternalIdentifier.externalId
-            ExternalId projectExternalId = externalIdFactory.createPathExternalId(dockerForge, externalIdPath)
-
-            DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, projectName, projectVersionName, projectExternalId, dependencyGraph)
-            return [detectCodeLocation]
-        } else {
-            logMissingFile(dockerBomToolDirectory, dependenciesFilenamePattern)
-        }
-
-        []
+        return shellScriptFile
     }
 
     private void logMissingFile(File searchDirectory, String filenamePattern) {
