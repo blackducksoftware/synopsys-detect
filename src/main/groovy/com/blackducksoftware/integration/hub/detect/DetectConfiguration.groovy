@@ -260,7 +260,7 @@ class DetectConfiguration {
     public String getProjectCodeLocationSuffix() {
         return detectProperties.projectCodeLocationSuffix?.trim()
     }
-    public String getProjectCodeLocationDeleteOldNames() {
+    public boolean getProjectCodeLocationDeleteOldNames() {
         return BooleanUtils.toBoolean(detectProperties.projectCodeLocationDeleteOldNames)
     }
     public boolean getProjectLevelMatchAdjustments() {
