@@ -28,10 +28,16 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.HubSupportHelper
+import com.blackducksoftware.integration.hub.cli.CLIDownloadService
+import com.blackducksoftware.integration.hub.cli.CLILocation
 import com.blackducksoftware.integration.hub.cli.OfflineCLILocation
 import com.blackducksoftware.integration.hub.cli.SimpleScanService
+import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.global.HubServerConfig
+import com.blackducksoftware.integration.hub.rest.RestConnection
+import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnection
 import com.blackducksoftware.integration.hub.scan.HubScanConfig
+import com.blackducksoftware.integration.log.IntLogger
 import com.blackducksoftware.integration.log.Slf4jIntLogger
 import com.blackducksoftware.integration.util.CIEnvironmentVariables
 import com.google.gson.Gson
@@ -42,6 +48,9 @@ import groovy.transform.TypeChecked
 @TypeChecked
 class OfflineScanner {
     private static final Logger logger = LoggerFactory.getLogger(OfflineScanner.class)
+
+    @Autowired
+    DetectConfiguration detectConfiguration
 
     @Autowired
     Gson gson
@@ -59,12 +68,35 @@ class OfflineScanner {
         ciEnvironmentVariables.putAll(System.getenv())
 
         def simpleScanService = new SimpleScanService(intLogger, gson, hubServerConfig, hubSupportHelper, ciEnvironmentVariables, hubScanConfig, null, null)
+        final CLILocation cliLocation = new CLILocation(intLogger, hubScanConfig.getToolsDir())
         if (hubSignatureScannerOfflineLocalPath) {
-            OfflineCLILocation cliLocation = new OfflineCLILocation(intLogger, new File(hubSignatureScannerOfflineLocalPath))
-            simpleScanService.setupAndExecuteScan(cliLocation)
-        } else {
-            simpleScanService.setupAndExecuteScan()
+            cliLocation = new OfflineCLILocation(intLogger, new File(hubSignatureScannerOfflineLocalPath))
         }
-        intLogger.info("The scan dry run files can be found in : ${simpleScanService.getDataDirectory()}")
+
+        boolean cliInstalledOkay = checkCliInstall(cliLocation, intLogger)
+        if (!cliInstalledOkay && detectConfiguration.hubSignatureScannerHostUrl) {
+            RestConnection restConnection = new UnauthenticatedRestConnection(intLogger, new URL(detectConfiguration.hubSignatureScannerHostUrl), detectConfiguration.hubTimeout)
+            CLIDownloadService cliDownloadService = new CLIDownloadService(intLogger, restConnection)
+            cliDownloadService.performInstallation(hubScanConfig.toolsDir, ciEnvironmentVariables, detectConfiguration.hubSignatureScannerHostUrl, 'unknown', 'hub-detect')
+        }
+
+        cliInstalledOkay = checkCliInstall(cliLocation, intLogger)
+        if (!cliInstalledOkay) {
+            logger.warn("The signature scanner is not correctly installed at ${hubScanConfig.toolsDir}")
+        } else {
+            simpleScanService.setupAndExecuteScan(cliLocation)
+            intLogger.info("The scan dry run files can be found in : ${simpleScanService.getDataDirectory()}")
+        }
+    }
+
+    private boolean checkCliInstall(CLILocation cliLocation, IntLogger intLogger) {
+        boolean cliInstalledOkay = false
+        try {
+            cliInstalledOkay = cliLocation.getCLIExists(intLogger)
+        } catch (IOException e) {
+            logger.error("Couldn't check the signature scanner install: ${e.message}")
+        }
+
+        return cliInstalledOkay
     }
 }

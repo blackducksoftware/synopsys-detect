@@ -186,6 +186,7 @@ class DetectConfiguration {
         logger.info(configurationMessage)
     }
 
+
     private int convertInt(Integer integerObj) {
         return integerObj == null ? 0 : integerObj.intValue()
     }
@@ -403,6 +404,9 @@ class DetectConfiguration {
     }
     public String getHubSignatureScannerOfflineLocalPath() {
         return detectProperties.hubSignatureScannerOfflineLocalPath
+    }
+    public String getHubSignatureScannerHostUrl() {
+        return detectProperties.hubSignatureScannerHostUrl
     }
     public boolean getPackagistIncludeDevDependencies() {
         return BooleanUtils.toBoolean(detectProperties.packagistIncludeDevDependencies)

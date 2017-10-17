@@ -342,6 +342,10 @@ class DetectProperties {
     @Value('${detect.hub.signature.scanner.offline.local.path}')
     String hubSignatureScannerOfflineLocalPath
 
+    @ValueDescription(description="If this url is set, an attempt will be made to use it to download the signature scanner. The server url provided must respect the Hub's urls for different operating systems.", group=DetectProperties.GROUP_SIGNATURE_SCANNER)
+    @Value('${detect.hub.signature.scanner.host.url}')
+    String hubSignatureScannerHostUrl
+
     @ValueDescription(description="Set this value to false if you would like to exclude your dev requires dependencies when ran", defaultValue='true', group=DetectProperties.GROUP_PACKAGIST)
     @Value('${detect.packagist.include.dev.dependencies}')
     Boolean packagistIncludeDevDependencies
