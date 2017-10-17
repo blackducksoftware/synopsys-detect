@@ -162,11 +162,12 @@ class DetectConfiguration {
     }
 
     public String guessDetectJarLocation() {
-        String containsDetectJarRegex = "hub-detect-[^\\\\/]+\\.jar"
+        String containsDetectJarRegex = ".*hub-detect-[^\\\\/]+\\.jar.*"
         String javaClassPath = System.getProperty("java.class.path")
         if(javaClassPath?.matches(containsDetectJarRegex)) {
             for(String classPathChunk : javaClassPath.split(System.getProperty("path.separator"))) {
                 if(classPathChunk?.matches(containsDetectJarRegex)) {
+                    logger.trace("Guessed Detect jar location as "+classPathChunk)
                     return classPathChunk
                 }
             }

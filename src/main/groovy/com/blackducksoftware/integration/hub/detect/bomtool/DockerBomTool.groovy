@@ -220,7 +220,8 @@ class DockerBomTool extends BomTool {
 
     private File getShellScript() {
         File shellScriptFile
-        def airGapHubDockerInspectorShellScript = new File("${detectConfiguration.getDockerInspectorAirGapPath()}", "hub-docker-inspector.sh")
+        def airGapHubDockerInspectorShellScript = new File(detectConfiguration.getDockerInspectorAirGapPath(), "hub-docker-inspector.sh")
+        logger.trace("Verifying air gap shell script present at ${airGapHubDockerInspectorShellScript.getCanonicalPath()}")
 
         if (detectConfiguration.dockerInspectorPath) {
             shellScriptFile = new File(detectConfiguration.dockerInspectorPath)
