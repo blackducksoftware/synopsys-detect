@@ -168,8 +168,8 @@ class HubSignatureScanner {
             hubScanConfigBuilder.setDryRun(true)
 
             if (!detectConfiguration.hubSignatureScannerOfflineLocalPath) {
-                File scannerDirectory = detectFileManager.createDirectory('signature_scanner')
-                File toolsDirectory = detectFileManager.createDirectory(scannerDirectory, 'tools')
+                File scannerDirectory = detectFileManager.createDirectory('signature_scanner', false)
+                File toolsDirectory = detectFileManager.createDirectory(scannerDirectory, 'tools', false)
                 hubScanConfigBuilder.toolsDir = toolsDirectory
             }
 
