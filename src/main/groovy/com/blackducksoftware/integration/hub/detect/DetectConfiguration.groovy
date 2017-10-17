@@ -186,7 +186,6 @@ class DetectConfiguration {
         logger.info(configurationMessage)
     }
 
-
     private int convertInt(Integer integerObj) {
         return integerObj == null ? 0 : integerObj.intValue()
     }
