@@ -52,6 +52,7 @@ class NugetBomTool extends BomTool {
     private String nugetExecutable
     private String nugetInspectorExecutable
     private File outputDirectory
+    private String inspectorVersion
 
     BomToolType getBomToolType() {
         return BomToolType.NUGET
@@ -116,13 +117,40 @@ class NugetBomTool extends BomTool {
     }
 
     public String getInspectorVersion() {
-        if (!nugetInspectorExecutable) {
-            nugetInspectorExecutable = installInspector()
-        }
-        final def nugetOptions = []
-        Executable getInspectorVersionExecutable = new Executable(detectConfiguration.sourceDirectory, nugetExecutable, nugetOptions)
+        if ('latest'.equalsIgnoreCase(detectConfiguration.getNugetInspectorPackageVersion())) {
+            if (!inspectorVersion) {
+                final def nugetOptions = [
+                    'list',
+                    detectConfiguration.getNugetInspectorPackageName()
+                ]
+                def airGapNugetInspectorDirectory = new File(detectConfiguration.getNugetInspectorAirGapPath())
+                if (airGapNugetInspectorDirectory.exists()) {
+                    logger.debug("Running in airgap mode. Resolving version from local path")
+                    nugetOptions.addAll([
+                        '-Source',
+                        detectConfiguration.getNugetInspectorAirGapPath()
+                    ])
+                } else {
+                    logger.debug('Running online. Resolving version through nuget')
+                    nugetOptions.addAll([
+                        '-Source',
+                        detectConfiguration.getNugetPackagesRepoUrl()
+                    ])
+                }
+                Executable getInspectorVersionExecutable = new Executable(detectConfiguration.sourceDirectory, nugetExecutable, nugetOptions)
 
-        executableRunner.execute(getInspectorVersionExecutable).standardOutput
+                List<String> output = executableRunner.execute(getInspectorVersionExecutable).standardOutputAsList
+                for (String line : output) {
+                    String[] lineChunks = line.split(" ")
+                    if (detectConfiguration.getNugetInspectorPackageName()?.equalsIgnoreCase(lineChunks[0])) {
+                        return lineChunks[1]
+                    }
+                }
+            }
+        } else {
+            inspectorVersion = detectConfiguration.getDockerInspectorVersion()
+        }
+        return inspectorVersion
     }
 
     private String installInspector() {

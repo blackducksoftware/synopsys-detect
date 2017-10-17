@@ -22,10 +22,16 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool
 
+import javax.xml.parsers.DocumentBuilder
+import javax.xml.parsers.DocumentBuilderFactory
+
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import org.w3c.dom.Document
+import org.w3c.dom.Node
+import org.w3c.dom.NodeList
 
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleDependenciesParser
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
@@ -57,11 +63,14 @@ class GradleBomTool extends BomTool {
 
     private String gradleExecutable
     private String inspectorVersion
+    private String initScriptPath
 
+    @Override
     BomToolType getBomToolType() {
         return BomToolType.GRADLE
     }
 
+    @Override
     boolean isBomToolApplicable() {
         def buildGradle = detectFileManager.findFile(sourcePath, BUILD_GRADLE_FILENAME)
 
@@ -78,9 +87,26 @@ class GradleBomTool extends BomTool {
     String getInspectorVersion() {
         if ('latest'.equalsIgnoreCase(detectConfiguration.getGradleInspectorVersion())) {
             if (!inspectorVersion) {
-                List<String> bashArguments = []
-                Executable getGradleInspectorVersion
-                //inspectorVersion = executableRunner.execute(getGradleInspectorVersion).standardOutput.split(" ")[1]
+                try {
+                    InputStream inputStream
+                    File airGapMavenMetadataFile = new File(detectConfiguration.getGradleInspectorAirGapPath(), "maven-metadata.xml")
+                    if (airGapMavenMetadataFile.exists()) {
+                        inputStream = new FileInputStream(airGapMavenMetadataFile)
+                    } else {
+                        URL mavenMetadataUrl = new URL("http://repo2.maven.org/maven2/com/blackducksoftware/integration/integration-gradle-inspector/maven-metadata.xml")
+                        inputStream = mavenMetadataUrl.openStream()
+                    }
+                    final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance()
+                    final DocumentBuilder builder = factory.newDocumentBuilder()
+                    final Document document = builder.parse(inputStream)
+                    final NodeList latestVersionNodes = document.getElementsByTagName("latest")
+                    Node latestVersion = latestVersionNodes.item(0)
+                    inspectorVersion = latestVersion.getTextContent()
+                } catch (Exception e) {
+                    inspectorVersion = detectConfiguration.getGradleInspectorVersion()
+                    logger.trace("Execption encountered when resolving latest version of Gradle Inspector, skipping resolution.")
+                    logger.trace(e.getMessage())
+                }
             }
         } else {
             inspectorVersion = detectConfiguration.getGradleInspectorVersion()
@@ -88,12 +114,15 @@ class GradleBomTool extends BomTool {
         inspectorVersion
     }
 
+    @Override
     List<DetectCodeLocation> extractDetectCodeLocations(DetectProject detectProject) {
         List<DetectCodeLocation> codeLocations = extractCodeLocationsFromGradle(detectProject)
 
         File[] additionalTargets = detectFileManager.findFilesToDepth(detectConfiguration.sourceDirectory, 'build', detectConfiguration.searchDepth)
         if (additionalTargets) {
-            additionalTargets.each { File file -> hubSignatureScanner.registerPathToScan(file) }
+            additionalTargets.each { File file ->
+                hubSignatureScanner.registerPathToScan(file)
+            }
         }
         codeLocations
     }
@@ -108,40 +137,48 @@ class GradleBomTool extends BomTool {
         gradlePath
     }
 
-    List<DetectCodeLocation> extractCodeLocationsFromGradle(DetectProject detectProject) {
-        File initScriptFile = detectFileManager.createFile(BomToolType.GRADLE, 'init-detect.gradle')
-        final Map<String, String> model = [
-            'gradleInspectorVersion' : getInspectorVersion(),
-            'excludedProjectNames' : detectConfiguration.getGradleExcludedProjectNames(),
-            'includedProjectNames' : detectConfiguration.getGradleIncludedProjectNames(),
-            'excludedConfigurationNames' : detectConfiguration.getGradleExcludedConfigurationNames(),
-            'includedConfigurationNames' : detectConfiguration.getGradleIncludedConfigurationNames()
-        ]
+    String getInitScriptPath() {
+        if(!initScriptPath) {
+            File initScriptFile = detectFileManager.createFile(BomToolType.GRADLE, 'init-detect.gradle')
+            String gradleInspectorVersion = detectConfiguration.getGradleInspectorVersion()
+            gradleInspectorVersion = 'latest'.equalsIgnoreCase(gradleInspectorVersion) ? '+' : gradleInspectorVersion
+            final Map<String, String> model = [
+                'gradleInspectorVersion' : gradleInspectorVersion,
+                'excludedProjectNames' : detectConfiguration.getGradleExcludedProjectNames(),
+                'includedProjectNames' : detectConfiguration.getGradleIncludedProjectNames(),
+                'excludedConfigurationNames' : detectConfiguration.getGradleExcludedConfigurationNames(),
+                'includedConfigurationNames' : detectConfiguration.getGradleIncludedConfigurationNames()
+            ]
 
-        try {
-            def gradleInspectorAirGapDirectory = new File(detectConfiguration.getGradleInspectorAirGapPath())
-            if (gradleInspectorAirGapDirectory.exists()) {
-                model.put('airGapLibsPath', gradleInspectorAirGapDirectory.getCanonicalPath())
+            try {
+                def gradleInspectorAirGapDirectory = new File(detectConfiguration.getGradleInspectorAirGapPath())
+                if (gradleInspectorAirGapDirectory.exists()) {
+                    model.put('airGapLibsPath', gradleInspectorAirGapDirectory.getCanonicalPath())
+                }
+            } catch (Exception e) {
+                logger.trace("Exception encountered when resolving air gap path for gradle, running in online mode instead")
+                logger.trace(e.getMessage())
             }
-        } catch (Exception e) {
-            logger.trace("Exception encountered when resolving air gap path for gradle, running in online mode instead")
-            logger.trace(e.getMessage())
-        }
 
-        if (detectConfiguration.getGradleInspectorRepositoryUrl()) {
-            model.put('customRepositoryUrl', detectConfiguration.getGradleInspectorRepositoryUrl())
-        }
+            if (detectConfiguration.getGradleInspectorRepositoryUrl()) {
+                model.put('customRepositoryUrl', detectConfiguration.getGradleInspectorRepositoryUrl())
+            }
 
-        final Template initScriptTemplate = configuration.getTemplate('init-script-gradle.ftl')
-        initScriptFile.withWriter('UTF-8') {
-            initScriptTemplate.process(model, it)
-        }
+            final Template initScriptTemplate = configuration.getTemplate('init-script-gradle.ftl')
+            initScriptFile.withWriter('UTF-8') {
+                initScriptTemplate.process(model, it)
+            }
 
-        String initScriptPath = initScriptFile.getCanonicalPath()
-        logger.info("using ${initScriptPath} as the path for the gradle init script")
+            initScriptPath = initScriptFile.getCanonicalPath()
+        }
+        return initScriptPath
+    }
+
+    List<DetectCodeLocation> extractCodeLocationsFromGradle(DetectProject detectProject) {
+        logger.info("using ${getInitScriptPath()} as the path for the gradle init script")
         Executable executable = new Executable(sourceDirectory, gradleExecutable, [
             detectConfiguration.getGradleBuildCommand(),
-            "--init-script=${initScriptPath}" as String
+            "--init-script=${getInitScriptPath()}" as String
         ])
         executableRunner.execute(executable)
 

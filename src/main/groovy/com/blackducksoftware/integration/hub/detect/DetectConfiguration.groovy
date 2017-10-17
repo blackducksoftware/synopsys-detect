@@ -207,7 +207,7 @@ class DetectConfiguration {
                     } else if (fieldName.toLowerCase().contains('gradle') && gradleBomTool.isBomToolApplicable()) {
                         version = gradleBomTool.getInspectorVersion()
                     }
-                    if (version) {
+                    if (version && !'latest'.equalsIgnoreCase(version)) {
                         fieldValue = "latest (${version})" as String
                     }
                 }
