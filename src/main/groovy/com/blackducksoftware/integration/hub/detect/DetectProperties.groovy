@@ -218,7 +218,7 @@ class DetectProperties {
     @Value('${detect.maven.scope}')
     String mavenScope
 
-    @ValueDescription(description="Maven build command", defaultValue="dependency:tree", group=DetectProperties.GROUP_MAVEN)
+    @ValueDescription(description="Maven build command", group=DetectProperties.GROUP_MAVEN)
     @Value('${detect.maven.build.command}')
     String mavenBuildCommand
 
