@@ -28,7 +28,12 @@ void fetchFile(File outputFile, String url) {
 task downloadNugetInspector {
     doLast {
         final def nugetInspectorUrl = 'https://www.nuget.org/api/v2/package/IntegrationNugetInspector/'
-        fetchFile(new File(nugetAirGapPath, 'integrationnugetinspector.nupkg'), nugetInspectorUrl)
+        final def nugetInspectorFile = new File(nugetAirGapPath, 'integrationnugetinspector.nupkg')
+        fetchFile(nugetInspectorFile, nugetInspectorUrl)
+        copy {
+            from zipTree(nugetInspectorFile)
+            into new File(nugetAirGapPath)
+        }
     }
 }
 
