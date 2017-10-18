@@ -32,23 +32,14 @@ class NugetInspectorManager {
     public String getInspectorVersion(final String nugetExecutablePath) {
         if ('latest'.equalsIgnoreCase(detectConfiguration.getNugetInspectorPackageVersion())) {
             if (!inspectorVersion) {
-                final def nugetOptions = [
-                    'list',
-                    detectConfiguration.getNugetInspectorPackageName()
-                ]
+                final def nugetOptions = ['list', detectConfiguration.getNugetInspectorPackageName()]
                 def airGapNugetInspectorDirectory = new File(detectConfiguration.getNugetInspectorAirGapPath())
                 if (airGapNugetInspectorDirectory.exists()) {
                     logger.debug('Running in airgap mode. Resolving version from local path')
-                    nugetOptions.addAll([
-                        '-Source',
-                        detectConfiguration.getNugetInspectorAirGapPath()
-                    ])
+                    nugetOptions.addAll(['-Source', detectConfiguration.getNugetInspectorAirGapPath()])
                 } else {
                     logger.debug('Running online. Resolving version through nuget')
-                    nugetOptions.addAll([
-                        '-Source',
-                        detectConfiguration.getNugetPackagesRepoUrl()
-                    ])
+                    nugetOptions.addAll(['-Source', detectConfiguration.getNugetPackagesRepoUrl()])
                 }
                 Executable getInspectorVersionExecutable = new Executable(detectConfiguration.sourceDirectory, nugetExecutablePath, nugetOptions)
 
@@ -56,7 +47,7 @@ class NugetInspectorManager {
                 for (String line : output) {
                     String[] lineChunks = line.split(' ')
                     if (detectConfiguration.getNugetInspectorPackageName()?.equalsIgnoreCase(lineChunks[0])) {
-                        return lineChunks[1]
+                        inspectorVersion = lineChunks[1]
                     }
                 }
             }
@@ -66,45 +57,33 @@ class NugetInspectorManager {
         return inspectorVersion
     }
 
-    private String installInspector(final String nugetExecutablePath, final File outputDirectory) {
-        final File inspectorVersionDirectory = new File(outputDirectory, "${detectConfiguration.getNugetInspectorPackageName()}.${detectConfiguration.getNugetInspectorPackageVersion()}")
-        final File toolsDirectory = new File(inspectorVersionDirectory, 'tools')
-        final File inspectorExe = new File(toolsDirectory, "${detectConfiguration.getNugetInspectorPackageName()}.exe")
-
-        final def nugetOptions = [
-            'install',
-            detectConfiguration.getNugetInspectorPackageName(),
-            '-OutputDirectory',
-            outputDirectory.getCanonicalPath()
-        ]
+    private void installInspector(final String nugetExecutablePath, final File outputDirectory) {
+        File inspectorExe
 
         def airGapNugetInspectorDirectory = new File(detectConfiguration.getNugetInspectorAirGapPath())
         if (airGapNugetInspectorDirectory.exists()) {
             logger.debug('Running in airgap mode. Resolving from local path')
-            nugetOptions.addAll([
-                '-Source',
-                detectConfiguration.getNugetInspectorAirGapPath()
-            ])
+            final File toolsDirectory = new File(airGapNugetInspectorDirectory, 'tools');
+            inspectorExe = new File(toolsDirectory, "${detectConfiguration.getNugetInspectorPackageName()}.exe");
         } else {
+            final File inspectorVersionDirectory = new File(outputDirectory, "${detectConfiguration.getNugetInspectorPackageName()}.${detectConfiguration.getNugetInspectorPackageVersion()}")
+            final File toolsDirectory = new File(inspectorVersionDirectory, 'tools')
+            inspectorExe = new File(toolsDirectory, "${detectConfiguration.getNugetInspectorPackageName()}.exe")
+
+            final def nugetOptions = [
+                'install',
+                detectConfiguration.getNugetInspectorPackageName(),
+                '-OutputDirectory',
+                outputDirectory.getCanonicalPath()
+            ]
+
             logger.debug('Running online. Resolving through nuget')
             if (!'latest'.equalsIgnoreCase(detectConfiguration.getNugetInspectorPackageVersion())) {
-                nugetOptions.addAll([
-                    '-Version',
-                    detectConfiguration.getNugetInspectorPackageVersion()
-                ])
+                nugetOptions.addAll(['-Version', detectConfiguration.getNugetInspectorPackageVersion()])
             }
-            nugetOptions.addAll([
-                '-Source',
-                detectConfiguration.getNugetPackagesRepoUrl()
-            ])
-        }
-
-
-        if (!inspectorExe.exists()) {
+            nugetOptions.addAll(['-Source', detectConfiguration.getNugetPackagesRepoUrl()])
             Executable installInspectorExecutable = new Executable(detectConfiguration.sourceDirectory, nugetExecutablePath, nugetOptions)
             executableRunner.execute(installInspectorExecutable)
-        } else {
-            logger.info("Existing nuget inspector found at ${inspectorExe.getCanonicalPath()}")
         }
 
         if (!inspectorExe.exists()) {
@@ -112,6 +91,6 @@ class NugetInspectorManager {
             return null
         }
 
-        inspectorExe.getCanonicalPath()
+        nugetInspectorExecutable = inspectorExe.getCanonicalPath()
     }
 }

@@ -78,8 +78,10 @@ class NugetBomTool extends BomTool {
 
     @Override
     List<DetectCodeLocation> extractDetectCodeLocations() {
+        nugetInspectorManager.installInspector(nugetExecutable, outputDirectory);
+
         if (!nugetInspectorManager.getNugetInspectorExecutablePath()) {
-            return []
+            throw new Exception("Failed to find a suitable nuget inspector to run.");
         }
 
         List<String> options =  [
