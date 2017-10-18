@@ -131,16 +131,16 @@ class DockerBomTool extends BomTool {
         Map<String, String> environmentVariables = [PATH: path]
 
         List<String> bashArguments = [
-            "-c",
+            '-c',
             "\"${dockerInspectorShellScript.getCanonicalPath()}\" --spring.config.location=\"${dockerBomToolDirectory.getCanonicalPath()}\" --dry.run=true --no.prompt=true ${imageArgument}" as String
         ]
         def airGapHubDockerInspectorJar = new File("${detectConfiguration.getDockerInspectorAirGapPath()}", "hub-docker-inspector-${inspectorVersion}.jar")
         if(airGapHubDockerInspectorJar.exists()) {
             try {
-                for ( String os : ["ubuntu", "alpine", "centos"]) {
+                for ( String os : ['ubuntu', 'alpine', 'centos']) {
                     def dockerImage = new File(airGapHubDockerInspectorJar.getParentFile(), "hub-docker-inspector-${os}.tar")
                     List<String> dockerImportArguments = [
-                        "-c",
+                        '-c',
                         "docker load -i \"${dockerImage.getCanonicalPath()}\"" as String
                     ]
                     bashArguments[1] = "\"${dockerInspectorShellScript.getCanonicalPath()}\" --spring.config.location=\"${dockerBomToolDirectory.getCanonicalPath()}\" --dry.run=true --no.prompt=true --jar.path=\"${airGapHubDockerInspectorJar.getCanonicalPath()}\" ${imageArgument}" as String
@@ -148,8 +148,8 @@ class DockerBomTool extends BomTool {
                     executableRunner.execute(dockerImportImageExecutable)
                 }
             } catch (Exception e) {
-                logger.trace("Exception encountered when resolving paths for docker air gap, running in online mode instead")
-                logger.trace(e.getMessage())
+                logger.debug('Exception encountered when resolving paths for docker air gap, running in online mode instead')
+                logger.debug(e.getMessage())
             }
         }
         Executable dockerExecutable = new Executable(dockerBomToolDirectory, environmentVariables, bashExecutablePath, bashArguments)
@@ -205,12 +205,12 @@ class DockerBomTool extends BomTool {
                     dockerInspectorShellScript = getShellScript()
                 }
                 List<String> bashArguments = [
-                    "-c",
+                    '-c',
                     "\"${dockerInspectorShellScript.getCanonicalPath()}\" --version" as String
                 ]
                 Executable getDockerInspectorVersion = new Executable(dockerBomToolDirectory, bashExecutablePath, bashArguments)
 
-                inspectorVersion = executableRunner.execute(getDockerInspectorVersion).standardOutput.split(" ")[1]
+                inspectorVersion = executableRunner.execute(getDockerInspectorVersion).standardOutput.split(' ')[1]
             }
         } else {
             inspectorVersion = detectConfiguration.getDockerInspectorVersion()
@@ -220,8 +220,8 @@ class DockerBomTool extends BomTool {
 
     private File getShellScript() {
         File shellScriptFile
-        def airGapHubDockerInspectorShellScript = new File(detectConfiguration.getDockerInspectorAirGapPath(), "hub-docker-inspector.sh")
-        logger.trace("Verifying air gap shell script present at ${airGapHubDockerInspectorShellScript.getCanonicalPath()}")
+        def airGapHubDockerInspectorShellScript = new File(detectConfiguration.getDockerInspectorAirGapPath(), 'hub-docker-inspector.sh')
+        logger.debug("Verifying air gap shell script present at ${airGapHubDockerInspectorShellScript.getCanonicalPath()}")
 
         if (detectConfiguration.dockerInspectorPath) {
             shellScriptFile = new File(detectConfiguration.dockerInspectorPath)

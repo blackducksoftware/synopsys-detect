@@ -12,7 +12,7 @@ configurations {
 }
 
 dependencies {
-    airGap "com.blackducksoftware.integration:integration-gradle-inspector:latest.release"
+    airGap 'com.blackducksoftware.integration:integration-gradle-inspector:latest.release'
 }
 
 void fetchFile(File outputFile, String url) {
@@ -22,20 +22,20 @@ void fetchFile(File outputFile, String url) {
     if (!outputFile.getParentFile().exists()) {
         outputFile.getParentFile().mkdirs()
     }
-    new URL(url).withInputStream{ i -> outputFile.withOutputStream{ it << i }}
+    new URL(url).withInputStream{ inputStream -> outputFile.withOutputStream{ it << inputStream }}
 }
 
 task downloadNugetInspector {
     doLast {
-        final def nugetInspectorUrl = "https://www.nuget.org/api/v2/package/IntegrationNugetInspector/"
-        fetchFile(new File(nugetAirGapPath, "integrationnugetinspector.nupkg"), nugetInspectorUrl)
+        final def nugetInspectorUrl = 'https://www.nuget.org/api/v2/package/IntegrationNugetInspector/'
+        fetchFile(new File(nugetAirGapPath, 'integrationnugetinspector.nupkg'), nugetInspectorUrl)
     }
 }
 
 task downloadGradleInspectorMavenMetadata {
     doLast {
-        final def gradleInspectorMavenMetadataUrl = "http://repo2.maven.org/maven2/com/blackducksoftware/integration/integration-gradle-inspector/maven-metadata.xml"
-        fetchFile(new File(gradleAirGapPath, "maven-metadata.xml"), gradleInspectorMavenMetadataUrl)
+        final def gradleInspectorMavenMetadataUrl = 'http://repo2.maven.org/maven2/com/blackducksoftware/integration/integration-gradle-inspector/maven-metadata.xml'
+        fetchFile(new File(gradleAirGapPath, 'maven-metadata.xml'), gradleInspectorMavenMetadataUrl)
     }
 }
 
@@ -56,8 +56,8 @@ task downloadDockerInspectorScript() {
     doLast{
         def dir = new File(dockerAirGapPath)
         dir.mkdir()
-        def dockerInspectorScript = new File(dockerAirGapPath, "hub-docker-inspector.sh")
-        final def dockerInspectorScriptUrl = "https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector.sh"
+        def dockerInspectorScript = new File(dockerAirGapPath, 'hub-docker-inspector.sh')
+        final def dockerInspectorScriptUrl = 'https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector.sh'
         fetchFile(dockerInspectorScript, dockerInspectorScriptUrl)              
         dockerInspectorScript.setExecutable(true)
     }
@@ -68,29 +68,29 @@ task downloadDockerImages() {
     doLast {
         def versionOutputStream = new ByteArrayOutputStream()
         exec {
-            commandLine "bash", "${dockerAirGapPath}/hub-docker-inspector.sh", "--version"
+            commandLine 'bash', "${dockerAirGapPath}/hub-docker-inspector.sh", '--version'
             standardOutput = versionOutputStream
         }
         def versionString = versionOutputStream.toString().trim().split(" ")[1]
         exec {
-            commandLine "docker", "pull", "blackducksoftware/hub-docker-inspector-ubuntu:${versionString}"
+            commandLine 'docker', 'pull', "blackducksoftware/hub-docker-inspector-ubuntu:${versionString}"
         }
         exec {
-            commandLine "docker", "save", "-o", "${dockerAirGapPath}/hub-docker-inspector-ubuntu.tar", "blackducksoftware/hub-docker-inspector-ubuntu:${versionString}"
-        }
-        
-        exec {
-            commandLine "docker", "pull", "blackducksoftware/hub-docker-inspector-centos:${versionString}"
-        }
-        exec {
-            commandLine "docker", "save", "-o", "${dockerAirGapPath}/hub-docker-inspector-centos.tar", "blackducksoftware/hub-docker-inspector-centos:${versionString}"
+            commandLine 'docker', 'save', '-o', "${dockerAirGapPath}/hub-docker-inspector-ubuntu.tar", "blackducksoftware/hub-docker-inspector-ubuntu:${versionString}"
         }
         
         exec {
-            commandLine "docker", "pull", "blackducksoftware/hub-docker-inspector-alpine:${versionString}"
+            commandLine 'docker', 'pull', "blackducksoftware/hub-docker-inspector-centos:${versionString}"
         }
         exec {
-            commandLine "docker", "save", "-o", "${dockerAirGapPath}/hub-docker-inspector-alpine.tar", "blackducksoftware/hub-docker-inspector-alpine:${versionString}"
+            commandLine 'docker', 'save', '-o', "${dockerAirGapPath}/hub-docker-inspector-centos.tar", "blackducksoftware/hub-docker-inspector-centos:${versionString}"
+        }
+        
+        exec {
+            commandLine 'docker', 'pull', "blackducksoftware/hub-docker-inspector-alpine:${versionString}"
+        }
+        exec {
+            commandLine 'docker', 'save', '-o', "${dockerAirGapPath}/hub-docker-inspector-alpine.tar", "blackducksoftware/hub-docker-inspector-alpine:${versionString}"
         }
     }
 }
@@ -99,7 +99,7 @@ task downloadDockerInspector() {
     dependsOn downloadDockerImages
     doLast{
         exec{
-            commandLine "bash", "${dockerAirGapPath}/hub-docker-inspector.sh", "--pulljar"
+            commandLine 'bash', "${dockerAirGapPath}/hub-docker-inspector.sh", '--pulljar'
         }
         copy{
             from '.'

@@ -23,7 +23,6 @@
 package com.blackducksoftware.integration.hub.detect.bomtool
 
 import javax.xml.parsers.DocumentBuilder
-import javax.xml.parsers.DocumentBuilderFactory
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -61,6 +60,9 @@ class GradleBomTool extends BomTool {
     @Autowired
     GradleDependenciesParser gradleDependenciesParser
 
+    @Autowired
+    DocumentBuilder xmlDocumentBuilder
+
     private String gradleExecutable
     private String inspectorVersion
     private String initScriptPath
@@ -89,23 +91,21 @@ class GradleBomTool extends BomTool {
             if (!inspectorVersion) {
                 try {
                     InputStream inputStream
-                    File airGapMavenMetadataFile = new File(detectConfiguration.getGradleInspectorAirGapPath(), "maven-metadata.xml")
+                    File airGapMavenMetadataFile = new File(detectConfiguration.getGradleInspectorAirGapPath(), 'maven-metadata.xml')
                     if (airGapMavenMetadataFile.exists()) {
                         inputStream = new FileInputStream(airGapMavenMetadataFile)
                     } else {
-                        URL mavenMetadataUrl = new URL("http://repo2.maven.org/maven2/com/blackducksoftware/integration/integration-gradle-inspector/maven-metadata.xml")
+                        URL mavenMetadataUrl = new URL('http://repo2.maven.org/maven2/com/blackducksoftware/integration/integration-gradle-inspector/maven-metadata.xml')
                         inputStream = mavenMetadataUrl.openStream()
                     }
-                    final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance()
-                    final DocumentBuilder builder = factory.newDocumentBuilder()
-                    final Document document = builder.parse(inputStream)
-                    final NodeList latestVersionNodes = document.getElementsByTagName("latest")
-                    Node latestVersion = latestVersionNodes.item(0)
+                    final Document xmlDocument = xmlDocumentBuilder.parse(inputStream)
+                    final NodeList latestVersionNodes = xmlDocument.getElementsByTagName('latest')
+                    final Node latestVersion = latestVersionNodes.item(0)
                     inspectorVersion = latestVersion.getTextContent()
                 } catch (Exception e) {
                     inspectorVersion = detectConfiguration.getGradleInspectorVersion()
-                    logger.trace("Execption encountered when resolving latest version of Gradle Inspector, skipping resolution.")
-                    logger.trace(e.getMessage())
+                    logger.debug('Execption encountered when resolving latest version of Gradle Inspector, skipping resolution.')
+                    logger.debug(e.getMessage())
                 }
             }
         } else {
@@ -156,8 +156,8 @@ class GradleBomTool extends BomTool {
                     model.put('airGapLibsPath', gradleInspectorAirGapDirectory.getCanonicalPath())
                 }
             } catch (Exception e) {
-                logger.trace("Exception encountered when resolving air gap path for gradle, running in online mode instead")
-                logger.trace(e.getMessage())
+                logger.debug('Exception encountered when resolving air gap path for gradle, running in online mode instead')
+                logger.debug(e.getMessage())
             }
 
             if (detectConfiguration.getGradleInspectorRepositoryUrl()) {

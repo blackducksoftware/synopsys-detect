@@ -53,6 +53,9 @@ class DetectConfiguration {
 
     static final String DETECT_PROPERTY_PREFIX = 'detect.'
     static final String DOCKER_PROPERTY_PREFIX = 'detect.docker.passthrough.'
+    static final String NUGET = 'nuget'
+    static final String GRADLE = 'gradle'
+    static final String DOCKER = 'docker'
 
     @Autowired
     ConfigurableEnvironment configurableEnvironment
@@ -162,17 +165,32 @@ class DetectConfiguration {
     }
 
     public String guessDetectJarLocation() {
-        String containsDetectJarRegex = ".*hub-detect-[^\\\\/]+\\.jar.*"
-        String javaClassPath = System.getProperty("java.class.path")
-        if(javaClassPath?.matches(containsDetectJarRegex)) {
-            for(String classPathChunk : javaClassPath.split(System.getProperty("path.separator"))) {
-                if(classPathChunk?.matches(containsDetectJarRegex)) {
-                    logger.trace("Guessed Detect jar location as "+classPathChunk)
+        String containsDetectJarRegex = '.*hub-detect-[^\\\\/]+\\.jar.*'
+        String javaClassPath = System.getProperty('java.class.path')
+        if (javaClassPath?.matches(containsDetectJarRegex)) {
+            for (String classPathChunk : javaClassPath.split(System.getProperty('path.separator'))) {
+                if (classPathChunk?.matches(containsDetectJarRegex)) {
+                    logger.debug("Guessed Detect jar location as ${classPathChunk}")
                     return classPathChunk
                 }
             }
         }
-        return ""
+        return ''
+    }
+
+    private String getInspectorAirGapPath(String inspectorLocationProperty, String inspectorName) {
+        if (!inspectorLocationProperty?.trim()) {
+            try {
+                File detectJar = new File(guessDetectJarLocation())
+                File inspectorsDirectory = new File(detectJar.getParentFile(), 'packaged-inspectors')
+                File inspectorAirGapDirectory = new File(inspectorsDirectory, inspectorName)
+                return inspectorAirGapDirectory.getCanonicalPath()
+            } catch (final Exception e) {
+                logger.debug("Exception encountered when guessing air gap path for ${inspectorName}, returning the detect property instead")
+                logger.trace(e.getMessage())
+            }
+        }
+        return inspectorLocationProperty
     }
 
     public void logConfiguration() {
@@ -495,46 +513,13 @@ class DetectConfiguration {
         return detectProperties.noticesReportOutputDirectory
     }
     public String getDockerInspectorAirGapPath() {
-        if (!detectProperties.dockerInspectorAirGapPath?.trim()) {
-            try {
-                File detectJar = new File(guessDetectJarLocation())
-                File inspectorsDirectory = new File(detectJar.getParentFile(), "packaged-inspectors")
-                File dockerAirGapDirectory = new File(inspectorsDirectory, "docker")
-                return dockerAirGapDirectory.getCanonicalPath()
-            } catch (final Exception e) {
-                logger.trace("Exception encountered when guessing air gap path for docker, returning the detect property instead")
-                logger.trace(e.getMessage())
-            }
-        }
-        return detectProperties.dockerInspectorAirGapPath
+        return getInspectorAirGapPath(detectProperties.dockerInspectorAirGapPath, DOCKER)
     }
     public String getGradleInspectorAirGapPath() {
-        if (!detectProperties.gradleInspectorAirGapPath?.trim()) {
-            try {
-                File detectJar = new File(guessDetectJarLocation())
-                File inspectorsDirectory = new File(detectJar.getParentFile(), "packaged-inspectors")
-                File gradleAirGapDirectory = new File(inspectorsDirectory, "gradle")
-                return gradleAirGapDirectory.getCanonicalPath()
-            } catch (final Exception e) {
-                logger.trace("Exception encountered when guessing air gap path for gradle, returning the detect property instead")
-                logger.trace(e.getMessage())
-            }
-        }
-        return detectProperties.gradleInspectorAirGapPath
+        return getInspectorAirGapPath(detectProperties.gradleInspectorAirGapPath, GRADLE)
     }
     public String getNugetInspectorAirGapPath() {
-        if (!detectProperties.nugetInspectorAirGapPath?.trim()) {
-            try {
-                File detectJar = new File(guessDetectJarLocation())
-                File inspectorsDirectory = new File(detectJar.getParentFile(), "packaged-inspectors")
-                File nugetAirGapDirectory = new File(inspectorsDirectory, "nuget")
-                return nugetAirGapDirectory.getCanonicalPath()
-            } catch (final Exception e) {
-                logger.trace("Exception encountered when guessing air gap path for nuget, returning the detect property instead")
-                logger.trace(e.getMessage())
-            }
-        }
-        return detectProperties.nugetInspectorAirGapPath
+        return getInspectorAirGapPath(detectProperties.nugetInspectorAirGapPath, NUGET)
     }
     public String getNugetPackagesRepoUrl() {
         return detectProperties.nugetPackagesRepoUrl?.trim()

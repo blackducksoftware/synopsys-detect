@@ -125,7 +125,7 @@ class NugetBomTool extends BomTool {
                 ]
                 def airGapNugetInspectorDirectory = new File(detectConfiguration.getNugetInspectorAirGapPath())
                 if (airGapNugetInspectorDirectory.exists()) {
-                    logger.debug("Running in airgap mode. Resolving version from local path")
+                    logger.debug('Running in airgap mode. Resolving version from local path')
                     nugetOptions.addAll([
                         '-Source',
                         detectConfiguration.getNugetInspectorAirGapPath()
@@ -141,7 +141,7 @@ class NugetBomTool extends BomTool {
 
                 List<String> output = executableRunner.execute(getInspectorVersionExecutable).standardOutputAsList
                 for (String line : output) {
-                    String[] lineChunks = line.split(" ")
+                    String[] lineChunks = line.split(' ')
                     if (detectConfiguration.getNugetInspectorPackageName()?.equalsIgnoreCase(lineChunks[0])) {
                         return lineChunks[1]
                     }
@@ -167,7 +167,7 @@ class NugetBomTool extends BomTool {
 
         def airGapNugetInspectorDirectory = new File(detectConfiguration.getNugetInspectorAirGapPath())
         if (airGapNugetInspectorDirectory.exists()) {
-            logger.debug("Running in airgap mode. Resolving from local path")
+            logger.debug('Running in airgap mode. Resolving from local path')
             nugetOptions.addAll([
                 '-Source',
                 detectConfiguration.getNugetInspectorAirGapPath()
