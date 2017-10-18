@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
+import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorManager
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorPackager
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
@@ -49,10 +50,11 @@ class NugetBomTool extends BomTool {
     @Autowired
     NugetInspectorPackager nugetInspectorPackager
 
+    @Autowired
+    NugetInspectorManager nugetInspectorManager
+
     private String nugetExecutable
-    private String nugetInspectorExecutable
     private File outputDirectory
-    private String inspectorVersion
 
     BomToolType getBomToolType() {
         return BomToolType.NUGET
@@ -76,7 +78,7 @@ class NugetBomTool extends BomTool {
 
     @Override
     List<DetectCodeLocation> extractDetectCodeLocations() {
-        if (!nugetInspectorExecutable) {
+        if (!nugetInspectorManager.getNugetInspectorExecutablePath()) {
             return []
         }
 
@@ -95,7 +97,7 @@ class NugetBomTool extends BomTool {
             options.add('-v')
         }
 
-        def hubNugetInspectorExecutable = new Executable(sourceDirectory, nugetInspectorExecutable, options)
+        def hubNugetInspectorExecutable = new Executable(sourceDirectory, nugetInspectorManager.getNugetInspectorExecutablePath(), options)
         ExecutableOutput executableOutput = executableRunner.execute(hubNugetInspectorExecutable)
 
         def dependencyNodeFiles = detectFileManager.findFiles(outputDirectory, INSPECTOR_OUTPUT_PATTERN)
@@ -116,89 +118,7 @@ class NugetBomTool extends BomTool {
         codeLocations
     }
 
-    public String getInspectorVersion() {
-        if ('latest'.equalsIgnoreCase(detectConfiguration.getNugetInspectorPackageVersion())) {
-            if (!inspectorVersion) {
-                final def nugetOptions = [
-                    'list',
-                    detectConfiguration.getNugetInspectorPackageName()
-                ]
-                def airGapNugetInspectorDirectory = new File(detectConfiguration.getNugetInspectorAirGapPath())
-                if (airGapNugetInspectorDirectory.exists()) {
-                    logger.debug('Running in airgap mode. Resolving version from local path')
-                    nugetOptions.addAll([
-                        '-Source',
-                        detectConfiguration.getNugetInspectorAirGapPath()
-                    ])
-                } else {
-                    logger.debug('Running online. Resolving version through nuget')
-                    nugetOptions.addAll([
-                        '-Source',
-                        detectConfiguration.getNugetPackagesRepoUrl()
-                    ])
-                }
-                Executable getInspectorVersionExecutable = new Executable(detectConfiguration.sourceDirectory, nugetExecutable, nugetOptions)
-
-                List<String> output = executableRunner.execute(getInspectorVersionExecutable).standardOutputAsList
-                for (String line : output) {
-                    String[] lineChunks = line.split(' ')
-                    if (detectConfiguration.getNugetInspectorPackageName()?.equalsIgnoreCase(lineChunks[0])) {
-                        return lineChunks[1]
-                    }
-                }
-            }
-        } else {
-            inspectorVersion = detectConfiguration.getDockerInspectorVersion()
-        }
-        return inspectorVersion
-    }
-
-    private String installInspector() {
-        final File inspectorVersionDirectory = new File(outputDirectory, "${detectConfiguration.getNugetInspectorPackageName()}.${detectConfiguration.getNugetInspectorPackageVersion()}")
-        final File toolsDirectory = new File(inspectorVersionDirectory, 'tools')
-        final File inspectorExe = new File(toolsDirectory, "${detectConfiguration.getNugetInspectorPackageName()}.exe")
-
-        final def nugetOptions = [
-            'install',
-            detectConfiguration.getNugetInspectorPackageName(),
-            '-OutputDirectory',
-            outputDirectory.getCanonicalPath()
-        ]
-
-        def airGapNugetInspectorDirectory = new File(detectConfiguration.getNugetInspectorAirGapPath())
-        if (airGapNugetInspectorDirectory.exists()) {
-            logger.debug('Running in airgap mode. Resolving from local path')
-            nugetOptions.addAll([
-                '-Source',
-                detectConfiguration.getNugetInspectorAirGapPath()
-            ])
-        } else {
-            logger.debug('Running online. Resolving through nuget')
-            if (!'latest'.equalsIgnoreCase(detectConfiguration.getNugetInspectorPackageVersion())) {
-                nugetOptions.addAll([
-                    '-Version',
-                    detectConfiguration.getNugetInspectorPackageVersion()
-                ])
-            }
-            nugetOptions.addAll([
-                '-Source',
-                detectConfiguration.getNugetPackagesRepoUrl()
-            ])
-        }
-
-
-        if (!inspectorExe.exists()) {
-            Executable installInspectorExecutable = new Executable(detectConfiguration.sourceDirectory, nugetExecutable, nugetOptions)
-            executableRunner.execute(installInspectorExecutable)
-        } else {
-            logger.info("Existing nuget inspector found at ${inspectorExe.getCanonicalPath()}")
-        }
-
-        if (!inspectorExe.exists()) {
-            logger.warn("Could not find the ${detectConfiguration.getNugetInspectorPackageName()} version:${detectConfiguration.getNugetInspectorPackageVersion()} even after an install attempt.")
-            return null
-        }
-
-        inspectorExe.getCanonicalPath()
+    String getInspectorVersion() {
+        return nugetInspectorManager.getInspectorVersion(nugetExecutable)
     }
 }

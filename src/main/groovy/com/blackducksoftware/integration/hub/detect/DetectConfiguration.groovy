@@ -187,7 +187,7 @@ class DetectConfiguration {
                 return inspectorAirGapDirectory.getCanonicalPath()
             } catch (final Exception e) {
                 logger.debug("Exception encountered when guessing air gap path for ${inspectorName}, returning the detect property instead")
-                logger.trace(e.getMessage())
+                logger.debug(e.getMessage())
             }
         }
         return inspectorLocationProperty

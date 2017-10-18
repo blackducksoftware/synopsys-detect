@@ -22,17 +22,13 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool
 
-import javax.xml.parsers.DocumentBuilder
-
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import org.w3c.dom.Document
-import org.w3c.dom.Node
-import org.w3c.dom.NodeList
 
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleDependenciesParser
+import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleInspectorManager
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
@@ -40,8 +36,6 @@ import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 
-import freemarker.template.Configuration
-import freemarker.template.Template
 import groovy.transform.TypeChecked
 
 @Component
@@ -55,17 +49,12 @@ class GradleBomTool extends BomTool {
     HubSignatureScanner hubSignatureScanner
 
     @Autowired
-    Configuration configuration
-
-    @Autowired
     GradleDependenciesParser gradleDependenciesParser
 
     @Autowired
-    DocumentBuilder xmlDocumentBuilder
+    GradleInspectorManager gradleInspectorManager
 
     private String gradleExecutable
-    private String inspectorVersion
-    private String initScriptPath
 
     @Override
     BomToolType getBomToolType() {
@@ -86,33 +75,6 @@ class GradleBomTool extends BomTool {
         buildGradle && gradleExecutable
     }
 
-    String getInspectorVersion() {
-        if ('latest'.equalsIgnoreCase(detectConfiguration.getGradleInspectorVersion())) {
-            if (!inspectorVersion) {
-                try {
-                    InputStream inputStream
-                    File airGapMavenMetadataFile = new File(detectConfiguration.getGradleInspectorAirGapPath(), 'maven-metadata.xml')
-                    if (airGapMavenMetadataFile.exists()) {
-                        inputStream = new FileInputStream(airGapMavenMetadataFile)
-                    } else {
-                        URL mavenMetadataUrl = new URL('http://repo2.maven.org/maven2/com/blackducksoftware/integration/integration-gradle-inspector/maven-metadata.xml')
-                        inputStream = mavenMetadataUrl.openStream()
-                    }
-                    final Document xmlDocument = xmlDocumentBuilder.parse(inputStream)
-                    final NodeList latestVersionNodes = xmlDocument.getElementsByTagName('latest')
-                    final Node latestVersion = latestVersionNodes.item(0)
-                    inspectorVersion = latestVersion.getTextContent()
-                } catch (Exception e) {
-                    inspectorVersion = detectConfiguration.getGradleInspectorVersion()
-                    logger.debug('Execption encountered when resolving latest version of Gradle Inspector, skipping resolution.')
-                    logger.debug(e.getMessage())
-                }
-            }
-        } else {
-            inspectorVersion = detectConfiguration.getGradleInspectorVersion()
-        }
-        inspectorVersion
-    }
 
     @Override
     List<DetectCodeLocation> extractDetectCodeLocations(DetectProject detectProject) {
@@ -137,48 +99,11 @@ class GradleBomTool extends BomTool {
         gradlePath
     }
 
-    String getInitScriptPath() {
-        if(!initScriptPath) {
-            File initScriptFile = detectFileManager.createFile(BomToolType.GRADLE, 'init-detect.gradle')
-            String gradleInspectorVersion = detectConfiguration.getGradleInspectorVersion()
-            gradleInspectorVersion = 'latest'.equalsIgnoreCase(gradleInspectorVersion) ? '+' : gradleInspectorVersion
-            final Map<String, String> model = [
-                'gradleInspectorVersion' : gradleInspectorVersion,
-                'excludedProjectNames' : detectConfiguration.getGradleExcludedProjectNames(),
-                'includedProjectNames' : detectConfiguration.getGradleIncludedProjectNames(),
-                'excludedConfigurationNames' : detectConfiguration.getGradleExcludedConfigurationNames(),
-                'includedConfigurationNames' : detectConfiguration.getGradleIncludedConfigurationNames()
-            ]
-
-            try {
-                def gradleInspectorAirGapDirectory = new File(detectConfiguration.getGradleInspectorAirGapPath())
-                if (gradleInspectorAirGapDirectory.exists()) {
-                    model.put('airGapLibsPath', gradleInspectorAirGapDirectory.getCanonicalPath())
-                }
-            } catch (Exception e) {
-                logger.debug('Exception encountered when resolving air gap path for gradle, running in online mode instead')
-                logger.debug(e.getMessage())
-            }
-
-            if (detectConfiguration.getGradleInspectorRepositoryUrl()) {
-                model.put('customRepositoryUrl', detectConfiguration.getGradleInspectorRepositoryUrl())
-            }
-
-            final Template initScriptTemplate = configuration.getTemplate('init-script-gradle.ftl')
-            initScriptFile.withWriter('UTF-8') {
-                initScriptTemplate.process(model, it)
-            }
-
-            initScriptPath = initScriptFile.getCanonicalPath()
-        }
-        return initScriptPath
-    }
-
     List<DetectCodeLocation> extractCodeLocationsFromGradle(DetectProject detectProject) {
-        logger.info("using ${getInitScriptPath()} as the path for the gradle init script")
+        logger.info("using ${gradleInspectorManager.getInitScriptPath()} as the path for the gradle init script")
         Executable executable = new Executable(sourceDirectory, gradleExecutable, [
             detectConfiguration.getGradleBuildCommand(),
-            "--init-script=${getInitScriptPath()}" as String
+            "--init-script=${gradleInspectorManager.getInitScriptPath()}" as String
         ])
         executableRunner.execute(executable)
 
@@ -195,5 +120,9 @@ class GradleBomTool extends BomTool {
             blackduckDirectory.deleteDir()
         }
         codeLocations
+    }
+
+    String getInspectorVersion() {
+        return gradleInspectorManager.getInspectorVersion()
     }
 }
