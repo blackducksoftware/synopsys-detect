@@ -174,13 +174,18 @@ class NugetBomTool extends BomTool {
             ])
         } else {
             logger.debug('Running online. Resolving through nuget')
+            if (!'latest'.equalsIgnoreCase(detectConfiguration.getNugetInspectorPackageVersion())) {
+                nugetOptions.addAll([
+                    '-Version',
+                    detectConfiguration.getNugetInspectorPackageVersion()
+                ])
+            }
             nugetOptions.addAll([
-                '-Version',
-                detectConfiguration.getNugetInspectorPackageVersion(),
                 '-Source',
                 detectConfiguration.getNugetPackagesRepoUrl()
             ])
         }
+
 
         if (!inspectorExe.exists()) {
             Executable installInspectorExecutable = new Executable(detectConfiguration.sourceDirectory, nugetExecutable, nugetOptions)
