@@ -73,10 +73,18 @@ class MavenBomTool extends BomTool {
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
-        def arguments = detectConfiguration.getMavenBuildCommand().split(' ') as List
+        String mavenCommand = detectConfiguration.mavenBuildCommand
+        mavenCommand = mavenCommand?.replace('dependency:tree', '')?.trim()
+
+        def arguments = []
+        if (mavenCommand) {
+            arguments.addAll(mavenCommand.split(' ') as List)
+        }
         if (detectConfiguration.getMavenScope()?.trim()) {
             arguments.add("-Dscope=${detectConfiguration.getMavenScope()}" as String)
         }
+        arguments.add('dependency:tree')
+
         final Executable mvnExecutable = new Executable(detectConfiguration.sourceDirectory, mvnExecutable, arguments)
         final ExecutableOutput mvnOutput = executableRunner.execute(mvnExecutable)
 

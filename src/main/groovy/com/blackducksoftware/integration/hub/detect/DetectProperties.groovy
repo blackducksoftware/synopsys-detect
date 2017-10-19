@@ -218,7 +218,7 @@ class DetectProperties {
     @Value('${detect.maven.scope}')
     String mavenScope
 
-    @ValueDescription(description="Maven build command", defaultValue="dependency:tree", group=DetectProperties.GROUP_MAVEN)
+    @ValueDescription(description="Maven build command", group=DetectProperties.GROUP_MAVEN)
     @Value('${detect.maven.build.command}')
     String mavenBuildCommand
 
@@ -341,6 +341,10 @@ class DetectProperties {
     @ValueDescription(description="To use a local signature scanner, set its location with this property. This will be the path that contains the 'Hub_Scan_Installation' directory where the signature scanner was unzipped.", group=DetectProperties.GROUP_SIGNATURE_SCANNER)
     @Value('${detect.hub.signature.scanner.offline.local.path}')
     String hubSignatureScannerOfflineLocalPath
+
+    @ValueDescription(description="If this url is set, an attempt will be made to use it to download the signature scanner. The server url provided must respect the Hub's urls for different operating systems.", group=DetectProperties.GROUP_SIGNATURE_SCANNER)
+    @Value('${detect.hub.signature.scanner.host.url}')
+    String hubSignatureScannerHostUrl
 
     @ValueDescription(description="Set this value to false if you would like to exclude your dev requires dependencies when ran", defaultValue='true', group=DetectProperties.GROUP_PACKAGIST)
     @Value('${detect.packagist.include.dev.dependencies}')

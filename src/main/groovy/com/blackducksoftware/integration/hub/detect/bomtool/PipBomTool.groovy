@@ -76,7 +76,7 @@ class PipBomTool extends BomTool {
             }
 
             boolean hasPip
-            if(detectConfiguration.pythonThreeOverride) {
+            if (detectConfiguration.pythonThreeOverride) {
                 hasPip = executableManager.getExecutablePath(ExecutableType.PIP3, true, detectConfiguration.sourcePath)
             } else {
                 hasPip = executableManager.getExecutablePath(ExecutableType.PIP, true, detectConfiguration.sourcePath)
