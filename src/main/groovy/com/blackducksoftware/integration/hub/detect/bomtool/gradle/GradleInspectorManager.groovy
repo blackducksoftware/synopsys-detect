@@ -93,7 +93,7 @@ class GradleInspectorManager {
     }
 
     String getInitScriptPath() {
-        if(!initScriptPath) {
+        if (!initScriptPath) {
             File initScriptFile = detectFileManager.createFile(BomToolType.GRADLE, 'init-detect.gradle')
             String gradleInspectorVersion = detectConfiguration.getGradleInspectorVersion()
             gradleInspectorVersion = 'latest'.equalsIgnoreCase(gradleInspectorVersion) ? '+' : gradleInspectorVersion

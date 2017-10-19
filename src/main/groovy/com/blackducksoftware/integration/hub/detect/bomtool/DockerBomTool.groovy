@@ -127,9 +127,9 @@ class DockerBomTool extends BomTool {
             "\"${dockerInspectorShellScript.getCanonicalPath()}\" --spring.config.location=\"${dockerBomToolDirectory.getCanonicalPath()}\" --dry.run=true --no.prompt=true ${imageArgument}" as String
         ]
         def airGapHubDockerInspectorJar = new File("${detectConfiguration.getDockerInspectorAirGapPath()}", "hub-docker-inspector-${dockerInspectorManager.getInspectorVersion(bashExecutablePath)}.jar")
-        if(airGapHubDockerInspectorJar.exists()) {
+        if (airGapHubDockerInspectorJar.exists()) {
             try {
-                for ( String os : ['ubuntu', 'alpine', 'centos']) {
+                for (String os : ['ubuntu', 'alpine', 'centos']) {
                     def dockerImage = new File(airGapHubDockerInspectorJar.getParentFile(), "hub-docker-inspector-${os}.tar")
                     List<String> dockerImportArguments = [
                         '-c',

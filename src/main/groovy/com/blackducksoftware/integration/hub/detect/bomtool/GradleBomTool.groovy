@@ -75,7 +75,6 @@ class GradleBomTool extends BomTool {
         buildGradle && gradleExecutable
     }
 
-
     @Override
     List<DetectCodeLocation> extractDetectCodeLocations(DetectProject detectProject) {
         List<DetectCodeLocation> codeLocations = extractCodeLocationsFromGradle(detectProject)

@@ -58,7 +58,7 @@ task copyApplicationProperties(type: Copy) {
 }
 
 task downloadDockerInspectorScript() {
-    doLast{
+    doLast {
         def dir = new File(dockerAirGapPath)
         dir.mkdir()
         def dockerInspectorScript = new File(dockerAirGapPath, 'hub-docker-inspector.sh')
@@ -102,16 +102,16 @@ task downloadDockerImages() {
 
 task downloadDockerInspector() {
     dependsOn downloadDockerImages
-    doLast{
-        exec{
+    doLast {
+        exec {
             commandLine 'bash', "${dockerAirGapPath}/hub-docker-inspector.sh", '--pulljar'
         }
-        copy{
+        copy {
             from '.'
             include 'hub-docker-inspector-*.jar'
             into dockerAirGapPath
         }
-        delete fileTree('.'){
+        delete fileTree('.') {
             include 'hub-docker-inspector-*.jar'
         }
     }

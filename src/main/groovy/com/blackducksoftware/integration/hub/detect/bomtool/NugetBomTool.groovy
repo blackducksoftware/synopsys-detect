@@ -78,13 +78,13 @@ class NugetBomTool extends BomTool {
 
     @Override
     List<DetectCodeLocation> extractDetectCodeLocations() {
-        nugetInspectorManager.installInspector(nugetExecutable, outputDirectory);
+        nugetInspectorManager.installInspector(nugetExecutable, outputDirectory)
 
         if (!nugetInspectorManager.getNugetInspectorExecutablePath()) {
-            throw new Exception("Failed to find a suitable nuget inspector to run.");
+            throw new Exception("Failed to find a suitable nuget inspector to run.")
         }
 
-        List<String> options =  [
+        List<String> options = [
             "--target_path=${sourcePath}" as String,
             "--output_directory=${outputDirectory.getCanonicalPath()}" as String,
             "--ignore_failure=${detectConfiguration.getNugetInspectorIgnoreFailure()}" as String
@@ -95,7 +95,7 @@ class NugetBomTool extends BomTool {
         if (detectConfiguration.getNugetPackagesRepoUrl()) {
             options.add("--packages_repo_url=${detectConfiguration.getNugetPackagesRepoUrl()}" as String)
         }
-        if (logger.traceEnabled) {
+        if (logger.isTraceEnabled()) {
             options.add('-v')
         }
 
