@@ -121,8 +121,8 @@ task createAirGapZip(type: Zip) {
     dependsOn build, copyApplicationProperties, downloadNugetInspector, copyGradleInspectorAndDependencies, downloadDockerInspector
     from buildArtifactFolder
     include "${rootProject.name}-${version}.jar"
-    include 'packaged-inspectors/*/*'
-    include 'config/*'
+    include 'packaged-inspectors/**'
+    include 'config/**'
     archiveName "${rootProject.name}-${version}-air-gap.zip"
     destinationDir(file(buildArtifactFolder))
 }
