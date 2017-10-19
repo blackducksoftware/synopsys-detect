@@ -23,7 +23,6 @@
 package com.blackducksoftware.integration.hub.detect.bomtool
 
 import org.apache.commons.io.IOUtils
-import org.apache.commons.lang3.math.NumberUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -36,27 +35,21 @@ import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.SimpleBdioDocument
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerInspectorManager
 import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerProperties
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
-import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnection
-import com.blackducksoftware.integration.log.Slf4jIntLogger
 import com.google.gson.Gson
 
 import groovy.transform.TypeChecked
-import okhttp3.HttpUrl
-import okhttp3.Request
-import okhttp3.Response
 
 @Component
 @TypeChecked
 class DockerBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(DockerBomTool.class)
-
-    static final URL LATEST_URL = new URL('https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector.sh')
 
     final String tarFilenamePattern = '*.tar.gz'
     final String dependenciesFilenamePattern = '*bdio.jsonld'
@@ -75,6 +68,9 @@ class DockerBomTool extends BomTool {
 
     @Autowired
     BdioTransformer bdioTransformer
+
+    @Autowired
+    DockerInspectorManager dockerInspectorManager
 
     private String dockerExecutablePath
     private String bashExecutablePath
@@ -103,43 +99,13 @@ class DockerBomTool extends BomTool {
         dockerExecutablePath && bashExecutablePath && propertiesOk
     }
 
+    @Override
     List<DetectCodeLocation> extractDetectCodeLocations() {
-        File shellScriptFile
-        if (detectConfiguration.dockerInspectorPath) {
-            shellScriptFile = new File(detectConfiguration.dockerInspectorPath)
-        } else {
-            URL hubDockerInspectorShellScriptUrl = LATEST_URL
-            if (!'latest'.equals(detectConfiguration.dockerInspectorVersion)) {
-                hubDockerInspectorShellScriptUrl = new URL("https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector-${detectConfiguration.dockerInspectorVersion}.sh")
-            }
-            logger.info("Getting the Docker inspector shell script from ${hubDockerInspectorShellScriptUrl.toURI().toString()}")
-            UnauthenticatedRestConnection restConnection = new UnauthenticatedRestConnection(new Slf4jIntLogger(logger), hubDockerInspectorShellScriptUrl, detectConfiguration.getHubTimeout())
-            restConnection.alwaysTrustServerCertificate = detectConfiguration.hubTrustCertificate
-            restConnection.proxyHost = detectConfiguration.getHubProxyHost();
-            restConnection.proxyPort = NumberUtils.toInt(detectConfiguration.getHubProxyPort());
-            restConnection.proxyUsername = detectConfiguration.getHubProxyUsername();
-            restConnection.proxyPassword = detectConfiguration.getHubProxyPassword();
-            HttpUrl httpUrl = restConnection.createHttpUrl()
-            Request request = restConnection.createGetRequest(httpUrl)
-            String shellScriptContents = null
-            Response response = null
-            try {
-                response = restConnection.handleExecuteClientCall(request)
-                shellScriptContents =  response.body().string()
-            } finally {
-                if (response != null) {
-                    response.close()
-                }
-            }
-            shellScriptFile = detectFileManager.createFile(getBomToolType(), "hub-docker-inspector-${detectConfiguration.dockerInspectorVersion}.sh")
-            detectFileManager.writeToFile(shellScriptFile, shellScriptContents)
-            shellScriptFile.setExecutable(true)
-        }
-
         File dockerPropertiesFile = detectFileManager.createFile(getBomToolType(), 'application.properties')
         File dockerBomToolDirectory =  dockerPropertiesFile.getParentFile()
         dockerProperties.populatePropertiesFile(dockerPropertiesFile, dockerBomToolDirectory)
 
+        File dockerInspectorShellScript = dockerInspectorManager.getShellScript()
 
         boolean usingTarFile = false
         String imageArgument = ''
@@ -153,13 +119,31 @@ class DockerBomTool extends BomTool {
 
         String path = System.getenv('PATH')
         File dockerExecutableFile = new File(dockerExecutablePath)
-        path += File.pathSeparator + dockerExecutableFile.parentFile.absolutePath
+        path += File.pathSeparator + dockerExecutableFile.parentFile.getCanonicalPath()
         Map<String, String> environmentVariables = [PATH: path]
 
         List<String> bashArguments = [
-            "-c",
-            "${shellScriptFile.absolutePath} --spring.config.location=\"${dockerBomToolDirectory.getAbsolutePath()}\" --dry.run=true --no.prompt=true ${imageArgument}" as String
+            '-c',
+            "\"${dockerInspectorShellScript.getCanonicalPath()}\" --spring.config.location=\"${dockerBomToolDirectory.getCanonicalPath()}\" --dry.run=true --no.prompt=true ${imageArgument}" as String
         ]
+        def airGapHubDockerInspectorJar = new File("${detectConfiguration.getDockerInspectorAirGapPath()}", "hub-docker-inspector-${dockerInspectorManager.getInspectorVersion(bashExecutablePath)}.jar")
+        if (airGapHubDockerInspectorJar.exists()) {
+            try {
+                for (String os : ['ubuntu', 'alpine', 'centos']) {
+                    def dockerImage = new File(airGapHubDockerInspectorJar.getParentFile(), "hub-docker-inspector-${os}.tar")
+                    List<String> dockerImportArguments = [
+                        '-c',
+                        "docker load -i \"${dockerImage.getCanonicalPath()}\"" as String
+                    ]
+                    bashArguments[1] = "\"${dockerInspectorShellScript.getCanonicalPath()}\" --spring.config.location=\"${dockerBomToolDirectory.getCanonicalPath()}\" --dry.run=true --no.prompt=true --jar.path=\"${airGapHubDockerInspectorJar.getCanonicalPath()}\" ${imageArgument}" as String
+                    Executable dockerImportImageExecutable = new Executable(dockerBomToolDirectory, environmentVariables, bashExecutablePath, dockerImportArguments)
+                    executableRunner.execute(dockerImportImageExecutable)
+                }
+            } catch (Exception e) {
+                logger.debug('Exception encountered when resolving paths for docker air gap, running in online mode instead')
+                logger.debug(e.getMessage())
+            }
+        }
         Executable dockerExecutable = new Executable(dockerBomToolDirectory, environmentVariables, bashExecutablePath, bashArguments)
         executableRunner.execute(dockerExecutable)
 
@@ -176,17 +160,17 @@ class DockerBomTool extends BomTool {
 
         File bdioFile = detectFileManager.findFile(dockerBomToolDirectory, dependenciesFilenamePattern)
         if (bdioFile) {
-            SimpleBdioDocument simpleBdioDocument = null;
-            BdioReader bdioReader = null;
+            SimpleBdioDocument simpleBdioDocument = null
+            BdioReader bdioReader = null
             try {
                 final InputStream dockerOutputInputStream = new FileInputStream(bdioFile)
-                bdioReader = new BdioReader(gson, dockerOutputInputStream);
-                simpleBdioDocument = bdioReader.readSimpleBdioDocument();
+                bdioReader = new BdioReader(gson, dockerOutputInputStream)
+                simpleBdioDocument = bdioReader.readSimpleBdioDocument()
             } finally {
-                IOUtils.closeQuietly(bdioReader);
+                IOUtils.closeQuietly(bdioReader)
             }
 
-            final DependencyGraph dependencyGraph = bdioTransformer.transformToDependencyGraph(simpleBdioDocument.project, simpleBdioDocument.components);
+            final DependencyGraph dependencyGraph = bdioTransformer.transformToDependencyGraph(simpleBdioDocument.project, simpleBdioDocument.components)
 
             String projectName = simpleBdioDocument.project.name
             String projectVersionName = simpleBdioDocument.project.version
@@ -202,6 +186,10 @@ class DockerBomTool extends BomTool {
         }
 
         []
+    }
+
+    String getInspectorVersion() {
+        return dockerInspectorManager.getInspectorVersion(bashExecutablePath)
     }
 
     private void logMissingFile(File searchDirectory, String filenamePattern) {
