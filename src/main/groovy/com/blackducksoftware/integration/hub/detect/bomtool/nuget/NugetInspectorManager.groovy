@@ -114,7 +114,7 @@ class NugetInspectorManager {
             Executable installInspectorExecutable = new Executable(detectConfiguration.sourceDirectory, nugetExecutablePath, nugetOptions)
             executableRunner.execute(installInspectorExecutable)
 
-            final File inspectorVersionDirectory = new File(outputDirectory, "${detectConfiguration.getNugetInspectorPackageName()}.${detectConfiguration.getNugetInspectorPackageVersion()}")
+            final File inspectorVersionDirectory = new File(outputDirectory, "${detectConfiguration.getNugetInspectorPackageName()}.${inspectorVersion}")
             toolsDirectory = new File(inspectorVersionDirectory, 'tools')
         }
         final File inspectorExe = new File(toolsDirectory, "${detectConfiguration.getNugetInspectorPackageName()}.exe")
