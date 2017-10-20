@@ -38,7 +38,12 @@ public class CodeLocationNameProvider3 extends CodeLocationNameProvider {
         final String codeLocationTypeString = codeLocationName.getCodeLocationType().toString().toLowerCase();
         final String bomToolTypeString = codeLocationName.getBomToolType() == null ? "" : codeLocationName.getBomToolType().toString().toLowerCase();
 
-        return createCommonName(finalSourcePathPiece, projectName, projectVersionName, prefix, suffix, codeLocationTypeString, bomToolTypeString);
+        final String codeLocationNameString = createCommonName(finalSourcePathPiece, projectName, projectVersionName, prefix, suffix, codeLocationTypeString, bomToolTypeString);
+        if (codeLocationNameString.length() > 250) {
+            return shortenCodeLocationName(finalSourcePathPiece, projectName, projectVersionName, prefix, suffix, codeLocationTypeString, bomToolTypeString);
+        } else {
+            return codeLocationNameString;
+        }
     }
 
     @Override
@@ -51,7 +56,12 @@ public class CodeLocationNameProvider3 extends CodeLocationNameProvider {
         final String codeLocationTypeString = codeLocationName.getCodeLocationType().toString().toLowerCase();
         final String bomToolTypeString = "";
 
-        return createCommonName(cleanedTargetPath, projectName, projectVersionName, prefix, suffix, codeLocationTypeString, bomToolTypeString);
+        final String codeLocationNameString = createCommonName(cleanedTargetPath, projectName, projectVersionName, prefix, suffix, codeLocationTypeString, bomToolTypeString);
+        if (codeLocationNameString.length() > 250) {
+            return shortenCodeLocationName(cleanedTargetPath, projectName, projectVersionName, prefix, suffix, codeLocationTypeString, bomToolTypeString);
+        } else {
+            return codeLocationNameString;
+        }
     }
 
     private String createCommonName(final String pathPiece, final String projectName, final String projectVersionName, final String prefix, final String suffix, final String codeLocationType, final String bomToolType) {
@@ -70,6 +80,24 @@ public class CodeLocationNameProvider3 extends CodeLocationNameProvider {
 
         name = String.format("%s %s", name, endPiece);
         return name;
+    }
+
+    private String shortenCodeLocationName(final String pathPiece, final String projectName, final String projectVersionName, final String prefix, final String suffix, final String codeLocationType, final String bomToolType) {
+        final String shortenedPathPiece = shortenPiece(pathPiece);
+        final String shortenedProjectName = shortenPiece(projectName);
+        final String shortenedProjectVersionName = shortenPiece(projectVersionName);
+        final String shortenedPrefix = shortenPiece(prefix);
+        final String shortenedSuffix = shortenPiece(suffix);
+
+        return createCommonName(shortenedPathPiece, shortenedProjectName, shortenedProjectVersionName, shortenedPrefix, shortenedSuffix, codeLocationType, bomToolType);
+    }
+
+    private String shortenPiece(final String piece) {
+        if (piece.length() <= 40) {
+            return piece;
+        } else {
+            return piece.substring(0, 19) + "..." + piece.substring(piece.length() - 18);
+        }
     }
 
 }

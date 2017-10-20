@@ -28,13 +28,7 @@ group = 'com.blackducksoftware.integration'
 // Detect version
 version = '2.1.0-SNAPSHOT'
 
-// Human's must change this here and in DetectProperties for every update
-final String gradleInspectorVersion = '0.2.2'
-final String nugetInspectorVersion = '2.0.0'
-
-final String buildArtifactFolder = "${buildDir}/libs/"
-final String gradleAirGapPath = "${buildArtifactFolder}/gradleJars"
-
+apply from: 'airgap.gradle'
 
 // BuildInfo - A json payload usable by detect for information from the build
 JsonBuilder jsonBuilder = new JsonBuilder()
@@ -53,8 +47,6 @@ sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
 build {
-    finalizedBy 'updateAirGapDependencies'
-
     doLast {
         def shellScriptTemplateFile = new File("${projectDir}/src/main/resources/hub-detect-sh")
         def shellScriptContents = shellScriptTemplateFile.getText('UTF-8')
@@ -77,8 +69,6 @@ repositories {
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
 }
 
-configurations { airGapConfig }
-
 dependencies {
     compile 'com.blackducksoftware.integration:hub-common:18.3.0'
     compile 'org.springframework.boot:spring-boot-starter'
@@ -91,8 +81,6 @@ dependencies {
     compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.2'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.9.2'
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.9.2'
-
-    airGapConfig "com.blackducksoftware.integration:integration-gradle-inspector:${gradleInspectorVersion}"
 
     testCompile 'org.springframework.boot:spring-boot-starter-test'
 }
@@ -115,32 +103,6 @@ license {
 }
 
 tasks.licenseMain.dependsOn(licenseFormatMain)
-
-void fetchFile(File outputFile, String url) {
-    if (outputFile.exists()) {
-        return
-    }
-    if (!outputFile.getParentFile().exists()) {
-        outputFile.getParentFile().mkdirs()
-    }
-    new URL(url).withInputStream{ i -> outputFile.withOutputStream{ it << i }}
-}
-
-task zipGradleAirGapDependencies(type: Zip) {
-    from configurations.airGapConfig
-    include '*.jar'
-    archiveName "GradleInspectorAirGap_${gradleInspectorVersion}.zip"
-    destinationDir(file(buildArtifactFolder))
-}
-
-task downloadNugetAirGapDependencies {
-    doLast {
-        final def nugetInspectorUrl = "https://www.nuget.org/api/v2/package/IntegrationNugetInspector/${nugetInspectorVersion}"
-        fetchFile(new File(buildArtifactFolder, "NugetInspector_${nugetInspectorVersion}.nupkg"), nugetInspectorUrl)
-    }
-}
-
-task updateAirGapDependencies { dependsOn downloadNugetAirGapDependencies, zipGradleAirGapDependencies }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'

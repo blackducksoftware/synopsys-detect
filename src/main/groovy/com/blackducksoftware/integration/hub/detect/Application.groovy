@@ -23,6 +23,8 @@
 package com.blackducksoftware.integration.hub.detect
 
 import javax.annotation.PostConstruct
+import javax.xml.parsers.DocumentBuilder
+import javax.xml.parsers.DocumentBuilderFactory
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -174,5 +176,12 @@ class Application {
         configuration.setLogTemplateExceptions(true)
 
         configuration
+    }
+
+    @Bean
+    DocumentBuilder xmlDocumentBuilder() {
+        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance()
+
+        factory.newDocumentBuilder()
     }
 }

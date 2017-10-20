@@ -143,4 +143,23 @@ class CodeLocationNameServiceTest {
 
         assertEquals(expected, actual)
     }
+
+    @Test
+    public void testLongCodeLocationNames() {
+        String expected = 'hub-common-rest/hub-common-resthub-...esthub-common-rest/2.5.1-SNAPSHOT npm/bom'
+
+        DetectFileManager detectFileManager = [extractFinalPieceFromPath: { 'hub-common-rest' }] as DetectFileManager
+        CodeLocationNameProvider codeLocationNameProvider = new CodeLocationNameProvider3()
+        codeLocationNameProvider.detectFileManager = detectFileManager
+
+        String sourcePath = '/Users/ekerwin/Documents/source/integration/hub-common-rest'
+        String projectName = 'hub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-rest'
+        String projectVersionName = '2.5.1-SNAPSHOT'
+        String prefix = ''
+        String suffix = ''
+        CodeLocationName codeLocationName = codeLocationNameService.createBomToolName(sourcePath, projectName, projectVersionName, BomToolType.NPM, prefix, suffix)
+        String actual = codeLocationNameProvider.generateBomToolName(codeLocationName)
+
+        assertEquals(expected, actual)
+    }
 }
