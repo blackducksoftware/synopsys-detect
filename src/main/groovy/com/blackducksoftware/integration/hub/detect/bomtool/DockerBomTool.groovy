@@ -124,7 +124,7 @@ class DockerBomTool extends BomTool {
 
         List<String> bashArguments = [
             '-c',
-            "\"${dockerInspectorShellScript.getCanonicalPath()}\" --spring.config.location=\"${dockerBomToolDirectory.getCanonicalPath()}\" --dry.run=true --no.prompt=true ${imageArgument}" as String
+            "\"${dockerInspectorShellScript.getCanonicalPath()}\" --spring.config.location=\"${dockerPropertiesFile.getCanonicalPath()}\" --dry.run=true --no.prompt=true ${imageArgument}" as String
         ]
         def airGapHubDockerInspectorJar = new File("${detectConfiguration.getDockerInspectorAirGapPath()}", "hub-docker-inspector-${dockerInspectorManager.getInspectorVersion(bashExecutablePath)}.jar")
         if (airGapHubDockerInspectorJar.exists()) {
@@ -135,7 +135,7 @@ class DockerBomTool extends BomTool {
                         '-c',
                         "docker load -i \"${dockerImage.getCanonicalPath()}\"" as String
                     ]
-                    bashArguments[1] = "\"${dockerInspectorShellScript.getCanonicalPath()}\" --spring.config.location=\"${dockerBomToolDirectory.getCanonicalPath()}\" --dry.run=true --no.prompt=true --jar.path=\"${airGapHubDockerInspectorJar.getCanonicalPath()}\" ${imageArgument}" as String
+                    bashArguments[1] = "\"${dockerInspectorShellScript.getCanonicalPath()}\" --spring.config.location=\"${dockerPropertiesFile.getCanonicalPath()}\" --dry.run=true --no.prompt=true --jar.path=\"${airGapHubDockerInspectorJar.getCanonicalPath()}\" ${imageArgument}" as String
                     Executable dockerImportImageExecutable = new Executable(dockerBomToolDirectory, environmentVariables, bashExecutablePath, dockerImportArguments)
                     executableRunner.execute(dockerImportImageExecutable)
                 }
