@@ -46,6 +46,7 @@ import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.exception.DoesNotExistException
 import com.blackducksoftware.integration.hub.global.HubServerConfig
+import com.blackducksoftware.integration.hub.model.enumeration.PolicySeverityEnum
 import com.blackducksoftware.integration.hub.model.request.ProjectRequest
 import com.blackducksoftware.integration.hub.model.view.CodeLocationView
 import com.blackducksoftware.integration.hub.model.view.ProjectVersionView
@@ -116,7 +117,18 @@ class HubManager {
                 PolicyStatusDataService policyStatusDataService = hubServiceWrapper.createPolicyStatusDataService()
                 PolicyStatusDescription policyStatus = policyChecker.getPolicyStatus(policyStatusDataService, projectVersionView)
                 logger.info(policyStatus.policyStatusMessage)
-                if (policyStatus.getCountInViolation()?.value > 0) {
+                def policySeverityCheck = detectConfiguration.getPolicySeverity().split(',').toList()
+                if (!policySeverityCheck.isEmpty()) {
+                    policySeverityCheck.each { policySeverity ->
+                        PolicySeverityEnum stronglyTypedPolicySeverity = PolicySeverityEnum.valueOf(policySeverity.trim())
+                        if (PolicySeverityEnum.values().contains(stronglyTypedPolicySeverity)) {
+                            int severityCount = policyStatus.getCountOfSeverity(stronglyTypedPolicySeverity)
+                            if (severityCount > 0) {
+                                postActionResult = 1
+                            }
+                        }
+                    }
+                } else if (policyStatus.getCountInViolation()?.value > 0) {
                     postActionResult = 1
                 }
             }
