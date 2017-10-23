@@ -121,9 +121,9 @@ class HubManager {
                 PolicyStatusDataService policyStatusDataService = hubServiceWrapper.createPolicyStatusDataService()
                 PolicyStatusDescription policyStatusDescription = policyChecker.getPolicyStatus(policyStatusDataService, projectVersionView)
                 logger.info(policyStatusDescription.policyStatusMessage)
-                def policySeverityCheck = detectConfiguration.getPolicySeverityThreshold().split(',').toList()
-                def policyFailBuild = 0
-                if (policySeverityCheck.size() > 1) {
+                String[] policySeverityCheck = detectConfiguration.getPolicySeverityThreshold().split(',')
+                int policyFailBuild = 0
+                if (policySeverityCheck.length > 1) {
                     for (String policySeverity : policySeverityCheck) {
                         PolicySeverityEnum policySeverityEnum = EnumUtils.getEnum(PolicySeverityEnum, policySeverity.trim())
                         if (policySeverityEnum != null) {
