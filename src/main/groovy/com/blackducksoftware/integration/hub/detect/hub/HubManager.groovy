@@ -22,6 +22,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.hub
 
+import org.apache.commons.lang3.EnumUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -120,8 +121,8 @@ class HubManager {
                 def policySeverityCheck = detectConfiguration.getPolicySeverity().split(',').toList()
                 if (!policySeverityCheck.isEmpty()) {
                     policySeverityCheck.each { policySeverity ->
-                        PolicySeverityEnum stronglyTypedPolicySeverity = PolicySeverityEnum.valueOf(policySeverity.trim())
-                        if (PolicySeverityEnum.values().contains(stronglyTypedPolicySeverity)) {
+                        if (EnumUtils.isValidEnum(PolicySeverityEnum.class, policySeverity.trim())) {
+                            PolicySeverityEnum stronglyTypedPolicySeverity = PolicySeverityEnum.valueOf(policySeverity.trim())
                             int severityCount = policyStatus.getCountOfSeverity(stronglyTypedPolicySeverity)
                             if (severityCount > 0) {
                                 postActionResult = 1
