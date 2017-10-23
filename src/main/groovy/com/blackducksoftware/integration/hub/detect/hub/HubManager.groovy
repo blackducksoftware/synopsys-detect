@@ -119,7 +119,7 @@ class HubManager {
                 PolicyStatusDescription policyStatus = policyChecker.getPolicyStatus(policyStatusDataService, projectVersionView)
                 logger.info(policyStatus.policyStatusMessage)
                 def policySeverityCheck = detectConfiguration.getPolicySeverity().split(',').toList()
-                if (!policySeverityCheck.isEmpty()) {
+                if (policySeverityCheck.size() > 1) {
                     policySeverityCheck.each { policySeverity ->
                         if (EnumUtils.isValidEnum(PolicySeverityEnum.class, policySeverity.trim())) {
                             PolicySeverityEnum stronglyTypedPolicySeverity = PolicySeverityEnum.valueOf(policySeverity.trim())
