@@ -48,6 +48,7 @@ import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.exception.DoesNotExistException
 import com.blackducksoftware.integration.hub.global.HubServerConfig
 import com.blackducksoftware.integration.hub.model.enumeration.PolicySeverityEnum
+import com.blackducksoftware.integration.hub.model.enumeration.VersionBomPolicyStatusOverallStatusEnum
 import com.blackducksoftware.integration.hub.model.request.ProjectRequest
 import com.blackducksoftware.integration.hub.model.view.CodeLocationView
 import com.blackducksoftware.integration.hub.model.view.ProjectVersionView
@@ -60,6 +61,8 @@ import groovy.transform.TypeChecked
 @Component
 @TypeChecked
 class HubManager {
+    private static final int FAIL_DETECT = 1
+
     private final Logger logger = LoggerFactory.getLogger(HubManager.class)
 
     @Autowired
@@ -116,21 +119,25 @@ class HubManager {
 
             if (detectConfiguration.getPolicyCheck()) {
                 PolicyStatusDataService policyStatusDataService = hubServiceWrapper.createPolicyStatusDataService()
-                PolicyStatusDescription policyStatus = policyChecker.getPolicyStatus(policyStatusDataService, projectVersionView)
-                logger.info(policyStatus.policyStatusMessage)
-                def policySeverityCheck = detectConfiguration.getPolicySeverity().split(',').toList()
+                PolicyStatusDescription policyStatusDescription = policyChecker.getPolicyStatus(policyStatusDataService, projectVersionView)
+                logger.info(policyStatusDescription.policyStatusMessage)
+                def policySeverityCheck = detectConfiguration.getPolicySeverityThreshold().split(',').toList()
+                def policyFailBuild = 0
                 if (policySeverityCheck.size() > 1) {
-                    policySeverityCheck.each { policySeverity ->
-                        if (EnumUtils.isValidEnum(PolicySeverityEnum.class, policySeverity.trim())) {
-                            PolicySeverityEnum stronglyTypedPolicySeverity = PolicySeverityEnum.valueOf(policySeverity.trim())
-                            int severityCount = policyStatus.getCountOfSeverity(stronglyTypedPolicySeverity)
-                            if (severityCount > 0) {
-                                postActionResult = 1
-                            }
+                    for (String policySeverity : policySeverityCheck) {
+                        PolicySeverityEnum policySeverityEnum = EnumUtils.getEnum(PolicySeverityEnum, policySeverity.trim())
+                        if (policySeverityEnum != null) {
+                            int severityCount = policyStatusDescription.getCountOfSeverity(policySeverityEnum)
+                            policyFailBuild += severityCount
                         }
                     }
-                } else if (policyStatus.getCountInViolation()?.value > 0) {
-                    postActionResult = 1
+                } else {
+                    int inViolationCount = policyStatusDescription.getCountOfStatus(VersionBomPolicyStatusOverallStatusEnum.IN_VIOLATION)
+                    policyFailBuild += inViolationCount
+                }
+
+                if (policyFailBuild > 0) {
+                    postActionResult = FAIL_DETECT
                 }
             }
 
