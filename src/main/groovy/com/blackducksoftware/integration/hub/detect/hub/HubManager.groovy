@@ -121,7 +121,7 @@ class HubManager {
                 PolicyStatusDataService policyStatusDataService = hubServiceWrapper.createPolicyStatusDataService()
                 PolicyStatusDescription policyStatusDescription = policyChecker.getPolicyStatus(policyStatusDataService, projectVersionView)
                 logger.info(policyStatusDescription.policyStatusMessage)
-                String[] policySeverityCheck = detectConfiguration.getPolicySeverityThreshold().split(',')
+                String[] policySeverityCheck = detectConfiguration.getPolicyFailOnSeverity().split(',')
                 int policyFailBuild = 0
                 if (policySeverityCheck.length > 1) {
                     for (String policySeverity : policySeverityCheck) {

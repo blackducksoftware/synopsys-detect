@@ -329,8 +329,8 @@ class DetectConfiguration {
     public boolean getPolicyCheck() {
         return BooleanUtils.toBoolean(detectProperties.policyCheck)
     }
-    public String getPolicySeverityThreshold() {
-        return detectProperties.policySeverityThreshold
+    public String getPolicyFailOnSeverity() {
+        return detectProperties.policyFailOnSeverity
     }
     public String getGradleInspectorVersion() {
         return detectProperties.gradleInspectorVersion
