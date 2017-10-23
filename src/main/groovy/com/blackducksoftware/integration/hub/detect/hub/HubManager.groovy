@@ -23,6 +23,7 @@
 package com.blackducksoftware.integration.hub.detect.hub
 
 import org.apache.commons.lang3.EnumUtils
+import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -121,11 +122,13 @@ class HubManager {
                 PolicyStatusDataService policyStatusDataService = hubServiceWrapper.createPolicyStatusDataService()
                 PolicyStatusDescription policyStatusDescription = policyChecker.getPolicyStatus(policyStatusDataService, projectVersionView)
                 logger.info(policyStatusDescription.policyStatusMessage)
-                String[] policySeverityCheck = detectConfiguration.getPolicyFailOnSeverity().split(',')
+                String policyFailOnSeverity = detectConfiguration.getPolicyFailOnSeverity()
                 int policyFailBuild = 0
-                if (policySeverityCheck.length > 1) {
+                if (!StringUtils.isEmpty(policyFailOnSeverity)) {
+                    String[] policySeverityCheck = policyFailOnSeverity.split(',')
                     for (String policySeverity : policySeverityCheck) {
-                        PolicySeverityEnum policySeverityEnum = EnumUtils.getEnum(PolicySeverityEnum, policySeverity.trim())
+                        String formattedPolicySeverity = policySeverity.toUpperCase().trim()
+                        PolicySeverityEnum policySeverityEnum = EnumUtils.getEnum(PolicySeverityEnum.class, formattedPolicySeverity)
                         if (policySeverityEnum != null) {
                             int severityCount = policyStatusDescription.getCountOfSeverity(policySeverityEnum)
                             policyFailBuild += severityCount
