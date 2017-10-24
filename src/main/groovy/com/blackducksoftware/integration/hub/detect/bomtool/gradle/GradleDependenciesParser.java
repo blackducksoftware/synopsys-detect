@@ -48,16 +48,13 @@ import com.blackducksoftware.integration.hub.detect.model.DetectProject;
 public class GradleDependenciesParser {
     private final Logger logger = LoggerFactory.getLogger(GradleDependenciesParser.class);
 
-    private static final String FIRST_DEPENDENCY_OF_MANY_INDICATOR = "+---";
-    private static final String LAST_DEPENDENCY_INDICATOR = "\\---";
-    private static final String FIRST_PROJECT_DEPENDENCY_OF_MANY_INDICATOR = "+--- project :";
-    private static final String LAST_PROJECT_DEPENDENCY_INDICATOR = "\\--- project :";
+    private static final String[] DEPENDENCY_INDICATORS = new String[] { "+---", "\\---" };
+    private static final String[] PROJECT_INDICATORS = new String[] { "+--- project :", "\\--- project :" };
+
     private static final String COMPONENT_PREFIX = "--- ";
     private static final String SEEN_ELSEWHERE_SUFFIX = " (*)";
     private static final String WINNING_INDICATOR = " -> ";
 
-    private String rootProjectSourcePath = "";
-    private String rootProjectGroup = "";
     private String rootProjectName = "";
     private String rootProjectVersionName = "";
     private String projectSourcePath = "";
@@ -65,6 +62,7 @@ public class GradleDependenciesParser {
     private String projectName = "";
     private String projectVersionName = "";
     private boolean processingMetaData = false;
+    private boolean processingBeneathProject = false;
     private boolean processingConfiguration = false;
     private String configurationName = null;
     private String previousLine = null;
@@ -75,25 +73,6 @@ public class GradleDependenciesParser {
 
     @Autowired
     private ExternalIdFactory externalIdFactory;
-
-    private void clearState() {
-        rootProjectSourcePath = "";
-        rootProjectGroup = "";
-        rootProjectName = "";
-        rootProjectVersionName = "";
-        projectSourcePath = "";
-        projectGroup = "";
-        projectName = "";
-        projectVersionName = "";
-        processingMetaData = false;
-        processingConfiguration = false;
-        configurationName = null;
-        previousLine = null;
-        graph = new MutableMapDependencyGraph();
-        nodeStack = new Stack<>();
-        previousNode = null;
-        treeLevel = 0;
-    }
 
     public DetectCodeLocation parseDependencies(final DetectProject detectProject, final InputStream dependenciesInputStream) {
         clearState();
@@ -120,20 +99,29 @@ public class GradleDependenciesParser {
                 }
 
                 if (StringUtils.isBlank(line)) {
-                    processingConfiguration = false;
-                    configurationName = null;
-                    previousLine = null;
-                    nodeStack = new Stack<>();
-                    previousNode = null;
-                    treeLevel = 0;
+                    clearConfigurationState();
                     continue;
                 }
 
-                determineConfigurationProcessing(line);
-
                 if (!processingConfiguration) {
+                    if (isRootLevel(line)) {
+                        processingConfiguration = true;
+                        configurationName = extractConfigurationName(previousLine);
+                        logger.info(String.format("processing of configuration %s started", configurationName));
+                    } else {
+                        previousLine = line;
+                        continue;
+                    }
+                }
+
+                if (processingBeneathProject && !isRootLevel(line)) {
                     previousLine = line;
                     continue;
+                } else if (isRootLevelProject(line)) {
+                    processingBeneathProject = true;
+                    continue;
+                } else {
+                    processingBeneathProject = false;
                 }
 
                 if (StringUtils.isBlank(line) || !line.contains(COMPONENT_PREFIX)) {
@@ -178,18 +166,68 @@ public class GradleDependenciesParser {
         return detectCodeLocation;
     }
 
+    private void clearState() {
+        rootProjectName = "";
+        rootProjectVersionName = "";
+        projectSourcePath = "";
+        projectGroup = "";
+        projectName = "";
+        projectVersionName = "";
+        processingMetaData = false;
+        processingConfiguration = false;
+        configurationName = null;
+        previousLine = null;
+        graph = new MutableMapDependencyGraph();
+        nodeStack = new Stack<>();
+        previousNode = null;
+        treeLevel = 0;
+    }
+
+    private void clearConfigurationState() {
+        processingBeneathProject = false;
+        processingConfiguration = false;
+        configurationName = null;
+        previousLine = null;
+        nodeStack = new Stack<>();
+        previousNode = null;
+        treeLevel = 0;
+    }
+
+    private String extractConfigurationName(final String nameLine) {
+        if (nameLine.contains(" - ")) {
+            return nameLine.substring(0, nameLine.indexOf(" - ")).trim();
+        } else {
+            return nameLine.trim();
+        }
+    }
+
+    private boolean startsWithAny(final String thing, final String[] targets) {
+        boolean startsWith = false;
+        for (final String target : targets) {
+            startsWith = startsWith || thing.startsWith(target);
+        }
+        return startsWith;
+    }
+
+    private String removeDependencyIndicators(final String line) {
+        int indexToCut = line.length();
+        for (final String target : DEPENDENCY_INDICATORS) {
+            if (line.contains(target)) {
+                indexToCut = line.indexOf(target);
+            }
+        }
+
+        return line.substring(0, indexToCut);
+
+    }
+
     public int getLineLevel(final String line) {
-        if (isTreeLevelZero(line)) {
+        if (isRootLevel(line)) {
             return 0;
         }
-        String modifiedLine = "";
-        int indexToCut = line.length();
-        if (line.contains(FIRST_DEPENDENCY_OF_MANY_INDICATOR)) {
-            indexToCut = line.indexOf(FIRST_DEPENDENCY_OF_MANY_INDICATOR);
-        } else if (line.contains(LAST_DEPENDENCY_INDICATOR)) {
-            indexToCut = line.indexOf(LAST_DEPENDENCY_INDICATOR);
-        }
-        modifiedLine = line.substring(0, indexToCut);
+
+        String modifiedLine = removeDependencyIndicators(line);
+
         if (!modifiedLine.startsWith("|")) {
             modifiedLine = "|" + modifiedLine;
         }
@@ -234,11 +272,7 @@ public class GradleDependenciesParser {
     }
 
     private void processMetaDataLine(final String metaDataLine) {
-        if (metaDataLine.startsWith("rootProjectPath:")) {
-            rootProjectSourcePath = metaDataLine.substring("rootProjectPath:".length()).trim();
-        } else if (metaDataLine.startsWith("rootProjectGroup:")) {
-            rootProjectGroup = metaDataLine.substring("rootProjectGroup:".length()).trim();
-        } else if (metaDataLine.startsWith("rootProjectName:")) {
+        if (metaDataLine.startsWith("rootProjectName:")) {
             rootProjectName = metaDataLine.substring("rootProjectName:".length()).trim();
         } else if (metaDataLine.startsWith("rootProjectVersion:")) {
             rootProjectVersionName = metaDataLine.substring("rootProjectVersion:".length()).trim();
@@ -253,36 +287,16 @@ public class GradleDependenciesParser {
         }
     }
 
-    private void determineConfigurationProcessing(final String line) {
-        if (!processingConfiguration && isTreeLevelZero(line) && configurationName == null) {
-            configurationName = previousLine;
-            if (previousLine.contains(" - ")) {
-                configurationName = previousLine.substring(0, previousLine.indexOf(" - ")).trim();
-            } else {
-                configurationName = previousLine.trim();
-            }
-        }
-
-        if (!processingConfiguration && isRootDependencyLine(line)) {
-            processingConfiguration = true;
-            logger.info(String.format("processing of configuration %s started", configurationName));
-        }
-
-        if (processingConfiguration && isRootProjectLine(line)) {
-            processingConfiguration = false;
-        }
+    private boolean isRootLevel(final String line) {
+        return isRootLevelProject(line) || isRootLevelDependency(line);
     }
 
-    private boolean isTreeLevelZero(final String line) {
-        return line.startsWith(FIRST_DEPENDENCY_OF_MANY_INDICATOR) || line.startsWith(LAST_DEPENDENCY_INDICATOR);
+    private boolean isRootLevelDependency(final String line) {
+        return startsWithAny(line, DEPENDENCY_INDICATORS);
     }
 
-    private boolean isRootDependencyLine(final String line) {
-        return isTreeLevelZero(line) && !line.startsWith(FIRST_PROJECT_DEPENDENCY_OF_MANY_INDICATOR) && !line.startsWith(LAST_PROJECT_DEPENDENCY_INDICATOR);
-    }
-
-    private boolean isRootProjectLine(final String line) {
-        return isTreeLevelZero(line) && !isRootDependencyLine(line);
+    private boolean isRootLevelProject(final String line) {
+        return startsWithAny(line, PROJECT_INDICATORS);
     }
 
 }
