@@ -16,6 +16,8 @@ import static org.junit.Assert.*
 import org.junit.Test
 import org.springframework.test.util.ReflectionTestUtils
 
+import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
@@ -25,6 +27,7 @@ import com.google.gson.GsonBuilder
 
 class GradleDependenciesParserTest {
     private TestUtil testUtil = new TestUtil()
+    private ExternalIdFactory externalIdFactory = new ExternalIdFactory()
 
     @Test
     public void getLineLevelTest() {
@@ -40,6 +43,69 @@ class GradleDependenciesParserTest {
     @Test
     public void extractCodeLocationTest() {
         createNewCodeLocationTest('gradle/dependencyGraph.txt', '/gradle/dependencyGraph-expected.json', "hub-detect", "2.0.0-SNAPSHOT")
+    }
+
+    @Test
+    public void complexTest() {
+        DetectCodeLocation codeLocation = build('gradle/parse-tests/complex_dependencyGraph.txt');
+        assertHas(codeLocation, "non-project:with-nested:1.0.0");
+        assertHas(codeLocation, "solo:component:4.12");
+        assertHas(codeLocation, "some.group:child:2.2.2");
+        assertHas(codeLocation, "terminal:child:6.2.3");
+
+        assertDoesNotHave(codeLocation, "child-project");
+        assertDoesNotHave(codeLocation, "nested-parent");
+        assertDoesNotHave(codeLocation, "spring-webflux");
+        assertDoesNotHave(codeLocation, "spring-beans");
+        assertDoesNotHave(codeLocation, "spring-core");
+        assertDoesNotHave(codeLocation, "spring-web");
+        assertDoesNotHave(codeLocation, "should-suppress");
+    }
+
+    private void assertDoesNotHave(DetectCodeLocation codeLocation, String name) {
+        assertDoesNotHave(codeLocation, name, null);
+    }
+
+    private void assertDoesNotHave(DetectCodeLocation codeLocation, String name, ExternalId current) {
+        if (current == null){
+            for (Dependency dep : codeLocation.dependencyGraph.getRootDependencies()){
+                assertDoesNotHave(dep, name);
+                assertDoesNotHave(codeLocation, name, dep.externalId);
+            }
+        }else{
+            for (Dependency dep : codeLocation.dependencyGraph.getChildrenForParent(current)){
+                assertDoesNotHave(dep, name);
+                assertDoesNotHave(codeLocation, name, dep.externalId);
+            }
+        }
+    }
+
+    private void assertDoesNotHave(Dependency dep, String name) {
+        assertFalse("Dependency name contains '" + name + "'", dep.name.contains(name));
+        assertFalse("Dependency version contains '" + name + "'", dep.version.contains(name));
+        assertFalse("External id version contains '" + name + "'", dep.externalId.version.contains(name));
+        assertFalse("External id group contains '" + name + "'", dep.externalId.group.contains(name));
+        assertFalse("External id name contains '" + name + "'", dep.externalId.name.contains(name));
+    }
+
+    private void assertHas(DetectCodeLocation codeLocation, String gav) {
+        String[] split = gav.split(":");
+        assertHas(codeLocation, split[0], split[1], split[2]);
+    }
+
+    private void assertHas(DetectCodeLocation codeLocation, String org, String name, String version) {
+
+        Dependency dep = codeLocation.dependencyGraph.getDependency(externalIdFactory.createMavenExternalId(org, name, version))
+        assertNotNull(dep);
+    }
+
+    private DetectCodeLocation build(String resource){
+        InputStream inputStream = ResourceUtil.getResourceAsStream(GradleDependenciesParserTest.class, resource)
+        DetectProject project = new DetectProject()
+        GradleDependenciesParser gradleDependenciesParser = new GradleDependenciesParser()
+        ReflectionTestUtils.setField(gradleDependenciesParser, 'externalIdFactory', externalIdFactory)
+        DetectCodeLocation codeLocation = gradleDependenciesParser.parseDependencies(project, inputStream)
+        return codeLocation;
     }
 
     @Test
