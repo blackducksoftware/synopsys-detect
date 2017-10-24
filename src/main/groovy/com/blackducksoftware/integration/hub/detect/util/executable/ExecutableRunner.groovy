@@ -22,8 +22,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.util.executable
 
-import java.nio.charset.StandardCharsets
-
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -46,8 +44,21 @@ public class ExecutableRunner {
         try {
             final ProcessBuilder processBuilder = executable.createProcessBuilder()
             final Process process = processBuilder.start()
-            final String standardOutput = printStream(process.getInputStream()).trim()
-            final String errorOutput = printStream(process.getErrorStream()).trim()
+
+            ExecutableStreamThread standardOutputThread = new ExecutableStreamThread(process.getInputStream(), logger);
+            standardOutputThread.start();
+
+            ExecutableStreamThread errorOutputThread = new ExecutableStreamThread(process.getErrorStream(), logger);
+            errorOutputThread.start();
+
+            int returnCode = process.waitFor();
+
+            standardOutputThread.join();
+            errorOutputThread.join();
+
+            final String standardOutput = standardOutputThread.executableOutput.trim()
+            final String errorOutput = errorOutputThread.executableOutput.trim()
+
             final ExecutableOutput output = new ExecutableOutput(standardOutput, errorOutput)
             return output
         } catch (final Exception e) {
@@ -64,18 +75,6 @@ public class ExecutableRunner {
         } catch (final Exception e) {
             throw new ExecutableRunnerException(e)
         }
-    }
-
-    private String printStream(final InputStream inputStream) throws IOException {
-        final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))
-        final StringBuilder stringBuilder = new StringBuilder()
-
-        String line
-        while ((line = bufferedReader.readLine()) != null) {
-            stringBuilder.append(line + System.lineSeparator)
-            logger.info(line)
-        }
-        return stringBuilder.toString()
     }
 
     public void runExeToFile(final String exePath, final File outputFile, final File errorFile, final String... args) {
