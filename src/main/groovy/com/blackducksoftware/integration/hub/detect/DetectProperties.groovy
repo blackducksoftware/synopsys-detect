@@ -286,6 +286,10 @@ class DetectProperties {
     @Value('${detect.go.dep.path}')
     String goDepPath
 
+    @ValueDescription(description="If set to true, we will attempt to run 'init' and 'ensure' which can modify your development environment.", defaultValue='false', group=DetectProperties.GROUP_GO)
+    @Value('${detect.go.run.dep.init}')
+    Boolean goRunDepInit
+
     @ValueDescription(description="Path of the docker executable", group=DetectProperties.GROUP_DOCKER)
     @Value('${detect.docker.path}')
     String dockerPath

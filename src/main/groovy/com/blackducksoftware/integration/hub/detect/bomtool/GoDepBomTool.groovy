@@ -46,9 +46,7 @@ class GoDepBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(GoDepBomTool.class)
 
     public static final String GOPKG_LOCK_FILENAME= 'Gopkg.lock'
-
     public static final String GOFILE_FILENAME_PATTERN= '*.go'
-
     public static final Forge GOLANG = new Forge("golang",":")
 
     @Autowired
@@ -127,11 +125,20 @@ class GoDepBomTool extends BomTool {
         def goOutputDirectory = goDep.getParentFile()
         goOutputDirectory.mkdirs()
         logger.debug("Retrieving the Go Dep tool")
-        Executable getGoDep = new Executable(goOutputDirectory, goExecutable, ['get', '-u', '-v', '-d', 'github.com/golang/dep/cmd/dep'])
+        Executable getGoDep = new Executable(goOutputDirectory, goExecutable, [
+            'get',
+            '-u',
+            '-v',
+            '-d',
+            'github.com/golang/dep/cmd/dep'
+        ])
         executableRunner.execute(getGoDep)
 
         logger.debug("Building the Go Dep tool in ${goOutputDirectory}")
-        Executable buildGoDep = new Executable(goOutputDirectory, goExecutable, ['build', 'github.com/golang/dep/cmd/dep'])
+        Executable buildGoDep = new Executable(goOutputDirectory, goExecutable, [
+            'build',
+            'github.com/golang/dep/cmd/dep'
+        ])
         executableRunner.execute(buildGoDep)
         goDep.getAbsolutePath()
     }

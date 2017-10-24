@@ -416,6 +416,9 @@ class DetectConfiguration {
     public String getGoDepPath() {
         return detectProperties.goDepPath
     }
+    public boolean getGoRunDepInit() {
+        return BooleanUtils.toBoolean(detectProperties.goRunDepInit)
+    }
     public String getDockerPath() {
         return detectProperties.dockerPath
     }

@@ -51,7 +51,7 @@ class DepPackager {
 
     @Autowired
     DetectConfiguration detectConfiguration
- 
+
     @Autowired
     ExternalIdFactory externalIdFactory
 
@@ -69,6 +69,12 @@ class DepPackager {
         if (gopkgLockFile.exists()) {
             return gopkgLockFile.text
         }
+
+        //by default, we won't run 'init' and 'ensure' anymore so just return an empty string
+        if (!detectConfiguration.goRunDepInit) {
+            return ''
+        }
+
         def gopkgTomlFile = new File(file, "Gopkg.toml")
         def vendorDirectory = new File(file, "vendor")
         boolean vendorDirectoryExistedBefore = vendorDirectory.exists()

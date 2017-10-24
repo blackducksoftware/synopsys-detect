@@ -14,12 +14,14 @@ package com.blackducksoftware.integration.hub.detect.bomtool.gradle
 import static org.junit.Assert.*
 
 import org.junit.Test
+import org.springframework.test.util.ReflectionTestUtils
 
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 import com.blackducksoftware.integration.util.ResourceUtil
+import com.google.gson.GsonBuilder
 
 class GradleDependenciesParserTest {
     private TestUtil testUtil = new TestUtil()
@@ -40,10 +42,20 @@ class GradleDependenciesParserTest {
         createNewCodeLocationTest('gradle/dependencyGraph.txt', '/gradle/dependencyGraph-expected.json', "hub-detect", "2.0.0-SNAPSHOT")
     }
 
+    @Test
+    public void testSpringFrameworkAop() {
+        InputStream inputStream = ResourceUtil.getResourceAsStream(GradleDependenciesParserTest.class, 'gradle/spring-framework/spring_aop_dependencyGraph.txt')
+        DetectProject project = new DetectProject()
+        GradleDependenciesParser gradleDependenciesParser = new GradleDependenciesParser()
+        ReflectionTestUtils.setField(gradleDependenciesParser, 'externalIdFactory', new ExternalIdFactory())
+        DetectCodeLocation codeLocation = gradleDependenciesParser.parseDependencies(project, inputStream)
+        println(new GsonBuilder().setPrettyPrinting().create().toJson(codeLocation))
+    }
+
     private void createNewCodeLocationTest(String gradleInspectorOutputResourcePath, String expectedResourcePath, String rootProjectName, String rootProjectVersionName) {
         DetectProject project = new DetectProject()
         GradleDependenciesParser gradleDependenciesParser = new GradleDependenciesParser()
-        gradleDependenciesParser.externalIdFactory = new ExternalIdFactory()
+        ReflectionTestUtils.setField(gradleDependenciesParser, 'externalIdFactory', new ExternalIdFactory())
         DetectCodeLocation codeLocation = gradleDependenciesParser.parseDependencies(project, ResourceUtil.getResourceAsStream(GradleDependenciesParserTest.class, gradleInspectorOutputResourcePath))
 
         assertEquals(rootProjectName, project.getProjectName())
