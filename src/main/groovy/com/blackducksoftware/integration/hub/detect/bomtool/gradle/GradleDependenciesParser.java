@@ -62,6 +62,14 @@ public class GradleDependenciesParser {
     private String projectGroup = "";
     private String projectName = "";
     private String projectVersionName = "";
+    private boolean processingMetaData = false;
+    private boolean processingConfiguration = false;
+    private String configurationName = null;
+    private String previousLine = null;
+    private MutableDependencyGraph graph = new MutableMapDependencyGraph();
+    private Stack<Dependency> nodeStack = new Stack<>();
+    private Dependency previousNode = null;
+    private int treeLevel = 0;
 
     private final ExternalIdFactory externalIdFactory;
 
@@ -69,15 +77,27 @@ public class GradleDependenciesParser {
         this.externalIdFactory = externalIdFactory;
     }
 
+    private void clearState() {
+        rootProjectSourcePath = "";
+        rootProjectGroup = "";
+        rootProjectName = "";
+        rootProjectVersionName = "";
+        projectSourcePath = "";
+        projectGroup = "";
+        projectName = "";
+        projectVersionName = "";
+        processingMetaData = false;
+        processingConfiguration = false;
+        configurationName = null;
+        previousLine = null;
+        graph = new MutableMapDependencyGraph();
+        nodeStack = new Stack<>();
+        previousNode = null;
+        treeLevel = 0;
+    }
+
     public DetectCodeLocation parseDependencies(final DetectProject detectProject, final InputStream dependenciesInputStream) {
-        final MutableDependencyGraph graph = new MutableMapDependencyGraph();
-        boolean processingMetaData = false;
-        boolean processingConfiguration = false;
-        String configurationName = null;
-        String previousLine = null;
-        Stack<Dependency> nodeStack = new Stack<>();
-        Dependency previousNode = null;
-        int treeLevel = 0;
+        clearState();
 
         BufferedReader reader = null;
         try {
@@ -110,19 +130,7 @@ public class GradleDependenciesParser {
                     continue;
                 }
 
-                if (!processingConfiguration && line.startsWith(DEPENDENCY_INDICATOR)) {
-                    configurationName = previousLine;
-                    if (previousLine.contains(" -  ")) {
-                        configurationName = previousLine.substring(0, previousLine.indexOf(" - ")).trim();
-                    } else {
-                        configurationName = previousLine.trim();
-                    }
-                }
-
-                if (!processingConfiguration && line.startsWith(DEPENDENCY_INDICATOR) && !line.startsWith(PROJECT_DEPENDENCY_INDICATOR)) {
-                    processingConfiguration = true;
-                    logger.info(String.format("processing of configuration %s started", configurationName));
-                }
+                determineConfigurationProcessing(line);
 
                 if (!processingConfiguration) {
                     previousLine = line;
@@ -245,4 +253,37 @@ public class GradleDependenciesParser {
             projectVersionName = metaDataLine.substring("projectVersion:".length()).trim();
         }
     }
+
+    private void determineConfigurationProcessing(final String line) {
+        if (!processingConfiguration && isTreeLevelZero(line) && configurationName == null) {
+            configurationName = previousLine;
+            if (previousLine.contains(" - ")) {
+                configurationName = previousLine.substring(0, previousLine.indexOf(" - ")).trim();
+            } else {
+                configurationName = previousLine.trim();
+            }
+        }
+
+        if (!processingConfiguration && isRootDependencyLine(line)) {
+            processingConfiguration = true;
+            logger.info(String.format("processing of configuration %s started", configurationName));
+        }
+
+        if (processingConfiguration && isRootProjectLine(line)) {
+            processingConfiguration = false;
+        }
+    }
+
+    private boolean isTreeLevelZero(final String line) {
+        return line.startsWith("+---") || (line.startsWith("\\---"));
+    }
+
+    private boolean isRootDependencyLine(final String line) {
+        return isTreeLevelZero(line) && !line.startsWith("+--- project :") && !line.startsWith("\\--- project :");
+    }
+
+    private boolean isRootProjectLine(final String line) {
+        return isTreeLevelZero(line) && !isRootDependencyLine(line);
+    }
+
 }
