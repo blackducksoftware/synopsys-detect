@@ -55,9 +55,6 @@ class GradleBomTool extends BomTool {
     @Autowired
     GradleInspectorManager gradleInspectorManager
 
-    @Autowired
-    ExternalIdFactory externalIdFactory;
-
     private String gradleExecutable
 
     @Override
