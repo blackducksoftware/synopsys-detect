@@ -77,7 +77,7 @@ class PolicyChecker {
         }
 
         String[] policySeverityCheck = policyFailOnSeverity.split(',')
-        return checkForPolicySeverityViolation(policyStatusDescription, policySeverityCheck)
+        return checkIfPolicySeverityViolated(policyStatusDescription, policySeverityCheck)
     }
 
     private boolean checkIfAnyPolicyViolated(PolicyStatusDescription policyStatusDescription) {
@@ -85,7 +85,7 @@ class PolicyChecker {
         return inViolationCount != 0
     }
 
-    private boolean checkForPolicySeverityViolation(PolicyStatusDescription policyStatusDescription, String[] severityCheckList) {
+    private boolean checkIfPolicySeverityViolated(PolicyStatusDescription policyStatusDescription, String[] severityCheckList) {
         for (String policySeverity : severityCheckList) {
             String formattedPolicySeverity = policySeverity.toUpperCase().trim()
             PolicySeverityEnum policySeverityEnum = EnumUtils.getEnum(PolicySeverityEnum.class, formattedPolicySeverity)
