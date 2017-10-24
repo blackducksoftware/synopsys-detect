@@ -47,6 +47,7 @@ import com.blackducksoftware.integration.hub.detect.model.DetectProject;
 public class GradleDependenciesParser {
     private final Logger logger = LoggerFactory.getLogger(GradleDependenciesParser.class);
 
+    private static final String PROJECT_DEPENDENCY_INDICATOR = "+--- project :";
     private static final String DEPENDENCY_INDICATOR = "+---";
     private static final String LAST_CHILD_INDICATOR = "\\---";
     private static final String COMPONENT_PREFIX = "--- ";
@@ -108,16 +109,21 @@ public class GradleDependenciesParser {
                     treeLevel = 0;
                     continue;
                 }
+
                 if (!processingConfiguration && line.startsWith(DEPENDENCY_INDICATOR)) {
-                    processingConfiguration = true;
                     configurationName = previousLine;
                     if (previousLine.contains(" -  ")) {
                         configurationName = previousLine.substring(0, previousLine.indexOf(" - ")).trim();
                     } else {
                         configurationName = previousLine.trim();
                     }
+                }
+
+                if (!processingConfiguration && line.startsWith(DEPENDENCY_INDICATOR) && !line.startsWith(PROJECT_DEPENDENCY_INDICATOR)) {
+                    processingConfiguration = true;
                     logger.info(String.format("processing of configuration %s started", configurationName));
                 }
+
                 if (!processingConfiguration) {
                     previousLine = line;
                     continue;
