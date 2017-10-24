@@ -44,6 +44,7 @@ import com.blackducksoftware.integration.hub.dataservice.project.ProjectDataServ
 import com.blackducksoftware.integration.hub.dataservice.project.ProjectVersionWrapper
 import com.blackducksoftware.integration.hub.dataservice.report.RiskReportDataService
 import com.blackducksoftware.integration.hub.dataservice.scan.ScanStatusDataService
+import com.blackducksoftware.integration.hub.detect.Application
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.exception.DoesNotExistException
@@ -62,8 +63,6 @@ import groovy.transform.TypeChecked
 @Component
 @TypeChecked
 class HubManager {
-    private static final int FAIL_DETECT = 1
-
     private final Logger logger = LoggerFactory.getLogger(HubManager.class)
 
     @Autowired
@@ -122,25 +121,8 @@ class HubManager {
                 PolicyStatusDataService policyStatusDataService = hubServiceWrapper.createPolicyStatusDataService()
                 PolicyStatusDescription policyStatusDescription = policyChecker.getPolicyStatus(policyStatusDataService, projectVersionView)
                 logger.info(policyStatusDescription.policyStatusMessage)
-                String policyFailOnSeverity = detectConfiguration.getPolicyFailOnSeverity()
-                int policyFailBuild = 0
-                if (!StringUtils.isEmpty(policyFailOnSeverity)) {
-                    String[] policySeverityCheck = policyFailOnSeverity.split(',')
-                    for (String policySeverity : policySeverityCheck) {
-                        String formattedPolicySeverity = policySeverity.toUpperCase().trim()
-                        PolicySeverityEnum policySeverityEnum = EnumUtils.getEnum(PolicySeverityEnum.class, formattedPolicySeverity)
-                        if (policySeverityEnum != null) {
-                            int severityCount = policyStatusDescription.getCountOfSeverity(policySeverityEnum)
-                            policyFailBuild += severityCount
-                        }
-                    }
-                } else {
-                    int inViolationCount = policyStatusDescription.getCountOfStatus(VersionBomPolicyStatusOverallStatusEnum.IN_VIOLATION)
-                    policyFailBuild += inViolationCount
-                }
-
-                if (policyFailBuild > 0) {
-                    postActionResult = FAIL_DETECT
+                if (policyChecker.policyViolated(policyStatusDescription)) {
+                    postActionResult = Application.FAIL_DETECT
                 }
             }
 

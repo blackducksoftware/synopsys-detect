@@ -22,6 +22,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.hub
 
+import org.apache.commons.lang3.EnumUtils
+import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -31,6 +33,7 @@ import com.blackducksoftware.integration.hub.dataservice.policystatus.PolicyStat
 import com.blackducksoftware.integration.hub.dataservice.policystatus.PolicyStatusDescription
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.exception.DetectException
+import com.blackducksoftware.integration.hub.model.enumeration.PolicySeverityEnum
 import com.blackducksoftware.integration.hub.model.enumeration.VersionBomPolicyStatusOverallStatusEnum
 import com.blackducksoftware.integration.hub.model.view.ProjectVersionView
 import com.blackducksoftware.integration.hub.model.view.VersionBomPolicyStatusView
@@ -65,5 +68,35 @@ class PolicyChecker {
         }
         logger.info("Policy Status: ${statusEnum.name()}")
         policyStatusDescription
+    }
+
+    public boolean policyViolated(PolicyStatusDescription policyStatusDescription) {
+        String policyFailOnSeverity = detectConfiguration.getPolicyFailOnSeverity()
+        if (StringUtils.isEmpty(policyFailOnSeverity)) {
+            return checkIfAnyPolicyViolated(policyStatusDescription)
+        }
+
+        String[] policySeverityCheck = policyFailOnSeverity.split(',')
+        return checkForPolicySeverityViolation(policyStatusDescription, policySeverityCheck)
+    }
+
+    private boolean checkIfAnyPolicyViolated(PolicyStatusDescription policyStatusDescription) {
+        int inViolationCount = policyStatusDescription.getCountOfStatus(VersionBomPolicyStatusOverallStatusEnum.IN_VIOLATION)
+        return inViolationCount != 0
+    }
+
+    private boolean checkForPolicySeverityViolation(PolicyStatusDescription policyStatusDescription, String[] severityCheckList) {
+        for (String policySeverity : severityCheckList) {
+            String formattedPolicySeverity = policySeverity.toUpperCase().trim()
+            PolicySeverityEnum policySeverityEnum = EnumUtils.getEnum(PolicySeverityEnum.class, formattedPolicySeverity)
+            if (policySeverityEnum != null) {
+                int severityCount = policyStatusDescription.getCountOfSeverity(policySeverityEnum)
+                if (severityCount > 0) {
+                    return true
+                }
+            }
+        }
+
+        return false
     }
 }

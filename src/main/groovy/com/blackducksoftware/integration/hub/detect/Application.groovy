@@ -59,6 +59,8 @@ import groovy.transform.TypeChecked
 @TypeChecked
 @SpringBootApplication
 class Application {
+    static final int FAIL_DETECT = 1
+
     private final Logger logger = LoggerFactory.getLogger(Application.class)
 
     @Autowired
