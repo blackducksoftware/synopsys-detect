@@ -47,7 +47,6 @@ class GoVndrBomTool extends BomTool {
 
     public static final String VNDR_CONF_FILENAME= 'vendor.conf'
 
-
     @Autowired
     ExternalIdFactory externalIdFactory
 
