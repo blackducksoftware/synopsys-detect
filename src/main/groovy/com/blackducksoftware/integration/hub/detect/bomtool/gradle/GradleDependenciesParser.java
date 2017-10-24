@@ -55,11 +55,6 @@ public class GradleDependenciesParser {
     private static final String SEEN_ELSEWHERE_SUFFIX = " (*)";
     private static final String WINNING_INDICATOR = " -> ";
 
-    @SuppressWarnings("unused")
-    private String rootProjectSourcePath = "";
-    @SuppressWarnings("unused")
-    private String rootProjectGroup = "";
-
     private String rootProjectName = "";
     private String rootProjectVersionName = "";
     private String projectSourcePath = "";
@@ -172,8 +167,6 @@ public class GradleDependenciesParser {
     }
 
     private void clearState() {
-        rootProjectSourcePath = "";
-        rootProjectGroup = "";
         rootProjectName = "";
         rootProjectVersionName = "";
         projectSourcePath = "";
@@ -279,11 +272,7 @@ public class GradleDependenciesParser {
     }
 
     private void processMetaDataLine(final String metaDataLine) {
-        if (metaDataLine.startsWith("rootProjectPath:")) {
-            rootProjectSourcePath = metaDataLine.substring("rootProjectPath:".length()).trim();
-        } else if (metaDataLine.startsWith("rootProjectGroup:")) {
-            rootProjectGroup = metaDataLine.substring("rootProjectGroup:".length()).trim();
-        } else if (metaDataLine.startsWith("rootProjectName:")) {
+        if (metaDataLine.startsWith("rootProjectName:")) {
             rootProjectName = metaDataLine.substring("rootProjectName:".length()).trim();
         } else if (metaDataLine.startsWith("rootProjectVersion:")) {
             rootProjectVersionName = metaDataLine.substring("rootProjectVersion:".length()).trim();
