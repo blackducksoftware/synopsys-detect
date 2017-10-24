@@ -47,9 +47,10 @@ import com.blackducksoftware.integration.hub.detect.model.DetectProject;
 public class GradleDependenciesParser {
     private final Logger logger = LoggerFactory.getLogger(GradleDependenciesParser.class);
 
-    private static final String PROJECT_DEPENDENCY_INDICATOR = "+--- project :";
-    private static final String DEPENDENCY_INDICATOR = "+---";
-    private static final String LAST_CHILD_INDICATOR = "\\---";
+    private static final String FIRST_DEPENDENCY_OF_MANY_INDICATOR = "+---";
+    private static final String LAST_DEPENDENCY_INDICATOR = "\\---";
+    private static final String FIRST_PROJECT_DEPENDENCY_OF_MANY_INDICATOR = "+--- project :";
+    private static final String LAST_PROJECT_DEPENDENCY_INDICATOR = "\\--- project :";
     private static final String COMPONENT_PREFIX = "--- ";
     private static final String SEEN_ELSEWHERE_SUFFIX = " (*)";
     private static final String WINNING_INDICATOR = " -> ";
@@ -180,15 +181,15 @@ public class GradleDependenciesParser {
     }
 
     public int getLineLevel(final String line) {
-        if (line.startsWith(DEPENDENCY_INDICATOR) || line.startsWith(LAST_CHILD_INDICATOR)) {
+        if (isTreeLevelZero(line)) {
             return 0;
         }
         String modifiedLine = "";
         int indexToCut = line.length();
-        if (line.contains(DEPENDENCY_INDICATOR)) {
-            indexToCut = line.indexOf(DEPENDENCY_INDICATOR);
-        } else if (line.contains(LAST_CHILD_INDICATOR)) {
-            indexToCut = line.indexOf(LAST_CHILD_INDICATOR);
+        if (line.contains(FIRST_DEPENDENCY_OF_MANY_INDICATOR)) {
+            indexToCut = line.indexOf(FIRST_DEPENDENCY_OF_MANY_INDICATOR);
+        } else if (line.contains(LAST_DEPENDENCY_INDICATOR)) {
+            indexToCut = line.indexOf(LAST_DEPENDENCY_INDICATOR);
         }
         modifiedLine = line.substring(0, indexToCut);
         if (!modifiedLine.startsWith("|")) {
@@ -275,11 +276,11 @@ public class GradleDependenciesParser {
     }
 
     private boolean isTreeLevelZero(final String line) {
-        return line.startsWith("+---") || (line.startsWith("\\---"));
+        return line.startsWith(FIRST_DEPENDENCY_OF_MANY_INDICATOR) || line.startsWith(LAST_DEPENDENCY_INDICATOR);
     }
 
     private boolean isRootDependencyLine(final String line) {
-        return isTreeLevelZero(line) && !line.startsWith("+--- project :") && !line.startsWith("\\--- project :");
+        return isTreeLevelZero(line) && !line.startsWith(FIRST_PROJECT_DEPENDENCY_OF_MANY_INDICATOR) && !line.startsWith(LAST_PROJECT_DEPENDENCY_INDICATOR);
     }
 
     private boolean isRootProjectLine(final String line) {

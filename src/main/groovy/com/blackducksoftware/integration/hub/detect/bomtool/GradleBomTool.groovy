@@ -49,8 +49,8 @@ class GradleBomTool extends BomTool {
     @Autowired
     HubSignatureScanner hubSignatureScanner
 
-    //    @Autowired
-    //    GradleDependenciesParser gradleDependenciesParser
+    @Autowired
+    GradleDependenciesParser gradleDependenciesParser
 
     @Autowired
     GradleInspectorManager gradleInspectorManager
@@ -117,7 +117,6 @@ class GradleBomTool extends BomTool {
 
         List<DetectCodeLocation> codeLocations = codeLocationFiles.collect { File file ->
             logger.debug("Parsing dependency graph : ${file.getName()}")
-            GradleDependenciesParser gradleDependenciesParser = new GradleDependenciesParser(externalIdFactory);
             gradleDependenciesParser.parseDependencies(detectProject, file.newInputStream())
         }
         if (detectConfiguration.gradleCleanupBuildBlackduckDirectory) {
