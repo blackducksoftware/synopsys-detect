@@ -22,6 +22,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.util.executable
 
+import org.apache.commons.io.IOUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -45,22 +46,30 @@ public class ExecutableRunner {
             final ProcessBuilder processBuilder = executable.createProcessBuilder()
             final Process process = processBuilder.start()
 
-            ExecutableStreamThread standardOutputThread = new ExecutableStreamThread(process.getInputStream(), logger);
-            standardOutputThread.start();
+            InputStream standardOutputStream = process.getInputStream();
+            InputStream standardErrorStream = process.getErrorStream();
 
-            ExecutableStreamThread errorOutputThread = new ExecutableStreamThread(process.getErrorStream(), logger);
-            errorOutputThread.start();
+            try {
+                ExecutableStreamThread standardOutputThread = new ExecutableStreamThread(standardOutputStream, logger);
+                standardOutputThread.start();
 
-            int returnCode = process.waitFor();
+                ExecutableStreamThread errorOutputThread = new ExecutableStreamThread(standardErrorStream, logger);
+                errorOutputThread.start();
 
-            standardOutputThread.join();
-            errorOutputThread.join();
+                int returnCode = process.waitFor();
 
-            final String standardOutput = standardOutputThread.executableOutput.trim()
-            final String errorOutput = errorOutputThread.executableOutput.trim()
+                standardOutputThread.join();
+                errorOutputThread.join();
 
-            final ExecutableOutput output = new ExecutableOutput(standardOutput, errorOutput)
-            return output
+                final String standardOutput = standardOutputThread.executableOutput.trim()
+                final String errorOutput = errorOutputThread.executableOutput.trim()
+
+                final ExecutableOutput output = new ExecutableOutput(standardOutput, errorOutput)
+                return output
+            } finally {
+                IOUtils.closeQuietly(standardOutputStream);
+                IOUtils.closeQuietly(standardErrorStream);
+            }
         } catch (final Exception e) {
             throw new ExecutableRunnerException(e)
         }
