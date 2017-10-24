@@ -97,6 +97,14 @@ def get_package_by_name(package_name):
         return pkg_resources.working_set.by_key[package_name.lower()]
     except:
         pass
+    try:
+        return pkg_resources.working_set.by_key[package_name.replace('-','_')]
+    except:
+        pass
+    try:
+        return pkg_resources.working_set.by_key[package_name.replace('_','-')]
+    except:
+        pass
     return None
 
 

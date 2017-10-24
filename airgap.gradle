@@ -6,6 +6,10 @@ final String gradleAirGapPath = "${airGapFolder}/gradle"
 final String nugetAirGapPath = "${airGapFolder}/nuget"
 final String configAirGapPath = "${buildArtifactFolder}/config"
 final String dockerAirGapPath = "${airGapFolder}/docker"
+final String artifactoryUrl = "http://prd-eng-repo01.dc2.lan:8181/artifactory"
+final String artifactoryRepoKey = "bds-integrations"
+final String artifactoryDetectPath = "com/blackducksoftware/integration/${rootProject.name}/${version}/"
+final String airGapZipName = "${rootProject.name}-${version}-air-gap.zip"
 
 configurations {
     airGap
@@ -123,6 +127,11 @@ task createAirGapZip(type: Zip) {
     include "${rootProject.name}-${version}.jar"
     include 'packaged-inspectors/**'
     include 'config/**'
-    archiveName "${rootProject.name}-${version}-air-gap.zip"
+    archiveName "${airGapZipName}"
     destinationDir(file(buildArtifactFolder))
+}
+
+task publishAirGapZip(type: Exec) {
+    dependsOn createAirGapZip
+    commandLine 'curl', '-u', "${artifactoryUsername}:${artifactoryPassword}", '-X', 'PUT', "${artifactoryUrl}/${artifactoryRepoKey}/${artifactoryDetectPath}/${airGapZipName}", '-T', "${buildArtifactFolder}/${airGapZipName}"
 }
