@@ -32,6 +32,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
@@ -72,11 +73,8 @@ public class GradleDependenciesParser {
     private Dependency previousNode = null;
     private int treeLevel = 0;
 
-    private final ExternalIdFactory externalIdFactory;
-
-    public GradleDependenciesParser(final ExternalIdFactory externalIdFactory) {
-        this.externalIdFactory = externalIdFactory;
-    }
+    @Autowired
+    private ExternalIdFactory externalIdFactory;
 
     private void clearState() {
         rootProjectSourcePath = "";
