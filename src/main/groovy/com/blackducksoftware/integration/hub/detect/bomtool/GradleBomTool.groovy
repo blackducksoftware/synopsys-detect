@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleDependenciesParser
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleInspectorManager
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
@@ -48,11 +49,14 @@ class GradleBomTool extends BomTool {
     @Autowired
     HubSignatureScanner hubSignatureScanner
 
-    @Autowired
-    GradleDependenciesParser gradleDependenciesParser
+    //    @Autowired
+    //    GradleDependenciesParser gradleDependenciesParser
 
     @Autowired
     GradleInspectorManager gradleInspectorManager
+
+    @Autowired
+    ExternalIdFactory externalIdFactory;
 
     private String gradleExecutable
 
@@ -113,6 +117,7 @@ class GradleBomTool extends BomTool {
 
         List<DetectCodeLocation> codeLocations = codeLocationFiles.collect { File file ->
             logger.debug("Parsing dependency graph : ${file.getName()}")
+            GradleDependenciesParser gradleDependenciesParser = new GradleDependenciesParser(externalIdFactory);
             gradleDependenciesParser.parseDependencies(detectProject, file.newInputStream())
         }
         if (detectConfiguration.gradleCleanupBuildBlackduckDirectory) {
