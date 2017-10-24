@@ -32,7 +32,6 @@ public class ExecutableStreamThread extends Thread {
         final InputStreamReader reader = new InputStreamReader(executableStream, StandardCharsets.UTF_8);
         this.bufferedReader = new BufferedReader(reader);
         this.stringBuilder = new StringBuilder();
-
     }
 
     @Override
