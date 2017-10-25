@@ -11,13 +11,13 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.gradle
 
+import static com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphAssertions.*
 import static org.junit.Assert.*
 
 import org.junit.Test
 import org.springframework.test.util.ReflectionTestUtils
 
-import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
@@ -48,55 +48,24 @@ class GradleDependenciesParserTest {
     @Test
     public void complexTest() {
         DetectCodeLocation codeLocation = build('gradle/parse-tests/complex_dependencyGraph.txt');
-        assertHas(codeLocation, "non-project:with-nested:1.0.0");
-        assertHas(codeLocation, "solo:component:4.12");
-        assertHas(codeLocation, "some.group:child:2.2.2");
-        assertHas(codeLocation, "terminal:child:6.2.3");
+        DependencyGraph graph = codeLocation.dependencyGraph;
 
-        assertDoesNotHave(codeLocation, "child-project");
-        assertDoesNotHave(codeLocation, "nested-parent");
-        assertDoesNotHave(codeLocation, "spring-webflux");
-        assertDoesNotHave(codeLocation, "spring-beans");
-        assertDoesNotHave(codeLocation, "spring-core");
-        assertDoesNotHave(codeLocation, "spring-web");
-        assertDoesNotHave(codeLocation, "should-suppress");
-    }
+        assertHasMavenGav(graph, "non-project:with-nested:1.0.0");
+        assertHasMavenGav(graph, "solo:component:4.12");
+        assertHasMavenGav(graph, "some.group:child:2.2.2");
+        assertHasMavenGav(graph, "terminal:child:6.2.3");
 
-    private void assertDoesNotHave(DetectCodeLocation codeLocation, String name) {
-        assertDoesNotHave(codeLocation, name, null);
-    }
+        assertDoesNotHave(graph, "child-project");
+        assertDoesNotHave(graph, "nested-parent");
+        assertDoesNotHave(graph, "spring-webflux");
+        assertDoesNotHave(graph, "spring-beans");
+        assertDoesNotHave(graph, "spring-core");
+        assertDoesNotHave(graph, "spring-web");
+        assertDoesNotHave(graph, "should-suppress");
 
-    private void assertDoesNotHave(DetectCodeLocation codeLocation, String name, ExternalId current) {
-        if (current == null){
-            for (Dependency dep : codeLocation.dependencyGraph.getRootDependencies()){
-                assertDoesNotHave(dep, name);
-                assertDoesNotHave(codeLocation, name, dep.externalId);
-            }
-        }else{
-            for (Dependency dep : codeLocation.dependencyGraph.getChildrenForParent(current)){
-                assertDoesNotHave(dep, name);
-                assertDoesNotHave(codeLocation, name, dep.externalId);
-            }
-        }
-    }
+        assertHasRootMavenGavs(graph, "solo:component:4.12", "non-project:with-nested:1.0.0", "some.group:parent:5.0.0", "terminal:child:6.2.3");
 
-    private void assertDoesNotHave(Dependency dep, String name) {
-        assertFalse("Dependency name contains '" + name + "'", dep.name.contains(name));
-        assertFalse("Dependency version contains '" + name + "'", dep.version.contains(name));
-        assertFalse("External id version contains '" + name + "'", dep.externalId.version.contains(name));
-        assertFalse("External id group contains '" + name + "'", dep.externalId.group.contains(name));
-        assertFalse("External id name contains '" + name + "'", dep.externalId.name.contains(name));
-    }
-
-    private void assertHas(DetectCodeLocation codeLocation, String gav) {
-        String[] split = gav.split(":");
-        assertHas(codeLocation, split[0], split[1], split[2]);
-    }
-
-    private void assertHas(DetectCodeLocation codeLocation, String org, String name, String version) {
-
-        Dependency dep = codeLocation.dependencyGraph.getDependency(externalIdFactory.createMavenExternalId(org, name, version))
-        assertNotNull(dep);
+        assertParentHasChildMavenGav("some.group:parent:5.0.0", graph, "some.group:child:2.2.2");
     }
 
     private DetectCodeLocation build(String resource){
