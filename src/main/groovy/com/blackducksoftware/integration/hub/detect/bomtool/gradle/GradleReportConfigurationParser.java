@@ -25,19 +25,34 @@ package com.blackducksoftware.integration.hub.detect.bomtool.gradle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GradleConfigurationLines {
-    private final Logger logger = LoggerFactory.getLogger(GradleConfigurationLines.class);
+import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency;
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
+
+public class GradleReportConfigurationParser {
+    private final Logger logger = LoggerFactory.getLogger(GradleReportConfigurationParser.class);
 
     private boolean processingConfiguration;
     private boolean processingProjectTree;
     private String lineThatMayContainConfigurationName;
-    private GradleConfigurationLine gradleConfigurationLine;
+    private GradleReportLine gradleReportLine;
+
+    public Dependency parseDependency(final ExternalIdFactory externalIdFactory, final String line) {
+        if (shouldParseLine(line)) {
+            final Dependency dependency = gradleReportLine.createDependencyNode(externalIdFactory);
+            return dependency;
+        }
+        return null;
+    }
+
+    public int getTreeLevel() {
+        return gradleReportLine.getTreeLevel();
+    }
 
     public boolean shouldParseLine(final String line) {
-        gradleConfigurationLine = new GradleConfigurationLine(line);
+        gradleReportLine = new GradleReportLine(line);
 
         if (!processingConfiguration) {
-            if (gradleConfigurationLine.isRootLevel()) {
+            if (gradleReportLine.isRootLevel()) {
                 processingConfiguration = true;
                 final String configurationName = extractConfigurationName();
                 logger.info(String.format("Started processing of configuration: %s", configurationName));
@@ -47,11 +62,11 @@ public class GradleConfigurationLines {
             }
         }
 
-        if (processingProjectTree && !gradleConfigurationLine.isRootLevel()) {
+        if (processingProjectTree && !gradleReportLine.isRootLevel()) {
             return false;
         }
 
-        if (gradleConfigurationLine.isRootLevelProject()) {
+        if (gradleReportLine.isRootLevelProject()) {
             processingProjectTree = true;
             return false;
         }
@@ -61,8 +76,8 @@ public class GradleConfigurationLines {
         return processingConfiguration && !processingProjectTree;
     }
 
-    public GradleConfigurationLine getLineToProcess() {
-        return gradleConfigurationLine;
+    public GradleReportLine getLineToProcess() {
+        return gradleReportLine;
     }
 
     private String extractConfigurationName() {

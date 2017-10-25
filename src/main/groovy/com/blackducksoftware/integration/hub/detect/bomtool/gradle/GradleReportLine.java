@@ -29,8 +29,8 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 
-public class GradleConfigurationLine {
-    private final Logger logger = LoggerFactory.getLogger(GradleConfigurationLine.class);
+public class GradleReportLine {
+    private final Logger logger = LoggerFactory.getLogger(GradleReportLine.class);
 
     public static final String[] DEPENDENCY_INDICATORS = new String[] { "+---", "\\---" };
     public static final String[] PROJECT_INDICATORS = new String[] { "+--- project :", "\\--- project :" };
@@ -40,7 +40,7 @@ public class GradleConfigurationLine {
 
     private final String originalLine;
 
-    public GradleConfigurationLine(final String line) {
+    public GradleReportLine(final String line) {
         this.originalLine = line;
     }
 

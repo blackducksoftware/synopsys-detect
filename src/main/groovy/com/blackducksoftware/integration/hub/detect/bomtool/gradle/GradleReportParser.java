@@ -45,8 +45,8 @@ import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.model.DetectProject;
 
 @Component
-public class GradleDependenciesParser {
-    private final Logger logger = LoggerFactory.getLogger(GradleDependenciesParser.class);
+public class GradleReportParser {
+    private final Logger logger = LoggerFactory.getLogger(GradleReportParser.class);
 
     private String rootProjectName = "";
     private String rootProjectVersionName = "";
@@ -59,7 +59,7 @@ public class GradleDependenciesParser {
     private Stack<Dependency> nodeStack = new Stack<>();
     private Dependency previousNode = null;
     private int previousTreeLevel = 0;
-    private GradleConfigurationLines gradleConfigurationLines;
+    private GradleReportConfigurationParser gradleReportConfigurationParser;
 
     @Autowired
     private ExternalIdFactory externalIdFactory;
@@ -93,17 +93,12 @@ public class GradleDependenciesParser {
                     continue;
                 }
 
-                if (!gradleConfigurationLines.shouldParseLine(line)) {
+                final Dependency nextDependency = gradleReportConfigurationParser.parseDependency(externalIdFactory, line);
+                if (nextDependency == null) {
                     continue;
                 }
 
-                final GradleConfigurationLine gradleConfigurationLine = gradleConfigurationLines.getLineToProcess();
-                final Dependency lineNode = gradleConfigurationLine.createDependencyNode(externalIdFactory);
-                if (lineNode == null) {
-                    continue;
-                }
-
-                final int lineTreeLevel = gradleConfigurationLine.getTreeLevel();
+                final int lineTreeLevel = gradleReportConfigurationParser.getTreeLevel();
                 if (lineTreeLevel == previousTreeLevel + 1) {
                     nodeStack.push(previousNode);
                 } else if (lineTreeLevel < previousTreeLevel) {
@@ -114,11 +109,11 @@ public class GradleDependenciesParser {
                     logger.error(String.format("The tree level (%s) and this line (%s) with count %s can't be reconciled.", previousTreeLevel, line, lineTreeLevel));
                 }
                 if (nodeStack.size() == 0) {
-                    graph.addChildToRoot(lineNode);
+                    graph.addChildToRoot(nextDependency);
                 } else {
-                    graph.addChildWithParents(lineNode, nodeStack.peek());
+                    graph.addChildWithParents(nextDependency, nodeStack.peek());
                 }
-                previousNode = lineNode;
+                previousNode = nextDependency;
                 previousTreeLevel = lineTreeLevel;
             }
         } catch (final Exception e) {
@@ -152,7 +147,7 @@ public class GradleDependenciesParser {
         nodeStack = new Stack<>();
         previousNode = null;
         previousTreeLevel = 0;
-        gradleConfigurationLines = new GradleConfigurationLines();
+        gradleReportConfigurationParser = new GradleReportConfigurationParser();
     }
 
     private void processMetaDataLine(final String metaDataLine) {
