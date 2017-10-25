@@ -23,7 +23,7 @@ import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeI
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.nameversion.builder.LinkedNameVersionNodeBuilder
 import com.blackducksoftware.integration.hub.detect.nameversion.metadata.LinkMetadata
-import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphTestUtil
+import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput
 
@@ -41,7 +41,7 @@ class YarnPackagerTest {
         String yarnLockText = testUtil.getResourceAsUTF8String('yarn/yarn.lock')
         def exeOutput = new ExecutableOutput(yarnLockText, '')
         DependencyGraph dependencyGraph = yarnPackager.parse(exeOutput.getStandardOutputAsList())
-        DependencyGraphTestUtil.assertGraph('yarn/expected_graph.json', dependencyGraph);
+        DependencyGraphResourceTestUtil.assertGraph('yarn/expected_graph.json', dependencyGraph);
     }
 
     @Test

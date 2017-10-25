@@ -5,7 +5,7 @@ import org.junit.Test
 
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
-import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphTestUtil
+import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 
 public class NpmOutputParserTest {
@@ -20,6 +20,6 @@ public class NpmOutputParserTest {
 
         Assert.assertEquals(codeLocation.bomToolProjectName, "node-js");
         Assert.assertEquals(codeLocation.bomToolProjectVersionName, "0.2.0");
-        DependencyGraphTestUtil.assertGraph('/npm/npmParseOutput_graph.json', codeLocation.dependencyGraph);
+        DependencyGraphResourceTestUtil.assertGraph('/npm/npmParseOutput_graph.json', codeLocation.dependencyGraph);
     }
 }

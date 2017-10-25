@@ -18,7 +18,7 @@ import org.junit.Test
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.DetectProperties
-import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphTestUtil
+import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput
 
@@ -71,6 +71,6 @@ class PearDependencyTest {
         ]
         def actual = pearDependencyFinder.createPearDependencyGraphFromList(exeOutput.getStandardOutputAsList(), dependencyNames)
 
-        DependencyGraphTestUtil.assertGraph('/pear/dependency-node-list_graph.json', actual);
+        DependencyGraphResourceTestUtil.assertGraph('/pear/dependency-node-list_graph.json', actual);
     }
 }
