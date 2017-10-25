@@ -77,6 +77,11 @@ class GemlockNodeParser {
             }
 
             //we are now either in the specs section or in the dependencies section
+
+            if (line.trim().equals("bundler")){
+                return;
+            }
+
             if (inSpecsSection) {
                 parseSpecsSectionLine(line)
             } else {
