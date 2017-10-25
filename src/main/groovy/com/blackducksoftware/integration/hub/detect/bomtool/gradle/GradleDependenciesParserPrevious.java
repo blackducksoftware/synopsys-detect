@@ -45,8 +45,15 @@ import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.model.DetectProject;
 
 @Component
-public class GradleDependenciesParser {
-    private final Logger logger = LoggerFactory.getLogger(GradleDependenciesParser.class);
+public class GradleDependenciesParserPrevious {
+    private final Logger logger = LoggerFactory.getLogger(GradleDependenciesParserPrevious.class);
+
+    private static final String[] DEPENDENCY_INDICATORS = new String[] { "+---", "\\---" };
+    private static final String[] PROJECT_INDICATORS = new String[] { "+--- project :", "\\--- project :" };
+
+    private static final String COMPONENT_PREFIX = "--- ";
+    private static final String SEEN_ELSEWHERE_SUFFIX = " (*)";
+    private static final String WINNING_INDICATOR = " -> ";
 
     private String rootProjectName = "";
     private String rootProjectVersionName = "";
@@ -55,11 +62,14 @@ public class GradleDependenciesParser {
     private String projectName = "";
     private String projectVersionName = "";
     private boolean processingMetaData = false;
+    private boolean processingBeneathProject = false;
+    private boolean processingConfiguration = false;
+    private String configurationName = null;
+    private String previousLine = null;
     private MutableDependencyGraph graph = new MutableMapDependencyGraph();
     private Stack<Dependency> nodeStack = new Stack<>();
     private Dependency previousNode = null;
-    private int previousTreeLevel = 0;
-    private GradleConfigurationLines gradleConfigurationLines;
+    private int treeLevel = 0;
 
     @Autowired
     private ExternalIdFactory externalIdFactory;
@@ -93,25 +103,46 @@ public class GradleDependenciesParser {
                     continue;
                 }
 
-                if (!gradleConfigurationLines.shouldParseLine(line)) {
+                if (!processingConfiguration) {
+                    if (isRootLevel(line)) {
+                        processingConfiguration = true;
+                        configurationName = extractConfigurationName(previousLine);
+                        logger.info(String.format("processing of configuration %s started", configurationName));
+                    } else {
+                        previousLine = line;
+                        continue;
+                    }
+                }
+
+                if (processingBeneathProject && !isRootLevel(line)) {
+                    previousLine = line;
+                    continue;
+                } else if (isRootLevelProject(line)) {
+                    processingBeneathProject = true;
+                    continue;
+                } else {
+                    processingBeneathProject = false;
+                }
+
+                if (StringUtils.isBlank(line) || !line.contains(COMPONENT_PREFIX)) {
                     continue;
                 }
 
-                final GradleConfigurationLine gradleConfigurationLine = gradleConfigurationLines.getLineToProcess();
-                final Dependency lineNode = gradleConfigurationLine.createDependencyNode(externalIdFactory);
+                final Dependency lineNode = createDependencyNodeFromOutputLine(line);
                 if (lineNode == null) {
+                    previousLine = line;
                     continue;
                 }
 
-                final int lineTreeLevel = gradleConfigurationLine.getTreeLevel();
-                if (lineTreeLevel == previousTreeLevel + 1) {
+                final int lineTreeLevel = getLineLevel(line);
+                if (lineTreeLevel == treeLevel + 1) {
                     nodeStack.push(previousNode);
-                } else if (lineTreeLevel < previousTreeLevel) {
-                    for (int times = 0; times < (previousTreeLevel - lineTreeLevel); times++) {
+                } else if (lineTreeLevel < treeLevel) {
+                    for (int times = 0; times < (treeLevel - lineTreeLevel); times++) {
                         nodeStack.pop();
                     }
-                } else if (lineTreeLevel != previousTreeLevel) {
-                    logger.error(String.format("The tree level (%s) and this line (%s) with count %s can't be reconciled.", previousTreeLevel, line, lineTreeLevel));
+                } else if (lineTreeLevel != treeLevel) {
+                    logger.error(String.format("The tree level (%s) and this line (%s) with count %s can't be reconciled.", treeLevel, line, lineTreeLevel));
                 }
                 if (nodeStack.size() == 0) {
                     graph.addChildToRoot(lineNode);
@@ -119,7 +150,8 @@ public class GradleDependenciesParser {
                     graph.addChildWithParents(lineNode, nodeStack.peek());
                 }
                 previousNode = lineNode;
-                previousTreeLevel = lineTreeLevel;
+                treeLevel = lineTreeLevel;
+                previousLine = line;
             }
         } catch (final Exception e) {
             logger.error("Exception parsing gradle output: " + e.getMessage());
@@ -142,17 +174,101 @@ public class GradleDependenciesParser {
         projectName = "";
         projectVersionName = "";
         processingMetaData = false;
+        processingConfiguration = false;
+        configurationName = null;
+        previousLine = null;
         graph = new MutableMapDependencyGraph();
         nodeStack = new Stack<>();
         previousNode = null;
-        clearConfigurationState();
+        treeLevel = 0;
     }
 
     private void clearConfigurationState() {
+        processingBeneathProject = false;
+        processingConfiguration = false;
+        configurationName = null;
+        previousLine = null;
         nodeStack = new Stack<>();
         previousNode = null;
-        previousTreeLevel = 0;
-        gradleConfigurationLines = new GradleConfigurationLines();
+        treeLevel = 0;
+    }
+
+    private String extractConfigurationName(final String nameLine) {
+        if (nameLine.contains(" - ")) {
+            return nameLine.substring(0, nameLine.indexOf(" - ")).trim();
+        } else {
+            return nameLine.trim();
+        }
+    }
+
+    private boolean startsWithAny(final String thing, final String[] targets) {
+        boolean startsWith = false;
+        for (final String target : targets) {
+            startsWith = startsWith || thing.startsWith(target);
+        }
+        return startsWith;
+    }
+
+    private String removeDependencyIndicators(final String line) {
+        int indexToCut = line.length();
+        for (final String target : DEPENDENCY_INDICATORS) {
+            if (line.contains(target)) {
+                indexToCut = line.indexOf(target);
+            }
+        }
+
+        return line.substring(0, indexToCut);
+
+    }
+
+    public int getLineLevel(final String line) {
+        if (isRootLevel(line)) {
+            return 0;
+        }
+
+        String modifiedLine = removeDependencyIndicators(line);
+
+        if (!modifiedLine.startsWith("|")) {
+            modifiedLine = "|" + modifiedLine;
+        }
+        modifiedLine = modifiedLine.replace("     ", "    |");
+        modifiedLine = modifiedLine.replace("||", "|");
+        if (modifiedLine.endsWith("|")) {
+            modifiedLine = modifiedLine.substring(0, modifiedLine.length() - 5);
+        }
+        final int matches = StringUtils.countMatches(modifiedLine, "|");
+
+        return matches;
+    }
+
+    public Dependency createDependencyNodeFromOutputLine(final String outputLine) {
+        String cleanedOutput = StringUtils.trimToEmpty(outputLine);
+        cleanedOutput = cleanedOutput.substring(cleanedOutput.indexOf(COMPONENT_PREFIX) + COMPONENT_PREFIX.length());
+        if (cleanedOutput.endsWith(SEEN_ELSEWHERE_SUFFIX)) {
+            final int lastSeenElsewhereIndex = cleanedOutput.lastIndexOf(SEEN_ELSEWHERE_SUFFIX);
+            cleanedOutput = cleanedOutput.substring(0, lastSeenElsewhereIndex);
+        }
+
+        String[] gav = cleanedOutput.split(":");
+        if (cleanedOutput.contains(WINNING_INDICATOR)) {
+            // WINNING_INDICATOR can point to an entire GAV not just a version
+            final String winningSection = cleanedOutput.substring(cleanedOutput.indexOf(WINNING_INDICATOR) + WINNING_INDICATOR.length());
+            if (winningSection.contains(":")) {
+                gav = winningSection.split(":");
+            } else {
+                gav[2] = winningSection;
+            }
+        }
+        if (gav.length != 3) {
+            logger.error(String.format("The line can not be reasonably split in to the neccessary parts: %s", outputLine));
+            return null;
+        }
+        final String group = gav[0];
+        final String artifact = gav[1];
+        final String version = gav[2];
+
+        final Dependency dependency = new Dependency(artifact, version, externalIdFactory.createMavenExternalId(group, artifact, version));
+        return dependency;
     }
 
     private void processMetaDataLine(final String metaDataLine) {
@@ -169,6 +285,18 @@ public class GradleDependenciesParser {
         } else if (metaDataLine.startsWith("projectVersion:")) {
             projectVersionName = metaDataLine.substring("projectVersion:".length()).trim();
         }
+    }
+
+    private boolean isRootLevel(final String line) {
+        return isRootLevelProject(line) || isRootLevelDependency(line);
+    }
+
+    private boolean isRootLevelDependency(final String line) {
+        return startsWithAny(line, DEPENDENCY_INDICATORS);
+    }
+
+    private boolean isRootLevelProject(final String line) {
+        return startsWithAny(line, PROJECT_INDICATORS);
     }
 
 }

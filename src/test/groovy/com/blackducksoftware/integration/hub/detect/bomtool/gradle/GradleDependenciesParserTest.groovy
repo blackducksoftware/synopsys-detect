@@ -31,13 +31,12 @@ class GradleDependenciesParserTest {
 
     @Test
     public void getLineLevelTest() {
-        GradleDependenciesParser gradleDependenciesParser = new GradleDependenciesParser()
-        assertEquals(5, gradleDependenciesParser.getLineLevel('|    |         |    |    \\--- org.springframework:spring-core:4.3.5.RELEASE'))
-        assertEquals(3, gradleDependenciesParser.getLineLevel('|    |         \\--- com.squareup.okhttp3:okhttp:3.4.2 (*)'))
-        assertEquals(4, gradleDependenciesParser.getLineLevel('     |    |         \\--- org.ow2.asm:asm:5.0.3'))
-        assertEquals(1, gradleDependenciesParser.getLineLevel('     +--- org.hamcrest:hamcrest-core:1.3'))
-        assertEquals(0, gradleDependenciesParser.getLineLevel('+--- org.springframework.boot:spring-boot-starter: -> 1.4.3.RELEASE'))
-        assertEquals(0, gradleDependenciesParser.getLineLevel('\\--- org.apache.commons:commons-compress:1.13'))
+        assertEquals(5, new GradleConfigurationLine(('|    |         |    |    \\--- org.springframework:spring-core:4.3.5.RELEASE')).treeLevel)
+        assertEquals(3, new GradleConfigurationLine(('|    |         \\--- com.squareup.okhttp3:okhttp:3.4.2 (*)')).treeLevel)
+        assertEquals(4, new GradleConfigurationLine(('     |    |         \\--- org.ow2.asm:asm:5.0.3')).treeLevel)
+        assertEquals(1, new GradleConfigurationLine(('     +--- org.hamcrest:hamcrest-core:1.3')).treeLevel)
+        assertEquals(0, new GradleConfigurationLine(('+--- org.springframework.boot:spring-boot-starter: -> 1.4.3.RELEASE')).treeLevel)
+        assertEquals(0, new GradleConfigurationLine(('\\--- org.apache.commons:commons-compress:1.13')).treeLevel)
     }
 
     @Test
@@ -68,12 +67,12 @@ class GradleDependenciesParserTest {
 
     private void assertDoesNotHave(DetectCodeLocation codeLocation, String name, ExternalId current) {
         if (current == null){
-            for (Dependency dep : codeLocation.dependencyGraph.getRootDependencies()){
+            for (Dependency dep : codeLocation.dependencyGraph.getRootDependencies()) {
                 assertDoesNotHave(dep, name);
                 assertDoesNotHave(codeLocation, name, dep.externalId);
             }
-        }else{
-            for (Dependency dep : codeLocation.dependencyGraph.getChildrenForParent(current)){
+        } else {
+            for (Dependency dep : codeLocation.dependencyGraph.getChildrenForParent(current)) {
                 assertDoesNotHave(dep, name);
                 assertDoesNotHave(codeLocation, name, dep.externalId);
             }
@@ -94,7 +93,6 @@ class GradleDependenciesParserTest {
     }
 
     private void assertHas(DetectCodeLocation codeLocation, String org, String name, String version) {
-
         Dependency dep = codeLocation.dependencyGraph.getDependency(externalIdFactory.createMavenExternalId(org, name, version))
         assertNotNull(dep);
     }
