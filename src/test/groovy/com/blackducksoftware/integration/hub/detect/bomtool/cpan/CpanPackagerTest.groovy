@@ -19,7 +19,7 @@ import org.junit.Test
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
-import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphTestUtil
+import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 
 class CpanPackagerTest {
@@ -49,6 +49,6 @@ class CpanPackagerTest {
     public void makeDependencyNodesTest() {
         DependencyGraph dependencyGraph = cpanPackager.makeDependencyGraph(cpanListText, showDepsText)
 
-        DependencyGraphTestUtil.assertGraph('/cpan/expectedDependencyNodes_graph.json', dependencyGraph)
+        DependencyGraphResourceTestUtil.assertGraph('/cpan/expectedDependencyNodes_graph.json', dependencyGraph)
     }
 }

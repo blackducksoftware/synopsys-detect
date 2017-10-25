@@ -17,7 +17,7 @@ import org.junit.Test
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
-import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphTestUtil
+import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 
 public class CocoapodsPackagerTest {
@@ -33,13 +33,13 @@ public class CocoapodsPackagerTest {
     void simpleTest() {
         final String podlockText = testUtil.getResourceAsUTF8String('cocoapods/simplePodfile.lock')
         final DependencyGraph projectDependencies = cocoapodsPackager.extractDependencyGraph(podlockText)
-        DependencyGraphTestUtil.assertGraph('cocoapods/simpleExpected_graph.json', projectDependencies);
+        DependencyGraphResourceTestUtil.assertGraph('cocoapods/simpleExpected_graph.json', projectDependencies);
     }
 
     @Test
     void complexTest() {
         final String podlockText = testUtil.getResourceAsUTF8String('cocoapods/complexPodfile.lock')
         final DependencyGraph projectDependencies = cocoapodsPackager.extractDependencyGraph(podlockText)
-        DependencyGraphTestUtil.assertGraph('cocoapods/complexExpected_graph.json', projectDependencies);
+        DependencyGraphResourceTestUtil.assertGraph('cocoapods/complexExpected_graph.json', projectDependencies);
     }
 }

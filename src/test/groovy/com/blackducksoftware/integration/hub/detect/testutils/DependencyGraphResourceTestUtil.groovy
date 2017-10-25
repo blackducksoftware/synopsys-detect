@@ -8,7 +8,7 @@ import com.blackducksoftware.integration.hub.bdio.graph.summary.GraphSummary
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
-class DependencyGraphTestUtil {
+class DependencyGraphResourceTestUtil {
     public static void assertGraph(String expectedResourceFile, DependencyGraph actualGraph) {
         DependencyGraphSummarizer summarizer = new DependencyGraphSummarizer(new Gson());
 

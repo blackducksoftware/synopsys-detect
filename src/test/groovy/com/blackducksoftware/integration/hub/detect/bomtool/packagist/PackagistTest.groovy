@@ -7,7 +7,7 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFac
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.DetectProperties
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
-import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphTestUtil
+import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 
 class PackagistTest {
@@ -31,6 +31,6 @@ class PackagistTest {
         Assert.assertEquals(codeLocation.bomToolProjectName, "clue/graph-composer");
         Assert.assertEquals(codeLocation.bomToolProjectVersionName, "1.0.0");
 
-        DependencyGraphTestUtil.assertGraph('/packagist/PackagistTestDependencyNode_graph.json', codeLocation.dependencyGraph);
+        DependencyGraphResourceTestUtil.assertGraph('/packagist/PackagistTestDependencyNode_graph.json', codeLocation.dependencyGraph);
     }
 }
