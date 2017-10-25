@@ -7,7 +7,7 @@ import org.junit.Test
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
-import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphTestUtil
+import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 import com.google.gson.GsonBuilder
 
@@ -34,7 +34,7 @@ class NpmLockfilePackagerTest {
 
         Assert.assertEquals(actual.bomToolProjectName, "knockout-tournament");
         Assert.assertEquals(actual.bomToolProjectVersionName, "1.0.0");
-        DependencyGraphTestUtil.assertGraph('/npm/packageLockExpected_graph.json', actual.dependencyGraph);
+        DependencyGraphResourceTestUtil.assertGraph('/npm/packageLockExpected_graph.json', actual.dependencyGraph);
     }
 
     @Test
@@ -44,6 +44,6 @@ class NpmLockfilePackagerTest {
 
         Assert.assertEquals(actual.bomToolProjectName, "fec-builder");
         Assert.assertEquals(actual.bomToolProjectVersionName, "1.3.7");
-        DependencyGraphTestUtil.assertGraph('/npm/shrinkwrapExpected_graph.json', actual.dependencyGraph);
+        DependencyGraphResourceTestUtil.assertGraph('/npm/shrinkwrapExpected_graph.json', actual.dependencyGraph);
     }
 }

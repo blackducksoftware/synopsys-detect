@@ -14,7 +14,7 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
-import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphTestUtil
+import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
@@ -94,7 +94,7 @@ public class NugetInspectorPackagerTest {
             def expectedOutputFile = expectedOutputFiles[i];
 
 
-            DependencyGraphTestUtil.assertGraph(expectedOutputFile, codeLocation.dependencyGraph);
+            DependencyGraphResourceTestUtil.assertGraph(expectedOutputFile, codeLocation.dependencyGraph);
         }
     }
 }

@@ -21,7 +21,7 @@ import org.junit.Test
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
-import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphTestUtil
+import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
@@ -40,6 +40,6 @@ class RubygemsNodePackagerTest {
         final DependencyGraph projects = rubygemsNodePackager.extractProjectDependencies(actualText)
         Assert.assertEquals(8, projects.getRootDependencies().size())
 
-        DependencyGraphTestUtil.assertGraph('/rubygems/expectedPackager_graph.json', projects)
+        DependencyGraphResourceTestUtil.assertGraph('/rubygems/expectedPackager_graph.json', projects)
     }
 }

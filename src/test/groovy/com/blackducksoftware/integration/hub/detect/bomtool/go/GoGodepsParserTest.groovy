@@ -21,7 +21,7 @@ import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.bomtool.GoDepBomTool
 import com.blackducksoftware.integration.hub.detect.bomtool.go.godep.GoGodepsParser
-import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphTestUtil
+import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
@@ -35,7 +35,7 @@ public class GoGodepsParserTest {
         final String goDepOutput = IOUtils.toString(getClass().getResourceAsStream("/go/Go_Godeps.json"), StandardCharsets.UTF_8)
         final DependencyGraph dependencyGraph = goDepParser.extractProjectDependencies(goDepOutput)
 
-        DependencyGraphTestUtil.assertGraph('/go/Go_GodepsParserExpected_graph.json', dependencyGraph)
+        DependencyGraphResourceTestUtil.assertGraph('/go/Go_GodepsParserExpected_graph.json', dependencyGraph)
     }
 
     private void fixVersion(final Dependency node, final String newVersion) {

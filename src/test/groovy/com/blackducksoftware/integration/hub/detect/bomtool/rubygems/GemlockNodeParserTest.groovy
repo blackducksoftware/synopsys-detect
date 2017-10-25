@@ -8,7 +8,7 @@ import org.junit.Test
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
-import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphTestUtil
+import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
@@ -22,7 +22,7 @@ class GemlockNodeParserTest {
         GemlockNodeParser gemlockNodeParser = new GemlockNodeParser()
         DependencyGraph dependencyGraph = gemlockNodeParser.parseProjectDependencies(nameVersionNodeTransformer, gemfileLockContents)
 
-        DependencyGraphTestUtil.assertGraph('/rubygems/expectedSmallParser_graph.json', dependencyGraph)
+        DependencyGraphResourceTestUtil.assertGraph('/rubygems/expectedSmallParser_graph.json', dependencyGraph)
     }
 
     @Test
@@ -33,6 +33,6 @@ class GemlockNodeParserTest {
         DependencyGraph dependencyGraph = gemlockNodeParser.parseProjectDependencies(nameVersionNodeTransformer, gemfileLockContents)
 
 
-        DependencyGraphTestUtil.assertGraph('/rubygems/expectedParser_graph.json', dependencyGraph)
+        DependencyGraphResourceTestUtil.assertGraph('/rubygems/expectedParser_graph.json', dependencyGraph)
     }
 }
