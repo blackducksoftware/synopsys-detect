@@ -73,14 +73,14 @@ class PolicyChecker {
     public boolean policyViolated(PolicyStatusDescription policyStatusDescription) {
         String policyFailOnSeverity = detectConfiguration.getPolicyFailOnSeverity()
         if (StringUtils.isEmpty(policyFailOnSeverity)) {
-            return checkIfAnyPolicyViolated(policyStatusDescription)
+            return isAnyPolicyViolated(policyStatusDescription)
         }
 
         String[] policySeverityCheck = policyFailOnSeverity.split(',')
         return arePolicySeveritiesViolated(policyStatusDescription, policySeverityCheck)
     }
 
-    private boolean checkIfAnyPolicyViolated(PolicyStatusDescription policyStatusDescription) {
+    private boolean isAnyPolicyViolated(PolicyStatusDescription policyStatusDescription) {
         int inViolationCount = policyStatusDescription.getCountOfStatus(VersionBomPolicyStatusOverallStatusEnum.IN_VIOLATION)
         return inViolationCount != 0
     }
