@@ -72,7 +72,10 @@ class HubSignatureScanner {
     private Set<String> registeredPathsToExclude = []
 
     public void registerPathToScan(File file, String... fileNamesToExclude) {
-        if (!detectConfiguration.hubSignatureScannerDisabled) {
+        boolean scannerEnabled = !detectConfiguration.hubSignatureScannerDisabled;
+        boolean customPathOverride = detectConfiguration.hubSignatureScannerPaths.size() > 0;
+
+        if (scannerEnabled && !customPathOverride) {
             String matchingExcludedPath = detectConfiguration.hubSignatureScannerPathsToExclude.find {
                 file.canonicalPath.startsWith(it)
             }
@@ -102,8 +105,10 @@ class HubSignatureScanner {
             } else {
                 logger.warn("Tried to register a scan for ${file.canonicalPath} but it doesn't appear to exist or it isn't a file or directory.")
             }
-        } else {
-            logger.info("Not registering path ${file.canonicalPath}, scan is disabled")
+        } else if (!scannerEnabled) {
+            logger.info("Not registering path ${file.canonicalPath}, scan is disabled");
+        }else if (customPathOverride){
+            logger.info("Not scanning path ${file.canonicalPath}, scan paths provided");
         }
     }
 
