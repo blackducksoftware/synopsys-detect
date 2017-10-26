@@ -170,7 +170,7 @@ class DetectProperties {
     @Value('${detect.policy.check}')
     Boolean policyCheck
 
-    @ValueDescription(description = "Comma separated list of severity levels to fail hub detect. If nothing is specified, any policy violation will fail", group=DetectProperties.GROUP_POLICY_CHECK)
+    @ValueDescription(description = "A comma-separated list of policy violation severities that will fail detect if checking policies is enabled. If no severity is provided, any policy violation will fail detect.", group=DetectProperties.GROUP_POLICY_CHECK)
     @Value('${detect.policy.fail.on.severity}')
     String policyFailOnSeverity
 
