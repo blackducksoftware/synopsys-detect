@@ -48,6 +48,7 @@ class GemlockNodeParser {
 
     private boolean inSpecsSection = false
     private boolean inDependenciesSection = false
+    private boolean previousLineWasBundledWith = false;
 
     DependencyGraph parseProjectDependencies(NameVersionNodeTransformer nameVersionNodeTransformer, final List<String> gemfileLockLines) {
         rootNameVersionNode = new NameVersionNodeImpl([name: 'gemfileLockRoot'])
@@ -72,16 +73,19 @@ class GemlockNodeParser {
                 return
             }
 
+            if ("BUNDLED WITH".equals(line.trim())){
+                previousLineWasBundledWith = true;
+            }else if (previousLineWasBundledWith){
+                previousLineWasBundledWith = false;
+                def bundler = nameVersionNodeBuilder.nodeCache["bundler"];
+                bundler?.version = line.trim();
+            }
+
             if (!inSpecsSection && !inDependenciesSection) {
                 return
             }
 
             //we are now either in the specs section or in the dependencies section
-
-            if (line.trim().equals("bundler")){
-                return;
-            }
-
             if (inSpecsSection) {
                 parseSpecsSectionLine(line)
             } else {
