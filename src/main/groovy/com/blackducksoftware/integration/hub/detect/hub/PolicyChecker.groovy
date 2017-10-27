@@ -71,7 +71,7 @@ class PolicyChecker {
     }
 
     public boolean policyViolated(PolicyStatusDescription policyStatusDescription) {
-        String policyFailOnSeverity = detectConfiguration.getPolicyFailOnSeverity()
+        String policyFailOnSeverity = detectConfiguration.getPolicyCheckFailOnSeverities()
         if (StringUtils.isEmpty(policyFailOnSeverity)) {
             return isAnyPolicyViolated(policyStatusDescription)
         }
