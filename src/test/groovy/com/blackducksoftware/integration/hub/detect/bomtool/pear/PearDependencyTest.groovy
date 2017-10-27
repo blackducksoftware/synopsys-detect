@@ -17,7 +17,6 @@ import org.junit.Test
 
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
-import com.blackducksoftware.integration.hub.detect.DetectProperties
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput
@@ -35,10 +34,8 @@ class PearDependencyTest {
 
     @Test
     public void findDependencyNamesTest() {
-        DetectProperties detectProperties = new DetectProperties()
-        detectProperties.pearOnlyRequiredDependencies = true
         DetectConfiguration detectConfiguration = new DetectConfiguration()
-        detectConfiguration.detectProperties = detectProperties
+        detectConfiguration.pearOnlyRequiredDependencies = true
         pearDependencyFinder.detectConfiguration = detectConfiguration
 
         def dependenciesList = testUtil.getResourceAsUTF8String('/pear/dependencies-list.txt')
