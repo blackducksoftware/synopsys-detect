@@ -170,6 +170,10 @@ class DetectProperties {
     @Value('${detect.policy.check}')
     Boolean policyCheck
 
+    @ValueDescription(description = "A comma-separated list of policy violation severities that will fail detect if checking policies is enabled. If no severity is provided, any policy violation will fail detect.", group=DetectProperties.GROUP_POLICY_CHECK)
+    @Value('${detect.policy.fail.on.severity}')
+    String policyFailOnSeverity
+
     @ValueDescription(description="Version of the Gradle Inspector", defaultValue="latest", group=DetectProperties.GROUP_GRADLE)
     @Value('${detect.gradle.inspector.version}')
     String gradleInspectorVersion

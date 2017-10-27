@@ -22,6 +22,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.hub
 
+import org.apache.commons.lang3.EnumUtils
+import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -42,10 +44,13 @@ import com.blackducksoftware.integration.hub.dataservice.project.ProjectDataServ
 import com.blackducksoftware.integration.hub.dataservice.project.ProjectVersionWrapper
 import com.blackducksoftware.integration.hub.dataservice.report.RiskReportDataService
 import com.blackducksoftware.integration.hub.dataservice.scan.ScanStatusDataService
+import com.blackducksoftware.integration.hub.detect.Application
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.exception.DoesNotExistException
 import com.blackducksoftware.integration.hub.global.HubServerConfig
+import com.blackducksoftware.integration.hub.model.enumeration.PolicySeverityEnum
+import com.blackducksoftware.integration.hub.model.enumeration.VersionBomPolicyStatusOverallStatusEnum
 import com.blackducksoftware.integration.hub.model.request.ProjectRequest
 import com.blackducksoftware.integration.hub.model.view.CodeLocationView
 import com.blackducksoftware.integration.hub.model.view.ProjectVersionView
@@ -114,10 +119,10 @@ class HubManager {
 
             if (detectConfiguration.getPolicyCheck()) {
                 PolicyStatusDataService policyStatusDataService = hubServiceWrapper.createPolicyStatusDataService()
-                PolicyStatusDescription policyStatus = policyChecker.getPolicyStatus(policyStatusDataService, projectVersionView)
-                logger.info(policyStatus.policyStatusMessage)
-                if (policyStatus.getCountInViolation()?.value > 0) {
-                    postActionResult = 1
+                PolicyStatusDescription policyStatusDescription = policyChecker.getPolicyStatus(policyStatusDataService, projectVersionView)
+                logger.info(policyStatusDescription.policyStatusMessage)
+                if (policyChecker.policyViolated(policyStatusDescription)) {
+                    postActionResult = Application.FAIL_DETECT
                 }
             }
 
