@@ -13,14 +13,11 @@ import com.blackducksoftware.integration.util.IntegrationEscapeUtil
 public class DetectProjectManagerTest {
     @Test
     void testGettingDefaultProjectVersions() {
-        def detectProperties = new DetectProperties()
-        detectProperties.projectVersionName = null
-        detectProperties.defaultProjectVersionScheme = 'timestamp'
-        detectProperties.defaultProjectVersionTimeformat = 'yyyy-MM-dd\'T\'HH:mm:ss.SSS'
-        detectProperties.defaultProjectVersionText = 'default'
-
         def detectConfiguration = new DetectConfiguration()
-        detectConfiguration.detectProperties = detectProperties
+        detectConfiguration.projectVersionName = null
+        detectConfiguration.defaultProjectVersionScheme = 'timestamp'
+        detectConfiguration.defaultProjectVersionTimeformat = 'yyyy-MM-dd\'T\'HH:mm:ss.SSS'
+        detectConfiguration.defaultProjectVersionText = 'default'
 
         def detectProjectManager = new DetectProjectManager()
         detectProjectManager.detectConfiguration = detectConfiguration
@@ -29,12 +26,12 @@ public class DetectProjectManagerTest {
         String defaultTimestampVersion = detectProjectManager.getProjectVersionName(null)
         Assert.assertTrue(defaultTimestampVersion.startsWith(timeString[0..10]))
 
-        detectProperties.defaultProjectVersionScheme = 'text'
-        String defaultTextVersion = detectProjectManager.getProjectVersionName(detectProperties.defaultProjectVersionText)
+        detectConfiguration.defaultProjectVersionScheme = 'text'
+        String defaultTextVersion = detectProjectManager.getProjectVersionName(detectConfiguration.defaultProjectVersionText)
         Assert.assertEquals('default', defaultTextVersion)
 
-        detectProperties.projectVersionName = 'actual'
-        String version = detectProjectManager.getProjectVersionName(detectProperties.defaultProjectVersionText)
+        detectConfiguration.projectVersionName = 'actual'
+        String version = detectProjectManager.getProjectVersionName(detectConfiguration.defaultProjectVersionText)
         Assert.assertEquals('actual', version)
     }
 
