@@ -171,63 +171,71 @@ class DetectConfiguration {
     @Value('${blackduck.hub.offline.mode:}')
     Boolean hubOfflineMode
 
-    @ValueDescription(description = "Source path to inspect", group=DetectConfiguration.GROUP_PATHS)
+    @ValueDescription(description="Source path to inspect", group=DetectConfiguration.GROUP_PATHS)
     @Value('${detect.source.path:}')
     String sourcePath
 
-    @ValueDescription(description = "Output path", group=DetectConfiguration.GROUP_PATHS)
+    @ValueDescription(description="Output path", group=DetectConfiguration.GROUP_PATHS)
     @Value('${detect.output.path:}')
     String outputDirectoryPath
 
-    @ValueDescription(description = "Depth from source paths to search for files.", defaultValue="3", group=DetectConfiguration.GROUP_PATHS)
+    @ValueDescription(description="The output directory for all bdio files. If not set, the bdio files will be in a 'bdio' subdirectory of the output path.", group=DetectConfiguration.GROUP_PATHS)
+    @Value('${detect.bdio.output.path:}')
+    String bdioOutputDirectoryPath
+
+    @ValueDescription(description="The output directory for all scan files. If not set, the scan files will be in a 'scan' subdirectory of the output path.", group=DetectConfiguration.GROUP_PATHS)
+    @Value('${detect.scan.output.path:}')
+    String scanOutputDirectoryPath
+
+    @ValueDescription(description="Depth from source paths to search for files.", defaultValue="3", group=DetectConfiguration.GROUP_PATHS)
     @Value('${detect.search.depth:}')
     Integer searchDepth
 
-    @ValueDescription(description = "By default, all tools will be included. If you want to exclude specific tools, specify the ones to exclude here. Exclusion rules always win.", group=DetectConfiguration.GROUP_BOMTOOL)
+    @ValueDescription(description="By default, all tools will be included. If you want to exclude specific tools, specify the ones to exclude here. Exclusion rules always win.", group=DetectConfiguration.GROUP_BOMTOOL)
     @Value('${detect.excluded.bom.tool.types:}')
     String excludedBomToolTypes
 
-    @ValueDescription(description = "By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.", group=DetectConfiguration.GROUP_BOMTOOL)
+    @ValueDescription(description="By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.", group=DetectConfiguration.GROUP_BOMTOOL)
     @Value('${detect.included.bom.tool.types:}')
     String includedBomToolTypes
 
-    @ValueDescription(description = "An override for the name to use for the Hub project. If not supplied, detect will attempt to use the tools to figure out a reasonable project name. If that fails, the final part of the directory path where the inspection is taking place will be used.", group=DetectConfiguration.GROUP_PROJECT_INFO)
+    @ValueDescription(description="An override for the name to use for the Hub project. If not supplied, detect will attempt to use the tools to figure out a reasonable project name. If that fails, the final part of the directory path where the inspection is taking place will be used.", group=DetectConfiguration.GROUP_PROJECT_INFO)
     @Value('${detect.project.name:}')
     String projectName
 
-    @ValueDescription(description = "An override for the version to use for the Hub project. If not supplied, detect will attempt to use the tools to figure out a reasonable version name. If that fails, the current date will be used.", group=DetectConfiguration.GROUP_PROJECT_INFO)
+    @ValueDescription(description="An override for the version to use for the Hub project. If not supplied, detect will attempt to use the tools to figure out a reasonable version name. If that fails, the current date will be used.", group=DetectConfiguration.GROUP_PROJECT_INFO)
     @Value('${detect.project.version.name:}')
     String projectVersionName
 
-    @ValueDescription(description = "A prefix to the name of the codelocations created by Detect. Useful for running against the same projects on multiple machines.", defaultValue='', group=DetectConfiguration.GROUP_PROJECT_INFO)
+    @ValueDescription(description="A prefix to the name of the codelocations created by Detect. Useful for running against the same projects on multiple machines.", defaultValue='', group=DetectConfiguration.GROUP_PROJECT_INFO)
     @Value('${detect.project.codelocation.prefix:}')
     String projectCodeLocationPrefix
 
-    @ValueDescription(description = "A suffix to the name of the codelocations created by Detect.", defaultValue='', group=DetectConfiguration.GROUP_PROJECT_INFO)
+    @ValueDescription(description="A suffix to the name of the codelocations created by Detect.", defaultValue='', group=DetectConfiguration.GROUP_PROJECT_INFO)
     @Value('${detect.project.codelocation.suffix:}')
     String projectCodeLocationSuffix
 
-    @ValueDescription(description = "If set to true, when an old code location format is found in the Hub, instead of logging a warning, the code location will be deleted. USE WITH CAUTION - THIS CAN DELETE CODE LOCATIONS IN THE HUB.", defaultValue='false', group=DetectConfiguration.GROUP_PROJECT_INFO)
+    @ValueDescription(description="If set to true, when an old code location format is found in the Hub, instead of logging a warning, the code location will be deleted. USE WITH CAUTION - THIS CAN DELETE CODE LOCATIONS IN THE HUB.", defaultValue='false', group=DetectConfiguration.GROUP_PROJECT_INFO)
     @Value('${detect.project.codelocation.delete.old.names:}')
     Boolean projectCodeLocationDeleteOldNames
 
-    @ValueDescription(description = "An override for the Project level matches.", defaultValue="true", group=DetectConfiguration.GROUP_PROJECT_INFO)
+    @ValueDescription(description="An override for the Project level matches.", defaultValue="true", group=DetectConfiguration.GROUP_PROJECT_INFO)
     @Value('${detect.project.level.adjustments:}')
     String projectLevelMatchAdjustments
 
-    @ValueDescription(description = "An override for the Project Version phase.", defaultValue="Development",  group=DetectConfiguration.GROUP_PROJECT_INFO)
+    @ValueDescription(description="An override for the Project Version phase.", defaultValue="Development",  group=DetectConfiguration.GROUP_PROJECT_INFO)
     @Value('${detect.project.version.phase:}')
     String projectVersionPhase
 
-    @ValueDescription(description = "An override for the Project Version distribution", defaultValue="External",  group=DetectConfiguration.GROUP_PROJECT_INFO)
+    @ValueDescription(description="An override for the Project Version distribution", defaultValue="External",  group=DetectConfiguration.GROUP_PROJECT_INFO)
     @Value('${detect.project.version.distribution:}')
     String projectVersionDistribution
 
-    @ValueDescription(description = "Set to true if you would like a policy check from the hub for your project. False by default", defaultValue="false", group=DetectConfiguration.GROUP_POLICY_CHECK)
+    @ValueDescription(description="Set to true if you would like a policy check from the hub for your project. False by default", defaultValue="false", group=DetectConfiguration.GROUP_POLICY_CHECK)
     @Value('${detect.policy.check:}')
     Boolean policyCheck
 
-    @ValueDescription(description = "A comma-separated list of policy violation severities that will fail detect if checking policies is enabled. If no severity is provided, any policy violation will fail detect.", group=DetectConfiguration.GROUP_POLICY_CHECK)
+    @ValueDescription(description="A comma-separated list of policy violation severities that will fail detect if checking policies is enabled. If no severity is provided, any policy violation will fail detect.", group=DetectConfiguration.GROUP_POLICY_CHECK)
     @Value('${detect.policy.check.fail.on.severities:}')
     String policyCheckFailOnSeverities
 
@@ -520,12 +528,20 @@ class DetectConfiguration {
         nugetInspectorPackageName = nugetInspectorPackageName.trim()
         nugetInspectorPackageVersion = nugetInspectorPackageVersion.trim()
 
-        outputDirectory = new File(outputDirectoryPath)
-        outputDirectory.mkdirs()
-        if (!outputDirectory.exists() || !outputDirectory.isDirectory()) {
-            throw new DetectException("The output directory ${outputDirectoryPath} does not exist. The system property 'user.home' will be used by default, but the output directory must exist.")
-        }
         outputDirectoryPath = outputDirectoryPath.trim()
+        outputDirectory = new File(outputDirectoryPath)
+
+        if (StringUtils.isBlank(bdioOutputDirectoryPath)) {
+            bdioOutputDirectoryPath = outputDirectoryPath + File.separator + 'bdio'
+        }
+
+        if (StringUtils.isBlank(scanOutputDirectoryPath)) {
+            scanOutputDirectoryPath = outputDirectoryPath + File.separator + 'scan'
+        }
+
+        ensureDirectoryExists(outputDirectoryPath, 'The system property \'user.home\' will be used by default, but the output directory must exist.')
+        ensureDirectoryExists(bdioOutputDirectoryPath, 'By default, the directory \'bdio\' will be created in the outputDirectory, but the directory must exist.')
+        ensureDirectoryExists(scanOutputDirectoryPath, 'By default, the directory \'scan\' will be created in the outputDirectory, but the directory must exist.')
 
         MutablePropertySources mutablePropertySources = configurableEnvironment.getPropertySources()
         mutablePropertySources.each { propertySource ->
@@ -555,6 +571,14 @@ class DetectConfiguration {
             if (it.startsWith(DOCKER_PROPERTY_PREFIX)) {
                 additionalDockerPropertyNames.add(it)
             }
+        }
+    }
+
+    private void ensureDirectoryExists(String directoryPath, String failureMessage) {
+        File directory = new File(directoryPath)
+        directory.mkdirs()
+        if (!directory.exists() || !directory.isDirectory()) {
+            throw new DetectException("The directory ${directoryPath} does not exist. ${failureMessage}")
         }
     }
 
@@ -609,8 +633,11 @@ class DetectConfiguration {
         configurationPieces.add('Current property values:')
         configurationPieces.add('-'.multiply(60))
         def propertyFields = DetectConfiguration.class.getDeclaredFields().findAll {
+            def foundValueAnnotation = it.annotations.find { annotation ->
+                annotation.annotationType() == Value.class
+            }
             int modifiers = it.modifiers
-            !Modifier.isStatic(modifiers) && Modifier.isPrivate(modifiers)
+            !Modifier.isStatic(modifiers) && Modifier.isPrivate(modifiers) && foundValueAnnotation
         }.sort { a, b ->
             a.name <=> b.name
         }
@@ -701,6 +728,12 @@ class DetectConfiguration {
     }
     public String getOutputDirectoryPath() {
         return outputDirectoryPath
+    }
+    public String getBdioOutputDirectoryPath() {
+        return bdioOutputDirectoryPath
+    }
+    public String getScanOutputDirectoryPath() {
+        return scanOutputDirectoryPath
     }
     public int getSearchDepth() {
         return convertInt(searchDepth)
@@ -945,4 +978,5 @@ class DetectConfiguration {
     public String getGradleInspectorRepositoryUrl() {
         return gradleInspectorRepositoryUrl?.trim()
     }
+
 }
