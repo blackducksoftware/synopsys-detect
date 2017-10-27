@@ -25,19 +25,18 @@ import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 import com.blackducksoftware.integration.util.ResourceUtil
 import com.google.gson.GsonBuilder
 
-class GradleDependenciesParserTest {
+class GradleReportParserTest {
     private TestUtil testUtil = new TestUtil()
     private ExternalIdFactory externalIdFactory = new ExternalIdFactory()
 
     @Test
     public void getLineLevelTest() {
-        GradleDependenciesParser gradleDependenciesParser = new GradleDependenciesParser()
-        assertEquals(5, gradleDependenciesParser.getLineLevel('|    |         |    |    \\--- org.springframework:spring-core:4.3.5.RELEASE'))
-        assertEquals(3, gradleDependenciesParser.getLineLevel('|    |         \\--- com.squareup.okhttp3:okhttp:3.4.2 (*)'))
-        assertEquals(4, gradleDependenciesParser.getLineLevel('     |    |         \\--- org.ow2.asm:asm:5.0.3'))
-        assertEquals(1, gradleDependenciesParser.getLineLevel('     +--- org.hamcrest:hamcrest-core:1.3'))
-        assertEquals(0, gradleDependenciesParser.getLineLevel('+--- org.springframework.boot:spring-boot-starter: -> 1.4.3.RELEASE'))
-        assertEquals(0, gradleDependenciesParser.getLineLevel('\\--- org.apache.commons:commons-compress:1.13'))
+        assertEquals(5, new GradleReportLine(('|    |         |    |    \\--- org.springframework:spring-core:4.3.5.RELEASE')).treeLevel)
+        assertEquals(3, new GradleReportLine(('|    |         \\--- com.squareup.okhttp3:okhttp:3.4.2 (*)')).treeLevel)
+        assertEquals(4, new GradleReportLine(('     |    |         \\--- org.ow2.asm:asm:5.0.3')).treeLevel)
+        assertEquals(1, new GradleReportLine(('     +--- org.hamcrest:hamcrest-core:1.3')).treeLevel)
+        assertEquals(0, new GradleReportLine(('+--- org.springframework.boot:spring-boot-starter: -> 1.4.3.RELEASE')).treeLevel)
+        assertEquals(0, new GradleReportLine(('\\--- org.apache.commons:commons-compress:1.13')).treeLevel)
     }
 
     @Test
@@ -69,29 +68,29 @@ class GradleDependenciesParserTest {
     }
 
     private DetectCodeLocation build(String resource){
-        InputStream inputStream = ResourceUtil.getResourceAsStream(GradleDependenciesParserTest.class, resource)
+        InputStream inputStream = ResourceUtil.getResourceAsStream(GradleReportParserTest.class, resource)
         DetectProject project = new DetectProject()
-        GradleDependenciesParser gradleDependenciesParser = new GradleDependenciesParser()
-        ReflectionTestUtils.setField(gradleDependenciesParser, 'externalIdFactory', externalIdFactory)
-        DetectCodeLocation codeLocation = gradleDependenciesParser.parseDependencies(project, inputStream)
+        GradleReportParser gradleReportParser = new GradleReportParser()
+        ReflectionTestUtils.setField(gradleReportParser, 'externalIdFactory', externalIdFactory)
+        DetectCodeLocation codeLocation = gradleReportParser.parseDependencies(project, inputStream)
         return codeLocation;
     }
 
     @Test
     public void testSpringFrameworkAop() {
-        InputStream inputStream = ResourceUtil.getResourceAsStream(GradleDependenciesParserTest.class, 'gradle/spring-framework/spring_aop_dependencyGraph.txt')
+        InputStream inputStream = ResourceUtil.getResourceAsStream(GradleReportParserTest.class, 'gradle/spring-framework/spring_aop_dependencyGraph.txt')
         DetectProject project = new DetectProject()
-        GradleDependenciesParser gradleDependenciesParser = new GradleDependenciesParser()
-        ReflectionTestUtils.setField(gradleDependenciesParser, 'externalIdFactory', new ExternalIdFactory())
-        DetectCodeLocation codeLocation = gradleDependenciesParser.parseDependencies(project, inputStream)
+        GradleReportParser gradleReportParser = new GradleReportParser()
+        ReflectionTestUtils.setField(gradleReportParser, 'externalIdFactory', new ExternalIdFactory())
+        DetectCodeLocation codeLocation = gradleReportParser.parseDependencies(project, inputStream)
         println(new GsonBuilder().setPrettyPrinting().create().toJson(codeLocation))
     }
 
     private void createNewCodeLocationTest(String gradleInspectorOutputResourcePath, String expectedResourcePath, String rootProjectName, String rootProjectVersionName) {
         DetectProject project = new DetectProject()
-        GradleDependenciesParser gradleDependenciesParser = new GradleDependenciesParser()
-        ReflectionTestUtils.setField(gradleDependenciesParser, 'externalIdFactory', new ExternalIdFactory())
-        DetectCodeLocation codeLocation = gradleDependenciesParser.parseDependencies(project, ResourceUtil.getResourceAsStream(GradleDependenciesParserTest.class, gradleInspectorOutputResourcePath))
+        GradleReportParser gradleReportParser = new GradleReportParser()
+        ReflectionTestUtils.setField(gradleReportParser, 'externalIdFactory', new ExternalIdFactory())
+        DetectCodeLocation codeLocation = gradleReportParser.parseDependencies(project, ResourceUtil.getResourceAsStream(GradleReportParserTest.class, gradleInspectorOutputResourcePath))
 
         assertEquals(rootProjectName, project.getProjectName())
         assertEquals(rootProjectVersionName, project.getProjectVersionName())

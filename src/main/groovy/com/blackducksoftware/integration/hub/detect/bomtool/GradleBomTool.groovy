@@ -27,8 +27,8 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleDependenciesParser
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleInspectorManager
+import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleReportParser
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
@@ -49,7 +49,7 @@ class GradleBomTool extends BomTool {
     HubSignatureScanner hubSignatureScanner
 
     @Autowired
-    GradleDependenciesParser gradleDependenciesParser
+    GradleReportParser gradleReportParser
 
     @Autowired
     GradleInspectorManager gradleInspectorManager
@@ -113,7 +113,7 @@ class GradleBomTool extends BomTool {
 
         List<DetectCodeLocation> codeLocations = codeLocationFiles.collect { File file ->
             logger.debug("Parsing dependency graph : ${file.getName()}")
-            gradleDependenciesParser.parseDependencies(detectProject, file.newInputStream())
+            gradleReportParser.parseDependencies(detectProject, file.newInputStream())
         }
         if (detectConfiguration.gradleCleanupBuildBlackduckDirectory) {
             blackduckDirectory.deleteDir()
