@@ -522,26 +522,20 @@ class DetectConfiguration {
 
         if (StringUtils.isBlank(outputDirectoryPath)) {
             usingDefaultOutputPath = true
-            outputDirectoryPath = System.getProperty('user.home') + File.separator + 'blackduck'
+            outputDirectoryPath = makeDirectoryIn(System.getProperty('user.home'), 'blackduck', 'The system property \'user.home\' will be used by default, but the output directory must exist.')
+        }
+        outputDirectory = new File(outputDirectoryPath)
+
+        if (StringUtils.isBlank(bdioOutputDirectoryPath)) {
+            bdioOutputDirectoryPath = makeDirectoryIn(outputDirectoryPath, 'bdio', 'By default, the directory \'bdio\' will be created in the outputDirectory, but the directory must exist.')
+        }
+
+        if (StringUtils.isBlank(scanOutputDirectoryPath)) {
+            scanOutputDirectoryPath = makeDirectoryIn(outputDirectoryPath, 'scan', 'By default, the directory \'scan\' will be created in the outputDirectory, but the directory must exist.')
         }
 
         nugetInspectorPackageName = nugetInspectorPackageName.trim()
         nugetInspectorPackageVersion = nugetInspectorPackageVersion.trim()
-
-        outputDirectoryPath = outputDirectoryPath.trim()
-        outputDirectory = new File(outputDirectoryPath)
-
-        if (StringUtils.isBlank(bdioOutputDirectoryPath)) {
-            bdioOutputDirectoryPath = outputDirectoryPath + File.separator + 'bdio'
-        }
-
-        if (StringUtils.isBlank(scanOutputDirectoryPath)) {
-            scanOutputDirectoryPath = outputDirectoryPath + File.separator + 'scan'
-        }
-
-        ensureDirectoryExists(outputDirectoryPath, 'The system property \'user.home\' will be used by default, but the output directory must exist.')
-        ensureDirectoryExists(bdioOutputDirectoryPath, 'By default, the directory \'bdio\' will be created in the outputDirectory, but the directory must exist.')
-        ensureDirectoryExists(scanOutputDirectoryPath, 'By default, the directory \'scan\' will be created in the outputDirectory, but the directory must exist.')
 
         MutablePropertySources mutablePropertySources = configurableEnvironment.getPropertySources()
         mutablePropertySources.each { propertySource ->
@@ -574,12 +568,13 @@ class DetectConfiguration {
         }
     }
 
-    private void ensureDirectoryExists(String directoryPath, String failureMessage) {
-        File directory = new File(directoryPath)
+    private String makeDirectoryIn(String baseDirectoryPath, String directoryName, String failureMessage) {
+        File directory = new File(baseDirectoryPath, directoryName)
         directory.mkdirs()
         if (!directory.exists() || !directory.isDirectory()) {
-            throw new DetectException("The directory ${directoryPath} does not exist. ${failureMessage}")
+            throw new DetectException("The directory ${directoryName} in ${baseDirectoryPath} does not exist or is not a directory. ${failureMessage}")
         }
+        directory.getCanonicalPath()
     }
 
     /**
