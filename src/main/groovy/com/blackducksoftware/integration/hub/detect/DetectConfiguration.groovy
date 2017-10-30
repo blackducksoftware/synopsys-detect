@@ -520,19 +520,16 @@ class DetectConfiguration {
         //make sure the path is absolute
         sourcePath = sourceDirectory.canonicalPath
 
-        if (StringUtils.isBlank(outputDirectoryPath)) {
-            usingDefaultOutputPath = true
-            outputDirectoryPath = makeDirectoryIn(System.getProperty('user.home'), 'blackduck', 'The system property \'user.home\' will be used by default, but the output directory must exist.')
-        }
+        usingDefaultOutputPath = StringUtils.isBlank(outputDirectoryPath)
+        outputDirectoryPath = createDirectoryPath(outputDirectoryPath, System.getProperty('user.home'), 'blackduck')
+        bdioOutputDirectoryPath = createDirectoryPath(bdioOutputDirectoryPath, outputDirectoryPath, 'bdio')
+        scanOutputDirectoryPath = createDirectoryPath(scanOutputDirectoryPath, outputDirectoryPath, 'scan')
+
+        ensureDirectoryExists(outputDirectoryPath, 'The system property \'user.home\' will be used by default, but the output directory must exist.')
+        ensureDirectoryExists(bdioOutputDirectoryPath, 'By default, the directory \'bdio\' will be created in the outputDirectory, but the directory must exist.')
+        ensureDirectoryExists(scanOutputDirectoryPath, 'By default, the directory \'scan\' will be created in the outputDirectory, but the directory must exist.')
+
         outputDirectory = new File(outputDirectoryPath)
-
-        if (StringUtils.isBlank(bdioOutputDirectoryPath)) {
-            bdioOutputDirectoryPath = makeDirectoryIn(outputDirectoryPath, 'bdio', 'By default, the directory \'bdio\' will be created in the outputDirectory, but the directory must exist.')
-        }
-
-        if (StringUtils.isBlank(scanOutputDirectoryPath)) {
-            scanOutputDirectoryPath = makeDirectoryIn(outputDirectoryPath, 'scan', 'By default, the directory \'scan\' will be created in the outputDirectory, but the directory must exist.')
-        }
 
         nugetInspectorPackageName = nugetInspectorPackageName.trim()
         nugetInspectorPackageVersion = nugetInspectorPackageVersion.trim()
@@ -568,13 +565,20 @@ class DetectConfiguration {
         }
     }
 
-    private String makeDirectoryIn(String baseDirectoryPath, String directoryName, String failureMessage) {
-        File directory = new File(baseDirectoryPath, directoryName)
+    private String createDirectoryPath(String providedDirectoryPath, String defaultDirectoryPath, String defaultDirectoryName) {
+        if (StringUtils.isBlank(providedDirectoryPath)) {
+            File directory = new File(defaultDirectoryPath, defaultDirectoryName)
+            return directory.canonicalPath
+        }
+        return providedDirectoryPath
+    }
+
+    private void ensureDirectoryExists(String directoryPath, String failureMessage) {
+        File directory = new File(directoryPath)
         directory.mkdirs()
         if (!directory.exists() || !directory.isDirectory()) {
-            throw new DetectException("The directory ${directoryName} in ${baseDirectoryPath} does not exist or is not a directory. ${failureMessage}")
+            throw new DetectException("The directory ${directoryPath} does not exist. ${failureMessage}")
         }
-        directory.getCanonicalPath()
     }
 
     /**
