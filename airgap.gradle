@@ -1,5 +1,6 @@
 import java.io.File
 
+final String distributionArtifactFolder = "${buildDir}/distributions"
 final String buildArtifactFolder = "${buildDir}/libs"
 final String airGapFolder = "${buildArtifactFolder}/packaged-inspectors"
 final String gradleAirGapPath = "${airGapFolder}/gradle"
@@ -124,5 +125,5 @@ task createAirGapZip(type: Zip) {
     include 'packaged-inspectors/**'
     include 'config/**'
     archiveName "${rootProject.name}-${version}-air-gap.zip"
-    destinationDir(file(buildArtifactFolder))
+    destinationDir(file(distributionArtifactFolder))
 }
