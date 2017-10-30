@@ -173,8 +173,8 @@ class HubSignatureScanner {
             hubScanConfigBuilder.setDryRun(true)
 
             if (!detectConfiguration.hubSignatureScannerOfflineLocalPath) {
-                File scannerDirectory = detectFileManager.createDirectory('signature_scanner', false)
-                File toolsDirectory = detectFileManager.createDirectory(scannerDirectory, 'tools', false)
+                File scannerDirectory = new File(detectConfiguration.scanOutputDirectoryPath)
+                File toolsDirectory = detectFileManager.createDirectory('tools', false)
                 hubScanConfigBuilder.toolsDir = toolsDirectory
             }
 
@@ -188,8 +188,8 @@ class HubSignatureScanner {
     }
 
     private HubScanConfigBuilder createScanConfigBuilder(DetectProject detectProject, String canonicalPath) {
-        File scannerDirectory = detectFileManager.createDirectory('signature_scanner', false)
-        File toolsDirectory = detectFileManager.createDirectory(scannerDirectory, 'tools', false)
+        File scannerDirectory = new File(detectConfiguration.scanOutputDirectoryPath)
+        File toolsDirectory = detectFileManager.createDirectory('tools', false)
 
         HubScanConfigBuilder hubScanConfigBuilder = new HubScanConfigBuilder()
         hubScanConfigBuilder.scanMemory = detectConfiguration.hubSignatureScannerMemory
