@@ -20,22 +20,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.help;
+package com.blackducksoftware.integration.hub.detect.profile;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import groovy.transform.TypeChecked;
+import com.blackducksoftware.integration.hub.detect.profile.manager.ProfileData;
 
-@TypeChecked
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface ValueDescription {
-    String description() default "";
-
-    String defaultValue() default "";
-
-    String group() default "";
+@ProfileData(profileName = "noscan")
+public @interface NoScanProfile {
+    String overrideDefault() default ProfileData.DONT_OVERRIDE;
 }

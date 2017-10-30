@@ -38,12 +38,15 @@ import com.blackducksoftware.integration.hub.bdio.BdioTransformer
 import com.blackducksoftware.integration.hub.bdio.SimpleBdioFactory
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.exception.DetectException
+import com.blackducksoftware.integration.hub.detect.help.DetectOption
 import com.blackducksoftware.integration.hub.detect.help.HelpPrinter
-import com.blackducksoftware.integration.hub.detect.help.ValueDescriptionAnnotationFinder
+import com.blackducksoftware.integration.hub.detect.help.ValueDescriptionManager
 import com.blackducksoftware.integration.hub.detect.hub.HubManager
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
+import com.blackducksoftware.integration.hub.detect.onboarding.Onboarder
+import com.blackducksoftware.integration.hub.detect.profile.manager.ProfileManager
 import com.blackducksoftware.integration.hub.detect.summary.DetectSummary
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager
@@ -64,7 +67,7 @@ class Application {
     private final Logger logger = LoggerFactory.getLogger(Application.class)
 
     @Autowired
-    ValueDescriptionAnnotationFinder valueDescriptionAnnotationFinder
+    ValueDescriptionManager valueDescriptionAnnotationFinder
 
     @Autowired
     DetectConfiguration detectConfiguration
@@ -94,20 +97,48 @@ class Application {
     DetectSummary detectSummary
 
     @Autowired
+    ProfileManager profileManager
+
+    @Autowired
     DetectFileManager detectFileManager
 
     static void main(final String[] args) {
         new SpringApplicationBuilder(Application.class).logStartupInfo(false).run(args)
     }
 
+    private List<String> getProfiles() {
+        List<String> profiles = new ArrayList<String>();
+        for (String arg : applicationArguments.getSourceArgs()){
+            if (!arg.contains("=")){
+                if (arg.startsWith("--")){
+                    profiles.add(arg.substring(2));
+                }
+            }
+        }
+        return profiles;
+    }
+
     @PostConstruct
     void init() {
         int postResult = 0
         try {
-            valueDescriptionAnnotationFinder.init()
+            profileManager.init(getProfiles());
+            valueDescriptionAnnotationFinder.init(profileManager.selectedProfiles)
+            List<DetectOption> options = valueDescriptionAnnotationFinder.getDetectOptions();
             if ('-h' in applicationArguments.getSourceArgs() || '--help' in applicationArguments.getSourceArgs()) {
-                helpPrinter.printHelpMessage(System.out)
+                helpPrinter.printHelpMessage(System.out, options, profileManager.availableProfiles(), profileManager.selectedProfiles)
                 return
+            }
+
+            if ('-o' in applicationArguments.getSourceArgs() || '--onboard' in applicationArguments.getSourceArgs()) {
+                Onboarder onboarder = new Onboarder(detectConfiguration, valueDescriptionAnnotationFinder);
+                try{
+                    onboarder.onboard(System.out);
+                }catch (Exception e){
+                    System.out.print(e);
+                    logger.error("Onboarding failed. Please retry onboarding or remove '--o' and '--onboard' from your options.")
+                    return;
+                }
             }
 
             detectConfiguration.init()
