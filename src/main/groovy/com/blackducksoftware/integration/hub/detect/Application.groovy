@@ -67,7 +67,7 @@ class Application {
     private final Logger logger = LoggerFactory.getLogger(Application.class)
 
     @Autowired
-    ValueDescriptionManager valueDescriptionAnnotationFinder
+    ValueDescriptionManager valueDescriptionManager
 
     @Autowired
     DetectConfiguration detectConfiguration
@@ -123,20 +123,20 @@ class Application {
         int postResult = 0
         try {
             profileManager.init(getProfiles());
-            valueDescriptionAnnotationFinder.init(profileManager.selectedProfiles)
-            List<DetectOption> options = valueDescriptionAnnotationFinder.getDetectOptions();
+            valueDescriptionManager.init(profileManager.selectedProfiles)
+            List<DetectOption> options = valueDescriptionManager.getDetectOptions();
             if ('-h' in applicationArguments.getSourceArgs() || '--help' in applicationArguments.getSourceArgs()) {
                 helpPrinter.printHelpMessage(System.out, options, profileManager.availableProfiles(), profileManager.selectedProfiles)
                 return
             }
 
             if ('-o' in applicationArguments.getSourceArgs() || '--onboard' in applicationArguments.getSourceArgs()) {
-                Onboarder onboarder = new Onboarder(detectConfiguration, valueDescriptionAnnotationFinder);
+                Onboarder onboarder = new Onboarder(detectConfiguration, valueDescriptionManager);
                 try{
                     onboarder.onboard(System.out);
                 }catch (Exception e){
-                    System.out.print(e);
-                    logger.error("Onboarding failed. Please retry onboarding or remove '--o' and '--onboard' from your options.")
+                    logger.error(e.toString());
+                    logger.error("Onboarding failed. Please retry onboarding or remove '-o' and '--onboard' from your options.")
                     return;
                 }
             }
