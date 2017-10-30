@@ -159,7 +159,7 @@ class DetectProjectManager {
                 final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(codeLocationNameString, detectProject, it)
                 String projectPath = detectFileManager.extractFinalPieceFromPath(it.sourcePath)
                 final String filename = createBdioFilename(it.bomToolType, projectPath, projectName, projectVersionName)
-                final File outputFile = new File(detectConfiguration.getOutputDirectory(), filename)
+                final File outputFile = new File(detectConfiguration.bdioOutputDirectoryPath, filename)
                 if (outputFile.exists()) {
                     outputFile.delete()
                 }
