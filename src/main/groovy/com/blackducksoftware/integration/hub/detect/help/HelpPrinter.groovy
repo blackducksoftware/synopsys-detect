@@ -37,26 +37,8 @@ class HelpPrinter {
         def helpMessagePieces = []
         helpMessagePieces.add('')
 
-        printStream.print("Available Profiles: ");
-        boolean first = true;
-        profiles.each {
-            if (!first){
-                printStream.print(", ");
-            }
-            first = false;
-            printStream.print(it);
-        }
-
-        printStream.println();
-        printStream.print("Selected Profiles: ");
-        first = true;
-        selectedProfiles.each {
-            if (!first){
-                printStream.print(", ");
-            }
-            first = false;
-            printStream.print(it);
-        }
+        printStream.println("Available Profiles: " + profiles.join(', '));
+        printStream.println("Selected Profiles: " + selectedProfiles.join(", "));
 
         def headerColumns = ['Property Name', 'Default', 'Description']
 
