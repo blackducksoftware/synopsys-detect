@@ -68,7 +68,7 @@ class Application {
     private final Logger logger = LoggerFactory.getLogger(Application.class)
 
     @Autowired
-    DetectOptionManager valueDescriptionManager
+    DetectOptionManager detectOptionManager
 
     @Autowired
     DetectConfiguration detectConfiguration
@@ -124,8 +124,9 @@ class Application {
         int postResult = 0
         try {
             profileManager.init(getProfiles());
-            valueDescriptionManager.init(profileManager.selectedProfiles)
-            List<DetectOption> options = valueDescriptionManager.getDetectOptions();
+            detectOptionManager.init(profileManager.selectedProfiles)
+
+            List<DetectOption> options = detectOptionManager.getDetectOptions();
             if ('-h' in applicationArguments.getSourceArgs() || '--help' in applicationArguments.getSourceArgs()) {
                 helpPrinter.printHelpMessage(System.out, options, profileManager.availableProfiles(), profileManager.selectedProfiles)
                 return
@@ -150,6 +151,7 @@ class Application {
                 helpPrinter.printProfiles(System.out, profileManager.availableProfiles(), profileManager.selectedProfiles)
                 DetectConfigurationPrinter detectConfigurationPrinter = new DetectConfigurationPrinter();
                 detectConfigurationPrinter.printConfiguration(System.out, detectConfiguration, options)
+                detectConfigurationPrinter.printOptions(System.out, options);
             }
 
             if (detectConfiguration.testConnection) {

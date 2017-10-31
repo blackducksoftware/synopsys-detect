@@ -121,7 +121,7 @@ public class Onboarder {
 
             final Field field = detectConfiguration.getClass().getDeclaredField(opt.fieldName);
             field.setAccessible(true);
-            ReflectionUtils.setValue(field, detectConfiguration, opt.onboardValue, true);
+            ReflectionUtils.setValue(field, detectConfiguration, opt.onboardValue);
 
         }
     }

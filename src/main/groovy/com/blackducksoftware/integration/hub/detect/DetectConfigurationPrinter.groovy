@@ -18,6 +18,16 @@ import org.springframework.beans.factory.annotation.Value
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 public class DetectConfigurationPrinter {
 
+    public void printOptions(final PrintStream printStream, final List<DetectOption> detectOptions) {
+        for (DetectOption option : detectOptions){
+            if (option.defaultValue.chosenProfile != null){
+                //printStream.println("${option.fieldName} = ${option.fieldName} (${option.defaultValue.chosenProfile})" as String)
+            }else{
+                //printStream.println("${option.fieldName} = ${option.fieldName}" as String)
+            }
+        }
+    }
+
     public void printConfiguration(final PrintStream printStream, DetectConfiguration detectConfiguration, final List<DetectOption> detectOptions) {
         printStream.println('')
         printStream.println("Detect Version: ${detectConfiguration.buildInfo.detectVersion}" as String)
@@ -44,14 +54,18 @@ public class DetectConfigurationPrinter {
                 if (fieldName.toLowerCase().contains('password')) {
                     fieldValue = '*'.multiply((fieldValue as String).length())
                 }
+                DetectOption option;
                 String profile = null;
                 for (DetectOption opt : detectOptions){
                     if (opt.fieldName.equals(fieldName)){
-                        profile = opt.defaultValue.lastUsedProfile;
+                        profile = opt.defaultValue.chosenProfile;
+                        option = opt;
                     }
                 }
                 if (profile != null){
                     printStream.println("${fieldName} = ${fieldValue} (${profile})" as String)
+                }else if (option != null && !option.originalValue.equals(option.finalValue)){
+                    printStream.println("${fieldName} = ${fieldValue} (${option.originalValue})" as String)
                 }else{
                     printStream.println("${fieldName} = ${fieldValue}" as String)
                 }

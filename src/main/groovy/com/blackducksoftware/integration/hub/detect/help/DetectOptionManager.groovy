@@ -65,21 +65,28 @@ public class DetectOptionManager {
                 String valueKey = field.getAnnotation(Value.class).value().trim()
                 key = SpringValueUtils.springKeyFromValueAnnotation(valueKey)
             }
-            field.setAccessible(true)
 
+            ProfileDefaultValue profileDefault = new ProfileDefaultValue(defaultValue, profileManager.getProfileDefaultsFromDetectField(field), profiles);
             Set<String> optionProfiles = profileManager.getProfilesFromDetectField(field);
-            ProfileDefaultValue profileDefault = new ProfileDefaultValue(defaultValue, profileManager.getProfileDefaultsFromDetectField(field));
 
-            if (defaultValue?.trim()) {
-                defaultValue = profileDefault.defaultValue(profiles);
+            field.setAccessible(true)
+            boolean hasValue = !ReflectionUtils.isValueNull(field, obj);
+
+            String originalValue = defaultValue;
+            String finalValue = originalValue;
+
+            defaultValue = profileDefault.chosenDefault;
+            if (defaultValue?.trim() && !hasValue){
                 try {
-                    ReflectionUtils.setValue(field, obj, defaultValue, false);
+                    ReflectionUtils.setValue(field, obj, defaultValue);
                 } catch (final IllegalAccessException e) {
                     logger.error(String.format("Could not set defaultValue on field %s with %s: %s", field.getName(), defaultValue, e.getMessage()))
                 }
+            }else if (hasValue){
+                finalValue = field.get(obj).toString();
             }
 
-            return new DetectOption(key, fieldName, description, valueType, optionProfiles, profileDefault, group);
+            return new DetectOption(key, fieldName, originalValue, finalValue, description, valueType, optionProfiles, profileDefault, group);
         }
         return null;
     }

@@ -11,48 +11,32 @@
  */
 package com.blackducksoftware.integration.hub.detect.help;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ProfileDefaultValue {
-    private final String originalDefault;
-    private final Map<String, String> profileSpecificDefaults;
-    public String lastUsedProfile = null;
+    public final String originalDefault;
+    public final Map<String, String> profileSpecificDefaults;
+    public final String chosenProfile;
+    public final String chosenDefault;
 
-    public ProfileDefaultValue(final String originalDefault) {
-        this.profileSpecificDefaults = new HashMap<>();
-        this.originalDefault = originalDefault;
-    }
-
-    public ProfileDefaultValue(final String originalDefault, final Map<String, String> profileSpecificDefaults) {
+    public ProfileDefaultValue(final String originalDefault, final Map<String, String> profileSpecificDefaults, final List<String> selectedProfiles) {
         this.profileSpecificDefaults = profileSpecificDefaults;
         this.originalDefault = originalDefault;
-    }
 
-    public void addDefault(final String profile, final String value) {
-        profileSpecificDefaults.put(profile, value);
-    }
-
-    public String defaultValue(final List<String> profiles) {
-        String actualDefault = originalDefault;
-        for (final String profile : profiles) {
+        String bestDefault = originalDefault;
+        String bestProfile = null;
+        for (final String profile : selectedProfiles) {
             if (profileSpecificDefaults.containsKey(profile)) {
-                actualDefault = profileSpecificDefaults.get(profile);
-                lastUsedProfile = profile;
+                bestDefault = profileSpecificDefaults.get(profile);
+                bestProfile = profile;
                 break;
             }
         }
-        return actualDefault;
-    }
 
-    public String matchingProfile(final List<String> profiles) {
-        for (final String profile : profiles) {
-            if (profileSpecificDefaults.containsKey(profile)) {
-                return profile;
-            }
-        }
-        return null;
+        chosenProfile = bestProfile;
+        chosenDefault = bestDefault;
+
     }
 
     public boolean containsProfile(final String profile) {

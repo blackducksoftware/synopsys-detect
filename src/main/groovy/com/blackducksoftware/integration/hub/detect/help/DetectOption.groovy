@@ -31,12 +31,14 @@ public class DetectOption {
     final String description
     final Class valueType
     final String group
+    final String finalValue
+    final String originalValue
 
     final Set<String> profiles
     final ProfileDefaultValue defaultValue
 
 
-    public DetectOption(final String key, String fieldName, final String description, Class valueType, Set<String> profiles, ProfileDefaultValue defaultValue, String group) {
+    public DetectOption(final String key, String fieldName, String originalValue, String finalValue, final String description, Class valueType, Set<String> profiles, ProfileDefaultValue defaultValue, String group) {
         this.key = key
         this.description = description
         this.valueType = valueType
@@ -44,5 +46,7 @@ public class DetectOption {
         this.group = group
         this.profiles = profiles
         this.fieldName = fieldName
+        this.originalValue = originalValue;
+        this.finalValue = finalValue;
     }
 }

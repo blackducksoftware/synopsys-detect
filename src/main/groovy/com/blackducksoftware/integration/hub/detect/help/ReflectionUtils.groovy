@@ -18,17 +18,32 @@ import org.apache.commons.lang3.math.NumberUtils
 
 public class ReflectionUtils {
 
-    public static void setValue(final Field field, final Object obj, final String value, final boolean force){
+    public static void setValue(final Field field, final Object obj, final String value){
         final Class type = field.getType()
         Object fieldValue = field.get(obj)
-        if (String.class == type && (force || !(fieldValue as String)?.trim())) {
+        if (String.class == type) {
             field.set(obj, value)
-        } else if (Integer.class == type && (force || fieldValue == null)) {
+        } else if (Integer.class == type) {
             field.set(obj, NumberUtils.toInt(value))
-        } else if (Long.class == type && (force || fieldValue == null)) {
+        } else if (Long.class == type) {
             field.set(obj, NumberUtils.toLong(value))
-        } else if (Boolean.class == type && (force || fieldValue == null)) {
+        } else if (Boolean.class == type) {
             field.set(obj, Boolean.parseBoolean(value))
         }
+    }
+
+    public static boolean isValueNull(final Field field, final Object obj){
+        final Class type = field.getType()
+        Object fieldValue = field.get(obj)
+        if (String.class == type && !(fieldValue as String)?.trim()) {
+            return true;
+        } else if (Integer.class == type && fieldValue == null) {
+            return true;
+        } else if (Long.class == type && fieldValue == null) {
+            return true;
+        } else if (Boolean.class == type && fieldValue == null) {
+            return true;
+        }
+        return false;
     }
 }

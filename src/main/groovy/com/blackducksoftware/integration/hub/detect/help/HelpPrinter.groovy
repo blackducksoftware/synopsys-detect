@@ -65,8 +65,8 @@ class HelpPrinter {
                 atLeastOneInGroupPrinted = false;
             }
 
-            String matchingProfileDefault = detectValue.getDefaultValue().matchingProfile(selectedProfiles);
-            String actualDefaultValue = detectValue.getDefaultValue().defaultValue(selectedProfiles);
+            String matchingProfileDefault = detectValue.getDefaultValue().chosenProfile;
+            String actualDefaultValue = detectValue.getDefaultValue().chosenDefault;
 
             String defaultValueHelp = detectValue.getDefaultValue().originalDefault;
             if (matchingProfileDefault != null){
