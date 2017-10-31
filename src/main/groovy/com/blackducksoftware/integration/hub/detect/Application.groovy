@@ -46,6 +46,7 @@ import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.onboarding.Onboarder
+import com.blackducksoftware.integration.hub.detect.onboarding.StandardOnboardingFlow
 import com.blackducksoftware.integration.hub.detect.profile.manager.ProfileManager
 import com.blackducksoftware.integration.hub.detect.summary.DetectSummary
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
@@ -131,9 +132,10 @@ class Application {
             }
 
             if ('-o' in applicationArguments.getSourceArgs() || '--onboard' in applicationArguments.getSourceArgs()) {
-                Onboarder onboarder = new Onboarder(detectConfiguration, valueDescriptionManager);
+                Onboarder onboarder = new Onboarder(new PrintStream(System.out), new Scanner(System.in), detectConfiguration);
+                StandardOnboardingFlow onboardFlow = new StandardOnboardingFlow(onboarder);
                 try{
-                    onboarder.onboard(System.out);
+                    onboardFlow.onboard();
                 }catch (Exception e){
                     logger.error(e.toString());
                     logger.error("Onboarding failed. Please retry onboarding or remove '-o' and '--onboard' from your options.")

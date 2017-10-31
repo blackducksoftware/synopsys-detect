@@ -671,6 +671,11 @@ class DetectConfiguration {
                         fieldValue = "latest (${version})" as String
                     }
                 }
+                //TODO: If using the default, log where it came from.
+                //May need more complicated code to achieve that.
+                //But it would be cool if it added (default) if it was the default or (offline) or (noscan)
+                //or even (default - offline) (default) and (default - noscan)
+                //we also should log which profiles were selected - not just in help.
                 configurationPieces.add("${fieldName} = ${fieldValue}" as String)
             }
             it.accessible = false
