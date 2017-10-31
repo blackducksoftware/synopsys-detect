@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (C) 2017 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
  *
@@ -20,29 +20,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.help
+package com.blackducksoftware.integration.hub.detect.profile;
 
-import groovy.transform.TypeChecked
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-@TypeChecked
-public class DetectOption {
-    final String key
-    final String fieldName
-    final String description
-    final Class valueType
-    final String group
+import com.blackducksoftware.integration.hub.detect.profile.manager.ProfileData;
 
-    final Set<String> profiles
-    final ProfileDefaultValue defaultValue
-
-
-    public DetectOption(final String key, String fieldName, final String description, Class valueType, Set<String> profiles, ProfileDefaultValue defaultValue, String group) {
-        this.key = key
-        this.description = description
-        this.valueType = valueType
-        this.defaultValue = defaultValue
-        this.group = group
-        this.profiles = profiles
-        this.fieldName = fieldName
-    }
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+@ProfileData(profileName = "dryrun")
+public @interface DryRunProfile {
+    String overrideDefault() default ProfileData.DONT_OVERRIDE;
 }

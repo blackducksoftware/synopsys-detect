@@ -36,8 +36,8 @@ import groovy.transform.TypeChecked
 
 @Component
 @TypeChecked
-public class ValueDescriptionManager {
-    private final Logger logger = LoggerFactory.getLogger(ValueDescriptionManager.class)
+public class DetectOptionManager {
+    private final Logger logger = LoggerFactory.getLogger(DetectOptionManager.class)
 
 
     List<DetectOption> detectOptions
@@ -51,6 +51,7 @@ public class ValueDescriptionManager {
 
     private DetectOption processField(Object obj, Class<?> objClz, Field field, List<String> profiles) {
         if (field.isAnnotationPresent(ValueDescription.class)) {
+            String fieldName = field.getName()
             String key = ''
             String description = ''
             Class valueType = field.getType()
@@ -78,7 +79,7 @@ public class ValueDescriptionManager {
                 }
             }
 
-            return new DetectOption(key, description, valueType, optionProfiles, profileDefault, group);
+            return new DetectOption(key, fieldName, description, valueType, optionProfiles, profileDefault, group);
         }
         return null;
     }

@@ -18,6 +18,7 @@ import java.util.Map;
 public class ProfileDefaultValue {
     private final String originalDefault;
     private final Map<String, String> profileSpecificDefaults;
+    public String lastUsedProfile = null;
 
     public ProfileDefaultValue(final String originalDefault) {
         this.profileSpecificDefaults = new HashMap<>();
@@ -38,6 +39,7 @@ public class ProfileDefaultValue {
         for (final String profile : profiles) {
             if (profileSpecificDefaults.containsKey(profile)) {
                 actualDefault = profileSpecificDefaults.get(profile);
+                lastUsedProfile = profile;
                 break;
             }
         }

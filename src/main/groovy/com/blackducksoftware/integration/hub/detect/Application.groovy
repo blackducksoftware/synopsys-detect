@@ -39,8 +39,8 @@ import com.blackducksoftware.integration.hub.bdio.SimpleBdioFactory
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.exception.DetectException
 import com.blackducksoftware.integration.hub.detect.help.DetectOption
+import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager
 import com.blackducksoftware.integration.hub.detect.help.HelpPrinter
-import com.blackducksoftware.integration.hub.detect.help.ValueDescriptionManager
 import com.blackducksoftware.integration.hub.detect.hub.HubManager
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
@@ -68,7 +68,7 @@ class Application {
     private final Logger logger = LoggerFactory.getLogger(Application.class)
 
     @Autowired
-    ValueDescriptionManager valueDescriptionManager
+    DetectOptionManager valueDescriptionManager
 
     @Autowired
     DetectConfiguration detectConfiguration
@@ -147,7 +147,9 @@ class Application {
             executableManager.init()
             logger.info('Configuration processed completely.')
             if (!detectConfiguration.suppressConfigurationOutput) {
-                detectConfiguration.logConfiguration()
+                helpPrinter.printProfiles(System.out, profileManager.availableProfiles(), profileManager.selectedProfiles)
+                DetectConfigurationPrinter detectConfigurationPrinter = new DetectConfigurationPrinter();
+                detectConfigurationPrinter.printConfiguration(System.out, detectConfiguration, options)
             }
 
             if (detectConfiguration.testConnection) {

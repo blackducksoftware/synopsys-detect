@@ -32,13 +32,16 @@ import groovy.transform.TypeChecked
 @TypeChecked
 class HelpPrinter {
 
+    void printProfiles(PrintStream printStream, Set<String> profiles, List<String> selectedProfiles) {
+        printStream.println("Available Profiles: " + profiles.join(', '));
+        printStream.println("Selected Profiles: " + selectedProfiles.join(", "));
+    }
 
     void printHelpMessage(PrintStream printStream, List<DetectOption> options, Set<String> profiles, List<String> selectedProfiles) {
         def helpMessagePieces = []
         helpMessagePieces.add('')
 
-        printStream.println("Available Profiles: " + profiles.join(', '));
-        printStream.println("Selected Profiles: " + selectedProfiles.join(", "));
+        printProfiles(printStream, profiles, selectedProfiles)
 
         def headerColumns = ['Property Name', 'Default', 'Description']
 
