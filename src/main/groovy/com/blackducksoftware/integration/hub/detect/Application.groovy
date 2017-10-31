@@ -38,6 +38,7 @@ import com.blackducksoftware.integration.hub.bdio.BdioTransformer
 import com.blackducksoftware.integration.hub.bdio.SimpleBdioFactory
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.exception.DetectException
+import com.blackducksoftware.integration.hub.detect.help.HelpHtmlWriter
 import com.blackducksoftware.integration.hub.detect.help.HelpPrinter
 import com.blackducksoftware.integration.hub.detect.help.ValueDescriptionAnnotationFinder
 import com.blackducksoftware.integration.hub.detect.hub.HubManager
@@ -82,6 +83,9 @@ class Application {
     HelpPrinter helpPrinter
 
     @Autowired
+    HelpHtmlWriter helpHtmlWriter
+
+    @Autowired
     HubManager hubManager
 
     @Autowired
@@ -111,6 +115,11 @@ class Application {
             }
 
             detectConfiguration.init()
+            if ('-hdoc' in applicationArguments.getSourceArgs() || '--helpdocument' in applicationArguments.getSourceArgs()) {
+                helpHtmlWriter.writeHelpMessage("hub-detect-${detectConfiguration.buildInfo.detectVersion}-help.html")
+                return
+            }
+
             executableManager.init()
             logger.info('Configuration processed completely.')
             if (!detectConfiguration.suppressConfigurationOutput) {

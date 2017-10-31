@@ -9,3 +9,4 @@ build/
 .idea
 classes/
 buildInfo.json
+*.html
