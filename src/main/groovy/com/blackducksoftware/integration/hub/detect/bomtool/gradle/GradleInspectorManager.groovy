@@ -24,6 +24,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool.gradle
 
 import javax.xml.parsers.DocumentBuilder
 
+import org.apache.commons.lang3.StringEscapeUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -108,7 +109,7 @@ class GradleInspectorManager {
             try {
                 def gradleInspectorAirGapDirectory = new File(detectConfiguration.getGradleInspectorAirGapPath())
                 if (gradleInspectorAirGapDirectory.exists()) {
-                    model.put('airGapLibsPath', gradleInspectorAirGapDirectory.getCanonicalPath())
+                    model.put('airGapLibsPath', StringEscapeUtils.escapeJava(gradleInspectorAirGapDirectory.getCanonicalPath()))
                 }
             } catch (Exception e) {
                 logger.debug('Exception encountered when resolving air gap path for gradle, running in online mode instead')
