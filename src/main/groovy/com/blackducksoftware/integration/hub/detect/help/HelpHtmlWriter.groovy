@@ -83,40 +83,42 @@ tbody tr:hover:not(.noBorder) {
     ValueDescriptionAnnotationFinder valueDescriptionAnnotationFinder
 
     public void writeHelpMessage(String fileName) {
-        Document doc = Jsoup.parse('<html/>')
-        Element head = doc.select('head').first()
-        Element style = head.appendElement('style')
-        style.appendText(cssStyles)
-        Element body = doc.select('body').first()
-        Element table = body.appendElement('table')
-        Element columnGroup = table.appendElement('colGroup')
-        columnGroup.appendElement('col').attr('class', 'propertyColumn')
-        columnGroup.appendElement('col').attr('class', 'defaultColumn')
-        columnGroup.appendElement('col')
-        Element tableHeader = table.appendElement('thead')
-
         def columnHeaders = [
             'Property Name',
             'Default',
             'Description'
         ]
 
+        Document doc = Jsoup.parse('<html/>')
+
+        Element head = doc.select('head').first()
+        Element style = head.appendElement('style')
+        style.appendText(cssStyles)
+
+        Element body = doc.select('body').first()
+        Element table = body.appendElement('table')
+        Element columnGroup = table.appendElement('colGroup')
+        columnGroup.appendElement('col').attr('class', 'propertyColumn')
+        columnGroup.appendElement('col').attr('class', 'defaultColumn')
+        columnGroup.appendElement('col')
+
         String group = ''
         valueDescriptionAnnotationFinder.getDetectValues().each { detectValue ->
-            if (!group.equals(detectValue.getGroup())){
-                Element spacerRow = table.appendElement('tr').attr('class', 'noBorder')
+            if (!group.equals(detectValue.getGroup())) {
                 group = detectValue.getGroup()
+                Element spacerRow = table.appendElement('tr').attr('class', 'noBorder')
                 spacerRow.appendElement('td').attr('colspan', '3').attr('class', 'noBorder')
+
                 Element groupHeaderRow = table.appendElement('tr')
                 Element groupHeader = groupHeaderRow.appendElement('th').attr('colspan', '3').attr('class', 'groupHeader')
                 groupHeader.appendText(WordUtils.capitalize(group))
+
                 Element columnHeadersRow = table.appendElement('tr')
-                for(String columnHeaderText : columnHeaders) {
+                for (String columnHeaderText : columnHeaders) {
                     Element headerCell = columnHeadersRow.appendElement('th')
                     headerCell.appendText(columnHeaderText)
                 }
             }
-            Element row = table.appendElement('tr')
 
             def bodyColumns = [
                 "--" + detectValue.getKey().substring(0, detectValue.getKey().lastIndexOf(':')),
@@ -124,6 +126,7 @@ tbody tr:hover:not(.noBorder) {
                 detectValue.getDescription()
             ]
 
+            Element row = table.appendElement('tr')
             for (String cellText : bodyColumns) {
                 Element cell = row.appendElement('td')
                 cell.appendText(cellText)
