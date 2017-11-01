@@ -7,9 +7,9 @@ final String gradleAirGapPath = "${airGapFolder}/gradle"
 final String nugetAirGapPath = "${airGapFolder}/nuget"
 final String configAirGapPath = "${buildArtifactFolder}/config"
 final String dockerAirGapPath = "${airGapFolder}/docker"
-final String artifactoryUrl = "http://prd-eng-repo01.dc2.lan:8181/artifactory"
-final String artifactoryRepoKey = "bds-integrations"
-final String artifactoryIntegrationPath = "com/blackducksoftware/integration"
+final String artifactoryUrl = 'https://test-repo.blackducksoftware.com/artifactory/'
+final String artifactoryRepoKey = 'bds-integrations-release'
+final String artifactoryIntegrationPath = 'com/blackducksoftware/integration'
 
 def airGapVersion = version
 
