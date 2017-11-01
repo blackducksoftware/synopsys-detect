@@ -40,6 +40,7 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFac
 import com.blackducksoftware.integration.hub.detect.exception.DetectException
 import com.blackducksoftware.integration.hub.detect.help.DetectOption
 import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager
+import com.blackducksoftware.integration.hub.detect.help.HelpHtmlWriter
 import com.blackducksoftware.integration.hub.detect.help.HelpPrinter
 import com.blackducksoftware.integration.hub.detect.hub.HubManager
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper
@@ -85,6 +86,9 @@ class Application {
 
     @Autowired
     HelpPrinter helpPrinter
+
+    @Autowired
+    HelpHtmlWriter helpHtmlWriter
 
     @Autowired
     HubManager hubManager
@@ -143,6 +147,11 @@ class Application {
 
             executableManager.init()
             detectConfiguration.init()
+
+            if ('-hdoc' in applicationArguments.getSourceArgs() || '--helpdocument' in applicationArguments.getSourceArgs()) {
+                helpHtmlWriter.writeHelpMessage("hub-detect-${detectConfiguration.buildInfo.detectVersion}-help.html".toString())
+                return
+            }
 
             logger.info('Configuration processed completely.')
 
