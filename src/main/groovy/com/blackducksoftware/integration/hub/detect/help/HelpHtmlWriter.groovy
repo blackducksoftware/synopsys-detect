@@ -22,9 +22,12 @@
  */
 package com.blackducksoftware.integration.hub.detect.help
 
+import org.apache.commons.lang3.text.WordUtils
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -33,14 +36,64 @@ import groovy.transform.TypeChecked
 @Component
 @TypeChecked
 class HelpHtmlWriter {
+    private final Logger logger = LoggerFactory.getLogger(HelpHtmlWriter.class)
+
+
+    private final String cssStyles = '''
+table {
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 7px 10px;
+}
+
+th.groupHeader {
+    font-weight: bold;
+    background-color: #ddd;
+    text-align: left;
+
+}
+
+th {
+    font-weight: normal;
+    background-color: #eee;
+    text-align: left;
+}
+
+tbody tr:hover:not(.noBorder) {
+    background-color: #f8f8f8;
+}
+
+.propertyColumn {
+    width: 400px;
+}
+
+.defaultColumn {
+    width: 300px;
+}
+
+.noBorder {
+    border: 0px;
+}
+'''
+
     @Autowired
     ValueDescriptionAnnotationFinder valueDescriptionAnnotationFinder
 
     public void writeHelpMessage(String fileName) {
         Document doc = Jsoup.parse('<html/>')
+        Element head = doc.select('head').first()
+        Element style = head.appendElement('style')
+        style.appendText(cssStyles)
         Element body = doc.select('body').first()
-        Element table = body.appendElement('table').attr('style', 'border-collapse:collapse')
-        Element tableHeader = table.appendElement('thead').attr('style', 'text-align:left')
+        Element table = body.appendElement('table')
+        Element columnGroup = table.appendElement('colGroup')
+        columnGroup.appendElement('col').attr('class', 'propertyColumn')
+        columnGroup.appendElement('col').attr('class', 'defaultColumn')
+        columnGroup.appendElement('col')
+        Element tableHeader = table.appendElement('thead')
 
         def columnHeaders = [
             'Property Name',
@@ -48,28 +101,40 @@ class HelpHtmlWriter {
             'Description'
         ]
 
-        for(String columnHeaderText : columnHeaders) {
-            Element headerCell = tableHeader.appendElement('th').attr('style', 'border:1px solid #ddd; padding: 7px 10px;')
-            headerCell.appendText(columnHeaderText)
-        }
-
+        String group = ''
         valueDescriptionAnnotationFinder.getDetectValues().each { detectValue ->
+            if (!group.equals(detectValue.getGroup())){
+                Element spacerRow = table.appendElement('tr').attr('class', 'noBorder')
+                group = detectValue.getGroup()
+                spacerRow.appendElement('td').attr('colspan', '3').attr('class', 'noBorder')
+                Element groupHeaderRow = table.appendElement('tr')
+                Element groupHeader = groupHeaderRow.appendElement('th').attr('colspan', '3').attr('class', 'groupHeader')
+                groupHeader.appendText(WordUtils.capitalize(group))
+                Element columnHeadersRow = table.appendElement('tr')
+                for(String columnHeaderText : columnHeaders) {
+                    Element headerCell = columnHeadersRow.appendElement('th')
+                    headerCell.appendText(columnHeaderText)
+                }
+            }
             Element row = table.appendElement('tr')
+
             def bodyColumns = [
-                "--" + detectValue.getKey(),
+                "--" + detectValue.getKey().substring(0, detectValue.getKey().lastIndexOf(':')),
                 detectValue.getDefaultValue(),
                 detectValue.getDescription()
             ]
 
             for (String cellText : bodyColumns) {
-                Element cell = row.appendElement('td').attr('style', 'border:1px solid #ddd; padding: 7px 10px; border-collapse:collapse')
+                Element cell = row.appendElement('td')
                 cell.appendText(cellText)
             }
-
-            BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))
-            writer.write(doc.html())
-
-            writer.close()
         }
+
+        logger.info("Writing help document ${fileName}")
+        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))
+        writer.write(doc.html())
+        File producedFile = new File(fileName)
+        logger.info("Finished writing help document, document can be found at: ${producedFile.getCanonicalPath()}")
+        writer.close()
     }
 }
