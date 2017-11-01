@@ -16,21 +16,16 @@ import java.lang.reflect.Modifier
 import org.springframework.beans.factory.annotation.Value
 
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
-public class DetectConfigurationPrinter {
+public class ProfileDetectConfigurationPrinter implements DetectConfigurationPrinter{
 
-    public void printOptions(final PrintStream printStream, final List<DetectOption> detectOptions) {
-        for (DetectOption option : detectOptions){
-            if (option.defaultValue.chosenProfile != null){
-                //printStream.println("${option.fieldName} = ${option.fieldName} (${option.defaultValue.chosenProfile})" as String)
-            }else{
-                //printStream.println("${option.fieldName} = ${option.fieldName}" as String)
-            }
-        }
+    public void printHeader(final PrintStream printStream, DetectConfiguration detectConfiguration, final List<DetectOption> detectOptions) {
+        printStream.println('')
+        printStream.println("Detect Version: ${detectConfiguration.buildInfo.detectVersion}" as String)
+        printStream.println('')
     }
 
     public void printConfiguration(final PrintStream printStream, DetectConfiguration detectConfiguration, final List<DetectOption> detectOptions) {
         printStream.println('')
-        printStream.println("Detect Version: ${detectConfiguration.buildInfo.detectVersion}" as String)
         printStream.println('Current property values:')
         printStream.println('-'.multiply(60))
         def propertyFields = DetectConfiguration.class.getDeclaredFields().findAll {
@@ -46,9 +41,12 @@ public class DetectConfigurationPrinter {
         propertyFields.each {
             it.accessible = true
             String fieldName = it.name
-            Object fieldValue = it.get(detectConfiguration)
+            Object rawFieldValue = it.get(detectConfiguration)
+            String fieldValue
             if (it.type.isArray()) {
-                fieldValue = (fieldValue as String[]).join(', ')
+                fieldValue = (rawFieldValue as String[]).join(', ')
+            }else{
+                fieldValue = rawFieldValue.toString()
             }
             if (fieldName && fieldValue && 'metaClass' != fieldName) {
                 if (fieldName.toLowerCase().contains('password')) {
@@ -64,8 +62,15 @@ public class DetectConfigurationPrinter {
                 }
                 if (profile != null){
                     printStream.println("${fieldName} = ${fieldValue} (${profile})" as String)
-                }else if (option != null && !option.originalValue.equals(option.finalValue)){
-                    printStream.println("${fieldName} = ${fieldValue} (${option.originalValue})" as String)
+                }else if (option != null && !option.finalValue.equals(fieldValue)){
+
+                    if (option.finalValue.equals("latest")){
+                        printStream.println("${fieldName} = ${fieldValue} [latest]" as String)
+                    }else if (option.finalValue.trim().size() == 0){
+                        printStream.println("${fieldName} = ${fieldValue} [calculated]" as String)
+                    }else{
+                        printStream.println("${fieldName} = ${fieldValue} [${option.finalValue}]" as String)
+                    }
                 }else{
                     printStream.println("${fieldName} = ${fieldValue}" as String)
                 }

@@ -78,6 +78,7 @@ public class DetectOptionManager {
             defaultValue = profileDefault.chosenDefault;
             if (defaultValue?.trim() && !hasValue){
                 try {
+                    finalValue = defaultValue;
                     ReflectionUtils.setValue(field, obj, defaultValue);
                 } catch (final IllegalAccessException e) {
                     logger.error(String.format("Could not set defaultValue on field %s with %s: %s", field.getName(), defaultValue, e.getMessage()))

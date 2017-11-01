@@ -107,7 +107,7 @@ class Application {
         new SpringApplicationBuilder(Application.class).logStartupInfo(false).run(args)
     }
 
-    private List<String> getProfiles() {
+    private List<String> getPossibleSelectedProfilesFromArgs() {
         List<String> profiles = new ArrayList<String>();
         for (String arg : applicationArguments.getSourceArgs()){
             if (!arg.contains("=")){
@@ -123,7 +123,7 @@ class Application {
     void init() {
         int postResult = 0
         try {
-            profileManager.init(getProfiles());
+            profileManager.init(getPossibleSelectedProfilesFromArgs());
             detectOptionManager.init(profileManager.selectedProfiles)
 
             List<DetectOption> options = detectOptionManager.getDetectOptions();
@@ -144,14 +144,22 @@ class Application {
                 }
             }
 
-            detectConfiguration.init()
             executableManager.init()
+            detectConfiguration.init()
+
             logger.info('Configuration processed completely.')
+
             if (!detectConfiguration.suppressConfigurationOutput) {
+
+                DetectConfigurationPrinter detectConfigurationPrinter = new OriginalDetectConfigurationPrinter();
+                detectConfigurationPrinter.printHeader(System.out, detectConfiguration, options)
                 helpPrinter.printProfiles(System.out, profileManager.availableProfiles(), profileManager.selectedProfiles)
-                DetectConfigurationPrinter detectConfigurationPrinter = new DetectConfigurationPrinter();
                 detectConfigurationPrinter.printConfiguration(System.out, detectConfiguration, options)
-                detectConfigurationPrinter.printOptions(System.out, options);
+
+                detectConfigurationPrinter = new ProfileDetectConfigurationPrinter();
+                detectConfigurationPrinter.printHeader(System.out, detectConfiguration, options)
+                helpPrinter.printProfiles(System.out, profileManager.availableProfiles(), profileManager.selectedProfiles)
+                detectConfigurationPrinter.printConfiguration(System.out, detectConfiguration, options)
             }
 
             if (detectConfiguration.testConnection) {

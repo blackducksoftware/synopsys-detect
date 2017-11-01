@@ -51,6 +51,7 @@ public class StandardOnboardingFlow {
                 onboarder.askFieldQuestion("projectVersionName", "What is the hub project version?");
                 onboarder.println("Project information updated.");
             }
+
         } else {
             onboarder.println("Setting detect to offline mode.");
             onboarder.setField("hubOfflineMode", "true");

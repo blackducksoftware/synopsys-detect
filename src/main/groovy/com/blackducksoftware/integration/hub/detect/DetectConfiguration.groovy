@@ -563,7 +563,6 @@ class DetectConfiguration {
             }
         }
 
-        //TODO: Log the inspector version the old way so it shows "latest (version)" if others still want that.
         if (gradleInspectorVersion.equals("latest") && gradleBomTool.isBomToolApplicable()){
             gradleInspectorVersion = gradleBomTool.getInspectorVersion()
             logger.info("Resolved gradle inspector version from latest to: ${gradleInspectorVersion}")
