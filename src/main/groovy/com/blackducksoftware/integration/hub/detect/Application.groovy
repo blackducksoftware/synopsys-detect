@@ -49,6 +49,7 @@ import com.blackducksoftware.integration.hub.detect.onboarding.Onboarder
 import com.blackducksoftware.integration.hub.detect.onboarding.StandardOnboardingFlow
 import com.blackducksoftware.integration.hub.detect.profile.manager.ProfileManager
 import com.blackducksoftware.integration.hub.detect.summary.DetectSummary
+import com.blackducksoftware.integration.hub.detect.summary.Result
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager
 import com.blackducksoftware.integration.hub.model.view.ProjectVersionView
@@ -183,10 +184,17 @@ class Application {
             logger.error('An unrecoverable error occurred - most likely this is due to your environment and/or configuration. Please double check the Hub Detect documentation: https://blackducksoftware.atlassian.net/wiki/x/Y7HtAg')
             logger.error(e.getMessage())
         }
+
         if (!detectConfiguration.suppressResultsOutput) {
             detectSummary.logResults(new Slf4jIntLogger(logger))
         }
+
         detectFileManager.cleanupDirectories()
+
+        if (Result.FAILURE == detectSummary.getOverallResult()) {
+            postResult = FAIL_DETECT
+        }
+
         System.exit(postResult)
     }
 
