@@ -90,8 +90,8 @@ artifactory {
         contextUrl = 'https://prd-eng-repo02.dc2.lan/artifactory'
         repository {
             repoKey = 'bds-integrations-snapshot'
-            username = 'bds-deployer'
-            password = 'apple@orange5JACKdrip'
+            username = '***'
+            password = '***'
         }
         defaults {
             publications ('mavenJava')
