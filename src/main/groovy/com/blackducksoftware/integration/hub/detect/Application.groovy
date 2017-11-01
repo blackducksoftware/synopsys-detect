@@ -136,8 +136,8 @@ class Application {
                 return
             }
 
+            Onboarder onboarder = new Onboarder(new PrintStream(System.out), new Scanner(System.in), detectConfiguration);
             if ('-o' in applicationArguments.getSourceArgs() || '--onboard' in applicationArguments.getSourceArgs()) {
-                Onboarder onboarder = new Onboarder(new PrintStream(System.out), new Scanner(System.in), detectConfiguration);
                 onboardingManager.onboard(onboarder, profileManager.selectedProfiles)
             }
 
@@ -151,12 +151,12 @@ class Application {
                 DetectConfigurationPrinter detectConfigurationPrinter = new OriginalDetectConfigurationPrinter();
                 detectConfigurationPrinter.printHeader(System.out, detectConfiguration, options)
                 helpPrinter.printProfiles(System.out, profileManager.availableProfiles(), profileManager.selectedProfiles)
-                detectConfigurationPrinter.printConfiguration(System.out, detectConfiguration, options)
+                detectConfigurationPrinter.printConfiguration(System.out, detectConfiguration, options, onboarder)
 
                 detectConfigurationPrinter = new ProfileDetectConfigurationPrinter();
                 detectConfigurationPrinter.printHeader(System.out, detectConfiguration, options)
                 helpPrinter.printProfiles(System.out, profileManager.availableProfiles(), profileManager.selectedProfiles)
-                detectConfigurationPrinter.printConfiguration(System.out, detectConfiguration, options)
+                detectConfigurationPrinter.printConfiguration(System.out, detectConfiguration, options, onboarder)
             }
 
             if (detectConfiguration.testConnection) {

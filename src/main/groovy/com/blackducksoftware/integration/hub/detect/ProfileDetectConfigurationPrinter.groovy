@@ -16,6 +16,7 @@ import java.lang.reflect.Modifier
 import org.springframework.beans.factory.annotation.Value
 
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
+import com.blackducksoftware.integration.hub.detect.onboarding.Onboarder
 public class ProfileDetectConfigurationPrinter implements DetectConfigurationPrinter{
 
     public void printHeader(final PrintStream printStream, DetectConfiguration detectConfiguration, final List<DetectOption> detectOptions) {
@@ -24,7 +25,7 @@ public class ProfileDetectConfigurationPrinter implements DetectConfigurationPri
         printStream.println('')
     }
 
-    public void printConfiguration(final PrintStream printStream, DetectConfiguration detectConfiguration, final List<DetectOption> detectOptions) {
+    public void printConfiguration(final PrintStream printStream, DetectConfiguration detectConfiguration, final List<DetectOption> detectOptions, Onboarder onboarder) {
         printStream.println('')
         printStream.println('Current property values:')
         printStream.println('-'.multiply(60))
@@ -64,7 +65,9 @@ public class ProfileDetectConfigurationPrinter implements DetectConfigurationPri
                     printStream.println("${fieldName} = ${fieldValue} (${profile})" as String)
                 }else if (option != null && !option.finalValue.equals(fieldValue)){
 
-                    if (option.finalValue.equals("latest")){
+                    if (onboarder.hasValueForField(fieldName)){
+                        printStream.println("${fieldName} = ${fieldValue} [onboarded]" as String)
+                    }else if (option.finalValue.equals("latest")){
                         printStream.println("${fieldName} = ${fieldValue} [latest]" as String)
                     }else if (option.finalValue.trim().size() == 0){
                         printStream.println("${fieldName} = ${fieldValue} [calculated]" as String)

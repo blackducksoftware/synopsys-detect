@@ -16,6 +16,7 @@ import java.lang.reflect.Modifier
 import org.springframework.beans.factory.annotation.Value
 
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
+import com.blackducksoftware.integration.hub.detect.onboarding.Onboarder
 public class OriginalDetectConfigurationPrinter implements DetectConfigurationPrinter{
 
     public void printHeader(final PrintStream printStream, DetectConfiguration detectConfiguration, final List<DetectOption> detectOptions) {
@@ -24,7 +25,7 @@ public class OriginalDetectConfigurationPrinter implements DetectConfigurationPr
         printStream.println('')
     }
 
-    public void printConfiguration(final PrintStream printStream, DetectConfiguration detectConfiguration, final List<DetectOption> detectOptions) {
+    public void printConfiguration(final PrintStream printStream, DetectConfiguration detectConfiguration, final List<DetectOption> detectOptions, Onboarder onboarder) {
         printStream.println('')
         printStream.println('Current property values:')
         printStream.println('-'.multiply(60))

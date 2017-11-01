@@ -116,6 +116,10 @@ public class Onboarder {
         return properties;
     }
 
+    public boolean hasValueForField(final String field) {
+        return fieldOptions.containsKey(field);
+    }
+
     public void saveOptionsToConfiguration() {
         for (final OnboardingOption opt : fieldOptions.values()) {
 
