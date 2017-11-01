@@ -135,7 +135,7 @@ class Application {
 
             if ('-o' in applicationArguments.getSourceArgs() || '--onboard' in applicationArguments.getSourceArgs()) {
                 Onboarder onboarder = new Onboarder(new PrintStream(System.out), new Scanner(System.in), detectConfiguration);
-                StandardOnboardingFlow onboardFlow = new StandardOnboardingFlow(onboarder);
+                StandardOnboardingFlow onboardFlow = new StandardOnboardingFlow(onboarder, hubServiceWrapper);
                 try{
                     onboardFlow.onboard();
                 }catch (Exception e){

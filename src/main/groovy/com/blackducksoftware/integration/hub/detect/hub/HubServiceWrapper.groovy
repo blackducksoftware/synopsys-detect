@@ -74,7 +74,7 @@ class HubServiceWrapper {
         }
     }
 
-    public void testHubConnection() {
+    public boolean testHubConnection() {
         logger.info("Attempting connection to the Hub")
         try {
             IntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
@@ -83,11 +83,13 @@ class HubServiceWrapper {
             final RestConnection connection = hubServerConfig.createCredentialsRestConnection(slf4jIntLogger)
             connection.connect()
             logger.info("Connection to the Hub was successful")
+            return true;
         } catch (IllegalStateException e) {
             logger.error("Failed to build the server configuration: ${e.message}", e)
         } catch (IntegrationException e) {
             logger.error("Could not reach the Hub server or the credentials were invalid: ${e.message}", e)
         }
+        return false;
     }
 
     ProjectRequestService createProjectRequestService() {

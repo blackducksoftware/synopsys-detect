@@ -11,13 +11,17 @@
  */
 package com.blackducksoftware.integration.hub.detect.onboarding;
 
+import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper;
+
 public class StandardOnboardingFlow {
 
-    public StandardOnboardingFlow(final Onboarder onboarder) {
+    public StandardOnboardingFlow(final Onboarder onboarder, final HubServiceWrapper hubServiceWrapper) {
         this.onboarder = onboarder;
+        this.hubServiceWrapper = hubServiceWrapper;
     }
 
     private final Onboarder onboarder;
+    private final HubServiceWrapper hubServiceWrapper;
 
     public void onboard() {
 
@@ -25,21 +29,42 @@ public class StandardOnboardingFlow {
 
         final Boolean connectToHub = onboarder.askYesOrNo("Would you like to connect to a Hub Instance?");
         if (connectToHub == true) {
-            onboarder.askFieldQuestion("hubUrl", "What is the hub instance url?");
-            onboarder.askFieldQuestion("hubUsername", "What is the hub username?");
-            onboarder.askFieldQuestion("hubPassword", "What is the hub password?");
+            boolean connected = false;
+            boolean skipConnectionTest = false;
+            while (!connected && !skipConnectionTest) {
+                onboarder.askFieldQuestion("hubUrl", "What is the hub instance url?");
+                onboarder.askFieldQuestion("hubUsername", "What is the hub username?");
+                onboarder.askFieldQuestion("hubPassword", "What is the hub password?");
 
-            final Boolean useProxy = onboarder.askYesOrNo("Would you like to configure a proxy for the hub?");
-            if (useProxy) {
-                onboarder.askFieldQuestion("hubProxyHost", "What is the hub proxy host?");
-                onboarder.askFieldQuestion("hubProxyPort", "What is the hub proxy port?");
-                onboarder.askFieldQuestion("hubProxyUsername", "What is the hub proxy username?");
-                onboarder.askFieldQuestion("hubProxyPassword", "What is the hub proxy password?");
-            }
+                final Boolean useProxy = onboarder.askYesOrNo("Would you like to configure a proxy for the hub?");
+                if (useProxy) {
+                    onboarder.askFieldQuestion("hubProxyHost", "What is the hub proxy host?");
+                    onboarder.askFieldQuestion("hubProxyPort", "What is the hub proxy port?");
+                    onboarder.askFieldQuestion("hubProxyUsername", "What is the hub proxy username?");
+                    onboarder.askFieldQuestion("hubProxyPassword", "What is the hub proxy password?");
+                }
 
-            final Boolean trustCert = onboarder.askYesOrNo("Would you like to automatically trust the hub certificate?");
-            if (trustCert) {
-                onboarder.setField("hubTrustCertificate", "true");
+                final Boolean trustCert = onboarder.askYesOrNo("Would you like to automatically trust the hub certificate?");
+                if (trustCert) {
+                    onboarder.setField("hubTrustCertificate", "true");
+                }
+
+                final Boolean testHub = onboarder.askYesOrNo("Would you like to test the hub connection now?");
+                if (testHub) {
+                    try {
+                        onboarder.saveOptionsToConfiguration();
+                        connected = hubServiceWrapper.testHubConnection();
+                    } catch (final Exception e) {
+                        onboarder.println("Failed to test hub connection.");
+                        onboarder.println(e.toString());
+                    }
+
+                    if (!connected) {
+                        skipConnectionTest = !onboarder.askYesOrNo("Would you like to retry entering the hub information?");
+                    }
+                } else {
+                    skipConnectionTest = true;
+                }
             }
 
             final Boolean customDetails = onboarder.askYesOrNo("Would you like to provide a project name and version to use on the hub?");
