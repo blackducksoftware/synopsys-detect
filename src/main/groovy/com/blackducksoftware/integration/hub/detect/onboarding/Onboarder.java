@@ -40,7 +40,7 @@ public class Onboarder {
     private final DetectConfiguration detectConfiguration;
     private final PrintStream printStream;
     private final Scanner scanner;
-    private final Map<String, OnboardOption> fieldOptions = new HashMap<>();
+    private final Map<String, OnboardingOption> fieldOptions = new HashMap<>();
 
     public String askQuestion(final String question) {
         printStream.println(question);
@@ -52,16 +52,16 @@ public class Onboarder {
     }
 
     public void setField(final String field, final String value) {
-        OnboardOption option;
+        OnboardingOption option;
         if (!fieldOptions.containsKey(field)) {
-            option = new OnboardOption();
+            option = new OnboardingOption();
             option.fieldName = field;
             option.springKey = springKeyFromFieldName(field);
             fieldOptions.put(field, option);
         } else {
             option = fieldOptions.get(field);
         }
-        option.onboardValue = value;
+        option.onboardingValue = value;
     }
 
     public Boolean askYesOrNo(final String question) {
@@ -100,8 +100,8 @@ public class Onboarder {
 
     public Map<String, String> optionsToSpringKeys() {
         final Map<String, String> springKeyMap = new HashMap<>();
-        for (final OnboardOption opt : fieldOptions.values()) {
-            springKeyMap.put(opt.springKey, opt.onboardValue);
+        for (final OnboardingOption opt : fieldOptions.values()) {
+            springKeyMap.put(opt.springKey, opt.onboardingValue);
         }
 
         return springKeyMap;
@@ -109,24 +109,38 @@ public class Onboarder {
 
     public Properties optionsToProperties() {
         final Properties properties = new Properties();
-        for (final OnboardOption opt : fieldOptions.values()) {
-            properties.put(opt.springKey, opt.onboardValue);
+        for (final OnboardingOption opt : fieldOptions.values()) {
+            properties.put(opt.springKey, opt.onboardingValue);
         }
 
         return properties;
     }
 
-    public void saveOptionsToConfiguration() throws NoSuchFieldException, SecurityException {
-        for (final OnboardOption opt : fieldOptions.values()) {
+    public void saveOptionsToConfiguration() {
+        for (final OnboardingOption opt : fieldOptions.values()) {
 
-            final Field field = detectConfiguration.getClass().getDeclaredField(opt.fieldName);
+            Field field;
+            try {
+                field = detectConfiguration.getClass().getDeclaredField(opt.fieldName);
+            } catch (final NoSuchFieldException e) {
+                throw new RuntimeException(e);
+            } catch (final SecurityException e) {
+                throw new RuntimeException(e);
+            }
             field.setAccessible(true);
-            ReflectionUtils.setValue(field, detectConfiguration, opt.onboardValue);
+            ReflectionUtils.setValue(field, detectConfiguration, opt.onboardingValue);
 
         }
     }
 
-    public void readyToStart() {
+    public void performStandardOutflow() {
+        printSuccess();
+        askToSave();
+        saveOptionsToConfiguration();
+        readyToStartDetect();
+    }
+
+    public void readyToStartDetect() {
         printStream.println();
         printStream.println("Ready to start detect. Hit enter to proceed.");
         scanner.nextLine();
@@ -150,8 +164,8 @@ public class Onboarder {
     }
 
     public void printOptions() {
-        for (final OnboardOption opt : fieldOptions.values()) {
-            printStream.println("--" + opt.springKey + "=" + opt.onboardValue);
+        for (final OnboardingOption opt : fieldOptions.values()) {
+            printStream.println("--" + opt.springKey + "=" + opt.onboardingValue);
         }
     }
 
@@ -177,8 +191,9 @@ public class Onboarder {
         }
     }
 
-    public void printReady() {
-        printStream.println("Onboarding flag found. Starting onboarding process.");
+    public void printWelcome() {
+        printStream.println("***** Welcome to Detect Onboarding *****");
+        printStream.println("");
     }
 
     public void print(final String x) {

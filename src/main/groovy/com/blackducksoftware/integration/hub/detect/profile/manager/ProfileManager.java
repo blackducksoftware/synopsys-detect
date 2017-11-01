@@ -66,6 +66,25 @@ public class ProfileManager {
 
     }
 
+    public Set<String> getProfilesFromOnboardingFlow(final Class<?> onboardingClass) {
+        final Set<String> profileSet = new HashSet<>();
+
+        for (final Entry<String, Class<? extends Annotation>> profile : profiles.entrySet()) {
+            final Class<? extends Annotation> clazz = profile.getValue();
+            final String profileName = profile.getKey();
+            final Object annotation = onboardingClass.getAnnotation(clazz);
+
+            if (annotation == null) {
+                continue;
+            }
+
+            profileSet.add(profileName);
+
+        }
+
+        return profileSet;
+    }
+
     public Set<String> getProfilesFromDetectField(final Field detectConfigurationField) {
         final Set<String> profileSet = new HashSet<>();
 

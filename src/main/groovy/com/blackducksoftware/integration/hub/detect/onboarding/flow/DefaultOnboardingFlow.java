@@ -9,23 +9,25 @@
  * accordance with the terms of the license agreement you entered into
  * with Black Duck Software.
  */
-package com.blackducksoftware.integration.hub.detect.onboarding;
+package com.blackducksoftware.integration.hub.detect.onboarding.flow;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper;
+import com.blackducksoftware.integration.hub.detect.onboarding.Onboarder;
+import com.blackducksoftware.integration.hub.detect.onboarding.OnboardingFlow;
 
-public class StandardOnboardingFlow {
+@Component
+public class DefaultOnboardingFlow implements OnboardingFlow {
 
-    public StandardOnboardingFlow(final Onboarder onboarder, final HubServiceWrapper hubServiceWrapper) {
-        this.onboarder = onboarder;
-        this.hubServiceWrapper = hubServiceWrapper;
-    }
+    @Autowired
+    private HubServiceWrapper hubServiceWrapper;
 
-    private final Onboarder onboarder;
-    private final HubServiceWrapper hubServiceWrapper;
+    @Override
+    public void onboard(final Onboarder onboarder) {
 
-    public void onboard() {
-
-        onboarder.printReady();
+        onboarder.printWelcome();
 
         final Boolean connectToHub = onboarder.askYesOrNo("Would you like to connect to a Hub Instance?");
         if (connectToHub == true) {
@@ -99,9 +101,7 @@ public class StandardOnboardingFlow {
             }
         }
 
-        onboarder.printSuccess();
-        onboarder.askToSave();
-        onboarder.readyToStart();
+        onboarder.performStandardOutflow();
 
     }
 

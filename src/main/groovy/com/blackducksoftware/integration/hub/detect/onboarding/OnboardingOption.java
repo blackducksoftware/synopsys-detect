@@ -11,10 +11,10 @@
  */
 package com.blackducksoftware.integration.hub.detect.onboarding;
 
-public class OnboardOption {
+public class OnboardingOption {
 
     public String fieldName;
     public String springKey;
-    public String onboardValue;
+    public String onboardingValue;
 
 }

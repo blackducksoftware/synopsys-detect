@@ -30,7 +30,7 @@ import java.lang.annotation.Target;
 import com.blackducksoftware.integration.hub.detect.profile.manager.ProfileData;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
+@Target({ ElementType.FIELD, ElementType.TYPE })
 @ProfileData(profileName = "offline")
 public @interface OfflineProfile {
     String overrideDefault() default ProfileData.DONT_OVERRIDE;

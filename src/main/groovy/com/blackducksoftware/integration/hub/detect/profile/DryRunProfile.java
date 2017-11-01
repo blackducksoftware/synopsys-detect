@@ -30,7 +30,7 @@ import java.lang.annotation.Target;
 import com.blackducksoftware.integration.hub.detect.profile.manager.ProfileData;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
+@Target({ ElementType.FIELD, ElementType.TYPE })
 @ProfileData(profileName = "dryrun")
 public @interface DryRunProfile {
     String overrideDefault() default ProfileData.DONT_OVERRIDE;
