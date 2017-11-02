@@ -71,7 +71,6 @@ build {
 repositories {
     mavenLocal()
     mavenCentral()
-    jcenter()
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
 }
 
@@ -86,12 +85,11 @@ publishing {
 
 artifactory {
     publish {
-        //contextUrl = 'http://int-jfrog01.dc1.lan:8081/artifactory/'
-        contextUrl = 'https://prd-eng-repo02.dc2.lan/artifactory'
+        contextUrl = artifactoryUrl
         repository {
-            repoKey = 'bds-integrations-snapshot'
-            username = '***'
-            password = '***'
+            repoKey = artifactoryRepo
+            username = artifactoryDeployerUsername
+            password = artifactoryDeployerPassword
         }
         defaults {
             publications ('mavenJava')
