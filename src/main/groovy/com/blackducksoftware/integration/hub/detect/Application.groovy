@@ -46,8 +46,8 @@ import com.blackducksoftware.integration.hub.detect.hub.HubManager
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
-import com.blackducksoftware.integration.hub.detect.onboarding.Onboarder
 import com.blackducksoftware.integration.hub.detect.onboarding.OnboardingManager
+import com.blackducksoftware.integration.hub.detect.onboarding.OnboardingOption
 import com.blackducksoftware.integration.hub.detect.profile.manager.ProfileManager
 import com.blackducksoftware.integration.hub.detect.summary.DetectSummary
 import com.blackducksoftware.integration.hub.detect.summary.Result
@@ -71,6 +71,9 @@ class Application {
 
     @Autowired
     DetectOptionManager detectOptionManager
+
+    @Autowired
+    DetectInfo detectInfo
 
     @Autowired
     DetectConfiguration detectConfiguration
@@ -131,6 +134,7 @@ class Application {
     void init() {
         int postResult = 0
         try {
+            detectInfo.init();
             profileManager.init(getPossibleSelectedProfilesFromArgs());
             detectOptionManager.init(profileManager.selectedProfiles)
 
@@ -140,32 +144,32 @@ class Application {
                 return
             }
 
-            Onboarder onboarder = new Onboarder(new PrintStream(System.out), new Scanner(System.in), detectConfiguration);
+            if ('-hdoc' in applicationArguments.getSourceArgs() || '--helpdocument' in applicationArguments.getSourceArgs()) {
+                helpHtmlWriter.writeHelpMessage("hub-detect-${detectInfo.detectVersion}-help.html".toString())
+                return
+            }
+
+            List<OnboardingOption> onboardedOptions = new ArrayList<>();
             if ('-o' in applicationArguments.getSourceArgs() || '--onboard' in applicationArguments.getSourceArgs()) {
-                onboardingManager.onboard(onboarder, profileManager.selectedProfiles)
+                onboardedOptions = onboardingManager.onboard(profileManager.selectedProfiles)
             }
 
             executableManager.init()
             detectConfiguration.init()
-
-            if ('-hdoc' in applicationArguments.getSourceArgs() || '--helpdocument' in applicationArguments.getSourceArgs()) {
-                helpHtmlWriter.writeHelpMessage("hub-detect-${detectConfiguration.buildInfo.detectVersion}-help.html".toString())
-                return
-            }
 
             logger.info('Configuration processed completely.')
 
             if (!detectConfiguration.suppressConfigurationOutput) {
 
                 DetectConfigurationPrinter detectConfigurationPrinter = new OriginalDetectConfigurationPrinter();
-                detectConfigurationPrinter.printHeader(System.out, detectConfiguration, options)
+                detectConfigurationPrinter.printHeader(System.out, detectInfo, options)
                 helpPrinter.printProfiles(System.out, profileManager.availableProfiles(), profileManager.selectedProfiles)
-                detectConfigurationPrinter.printConfiguration(System.out, detectConfiguration, options, onboarder)
+                detectConfigurationPrinter.printConfiguration(System.out, detectInfo, detectConfiguration, options, onboardedOptions)
 
                 detectConfigurationPrinter = new ProfileDetectConfigurationPrinter();
-                detectConfigurationPrinter.printHeader(System.out, detectConfiguration, options)
+                detectConfigurationPrinter.printHeader(System.out, detectInfo, options)
                 helpPrinter.printProfiles(System.out, profileManager.availableProfiles(), profileManager.selectedProfiles)
-                detectConfigurationPrinter.printConfiguration(System.out, detectConfiguration, options, onboarder)
+                detectConfigurationPrinter.printConfiguration(System.out, detectInfo, detectConfiguration, options, onboardedOptions)
             }
 
             if (detectConfiguration.testConnection) {

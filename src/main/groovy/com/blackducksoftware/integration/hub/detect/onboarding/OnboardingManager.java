@@ -11,6 +11,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.onboarding;
 
+import java.io.Console;
+import java.io.PrintStream;
 import java.util.List;
 import java.util.Set;
 
@@ -19,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.onboarding.flow.DefaultOnboardingFlow;
 import com.blackducksoftware.integration.hub.detect.profile.manager.ProfileManager;
 
@@ -26,6 +29,9 @@ import com.blackducksoftware.integration.hub.detect.profile.manager.ProfileManag
 public class OnboardingManager {
 
     private final Logger logger = LoggerFactory.getLogger(OnboardingManager.class);
+
+    @Autowired
+    DetectConfiguration detectConfiguration;
 
     @Autowired
     ProfileManager profileManager;
@@ -36,7 +42,16 @@ public class OnboardingManager {
     @Autowired
     DefaultOnboardingFlow defaultOnboardingFlow;
 
-    public void onboard(final Onboarder onboarder, final List<String> profiles) {
+    public List<OnboardingOption> onboard(final List<String> profiles) {
+
+        Onboarder onboarder;
+        final Console console = System.console();
+        if (console != null) {
+            onboarder = new Onboarder(new PrintStream(System.out), new ConsoleOnboardingReader(console), detectConfiguration);
+        } else {
+            logger.warn("Onboarding passwords may be insecure because you are running in a virtual console.");
+            onboarder = new Onboarder(new PrintStream(System.out), new ScannerOnboardingReader(System.in), detectConfiguration);
+        }
 
         onboarder.println("");
         onboarder.println("Onboarding flag found.");
@@ -49,7 +64,7 @@ public class OnboardingManager {
                     onboarder.println("Starting '" + onboardFlow.getClass().getSimpleName() + "' from profile '" + profile + "'.");
                     onboarder.println("");
                     onboard(onboardFlow, onboarder);
-                    return;
+                    return onboarder.getOnboardedOptions();
                 }
             }
         }
@@ -57,7 +72,7 @@ public class OnboardingManager {
         onboarder.println("Starting default onboarder.");
         onboarder.println("");
         onboard(defaultOnboardingFlow, onboarder);
-
+        return onboarder.getOnboardedOptions();
     }
 
     public void onboard(final OnboardingFlow onboardFlow, final Onboarder onboarder) {

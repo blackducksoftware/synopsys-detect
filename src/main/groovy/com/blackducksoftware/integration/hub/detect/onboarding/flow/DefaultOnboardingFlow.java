@@ -36,14 +36,14 @@ public class DefaultOnboardingFlow implements OnboardingFlow {
             while (!connected && !skipConnectionTest) {
                 onboarder.askFieldQuestion("hubUrl", "What is the hub instance url?");
                 onboarder.askFieldQuestion("hubUsername", "What is the hub username?");
-                onboarder.askFieldQuestion("hubPassword", "What is the hub password?");
+                onboarder.askSecretFieldQuestion("hubPassword", "What is the hub password?");
 
                 final Boolean useProxy = onboarder.askYesOrNo("Would you like to configure a proxy for the hub?");
                 if (useProxy) {
                     onboarder.askFieldQuestion("hubProxyHost", "What is the hub proxy host?");
                     onboarder.askFieldQuestion("hubProxyPort", "What is the hub proxy port?");
                     onboarder.askFieldQuestion("hubProxyUsername", "What is the hub proxy username?");
-                    onboarder.askFieldQuestion("hubProxyPassword", "What is the hub proxy password?");
+                    onboarder.askSecretFieldQuestion("hubProxyPassword", "What is the hub proxy password?");
                 }
 
                 final Boolean trustCert = onboarder.askYesOrNo("Would you like to automatically trust the hub certificate?");

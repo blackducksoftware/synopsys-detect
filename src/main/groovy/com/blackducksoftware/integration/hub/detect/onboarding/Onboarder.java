@@ -18,10 +18,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Scanner;
 
 import org.springframework.beans.factory.annotation.Value;
 
@@ -31,24 +32,33 @@ import com.blackducksoftware.integration.hub.detect.help.SpringValueUtils;
 
 public class Onboarder {
 
-    public Onboarder(final PrintStream printStream, final Scanner scanner, final DetectConfiguration detectConfiguration) {
+    public Onboarder(final PrintStream printStream, final OnboardingReader reader, final DetectConfiguration detectConfiguration) {
         this.printStream = printStream;
-        this.scanner = scanner;
+        this.reader = reader;
         this.detectConfiguration = detectConfiguration;
     }
 
     private final DetectConfiguration detectConfiguration;
     private final PrintStream printStream;
-    private final Scanner scanner;
+    private final OnboardingReader reader;
     private final Map<String, OnboardingOption> fieldOptions = new HashMap<>();
 
     public String askQuestion(final String question) {
         printStream.println(question);
-        return scanner.nextLine();
+        return reader.readLine();
+    }
+
+    public String askSecretQuestion(final String question) {
+        printStream.println(question);
+        return reader.readPassword().toString();
     }
 
     public void askFieldQuestion(final String field, final String question) {
         setField(field, askQuestion(question));
+    }
+
+    public void askSecretFieldQuestion(final String field, final String question) {
+        setField(field, askSecretQuestion(question));
     }
 
     public void setField(final String field, final String value) {
@@ -71,7 +81,7 @@ public class Onboarder {
         final int maxAttempts = 3;
         int attempts = 0;
         while (attempts < maxAttempts) {
-            final String response = scanner.nextLine();
+            final String response = reader.readLine();
             if (anyEquals(response, "y", "yes")) {
                 return true;
             } else if (anyEquals(response, "n", "no")) {
@@ -147,8 +157,7 @@ public class Onboarder {
     public void readyToStartDetect() {
         printStream.println();
         printStream.println("Ready to start detect. Hit enter to proceed.");
-        scanner.nextLine();
-        scanner.close();
+        reader.readLine();
     }
 
     public void printSuccess() {
@@ -216,5 +225,9 @@ public class Onboarder {
             }
         }
         return false;
+    }
+
+    public List<OnboardingOption> getOnboardedOptions() {
+        return new ArrayList<>(fieldOptions.values());
     }
 }

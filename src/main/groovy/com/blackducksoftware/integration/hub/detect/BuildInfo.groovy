@@ -29,5 +29,5 @@ import groovy.transform.TypeChecked
 @TypeChecked
 class BuildInfo {
     @SerializedName("detect")
-    final String detectVersion
+    public String detectVersion
 }

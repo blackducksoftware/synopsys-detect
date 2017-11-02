@@ -15,12 +15,12 @@ import java.io.PrintStream;
 import java.util.List;
 
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
-import com.blackducksoftware.integration.hub.detect.onboarding.Onboarder;
+import com.blackducksoftware.integration.hub.detect.onboarding.OnboardingOption;
 
 public interface DetectConfigurationPrinter {
 
-    void printHeader(final PrintStream printStream, DetectConfiguration detectConfiguration, final List<DetectOption> detectOptions);
+    void printHeader(final PrintStream printStream, DetectInfo detectInfo, final List<DetectOption> detectOptions);
 
-    void printConfiguration(final PrintStream printStream, DetectConfiguration detectConfiguration, final List<DetectOption> detectOptions, Onboarder onboarder);
+    void printConfiguration(final PrintStream printStream, DetectInfo detectInfo, DetectConfiguration detectConfiguration, final List<DetectOption> detectOptions, List<OnboardingOption> onboardedOptions);
 
 }

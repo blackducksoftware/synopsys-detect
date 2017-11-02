@@ -16,16 +16,16 @@ import java.lang.reflect.Modifier
 import org.springframework.beans.factory.annotation.Value
 
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
-import com.blackducksoftware.integration.hub.detect.onboarding.Onboarder
+import com.blackducksoftware.integration.hub.detect.onboarding.OnboardingOption
 public class ProfileDetectConfigurationPrinter implements DetectConfigurationPrinter{
 
-    public void printHeader(final PrintStream printStream, DetectConfiguration detectConfiguration, final List<DetectOption> detectOptions) {
+    public void printHeader(final PrintStream printStream, DetectInfo detectInfo, final List<DetectOption> detectOptions) {
         printStream.println('')
-        printStream.println("Detect Version: ${detectConfiguration.buildInfo.detectVersion}" as String)
+        printStream.println("Detect Version: ${detectInfo.detectVersion}" as String)
         printStream.println('')
     }
 
-    public void printConfiguration(final PrintStream printStream, DetectConfiguration detectConfiguration, final List<DetectOption> detectOptions, Onboarder onboarder) {
+    public void printConfiguration(final PrintStream printStream, DetectInfo detectInfo, DetectConfiguration detectConfiguration, final List<DetectOption> detectOptions, List<OnboardingOption> onboardedOptions) {
         printStream.println('')
         printStream.println('Current property values:')
         printStream.println('-'.multiply(60))
@@ -65,7 +65,7 @@ public class ProfileDetectConfigurationPrinter implements DetectConfigurationPri
                     printStream.println("${fieldName} = ${fieldValue} (${profile})" as String)
                 }else if (option != null && !option.finalValue.equals(fieldValue)){
 
-                    if (onboarder.hasValueForField(fieldName)){
+                    if (didOnboardField(fieldName, onboardedOptions)){
                         printStream.println("${fieldName} = ${fieldValue} [onboarded]" as String)
                     }else if (option.finalValue.equals("latest")){
                         printStream.println("${fieldName} = ${fieldValue} [latest]" as String)
@@ -82,5 +82,14 @@ public class ProfileDetectConfigurationPrinter implements DetectConfigurationPri
         }
         printStream.println('-'.multiply(60))
         printStream.println('')
+    }
+
+    private boolean didOnboardField(String field, List<OnboardingOption> onboardedOptions) {
+        for (OnboardingOption option : onboardedOptions){
+            if (option.fieldName.equals(field)){
+                return true;
+            }
+        }
+        return false;
     }
 }

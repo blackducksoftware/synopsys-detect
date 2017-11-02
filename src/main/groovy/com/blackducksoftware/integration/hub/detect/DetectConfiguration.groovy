@@ -22,8 +22,6 @@
  */
 package com.blackducksoftware.integration.hub.detect
 
-import java.nio.charset.StandardCharsets
-
 import org.apache.commons.lang3.BooleanUtils
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
@@ -45,7 +43,6 @@ import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.profile.DryRunProfile
 import com.blackducksoftware.integration.hub.detect.profile.NoScanProfile
 import com.blackducksoftware.integration.hub.detect.profile.OfflineProfile
-import com.blackducksoftware.integration.util.ResourceUtil
 import com.google.gson.Gson
 
 import groovy.transform.TypeChecked
@@ -97,8 +94,6 @@ class DetectConfiguration {
 
     @Autowired
     Gson gson
-
-    BuildInfo buildInfo
 
     File sourceDirectory
     File outputDirectory
@@ -513,7 +508,6 @@ class DetectConfiguration {
     //properties end
 
     void init() {
-        buildInfo = gson.fromJson(ResourceUtil.getResourceAsString('buildInfo.json', StandardCharsets.UTF_8.toString()), BuildInfo.class)
 
         if (!sourcePath) {
             usingDefaultSourcePath = true

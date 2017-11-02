@@ -60,6 +60,9 @@ class DetectProjectManager {
     private final Logger logger = LoggerFactory.getLogger(DetectProjectManager.class)
 
     @Autowired
+    DetectInfo detectInfo
+
+    @Autowired
     DetectConfiguration detectConfiguration
 
     @Autowired
@@ -237,7 +240,7 @@ class DetectProjectManager {
     private SimpleBdioDocument createSimpleBdioDocument(String codeLocationName, String projectName, String projectVersionName, ExternalId projectExternalId, DependencyGraph dependencyGraph) {
         SimpleBdioDocument simpleBdioDocument = simpleBdioFactory.createSimpleBdioDocument(codeLocationName, projectName, projectVersionName, projectExternalId, dependencyGraph)
 
-        String hubDetectVersion = detectConfiguration.buildInfo.detectVersion
+        String hubDetectVersion = detectInfo.detectVersion
         def detectVersionData = ['detectVersion' : hubDetectVersion]
         simpleBdioDocument.billOfMaterials.customData = detectVersionData
 
