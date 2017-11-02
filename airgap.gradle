@@ -1,6 +1,6 @@
 import java.io.File
 
-final String distributionArtifactFolder = "${buildDir}/distributions"
+final String distributionsFolder = "${buildDir}/distributions"
 final String buildArtifactFolder = "${buildDir}/libs"
 final String airGapFolder = "${buildArtifactFolder}/packaged-inspectors"
 final String gradleAirGapPath = "${airGapFolder}/gradle"
@@ -128,10 +128,10 @@ task createAirGapZip(type: Zip) {
     include 'packaged-inspectors/**'
     include 'config/**'
     archiveName airGapZipName
-    destinationDir(file(distributionArtifactFolder))
+    destinationDir(file(distributionsFolder))
 }
 
 task publishAirGapZip(type: Exec) {
     dependsOn createAirGapZip
-    commandLine 'curl', '-u', "${artifactoryDeployerUsername}:${artifactoryDeployerUsername}", '-X', 'PUT', "${artifactoryUrl}/${artifactoryRepo}/${artifactoryIntegrationPath}/${rootProject.name}/${version}/${airGapZipName}", '-T', "${buildArtifactFolder}/${airGapZipName}", '-f'
+    commandLine 'curl', '-u', "${artifactoryDeployerUsername}:${artifactoryDeployerUsername}", '-X', 'PUT', "${artifactoryUrl}/${artifactoryRepo}/${artifactoryIntegrationPath}/${rootProject.name}/${version}/${airGapZipName}", '-T', "${distributionsFolder}/${airGapZipName}", '-f'
 }
