@@ -9,15 +9,7 @@ final String configAirGapPath = "${buildArtifactFolder}/config"
 final String dockerAirGapPath = "${airGapFolder}/docker"
 final String artifactoryIntegrationPath = "com/blackducksoftware/integration"
 
-def airGapVersion = version
-
-// the override.snaphot property should be set to true for a CI build so
-// that the version is omitted from a snapshot build artifact
-if (version.contains('SNAPSHOT') && "true" == project.findProperty('override.snapshot')) {
-    airGapVersion = 'latest-SNAPSHOT'
-}
-
-final String airGapZipName = "${rootProject.name}-${airGapVersion}-air-gap.zip"
+final String airGapZipName = "${rootProject.name}-${version}-air-gap.zip"
 
 configurations {
     airGap

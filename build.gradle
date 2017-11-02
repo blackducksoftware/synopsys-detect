@@ -33,8 +33,6 @@ group = 'com.blackducksoftware.integration'
 
 version = '2.2.0-SNAPSHOT'
 
-apply from: 'airgap.gradle'
-
 // BuildInfo - A json payload usable by detect for information from the build
 JsonBuilder jsonBuilder = new JsonBuilder()
 jsonBuilder { detect version }
@@ -50,6 +48,8 @@ if (version.contains('SNAPSHOT') && "true" == project.findProperty('override.sna
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
+
+apply from: 'airgap.gradle'
 
 build {
     doLast {
@@ -109,6 +109,8 @@ dependencies {
     compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.2'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.9.2'
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.9.2'
+    
+    compile 'org.jsoup:jsoup:1.7.2'
 
     testCompile 'org.springframework.boot:spring-boot-starter-test'
 }
