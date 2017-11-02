@@ -70,7 +70,7 @@ class HelpPrinter {
 
             String defaultValueHelp = detectValue.getDefaultValue().originalDefault;
             if (matchingProfileDefault != null){
-                defaultValueHelp = matchingProfileDefault + ": " + actualDefaultValue;
+                defaultValueHelp = actualDefaultValue + " (" + matchingProfileDefault + ")";
             }
 
             def bodyColumns = ["--" + detectValue.getKey(), defaultValueHelp, detectValue.getDescription()]
@@ -88,14 +88,6 @@ class HelpPrinter {
         helpMessagePieces.add('')
 
         printStream.println(helpMessagePieces.join(System.getProperty("line.separator")))
-    }
-
-    private String defaultValue(DetectOption option) {
-        String out = option.defaultValue.originalDefault;
-        option.defaultValue.profileSpecificDefaults.each{
-            out += " (" + it.key + ": " + it.value + ")"
-        }
-        return out;
     }
 
     private String formatColumns(List<String> columns, int... columnWidths) {
