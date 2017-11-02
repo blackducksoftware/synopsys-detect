@@ -243,7 +243,7 @@ class DetectConfiguration {
     @Value('${detect.gradle.inspector.version:}')
     String gradleInspectorVersion
 
-    @ValueDescription(description="Gradle build command", defaultValue="dependencies", group=DetectConfiguration.GROUP_GRADLE)
+    @ValueDescription(description="Gradle build command", group=DetectConfiguration.GROUP_GRADLE)
     @Value('${detect.gradle.build.command:}')
     String gradleBuildCommand
 

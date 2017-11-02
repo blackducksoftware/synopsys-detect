@@ -99,11 +99,18 @@ class GradleBomTool extends BomTool {
     }
 
     List<DetectCodeLocation> extractCodeLocationsFromGradle(DetectProject detectProject) {
+        String gradleCommand = detectConfiguration.gradleBuildCommand
+        gradleCommand = gradleCommand?.replace('dependencies', '')?.trim()
+
+        def arguments = []
+        if (gradleCommand) {
+            arguments.addAll(gradleCommand.split(' ') as List)
+        }
+        arguments.add('dependencies')
+        arguments.add("--init-script=${gradleInspectorManager.getInitScriptPath()}")
+
         logger.info("using ${gradleInspectorManager.getInitScriptPath()} as the path for the gradle init script")
-        Executable executable = new Executable(sourceDirectory, gradleExecutable, [
-            detectConfiguration.getGradleBuildCommand(),
-            "--init-script=${gradleInspectorManager.getInitScriptPath()}" as String
-        ])
+        Executable executable = new Executable(sourceDirectory, gradleExecutable, arguments)
         executableRunner.execute(executable)
 
         File buildDirectory = new File(sourcePath, 'build')

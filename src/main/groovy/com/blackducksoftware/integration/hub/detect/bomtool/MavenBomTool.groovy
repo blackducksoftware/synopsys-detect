@@ -81,7 +81,7 @@ class MavenBomTool extends BomTool {
             arguments.addAll(mavenCommand.split(' ') as List)
         }
         if (detectConfiguration.getMavenScope()?.trim()) {
-            arguments.add("-Dscope=${detectConfiguration.getMavenScope()}" as String)
+            arguments.add("-Dscope=${detectConfiguration.getMavenScope()}")
         }
         arguments.add('dependency:tree')
 
