@@ -24,6 +24,7 @@ package com.blackducksoftware.integration.hub.detect.summary
 
 import java.util.Map.Entry
 
+import org.apache.commons.lang3.StringUtils
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
@@ -74,13 +75,17 @@ class DetectSummary {
         logger.info("")
         logger.info("======== Detect Results ========")
         for (Entry<BomToolType, Result> entry : bomToolResults.entrySet()) {
-            logger.info("${entry.getKey().toString()} : ${entry.getValue().toString()}")
+            logger.info("${entry.getKey().toString()}: ${entry.getValue().toString()}")
         }
         for (Entry<File, Result> entry : scanResults.entrySet()) {
-            logger.info("Scan Target ${entry.getKey()} : ${entry.getValue().toString()}")
+            logger.info("Scan Target ${entry.getKey()}: ${entry.getValue().toString()}")
         }
+
         logger.info("")
-        logger.info("Overall Status : ${exitCodeType.toString()}")
+        if (StringUtils.isNotBlank(exitMessage)) {
+            logger.info("Exit Message: ${exitMessage}")
+        }
+        logger.info("Overall Status: ${exitCodeType.toString()}")
         logger.info("================================")
         logger.info("")
     }
