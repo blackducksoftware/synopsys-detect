@@ -27,6 +27,7 @@ import java.util.Map.Entry
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
+import com.blackducksoftware.integration.hub.detect.type.ExitCodeType
 import com.blackducksoftware.integration.log.IntLogger
 
 import groovy.transform.TypeChecked
@@ -36,7 +37,9 @@ import groovy.transform.TypeChecked
 class DetectSummary {
     private Map<BomToolType, Result> bomToolResults = new HashMap<>()
     private Map<String, Result> scanResults = new HashMap<>()
-    Result overallResult = null;
+
+    String exitMessage = null
+    ExitCodeType exitCodeType = ExitCodeType.SUCCESS
 
     public void addApplicableBomToolType(BomToolType bomToolType) {
         bomToolResults.put(bomToolType, Result.FAILURE)
@@ -54,17 +57,18 @@ class DetectSummary {
         scanResults.put(scanPath, result)
     }
 
-    public void setOverallFailure() {
-        overallResult = Result.FAILURE
+    public void setExitCode(ExitCodeType exitCodeType, String exitMessage) {
+        this.exitCodeType = exitCodeType
+        this.exitMessage = exitMessage
+    }
+
+    public int getExitCode() {
+        return exitCodeType.getExitCode()
     }
 
     public void logResults(IntLogger logger) {
-        if (overallResult == null) {
-            if (bomToolResults.containsValue(Result.FAILURE) || scanResults.containsValue(Result.FAILURE)) {
-                overallResult = Result.FAILURE
-            } else {
-                overallResult = Result.SUCCESS
-            }
+        if (exitCodeType.isSuccess() && (bomToolResults.containsValue(Result.FAILURE) || scanResults.containsValue(Result.FAILURE))) {
+            exitCodeType = ExitCodeType.FAILURE_GENERAL_ERROR
         }
 
         logger.info("")
@@ -76,7 +80,7 @@ class DetectSummary {
             logger.info("Scan Target ${entry.getKey()} : ${entry.getValue().toString()}")
         }
         logger.info("")
-        logger.info("Overall Status : ${overallResult.toString()}")
+        logger.info("Overall Status : ${exitCodeType.toString()}")
         logger.info("================================")
         logger.info("")
     }

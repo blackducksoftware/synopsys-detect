@@ -20,20 +20,32 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.exception;
+package com.blackducksoftware.integration.hub.detect.type;
 
-import com.blackducksoftware.integration.hub.detect.type.ExitCodeType;
+public enum ExitCodeType {
+    SUCCESS(0),
+    FAILURE_HUB_CONNECTIVITY(1),
+    FAILURE_TIMEOUT(2),
+    FAILURE_POLICY_VIOLATION(3),
+    FAILURE_GENERAL_ERROR(99),
+    FAILURE_UNKNOWN_ERROR(100);
 
-public class DetectException extends Exception {
-    private final ExitCodeType exitCodeType;
+    private int exitCode;
 
-    public DetectException(final String message, final ExitCodeType exitCodeType) {
-        super(message);
-        this.exitCodeType = exitCodeType;
+    private ExitCodeType(final int exitCode) {
+        this.exitCode = exitCode;
     }
 
-    public ExitCodeType getExitCodeType() {
-        return exitCodeType;
+    public int getExitCode() {
+        return exitCode;
+    }
+
+    public boolean isSuccess() {
+        return this == SUCCESS;
+    }
+
+    public boolean isFailure() {
+        return !isSuccess();
     }
 
 }

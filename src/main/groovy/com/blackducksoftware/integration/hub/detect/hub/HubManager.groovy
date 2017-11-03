@@ -22,8 +22,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.hub
 
-import org.apache.commons.lang3.EnumUtils
-import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -44,13 +42,13 @@ import com.blackducksoftware.integration.hub.dataservice.project.ProjectDataServ
 import com.blackducksoftware.integration.hub.dataservice.project.ProjectVersionWrapper
 import com.blackducksoftware.integration.hub.dataservice.report.RiskReportDataService
 import com.blackducksoftware.integration.hub.dataservice.scan.ScanStatusDataService
-import com.blackducksoftware.integration.hub.detect.Application
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
+import com.blackducksoftware.integration.hub.detect.exception.DetectException
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
+import com.blackducksoftware.integration.hub.detect.summary.DetectSummary
+import com.blackducksoftware.integration.hub.detect.type.ExitCodeType
 import com.blackducksoftware.integration.hub.exception.DoesNotExistException
 import com.blackducksoftware.integration.hub.global.HubServerConfig
-import com.blackducksoftware.integration.hub.model.enumeration.PolicySeverityEnum
-import com.blackducksoftware.integration.hub.model.enumeration.VersionBomPolicyStatusOverallStatusEnum
 import com.blackducksoftware.integration.hub.model.request.ProjectRequest
 import com.blackducksoftware.integration.hub.model.view.CodeLocationView
 import com.blackducksoftware.integration.hub.model.view.ProjectVersionView
@@ -80,6 +78,9 @@ class HubManager {
     @Autowired
     HubServiceWrapper hubServiceWrapper
 
+    @Autowired
+    DetectSummary detectSummary
+
     public ProjectVersionView updateHubProjectVersion(DetectProject detectProject, List<File> createdBdioFiles) {
         ProjectRequestService projectRequestService = hubServiceWrapper.createProjectRequestService()
         ProjectVersionRequestService projectVersionRequestService = hubServiceWrapper.createProjectVersionRequestService()
@@ -104,8 +105,7 @@ class HubManager {
         return projectVersionView
     }
 
-    public int performPostHubActions(DetectProject detectProject, ProjectVersionView projectVersionView) {
-        def postActionResult = 0
+    public void performPostHubActions(DetectProject detectProject, ProjectVersionView projectVersionView) {
         try {
             if (detectConfiguration.getPolicyCheck() || detectConfiguration.getRiskReportPdf() || detectConfiguration.getNoticesReport()) {
                 ProjectDataService projectDataService = hubServiceWrapper.createProjectDataService()
@@ -115,30 +115,30 @@ class HubManager {
                 ScanStatusDataService scanStatusDataService = hubServiceWrapper.createScanStatusDataService()
 
                 waitForBomUpdate(projectDataService, codeLocationRequestService, metaService, scanSummaryRequestService, scanStatusDataService, projectVersionView)
-            }
 
-            if (detectConfiguration.getPolicyCheck()) {
-                PolicyStatusDataService policyStatusDataService = hubServiceWrapper.createPolicyStatusDataService()
-                PolicyStatusDescription policyStatusDescription = policyChecker.getPolicyStatus(policyStatusDataService, projectVersionView)
-                logger.info(policyStatusDescription.policyStatusMessage)
-                if (policyChecker.policyViolated(policyStatusDescription)) {
-                    postActionResult = Application.FAIL_DETECT
+                if (detectConfiguration.getPolicyCheck()) {
+                    PolicyStatusDataService policyStatusDataService = hubServiceWrapper.createPolicyStatusDataService()
+                    PolicyStatusDescription policyStatusDescription = policyChecker.getPolicyStatus(policyStatusDataService, projectVersionView)
+                    logger.info(policyStatusDescription.policyStatusMessage)
+                    if (policyChecker.policyViolated(policyStatusDescription)) {
+                        detectSummary.setExitCode(ExitCodeType.FAILURE_POLICY_VIOLATION, policyStatusDescription.policyStatusMessage)
+                    }
                 }
-            }
 
-            if (detectConfiguration.getRiskReportPdf()) {
-                RiskReportDataService riskReportDataService = hubServiceWrapper.createRiskReportDataService()
-                logger.info("Creating risk report pdf")
-                File pdfFile = riskReportDataService.createReportPdfFile(new File(detectConfiguration.riskReportPdfOutputDirectory), detectProject.projectName, detectProject.projectVersionName)
-                logger.info("Created risk report pdf : ${pdfFile.getCanonicalPath()}")
-            }
+                if (detectConfiguration.getRiskReportPdf()) {
+                    RiskReportDataService riskReportDataService = hubServiceWrapper.createRiskReportDataService()
+                    logger.info("Creating risk report pdf")
+                    File pdfFile = riskReportDataService.createReportPdfFile(new File(detectConfiguration.riskReportPdfOutputDirectory), detectProject.projectName, detectProject.projectVersionName)
+                    logger.info("Created risk report pdf : ${pdfFile.getCanonicalPath()}")
+                }
 
-            if (detectConfiguration.getNoticesReport()) {
-                RiskReportDataService riskReportDataService = hubServiceWrapper.createRiskReportDataService()
-                logger.info("Creating notices report")
-                File noticesFile = riskReportDataService.createNoticesReportFile(new File(detectConfiguration.noticesReportOutputDirectory), detectProject.projectName, detectProject.projectVersionName)
-                if (noticesFile != null) {
-                    logger.info("Created notices report : ${noticesFile.getCanonicalPath()}")
+                if (detectConfiguration.getNoticesReport()) {
+                    RiskReportDataService riskReportDataService = hubServiceWrapper.createRiskReportDataService()
+                    logger.info("Creating notices report")
+                    File noticesFile = riskReportDataService.createNoticesReportFile(new File(detectConfiguration.noticesReportOutputDirectory), detectProject.projectName, detectProject.projectVersionName)
+                    if (noticesFile != null) {
+                        logger.info("Created notices report : ${noticesFile.getCanonicalPath()}")
+                    }
                 }
             }
 
@@ -153,13 +153,12 @@ class HubManager {
                 logger.debug('Found no code locations and did not run a scan.')
             }
         } catch (IllegalStateException e) {
-            logger.error("Your Hub configuration is not valid: ${e.message}")
+            throw new DetectException("Your Hub configuration is not valid: ${e.message}", ExitCodeType.FAILURE_HUB_CONNECTIVITY)
             logger.debug(e.getMessage(), e)
         } catch (Exception e) {
-            logger.error("There was a problem communicating with the Hub : ${e.message}")
+            throw new DetectException("There was a problem communicating with the Hub: ${e.message}", ExitCodeType.FAILURE_HUB_CONNECTIVITY)
             logger.debug(e.getMessage(), e)
         }
-        postActionResult
     }
 
     public void waitForBomUpdate(ProjectDataService projectDataService, CodeLocationRequestService codeLocationRequestService, MetaService metaService, ScanSummaryRequestService scanSummaryRequestService, ScanStatusDataService scanStatusDataService, ProjectVersionView version) {
