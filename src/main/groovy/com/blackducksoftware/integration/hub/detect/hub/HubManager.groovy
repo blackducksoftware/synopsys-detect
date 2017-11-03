@@ -105,7 +105,7 @@ class HubManager {
         return projectVersionView
     }
 
-    public void performPostHubActions(DetectProject detectProject, ProjectVersionView projectVersionView) {
+    public void performPostHubActions(DetectProject detectProject, ProjectVersionView projectVersionView) throws DetectException {
         try {
             if (detectConfiguration.getPolicyCheck() || detectConfiguration.getRiskReportPdf() || detectConfiguration.getNoticesReport()) {
                 ProjectDataService projectDataService = hubServiceWrapper.createProjectDataService()

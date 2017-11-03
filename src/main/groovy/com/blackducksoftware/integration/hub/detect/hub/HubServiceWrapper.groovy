@@ -72,6 +72,7 @@ class HubServiceWrapper {
             hubServicesFactory = createHubServicesFactory(slf4jIntLogger, hubServerConfig)
         } catch (IllegalStateException | EncryptionException e) {
             throw new DetectException("Not able to initialize Hub connection: ${e.message}", ExitCodeType.FAILURE_HUB_CONNECTIVITY)
+            logger.debug(e.getMessage(), e)
         }
     }
 
