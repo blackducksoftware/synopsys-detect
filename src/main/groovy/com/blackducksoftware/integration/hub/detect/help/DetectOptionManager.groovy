@@ -31,6 +31,8 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.detect.profile.manager.ProfileManager
+import com.blackducksoftware.integration.hub.detect.util.ReflectionUtils
+import com.blackducksoftware.integration.hub.detect.util.SpringValueUtils
 
 import groovy.transform.TypeChecked
 
@@ -39,57 +41,15 @@ import groovy.transform.TypeChecked
 public class DetectOptionManager {
     private final Logger logger = LoggerFactory.getLogger(DetectOptionManager.class)
 
-
-    List<DetectOption> detectOptions
-
     @Autowired
-    public ProfileManager profileManager;
+    public ProfileManager profileManager
 
     @Autowired
     public AnnotationManager annotationManager
 
-
-    private DetectOption processField(Object obj, Class<?> objClz, Field field, List<String> profiles) {
-        if (field.isAnnotationPresent(ValueDescription.class)) {
-            String fieldName = field.getName()
-            String key = ''
-            String description = ''
-            Class valueType = field.getType()
-            String defaultValue = ''
-            String group = ''
-            final ValueDescription valueDescription = field.getAnnotation(ValueDescription.class)
-            description = valueDescription.description()
-            defaultValue = valueDescription.defaultValue()
-            group = valueDescription.group()
-            if (field.isAnnotationPresent(Value.class)) {
-                String valueKey = field.getAnnotation(Value.class).value().trim()
-                key = SpringValueUtils.springKeyFromValueAnnotation(valueKey)
-            }
-
-            ProfileDefaultValue profileDefault = new ProfileDefaultValue(defaultValue, profileManager.getProfileDefaultsFromDetectField(field), profiles);
-            Set<String> optionProfiles = profileManager.getProfilesFromDetectField(field);
-
-            field.setAccessible(true)
-            boolean hasValue = !ReflectionUtils.isValueNull(field, obj);
-
-            String originalValue = defaultValue;
-            String finalValue = originalValue;
-
-            defaultValue = profileDefault.chosenDefault;
-            if (defaultValue?.trim() && !hasValue){
-                try {
-                    finalValue = defaultValue;
-                    ReflectionUtils.setValue(field, obj, defaultValue);
-                } catch (final IllegalAccessException e) {
-                    logger.error(String.format("Could not set defaultValue on field %s with %s: %s", field.getName(), defaultValue, e.getMessage()))
-                }
-            }else if (hasValue){
-                finalValue = field.get(obj).toString();
-            }
-
-            return new DetectOption(key, fieldName, originalValue, finalValue, description, valueType, optionProfiles, profileDefault, group);
-        }
-        return null;
+    List<DetectOption> detectOptions
+    public List<DetectOption> getDetectOptions() {
+        detectOptions
     }
 
     public void init(List<String> selectedProfiles) {
@@ -97,10 +57,10 @@ public class DetectOptionManager {
 
         annotationManager.findBeanClasses().each{ pair ->
             pair.value.declaredFields.each { Field field ->
-                DetectOption option = processField(pair.key, pair.value, field, selectedProfiles);
+                DetectOption option = processField(pair.key, pair.value, field, selectedProfiles)
                 if (option != null){
                     if (!detectOptionsMap.containsKey(option.key)){
-                        detectOptionsMap.put(option.key, option);
+                        detectOptionsMap.put(option.key, option)
                     }
                 }
             }
@@ -120,7 +80,46 @@ public class DetectOptionManager {
                 })
     }
 
-    public List<DetectOption> getDetectOptions() {
-        detectOptions
+    private DetectOption processField(Object obj, Class<?> objClz, Field field, List<String> profiles) {
+        if (field.isAnnotationPresent(ValueDescription.class)) {
+            String fieldName = field.getName()
+            String key = ''
+            String description = ''
+            Class valueType = field.getType()
+            String defaultValue = ''
+            String group = ''
+            final ValueDescription valueDescription = field.getAnnotation(ValueDescription.class)
+            description = valueDescription.description()
+            defaultValue = valueDescription.defaultValue()
+            group = valueDescription.group()
+            if (field.isAnnotationPresent(Value.class)) {
+                String valueKey = field.getAnnotation(Value.class).value().trim()
+                key = SpringValueUtils.springKeyFromValueAnnotation(valueKey)
+            }
+
+            DetectDefaultValue profileDefault = new DetectDefaultValue(defaultValue, profileManager.getProfileDefaultsFromDetectField(field), profiles)
+            Set<String> optionProfiles = profileManager.getProfilesFromDetectField(field)
+
+            field.setAccessible(true)
+            boolean hasValue = !ReflectionUtils.isValueNull(field, obj)
+
+            String originalValue = defaultValue
+            String finalValue = originalValue
+
+            defaultValue = profileDefault.chosenDefault
+            if (defaultValue?.trim() && !hasValue){
+                try {
+                    finalValue = defaultValue
+                    ReflectionUtils.setValue(field, obj, defaultValue)
+                } catch (final IllegalAccessException e) {
+                    logger.error(String.format("Could not set defaultValue on field %s with %s: %s", field.getName(), defaultValue, e.getMessage()))
+                }
+            }else if (hasValue){
+                finalValue = field.get(obj).toString()
+            }
+
+            return new DetectOption(key, fieldName, originalValue, finalValue, description, valueType, optionProfiles, profileDefault, group)
+        }
+        return null
     }
 }

@@ -40,8 +40,10 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFac
 import com.blackducksoftware.integration.hub.detect.exception.DetectException
 import com.blackducksoftware.integration.hub.detect.help.DetectOption
 import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager
-import com.blackducksoftware.integration.hub.detect.help.HelpHtmlWriter
-import com.blackducksoftware.integration.hub.detect.help.HelpPrinter
+import com.blackducksoftware.integration.hub.detect.help.print.DetectConfigurationPrinter
+import com.blackducksoftware.integration.hub.detect.help.print.DetectInfoPrinter
+import com.blackducksoftware.integration.hub.detect.help.print.HelpHtmlWriter
+import com.blackducksoftware.integration.hub.detect.help.print.HelpPrinter
 import com.blackducksoftware.integration.hub.detect.hub.HubManager
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
@@ -119,26 +121,26 @@ class Application {
     }
 
     private List<String> getPossibleSelectedProfilesFromArgs() {
-        List<String> profiles = new ArrayList<String>();
+        List<String> profiles = new ArrayList<String>()
         for (String arg : applicationArguments.getSourceArgs()){
             if (!arg.contains("=")){
                 if (arg.startsWith("--")){
-                    profiles.add(arg.substring(2));
+                    profiles.add(arg.substring(2))
                 }
             }
         }
-        return profiles;
+        return profiles
     }
 
     @PostConstruct
     void init() {
         int postResult = 0
         try {
-            detectInfo.init();
-            profileManager.init(getPossibleSelectedProfilesFromArgs());
+            detectInfo.init()
+            profileManager.init(getPossibleSelectedProfilesFromArgs())
             detectOptionManager.init(profileManager.selectedProfiles)
 
-            List<DetectOption> options = detectOptionManager.getDetectOptions();
+            List<DetectOption> options = detectOptionManager.getDetectOptions()
             if ('-h' in applicationArguments.getSourceArgs() || '--help' in applicationArguments.getSourceArgs()) {
                 helpPrinter.printHelpMessage(System.out, options, profileManager.availableProfiles(), profileManager.selectedProfiles)
                 return
@@ -149,7 +151,7 @@ class Application {
                 return
             }
 
-            List<OnboardingOption> onboardedOptions = new ArrayList<>();
+            List<OnboardingOption> onboardedOptions = new ArrayList<>()
             if ('-o' in applicationArguments.getSourceArgs() || '--onboard' in applicationArguments.getSourceArgs()) {
                 onboardedOptions = onboardingManager.onboard(profileManager.selectedProfiles)
             }
@@ -161,15 +163,12 @@ class Application {
 
             if (!detectConfiguration.suppressConfigurationOutput) {
 
-                DetectConfigurationPrinter detectConfigurationPrinter = new OriginalDetectConfigurationPrinter();
-                detectConfigurationPrinter.printHeader(System.out, detectInfo, options)
-                helpPrinter.printProfiles(System.out, profileManager.availableProfiles(), profileManager.selectedProfiles)
-                detectConfigurationPrinter.printConfiguration(System.out, detectInfo, detectConfiguration, options, onboardedOptions)
+                DetectInfoPrinter infoPrinter = new DetectInfoPrinter();
+                DetectConfigurationPrinter detectConfigurationPrinter = new DetectConfigurationPrinter()
 
-                detectConfigurationPrinter = new ProfileDetectConfigurationPrinter();
-                detectConfigurationPrinter.printHeader(System.out, detectInfo, options)
+                infoPrinter.printInfo(System.out, detectInfo)
                 helpPrinter.printProfiles(System.out, profileManager.availableProfiles(), profileManager.selectedProfiles)
-                detectConfigurationPrinter.printConfiguration(System.out, detectInfo, detectConfiguration, options, onboardedOptions)
+                detectConfigurationPrinter.printDetailedConfiguration(System.out, detectConfiguration, options, onboardedOptions)
             }
 
             if (detectConfiguration.testConnection) {

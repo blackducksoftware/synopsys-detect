@@ -35,10 +35,9 @@ public class DetectOption {
     final String originalValue
 
     final Set<String> profiles
-    final ProfileDefaultValue defaultValue
+    final DetectDefaultValue defaultValue
 
-
-    public DetectOption(final String key, String fieldName, String originalValue, String finalValue, final String description, Class valueType, Set<String> profiles, ProfileDefaultValue defaultValue, String group) {
+    public DetectOption(final String key, String fieldName, String originalValue, String finalValue, final String description, Class valueType, Set<String> profiles, DetectDefaultValue defaultValue, String group) {
         this.key = key
         this.description = description
         this.valueType = valueType
@@ -46,7 +45,7 @@ public class DetectOption {
         this.group = group
         this.profiles = profiles
         this.fieldName = fieldName
-        this.originalValue = originalValue;
-        this.finalValue = finalValue;
+        this.originalValue = originalValue
+        this.finalValue = finalValue
     }
 }

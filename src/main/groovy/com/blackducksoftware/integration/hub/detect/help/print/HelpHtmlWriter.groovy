@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.help
+package com.blackducksoftware.integration.hub.detect.help.print
 
 import org.apache.commons.lang3.text.WordUtils
 import org.jsoup.Jsoup
@@ -30,6 +30,8 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+
+import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager
 
 import groovy.transform.TypeChecked
 

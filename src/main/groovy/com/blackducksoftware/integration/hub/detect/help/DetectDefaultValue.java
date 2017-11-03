@@ -25,13 +25,13 @@ package com.blackducksoftware.integration.hub.detect.help;
 import java.util.List;
 import java.util.Map;
 
-public class ProfileDefaultValue {
+public class DetectDefaultValue {
     public final String originalDefault;
     public final Map<String, String> profileSpecificDefaults;
     public final String chosenProfile;
     public final String chosenDefault;
 
-    public ProfileDefaultValue(final String originalDefault, final Map<String, String> profileSpecificDefaults, final List<String> selectedProfiles) {
+    public DetectDefaultValue(final String originalDefault, final Map<String, String> profileSpecificDefaults, final List<String> selectedProfiles) {
         this.profileSpecificDefaults = profileSpecificDefaults;
         this.originalDefault = originalDefault;
 
@@ -47,7 +47,6 @@ public class ProfileDefaultValue {
 
         chosenProfile = bestProfile;
         chosenDefault = bestDefault;
-
     }
 
     public boolean containsProfile(final String profile) {

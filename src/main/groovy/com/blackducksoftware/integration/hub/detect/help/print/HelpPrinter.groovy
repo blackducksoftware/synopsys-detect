@@ -20,11 +20,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.help
+package com.blackducksoftware.integration.hub.detect.help.print
 
 import org.apache.commons.lang3.StringUtils
 import org.springframework.stereotype.Component
 import org.springframework.util.CollectionUtils
+
+import com.blackducksoftware.integration.hub.detect.help.DetectOption
 
 import groovy.transform.TypeChecked
 
@@ -33,8 +35,8 @@ import groovy.transform.TypeChecked
 class HelpPrinter {
 
     void printProfiles(PrintStream printStream, Set<String> profiles, List<String> selectedProfiles) {
-        printStream.println("Available Profiles: " + profiles.join(', '));
-        printStream.println("Selected Profiles: " + selectedProfiles.join(", "));
+        printStream.println("Available Profiles: " + profiles.join(', '))
+        printStream.println("Selected Profiles: " + selectedProfiles.join(", "))
     }
 
     void printHelpMessage(PrintStream printStream, List<DetectOption> options, Set<String> profiles, List<String> selectedProfiles) {
@@ -56,21 +58,21 @@ class HelpPrinter {
             String currentGroup = detectValue.getGroup()
             if (group == null) {
                 group = currentGroup
-                atLeastOneInGroupPrinted = false;
+                atLeastOneInGroupPrinted = false
             } else if (!group.equals(currentGroup)) {
                 if (atLeastOneInGroupPrinted){
                     helpMessagePieces.add('')
                 }
                 group = currentGroup
-                atLeastOneInGroupPrinted = false;
+                atLeastOneInGroupPrinted = false
             }
 
-            String matchingProfileDefault = detectValue.getDefaultValue().chosenProfile;
-            String actualDefaultValue = detectValue.getDefaultValue().chosenDefault;
+            String matchingProfileDefault = detectValue.getDefaultValue().chosenProfile
+            String actualDefaultValue = detectValue.getDefaultValue().chosenDefault
 
-            String defaultValueHelp = detectValue.getDefaultValue().originalDefault;
+            String defaultValueHelp = detectValue.getDefaultValue().originalDefault
             if (matchingProfileDefault != null){
-                defaultValueHelp = actualDefaultValue + " (" + matchingProfileDefault + ")";
+                defaultValueHelp = actualDefaultValue + " (" + matchingProfileDefault + ")"
             }
 
             def bodyColumns = ["--" + detectValue.getKey(), defaultValueHelp, detectValue.getDescription()]

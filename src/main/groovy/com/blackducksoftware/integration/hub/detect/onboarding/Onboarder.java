@@ -38,8 +38,8 @@ import java.util.Properties;
 import org.springframework.beans.factory.annotation.Value;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.help.ReflectionUtils;
-import com.blackducksoftware.integration.hub.detect.help.SpringValueUtils;
+import com.blackducksoftware.integration.hub.detect.util.ReflectionUtils;
+import com.blackducksoftware.integration.hub.detect.util.SpringValueUtils;
 
 public class Onboarder {
 
