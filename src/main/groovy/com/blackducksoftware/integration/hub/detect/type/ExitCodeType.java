@@ -44,8 +44,4 @@ public enum ExitCodeType {
         return this == SUCCESS;
     }
 
-    public boolean isFailure() {
-        return !isSuccess();
-    }
-
 }
