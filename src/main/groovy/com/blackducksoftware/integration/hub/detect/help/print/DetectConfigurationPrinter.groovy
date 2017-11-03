@@ -34,6 +34,7 @@ public class DetectConfigurationPrinter {
     public void printDetailedConfiguration(final PrintStream printStream, DetectConfiguration detectConfiguration, final List<DetectOption> detectOptions, List<OnboardingOption> onboardedOptions) {
         printStream.println('')
         printStream.println('Current property values:')
+        printStream.println('--property = value (profile) [notes]')
         printStream.println('-'.multiply(60))
         def propertyFields = DetectConfiguration.class.getDeclaredFields().findAll {
             def foundValueAnnotation = it.annotations.find { annotation ->

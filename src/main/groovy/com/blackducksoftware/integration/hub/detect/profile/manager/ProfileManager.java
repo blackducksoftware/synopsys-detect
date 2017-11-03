@@ -37,6 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import com.blackducksoftware.integration.hub.detect.profile.DryRunProfile;
 import com.blackducksoftware.integration.hub.detect.profile.NoScanProfile;
 import com.blackducksoftware.integration.hub.detect.profile.OfflineProfile;
 
@@ -50,6 +51,7 @@ public class ProfileManager {
         try {
             RegisterProfile(OfflineProfile.class);
             RegisterProfile(NoScanProfile.class);
+            RegisterProfile(DryRunProfile.class);
         } catch (final Exception e) {
             logger.error("Exception registering profile classes");
         }
