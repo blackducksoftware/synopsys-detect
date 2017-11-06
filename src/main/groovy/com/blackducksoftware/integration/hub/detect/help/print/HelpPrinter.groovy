@@ -44,7 +44,6 @@ class HelpPrinter {
         helpMessagePieces.add(StringUtils.repeat('_', 175))
 
         String group = null
-        boolean atLeastOneInGroupPrinted = false
 
         options.each { detectValue ->
             String currentGroup = detectValue.getGroup()

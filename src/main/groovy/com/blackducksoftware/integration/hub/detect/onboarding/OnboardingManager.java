@@ -61,7 +61,6 @@ public class OnboardingManager {
         OnboardingReader reader;
         if (console != null) {
             reader = new ConsoleOnboardingReader(console);
-
         } else {
             logger.warn("Onboarding passwords may be insecure because you are running in a virtual console.");
             reader = new ScannerOnboardingReader(System.in);
