@@ -33,11 +33,6 @@ import groovy.transform.TypeChecked
 @TypeChecked
 class HelpPrinter {
 
-    void printProfiles(PrintStream printStream, Set<String> profiles, List<String> selectedProfiles) {
-        printStream.println("Available Profiles: " + profiles.join(', '))
-        printStream.println("Selected Profiles: " + selectedProfiles.join(", "))
-    }
-
     void printHelpMessage(PrintStream printStream, List<DetectOption> options) {
         def helpMessagePieces = []
         helpMessagePieces.add('')
@@ -55,20 +50,15 @@ class HelpPrinter {
             String currentGroup = detectValue.getGroup()
             if (group == null) {
                 group = currentGroup
-                atLeastOneInGroupPrinted = false
             } else if (!group.equals(currentGroup)) {
-                if (atLeastOneInGroupPrinted){
-                    helpMessagePieces.add('')
-                }
+                helpMessagePieces.add('')
                 group = currentGroup
-                atLeastOneInGroupPrinted = false
             }
 
             def bodyColumns = ["--" + detectValue.getKey(), detectValue.getDefaultValue(), detectValue.getDescription()]
             String bodyText = formatColumns(bodyColumns, 50, 30, 95)
 
             helpMessagePieces.add(bodyText)
-            atLeastOneInGroupPrinted=true;
         }
         helpMessagePieces.add('')
         helpMessagePieces.add('Usage : ')

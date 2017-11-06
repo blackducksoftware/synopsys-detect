@@ -20,39 +20,36 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.onboarding.flow;
+package com.blackducksoftware.integration.hub.detect.onboarders;
 
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.onboarding.Onboarder;
-import com.blackducksoftware.integration.hub.detect.onboarding.OnboardingFlow;
-
 @Component
-public class OfflineOnboardingFlow implements OnboardingFlow {
+public class OfflineOnboarder extends Onboarder {
 
     @Override
-    public void onboard(final Onboarder onboarder) {
+    public void onboard() {
 
-        onboarder.printWelcome();
+        printWelcome();
 
-        final Boolean scan = onboarder.askYesOrNo("Would you like run a CLI scan?");
+        final Boolean scan = askYesOrNo("Would you like run a CLI scan?");
         if (!scan) {
-            onboarder.setField("hubSignatureScannerDisabled", "true");
+            setField("hubSignatureScannerDisabled", "true");
         }
 
         if (scan) {
-            final Boolean customScanner = onboarder.askYesOrNo("Would you like to provide a custom scanner?");
+            final Boolean customScanner = askYesOrNo("Would you like to provide a custom scanner?");
             if (customScanner) {
-                final Boolean downloadCustomScanner = onboarder.askYesOrNo("Would you like to download the custom scanner?");
+                final Boolean downloadCustomScanner = askYesOrNo("Would you like to download the custom scanner?");
                 if (downloadCustomScanner) {
-                    onboarder.askFieldQuestion("hubSignatureScannerHostUrl", "What is the scanner host url?");
+                    askFieldQuestion("hubSignatureScannerHostUrl", "What is the scanner host url?");
                 } else {
-                    onboarder.askFieldQuestion("hubSignatureScannerOfflineLocalPath", "What is the location of your offline scanner?");
+                    askFieldQuestion("hubSignatureScannerOfflineLocalPath", "What is the location of your offline scanner?");
                 }
             }
         }
 
-        onboarder.performStandardOutflow();
+        performStandardOutflow();
 
     }
 

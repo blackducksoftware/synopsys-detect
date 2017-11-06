@@ -20,26 +20,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.onboarding;
+package com.blackducksoftware.integration.hub.detect.onboarding.reader;
 
-import java.io.Console;
+public interface OnboardingReader {
 
-public class ConsoleOnboardingReader implements OnboardingReader {
+    public String readLine();
 
-    private final Console console;
-
-    public ConsoleOnboardingReader(final Console console) {
-        this.console = console;
-    }
-
-    @Override
-    public String readLine() {
-        return console.readLine();
-    }
-
-    @Override
-    public String readPassword() {
-        return new String(console.readPassword());
-    }
+    public String readPassword();
 
 }

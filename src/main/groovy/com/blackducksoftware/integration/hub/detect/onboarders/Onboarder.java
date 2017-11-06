@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.onboarding;
+package com.blackducksoftware.integration.hub.detect.onboarders;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -38,21 +38,27 @@ import java.util.Properties;
 import org.springframework.beans.factory.annotation.Value;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.onboarding.OnboardingOption;
+import com.blackducksoftware.integration.hub.detect.onboarding.reader.OnboardingReader;
 import com.blackducksoftware.integration.hub.detect.util.ReflectionUtils;
 import com.blackducksoftware.integration.hub.detect.util.SpringValueUtils;
 
 public class Onboarder {
 
-    public Onboarder(final PrintStream printStream, final OnboardingReader reader, final DetectConfiguration detectConfiguration) {
+    private DetectConfiguration detectConfiguration;
+    private PrintStream printStream;
+    private OnboardingReader reader;
+    private final Map<String, OnboardingOption> fieldOptions = new HashMap<>();
+
+    public void init(final PrintStream printStream, final OnboardingReader reader, final DetectConfiguration detectConfiguration) {
         this.printStream = printStream;
         this.reader = reader;
         this.detectConfiguration = detectConfiguration;
     }
 
-    private final DetectConfiguration detectConfiguration;
-    private final PrintStream printStream;
-    private final OnboardingReader reader;
-    private final Map<String, OnboardingOption> fieldOptions = new HashMap<>();
+    public void onboard() {
+
+    }
 
     public String askQuestion(final String question) {
         printStream.println(question);
@@ -112,17 +118,16 @@ public class Onboarder {
             final String key = SpringValueUtils.springKeyFromValueAnnotation(valueAnnotation.value());
             return key;
         } catch (final NoSuchFieldException e) {
-
+            throw new RuntimeException(e);
         } catch (final SecurityException e) {
-
+            throw new RuntimeException(e);
         }
-        return null;
     }
 
     public Map<String, String> optionsToSpringKeys() {
         final Map<String, String> springKeyMap = new HashMap<>();
-        for (final OnboardingOption opt : fieldOptions.values()) {
-            springKeyMap.put(opt.springKey, opt.onboardingValue);
+        for (final OnboardingOption onboardingOption : fieldOptions.values()) {
+            springKeyMap.put(onboardingOption.springKey, onboardingOption.onboardingValue);
         }
 
         return springKeyMap;
@@ -130,8 +135,8 @@ public class Onboarder {
 
     public Properties optionsToProperties() {
         final Properties properties = new Properties();
-        for (final OnboardingOption opt : fieldOptions.values()) {
-            properties.put(opt.springKey, opt.onboardingValue);
+        for (final OnboardingOption onboardingOption : fieldOptions.values()) {
+            properties.put(onboardingOption.springKey, onboardingOption.onboardingValue);
         }
 
         return properties;
@@ -142,18 +147,18 @@ public class Onboarder {
     }
 
     public void saveOptionsToConfiguration() {
-        for (final OnboardingOption opt : fieldOptions.values()) {
+        for (final OnboardingOption onboardingOption : fieldOptions.values()) {
 
             Field field;
             try {
-                field = detectConfiguration.getClass().getDeclaredField(opt.fieldName);
+                field = detectConfiguration.getClass().getDeclaredField(onboardingOption.fieldName);
             } catch (final NoSuchFieldException e) {
                 throw new RuntimeException(e);
             } catch (final SecurityException e) {
                 throw new RuntimeException(e);
             }
             field.setAccessible(true);
-            ReflectionUtils.setValue(field, detectConfiguration, opt.onboardingValue);
+            ReflectionUtils.setValue(field, detectConfiguration, onboardingOption.onboardingValue);
 
         }
     }
@@ -188,15 +193,15 @@ public class Onboarder {
     }
 
     public void printOptions() {
-        for (final OnboardingOption opt : fieldOptions.values()) {
-            String fieldValue = opt.onboardingValue;
-            if (opt.fieldName.toLowerCase().contains("password")) {
+        for (final OnboardingOption onboardingOption : fieldOptions.values()) {
+            String fieldValue = onboardingOption.onboardingValue;
+            if (onboardingOption.fieldName.toLowerCase().contains("password")) {
                 fieldValue = "";
-                for (int i = 0; i < opt.onboardingValue.length(); i++) {
+                for (int i = 0; i < onboardingOption.onboardingValue.length(); i++) {
                     fieldValue += "*";
                 }
             }
-            printStream.println("--" + opt.springKey + "=" + fieldValue);
+            printStream.println("--" + onboardingOption.springKey + "=" + fieldValue);
         }
     }
 
@@ -204,13 +209,13 @@ public class Onboarder {
         final Properties properties = optionsToProperties();
         final File directory = new File(System.getProperty("user.dir"));
         final File applicationsProperty = new File(directory, "application.properties");
-        OutputStream outs;
+        OutputStream outputStream;
         try {
-            outs = new FileOutputStream(applicationsProperty);
-            properties.store(outs, "Automatically generated during Detect Onboarding.");
+            outputStream = new FileOutputStream(applicationsProperty);
+            properties.store(outputStream, "Automatically generated during Detect Onboarding.");
             printStream.println();
             printStream.println("Succesfully saved to '" + applicationsProperty.getCanonicalPath() + "'!");
-            outs.close();
+            outputStream.close();
         } catch (final FileNotFoundException e) {
             printStream.println(e);
             printStream.println("Failed to write to application.properties.");
