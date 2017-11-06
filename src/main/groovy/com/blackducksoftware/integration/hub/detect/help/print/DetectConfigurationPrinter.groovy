@@ -34,7 +34,7 @@ public class DetectConfigurationPrinter {
     public void printDetailedConfiguration(final PrintStream printStream, DetectConfiguration detectConfiguration, final List<DetectOption> detectOptions, List<OnboardingOption> onboardedOptions) {
         printStream.println('')
         printStream.println('Current property values:')
-        printStream.println('--property = value (profile) [notes]')
+        printStream.println('--property = value [notes]')
         printStream.println('-'.multiply(60))
         def propertyFields = DetectConfiguration.class.getDeclaredFields().findAll {
             def foundValueAnnotation = it.annotations.find { annotation ->
@@ -67,9 +67,7 @@ public class DetectConfigurationPrinter {
                         option = opt;
                     }
                 }
-                if (option.defaultValue.chosenProfile != null && fieldValue.equals(option.defaultValue.chosenDefault)){
-                    printStream.println("${fieldName} = ${fieldValue} (${option.defaultValue.chosenProfile})" as String)
-                }else if (option != null && !option.finalValue.equals(fieldValue) && !containsPassword){
+                if (option != null && !option.finalValue.equals(fieldValue) && !containsPassword){
 
                     if (didOnboardField(fieldName, onboardedOptions)){
                         printStream.println("${fieldName} = ${fieldValue} [onboarded]" as String)

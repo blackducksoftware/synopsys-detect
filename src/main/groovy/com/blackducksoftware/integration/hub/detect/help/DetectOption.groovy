@@ -33,17 +33,14 @@ public class DetectOption {
     final String group
     final String finalValue
     final String originalValue
+    final String defaultValue
 
-    final Set<String> profiles
-    final DetectDefaultValue defaultValue
-
-    public DetectOption(final String key, String fieldName, String originalValue, String finalValue, final String description, Class valueType, Set<String> profiles, DetectDefaultValue defaultValue, String group) {
+    public DetectOption(final String key, String fieldName, String originalValue, String finalValue, final String description, Class valueType, String defaultValue, String group) {
         this.key = key
         this.description = description
         this.valueType = valueType
-        this.defaultValue = defaultValue
         this.group = group
-        this.profiles = profiles
+        this.defaultValue = defaultValue
         this.fieldName = fieldName
         this.originalValue = originalValue
         this.finalValue = finalValue

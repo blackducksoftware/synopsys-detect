@@ -30,7 +30,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.detect.profile.manager.ProfileManager
 import com.blackducksoftware.integration.hub.detect.util.ReflectionUtils
 import com.blackducksoftware.integration.hub.detect.util.SpringValueUtils
 
@@ -42,22 +41,19 @@ public class DetectOptionManager {
     private final Logger logger = LoggerFactory.getLogger(DetectOptionManager.class)
 
     @Autowired
-    public ProfileManager profileManager
-
-    @Autowired
-    public AnnotationManager annotationManager
+    public BeanFinder beanFinder
 
     List<DetectOption> detectOptions
     public List<DetectOption> getDetectOptions() {
         detectOptions
     }
 
-    public void init(List<String> selectedProfiles) {
+    public void init() {
         Map<String, DetectOption> detectOptionsMap = [:]
 
-        annotationManager.findBeanClasses().each{ pair ->
+        beanFinder.findBeanClasses().each{ pair ->
             pair.value.declaredFields.each { Field field ->
-                DetectOption option = processField(pair.key, pair.value, field, selectedProfiles)
+                DetectOption option = processField(pair.key, pair.value, field)
                 if (option != null){
                     if (!detectOptionsMap.containsKey(option.key)){
                         detectOptionsMap.put(option.key, option)
@@ -80,7 +76,7 @@ public class DetectOptionManager {
                 })
     }
 
-    private DetectOption processField(Object obj, Class<?> objClz, Field field, List<String> profiles) {
+    private DetectOption processField(Object obj, Class<?> objClz, Field field) {
         if (field.isAnnotationPresent(ValueDescription.class)) {
             String fieldName = field.getName()
             String key = ''
@@ -97,16 +93,12 @@ public class DetectOptionManager {
                 key = SpringValueUtils.springKeyFromValueAnnotation(valueKey)
             }
 
-            DetectDefaultValue profileDefault = new DetectDefaultValue(defaultValue, profileManager.getProfileDefaultsFromDetectField(field), profiles)
-            Set<String> optionProfiles = profileManager.getProfilesFromDetectField(field)
-
             field.setAccessible(true)
             boolean hasValue = !ReflectionUtils.isValueNull(field, obj)
 
             String originalValue = defaultValue
             String finalValue = originalValue
 
-            defaultValue = profileDefault.chosenDefault
             if (defaultValue?.trim() && !hasValue){
                 try {
                     finalValue = defaultValue
@@ -118,7 +110,7 @@ public class DetectOptionManager {
                 finalValue = field.get(obj).toString()
             }
 
-            return new DetectOption(key, fieldName, originalValue, finalValue, description, valueType, optionProfiles, profileDefault, group)
+            return new DetectOption(key, fieldName, originalValue, finalValue, description, valueType, defaultValue, group)
         }
         return null
     }

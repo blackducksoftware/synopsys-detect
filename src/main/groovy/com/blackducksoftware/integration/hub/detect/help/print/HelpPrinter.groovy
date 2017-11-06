@@ -24,7 +24,6 @@ package com.blackducksoftware.integration.hub.detect.help.print
 
 import org.apache.commons.lang3.StringUtils
 import org.springframework.stereotype.Component
-import org.springframework.util.CollectionUtils
 
 import com.blackducksoftware.integration.hub.detect.help.DetectOption
 
@@ -39,11 +38,9 @@ class HelpPrinter {
         printStream.println("Selected Profiles: " + selectedProfiles.join(", "))
     }
 
-    void printHelpMessage(PrintStream printStream, List<DetectOption> options, Set<String> profiles, List<String> selectedProfiles) {
+    void printHelpMessage(PrintStream printStream, List<DetectOption> options) {
         def helpMessagePieces = []
         helpMessagePieces.add('')
-
-        printProfiles(printStream, profiles, selectedProfiles)
 
         def headerColumns = ['Property Name', 'Default', 'Description']
 
@@ -67,22 +64,11 @@ class HelpPrinter {
                 atLeastOneInGroupPrinted = false
             }
 
-            String matchingProfileDefault = detectValue.getDefaultValue().chosenProfile
-            String actualDefaultValue = detectValue.getDefaultValue().chosenDefault
-
-            String defaultValueHelp = detectValue.getDefaultValue().originalDefault
-            if (matchingProfileDefault != null){
-                defaultValueHelp = actualDefaultValue + " (" + matchingProfileDefault + ")"
-            }
-
-            def bodyColumns = ["--" + detectValue.getKey(), defaultValueHelp, detectValue.getDescription()]
+            def bodyColumns = ["--" + detectValue.getKey(), detectValue.getDefaultValue(), detectValue.getDescription()]
             String bodyText = formatColumns(bodyColumns, 50, 30, 95)
 
-
-            if (selectedProfiles.empty || CollectionUtils.containsAny(detectValue.getProfiles(), selectedProfiles)){
-                helpMessagePieces.add(bodyText)
-                atLeastOneInGroupPrinted=true;
-            }
+            helpMessagePieces.add(bodyText)
+            atLeastOneInGroupPrinted=true;
         }
         helpMessagePieces.add('')
         helpMessagePieces.add('Usage : ')

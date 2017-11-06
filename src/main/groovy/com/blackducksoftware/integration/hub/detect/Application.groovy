@@ -50,7 +50,6 @@ import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.onboarding.OnboardingManager
 import com.blackducksoftware.integration.hub.detect.onboarding.OnboardingOption
-import com.blackducksoftware.integration.hub.detect.profile.manager.ProfileManager
 import com.blackducksoftware.integration.hub.detect.summary.DetectSummary
 import com.blackducksoftware.integration.hub.detect.summary.Result
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
@@ -108,9 +107,6 @@ class Application {
     DetectSummary detectSummary
 
     @Autowired
-    ProfileManager profileManager
-
-    @Autowired
     OnboardingManager onboardingManager
 
     @Autowired
@@ -120,29 +116,16 @@ class Application {
         new SpringApplicationBuilder(Application.class).logStartupInfo(false).run(args)
     }
 
-    private List<String> getPossibleSelectedProfilesFromArgs() {
-        List<String> profiles = new ArrayList<String>()
-        for (String arg : applicationArguments.getSourceArgs()){
-            if (!arg.contains("=")){
-                if (arg.startsWith("--")){
-                    profiles.add(arg.substring(2))
-                }
-            }
-        }
-        return profiles
-    }
-
     @PostConstruct
     void init() {
         int postResult = 0
         try {
             detectInfo.init()
-            profileManager.init(getPossibleSelectedProfilesFromArgs())
-            detectOptionManager.init(profileManager.selectedProfiles)
+            detectOptionManager.init()
 
             List<DetectOption> options = detectOptionManager.getDetectOptions()
             if ('-h' in applicationArguments.getSourceArgs() || '--help' in applicationArguments.getSourceArgs()) {
-                helpPrinter.printHelpMessage(System.out, options, profileManager.availableProfiles(), profileManager.selectedProfiles)
+                helpPrinter.printHelpMessage(System.out, options)
                 return
             }
 
@@ -153,7 +136,7 @@ class Application {
 
             List<OnboardingOption> onboardedOptions = new ArrayList<>()
             if ('-o' in applicationArguments.getSourceArgs() || '--onboard' in applicationArguments.getSourceArgs()) {
-                onboardedOptions = onboardingManager.onboard(profileManager.selectedProfiles)
+                onboardedOptions = onboardingManager.onboard()
             }
 
             executableManager.init()
@@ -167,7 +150,6 @@ class Application {
                 DetectConfigurationPrinter detectConfigurationPrinter = new DetectConfigurationPrinter()
 
                 infoPrinter.printInfo(System.out, detectInfo)
-                helpPrinter.printProfiles(System.out, profileManager.availableProfiles(), profileManager.selectedProfiles)
                 detectConfigurationPrinter.printDetailedConfiguration(System.out, detectConfiguration, options, onboardedOptions)
             }
 

@@ -25,7 +25,6 @@ package com.blackducksoftware.integration.hub.detect.onboarding;
 import java.io.Console;
 import java.io.PrintStream;
 import java.util.List;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +33,6 @@ import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.onboarding.flow.DefaultOnboardingFlow;
-import com.blackducksoftware.integration.hub.detect.profile.manager.ProfileManager;
 
 @Component
 public class OnboardingManager {
@@ -45,15 +43,12 @@ public class OnboardingManager {
     DetectConfiguration detectConfiguration;
 
     @Autowired
-    ProfileManager profileManager;
-
-    @Autowired
     List<OnboardingFlow> onboardingFlows;
 
     @Autowired
     DefaultOnboardingFlow defaultOnboardingFlow;
 
-    public List<OnboardingOption> onboard(final List<String> profiles) {
+    public List<OnboardingOption> onboard() {
 
         Onboarder onboarder;
         final Console console = System.console();
@@ -66,20 +61,6 @@ public class OnboardingManager {
 
         onboarder.println("");
         onboarder.println("Onboarding flag found.");
-
-        for (final String profile : profiles) {
-            for (final OnboardingFlow onboardFlow : onboardingFlows) {
-                final Set<String> applicable = profileManager.getProfilesFromOnboardingFlow(onboardFlow.getClass());
-
-                if (applicable.contains(profile)) {
-                    onboarder.println("Starting '" + onboardFlow.getClass().getSimpleName() + "' from profile '" + profile + "'.");
-                    onboarder.println("");
-                    onboard(onboardFlow, onboarder);
-                    return onboarder.getOnboardedOptions();
-                }
-            }
-        }
-
         onboarder.println("Starting default onboarder.");
         onboarder.println("");
         onboard(defaultOnboardingFlow, onboarder);

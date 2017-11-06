@@ -26,10 +26,8 @@ import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.onboarding.Onboarder;
 import com.blackducksoftware.integration.hub.detect.onboarding.OnboardingFlow;
-import com.blackducksoftware.integration.hub.detect.profile.OfflineProfile;
 
 @Component
-@OfflineProfile()
 public class OfflineOnboardingFlow implements OnboardingFlow {
 
     @Override

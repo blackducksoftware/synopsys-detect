@@ -120,7 +120,7 @@ tbody tr:hover:not(.noBorder) {
 
             def bodyColumns = [
                 "--" + detectOption.getKey(),
-                detectOption.getDefaultValue().originalDefault,
+                detectOption.getDefaultValue(),
                 detectOption.getDescription()
             ]
 
