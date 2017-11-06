@@ -49,6 +49,7 @@ public class Onboarder {
     private PrintStream printStream;
     private OnboardingReader reader;
     private final Map<String, OnboardingOption> fieldOptions = new HashMap<>();
+    private String profileName = null;
 
     public void init(final PrintStream printStream, final OnboardingReader reader, final DetectConfiguration detectConfiguration) {
         this.printStream = printStream;
@@ -185,11 +186,30 @@ public class Onboarder {
         printStream.println();
     }
 
+    public void printProfile() {
+        if (profileName != null) {
+            printStream.println();
+            printStream.println("In the future, to use this profile add the following option:");
+            printStream.println();
+            printStream.println("--spring.profiles.active=" + profileName);
+        }
+    }
+
     public void askToSave() {
         final Boolean saveSettings = askYesOrNo("Would you like to save these settings to an application.properties file?");
         if (saveSettings) {
+
+            final Boolean customName = askYesOrNo("Would you like to provide a profile name for this application.properties file?");
+            if (customName) {
+                profileName = askQuestion("What is the profile name?");
+            }
+
             saveOptionsToApplicationProperties();
+
+            printProfile();
+
         }
+
     }
 
     public void printOptions() {
@@ -208,7 +228,12 @@ public class Onboarder {
     public void saveOptionsToApplicationProperties() {
         final Properties properties = optionsToProperties();
         final File directory = new File(System.getProperty("user.dir"));
-        final File applicationsProperty = new File(directory, "application.properties");
+        String fileName = "application.properties";
+        if (profileName != null) {
+            fileName = "application-" + profileName + ".properties";
+        }
+
+        final File applicationsProperty = new File(directory, fileName);
         OutputStream outputStream;
         try {
             outputStream = new FileOutputStream(applicationsProperty);
