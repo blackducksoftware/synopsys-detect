@@ -41,9 +41,9 @@ import com.blackducksoftware.integration.hub.detect.bomtool.DockerBomTool
 import com.blackducksoftware.integration.hub.detect.bomtool.GradleBomTool
 import com.blackducksoftware.integration.hub.detect.bomtool.NugetBomTool
 import com.blackducksoftware.integration.hub.detect.exception.DetectException
+import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType
 import com.blackducksoftware.integration.hub.detect.help.ValueDescription
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
-import com.blackducksoftware.integration.hub.detect.type.ExitCodeType
 import com.blackducksoftware.integration.util.ResourceUtil
 import com.google.gson.Gson
 

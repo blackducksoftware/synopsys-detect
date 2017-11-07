@@ -20,20 +20,32 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.exception;
+package com.blackducksoftware.integration.hub.detect.summary;
 
-import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
+public class DetectSummaryResult {
+    private final String descriptionKey;
+    private Result result;
 
-public class DetectException extends Exception {
-    private final ExitCodeType exitCodeType;
-
-    public DetectException(final String message, final ExitCodeType exitCodeType) {
-        super(message);
-        this.exitCodeType = exitCodeType;
+    public DetectSummaryResult(final String descriptionKey) {
+        this.descriptionKey = descriptionKey;
+        this.result = Result.FAILURE;
     }
 
-    public ExitCodeType getExitCodeType() {
-        return exitCodeType;
+    public DetectSummaryResult(final String descriptionKey, final Result result) {
+        this.descriptionKey = descriptionKey;
+        this.result = result;
+    }
+
+    public String getDescriptionKey() {
+        return descriptionKey;
+    }
+
+    public Result getResult() {
+        return result;
+    }
+
+    public void setResult(final Result result) {
+        this.result = result;
     }
 
 }

@@ -44,9 +44,10 @@ import com.blackducksoftware.integration.hub.dataservice.report.RiskReportDataSe
 import com.blackducksoftware.integration.hub.dataservice.scan.ScanStatusDataService
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.exception.DetectException
+import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter
+import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.summary.DetectSummary
-import com.blackducksoftware.integration.hub.detect.type.ExitCodeType
 import com.blackducksoftware.integration.hub.exception.DoesNotExistException
 import com.blackducksoftware.integration.hub.global.HubServerConfig
 import com.blackducksoftware.integration.hub.model.request.ProjectRequest
@@ -60,7 +61,7 @@ import groovy.transform.TypeChecked
 
 @Component
 @TypeChecked
-class HubManager {
+class HubManager implements ExitCodeReporter {
     private final Logger logger = LoggerFactory.getLogger(HubManager.class)
 
     @Autowired
@@ -80,6 +81,9 @@ class HubManager {
 
     @Autowired
     DetectSummary detectSummary
+
+    private ExitCodeType exitCodeType = ExitCodeType.SUCCESS;
+    private String exitMessage = "";
 
     public ProjectVersionView updateHubProjectVersion(DetectProject detectProject, List<File> createdBdioFiles) {
         ProjectRequestService projectRequestService = hubServiceWrapper.createProjectRequestService()
@@ -121,7 +125,8 @@ class HubManager {
                     PolicyStatusDescription policyStatusDescription = policyChecker.getPolicyStatus(policyStatusDataService, projectVersionView)
                     logger.info(policyStatusDescription.policyStatusMessage)
                     if (policyChecker.policyViolated(policyStatusDescription)) {
-                        detectSummary.setExitCode(ExitCodeType.FAILURE_POLICY_VIOLATION, policyStatusDescription.policyStatusMessage)
+                        exitCodeType = ExitCodeType.FAILURE_POLICY_VIOLATION;
+                        exitMessage = policyStatusDescription.policyStatusMessage;
                     }
                 }
 
@@ -221,5 +226,15 @@ class HubManager {
                 }
             }
         }
+    }
+
+    @Override
+    public ExitCodeType getExitCodeType() {
+        return exitCodeType;
+    }
+
+    @Override
+    public String getExitMessage() {
+        return exitMessage;
     }
 }

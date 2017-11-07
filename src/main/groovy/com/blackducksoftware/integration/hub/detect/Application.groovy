@@ -39,6 +39,8 @@ import com.blackducksoftware.integration.hub.bdio.BdioTransformer
 import com.blackducksoftware.integration.hub.bdio.SimpleBdioFactory
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.exception.DetectException
+import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter
+import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType
 import com.blackducksoftware.integration.hub.detect.help.HelpHtmlWriter
 import com.blackducksoftware.integration.hub.detect.help.HelpPrinter
 import com.blackducksoftware.integration.hub.detect.help.ValueDescriptionAnnotationFinder
@@ -47,7 +49,6 @@ import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.summary.DetectSummary
-import com.blackducksoftware.integration.hub.detect.type.ExitCodeType
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager
 import com.blackducksoftware.integration.hub.exception.HubTimeoutExceededException
@@ -101,6 +102,12 @@ class Application {
     @Autowired
     DetectFileManager detectFileManager
 
+    @Autowired
+    List<ExitCodeReporter> exitCodeReporters;
+
+    private ExitCodeType exitCodeType = ExitCodeType.SUCCESS;
+    private String exitMessage = "";
+
     static void main(final String[] args) {
         new SpringApplicationBuilder(Application.class).logStartupInfo(false).run(args)
     }
@@ -142,41 +149,41 @@ class Application {
             } else if (!detectConfiguration.hubSignatureScannerDisabled){
                 hubSignatureScanner.scanPathsOffline(detectProject)
             }
+
+            for (ExitCodeReporter exitCodeReporter : exitCodeReporters) {
+                exitCodeType = ExitCodeType.getWinningExitCodeType(exitCodeType, exitCodeReporter.getExitCodeType());
+            }
         } catch (Exception e) {
-            populateDetectSummaryWithExceptionDetails(e)
+            populateExitCodeFromExceptionDetails(e)
         } finally {
             if (!detectConfiguration.suppressResultsOutput) {
-                detectSummary.logResults(new Slf4jIntLogger(logger))
+                detectSummary.logResults(new Slf4jIntLogger(logger), exitCodeType, exitMessage);
             }
 
             detectFileManager.cleanupDirectories()
         }
 
-        System.exit(detectSummary.getExitCode())
+        System.exit(exitCodeType.getExitCode())
     }
 
-    private void populateDetectSummaryWithExceptionDetails(Exception e) {
+    private void populateExitCodeFromExceptionDetails(Exception e) {
         if (e instanceof HubTimeoutExceededException) {
-            detectSummary.setExitCode(ExitCodeType.FAILURE_TIMEOUT, e.getMessage())
+            exitCodeType = ExitCodeType.FAILURE_TIMEOUT;
+            exitMessage = e.getMessage();
         } else if (e instanceof DetectException) {
-            detectSummary.setExitCode(e.getExitCodeType(), e.getMessage())
+            exitCodeType = e.getExitCodeType();
+            exitMessage = e.getMessage();
         } else if (e instanceof IntegrationException) {
-            handleKnownException(e)
+            logger.error('An unrecoverable error occurred - most likely this is due to your environment and/or configuration. Please double check the Hub Detect documentation: https://blackducksoftware.atlassian.net/wiki/x/Y7HtAg');
+            logger.debug(e.getMessage(), e);
+            exitCodeType = ExitCodeType.FAILURE_GENERAL_ERROR;
+            exitMessage = e.getMessage();
         } else {
-            handleUnknownException(e)
+            logger.error('An unknown/unexpected error occurred');
+            logger.debug(e.getMessage(), e);
+            exitCodeType = ExitCodeType.FAILURE_UNKNOWN_ERROR;
+            exitMessage = e.getMessage();
         }
-    }
-
-    private void handleKnownException(Exception e) {
-        logger.error('An unrecoverable error occurred - most likely this is due to your environment and/or configuration. Please double check the Hub Detect documentation: https://blackducksoftware.atlassian.net/wiki/x/Y7HtAg')
-        logger.debug(e.getMessage(), e)
-        detectSummary.setExitCode(ExitCodeType.FAILURE_GENERAL_ERROR, e.getMessage())
-    }
-
-    private void handleUnknownException(Exception e) {
-        logger.error('An unknown/unexpected error occurred')
-        logger.debug(e.getMessage(), e)
-        detectSummary.setExitCode(ExitCodeType.FAILURE_UNKNOWN_ERROR, e.getMessage())
     }
 
     @Bean

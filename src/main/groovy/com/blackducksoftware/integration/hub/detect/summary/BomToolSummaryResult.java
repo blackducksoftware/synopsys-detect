@@ -20,28 +20,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.type;
+package com.blackducksoftware.integration.hub.detect.summary;
 
-public enum ExitCodeType {
-    SUCCESS(0),
-    FAILURE_HUB_CONNECTIVITY(1),
-    FAILURE_TIMEOUT(2),
-    FAILURE_POLICY_VIOLATION(3),
-    FAILURE_GENERAL_ERROR(99),
-    FAILURE_UNKNOWN_ERROR(100);
+import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 
-    private int exitCode;
-
-    private ExitCodeType(final int exitCode) {
-        this.exitCode = exitCode;
+public class BomToolSummaryResult extends DetectSummaryResult {
+    public BomToolSummaryResult(final BomToolType bomToolType) {
+        super(bomToolType.toString());
     }
 
-    public int getExitCode() {
-        return exitCode;
-    }
-
-    public boolean isSuccess() {
-        return this == SUCCESS;
+    public BomToolSummaryResult(final BomToolType bomToolType, final Result result) {
+        super(bomToolType.toString(), result);
     }
 
 }
