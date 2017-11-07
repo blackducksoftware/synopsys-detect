@@ -62,23 +62,23 @@ public class DetectConfigurationPrinter {
                     fieldValue = '*'.multiply((fieldValue as String).length())
                 }
                 DetectOption option;
-                for (DetectOption opt : detectOptions){
-                    if (opt.fieldName.equals(fieldName)){
+                for (DetectOption opt : detectOptions) {
+                    if (opt.fieldName.equals(fieldName)) {
                         option = opt;
                     }
                 }
-                if (option != null && !option.finalValue.equals(fieldValue) && !containsPassword){
+                if (option != null && !option.finalValue.equals(fieldValue) && !containsPassword) {
 
-                    if (didOnboardField(fieldName, onboardedOptions)){
+                    if (didOnboardField(fieldName, onboardedOptions)) {
                         printStream.println("${fieldName} = ${fieldValue} [onboarded]" as String)
-                    }else if (option.finalValue.equals("latest")){
+                    } else if (option.finalValue.equals("latest")) {
                         printStream.println("${fieldName} = ${fieldValue} [latest]" as String)
-                    }else if (option.finalValue.trim().size() == 0){
+                    } else if (option.finalValue.trim().size() == 0) {
                         printStream.println("${fieldName} = ${fieldValue} [calculated]" as String)
-                    }else{
+                    } else {
                         printStream.println("${fieldName} = ${fieldValue} [${option.finalValue}]" as String)
                     }
-                }else{
+                } else {
                     printStream.println("${fieldName} = ${fieldValue}" as String)
                 }
             }
@@ -89,8 +89,8 @@ public class DetectConfigurationPrinter {
     }
 
     private boolean didOnboardField(String field, List<OnboardingOption> onboardedOptions) {
-        for (OnboardingOption option : onboardedOptions){
-            if (option.fieldName.equals(field)){
+        for (OnboardingOption option : onboardedOptions) {
+            if (option.fieldName.equals(field)) {
                 return true;
             }
         }
@@ -126,14 +126,14 @@ public class DetectConfigurationPrinter {
                     fieldValue = '*'.multiply((fieldValue as String).length())
                 }
                 DetectOption option
-                for (DetectOption opt : detectOptions){
-                    if (opt.fieldName.equals(fieldName)){
+                for (DetectOption opt : detectOptions) {
+                    if (opt.fieldName.equals(fieldName)) {
                         option = opt
                     }
                 }
-                if (option != null && !option.finalValue.equals(fieldValue) && option.finalValue.equals("latest")){
+                if (option != null && !option.finalValue.equals(fieldValue) && option.finalValue.equals("latest")) {
                     printStream.println("${fieldName} = latest (${fieldValue})" as String)
-                }else{
+                } else {
                     printStream.println("${fieldName} = ${fieldValue}" as String)
                 }
             }

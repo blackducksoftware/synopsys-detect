@@ -549,15 +549,15 @@ class DetectConfiguration {
             }
         }
 
-        if (gradleInspectorVersion.equals("latest") && gradleBomTool.isBomToolApplicable()){
+        if (gradleInspectorVersion.equals("latest") && gradleBomTool.isBomToolApplicable()) {
             gradleInspectorVersion = gradleBomTool.getInspectorVersion()
             logger.info("Resolved gradle inspector version from latest to: ${gradleInspectorVersion}")
         }
-        if (nugetInspectorPackageVersion.equals("latest") && nugetBomTool.isBomToolApplicable()){
+        if (nugetInspectorPackageVersion.equals("latest") && nugetBomTool.isBomToolApplicable()) {
             nugetInspectorPackageVersion = nugetBomTool.getInspectorVersion()
             logger.info("Resolved nuget inspector version from latest to: ${nugetInspectorPackageVersion}")
         }
-        if (dockerInspectorVersion.equals("latest") && dockerBomTool.isBomToolApplicable()){
+        if (dockerInspectorVersion.equals("latest") && dockerBomTool.isBomToolApplicable()) {
             dockerInspectorVersion = dockerBomTool.getInspectorVersion()
             logger.info("Resolved docker inspector version from latest to: ${dockerInspectorVersion}")
         }

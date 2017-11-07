@@ -54,8 +54,8 @@ public class DetectOptionManager {
 
         DetectConfiguration.class.declaredFields.each { Field field ->
             DetectOption option = processField(detectConfiguration, DetectConfiguration.class, field)
-            if (option != null){
-                if (!detectOptionsMap.containsKey(option.key)){
+            if (option != null) {
+                if (!detectOptionsMap.containsKey(option.key)) {
                     detectOptionsMap.put(option.key, option)
                 }
             }
@@ -98,14 +98,14 @@ public class DetectOptionManager {
             String originalValue = defaultValue
             String finalValue = originalValue
 
-            if (defaultValue?.trim() && !hasValue){
+            if (defaultValue?.trim() && !hasValue) {
                 try {
                     finalValue = defaultValue
                     ReflectionUtils.setValue(field, obj, defaultValue)
                 } catch (final IllegalAccessException e) {
                     logger.error(String.format("Could not set defaultValue on field %s with %s: %s", field.getName(), defaultValue, e.getMessage()))
                 }
-            }else if (hasValue){
+            } else if (hasValue) {
                 finalValue = field.get(obj).toString()
             }
 

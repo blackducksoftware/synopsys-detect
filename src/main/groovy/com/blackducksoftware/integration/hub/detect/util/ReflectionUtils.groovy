@@ -29,7 +29,7 @@ import org.apache.commons.lang3.math.NumberUtils
 
 public class ReflectionUtils {
 
-    public static void setValue(final Field field, final Object obj, final String value){
+    public static void setValue(final Field field, final Object obj, final String value) {
         final Class type = field.getType()
         Object fieldValue = field.get(obj)
         if (String.class == type) {
@@ -43,7 +43,7 @@ public class ReflectionUtils {
         }
     }
 
-    public static boolean isValueNull(final Field field, final Object obj){
+    public static boolean isValueNull(final Field field, final Object obj) {
         final Class type = field.getType()
         Object fieldValue = field.get(obj)
         if (String.class == type && !(fieldValue as String)?.trim()) {

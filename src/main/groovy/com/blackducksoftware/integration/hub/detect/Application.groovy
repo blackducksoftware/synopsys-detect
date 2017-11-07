@@ -166,7 +166,7 @@ class Application {
             if (!detectConfiguration.hubOfflineMode) {
                 ProjectVersionView projectVersionView = hubManager.updateHubProjectVersion(detectProject, createdBdioFiles)
                 postResult = hubManager.performPostHubActions(detectProject, projectVersionView)
-            } else if (!detectConfiguration.hubSignatureScannerDisabled){
+            } else if (!detectConfiguration.hubSignatureScannerDisabled) {
                 hubSignatureScanner.scanPathsOffline(detectProject)
             }
         } catch (DetectException e) {

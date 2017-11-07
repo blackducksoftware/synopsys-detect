@@ -111,7 +111,7 @@ class HubSignatureScanner {
             }
         } else if (!scannerEnabled) {
             logger.info("Not registering path ${file.canonicalPath}, scan is disabled");
-        }else if (customPathOverride){
+        } else if (customPathOverride) {
             logger.info("Not scanning path ${file.canonicalPath}, scan paths provided");
         }
     }
