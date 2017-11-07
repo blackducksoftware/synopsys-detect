@@ -27,11 +27,11 @@ import java.lang.reflect.Modifier
 import org.springframework.beans.factory.annotation.Value
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
+import com.blackducksoftware.integration.hub.detect.DetectInfo
 import com.blackducksoftware.integration.hub.detect.help.DetectOption
-import com.blackducksoftware.integration.hub.detect.onboarding.OnboardingOption
 public class DetectConfigurationPrinter {
 
-    public void printDetailedConfiguration(final PrintStream printStream, DetectConfiguration detectConfiguration, final List<DetectOption> detectOptions, List<OnboardingOption> onboardedOptions) {
+    public void print(final PrintStream printStream, DetectInfo detectInfo, DetectConfiguration detectConfiguration, final List<DetectOption> detectOptions) {
         printStream.println('')
         printStream.println('Current property values:')
         printStream.println('--property = value [notes]')
@@ -67,72 +67,17 @@ public class DetectConfigurationPrinter {
                         option = opt;
                     }
                 }
-                if (option != null && !option.finalValue.equals(fieldValue) && !containsPassword) {
+                if (option != null && !option.resolvedValue.equals(fieldValue) && !containsPassword) {
 
-                    if (didOnboardField(fieldName, onboardedOptions)) {
+                    if (option.onboardedValue != null) {
                         printStream.println("${fieldName} = ${fieldValue} [onboarded]" as String)
-                    } else if (option.finalValue.equals("latest")) {
+                    } else if (option.resolvedValue.equals("latest")) {
                         printStream.println("${fieldName} = ${fieldValue} [latest]" as String)
-                    } else if (option.finalValue.trim().size() == 0) {
+                    } else if (option.resolvedValue.trim().size() == 0) {
                         printStream.println("${fieldName} = ${fieldValue} [calculated]" as String)
                     } else {
-                        printStream.println("${fieldName} = ${fieldValue} [${option.finalValue}]" as String)
+                        printStream.println("${fieldName} = ${fieldValue} [${option.resolvedValue}]" as String)
                     }
-                } else {
-                    printStream.println("${fieldName} = ${fieldValue}" as String)
-                }
-            }
-            it.accessible = false
-        }
-        printStream.println('-'.multiply(60))
-        printStream.println('')
-    }
-
-    private boolean didOnboardField(String field, List<OnboardingOption> onboardedOptions) {
-        for (OnboardingOption option : onboardedOptions) {
-            if (option.fieldName.equals(field)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public void printOriginalConfiguration(final PrintStream printStream, DetectConfiguration detectConfiguration, final List<DetectOption> detectOptions, List<OnboardingOption> onboardedOptions) {
-        printStream.println('')
-        printStream.println('Current property values:')
-        printStream.println('-'.multiply(60))
-        def propertyFields = DetectConfiguration.class.getDeclaredFields().findAll {
-            def foundValueAnnotation = it.annotations.find { annotation ->
-                annotation.annotationType() == Value.class
-            }
-            int modifiers = it.modifiers
-            !Modifier.isStatic(modifiers) && Modifier.isPrivate(modifiers) && foundValueAnnotation
-        }.sort { a, b ->
-            a.name <=> b.name
-        }
-
-        propertyFields.each {
-            it.accessible = true
-            String fieldName = it.name
-            Object rawFieldValue = it.get(detectConfiguration)
-            String fieldValue
-            if (it.type.isArray()) {
-                fieldValue = (rawFieldValue as String[]).join(', ')
-            } else {
-                fieldValue = rawFieldValue.toString()
-            }
-            if (fieldName && fieldValue && 'metaClass' != fieldName) {
-                if (fieldName.toLowerCase().contains('password')) {
-                    fieldValue = '*'.multiply((fieldValue as String).length())
-                }
-                DetectOption option
-                for (DetectOption opt : detectOptions) {
-                    if (opt.fieldName.equals(fieldName)) {
-                        option = opt
-                    }
-                }
-                if (option != null && !option.finalValue.equals(fieldValue) && option.finalValue.equals("latest")) {
-                    printStream.println("${fieldName} = latest (${fieldValue})" as String)
                 } else {
                     printStream.println("${fieldName} = ${fieldValue}" as String)
                 }

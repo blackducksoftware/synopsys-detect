@@ -22,9 +22,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.onboarding;
 
-import java.io.Console;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -32,12 +30,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
 import com.blackducksoftware.integration.hub.detect.onboarders.DefaultOnboarder;
 import com.blackducksoftware.integration.hub.detect.onboarders.Onboarder;
-import com.blackducksoftware.integration.hub.detect.onboarding.reader.ConsoleOnboardingReader;
 import com.blackducksoftware.integration.hub.detect.onboarding.reader.OnboardingReader;
-import com.blackducksoftware.integration.hub.detect.onboarding.reader.ScannerOnboardingReader;
 
 @Component
 public class OnboardingManager {
@@ -45,7 +41,7 @@ public class OnboardingManager {
     private final Logger logger = LoggerFactory.getLogger(OnboardingManager.class);
 
     @Autowired
-    DetectConfiguration detectConfiguration;
+    DetectOptionManager detectOptionManager;
 
     @Autowired
     List<Onboarder> onboardingFlows;
@@ -53,20 +49,11 @@ public class OnboardingManager {
     @Autowired
     DefaultOnboarder defaultOnboarder;
 
-    public List<OnboardingOption> onboard() {
+    public void onboard(final OnboardingReader onboardingReader, final PrintStream printStream) {
 
         final Onboarder onboarder = defaultOnboarder;
 
-        final Console console = System.console();
-        OnboardingReader reader;
-        if (console != null) {
-            reader = new ConsoleOnboardingReader(console);
-        } else {
-            logger.warn("Onboarding passwords may be insecure because you are running in a virtual console.");
-            reader = new ScannerOnboardingReader(System.in);
-        }
-
-        onboarder.init(new PrintStream(System.out), reader, detectConfiguration);
+        onboarder.init(printStream, onboardingReader);
 
         onboarder.println("");
         onboarder.println("Onboarding flag found.");
@@ -75,11 +62,13 @@ public class OnboardingManager {
 
         try {
             onboarder.onboard();
-            return onboarder.getOnboardedOptions();
+            final List<OnboardingOption> onboardedOptions = onboarder.getOnboardedOptions();
+            detectOptionManager.applyOnboardedOptions(onboardedOptions);
         } catch (final Exception e) {
             logger.error(e.toString());
             logger.error("Onboarding failed. Please retry onboarding or remove '-o' and '--onboard' from your options.");
-            return new ArrayList<>();
+            throw new RuntimeException(e);
         }
     }
+
 }

@@ -24,6 +24,7 @@ package com.blackducksoftware.integration.hub.detect.help
 
 import java.lang.reflect.Field
 
+import org.apache.commons.lang3.math.NumberUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -31,7 +32,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
-import com.blackducksoftware.integration.hub.detect.util.ReflectionUtils
+import com.blackducksoftware.integration.hub.detect.onboarding.OnboardingOption
 import com.blackducksoftware.integration.hub.detect.util.SpringValueUtils
 
 import groovy.transform.TypeChecked
@@ -93,24 +94,81 @@ public class DetectOptionManager {
             }
 
             field.setAccessible(true)
-            boolean hasValue = !ReflectionUtils.isValueNull(field, obj)
+            boolean hasValue = !isValueNull(field, obj)
 
             String originalValue = defaultValue
-            String finalValue = originalValue
+            String resolvedValue = originalValue
 
             if (defaultValue?.trim() && !hasValue) {
                 try {
-                    finalValue = defaultValue
-                    ReflectionUtils.setValue(field, obj, defaultValue)
+                    resolvedValue = defaultValue
+                    setValue(field, obj, defaultValue)
                 } catch (final IllegalAccessException e) {
                     logger.error(String.format("Could not set defaultValue on field %s with %s: %s", field.getName(), defaultValue, e.getMessage()))
                 }
             } else if (hasValue) {
-                finalValue = field.get(obj).toString()
+                resolvedValue = field.get(obj).toString()
             }
 
-            return new DetectOption(key, fieldName, originalValue, finalValue, description, valueType, defaultValue, group)
+            return new DetectOption(key, fieldName, originalValue, resolvedValue, description, valueType, defaultValue, group)
         }
         return null
+    }
+
+    public void applyOnboardedOptions(List<OnboardingOption> onboardingOptions) {
+        for (final OnboardingOption onboardingOption : onboardingOptions) {
+
+            for (DetectOption detectOption : detectOptions){
+                if (detectOption.getFieldName().equals(onboardingOption.fieldName)){
+                    detectOption.onboardedValue = onboardingOption.onboardingValue;
+                }
+            }
+
+            Field field;
+            try {
+                field = detectConfiguration.getClass().getDeclaredField(onboardingOption.fieldName);
+            } catch (NoSuchFieldException | SecurityException e) {
+                throw new RuntimeException(e);
+            }
+            field.setAccessible(true);
+            setValue(field, detectConfiguration, onboardingOption.onboardingValue);
+        }
+    }
+
+    public void setValue(final Field field, final Object obj, final String value) {
+        final Class<?> type = field.getType();
+        try {
+            if (String.class == type) {
+                field.set(obj, value);
+            } else if (Integer.class == type) {
+                field.set(obj, NumberUtils.toInt(value));
+            } else if (Long.class == type) {
+                field.set(obj, NumberUtils.toLong(value));
+            } else if (Boolean.class == type) {
+                field.set(obj, Boolean.parseBoolean(value));
+            }
+        } catch (IllegalArgumentException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean isValueNull(final Field field, final Object obj) {
+        final Class<?> type = field.getType();
+        Object fieldValue;
+        try {
+            fieldValue = field.get(obj);
+        } catch (IllegalArgumentException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+        if (String.class == type && fieldValue.toString().trim().length() > 0) {
+            return true;
+        } else if (Integer.class == type && fieldValue == null) {
+            return true;
+        } else if (Long.class == type && fieldValue == null) {
+            return true;
+        } else if (Boolean.class == type && fieldValue == null) {
+            return true;
+        }
+        return false;
     }
 }

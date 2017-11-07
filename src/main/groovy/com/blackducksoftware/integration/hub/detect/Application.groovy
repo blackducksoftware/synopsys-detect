@@ -52,7 +52,9 @@ import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.onboarding.OnboardingManager
-import com.blackducksoftware.integration.hub.detect.onboarding.OnboardingOption
+import com.blackducksoftware.integration.hub.detect.onboarding.reader.ConsoleOnboardingReader
+import com.blackducksoftware.integration.hub.detect.onboarding.reader.OnboardingReader
+import com.blackducksoftware.integration.hub.detect.onboarding.reader.ScannerOnboardingReader
 import com.blackducksoftware.integration.hub.detect.summary.DetectSummary
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager
@@ -140,9 +142,10 @@ class Application {
                 return
             }
 
-            List<OnboardingOption> onboardedOptions = new ArrayList<>()
             if ('-o' in applicationArguments.getSourceArgs() || '--onboard' in applicationArguments.getSourceArgs()) {
-                onboardedOptions = onboardingManager.onboard()
+                OnboardingReader onboardingReader = createOnboardingReader();
+                PrintStream onboardingPrintStream = new PrintStream(System.out);
+                onboardingManager.onboard(onboardingReader, onboardingPrintStream);
             }
 
             executableManager.init()
@@ -156,7 +159,7 @@ class Application {
                 DetectConfigurationPrinter detectConfigurationPrinter = new DetectConfigurationPrinter()
 
                 infoPrinter.printInfo(System.out, detectInfo)
-                detectConfigurationPrinter.printDetailedConfiguration(System.out, detectConfiguration, options, onboardedOptions)
+                detectConfigurationPrinter.print(System.out, detectInfo, detectConfiguration, options)
             }
 
             if (detectConfiguration.testConnection) {
@@ -190,6 +193,16 @@ class Application {
         }
 
         System.exit(exitCodeType.getExitCode())
+    }
+
+    private OnboardingReader createOnboardingReader() {
+        final Console console = System.console();
+        if (console != null) {
+            return new ConsoleOnboardingReader(console);
+        } else {
+            logger.warn("Onboarding passwords may be insecure because you are running in a virtual console.");
+            return new ScannerOnboardingReader(System.in);
+        }
     }
 
     private void populateExitCodeFromExceptionDetails(Exception e) {

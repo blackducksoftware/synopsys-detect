@@ -31,11 +31,12 @@ public class DetectOption {
     final String description
     final Class valueType
     final String group
-    final String finalValue
     final String originalValue
     final String defaultValue
+    final String resolvedValue
+    public String onboardedValue = null;
 
-    public DetectOption(final String key, String fieldName, String originalValue, String finalValue, final String description, Class valueType, String defaultValue, String group) {
+    public DetectOption(final String key, String fieldName, String originalValue, String resolvedValue, final String description, Class valueType, String defaultValue, String group) {
         this.key = key
         this.description = description
         this.valueType = valueType
@@ -43,6 +44,6 @@ public class DetectOption {
         this.defaultValue = defaultValue
         this.fieldName = fieldName
         this.originalValue = originalValue
-        this.finalValue = finalValue
+        this.resolvedValue = resolvedValue
     }
 }

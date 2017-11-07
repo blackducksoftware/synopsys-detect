@@ -34,7 +34,7 @@ public class OfflineOnboarder extends Onboarder {
 
         final Boolean scan = askYesOrNo("Would you like run a CLI scan?");
         if (!scan) {
-            setField("hubSignatureScannerDisabled", "true");
+            setProperty("hubSignatureScannerDisabled", "true");
         }
 
         if (scan) {
@@ -42,9 +42,9 @@ public class OfflineOnboarder extends Onboarder {
             if (customScanner) {
                 final Boolean downloadCustomScanner = askYesOrNo("Would you like to download the custom scanner?");
                 if (downloadCustomScanner) {
-                    askFieldQuestion("hubSignatureScannerHostUrl", "What is the scanner host url?");
+                    setPropertyFromQuestion("hubSignatureScannerHostUrl", "What is the scanner host url?");
                 } else {
-                    askFieldQuestion("hubSignatureScannerOfflineLocalPath", "What is the location of your offline scanner?");
+                    setPropertyFromQuestion("hubSignatureScannerOfflineLocalPath", "What is the location of your offline scanner?");
                 }
             }
         }

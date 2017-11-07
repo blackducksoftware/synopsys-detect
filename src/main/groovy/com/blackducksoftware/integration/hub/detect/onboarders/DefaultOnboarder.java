@@ -25,6 +25,7 @@ package com.blackducksoftware.integration.hub.detect.onboarders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper;
 
 @Component
@@ -32,6 +33,9 @@ public class DefaultOnboarder extends Onboarder {
 
     @Autowired
     private HubServiceWrapper hubServiceWrapper;
+
+    @Autowired
+    private DetectOptionManager detectOptionManager;
 
     @Override
     public void onboard() {
@@ -43,27 +47,27 @@ public class DefaultOnboarder extends Onboarder {
             boolean connected = false;
             boolean skipConnectionTest = false;
             while (!connected && !skipConnectionTest) {
-                askFieldQuestion("hubUrl", "What is the hub instance url?");
-                askFieldQuestion("hubUsername", "What is the hub username?");
-                askSecretFieldQuestion("hubPassword", "What is the hub password?");
+                setPropertyFromQuestion("hubUrl", "What is the hub instance url?");
+                setPropertyFromQuestion("hubUsername", "What is the hub username?");
+                setPropertyFromSecretQuestion("hubPassword", "What is the hub password?");
 
                 final Boolean useProxy = askYesOrNo("Would you like to configure a proxy for the hub?");
                 if (useProxy) {
-                    askFieldQuestion("hubProxyHost", "What is the hub proxy host?");
-                    askFieldQuestion("hubProxyPort", "What is the hub proxy port?");
-                    askFieldQuestion("hubProxyUsername", "What is the hub proxy username?");
-                    askSecretFieldQuestion("hubProxyPassword", "What is the hub proxy password?");
+                    setPropertyFromQuestion("hubProxyHost", "What is the hub proxy host?");
+                    setPropertyFromQuestion("hubProxyPort", "What is the hub proxy port?");
+                    setPropertyFromQuestion("hubProxyUsername", "What is the hub proxy username?");
+                    setPropertyFromSecretQuestion("hubProxyPassword", "What is the hub proxy password?");
                 }
 
                 final Boolean trustCert = askYesOrNo("Would you like to automatically trust the hub certificate?");
                 if (trustCert) {
-                    setField("hubTrustCertificate", "true");
+                    setProperty("hubTrustCertificate", "true");
                 }
 
                 final Boolean testHub = askYesOrNo("Would you like to test the hub connection now?");
                 if (testHub) {
                     try {
-                        saveOptionsToConfiguration();
+                        detectOptionManager.applyOnboardedOptions(getOnboardedOptions());
                         connected = hubServiceWrapper.testHubConnection();
                     } catch (final Exception e) {
                         println("Failed to test hub connection.");
@@ -81,21 +85,21 @@ public class DefaultOnboarder extends Onboarder {
 
             final Boolean customDetails = askYesOrNo("Would you like to provide a project name and version to use on the hub?");
             if (customDetails) {
-                askFieldQuestion("projectName", "What is the hub project name?");
-                askFieldQuestion("projectVersionName", "What is the hub project version?");
+                setPropertyFromQuestion("projectName", "What is the hub project name?");
+                setPropertyFromQuestion("projectVersionName", "What is the hub project version?");
             }
 
         } else {
-            setField("hubOfflineMode", "true");
+            setProperty("hubOfflineMode", "true");
         }
 
         final Boolean scan = askYesOrNo("Would you like run a CLI scan?");
         if (!scan) {
-            setField("hubSignatureScannerDisabled", "true");
+            setProperty("hubSignatureScannerDisabled", "true");
         } else if (scan && connectToHub) {
             final Boolean upload = askYesOrNo("Would you like to upload CLI scan results to the hub?");
             if (!upload) {
-                setField("hubSignatureScannerDryRun", "true");
+                setProperty("hubSignatureScannerDryRun", "true");
             }
         }
 
@@ -104,9 +108,9 @@ public class DefaultOnboarder extends Onboarder {
             if (customScanner) {
                 final Boolean downloadCustomScanner = askYesOrNo("Would you like to download the custom scanner?");
                 if (downloadCustomScanner) {
-                    askFieldQuestion("hubSignatureScannerHostUrl", "What is the scanner host url?");
+                    setPropertyFromQuestion("hubSignatureScannerHostUrl", "What is the scanner host url?");
                 } else {
-                    askFieldQuestion("hubSignatureScannerOfflineLocalPath", "What is the location of your offline scanner?");
+                    setPropertyFromQuestion("hubSignatureScannerOfflineLocalPath", "What is the location of your offline scanner?");
                 }
             }
         }

@@ -40,21 +40,18 @@ import org.springframework.beans.factory.annotation.Value;
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.onboarding.OnboardingOption;
 import com.blackducksoftware.integration.hub.detect.onboarding.reader.OnboardingReader;
-import com.blackducksoftware.integration.hub.detect.util.ReflectionUtils;
 import com.blackducksoftware.integration.hub.detect.util.SpringValueUtils;
 
 public abstract class Onboarder {
 
-    private DetectConfiguration detectConfiguration;
     private PrintStream printStream;
-    private OnboardingReader reader;
-    private final Map<String, OnboardingOption> fieldOptions = new HashMap<>();
+    private OnboardingReader onboardingReader;
+    private final Map<String, OnboardingOption> propertyToOptionMap = new HashMap<>();
     private String profileName = null;
 
-    public void init(final PrintStream printStream, final OnboardingReader reader, final DetectConfiguration detectConfiguration) {
+    public void init(final PrintStream printStream, final OnboardingReader reader) {
         this.printStream = printStream;
-        this.reader = reader;
-        this.detectConfiguration = detectConfiguration;
+        this.onboardingReader = reader;
     }
 
     public void onboard() {
@@ -63,31 +60,33 @@ public abstract class Onboarder {
 
     public String askQuestion(final String question) {
         printStream.println(question);
-        return reader.readLine();
+        return onboardingReader.readLine();
     }
 
     public String askSecretQuestion(final String question) {
         printStream.println(question);
-        return reader.readPassword().toString();
+        return onboardingReader.readPassword().toString();
     }
 
-    public void askFieldQuestion(final String field, final String question) {
-        setField(field, askQuestion(question));
+    public void setPropertyFromQuestion(final String propertyName, final String question) {
+        final String value = askQuestion(question);
+        setProperty(propertyName, value);
     }
 
-    public void askSecretFieldQuestion(final String field, final String question) {
-        setField(field, askSecretQuestion(question));
+    public void setPropertyFromSecretQuestion(final String propertyName, final String question) {
+        final String value = askSecretQuestion(question);
+        setProperty(propertyName, value);
     }
 
-    public void setField(final String field, final String value) {
+    public void setProperty(final String propertyName, final String value) {
         OnboardingOption option;
-        if (!fieldOptions.containsKey(field)) {
+        if (!propertyToOptionMap.containsKey(propertyName)) {
             option = new OnboardingOption();
-            option.fieldName = field;
-            option.springKey = springKeyFromFieldName(field);
-            fieldOptions.put(field, option);
+            option.fieldName = propertyName;
+            option.springKey = springKeyFromFieldName(propertyName);
+            propertyToOptionMap.put(propertyName, option);
         } else {
-            option = fieldOptions.get(field);
+            option = propertyToOptionMap.get(propertyName);
         }
         option.onboardingValue = value;
     }
@@ -99,7 +98,7 @@ public abstract class Onboarder {
         final int maxAttempts = 3;
         int attempts = 0;
         while (attempts < maxAttempts) {
-            final String response = reader.readLine();
+            final String response = onboardingReader.readLine();
             if (anyEquals(response, "y", "yes")) {
                 return true;
             } else if (anyEquals(response, "n", "no")) {
@@ -113,7 +112,7 @@ public abstract class Onboarder {
 
     private String springKeyFromFieldName(final String fieldName) {
         try {
-            final Field field = detectConfiguration.getClass().getDeclaredField(fieldName);
+            final Field field = DetectConfiguration.class.getDeclaredField(fieldName);
 
             final Value valueAnnotation = field.getAnnotation(Value.class);
             final String key = SpringValueUtils.springKeyFromValueAnnotation(valueAnnotation.value());
@@ -127,7 +126,7 @@ public abstract class Onboarder {
 
     public Map<String, String> optionsToSpringKeys() {
         final Map<String, String> springKeyMap = new HashMap<>();
-        for (final OnboardingOption onboardingOption : fieldOptions.values()) {
+        for (final OnboardingOption onboardingOption : propertyToOptionMap.values()) {
             springKeyMap.put(onboardingOption.springKey, onboardingOption.onboardingValue);
         }
 
@@ -136,7 +135,7 @@ public abstract class Onboarder {
 
     public Properties optionsToProperties() {
         final Properties properties = new Properties();
-        for (final OnboardingOption onboardingOption : fieldOptions.values()) {
+        for (final OnboardingOption onboardingOption : propertyToOptionMap.values()) {
             properties.put(onboardingOption.springKey, onboardingOption.onboardingValue);
         }
 
@@ -144,37 +143,19 @@ public abstract class Onboarder {
     }
 
     public boolean hasValueForField(final String field) {
-        return fieldOptions.containsKey(field);
-    }
-
-    public void saveOptionsToConfiguration() {
-        for (final OnboardingOption onboardingOption : fieldOptions.values()) {
-
-            Field field;
-            try {
-                field = detectConfiguration.getClass().getDeclaredField(onboardingOption.fieldName);
-            } catch (final NoSuchFieldException e) {
-                throw new RuntimeException(e);
-            } catch (final SecurityException e) {
-                throw new RuntimeException(e);
-            }
-            field.setAccessible(true);
-            ReflectionUtils.setValue(field, detectConfiguration, onboardingOption.onboardingValue);
-
-        }
+        return propertyToOptionMap.containsKey(field);
     }
 
     public void performStandardOutflow() {
         printSuccess();
         askToSave();
-        saveOptionsToConfiguration();
         readyToStartDetect();
     }
 
     public void readyToStartDetect() {
         printStream.println();
         printStream.println("Ready to start detect. Hit enter to proceed.");
-        reader.readLine();
+        onboardingReader.readLine();
     }
 
     public void printSuccess() {
@@ -213,7 +194,7 @@ public abstract class Onboarder {
     }
 
     public void printOptions() {
-        for (final OnboardingOption onboardingOption : fieldOptions.values()) {
+        for (final OnboardingOption onboardingOption : propertyToOptionMap.values()) {
             String fieldValue = onboardingOption.onboardingValue;
             if (onboardingOption.fieldName.toLowerCase().contains("password")) {
                 fieldValue = "";
@@ -276,6 +257,6 @@ public abstract class Onboarder {
     }
 
     public List<OnboardingOption> getOnboardedOptions() {
-        return new ArrayList<>(fieldOptions.values());
+        return new ArrayList<>(propertyToOptionMap.values());
     }
 }
