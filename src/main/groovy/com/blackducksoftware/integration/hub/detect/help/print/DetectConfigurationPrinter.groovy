@@ -53,7 +53,7 @@ public class DetectConfigurationPrinter {
             String fieldValue
             if (it.type.isArray()) {
                 fieldValue = (rawFieldValue as String[]).join(', ')
-            }else{
+            } else {
                 fieldValue = rawFieldValue.toString()
             }
             if (fieldName && fieldValue && 'metaClass' != fieldName) {
@@ -118,7 +118,7 @@ public class DetectConfigurationPrinter {
             String fieldValue
             if (it.type.isArray()) {
                 fieldValue = (rawFieldValue as String[]).join(', ')
-            }else{
+            } else {
                 fieldValue = rawFieldValue.toString()
             }
             if (fieldName && fieldValue && 'metaClass' != fieldName) {
