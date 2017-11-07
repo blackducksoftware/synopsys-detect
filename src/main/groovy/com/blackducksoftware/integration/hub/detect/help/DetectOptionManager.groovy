@@ -30,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
+import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.util.ReflectionUtils
 import com.blackducksoftware.integration.hub.detect.util.SpringValueUtils
 
@@ -41,7 +42,7 @@ public class DetectOptionManager {
     private final Logger logger = LoggerFactory.getLogger(DetectOptionManager.class)
 
     @Autowired
-    public BeanFinder beanFinder
+    public DetectConfiguration detectConfiguration
 
     List<DetectOption> detectOptions
     public List<DetectOption> getDetectOptions() {
@@ -51,13 +52,11 @@ public class DetectOptionManager {
     public void init() {
         Map<String, DetectOption> detectOptionsMap = [:]
 
-        beanFinder.findBeanClasses().each{ pair ->
-            pair.value.declaredFields.each { Field field ->
-                DetectOption option = processField(pair.key, pair.value, field)
-                if (option != null){
-                    if (!detectOptionsMap.containsKey(option.key)){
-                        detectOptionsMap.put(option.key, option)
-                    }
+        DetectConfiguration.class.declaredFields.each { Field field ->
+            DetectOption option = processField(detectConfiguration, DetectConfiguration.class, field)
+            if (option != null){
+                if (!detectOptionsMap.containsKey(option.key)){
+                    detectOptionsMap.put(option.key, option)
                 }
             }
         }

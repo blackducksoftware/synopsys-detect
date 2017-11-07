@@ -30,7 +30,6 @@ import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.util.ResourceUtil;
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 
 @Component
 public class DetectInfo {
@@ -40,16 +39,16 @@ public class DetectInfo {
 
     public void init() {
         try {
-            buildInfo = gson.fromJson(ResourceUtil.getResourceAsString("buildInfo.json", StandardCharsets.UTF_8.toString()), BuildInfo.class);
-        } catch (JsonSyntaxException | IOException e) {
+            detectVersion = ResourceUtil.getResourceAsString("version.txt", StandardCharsets.UTF_8.toString());
+        } catch (final IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private BuildInfo buildInfo;
+    private String detectVersion;
 
     public String getDetectVersion() {
-        return buildInfo.detectVersion;
+        return detectVersion;
     }
 
 }

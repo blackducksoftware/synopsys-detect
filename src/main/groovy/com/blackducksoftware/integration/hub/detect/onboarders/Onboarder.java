@@ -43,7 +43,7 @@ import com.blackducksoftware.integration.hub.detect.onboarding.reader.Onboarding
 import com.blackducksoftware.integration.hub.detect.util.ReflectionUtils;
 import com.blackducksoftware.integration.hub.detect.util.SpringValueUtils;
 
-public class Onboarder {
+public abstract class Onboarder {
 
     private DetectConfiguration detectConfiguration;
     private PrintStream printStream;
@@ -199,7 +199,7 @@ public class Onboarder {
         final Boolean saveSettings = askYesOrNo("Would you like to save these settings to an application.properties file?");
         if (saveSettings) {
 
-            final Boolean customName = askYesOrNo("Would you like to provide a profile name for this application.properties file?");
+            final Boolean customName = askYesOrNo("Would you like save these settings to a profile?");
             if (customName) {
                 profileName = askQuestion("What is the profile name?");
             }
