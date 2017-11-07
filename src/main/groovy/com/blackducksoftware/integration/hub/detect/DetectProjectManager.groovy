@@ -45,8 +45,9 @@ import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
-import com.blackducksoftware.integration.hub.detect.summary.DetectSummary
+import com.blackducksoftware.integration.hub.detect.summary.BomToolSummaryResult
 import com.blackducksoftware.integration.hub.detect.summary.Result
+import com.blackducksoftware.integration.hub.detect.summary.SummaryResultReporter
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil
@@ -56,7 +57,7 @@ import groovy.transform.TypeChecked
 
 @Component
 @TypeChecked
-class DetectProjectManager {
+class DetectProjectManager implements SummaryResultReporter {
     private final Logger logger = LoggerFactory.getLogger(DetectProjectManager.class)
 
     @Autowired
@@ -81,12 +82,10 @@ class DetectProjectManager {
     DetectFileManager detectFileManager
 
     @Autowired
-    DetectSummary detectSummary
-
-    @Autowired
     CodeLocationNameService codeLocationNameService
 
     private boolean foundAnyBomTools
+    private Map<BomToolType, Result> bomToolSummaryResults = new HashMap<>();
 
     public DetectProject createDetectProject() {
         DetectProject detectProject = new DetectProject()
@@ -106,15 +105,14 @@ class DetectProjectManager {
 
                 if (bomTool.isBomToolApplicable() && detectConfiguration.shouldRun(bomTool)) {
                     logger.info("${bomToolTypeString} applies given the current configuration.")
-                    detectSummary.addApplicableBomToolType(bomTool.getBomToolType())
+                    bomToolSummaryResults.put(bomTool.getBomToolType(), Result.FAILURE);
                     foundAnyBomTools = true
                     List<DetectCodeLocation> codeLocations = bomTool.extractDetectCodeLocations(detectProject)
                     if (codeLocations != null && codeLocations.size() > 0) {
-                        detectSummary.setBomToolResult(bomTool.getBomToolType(), Result.SUCCESS)
+                        bomToolSummaryResults.put(bomTool.getBomToolType(), Result.SUCCESS)
                         detectProject.addAllDetectCodeLocations(codeLocations)
                     } else {
                         logger.error("Did not find any projects from ${bomToolTypeString} even though it applied.")
-                        detectSummary.setBomToolResult(bomTool.getBomToolType(), Result.FAILURE)
                     }
                 }
             } catch (final Exception e) {
@@ -181,6 +179,15 @@ class DetectProjectManager {
         }
 
         bdioFiles
+    }
+
+    @Override
+    public List<BomToolSummaryResult> getDetectSummaryResults() {
+        List<BomToolSummaryResult> detectSummaryResults = new ArrayList<>();
+        for (Map.Entry<BomToolType, Result> entry : bomToolSummaryResults.entrySet()) {
+            detectSummaryResults.add(new BomToolSummaryResult(entry.getKey(), entry.getValue()));
+        }
+        return detectSummaryResults;
     }
 
     private String createBdioFilename(BomToolType bomToolType, String finalSourcePathPiece, String projectName, String projectVersionName) {

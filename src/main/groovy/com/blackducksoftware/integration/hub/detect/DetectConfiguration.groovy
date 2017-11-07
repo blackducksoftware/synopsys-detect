@@ -40,7 +40,8 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import com.blackducksoftware.integration.hub.detect.bomtool.DockerBomTool
 import com.blackducksoftware.integration.hub.detect.bomtool.GradleBomTool
 import com.blackducksoftware.integration.hub.detect.bomtool.NugetBomTool
-import com.blackducksoftware.integration.hub.detect.exception.DetectException
+import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException
+import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType
 import com.blackducksoftware.integration.hub.detect.help.ValueDescription
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.util.ResourceUtil
@@ -515,7 +516,7 @@ class DetectConfiguration {
 
         sourceDirectory = new File(sourcePath)
         if (!sourceDirectory.exists() || !sourceDirectory.isDirectory()) {
-            throw new DetectException("The source path ${sourcePath} either doesn't exist, isn't a directory, or doesn't have appropriate permissions.")
+            throw new DetectUserFriendlyException("The source path ${sourcePath} either doesn't exist, isn't a directory, or doesn't have appropriate permissions.", ExitCodeType.FAILURE_GENERAL_ERROR)
         }
         //make sure the path is absolute
         sourcePath = sourceDirectory.canonicalPath
@@ -577,7 +578,7 @@ class DetectConfiguration {
         File directory = new File(directoryPath)
         directory.mkdirs()
         if (!directory.exists() || !directory.isDirectory()) {
-            throw new DetectException("The directory ${directoryPath} does not exist. ${failureMessage}")
+            throw new DetectUserFriendlyException("The directory ${directoryPath} does not exist. ${failureMessage}", ExitCodeType.FAILURE_GENERAL_ERROR)
         }
     }
 

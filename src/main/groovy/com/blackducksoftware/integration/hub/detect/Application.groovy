@@ -34,10 +34,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.builder.SpringApplicationBuilder
 import org.springframework.context.annotation.Bean
 
+import com.blackducksoftware.integration.exception.IntegrationException
 import com.blackducksoftware.integration.hub.bdio.BdioTransformer
 import com.blackducksoftware.integration.hub.bdio.SimpleBdioFactory
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.exception.DetectException
+import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException
+import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter
+import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType
 import com.blackducksoftware.integration.hub.detect.help.HelpHtmlWriter
 import com.blackducksoftware.integration.hub.detect.help.HelpPrinter
 import com.blackducksoftware.integration.hub.detect.help.ValueDescriptionAnnotationFinder
@@ -46,9 +49,9 @@ import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.summary.DetectSummary
-import com.blackducksoftware.integration.hub.detect.summary.Result
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager
+import com.blackducksoftware.integration.hub.exception.HubTimeoutExceededException
 import com.blackducksoftware.integration.hub.model.view.ProjectVersionView
 import com.blackducksoftware.integration.log.Slf4jIntLogger
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil
@@ -61,8 +64,6 @@ import groovy.transform.TypeChecked
 @TypeChecked
 @SpringBootApplication
 class Application {
-    public static final int FAIL_DETECT = 1
-
     private final Logger logger = LoggerFactory.getLogger(Application.class)
 
     @Autowired
@@ -101,13 +102,18 @@ class Application {
     @Autowired
     DetectFileManager detectFileManager
 
+    @Autowired
+    List<ExitCodeReporter> exitCodeReporters;
+
+    private ExitCodeType exitCodeType = ExitCodeType.SUCCESS;
+    private String exitMessage = "";
+
     static void main(final String[] args) {
         new SpringApplicationBuilder(Application.class).logStartupInfo(false).run(args)
     }
 
     @PostConstruct
     void init() {
-        int postResult = 0
         try {
             valueDescriptionAnnotationFinder.init()
             if ('-h' in applicationArguments.getSourceArgs() || '--help' in applicationArguments.getSourceArgs()) {
@@ -139,27 +145,45 @@ class Application {
             List<File> createdBdioFiles = detectProjectManager.createBdioFiles(detectProject)
             if (!detectConfiguration.hubOfflineMode) {
                 ProjectVersionView projectVersionView = hubManager.updateHubProjectVersion(detectProject, createdBdioFiles)
-                postResult = hubManager.performPostHubActions(detectProject, projectVersionView)
+                hubManager.performPostHubActions(detectProject, projectVersionView)
             } else if (!detectConfiguration.hubSignatureScannerDisabled){
                 hubSignatureScanner.scanPathsOffline(detectProject)
             }
-        } catch (DetectException e) {
-            detectSummary.setOverallFailure()
-            logger.error('An unrecoverable error occurred - most likely this is due to your environment and/or configuration. Please double check the Hub Detect documentation: https://blackducksoftware.atlassian.net/wiki/x/Y7HtAg')
-            logger.error(e.getMessage())
+
+            for (ExitCodeReporter exitCodeReporter : exitCodeReporters) {
+                exitCodeType = ExitCodeType.getWinningExitCodeType(exitCodeType, exitCodeReporter.getExitCodeType());
+            }
+        } catch (Exception e) {
+            populateExitCodeFromExceptionDetails(e)
+        } finally {
+            if (!detectConfiguration.suppressResultsOutput) {
+                detectSummary.logResults(new Slf4jIntLogger(logger), exitCodeType, exitMessage);
+            }
+
+            detectFileManager.cleanupDirectories()
         }
 
-        if (!detectConfiguration.suppressResultsOutput) {
-            detectSummary.logResults(new Slf4jIntLogger(logger))
+        System.exit(exitCodeType.getExitCode())
+    }
+
+    private void populateExitCodeFromExceptionDetails(Exception e) {
+        exitMessage = e.getMessage();
+        if (e instanceof HubTimeoutExceededException) {
+            exitCodeType = ExitCodeType.FAILURE_TIMEOUT;
+        } else if (e instanceof DetectUserFriendlyException) {
+            if (e.getCause() != null) {
+                logger.debug(e.getCause().getMessage(), e.getCause());
+            }
+            exitCodeType = e.getExitCodeType();
+        } else if (e instanceof IntegrationException) {
+            logger.error('An unrecoverable error occurred - most likely this is due to your environment and/or configuration. Please double check the Hub Detect documentation: https://blackducksoftware.atlassian.net/wiki/x/Y7HtAg');
+            logger.debug(e.getMessage(), e);
+            exitCodeType = ExitCodeType.FAILURE_GENERAL_ERROR;
+        } else {
+            logger.error('An unknown/unexpected error occurred');
+            logger.debug(e.getMessage(), e);
+            exitCodeType = ExitCodeType.FAILURE_UNKNOWN_ERROR;
         }
-
-        detectFileManager.cleanupDirectories()
-
-        if (Result.FAILURE == detectSummary.getOverallResult()) {
-            postResult = FAIL_DETECT
-        }
-
-        System.exit(postResult)
     }
 
     @Bean
