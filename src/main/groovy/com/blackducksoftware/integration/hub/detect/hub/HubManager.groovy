@@ -43,11 +43,10 @@ import com.blackducksoftware.integration.hub.dataservice.project.ProjectVersionW
 import com.blackducksoftware.integration.hub.dataservice.report.RiskReportDataService
 import com.blackducksoftware.integration.hub.dataservice.scan.ScanStatusDataService
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
-import com.blackducksoftware.integration.hub.detect.exception.DetectException
+import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
-import com.blackducksoftware.integration.hub.detect.summary.DetectSummary
 import com.blackducksoftware.integration.hub.exception.DoesNotExistException
 import com.blackducksoftware.integration.hub.global.HubServerConfig
 import com.blackducksoftware.integration.hub.model.request.ProjectRequest
@@ -79,9 +78,6 @@ class HubManager implements ExitCodeReporter {
     @Autowired
     HubServiceWrapper hubServiceWrapper
 
-    @Autowired
-    DetectSummary detectSummary
-
     private ExitCodeType exitCodeType = ExitCodeType.SUCCESS;
     private String exitMessage = "";
 
@@ -109,7 +105,7 @@ class HubManager implements ExitCodeReporter {
         return projectVersionView
     }
 
-    public void performPostHubActions(DetectProject detectProject, ProjectVersionView projectVersionView) throws DetectException {
+    public void performPostHubActions(DetectProject detectProject, ProjectVersionView projectVersionView) throws DetectUserFriendlyException {
         try {
             if (detectConfiguration.getPolicyCheck() || detectConfiguration.getRiskReportPdf() || detectConfiguration.getNoticesReport()) {
                 ProjectDataService projectDataService = hubServiceWrapper.createProjectDataService()
@@ -158,11 +154,9 @@ class HubManager implements ExitCodeReporter {
                 logger.debug('Found no code locations and did not run a scan.')
             }
         } catch (IllegalStateException e) {
-            throw new DetectException("Your Hub configuration is not valid: ${e.message}", ExitCodeType.FAILURE_HUB_CONNECTIVITY)
-            logger.debug(e.getMessage(), e)
+            throw new DetectUserFriendlyException("Your Hub configuration is not valid: ${e.message}", e, ExitCodeType.FAILURE_HUB_CONNECTIVITY)
         } catch (Exception e) {
-            throw new DetectException("There was a problem communicating with the Hub: ${e.message}", ExitCodeType.FAILURE_HUB_CONNECTIVITY)
-            logger.debug(e.getMessage(), e)
+            throw new DetectUserFriendlyException("There was a problem communicating with the Hub: ${e.message}", e, ExitCodeType.FAILURE_HUB_CONNECTIVITY)
         }
     }
 

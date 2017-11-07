@@ -24,11 +24,16 @@ package com.blackducksoftware.integration.hub.detect.exception;
 
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 
-public class DetectException extends Exception {
+public class DetectUserFriendlyException extends Exception {
     private final ExitCodeType exitCodeType;
 
-    public DetectException(final String message, final ExitCodeType exitCodeType) {
+    public DetectUserFriendlyException(final String message, final ExitCodeType exitCodeType) {
         super(message);
+        this.exitCodeType = exitCodeType;
+    }
+
+    public DetectUserFriendlyException(final String message, final Throwable cause, final ExitCodeType exitCodeType) {
+        super(message, cause);
         this.exitCodeType = exitCodeType;
     }
 

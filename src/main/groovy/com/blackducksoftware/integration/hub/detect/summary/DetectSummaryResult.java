@@ -24,12 +24,7 @@ package com.blackducksoftware.integration.hub.detect.summary;
 
 public class DetectSummaryResult {
     private final String descriptionKey;
-    private Result result;
-
-    public DetectSummaryResult(final String descriptionKey) {
-        this.descriptionKey = descriptionKey;
-        this.result = Result.FAILURE;
-    }
+    private final Result result;
 
     public DetectSummaryResult(final String descriptionKey, final Result result) {
         this.descriptionKey = descriptionKey;
@@ -42,10 +37,6 @@ public class DetectSummaryResult {
 
     public Result getResult() {
         return result;
-    }
-
-    public void setResult(final Result result) {
-        this.result = result;
     }
 
 }

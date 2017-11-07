@@ -38,7 +38,7 @@ import com.blackducksoftware.integration.exception.IntegrationException
 import com.blackducksoftware.integration.hub.bdio.BdioTransformer
 import com.blackducksoftware.integration.hub.bdio.SimpleBdioFactory
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.exception.DetectException
+import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType
 import com.blackducksoftware.integration.hub.detect.help.HelpHtmlWriter
@@ -167,22 +167,22 @@ class Application {
     }
 
     private void populateExitCodeFromExceptionDetails(Exception e) {
+        exitMessage = e.getMessage();
         if (e instanceof HubTimeoutExceededException) {
             exitCodeType = ExitCodeType.FAILURE_TIMEOUT;
-            exitMessage = e.getMessage();
-        } else if (e instanceof DetectException) {
+        } else if (e instanceof DetectUserFriendlyException) {
+            if (e.getCause() != null) {
+                logger.debug(e.getCause().getMessage(), e.getCause());
+            }
             exitCodeType = e.getExitCodeType();
-            exitMessage = e.getMessage();
         } else if (e instanceof IntegrationException) {
             logger.error('An unrecoverable error occurred - most likely this is due to your environment and/or configuration. Please double check the Hub Detect documentation: https://blackducksoftware.atlassian.net/wiki/x/Y7HtAg');
             logger.debug(e.getMessage(), e);
             exitCodeType = ExitCodeType.FAILURE_GENERAL_ERROR;
-            exitMessage = e.getMessage();
         } else {
             logger.error('An unknown/unexpected error occurred');
             logger.debug(e.getMessage(), e);
             exitCodeType = ExitCodeType.FAILURE_UNKNOWN_ERROR;
-            exitMessage = e.getMessage();
         }
     }
 
