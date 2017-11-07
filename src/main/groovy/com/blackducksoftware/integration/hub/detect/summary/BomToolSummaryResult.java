@@ -20,27 +20,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.exception;
+package com.blackducksoftware.integration.hub.detect.summary;
 
-public class DetectException extends Exception {
-    public DetectException() {
-        super();
-    }
+import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 
-    public DetectException(final String message, final Throwable cause, final boolean enableSuppression, final boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
-
-    public DetectException(final String message, final Throwable cause) {
-        super(message, cause);
-    }
-
-    public DetectException(final String message) {
-        super(message);
-    }
-
-    public DetectException(final Throwable cause) {
-        super(cause);
+public class BomToolSummaryResult extends DetectSummaryResult {
+    public BomToolSummaryResult(final BomToolType bomToolType, final Result result) {
+        super(bomToolType.toString(), result);
     }
 
 }

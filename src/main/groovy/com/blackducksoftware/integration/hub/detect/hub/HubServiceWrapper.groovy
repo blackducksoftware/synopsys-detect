@@ -43,7 +43,8 @@ import com.blackducksoftware.integration.hub.dataservice.project.ProjectDataServ
 import com.blackducksoftware.integration.hub.dataservice.report.RiskReportDataService
 import com.blackducksoftware.integration.hub.dataservice.scan.ScanStatusDataService
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
-import com.blackducksoftware.integration.hub.detect.exception.DetectException
+import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException
+import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType
 import com.blackducksoftware.integration.hub.global.HubServerConfig
 import com.blackducksoftware.integration.hub.rest.RestConnection
 import com.blackducksoftware.integration.hub.service.HubServicesFactory
@@ -70,7 +71,7 @@ class HubServiceWrapper {
             hubServerConfig = createHubServerConfig(slf4jIntLogger)
             hubServicesFactory = createHubServicesFactory(slf4jIntLogger, hubServerConfig)
         } catch (IllegalStateException | EncryptionException e) {
-            throw new DetectException("Not able to initialize Hub connection: ${e.message}")
+            throw new DetectUserFriendlyException("Not able to initialize Hub connection: ${e.message}", e, ExitCodeType.FAILURE_HUB_CONNECTIVITY)
         }
     }
 

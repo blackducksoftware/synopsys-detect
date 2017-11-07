@@ -32,7 +32,6 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.dataservice.policystatus.PolicyStatusDataService
 import com.blackducksoftware.integration.hub.dataservice.policystatus.PolicyStatusDescription
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
-import com.blackducksoftware.integration.hub.detect.exception.DetectException
 import com.blackducksoftware.integration.hub.model.enumeration.PolicySeverityEnum
 import com.blackducksoftware.integration.hub.model.enumeration.VersionBomPolicyStatusOverallStatusEnum
 import com.blackducksoftware.integration.hub.model.view.ProjectVersionView
@@ -56,7 +55,7 @@ class PolicyChecker {
      * all of its code locations, then all of their scan summaries, wait until
      * they are all complete, then get the policy status.
      */
-    public PolicyStatusDescription getPolicyStatus(PolicyStatusDataService policyStatusDataService, ProjectVersionView version) throws DetectException {
+    public PolicyStatusDescription getPolicyStatus(PolicyStatusDataService policyStatusDataService, ProjectVersionView version) {
         VersionBomPolicyStatusView versionBomPolicyStatusView = policyStatusDataService.getPolicyStatusForVersion(version)
         PolicyStatusDescription policyStatusDescription = new PolicyStatusDescription(versionBomPolicyStatusView)
 

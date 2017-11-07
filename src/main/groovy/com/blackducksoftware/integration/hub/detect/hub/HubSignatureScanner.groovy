@@ -34,8 +34,9 @@ import com.blackducksoftware.integration.hub.detect.DetectInfo
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationName
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationNameService
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
-import com.blackducksoftware.integration.hub.detect.summary.DetectSummary
 import com.blackducksoftware.integration.hub.detect.summary.Result
+import com.blackducksoftware.integration.hub.detect.summary.ScanSummaryResult
+import com.blackducksoftware.integration.hub.detect.summary.SummaryResultReporter
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.global.HubServerConfig
 import com.blackducksoftware.integration.hub.model.request.ProjectRequest
@@ -48,7 +49,7 @@ import groovy.transform.TypeChecked
 
 @Component
 @TypeChecked
-class HubSignatureScanner {
+class HubSignatureScanner implements SummaryResultReporter {
     private final Logger logger = LoggerFactory.getLogger(HubSignatureScanner.class)
 
     @Autowired
@@ -67,13 +68,11 @@ class HubSignatureScanner {
     OfflineScanner offlineScanner
 
     @Autowired
-    DetectSummary detectSummary
-
-    @Autowired
     CodeLocationNameService codeLocationNameService
 
     private Set<String> registeredPaths = []
     private Set<String> registeredPathsToExclude = []
+    private Map<String, Result> scanSummaryResults = new HashMap<>();
 
     public void registerPathToScan(File file, String... fileNamesToExclude) {
         boolean scannerEnabled = !detectConfiguration.hubSignatureScannerDisabled;
@@ -87,8 +86,8 @@ class HubSignatureScanner {
             if (matchingExcludedPath) {
                 logger.info("Not registering excluded path ${file.canonicalPath} to scan")
             } else if (file.exists() && (file.isFile() || file.isDirectory())) {
-                detectSummary.addPathToBeScanned(file.getCanonicalPath())
                 logger.info("Registering path ${file.canonicalPath} to scan")
+                scanSummaryResults.put(file.getCanonicalPath(), Result.FAILURE);
                 registeredPaths.add(file.canonicalPath)
                 if (fileNamesToExclude) {
                     for (String fileNameToExclude : fileNamesToExclude) {
@@ -131,7 +130,7 @@ class HubSignatureScanner {
                 }
             }
         }
-        return projectVersionView
+        return projectVersionView;
     }
 
     public void scanPathsOffline(DetectProject detectProject) {
@@ -145,6 +144,15 @@ class HubSignatureScanner {
                 scanPathOffline(it, detectProject)
             }
         }
+    }
+
+    @Override
+    public List<ScanSummaryResult> getDetectSummaryResults() {
+        List<ScanSummaryResult> detectSummaryResults = new ArrayList<>();
+        for (Map.Entry<String, Result> entry : scanSummaryResults.entrySet()) {
+            detectSummaryResults.add(new ScanSummaryResult(entry.getKey(), entry.getValue()));
+        }
+        return detectSummaryResults;
     }
 
     private ProjectVersionView scanPath(CLIDataService cliDataService, HubServerConfig hubServerConfig, String canonicalPath, DetectProject detectProject) {
@@ -163,7 +171,7 @@ class HubSignatureScanner {
 
             String hubDetectVersion = detectInfo.detectVersion
             projectVersionView = cliDataService.installAndRunControlledScan(hubServerConfig, hubScanConfig, projectRequest, false, ThirdPartyName.DETECT, hubDetectVersion, hubDetectVersion)
-            detectSummary.setPathScanResult(canonicalPath, Result.SUCCESS)
+            scanSummaryResults.put(canonicalPath, Result.SUCCESS);
             logger.info("${canonicalPath} was successfully scanned by the BlackDuck CLI.")
         } catch (Exception e) {
             logger.error("${detectProject.projectName}/${detectProject.projectVersionName} - ${canonicalPath} was not scanned by the BlackDuck CLI: ${e.message}")
@@ -184,7 +192,7 @@ class HubSignatureScanner {
 
             HubScanConfig hubScanConfig = hubScanConfigBuilder.build()
             offlineScanner.offlineScan(hubScanConfig, detectConfiguration.hubSignatureScannerOfflineLocalPath)
-            detectSummary.setPathScanResult(canonicalPath, Result.SUCCESS)
+            scanSummaryResults.put(canonicalPath, Result.SUCCESS);
             logger.info("${canonicalPath} was successfully scanned by the BlackDuck CLI.")
         } catch (Exception e) {
             logger.error("${detectProject.projectName}/${detectProject.projectVersionName} - ${canonicalPath} was not scanned by the BlackDuck CLI: ${e.message}")
