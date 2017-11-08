@@ -38,7 +38,7 @@ import groovy.transform.TypeChecked
 class NameVersionNodeTransformer {
     public ExternalIdFactory externalIdFactory;
 
-    public NameVersionNodeTransformer(ExternalIdFactory externalIdFactory){
+    public NameVersionNodeTransformer(ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }
 
@@ -51,9 +51,9 @@ class NameVersionNodeTransformer {
 
         def root = addNameVersionNodeToDependencyGraph(graph, defaultForge, nameVersionNode)
 
-        if (rootIsRealRoot){
+        if (rootIsRealRoot) {
             graph.addChildToRoot(root);
-        }else{
+        } else {
             graph.addChildrenToRoot(graph.getChildrenForParent(root))
         }
         return graph

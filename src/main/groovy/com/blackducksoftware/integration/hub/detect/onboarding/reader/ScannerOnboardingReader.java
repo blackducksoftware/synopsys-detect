@@ -20,22 +20,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.help;
+package com.blackducksoftware.integration.hub.detect.onboarding.reader;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.io.InputStream;
+import java.util.Scanner;
 
-import groovy.transform.TypeChecked;
+public class ScannerOnboardingReader implements OnboardingReader {
+    private final Scanner scanner;
 
-@TypeChecked
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
-public @interface ValueDescription {
-    String description() default "";
+    public ScannerOnboardingReader(final Scanner scanner) {
+        this.scanner = scanner;
+    }
 
-    String defaultValue() default "";
+    public ScannerOnboardingReader(final InputStream stream) {
+        this.scanner = new Scanner(stream);
+    }
 
-    String group() default "";
+    @Override
+    public String readLine() {
+        return scanner.nextLine();
+    }
+
+    @Override
+    public String readPassword() {
+        return scanner.nextLine();
+    }
+
 }

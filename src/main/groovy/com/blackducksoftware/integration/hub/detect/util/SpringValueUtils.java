@@ -20,22 +20,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.help;
+package com.blackducksoftware.integration.hub.detect.util;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+public class SpringValueUtils {
+    public static String springKeyFromValueAnnotation(String value) {
+        if (value.contains("${")) {
+            value = value.substring(2);
+        }
+        if (value.endsWith("}")) {
+            value = value.substring(0, value.length() - 1);
+        }
+        if (value.contains(":")) {
+            value = value.split(":")[0];
+        }
+        return value;
+    }
 
-import groovy.transform.TypeChecked;
-
-@TypeChecked
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
-public @interface ValueDescription {
-    String description() default "";
-
-    String defaultValue() default "";
-
-    String group() default "";
 }

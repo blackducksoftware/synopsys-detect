@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (C) 2017 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
  *
@@ -20,14 +20,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect
+package com.blackducksoftware.integration.hub.detect.onboarding.reader;
 
-import com.google.gson.annotations.SerializedName
+public interface OnboardingReader {
+    public String readLine();
 
-import groovy.transform.TypeChecked
+    public String readPassword();
 
-@TypeChecked
-class BuildInfo {
-    @SerializedName("detect")
-    final String detectVersion
 }

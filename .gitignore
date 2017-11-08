@@ -8,5 +8,5 @@ build/
 .DS_Store
 .idea
 classes/
-buildInfo.json
+version.txt
 *.html

@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.help
+package com.blackducksoftware.integration.hub.detect.help.print
 
 import org.apache.commons.lang3.text.WordUtils
 import org.jsoup.Jsoup
@@ -30,6 +30,8 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+
+import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager
 
 import groovy.transform.TypeChecked
 
@@ -80,14 +82,10 @@ tbody tr:hover:not(.noBorder) {
 '''
 
     @Autowired
-    ValueDescriptionAnnotationFinder valueDescriptionAnnotationFinder
+    DetectOptionManager detectOptionManager
 
     public void writeHelpMessage(String fileName) {
-        def columnHeaders = [
-            'Property Name',
-            'Default',
-            'Description'
-        ]
+        def columnHeaders = ['Property Name', 'Default', 'Description']
 
         Document doc = Jsoup.parse('<html/>')
 
@@ -103,9 +101,9 @@ tbody tr:hover:not(.noBorder) {
         columnGroup.appendElement('col')
 
         String group = ''
-        valueDescriptionAnnotationFinder.getDetectValues().each { detectValue ->
-            if (!group.equals(detectValue.getGroup())) {
-                group = detectValue.getGroup()
+        detectOptionManager.getDetectOptions().each { detectOption ->
+            if (!group.equals(detectOption.getGroup())) {
+                group = detectOption.getGroup()
                 Element spacerRow = table.appendElement('tr').attr('class', 'noBorder')
                 spacerRow.appendElement('td').attr('colspan', '3').attr('class', 'noBorder')
 
@@ -121,9 +119,9 @@ tbody tr:hover:not(.noBorder) {
             }
 
             def bodyColumns = [
-                "--" + detectValue.getKey().substring(0, detectValue.getKey().lastIndexOf(':')),
-                detectValue.getDefaultValue(),
-                detectValue.getDescription()
+                "--" + detectOption.getKey(),
+                detectOption.getDefaultValue(),
+                detectOption.getDescription()
             ]
 
             Element row = table.appendElement('tr')
