@@ -23,7 +23,6 @@
 package com.blackducksoftware.integration.hub.detect.onboarding;
 
 public class OnboardingOption {
-
     public String fieldName;
     public String springKey;
     public String onboardingValue;

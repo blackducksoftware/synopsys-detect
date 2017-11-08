@@ -37,7 +37,6 @@ import com.blackducksoftware.integration.hub.detect.onboarding.reader.Onboarding
 
 @Component
 public class OnboardingManager {
-
     private final Logger logger = LoggerFactory.getLogger(OnboardingManager.class);
 
     @Autowired
@@ -50,7 +49,6 @@ public class OnboardingManager {
     DefaultOnboarder defaultOnboarder;
 
     public void onboard(final OnboardingReader onboardingReader, final PrintStream printStream) {
-
         final Onboarder onboarder = defaultOnboarder;
 
         onboarder.init(printStream, onboardingReader);

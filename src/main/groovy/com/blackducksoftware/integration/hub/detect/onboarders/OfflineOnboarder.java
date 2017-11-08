@@ -26,10 +26,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class OfflineOnboarder extends Onboarder {
-
     @Override
     public void onboard() {
-
         printWelcome();
 
         final Boolean scan = askYesOrNo("Would you like run a CLI scan?");
@@ -50,7 +48,6 @@ public class OfflineOnboarder extends Onboarder {
         }
 
         performStandardOutflow();
-
     }
 
 }

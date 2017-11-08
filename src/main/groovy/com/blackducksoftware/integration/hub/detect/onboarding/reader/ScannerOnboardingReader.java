@@ -26,7 +26,6 @@ import java.io.InputStream;
 import java.util.Scanner;
 
 public class ScannerOnboardingReader implements OnboardingReader {
-
     private final Scanner scanner;
 
     public ScannerOnboardingReader(final Scanner scanner) {

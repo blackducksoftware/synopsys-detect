@@ -30,7 +30,6 @@ import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper;
 
 @Component
 public class DefaultOnboarder extends Onboarder {
-
     @Autowired
     private HubServiceWrapper hubServiceWrapper;
 
@@ -39,7 +38,6 @@ public class DefaultOnboarder extends Onboarder {
 
     @Override
     public void onboard() {
-
         printWelcome();
 
         final Boolean connectToHub = askYesOrNo("Would you like to connect to a Hub Instance?");
@@ -88,7 +86,6 @@ public class DefaultOnboarder extends Onboarder {
                 setPropertyFromQuestion("projectName", "What is the hub project name?");
                 setPropertyFromQuestion("projectVersionName", "What is the hub project version?");
             }
-
         } else {
             setProperty("hubOfflineMode", "true");
         }
@@ -116,7 +113,6 @@ public class DefaultOnboarder extends Onboarder {
         }
 
         performStandardOutflow();
-
     }
 
 }

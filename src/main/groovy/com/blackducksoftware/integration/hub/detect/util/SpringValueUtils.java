@@ -23,7 +23,6 @@
 package com.blackducksoftware.integration.hub.detect.util;
 
 public class SpringValueUtils {
-
     public static String springKeyFromValueAnnotation(String value) {
         if (value.contains("${")) {
             value = value.substring(2);
@@ -36,4 +35,5 @@ public class SpringValueUtils {
         }
         return value;
     }
+
 }

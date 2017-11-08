@@ -23,7 +23,6 @@
 package com.blackducksoftware.integration.hub.detect.onboarding.reader;
 
 public interface OnboardingReader {
-
     public String readLine();
 
     public String readPassword();

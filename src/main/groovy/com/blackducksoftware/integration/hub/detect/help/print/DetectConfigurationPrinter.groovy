@@ -29,8 +29,8 @@ import org.springframework.beans.factory.annotation.Value
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.DetectInfo
 import com.blackducksoftware.integration.hub.detect.help.DetectOption
-public class DetectConfigurationPrinter {
 
+public class DetectConfigurationPrinter {
     public void print(final PrintStream printStream, DetectInfo detectInfo, DetectConfiguration detectConfiguration, final List<DetectOption> detectOptions) {
         printStream.println('')
         printStream.println('Current property values:')
@@ -68,7 +68,6 @@ public class DetectConfigurationPrinter {
                     }
                 }
                 if (option != null && !option.resolvedValue.equals(fieldValue) && !containsPassword) {
-
                     if (option.onboardedValue != null) {
                         printStream.println("${fieldName} = ${fieldValue} [onboarded]" as String)
                     } else if (option.resolvedValue.equals("latest")) {

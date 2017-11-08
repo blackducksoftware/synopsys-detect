@@ -43,7 +43,6 @@ import com.blackducksoftware.integration.hub.detect.onboarding.reader.Onboarding
 import com.blackducksoftware.integration.hub.detect.util.SpringValueUtils;
 
 public abstract class Onboarder {
-
     private PrintStream printStream;
     private OnboardingReader onboardingReader;
     private final Map<String, OnboardingOption> propertyToOptionMap = new HashMap<>();
@@ -54,9 +53,7 @@ public abstract class Onboarder {
         this.onboardingReader = reader;
     }
 
-    public void onboard() {
-
-    }
+    public abstract void onboard();
 
     public String askQuestion(final String question) {
         printStream.println(question);
@@ -179,7 +176,6 @@ public abstract class Onboarder {
     public void askToSave() {
         final Boolean saveSettings = askYesOrNo("Would you like to save these settings to an application.properties file?");
         if (saveSettings) {
-
             final Boolean customName = askYesOrNo("Would you like save these settings to a profile?");
             if (customName) {
                 profileName = askQuestion("What is the profile name?");
@@ -188,7 +184,6 @@ public abstract class Onboarder {
             saveOptionsToApplicationProperties();
 
             printProfile();
-
         }
 
     }
@@ -259,4 +254,5 @@ public abstract class Onboarder {
     public List<OnboardingOption> getOnboardedOptions() {
         return new ArrayList<>(propertyToOptionMap.values());
     }
+
 }

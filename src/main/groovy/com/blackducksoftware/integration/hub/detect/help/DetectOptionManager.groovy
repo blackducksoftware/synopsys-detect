@@ -117,7 +117,6 @@ public class DetectOptionManager {
 
     public void applyOnboardedOptions(List<OnboardingOption> onboardingOptions) {
         for (final OnboardingOption onboardingOption : onboardingOptions) {
-
             for (DetectOption detectOption : detectOptions){
                 if (detectOption.getFieldName().equals(onboardingOption.fieldName)){
                     detectOption.onboardedValue = onboardingOption.onboardingValue;

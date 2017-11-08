@@ -25,7 +25,6 @@ package com.blackducksoftware.integration.hub.detect.onboarding.reader;
 import java.io.Console;
 
 public class ConsoleOnboardingReader implements OnboardingReader {
-
     private final Console console;
 
     public ConsoleOnboardingReader(final Console console) {

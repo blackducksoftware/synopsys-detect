@@ -33,9 +33,10 @@ import com.google.gson.Gson;
 
 @Component
 public class DetectInfo {
-
     @Autowired
     Gson gson;
+
+    private String detectVersion;
 
     public void init() {
         try {
@@ -44,8 +45,6 @@ public class DetectInfo {
             throw new RuntimeException(e);
         }
     }
-
-    private String detectVersion;
 
     public String getDetectVersion() {
         return detectVersion;
