@@ -20,22 +20,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.help;
+package com.blackducksoftware.integration.hub.detect.help.print;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.io.PrintStream;
 
-import groovy.transform.TypeChecked;
+import com.blackducksoftware.integration.hub.detect.DetectInfo;
 
-@TypeChecked
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
-public @interface ValueDescription {
-    String description() default "";
-
-    String defaultValue() default "";
-
-    String group() default "";
+public class DetectInfoPrinter {
+    public void printInfo(final PrintStream printStream, final DetectInfo detectInfo) {
+        printStream.println("");
+        printStream.println("Detect Version: " + detectInfo.getDetectVersion());
+        printStream.println("");
+    }
 }

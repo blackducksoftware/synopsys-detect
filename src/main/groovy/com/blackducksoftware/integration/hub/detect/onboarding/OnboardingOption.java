@@ -20,22 +20,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.help;
+package com.blackducksoftware.integration.hub.detect.onboarding;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+public class OnboardingOption {
+    public String fieldName;
+    public String springKey;
+    public String onboardingValue;
 
-import groovy.transform.TypeChecked;
-
-@TypeChecked
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
-public @interface ValueDescription {
-    String description() default "";
-
-    String defaultValue() default "";
-
-    String group() default "";
 }

@@ -20,22 +20,34 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.help;
+package com.blackducksoftware.integration.hub.detect;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
-import groovy.transform.TypeChecked;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-@TypeChecked
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
-public @interface ValueDescription {
-    String description() default "";
+import com.blackducksoftware.integration.util.ResourceUtil;
+import com.google.gson.Gson;
 
-    String defaultValue() default "";
+@Component
+public class DetectInfo {
+    @Autowired
+    Gson gson;
 
-    String group() default "";
+    private String detectVersion;
+
+    public void init() {
+        try {
+            detectVersion = ResourceUtil.getResourceAsString("version.txt", StandardCharsets.UTF_8.toString());
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String getDetectVersion() {
+        return detectVersion;
+    }
+
 }

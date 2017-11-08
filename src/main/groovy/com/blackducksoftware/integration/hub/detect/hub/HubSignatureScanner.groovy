@@ -30,6 +30,7 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.builder.HubScanConfigBuilder
 import com.blackducksoftware.integration.hub.dataservice.cli.CLIDataService
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
+import com.blackducksoftware.integration.hub.detect.DetectInfo
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationName
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationNameService
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
@@ -50,6 +51,9 @@ import groovy.transform.TypeChecked
 @TypeChecked
 class HubSignatureScanner implements SummaryResultReporter {
     private final Logger logger = LoggerFactory.getLogger(HubSignatureScanner.class)
+
+    @Autowired
+    DetectInfo detectInfo
 
     @Autowired
     DetectConfiguration detectConfiguration
@@ -165,7 +169,7 @@ class HubSignatureScanner implements SummaryResultReporter {
             HubScanConfigBuilder hubScanConfigBuilder = createScanConfigBuilder(detectProject, canonicalPath)
             HubScanConfig hubScanConfig = hubScanConfigBuilder.build()
 
-            String hubDetectVersion = detectConfiguration.getBuildInfo().detectVersion
+            String hubDetectVersion = detectInfo.detectVersion
             projectVersionView = cliDataService.installAndRunControlledScan(hubServerConfig, hubScanConfig, projectRequest, false, ThirdPartyName.DETECT, hubDetectVersion, hubDetectVersion)
             scanSummaryResults.put(canonicalPath, Result.SUCCESS);
             logger.info("${canonicalPath} was successfully scanned by the BlackDuck CLI.")

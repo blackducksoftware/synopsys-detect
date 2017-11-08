@@ -30,6 +30,7 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.api.bom.BomImportRequestService
 import com.blackducksoftware.integration.hub.dataservice.phonehome.PhoneHomeDataService
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
+import com.blackducksoftware.integration.hub.detect.DetectInfo
 import com.blackducksoftware.integration.hub.global.HubServerConfig
 import com.blackducksoftware.integration.phonehome.PhoneHomeRequestBody
 import com.blackducksoftware.integration.phonehome.enums.ThirdPartyName
@@ -40,6 +41,9 @@ import groovy.transform.TypeChecked
 @TypeChecked
 class BdioUploader {
     private final Logger logger = LoggerFactory.getLogger(BdioUploader.class)
+
+    @Autowired
+    DetectInfo detectInfo
 
     @Autowired
     DetectConfiguration detectConfiguration
@@ -53,7 +57,7 @@ class BdioUploader {
             }
         }
 
-        String hubDetectVersion = detectConfiguration.getBuildInfo().detectVersion
+        String hubDetectVersion = detectInfo.detectVersion
         PhoneHomeRequestBody phoneHomeRequestBody = phoneHomeDataService.createInitialPhoneHomeRequestBodyBuilder(ThirdPartyName.DETECT, hubDetectVersion, hubDetectVersion).build()
         phoneHomeDataService.phoneHome(phoneHomeRequestBody)
     }

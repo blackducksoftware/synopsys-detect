@@ -20,35 +20,32 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.help
+package com.blackducksoftware.integration.hub.detect.help.print
 
 import org.apache.commons.lang3.StringUtils
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+
+import com.blackducksoftware.integration.hub.detect.help.DetectOption
 
 import groovy.transform.TypeChecked
 
 @Component
 @TypeChecked
 class HelpPrinter {
-    @Autowired
-    ValueDescriptionAnnotationFinder valueDescriptionAnnotationFinder
 
-    void printHelpMessage(PrintStream printStream) {
+    void printHelpMessage(PrintStream printStream, List<DetectOption> options) {
         def helpMessagePieces = []
         helpMessagePieces.add('')
 
-        def headerColumns = [
-            'Property Name',
-            'Default',
-            'Description'
-        ]
+        def headerColumns = ['Property Name', 'Default', 'Description']
 
         String headerText = formatColumns(headerColumns, 50, 30, 95)
         helpMessagePieces.add(headerText)
         helpMessagePieces.add(StringUtils.repeat('_', 175))
+
         String group = null
-        valueDescriptionAnnotationFinder.getDetectValues().each { detectValue ->
+
+        options.each { detectValue ->
             String currentGroup = detectValue.getGroup()
             if (group == null) {
                 group = currentGroup
@@ -56,12 +53,10 @@ class HelpPrinter {
                 helpMessagePieces.add('')
                 group = currentGroup
             }
-            def bodyColumns = [
-                "--" + detectValue.getKey(),
-                detectValue.getDefaultValue(),
-                detectValue.getDescription()
-            ]
+
+            def bodyColumns = ["--" + detectValue.getKey(), detectValue.getDefaultValue(), detectValue.getDescription()]
             String bodyText = formatColumns(bodyColumns, 50, 30, 95)
+
             helpMessagePieces.add(bodyText)
         }
         helpMessagePieces.add('')

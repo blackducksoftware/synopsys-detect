@@ -41,13 +41,20 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFac
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType
-import com.blackducksoftware.integration.hub.detect.help.HelpHtmlWriter
-import com.blackducksoftware.integration.hub.detect.help.HelpPrinter
-import com.blackducksoftware.integration.hub.detect.help.ValueDescriptionAnnotationFinder
+import com.blackducksoftware.integration.hub.detect.help.DetectOption
+import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager
+import com.blackducksoftware.integration.hub.detect.help.print.DetectConfigurationPrinter
+import com.blackducksoftware.integration.hub.detect.help.print.DetectInfoPrinter
+import com.blackducksoftware.integration.hub.detect.help.print.HelpHtmlWriter
+import com.blackducksoftware.integration.hub.detect.help.print.HelpPrinter
 import com.blackducksoftware.integration.hub.detect.hub.HubManager
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
+import com.blackducksoftware.integration.hub.detect.onboarding.OnboardingManager
+import com.blackducksoftware.integration.hub.detect.onboarding.reader.ConsoleOnboardingReader
+import com.blackducksoftware.integration.hub.detect.onboarding.reader.OnboardingReader
+import com.blackducksoftware.integration.hub.detect.onboarding.reader.ScannerOnboardingReader
 import com.blackducksoftware.integration.hub.detect.summary.DetectSummary
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager
@@ -67,7 +74,10 @@ class Application {
     private final Logger logger = LoggerFactory.getLogger(Application.class)
 
     @Autowired
-    ValueDescriptionAnnotationFinder valueDescriptionAnnotationFinder
+    DetectOptionManager detectOptionManager
+
+    @Autowired
+    DetectInfo detectInfo
 
     @Autowired
     DetectConfiguration detectConfiguration
@@ -100,6 +110,9 @@ class Application {
     DetectSummary detectSummary
 
     @Autowired
+    OnboardingManager onboardingManager
+
+    @Autowired
     DetectFileManager detectFileManager
 
     @Autowired
@@ -115,22 +128,38 @@ class Application {
     @PostConstruct
     void init() {
         try {
-            valueDescriptionAnnotationFinder.init()
+            detectInfo.init()
+            detectOptionManager.init()
+
+            List<DetectOption> options = detectOptionManager.getDetectOptions()
             if ('-h' in applicationArguments.getSourceArgs() || '--help' in applicationArguments.getSourceArgs()) {
-                helpPrinter.printHelpMessage(System.out)
+                helpPrinter.printHelpMessage(System.out, options)
                 return
             }
 
-            detectConfiguration.init()
             if ('-hdoc' in applicationArguments.getSourceArgs() || '--helpdocument' in applicationArguments.getSourceArgs()) {
-                helpHtmlWriter.writeHelpMessage("hub-detect-${detectConfiguration.buildInfo.detectVersion}-help.html")
+                helpHtmlWriter.writeHelpMessage("hub-detect-${detectInfo.detectVersion}-help.html".toString())
                 return
+            }
+
+            if ('-o' in applicationArguments.getSourceArgs() || '--onboard' in applicationArguments.getSourceArgs()) {
+                OnboardingReader onboardingReader = createOnboardingReader();
+                PrintStream onboardingPrintStream = new PrintStream(System.out);
+                onboardingManager.onboard(onboardingReader, onboardingPrintStream);
             }
 
             executableManager.init()
+            detectConfiguration.init()
+
             logger.info('Configuration processed completely.')
+
             if (!detectConfiguration.suppressConfigurationOutput) {
-                detectConfiguration.logConfiguration()
+
+                DetectInfoPrinter infoPrinter = new DetectInfoPrinter();
+                DetectConfigurationPrinter detectConfigurationPrinter = new DetectConfigurationPrinter()
+
+                infoPrinter.printInfo(System.out, detectInfo)
+                detectConfigurationPrinter.print(System.out, detectInfo, detectConfiguration, options)
             }
 
             if (detectConfiguration.testConnection) {
@@ -146,7 +175,7 @@ class Application {
             if (!detectConfiguration.hubOfflineMode) {
                 ProjectVersionView projectVersionView = hubManager.updateHubProjectVersion(detectProject, createdBdioFiles)
                 hubManager.performPostHubActions(detectProject, projectVersionView)
-            } else if (!detectConfiguration.hubSignatureScannerDisabled){
+            } else if (!detectConfiguration.hubSignatureScannerDisabled) {
                 hubSignatureScanner.scanPathsOffline(detectProject)
             }
 
@@ -164,6 +193,16 @@ class Application {
         }
 
         System.exit(exitCodeType.getExitCode())
+    }
+
+    private OnboardingReader createOnboardingReader() {
+        final Console console = System.console();
+        if (console != null) {
+            return new ConsoleOnboardingReader(console);
+        } else {
+            logger.warn("Onboarding passwords may be insecure because you are running in a virtual console.");
+            return new ScannerOnboardingReader(System.in);
+        }
     }
 
     private void populateExitCodeFromExceptionDetails(Exception e) {
