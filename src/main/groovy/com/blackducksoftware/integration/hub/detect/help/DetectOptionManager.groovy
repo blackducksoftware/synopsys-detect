@@ -159,7 +159,7 @@ public class DetectOptionManager {
         } catch (IllegalArgumentException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
-        if (String.class == type && fieldValue.toString().trim().length() > 0) {
+        if (String.class == type && fieldValue.toString().trim().length() == 0) {
             return true;
         } else if (Integer.class == type && fieldValue == null) {
             return true;
