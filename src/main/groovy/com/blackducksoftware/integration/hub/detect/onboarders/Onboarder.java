@@ -158,10 +158,6 @@ public abstract class Onboarder {
     public void printSuccess() {
         printStream.println("Onboarding succesfull!");
         printStream.println();
-        printStream.println("In the future, start detect with the following options:");
-        printStream.println();
-        printOptions();
-        printStream.println();
     }
 
     public void printProfile() {
@@ -242,7 +238,7 @@ public abstract class Onboarder {
     }
 
     private boolean anyEquals(final String response, final String... options) {
-        final String trimmed = response.trim();
+        final String trimmed = response.trim().toLowerCase();
         for (final String opt : options) {
             if (trimmed.equals(opt)) {
                 return true;
