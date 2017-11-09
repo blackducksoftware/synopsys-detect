@@ -49,8 +49,6 @@ class PackagistParser {
     @Autowired
     ExternalIdFactory externalIdFactory
 
-
-
     public DetectCodeLocation getDependencyGraphFromProject(String sourcePath, String composerJsonText, String composerLockText) {
         MutableDependencyGraph graph = new MutableMapDependencyGraph();
 

@@ -80,12 +80,12 @@ class OfflineScanner {
             logger.info("Attempting to download the signature scanner from ${detectConfiguration.hubSignatureScannerHostUrl}")
             RestConnection restConnection = new UnauthenticatedRestConnection(silentLogger, new URL(detectConfiguration.hubSignatureScannerHostUrl), detectConfiguration.hubTimeout)
             CLIDownloadService cliDownloadService = new CLIDownloadService(intLogger, restConnection)
-            cliDownloadService.performInstallation(hubScanConfig.toolsDir, ciEnvironmentVariables, detectConfiguration.hubSignatureScannerHostUrl, 'unknown', 'hub-detect')
+            cliDownloadService.performInstallation(cliLocation.getCLIInstallDir(), ciEnvironmentVariables, detectConfiguration.hubSignatureScannerHostUrl, 'unknown', 'hub-detect')
         }
 
         cliInstalledOkay = checkCliInstall(cliLocation, silentLogger)
         if (!cliInstalledOkay) {
-            logger.warn("The signature scanner is not correctly installed at ${hubScanConfig.toolsDir}")
+            logger.warn("The signature scanner is not correctly installed at ${cliLocation.getCLIInstallDir()}")
         } else {
             simpleScanService.setupAndExecuteScan(cliLocation)
             logger.info("The scan dry run files can be found in : ${simpleScanService.getDataDirectory()}")
