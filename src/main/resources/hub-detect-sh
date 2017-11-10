@@ -50,8 +50,8 @@ get_detect() {
   if [ $DETECT_USE_SNAPSHOT -eq 1 ]; then
     if [ -z "${DETECT_RELEASE_VERSION}" ]; then
       echo "will look for snapshot: hub-detect-latest-SNAPSHOT.jar"
-      DETECT_DESTINATION="${DETECT_JAR_PATH}/hub-detect-latest-SNAPSHOT.jar"
       DETECT_SOURCE="https://test-repo.blackducksoftware.com/artifactory/bds-integrations-snapshot/com/blackducksoftware/integration/hub-detect/latest-SNAPSHOT/hub-detect-latest-SNAPSHOT.jar"
+      DETECT_DESTINATION="${DETECT_JAR_PATH}/hub-detect-latest-SNAPSHOT.jar"
     else
       DETECT_SOURCE="https://test-repo.blackducksoftware.com/artifactory/bds-integrations-snapshot/com/blackducksoftware/integration/hub-detect/${DETECT_RELEASE_VERSION}/hub-detect-${DETECT_RELEASE_VERSION}.jar"
       DETECT_DESTINATION="${DETECT_JAR_PATH}/hub-detect-${DETECT_RELEASE_VERSION}.jar"
