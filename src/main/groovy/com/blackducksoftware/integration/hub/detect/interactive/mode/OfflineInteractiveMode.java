@@ -20,14 +20,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.onboarders;
+package com.blackducksoftware.integration.hub.detect.interactive.mode;
 
 import org.springframework.stereotype.Component;
 
 @Component
-public class OfflineOnboarder extends Onboarder {
+public class OfflineInteractiveMode extends InteractiveMode {
     @Override
-    public void onboard() {
+    public void interact() {
         printWelcome();
 
         final Boolean scan = askYesOrNo("Would you like run a CLI scan?");

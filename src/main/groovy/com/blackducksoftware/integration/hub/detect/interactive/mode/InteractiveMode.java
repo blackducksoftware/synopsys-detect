@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.onboarders;
+package com.blackducksoftware.integration.hub.detect.interactive.mode;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -38,31 +38,31 @@ import java.util.Properties;
 import org.springframework.beans.factory.annotation.Value;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.onboarding.OnboardingOption;
-import com.blackducksoftware.integration.hub.detect.onboarding.reader.OnboardingReader;
+import com.blackducksoftware.integration.hub.detect.interactive.InteractiveOption;
+import com.blackducksoftware.integration.hub.detect.interactive.reader.InteractiveReader;
 import com.blackducksoftware.integration.hub.detect.util.SpringValueUtils;
 
-public abstract class Onboarder {
+public abstract class InteractiveMode {
     private PrintStream printStream;
-    private OnboardingReader onboardingReader;
-    private final Map<String, OnboardingOption> propertyToOptionMap = new HashMap<>();
+    private InteractiveReader interactiveReader;
+    private final Map<String, InteractiveOption> propertyToOptionMap = new HashMap<>();
     private String profileName = null;
 
-    public void init(final PrintStream printStream, final OnboardingReader reader) {
+    public void init(final PrintStream printStream, final InteractiveReader reader) {
         this.printStream = printStream;
-        this.onboardingReader = reader;
+        this.interactiveReader = reader;
     }
 
-    public abstract void onboard();
+    public abstract void interact();
 
     public String askQuestion(final String question) {
         printStream.println(question);
-        return onboardingReader.readLine();
+        return interactiveReader.readLine();
     }
 
     public String askSecretQuestion(final String question) {
         printStream.println(question);
-        return onboardingReader.readPassword().toString();
+        return interactiveReader.readPassword().toString();
     }
 
     public void setPropertyFromQuestion(final String propertyName, final String question) {
@@ -76,16 +76,16 @@ public abstract class Onboarder {
     }
 
     public void setProperty(final String propertyName, final String value) {
-        OnboardingOption option;
+        InteractiveOption option;
         if (!propertyToOptionMap.containsKey(propertyName)) {
-            option = new OnboardingOption();
+            option = new InteractiveOption();
             option.fieldName = propertyName;
             option.springKey = springKeyFromFieldName(propertyName);
             propertyToOptionMap.put(propertyName, option);
         } else {
             option = propertyToOptionMap.get(propertyName);
         }
-        option.onboardingValue = value;
+        option.interactiveValue = value;
     }
 
     public Boolean askYesOrNo(final String question) {
@@ -95,7 +95,7 @@ public abstract class Onboarder {
         final int maxAttempts = 3;
         int attempts = 0;
         while (attempts < maxAttempts) {
-            final String response = onboardingReader.readLine();
+            final String response = interactiveReader.readLine();
             if (anyEquals(response, "y", "yes")) {
                 return true;
             } else if (anyEquals(response, "n", "no")) {
@@ -123,8 +123,8 @@ public abstract class Onboarder {
 
     public Map<String, String> optionsToSpringKeys() {
         final Map<String, String> springKeyMap = new HashMap<>();
-        for (final OnboardingOption onboardingOption : propertyToOptionMap.values()) {
-            springKeyMap.put(onboardingOption.springKey, onboardingOption.onboardingValue);
+        for (final InteractiveOption interactiveOption : propertyToOptionMap.values()) {
+            springKeyMap.put(interactiveOption.springKey, interactiveOption.interactiveValue);
         }
 
         return springKeyMap;
@@ -132,8 +132,8 @@ public abstract class Onboarder {
 
     public Properties optionsToProperties() {
         final Properties properties = new Properties();
-        for (final OnboardingOption onboardingOption : propertyToOptionMap.values()) {
-            properties.put(onboardingOption.springKey, onboardingOption.onboardingValue);
+        for (final InteractiveOption interactiveOption : propertyToOptionMap.values()) {
+            properties.put(interactiveOption.springKey, interactiveOption.interactiveValue);
         }
 
         return properties;
@@ -152,11 +152,11 @@ public abstract class Onboarder {
     public void readyToStartDetect() {
         printStream.println();
         printStream.println("Ready to start detect. Hit enter to proceed.");
-        onboardingReader.readLine();
+        interactiveReader.readLine();
     }
 
     public void printSuccess() {
-        printStream.println("Onboarding succesfull!");
+        printStream.println("Interactive Mode Succesfull!");
         printStream.println();
     }
 
@@ -185,15 +185,15 @@ public abstract class Onboarder {
     }
 
     public void printOptions() {
-        for (final OnboardingOption onboardingOption : propertyToOptionMap.values()) {
-            String fieldValue = onboardingOption.onboardingValue;
-            if (onboardingOption.fieldName.toLowerCase().contains("password")) {
+        for (final InteractiveOption interactiveOption : propertyToOptionMap.values()) {
+            String fieldValue = interactiveOption.interactiveValue;
+            if (interactiveOption.fieldName.toLowerCase().contains("password")) {
                 fieldValue = "";
-                for (int i = 0; i < onboardingOption.onboardingValue.length(); i++) {
+                for (int i = 0; i < interactiveOption.interactiveValue.length(); i++) {
                     fieldValue += "*";
                 }
             }
-            printStream.println("--" + onboardingOption.springKey + "=" + fieldValue);
+            printStream.println("--" + interactiveOption.springKey + "=" + fieldValue);
         }
     }
 
@@ -209,7 +209,7 @@ public abstract class Onboarder {
         OutputStream outputStream;
         try {
             outputStream = new FileOutputStream(applicationsProperty);
-            properties.store(outputStream, "Automatically generated during Detect Onboarding.");
+            properties.store(outputStream, "Automatically generated during Detect Interactive Mode.");
             printStream.println();
             printStream.println("Succesfully saved to '" + applicationsProperty.getCanonicalPath() + "'!");
             outputStream.close();
@@ -225,7 +225,7 @@ public abstract class Onboarder {
     }
 
     public void printWelcome() {
-        printStream.println("***** Welcome to Detect Onboarding *****");
+        printStream.println("***** Welcome to Detect Interactive Mode *****");
         printStream.println("");
     }
 
@@ -247,7 +247,7 @@ public abstract class Onboarder {
         return false;
     }
 
-    public List<OnboardingOption> getOnboardedOptions() {
+    public List<InteractiveOption> getInteractiveOptions() {
         return new ArrayList<>(propertyToOptionMap.values());
     }
 
