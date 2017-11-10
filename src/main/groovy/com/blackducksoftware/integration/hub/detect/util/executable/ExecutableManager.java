@@ -26,9 +26,6 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang3.SystemUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -38,28 +35,13 @@ import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 
 @Component
 public class ExecutableManager {
-    private final Logger logger = LoggerFactory.getLogger(ExecutableManager.class);
-
     @Autowired
     private DetectFileManager detectFileManager;
 
     private OperatingSystemType currentOs;
 
-    public void init() {
-        if (SystemUtils.IS_OS_LINUX) {
-            currentOs = OperatingSystemType.LINUX;
-        } else if (SystemUtils.IS_OS_MAC) {
-            currentOs = OperatingSystemType.MAC;
-        } else if (SystemUtils.IS_OS_WINDOWS) {
-            currentOs = OperatingSystemType.WINDOWS;
-        }
-
-        if (currentOs == null) {
-            logger.warn("Your operating system is not supported. Linux will be assumed.");
-            currentOs = OperatingSystemType.LINUX;
-        } else {
-            logger.info("You seem to be running in a " + currentOs + " operating system.");
-        }
+    public void init(final OperatingSystemType currentOs) {
+        this.currentOs = currentOs;
     }
 
     public String getExecutableName(final ExecutableType executableType) {

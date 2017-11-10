@@ -501,7 +501,6 @@ class DetectConfiguration {
     //properties end
 
     void init() {
-
         if (!sourcePath) {
             usingDefaultSourcePath = true
             sourcePath = System.getProperty('user.dir')
@@ -631,8 +630,6 @@ class DetectConfiguration {
         }
         return inspectorLocationProperty
     }
-
-
 
     private int convertInt(Integer integerObj) {
         return integerObj == null ? 0 : integerObj.intValue()
