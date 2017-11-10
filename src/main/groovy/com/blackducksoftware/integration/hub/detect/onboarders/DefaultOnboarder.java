@@ -66,14 +66,16 @@ public class DefaultOnboarder extends Onboarder {
                 if (testHub) {
                     try {
                         detectOptionManager.applyOnboardedOptions(getOnboardedOptions());
-                        connected = hubServiceWrapper.testHubConnection();
+                        connected = hubServiceWrapper.testHubConnection(false);
                     } catch (final Exception e) {
                         println("Failed to test hub connection.");
                         println(e.toString());
+                        println("");
                     }
 
                     if (!connected) {
                         println("Failed to connect to the hub.");
+                        println("");
                         skipConnectionTest = !askYesOrNo("Would you like to retry entering the hub information?");
                     }
                 } else {
