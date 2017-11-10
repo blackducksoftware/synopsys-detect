@@ -34,7 +34,7 @@ public class DetectOption {
     final String originalValue
     final String defaultValue
     final String resolvedValue
-    public String onboardedValue = null;
+    public String interactiveValue = null;
 
     public DetectOption(final String key, String fieldName, String originalValue, String resolvedValue, final String description, Class valueType, String defaultValue, String group) {
         this.key = key

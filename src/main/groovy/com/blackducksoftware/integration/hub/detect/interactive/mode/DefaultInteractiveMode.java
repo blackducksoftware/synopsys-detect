@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.onboarders;
+package com.blackducksoftware.integration.hub.detect.interactive.mode;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,7 +29,7 @@ import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper;
 
 @Component
-public class DefaultOnboarder extends Onboarder {
+public class DefaultInteractiveMode extends InteractiveMode {
     @Autowired
     private HubServiceWrapper hubServiceWrapper;
 
@@ -37,7 +37,7 @@ public class DefaultOnboarder extends Onboarder {
     private DetectOptionManager detectOptionManager;
 
     @Override
-    public void onboard() {
+    public void interact() {
         printWelcome();
 
         final Boolean connectToHub = askYesOrNo("Would you like to connect to a Hub Instance?");
@@ -65,7 +65,7 @@ public class DefaultOnboarder extends Onboarder {
                 final Boolean testHub = askYesOrNo("Would you like to test the hub connection now?");
                 if (testHub) {
                     try {
-                        detectOptionManager.applyOnboardedOptions(getOnboardedOptions());
+                        detectOptionManager.applyInteractiveOptions(getInteractiveOptions());
                         connected = hubServiceWrapper.testHubConnection(false);
                     } catch (final Exception e) {
                         println("Failed to test hub connection.");

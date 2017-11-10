@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.onboarding;
+package com.blackducksoftware.integration.hub.detect.interactive;
 
 import java.io.PrintStream;
 import java.util.List;
@@ -31,40 +31,40 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
-import com.blackducksoftware.integration.hub.detect.onboarders.DefaultOnboarder;
-import com.blackducksoftware.integration.hub.detect.onboarders.Onboarder;
-import com.blackducksoftware.integration.hub.detect.onboarding.reader.OnboardingReader;
+import com.blackducksoftware.integration.hub.detect.interactive.mode.DefaultInteractiveMode;
+import com.blackducksoftware.integration.hub.detect.interactive.mode.InteractiveMode;
+import com.blackducksoftware.integration.hub.detect.interactive.reader.InteractiveReader;
 
 @Component
-public class OnboardingManager {
-    private final Logger logger = LoggerFactory.getLogger(OnboardingManager.class);
+public class InteractiveManager {
+    private final Logger logger = LoggerFactory.getLogger(InteractiveManager.class);
 
     @Autowired
     DetectOptionManager detectOptionManager;
 
     @Autowired
-    List<Onboarder> onboardingFlows;
+    List<InteractiveMode> interactiveModes;
 
     @Autowired
-    DefaultOnboarder defaultOnboarder;
+    DefaultInteractiveMode defaultInteractiveMode;
 
-    public void onboard(final OnboardingReader onboardingReader, final PrintStream printStream) {
-        final Onboarder onboarder = defaultOnboarder;
+    public void interact(final InteractiveReader interactiveReader, final PrintStream printStream) {
+        final InteractiveMode interactiveMode = defaultInteractiveMode;
 
-        onboarder.init(printStream, onboardingReader);
+        interactiveMode.init(printStream, interactiveReader);
 
-        onboarder.println("");
-        onboarder.println("Onboarding flag found.");
-        onboarder.println("Starting default onboarder.");
-        onboarder.println("");
+        interactiveMode.println("");
+        interactiveMode.println("Interactive flag found.");
+        interactiveMode.println("Starting default interactive mode.");
+        interactiveMode.println("");
 
         try {
-            onboarder.onboard();
-            final List<OnboardingOption> onboardedOptions = onboarder.getOnboardedOptions();
-            detectOptionManager.applyOnboardedOptions(onboardedOptions);
+            interactiveMode.interact();
+            final List<InteractiveOption> interactiveOptions = interactiveMode.getInteractiveOptions();
+            detectOptionManager.applyInteractiveOptions(interactiveOptions);
         } catch (final Exception e) {
             logger.error(e.toString());
-            logger.error("Onboarding failed. Please retry onboarding or remove '-o' and '--onboard' from your options.");
+            logger.error("Interactive mode failed. Please retry interactive mode or remove '-i' and '--interactive' from your options.");
             throw new RuntimeException(e);
         }
     }

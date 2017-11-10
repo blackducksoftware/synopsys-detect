@@ -68,8 +68,8 @@ public class DetectConfigurationPrinter {
                     }
                 }
                 if (option != null && !option.resolvedValue.equals(fieldValue) && !containsPassword) {
-                    if (option.onboardedValue != null) {
-                        printStream.println("${fieldName} = ${fieldValue} [onboarded]" as String)
+                    if (option.interactiveValue != null) {
+                        printStream.println("${fieldName} = ${fieldValue} [interactive]" as String)
                     } else if (option.resolvedValue.equals("latest")) {
                         printStream.println("${fieldName} = ${fieldValue} [latest]" as String)
                     } else if (option.resolvedValue.trim().size() == 0) {
