@@ -1,11 +1,5 @@
 #!/bin/bash
 
-# This value should not be updated - the Jenkins
-# build process will, for ANY snapshot build,
-# override the hub-detect-latest-SNAPSHOT.jar file in
-# artifactory.
-DETECT_LATEST_SNAPSHOT=hub-detect-latest-SNAPSHOT.jar
-
 # DETECT_LATEST_RELEASE_VERSION should be set in your
 # environment if you wish to use a version different
 # from LATEST.
@@ -54,9 +48,14 @@ get_detect() {
   LATEST_VERSION=$( <$VERSION_FILE_DESTINATION )
 
   if [ $DETECT_USE_SNAPSHOT -eq 1 ]; then
-    echo "will look for snapshot: ${DETECT_LATEST_SNAPSHOT}"
-    DETECT_DESTINATION="${DETECT_JAR_PATH}/${DETECT_LATEST_SNAPSHOT}"
-    DETECT_SOURCE="https://test-repo.blackducksoftware.com/artifactory/bds-integrations-snapshot/com/blackducksoftware/integration/hub-detect/latest-SNAPSHOT/${DETECT_LATEST_SNAPSHOT}"
+    if [ -z "${DETECT_RELEASE_VERSION}" ]; then
+      echo "will look for snapshot: hub-detect-latest-SNAPSHOT.jar"
+      DETECT_SOURCE="https://test-repo.blackducksoftware.com/artifactory/bds-integrations-snapshot/com/blackducksoftware/integration/hub-detect/latest-SNAPSHOT/hub-detect-latest-SNAPSHOT.jar"
+      DETECT_DESTINATION="${DETECT_JAR_PATH}/hub-detect-latest-SNAPSHOT.jar"
+    else
+      DETECT_SOURCE="https://test-repo.blackducksoftware.com/artifactory/bds-integrations-snapshot/com/blackducksoftware/integration/hub-detect/${DETECT_RELEASE_VERSION}/hub-detect-${DETECT_RELEASE_VERSION}.jar"
+      DETECT_DESTINATION="${DETECT_JAR_PATH}/hub-detect-${DETECT_RELEASE_VERSION}.jar"
+    fi
   else
     if [ -z "${DETECT_RELEASE_VERSION}" ]; then
       DETECT_RELEASE_VERSION=$(curl https://test-repo.blackducksoftware.com/artifactory/bds-integrations-release/com/blackducksoftware/integration/hub-detect/maven-metadata.xml | grep latest | sed -e 's@<latest>@@' -e 's@</latest>@@' -e 's/^[ \t]*//')
