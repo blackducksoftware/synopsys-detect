@@ -41,6 +41,8 @@ import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendly
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType
 import com.blackducksoftware.integration.hub.detect.help.ValueDescription
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
+import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType
+import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver
 import com.google.gson.Gson
 
 import groovy.transform.TypeChecked
@@ -93,6 +95,9 @@ class DetectConfiguration {
     @Autowired
     Gson gson
 
+    @Autowired
+    TildeInPathResolver tildeInPathResolver
+
     File sourceDirectory
     File outputDirectory
 
@@ -104,7 +109,10 @@ class DetectConfiguration {
 
     List<String> excludedScanPaths = []
 
-    void init() {
+    void init(OperatingSystemType currentOs) {
+        String systemUserHome = System.getProperty('user.home');
+        tildeInPathResolver.resolveTildeInAllPathFields(currentOs, systemUserHome, this);
+
         if (!sourcePath) {
             usingDefaultSourcePath = true
             sourcePath = System.getProperty('user.dir')
@@ -118,7 +126,7 @@ class DetectConfiguration {
         sourcePath = sourceDirectory.canonicalPath
 
         usingDefaultOutputPath = StringUtils.isBlank(outputDirectoryPath)
-        outputDirectoryPath = createDirectoryPath(outputDirectoryPath, System.getProperty('user.home'), 'blackduck')
+        outputDirectoryPath = createDirectoryPath(outputDirectoryPath, systemUserHome, 'blackduck')
         bdioOutputDirectoryPath = createDirectoryPath(bdioOutputDirectoryPath, outputDirectoryPath, 'bdio')
         scanOutputDirectoryPath = createDirectoryPath(scanOutputDirectoryPath, outputDirectoryPath, 'scan')
 
@@ -304,6 +312,10 @@ class DetectConfiguration {
     @ValueDescription(description="This can disable any Hub communication - if true, Detect will not upload BDIO files, it will not check policies, and it will not download and install the signature scanner.", defaultValue="false", group=DetectConfiguration.GROUP_HUB_CONFIGURATION)
     @Value('${blackduck.hub.offline.mode:}')
     Boolean hubOfflineMode
+
+    @ValueDescription(description="If set to false we will not automatically resolve the ~ character to the user's home directory.", defaultValue="true", group=DetectConfiguration.GROUP_PATHS)
+    @Value('${detect.resolve.tilde.in.paths:}')
+    Boolean resolveTildeInPaths
 
     @ValueDescription(description="Source path to inspect", group=DetectConfiguration.GROUP_PATHS)
     @Value('${detect.source.path:}')
@@ -675,6 +687,9 @@ class DetectConfiguration {
     }
     public boolean getHubTrustCertificate() {
         return BooleanUtils.toBoolean(hubTrustCertificate)
+    }
+    public boolean getResolveTildeInPaths() {
+        return BooleanUtils.toBoolean(resolveTildeInPaths)
     }
     public String getSourcePath() {
         return sourcePath
