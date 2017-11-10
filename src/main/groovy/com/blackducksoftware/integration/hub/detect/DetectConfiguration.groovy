@@ -413,6 +413,10 @@ class DetectConfiguration {
     @Value('${detect.nuget.excluded.modules:}')
     String nugetInspectorExcludedModules
 
+    @ValueDescription(description="The names of the projects in a solution to include (overrides exclude)", group=DetectConfiguration.GROUP_NUGET)
+    @Value('${detect.nuget.included.modules:}')
+    String nugetInspectorIncludedModules
+
     @ValueDescription(description="If true errors will be logged and then ignored.", defaultValue="false", group=DetectConfiguration.GROUP_NUGET)
     @Value('${detect.nuget.ignore.failure:}')
     Boolean nugetInspectorIgnoreFailure
@@ -756,6 +760,9 @@ class DetectConfiguration {
     }
     public String getNugetInspectorExcludedModules() {
         return nugetInspectorExcludedModules
+    }
+    public String getNugetInspectorIncludedModules() {
+        return nugetInspectorIncludedModules
     }
     public boolean getNugetInspectorIgnoreFailure() {
         return BooleanUtils.toBoolean(nugetInspectorIgnoreFailure)
