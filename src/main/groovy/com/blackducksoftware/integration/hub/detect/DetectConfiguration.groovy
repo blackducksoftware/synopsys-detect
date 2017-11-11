@@ -111,7 +111,9 @@ class DetectConfiguration {
 
     void init(OperatingSystemType currentOs) {
         String systemUserHome = System.getProperty('user.home');
-        tildeInPathResolver.resolveTildeInAllPathFields(currentOs, systemUserHome, this);
+        if (resolveTildeInPaths) {
+            tildeInPathResolver.resolveTildeInAllPathFields(currentOs, systemUserHome, this);
+        }
 
         if (!sourcePath) {
             usingDefaultSourcePath = true
