@@ -20,11 +20,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.onboarding.reader;
+package com.blackducksoftware.integration.hub.detect.interactive;
 
-public interface OnboardingReader {
-    public String readLine();
-
-    public String readPassword();
+public class InteractiveOption {
+    public String fieldName;
+    public String springKey;
+    public String interactiveValue;
 
 }

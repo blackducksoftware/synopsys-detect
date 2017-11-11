@@ -20,30 +20,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.onboarding.reader;
+package com.blackducksoftware.integration.hub.detect.interactive.reader;
 
-import java.io.InputStream;
-import java.util.Scanner;
+public interface InteractiveReader {
+    public String readLine();
 
-public class ScannerOnboardingReader implements OnboardingReader {
-    private final Scanner scanner;
-
-    public ScannerOnboardingReader(final Scanner scanner) {
-        this.scanner = scanner;
-    }
-
-    public ScannerOnboardingReader(final InputStream stream) {
-        this.scanner = new Scanner(stream);
-    }
-
-    @Override
-    public String readLine() {
-        return scanner.nextLine();
-    }
-
-    @Override
-    public String readPassword() {
-        return scanner.nextLine();
-    }
+    public String readPassword();
 
 }

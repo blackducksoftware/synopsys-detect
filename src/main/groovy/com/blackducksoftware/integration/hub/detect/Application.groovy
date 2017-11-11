@@ -51,11 +51,11 @@ import com.blackducksoftware.integration.hub.detect.help.print.HelpPrinter
 import com.blackducksoftware.integration.hub.detect.hub.HubManager
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
+import com.blackducksoftware.integration.hub.detect.interactive.InteractiveManager
+import com.blackducksoftware.integration.hub.detect.interactive.reader.ConsoleInteractiveReader
+import com.blackducksoftware.integration.hub.detect.interactive.reader.InteractiveReader
+import com.blackducksoftware.integration.hub.detect.interactive.reader.ScannerInteractiveReader
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
-import com.blackducksoftware.integration.hub.detect.onboarding.OnboardingManager
-import com.blackducksoftware.integration.hub.detect.onboarding.reader.ConsoleOnboardingReader
-import com.blackducksoftware.integration.hub.detect.onboarding.reader.OnboardingReader
-import com.blackducksoftware.integration.hub.detect.onboarding.reader.ScannerOnboardingReader
 import com.blackducksoftware.integration.hub.detect.summary.DetectSummary
 import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
@@ -112,7 +112,7 @@ class Application {
     DetectSummary detectSummary
 
     @Autowired
-    OnboardingManager onboardingManager
+    InteractiveManager interactiveManager
 
     @Autowired
     DetectFileManager detectFileManager
@@ -145,10 +145,10 @@ class Application {
                 return
             }
 
-            if ('-o' in applicationArguments.getSourceArgs() || '--onboard' in applicationArguments.getSourceArgs()) {
-                OnboardingReader onboardingReader = createOnboardingReader();
-                PrintStream onboardingPrintStream = new PrintStream(System.out);
-                onboardingManager.onboard(onboardingReader, onboardingPrintStream);
+            if ('-i' in applicationArguments.getSourceArgs() || '--interactive' in applicationArguments.getSourceArgs()) {
+                InteractiveReader interactiveReader = createInteractiveReader();
+                PrintStream interactivePrintStream = new PrintStream(System.out);
+                interactiveManager.interact(interactiveReader, interactivePrintStream);
             }
 
             determineOperatingSystem();
@@ -199,13 +199,13 @@ class Application {
         System.exit(exitCodeType.getExitCode())
     }
 
-    private OnboardingReader createOnboardingReader() {
+    private InteractiveReader createInteractiveReader() {
         final Console console = System.console();
         if (console != null) {
-            return new ConsoleOnboardingReader(console);
+            return new ConsoleInteractiveReader(console);
         } else {
-            logger.warn("Onboarding passwords may be insecure because you are running in a virtual console.");
-            return new ScannerOnboardingReader(System.in);
+            logger.warn("It may be insecure to enter passwords you are running in a virtual console.");
+            return new ScannerInteractiveReader(System.in);
         }
     }
 

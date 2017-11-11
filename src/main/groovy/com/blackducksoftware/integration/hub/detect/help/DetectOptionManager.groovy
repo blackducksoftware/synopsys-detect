@@ -32,7 +32,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
-import com.blackducksoftware.integration.hub.detect.onboarding.OnboardingOption
+import com.blackducksoftware.integration.hub.detect.interactive.InteractiveOption
 import com.blackducksoftware.integration.hub.detect.util.SpringValueUtils
 
 import groovy.transform.TypeChecked
@@ -115,22 +115,22 @@ public class DetectOptionManager {
         return null
     }
 
-    public void applyOnboardedOptions(List<OnboardingOption> onboardingOptions) {
-        for (final OnboardingOption onboardingOption : onboardingOptions) {
+    public void applyInteractiveOptions(List<InteractiveOption> interactiveOptions) {
+        for (final InteractiveOption interactiveOption : interactiveOptions) {
             for (DetectOption detectOption : detectOptions){
-                if (detectOption.getFieldName().equals(onboardingOption.fieldName)){
-                    detectOption.onboardedValue = onboardingOption.onboardingValue;
+                if (detectOption.getFieldName().equals(interactiveOption.fieldName)){
+                    detectOption.interactiveValue = interactiveOption.interactiveValue;
                 }
             }
 
             Field field;
             try {
-                field = detectConfiguration.getClass().getDeclaredField(onboardingOption.fieldName);
+                field = detectConfiguration.getClass().getDeclaredField(interactiveOption.fieldName);
             } catch (NoSuchFieldException | SecurityException e) {
                 throw new RuntimeException(e);
             }
             field.setAccessible(true);
-            setValue(field, detectConfiguration, onboardingOption.onboardingValue);
+            setValue(field, detectConfiguration, interactiveOption.interactiveValue);
         }
     }
 
