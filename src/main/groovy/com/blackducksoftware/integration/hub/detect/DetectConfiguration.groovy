@@ -66,6 +66,7 @@ class DetectConfiguration {
     private static final String GROUP_DOCKER = 'docker'
     private static final String GROUP_GO = 'go'
     private static final String GROUP_GRADLE = 'gradle'
+    private static final String GROUP_HEX = 'hex'
     private static final String GROUP_MAVEN = 'maven'
     private static final String GROUP_NPM = 'npm'
     private static final String GROUP_NUGET = 'nuget'
@@ -497,6 +498,10 @@ class DetectConfiguration {
     @ValueDescription(description="The respository gradle should use to look for the gradle inspector", group=DetectConfiguration.GROUP_GRADLE)
     @Value('${detect.gradle.inspector.repository.url:}')
     String gradleInspectorRepositoryUrl
+
+    @ValueDescription(description="The path of the rebar3 executable", group=DetectConfiguration.GROUP_HEX)
+    @Value('${detect.hex.rebar3.path:}')
+    String hexRebar3Path
 
     //properties end
 
@@ -935,6 +940,9 @@ class DetectConfiguration {
     }
     public String getGradleInspectorRepositoryUrl() {
         return gradleInspectorRepositoryUrl?.trim()
+    }
+    public String getHexRebar3Path() {
+        return hexRebar3Path
     }
 
 }
