@@ -117,7 +117,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 4.0)
-  - AlamofireHandlers (from `http://git.soluto.local/Soluto/alamofire-handler.git`, tag `1.0.1`)
+  - AlamofireHandlers (from `http://git.randomGit.local/Soluto/alamofire-handler.git`, tag `1.0.1`)
   - Branch-SDK (from `../node_modules/react-native-branch/ios`)
   - BugsnagReactNative (from `../node_modules/bugsnag-react-native`)
   - BVLinearGradient (from `../node_modules/react-native-linear-gradient`)
@@ -148,7 +148,7 @@ DEPENDENCIES:
   - ReactNativePermissions (from `../node_modules/react-native-permissions`)
   - RNSound (from `../node_modules/react-native-sound`)
   - RNSVG (from `../node_modules/react-native-svg`)
-  - RNTimeMonitor (from `../node_modules/@npmsoluto/rn-time-monitor`)
+  - RNTimeMonitor (from `../node_modules/@npmrandomGit/rn-time-monitor`)
   - RxAlamofire (~> 3.0)
   - RxBlocking (~> 3.0.0)
   - RxCocoa (~> 3.0.0)
@@ -191,13 +191,13 @@ EXTERNAL SOURCES:
   RNSVG:
     :path: "../node_modules/react-native-svg"
   RNTimeMonitor:
-    :path: "../node_modules/@npmsoluto/rn-time-monitor"
+    :path: "../node_modules/@npmrandomGit/rn-time-monitor"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 CHECKOUT OPTIONS:
   AlamofireHandlers:
-    :git: http://git.soluto.local/Soluto/alamofire-handler.git
+    :git: http://git.randomGit.local/Soluto/alamofire-handler.git
     :tag: 1.0.1
 
 SPEC CHECKSUMS:
