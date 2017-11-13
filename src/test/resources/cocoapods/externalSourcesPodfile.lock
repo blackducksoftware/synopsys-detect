@@ -164,7 +164,7 @@ DEPENDENCIES:
 
 EXTERNAL SOURCES:
   AlamofireHandlers:
-    :git: http://git.soluto.local/Soluto/alamofire-handler.git
+    :git: http://random.stuff.local/handler.git
     :tag: 1.0.1
   Branch-SDK:
     :path: "../node_modules/react-native-branch/ios"
