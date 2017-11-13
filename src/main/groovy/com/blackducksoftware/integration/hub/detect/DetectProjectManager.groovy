@@ -153,13 +153,17 @@ class DetectProjectManager implements SummaryResultReporter {
 
                 String projectName = detectProject.getProjectName()
                 String projectVersionName = detectProject.getProjectVersionName()
+
                 String prefix = detectConfiguration.getProjectCodeLocationPrefix()
                 String suffix = detectConfiguration.getProjectCodeLocationSuffix()
+
                 CodeLocationName codeLocationName = codeLocationNameService.createBomToolName(it.sourcePath, projectName, projectVersionName, it.bomToolType, prefix, suffix)
                 String codeLocationNameString = codeLocationNameService.generateBomToolCurrent(codeLocationName)
                 final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(codeLocationNameString, detectProject, it)
-                String projectPath = detectFileManager.extractFinalPieceFromPath(it.sourcePath)
-                final String filename = createBdioFilename(it.bomToolType, projectPath, projectName, projectVersionName)
+
+                String finalSourcePathPiece = detectFileManager.extractFinalPieceFromPath(it.sourcePath);
+                final String filename = generateShortenedFilename(it.bomToolType, finalSourcePathPiece, it.getBomToolProjectExternalId());
+
                 final File outputFile = new File(detectConfiguration.bdioOutputDirectoryPath, filename)
                 if (outputFile.exists()) {
                     outputFile.delete()
@@ -193,27 +197,39 @@ class DetectProjectManager implements SummaryResultReporter {
         return detectSummaryResults;
     }
 
-    private String createBdioFilename(BomToolType bomToolType, String finalSourcePathPiece, String projectName, String projectVersionName) {
-        def names = [finalSourcePathPiece, projectName, projectVersionName]
-        names.sort { -it.size() }
-        String filename = generateFilename(bomToolType, finalSourcePathPiece, projectName, projectVersionName)
-        for (int i = 0; (filename.length() >= 255) && (i < 3); i++) {
-            names[i] = DigestUtils.sha1Hex(names[i])
-            if (names[i].length() > 15) {
-                names[i] = names[i].substring(0, 15)
-            }
+    private String generateShortenedFilename(BomToolType bomToolType, String finalSourcePathPiece, ExternalId externalId) {
 
-            filename = generateFilename(bomToolType, names[0], names[1], names[2])
+        List<String> filenamePieces = new ArrayList<>();
+        filenamePieces.addAll(externalId.getExternalIdPieces());
+        filenamePieces.add(finalSourcePathPiece);
+        String filename = generateFilename(bomToolType, filenamePieces)
+
+        if (filename.length() >= 255){
+            filenamePieces.sort { it.size() }
+            for (int i = filenamePieces.size() - 1; (filename.length() >= 255) && (i >= 0); i--) {
+                filenamePieces[i] = DigestUtils.sha1Hex(filenamePieces[i])
+                if (filenamePieces[i].length() > 15) {
+                    filenamePieces[i] = filenamePieces[i].substring(0, 15)
+                }
+
+                filename = generateFilename(bomToolType, filenamePieces)
+            }
         }
 
         filename
     }
 
-    private String generateFilename(BomToolType bomToolType, String finalSourcePathPiece, String projectName, String projectVersionName) {
-        List<String> safePieces = [bomToolType.toString(), projectName, projectVersionName, finalSourcePathPiece, 'bdio'].collect { integrationEscapeUtil.escapeForUri(it) }
+    private String generateFilename(BomToolType bomToolType, List<String> pieces) {
+        List<String> rawPieces = new ArrayList<String>();
+        rawPieces.add(bomToolType.toString());
+        rawPieces.addAll(pieces);
+        rawPieces.add('bdio');
 
-        String filename = (safePieces as Iterable).join('_') + '.jsonld'
-        filename
+        List<String> safePieces = rawPieces.collect { integrationEscapeUtil.escapeForUri(it) };
+
+        String filename = (safePieces as Iterable).join('_') + '.jsonld';
+
+        filename;
     }
 
     private SimpleBdioDocument createAggregateSimpleBdioDocument(DetectProject detectProject, DependencyGraph dependencyGraph) {
