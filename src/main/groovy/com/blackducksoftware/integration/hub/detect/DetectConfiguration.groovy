@@ -105,6 +105,145 @@ class DetectConfiguration {
 
     List<String> excludedScanPaths = []
 
+    void init() {
+        if (!sourcePath) {
+            usingDefaultSourcePath = true
+            sourcePath = System.getProperty('user.dir')
+        }
+
+        sourceDirectory = new File(sourcePath)
+        if (!sourceDirectory.exists() || !sourceDirectory.isDirectory()) {
+            throw new DetectUserFriendlyException("The source path ${sourcePath} either doesn't exist, isn't a directory, or doesn't have appropriate permissions.", ExitCodeType.FAILURE_GENERAL_ERROR)
+        }
+        //make sure the path is absolute
+        sourcePath = sourceDirectory.canonicalPath
+
+        usingDefaultOutputPath = StringUtils.isBlank(outputDirectoryPath)
+        outputDirectoryPath = createDirectoryPath(outputDirectoryPath, System.getProperty('user.home'), 'blackduck')
+        bdioOutputDirectoryPath = createDirectoryPath(bdioOutputDirectoryPath, outputDirectoryPath, 'bdio')
+        scanOutputDirectoryPath = createDirectoryPath(scanOutputDirectoryPath, outputDirectoryPath, 'scan')
+
+        ensureDirectoryExists(outputDirectoryPath, 'The system property \'user.home\' will be used by default, but the output directory must exist.')
+        ensureDirectoryExists(bdioOutputDirectoryPath, 'By default, the directory \'bdio\' will be created in the outputDirectory, but the directory must exist.')
+        ensureDirectoryExists(scanOutputDirectoryPath, 'By default, the directory \'scan\' will be created in the outputDirectory, but the directory must exist.')
+
+        outputDirectory = new File(outputDirectoryPath)
+
+        nugetInspectorPackageName = nugetInspectorPackageName.trim()
+        nugetInspectorPackageVersion = nugetInspectorPackageVersion.trim()
+
+        MutablePropertySources mutablePropertySources = configurableEnvironment.getPropertySources()
+        mutablePropertySources.each { propertySource ->
+            if (propertySource instanceof EnumerablePropertySource) {
+                EnumerablePropertySource enumerablePropertySource = (EnumerablePropertySource) propertySource
+                enumerablePropertySource.propertyNames.each { String propertyName ->
+                    if (propertyName && propertyName.startsWith(DETECT_PROPERTY_PREFIX)) {
+                        allDetectPropertyKeys.add(propertyName)
+                    }
+                }
+            }
+        }
+
+        if (dockerBomTool.isBomToolApplicable()) {
+            configureForDocker()
+        }
+
+        if (hubSignatureScannerRelativePathsToExclude) {
+            hubSignatureScannerRelativePathsToExclude.each { String path ->
+                excludedScanPaths.add(new File(sourceDirectory, path).getCanonicalPath())
+            }
+        }
+
+        if (gradleInspectorVersion.equals("latest") && gradleBomTool.isBomToolApplicable()) {
+            gradleInspectorVersion = gradleBomTool.getInspectorVersion()
+            logger.info("Resolved gradle inspector version from latest to: ${gradleInspectorVersion}")
+        }
+        if (nugetInspectorPackageVersion.equals("latest") && nugetBomTool.isBomToolApplicable()) {
+            nugetInspectorPackageVersion = nugetBomTool.getInspectorVersion()
+            logger.info("Resolved nuget inspector version from latest to: ${nugetInspectorPackageVersion}")
+        }
+        if (dockerInspectorVersion.equals("latest") && dockerBomTool.isBomToolApplicable()) {
+            dockerInspectorVersion = dockerBomTool.getInspectorVersion()
+            logger.info("Resolved docker inspector version from latest to: ${dockerInspectorVersion}")
+        }
+    }
+
+    private void configureForDocker() {
+        allDetectPropertyKeys.each {
+            if (it.startsWith(DOCKER_PROPERTY_PREFIX)) {
+                additionalDockerPropertyNames.add(it)
+            }
+        }
+    }
+
+    private String createDirectoryPath(String providedDirectoryPath, String defaultDirectoryPath, String defaultDirectoryName) {
+        if (StringUtils.isBlank(providedDirectoryPath)) {
+            File directory = new File(defaultDirectoryPath, defaultDirectoryName)
+            return directory.canonicalPath
+        }
+        return providedDirectoryPath
+    }
+
+    private void ensureDirectoryExists(String directoryPath, String failureMessage) {
+        File directory = new File(directoryPath)
+        directory.mkdirs()
+        if (!directory.exists() || !directory.isDirectory()) {
+            throw new DetectUserFriendlyException("The directory ${directoryPath} does not exist. ${failureMessage}", ExitCodeType.FAILURE_GENERAL_ERROR)
+        }
+    }
+
+    /**
+     * If the default source path is being used AND docker is configured, don't run unless the tool is docker
+     */
+    public boolean shouldRun(BomTool bomTool) {
+        if (usingDefaultSourcePath && dockerBomTool.isBomToolApplicable()) {
+            return BomToolType.DOCKER == bomTool.bomToolType
+        } else {
+            return true
+        }
+    }
+
+    public String getDetectProperty(String key) {
+        configurableEnvironment.getProperty(key)
+    }
+
+    public String guessDetectJarLocation() {
+        String containsDetectJarRegex = '.*hub-detect-[^\\\\/]+\\.jar.*'
+        String javaClassPath = System.getProperty('java.class.path')
+        if (javaClassPath?.matches(containsDetectJarRegex)) {
+            for (String classPathChunk : javaClassPath.split(System.getProperty('path.separator'))) {
+                if (classPathChunk?.matches(containsDetectJarRegex)) {
+                    logger.debug("Guessed Detect jar location as ${classPathChunk}")
+                    return classPathChunk
+                }
+            }
+        }
+        return ''
+    }
+
+    private String getInspectorAirGapPath(String inspectorLocationProperty, String inspectorName) {
+        if (!inspectorLocationProperty?.trim()) {
+            try {
+                File detectJar = new File(guessDetectJarLocation())
+                File inspectorsDirectory = new File(detectJar.getParentFile(), 'packaged-inspectors')
+                File inspectorAirGapDirectory = new File(inspectorsDirectory, inspectorName)
+                return inspectorAirGapDirectory.getCanonicalPath()
+            } catch (final Exception e) {
+                logger.debug("Exception encountered when guessing air gap path for ${inspectorName}, returning the detect property instead")
+                logger.debug(e.getMessage())
+            }
+        }
+        return inspectorLocationProperty
+    }
+
+    private int convertInt(Integer integerObj) {
+        return integerObj == null ? 0 : integerObj.intValue()
+    }
+
+    private long convertLong(Long longObj) {
+        return longObj == null ? 0L : longObj.longValue()
+    }
+
     //properties start
 
     @ValueDescription(description="If true, the default behavior of printing your configuration properties at startup will be suppressed.", defaultValue="false", group=DetectConfiguration.GROUP_LOGGING)
@@ -274,6 +413,10 @@ class DetectConfiguration {
     @ValueDescription(description="The names of the projects in a solution to exclude", group=DetectConfiguration.GROUP_NUGET)
     @Value('${detect.nuget.excluded.modules:}')
     String nugetInspectorExcludedModules
+
+    @ValueDescription(description="The names of the projects in a solution to include (overrides exclude)", group=DetectConfiguration.GROUP_NUGET)
+    @Value('${detect.nuget.included.modules:}')
+    String nugetInspectorIncludedModules
 
     @ValueDescription(description="If true errors will be logged and then ignored.", defaultValue="false", group=DetectConfiguration.GROUP_NUGET)
     @Value('${detect.nuget.ignore.failure:}')
@@ -503,150 +646,6 @@ class DetectConfiguration {
     @Value('${detect.hex.rebar3.path:}')
     String hexRebar3Path
 
-    //properties end
-
-    void init() {
-
-        if (!sourcePath) {
-            usingDefaultSourcePath = true
-            sourcePath = System.getProperty('user.dir')
-        }
-
-        sourceDirectory = new File(sourcePath)
-        if (!sourceDirectory.exists() || !sourceDirectory.isDirectory()) {
-            throw new DetectUserFriendlyException("The source path ${sourcePath} either doesn't exist, isn't a directory, or doesn't have appropriate permissions.", ExitCodeType.FAILURE_GENERAL_ERROR)
-        }
-        //make sure the path is absolute
-        sourcePath = sourceDirectory.canonicalPath
-
-        usingDefaultOutputPath = StringUtils.isBlank(outputDirectoryPath)
-        outputDirectoryPath = createDirectoryPath(outputDirectoryPath, System.getProperty('user.home'), 'blackduck')
-        bdioOutputDirectoryPath = createDirectoryPath(bdioOutputDirectoryPath, outputDirectoryPath, 'bdio')
-        scanOutputDirectoryPath = createDirectoryPath(scanOutputDirectoryPath, outputDirectoryPath, 'scan')
-
-        ensureDirectoryExists(outputDirectoryPath, 'The system property \'user.home\' will be used by default, but the output directory must exist.')
-        ensureDirectoryExists(bdioOutputDirectoryPath, 'By default, the directory \'bdio\' will be created in the outputDirectory, but the directory must exist.')
-        ensureDirectoryExists(scanOutputDirectoryPath, 'By default, the directory \'scan\' will be created in the outputDirectory, but the directory must exist.')
-
-        outputDirectory = new File(outputDirectoryPath)
-
-        nugetInspectorPackageName = nugetInspectorPackageName.trim()
-        nugetInspectorPackageVersion = nugetInspectorPackageVersion.trim()
-
-        MutablePropertySources mutablePropertySources = configurableEnvironment.getPropertySources()
-        mutablePropertySources.each { propertySource ->
-            if (propertySource instanceof EnumerablePropertySource) {
-                EnumerablePropertySource enumerablePropertySource = (EnumerablePropertySource) propertySource
-                enumerablePropertySource.propertyNames.each { String propertyName ->
-                    if (propertyName && propertyName.startsWith(DETECT_PROPERTY_PREFIX)) {
-                        allDetectPropertyKeys.add(propertyName)
-                    }
-                }
-            }
-        }
-
-        if (dockerBomTool.isBomToolApplicable()) {
-            configureForDocker()
-        }
-
-        if (hubSignatureScannerRelativePathsToExclude) {
-            hubSignatureScannerRelativePathsToExclude.each { String path ->
-                excludedScanPaths.add(new File(sourceDirectory, path).getCanonicalPath())
-            }
-        }
-
-        if (gradleInspectorVersion.equals("latest") && gradleBomTool.isBomToolApplicable()) {
-            gradleInspectorVersion = gradleBomTool.getInspectorVersion()
-            logger.info("Resolved gradle inspector version from latest to: ${gradleInspectorVersion}")
-        }
-        if (nugetInspectorPackageVersion.equals("latest") && nugetBomTool.isBomToolApplicable()) {
-            nugetInspectorPackageVersion = nugetBomTool.getInspectorVersion()
-            logger.info("Resolved nuget inspector version from latest to: ${nugetInspectorPackageVersion}")
-        }
-        if (dockerInspectorVersion.equals("latest") && dockerBomTool.isBomToolApplicable()) {
-            dockerInspectorVersion = dockerBomTool.getInspectorVersion()
-            logger.info("Resolved docker inspector version from latest to: ${dockerInspectorVersion}")
-        }
-    }
-
-    private void configureForDocker() {
-        allDetectPropertyKeys.each {
-            if (it.startsWith(DOCKER_PROPERTY_PREFIX)) {
-                additionalDockerPropertyNames.add(it)
-            }
-        }
-    }
-
-    private String createDirectoryPath(String providedDirectoryPath, String defaultDirectoryPath, String defaultDirectoryName) {
-        if (StringUtils.isBlank(providedDirectoryPath)) {
-            File directory = new File(defaultDirectoryPath, defaultDirectoryName)
-            return directory.canonicalPath
-        }
-        return providedDirectoryPath
-    }
-
-    private void ensureDirectoryExists(String directoryPath, String failureMessage) {
-        File directory = new File(directoryPath)
-        directory.mkdirs()
-        if (!directory.exists() || !directory.isDirectory()) {
-            throw new DetectUserFriendlyException("The directory ${directoryPath} does not exist. ${failureMessage}", ExitCodeType.FAILURE_GENERAL_ERROR)
-        }
-    }
-
-    /**
-     * If the default source path is being used AND docker is configured, don't run unless the tool is docker
-     */
-    public boolean shouldRun(BomTool bomTool) {
-        if (usingDefaultSourcePath && dockerBomTool.isBomToolApplicable()) {
-            return BomToolType.DOCKER == bomTool.bomToolType
-        } else {
-            return true
-        }
-    }
-
-    public String getDetectProperty(String key) {
-        configurableEnvironment.getProperty(key)
-    }
-
-    public String guessDetectJarLocation() {
-        String containsDetectJarRegex = '.*hub-detect-[^\\\\/]+\\.jar.*'
-        String javaClassPath = System.getProperty('java.class.path')
-        if (javaClassPath?.matches(containsDetectJarRegex)) {
-            for (String classPathChunk : javaClassPath.split(System.getProperty('path.separator'))) {
-                if (classPathChunk?.matches(containsDetectJarRegex)) {
-                    logger.debug("Guessed Detect jar location as ${classPathChunk}")
-                    return classPathChunk
-                }
-            }
-        }
-        return ''
-    }
-
-    private String getInspectorAirGapPath(String inspectorLocationProperty, String inspectorName) {
-        if (!inspectorLocationProperty?.trim()) {
-            try {
-                File detectJar = new File(guessDetectJarLocation())
-                File inspectorsDirectory = new File(detectJar.getParentFile(), 'packaged-inspectors')
-                File inspectorAirGapDirectory = new File(inspectorsDirectory, inspectorName)
-                return inspectorAirGapDirectory.getCanonicalPath()
-            } catch (final Exception e) {
-                logger.debug("Exception encountered when guessing air gap path for ${inspectorName}, returning the detect property instead")
-                logger.debug(e.getMessage())
-            }
-        }
-        return inspectorLocationProperty
-    }
-
-
-
-    private int convertInt(Integer integerObj) {
-        return integerObj == null ? 0 : integerObj.intValue()
-    }
-
-    private long convertLong(Long longObj) {
-        return longObj == null ? 0L : longObj.longValue()
-    }
-
     public boolean getCleanupBdioFiles() {
         return BooleanUtils.toBoolean(cleanupBdioFiles)
     }
@@ -766,6 +765,9 @@ class DetectConfiguration {
     }
     public String getNugetInspectorExcludedModules() {
         return nugetInspectorExcludedModules
+    }
+    public String getNugetInspectorIncludedModules() {
+        return nugetInspectorIncludedModules
     }
     public boolean getNugetInspectorIgnoreFailure() {
         return BooleanUtils.toBoolean(nugetInspectorIgnoreFailure)
@@ -944,5 +946,7 @@ class DetectConfiguration {
     public String getHexRebar3Path() {
         return hexRebar3Path
     }
+
+    //properties end
 
 }

@@ -76,19 +76,32 @@ class HubServiceWrapper {
     }
 
     public boolean testHubConnection() {
+        testHubConnection(true);
+    }
+
+    public boolean testHubConnection(boolean detailedLog) {
         logger.info("Attempting connection to the Hub")
         try {
-            IntLogger slf4jIntLogger = new Slf4jIntLogger(logger)
-            HubServerConfig hubServerConfig = createHubServerConfig(slf4jIntLogger)
+            IntLogger slf4jIntLogger;
+            if (detailedLog){
+                slf4jIntLogger = new Slf4jIntLogger(logger);
+            }else{
+                slf4jIntLogger = new SilentLogger();
+            }
+            HubServerConfig hubServerConfig = createHubServerConfig(slf4jIntLogger);
 
             final RestConnection connection = hubServerConfig.createCredentialsRestConnection(slf4jIntLogger)
             connection.connect()
             logger.info("Connection to the Hub was successful")
             return true;
         } catch (IllegalStateException e) {
-            logger.error("Failed to build the server configuration: ${e.message}", e)
+            if (detailedLog){
+                logger.error("Failed to build the server configuration: ${e.message}", e)
+            }
         } catch (IntegrationException e) {
-            logger.error("Could not reach the Hub server or the credentials were invalid: ${e.message}", e)
+            if (detailedLog){
+                logger.error("Could not reach the Hub server or the credentials were invalid: ${e.message}", e)
+            }
         }
         return false;
     }
@@ -141,13 +154,13 @@ class HubServiceWrapper {
         hubServicesFactory.createCLIDataService(120000L)
     }
 
-    private HubServicesFactory createHubServicesFactory(Slf4jIntLogger slf4jIntLogger, HubServerConfig hubServerConfig) {
+    private HubServicesFactory createHubServicesFactory(IntLogger slf4jIntLogger, HubServerConfig hubServerConfig) {
         RestConnection restConnection = hubServerConfig.createCredentialsRestConnection(slf4jIntLogger)
 
         new HubServicesFactory(restConnection)
     }
 
-    private HubServerConfig createHubServerConfig(Slf4jIntLogger slf4jIntLogger) {
+    private HubServerConfig createHubServerConfig(IntLogger slf4jIntLogger) {
         HubServerConfigBuilder hubServerConfigBuilder = new HubServerConfigBuilder()
         hubServerConfigBuilder.setHubUrl(detectConfiguration.getHubUrl())
         hubServerConfigBuilder.setTimeout(detectConfiguration.getHubTimeout())
