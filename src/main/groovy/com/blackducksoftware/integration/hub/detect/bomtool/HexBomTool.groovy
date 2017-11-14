@@ -33,6 +33,7 @@ import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
+import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 
 import groovy.transform.TypeChecked
 
@@ -76,10 +77,15 @@ class HexBomTool extends BomTool {
 
 
     @Override
-    List<DetectCodeLocation> extractDetectCodeLocations(DetectProject detectProject) {
+    public List<DetectCodeLocation> extractDetectCodeLocations(DetectProject detectProject) {
         if (rebarApplies) {
-            return rebarTreeParser.getCodeLocationsFromRebarTree(sourcePath, rebarExePath, detectProject)
+            Executable rebar3TreeExe = new Executable(new File(sourcePath), ['REBAR_COLOR': 'none'], rebarExePath, ['tree'])
+            List<String> output = executableRunner.execute(rebar3TreeExe).standardOutputAsList
+            DetectCodeLocation projectCodeLocation = rebarTreeParser.parseRebarTreeOutput(output, detectProject, sourcePath)
+
+            return [projectCodeLocation]
         }
+
         []
     }
 }
