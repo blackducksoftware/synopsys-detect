@@ -41,7 +41,6 @@ import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendly
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType
 import com.blackducksoftware.integration.hub.detect.help.ValueDescription
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
-import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType
 import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver
 import com.google.gson.Gson
 
@@ -109,10 +108,10 @@ class DetectConfiguration {
 
     List<String> excludedScanPaths = []
 
-    void init(OperatingSystemType currentOs) {
+    void init() {
         String systemUserHome = System.getProperty('user.home');
         if (resolveTildeInPaths) {
-            tildeInPathResolver.resolveTildeInAllPathFields(currentOs, systemUserHome, this);
+            tildeInPathResolver.resolveTildeInAllPathFields(systemUserHome, this);
         }
 
         if (!sourcePath) {
@@ -315,7 +314,7 @@ class DetectConfiguration {
     @Value('${blackduck.hub.offline.mode:}')
     Boolean hubOfflineMode
 
-    @ValueDescription(description="If set to false we will not automatically resolve the ~ character to the user's home directory.", defaultValue="true", group=DetectConfiguration.GROUP_PATHS)
+    @ValueDescription(description="If set to false we will not automatically resolve the '~/' prefix in a mac or linux path to the user's home directory.", defaultValue="true", group=DetectConfiguration.GROUP_PATHS)
     @Value('${detect.resolve.tilde.in.paths:}')
     Boolean resolveTildeInPaths
 

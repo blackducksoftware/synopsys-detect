@@ -4,6 +4,7 @@ import org.junit.Assert
 import org.junit.Test
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
+import com.blackducksoftware.integration.hub.detect.DetectInfo
 import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType
 
 class TildeInPathResolverTest {
@@ -13,7 +14,9 @@ class TildeInPathResolverTest {
         detectConfiguration.sourcePath = '~/Documents/source/integration/hub-detect'
 
         TildeInPathResolver resolver = new TildeInPathResolver()
-        resolver.resolveTildeInAllPathFields(OperatingSystemType.LINUX, '/Users/ekerwin', detectConfiguration)
+        resolver.detectInfo = [determineOperatingSystem: {OperatingSystemType.LINUX}] as DetectInfo
+
+        resolver.resolveTildeInAllPathFields('/Users/ekerwin', detectConfiguration)
 
         Assert.assertEquals('/Users/ekerwin/Documents/source/integration/hub-detect', detectConfiguration.sourcePath)
     }
@@ -24,7 +27,9 @@ class TildeInPathResolverTest {
         detectConfiguration.sourcePath = '~/Documents/source/integration/hub-detect'
 
         TildeInPathResolver resolver = new TildeInPathResolver()
-        resolver.resolveTildeInAllPathFields(OperatingSystemType.WINDOWS, '/Users/ekerwin', detectConfiguration)
+        resolver.detectInfo = [determineOperatingSystem: {OperatingSystemType.WINDOWS}] as DetectInfo
+
+        resolver.resolveTildeInAllPathFields('/Users/ekerwin', detectConfiguration)
 
         Assert.assertEquals('~/Documents/source/integration/hub-detect', detectConfiguration.sourcePath)
     }
@@ -35,7 +40,9 @@ class TildeInPathResolverTest {
         detectConfiguration.sourcePath = '/Documents/~source/~/integration/hub-detect'
 
         TildeInPathResolver resolver = new TildeInPathResolver()
-        resolver.resolveTildeInAllPathFields(OperatingSystemType.LINUX, '/Users/ekerwin', detectConfiguration)
+        resolver.detectInfo = [determineOperatingSystem: {OperatingSystemType.LINUX}] as DetectInfo
+
+        resolver.resolveTildeInAllPathFields('/Users/ekerwin', detectConfiguration)
 
         Assert.assertEquals('/Documents/~source/~/integration/hub-detect', detectConfiguration.sourcePath)
     }

@@ -29,6 +29,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.blackducksoftware.integration.hub.detect.DetectInfo;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
@@ -38,11 +39,8 @@ public class ExecutableManager {
     @Autowired
     private DetectFileManager detectFileManager;
 
-    private OperatingSystemType currentOs;
-
-    public void init(final OperatingSystemType currentOs) {
-        this.currentOs = currentOs;
-    }
+    @Autowired
+    private DetectInfo detectInfo;
 
     public String getExecutableName(final ExecutableType executableType) {
         return executableType.getExecutable();
@@ -75,6 +73,7 @@ public class ExecutableManager {
 
     private File findExecutableFileFromPath(final String path, final String executableName) {
         final List<String> executables;
+        final OperatingSystemType currentOs = detectInfo.determineOperatingSystem();
         if (currentOs == OperatingSystemType.WINDOWS) {
             executables = Arrays.asList(executableName + ".cmd", executableName + ".bat", executableName + ".exe");
         } else {

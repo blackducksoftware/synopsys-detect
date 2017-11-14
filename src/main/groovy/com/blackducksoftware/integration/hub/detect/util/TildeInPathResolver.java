@@ -27,13 +27,13 @@ import java.lang.reflect.Field;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.DetectInfo;
 import com.blackducksoftware.integration.hub.detect.help.ValueDescription;
 import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType;
-
-@Component
 
 /**
  * // @formatter:off
@@ -48,10 +48,15 @@ import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType;
  * --detect.resolve.tilde.in.paths=false to turn it off.
  * // @formatter:on
  */
+@Component
 public class TildeInPathResolver {
     private final Logger logger = LoggerFactory.getLogger(TildeInPathResolver.class);
 
-    public void resolveTildeInAllPathFields(final OperatingSystemType currentOs, final String systemUserHome, final DetectConfiguration detectConfiguration) throws IllegalArgumentException, IllegalAccessException {
+    @Autowired
+    private DetectInfo detectInfo;
+
+    public void resolveTildeInAllPathFields(final String systemUserHome, final DetectConfiguration detectConfiguration) throws IllegalArgumentException, IllegalAccessException {
+        final OperatingSystemType currentOs = detectInfo.determineOperatingSystem();
         final Field[] fields = DetectConfiguration.class.getDeclaredFields();
         for (final Field field : fields) {
             if (field.isAnnotationPresent(ValueDescription.class) && field.getType() == String.class) {

@@ -26,7 +26,6 @@ import javax.annotation.PostConstruct
 import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
 
-import org.apache.commons.lang3.SystemUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -57,9 +56,7 @@ import com.blackducksoftware.integration.hub.detect.interactive.reader.Interacti
 import com.blackducksoftware.integration.hub.detect.interactive.reader.ScannerInteractiveReader
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.summary.DetectSummary
-import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager
 import com.blackducksoftware.integration.hub.exception.HubTimeoutExceededException
 import com.blackducksoftware.integration.hub.model.view.ProjectVersionView
 import com.blackducksoftware.integration.log.Slf4jIntLogger
@@ -83,9 +80,6 @@ class Application {
 
     @Autowired
     DetectConfiguration detectConfiguration
-
-    @Autowired
-    ExecutableManager executableManager
 
     @Autowired
     DetectProjectManager detectProjectManager
@@ -120,7 +114,6 @@ class Application {
     @Autowired
     List<ExitCodeReporter> exitCodeReporters;
 
-    private OperatingSystemType currentOs;
     private ExitCodeType exitCodeType = ExitCodeType.SUCCESS;
     private String exitMessage = "";
 
@@ -151,9 +144,7 @@ class Application {
                 interactiveManager.interact(interactiveReader, interactivePrintStream);
             }
 
-            determineOperatingSystem();
-            executableManager.init(currentOs);
-            detectConfiguration.init(currentOs)
+            detectConfiguration.init()
 
             logger.info('Configuration processed completely.')
 
@@ -226,23 +217,6 @@ class Application {
             logger.error('An unknown/unexpected error occurred');
             logger.debug(e.getMessage(), e);
             exitCodeType = ExitCodeType.FAILURE_UNKNOWN_ERROR;
-        }
-    }
-
-    private void determineOperatingSystem() {
-        if (SystemUtils.IS_OS_LINUX) {
-            currentOs = OperatingSystemType.LINUX;
-        } else if (SystemUtils.IS_OS_MAC) {
-            currentOs = OperatingSystemType.MAC;
-        } else if (SystemUtils.IS_OS_WINDOWS) {
-            currentOs = OperatingSystemType.WINDOWS;
-        }
-
-        if (currentOs == null) {
-            logger.warn("Your operating system is not supported. Linux will be assumed.");
-            currentOs = OperatingSystemType.LINUX;
-        } else {
-            logger.info("You seem to be running in a " + currentOs + " operating system.");
         }
     }
 
