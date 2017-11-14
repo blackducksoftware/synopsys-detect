@@ -198,7 +198,6 @@ class DetectProjectManager implements SummaryResultReporter {
     }
 
     private String generateShortenedFilename(BomToolType bomToolType, String finalSourcePathPiece, ExternalId externalId) {
-
         List<String> filenamePieces = new ArrayList<>();
         filenamePieces.addAll(externalId.getExternalIdPieces());
         filenamePieces.add(finalSourcePathPiece);
