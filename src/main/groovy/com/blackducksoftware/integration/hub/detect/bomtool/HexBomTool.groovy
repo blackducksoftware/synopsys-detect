@@ -42,10 +42,6 @@ class HexBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(HexBomTool.class)
 
     public static final String REBAR_CONFIG = 'rebar.config'
-    public static final String ELBOW = '└'
-    public static final String TEE = '├'
-    public static final String LINEY_DOO = '│'
-    public static final String MR_DASH = '─'
 
     @Autowired
     DetectConfiguration detectConfiguration
@@ -66,9 +62,10 @@ class HexBomTool extends BomTool {
         boolean hasRebarConfig = detectFileManager.containsAllFiles(sourcePath, REBAR_CONFIG)
 
         if (hasRebarConfig) {
+            logger.info('Rebar3 build tool applies for HEX given the current configuration.')
             rebarExePath = findExecutablePath(ExecutableType.REBAR3, true, detectConfiguration.getHexRebar3Path())
             if (!rebarExePath) {
-                logger.warn('Could not find a rebar3 executable')
+                logger.warn('Could not find a rebar3 executable.')
             }
         }
 
@@ -81,7 +78,7 @@ class HexBomTool extends BomTool {
     @Override
     List<DetectCodeLocation> extractDetectCodeLocations(DetectProject detectProject) {
         if (rebarApplies) {
-            return rebarTreeParser.parseTree(detectProject, sourcePath, rebarExePath)
+            return rebarTreeParser.getCodeLocationsFromRebarTree(sourcePath, rebarExePath, detectProject)
         }
         []
     }

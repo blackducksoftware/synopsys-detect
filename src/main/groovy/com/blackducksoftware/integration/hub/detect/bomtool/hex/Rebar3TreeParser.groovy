@@ -49,19 +49,11 @@ class Rebar3TreeParser {
 
     public static final String LAST_DEPENDENCY_CHARACTER = '└'
     public static final String NTH_DEPENDENCY_CHARACTER = '├'
-    public static final String INNER_LEVEL_CHARACTER = '│'
     public static final String HORIZONTAL_SEPARATOR_CHARACTER = '─'
-    public static final String SPACE_CHARACTER = ' '
-    public static final String NTH_DEPENDENCY_PREFIX = NTH_DEPENDENCY_CHARACTER + HORIZONTAL_SEPARATOR_CHARACTER + SPACE_CHARACTER
-    public static final String LAST_DEPENDENCY_PREFIX = LAST_DEPENDENCY_CHARACTER + HORIZONTAL_SEPARATOR_CHARACTER + SPACE_CHARACTER
-    public static final String INNER_LEVEL_PREFIX = INNER_LEVEL_CHARACTER + SPACE_CHARACTER + SPACE_CHARACTER
-    public static final String OUTER_LEVEL_PREFIX = SPACE_CHARACTER + SPACE_CHARACTER + SPACE_CHARACTER
-    public static final String HEX_FORGE_STRING = '(hex package)'
-    public static final String GIT_FORGE_STRING = '(git repo)'
+    public static final String INNER_LEVEL_CHARACTER = '│'
+    public static final String INNER_LEVEL_PREFIX = INNER_LEVEL_CHARACTER + ' '.multiply(2)
+    public static final String OUTER_LEVEL_PREFIX = ' '.multiply(3)
     public static final String PROJECT_FORGE_STRING = '(project app)'
-    public static final String CHECKOUT_FORGE_STRING = '(checkout app)'
-
-    private MutableDependencyGraph graph = new MutableMapDependencyGraph()
 
     @Autowired
     DetectConfiguration detectConfiguration
@@ -72,7 +64,7 @@ class Rebar3TreeParser {
     @Autowired
     ExternalIdFactory externalIdFactory
 
-    public List<DetectCodeLocation> parseTree(DetectProject detectProject, String sourcePath, String rebarExecutablePath) {
+    public List<DetectCodeLocation> getCodeLocationsFromRebarTree(String sourcePath, String rebarExecutablePath, DetectProject detectProject) {
         Executable rebar3TreeExe = new Executable(new File(sourcePath), ['REBAR_COLOR': 'none'], rebarExecutablePath, ['tree'])
         List<String> output = executableRunner.execute(rebar3TreeExe).standardOutputAsList
 
@@ -83,13 +75,20 @@ class Rebar3TreeParser {
             }
         }
 
-        String projectName = ""
-        String projectVersionName = ""
+        DetectCodeLocation projectCodeLocation = parseRebarTreeOutput(cleanedOutput, detectProject, sourcePath)
+
+        return [projectCodeLocation]
+    }
+
+    private DetectCodeLocation parseRebarTreeOutput(List<String> dependencyTreeOutput, DetectProject detectProject, String sourcePath) {
+        MutableDependencyGraph graph = new MutableMapDependencyGraph()
+        String projectName = ''
+        String projectVersionName = ''
         Stack<Dependency> dependencyStack = new Stack<Dependency>()
         int previousTreeLevel = 0
         Dependency previousDependency
         try {
-            for (String line: cleanedOutput) {
+            for (String line: dependencyTreeOutput) {
                 Dependency currentDependency = createDependencyFromLine(line)
 
                 final int currentTreeLevel = getDependencyLevel(line)
@@ -102,7 +101,7 @@ class Rebar3TreeParser {
                         dependencyStack.pop()
                     }
                 } else if (currentTreeLevel != previousTreeLevel) {
-                    logger.error(String.format("The tree level (%s) and this line (%s) with count %s can't be reconciled.", previousTreeLevel, line, currentTreeLevel))
+                    logger.error(String.format('The tree level (%s) and this line (%s) with count %s can\'t be reconciled.', previousTreeLevel, line, currentTreeLevel))
                 }
 
                 if (dependencyStack.size() == 0) {
@@ -122,21 +121,21 @@ class Rebar3TreeParser {
                 previousTreeLevel = currentTreeLevel
             }
         } catch (final Exception e) {
-            logger.error("Exception parsing rebar output: " + e.getMessage())
+            logger.error('Exception parsing rebar output: ' + e.getMessage())
         }
         detectProject.setProjectNameIfNotSet(projectName)
         detectProject.setProjectVersionNameIfNotSet(projectVersionName)
 
-        final ExternalId id = externalIdFactory.createNameVersionExternalId(new Forge("hex", "/"), projectName, projectVersionName)
-        final DetectCodeLocation detectCodeLocation = new DetectCodeLocation(BomToolType.HEX, sourcePath, projectName, projectVersionName, id, graph)
-        return [detectCodeLocation]
+        final ExternalId id = externalIdFactory.createNameVersionExternalId(new Forge('hex', '/'), projectName, projectVersionName)
+
+        return new DetectCodeLocation(BomToolType.HEX, sourcePath, projectName, projectVersionName, id, graph)
     }
 
     private Dependency createDependencyFromLine(String line) {
         String nameVersionLine = reduceLineToNameVersion(line)
         String name = nameVersionLine.substring(0, nameVersionLine.lastIndexOf(HORIZONTAL_SEPARATOR_CHARACTER))
         String version = nameVersionLine.substring(nameVersionLine.lastIndexOf(HORIZONTAL_SEPARATOR_CHARACTER) + 1)
-        ExternalId externalId  = externalIdFactory.createNameVersionExternalId(new Forge("hex", "/"), name, version)
+        ExternalId externalId  = externalIdFactory.createNameVersionExternalId(new Forge('hex', '/'), name, version)
 
         return new Dependency(name, version, externalId)
     }
@@ -149,11 +148,11 @@ class Rebar3TreeParser {
         ]) {
             line = line.replaceAll(specialCharacter, '')
         }
-        //Special treatment because this prefixes all of the lines, but is also used to separate name/version
         line = line.replaceFirst(HORIZONTAL_SEPARATOR_CHARACTER, '')
         if (line.endsWith(')')) {
             line = line.substring(0, line.lastIndexOf('('))
         }
+
         return line.trim()
     }
 
@@ -172,6 +171,7 @@ class Rebar3TreeParser {
         if (line.endsWith(')')) {
             forgeString = line.substring(line.lastIndexOf('('))
         }
+
         return PROJECT_FORGE_STRING.equals(forgeString)
     }
 }
