@@ -108,7 +108,7 @@ class Rebar3TreeParser {
         detectProject.setProjectNameIfNotSet(projectName)
         detectProject.setProjectVersionNameIfNotSet(projectVersionName)
 
-        final ExternalId id = externalIdFactory.createNameVersionExternalId(new Forge('hex', '/'), projectName, projectVersionName)
+        final ExternalId id = externalIdFactory.createNameVersionExternalId(Forge.HEX, projectName, projectVersionName)
 
         return new DetectCodeLocation(BomToolType.HEX, sourcePath, projectName, projectVersionName, id, graph)
     }
@@ -117,7 +117,7 @@ class Rebar3TreeParser {
         String nameVersionLine = reduceLineToNameVersion(line)
         String name = nameVersionLine.substring(0, nameVersionLine.lastIndexOf(HORIZONTAL_SEPARATOR_CHARACTER))
         String version = nameVersionLine.substring(nameVersionLine.lastIndexOf(HORIZONTAL_SEPARATOR_CHARACTER) + 1)
-        ExternalId externalId  = externalIdFactory.createNameVersionExternalId(new Forge('hex', '/'), name, version)
+        ExternalId externalId  = externalIdFactory.createNameVersionExternalId(Forge.HEX, name, version)
 
         return new Dependency(name, version, externalId)
     }

@@ -59,7 +59,7 @@ class RebarParserTest {
     }
 
     private Dependency buildDependency(String name, String version) {
-        return new Dependency(name, version, externalIdFactory.createNameVersionExternalId(new Forge('hex', '/'), name, version))
+        return new Dependency(name, version, externalIdFactory.createNameVersionExternalId(Forge.HEX, name, version))
     }
 
     private DetectCodeLocation build(String resource){
