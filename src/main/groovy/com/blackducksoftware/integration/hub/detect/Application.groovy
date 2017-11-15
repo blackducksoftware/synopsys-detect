@@ -57,7 +57,6 @@ import com.blackducksoftware.integration.hub.detect.interactive.reader.ScannerIn
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.summary.DetectSummary
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager
 import com.blackducksoftware.integration.hub.exception.HubTimeoutExceededException
 import com.blackducksoftware.integration.hub.model.view.ProjectVersionView
 import com.blackducksoftware.integration.log.Slf4jIntLogger
@@ -81,9 +80,6 @@ class Application {
 
     @Autowired
     DetectConfiguration detectConfiguration
-
-    @Autowired
-    ExecutableManager executableManager
 
     @Autowired
     DetectProjectManager detectProjectManager
@@ -148,7 +144,6 @@ class Application {
                 interactiveManager.interact(interactiveReader, interactivePrintStream);
             }
 
-            executableManager.init()
             detectConfiguration.init()
 
             logger.info('Configuration processed completely.')
