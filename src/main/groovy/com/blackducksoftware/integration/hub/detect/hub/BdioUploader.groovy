@@ -62,13 +62,11 @@ class BdioUploader {
 
         String hubDetectVersion = detectInfo.detectVersion
         PhoneHomeRequestBody phoneHomeRequestBody = phoneHomeDataService.createInitialPhoneHomeRequestBodyBuilder(ThirdPartyName.DETECT, hubDetectVersion, hubDetectVersion).build()
-        populatePhoneHomeBomToolMetadata(detectProject, phoneHomeRequestBody.getInfoMap());
+
+        Set<BomToolType> applicableBomTools = detectProject.getApplicableBomTools();
+        String applicableBomToolsString = StringUtils.join(applicableBomTools, ", ");
+        phoneHomeRequestBody.getInfoMap().put("bomToolTypes", applicableBomToolsString);
 
         phoneHomeDataService.phoneHome(phoneHomeRequestBody)
-    }
-
-    private String populatePhoneHomeBomToolMetadata(DetectProject detectProject, Map<String, String> metadataMap) {
-        Set<BomToolType> bomToolTypes = detectProject.getApplicableBomTools();
-        metadataMap.put("bomToolTypes", StringUtils.join(bomToolTypes, ", "));
     }
 }
