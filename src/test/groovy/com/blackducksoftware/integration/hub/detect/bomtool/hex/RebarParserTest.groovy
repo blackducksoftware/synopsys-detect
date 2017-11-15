@@ -1,6 +1,7 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.hex
 
 import static com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphAssertions.*
+import static com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil.*
 import static org.junit.Assert.*
 
 import org.junit.BeforeClass
@@ -8,6 +9,7 @@ import org.junit.Test
 import org.springframework.test.util.ReflectionTestUtils
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
@@ -30,9 +32,34 @@ class RebarParserTest {
         testUtil = new TestUtil()
     }
 
+    @Test
     public void testParseRebarTreeOutput(){
+        MutableMapDependencyGraph expectedGraph = new MutableMapDependencyGraph()
+        Dependency gitInnerParentDependency = buildDependency('git_inner_parent_dependency', '0.0.2')
+        Dependency hexInnerChildDependency = buildDependency('hex_inner_child_dependency', '0.3.0')
+        Dependency hexGrandchildDependency = buildDependency('hex_grandchild_dependency', '4.0.0')
+        Dependency gitInnerChildDependency = buildDependency('git_inner_child_dependency', '0.5.0')
+        Dependency gitGrandchildDependency = buildDependency('git_grandchild_dependency', '6.0.0')
+        Dependency gitOuterParentDependency = buildDependency('git_outer_parent_dependency', '0.0.7')
+        Dependency gitOuterChildDependency = buildDependency('git_outer_child_dependency', '0.8.0')
+
+        expectedGraph.addChildrenToRoot(gitInnerParentDependency, gitOuterParentDependency)
+        expectedGraph.addChildWithParent(hexInnerChildDependency, gitInnerParentDependency)
+        expectedGraph.addChildWithParents(hexGrandchildDependency, hexInnerChildDependency)
+
+        expectedGraph.addChildWithParent(gitInnerChildDependency, gitInnerParentDependency)
+        expectedGraph.addChildWithParents(gitGrandchildDependency, gitInnerChildDependency)
+
+        expectedGraph.addChildWithParents(gitOuterChildDependency, gitOuterParentDependency)
+
         DetectCodeLocation codeLocation = build('hex/dependencyTree.txt')
-        DependencyGraph graph = codeLocation.dependencyGraph
+        DependencyGraph actualGraph = codeLocation.dependencyGraph
+
+        assertGraph(expectedGraph, actualGraph)
+    }
+
+    private Dependency buildDependency(String name, String version) {
+        return new Dependency(name, version, externalIdFactory.createNameVersionExternalId(new Forge('hex', '/'), name, version))
     }
 
     private DetectCodeLocation build(String resource){
