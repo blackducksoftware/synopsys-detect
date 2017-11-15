@@ -26,41 +26,21 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang3.SystemUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.blackducksoftware.integration.hub.detect.DetectInfo;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 
 @Component
 public class ExecutableManager {
-    private final Logger logger = LoggerFactory.getLogger(ExecutableManager.class);
-
     @Autowired
     private DetectFileManager detectFileManager;
 
-    private OperatingSystemType currentOs;
-
-    public void init() {
-        if (SystemUtils.IS_OS_LINUX) {
-            currentOs = OperatingSystemType.LINUX;
-        } else if (SystemUtils.IS_OS_MAC) {
-            currentOs = OperatingSystemType.MAC;
-        } else if (SystemUtils.IS_OS_WINDOWS) {
-            currentOs = OperatingSystemType.WINDOWS;
-        }
-
-        if (currentOs == null) {
-            logger.warn("Your operating system is not supported. Linux will be assumed.");
-            currentOs = OperatingSystemType.LINUX;
-        } else {
-            logger.info("You seem to be running in a " + currentOs + " operating system.");
-        }
-    }
+    @Autowired
+    private DetectInfo detectInfo;
 
     public String getExecutableName(final ExecutableType executableType) {
         return executableType.getExecutable();
@@ -93,6 +73,7 @@ public class ExecutableManager {
 
     private File findExecutableFileFromPath(final String path, final String executableName) {
         final List<String> executables;
+        final OperatingSystemType currentOs = detectInfo.determineOperatingSystem();
         if (currentOs == OperatingSystemType.WINDOWS) {
             executables = Arrays.asList(executableName + ".cmd", executableName + ".bat", executableName + ".exe");
         } else {

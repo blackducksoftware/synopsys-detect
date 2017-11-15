@@ -25,14 +25,20 @@ package com.blackducksoftware.integration.hub.detect;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+import org.apache.commons.lang3.SystemUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType;
 import com.blackducksoftware.integration.util.ResourceUtil;
 import com.google.gson.Gson;
 
 @Component
 public class DetectInfo {
+    private final Logger logger = LoggerFactory.getLogger(DetectConfiguration.class);
+
     @Autowired
     Gson gson;
 
@@ -44,6 +50,27 @@ public class DetectInfo {
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public OperatingSystemType determineOperatingSystem() {
+        OperatingSystemType currentOs = null;
+
+        if (SystemUtils.IS_OS_LINUX) {
+            currentOs = OperatingSystemType.LINUX;
+        } else if (SystemUtils.IS_OS_MAC) {
+            currentOs = OperatingSystemType.MAC;
+        } else if (SystemUtils.IS_OS_WINDOWS) {
+            currentOs = OperatingSystemType.WINDOWS;
+        }
+
+        if (currentOs == null) {
+            logger.warn("Your operating system is not supported. Linux will be assumed.");
+            currentOs = OperatingSystemType.LINUX;
+        } else {
+            logger.info("You seem to be running in a " + currentOs + " operating system.");
+        }
+
+        return currentOs;
     }
 
     public String getDetectVersion() {
