@@ -76,7 +76,7 @@ class RebarParserTest {
     public void testCreateDependencyFromLine() {
         String expectedName = 'cf'
         String expectedVersion = '0.2.2'
-        ExternalId expectedExternalId  = externalIdFactory.createNameVersionExternalId(new Forge('hex', '/'), expectedName, expectedVersion)
+        ExternalId expectedExternalId  = externalIdFactory.createNameVersionExternalId(Forge.HEX, expectedName, expectedVersion)
 
         Dependency actualDependency = rebar3TreeParser.createDependencyFromLine('   │  │  └─ cf─0.2.2 (hex package)')
 
