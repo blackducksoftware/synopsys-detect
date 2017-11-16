@@ -36,6 +36,7 @@ import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.global.HubServerConfig
 import com.blackducksoftware.integration.phonehome.PhoneHomeRequestBody
+import com.blackducksoftware.integration.phonehome.PhoneHomeRequestBodyBuilder
 import com.blackducksoftware.integration.phonehome.enums.ThirdPartyName
 
 import groovy.transform.TypeChecked
@@ -61,12 +62,13 @@ class BdioUploader {
         }
 
         String hubDetectVersion = detectInfo.detectVersion
-        PhoneHomeRequestBody phoneHomeRequestBody = phoneHomeDataService.createInitialPhoneHomeRequestBodyBuilder(ThirdPartyName.DETECT, hubDetectVersion, hubDetectVersion).build()
-
         Set<BomToolType> applicableBomTools = detectProject.getApplicableBomTools();
         String applicableBomToolsString = StringUtils.join(applicableBomTools, ", ");
-        phoneHomeRequestBody.getInfoMap().put("bomToolTypes", applicableBomToolsString);
 
+        PhoneHomeRequestBodyBuilder phoneHomeRequestBodyBuilder = phoneHomeDataService.createInitialPhoneHomeRequestBodyBuilder(ThirdPartyName.DETECT, hubDetectVersion, hubDetectVersion);
+        phoneHomeRequestBodyBuilder.addToMetaDataMap('bomToolTypes', applicableBomToolsString);
+
+        PhoneHomeRequestBody phoneHomeRequestBody = phoneHomeRequestBodyBuilder.build();
         phoneHomeDataService.phoneHome(phoneHomeRequestBody)
     }
 }
