@@ -81,6 +81,13 @@ class PackagistParser {
             }
         }
 
+        List<String> allPackageNames =  packagistPackages.collect{it.getAt('name').toString().replace('"', '')}
+        startingPackages.each {
+            if (!allPackageNames.contains(it)){
+                logger.warn("A discrepency exists between the composer.json and the composer.lock - the package '${it}' was in the json but not the lock.");
+            }
+        }
+
         ExternalId projectExternalId;
         if (projectName == null || projectVersion == null){
             projectExternalId = externalIdFactory.createPathExternalId(Forge.PACKAGIST, sourcePath);
@@ -95,14 +102,11 @@ class PackagistParser {
         if (!currentPackages) {
             return
         }
-        List<String> found = new ArrayList<>();
+
         jsonArray.each {
             String currentRowPackageName = it.getAt('name').toString().replace('"', '')
 
             if (currentPackages.contains(currentRowPackageName)) {
-                if (root){
-                    found.add(currentRowPackageName);
-                }
                 String currentRowPackageVersion = it.getAt('version').toString().replace('"', '')
 
                 Dependency child = new Dependency(currentRowPackageName, currentRowPackageVersion, externalIdFactory.createNameVersionExternalId(Forge.PACKAGIST, currentRowPackageName, currentRowPackageVersion))
@@ -112,14 +116,6 @@ class PackagistParser {
                     graph.addChildToRoot(child)
                 }else{
                     graph.addParentWithChild(parent, child)
-                }
-            }
-        }
-
-        if (root){
-            currentPackages.each {
-                if (!found.contains(it)){
-                    logger.warn("A discrepency exists between the composer.json and the composer.lock - the package '${it}' was in the json but not the lock.");
                 }
             }
         }
