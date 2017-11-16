@@ -22,7 +22,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.docker
 
-import org.apache.commons.lang3.math.NumberUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -34,6 +33,8 @@ import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
+import com.blackducksoftware.integration.hub.proxy.ProxyInfo
+import com.blackducksoftware.integration.hub.proxy.ProxyInfoBuilder
 import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnection
 import com.blackducksoftware.integration.log.Slf4jIntLogger
 
@@ -99,12 +100,14 @@ class DockerInspectorManager {
                     hubDockerInspectorShellScriptUrl = new URL("https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector-${detectConfiguration.dockerInspectorVersion}.sh")
                 }
                 logger.info("Getting the Docker inspector shell script from ${hubDockerInspectorShellScriptUrl.toURI().toString()}")
-                UnauthenticatedRestConnection restConnection = new UnauthenticatedRestConnection(new Slf4jIntLogger(logger), hubDockerInspectorShellScriptUrl, detectConfiguration.getHubTimeout())
+                ProxyInfoBuilder proxyInfoBuilder = new ProxyInfoBuilder()
+                proxyInfoBuilder.setHost(detectConfiguration.getHubProxyHost())
+                proxyInfoBuilder.setPort(detectConfiguration.getHubProxyPort())
+                proxyInfoBuilder.setUsername(detectConfiguration.getHubProxyUsername())
+                proxyInfoBuilder.setPassword(detectConfiguration.getHubProxyPassword())
+                ProxyInfo proxyInfo = proxyInfoBuilder.build()
+                UnauthenticatedRestConnection restConnection = new UnauthenticatedRestConnection(new Slf4jIntLogger(logger), hubDockerInspectorShellScriptUrl, detectConfiguration.getHubTimeout(), proxyInfo)
                 restConnection.alwaysTrustServerCertificate = detectConfiguration.hubTrustCertificate
-                restConnection.proxyHost = detectConfiguration.getHubProxyHost()
-                restConnection.proxyPort = NumberUtils.toInt(detectConfiguration.getHubProxyPort())
-                restConnection.proxyUsername = detectConfiguration.getHubProxyUsername()
-                restConnection.proxyPassword = detectConfiguration.getHubProxyPassword()
                 HttpUrl httpUrl = restConnection.createHttpUrl()
                 Request request = restConnection.createGetRequest(httpUrl)
                 String shellScriptContents = null
