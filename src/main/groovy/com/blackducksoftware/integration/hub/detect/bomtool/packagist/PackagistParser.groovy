@@ -22,6 +22,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.packagist
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -43,6 +45,8 @@ import groovy.transform.TypeChecked
 @Component
 @TypeChecked
 class PackagistParser {
+    private final Logger logger = LoggerFactory.getLogger(PackagistParser.class)
+
     @Autowired
     DetectConfiguration detectConfiguration
 
@@ -68,6 +72,15 @@ class PackagistParser {
         }
         convertFromJsonToDependency(graph, null, startingPackages, packagistPackages, true)
 
+        packagistPackages.each{
+            String packageName = it.getAt('name').toString().replace('"', '')
+            String packageVersion = it.getAt('version').toString().replace('"', '')
+            ExternalId id = externalIdFactory.createNameVersionExternalId(Forge.PACKAGIST, packageName, packageVersion);
+            if (graph.getDependency(id) == null){
+                logger.warn("A discrepency exists between the composer.json and the composer.lock - the package '${packageName}' was in the lock but was not included in the json dependency tree.");
+            }
+        }
+
         ExternalId projectExternalId;
         if (projectName == null || projectVersion == null){
             projectExternalId = externalIdFactory.createPathExternalId(Forge.PACKAGIST, sourcePath);
@@ -82,11 +95,14 @@ class PackagistParser {
         if (!currentPackages) {
             return
         }
-
+        List<String> found = new ArrayList<>();
         jsonArray.each {
             String currentRowPackageName = it.getAt('name').toString().replace('"', '')
 
             if (currentPackages.contains(currentRowPackageName)) {
+                if (root){
+                    found.add(currentRowPackageName);
+                }
                 String currentRowPackageVersion = it.getAt('version').toString().replace('"', '')
 
                 Dependency child = new Dependency(currentRowPackageName, currentRowPackageVersion, externalIdFactory.createNameVersionExternalId(Forge.PACKAGIST, currentRowPackageName, currentRowPackageVersion))
@@ -96,6 +112,14 @@ class PackagistParser {
                     graph.addChildToRoot(child)
                 }else{
                     graph.addParentWithChild(parent, child)
+                }
+            }
+        }
+
+        if (root){
+            currentPackages.each {
+                if (!found.contains(it)){
+                    logger.warn("A discrepency exists between the composer.json and the composer.lock - the package '${it}' was in the json but not the lock.");
                 }
             }
         }
