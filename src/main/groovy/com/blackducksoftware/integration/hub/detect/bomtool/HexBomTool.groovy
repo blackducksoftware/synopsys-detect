@@ -40,52 +40,52 @@ import groovy.transform.TypeChecked
 @Component
 @TypeChecked
 class HexBomTool extends BomTool {
-    private final Logger logger = LoggerFactory.getLogger(HexBomTool.class)
+    private final Logger logger = LoggerFactory.getLogger(HexBomTool.class);
 
-    public static final String REBAR_CONFIG = 'rebar.config'
-
-    @Autowired
-    DetectConfiguration detectConfiguration
+    public static final String REBAR_CONFIG = 'rebar.config';
 
     @Autowired
-    Rebar3TreeParser rebarTreeParser
+    DetectConfiguration detectConfiguration;
 
-    private String rebarExePath
-    private boolean rebarApplies
+    @Autowired
+    Rebar3TreeParser rebarTreeParser;
+
+    private String rebarExePath;
+    private boolean rebarApplies;
 
     @Override
     public BomToolType getBomToolType() {
-        return BomToolType.HEX
+        return BomToolType.HEX;
     }
 
     @Override
     public boolean isBomToolApplicable() {
-        boolean hasRebarConfig = detectFileManager.containsAllFiles(sourcePath, REBAR_CONFIG)
+        boolean hasRebarConfig = detectFileManager.containsAllFiles(sourcePath, REBAR_CONFIG);
 
         if (hasRebarConfig) {
-            logger.info('Rebar3 build tool applies for HEX given the current configuration.')
-            rebarExePath = findExecutablePath(ExecutableType.REBAR3, true, detectConfiguration.getHexRebar3Path())
+            logger.info('Rebar3 build tool applies for HEX given the current configuration.');
+            rebarExePath = findExecutablePath(ExecutableType.REBAR3, true, detectConfiguration.getHexRebar3Path());
             if (!rebarExePath) {
-                logger.warn('Could not find a rebar3 executable.')
+                logger.warn('Could not find a rebar3 executable.');
             }
         }
 
-        rebarApplies = rebarExePath && hasRebarConfig
+        rebarApplies = rebarExePath && hasRebarConfig;
 
-        return rebarApplies
+        return rebarApplies;
     }
 
 
     @Override
     public List<DetectCodeLocation> extractDetectCodeLocations(DetectProject detectProject) {
         if (rebarApplies) {
-            Executable rebar3TreeExe = new Executable(new File(sourcePath), ['REBAR_COLOR': 'none'], rebarExePath, ['tree'])
-            List<String> output = executableRunner.execute(rebar3TreeExe).standardOutputAsList
-            DetectCodeLocation projectCodeLocation = rebarTreeParser.parseRebarTreeOutput(output, detectProject, sourcePath)
+            Executable rebar3TreeExe = new Executable(new File(sourcePath), ['REBAR_COLOR': 'none'], rebarExePath, ['tree']);
+            List<String> output = executableRunner.execute(rebar3TreeExe).standardOutputAsList;
+            DetectCodeLocation projectCodeLocation = rebarTreeParser.parseRebarTreeOutput(output, detectProject, sourcePath);
 
-            return [projectCodeLocation]
+            return [projectCodeLocation];
         }
 
-        []
+        return [];
     }
 }
