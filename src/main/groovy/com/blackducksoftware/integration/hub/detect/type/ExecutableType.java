@@ -41,7 +41,8 @@ public enum ExecutableType {
     PIP,
     PIP3,
     PYTHON,
-    PYTHON3;
+    PYTHON3,
+    REBAR3;
 
     private String executableName;
 

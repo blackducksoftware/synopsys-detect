@@ -1,0 +1,8 @@
+└─ project─1.0.0 (project app)
+   ├─ git_inner_parent_dependency─0.0.2 (git repo)
+   │  ├─ hex_inner_child_dependency─0.3.0 (hex package)
+   │  │  └─ hex_grandchild_dependency─4.0.0 (hex package)
+   │  └─ git_inner_child_dependency─0.5.0 (git repo)
+   │     └─ git_grandchild_dependency─6.0.0 (git repo)
+   └─ git_outer_parent_dependency─0.0.7 (git repo)
+      └─ git_outer_child_dependency─0.8.0 (git repo)

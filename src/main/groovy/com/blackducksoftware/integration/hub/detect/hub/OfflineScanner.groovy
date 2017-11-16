@@ -33,9 +33,11 @@ import com.blackducksoftware.integration.hub.cli.CLILocation
 import com.blackducksoftware.integration.hub.cli.OfflineCLILocation
 import com.blackducksoftware.integration.hub.cli.SimpleScanService
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
+import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException
+import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType
 import com.blackducksoftware.integration.hub.global.HubServerConfig
 import com.blackducksoftware.integration.hub.rest.RestConnection
-import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnection
+import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnectionBuilder
 import com.blackducksoftware.integration.hub.scan.HubScanConfig
 import com.blackducksoftware.integration.log.IntLogger
 import com.blackducksoftware.integration.log.Slf4jIntLogger
@@ -77,10 +79,18 @@ class OfflineScanner {
 
         boolean cliInstalledOkay = checkCliInstall(cliLocation, silentLogger)
         if (!cliInstalledOkay && detectConfiguration.hubSignatureScannerHostUrl) {
-            logger.info("Attempting to download the signature scanner from ${detectConfiguration.hubSignatureScannerHostUrl}")
-            RestConnection restConnection = new UnauthenticatedRestConnection(silentLogger, new URL(detectConfiguration.hubSignatureScannerHostUrl), detectConfiguration.hubTimeout)
-            CLIDownloadService cliDownloadService = new CLIDownloadService(intLogger, restConnection)
-            cliDownloadService.performInstallation(cliLocation.getCLIInstallDir(), ciEnvironmentVariables, detectConfiguration.hubSignatureScannerHostUrl, 'unknown', 'hub-detect')
+            try {
+                logger.info("Attempting to download the signature scanner from ${detectConfiguration.hubSignatureScannerHostUrl}")
+                UnauthenticatedRestConnectionBuilder restConnectionBuilder = new UnauthenticatedRestConnectionBuilder()
+                restConnectionBuilder.setBaseUrl(detectConfiguration.hubSignatureScannerHostUrl)
+                restConnectionBuilder.setTimeout(detectConfiguration.hubTimeout)
+                restConnectionBuilder.applyProxyInfo(detectConfiguration.getHubProxyInfo())
+                RestConnection restConnection = restConnectionBuilder.build()
+                CLIDownloadService cliDownloadService = new CLIDownloadService(intLogger, restConnection)
+                cliDownloadService.performInstallation(cliLocation.getCLIInstallDir(), ciEnvironmentVariables, detectConfiguration.hubSignatureScannerHostUrl, 'unknown', 'hub-detect')
+            } catch (Exception e) {
+                throw new DetectUserFriendlyException("There was a problem downloading the signature scanner from ${detectConfiguration.hubSignatureScannerHostUrl}: ${e.message}", e, ExitCodeType.FAILURE_GENERAL_ERROR)
+            }
         }
 
         cliInstalledOkay = checkCliInstall(cliLocation, silentLogger)
