@@ -33,8 +33,6 @@ import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
-import com.blackducksoftware.integration.hub.proxy.ProxyInfo
-import com.blackducksoftware.integration.hub.proxy.ProxyInfoBuilder
 import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnection
 import com.blackducksoftware.integration.log.Slf4jIntLogger
 
@@ -100,13 +98,7 @@ class DockerInspectorManager {
                     hubDockerInspectorShellScriptUrl = new URL("https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector-${detectConfiguration.dockerInspectorVersion}.sh")
                 }
                 logger.info("Getting the Docker inspector shell script from ${hubDockerInspectorShellScriptUrl.toURI().toString()}")
-                ProxyInfoBuilder proxyInfoBuilder = new ProxyInfoBuilder()
-                proxyInfoBuilder.setHost(detectConfiguration.getHubProxyHost())
-                proxyInfoBuilder.setPort(detectConfiguration.getHubProxyPort())
-                proxyInfoBuilder.setUsername(detectConfiguration.getHubProxyUsername())
-                proxyInfoBuilder.setPassword(detectConfiguration.getHubProxyPassword())
-                ProxyInfo proxyInfo = proxyInfoBuilder.build()
-                UnauthenticatedRestConnection restConnection = new UnauthenticatedRestConnection(new Slf4jIntLogger(logger), hubDockerInspectorShellScriptUrl, detectConfiguration.getHubTimeout(), proxyInfo)
+                UnauthenticatedRestConnection restConnection = new UnauthenticatedRestConnection(new Slf4jIntLogger(logger), hubDockerInspectorShellScriptUrl, detectConfiguration.getHubTimeout(), detectConfiguration.getHubProxyInfo())
                 restConnection.alwaysTrustServerCertificate = detectConfiguration.hubTrustCertificate
                 HttpUrl httpUrl = restConnection.createHttpUrl()
                 Request request = restConnection.createGetRequest(httpUrl)

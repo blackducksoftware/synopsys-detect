@@ -42,6 +42,8 @@ import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType
 import com.blackducksoftware.integration.hub.detect.help.ValueDescription
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver
+import com.blackducksoftware.integration.hub.proxy.ProxyInfo
+import com.blackducksoftware.integration.hub.proxy.ProxyInfoBuilder
 import com.google.gson.Gson
 
 import groovy.transform.TypeChecked
@@ -110,9 +112,9 @@ class DetectConfiguration {
     List<String> excludedScanPaths = []
 
     void init() {
-        String systemUserHome = System.getProperty('user.home');
+        String systemUserHome = System.getProperty('user.home')
         if (resolveTildeInPaths) {
-            tildeInPathResolver.resolveTildeInAllPathFields(systemUserHome, this);
+            tildeInPathResolver.resolveTildeInAllPathFields(systemUserHome, this)
         }
 
         if (!sourcePath) {
@@ -177,29 +179,7 @@ class DetectConfiguration {
         }
     }
 
-    private void configureForDocker() {
-        allDetectPropertyKeys.each {
-            if (it.startsWith(DOCKER_PROPERTY_PREFIX)) {
-                additionalDockerPropertyNames.add(it)
-            }
-        }
-    }
 
-    private String createDirectoryPath(String providedDirectoryPath, String defaultDirectoryPath, String defaultDirectoryName) {
-        if (StringUtils.isBlank(providedDirectoryPath)) {
-            File directory = new File(defaultDirectoryPath, defaultDirectoryName)
-            return directory.canonicalPath
-        }
-        return providedDirectoryPath
-    }
-
-    private void ensureDirectoryExists(String directoryPath, String failureMessage) {
-        File directory = new File(directoryPath)
-        directory.mkdirs()
-        if (!directory.exists() || !directory.isDirectory()) {
-            throw new DetectUserFriendlyException("The directory ${directoryPath} does not exist. ${failureMessage}", ExitCodeType.FAILURE_GENERAL_ERROR)
-        }
-    }
 
     /**
      * If the default source path is being used AND docker is configured, don't run unless the tool is docker
@@ -230,6 +210,21 @@ class DetectConfiguration {
         return ''
     }
 
+    public ProxyInfo getHubProxyInfo() {
+        ProxyInfoBuilder proxyInfoBuilder = new ProxyInfoBuilder()
+        proxyInfoBuilder.setHost(hubProxyHost)
+        proxyInfoBuilder.setPort(hubProxyPort)
+        proxyInfoBuilder.setUsername(hubProxyUsername)
+        proxyInfoBuilder.setPassword(hubProxyPassword)
+        ProxyInfo proxyInfo = ProxyInfo.NO_PROXY_INFO
+        try {
+            proxyInfo = proxyInfoBuilder.build()
+        } catch (IllegalStateException e) {
+            throw new DetectUserFriendlyException("Your proxy configuration is not valid: ${e.message}", e, ExitCodeType.FAILURE_PROXY_CONNECTIVITY)
+        }
+        return proxyInfo
+    }
+
     private String getInspectorAirGapPath(String inspectorLocationProperty, String inspectorName) {
         if (!inspectorLocationProperty?.trim()) {
             try {
@@ -251,6 +246,30 @@ class DetectConfiguration {
 
     private long convertLong(Long longObj) {
         return longObj == null ? 0L : longObj.longValue()
+    }
+
+    private void configureForDocker() {
+        allDetectPropertyKeys.each {
+            if (it.startsWith(DOCKER_PROPERTY_PREFIX)) {
+                additionalDockerPropertyNames.add(it)
+            }
+        }
+    }
+
+    private String createDirectoryPath(String providedDirectoryPath, String defaultDirectoryPath, String defaultDirectoryName) {
+        if (StringUtils.isBlank(providedDirectoryPath)) {
+            File directory = new File(defaultDirectoryPath, defaultDirectoryName)
+            return directory.canonicalPath
+        }
+        return providedDirectoryPath
+    }
+
+    private void ensureDirectoryExists(String directoryPath, String failureMessage) {
+        File directory = new File(directoryPath)
+        directory.mkdirs()
+        if (!directory.exists() || !directory.isDirectory()) {
+            throw new DetectUserFriendlyException("The directory ${directoryPath} does not exist. ${failureMessage}", ExitCodeType.FAILURE_GENERAL_ERROR)
+        }
     }
 
     //properties start

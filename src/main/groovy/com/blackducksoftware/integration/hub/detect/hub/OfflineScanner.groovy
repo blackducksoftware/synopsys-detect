@@ -34,8 +34,6 @@ import com.blackducksoftware.integration.hub.cli.OfflineCLILocation
 import com.blackducksoftware.integration.hub.cli.SimpleScanService
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.global.HubServerConfig
-import com.blackducksoftware.integration.hub.proxy.ProxyInfo
-import com.blackducksoftware.integration.hub.proxy.ProxyInfoBuilder
 import com.blackducksoftware.integration.hub.rest.RestConnection
 import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnection
 import com.blackducksoftware.integration.hub.scan.HubScanConfig
@@ -80,13 +78,7 @@ class OfflineScanner {
         boolean cliInstalledOkay = checkCliInstall(cliLocation, silentLogger)
         if (!cliInstalledOkay && detectConfiguration.hubSignatureScannerHostUrl) {
             logger.info("Attempting to download the signature scanner from ${detectConfiguration.hubSignatureScannerHostUrl}")
-            ProxyInfoBuilder proxyInfoBuilder = new ProxyInfoBuilder()
-            proxyInfoBuilder.setHost(detectConfiguration.getHubProxyHost())
-            proxyInfoBuilder.setPort(detectConfiguration.getHubProxyPort())
-            proxyInfoBuilder.setUsername(detectConfiguration.getHubProxyUsername())
-            proxyInfoBuilder.setPassword(detectConfiguration.getHubProxyPassword())
-            ProxyInfo proxyInfo = proxyInfoBuilder.build()
-            RestConnection restConnection = new UnauthenticatedRestConnection(silentLogger, new URL(detectConfiguration.hubSignatureScannerHostUrl), detectConfiguration.hubTimeout, proxyInfo)
+            RestConnection restConnection = new UnauthenticatedRestConnection(silentLogger, new URL(detectConfiguration.hubSignatureScannerHostUrl), detectConfiguration.hubTimeout, detectConfiguration.getHubProxyInfo())
             CLIDownloadService cliDownloadService = new CLIDownloadService(intLogger, restConnection)
             cliDownloadService.performInstallation(cliLocation.getCLIInstallDir(), ciEnvironmentVariables, detectConfiguration.hubSignatureScannerHostUrl, 'unknown', 'hub-detect')
         }
