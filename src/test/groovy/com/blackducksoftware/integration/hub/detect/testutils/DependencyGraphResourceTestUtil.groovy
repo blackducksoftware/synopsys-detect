@@ -1,12 +1,12 @@
 package com.blackducksoftware.integration.hub.detect.testutils
 
-import static org.junit.Assert.*
+import static org.junit.Assert.*;
 
-import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
-import com.blackducksoftware.integration.hub.bdio.graph.summary.DependencyGraphSummarizer
-import com.blackducksoftware.integration.hub.bdio.graph.summary.GraphSummary
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
+import com.blackducksoftware.integration.hub.bdio.graph.summary.DependencyGraphSummarizer;
+import com.blackducksoftware.integration.hub.bdio.graph.summary.GraphSummary;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 class DependencyGraphResourceTestUtil {
     public static void assertGraph(String expectedResourceFile, DependencyGraph actualGraph) {
