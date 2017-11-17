@@ -166,12 +166,12 @@ class DetectConfiguration {
         }
 
         if (hubSignatureScannerHostUrl) {
-            logger.info("A hub signature scanner url was provided, you probably meant to run in hub offline mode. Setting hub offline mode to true.");
+            logger.info('A hub signature scanner url was provided, which requires hub offline mode. Setting hub offline mode to true.');
             hubOfflineMode = true
         }
 
         if (hubSignatureScannerOfflineLocalPath) {
-            logger.info("A local hub signature scanner path was provided, you probably meant to run in hub offline mode. Setting hub offline mode to true.");
+            logger.info('A local hub signature scanner path was provided, which requires hub offline mode. Setting hub offline mode to true.');
             hubOfflineMode = true
         }
 
