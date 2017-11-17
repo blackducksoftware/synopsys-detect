@@ -22,6 +22,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.packagist
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -43,6 +45,8 @@ import groovy.transform.TypeChecked
 @Component
 @TypeChecked
 class PackagistParser {
+    private final Logger logger = LoggerFactory.getLogger(PackagistParser.class)
+
     @Autowired
     DetectConfiguration detectConfiguration
 
@@ -68,8 +72,24 @@ class PackagistParser {
         }
         convertFromJsonToDependency(graph, null, startingPackages, packagistPackages, true)
 
+        packagistPackages.each {
+            String packageName = it.getAt('name').toString().replace('"', '')
+            String packageVersion = it.getAt('version').toString().replace('"', '')
+            ExternalId id = externalIdFactory.createNameVersionExternalId(Forge.PACKAGIST, packageName, packageVersion);
+            if (graph.getDependency(id) == null) {
+                logger.warn("A discrepency exists between the composer.json and the composer.lock - the package '${packageName}' was in the lock but was not included in the json dependency tree.");
+            }
+        }
+
+        List<String> allPackageNames =  packagistPackages.collect{it.getAt('name').toString().replace('"', '')}
+        startingPackages.each {
+            if (!allPackageNames.contains(it)) {
+                logger.warn("A discrepency exists between the composer.json and the composer.lock - the package '${it}' was in the json but not the lock.");
+            }
+        }
+
         ExternalId projectExternalId;
-        if (projectName == null || projectVersion == null){
+        if (projectName == null || projectVersion == null) {
             projectExternalId = externalIdFactory.createPathExternalId(Forge.PACKAGIST, sourcePath);
         }else{
             projectExternalId = externalIdFactory.createNameVersionExternalId(Forge.PACKAGIST, projectName, projectVersion);
@@ -92,7 +112,7 @@ class PackagistParser {
                 Dependency child = new Dependency(currentRowPackageName, currentRowPackageVersion, externalIdFactory.createNameVersionExternalId(Forge.PACKAGIST, currentRowPackageName, currentRowPackageVersion))
 
                 convertFromJsonToDependency(graph, child, getStartingPackages(it.getAsJsonObject(), false), jsonArray, false)
-                if (root){
+                if (root) {
                     graph.addChildToRoot(child)
                 }else{
                     graph.addParentWithChild(parent, child)
