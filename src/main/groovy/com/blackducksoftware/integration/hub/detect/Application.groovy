@@ -168,6 +168,7 @@ class Application {
             if (!detectConfiguration.hubOfflineMode) {
                 hubServiceWrapper.init()
             }
+
             DetectProject detectProject = detectProjectManager.createDetectProject()
             List<File> createdBdioFiles = detectProjectManager.createBdioFiles(detectProject)
             if (!detectConfiguration.hubOfflineMode) {

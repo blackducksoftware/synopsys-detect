@@ -89,7 +89,7 @@ class HubManager implements ExitCodeReporter {
             HubServerConfig hubServerConfig = hubServiceWrapper.hubServerConfig
             BomImportRequestService bomImportRequestService = hubServiceWrapper.createBomImportRequestService()
             PhoneHomeDataService phoneHomeDataService = hubServiceWrapper.createPhoneHomeDataService()
-            bdioUploader.uploadBdioFiles(hubServerConfig, bomImportRequestService, phoneHomeDataService, createdBdioFiles)
+            bdioUploader.uploadBdioFiles(hubServerConfig, bomImportRequestService, phoneHomeDataService, detectProject, createdBdioFiles)
         } else {
             logger.debug('Did not create any bdio files.')
         }

@@ -22,6 +22,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.hub
 
+import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,8 +33,11 @@ import com.blackducksoftware.integration.hub.dataservice.phonehome.PhoneHomeData
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.DetectInfo
 import com.blackducksoftware.integration.hub.detect.DetectPhoneHomeManager
+import com.blackducksoftware.integration.hub.detect.model.BomToolType
+import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.global.HubServerConfig
 import com.blackducksoftware.integration.phonehome.PhoneHomeRequestBody
+import com.blackducksoftware.integration.phonehome.PhoneHomeRequestBodyBuilder
 import com.blackducksoftware.integration.phonehome.enums.ThirdPartyName
 
 import groovy.transform.TypeChecked
@@ -52,7 +56,7 @@ class BdioUploader {
     @Autowired
     DetectPhoneHomeManager detectPhoneHomeManager
 
-    void uploadBdioFiles(HubServerConfig hubServerConfig, BomImportRequestService bomImportRequestService, PhoneHomeDataService phoneHomeDataService, List<File> createdBdioFiles) {
+    void uploadBdioFiles(HubServerConfig hubServerConfig, BomImportRequestService bomImportRequestService, PhoneHomeDataService phoneHomeDataService, DetectProject detectProject, List<File> createdBdioFiles) {
         createdBdioFiles.each { file ->
             logger.info("uploading ${file.name} to ${detectConfiguration.getHubUrl()}")
             bomImportRequestService.importBomFile(file)
@@ -62,7 +66,13 @@ class BdioUploader {
         }
 
         String hubDetectVersion = detectInfo.detectVersion
-        PhoneHomeRequestBody phoneHomeRequestBody = phoneHomeDataService.createInitialPhoneHomeRequestBodyBuilder(ThirdPartyName.DETECT, hubDetectVersion, hubDetectVersion).build()
-        detectPhoneHomeManager.startPhoneHome(phoneHomeDataService, phoneHomeRequestBody)
+        Set<BomToolType> applicableBomTools = detectProject.getApplicableBomTools();
+        String applicableBomToolsString = StringUtils.join(applicableBomTools, ", ");
+
+        PhoneHomeRequestBodyBuilder phoneHomeRequestBodyBuilder = phoneHomeDataService.createInitialPhoneHomeRequestBodyBuilder(ThirdPartyName.DETECT, hubDetectVersion, hubDetectVersion);
+        phoneHomeRequestBodyBuilder.addToMetaDataMap('bomToolTypes', applicableBomToolsString);
+
+        PhoneHomeRequestBody phoneHomeRequestBody = phoneHomeRequestBodyBuilder.build();
+        detectPhoneHomeManager.startPhoneHome(phoneHomeDataService, phoneHomeRequestBody);
     }
 }
