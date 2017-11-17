@@ -165,8 +165,13 @@ class DetectConfiguration {
             }
         }
 
-        //you would only provide an alternate url for downloading the signature scanner if and only if you did not have a hub server
         if (hubSignatureScannerHostUrl) {
+            logger.info("A hub signature scanner url was provided, you probably meant to run in hub offline mode. Setting hub offline mode to true.");
+            hubOfflineMode = true
+        }
+
+        if (hubSignatureScannerOfflineLocalPath) {
+            logger.info("A local hub signature scanner path was provided, you probably meant to run in hub offline mode. Setting hub offline mode to true.");
             hubOfflineMode = true
         }
 
