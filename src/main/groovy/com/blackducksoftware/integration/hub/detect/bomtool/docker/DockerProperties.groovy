@@ -43,6 +43,7 @@ class DockerProperties {
         dockerProperties.setProperty('output.path', bomToolOutputDirectory.getAbsolutePath())
         dockerProperties.setProperty('output.include.containerfilesystem', 'true')
         dockerProperties.setProperty('logging.level.com.blackducksoftware', detectConfiguration.getLoggingLevel())
+        dockerProperties.setProperty('phone.home', 'false')
 
         detectConfiguration.additionalDockerPropertyNames.each { propertyName ->
             String dockerKey = propertyName[DetectConfiguration.DOCKER_PROPERTY_PREFIX.length()..-1]

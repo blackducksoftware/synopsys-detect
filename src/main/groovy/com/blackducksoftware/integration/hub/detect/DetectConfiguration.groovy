@@ -165,6 +165,16 @@ class DetectConfiguration {
             }
         }
 
+        if (hubSignatureScannerHostUrl) {
+            logger.info('A hub signature scanner url was provided, which requires hub offline mode. Setting hub offline mode to true.');
+            hubOfflineMode = true
+        }
+
+        if (hubSignatureScannerOfflineLocalPath) {
+            logger.info('A local hub signature scanner path was provided, which requires hub offline mode. Setting hub offline mode to true.');
+            hubOfflineMode = true
+        }
+
         if (gradleInspectorVersion.equals("latest") && gradleBomTool.isBomToolApplicable()) {
             gradleInspectorVersion = gradleBomTool.getInspectorVersion()
             logger.info("Resolved gradle inspector version from latest to: ${gradleInspectorVersion}")
@@ -178,8 +188,6 @@ class DetectConfiguration {
             logger.info("Resolved docker inspector version from latest to: ${dockerInspectorVersion}")
         }
     }
-
-
 
     /**
      * If the default source path is being used AND docker is configured, don't run unless the tool is docker
