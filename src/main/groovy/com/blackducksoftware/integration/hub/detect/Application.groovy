@@ -114,6 +114,9 @@ class Application {
     @Autowired
     List<ExitCodeReporter> exitCodeReporters;
 
+    @Autowired
+    DetectPhoneHomeManager detectPhoneHomeManager
+
     private ExitCodeType exitCodeType = ExitCodeType.SUCCESS;
     private String exitMessage = "";
 
@@ -180,6 +183,12 @@ class Application {
         } catch (Exception e) {
             populateExitCodeFromExceptionDetails(e)
         } finally {
+            try {
+                detectPhoneHomeManager.endPhoneHome();
+            } catch (Exception e) {
+                logger.error(String.format('Error trying to end the phone home task: %s', e.getMessage()));
+            }
+
             if (!detectConfiguration.suppressResultsOutput) {
                 detectSummary.logResults(new Slf4jIntLogger(logger), exitCodeType, exitMessage);
             }
