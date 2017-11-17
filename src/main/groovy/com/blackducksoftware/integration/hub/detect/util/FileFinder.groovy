@@ -126,7 +126,6 @@ class FileFinder {
     }
 
     private File[] findDirectoriesContainingDirectoriesToDepthRecursive(final File sourceDirectory, final String directoryPattern, int currentDepth, int maxDepth) {
-
         def files = []
         if (currentDepth > maxDepth || !sourceDirectory.isDirectory()) {
             return files as File[]

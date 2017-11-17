@@ -32,6 +32,7 @@ import com.blackducksoftware.integration.hub.api.bom.BomImportRequestService
 import com.blackducksoftware.integration.hub.dataservice.phonehome.PhoneHomeDataService
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.DetectInfo
+import com.blackducksoftware.integration.hub.detect.DetectPhoneHomeManager
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.global.HubServerConfig
@@ -52,6 +53,9 @@ class BdioUploader {
     @Autowired
     DetectConfiguration detectConfiguration
 
+    @Autowired
+    DetectPhoneHomeManager detectPhoneHomeManager
+
     void uploadBdioFiles(HubServerConfig hubServerConfig, BomImportRequestService bomImportRequestService, PhoneHomeDataService phoneHomeDataService, DetectProject detectProject, List<File> createdBdioFiles) {
         createdBdioFiles.each { file ->
             logger.info("uploading ${file.name} to ${detectConfiguration.getHubUrl()}")
@@ -69,6 +73,6 @@ class BdioUploader {
         phoneHomeRequestBodyBuilder.addToMetaDataMap('bomToolTypes', applicableBomToolsString);
 
         PhoneHomeRequestBody phoneHomeRequestBody = phoneHomeRequestBodyBuilder.build();
-        phoneHomeDataService.phoneHome(phoneHomeRequestBody)
+        detectPhoneHomeManager.startPhoneHome(phoneHomeDataService, phoneHomeRequestBody);
     }
 }
