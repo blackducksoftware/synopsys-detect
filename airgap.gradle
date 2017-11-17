@@ -108,6 +108,7 @@ task downloadDockerInspector() {
     dependsOn downloadDockerImages
     doLast {
         exec {
+            environment 'DOCKER_INSPECTOR_CURL_OPTS', '--insecure'
             commandLine 'bash', "${dockerAirGapPath}/hub-docker-inspector.sh", '--pulljar'
         }
         copy {
