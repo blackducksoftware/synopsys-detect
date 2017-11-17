@@ -187,7 +187,7 @@ class Application {
             try {
                 detectPhoneHomeManager.endPhoneHome();
             } catch (Exception e) {
-                logger.error(String.format('Error trying to end the phone home task: %s', e.getMessage()));
+                logger.debug(String.format('Error trying to end the phone home task: %s', e.getMessage()));
             }
 
             if (!detectConfiguration.suppressResultsOutput) {
