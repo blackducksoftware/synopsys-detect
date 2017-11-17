@@ -165,8 +165,8 @@ class DetectConfiguration {
             }
         }
 
-        //when an offline path is provided, force offline mode
-        if (hubSignatureScannerOfflineLocalPath) {
+        //you would only provide an alternate url for downloading the signature scanner if and only if you did not have a hub server
+        if (hubSignatureScannerHostUrl) {
             hubOfflineMode = true
         }
 
