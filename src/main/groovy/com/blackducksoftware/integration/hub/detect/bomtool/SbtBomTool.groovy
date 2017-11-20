@@ -104,7 +104,9 @@ class SbtBomTool extends BomTool {
         result.bomToolType = getBomToolType()
         result.modules = modules
 
-        if (modules.size() == 1) {
+        if (modules.size() == 0){
+            logger.warn("Unable to create an sbt project, no sbt modules were found.")
+        }else if (modules.size() == 1) {
             logger.warn("Found exactly one root module, using it's name and version.")
             result.projectName = modules[0].name
             result.projectVersion = modules[0].version
@@ -139,6 +141,9 @@ class SbtBomTool extends BomTool {
         List<File> sbtFiles = detectFileManager.findFilesToDepth(sourcePath, BUILD_SBT_FILENAME, depth) as List
         List<File> resolutionCaches = detectFileManager.findDirectoriesContainingDirectoriesToDepth(sourcePath, REPORT_SEARCH_PATTERN, depth) as List
 
+        logger.info("Found ${sbtFiles.size()} build.sbt files.");
+        logger.info("Found ${resolutionCaches.size()} resolution caches.");
+
         List<SbtDependencyModule> modules = new ArrayList<SbtDependencyModule>()
         List<String> usedReports = new ArrayList<String>()
 
@@ -166,6 +171,17 @@ class SbtBomTool extends BomTool {
                     hubSignatureScanner.registerPathToScan(file)
                     scanned.add(file)
                 }
+            }
+        }
+
+        if (modules.size() == 0){
+            if (sbtFiles.size() == 0){
+                logger.error("Sbt found no build.sbt files even though it applied.");
+            }else if (resolutionCaches.size() == 0){
+                logger.error("Sbt found no resolution-caches, this most likely means you are not running post build.");
+                logger.error("Please build the project before running detect.")
+            }else{
+                logger.error("Sbt was unable to parse any dependencies from any resolution caches.")
             }
         }
 
