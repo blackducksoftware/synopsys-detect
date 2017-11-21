@@ -37,6 +37,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
 import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnection
 import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnectionBuilder
+import com.blackducksoftware.integration.log.Slf4jIntLogger
 
 import groovy.transform.TypeChecked
 import okhttp3.HttpUrl
@@ -105,6 +106,7 @@ class DockerInspectorManager {
                     restConnectionBuilder.setBaseUrl(hubDockerInspectorShellScriptUrl)
                     restConnectionBuilder.setTimeout(detectConfiguration.getHubTimeout())
                     restConnectionBuilder.applyProxyInfo(detectConfiguration.getHubProxyInfo())
+                    restConnectionBuilder.setLogger(new Slf4jIntLogger(logger))
                     UnauthenticatedRestConnection restConnection = restConnectionBuilder.build()
                     restConnection.alwaysTrustServerCertificate = detectConfiguration.hubTrustCertificate
                     HttpUrl httpUrl = restConnection.createHttpUrl()
