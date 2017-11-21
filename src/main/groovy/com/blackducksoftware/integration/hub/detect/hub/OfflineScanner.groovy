@@ -85,6 +85,7 @@ class OfflineScanner {
                 restConnectionBuilder.setBaseUrl(detectConfiguration.hubSignatureScannerHostUrl)
                 restConnectionBuilder.setTimeout(detectConfiguration.hubTimeout)
                 restConnectionBuilder.applyProxyInfo(detectConfiguration.getHubProxyInfo())
+                restConnectionBuilder.setLogger(intLogger)
                 RestConnection restConnection = restConnectionBuilder.build()
                 CLIDownloadService cliDownloadService = new CLIDownloadService(intLogger, restConnection)
                 cliDownloadService.performInstallation(cliLocation.getCLIInstallDir(), ciEnvironmentVariables, detectConfiguration.hubSignatureScannerHostUrl, 'unknown', 'hub-detect')
