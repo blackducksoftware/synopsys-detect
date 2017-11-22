@@ -574,6 +574,10 @@ class DetectConfiguration {
     @Value('${detect.hub.signature.scanner.dry.run:}')
     Boolean hubSignatureScannerDryRun
 
+    @ValueDescription(description="If set to true, the signature scanner will, if supported by your Hub version, run in snippet scanning mode.", defaultValue='false', group=DetectConfiguration.GROUP_SIGNATURE_SCANNER)
+    @Value('${detect.hub.signature.scanner.snippet.mode:}')
+    Boolean hubSignatureScannerSnippetMode
+
     @ValueDescription(description="Enables you to specify sub-directories to exclude from scans", group=DetectConfiguration.GROUP_SIGNATURE_SCANNER)
     @Value('${detect.hub.signature.scanner.exclusion.patterns:}')
     String[] hubSignatureScannerExclusionPatterns
@@ -905,6 +909,9 @@ class DetectConfiguration {
     }
     public boolean getHubSignatureScannerDryRun() {
         return hubSignatureScannerDryRun
+    }
+    public boolean getHubSignatureScannerSnippetMode() {
+        return hubSignatureScannerSnippetMode
     }
     public String[] getHubSignatureScannerPaths() {
         return hubSignatureScannerPaths
