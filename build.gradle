@@ -29,7 +29,7 @@ tasks.withType(GroovyCompile) {
 
 group = 'com.blackducksoftware.integration'
 
-version = '2.3.0-RC2-SNAPSHOT'
+version = '2.3.0-RC3-SNAPSHOT'
 
 // BuildInfo - A json payload usable by detect for information from the build
 final def versionFile = new File("${projectDir}/src/main/resources/version.txt")
@@ -94,7 +94,7 @@ artifactory {
 }
 
 dependencies {
-    compile 'com.blackducksoftware.integration:hub-common:20.0.0'
+    compile 'com.blackducksoftware.integration:hub-common:21.0.0'
     compile 'org.springframework.boot:spring-boot-starter'
     compile 'org.apache.maven.shared:maven-invoker:3.0.0'
     compile 'com.esotericsoftware.yamlbeans:yamlbeans:1.11'

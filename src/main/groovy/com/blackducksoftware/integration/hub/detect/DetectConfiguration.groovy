@@ -165,6 +165,10 @@ class DetectConfiguration {
             }
         }
 
+        if (hubSignatureScannerHostUrl && hubSignatureScannerOfflineLocalPath) {
+            throw new DetectUserFriendlyException('You have provided both a hub signature scanner url AND a local hub signature scanner path. Only one of these properties can be set at a time. If both are used together, the *correct* source of the signature scanner can not be determined.', ExitCodeType.FAILURE_GENERAL_ERROR);
+        }
+
         if (hubSignatureScannerHostUrl) {
             logger.info('A hub signature scanner url was provided, which requires hub offline mode. Setting hub offline mode to true.');
             hubOfflineMode = true
@@ -590,7 +594,7 @@ class DetectConfiguration {
     @Value('${detect.hub.signature.scanner.disabled:}')
     Boolean hubSignatureScannerDisabled
 
-    @ValueDescription(description="To use a local signature scanner, set its location with this property. This will be the path that contains the 'Hub_Scan_Installation' directory where the signature scanner was unzipped.", group=DetectConfiguration.GROUP_SIGNATURE_SCANNER)
+    @ValueDescription(description="To use a local signature scanner, set its location with this property. This will be the path where the signature scanner was unzipped. This will likely look similar to /some/path/scan.cli-x.y.z", group=DetectConfiguration.GROUP_SIGNATURE_SCANNER)
     @Value('${detect.hub.signature.scanner.offline.local.path:}')
     String hubSignatureScannerOfflineLocalPath
 
