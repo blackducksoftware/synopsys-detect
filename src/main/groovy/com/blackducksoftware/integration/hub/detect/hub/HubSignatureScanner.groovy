@@ -210,6 +210,7 @@ class HubSignatureScanner implements SummaryResultReporter {
         hubScanConfigBuilder.addScanTargetPath(canonicalPath)
         hubScanConfigBuilder.cleanupLogsOnSuccess = detectConfiguration.cleanupBomToolFiles
         hubScanConfigBuilder.dryRun = detectConfiguration.hubSignatureScannerDryRun
+        hubScanConfigBuilder.snippetModeEnabled = detectConfiguration.hubSignatureScannerSnippetMode
 
         String projectName = detectProject.projectName
         String projectVersionName = detectProject.projectVersionName
