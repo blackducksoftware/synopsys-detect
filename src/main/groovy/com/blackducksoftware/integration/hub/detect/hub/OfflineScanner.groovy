@@ -35,6 +35,7 @@ import com.blackducksoftware.integration.hub.cli.SimpleScanService
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType
+import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.global.HubServerConfig
 import com.blackducksoftware.integration.hub.rest.RestConnection
 import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnectionBuilder
@@ -57,7 +58,7 @@ class OfflineScanner {
     @Autowired
     Gson gson
 
-    void offlineScan(HubScanConfig hubScanConfig, String hubSignatureScannerOfflineLocalPath) {
+    void offlineScan(DetectProject detectProject, HubScanConfig hubScanConfig, String hubSignatureScannerOfflineLocalPath) {
         def intLogger = new Slf4jIntLogger(logger)
 
         def hubServerConfig = new HubServerConfig(null, 0, null, null, false)
@@ -71,7 +72,7 @@ class OfflineScanner {
 
         def silentLogger = new SilentLogger()
 
-        def simpleScanService = new SimpleScanService(intLogger, gson, hubServerConfig, hubSupportHelper, ciEnvironmentVariables, hubScanConfig, null, null)
+        def simpleScanService = new SimpleScanService(intLogger, gson, hubServerConfig, hubSupportHelper, ciEnvironmentVariables, hubScanConfig, detectProject.projectName, detectProject.projectVersionName)
         final CLILocation cliLocation = new CLILocation(silentLogger, hubScanConfig.getToolsDir())
         if (hubSignatureScannerOfflineLocalPath) {
             cliLocation = new OfflineCLILocation(silentLogger, new File(hubSignatureScannerOfflineLocalPath))
@@ -79,27 +80,33 @@ class OfflineScanner {
 
         boolean cliInstalledOkay = checkCliInstall(cliLocation, silentLogger)
         if (!cliInstalledOkay && detectConfiguration.hubSignatureScannerHostUrl) {
-            try {
-                logger.info("Attempting to download the signature scanner from ${detectConfiguration.hubSignatureScannerHostUrl}")
-                UnauthenticatedRestConnectionBuilder restConnectionBuilder = new UnauthenticatedRestConnectionBuilder()
-                restConnectionBuilder.setBaseUrl(detectConfiguration.hubSignatureScannerHostUrl)
-                restConnectionBuilder.setTimeout(detectConfiguration.hubTimeout)
-                restConnectionBuilder.applyProxyInfo(detectConfiguration.getHubProxyInfo())
-                restConnectionBuilder.setLogger(intLogger)
-                RestConnection restConnection = restConnectionBuilder.build()
-                CLIDownloadService cliDownloadService = new CLIDownloadService(intLogger, restConnection)
-                cliDownloadService.performInstallation(cliLocation.getCLIInstallDir(), ciEnvironmentVariables, detectConfiguration.hubSignatureScannerHostUrl, 'unknown', 'hub-detect')
-            } catch (Exception e) {
-                throw new DetectUserFriendlyException("There was a problem downloading the signature scanner from ${detectConfiguration.hubSignatureScannerHostUrl}: ${e.message}", e, ExitCodeType.FAILURE_GENERAL_ERROR)
-            }
+            installSignatureScannerFromUrl(intLogger, hubScanConfig, ciEnvironmentVariables);
+            cliInstalledOkay = checkCliInstall(cliLocation, silentLogger)
         }
 
-        cliInstalledOkay = checkCliInstall(cliLocation, silentLogger)
-        if (!cliInstalledOkay) {
-            logger.warn("The signature scanner is not correctly installed at ${cliLocation.getCLIInstallDir()}")
+        if (!cliInstalledOkay && hubSignatureScannerOfflineLocalPath) {
+            logger.warn("The signature scanner is not correctly installed at ${hubSignatureScannerOfflineLocalPath}")
+        } else if (!cliInstalledOkay) {
+            logger.warn("The signature scanner is not correctly installed at ${hubScanConfig.getToolsDir()}")
         } else {
             simpleScanService.setupAndExecuteScan(cliLocation)
             logger.info("The scan dry run files can be found in : ${simpleScanService.getDataDirectory()}")
+        }
+    }
+
+    private void installSignatureScannerFromUrl(IntLogger intLogger, HubScanConfig hubScanConfig, CIEnvironmentVariables ciEnvironmentVariables) {
+        try {
+            logger.info("Attempting to download the signature scanner from ${detectConfiguration.hubSignatureScannerHostUrl}")
+            UnauthenticatedRestConnectionBuilder restConnectionBuilder = new UnauthenticatedRestConnectionBuilder()
+            restConnectionBuilder.setBaseUrl(detectConfiguration.hubSignatureScannerHostUrl)
+            restConnectionBuilder.setTimeout(detectConfiguration.hubTimeout)
+            restConnectionBuilder.applyProxyInfo(detectConfiguration.getHubProxyInfo())
+            restConnectionBuilder.setLogger(intLogger)
+            RestConnection restConnection = restConnectionBuilder.build()
+            CLIDownloadService cliDownloadService = new CLIDownloadService(intLogger, restConnection)
+            cliDownloadService.performInstallation(hubScanConfig.getToolsDir(), ciEnvironmentVariables, detectConfiguration.hubSignatureScannerHostUrl, 'unknown', 'hub-detect')
+        } catch (Exception e) {
+            throw new DetectUserFriendlyException("There was a problem downloading the signature scanner from ${detectConfiguration.hubSignatureScannerHostUrl}: ${e.message}", e, ExitCodeType.FAILURE_GENERAL_ERROR)
         }
     }
 

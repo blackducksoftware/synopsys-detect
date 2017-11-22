@@ -191,7 +191,7 @@ class HubSignatureScanner implements SummaryResultReporter {
             }
 
             HubScanConfig hubScanConfig = hubScanConfigBuilder.build()
-            offlineScanner.offlineScan(hubScanConfig, detectConfiguration.hubSignatureScannerOfflineLocalPath)
+            offlineScanner.offlineScan(detectProject, hubScanConfig, detectConfiguration.hubSignatureScannerOfflineLocalPath)
             scanSummaryResults.put(canonicalPath, Result.SUCCESS);
             logger.info("${canonicalPath} was successfully scanned by the BlackDuck CLI.")
         } catch (Exception e) {
@@ -210,6 +210,7 @@ class HubSignatureScanner implements SummaryResultReporter {
         hubScanConfigBuilder.addScanTargetPath(canonicalPath)
         hubScanConfigBuilder.cleanupLogsOnSuccess = detectConfiguration.cleanupBomToolFiles
         hubScanConfigBuilder.dryRun = detectConfiguration.hubSignatureScannerDryRun
+        hubScanConfigBuilder.snippetModeEnabled = detectConfiguration.hubSignatureScannerSnippetMode
 
         String projectName = detectProject.projectName
         String projectVersionName = detectProject.projectVersionName
