@@ -152,7 +152,6 @@ class Application {
             logger.info('Configuration processed completely.')
 
             if (!detectConfiguration.suppressConfigurationOutput) {
-
                 DetectInfoPrinter infoPrinter = new DetectInfoPrinter();
                 DetectConfigurationPrinter detectConfigurationPrinter = new DetectConfigurationPrinter()
 

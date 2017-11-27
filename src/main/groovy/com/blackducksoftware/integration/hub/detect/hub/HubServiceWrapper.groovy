@@ -83,9 +83,9 @@ class HubServiceWrapper {
         logger.info("Attempting connection to the Hub")
         try {
             IntLogger slf4jIntLogger;
-            if (detailedLog){
+            if (detailedLog) {
                 slf4jIntLogger = new Slf4jIntLogger(logger);
-            }else{
+            } else {
                 slf4jIntLogger = new SilentLogger();
             }
             HubServerConfig hubServerConfig = createHubServerConfig(slf4jIntLogger);
@@ -95,11 +95,11 @@ class HubServiceWrapper {
             logger.info("Connection to the Hub was successful")
             return true;
         } catch (IllegalStateException e) {
-            if (detailedLog){
+            if (detailedLog) {
                 logger.error("Failed to build the server configuration: ${e.message}", e)
             }
         } catch (IntegrationException e) {
-            if (detailedLog){
+            if (detailedLog) {
                 logger.error("Could not reach the Hub server or the credentials were invalid: ${e.message}", e)
             }
         }

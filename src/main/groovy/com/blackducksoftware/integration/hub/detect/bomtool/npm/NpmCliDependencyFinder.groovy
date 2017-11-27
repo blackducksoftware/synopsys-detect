@@ -51,7 +51,7 @@ class NpmCliDependencyFinder {
     private static final String JSON_DEPENDENCIES = 'dependencies'
 
     public ExternalIdFactory externalIdFactory;
-    public NpmCliDependencyFinder(ExternalIdFactory externalIdFactory){
+    public NpmCliDependencyFinder(ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }
 

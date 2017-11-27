@@ -56,7 +56,7 @@ class GemlockNodeParser {
         directDependencyNames = new HashSet<>()
         currentParent = null
 
-        gemfileLockLines.each{ String line ->
+        gemfileLockLines.each { String line ->
             if (!line?.trim()) {
                 inSpecsSection = false
                 inDependenciesSection = false
@@ -73,9 +73,9 @@ class GemlockNodeParser {
                 return
             }
 
-            if ("BUNDLED WITH".equals(line.trim())){
+            if ("BUNDLED WITH".equals(line.trim())) {
                 previousLineWasBundledWith = true;
-            }else if (previousLineWasBundledWith){
+            } else if (previousLineWasBundledWith) {
                 previousLineWasBundledWith = false;
                 def bundler = nameVersionNodeBuilder.nodeCache["bundler"];
                 bundler?.version = line.trim();

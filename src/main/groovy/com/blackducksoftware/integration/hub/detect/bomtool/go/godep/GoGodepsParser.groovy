@@ -37,7 +37,7 @@ import groovy.transform.TypeChecked
 class GoGodepsParser {
     private final Gson gson
     public ExternalIdFactory externalIdFactory;
-    public GoGodepsParser(Gson gson, ExternalIdFactory externalIdFactory){
+    public GoGodepsParser(Gson gson, ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
         this.gson = gson
     }

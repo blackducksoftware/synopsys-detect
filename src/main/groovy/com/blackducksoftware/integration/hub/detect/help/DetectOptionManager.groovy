@@ -117,8 +117,8 @@ public class DetectOptionManager {
 
     public void applyInteractiveOptions(List<InteractiveOption> interactiveOptions) {
         for (final InteractiveOption interactiveOption : interactiveOptions) {
-            for (DetectOption detectOption : detectOptions){
-                if (detectOption.getFieldName().equals(interactiveOption.fieldName)){
+            for (DetectOption detectOption : detectOptions) {
+                if (detectOption.getFieldName().equals(interactiveOption.fieldName)) {
                     detectOption.interactiveValue = interactiveOption.interactiveValue;
                 }
             }

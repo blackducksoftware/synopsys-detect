@@ -38,7 +38,7 @@ class SbtPackager {
 
     ExternalIdFactory externalIdFactory;
 
-    SbtPackager(ExternalIdFactory externalIdFactory){
+    SbtPackager(ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }
 

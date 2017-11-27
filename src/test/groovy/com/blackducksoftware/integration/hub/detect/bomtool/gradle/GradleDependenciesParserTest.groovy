@@ -67,7 +67,7 @@ class GradleReportParserTest {
         assertParentHasChildMavenGav("some.group:parent:5.0.0", graph, "some.group:child:2.2.2");
     }
 
-    private DetectCodeLocation build(String resource){
+    private DetectCodeLocation build(String resource) {
         InputStream inputStream = ResourceUtil.getResourceAsStream(GradleReportParserTest.class, resource)
         DetectProject project = new DetectProject()
         GradleReportParser gradleReportParser = new GradleReportParser()

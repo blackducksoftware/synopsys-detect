@@ -203,7 +203,7 @@ class DetectProjectManager implements SummaryResultReporter {
         filenamePieces.add(finalSourcePathPiece);
         String filename = generateFilename(bomToolType, filenamePieces)
 
-        if (filename.length() >= 255){
+        if (filename.length() >= 255) {
             filenamePieces.sort { it.size() }
             for (int i = filenamePieces.size() - 1; (filename.length() >= 255) && (i >= 0); i--) {
                 filenamePieces[i] = DigestUtils.sha1Hex(filenamePieces[i])
@@ -257,7 +257,6 @@ class DetectProjectManager implements SummaryResultReporter {
         simpleBdioDocument.billOfMaterials.customData = detectVersionData
 
         simpleBdioDocument
-
     }
 
     String getProjectName(final String defaultProjectName) {

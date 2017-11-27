@@ -95,7 +95,7 @@ class SbtBomTool extends BomTool {
 
     SbtProject extractProject(int depth, String included, String excluded) {
         def rawModules = extractModules(depth, included, excluded)
-        def modules = rawModules.findAll{ it.graph != null }
+        def modules = rawModules.findAll { it.graph != null }
         def skipped = rawModules.size() - modules.size()
         if (skipped > 0) {
             logger.error("Skipped ${skipped}")
@@ -104,9 +104,9 @@ class SbtBomTool extends BomTool {
         result.bomToolType = getBomToolType()
         result.modules = modules
 
-        if (modules.size() == 0){
+        if (modules.size() == 0) {
             logger.warn("Unable to create an sbt project, no sbt modules were found.")
-        }else if (modules.size() == 1) {
+        } else if (modules.size() == 1) {
             logger.warn("Found exactly one root module, using it's name and version.")
             result.projectName = modules[0].name
             result.projectVersion = modules[0].version
@@ -128,7 +128,7 @@ class SbtBomTool extends BomTool {
 
     String findFirstModuleVersion(List<SbtDependencyModule> modules, String... names) {
         String version = null
-        modules.each{
+        modules.each {
             if (version == null && it.name != null && names.contains(it.name)) {
                 logger.debug("Matched ${it.name} to project version.")
                 version = it.version
@@ -174,13 +174,13 @@ class SbtBomTool extends BomTool {
             }
         }
 
-        if (modules.size() == 0){
-            if (sbtFiles.size() == 0){
+        if (modules.size() == 0) {
+            if (sbtFiles.size() == 0) {
                 logger.error("Sbt found no build.sbt files even though it applied.");
-            }else if (resolutionCaches.size() == 0){
+            } else if (resolutionCaches.size() == 0) {
                 logger.error("Sbt found no resolution-caches, this most likely means you are not running post build.");
                 logger.error("Please build the project before running detect.")
-            }else{
+            } else {
                 logger.error("Sbt was unable to parse any dependencies from any resolution caches.")
             }
         }
@@ -222,7 +222,7 @@ class SbtBomTool extends BomTool {
                     logger.debug("No dependencies were generated for report folder: ${reportPath}")
                 } else {
                     logger.debug("Found ${aggregatedModules.size()} aggregate dependencies in report folder: ${reportPath}")
-                    aggregatedModules.each{ aggregatedModule ->
+                    aggregatedModules.each { aggregatedModule ->
                         logger.debug("Generated root node of ${aggregatedModule.name} ${aggregatedModule.version} ")
 
                         aggregatedModule.sourcePath = source.getCanonicalPath()

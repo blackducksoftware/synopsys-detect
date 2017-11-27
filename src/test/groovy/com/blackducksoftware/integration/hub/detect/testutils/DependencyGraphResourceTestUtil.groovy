@@ -41,11 +41,11 @@ class DependencyGraphResourceTestUtil {
 
         assertSet(expectedExistingRelationshipsIds, actualExistingRelationshipsIds, "Existing relationships");
 
-        for (String key : expected.dependencySummaries.keySet()){
+        for (String key : expected.dependencySummaries.keySet()) {
             assertEquals(expected.dependencySummaries.get(key).name, actual.dependencySummaries.get(key).name);
             assertEquals(expected.dependencySummaries.get(key).version, actual.dependencySummaries.get(key).version);
         }
-        for (String key : expectedExistingRelationshipsIds){
+        for (String key : expectedExistingRelationshipsIds) {
             assertSet(expected.externalDataIdRelationships.get(key), actual.externalDataIdRelationships.get(key), "External data id relationships for " + key);
         }
     }

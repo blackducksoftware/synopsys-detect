@@ -37,7 +37,7 @@ import groovy.transform.TypeChecked
 public class SbtDependencyResolver {
 
     public ExternalIdFactory externalIdFactory;
-    public SbtDependencyResolver(ExternalIdFactory externalIdFactory){
+    public SbtDependencyResolver(ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }
 
@@ -55,9 +55,9 @@ public class SbtDependencyResolver {
                 revision.callers.each { caller ->
                     def parentId = externalIdFactory.createMavenExternalId(caller.callerOrganisation, caller.callerName, caller.callerRevision)
                     def parent = new Dependency(caller.callerName, caller.callerRevision, parentId)
-                    if (rootId.equals(parentId)){
+                    if (rootId.equals(parentId)) {
                         graph.addChildToRoot(child);
-                    }else{
+                    } else {
                         graph.addParentWithChild(parent, child)
                     }
                 }

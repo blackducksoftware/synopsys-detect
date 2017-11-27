@@ -81,7 +81,7 @@ class PackagistParser {
             }
         }
 
-        List<String> allPackageNames =  packagistPackages.collect{it.getAt('name').toString().replace('"', '')}
+        List<String> allPackageNames =  packagistPackages.collect { it.getAt('name').toString().replace('"', '')}
         startingPackages.each {
             if (!allPackageNames.contains(it)) {
                 logger.warn("A discrepency exists between the composer.json and the composer.lock - the package '${it}' was in the json but not the lock.");
@@ -91,7 +91,7 @@ class PackagistParser {
         ExternalId projectExternalId;
         if (projectName == null || projectVersion == null) {
             projectExternalId = externalIdFactory.createPathExternalId(Forge.PACKAGIST, sourcePath);
-        }else{
+        } else {
             projectExternalId = externalIdFactory.createNameVersionExternalId(Forge.PACKAGIST, projectName, projectVersion);
         }
 
@@ -114,7 +114,7 @@ class PackagistParser {
                 convertFromJsonToDependency(graph, child, getStartingPackages(it.getAsJsonObject(), false), jsonArray, false)
                 if (root) {
                     graph.addChildToRoot(child)
-                }else{
+                } else {
                     graph.addParentWithChild(parent, child)
                 }
             }

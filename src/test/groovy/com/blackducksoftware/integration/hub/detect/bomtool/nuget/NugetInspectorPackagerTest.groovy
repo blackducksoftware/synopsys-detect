@@ -60,7 +60,7 @@ public class NugetInspectorPackagerTest {
         packager.externalIdFactory = nameVersionNodeTransformer.externalIdFactory
         List<DetectCodeLocation> codeLocations = packager.createDetectCodeLocation(dependencyNodeFile)
 
-        for (DetectCodeLocation codeLocation : codeLocations){
+        for (DetectCodeLocation codeLocation : codeLocations) {
             BdioPropertyHelper bdioPropertyHelper = new BdioPropertyHelper()
             BdioNodeFactory bdioNodeFactory = new BdioNodeFactory(bdioPropertyHelper)
 
@@ -89,7 +89,7 @@ public class NugetInspectorPackagerTest {
 
         List<DetectCodeLocation> codeLocations = packager.createDetectCodeLocation(dependencyNodeFile)
 
-        for (def i = 0; i < expectedOutputFiles.size(); i++){
+        for (def i = 0; i < expectedOutputFiles.size(); i++) {
             def codeLocation = codeLocations[i];
             def expectedOutputFile = expectedOutputFiles[i];
 

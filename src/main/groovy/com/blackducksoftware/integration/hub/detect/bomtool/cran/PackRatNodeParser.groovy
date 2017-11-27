@@ -41,7 +41,7 @@ public class PackRatNodeParser {
     private final Logger logger = LoggerFactory.getLogger(PackRatNodeParser.class)
 
     public ExternalIdFactory externalIdFactory
-    public PackRatNodeParser(ExternalIdFactory externalIdFactory){
+    public PackRatNodeParser(ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory
     }
 
@@ -54,11 +54,11 @@ public class PackRatNodeParser {
         String version
 
         for (String line : packratLockContents) {
-            if (line.startsWith("PackratFormat:")){
+            if (line.startsWith("PackratFormat:")) {
                 continue;
-            }else if (line.startsWith("PackratVersion:")){
+            } else if (line.startsWith("PackratVersion:")) {
                 continue;
-            }else if (line.startsWith("RVersion:")){
+            } else if (line.startsWith("RVersion:")) {
                 continue;
             }
 

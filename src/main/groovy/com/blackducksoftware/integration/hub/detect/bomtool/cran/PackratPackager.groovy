@@ -34,7 +34,7 @@ public class PackratPackager {
 
     public ExternalIdFactory externalIdFactory
 
-    public PackratPackager(ExternalIdFactory externalIdFactory){
+    public PackratPackager(ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory
     }
 

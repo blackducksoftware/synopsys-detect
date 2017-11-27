@@ -85,14 +85,14 @@ class DepPackager {
         }
 
         def gopkgLockContents = null
-        try{
+        try {
             logger.info("Running ${goDepExecutable} 'init' on path ${file.getAbsolutePath()}")
             Executable executable = new Executable(file, goDepExecutable, ['init'])
             executableRunner.execute(executable)
         } catch (ExecutableRunnerException e) {
             logger.error("Failed to run ${goDepExecutable} 'init' on path ${file.getAbsolutePath()}, ${e.getMessage()}")
         }
-        try{
+        try {
             logger.info("Running ${goDepExecutable} 'ensure -update' on path ${file.getAbsolutePath()}")
             Executable executable = new Executable(file, goDepExecutable, ['ensure', '-update'])
             executableRunner.execute(executable)

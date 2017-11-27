@@ -33,7 +33,7 @@ class RebarParserTest {
     }
 
     @Test
-    public void testParseRebarTreeOutput(){
+    public void testParseRebarTreeOutput() {
         MutableMapDependencyGraph expectedGraph = new MutableMapDependencyGraph()
         Dependency gitInnerParentDependency = buildDependency('git_inner_parent_dependency', '0.0.2')
         Dependency hexInnerChildDependency = buildDependency('hex_inner_child_dependency', '0.3.0')
@@ -62,7 +62,7 @@ class RebarParserTest {
         return new Dependency(name, version, externalIdFactory.createNameVersionExternalId(Forge.HEX, name, version))
     }
 
-    private DetectCodeLocation build(String resource){
+    private DetectCodeLocation build(String resource) {
         List<String> dependencyTreeOutput = testUtil.getResourceAsUTF8String(resource).split('\n')
         DetectProject project = new DetectProject()
         Rebar3TreeParser rebarTreeParser = new Rebar3TreeParser()

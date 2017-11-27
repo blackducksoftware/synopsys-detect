@@ -104,7 +104,7 @@ class PipInspectorTreeParser {
                 }
             }
 
-            if (tree.size() > 0){
+            if (tree.size() > 0) {
                 dependencyGraph.addChildWithParents(next, [tree.peek()])
             } else {
                 dependencyGraph.addChildrenToRoot(next);
@@ -130,7 +130,7 @@ class PipInspectorTreeParser {
         String version = segments[1].trim()
 
         def externalId = externalIdFactory.createNameVersionExternalId(Forge.PYPI, name, version)
-        if (name.equals(UNKNOWN_PROJECT_NAME) || version.equals(UNKNOWN_PROJECT_VERSION) ){
+        if (name.equals(UNKNOWN_PROJECT_NAME) || version.equals(UNKNOWN_PROJECT_VERSION) ) {
             externalId = externalIdFactory.createPathExternalId(Forge.PYPI, sourcePath)
         }
 

@@ -36,7 +36,7 @@ import groovy.transform.TypeChecked
 @TypeChecked
 class GopkgLockParser {
     public ExternalIdFactory externalIdFactory;
-    public GopkgLockParser(ExternalIdFactory externalIdFactory){
+    public GopkgLockParser(ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }
 

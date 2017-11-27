@@ -36,7 +36,7 @@ import groovy.transform.TypeChecked
 class VndrParser {
 
     public ExternalIdFactory externalIdFactory
-    public VndrParser(ExternalIdFactory externalIdFactory){
+    public VndrParser(ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory
     }
 

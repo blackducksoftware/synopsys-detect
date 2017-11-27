@@ -127,7 +127,7 @@ class PipBomTool extends BomTool {
     String getPythonPath() {
         def pythonPath = detectConfiguration.pythonPath
 
-        if (detectConfiguration.pythonThreeOverride){
+        if (detectConfiguration.pythonThreeOverride) {
             pythonPath = executableManager.getExecutablePath(ExecutableType.PYTHON3, true, detectConfiguration.sourcePath)
         } else if (!pythonPath?.trim()) {
             pythonPath = executableManager.getExecutablePath(ExecutableType.PYTHON, true, detectConfiguration.sourcePath)

@@ -33,11 +33,12 @@ class SbtDependencyModule {
     public String org
     public DependencyGraph graph
 
-    public String configuration = null //if this is from a specific configuration
+    //if this is from a specific configuration
+    public String configuration = null
 
-    public SbtDependencyModule(){
-
+    public SbtDependencyModule() {
     }
+
     public SbtDependencyModule(String name, String version, String org, DependencyGraph graph, String sourcePath) {
         this.sourcePath = sourcePath
         this.graph = graph

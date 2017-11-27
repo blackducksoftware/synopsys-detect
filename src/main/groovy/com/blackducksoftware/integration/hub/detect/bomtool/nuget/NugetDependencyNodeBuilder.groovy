@@ -40,7 +40,7 @@ public class NugetDependencyNodeBuilder {
 
 
     public ExternalIdFactory externalIdFactory;
-    public NugetDependencyNodeBuilder(ExternalIdFactory externalIdFactory){
+    public NugetDependencyNodeBuilder(ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }
 
@@ -54,8 +54,8 @@ public class NugetDependencyNodeBuilder {
     public DependencyGraph createDependencyGraph(List<NugetPackageId> packageDependencies) {
         MutableDependencyGraph graph = new MutableMapDependencyGraph();
 
-        for (def packageSet : packageSets){
-            for (def id : packageSet.dependencies){
+        for (def packageSet : packageSets) {
+            for (def id : packageSet.dependencies) {
                 graph.addParentWithChild(convertPackageId(packageSet.getPackageId()), convertPackageId(id))
             }
         }
@@ -67,7 +67,7 @@ public class NugetDependencyNodeBuilder {
         graph
     }
 
-    private Dependency convertPackageId(NugetPackageId id){
+    private Dependency convertPackageId(NugetPackageId id) {
         def externalId = externalIdFactory.createNameVersionExternalId(Forge.NUGET, id.name, id.version)
         def node = new Dependency(id.name, id.version, externalId)
         node

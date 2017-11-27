@@ -40,7 +40,7 @@ public class SbtModuleAggregator {
     List<SbtDependencyModule> aggregateModules(List<SbtDependencyModule> modules) {
         def aggregates = uniqueAggregates(modules)
 
-        aggregates.collect{ aggregate ->
+        aggregates.collect { aggregate ->
             SbtDependencyModule aggregated = new SbtDependencyModule()
             aggregated.name = aggregate.name
             aggregated.version = aggregate.version
@@ -76,7 +76,7 @@ public class SbtModuleAggregator {
 
     List<SbtAggregate> uniqueAggregates(List<SbtDependencyModule> modules) {
         List<SbtAggregate> found = new ArrayList<SbtAggregate>()
-        modules.each{module ->
+        modules.each { module ->
             def aggregate = moduleToAggregate(module)
             if (!found.contains(aggregate)) {
                 found.add(aggregate)

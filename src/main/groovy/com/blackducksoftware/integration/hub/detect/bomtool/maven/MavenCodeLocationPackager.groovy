@@ -56,7 +56,7 @@ class MavenCodeLocationPackager {
     private MutableDependencyGraph currentGraph = null
 
     public ExternalIdFactory externalIdFactory;
-    public MavenCodeLocationPackager(ExternalIdFactory externalIdFactory){
+    public MavenCodeLocationPackager(ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }
 

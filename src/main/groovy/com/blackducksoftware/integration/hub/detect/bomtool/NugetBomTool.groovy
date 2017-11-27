@@ -110,7 +110,7 @@ class NugetBomTool extends BomTool {
         if (detectConfiguration.cleanupBomToolFiles) {
             try {
                 FileUtils.deleteDirectory(outputDirectory)
-            } catch (Exception e){
+            } catch (Exception e) {
                 logger.warn("Unable to clean up nuget files: ${outputDirectory}")
             }
         }
