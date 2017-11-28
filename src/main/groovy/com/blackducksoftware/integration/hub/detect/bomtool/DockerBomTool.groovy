@@ -110,10 +110,10 @@ class DockerBomTool extends BomTool {
         boolean usingTarFile = false
         String imageArgument = ''
         if (detectConfiguration.dockerImage) {
-            imageArgument = detectConfiguration.dockerImage
+            imageArgument = String.format("--docker.image=%s", detectConfiguration.dockerImage)
         } else {
             File dockerTarFile = new File(detectConfiguration.dockerTar)
-            imageArgument = dockerTarFile.getCanonicalPath()
+            imageArgument = String.format("--docker.tar=%s", dockerTarFile.getCanonicalPath())
             usingTarFile = true
         }
 
@@ -121,6 +121,9 @@ class DockerBomTool extends BomTool {
         File dockerExecutableFile = new File(dockerExecutablePath)
         path += File.pathSeparator + dockerExecutableFile.parentFile.getCanonicalPath()
         Map<String, String> environmentVariables = [PATH: path]
+        if (!'latest'.equals(detectConfiguration.dockerInspectorVersion)) {
+            environmentVariables.put('DOCKER_INSPECTOR_VERSION', detectConfiguration.dockerInspectorVersion)
+        }
 
         List<String> bashArguments = [
             '-c',

@@ -68,7 +68,7 @@ class DockerInspectorManager {
             if (!inspectorVersion) {
                 File dockerPropertiesFile = detectFileManager.createFile(BomToolType.DOCKER, 'application.properties')
                 File dockerBomToolDirectory =  dockerPropertiesFile.getParentFile()
-                if(!dockerInspectorShellScript) {
+                if (!dockerInspectorShellScript) {
                     dockerInspectorShellScript = getShellScript()
                 }
                 List<String> bashArguments = [

@@ -83,7 +83,7 @@ class GradleInspectorManager {
                     inspectorVersion = latestVersion.getTextContent()
                 } catch (Exception e) {
                     inspectorVersion = detectConfiguration.getGradleInspectorVersion()
-                    logger.debug('Execption encountered when resolving latest version of Gradle Inspector, skipping resolution.')
+                    logger.debug('Exception encountered when resolving latest version of Gradle Inspector, skipping resolution.')
                     logger.debug(e.getMessage())
                 }
             }
