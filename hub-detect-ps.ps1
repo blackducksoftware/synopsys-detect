@@ -2,9 +2,9 @@
 
 $SCRIPT_ARGS = $args;
 
-function Run () {
+function Detect ([string[]] $real_args) {
     $DETECT = Get-Detect;
-    Invoke-Detect -DetectJar $DETECT -ScriptArgs $SCRIPT_ARGS
+    Invoke-Detect -DetectJar $DETECT -ScriptArgs $real_args
 }
 
 function Invoke-Detect ($DetectJar, $ScriptArgs) {
@@ -65,5 +65,3 @@ function Get-EnvironmentVariable($Name, $DefaultValue) {
         return Get-ChildItem Env:$Name;
     }
 }
-
-Run;
