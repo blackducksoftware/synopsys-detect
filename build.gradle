@@ -29,7 +29,7 @@ tasks.withType(GroovyCompile) {
 
 group = 'com.blackducksoftware.integration'
 
-version = '2.3.0-RC3-SNAPSHOT'
+version = '2.3.0-RC4-SNAPSHOT'
 
 // BuildInfo - A json payload usable by detect for information from the build
 final def versionFile = new File("${projectDir}/src/main/resources/version.txt")
