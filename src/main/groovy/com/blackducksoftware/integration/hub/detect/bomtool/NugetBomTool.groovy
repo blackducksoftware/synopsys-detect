@@ -92,7 +92,7 @@ class NugetBomTool extends BomTool {
         if (detectConfiguration.getNugetInspectorExcludedModules()) {
             options.add("--excluded_modules=${detectConfiguration.getNugetInspectorExcludedModules()}" as String)
         }
-        if (detectConfiguration.getNugetInspectorExcludedModules()) {
+        if (detectConfiguration.getNugetInspectorIncludedModules()) {
             options.add("--included_modules=${detectConfiguration.getNugetInspectorIncludedModules()}" as String)
         }
         if (detectConfiguration.getNugetPackagesRepoUrl()) {
