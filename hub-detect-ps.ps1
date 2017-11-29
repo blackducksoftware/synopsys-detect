@@ -1,5 +1,5 @@
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-$Version = "1.0.0"
+$Version = "1.0.1"
 
 function Detect {
     Write-Host "Detect Powershell Script $Version"
@@ -11,7 +11,11 @@ function Detect {
 
 function Invoke-Detect ($DetectJar, $DetectArgs) {
     $JavaArgs = @("-jar", $DetectJar)
-    $AllArgs =  $JavaArgs + $DetectArgs
+    if ($DetectArgs.Count > 0) { #If we try to add DetectArgs and it has no values it makes $AllArgs an Object[] instead of String[] 
+        $AllArgs =  $JavaArgs + $DetectArgs
+    }else{
+        $AllArgs = $JavaArgs
+    }
     Write-Host "Running detect: $AllArgs"
     $DetectProcess = Start-Process java -ArgumentList $AllArgs -NoNewWindow -Wait
     $DetectExitCode = $DetectProcess.ExitCode;
@@ -22,6 +26,7 @@ function Invoke-Detect ($DetectJar, $DetectArgs) {
 function Get-Detect () {
     $DetectVersion = Get-EnvironmentVariable -Name "DetectVersion" -DefaultValue "";
     $DetectJarFolder = Get-EnvironmentVariable -Name "DetectJarFolder" -DefaultValue "$HOME\tmp";
+    #TODO: Mirror the functionality of the shell script and allow Java opts and GET (InvokeWebRequest?) opts.
     #$DETECT_JAVA_OPTS = Get-EnvironmentVariable -Name "DETECT_JAVA_OPTS" -DefaultValue "";
     #$DETECT_GET_OPTS = Get-EnvironmentVariable -Name "DETECT_GET_OPTS" -DefaultValue "";
 
@@ -51,6 +56,7 @@ function Get-Detect () {
         Write-Host "Using existing jar file."
     }
 
+    Write-Host "Detect ready."
     return $DetectJarFile
 }
 
