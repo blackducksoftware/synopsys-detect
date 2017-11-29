@@ -1,10 +1,10 @@
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
-$SCRIPT_ARGS = $args;
 
-function Detect ([string[]] $real_args) {
+function Detect {
+    $SCRIPT_ARGS = $args;
     $DETECT = Get-Detect;
-    Invoke-Detect -DetectJar $DETECT -ScriptArgs $real_args
+    Invoke-Detect -DetectJar $DETECT -ScriptArgs $SCRIPT_ARGS
 }
 
 function Invoke-Detect ($DetectJar, $ScriptArgs) {
