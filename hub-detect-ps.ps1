@@ -5,6 +5,7 @@ function Detect {
     Write-Host "Detect Powershell Script $Version"
     $DetectArgs = $args;
     $DetectJar = Get-Detect;
+    Write-Host "Invoking jar: $DetectJar"
     $DetectExitCode = Invoke-Detect -DetectJar $DetectJar -DetectArgs $DetectArgs
     exit $DetectExitCode
 }
@@ -58,7 +59,7 @@ function Get-Detect () {
         Write-Host "Using existing jar file."
     }
 
-    Write-Host "Detect ready."
+    Write-Host "Resolved detect jar: $DetectJarFile"
     return $DetectJarFile
 }
 
