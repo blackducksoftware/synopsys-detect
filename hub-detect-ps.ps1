@@ -1,5 +1,5 @@
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-$Version = "1.0.2"
+$Version = "1.0.3"
 
 function Detect {
     Write-Host "Detect Powershell Script $Version"
