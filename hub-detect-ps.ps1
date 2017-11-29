@@ -1,17 +1,17 @@
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-$Version = "1.0.4"
+$Version = "1.0.5"
 
 function Detect {
     Write-Host "Detect Powershell Script $Version"
-    Get-Detect -DetectJarFile [ref] $DetectJar
+    Get-Detect -DetectJarFile [ref] $DetectJarFile
     $DetectArgs = $args;
-    $DetectExitCode = Invoke-Detect -DetectJar $DetectJar -DetectArgs $DetectArgs
+    $DetectExitCode = Invoke-Detect -DetectJarFile $DetectJarFile -DetectArgs $DetectArgs
     exit $DetectExitCode
 }
 
-function Invoke-Detect ($DetectJar, $DetectArgs) {
-    Write-Host "Jar file: $DetectJar"
-    $JavaArgs = @("-jar", $DetectJar)
+function Invoke-Detect ($DetectJarFile, $DetectArgs) {
+    Write-Host "Jar file: $DetectJarFile"
+    $JavaArgs = @("-jar", $DetectJarFile)
     $AllArgs =  $JavaArgs + $DetectArgs
     Write-Host "Running detect : $AllArgs"
     $DetectProcess = Start-Process java -ArgumentList $AllArgs -NoNewWindow -Wait -PassThru
