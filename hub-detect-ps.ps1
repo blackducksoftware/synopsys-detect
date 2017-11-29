@@ -1,32 +1,26 @@
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-$Version = "1.0.3"
+$Version = "1.0.4"
 
 function Detect {
     Write-Host "Detect Powershell Script $Version"
+    Get-Detect -DetectJarFile [ref] $DetectJar
     $DetectArgs = $args;
-    $DetectJar = Get-Detect;
-    Write-Host "Invoking jar: $DetectJar"
     $DetectExitCode = Invoke-Detect -DetectJar $DetectJar -DetectArgs $DetectArgs
     exit $DetectExitCode
 }
 
 function Invoke-Detect ($DetectJar, $DetectArgs) {
+    Write-Host "Jar file: $DetectJar"
     $JavaArgs = @("-jar", $DetectJar)
-    if ($DetectArgs.Count > 0) { #If we try to add DetectArgs and it has no values it makes $AllArgs an Object[] instead of String[] 
-        $AllArgs =  $JavaArgs + $DetectArgs
-    }else{
-        $AllArgs = $JavaArgs
-    }
-    Write-Host "Running detect: $DetectJar"
-    Write-Host "Running detect: $JavaArgs"
-    Write-Host "Running detect: $AllArgs"
-    $DetectProcess = Start-Process java -ArgumentList $AllArgs -NoNewWindow -Wait
+    $AllArgs =  $JavaArgs + $DetectArgs
+    Write-Host "Running detect : $AllArgs"
+    $DetectProcess = Start-Process java -ArgumentList $AllArgs -NoNewWindow -Wait -PassThru
     $DetectExitCode = $DetectProcess.ExitCode;
     Write-Host "Result code of $DetectExitCode, exiting"
     return $DetectExitCode    
 }
 
-function Get-Detect () {
+function Get-Detect ([ref] $DetectJarFile) {
     $DetectVersion = Get-EnvironmentVariable -Name "DetectVersion" -DefaultValue "";
     $DetectJarFolder = Get-EnvironmentVariable -Name "DetectJarFolder" -DefaultValue "$HOME\tmp";
     #TODO: Mirror the functionality of the shell script and allow Java opts and GET (InvokeWebRequest?) opts.
@@ -49,18 +43,17 @@ function Get-Detect () {
     $DetectUrl="https://test-repo.blackducksoftware.com/artifactory/bds-integrations-release/com/blackducksoftware/integration/hub-detect/${DetectVersion}/hub-detect-${DetectVersion}.jar"
     $DetectJarFile="$DetectJarFolder\hub-detect-$DetectVersion.jar"
 
-    Write-Host "Checking for existing detect jar file: $DetectJarFile"
+    Write-Host "Checking for existing detect jar."
     $DetectJarExists = Test-Path $DetectJarFile
 
     if (!$DetectJarExists){
         Write-Host "You don't have detect. Downloading now."
         Invoke-WebRequest $DetectUrl -OutFile $DetectJarFile
     }else{
-        Write-Host "Using existing jar file."
+        Write-Host "Existing detect jar file found."
     }
 
     Write-Host "Resolved detect jar: $DetectJarFile"
-    return $DetectJarFile
 }
 
 
