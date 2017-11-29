@@ -3,7 +3,7 @@ $Version = "1.0.5"
 
 function Detect {
     Write-Host "Detect Powershell Script $Version"
-    Get-Detect -DetectJarFile [ref] $DetectJarFile
+    Get-Detect -DetectJarFile $DetectJarFile
     $DetectArgs = $args;
     $DetectExitCode = Invoke-Detect -DetectJarFile $DetectJarFile -DetectArgs $DetectArgs
     exit $DetectExitCode
