@@ -1,9 +1,10 @@
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-$Version = "1.0.5"
+$Version = "1.0.6"
 
 function Detect {
     Write-Host "Detect Powershell Script $Version"
-    Get-Detect -DetectJarFile $DetectJarFile
+    $DetectJarFile = ""
+    Get-Detect -DetectJarFile [ref]$DetectJarFile
     $DetectArgs = $args;
     $DetectExitCode = Invoke-Detect -DetectJarFile $DetectJarFile -DetectArgs $DetectArgs
     exit $DetectExitCode
