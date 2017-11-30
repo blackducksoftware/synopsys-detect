@@ -1,5 +1,7 @@
 #Detect Powershell Script
-#Recommended Invocation: powershell "iwr https://blackducksoftware.github.io/hub-detect/hub-detect-ps.ps1?$(Get-Random) | iex; detect"
+#Recommended Invocation: powershell "iwr https://blackducksoftware.github.io/hub-detect/hub-detect.ps1?$(Get-Random) | iex; detect"
+
+function Get-EnvironmentVariable($Key, $DefaultValue) { if (-not (Test-Path Env:$Key)) { return $DefaultValue; }else{ return Get-ChildItem Env:$Key; } }
 
 # DETECT_LATEST_RELEASE_VERSION should be set in your
 # environment if you wish to use a version different
@@ -35,7 +37,7 @@ $EnvHomeTempFolder = "$HOME\tmp"
 # DETECT_CURL_OPTS=--proxy http://myproxy:3128
 #$DetectGetOpts = Get-EnvironmentVariable -Key "DETECT_CURL_OPTS" -DefaultValue "";
 
-$Version = "1.1.0"
+$Version = "1.1.1"
 
 $DetectReleaseBaseUrl = "https://test-repo.blackducksoftware.com/artifactory/bds-integrations-release/com/blackducksoftware/integration/hub-detect/"
 $DetectSnapshotBaseUrl = "https://test-repo.blackducksoftware.com/artifactory/bds-integrations-snapshot/com/blackducksoftware/integration/hub-detect/"
@@ -163,12 +165,4 @@ function Receive-DetectJar ($DetectUrl, $DetectJarFile) {
     Write-Host "You don't have detect. Downloading now."
     Invoke-WebRequest $DetectUrl -OutFile $DetectJarFile | Out-Null #Pipe to Out-Null to prevent dirtying to the function output
     Write-Host "Downloaded detect jar."
-}
-
-function Get-EnvironmentVariable($Key, $DefaultValue) {
-    if (-not (Test-Path Env:$Key)) {
-        return $DefaultValue;
-    }else{
-        return Get-ChildItem Env:$Key;
-    }
 }
