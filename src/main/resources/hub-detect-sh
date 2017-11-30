@@ -26,7 +26,7 @@ DETECT_JAVA_OPTS=${DETECT_JAVA_OPTS:-}
 
 # If you want to pass any additional options to
 # curl, specify DETECT_CURL_OPTS in your environment.
-# For exmaple, to specify a proxy, you would set
+# For example, to specify a proxy, you would set
 # DETECT_CURL_OPTS=--proxy http://myproxy:3128
 DETECT_CURL_OPTS=${DETECT_CURL_OPTS:-}
 

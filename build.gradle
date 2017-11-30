@@ -50,16 +50,17 @@ build {
     doLast {
         def shellScriptTemplateFile = new File("${projectDir}/src/main/resources/hub-detect-sh")
         def shellScriptContents = shellScriptTemplateFile.getText('UTF-8')
-        if (!version.contains('SNAPSHOT')) {
-            String latestReleaseVersion = 'DETECT_LATEST_RELEASE_VERSION=\\${DETECT_LATEST_RELEASE_VERSION:-' + "${version}" + '}\n'
-            shellScriptContents = shellScriptContents.replaceFirst("DETECT_LATEST_RELEASE_VERSION=\\S*\n", latestReleaseVersion)
-            shellScriptTemplateFile.delete()
-            shellScriptTemplateFile << shellScriptContents
-        }
         def shellScriptFile = new File("${buildDir}/hub-detect.sh")
         shellScriptFile.delete()
         shellScriptFile << shellScriptContents
         shellScriptFile.setExecutable(true)
+        
+        def powershellScriptTemplateFile = new File("${projectDir}/src/main/resources/hub-detect-ps")
+        def powershellScriptContents = powershellScriptTemplateFile.getText('UTF-8')
+        def powershellScriptFile = new File("${buildDir}/hub-detect.ps1")
+        powershellScriptFile.delete()
+        powershellScriptFile << powershellScriptContents
+        powershellScriptFile.setExecutable(true)
     }
 }
 
