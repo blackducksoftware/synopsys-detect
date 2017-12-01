@@ -37,7 +37,7 @@ $EnvHomeTempFolder = "$HOME\tmp"
 # DETECT_CURL_OPTS=--proxy http://myproxy:3128
 #$DetectGetOpts = Get-EnvironmentVariable -Key "DETECT_CURL_OPTS" -DefaultValue "";
 
-$Version = "0.1.6"
+$Version = "0.1.7"
 
 $DetectReleaseBaseUrl = "https://test-repo.blackducksoftware.com/artifactory/bds-integrations-release/com/blackducksoftware/integration/hub-detect"
 $DetectSnapshotBaseUrl = "https://test-repo.blackducksoftware.com/artifactory/bds-integrations-snapshot/com/blackducksoftware/integration/hub-detect"
@@ -78,11 +78,13 @@ function Get-DetectSnapshotJar ($DetectFolder, $DetectVersion) {
     $DetectJarExists = Test-Path $DetectJarFile
     $DetectCurrentCommitFileExists = Test-Path $DetectCurrentCommitFile
     $DetectLatestCommit = Invoke-WebRequest $DetectCommitUrl
+    $DetectLatestCommit = $DetectLatestCommit.Trim()
     Write-Host "Detect jar exists '$DetectJarExists', commit file exists '$DetectCurrentCommitFileExists', latest commit '$DetectLatestCommit'"
 
     $Download = $TRUE;
     if ($DetectJarExists -and $DetectCurrentCommitFileExists){
         $DetectCurrentCommit = Get-Content $DetectCurrentCommitFile
+        $DetectCurrentCommit = $DetectCurrentCommit.Trim()
         Write-Host "Current commit '$DetectCurrentCommit'"
         if ($DetectCurrentCommit -eq $DetectLatestCommit){
             $Download = $FALSE;
