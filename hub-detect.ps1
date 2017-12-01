@@ -37,7 +37,7 @@ $EnvHomeTempFolder = "$HOME\tmp"
 # DETECT_CURL_OPTS=--proxy http://myproxy:3128
 #$DetectGetOpts = Get-EnvironmentVariable -Key "DETECT_CURL_OPTS" -DefaultValue "";
 
-$Version = "1.1.2"
+$Version = "1.1.3"
 
 $DetectReleaseBaseUrl = "https://test-repo.blackducksoftware.com/artifactory/bds-integrations-release/com/blackducksoftware/integration/hub-detect/"
 $DetectSnapshotBaseUrl = "https://test-repo.blackducksoftware.com/artifactory/bds-integrations-snapshot/com/blackducksoftware/integration/hub-detect/"
@@ -54,9 +54,9 @@ function Detect {
 
     Write-Host "Getting detect."
     if ($EnvDetectUseSnapshot -eq "1"){
-        $DetectJarFile = Get-DetectSnapshotJar -DetectFolder $DetectFolder -DetectDesiredVersion $EnvDetectDesiredVersion
+        $DetectJarFile = Get-DetectSnapshotJar -DetectFolder $DetectFolder -DetectVersion $EnvDetectDesiredVersion
     }else{
-        $DetectJarFile = Get-DetectJar -DetectFolder $DetectFolder -DetectDesiredVersion $EnvDetectDesiredVersion
+        $DetectJarFile = Get-DetectJar -DetectFolder $DetectFolder -DetectVersion $EnvDetectDesiredVersion
     }
 
     Write-Host "Executing detect."
