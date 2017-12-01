@@ -37,7 +37,7 @@ $EnvHomeTempFolder = "$HOME\tmp"
 # DETECT_CURL_OPTS=--proxy http://myproxy:3128
 #$DetectGetOpts = Get-EnvironmentVariable -Key "DETECT_CURL_OPTS" -DefaultValue "";
 
-$Version = "0.1.5"
+$Version = "0.1.6"
 
 $DetectReleaseBaseUrl = "https://test-repo.blackducksoftware.com/artifactory/bds-integrations-release/com/blackducksoftware/integration/hub-detect"
 $DetectSnapshotBaseUrl = "https://test-repo.blackducksoftware.com/artifactory/bds-integrations-snapshot/com/blackducksoftware/integration/hub-detect"
@@ -92,7 +92,7 @@ function Get-DetectSnapshotJar ($DetectFolder, $DetectVersion) {
     if ($Download){
         $DetectUrl = Join-DetectUrl -DetectBaseUrl $DetectSnapshotBaseUrl -DetectVersion $DetectVersion
         Receive-DetectJar -DetectUrl $DetectUrl -DetectJarFile $DetectJarFile
-        Set-Content $DetectCurrentCommitFile $DetectLatestCommit | Out Null
+        Set-Content $DetectCurrentCommitFile $DetectLatestCommit
     }else{
         Write-Host "You have already downloaded the latest file, so the local file will be used."
     }
