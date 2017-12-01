@@ -69,6 +69,8 @@ function Get-DetectSnapshotJar ($DetectFolder, $DetectVersion) {
     if ($DetectVersion -eq ""){
         $DetectVersion = "latest-SNAPSHOT"
     }
+    
+    Write-Host "Using detect version $DetectVersion"
 
     $DetectJarFile = "$DetectFolder\hub-detect-$DetectVersion.jar"
     $DetectCurrentCommitFile = "$DetectFolder\hub-detect-latest-commit.txt"
@@ -102,6 +104,8 @@ function Get-DetectJar ($DetectFolder, $DetectVersion) {
     if ($DetectVersion -eq ""){
         $DetectVersion = Receive-DetectLatestVersion
     }
+
+	Write-Host "Using detect version $DetectVersion"
 
     $DetectJarFile = "$DetectFolder\hub-detect-$DetectVersion.jar"
 
@@ -163,6 +167,7 @@ function Receive-DetectLatestVersion {
 
 function Receive-DetectJar ($DetectUrl, $DetectJarFile) {
     Write-Host "You don't have detect. Downloading now."
+    Write-Host "Using url $DetectUrl"
     Invoke-WebRequest $DetectUrl -OutFile $DetectJarFile | Out-Null #Pipe to Out-Null to prevent dirtying to the function output
     Write-Host "Downloaded detect jar."
 }
