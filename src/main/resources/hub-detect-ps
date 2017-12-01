@@ -37,10 +37,10 @@ $EnvHomeTempFolder = "$HOME\tmp"
 # DETECT_CURL_OPTS=--proxy http://myproxy:3128
 #$DetectGetOpts = Get-EnvironmentVariable -Key "DETECT_CURL_OPTS" -DefaultValue "";
 
-$Version = "0.1.4"
+$Version = "0.1.5"
 
-$DetectReleaseBaseUrl = "https://test-repo.blackducksoftware.com/artifactory/bds-integrations-release/com/blackducksoftware/integration/hub-detect/"
-$DetectSnapshotBaseUrl = "https://test-repo.blackducksoftware.com/artifactory/bds-integrations-snapshot/com/blackducksoftware/integration/hub-detect/"
+$DetectReleaseBaseUrl = "https://test-repo.blackducksoftware.com/artifactory/bds-integrations-release/com/blackducksoftware/integration/hub-detect"
+$DetectSnapshotBaseUrl = "https://test-repo.blackducksoftware.com/artifactory/bds-integrations-snapshot/com/blackducksoftware/integration/hub-detect"
 $DetectCommitUrl = "https://blackducksoftware.github.io/hub-detect/latest-commit-id.txt"
 $DetectVersionUrl = "https://test-repo.blackducksoftware.com/artifactory/api/search/latestVersion?g=com.blackducksoftware.integration&a=hub-detect&repos=bds-integrations-release"
 
