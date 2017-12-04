@@ -37,7 +37,7 @@ $EnvHomeTempFolder = "$HOME\tmp"
 # DETECT_CURL_OPTS=--proxy http://myproxy:3128
 #$DetectGetOpts = Get-EnvironmentVariable -Key "DETECT_CURL_OPTS" -DefaultValue "";
 
-$Version = "0.1.8"
+$Version = "0.1.9"
 
 $DetectReleaseBaseUrl = "https://test-repo.blackducksoftware.com/artifactory/bds-integrations-release/com/blackducksoftware/integration/hub-detect"
 $DetectSnapshotBaseUrl = "https://test-repo.blackducksoftware.com/artifactory/bds-integrations-snapshot/com/blackducksoftware/integration/hub-detect"
@@ -170,6 +170,7 @@ function Receive-DetectLatestVersion {
 function Receive-DetectJar ($DetectUrl, $DetectJarFile) {
     Write-Host "You don't have detect. Downloading now."
     Write-Host "Using url $DetectUrl"
-    Invoke-WebRequest $DetectUrl -OutFile $DetectJarFile | Out-Null #Pipe to Out-Null to prevent dirtying to the function output
-    Write-Host "Downloaded detect jar."
+    $Request = Invoke-WebRequest $DetectUrl -OutFile $DetectJarFile
+    $DetectJarExists = Test-Path $DetectJarFile
+    Write-Host "Downloaded detect jar successfully '$DetectJarExists'"
 }
