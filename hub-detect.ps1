@@ -37,7 +37,12 @@ $EnvHomeTempFolder = "$HOME\tmp"
 # DETECT_CURL_OPTS=--proxy http://myproxy:3128
 #$DetectGetOpts = Get-EnvironmentVariable -Key "DETECT_CURL_OPTS" -DefaultValue "";
 
-$Version = "0.1.9"
+# If you want to skip the test for java
+# DETECT_SKIP_JAVA_TEST=1
+$DetectSkipJavaTest = Get-EnvironmentVariable -Key "DETECT_SKIP_JAVA_TEST" -DefaultValue "";
+
+
+$Version = "0.2.0"
 
 $DetectReleaseBaseUrl = "https://test-repo.blackducksoftware.com/artifactory/bds-integrations-release/com/blackducksoftware/integration/hub-detect"
 $DetectSnapshotBaseUrl = "https://test-repo.blackducksoftware.com/artifactory/bds-integrations-snapshot/com/blackducksoftware/integration/hub-detect"
@@ -48,6 +53,12 @@ $DetectVersionUrl = "https://test-repo.blackducksoftware.com/artifactory/api/sea
 
 function Detect {
     Write-Host "Detect Powershell Script $Version"
+    
+    if ($DetectSkipJavaTest -eq ""){
+    	Test-JavaExists
+    }else{
+   		Write-Host "Skipping java test."
+    }
 
     Write-Host "Initializing detect folder."
     $DetectFolder = Initialize-DetectFolder -DetectFolder $EnvDetectFolder -TempFolder $EnvTempFolder -HomeTempFolder $EnvHomeTempFolder
@@ -173,4 +184,15 @@ function Receive-DetectJar ($DetectUrl, $DetectJarFile) {
     $Request = Invoke-WebRequest $DetectUrl -OutFile $DetectJarFile
     $DetectJarExists = Test-Path $DetectJarFile
     Write-Host "Downloaded detect jar successfully '$DetectJarExists'"
+}
+
+function Test-JavaExists() {
+	Write-Host "Checking if Java is installed by asking for version."
+	try {
+		$DetectProcess = Start-Process java -ArgumentList "-version" -NoNewWindow -Wait -PassThru
+		Write-Host "Successfully able to start java and get version."
+	}catch { 
+		Write-Hose "An error occurred checking the Java version. Please ensure Java is installed."
+		exit 127 #Command not found http://tldp.org/LDP/abs/html/exitcodes.html
+	}
 }
