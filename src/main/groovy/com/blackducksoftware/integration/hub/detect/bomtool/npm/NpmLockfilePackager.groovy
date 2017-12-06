@@ -52,13 +52,16 @@ class NpmLockfilePackager {
     @Autowired
     ExternalIdFactory externalIdFactory
 
-    public DetectCodeLocation parse(String sourcePath, String lockFileText) {
+    public DetectCodeLocation parse(String sourcePath, String lockFileText, boolean includeDevDependencies) {
         NpmProject npmProject = gson.fromJson(lockFileText, NpmProject.class)
 
         NameVersionNode root = new NameVersionNodeImpl([name: npmProject.name, version: npmProject.version])
         NameVersionNodeBuilder builder = new LinkedNameVersionNodeBuilder(root)
 
         npmProject.dependencies.each { name, npmDependency ->
+
+            if (npmDependency.dev == true) return;
+
             NameVersionNode dependency = new NameVersionNodeImpl([name: name, version: npmDependency.version])
             builder.addChildNodeToParent(dependency, root)
 
