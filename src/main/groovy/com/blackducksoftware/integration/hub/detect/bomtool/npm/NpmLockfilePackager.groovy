@@ -60,7 +60,7 @@ class NpmLockfilePackager {
 
         npmProject.dependencies.each { name, npmDependency ->
 
-            if (npmDependency.dev == true) return;
+            if (!includeDevDependencies && npmDependency.dev == true) return;
 
             NameVersionNode dependency = new NameVersionNodeImpl([name: name, version: npmDependency.version])
             builder.addChildNodeToParent(dependency, root)
