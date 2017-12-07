@@ -31,6 +31,9 @@ class NpmDependency {
     @SerializedName('version')
     String version
 
+    @SerializedName('dev')
+    Boolean dev;
+
     @SerializedName('requires')
     Map<String, String> requires
 }
