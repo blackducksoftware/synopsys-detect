@@ -140,7 +140,7 @@ class NpmBomTool extends BomTool {
 
     private List<DetectCodeLocation> extractFromLockFile(File lockFile) {
         String lockFileText = lockFile.getText()
-        DetectCodeLocation detectCodeLocation = npmLockfilePackager.parse(sourcePath, lockFileText)
+        DetectCodeLocation detectCodeLocation = npmLockfilePackager.parse(sourcePath, lockFileText, detectConfiguration.npmIncludeDevDependencies)
 
         [detectCodeLocation]
     }
