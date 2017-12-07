@@ -42,7 +42,7 @@ $EnvHomeTempFolder = "$HOME\tmp"
 $DetectSkipJavaTest = Get-EnvironmentVariable -Key "DETECT_SKIP_JAVA_TEST" -DefaultValue "";
 
 
-$Version = "0.2.0"
+$Version = "0.2.1"
 
 $DetectReleaseBaseUrl = "https://test-repo.blackducksoftware.com/artifactory/bds-integrations-release/com/blackducksoftware/integration/hub-detect"
 $DetectSnapshotBaseUrl = "https://test-repo.blackducksoftware.com/artifactory/bds-integrations-snapshot/com/blackducksoftware/integration/hub-detect"
@@ -88,7 +88,7 @@ function Get-DetectSnapshotJar ($DetectFolder, $DetectVersion) {
 
     $DetectJarExists = Test-Path $DetectJarFile
     $DetectCurrentCommitFileExists = Test-Path $DetectCurrentCommitFile
-    $DetectLatestCommit = Invoke-WebRequest $DetectCommitUrl
+    $DetectLatestCommit = Invoke-WebRequest $DetectCommitUrl -UseBasicParsing
     $DetectLatestCommit = $DetectLatestCommit.ToString().Trim()
     Write-Host "Detect jar exists '$DetectJarExists', commit file exists '$DetectCurrentCommitFileExists', latest commit '$DetectLatestCommit'"
 
@@ -173,7 +173,7 @@ function Initialize-Folder ($Folder) {
 
 function Receive-DetectLatestVersion {
     Write-Host "Finding latest detect version."
-    $DetectVersion = Invoke-WebRequest $DetectVersionUrl
+    $DetectVersion = Invoke-WebRequest $DetectVersionUrl -UseBasicParsing
     Write-Host "Resolved version $DetectVersion"
     return $DetectVersion
 }
@@ -181,7 +181,7 @@ function Receive-DetectLatestVersion {
 function Receive-DetectJar ($DetectUrl, $DetectJarFile) {
     Write-Host "You don't have detect. Downloading now."
     Write-Host "Using url $DetectUrl"
-    $Request = Invoke-WebRequest $DetectUrl -OutFile $DetectJarFile
+    $Request = Invoke-WebRequest $DetectUrl -OutFile $DetectJarFile -UseBasicParsing
     $DetectJarExists = Test-Path $DetectJarFile
     Write-Host "Downloaded detect jar successfully '$DetectJarExists'"
 }
