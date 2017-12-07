@@ -1,5 +1,5 @@
 #Detect Powershell Script
-#Recommended Invocation: powershell "iwr https://blackducksoftware.github.io/hub-detect/hub-detect.ps1?$(Get-Random) | iex; detect"
+#Recommended Invocation: powershell "irm https://blackducksoftware.github.io/hub-detect/hub-detect.ps1?$(Get-Random) | iex; detect"
 
 function Get-EnvironmentVariable($Key, $DefaultValue) { if (-not (Test-Path Env:$Key)) { return $DefaultValue; }else{ return (Get-ChildItem Env:$Key).Value; } }
 
@@ -42,7 +42,7 @@ $EnvHomeTempFolder = "$HOME\tmp"
 $DetectSkipJavaTest = Get-EnvironmentVariable -Key "DETECT_SKIP_JAVA_TEST" -DefaultValue "";
 
 
-$Version = "0.2.1"
+$Version = "0.3.0"
 
 $DetectReleaseBaseUrl = "https://test-repo.blackducksoftware.com/artifactory/bds-integrations-release/com/blackducksoftware/integration/hub-detect"
 $DetectSnapshotBaseUrl = "https://test-repo.blackducksoftware.com/artifactory/bds-integrations-snapshot/com/blackducksoftware/integration/hub-detect"
@@ -189,7 +189,21 @@ function Receive-DetectJar ($DetectUrl, $DetectJarFile) {
 function Test-JavaExists() {
 	Write-Host "Checking if Java is installed by asking for version."
 	try {
-		$DetectProcess = Start-Process java -ArgumentList "-version" -NoNewWindow -Wait -PassThru
+		$ProcessStartInfo = New-object System.Diagnostics.ProcessStartInfo 
+		$ProcessStartInfo.CreateNoWindow = $true 
+		$ProcessStartInfo.UseShellExecute = $false 
+		$ProcessStartInfo.RedirectStandardOutput = $true 
+		$ProcessStartInfo.RedirectStandardError = $true 
+		$ProcessStartInfo.FileName = 'java' 
+		$ProcessStartInfo.Arguments = @("-version") 
+		$Process = New-Object System.Diagnostics.Process 
+		$Process.StartInfo = $ProcessStartInfo
+		[void]$Process.Start()
+		$StdOutput = $process.StandardOutput.ReadToEnd()
+		$StdError = $process.StandardError.ReadToEnd() 
+		$Process.WaitForExit()
+		Write-Host "Java Standard Output: $StdOutput"
+		Write-Host "Java Error Output: $StdError"
 		Write-Host "Successfully able to start java and get version."
 	}catch { 
 		Write-Hose "An error occurred checking the Java version. Please ensure Java is installed."
