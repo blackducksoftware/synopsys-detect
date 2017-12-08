@@ -42,7 +42,7 @@ $EnvHomeTempFolder = "$HOME\tmp"
 $DetectSkipJavaTest = Get-EnvironmentVariable -Key "DETECT_SKIP_JAVA_TEST" -DefaultValue "";
 
 
-$Version = "0.3.0"
+$Version = "0.3.1"
 
 $DetectReleaseBaseUrl = "https://test-repo.blackducksoftware.com/artifactory/bds-integrations-release/com/blackducksoftware/integration/hub-detect"
 $DetectSnapshotBaseUrl = "https://test-repo.blackducksoftware.com/artifactory/bds-integrations-snapshot/com/blackducksoftware/integration/hub-detect"
@@ -139,7 +139,8 @@ function Invoke-Detect ($DetectJarFile, $DetectArgs) {
     $JavaArgs = @("-jar", $DetectJarFile)
     $AllArgs =  $JavaArgs + $DetectArgs
     Write-Host "Running detect: $AllArgs"
-    $DetectProcess = Start-Process java -ArgumentList $AllArgs -NoNewWindow -Wait -PassThru
+    $DetectProcess = Start-Process java -ArgumentList $AllArgs -NoNewWindow -PassThru
+    Wait-Process -InputObject $DetectProcess -ErrorAction SilentlyContinue
     $DetectExitCode = $DetectProcess.ExitCode;
     Write-Host "Result code of $DetectExitCode, exiting"
     return $DetectExitCode
