@@ -60,6 +60,7 @@ class DetectConfiguration {
     static final String DOCKER = 'docker'
 
     private static final String GROUP_HUB_CONFIGURATION = 'hub configuration'
+    private static final String GROUP_GENERAL = 'general'
     private static final String GROUP_LOGGING = 'logging'
     private static final String GROUP_CLEANUP = 'cleanup'
     private static final String GROUP_PATHS = 'paths'
@@ -285,6 +286,10 @@ class DetectConfiguration {
     }
 
     //properties start
+
+    @ValueDescription(description="If true, detect will always exit with code 0.", defaultValue="false", group=DetectConfiguration.GROUP_GENERAL)
+    @Value('${detect.force.success:}')
+    Boolean forceSuccess
 
     @ValueDescription(description="If true, the default behavior of printing your configuration properties at startup will be suppressed.", defaultValue="false", group=DetectConfiguration.GROUP_LOGGING)
     @Value('${detect.suppress.configuration.output:}')
@@ -903,6 +908,9 @@ class DetectConfiguration {
     }
     public boolean getSuppressConfigurationOutput() {
         return BooleanUtils.toBoolean(suppressConfigurationOutput)
+    }
+    public boolean getForceSuccess() {
+        return BooleanUtils.toBoolean(forceSuccess)
     }
     public boolean getSuppressResultsOutput() {
         return BooleanUtils.toBoolean(suppressResultsOutput)
