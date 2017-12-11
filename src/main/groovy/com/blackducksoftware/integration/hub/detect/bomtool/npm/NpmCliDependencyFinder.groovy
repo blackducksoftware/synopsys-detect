@@ -56,14 +56,13 @@ class NpmCliDependencyFinder {
     }
 
     public DetectCodeLocation generateCodeLocation(String sourcePath, File npmLsOutputFile) {
-        if (npmLsOutputFile?.length() > 0) {
-            logger.info("Generating results from npm ls -json")
-            return convertNpmJsonFileToCodeLocation(sourcePath, npmLsOutputFile.text)
-        } else {
+        if (npmLsOutputFile?.length() <= 0) {
             logger.error("Ran into an issue creating and writing to file")
+            return null
         }
 
-        null
+        logger.info("Generating results from npm ls -json")
+        return convertNpmJsonFileToCodeLocation(sourcePath, npmLsOutputFile.text)
     }
 
     private DetectCodeLocation convertNpmJsonFileToCodeLocation(String sourcePath, String npmLsOutput) {

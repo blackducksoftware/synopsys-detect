@@ -148,12 +148,13 @@ class NpmBomTool extends BomTool {
     private List<DetectCodeLocation> extractFromCommand() {
         File npmLsOutputFile = detectFileManager.createFile(BomToolType.NPM, NpmBomTool.OUTPUT_FILE)
         File npmLsErrorFile = detectFileManager.createFile(BomToolType.NPM, NpmBomTool.ERROR_FILE)
+
         boolean includeDevDeps = detectConfiguration.npmIncludeDevDependencies
         def exeArgs = ['ls', '-json']
-
         if (!includeDevDeps) {
             exeArgs.add('-prod')
         }
+
         npmLsExe.executableArguments = exeArgs
         executableRunner.executeToFile(npmLsExe, npmLsOutputFile, npmLsErrorFile)
 

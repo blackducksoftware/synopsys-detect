@@ -12,6 +12,12 @@ class MavenCodeLocationPackagerTest {
     private TestUtil testUtil = new TestUtil()
 
     @Test
+    public void extractCodeLocationsTestWithNumberedOutput() {
+        final String mavenOutputText = testUtil.getResourceAsUTF8String('/maven/mavenOutputWithNumbers.txt')
+        createNewCodeLocationTest(mavenOutputText, '/maven/sonarStashCodeLocation.json')
+    }
+
+    @Test
     public void extractCodeLocationsTest() {
         final String mavenOutputText = testUtil.getResourceAsUTF8String('/maven/sonarStashOutput.txt')
         createNewCodeLocationTest(mavenOutputText, '/maven/sonarStashCodeLocation.json')
