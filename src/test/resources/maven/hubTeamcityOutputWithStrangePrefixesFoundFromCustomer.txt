@@ -1,0 +1,337 @@
+2337 [main] [INFO] Scanning for projects...
+2397 [main] [INFO] ------------------------------------------------------------------------
+2404 [main] [INFO] Reactor Build Order:
+2687 [main] [INFO] 
+2712 [main] [INFO] Black Duck Hub Plugin for TeamCity
+2749 [main] [INFO] Black Duck Hub Plug-In for TeamCity Common
+3029 [main] [INFO] Black Duck Hub Plug-In for TeamCity Server
+3094 [main] [INFO] Black Duck Hub Plug-In for TeamCity Agent
+3332 [main] [INFO] Assemble Black Duck Hub Plug-In for TeamCity CI
+3356 [main] [INFO]                                                                         
+3455 [main] [INFO] ------------------------------------------------------------------------
+3706 [main] [INFO] Building Black Duck Hub Plugin for TeamCity 3.2.0-SNAPSHOT
+3821 [main] [INFO] ------------------------------------------------------------------------
+3853 [main] [INFO] 
+4039 [main] [INFO] --- maven-dependency-plugin:2.10:tree (default-cli) @ hub-teamcity ---
+4088 [main] [INFO] com.blackducksoftware.integration:hub-teamcity:pom:3.2.0-SNAPSHOT
+4146 [main] [INFO] +- junit:junit:jar:4.12:test
+4245 [main] [INFO] |  \- org.hamcrest:hamcrest-core:jar:1.3:test
+4400 [main] [INFO] +- org.codehaus.groovy:groovy-all:jar:2.4.11:test
+4486 [main] [INFO] +- org.mockito:mockito-all:jar:1.10.19:test
+4648 [main] [INFO] +- org.powermock:powermock-api-mockito:jar:1.6.6:test
+4934 [main] [INFO] |  +- org.mockito:mockito-core:jar:1.10.19:test
+5095 [main] [INFO] |  |  \- org.objenesis:objenesis:jar:2.1:test
+5149 [main] [INFO] |  \- org.powermock:powermock-api-mockito-common:jar:1.6.6:test
+5260 [main] [INFO] |     \- org.powermock:powermock-api-support:jar:1.6.6:test
+5511 [main] [INFO] +- org.slf4j:slf4j-simple:jar:1.7.21:test
+5606 [main] [INFO] |  \- org.slf4j:slf4j-api:jar:1.7.21:test
+5778 [main] [INFO] \- org.powermock:powermock-module-junit4:jar:1.6.6:test
+5903 [main] [INFO]    \- org.powermock:powermock-module-junit4-common:jar:1.6.6:test
+6104 [main] [INFO]       +- org.powermock:powermock-core:jar:1.6.6:test
+6215 [main] [INFO]       |  \- org.javassist:javassist:jar:3.21.0-GA:test
+6284 [main] [INFO]       \- org.powermock:powermock-reflect:jar:1.6.6:test
+6440 [main] [INFO]                                                                         
+6665 [main] [INFO] ------------------------------------------------------------------------
+6738 [main] [INFO] Building Black Duck Hub Plug-In for TeamCity Common 3.2.0-SNAPSHOT
+6958 [main] [INFO] ------------------------------------------------------------------------
+7139 [main] [INFO] 
+7275 [main] [INFO] --- maven-dependency-plugin:2.10:tree (default-cli) @ hub-teamcity-common ---
+7450 [main] [INFO] com.blackducksoftware.integration:hub-teamcity-common:jar:3.2.0-SNAPSHOT
+7509 [main] [INFO] +- com.blackducksoftware.integration:hub-common:jar:13.1.2:compile
+7560 [main] [INFO] |  +- com.blackducksoftware.integration:hub-common-rest:jar:2.1.3:compile
+7638 [main] [INFO] |  |  +- com.blackducksoftware.integration:integration-common:jar:6.0.2:compile
+7867 [main] [INFO] |  |  |  \- commons-codec:commons-codec:jar:1.10:compile
+8014 [main] [INFO] |  |  +- com.google.code.gson:gson:jar:2.7:compile
+8227 [main] [INFO] |  |  +- com.squareup.okhttp3:okhttp:jar:3.7.0:compile
+8236 [main] [INFO] |  |  |  \- com.squareup.okio:okio:jar:1.12.0:compile
+8514 [main] [INFO] |  |  \- com.squareup.okhttp3:okhttp-urlconnection:jar:3.7.0:compile
+8666 [main] [INFO] |  +- com.blackducksoftware.integration:hub-common-response:jar:3.2.0:compile
+8962 [main] [INFO] |  +- com.blackducksoftware.integration:hub-common-reporting:jar:2.0.0:compile
+9113 [main] [INFO] |  |  \- commons-io:commons-io:jar:2.5:compile
+9122 [main] [INFO] |  +- com.blackducksoftware.integration:phone-home-api:jar:2.0.2:compile
+9285 [main] [INFO] |  +- com.blackducksoftware.integration:integration-bdio:jar:4.1.1:compile
+9334 [main] [INFO] |  \- joda-time:joda-time:jar:2.9.6:compile
+9404 [main] [INFO] +- org.apache.commons:commons-lang3:jar:3.5:compile
+9623 [main] [INFO] +- junit:junit:jar:4.12:test
+9868 [main] [INFO] |  \- org.hamcrest:hamcrest-core:jar:1.3:test
+10155 [main] [INFO] +- org.codehaus.groovy:groovy-all:jar:2.4.11:test
+10221 [main] [INFO] +- org.mockito:mockito-all:jar:1.10.19:test
+10331 [main] [INFO] +- org.powermock:powermock-api-mockito:jar:1.6.6:test
+10424 [main] [INFO] |  +- org.mockito:mockito-core:jar:1.10.19:test
+10551 [main] [INFO] |  |  \- org.objenesis:objenesis:jar:2.1:test
+10849 [main] [INFO] |  \- org.powermock:powermock-api-mockito-common:jar:1.6.6:test
+11063 [main] [INFO] |     \- org.powermock:powermock-api-support:jar:1.6.6:test
+11318 [main] [INFO] +- org.slf4j:slf4j-simple:jar:1.7.21:test
+11327 [main] [INFO] |  \- org.slf4j:slf4j-api:jar:1.7.21:compile
+11590 [main] [INFO] \- org.powermock:powermock-module-junit4:jar:1.6.6:test
+11698 [main] [INFO]    \- org.powermock:powermock-module-junit4-common:jar:1.6.6:test
+11980 [main] [INFO]       +- org.powermock:powermock-core:jar:1.6.6:test
+12028 [main] [INFO]       |  \- org.javassist:javassist:jar:3.21.0-GA:test
+12103 [main] [INFO]       \- org.powermock:powermock-reflect:jar:1.6.6:test
+12283 [main] [INFO]                                                                         
+12462 [main] [INFO] ------------------------------------------------------------------------
+12669 [main] [INFO] Building Black Duck Hub Plug-In for TeamCity Server 3.2.0-SNAPSHOT
+12766 [main] [INFO] ------------------------------------------------------------------------
+Downloading: http://download.jetbrains.com/teamcity-repository/com/blackducksoftware/integration/hub-teamcity-common/3.2.0-SNAPSHOT/maven-metadata.xmlDownloading: http://download.jetbrains.com/teamcity-repository/opensymphony/quartz/1.6.0/quartz-1.6.0.pomDownloading: https://repo.maven.apache.org/maven2/opensymphony/quartz/1.6.0/quartz-1.6.0.pom[WARNING] The POM for opensymphony:quartz:jar:1.6.0 is missing, no dependency information available13055 [main] [INFO] 
+13066 [main] [INFO] --- maven-dependency-plugin:2.10:tree (default-cli) @ hub-teamcity-server ---
+13305 [main] [INFO] com.blackducksoftware.integration:hub-teamcity-server:jar:3.2.0-SNAPSHOT
+13488 [main] [INFO] +- com.blackducksoftware.integration:hub-teamcity-common:jar:3.2.0-SNAPSHOT:compile
+13537 [main] [INFO] +- com.blackducksoftware.integration:hub-common:jar:13.1.2:compile
+13811 [main] [INFO] |  +- com.blackducksoftware.integration:hub-common-rest:jar:2.1.3:compile
+14040 [main] [INFO] |  |  +- com.blackducksoftware.integration:integration-common:jar:6.0.2:compile
+14141 [main] [INFO] |  |  +- com.squareup.okhttp3:okhttp:jar:3.7.0:compile
+14312 [main] [INFO] |  |  |  \- com.squareup.okio:okio:jar:1.12.0:compile
+14590 [main] [INFO] |  |  \- com.squareup.okhttp3:okhttp-urlconnection:jar:3.7.0:compile
+14822 [main] [INFO] |  +- com.blackducksoftware.integration:hub-common-response:jar:3.2.0:compile
+14951 [main] [INFO] |  +- com.blackducksoftware.integration:hub-common-reporting:jar:2.0.0:compile
+14971 [main] [INFO] |  +- com.blackducksoftware.integration:phone-home-api:jar:2.0.2:compile
+15223 [main] [INFO] |  +- com.blackducksoftware.integration:integration-bdio:jar:4.1.1:compile
+15303 [main] [INFO] |  \- joda-time:joda-time:jar:2.9.6:compile
+15359 [main] [INFO] +- org.jdom:jdom:jar:1.1.3:compile
+15567 [main] [INFO] +- commons-io:commons-io:jar:2.5:compile
+15857 [main] [INFO] +- org.apache.commons:commons-lang3:jar:3.5:compile
+16139 [main] [INFO] +- javax.servlet:servlet-api:jar:2.5:provided
+16213 [main] [INFO] +- org.jetbrains.teamcity:server-api:jar:8.0:provided
+16403 [main] [INFO] |  +- javax.servlet:jstl:jar:1.1.2:provided
+16409 [main] [INFO] |  +- org.apache.tomcat:el-api:jar:6.0.16:provided
+16665 [main] [INFO] |  +- org.apache.tomcat:tomcat-annotations-api:jar:7.0.37:provided
+16916 [main] [INFO] |  +- org.apache.tomcat:tomcat-jsp-api:jar:7.0.37:provided
+17057 [main] [INFO] |  |  \- org.apache.tomcat:tomcat-el-api:jar:7.0.37:provided
+17336 [main] [INFO] |  +- org.apache.tomcat:tomcat-servlet-api:jar:7.0.37:provided
+17397 [main] [INFO] |  +- org.jetbrains.teamcity:common-api:jar:8.0:provided
+17471 [main] [INFO] |  |  +- commons-codec:commons-codec:jar:1.3:compile
+17601 [main] [INFO] |  |  +- commons-httpclient:commons-httpclient:jar:3.1:provided
+17855 [main] [INFO] |  |  +- jaxen:jaxen:jar:1.1.1:provided
+18093 [main] [INFO] |  |  |  +- dom4j:dom4j:jar:1.6.1:provided
+18301 [main] [INFO] |  |  |  +- xml-apis:xml-apis:jar:1.3.02:provided
+18481 [main] [INFO] |  |  |  \- xom:xom:jar:1.0:provided
+18537 [main] [INFO] |  |  |     +- xerces:xmlParserAPIs:jar:2.6.2:provided
+18661 [main] [INFO] |  |  |     +- xalan:xalan:jar:2.6.0:provided
+18675 [main] [INFO] |  |  |     \- com.ibm.icu:icu4j:jar:2.6.1:provided
+18721 [main] [INFO] |  |  +- org.apache.ws.xmlrpc:xmlrpc:jar:2.0.1:provided
+18932 [main] [INFO] |  |  +- org.jetbrains.teamcity.idea:annotations:jar:95.677:provided
+19002 [main] [INFO] |  |  +- org.jetbrains.teamcity.idea:trove4j:jar:95.677:provided
+19085 [main] [INFO] |  |  +- com.thoughtworks.xstream:xstream:jar:1.4.1:provided
+19208 [main] [INFO] |  |  |  +- xmlpull:xmlpull:jar:1.1.3.1:provided
+19298 [main] [INFO] |  |  |  \- xpp3:xpp3_min:jar:1.1.4c:provided
+19526 [main] [INFO] |  |  +- org.apache.commons:commons-compress:jar:1.4.1:provided
+19631 [main] [INFO] |  |  |  \- org.tukaani:xz:jar:1.0:provided
+19664 [main] [INFO] |  |  +- xerces:xercesImpl:jar:2.9.1:provided
+19687 [main] [INFO] |  |  \- xpp3:xpp3:jar:1.1.4c:provided
+19933 [main] [INFO] |  +- org.springframework:spring-aop:jar:3.0.5.RELEASE:provided
+20144 [main] [INFO] |  +- org.springframework:spring-asm:jar:3.0.5.RELEASE:provided
+20163 [main] [INFO] |  +- org.springframework:spring-aspects:jar:3.0.5.RELEASE:provided
+20431 [main] [INFO] |  |  \- org.springframework:spring-test:jar:3.0.5.RELEASE:provided
+20514 [main] [INFO] |  +- org.springframework:spring-beans:jar:3.0.5.RELEASE:provided
+20527 [main] [INFO] |  +- org.springframework:spring-context:jar:3.0.5.RELEASE:provided
+20705 [main] [INFO] |  +- org.springframework:spring-context-support:jar:3.0.5.RELEASE:provided
+20791 [main] [INFO] |  +- org.springframework:spring-core:jar:3.0.5.RELEASE:provided
+21068 [main] [INFO] |  +- org.springframework:spring-expression:jar:3.0.5.RELEASE:provided
+21188 [main] [INFO] |  +- org.springframework:spring-instrument:jar:3.0.5.RELEASE:provided
+21474 [main] [INFO] |  +- org.springframework:spring-jdbc:jar:3.0.5.RELEASE:provided
+21713 [main] [INFO] |  +- org.springframework:spring-tx:jar:3.0.5.RELEASE:provided
+21994 [main] [INFO] |  +- org.springframework:spring-web:jar:3.0.5.RELEASE:provided
+22091 [main] [INFO] |  +- org.springframework:spring-webmvc:jar:3.0.5.RELEASE:provided
+22330 [main] [INFO] |  +- taglibs:standard:jar:1.1.2:provided
+22353 [main] [INFO] |  +- aopalliance:aopalliance:jar:1.0:provided
+22525 [main] [INFO] |  +- cglib:cglib-nodep:jar:2.1_3:provided
+22569 [main] [INFO] |  +- com.google.code.findbugs:jsr305:jar:1.3.9:provided
+22721 [main] [INFO] |  +- com.google.code.gson:gson:jar:1.7.1:compile
+22814 [main] [INFO] |  +- com.google.guava:guava:jar:13.0.1:provided
+22991 [main] [INFO] |  +- com.yahoo.platform.yui:yuicompressor:jar:2.4.7:provided
+23009 [main] [INFO] |  |  \- rhino:js:jar:1.6R7:provided
+23236 [main] [INFO] |  +- commons-beanutils:commons-beanutils-core:jar:1.7.0:provided
+23451 [main] [INFO] |  +- commons-cli:commons-cli:jar:1.0:provided
+23483 [main] [INFO] |  |  \- commons-lang:commons-lang:jar:1.0:provided
+23591 [main] [INFO] |  +- commons-collections:commons-collections:jar:3.2.1:provided
+23630 [main] [INFO] |  +- commons-dbcp:commons-dbcp:jar:1.3:provided
+23706 [main] [INFO] |  +- commons-pool:commons-pool:jar:1.5.6:provided
+23882 [main] [INFO] |  +- jfree:jcommon:jar:1.0.12:provided
+23917 [main] [INFO] |  +- jfree:jfreechart:jar:1.0.9:provided
+24074 [main] [INFO] |  +- net.sf.ehcache:ehcache:jar:1.6.0:provided
+24116 [main] [INFO] |  +- net.sf.opencsv:opencsv:jar:1.8:provided
+24297 [main] [INFO] |  +- opensymphony:quartz:jar:1.6.0:provided
+24455 [main] [INFO] |  +- org.apache.tomcat:tomcat-jdbc:jar:7.0.23:provided
+24722 [main] [INFO] |  +- org.apache.tomcat:tomcat-juli:jar:7.0.23:provided
+24988 [main] [INFO] |  +- org.hsqldb:hsqldb:jar:2.2.9:provided
+25201 [main] [INFO] |  +- org.jetbrains.teamcity:ehcache-patch:jar:1.6:provided
+25296 [main] [INFO] |  +- org.jetbrains.teamcity:hsqldb:jar:1.0:provided
+25367 [main] [INFO] |  +- org.jetbrains.teamcity:jhighlight-njcms-patch:jar:1.0:provided
+25547 [main] [INFO] |  +- org.jetbrains.teamcity:packtag:jar:3.7:provided
+25607 [main] [INFO] |  \- org.springframework.security:spring-security-aspects:jar:3.0.5.RELEASE:provided
+25897 [main] [INFO] |     +- org.aspectj:aspectjweaver:jar:1.6.8:provided
+26007 [main] [INFO] |     \- org.springframework.security:spring-security-core:jar:3.0.5.RELEASE:provided
+26038 [main] [INFO] |        \- org.aspectj:aspectjrt:jar:1.6.8:provided
+26165 [main] [INFO] +- com.intellij:openapi:jar:7.0.3:provided
+26216 [main] [INFO] |  +- com.intellij:annotations:jar:7.0.3:provided
+26221 [main] [INFO] |  \- com.intellij:extensions:jar:7.0.3:provided
+26462 [main] [INFO] +- commons-logging:commons-logging:jar:1.1.1:test
+26739 [main] [INFO] +- log4j:log4j:jar:1.2.17:test
+26822 [main] [INFO] +- junit:junit:jar:4.12:test
+27001 [main] [INFO] |  \- org.hamcrest:hamcrest-core:jar:1.3:test
+27257 [main] [INFO] +- org.codehaus.groovy:groovy-all:jar:2.4.11:test
+27379 [main] [INFO] +- org.mockito:mockito-all:jar:1.10.19:test
+27634 [main] [INFO] +- org.powermock:powermock-api-mockito:jar:1.6.6:test
+27916 [main] [INFO] |  +- org.mockito:mockito-core:jar:1.10.19:test
+27935 [main] [INFO] |  |  \- org.objenesis:objenesis:jar:2.1:test
+28044 [main] [INFO] |  \- org.powermock:powermock-api-mockito-common:jar:1.6.6:test
+28121 [main] [INFO] |     \- org.powermock:powermock-api-support:jar:1.6.6:test
+28395 [main] [INFO] +- org.slf4j:slf4j-simple:jar:1.7.21:test
+28523 [main] [INFO] |  \- org.slf4j:slf4j-api:jar:1.7.21:compile
+28532 [main] [INFO] \- org.powermock:powermock-module-junit4:jar:1.6.6:test
+28783 [main] [INFO]    \- org.powermock:powermock-module-junit4-common:jar:1.6.6:test
+28813 [main] [INFO]       +- org.powermock:powermock-core:jar:1.6.6:test
+29063 [main] [INFO]       |  \- org.javassist:javassist:jar:3.21.0-GA:test
+29328 [main] [INFO]       \- org.powermock:powermock-reflect:jar:1.6.6:test
+29438 [main] [INFO]                                                                         
+29504 [main] [INFO] ------------------------------------------------------------------------
+29590 [main] [INFO] Building Black Duck Hub Plug-In for TeamCity Agent 3.2.0-SNAPSHOT
+29754 [main] [INFO] ------------------------------------------------------------------------
+Downloading: http://download.jetbrains.com/teamcity-repository/com/blackducksoftware/integration/hub-teamcity-server/3.2.0-SNAPSHOT/maven-metadata.xml29782 [main] [INFO] 
+29967 [main] [INFO] --- maven-dependency-plugin:2.10:tree (default-cli) @ hub-teamcity-agent ---
+30065 [main] [INFO] com.blackducksoftware.integration:hub-teamcity-agent:jar:3.2.0-SNAPSHOT
+30346 [main] [INFO] +- org.apache.commons:commons-lang3:jar:3.5:compile
+30568 [main] [INFO] +- com.blackducksoftware.integration:hub-teamcity-common:jar:3.2.0-SNAPSHOT:compile
+30638 [main] [INFO] +- com.blackducksoftware.integration:hub-teamcity-server:jar:3.2.0-SNAPSHOT:compile
+30929 [main] [INFO] |  +- org.jdom:jdom:jar:1.1.3:compile
+31197 [main] [INFO] |  \- commons-io:commons-io:jar:2.5:compile
+31403 [main] [INFO] +- com.blackducksoftware.integration:hub-common:jar:13.1.2:compile
+31523 [main] [INFO] |  +- com.blackducksoftware.integration:hub-common-rest:jar:2.1.3:compile
+31533 [main] [INFO] |  |  +- com.blackducksoftware.integration:integration-common:jar:6.0.2:compile
+31794 [main] [INFO] |  |  +- com.squareup.okhttp3:okhttp:jar:3.7.0:compile
+32075 [main] [INFO] |  |  |  \- com.squareup.okio:okio:jar:1.12.0:compile
+32188 [main] [INFO] |  |  \- com.squareup.okhttp3:okhttp-urlconnection:jar:3.7.0:compile
+32215 [main] [INFO] |  +- com.blackducksoftware.integration:hub-common-response:jar:3.2.0:compile
+32377 [main] [INFO] |  +- com.blackducksoftware.integration:hub-common-reporting:jar:2.0.0:compile
+32569 [main] [INFO] |  +- com.blackducksoftware.integration:phone-home-api:jar:2.0.2:compile
+32776 [main] [INFO] |  +- com.blackducksoftware.integration:integration-bdio:jar:4.1.1:compile
+33041 [main] [INFO] |  \- joda-time:joda-time:jar:2.9.6:compile
+33124 [main] [INFO] +- org.codehaus.groovy:groovy-all:jar:2.4.11:compile
+33133 [main] [INFO] +- org.slf4j:slf4j-api:jar:1.7.5:provided
+33142 [main] [INFO] +- org.jetbrains.teamcity:agent-api:jar:8.0:provided
+33391 [main] [INFO] |  +- org.jetbrains.teamcity:common-api:jar:8.0:provided
+33666 [main] [INFO] |  |  +- commons-codec:commons-codec:jar:1.3:compile
+33695 [main] [INFO] |  |  +- commons-httpclient:commons-httpclient:jar:3.1:provided
+33845 [main] [INFO] |  |  +- jaxen:jaxen:jar:1.1.1:provided
+34038 [main] [INFO] |  |  |  +- dom4j:dom4j:jar:1.6.1:provided
+34108 [main] [INFO] |  |  |  +- xml-apis:xml-apis:jar:1.3.02:provided
+34346 [main] [INFO] |  |  |  \- xom:xom:jar:1.0:provided
+34544 [main] [INFO] |  |  |     +- xerces:xmlParserAPIs:jar:2.6.2:provided
+34813 [main] [INFO] |  |  |     +- xalan:xalan:jar:2.6.0:provided
+34867 [main] [INFO] |  |  |     \- com.ibm.icu:icu4j:jar:2.6.1:provided
+35026 [main] [INFO] |  |  +- log4j:log4j:jar:1.2.12:provided
+35310 [main] [INFO] |  |  +- org.apache.ws.xmlrpc:xmlrpc:jar:2.0.1:provided
+35476 [main] [INFO] |  |  |  \- javax.servlet:servlet-api:jar:2.5:provided
+35700 [main] [INFO] |  |  +- org.jetbrains.teamcity.idea:annotations:jar:95.677:provided
+35884 [main] [INFO] |  |  +- org.jetbrains.teamcity.idea:trove4j:jar:95.677:provided
+35991 [main] [INFO] |  |  +- com.thoughtworks.xstream:xstream:jar:1.4.1:provided
+36150 [main] [INFO] |  |  |  +- xmlpull:xmlpull:jar:1.1.3.1:provided
+36449 [main] [INFO] |  |  |  \- xpp3:xpp3_min:jar:1.1.4c:provided
+36613 [main] [INFO] |  |  +- org.apache.commons:commons-compress:jar:1.4.1:provided
+36787 [main] [INFO] |  |  |  \- org.tukaani:xz:jar:1.0:provided
+36953 [main] [INFO] |  |  +- xerces:xercesImpl:jar:2.9.1:provided
+37137 [main] [INFO] |  |  \- xpp3:xpp3:jar:1.1.4c:provided
+37313 [main] [INFO] |  +- org.springframework:spring-aop:jar:3.0.5.RELEASE:provided
+37589 [main] [INFO] |  +- org.springframework:spring-asm:jar:3.0.5.RELEASE:provided
+37639 [main] [INFO] |  +- org.springframework:spring-aspects:jar:3.0.5.RELEASE:provided
+37796 [main] [INFO] |  |  \- org.springframework:spring-test:jar:3.0.5.RELEASE:provided
+37935 [main] [INFO] |  +- org.springframework:spring-beans:jar:3.0.5.RELEASE:provided
+38063 [main] [INFO] |  +- org.springframework:spring-context:jar:3.0.5.RELEASE:provided
+38342 [main] [INFO] |  +- org.springframework:spring-context-support:jar:3.0.5.RELEASE:provided
+38530 [main] [INFO] |  +- org.springframework:spring-core:jar:3.0.5.RELEASE:provided
+38599 [main] [INFO] |  +- org.springframework:spring-expression:jar:3.0.5.RELEASE:provided
+38654 [main] [INFO] |  +- org.springframework:spring-instrument:jar:3.0.5.RELEASE:provided
+38938 [main] [INFO] |  +- org.springframework:spring-jdbc:jar:3.0.5.RELEASE:provided
+39131 [main] [INFO] |  \- org.springframework:spring-tx:jar:3.0.5.RELEASE:provided
+39216 [main] [INFO] +- org.jetbrains.teamcity:server-api:jar:8.0:provided
+39274 [main] [INFO] |  +- javax.servlet:jstl:jar:1.1.2:provided
+39335 [main] [INFO] |  +- org.apache.tomcat:el-api:jar:6.0.16:provided
+39575 [main] [INFO] |  +- org.apache.tomcat:tomcat-annotations-api:jar:7.0.37:provided
+39762 [main] [INFO] |  +- org.apache.tomcat:tomcat-jsp-api:jar:7.0.37:provided
+39877 [main] [INFO] |  |  \- org.apache.tomcat:tomcat-el-api:jar:7.0.37:provided
+40055 [main] [INFO] |  +- org.apache.tomcat:tomcat-servlet-api:jar:7.0.37:provided
+40140 [main] [INFO] |  +- org.springframework:spring-web:jar:3.0.5.RELEASE:provided
+40418 [main] [INFO] |  +- org.springframework:spring-webmvc:jar:3.0.5.RELEASE:provided
+40718 [main] [INFO] |  +- taglibs:standard:jar:1.1.2:provided
+40937 [main] [INFO] |  +- aopalliance:aopalliance:jar:1.0:provided
+41022 [main] [INFO] |  +- cglib:cglib-nodep:jar:2.1_3:provided
+41200 [main] [INFO] |  +- com.google.code.findbugs:jsr305:jar:1.3.9:provided
+41210 [main] [INFO] |  +- com.google.code.gson:gson:jar:1.7.1:compile
+41376 [main] [INFO] |  +- com.google.guava:guava:jar:13.0.1:provided
+41641 [main] [INFO] |  +- com.yahoo.platform.yui:yuicompressor:jar:2.4.7:provided
+41675 [main] [INFO] |  |  \- rhino:js:jar:1.6R7:provided
+41932 [main] [INFO] |  +- commons-beanutils:commons-beanutils-core:jar:1.7.0:provided
+41939 [main] [INFO] |  +- commons-cli:commons-cli:jar:1.0:provided
+42174 [main] [INFO] |  |  \- commons-lang:commons-lang:jar:1.0:provided
+42365 [main] [INFO] |  +- commons-collections:commons-collections:jar:3.2.1:provided
+42639 [main] [INFO] |  +- commons-dbcp:commons-dbcp:jar:1.3:provided
+42745 [main] [INFO] |  +- commons-logging:commons-logging:jar:1.1.1:provided
+42993 [main] [INFO] |  +- commons-pool:commons-pool:jar:1.5.6:provided
+43211 [main] [INFO] |  +- jfree:jcommon:jar:1.0.12:provided
+43394 [main] [INFO] |  +- jfree:jfreechart:jar:1.0.9:provided
+43506 [main] [INFO] |  +- net.sf.ehcache:ehcache:jar:1.6.0:provided
+43568 [main] [INFO] |  +- net.sf.opencsv:opencsv:jar:1.8:provided
+43860 [main] [INFO] |  +- opensymphony:quartz:jar:1.6.0:provided
+44052 [main] [INFO] |  +- org.apache.tomcat:tomcat-jdbc:jar:7.0.23:provided
+44304 [main] [INFO] |  +- org.apache.tomcat:tomcat-juli:jar:7.0.23:provided
+44335 [main] [INFO] |  +- org.hsqldb:hsqldb:jar:2.2.9:provided
+44398 [main] [INFO] |  +- org.jetbrains.teamcity:ehcache-patch:jar:1.6:provided
+44467 [main] [INFO] |  +- org.jetbrains.teamcity:hsqldb:jar:1.0:provided
+44676 [main] [INFO] |  +- org.jetbrains.teamcity:jhighlight-njcms-patch:jar:1.0:provided
+44928 [main] [INFO] |  +- org.jetbrains.teamcity:packtag:jar:3.7:provided
+45079 [main] [INFO] |  \- org.springframework.security:spring-security-aspects:jar:3.0.5.RELEASE:provided
+45362 [main] [INFO] |     +- org.aspectj:aspectjweaver:jar:1.6.8:provided
+45580 [main] [INFO] |     \- org.springframework.security:spring-security-core:jar:3.0.5.RELEASE:provided
+45585 [main] [INFO] |        \- org.aspectj:aspectjrt:jar:1.6.8:provided
+45652 [main] [INFO] +- junit:junit:jar:4.12:test
+45864 [main] [INFO] |  \- org.hamcrest:hamcrest-core:jar:1.3:test
+45949 [main] [INFO] +- org.mockito:mockito-all:jar:1.10.19:test
+45993 [main] [INFO] +- org.powermock:powermock-api-mockito:jar:1.6.6:test
+46268 [main] [INFO] |  +- org.mockito:mockito-core:jar:1.10.19:test
+46459 [main] [INFO] |  |  \- org.objenesis:objenesis:jar:2.1:test
+46528 [main] [INFO] |  \- org.powermock:powermock-api-mockito-common:jar:1.6.6:test
+46665 [main] [INFO] |     \- org.powermock:powermock-api-support:jar:1.6.6:test
+46854 [main] [INFO] +- org.slf4j:slf4j-simple:jar:1.7.21:test
+47060 [main] [INFO] \- org.powermock:powermock-module-junit4:jar:1.6.6:test
+47350 [main] [INFO]    \- org.powermock:powermock-module-junit4-common:jar:1.6.6:test
+47406 [main] [INFO]       +- org.powermock:powermock-core:jar:1.6.6:test
+47653 [main] [INFO]       |  \- org.javassist:javassist:jar:3.21.0-GA:test
+47787 [main] [INFO]       \- org.powermock:powermock-reflect:jar:1.6.6:test
+48018 [main] [INFO]                                                                         
+48097 [main] [INFO] ------------------------------------------------------------------------
+48220 [main] [INFO] Building Assemble Black Duck Hub Plug-In for TeamCity CI 3.2.0-SNAPSHOT
+48294 [main] [INFO] ------------------------------------------------------------------------
+48502 [main] [INFO] 
+48793 [main] [INFO] --- maven-dependency-plugin:2.10:tree (default-cli) @ hub-teamcity-assembly ---
+49027 [main] [INFO] com.blackducksoftware.integration:hub-teamcity-assembly:pom:3.2.0-SNAPSHOT
+49083 [main] [INFO] +- junit:junit:jar:4.12:test
+49297 [main] [INFO] |  \- org.hamcrest:hamcrest-core:jar:1.3:test
+49308 [main] [INFO] +- org.codehaus.groovy:groovy-all:jar:2.4.11:test
+49554 [main] [INFO] +- org.mockito:mockito-all:jar:1.10.19:test
+49727 [main] [INFO] +- org.powermock:powermock-api-mockito:jar:1.6.6:test
+49888 [main] [INFO] |  +- org.mockito:mockito-core:jar:1.10.19:test
+49916 [main] [INFO] |  |  \- org.objenesis:objenesis:jar:2.1:test
+50149 [main] [INFO] |  \- org.powermock:powermock-api-mockito-common:jar:1.6.6:test
+50249 [main] [INFO] |     \- org.powermock:powermock-api-support:jar:1.6.6:test
+50346 [main] [INFO] +- org.slf4j:slf4j-simple:jar:1.7.21:test
+50405 [main] [INFO] |  \- org.slf4j:slf4j-api:jar:1.7.21:test
+50632 [main] [INFO] \- org.powermock:powermock-module-junit4:jar:1.6.6:test
+50649 [main] [INFO]    \- org.powermock:powermock-module-junit4-common:jar:1.6.6:test
+50681 [main] [INFO]       +- org.powermock:powermock-core:jar:1.6.6:test
+50842 [main] [INFO]       |  \- org.javassist:javassist:jar:3.21.0-GA:test
+51118 [main] [INFO]       \- org.powermock:powermock-reflect:jar:1.6.6:test
+51218 [main] [INFO] ------------------------------------------------------------------------
+51249 [main] [INFO] Reactor Summary:
+51409 [main] [INFO] 
+51616 [main] [INFO] Black Duck Hub Plugin for TeamCity ................. SUCCESS [  0.559 s]
+51817 [main] [INFO] Black Duck Hub Plug-In for TeamCity Common ......... SUCCESS [  0.062 s]
+51877 [main] [INFO] Black Duck Hub Plug-In for TeamCity Server ......... SUCCESS [  1.287 s]
+51953 [main] [INFO] Black Duck Hub Plug-In for TeamCity Agent .......... SUCCESS [  0.233 s]
+51991 [main] [INFO] Assemble Black Duck Hub Plug-In for TeamCity CI .... SUCCESS [  0.008 s]
+52228 [main] [INFO] ------------------------------------------------------------------------
+52313 [main] [INFO] BUILD SUCCESS
+52366 [main] [INFO] ------------------------------------------------------------------------
+52518 [main] [INFO] Total time: 2.440 s
+52641 [main] [INFO] Finished at: 2017-09-13T10:56:17-04:00
+52861 [main] [INFO] Final Memory: 21M/265M
+53150 [main] [INFO] ------------------------------------------------------------------------

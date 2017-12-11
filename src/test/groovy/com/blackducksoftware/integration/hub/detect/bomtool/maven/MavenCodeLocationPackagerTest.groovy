@@ -12,9 +12,9 @@ class MavenCodeLocationPackagerTest {
     private TestUtil testUtil = new TestUtil()
 
     @Test
-    public void extractCodeLocationsTestWithNumberedOutput() {
-        final String mavenOutputText = testUtil.getResourceAsUTF8String('/maven/mavenOutputWithNumbers.txt')
-        createNewCodeLocationTest(mavenOutputText, '/maven/sonarStashCodeLocation.json')
+    public void extractCodeLocationsTestWithNumbersRemovedOutput() {
+        final String mavenOutputText = testUtil.getResourceAsUTF8String('/maven/hubTeamcityOutputWithStrangePrefixesFoundFromCustomer.txt')
+        createNewCodeLocationTest(mavenOutputText, '/maven/hubTeamCityCodeLocation.json', 5, "", "")
     }
 
     @Test
