@@ -30,7 +30,7 @@ class NpmLockfilePackagerTest {
     @Test
     public void parseLockFileTest() {
         String lockFileText = testUtil.getResourceAsUTF8String('npm/package-lock.json')
-        DetectCodeLocation actual = npmLockfilePackager.parse("source", lockFileText)
+        DetectCodeLocation actual = npmLockfilePackager.parse("source", lockFileText, true)
 
         Assert.assertEquals(actual.bomToolProjectName, "knockout-tournament");
         Assert.assertEquals(actual.bomToolProjectVersionName, "1.0.0");
@@ -40,7 +40,7 @@ class NpmLockfilePackagerTest {
     @Test
     public void parseShrinkwrapTest() {
         String shrinkwrapText = testUtil.getResourceAsUTF8String('npm/npm-shrinkwrap.json')
-        DetectCodeLocation actual = npmLockfilePackager.parse("source", shrinkwrapText)
+        DetectCodeLocation actual = npmLockfilePackager.parse("source", shrinkwrapText, true)
 
         Assert.assertEquals(actual.bomToolProjectName, "fec-builder");
         Assert.assertEquals(actual.bomToolProjectVersionName, "1.3.7");

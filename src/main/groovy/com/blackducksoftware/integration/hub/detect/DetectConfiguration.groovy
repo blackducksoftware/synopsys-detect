@@ -240,7 +240,7 @@ class DetectConfiguration {
     private String getInspectorAirGapPath(String inspectorLocationProperty, String inspectorName) {
         if (!inspectorLocationProperty?.trim()) {
             try {
-                File detectJar = new File(guessDetectJarLocation())
+                File detectJar = new File(guessDetectJarLocation()).getCanonicalFile()
                 File inspectorsDirectory = new File(detectJar.getParentFile(), 'packaged-inspectors')
                 File inspectorAirGapDirectory = new File(inspectorsDirectory, inspectorName)
                 return inspectorAirGapDirectory.getCanonicalPath()
