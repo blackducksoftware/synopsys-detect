@@ -27,7 +27,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -42,7 +41,7 @@ public class DetectSummary {
     @Autowired
     private List<SummaryResultReporter> summaryResultReporters;
 
-    public void logResults(final IntLogger logger, final ExitCodeType exitCodeType, final String exitMessage) {
+    public void logResults(final IntLogger logger, final ExitCodeType exitCodeType, final List<String> exitMessages) {
         final List<DetectSummaryResult> detectSummaryResults = new ArrayList<>();
         for (final SummaryResultReporter summaryResultReporter : summaryResultReporters) {
             detectSummaryResults.addAll(summaryResultReporter.getDetectSummaryResults());
@@ -72,8 +71,11 @@ public class DetectSummary {
         }
 
         logger.info("");
-        if (StringUtils.isNotBlank(exitMessage)) {
-            logger.info(String.format("Exit Message: %s", exitMessage));
+        if (exitMessages.size() > 0) {
+            logger.info("Exit Message(s):");
+            for (final String exitMessage : exitMessages) {
+                logger.info("\t" + exitMessage);
+            }
         }
         logger.info(String.format("Overall Status: %s", exitCodeType.toString()));
         logger.info("================================");
