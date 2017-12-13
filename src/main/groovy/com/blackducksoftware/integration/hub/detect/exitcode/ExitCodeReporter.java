@@ -26,5 +26,4 @@ public interface ExitCodeReporter {
     public ExitCodeType getExitCodeType();
 
     public String getExitMessage();
-
 }

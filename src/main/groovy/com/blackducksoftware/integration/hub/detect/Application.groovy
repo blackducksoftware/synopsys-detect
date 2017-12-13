@@ -118,7 +118,7 @@ class Application {
     DetectPhoneHomeManager detectPhoneHomeManager
 
     private ExitCodeType exitCodeType = ExitCodeType.SUCCESS;
-    private String exitMessage = "";
+    private List<String> exitMessages = [];
 
     static void main(final String[] args) {
         new SpringApplicationBuilder(Application.class).logStartupInfo(false).run(args)
@@ -178,6 +178,7 @@ class Application {
             }
 
             for (ExitCodeReporter exitCodeReporter : exitCodeReporters) {
+                exitMessages.add(exitCodeReporter.getExitMessage());
                 exitCodeType = ExitCodeType.getWinningExitCodeType(exitCodeType, exitCodeReporter.getExitCodeType());
             }
         } catch (Exception e) {
@@ -190,7 +191,7 @@ class Application {
             }
 
             if (!detectConfiguration.suppressResultsOutput) {
-                detectSummary.logResults(new Slf4jIntLogger(logger), exitCodeType, exitMessage);
+                detectSummary.logResults(new Slf4jIntLogger(logger), exitCodeType, exitMessages);
             }
 
             detectFileManager.cleanupDirectories()
@@ -210,7 +211,7 @@ class Application {
     }
 
     private void populateExitCodeFromExceptionDetails(Exception e) {
-        exitMessage = e.getMessage();
+        exitMessages.add(e.getMessage());
         if (e instanceof HubTimeoutExceededException) {
             exitCodeType = ExitCodeType.FAILURE_TIMEOUT;
         } else if (e instanceof DetectUserFriendlyException) {

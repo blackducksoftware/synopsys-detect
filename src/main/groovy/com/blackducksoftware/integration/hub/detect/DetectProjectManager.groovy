@@ -41,6 +41,8 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationName
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationNameService
+import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter
+import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
@@ -57,7 +59,7 @@ import groovy.transform.TypeChecked
 
 @Component
 @TypeChecked
-class DetectProjectManager implements SummaryResultReporter {
+class DetectProjectManager implements SummaryResultReporter, ExitCodeReporter {
     private final Logger logger = LoggerFactory.getLogger(DetectProjectManager.class)
 
     @Autowired
@@ -195,6 +197,21 @@ class DetectProjectManager implements SummaryResultReporter {
             detectSummaryResults.add(new BomToolSummaryResult(entry.getKey(), entry.getValue()));
         }
         return detectSummaryResults;
+    }
+
+    @Override
+    public ExitCodeType getExitCodeType() {
+        for (Map.Entry<BomToolType, Result> entry : bomToolSummaryResults.entrySet()) {
+            if (Result.FAILURE == entry.getValue()) {
+                return ExitCodeType.FAILURE_BOM_TOOL;
+            }
+        }
+        return ExitCodeType.SUCCESS;
+    }
+
+    @Override
+    public String getExitMessage() {
+        return "One of the applicable bom tools reported a failure - please check the logs for details.";
     }
 
     private String generateShortenedFilename(BomToolType bomToolType, String finalSourcePathPiece, ExternalId externalId) {

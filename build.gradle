@@ -1,12 +1,6 @@
 buildscript {
     repositories {
-        maven {
-            url 'http://localhost:8081/artifactory/maven-virtual'
-            credentials {
-                username = "${artifactory_user}"
-                password = "${artifactory_password}"
-            }
-        }
+        mavenCentral()
     }
 
     dependencies {
@@ -71,13 +65,9 @@ build {
 }
 
 repositories {
-        maven {
-            url 'http://localhost:8081/artifactory/maven-virtual'
-            credentials {
-                username = "${artifactory_user}"
-                password = "${artifactory_password}"
-            }
-        }
+    mavenLocal()
+    mavenCentral()
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
 }
 
 publishing {
@@ -91,7 +81,7 @@ publishing {
 
 artifactory {
     publish {
-        contextUrl = artifactory_contextUrl
+        contextUrl = artifactoryUrl
         repository {
             repoKey = artifactoryRepo
             username = artifactoryDeployerUsername
@@ -99,14 +89,6 @@ artifactory {
         }
         defaults {
             publications ('mavenJava')
-        }
-    }
-    resolve {
-        repository {
-            repoKey = 'maven-virtual'
-            username = "${artifactory_user}"
-            password = "${artifactory_password}"
-            maven = true
         }
     }
 }
@@ -119,8 +101,6 @@ dependencies {
     compile 'com.moandjiezana.toml:toml4j:0.7.1'
     compile 'org.codehaus.groovy:groovy-all:2.4.11'
     compile 'org.freemarker:freemarker:2.3.26-incubating'
-    compile group: 'org.apache.poi', name: 'poi', version: '3.9'
-    compile group: 'org.apache.poi', name: 'poi-ooxml', version: '3.9'
 
     compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.2'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.9.2'
