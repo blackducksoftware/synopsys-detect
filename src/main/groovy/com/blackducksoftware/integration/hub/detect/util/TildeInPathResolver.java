@@ -56,7 +56,7 @@ public class TildeInPathResolver {
     private DetectInfo detectInfo;
 
     public void resolveTildeInAllPathFields(final String systemUserHome, final DetectConfiguration detectConfiguration) throws IllegalArgumentException, IllegalAccessException {
-        final OperatingSystemType currentOs = detectInfo.determineOperatingSystem();
+        final OperatingSystemType currentOs = detectInfo.getCurrentOs();
         final Field[] fields = DetectConfiguration.class.getDeclaredFields();
         for (final Field field : fields) {
             if (field.isAnnotationPresent(ValueDescription.class) && field.getType() == String.class) {

@@ -73,7 +73,7 @@ public class ExecutableManager {
 
     private File findExecutableFileFromPath(final String path, final String executableName) {
         final List<String> executables;
-        final OperatingSystemType currentOs = detectInfo.determineOperatingSystem();
+        final OperatingSystemType currentOs = detectInfo.getCurrentOs();
         if (currentOs == OperatingSystemType.WINDOWS) {
             executables = Arrays.asList(executableName + ".cmd", executableName + ".bat", executableName + ".exe");
         } else {
