@@ -178,6 +178,7 @@ class Application {
             }
 
             for (ExitCodeReporter exitCodeReporter : exitCodeReporters) {
+                exitMessages.add(exitCodeReporter.getExitMessage());
                 exitCodeType = ExitCodeType.getWinningExitCodeType(exitCodeType, exitCodeReporter.getExitCodeType());
             }
         } catch (Exception e) {
