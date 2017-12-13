@@ -197,7 +197,12 @@ class Application {
             detectFileManager.cleanupDirectories()
         }
 
-        System.exit(exitCodeType.getExitCode())
+        if (detectConfiguration.forceSuccess && exitCodeType.getExitCode() != 0) {
+            logger.warn("Forcing success: Exiting with 0. Desired exit code was ${exitCodeType.getExitCode()}.");
+            System.exit(0);
+        } else {
+            System.exit(exitCodeType.getExitCode())
+        }
     }
 
     private InteractiveReader createInteractiveReader() {
@@ -205,7 +210,7 @@ class Application {
         if (console != null) {
             return new ConsoleInteractiveReader(console);
         } else {
-            logger.warn("It may be insecure to enter passwords you are running in a virtual console.");
+            logger.warn("It may be insecure to enter passwords because you are running in a virtual console.");
             return new ScannerInteractiveReader(System.in);
         }
     }
