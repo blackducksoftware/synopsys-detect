@@ -42,19 +42,27 @@ public class DetectInfo {
     @Autowired
     Gson gson;
 
+    private OperatingSystemType currentOs = null;
     private String detectVersion;
 
     public void init() {
         try {
             detectVersion = ResourceUtil.getResourceAsString("version.txt", StandardCharsets.UTF_8.toString());
+            populateCurrentOs();
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public OperatingSystemType determineOperatingSystem() {
-        OperatingSystemType currentOs = null;
+    public String getDetectVersion() {
+        return detectVersion;
+    }
 
+    public OperatingSystemType getCurrentOs() {
+        return currentOs;
+    }
+
+    private void populateCurrentOs() {
         if (SystemUtils.IS_OS_LINUX) {
             currentOs = OperatingSystemType.LINUX;
         } else if (SystemUtils.IS_OS_MAC) {
@@ -69,12 +77,6 @@ public class DetectInfo {
         } else {
             logger.info("You seem to be running in a " + currentOs + " operating system.");
         }
-
-        return currentOs;
-    }
-
-    public String getDetectVersion() {
-        return detectVersion;
     }
 
 }

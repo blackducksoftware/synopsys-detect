@@ -1,7 +1,5 @@
 buildscript {
-    repositories {
-        mavenCentral()
-    }
+    repositories { mavenCentral() }
 
     dependencies {
         classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.5.8.RELEASE'
@@ -20,12 +18,8 @@ plugins {
     id "com.jfrog.artifactory" version '4.5.4'
 }
 
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-}
-tasks.withType(GroovyCompile) {
-    options.encoding = 'UTF-8'
-}
+tasks.withType(JavaCompile) { options.encoding = 'UTF-8' }
+tasks.withType(GroovyCompile) { options.encoding = 'UTF-8' }
 
 group = 'com.blackducksoftware.integration'
 
@@ -54,7 +48,7 @@ build {
         shellScriptFile.delete()
         shellScriptFile << shellScriptContents
         shellScriptFile.setExecutable(true)
-        
+
         def powershellScriptTemplateFile = new File("${projectDir}/src/main/resources/hub-detect-ps")
         def powershellScriptContents = powershellScriptTemplateFile.getText('UTF-8')
         def powershellScriptFile = new File("${buildDir}/hub-detect.ps1")
@@ -87,9 +81,7 @@ artifactory {
             username = artifactoryDeployerUsername
             password = artifactoryDeployerPassword
         }
-        defaults {
-            publications ('mavenJava')
-        }
+        defaults { publications ('mavenJava') }
     }
 }
 
@@ -129,6 +121,11 @@ license {
 }
 
 tasks.licenseMain.dependsOn(licenseFormatMain)
+
+task printConfigurations {
+    println project.configurations.collect { it.name }.join(',')
+    project.configurations.each() { println "name: ${it.name}, transitive: ${it.transitive}, visible: ${it.visible}, description: ${it.description}, state: ${it.state}" }
+}
 
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
