@@ -24,6 +24,4 @@ package com.blackducksoftware.integration.hub.detect.exitcode;
 
 public interface ExitCodeReporter {
     public ExitCodeType getExitCodeType();
-
-    public String getExitMessage();
 }

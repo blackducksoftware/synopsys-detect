@@ -79,7 +79,6 @@ class HubManager implements ExitCodeReporter {
     HubServiceWrapper hubServiceWrapper
 
     private ExitCodeType exitCodeType = ExitCodeType.SUCCESS;
-    private String exitMessage = "";
 
     public ProjectVersionView updateHubProjectVersion(DetectProject detectProject, List<File> createdBdioFiles) {
         ProjectRequestService projectRequestService = hubServiceWrapper.createProjectRequestService()
@@ -122,7 +121,6 @@ class HubManager implements ExitCodeReporter {
                     logger.info(policyStatusDescription.policyStatusMessage)
                     if (policyChecker.policyViolated(policyStatusDescription)) {
                         exitCodeType = ExitCodeType.FAILURE_POLICY_VIOLATION;
-                        exitMessage = policyStatusDescription.policyStatusMessage;
                     }
                 }
 
@@ -225,10 +223,5 @@ class HubManager implements ExitCodeReporter {
     @Override
     public ExitCodeType getExitCodeType() {
         return exitCodeType;
-    }
-
-    @Override
-    public String getExitMessage() {
-        return exitMessage;
     }
 }
