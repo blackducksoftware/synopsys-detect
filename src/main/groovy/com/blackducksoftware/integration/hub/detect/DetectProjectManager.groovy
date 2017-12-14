@@ -209,11 +209,6 @@ class DetectProjectManager implements SummaryResultReporter, ExitCodeReporter {
         return ExitCodeType.SUCCESS;
     }
 
-    @Override
-    public String getExitMessage() {
-        return "One of the applicable bom tools reported a failure - please check the logs for details.";
-    }
-
     private String generateShortenedFilename(BomToolType bomToolType, String finalSourcePathPiece, ExternalId externalId) {
         List<String> filenamePieces = new ArrayList<>();
         filenamePieces.addAll(externalId.getExternalIdPieces());

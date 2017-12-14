@@ -41,7 +41,7 @@ public class DetectSummary {
     @Autowired
     private List<SummaryResultReporter> summaryResultReporters;
 
-    public void logResults(final IntLogger logger, final ExitCodeType exitCodeType, final List<String> exitMessages) {
+    public void logResults(final IntLogger logger, final ExitCodeType exitCodeType) {
         final List<DetectSummaryResult> detectSummaryResults = new ArrayList<>();
         for (final SummaryResultReporter summaryResultReporter : summaryResultReporters) {
             detectSummaryResults.addAll(summaryResultReporter.getDetectSummaryResults());
@@ -70,13 +70,6 @@ public class DetectSummary {
             previousResultClass = detectSummaryResult.getClass();
         }
 
-        logger.info("");
-        if (exitMessages.size() > 0) {
-            logger.info("Exit Message(s):");
-            for (final String exitMessage : exitMessages) {
-                logger.info("\t" + exitMessage);
-            }
-        }
         logger.info(String.format("Overall Status: %s", exitCodeType.toString()));
         logger.info("================================");
         logger.info("");
