@@ -14,7 +14,7 @@ class TildeInPathResolverTest {
         detectConfiguration.sourcePath = '~/Documents/source/integration/hub-detect'
 
         TildeInPathResolver resolver = new TildeInPathResolver()
-        resolver.detectInfo = [determineOperatingSystem: {OperatingSystemType.LINUX}] as DetectInfo
+        resolver.detectInfo = [getCurrentOs: {OperatingSystemType.LINUX}] as DetectInfo
 
         resolver.resolveTildeInAllPathFields('/Users/ekerwin', detectConfiguration)
 
@@ -27,7 +27,7 @@ class TildeInPathResolverTest {
         detectConfiguration.sourcePath = '~/Documents/source/integration/hub-detect'
 
         TildeInPathResolver resolver = new TildeInPathResolver()
-        resolver.detectInfo = [determineOperatingSystem: {OperatingSystemType.WINDOWS}] as DetectInfo
+        resolver.detectInfo = [getCurrentOs: {OperatingSystemType.WINDOWS}] as DetectInfo
 
         resolver.resolveTildeInAllPathFields('/Users/ekerwin', detectConfiguration)
 
@@ -40,7 +40,7 @@ class TildeInPathResolverTest {
         detectConfiguration.sourcePath = '/Documents/~source/~/integration/hub-detect'
 
         TildeInPathResolver resolver = new TildeInPathResolver()
-        resolver.detectInfo = [determineOperatingSystem: {OperatingSystemType.LINUX}] as DetectInfo
+        resolver.detectInfo = [getCurrentOs: {OperatingSystemType.LINUX}] as DetectInfo
 
         resolver.resolveTildeInAllPathFields('/Users/ekerwin', detectConfiguration)
 
