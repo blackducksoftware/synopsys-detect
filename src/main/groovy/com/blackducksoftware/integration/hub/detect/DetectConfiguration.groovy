@@ -699,6 +699,14 @@ class DetectConfiguration {
     @Value('${detect.hex.rebar3.path:}')
     String hexRebar3Path
 
+    @ValueDescription(description="The accepted parallelism for tasks supporting it like scanning, default to the number of processors", group=DetectConfiguration.GROUP_GENERAL)
+    @Value('${detect.execution.parallelism:}')
+    Integer executionParallelism
+
+    int getExecutionParallelism() {
+        return executionParallelism == null ? Runtime.runtime.availableProcessors() : executionParallelism
+    }
+
     public boolean getCleanupBdioFiles() {
         return BooleanUtils.toBoolean(cleanupBdioFiles)
     }

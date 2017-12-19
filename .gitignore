@@ -10,3 +10,4 @@ build/
 classes/
 version.txt
 *.html
+*.iml
