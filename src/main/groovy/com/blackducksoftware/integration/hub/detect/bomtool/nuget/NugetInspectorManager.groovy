@@ -52,8 +52,8 @@ class NugetInspectorManager {
     }
 
     public String getInspectorVersion(final String nugetExecutablePath) {
-        if ('latest'.equalsIgnoreCase(detectConfiguration.getNugetInspectorPackageVersion())) {
-            if (!inspectorVersion) {
+        if (!inspectorVersion) {
+            if ('latest'.equalsIgnoreCase(detectConfiguration.getNugetInspectorPackageVersion())) {
                 final def nugetOptions = [
                     'list',
                     detectConfiguration.getNugetInspectorPackageName()
@@ -81,15 +81,17 @@ class NugetInspectorManager {
                         inspectorVersion = lineChunks[1]
                     }
                 }
+                logger.info("Resolved nuget inspector version from latest to: ${inspectorVersion}")
+            } else {
+                inspectorVersion = detectConfiguration.getNugetInspectorPackageVersion()
             }
-        } else {
-            inspectorVersion = detectConfiguration.getDockerInspectorVersion()
         }
         return inspectorVersion
     }
 
     private void installInspector(final String nugetExecutablePath, final File outputDirectory) {
         File toolsDirectory
+        String inspectorVersion = detectConfiguration.getNugetInspectorPackageVersion()
 
         def airGapNugetInspectorDirectory = new File(detectConfiguration.getNugetInspectorAirGapPath())
         if (airGapNugetInspectorDirectory.exists()) {
@@ -105,22 +107,20 @@ class NugetInspectorManager {
                 '-Source',
                 detectConfiguration.getNugetPackagesRepoUrl()
             ]
-            if (!'latest'.equalsIgnoreCase(detectConfiguration.getNugetInspectorPackageVersion())) {
-                nugetOptions.addAll([
-                    '-Version',
-                    detectConfiguration.getNugetInspectorPackageVersion()
-                ])
-            }
-            Executable installInspectorExecutable = new Executable(detectConfiguration.sourceDirectory, nugetExecutablePath, nugetOptions)
+            nugetOptions.addAll([
+                '-Version',
+                inspectorVersion
+            ])
+            Executable installInspectorExecutable = new Executable(detectConfiguration.getSourceDirectory(), nugetExecutablePath, nugetOptions)
             executableRunner.execute(installInspectorExecutable)
 
-            final File inspectorVersionDirectory = new File(outputDirectory, "${detectConfiguration.getNugetInspectorPackageName()}.${inspectorVersion}")
+            final File inspectorVersionDirectory = new File(outputDirectory, "${detectConfiguration.getNugetInspectorPackageName()}.${detectConfiguration.getNugetInspectorPackageVersion()}")
             toolsDirectory = new File(inspectorVersionDirectory, 'tools')
         }
         final File inspectorExe = new File(toolsDirectory, "${detectConfiguration.getNugetInspectorPackageName()}.exe")
 
         if (!inspectorExe.exists()) {
-            logger.warn("Could not find the ${detectConfiguration.getNugetInspectorPackageName()} version:${detectConfiguration.getNugetInspectorPackageVersion()} even after an install attempt.")
+            logger.warn("Could not find the ${detectConfiguration.getNugetInspectorPackageName()} version: ${detectConfiguration.getNugetInspectorPackageVersion()} even after an install attempt.")
             return null
         }
 
