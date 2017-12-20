@@ -29,12 +29,11 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.exception.EncryptionException
 import com.blackducksoftware.integration.exception.IntegrationException
-import com.blackducksoftware.integration.hub.api.bom.BomImportRequestService
-import com.blackducksoftware.integration.hub.api.codelocation.CodeLocationRequestService
-import com.blackducksoftware.integration.hub.api.item.MetaService
-import com.blackducksoftware.integration.hub.api.project.ProjectRequestService
-import com.blackducksoftware.integration.hub.api.project.version.ProjectVersionRequestService
-import com.blackducksoftware.integration.hub.api.scan.ScanSummaryRequestService
+import com.blackducksoftware.integration.hub.api.bom.BomImportService
+import com.blackducksoftware.integration.hub.api.codelocation.CodeLocationService
+import com.blackducksoftware.integration.hub.api.project.ProjectService
+import com.blackducksoftware.integration.hub.api.project.version.ProjectVersionService
+import com.blackducksoftware.integration.hub.api.scan.ScanSummaryService
 import com.blackducksoftware.integration.hub.builder.HubServerConfigBuilder
 import com.blackducksoftware.integration.hub.dataservice.cli.CLIDataService
 import com.blackducksoftware.integration.hub.dataservice.phonehome.PhoneHomeDataService
@@ -47,6 +46,7 @@ import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendly
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType
 import com.blackducksoftware.integration.hub.global.HubServerConfig
 import com.blackducksoftware.integration.hub.rest.RestConnection
+import com.blackducksoftware.integration.hub.service.HubService
 import com.blackducksoftware.integration.hub.service.HubServicesFactory
 import com.blackducksoftware.integration.log.IntLogger
 import com.blackducksoftware.integration.log.Slf4jIntLogger
@@ -106,16 +106,20 @@ class HubServiceWrapper {
         return false;
     }
 
-    ProjectRequestService createProjectRequestService() {
-        hubServicesFactory.createProjectRequestService()
+    HubService createHubService() {
+        hubServicesFactory.createHubService()
     }
 
-    ProjectVersionRequestService createProjectVersionRequestService() {
-        hubServicesFactory.createProjectVersionRequestService()
+    ProjectService createProjectService() {
+        hubServicesFactory.createProjectService()
     }
 
-    BomImportRequestService createBomImportRequestService() {
-        hubServicesFactory.createBomImportRequestService()
+    ProjectVersionService createProjectVersionService() {
+        hubServicesFactory.createProjectVersionService()
+    }
+
+    BomImportService createBomImportService() {
+        hubServicesFactory.createBomImportService()
     }
 
     PhoneHomeDataService createPhoneHomeDataService() {
@@ -126,16 +130,12 @@ class HubServiceWrapper {
         hubServicesFactory.createProjectDataService()
     }
 
-    CodeLocationRequestService createCodeLocationRequestService() {
-        hubServicesFactory.createCodeLocationRequestService()
+    CodeLocationService createCodeLocationService() {
+        hubServicesFactory.createCodeLocationService()
     }
 
-    MetaService createMetaService() {
-        hubServicesFactory.createMetaService()
-    }
-
-    ScanSummaryRequestService createScanSummaryRequestService() {
-        hubServicesFactory.createScanSummaryRequestService()
+    ScanSummaryService createScanSummaryService() {
+        hubServicesFactory.createScanSummaryService()
     }
 
     ScanStatusDataService createScanStatusDataService() {

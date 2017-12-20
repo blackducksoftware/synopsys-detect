@@ -178,7 +178,7 @@ class DockerBomTool extends BomTool {
             String projectName = simpleBdioDocument.project.name
             String projectVersionName = simpleBdioDocument.project.version
 
-            Forge dockerForge = new Forge(simpleBdioDocument.project.bdioExternalIdentifier.forge, ExternalId.BDIO_ID_SEPARATOR)
+            Forge dockerForge = new Forge(ExternalId.BDIO_ID_SEPARATOR, ExternalId.BDIO_ID_SEPARATOR, simpleBdioDocument.project.bdioExternalIdentifier.forge)
             String externalIdPath = simpleBdioDocument.project.bdioExternalIdentifier.externalId
             ExternalId projectExternalId = externalIdFactory.createPathExternalId(dockerForge, externalIdPath)
 

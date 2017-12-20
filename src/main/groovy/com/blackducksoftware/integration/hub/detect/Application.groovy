@@ -35,8 +35,11 @@ import org.springframework.boot.builder.SpringApplicationBuilder
 import org.springframework.context.annotation.Bean
 
 import com.blackducksoftware.integration.exception.IntegrationException
+import com.blackducksoftware.integration.hub.bdio.BdioNodeFactory
+import com.blackducksoftware.integration.hub.bdio.BdioPropertyHelper
 import com.blackducksoftware.integration.hub.bdio.BdioTransformer
 import com.blackducksoftware.integration.hub.bdio.SimpleBdioFactory
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter
@@ -240,7 +243,10 @@ class Application {
 
     @Bean
     SimpleBdioFactory simpleBdioFactory() {
-        new SimpleBdioFactory()
+        BdioPropertyHelper bdioPropertyHelper = new BdioPropertyHelper();
+        BdioNodeFactory bdioNodeFactory = new BdioNodeFactory(bdioPropertyHelper);
+        DependencyGraphTransformer dependencyGraphTransformer = new DependencyGraphTransformer(bdioPropertyHelper, bdioNodeFactory);
+        new SimpleBdioFactory(bdioPropertyHelper, bdioNodeFactory, dependencyGraphTransformer, externalIdFactory(), gson());
     }
 
     @Bean

@@ -170,7 +170,7 @@ class DetectProjectManager implements SummaryResultReporter, ExitCodeReporter {
                 if (outputFile.exists()) {
                     outputFile.delete()
                 }
-                simpleBdioFactory.writeSimpleBdioDocumentToFile(outputFile, gson, simpleBdioDocument)
+                simpleBdioFactory.writeSimpleBdioDocumentToFile(outputFile, simpleBdioDocument)
                 bdioFiles.add(outputFile)
                 logger.info("BDIO Generated: " + outputFile.getAbsolutePath())
             }
@@ -183,7 +183,7 @@ class DetectProjectManager implements SummaryResultReporter, ExitCodeReporter {
             if (aggregateBdioFile.exists()) {
                 aggregateBdioFile.delete()
             }
-            simpleBdioFactory.writeSimpleBdioDocumentToFile(aggregateBdioFile, gson, aggregateBdioDocument)
+            simpleBdioFactory.writeSimpleBdioDocumentToFile(aggregateBdioFile, aggregateBdioDocument)
             logger.info("BDIO Generated: " + aggregateBdioFile.getAbsolutePath())
         }
 
@@ -247,7 +247,7 @@ class DetectProjectManager implements SummaryResultReporter, ExitCodeReporter {
         final String codeLocationName = ''
         final String projectName = detectProject.getProjectName()
         final String projectVersionName = detectProject.projectVersionName
-        final ExternalId projectExternalId = simpleBdioFactory.createNameVersionExternalId(new Forge('', '/'), projectName, projectVersionName)
+        final ExternalId projectExternalId = simpleBdioFactory.createNameVersionExternalId(new Forge('/', '/', ''), projectName, projectVersionName)
 
         createSimpleBdioDocument(codeLocationName, projectName, projectVersionName, projectExternalId, dependencyGraph)
     }

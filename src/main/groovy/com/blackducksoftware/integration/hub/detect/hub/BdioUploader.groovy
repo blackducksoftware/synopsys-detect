@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.api.bom.BomImportRequestService
+import com.blackducksoftware.integration.hub.api.bom.BomImportService
 import com.blackducksoftware.integration.hub.dataservice.phonehome.PhoneHomeDataService
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.DetectInfo
@@ -56,10 +56,10 @@ class BdioUploader {
     @Autowired
     DetectPhoneHomeManager detectPhoneHomeManager
 
-    void uploadBdioFiles(HubServerConfig hubServerConfig, BomImportRequestService bomImportRequestService, PhoneHomeDataService phoneHomeDataService, DetectProject detectProject, List<File> createdBdioFiles) {
+    void uploadBdioFiles(HubServerConfig hubServerConfig, BomImportService bomImportService, PhoneHomeDataService phoneHomeDataService, DetectProject detectProject, List<File> createdBdioFiles) {
         createdBdioFiles.each { file ->
             logger.info("uploading ${file.name} to ${detectConfiguration.getHubUrl()}")
-            bomImportRequestService.importBomFile(file)
+            bomImportService.importBomFile(file)
             if (detectConfiguration.getCleanupBdioFiles()) {
                 file.delete()
             }
