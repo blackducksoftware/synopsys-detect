@@ -83,7 +83,7 @@ class NugetInspectorManager {
                 }
                 logger.info("Resolved nuget inspector version from latest to: ${inspectorVersion}")
             } else {
-                inspectorVersion = detectConfiguration.getDockerInspectorVersion()
+                inspectorVersion = detectConfiguration.getNugetInspectorPackageVersion()
             }
         }
         return inspectorVersion
