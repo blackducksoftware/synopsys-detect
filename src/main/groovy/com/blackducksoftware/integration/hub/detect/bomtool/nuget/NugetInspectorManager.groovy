@@ -111,16 +111,16 @@ class NugetInspectorManager {
                 '-Version',
                 inspectorVersion
             ])
-            Executable installInspectorExecutable = new Executable(detectConfiguration.sourceDirectory, nugetExecutablePath, nugetOptions)
+            Executable installInspectorExecutable = new Executable(detectConfiguration.getSourceDirectory(), nugetExecutablePath, nugetOptions)
             executableRunner.execute(installInspectorExecutable)
 
-            final File inspectorVersionDirectory = new File(outputDirectory, "${detectConfiguration.getNugetInspectorPackageName()}.${inspectorVersion}")
+            final File inspectorVersionDirectory = new File(outputDirectory, "${detectConfiguration.getNugetInspectorPackageName()}.${detectConfiguration.getNugetInspectorPackageVersion()}")
             toolsDirectory = new File(inspectorVersionDirectory, 'tools')
         }
         final File inspectorExe = new File(toolsDirectory, "${detectConfiguration.getNugetInspectorPackageName()}.exe")
 
         if (!inspectorExe.exists()) {
-            logger.warn("Could not find the ${detectConfiguration.getNugetInspectorPackageName()} version: ${inspectorVersion} even after an install attempt.")
+            logger.warn("Could not find the ${detectConfiguration.getNugetInspectorPackageName()} version: ${detectConfiguration.getNugetInspectorPackageVersion()} even after an install attempt.")
             return null
         }
 
