@@ -16,7 +16,6 @@ import com.google.gson.GsonBuilder
 
 public class NugetInspectorPackagerPerfTest {
     public Gson gson = new GsonBuilder().setPrettyPrinting().create()
-    public ExternalIdFactory externalIdFactory = new ExternalIdFactory()
 
     @Test(timeout = 120000L)
     public void performanceTestNuget() throws IOException {
@@ -35,7 +34,7 @@ public class NugetInspectorPackagerPerfTest {
         final BdioNodeFactory bdioNodeFactory = new BdioNodeFactory(bdioPropertyHelper)
         final DependencyGraphTransformer dependencyGraphTransformer = new DependencyGraphTransformer(bdioPropertyHelper, bdioNodeFactory)
 
-        final bdioNode = bdioNodeFactory.createProject("test", "1.0.0", "bdioId", externalIdFactory.createMavenExternalId("group", "name", "version"))
+        final bdioNode = bdioNodeFactory.createProject("test", "1.0.0", "bdioId", "forge", "externalId")
 
         final List<BdioComponent> components = dependencyGraphTransformer.transformDependencyGraph(codeLocation.dependencyGraph, bdioNode, codeLocation.dependencyGraph.rootDependencies, [:])
 
