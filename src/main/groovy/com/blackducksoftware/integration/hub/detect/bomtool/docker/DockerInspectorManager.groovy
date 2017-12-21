@@ -98,7 +98,10 @@ class DockerInspectorManager {
                 } else if (airGapHubDockerInspectorShellScript.exists()) {
                     shellScriptFile = airGapHubDockerInspectorShellScript
                 } else {
-                    String hubDockerInspectorShellScriptUrl = "https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector-${detectConfiguration.getDockerInspectorVersion()}.sh"
+                    String hubDockerInspectorShellScriptUrl = LATEST_URL
+                    if (!'latest'.equals(detectConfiguration.getDockerInspectorVersion())) {
+                        hubDockerInspectorShellScriptUrl = "https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector-${detectConfiguration.getDockerInspectorVersion()}.sh"
+                    }
                     logger.info("Getting the Docker inspector shell script from ${hubDockerInspectorShellScriptUrl.toURI().toString()}")
                     UnauthenticatedRestConnectionBuilder restConnectionBuilder = new UnauthenticatedRestConnectionBuilder();
                     restConnectionBuilder.setBaseUrl(hubDockerInspectorShellScriptUrl)
