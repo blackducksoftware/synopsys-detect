@@ -44,10 +44,10 @@ import groovy.transform.TypeChecked
 class Rebar3TreeParser {
     private final Logger logger = LoggerFactory.getLogger(Rebar3TreeParser.class);
 
-    public static final String LAST_DEPENDENCY_CHARACTER = '└';
-    public static final String NTH_DEPENDENCY_CHARACTER = '├';
-    public static final String HORIZONTAL_SEPARATOR_CHARACTER = '─';
-    public static final String INNER_LEVEL_CHARACTER = '│';
+    public static final String LAST_DEPENDENCY_CHARACTER = '\u2514';
+    public static final String NTH_DEPENDENCY_CHARACTER = '\u251C';
+    public static final String HORIZONTAL_SEPARATOR_CHARACTER = '\u2500';
+    public static final String INNER_LEVEL_CHARACTER = '\u2502';
     public static final String INNER_LEVEL_PREFIX = INNER_LEVEL_CHARACTER + ' '.multiply(2);
     public static final String OUTER_LEVEL_PREFIX = ' '.multiply(3);
     public static final String PROJECT_IDENTIFIER = '(project app)';
