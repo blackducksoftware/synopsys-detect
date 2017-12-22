@@ -95,7 +95,7 @@ class FileFinder {
                         return FilenameUtils.wildcardMatchOnSystem(filename, filenamePattern)
                     }
                 })
-        if (foundFiles.length == 0) {
+        if (foundFiles == null || foundFiles.length == 0) {
             return null
         }
         foundFiles

@@ -70,7 +70,7 @@ class MavenCodeLocationPackager {
 
         level = 0
         for (String line : mavenOutputText.split(System.lineSeparator)) {
-            if (!(line ==~ /.*\[.*INFO.*\].*/) || line ==~ /.*\[.*INFO.*\].*Downloaded:.*/ || line ==~ /.*\[.*INFO.*\].*Downloading:.*/) {
+            if (!(line ==~ /.*\[.*INFO.*\].*/) || line ==~ /.*\[.*INFO.*\].*Downloaded.*/ || line ==~ /.*\[.*INFO.*\].*Downloading.*/) {
                 // If the line does not contain [INFO] and have content, we will ignore it
                 // We also ignore lines for downloads
                 continue

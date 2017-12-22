@@ -64,8 +64,8 @@ class DockerInspectorManager {
     private String inspectorVersion
 
     String getInspectorVersion(String bashExecutablePath) {
-        if ('latest'.equalsIgnoreCase(detectConfiguration.getDockerInspectorVersion())) {
-            if (!inspectorVersion) {
+        if (!inspectorVersion) {
+            if ('latest'.equalsIgnoreCase(detectConfiguration.getDockerInspectorVersion())) {
                 File dockerPropertiesFile = detectFileManager.createFile(BomToolType.DOCKER, 'application.properties')
                 File dockerBomToolDirectory =  dockerPropertiesFile.getParentFile()
                 if (!dockerInspectorShellScript) {
@@ -78,11 +78,12 @@ class DockerInspectorManager {
                 Executable getDockerInspectorVersion = new Executable(dockerBomToolDirectory, bashExecutablePath, bashArguments)
 
                 inspectorVersion = executableRunner.execute(getDockerInspectorVersion).standardOutput.split(' ')[1]
+                logger.info("Resolved docker inspector version from latest to: ${inspectorVersion}")
+            } else {
+                inspectorVersion = detectConfiguration.getDockerInspectorVersion()
             }
-        } else {
-            inspectorVersion = detectConfiguration.getDockerInspectorVersion()
         }
-        inspectorVersion
+        return inspectorVersion
     }
 
     private File getShellScript() {
@@ -98,8 +99,8 @@ class DockerInspectorManager {
                     shellScriptFile = airGapHubDockerInspectorShellScript
                 } else {
                     String hubDockerInspectorShellScriptUrl = LATEST_URL
-                    if (!'latest'.equals(detectConfiguration.dockerInspectorVersion)) {
-                        hubDockerInspectorShellScriptUrl = "https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector-${detectConfiguration.dockerInspectorVersion}.sh"
+                    if (!'latest'.equals(detectConfiguration.getDockerInspectorVersion())) {
+                        hubDockerInspectorShellScriptUrl = "https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector-${detectConfiguration.getDockerInspectorVersion()}.sh"
                     }
                     logger.info("Getting the Docker inspector shell script from ${hubDockerInspectorShellScriptUrl.toURI().toString()}")
                     UnauthenticatedRestConnectionBuilder restConnectionBuilder = new UnauthenticatedRestConnectionBuilder();
