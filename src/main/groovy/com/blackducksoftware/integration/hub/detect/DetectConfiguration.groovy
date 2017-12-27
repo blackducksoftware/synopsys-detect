@@ -699,8 +699,8 @@ class DetectConfiguration {
     @Value('${detect.hex.rebar3.path:}')
     String hexRebar3Path
 
-    @ValueDescription(description="The accepted parallelism for tasks supporting it like scanning, default to the number of processors", group=DetectConfiguration.GROUP_GENERAL)
-    @Value('${detect.execution.parallelism:}')
+    @ValueDescription(description="The number of scans to run in parallel, default to the number of processors", group=DetectConfiguration.GROUP_GENERAL)
+    @Value('${detect.scan.parallel.processors:}')
     Integer executionParallelism
 
     int getExecutionParallelism() {
