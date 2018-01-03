@@ -75,12 +75,6 @@ publishing {
 
 artifactory {
     publish {
-        contextUrl = artifactoryUrl
-        repository {
-            repoKey = artifactoryRepo
-            username = artifactoryDeployerUsername
-            password = artifactoryDeployerPassword
-        }
         defaults { publications ('mavenJava') }
     }
 }
