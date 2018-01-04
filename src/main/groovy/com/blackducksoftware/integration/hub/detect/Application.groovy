@@ -256,7 +256,7 @@ class Application {
 
     @Bean
     ExternalIdFactory externalIdFactory() {
-        simpleBdioFactory().getExternalIdFactory()
+        new ExternalIdFactory();
     }
 
     @Bean
