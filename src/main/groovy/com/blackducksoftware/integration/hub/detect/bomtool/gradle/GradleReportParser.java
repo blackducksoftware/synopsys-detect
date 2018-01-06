@@ -29,7 +29,6 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Stack;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,9 +67,7 @@ public class GradleReportParser {
     public DetectCodeLocation parseDependencies(final DetectProject detectProject, final InputStream dependenciesInputStream) {
         clearState();
 
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new InputStreamReader(dependenciesInputStream, StandardCharsets.UTF_8));
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(dependenciesInputStream, StandardCharsets.UTF_8));) {
             while (reader.ready()) {
                 final String line = reader.readLine();
                 /**
@@ -119,8 +116,6 @@ public class GradleReportParser {
             }
         } catch (final Exception e) {
             logger.error("Exception parsing gradle output: " + e.getMessage());
-        } finally {
-            IOUtils.closeQuietly(reader);
         }
         detectProject.setProjectNameIfNotSet(rootProjectName);
         detectProject.setProjectVersionNameIfNotSet(rootProjectVersionName);

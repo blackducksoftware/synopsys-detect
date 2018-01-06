@@ -19,7 +19,7 @@ plugins {
 
 version = '2.5.0-SNAPSHOT'
 
-apply plugin: 'com.blackducksoftware.integration.library'
+apply plugin: 'com.blackducksoftware.integration.solution'
 
 final def versionFile = new File("${projectDir}/src/main/resources/version.txt")
 versionFile.delete()
