@@ -1,29 +1,25 @@
 buildscript {
-    repositories { mavenCentral() }
+    repositories {
+        jcenter()
+        mavenCentral()
+        maven { url 'https://plugins.gradle.org/m2/' }
+    }
 
     dependencies {
+        classpath 'com.blackducksoftware.integration:common-gradle-plugin:0.0.+'
         classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.5.8.RELEASE'
-        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.8.1'
     }
 }
 
 plugins {
     id 'groovy'
-    id 'eclipse'
     id 'org.springframework.boot' version '1.5.8.RELEASE'
-    id 'jacoco'
-    id 'com.github.kt3k.coveralls' version '2.8.1'
-    id 'com.github.hierynomus.license' version '0.14.0'
     id 'maven-publish'
-    id "com.jfrog.artifactory" version '4.5.4'
 }
 
-tasks.withType(JavaCompile) { options.encoding = 'UTF-8' }
-tasks.withType(GroovyCompile) { options.encoding = 'UTF-8' }
-
-group = 'com.blackducksoftware.integration'
-
 version = '2.5.0-SNAPSHOT'
+
+apply plugin: 'com.blackducksoftware.integration.library'
 
 final def versionFile = new File("${projectDir}/src/main/resources/version.txt")
 versionFile.delete()
@@ -34,9 +30,6 @@ versionFile << version
 if (version.contains('SNAPSHOT') && "true" == project.findProperty('override.snapshot')) {
     version = 'latest-SNAPSHOT'
 }
-
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
 
 apply from: 'airgap.gradle'
 
@@ -58,12 +51,6 @@ build {
     }
 }
 
-repositories {
-    mavenLocal()
-    mavenCentral()
-    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
-}
-
 publishing {
     publications {
         mavenJava(MavenPublication) {
@@ -80,7 +67,7 @@ artifactory {
 }
 
 dependencies {
-    compile 'com.blackducksoftware.integration:hub-common:24.0.0'
+    compile 'com.blackducksoftware.integration:hub-common:25.0.0'
     compile 'org.springframework.boot:spring-boot-starter'
     compile 'org.apache.maven.shared:maven-invoker:3.0.0'
     compile 'com.esotericsoftware.yamlbeans:yamlbeans:1.11'
@@ -98,35 +85,3 @@ dependencies {
 }
 
 springBoot { mainClass = 'com.blackducksoftware.integration.hub.detect.Application' }
-
-jacocoTestReport {
-    reports { xml.enabled = true }
-}
-
-license {
-    header = file('HEADER')
-    ext.year = Calendar.getInstance().get(Calendar.YEAR)
-    ignoreFailures = true
-    includes (["**/*.groovy", "**/*.java"])
-    excludes ([
-        "/src/test/*.groovy",
-        "src/test/*.java"
-    ])
-}
-
-tasks.licenseMain.dependsOn(licenseFormatMain)
-
-task printConfigurations {
-    println project.configurations.collect { it.name }.join(',')
-    project.configurations.each() { println "name: ${it.name}, transitive: ${it.transitive}, visible: ${it.visible}, description: ${it.description}, state: ${it.state}" }
-}
-
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
