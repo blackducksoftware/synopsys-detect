@@ -1,5 +1,5 @@
-/*
- * Copyright (C) 2017 Black Duck Software, Inc.
+/**
+ * Copyright (C) 2018 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
  *
  *
