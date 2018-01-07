@@ -1,5 +1,6 @@
 buildscript {
     repositories {
+        mavenLocal()
         jcenter()
         mavenCentral()
         maven { url 'https://plugins.gradle.org/m2/' }
@@ -27,7 +28,7 @@ versionFile << version
 
 // the override.snaphot property should be set to true for a CI build so
 // that the version is omitted from a snapshot build artifact
-if (version.contains('SNAPSHOT') && "true" == project.findProperty('override.snapshot')) {
+if (project.isSnapshot && "true" == project.findProperty('override.snapshot')) {
     version = 'latest-SNAPSHOT'
 }
 
@@ -72,7 +73,7 @@ dependencies {
     compile 'org.apache.maven.shared:maven-invoker:3.0.0'
     compile 'com.esotericsoftware.yamlbeans:yamlbeans:1.11'
     compile 'com.moandjiezana.toml:toml4j:0.7.1'
-    compile 'org.codehaus.groovy:groovy-all:2.4.11'
+    compile 'org.codehaus.groovy:groovy-all:2.4.12'
     compile 'org.freemarker:freemarker:2.3.26-incubating'
 
     compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.2'
