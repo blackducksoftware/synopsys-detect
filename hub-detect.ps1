@@ -41,6 +41,9 @@ $EnvHomeTempFolder = "$HOME\tmp"
 # DETECT_SKIP_JAVA_TEST=1
 $DetectSkipJavaTest = Get-EnvironmentVariable -Key "DETECT_SKIP_JAVA_TEST" -DefaultValue "";
 
+# If you do not want to exit with the detect exit code,
+# set DETECT_EXIT_CODE_PASSTHRU to 1 and this script won't exit, but simply return it (pass it thru).
+$EnvDetectExitCodePassthru = Get-EnvironmentVariable -Key "DETECT_EXIT_CODE_PASSTHRU" -DefaultValue "";
 
 $Version = "0.3.1"
 
@@ -73,7 +76,12 @@ function Detect {
     Write-Host "Executing detect."
     $DetectArgs = $args;
     $DetectExitCode = Invoke-Detect -DetectJar $DetectJarFile -DetectArgs $DetectArgs
-    exit $DetectExitCode
+    
+    if ($EnvDetectExitCodePassthru -eq "1"){
+        return $DetectExitCode
+    }else{
+    	exit $DetectExitCode
+    }
 }
 
 function Get-DetectSnapshotJar ($DetectFolder, $DetectVersion) {
