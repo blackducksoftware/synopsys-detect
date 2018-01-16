@@ -1,7 +1,8 @@
 /*
+ * hub-detect
+ *
  * Copyright (C) 2018 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
- *
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -41,6 +42,7 @@ import com.blackducksoftware.integration.hub.rest.RestConnection
 import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnectionBuilder
 import com.blackducksoftware.integration.hub.scan.HubScanConfig
 import com.blackducksoftware.integration.log.IntLogger
+import com.blackducksoftware.integration.log.SilentLogger
 import com.blackducksoftware.integration.log.Slf4jIntLogger
 import com.blackducksoftware.integration.util.CIEnvironmentVariables
 import com.google.gson.Gson
@@ -61,7 +63,7 @@ class OfflineScanner {
     void offlineScan(DetectProject detectProject, HubScanConfig hubScanConfig, String hubSignatureScannerOfflineLocalPath) {
         def intLogger = new Slf4jIntLogger(logger)
 
-        def hubServerConfig = new HubServerConfig(null, 0, null, null, false)
+        def hubServerConfig = new HubServerConfig(null, 0, (String)null, null, false)
 
         def hubSupportHelper = new HubSupportHelper()
         hubSupportHelper.setHub3_7Support()
