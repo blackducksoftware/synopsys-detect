@@ -52,7 +52,7 @@ class RebarParserTest {
 
         expectedGraph.addChildWithParents(gitOuterChildDependency, gitOuterParentDependency)
 
-        DetectCodeLocation codeLocation = build('hex/dependencyTree.txt')
+        DetectCodeLocation codeLocation = build('/hex/dependencyTree.txt')
         DependencyGraph actualGraph = codeLocation.dependencyGraph
 
         assertGraph(expectedGraph, actualGraph)

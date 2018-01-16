@@ -48,7 +48,7 @@ public class DetectInfo {
 
     public void init() {
         try {
-            detectVersion = ResourceUtil.getResourceAsString("version.txt", StandardCharsets.UTF_8.toString());
+            detectVersion = ResourceUtil.getResourceAsString(getClass(), "/version.txt", StandardCharsets.UTF_8.toString());
             populateCurrentOs();
         } catch (final IOException e) {
             throw new RuntimeException(e);

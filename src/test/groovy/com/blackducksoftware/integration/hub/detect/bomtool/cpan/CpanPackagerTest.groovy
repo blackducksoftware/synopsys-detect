@@ -26,8 +26,8 @@ class CpanPackagerTest {
     private final TestUtil testUtil = new TestUtil()
     private final CpanPackager cpanPackager = new CpanPackager()
 
-    private final List<String> cpanListText = testUtil.getResourceAsUTF8String('cpan/cpanList.txt').split('\n').toList()
-    private final List<String> showDepsText = testUtil.getResourceAsUTF8String('cpan/showDeps.txt').split('\n').toList()
+    private final List<String> cpanListText = testUtil.getResourceAsUTF8String('/cpan/cpanList.txt').split('\n').toList()
+    private final List<String> showDepsText = testUtil.getResourceAsUTF8String('/cpan/showDeps.txt').split('\n').toList()
 
     @Before
     public void init() {

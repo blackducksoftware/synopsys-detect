@@ -67,7 +67,7 @@ artifactory {
 }
 
 dependencies {
-    compile 'com.blackducksoftware.integration:hub-common:25.0.0'
+    compile 'com.blackducksoftware.integration:hub-common:26.0.0'
     compile 'org.springframework.boot:spring-boot-starter'
     compile 'org.apache.maven.shared:maven-invoker:3.0.0'
     compile 'com.esotericsoftware.yamlbeans:yamlbeans:1.11'
