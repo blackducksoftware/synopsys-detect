@@ -1,7 +1,8 @@
 /*
- * Copyright (C) 2017 Black Duck Software, Inc.
- * http://www.blackducksoftware.com/
+ * hub-detect
  *
+ * Copyright (C) 2018 Black Duck Software, Inc.
+ * http://www.blackducksoftware.com/
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -66,8 +67,8 @@ class GradleInspectorManager {
     private String initScriptPath
 
     String getInspectorVersion() {
-        if ('latest'.equalsIgnoreCase(detectConfiguration.getGradleInspectorVersion())) {
-            if (!inspectorVersion) {
+        if (!inspectorVersion) {
+            if ('latest'.equalsIgnoreCase(detectConfiguration.getGradleInspectorVersion())) {
                 try {
                     InputStream inputStream
                     File airGapMavenMetadataFile = new File(detectConfiguration.getGradleInspectorAirGapPath(), 'maven-metadata.xml')
@@ -81,25 +82,24 @@ class GradleInspectorManager {
                     final NodeList latestVersionNodes = xmlDocument.getElementsByTagName('latest')
                     final Node latestVersion = latestVersionNodes.item(0)
                     inspectorVersion = latestVersion.getTextContent()
+                    logger.info("Resolved gradle inspector version from latest to: ${inspectorVersion}")
                 } catch (Exception e) {
                     inspectorVersion = detectConfiguration.getGradleInspectorVersion()
                     logger.debug('Exception encountered when resolving latest version of Gradle Inspector, skipping resolution.')
                     logger.debug(e.getMessage())
                 }
+            } else {
+                inspectorVersion = detectConfiguration.getGradleInspectorVersion()
             }
-        } else {
-            inspectorVersion = detectConfiguration.getGradleInspectorVersion()
         }
-        inspectorVersion
+        return inspectorVersion
     }
 
     String getInitScriptPath() {
         if (!initScriptPath) {
             File initScriptFile = detectFileManager.createFile(BomToolType.GRADLE, 'init-detect.gradle')
-            String gradleInspectorVersion = detectConfiguration.getGradleInspectorVersion()
-            gradleInspectorVersion = 'latest'.equalsIgnoreCase(gradleInspectorVersion) ? '+' : gradleInspectorVersion
             final Map<String, String> model = [
-                'gradleInspectorVersion' : gradleInspectorVersion,
+                'gradleInspectorVersion' : detectConfiguration.getGradleInspectorVersion(),
                 'excludedProjectNames' : detectConfiguration.getGradleExcludedProjectNames(),
                 'includedProjectNames' : detectConfiguration.getGradleIncludedProjectNames(),
                 'excludedConfigurationNames' : detectConfiguration.getGradleExcludedConfigurationNames(),

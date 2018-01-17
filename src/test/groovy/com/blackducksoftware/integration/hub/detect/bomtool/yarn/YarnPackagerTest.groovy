@@ -38,10 +38,10 @@ class YarnPackagerTest {
 
     @Test
     public void parseTest() {
-        String yarnLockText = testUtil.getResourceAsUTF8String('yarn/yarn.lock')
+        String yarnLockText = testUtil.getResourceAsUTF8String('/yarn/yarn.lock')
         def exeOutput = new ExecutableOutput(yarnLockText, '')
         DependencyGraph dependencyGraph = yarnPackager.parse(exeOutput.getStandardOutputAsList())
-        DependencyGraphResourceTestUtil.assertGraph('yarn/expected_graph.json', dependencyGraph);
+        DependencyGraphResourceTestUtil.assertGraph('/yarn/expected_graph.json', dependencyGraph);
     }
 
     @Test

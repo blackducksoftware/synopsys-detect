@@ -1,7 +1,8 @@
 /*
- * Copyright (C) 2017 Black Duck Software, Inc.
- * http://www.blackducksoftware.com/
+ * hub-detect
  *
+ * Copyright (C) 2018 Black Duck Software, Inc.
+ * http://www.blackducksoftware.com/
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -47,7 +48,6 @@ class GoDepBomTool extends BomTool {
 
     public static final String GOPKG_LOCK_FILENAME= 'Gopkg.lock'
     public static final String GOFILE_FILENAME_PATTERN= '*.go'
-    public static final Forge GOLANG = new Forge("golang",":")
 
     @Autowired
     GoGodepsBomTool goGodepsBomTool
@@ -97,7 +97,7 @@ class GoDepBomTool extends BomTool {
         String goDepExecutable = findGoDepExecutable()
 
         DependencyGraph graph = goPackager.makeDependencyGraph(sourcePath, goDepExecutable)
-        ExternalId externalId = externalIdFactory.createPathExternalId(GOLANG, sourcePath)
+        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.GOLANG, sourcePath)
         DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, externalId, graph)
 
         [detectCodeLocation]

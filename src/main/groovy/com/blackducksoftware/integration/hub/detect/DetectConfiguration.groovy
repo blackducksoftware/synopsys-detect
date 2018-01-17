@@ -1,7 +1,8 @@
 /*
- * Copyright (C) 2017 Black Duck Software, Inc.
- * http://www.blackducksoftware.com/
+ * hub-detect
  *
+ * Copyright (C) 2018 Black Duck Software, Inc.
+ * http://www.blackducksoftware.com/
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -180,17 +181,16 @@ class DetectConfiguration {
             hubOfflineMode = true
         }
 
-        if (gradleInspectorVersion.equals("latest") && gradleBomTool.isBomToolApplicable()) {
+        if (gradleBomTool.isBomToolApplicable()) {
             gradleInspectorVersion = gradleBomTool.getInspectorVersion()
-            logger.info("Resolved gradle inspector version from latest to: ${gradleInspectorVersion}")
         }
-        if (nugetInspectorPackageVersion.equals("latest") && nugetBomTool.isBomToolApplicable()) {
+
+        if (nugetBomTool.isBomToolApplicable()) {
             nugetInspectorPackageVersion = nugetBomTool.getInspectorVersion()
-            logger.info("Resolved nuget inspector version from latest to: ${nugetInspectorPackageVersion}")
         }
-        if (dockerInspectorVersion.equals("latest") && dockerBomTool.isBomToolApplicable()) {
+
+        if (dockerBomTool.isBomToolApplicable()) {
             dockerInspectorVersion = dockerBomTool.getInspectorVersion()
-            logger.info("Resolved docker inspector version from latest to: ${dockerInspectorVersion}")
         }
     }
 

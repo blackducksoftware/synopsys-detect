@@ -34,10 +34,7 @@ class TestUtil {
     }
 
     String getResourceAsUTF8String(String resourcePath) {
-        if (resourcePath.startsWith('/')) {
-            resourcePath = resourcePath.replaceFirst('/', '')
-        }
-        String data = ResourceUtil.getResourceAsString(resourcePath, StandardCharsets.UTF_8.toString())
+        String data = ResourceUtil.getResourceAsString(getClass(), resourcePath, StandardCharsets.UTF_8.toString())
         data.split("\r?\n").join(System.lineSeparator)
     }
 

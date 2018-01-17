@@ -31,15 +31,15 @@ public class CocoapodsPackagerTest {
 
     @Test
     void simpleTest() {
-        final String podlockText = testUtil.getResourceAsUTF8String('cocoapods/simplePodfile.lock')
+        final String podlockText = testUtil.getResourceAsUTF8String('/cocoapods/simplePodfile.lock')
         final DependencyGraph projectDependencies = cocoapodsPackager.extractDependencyGraph(podlockText)
-        DependencyGraphResourceTestUtil.assertGraph('cocoapods/simpleExpected_graph.json', projectDependencies);
+        DependencyGraphResourceTestUtil.assertGraph('/cocoapods/simpleExpected_graph.json', projectDependencies);
     }
 
     @Test
     void complexTest() {
-        final String podlockText = testUtil.getResourceAsUTF8String('cocoapods/complexPodfile.lock')
+        final String podlockText = testUtil.getResourceAsUTF8String('/cocoapods/complexPodfile.lock')
         final DependencyGraph projectDependencies = cocoapodsPackager.extractDependencyGraph(podlockText)
-        DependencyGraphResourceTestUtil.assertGraph('cocoapods/complexExpected_graph.json', projectDependencies);
+        DependencyGraphResourceTestUtil.assertGraph('/cocoapods/complexExpected_graph.json', projectDependencies);
     }
 }

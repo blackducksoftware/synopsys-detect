@@ -1,7 +1,8 @@
 /*
- * Copyright (C) 2017 Black Duck Software, Inc.
- * http://www.blackducksoftware.com/
+ * hub-detect
  *
+ * Copyright (C) 2018 Black Duck Software, Inc.
+ * http://www.blackducksoftware.com/
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -70,7 +71,7 @@ class MavenCodeLocationPackager {
 
         level = 0
         for (String line : mavenOutputText.split(System.lineSeparator)) {
-            if (!(line ==~ /.*\[.*INFO.*\].*/) || line ==~ /.*\[.*INFO.*\].*Downloaded:.*/ || line ==~ /.*\[.*INFO.*\].*Downloading:.*/) {
+            if (!(line ==~ /.*\[.*INFO.*\].*/) || line ==~ /.*\[.*INFO.*\].*Downloaded.*/ || line ==~ /.*\[.*INFO.*\].*Downloading.*/) {
                 // If the line does not contain [INFO] and have content, we will ignore it
                 // We also ignore lines for downloads
                 continue

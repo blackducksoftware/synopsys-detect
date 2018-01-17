@@ -1,13 +1,17 @@
-bin/
-.gradle/
-.project
-.classpath
-.settings/
-build/
-.groovy/
+# operating system
 .DS_Store
+
+# ide
+.settings/
+.classpath
+.project
+bin/
 .idea
-classes/
+
+# build tool
+.gradle/
+build/
+
 version.txt
 *.html
 *.iml

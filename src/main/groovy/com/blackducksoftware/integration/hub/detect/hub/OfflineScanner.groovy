@@ -1,7 +1,8 @@
 /*
- * Copyright (C) 2017 Black Duck Software, Inc.
- * http://www.blackducksoftware.com/
+ * hub-detect
  *
+ * Copyright (C) 2018 Black Duck Software, Inc.
+ * http://www.blackducksoftware.com/
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -28,10 +29,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.HubSupportHelper
-import com.blackducksoftware.integration.hub.cli.CLIDownloadService
+import com.blackducksoftware.integration.hub.cli.CLIDownloadUtility
 import com.blackducksoftware.integration.hub.cli.CLILocation
 import com.blackducksoftware.integration.hub.cli.OfflineCLILocation
-import com.blackducksoftware.integration.hub.cli.SimpleScanService
+import com.blackducksoftware.integration.hub.cli.SimpleScanUtility
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType
@@ -41,6 +42,7 @@ import com.blackducksoftware.integration.hub.rest.RestConnection
 import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnectionBuilder
 import com.blackducksoftware.integration.hub.scan.HubScanConfig
 import com.blackducksoftware.integration.log.IntLogger
+import com.blackducksoftware.integration.log.SilentLogger
 import com.blackducksoftware.integration.log.Slf4jIntLogger
 import com.blackducksoftware.integration.util.CIEnvironmentVariables
 import com.google.gson.Gson
@@ -61,7 +63,7 @@ class OfflineScanner {
     void offlineScan(DetectProject detectProject, HubScanConfig hubScanConfig, String hubSignatureScannerOfflineLocalPath) {
         def intLogger = new Slf4jIntLogger(logger)
 
-        def hubServerConfig = new HubServerConfig(null, 0, null, null, false)
+        def hubServerConfig = new HubServerConfig(null, 0, (String)null, null, false)
 
         def hubSupportHelper = new HubSupportHelper()
         hubSupportHelper.setHub3_7Support()
@@ -72,7 +74,7 @@ class OfflineScanner {
 
         def silentLogger = new SilentLogger()
 
-        def simpleScanService = new SimpleScanService(intLogger, gson, hubServerConfig, hubSupportHelper, ciEnvironmentVariables, hubScanConfig, detectProject.projectName, detectProject.projectVersionName)
+        def simpleScanUtility = new SimpleScanUtility(intLogger, gson, hubServerConfig, hubSupportHelper, ciEnvironmentVariables, hubScanConfig, detectProject.projectName, detectProject.projectVersionName)
         final CLILocation cliLocation = new CLILocation(silentLogger, hubScanConfig.getToolsDir())
         if (hubSignatureScannerOfflineLocalPath) {
             cliLocation = new OfflineCLILocation(silentLogger, new File(hubSignatureScannerOfflineLocalPath))
@@ -89,8 +91,8 @@ class OfflineScanner {
         } else if (!cliInstalledOkay) {
             logger.warn("The signature scanner is not correctly installed at ${hubScanConfig.getToolsDir()}")
         } else {
-            simpleScanService.setupAndExecuteScan(cliLocation)
-            logger.info("The scan dry run files can be found in : ${simpleScanService.getDataDirectory()}")
+            simpleScanUtility.setupAndExecuteScan(cliLocation)
+            logger.info("The scan dry run files can be found in : ${simpleScanUtility.getDataDirectory()}")
         }
     }
 
@@ -103,8 +105,8 @@ class OfflineScanner {
             restConnectionBuilder.applyProxyInfo(detectConfiguration.getHubProxyInfo())
             restConnectionBuilder.setLogger(intLogger)
             RestConnection restConnection = restConnectionBuilder.build()
-            CLIDownloadService cliDownloadService = new CLIDownloadService(intLogger, restConnection)
-            cliDownloadService.performInstallation(hubScanConfig.getToolsDir(), ciEnvironmentVariables, detectConfiguration.hubSignatureScannerHostUrl, 'unknown', 'hub-detect')
+            CLIDownloadUtility cliDownloadUtility = new CLIDownloadUtility(intLogger, restConnection)
+            cliDownloadUtility.performInstallation(hubScanConfig.getToolsDir(), ciEnvironmentVariables, detectConfiguration.hubSignatureScannerHostUrl, 'unknown', 'hub-detect')
         } catch (Exception e) {
             throw new DetectUserFriendlyException("There was a problem downloading the signature scanner from ${detectConfiguration.hubSignatureScannerHostUrl}: ${e.message}", e, ExitCodeType.FAILURE_GENERAL_ERROR)
         }

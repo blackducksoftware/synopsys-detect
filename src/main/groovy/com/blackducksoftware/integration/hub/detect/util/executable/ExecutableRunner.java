@@ -1,7 +1,8 @@
 /**
- * Copyright (C) 2017 Black Duck Software, Inc.
- * http://www.blackducksoftware.com/
+ * hub-detect
  *
+ * Copyright (C) 2018 Black Duck Software, Inc.
+ * http://www.blackducksoftware.com/
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -26,7 +27,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.Arrays;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,10 +47,7 @@ public class ExecutableRunner {
             final ProcessBuilder processBuilder = executable.createProcessBuilder();
             final Process process = processBuilder.start();
 
-            final InputStream standardOutputStream = process.getInputStream();
-            final InputStream standardErrorStream = process.getErrorStream();
-
-            try {
+            try (InputStream standardOutputStream = process.getInputStream(); InputStream standardErrorStream = process.getErrorStream()) {
                 final ExecutableStreamThread standardOutputThread = new ExecutableStreamThread(standardOutputStream, logger);
                 standardOutputThread.start();
 
@@ -68,9 +65,6 @@ public class ExecutableRunner {
 
                 final ExecutableOutput output = new ExecutableOutput(standardOutput, errorOutput);
                 return output;
-            } finally {
-                IOUtils.closeQuietly(standardOutputStream);
-                IOUtils.closeQuietly(standardErrorStream);
             }
         } catch (final Exception e) {
             throw new ExecutableRunnerException(e);

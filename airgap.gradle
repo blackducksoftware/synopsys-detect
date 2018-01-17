@@ -134,5 +134,7 @@ task createAirGapZip(type: Zip) {
 
 task publishAirGapZip(type: Exec) {
     dependsOn createAirGapZip
-    commandLine 'curl', '--insecure','-u', "${artifactoryDeployerUsername}:${artifactoryDeployerPassword}", '-X', 'PUT', "${artifactoryUrl}/${artifactoryRepo}/${artifactoryIntegrationPath}/${rootProject.name}/${version}/${airGapZipName}", '-T', "${distributionsFolder}/${airGapZipName}", '-f'
+    doLast {
+        commandLine 'curl', '--insecure','-u', "${artifactoryDeployerUsername}:${artifactoryDeployerPassword}", '-X', 'PUT', "${artifactoryUrl}/${artifactoryRepo}/${artifactoryIntegrationPath}/${rootProject.name}/${version}/${airGapZipName}", '-T', "${distributionsFolder}/${airGapZipName}", '-f'
+    }
 }

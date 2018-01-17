@@ -22,7 +22,6 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFac
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
-import com.blackducksoftware.integration.util.ResourceUtil
 import com.google.gson.GsonBuilder
 
 class GradleReportParserTest {
@@ -41,12 +40,12 @@ class GradleReportParserTest {
 
     @Test
     public void extractCodeLocationTest() {
-        createNewCodeLocationTest('gradle/dependencyGraph.txt', '/gradle/dependencyGraph-expected.json', "hub-detect", "2.0.0-SNAPSHOT")
+        createNewCodeLocationTest('/gradle/dependencyGraph.txt', '/gradle/dependencyGraph-expected.json', "hub-detect", "2.0.0-SNAPSHOT")
     }
 
     @Test
     public void complexTest() {
-        DetectCodeLocation codeLocation = build('gradle/parse-tests/complex_dependencyGraph.txt');
+        DetectCodeLocation codeLocation = build('/gradle/parse-tests/complex_dependencyGraph.txt');
         DependencyGraph graph = codeLocation.dependencyGraph;
 
         assertHasMavenGav(graph, "non-project:with-nested:1.0.0");
@@ -68,7 +67,7 @@ class GradleReportParserTest {
     }
 
     private DetectCodeLocation build(String resource) {
-        InputStream inputStream = ResourceUtil.getResourceAsStream(GradleReportParserTest.class, resource)
+        InputStream inputStream = getClass().getResourceAsStream(resource)
         DetectProject project = new DetectProject()
         GradleReportParser gradleReportParser = new GradleReportParser()
         ReflectionTestUtils.setField(gradleReportParser, 'externalIdFactory', externalIdFactory)
@@ -78,7 +77,7 @@ class GradleReportParserTest {
 
     @Test
     public void testSpringFrameworkAop() {
-        InputStream inputStream = ResourceUtil.getResourceAsStream(GradleReportParserTest.class, 'gradle/spring-framework/spring_aop_dependencyGraph.txt')
+        InputStream inputStream = getClass().getResourceAsStream('/gradle/spring-framework/spring_aop_dependencyGraph.txt')
         DetectProject project = new DetectProject()
         GradleReportParser gradleReportParser = new GradleReportParser()
         ReflectionTestUtils.setField(gradleReportParser, 'externalIdFactory', new ExternalIdFactory())
@@ -90,7 +89,7 @@ class GradleReportParserTest {
         DetectProject project = new DetectProject()
         GradleReportParser gradleReportParser = new GradleReportParser()
         ReflectionTestUtils.setField(gradleReportParser, 'externalIdFactory', new ExternalIdFactory())
-        DetectCodeLocation codeLocation = gradleReportParser.parseDependencies(project, ResourceUtil.getResourceAsStream(GradleReportParserTest.class, gradleInspectorOutputResourcePath))
+        DetectCodeLocation codeLocation = gradleReportParser.parseDependencies(project, getClass().getResourceAsStream(gradleInspectorOutputResourcePath))
 
         assertEquals(rootProjectName, project.getProjectName())
         assertEquals(rootProjectVersionName, project.getProjectVersionName())

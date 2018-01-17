@@ -1,7 +1,8 @@
 /**
- * Copyright (C) 2017 Black Duck Software, Inc.
- * http://www.blackducksoftware.com/
+ * hub-detect
  *
+ * Copyright (C) 2018 Black Duck Software, Inc.
+ * http://www.blackducksoftware.com/
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -47,7 +48,7 @@ public class DetectInfo {
 
     public void init() {
         try {
-            detectVersion = ResourceUtil.getResourceAsString("version.txt", StandardCharsets.UTF_8.toString());
+            detectVersion = ResourceUtil.getResourceAsString(getClass(), "/version.txt", StandardCharsets.UTF_8.toString());
             populateCurrentOs();
         } catch (final IOException e) {
             throw new RuntimeException(e);

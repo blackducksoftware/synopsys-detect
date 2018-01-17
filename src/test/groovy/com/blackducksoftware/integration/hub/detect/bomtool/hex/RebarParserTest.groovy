@@ -52,7 +52,7 @@ class RebarParserTest {
 
         expectedGraph.addChildWithParents(gitOuterChildDependency, gitOuterParentDependency)
 
-        DetectCodeLocation codeLocation = build('hex/dependencyTree.txt')
+        DetectCodeLocation codeLocation = build('/hex/dependencyTree.txt')
         DependencyGraph actualGraph = codeLocation.dependencyGraph
 
         assertGraph(expectedGraph, actualGraph)
@@ -78,7 +78,7 @@ class RebarParserTest {
         String expectedVersion = '0.2.2'
         ExternalId expectedExternalId  = externalIdFactory.createNameVersionExternalId(Forge.HEX, expectedName, expectedVersion)
 
-        Dependency actualDependency = rebar3TreeParser.createDependencyFromLine('   │  │  └─ cf─0.2.2 (hex package)')
+        Dependency actualDependency = rebar3TreeParser.createDependencyFromLine('   \u2502  \u2502  \u2514\u2500 cf\u25000.2.2 (hex package)')
 
         assertEquals(expectedName, actualDependency.name)
         assertEquals(expectedVersion, actualDependency.version)
@@ -88,26 +88,26 @@ class RebarParserTest {
 
     @Test
     public void testReduceLineToNameVersion() {
-        assertEquals('qdate─0.4.2', rebar3TreeParser.reduceLineToNameVersion('   ├─ qdate─0.4.2 (git repo)'))
-        assertEquals('erlware_commons─1.0.1', rebar3TreeParser.reduceLineToNameVersion('   │  ├─ erlware_commons─1.0.1 (hex package)'))
-        assertEquals('cf─0.2.2', rebar3TreeParser.reduceLineToNameVersion('   │  │  └─ cf─0.2.2 (hex package)'))
+        assertEquals('qdate\u25000.4.2', rebar3TreeParser.reduceLineToNameVersion('   \u251C\u2500 qdate\u25000.4.2 (git repo)'))
+        assertEquals('erlware_commons\u25001.0.1', rebar3TreeParser.reduceLineToNameVersion('   \u2502  \u251C\u2500 erlware_commons\u25001.0.1 (hex package)'))
+        assertEquals('cf\u25000.2.2', rebar3TreeParser.reduceLineToNameVersion('   \u2502  \u2502  \u2514\u2500 cf\u25000.2.2 (hex package)'))
     }
 
     @Test
     public void testGetDependencyLevelFromLine() {
-        assertEquals(0, rebar3TreeParser.getDependencyLevelFromLine('└─ gcm─1.0.1 (project app)'))
-        assertEquals(1, rebar3TreeParser.getDependencyLevelFromLine('   ├─ qdate─0.4.2 (git repo)'))
-        assertEquals(2, rebar3TreeParser.getDependencyLevelFromLine('   │  ├─ erlware_commons─1.0.1 (hex package)'))
-        assertEquals(3, rebar3TreeParser.getDependencyLevelFromLine('   │  │  └─ cf─0.2.2 (hex package)'))
-        assertEquals(2, rebar3TreeParser.getDependencyLevelFromLine('   │  └─ qdate_localtime─1.1.0 (hex package)'))
-        assertEquals(1, rebar3TreeParser.getDependencyLevelFromLine('   └─ webpush_encryption─0.0.1 (git repo)'))
-        assertEquals(2, rebar3TreeParser.getDependencyLevelFromLine('      └─ base64url─0.0.1 (git repo)'))
+        assertEquals(0, rebar3TreeParser.getDependencyLevelFromLine('\u2514\u2500 gcm\u25001.0.1 (project app)'))
+        assertEquals(1, rebar3TreeParser.getDependencyLevelFromLine('   \u251C\u2500 qdate\u25000.4.2 (git repo)'))
+        assertEquals(2, rebar3TreeParser.getDependencyLevelFromLine('   \u2502  \u251C\u2500 erlware_commons\u25001.0.1 (hex package)'))
+        assertEquals(3, rebar3TreeParser.getDependencyLevelFromLine('   \u2502  \u2502  \u2514\u2500 cf\u25000.2.2 (hex package)'))
+        assertEquals(2, rebar3TreeParser.getDependencyLevelFromLine('   \u2502  \u2514\u2500 qdate_localtime\u25001.1.0 (hex package)'))
+        assertEquals(1, rebar3TreeParser.getDependencyLevelFromLine('   \u2514\u2500 webpush_encryption\u25000.0.1 (git repo)'))
+        assertEquals(2, rebar3TreeParser.getDependencyLevelFromLine('      \u2514\u2500 base64url\u25000.0.1 (git repo)'))
     }
 
     @Test
     public void testIsProjectLine() {
-        assertTrue(rebar3TreeParser.isProject('└─ gcm─1.0.1 (project app)'))
-        assertFalse(rebar3TreeParser.isProject('   ├─ qdate─0.4.2 (git repo)'))
-        assertFalse(rebar3TreeParser.isProject('   │  ├─ erlware_commons─1.0.1 (hex package)'))
+        assertTrue(rebar3TreeParser.isProject('\u2514\u2500 gcm\u25001.0.1 (project app)'))
+        assertFalse(rebar3TreeParser.isProject('   \u251C\u2500 qdate\u25000.4.2 (git repo)'))
+        assertFalse(rebar3TreeParser.isProject('   \u2502  \u251C\u2500 erlware_commons\u25001.0.1 (hex package)'))
     }
 }

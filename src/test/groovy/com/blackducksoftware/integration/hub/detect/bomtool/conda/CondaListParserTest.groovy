@@ -49,19 +49,19 @@ class CondaListParserTest {
 
     @Test
     public void smallParseTest() {
-        final String condaInfoJson = testUtil.getResourceAsUTF8String('conda/condaInfo.json')
-        final String condaListJson = testUtil.getResourceAsUTF8String('conda/condaListSmall.json')
+        final String condaInfoJson = testUtil.getResourceAsUTF8String('/conda/condaInfo.json')
+        final String condaListJson = testUtil.getResourceAsUTF8String('/conda/condaListSmall.json')
         DependencyGraph dependencyGraph = condaListParser.parse(condaListJson, condaInfoJson)
 
-        DependencyGraphResourceTestUtil.assertGraph('conda/condaListSmallExpected_graph.json', dependencyGraph)
+        DependencyGraphResourceTestUtil.assertGraph('/conda/condaListSmallExpected_graph.json', dependencyGraph)
     }
 
     @Test
     public void largeParseTest() {
-        String condaInfoJson = testUtil.getResourceAsUTF8String('conda/condaInfo.json')
-        String condaListJson = testUtil.getResourceAsUTF8String('conda/condaListLarge.json')
+        String condaInfoJson = testUtil.getResourceAsUTF8String('/conda/condaInfo.json')
+        String condaListJson = testUtil.getResourceAsUTF8String('/conda/condaListLarge.json')
         DependencyGraph dependencyGraph = condaListParser.parse(condaListJson, condaInfoJson)
 
-        DependencyGraphResourceTestUtil.assertGraph('conda/condaListLargeExpected_graph.json', dependencyGraph)
+        DependencyGraphResourceTestUtil.assertGraph('/conda/condaListLargeExpected_graph.json', dependencyGraph)
     }
 }

@@ -1,13 +1,18 @@
 language: java
+
 jdk:
   - oraclejdk8
+
+notifications:
+  email:
+    recipients:
+      - ekerwin@blackducksoftware.com
+
 install: true
 
 script:
   - ./gradlew clean build
-  
+
 after_success:
   - ./gradlew test jacocoTestReport coveralls
-  - curl https://copilot.blackducksoftware.com/scripts/init/gradle -o bds_init.gradle
-  - ./gradlew --init-script bds_init.gradle buildBom -DbdsPluginVersion=5.0.0
-  - bash <(curl -s https://copilot.blackducksoftware.com/bash/travis) ./build/blackduck/*_bdio.jsonld
+  - bash <(curl -s https://copilot.blackducksoftware.com/ci/travis/scripts/upload)

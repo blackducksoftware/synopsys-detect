@@ -1,7 +1,8 @@
 /*
- * Copyright (C) 2017 Black Duck Software, Inc.
- * http://www.blackducksoftware.com/
+ * hub-detect
  *
+ * Copyright (C) 2018 Black Duck Software, Inc.
+ * http://www.blackducksoftware.com/
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -25,10 +26,10 @@ package com.blackducksoftware.integration.hub.detect.bomtool.go.godep
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph
 import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.bomtool.GoDepBomTool
 import com.google.gson.Gson
 
 import groovy.transform.TypeChecked
@@ -58,7 +59,7 @@ class GoGodepsParser {
             } else {
                 version = dep.rev.trim()
             }
-            final ExternalId dependencyExternalId = externalIdFactory.createNameVersionExternalId(GoDepBomTool.GOLANG, dep.importPath, version)
+            final ExternalId dependencyExternalId = externalIdFactory.createNameVersionExternalId(Forge.GOLANG, dep.importPath, version)
             final Dependency dependency = new Dependency(dep.importPath, version, dependencyExternalId)
             graph.addChildToRoot(dependency);
         }
