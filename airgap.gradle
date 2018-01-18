@@ -132,9 +132,11 @@ task createAirGapZip(type: Zip) {
     destinationDir(file(distributionsFolder))
 }
 
-task publishAirGapZip(type: Exec) {
+task publishAirGapZip() {
     dependsOn createAirGapZip
     doLast {
-        commandLine 'curl', '--insecure','-u', "${artifactoryDeployerUsername}:${artifactoryDeployerPassword}", '-X', 'PUT', "${artifactoryUrl}/${artifactoryRepo}/${artifactoryIntegrationPath}/${rootProject.name}/${version}/${airGapZipName}", '-T', "${distributionsFolder}/${airGapZipName}", '-f'
+        exec {
+            commandLine 'curl', '--insecure','-u', "${artifactoryDeployerUsername}:${artifactoryDeployerPassword}", '-X', 'PUT', "${artifactoryUrl}/${artifactoryRepo}/${artifactoryIntegrationPath}/${rootProject.name}/${version}/${airGapZipName}", '-T', "${distributionsFolder}/${airGapZipName}", '-f'
+        }
     }
 }
