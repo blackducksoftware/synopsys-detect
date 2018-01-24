@@ -13,3 +13,5 @@ bin/
 build/
 
 version.txt
+*.html
+*.iml
