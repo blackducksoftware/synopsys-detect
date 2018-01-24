@@ -46,39 +46,53 @@ class NugetBomTool extends BomTool {
 
     static final String SOLUTION_PATTERN = '*.sln'
     static final String INSPECTOR_OUTPUT_PATTERN ='*_inspection.json'
-    
+
     //populated from "open project" in visual studio 2017
-    static final String[] SUPPORTED_PROJECT_PATTERNS = [ 
-        ".dsw", //Workspace
-        ".vcw", //Workspace
-        ".csproj", //C#
-        ".fsproj", //F#
-        ".vbproj", //VB
-        ".asaproj", //Azure Stream Analytics
-        ".dcproj", //Docker Compose
-        ".shproj", //Shared Projects
-        ".ccproj", //Cloud Computing
-        ".sfproj", //Fabric Application
-        ".exe", //Exe Project
-        ".njsproj", //Node.js
-        ".vcxproj", //VC++
-        ".vcproj", //VC++
-        ".dsp", //VC++
-        ".mdp", //VC++
-        ".props", //VC++
-        ".vcp", //VC++
-        ".vcxitems", //VC++
-        ".xproj", //.NET Core
-        ".pyproj", //Python
-        ".hiveproj", //Hive
-        ".pigproj", //Pig
-        ".jsproj", //JavaScript
-        ".usqlproj", //U-SQL
-        ".deployproj", //Deployment
-        ".msbuildproj", //Common Project System Files
-        ".sqlproj", //SQL
-        ".dbproj", //SQL Project Files
-        ".rproj", //RStudio
+    static final String[] SUPPORTED_PROJECT_PATTERNS = [
+        //C#
+        "*.csproj",
+        //F#
+        "*.fsproj",
+        //VB
+        "*.vbproj",
+        //Azure Stream Analytics
+        "*.asaproj",
+        //Docker Compose
+        "*.dcproj",
+        //Shared Projects
+        "*.shproj",
+        //Cloud Computing
+        "*.ccproj",
+        //Fabric Application
+        "*.sfproj",
+        //Node.js
+        "*.njsproj",
+        //VC++
+        "*.vcxproj",
+        //VC++
+        "*.vcproj",
+        //.NET Core
+        "*.xproj",
+        //Python
+        "*.pyproj",
+        //Hive
+        "*.hiveproj",
+        //Pig
+        "*.pigproj",
+        //JavaScript
+        "*.jsproj",
+        //U-SQL
+        "*.usqlproj",
+        //Deployment
+        "*.deployproj",
+        //Common Project System Files
+        "*.msbuildproj",
+        //SQL
+        "*.sqlproj",
+        //SQL Project Files
+        "*.dbproj",
+        //RStudio
+        "*.rproj"
     ];
 
     @Autowired
@@ -97,7 +111,7 @@ class NugetBomTool extends BomTool {
     @Override
     public boolean isBomToolApplicable() {
         def containsSolutionFile = detectFileManager.containsAllFiles(sourcePath, SOLUTION_PATTERN)
-        def containsProjectFile = detectFileManager.containsAllFiles(sourcePath, PROJECT_PATTERN)
+        def containsProjectFile = SUPPORTED_PROJECT_PATTERNS.any{ String pattern -> detectFileManager.containsAllFiles(pattern) }
 
         if (containsSolutionFile || containsProjectFile) {
             nugetExecutable = findExecutablePath(ExecutableType.NUGET, true, detectConfiguration.getNugetPath())
