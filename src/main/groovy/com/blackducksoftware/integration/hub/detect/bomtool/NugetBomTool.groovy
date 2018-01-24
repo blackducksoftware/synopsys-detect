@@ -45,8 +45,41 @@ class NugetBomTool extends BomTool {
     private final Logger logger = LoggerFactory.getLogger(NugetBomTool.class)
 
     static final String SOLUTION_PATTERN = '*.sln'
-    static final String PROJECT_PATTERN = '*.*proj'
     static final String INSPECTOR_OUTPUT_PATTERN ='*_inspection.json'
+    
+    //populated from "open project" in visual studio 2017
+    static final String[] SUPPORTED_PROJECT_PATTERNS = [ 
+        ".dsw", //Workspace
+        ".vcw", //Workspace
+        ".csproj", //C#
+        ".fsproj", //F#
+        ".vbproj", //VB
+        ".asaproj", //Azure Stream Analytics
+        ".dcproj", //Docker Compose
+        ".shproj", //Shared Projects
+        ".ccproj", //Cloud Computing
+        ".sfproj", //Fabric Application
+        ".exe", //Exe Project
+        ".njsproj", //Node.js
+        ".vcxproj", //VC++
+        ".vcproj", //VC++
+        ".dsp", //VC++
+        ".mdp", //VC++
+        ".props", //VC++
+        ".vcp", //VC++
+        ".vcxitems", //VC++
+        ".xproj", //.NET Core
+        ".pyproj", //Python
+        ".hiveproj", //Hive
+        ".pigproj", //Pig
+        ".jsproj", //JavaScript
+        ".usqlproj", //U-SQL
+        ".deployproj", //Deployment
+        ".msbuildproj", //Common Project System Files
+        ".sqlproj", //SQL
+        ".dbproj", //SQL Project Files
+        ".rproj", //RStudio
+    ];
 
     @Autowired
     NugetInspectorPackager nugetInspectorPackager
