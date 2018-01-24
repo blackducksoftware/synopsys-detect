@@ -48,6 +48,13 @@ import com.blackducksoftware.integration.phonehome.enums.ThirdPartyName
 
 import groovy.transform.TypeChecked
 
+import java.util.concurrent.Callable
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import java.util.concurrent.Future
+
+import static java.util.concurrent.TimeUnit.MINUTES
+
 @Component
 @TypeChecked
 class HubSignatureScanner implements SummaryResultReporter {
@@ -118,18 +125,37 @@ class HubSignatureScanner implements SummaryResultReporter {
 
     public ProjectVersionView scanPaths(HubServerConfig hubServerConfig, CLIDataService cliDataService, DetectProject detectProject) {
         ProjectVersionView projectVersionView = null
-        if (detectProject.projectName && detectProject.projectVersionName && detectConfiguration.hubSignatureScannerPaths) {
-            detectConfiguration.hubSignatureScannerPaths.each { String path ->
-                projectVersionView = scanPath(cliDataService, hubServerConfig, new File(path).canonicalPath, detectProject)
-            }
-        } else {
-            registeredPaths.each {
-                logger.info("Attempting to scan ${it} for ${detectProject.projectName}/${detectProject.projectVersionName}")
-                ProjectVersionView scanProject = scanPath(cliDataService, hubServerConfig, it, detectProject)
-                if (!projectVersionView) {
-                    projectVersionView = scanProject
+        ExecutorService pool = Executors.newFixedThreadPool(detectConfiguration.executionParallelism)
+        try {
+            if (detectProject.projectName && detectProject.projectVersionName && detectConfiguration.hubSignatureScannerPaths) {
+                detectConfiguration.hubSignatureScannerPaths.collect { String path ->
+                    pool.submit(new Callable<ProjectVersionView>() {
+                        @Override
+                        ProjectVersionView call() throws Exception {
+                            return scanPath(cliDataService, hubServerConfig, new File(path).canonicalPath, detectProject)
+                        }
+                    })
+                }.each { Future<ProjectVersionView> result ->
+                    projectVersionView = result.get()
+                }
+            } else {
+                registeredPaths.collect { String path ->
+                    logger.info("Attempting to scan ${path} for ${detectProject.projectName}/${detectProject.projectVersionName}")
+                    pool.submit(new Callable<ProjectVersionView>() {
+                        @Override
+                        ProjectVersionView call() throws Exception {
+                            return scanPath(cliDataService, hubServerConfig, path, detectProject)
+                        }
+                    })
+                }.each { Future<ProjectVersionView> result ->
+                    if (!projectVersionView) {
+                        projectVersionView = result.get()
+                    }
                 }
             }
+        } finally {
+            pool.shutdown()
+            pool.awaitTermination(1, MINUTES) // already off normally since we waited the tasks
         }
         return projectVersionView;
     }
@@ -172,7 +198,9 @@ class HubSignatureScanner implements SummaryResultReporter {
 
             String hubDetectVersion = detectInfo.detectVersion
             projectVersionView = cliDataService.installAndRunControlledScan(hubServerConfig, hubScanConfig, projectRequest, false, ThirdPartyName.DETECT, hubDetectVersion, hubDetectVersion)
-            scanSummaryResults.put(canonicalPath, Result.SUCCESS);
+            synchronized (scanSummaryResults) {
+                scanSummaryResults.put(canonicalPath, Result.SUCCESS);
+            }
             logger.info("${canonicalPath} was successfully scanned by the BlackDuck CLI.")
         } catch (Exception e) {
             logger.error("${detectProject.projectName}/${detectProject.projectVersionName} - ${canonicalPath} was not scanned by the BlackDuck CLI: ${e.message}")

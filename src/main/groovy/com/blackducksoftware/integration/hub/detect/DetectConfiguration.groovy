@@ -699,6 +699,14 @@ class DetectConfiguration {
     @Value('${detect.hex.rebar3.path:}')
     String hexRebar3Path
 
+    @ValueDescription(description="The number of scans to run in parallel, default to the number of processors", group=DetectConfiguration.GROUP_GENERAL)
+    @Value('${detect.scan.parallel.processors:}')
+    Integer executionParallelism
+
+    int getExecutionParallelism() {
+        return executionParallelism == null ? Runtime.runtime.availableProcessors() : executionParallelism
+    }
+
     public boolean getCleanupBdioFiles() {
         return BooleanUtils.toBoolean(cleanupBdioFiles)
     }
