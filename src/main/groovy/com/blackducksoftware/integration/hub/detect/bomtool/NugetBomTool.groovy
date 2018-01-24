@@ -29,11 +29,13 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
+import com.blackducksoftware.integration.hub.detect.DetectInfo
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorManager
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorPackager
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
+import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput
 
@@ -101,6 +103,9 @@ class NugetBomTool extends BomTool {
     @Autowired
     NugetInspectorManager nugetInspectorManager
 
+    @Autowired
+    DetectInfo detectInfo
+
     private String nugetExecutable
     private File outputDirectory
 
@@ -110,6 +115,10 @@ class NugetBomTool extends BomTool {
 
     @Override
     public boolean isBomToolApplicable() {
+        if (detectInfo.getCurrentOs() != OperatingSystemType.WINDOWS){
+            return false;
+        }
+
         def containsSolutionFile = detectFileManager.containsAllFiles(sourcePath, SOLUTION_PATTERN)
         def containsProjectFile = SUPPORTED_PROJECT_PATTERNS.any{ String pattern -> detectFileManager.containsAllFiles(pattern) }
 
