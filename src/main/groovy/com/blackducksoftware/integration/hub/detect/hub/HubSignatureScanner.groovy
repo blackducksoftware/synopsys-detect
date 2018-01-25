@@ -23,6 +23,9 @@
  */
 package com.blackducksoftware.integration.hub.detect.hub
 
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -44,16 +47,8 @@ import com.blackducksoftware.integration.hub.model.request.ProjectRequest
 import com.blackducksoftware.integration.hub.model.view.ProjectVersionView
 import com.blackducksoftware.integration.hub.request.builder.ProjectRequestBuilder
 import com.blackducksoftware.integration.hub.scan.HubScanConfig
-import com.blackducksoftware.integration.phonehome.enums.ThirdPartyName
 
 import groovy.transform.TypeChecked
-
-import java.util.concurrent.Callable
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
-import java.util.concurrent.Future
-
-import static java.util.concurrent.TimeUnit.MINUTES
 
 @Component
 @TypeChecked
@@ -125,38 +120,35 @@ class HubSignatureScanner implements SummaryResultReporter {
 
     public ProjectVersionView scanPaths(HubServerConfig hubServerConfig, CLIDataService cliDataService, DetectProject detectProject) {
         ProjectVersionView projectVersionView = null
-        ExecutorService pool = Executors.newFixedThreadPool(detectConfiguration.executionParallelism)
+
+        ProjectRequest projectRequest = createProjectRequest(detectProject)
+        String hubDetectVersion = detectInfo.detectVersion
+        Set<String> canonicalPathsToScan = registeredPaths
+        if (detectProject.projectName && detectProject.projectVersionName && detectConfiguration.hubSignatureScannerPaths) {
+            canonicalPathsToScan = new HashSet<String>(Arrays.asList(detectConfiguration.hubSignatureScannerPaths))
+        }
+
+        List<ScanPathCallable> scanPathCallables = new ArrayList<>()
+        canonicalPathsToScan.each { String canonicalPath ->
+            HubScanConfigBuilder hubScanConfigBuilder = createScanConfigBuilder(detectProject, canonicalPath)
+            HubScanConfig hubScanConfig = hubScanConfigBuilder.build()
+            ScanPathCallable scanPathCallable = new ScanPathCallable(cliDataService, hubServerConfig, hubScanConfig, projectRequest, canonicalPath, hubDetectVersion, scanSummaryResults);
+            scanPathCallables.add(scanPathCallable)
+        }
+
+        ExecutorService pool = Executors.newFixedThreadPool(detectConfiguration.hubSignatureScannerParallelProcessors)
         try {
-            if (detectProject.projectName && detectProject.projectVersionName && detectConfiguration.hubSignatureScannerPaths) {
-                detectConfiguration.hubSignatureScannerPaths.collect { String path ->
-                    pool.submit(new Callable<ProjectVersionView>() {
-                        @Override
-                        ProjectVersionView call() throws Exception {
-                            return scanPath(cliDataService, hubServerConfig, new File(path).canonicalPath, detectProject)
-                        }
-                    })
-                }.each { Future<ProjectVersionView> result ->
-                    projectVersionView = result.get()
-                }
-            } else {
-                registeredPaths.collect { String path ->
-                    logger.info("Attempting to scan ${path} for ${detectProject.projectName}/${detectProject.projectVersionName}")
-                    pool.submit(new Callable<ProjectVersionView>() {
-                        @Override
-                        ProjectVersionView call() throws Exception {
-                            return scanPath(cliDataService, hubServerConfig, path, detectProject)
-                        }
-                    })
-                }.each { Future<ProjectVersionView> result ->
-                    if (!projectVersionView) {
-                        projectVersionView = result.get()
-                    }
+            scanPathCallables.collect { pool.submit(it) }.each {
+                ProjectVersionView projectVersionViewFromScan = it.get()
+                if (projectVersionViewFromScan != null) {
+                    projectVersionView = projectVersionViewFromScan
                 }
             }
         } finally {
-            pool.shutdown()
-            pool.awaitTermination(1, MINUTES) // already off normally since we waited the tasks
+            // get() was called on every java.util.concurrent.Future, no need to wait any longer
+            pool.shutdownNow()
         }
+
         return projectVersionView;
     }
 
@@ -182,32 +174,6 @@ class HubSignatureScanner implements SummaryResultReporter {
         return detectSummaryResults;
     }
 
-    private ProjectVersionView scanPath(CLIDataService cliDataService, HubServerConfig hubServerConfig, String canonicalPath, DetectProject detectProject) {
-        ProjectVersionView projectVersionView = null
-        try {
-            ProjectRequestBuilder builder = new ProjectRequestBuilder()
-            builder.setProjectName(detectProject.projectName)
-            builder.setVersionName(detectProject.projectVersionName)
-            builder.setProjectLevelAdjustments(detectConfiguration.projectLevelMatchAdjustments)
-            builder.setPhase(detectConfiguration.projectVersionPhase)
-            builder.setDistribution(detectConfiguration.projectVersionDistribution)
-            ProjectRequest projectRequest = builder.build()
-
-            HubScanConfigBuilder hubScanConfigBuilder = createScanConfigBuilder(detectProject, canonicalPath)
-            HubScanConfig hubScanConfig = hubScanConfigBuilder.build()
-
-            String hubDetectVersion = detectInfo.detectVersion
-            projectVersionView = cliDataService.installAndRunControlledScan(hubServerConfig, hubScanConfig, projectRequest, false, ThirdPartyName.DETECT, hubDetectVersion, hubDetectVersion)
-            synchronized (scanSummaryResults) {
-                scanSummaryResults.put(canonicalPath, Result.SUCCESS);
-            }
-            logger.info("${canonicalPath} was successfully scanned by the BlackDuck CLI.")
-        } catch (Exception e) {
-            logger.error("${detectProject.projectName}/${detectProject.projectVersionName} - ${canonicalPath} was not scanned by the BlackDuck CLI: ${e.message}")
-        }
-        return projectVersionView
-    }
-
     private void scanPathOffline(String canonicalPath, DetectProject detectProject) {
         try {
             HubScanConfigBuilder hubScanConfigBuilder = createScanConfigBuilder(detectProject, canonicalPath)
@@ -226,6 +192,16 @@ class HubSignatureScanner implements SummaryResultReporter {
         } catch (Exception e) {
             logger.error("${detectProject.projectName}/${detectProject.projectVersionName} - ${canonicalPath} was not scanned by the BlackDuck CLI: ${e.message}")
         }
+    }
+
+    private ProjectRequest createProjectRequest(DetectProject detectProject) {
+        ProjectRequestBuilder builder = new ProjectRequestBuilder()
+        builder.setProjectName(detectProject.projectName)
+        builder.setVersionName(detectProject.projectVersionName)
+        builder.setProjectLevelAdjustments(detectConfiguration.projectLevelMatchAdjustments)
+        builder.setPhase(detectConfiguration.projectVersionPhase)
+        builder.setDistribution(detectConfiguration.projectVersionDistribution)
+        return builder.build()
     }
 
     private HubScanConfigBuilder createScanConfigBuilder(DetectProject detectProject, String canonicalPath) {
