@@ -108,6 +108,9 @@ class DockerBomTool extends BomTool {
 
         File dockerInspectorShellScript = dockerInspectorManager.getShellScript()
 
+        Map<String, String> environmentVariables = new HashMap<>()
+        dockerProperties.populateEnvironmentVariables(environmentVariables, dockerExecutablePath)
+
         boolean usingTarFile = false
         String imageArgument = ''
         if (detectConfiguration.dockerImage) {
@@ -118,17 +121,9 @@ class DockerBomTool extends BomTool {
             usingTarFile = true
         }
 
-        String path = System.getenv('PATH')
-        File dockerExecutableFile = new File(dockerExecutablePath)
-        path += File.pathSeparator + dockerExecutableFile.parentFile.getCanonicalPath()
-        Map<String, String> environmentVariables = [PATH: path]
-        if (!'latest'.equals(detectConfiguration.dockerInspectorVersion)) {
-            environmentVariables.put('DOCKER_INSPECTOR_VERSION', detectConfiguration.dockerInspectorVersion)
-        }
-
         List<String> bashArguments = [
             '-c',
-            "\"${dockerInspectorShellScript.getCanonicalPath()}\" --spring.config.location=\"file:${dockerPropertiesFile.getCanonicalPath()}\" --dry.run=true --no.prompt=true ${imageArgument}" as String
+            "\"${dockerInspectorShellScript.getCanonicalPath()}\" --spring.config.location=\"file:${dockerPropertiesFile.getCanonicalPath()}\" ${imageArgument}" as String
         ]
         def airGapHubDockerInspectorJar = new File("${detectConfiguration.getDockerInspectorAirGapPath()}", "hub-docker-inspector-${dockerInspectorManager.getInspectorVersion(bashExecutablePath)}.jar")
         if (airGapHubDockerInspectorJar.exists()) {
