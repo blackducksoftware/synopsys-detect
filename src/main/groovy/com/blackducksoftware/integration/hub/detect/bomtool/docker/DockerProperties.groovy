@@ -41,7 +41,7 @@ class DockerProperties {
         Properties dockerProperties = new Properties()
 
         dockerProperties.setProperty('logging.level.com.blackducksoftware', detectConfiguration.getLoggingLevel())
-        dockerProperties.setProperty('upload.bdio', 'true')
+        dockerProperties.setProperty('upload.bdio', 'false')
         dockerProperties.setProperty('no.prompt', 'true')
         dockerProperties.setProperty('output.path', bomToolOutputDirectory.getAbsolutePath())
         dockerProperties.setProperty('output.include.containerfilesystem', 'true')
