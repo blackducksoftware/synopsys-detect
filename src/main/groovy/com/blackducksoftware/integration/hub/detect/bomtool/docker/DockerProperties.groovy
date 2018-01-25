@@ -23,6 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.docker
 
+import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -40,18 +41,45 @@ class DockerProperties {
         Properties dockerProperties = new Properties()
 
         dockerProperties.setProperty('logging.level.com.blackducksoftware', detectConfiguration.getLoggingLevel())
-        dockerProperties.setProperty('dry.run', 'true')
+        dockerProperties.setProperty('upload.bdio', 'true')
+        dockerProperties.setProperty('no.prompt', 'true')
         dockerProperties.setProperty('output.path', bomToolOutputDirectory.getAbsolutePath())
         dockerProperties.setProperty('output.include.containerfilesystem', 'true')
         dockerProperties.setProperty('logging.level.com.blackducksoftware', detectConfiguration.getLoggingLevel())
         dockerProperties.setProperty('phone.home', 'false')
 
         detectConfiguration.additionalDockerPropertyNames.each { propertyName ->
-            String dockerKey = propertyName[DetectConfiguration.DOCKER_PROPERTY_PREFIX.length()..-1]
+            String dockerKey = getKeyWithoutPrefix(propertyName, DetectConfiguration.DOCKER_PROPERTY_PREFIX)
             addDockerProperty(dockerProperties, propertyName, dockerKey)
         }
 
         dockerProperties.store(dockerPropertiesFile.newOutputStream(), "")
+    }
+
+    public void populateEnvironmentVariables(Map<String, String> environmentVariables, String dockerExecutablePath) {
+        String path = System.getenv('PATH')
+        File dockerExecutableFile = new File(dockerExecutablePath)
+        path += File.pathSeparator + dockerExecutableFile.parentFile.getCanonicalPath()
+        environmentVariables.put('PATH', path)
+        if (!'latest'.equals(detectConfiguration.dockerInspectorVersion)) {
+            environmentVariables.put('DOCKER_INSPECTOR_VERSION', detectConfiguration.dockerInspectorVersion)
+        }
+
+        String detectCurlOpts = System.getenv('DETECT_CURL_OPTS')
+        if (StringUtils.isNotBlank(detectCurlOpts)) {
+            environmentVariables.put('DOCKER_INSPECTOR_CURL_OPTS', detectCurlOpts)
+        }
+
+        for (Map.Entry<String, String> environmentProperty : System.getenv()) {
+            String key = environmentProperty.getKey()
+            if (key != null && key.startsWith(DetectConfiguration.DOCKER_ENVIRONMENT_PREFIX)) {
+                environmentVariables.put(getKeyWithoutPrefix(key, DetectConfiguration.DOCKER_ENVIRONMENT_PREFIX), environmentProperty.getValue())
+            }
+        }
+    }
+
+    private String getKeyWithoutPrefix(String key, String prefix) {
+        return key[prefix.length()..-1]
     }
 
     private String addDockerProperty(Properties dockerProperties, String key, String dockerKey) {

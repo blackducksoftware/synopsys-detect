@@ -56,6 +56,7 @@ class DetectConfiguration {
 
     static final String DETECT_PROPERTY_PREFIX = 'detect.'
     static final String DOCKER_PROPERTY_PREFIX = 'detect.docker.passthrough.'
+    static final String DOCKER_ENVIRONMENT_PREFIX = 'DETECT_DOCKER_PASSTHROUGH_'
     static final String NUGET = 'nuget'
     static final String GRADLE = 'gradle'
     static final String DOCKER = 'docker'
