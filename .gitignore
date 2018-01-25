@@ -7,11 +7,10 @@
 .project
 bin/
 .idea
+*.iml
 
 # build tool
 .gradle/
 build/
 
 version.txt
-*.html
-*.iml

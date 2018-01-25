@@ -38,9 +38,13 @@ class HelpPrinter {
         def helpMessagePieces = []
         helpMessagePieces.add('')
 
-        def headerColumns = ['Property Name', 'Default', 'Description']
+        def headerColumns = [
+            'Property Name',
+            'Default',
+            'Description'
+        ]
 
-        String headerText = formatColumns(headerColumns, 50, 30, 95)
+        String headerText = formatColumns(headerColumns, 51, 30, 95)
         helpMessagePieces.add(headerText)
         helpMessagePieces.add(StringUtils.repeat('_', 175))
 
@@ -55,8 +59,12 @@ class HelpPrinter {
                 group = currentGroup
             }
 
-            def bodyColumns = ["--" + detectValue.getKey(), detectValue.getDefaultValue(), detectValue.getDescription()]
-            String bodyText = formatColumns(bodyColumns, 50, 30, 95)
+            def bodyColumns = [
+                "--" + detectValue.getKey(),
+                detectValue.getDefaultValue(),
+                detectValue.getDescription()
+            ]
+            String bodyText = formatColumns(bodyColumns, 51, 30, 95)
 
             helpMessagePieces.add(bodyText)
         }
