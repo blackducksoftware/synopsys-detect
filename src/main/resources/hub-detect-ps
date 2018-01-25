@@ -45,7 +45,7 @@ $DetectSkipJavaTest = Get-EnvironmentVariable -Key "DETECT_SKIP_JAVA_TEST" -Defa
 # set DETECT_EXIT_CODE_PASSTHRU to 1 and this script won't exit, but simply return it (pass it thru).
 $EnvDetectExitCodePassthru = Get-EnvironmentVariable -Key "DETECT_EXIT_CODE_PASSTHRU" -DefaultValue "";
 
-$Version = "0.4.1"
+$Version = "0.5.0"
 
 $DetectReleaseBaseUrl = "https://test-repo.blackducksoftware.com/artifactory/bds-integrations-release/com/blackducksoftware/integration/hub-detect"
 $DetectSnapshotBaseUrl = "https://test-repo.blackducksoftware.com/artifactory/bds-integrations-snapshot/com/blackducksoftware/integration/hub-detect"
@@ -146,6 +146,7 @@ function Get-DetectJar ($DetectFolder, $DetectVersion) {
 function Invoke-Detect ($DetectJarFile, $DetectArgs) {
     $JavaArgs = @("-jar", $DetectJarFile)
     $AllArgs =  $JavaArgs + $DetectArgs
+    Set-ToEscaped($AllArgs)
     Write-Host "Running detect: $AllArgs"
     $DetectProcess = Start-Process java -ArgumentList $AllArgs -NoNewWindow -PassThru
     Wait-Process -InputObject $DetectProcess -ErrorAction SilentlyContinue
@@ -193,6 +194,13 @@ function Receive-DetectJar ($DetectUrl, $DetectJarFile) {
     $Request = Invoke-WebRequest $DetectUrl -OutFile $DetectJarFile -UseBasicParsing
     $DetectJarExists = Test-Path $DetectJarFile
     Write-Host "Downloaded detect jar successfully '$DetectJarExists'"
+}
+
+function Set-ToEscaped ($ArgArray){
+	for ($i = 0; $i -lt $ArgArray.Count ; $i++) {
+		$Value = $ArgArray[$i]
+        $ArgArray[$i] = """$Value"""
+    }
 }
 
 function Test-JavaExists() {
