@@ -203,7 +203,7 @@ class Application {
         }
 
         long end = System.currentTimeMillis()
-        logger.info(String.format("Hub-Detect run duration: ", DurationFormatUtils.formatPeriod(start, end, "H'h 'mm'm 'ss's'")));
+        logger.info(String.format("Hub-Detect run duration: %s", DurationFormatUtils.formatPeriod(start, end, "HH'h' mm'm' ss's' SSS'ms'")));
         if (detectConfiguration.forceSuccess && exitCodeType.getExitCode() != 0) {
             logger.warn("Forcing success: Exiting with 0. Desired exit code was ${exitCodeType.getExitCode()}.");
             System.exit(0);
