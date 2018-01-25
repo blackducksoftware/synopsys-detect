@@ -21,9 +21,6 @@ version = '2.5.0-SNAPSHOT'
 
 apply plugin: 'com.blackducksoftware.integration.solution'
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
-
 final def versionFile = new File("${projectDir}/src/main/resources/version.txt")
 versionFile.delete()
 versionFile << version
