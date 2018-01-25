@@ -615,7 +615,7 @@ class DetectConfiguration {
     @Value('${detect.hub.signature.scanner.host.url:}')
     String hubSignatureScannerHostUrl
 
-    @ValueDescription(description="The number of scans to run in parallel, defaults to 1, but if you specify -1, the number of processors on the machine will be used.", group=DetectConfiguration.GROUP_SIGNATURE_SCANNER)
+    @ValueDescription(description="The number of scans to run in parallel, defaults to 1, but if you specify -1, the number of processors on the machine will be used.", defaultValue="1", group=DetectConfiguration.GROUP_SIGNATURE_SCANNER)
     @Value('${detect.hub.signature.scanner.parallel.processors:}')
     Integer hubSignatureScannerParallelProcessors
 
