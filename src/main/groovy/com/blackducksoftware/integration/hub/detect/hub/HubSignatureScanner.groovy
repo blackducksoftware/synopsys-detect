@@ -125,7 +125,10 @@ class HubSignatureScanner implements SummaryResultReporter {
         String hubDetectVersion = detectInfo.detectVersion
         Set<String> canonicalPathsToScan = registeredPaths
         if (detectProject.projectName && detectProject.projectVersionName && detectConfiguration.hubSignatureScannerPaths) {
-            canonicalPathsToScan = new HashSet<String>(Arrays.asList(detectConfiguration.hubSignatureScannerPaths))
+            canonicalPathsToScan = new HashSet<>()
+            detectConfiguration.hubSignatureScannerPaths.each { String path ->
+                canonicalPathsToScan.add(new File(path).canonicalPath)
+            }
         }
 
         List<ScanPathCallable> scanPathCallables = new ArrayList<>()
