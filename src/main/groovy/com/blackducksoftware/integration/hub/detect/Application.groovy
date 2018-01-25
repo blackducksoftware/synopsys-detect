@@ -27,6 +27,7 @@ import javax.annotation.PostConstruct
 import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
 
+import org.apache.commons.lang3.time.DurationFormatUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -129,6 +130,8 @@ class Application {
 
     @PostConstruct
     void init() {
+        long start = System.currentTimeMillis()
+
         try {
             detectInfo.init()
             detectOptionManager.init()
@@ -199,6 +202,8 @@ class Application {
             detectFileManager.cleanupDirectories()
         }
 
+        long end = System.currentTimeMillis()
+        logger.info(String.format("Hub-Detect run duration: ", DurationFormatUtils.formatPeriod(start, end, "H'h 'mm'm 'ss's'")));
         if (detectConfiguration.forceSuccess && exitCodeType.getExitCode() != 0) {
             logger.warn("Forcing success: Exiting with 0. Desired exit code was ${exitCodeType.getExitCode()}.");
             System.exit(0);
