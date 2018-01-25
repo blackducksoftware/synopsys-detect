@@ -115,12 +115,14 @@ class NugetBomTool extends BomTool {
 
     @Override
     public boolean isBomToolApplicable() {
-        if (detectInfo.getCurrentOs() != OperatingSystemType.WINDOWS){
+        if (OperatingSystemType.WINDOWS != detectInfo.getCurrentOs()) {
             return false;
         }
 
         def containsSolutionFile = detectFileManager.containsAllFiles(sourcePath, SOLUTION_PATTERN)
-        def containsProjectFile = SUPPORTED_PROJECT_PATTERNS.any{ String pattern -> detectFileManager.containsAllFiles(pattern) }
+        def containsProjectFile = SUPPORTED_PROJECT_PATTERNS.any { String pattern ->
+            detectFileManager.containsAllFiles(pattern)
+        }
 
         if (containsSolutionFile || containsProjectFile) {
             nugetExecutable = findExecutablePath(ExecutableType.NUGET, true, detectConfiguration.getNugetPath())
