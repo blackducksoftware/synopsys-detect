@@ -132,6 +132,16 @@ task createAirGapZip(type: Zip) {
     destinationDir(file(distributionsFolder))
 }
 
+task doSomething() {
+    doLast {
+        println project.ext.artifactoryDeployerUsername
+        println project.ext.artifactoryDeployerPassword
+        println System.getenv('ARTIFACTORY_DEPLOYER_USER')
+        println System.getenv('ORG_GRADLE_PROJECT_ARTIFACTORY_DEPLOYER_USER')
+        //println ('curl', '--insecure','-u', "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}", '-X', 'PUT', "${artifactoryUrl}/${project.ext.artifactoryRepo}/${artifactoryIntegrationPath}/${rootProject.name}/${version}/${airGapZipName}", '-T', "${distributionsFolder}/${airGapZipName}", '-f').join ' '
+    }    
+}
+
 task publishAirGapZip() {
     dependsOn createAirGapZip
     doLast {
