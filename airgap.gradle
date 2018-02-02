@@ -136,6 +136,7 @@ task doSomething() {
     doLast {
         println project.ext.artifactoryDeployerUsername
         println project.ext.artifactoryDeployerPassword
+        println project.ext.artifactoryRepo
         println System.getenv('ARTIFACTORY_DEPLOYER_USER')
         println System.getenv('ORG_GRADLE_PROJECT_ARTIFACTORY_DEPLOYER_USER')
         def curlCmd = ['curl', '--insecure','-u', "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}", '-X', 'PUT', "${artifactoryUrl}/${project.ext.artifactoryRepo}/${artifactoryIntegrationPath}/${rootProject.name}/${version}/${airGapZipName}", '-T', "${distributionsFolder}/${airGapZipName}", '-f'].join ' '
