@@ -132,23 +132,11 @@ task createAirGapZip(type: Zip) {
     destinationDir(file(distributionsFolder))
 }
 
-task doSomething() {
-    doLast {
-        println project.ext.artifactoryDeployerUsername
-        println project.ext.artifactoryDeployerPassword
-        println project.ext.artifactoryRepo
-        println System.getenv('ARTIFACTORY_DEPLOYER_USER')
-        println System.getenv('ORG_GRADLE_PROJECT_ARTIFACTORY_DEPLOYER_USER')
-        def curlCmd = ['curl', '--insecure','-u', "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}", '-X', 'PUT', "${artifactoryUrl}/${project.ext.artifactoryRepo}/${artifactoryIntegrationPath}/${rootProject.name}/${version}/${airGapZipName}", '-T', "${distributionsFolder}/${airGapZipName}", '-f'].join ' '
-        println curlCmd
-    }    
-}
-
 task publishAirGapZip() {
     dependsOn createAirGapZip
     doLast {
         exec {
-            commandLine 'curl', '--insecure','-u', "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}", '-X', 'PUT', "${artifactoryUrl}/${project.ext.artifactoryRepo}/${artifactoryIntegrationPath}/${rootProject.name}/${version}/${airGapZipName}", '-T', "${distributionsFolder}/${airGapZipName}", '-f'
+            commandLine 'curl', '--insecure','-u', "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}", '-X', 'PUT', "${project.ext.artifactoryUrl}/${project.ext.artifactoryRepo}/${artifactoryIntegrationPath}/${rootProject.name}/${version}/${airGapZipName}", '-T', "${distributionsFolder}/${airGapZipName}", '-f'
         }
     }
 }
