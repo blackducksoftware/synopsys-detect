@@ -75,6 +75,7 @@ class HubServiceWrapper {
         } catch (IllegalStateException | EncryptionException e) {
             throw new DetectUserFriendlyException("Not able to initialize Hub connection: ${e.message}", e, ExitCodeType.FAILURE_HUB_CONNECTIVITY)
         }
+        logger.info(String.format("Successfully connected to Hub (version %s)!", hubServicesFactory.createHubVersionService().hubVersion))
     }
 
     public boolean testHubConnection() {
