@@ -72,8 +72,20 @@ class BdioUploader {
 
         PhoneHomeRequestBodyBuilder phoneHomeRequestBodyBuilder = phoneHomeDataService.createInitialPhoneHomeRequestBodyBuilder(ThirdPartyName.DETECT, hubDetectVersion, hubDetectVersion);
         phoneHomeRequestBodyBuilder.addToMetaDataMap('bomToolTypes', applicableBomToolsString);
+        addAdditionalPhoneHomeMetaData(phoneHomeRequestBodyBuilder);
 
         PhoneHomeRequestBody phoneHomeRequestBody = phoneHomeRequestBodyBuilder.build();
         detectPhoneHomeManager.startPhoneHome(phoneHomeDataService, phoneHomeRequestBody);
+    }
+
+    public void addAdditionalPhoneHomeMetaData(PhoneHomeRequestBodyBuilder phoneHomeRequestBodyBuilder) {
+        detectConfiguration.additionalPhoneHomePropertyNames.each { propertyName ->
+            String actualKey = getKeyWithoutPrefix(propertyName, DetectConfiguration.PHONE_HOME_PROPERTY_PREFIX)
+            String value = detectConfiguration.getDetectProperty(propertyName);
+            phoneHomeRequestBodyBuilder.addToMetaDataMap(actualKey, value);
+        }
+    }
+    private String getKeyWithoutPrefix(String key, String prefix) {
+        return key[prefix.length()..-1]
     }
 }
