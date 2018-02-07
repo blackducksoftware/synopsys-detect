@@ -56,6 +56,7 @@ class DetectConfiguration {
 
     static final String DETECT_PROPERTY_PREFIX = 'detect.'
     static final String DOCKER_PROPERTY_PREFIX = 'detect.docker.passthrough.'
+    static final String PHONE_HOME_PROPERTY_PREFIX = 'detect.phone.home.passthrough.'
     static final String DOCKER_ENVIRONMENT_PREFIX = 'DETECT_DOCKER_PASSTHROUGH_'
     static final String NUGET = 'nuget'
     static final String GRADLE = 'gradle'
@@ -108,6 +109,7 @@ class DetectConfiguration {
 
     Set<String> allDetectPropertyKeys = new HashSet<>()
     Set<String> additionalDockerPropertyNames = new HashSet<>()
+    Set<String> additionalPhoneHomePropertyNames = new HashSet<>()
 
     private boolean usingDefaultSourcePath
     private boolean usingDefaultOutputPath
@@ -197,6 +199,8 @@ class DetectConfiguration {
         if (dockerBomTool.isBomToolApplicable()) {
             dockerInspectorVersion = dockerBomTool.getInspectorVersion()
         }
+
+        configureForPhoneHome();
     }
 
     /**
@@ -270,6 +274,14 @@ class DetectConfiguration {
         allDetectPropertyKeys.each {
             if (it.startsWith(DOCKER_PROPERTY_PREFIX)) {
                 additionalDockerPropertyNames.add(it)
+            }
+        }
+    }
+
+    private void configureForPhoneHome() {
+        allDetectPropertyKeys.each {
+            if (it.startsWith(PHONE_HOME_PROPERTY_PREFIX)) {
+                additionalPhoneHomePropertyNames.add(it)
             }
         }
     }
