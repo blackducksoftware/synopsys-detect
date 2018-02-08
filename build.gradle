@@ -75,9 +75,9 @@ dependencies {
     compile 'org.codehaus.groovy:groovy-all:2.4.12'
     compile 'org.freemarker:freemarker:2.3.26-incubating'
 
-    compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.2'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.9.2'
-    compile 'com.fasterxml.jackson.core:jackson-annotations:2.9.2'
+    compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.4'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.9.4'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.9.4'
 
     compile 'org.jsoup:jsoup:1.7.2'
 
