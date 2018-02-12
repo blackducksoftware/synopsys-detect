@@ -19,9 +19,6 @@ plugins {
 
 version = '3.0.2-SNAPSHOT'
 
-repositories {
-    mavenLocal()
-}
 apply plugin: 'com.blackducksoftware.integration.solution'
 
 final def versionFile = new File("${projectDir}/src/main/resources/version.txt")
