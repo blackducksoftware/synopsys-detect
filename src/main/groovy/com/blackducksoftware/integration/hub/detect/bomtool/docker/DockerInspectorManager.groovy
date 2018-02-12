@@ -36,14 +36,13 @@ import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
+import com.blackducksoftware.integration.hub.request.Request
+import com.blackducksoftware.integration.hub.request.Response
 import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnection
 import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnectionBuilder
 import com.blackducksoftware.integration.log.Slf4jIntLogger
 
 import groovy.transform.TypeChecked
-import okhttp3.HttpUrl
-import okhttp3.Request
-import okhttp3.Response
 
 @Component
 @TypeChecked
@@ -111,13 +110,13 @@ class DockerInspectorManager {
                     restConnectionBuilder.setLogger(new Slf4jIntLogger(logger))
                     UnauthenticatedRestConnection restConnection = restConnectionBuilder.build()
                     restConnection.alwaysTrustServerCertificate = detectConfiguration.hubTrustCertificate
-                    HttpUrl httpUrl = restConnection.createHttpUrl()
-                    Request request = restConnection.createGetRequest(httpUrl)
+
+                    Request request = new Request(hubDockerInspectorShellScriptUrl);
                     String shellScriptContents = null
                     Response response = null
                     try {
-                        response = restConnection.handleExecuteClientCall(request)
-                        shellScriptContents =  response.body().string()
+                        response = restConnection.executeRequest(request)
+                        shellScriptContents =  response.getContentString()
                     } finally {
                         if (response != null) {
                             response.close()

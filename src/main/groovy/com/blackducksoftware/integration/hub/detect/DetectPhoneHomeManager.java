@@ -25,7 +25,7 @@ package com.blackducksoftware.integration.hub.detect;
 
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.dataservice.phonehome.PhoneHomeDataService;
+import com.blackducksoftware.integration.hub.dataservice.PhoneHomeDataService;
 import com.blackducksoftware.integration.hub.dataservice.phonehome.PhoneHomeResponse;
 import com.blackducksoftware.integration.phonehome.PhoneHomeRequestBody;
 

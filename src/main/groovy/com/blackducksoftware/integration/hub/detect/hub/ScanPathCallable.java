@@ -29,11 +29,12 @@ import java.util.concurrent.Callable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.dataservice.cli.CLIDataService;
+import com.blackducksoftware.integration.hub.api.generated.component.ProjectRequest;
+import com.blackducksoftware.integration.hub.api.generated.view.ProjectVersionView;
+import com.blackducksoftware.integration.hub.dataservice.CLIDataService;
+import com.blackducksoftware.integration.hub.dataservice.project.ProjectVersionWrapper;
 import com.blackducksoftware.integration.hub.detect.summary.Result;
 import com.blackducksoftware.integration.hub.global.HubServerConfig;
-import com.blackducksoftware.integration.hub.model.request.ProjectRequest;
-import com.blackducksoftware.integration.hub.model.view.ProjectVersionView;
 import com.blackducksoftware.integration.hub.scan.HubScanConfig;
 import com.blackducksoftware.integration.phonehome.enums.ThirdPartyName;
 
@@ -61,16 +62,16 @@ public class ScanPathCallable implements Callable<ProjectVersionView> {
 
     @Override
     public ProjectVersionView call() throws Exception {
-        ProjectVersionView projectVersionView = null;
+        ProjectVersionWrapper projectVersionWrapper = null;
         try {
-            logger.info(String.format("Attempting to scan %s for %s/%s", canonicalPath, projectRequest.getName(), projectRequest.getVersionRequest().getVersionName()));
-            projectVersionView = cliDataService.installAndRunControlledScan(hubServerConfig, hubScanConfig, projectRequest, false, ThirdPartyName.DETECT, hubDetectVersion, hubDetectVersion);
+            logger.info(String.format("Attempting to scan %s for %s/%s", canonicalPath, projectRequest.name, projectRequest.versionRequest.versionName));
+            projectVersionWrapper = cliDataService.installAndRunControlledScan(hubServerConfig, hubScanConfig, projectRequest, false, ThirdPartyName.DETECT, hubDetectVersion, hubDetectVersion);
             scanSummaryResults.put(canonicalPath, Result.SUCCESS);
             logger.info(String.format("%s was successfully scanned by the BlackDuck CLI.", canonicalPath));
         } catch (final Exception e) {
-            logger.error(String.format("%s/%s - %s was not scanned by the BlackDuck CLI: %s", projectRequest.getName(), projectRequest.getVersionRequest().getVersionName(), canonicalPath, e.getMessage()));
+            logger.error(String.format("%s/%s - %s was not scanned by the BlackDuck CLI: %s", projectRequest.name, projectRequest.versionRequest.versionName, canonicalPath, e.getMessage()));
         }
-        return projectVersionView;
+        return projectVersionWrapper.getProjectVersionView();
     }
 
 }

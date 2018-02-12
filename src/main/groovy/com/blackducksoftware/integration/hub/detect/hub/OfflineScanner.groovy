@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.HubSupportHelper
 import com.blackducksoftware.integration.hub.cli.CLIDownloadUtility
 import com.blackducksoftware.integration.hub.cli.CLILocation
 import com.blackducksoftware.integration.hub.cli.OfflineCLILocation
@@ -65,16 +64,13 @@ class OfflineScanner {
 
         def hubServerConfig = new HubServerConfig(null, 0, (String)null, null, false)
 
-        def hubSupportHelper = new HubSupportHelper()
-        hubSupportHelper.setHub3_7Support()
-        hubSupportHelper.setHasBeenChecked(true)
 
         def ciEnvironmentVariables = new CIEnvironmentVariables()
         ciEnvironmentVariables.putAll(System.getenv())
 
         def silentLogger = new SilentLogger()
 
-        def simpleScanUtility = new SimpleScanUtility(intLogger, gson, hubServerConfig, hubSupportHelper, ciEnvironmentVariables, hubScanConfig, detectProject.projectName, detectProject.projectVersionName)
+        def simpleScanUtility = new SimpleScanUtility(intLogger, gson, hubServerConfig, ciEnvironmentVariables, hubScanConfig, detectProject.projectName, detectProject.projectVersionName)
         final CLILocation cliLocation = new CLILocation(silentLogger, hubScanConfig.getToolsDir())
         if (hubSignatureScannerOfflineLocalPath) {
             cliLocation = new OfflineCLILocation(silentLogger, new File(hubSignatureScannerOfflineLocalPath))

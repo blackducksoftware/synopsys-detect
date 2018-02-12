@@ -31,8 +31,10 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
+import com.blackducksoftware.integration.hub.api.generated.component.ProjectRequest
+import com.blackducksoftware.integration.hub.api.generated.view.ProjectVersionView
 import com.blackducksoftware.integration.hub.builder.HubScanConfigBuilder
-import com.blackducksoftware.integration.hub.dataservice.cli.CLIDataService
+import com.blackducksoftware.integration.hub.dataservice.CLIDataService
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.DetectInfo
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationName
@@ -43,8 +45,6 @@ import com.blackducksoftware.integration.hub.detect.summary.ScanSummaryResult
 import com.blackducksoftware.integration.hub.detect.summary.SummaryResultReporter
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.global.HubServerConfig
-import com.blackducksoftware.integration.hub.model.request.ProjectRequest
-import com.blackducksoftware.integration.hub.model.view.ProjectVersionView
 import com.blackducksoftware.integration.hub.request.builder.ProjectRequestBuilder
 import com.blackducksoftware.integration.hub.scan.HubScanConfig
 

@@ -30,25 +30,23 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.exception.EncryptionException
 import com.blackducksoftware.integration.exception.IntegrationException
-import com.blackducksoftware.integration.hub.api.bom.BomImportService
-import com.blackducksoftware.integration.hub.api.codelocation.CodeLocationService
-import com.blackducksoftware.integration.hub.api.project.ProjectService
-import com.blackducksoftware.integration.hub.api.project.version.ProjectVersionService
-import com.blackducksoftware.integration.hub.api.scan.ScanSummaryService
+import com.blackducksoftware.integration.hub.api.generated.discovery.ApiDiscovery
+import com.blackducksoftware.integration.hub.api.generated.response.CurrentVersionView
 import com.blackducksoftware.integration.hub.builder.HubServerConfigBuilder
-import com.blackducksoftware.integration.hub.dataservice.cli.CLIDataService
-import com.blackducksoftware.integration.hub.dataservice.phonehome.PhoneHomeDataService
-import com.blackducksoftware.integration.hub.dataservice.policystatus.PolicyStatusDataService
-import com.blackducksoftware.integration.hub.dataservice.project.ProjectDataService
-import com.blackducksoftware.integration.hub.dataservice.report.RiskReportDataService
-import com.blackducksoftware.integration.hub.dataservice.scan.ScanStatusDataService
+import com.blackducksoftware.integration.hub.dataservice.CLIDataService
+import com.blackducksoftware.integration.hub.dataservice.CodeLocationDataService
+import com.blackducksoftware.integration.hub.dataservice.HubDataService
+import com.blackducksoftware.integration.hub.dataservice.PhoneHomeDataService
+import com.blackducksoftware.integration.hub.dataservice.PolicyStatusDataService
+import com.blackducksoftware.integration.hub.dataservice.ProjectDataService
+import com.blackducksoftware.integration.hub.dataservice.ReportDataService
+import com.blackducksoftware.integration.hub.dataservice.ScanStatusDataService
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType
 import com.blackducksoftware.integration.hub.global.HubServerConfig
 import com.blackducksoftware.integration.hub.rest.RestConnection
-import com.blackducksoftware.integration.hub.service.HubService
-import com.blackducksoftware.integration.hub.service.HubServicesFactory
+import com.blackducksoftware.integration.hub.service.HubDataServicesFactory
 import com.blackducksoftware.integration.log.IntLogger
 import com.blackducksoftware.integration.log.SilentLogger
 import com.blackducksoftware.integration.log.Slf4jIntLogger
@@ -65,17 +63,19 @@ class HubServiceWrapper {
 
     Slf4jIntLogger slf4jIntLogger
     HubServerConfig hubServerConfig
-    HubServicesFactory hubServicesFactory
+    HubDataServicesFactory hubDataServicesFactory
 
     void init() {
         try {
             slf4jIntLogger = new Slf4jIntLogger(logger)
             hubServerConfig = createHubServerConfig(slf4jIntLogger)
-            hubServicesFactory = createHubServicesFactory(slf4jIntLogger, hubServerConfig)
+            hubDataServicesFactory = createHubDataServicesFactory(slf4jIntLogger, hubServerConfig)
         } catch (IllegalStateException | EncryptionException e) {
             throw new DetectUserFriendlyException("Not able to initialize Hub connection: ${e.message}", e, ExitCodeType.FAILURE_HUB_CONNECTIVITY)
         }
-        logger.info(String.format("Successfully connected to Hub (version %s)!", hubServicesFactory.createHubVersionService().hubVersion))
+        HubDataService hubDataService = createHubDataService()
+        CurrentVersionView currentVersion = hubDataService.getResponseFromLinkResponse(ApiDiscovery.CURRENT_VERSION_LINK_RESPONSE)
+        logger.info(String.format("Successfully connected to Hub (version %s)!", currentVersion.version))
     }
 
     public boolean testHubConnection() {
@@ -109,58 +109,43 @@ class HubServiceWrapper {
         return false;
     }
 
-    HubService createHubService() {
-        hubServicesFactory.createHubService()
-    }
-
-    ProjectService createProjectService() {
-        hubServicesFactory.createProjectService()
-    }
-
-    ProjectVersionService createProjectVersionService() {
-        hubServicesFactory.createProjectVersionService()
-    }
-
-    BomImportService createBomImportService() {
-        hubServicesFactory.createBomImportService()
-    }
-
-    PhoneHomeDataService createPhoneHomeDataService() {
-        hubServicesFactory.createPhoneHomeDataService()
+    HubDataService createHubDataService() {
+        hubDataServicesFactory.createHubDataService()
     }
 
     ProjectDataService createProjectDataService() {
-        hubServicesFactory.createProjectDataService()
+        hubDataServicesFactory.createProjectDataService()
     }
 
-    CodeLocationService createCodeLocationService() {
-        hubServicesFactory.createCodeLocationService()
+    PhoneHomeDataService createPhoneHomeDataService() {
+        hubDataServicesFactory.createPhoneHomeDataService()
     }
 
-    ScanSummaryService createScanSummaryService() {
-        hubServicesFactory.createScanSummaryService()
+
+    CodeLocationDataService createCodeLocationDataService() {
+        hubDataServicesFactory.createCodeLocationDataService()
     }
 
     ScanStatusDataService createScanStatusDataService() {
-        hubServicesFactory.createScanStatusDataService(detectConfiguration.getApiTimeout())
+        hubDataServicesFactory.createScanStatusDataService(detectConfiguration.getApiTimeout())
     }
 
     PolicyStatusDataService createPolicyStatusDataService() {
-        hubServicesFactory.createPolicyStatusDataService()
+        hubDataServicesFactory.createPolicyStatusDataService()
     }
 
-    RiskReportDataService createRiskReportDataService() {
-        hubServicesFactory.createRiskReportDataService(detectConfiguration.getApiTimeout())
+    ReportDataService createReportDataService() {
+        hubDataServicesFactory.createReportDataService(detectConfiguration.getApiTimeout())
     }
 
     CLIDataService createCliDataService() {
-        hubServicesFactory.createCLIDataService(120000L)
+        hubDataServicesFactory.createCLIDataService(120000L)
     }
 
-    private HubServicesFactory createHubServicesFactory(IntLogger slf4jIntLogger, HubServerConfig hubServerConfig) {
+    private HubDataServicesFactory createHubDataServicesFactory(IntLogger slf4jIntLogger, HubServerConfig hubServerConfig) {
         RestConnection restConnection = hubServerConfig.createCredentialsRestConnection(slf4jIntLogger)
 
-        new HubServicesFactory(restConnection)
+        new HubDataServicesFactory(restConnection)
     }
 
     private HubServerConfig createHubServerConfig(IntLogger slf4jIntLogger) {

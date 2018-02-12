@@ -30,13 +30,13 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.dataservice.policystatus.PolicyStatusDataService
+import com.blackducksoftware.integration.hub.api.enumeration.PolicySeverityType
+import com.blackducksoftware.integration.hub.api.generated.enumeration.PolicyStatusApprovalStatusType
+import com.blackducksoftware.integration.hub.api.generated.view.ProjectVersionView
+import com.blackducksoftware.integration.hub.api.generated.view.VersionBomPolicyStatusView
+import com.blackducksoftware.integration.hub.dataservice.PolicyStatusDataService
 import com.blackducksoftware.integration.hub.dataservice.policystatus.PolicyStatusDescription
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
-import com.blackducksoftware.integration.hub.model.enumeration.PolicySeverityEnum
-import com.blackducksoftware.integration.hub.model.enumeration.VersionBomPolicyStatusOverallStatusEnum
-import com.blackducksoftware.integration.hub.model.view.ProjectVersionView
-import com.blackducksoftware.integration.hub.model.view.VersionBomPolicyStatusView
 
 import groovy.transform.TypeChecked
 
@@ -60,11 +60,11 @@ class PolicyChecker {
         VersionBomPolicyStatusView versionBomPolicyStatusView = policyStatusDataService.getPolicyStatusForVersion(version)
         PolicyStatusDescription policyStatusDescription = new PolicyStatusDescription(versionBomPolicyStatusView)
 
-        VersionBomPolicyStatusOverallStatusEnum statusEnum = VersionBomPolicyStatusOverallStatusEnum.NOT_IN_VIOLATION
+        PolicyStatusApprovalStatusType statusEnum = PolicyStatusApprovalStatusType.NOT_IN_VIOLATION
         if (policyStatusDescription.getCountInViolation()?.value > 0) {
-            statusEnum = VersionBomPolicyStatusOverallStatusEnum.IN_VIOLATION
+            statusEnum = PolicyStatusApprovalStatusType.IN_VIOLATION
         } else if (policyStatusDescription.getCountInViolationOverridden()?.value > 0) {
-            statusEnum = VersionBomPolicyStatusOverallStatusEnum.IN_VIOLATION_OVERRIDDEN
+            statusEnum = PolicyStatusApprovalStatusType.IN_VIOLATION_OVERRIDDEN
         }
         logger.info("Policy Status: ${statusEnum.name()}")
         policyStatusDescription
@@ -81,16 +81,16 @@ class PolicyChecker {
     }
 
     private boolean isAnyPolicyViolated(PolicyStatusDescription policyStatusDescription) {
-        int inViolationCount = policyStatusDescription.getCountOfStatus(VersionBomPolicyStatusOverallStatusEnum.IN_VIOLATION)
+        int inViolationCount = policyStatusDescription.getCountOfStatus(PolicyStatusApprovalStatusType.IN_VIOLATION)
         return inViolationCount != 0
     }
 
     private boolean arePolicySeveritiesViolated(PolicyStatusDescription policyStatusDescription, String[] severityCheckList) {
         for (String policySeverity : severityCheckList) {
             String formattedPolicySeverity = policySeverity.toUpperCase().trim()
-            PolicySeverityEnum policySeverityEnum = EnumUtils.getEnum(PolicySeverityEnum.class, formattedPolicySeverity)
-            if (policySeverityEnum != null) {
-                int severityCount = policyStatusDescription.getCountOfSeverity(policySeverityEnum)
+            PolicySeverityType policySeverityType = EnumUtils.getEnum(PolicySeverityType.class, formattedPolicySeverity)
+            if (policySeverityType != null) {
+                int severityCount = policyStatusDescription.getCountOfSeverity(policySeverityType)
                 if (severityCount > 0) {
                     return true
                 }
