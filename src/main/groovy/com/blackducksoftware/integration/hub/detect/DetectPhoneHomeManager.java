@@ -25,15 +25,15 @@ package com.blackducksoftware.integration.hub.detect;
 
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.dataservice.PhoneHomeDataService;
-import com.blackducksoftware.integration.hub.dataservice.phonehome.PhoneHomeResponse;
+import com.blackducksoftware.integration.hub.service.PhoneHomeService;
+import com.blackducksoftware.integration.hub.service.model.PhoneHomeResponse;
 import com.blackducksoftware.integration.phonehome.PhoneHomeRequestBody;
 
 @Component
 public class DetectPhoneHomeManager {
     private PhoneHomeResponse phoneHomeResponse;
 
-    public void startPhoneHome(final PhoneHomeDataService phoneHomeDataService, final PhoneHomeRequestBody phoneHomeRequestBody) {
+    public void startPhoneHome(final PhoneHomeService phoneHomeDataService, final PhoneHomeRequestBody phoneHomeRequestBody) {
         phoneHomeResponse = phoneHomeDataService.startPhoneHome(phoneHomeRequestBody);
     }
 

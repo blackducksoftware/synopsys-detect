@@ -32,21 +32,21 @@ import com.blackducksoftware.integration.exception.EncryptionException
 import com.blackducksoftware.integration.exception.IntegrationException
 import com.blackducksoftware.integration.hub.api.generated.discovery.ApiDiscovery
 import com.blackducksoftware.integration.hub.api.generated.response.CurrentVersionView
-import com.blackducksoftware.integration.hub.builder.HubServerConfigBuilder
-import com.blackducksoftware.integration.hub.dataservice.CLIDataService
-import com.blackducksoftware.integration.hub.dataservice.CodeLocationDataService
-import com.blackducksoftware.integration.hub.dataservice.HubDataService
-import com.blackducksoftware.integration.hub.dataservice.PhoneHomeDataService
-import com.blackducksoftware.integration.hub.dataservice.PolicyStatusDataService
-import com.blackducksoftware.integration.hub.dataservice.ProjectDataService
-import com.blackducksoftware.integration.hub.dataservice.ReportDataService
-import com.blackducksoftware.integration.hub.dataservice.ScanStatusDataService
+import com.blackducksoftware.integration.hub.configuration.HubServerConfig
+import com.blackducksoftware.integration.hub.configuration.HubServerConfigBuilder
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType
-import com.blackducksoftware.integration.hub.global.HubServerConfig
 import com.blackducksoftware.integration.hub.rest.RestConnection
-import com.blackducksoftware.integration.hub.service.HubDataServicesFactory
+import com.blackducksoftware.integration.hub.service.CodeLocationService
+import com.blackducksoftware.integration.hub.service.HubService
+import com.blackducksoftware.integration.hub.service.HubServicesFactory
+import com.blackducksoftware.integration.hub.service.PhoneHomeService
+import com.blackducksoftware.integration.hub.service.PolicyStatusService
+import com.blackducksoftware.integration.hub.service.ProjectService
+import com.blackducksoftware.integration.hub.service.ReportService
+import com.blackducksoftware.integration.hub.service.ScanStatusService
+import com.blackducksoftware.integration.hub.service.SignatureScannerService
 import com.blackducksoftware.integration.log.IntLogger
 import com.blackducksoftware.integration.log.SilentLogger
 import com.blackducksoftware.integration.log.Slf4jIntLogger
@@ -63,18 +63,18 @@ class HubServiceWrapper {
 
     Slf4jIntLogger slf4jIntLogger
     HubServerConfig hubServerConfig
-    HubDataServicesFactory hubDataServicesFactory
+    HubServicesFactory hubServicesFactory
 
     void init() {
         try {
             slf4jIntLogger = new Slf4jIntLogger(logger)
             hubServerConfig = createHubServerConfig(slf4jIntLogger)
-            hubDataServicesFactory = createHubDataServicesFactory(slf4jIntLogger, hubServerConfig)
+            hubServicesFactory = createHubServicesFactory(slf4jIntLogger, hubServerConfig)
         } catch (IllegalStateException | EncryptionException e) {
             throw new DetectUserFriendlyException("Not able to initialize Hub connection: ${e.message}", e, ExitCodeType.FAILURE_HUB_CONNECTIVITY)
         }
-        HubDataService hubDataService = createHubDataService()
-        CurrentVersionView currentVersion = hubDataService.getResponseFromLinkResponse(ApiDiscovery.CURRENT_VERSION_LINK_RESPONSE)
+        HubService hubService = createHubService()
+        CurrentVersionView currentVersion = hubService.getResponseFromLinkResponse(ApiDiscovery.CURRENT_VERSION_LINK_RESPONSE)
         logger.info(String.format("Successfully connected to Hub (version %s)!", currentVersion.version))
     }
 
@@ -109,43 +109,43 @@ class HubServiceWrapper {
         return false;
     }
 
-    HubDataService createHubDataService() {
-        hubDataServicesFactory.createHubDataService()
+    HubService createHubService() {
+        hubServicesFactory.createHubService()
     }
 
-    ProjectDataService createProjectDataService() {
-        hubDataServicesFactory.createProjectDataService()
+    ProjectService createProjectService() {
+        hubServicesFactory.createProjectService()
     }
 
-    PhoneHomeDataService createPhoneHomeDataService() {
-        hubDataServicesFactory.createPhoneHomeDataService()
+    PhoneHomeService createPhoneHomeService() {
+        hubServicesFactory.createPhoneHomeService()
     }
 
 
-    CodeLocationDataService createCodeLocationDataService() {
-        hubDataServicesFactory.createCodeLocationDataService()
+    CodeLocationService createCodeLocationService() {
+        hubServicesFactory.createCodeLocationService()
     }
 
-    ScanStatusDataService createScanStatusDataService() {
-        hubDataServicesFactory.createScanStatusDataService(detectConfiguration.getApiTimeout())
+    ScanStatusService createScanStatusService() {
+        hubServicesFactory.createScanStatusService(detectConfiguration.getApiTimeout())
     }
 
-    PolicyStatusDataService createPolicyStatusDataService() {
-        hubDataServicesFactory.createPolicyStatusDataService()
+    PolicyStatusService createPolicyStatusService() {
+        hubServicesFactory.createPolicyStatusService()
     }
 
-    ReportDataService createReportDataService() {
-        hubDataServicesFactory.createReportDataService(detectConfiguration.getApiTimeout())
+    ReportService createReportService() {
+        hubServicesFactory.createReportService(detectConfiguration.getApiTimeout())
     }
 
-    CLIDataService createCliDataService() {
-        hubDataServicesFactory.createCLIDataService(120000L)
+    SignatureScannerService createSignatureScannerService() {
+        hubServicesFactory.createSignatureScannerService(120000L)
     }
 
-    private HubDataServicesFactory createHubDataServicesFactory(IntLogger slf4jIntLogger, HubServerConfig hubServerConfig) {
+    private HubServicesFactory createHubServicesFactory(IntLogger slf4jIntLogger, HubServerConfig hubServerConfig) {
         RestConnection restConnection = hubServerConfig.createCredentialsRestConnection(slf4jIntLogger)
 
-        new HubDataServicesFactory(restConnection)
+        new HubServicesFactory(restConnection)
     }
 
     private HubServerConfig createHubServerConfig(IntLogger slf4jIntLogger) {

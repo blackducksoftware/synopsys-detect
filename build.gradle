@@ -16,7 +16,9 @@ plugins {
     id 'org.springframework.boot' version '1.5.8.RELEASE'
     id 'maven-publish'
 }
-
+repositories {
+    mavenLocal()
+}
 version = '3.0.2-SNAPSHOT'
 
 apply plugin: 'com.blackducksoftware.integration.solution'

@@ -32,14 +32,14 @@ import com.blackducksoftware.integration.hub.cli.CLIDownloadUtility
 import com.blackducksoftware.integration.hub.cli.CLILocation
 import com.blackducksoftware.integration.hub.cli.OfflineCLILocation
 import com.blackducksoftware.integration.hub.cli.SimpleScanUtility
+import com.blackducksoftware.integration.hub.configuration.HubScanConfig
+import com.blackducksoftware.integration.hub.configuration.HubServerConfig
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
-import com.blackducksoftware.integration.hub.global.HubServerConfig
 import com.blackducksoftware.integration.hub.rest.RestConnection
 import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnectionBuilder
-import com.blackducksoftware.integration.hub.scan.HubScanConfig
 import com.blackducksoftware.integration.log.IntLogger
 import com.blackducksoftware.integration.log.SilentLogger
 import com.blackducksoftware.integration.log.Slf4jIntLogger

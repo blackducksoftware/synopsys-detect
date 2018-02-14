@@ -34,9 +34,9 @@ import com.blackducksoftware.integration.hub.api.enumeration.PolicySeverityType
 import com.blackducksoftware.integration.hub.api.generated.enumeration.PolicyStatusApprovalStatusType
 import com.blackducksoftware.integration.hub.api.generated.view.ProjectVersionView
 import com.blackducksoftware.integration.hub.api.generated.view.VersionBomPolicyStatusView
-import com.blackducksoftware.integration.hub.dataservice.PolicyStatusDataService
-import com.blackducksoftware.integration.hub.dataservice.policystatus.PolicyStatusDescription
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
+import com.blackducksoftware.integration.hub.service.PolicyStatusService
+import com.blackducksoftware.integration.hub.service.model.PolicyStatusDescription
 
 import groovy.transform.TypeChecked
 
@@ -56,8 +56,8 @@ class PolicyChecker {
      * all of its code locations, then all of their scan summaries, wait until
      * they are all complete, then get the policy status.
      */
-    public PolicyStatusDescription getPolicyStatus(PolicyStatusDataService policyStatusDataService, ProjectVersionView version) {
-        VersionBomPolicyStatusView versionBomPolicyStatusView = policyStatusDataService.getPolicyStatusForVersion(version)
+    public PolicyStatusDescription getPolicyStatus(PolicyStatusService policyStatusService, ProjectVersionView version) {
+        VersionBomPolicyStatusView versionBomPolicyStatusView = policyStatusService.getPolicyStatusForVersion(version)
         PolicyStatusDescription policyStatusDescription = new PolicyStatusDescription(versionBomPolicyStatusView)
 
         PolicyStatusApprovalStatusType statusEnum = PolicyStatusApprovalStatusType.NOT_IN_VIOLATION
