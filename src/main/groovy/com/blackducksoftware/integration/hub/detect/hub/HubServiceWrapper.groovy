@@ -42,7 +42,6 @@ import com.blackducksoftware.integration.hub.service.CodeLocationService
 import com.blackducksoftware.integration.hub.service.HubService
 import com.blackducksoftware.integration.hub.service.HubServicesFactory
 import com.blackducksoftware.integration.hub.service.PhoneHomeService
-import com.blackducksoftware.integration.hub.service.PolicyStatusService
 import com.blackducksoftware.integration.hub.service.ProjectService
 import com.blackducksoftware.integration.hub.service.ReportService
 import com.blackducksoftware.integration.hub.service.ScanStatusService
@@ -74,7 +73,7 @@ class HubServiceWrapper {
             throw new DetectUserFriendlyException("Not able to initialize Hub connection: ${e.message}", e, ExitCodeType.FAILURE_HUB_CONNECTIVITY)
         }
         HubService hubService = createHubService()
-        CurrentVersionView currentVersion = hubService.getResponseFromLinkResponse(ApiDiscovery.CURRENT_VERSION_LINK_RESPONSE)
+        CurrentVersionView currentVersion = hubService.getResponseFromPath(ApiDiscovery.CURRENT_VERSION_LINK_RESPONSE)
         logger.info(String.format("Successfully connected to Hub (version %s)!", currentVersion.version))
     }
 
@@ -128,10 +127,6 @@ class HubServiceWrapper {
 
     ScanStatusService createScanStatusService() {
         hubServicesFactory.createScanStatusService(detectConfiguration.getApiTimeout())
-    }
-
-    PolicyStatusService createPolicyStatusService() {
-        hubServicesFactory.createPolicyStatusService()
     }
 
     ReportService createReportService() {

@@ -45,7 +45,6 @@ import com.blackducksoftware.integration.hub.exception.DoesNotExistException
 import com.blackducksoftware.integration.hub.service.CodeLocationService
 import com.blackducksoftware.integration.hub.service.HubService
 import com.blackducksoftware.integration.hub.service.PhoneHomeService
-import com.blackducksoftware.integration.hub.service.PolicyStatusService
 import com.blackducksoftware.integration.hub.service.ProjectService
 import com.blackducksoftware.integration.hub.service.ReportService
 import com.blackducksoftware.integration.hub.service.ScanStatusService
@@ -108,11 +107,10 @@ class HubManager implements ExitCodeReporter {
                 CodeLocationService codeLocationService = hubServiceWrapper.createCodeLocationService()
                 ScanStatusService scanStatusService = hubServiceWrapper.createScanStatusService()
 
-                waitForBomUpdate(projectService, codeLocationService, scanStatusService, projectVersionView)
+                waitForBomUpdate(hubServiceWrapper.createHubService(), scanStatusService, projectVersionView)
 
                 if (detectConfiguration.getPolicyCheck()) {
-                    PolicyStatusService policyStatusService = hubServiceWrapper.createPolicyStatusService()
-                    PolicyStatusDescription policyStatusDescription = policyChecker.getPolicyStatus(policyStatusService, projectVersionView)
+                    PolicyStatusDescription policyStatusDescription = policyChecker.getPolicyStatus(projectService, projectVersionView)
                     logger.info(policyStatusDescription.policyStatusMessage)
                     if (policyChecker.policyViolated(policyStatusDescription)) {
                         exitCodeType = ExitCodeType.FAILURE_POLICY_VIOLATION;
@@ -153,13 +151,13 @@ class HubManager implements ExitCodeReporter {
         }
     }
 
-    public void waitForBomUpdate(ProjectService projectService, CodeLocationService codeLocationService, ScanStatusService scanStatusService, ProjectVersionView version) {
-        List<CodeLocationView> allCodeLocations = projectService.getResponsesFromLinkResponse(version, ProjectVersionView.CODELOCATIONS_LINK_RESPONSE, true)
+    public void waitForBomUpdate(HubService hubService, ScanStatusService scanStatusService, ProjectVersionView version) {
+        List<CodeLocationView> allCodeLocations = hubService.getAllResponses(version, ProjectVersionView.CODELOCATIONS_LINK_RESPONSE)
         List<ScanSummaryView> scanSummaryViews = []
         allCodeLocations.each {
-            String scansLink = codeLocationService.getFirstLinkSafely(it, CodeLocationView.SCANS_LINK)
+            String scansLink = hubService.getFirstLinkSafely(it, CodeLocationView.SCANS_LINK)
             if (StringUtils.isNotBlank(scansLink)) {
-                List<ScanSummaryView> codeLocationScanSummaryViews = codeLocationService.getResponses(scansLink, ScanSummaryView.class, true)
+                List<ScanSummaryView> codeLocationScanSummaryViews = hubService.getResponses(scansLink, ScanSummaryView.class, true)
                 scanSummaryViews.addAll(codeLocationScanSummaryViews)
             }
         }

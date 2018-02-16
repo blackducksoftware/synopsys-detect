@@ -111,7 +111,7 @@ class DockerInspectorManager {
                     UnauthenticatedRestConnection restConnection = restConnectionBuilder.build()
                     restConnection.alwaysTrustServerCertificate = detectConfiguration.hubTrustCertificate
 
-                    Request request = new Request(hubDockerInspectorShellScriptUrl);
+                    Request request = new Request.Builder().uri(hubDockerInspectorShellScriptUrl).build();
                     String shellScriptContents = null
                     Response response = null
                     try {
