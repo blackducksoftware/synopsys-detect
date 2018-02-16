@@ -44,7 +44,7 @@ $EnvHomeTempFolder = "$HOME\tmp"
 # heap size, you would set DETECT_JAVA_OPTS=-Xmx6G.
 #$DetectJavaOpts = Get-EnvironmentVariable -Key "DETECT_JAVA_OPTS" -DefaultValue "";
 
-$Version = "0.6.2"
+$Version = "0.6.3"
 
 $DetectReleaseBaseUrl = "https://test-repo.blackducksoftware.com/artifactory/bds-integrations-release/com/blackducksoftware/integration/hub-detect"
 $DetectSnapshotBaseUrl = "https://test-repo.blackducksoftware.com/artifactory/bds-integrations-snapshot/com/blackducksoftware/integration/hub-detect"
@@ -127,11 +127,11 @@ function Get-ProxyInfo () {
                 $ProxyInfoProperties.Credentials = $ProxyCredentials;
             }
 
-            Write-Host "Succesfully setup proxy."
+            Write-Host "Successfully setup proxy."
         }
 
     } catch [Exception] {
-        Write-Host ("An exception occured setting up the proxy, will continue but will not use a proxy.")
+        Write-Host ("An exception occurred setting up the proxy, will continue but will not use a proxy.")
         Write-Host ("  Reason: {0}" -f $_.Exception.GetType().FullName); 
         Write-Host ("  Reason: {0}" -f $_.Exception.Message); 
         Write-Host ("  Reason: {0}" -f $_.Exception.StackTrace); 
@@ -143,7 +143,27 @@ function Get-ProxyInfo () {
 }
 
 function Invoke-WebRequestWrapper($Url, $ProxyInfo, $DownloadLocation = $null) {
-    return Invoke-WebRequest $Url -UseBasicParsing -OutFile $DownloadLocation -Proxy $ProxyInfo.Uri -ProxyCredential $ProxyInfo.Credentials
+    $parameters = @{}
+    try {
+        if ($DownloadLocation -ne $null){
+            $parameters.Add("OutFile", $DownloadLocation);
+        }
+        if ($ProxyInfo -ne $null){
+            if ($ProxyInfo.Uri -ne $null){
+                $parameters.Add("Proxy", $ProxyInfo.Uri);
+            }
+            if ($ProxyInfo.Credentials -ne $null){
+                $parameters.Add("ProxyCredential",$ProxyInfo.Credentials);
+            }
+        }
+    }catch [Exception] {
+        Write-Host ("An exception occurred setting additional properties on web request.")
+        Write-Host ("  Reason: {0}" -f $_.Exception.GetType().FullName); 
+        Write-Host ("  Reason: {0}" -f $_.Exception.Message); 
+        Write-Host ("  Reason: {0}" -f $_.Exception.StackTrace);
+    }
+    
+    return Invoke-WebRequest $Url -UseBasicParsing @parameters
 }
 
 function Get-DetectSnapshotJar ($DetectFolder, $DetectVersion, $ProxyInfo) {
