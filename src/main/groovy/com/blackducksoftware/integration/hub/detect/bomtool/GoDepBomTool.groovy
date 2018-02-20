@@ -30,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
@@ -97,6 +98,9 @@ class GoDepBomTool extends BomTool {
         String goDepExecutable = findGoDepExecutable()
 
         DependencyGraph graph = goPackager.makeDependencyGraph(sourcePath, goDepExecutable)
+        if(graph == null) {
+            graph = new MutableMapDependencyGraph()
+        }
         ExternalId externalId = externalIdFactory.createPathExternalId(Forge.GOLANG, sourcePath)
         DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, externalId, graph)
 

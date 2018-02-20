@@ -73,6 +73,7 @@ class DepPackager {
 
         //by default, we won't run 'init' and 'ensure' anymore so just return an empty string
         if (!detectConfiguration.goRunDepInit) {
+            logger.info("Skipping Dep commands 'init' and 'ensure'")
             return ''
         }
 
