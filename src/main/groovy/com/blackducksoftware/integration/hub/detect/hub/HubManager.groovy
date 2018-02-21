@@ -42,6 +42,7 @@ import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.exception.DoesNotExistException
+import com.blackducksoftware.integration.hub.rest.exception.IntegrationRestException
 import com.blackducksoftware.integration.hub.service.CodeLocationService
 import com.blackducksoftware.integration.hub.service.HubService
 import com.blackducksoftware.integration.hub.service.PhoneHomeService
@@ -146,7 +147,7 @@ class HubManager implements ExitCodeReporter {
             }
         } catch (IllegalStateException e) {
             throw new DetectUserFriendlyException("Your Hub configuration is not valid: ${e.message}", e, ExitCodeType.FAILURE_HUB_CONNECTIVITY)
-        } catch (IntegrationException e) {
+        } catch (IntegrationRestException e) {
             throw new DetectUserFriendlyException(e.message, e, ExitCodeType.FAILURE_HUB_CONNECTIVITY)
         } catch (Exception e) {
             throw new DetectUserFriendlyException("There was a problem : ${e.message}", e, ExitCodeType.FAILURE_GENERAL_ERROR)
