@@ -47,8 +47,15 @@ public class DefaultInteractiveMode extends InteractiveMode {
             boolean skipConnectionTest = false;
             while (!connected && !skipConnectionTest) {
                 setPropertyFromQuestion("hubUrl", "What is the hub instance url?");
-                setPropertyFromQuestion("hubUsername", "What is the hub username?");
-                setPropertyFromSecretQuestion("hubPassword", "What is the hub password?");
+
+                print("You can now configure the hub with either an API token -OR- a username and password. The API token must already exist on the hub, but it is the preferred approach to configure your connection.");
+                final Boolean useApiToken = askYesOrNo("Would you like to use an existing API token?");
+                if (useApiToken) {
+                    setPropertyFromQuestion("hubApiToken", "What is the hub API token?");
+                } else {
+                    setPropertyFromQuestion("hubUsername", "What is the hub username?");
+                    setPropertyFromSecretQuestion("hubPassword", "What is the hub password?");
+                }
 
                 final Boolean useProxy = askYesOrNo("Would you like to configure a proxy for the hub?");
                 if (useProxy) {
