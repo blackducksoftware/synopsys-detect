@@ -45,6 +45,7 @@ import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver
 import com.blackducksoftware.integration.hub.proxy.ProxyInfo
 import com.blackducksoftware.integration.hub.proxy.ProxyInfoBuilder
+import com.blackducksoftware.integration.util.ExcludedIncludedFilter
 import com.google.gson.Gson
 
 import groovy.transform.TypeChecked
@@ -164,7 +165,9 @@ class DetectConfiguration {
             hubSignatureScannerParallelProcessors = Runtime.runtime.availableProcessors()
         }
 
-        if (dockerBomTool.isBomToolApplicable()) {
+        final ExcludedIncludedFilter toolFilter = new ExcludedIncludedFilter(excludedBomToolTypes, includedBomToolTypes)
+
+        if (dockerBomTool.isBomToolApplicable() && toolFilter.shouldInclude(dockerBomTool.getBomToolType().toString())) {
             configureForDocker()
         }
 
@@ -188,15 +191,15 @@ class DetectConfiguration {
             hubOfflineMode = true
         }
 
-        if (gradleBomTool.isBomToolApplicable()) {
+        if (gradleBomTool.isBomToolApplicable() && toolFilter.shouldInclude(gradleBomTool.getBomToolType().toString())) {
             gradleInspectorVersion = gradleBomTool.getInspectorVersion()
         }
 
-        if (nugetBomTool.isBomToolApplicable()) {
+        if (nugetBomTool.isBomToolApplicable() && toolFilter.shouldInclude(nugetBomTool.getBomToolType().toString())) {
             nugetInspectorPackageVersion = nugetBomTool.getInspectorVersion()
         }
 
-        if (dockerBomTool.isBomToolApplicable()) {
+        if (dockerBomTool.isBomToolApplicable() && toolFilter.shouldInclude(dockerBomTool.getBomToolType().toString())) {
             dockerInspectorVersion = dockerBomTool.getInspectorVersion()
         }
 
