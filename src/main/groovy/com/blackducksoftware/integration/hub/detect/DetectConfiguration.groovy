@@ -238,6 +238,8 @@ class DetectConfiguration {
         proxyInfoBuilder.setPort(hubProxyPort)
         proxyInfoBuilder.setUsername(hubProxyUsername)
         proxyInfoBuilder.setPassword(hubProxyPassword)
+        proxyInfoBuilder.setNtlmDomain(hubProxyNtlmDomain)
+        proxyInfoBuilder.setNtlmWorkstation(hubProxyNtlmWorkstation)
         ProxyInfo proxyInfo = ProxyInfo.NO_PROXY_INFO
         try {
             proxyInfo = proxyInfoBuilder.build()
@@ -363,6 +365,14 @@ class DetectConfiguration {
     @ValueDescription(description="Proxy password", group=DetectConfiguration.GROUP_HUB_CONFIGURATION)
     @Value('${blackduck.hub.proxy.password:}')
     String hubProxyPassword
+
+    @ValueDescription(description="Ntlm Proxy domain", group=DetectConfiguration.GROUP_HUB_CONFIGURATION)
+    @Value('${blackduck.hub.proxy.ntlm.domain:}')
+    String hubProxyNtlmDomain
+
+    @ValueDescription(description="Ntlm Proxy workstation", group=DetectConfiguration.GROUP_HUB_CONFIGURATION)
+    @Value('${blackduck.hub.proxy.ntlm.workstation:}')
+    String hubProxyNtlmWorkstation
 
     @ValueDescription(description="If true, automatically trust the certificate for the current run of Detect only", defaultValue="false", group=DetectConfiguration.GROUP_HUB_CONFIGURATION)
     @Value('${blackduck.hub.trust.cert:}')
