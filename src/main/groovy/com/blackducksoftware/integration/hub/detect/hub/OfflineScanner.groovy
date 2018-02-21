@@ -59,7 +59,7 @@ class OfflineScanner {
     @Autowired
     Gson gson
 
-    void offlineScan(DetectProject detectProject, HubScanConfig hubScanConfig, String hubSignatureScannerOfflineLocalPath) {
+    boolean offlineScan(DetectProject detectProject, HubScanConfig hubScanConfig, String hubSignatureScannerOfflineLocalPath) {
         def intLogger = new Slf4jIntLogger(logger)
 
         def hubServerConfig = new HubServerConfig(null, 0, (String)null, null, false)
@@ -84,11 +84,14 @@ class OfflineScanner {
 
         if (!cliInstalledOkay && hubSignatureScannerOfflineLocalPath) {
             logger.warn("The signature scanner is not correctly installed at ${hubSignatureScannerOfflineLocalPath}")
+            return false
         } else if (!cliInstalledOkay) {
             logger.warn("The signature scanner is not correctly installed at ${hubScanConfig.getToolsDir()}")
+            return false
         } else {
             simpleScanUtility.setupAndExecuteScan(cliLocation)
             logger.info("The scan dry run files can be found in : ${simpleScanUtility.getDataDirectory()}")
+            return true
         }
     }
 

@@ -189,9 +189,11 @@ class HubSignatureScanner implements SummaryResultReporter {
             }
 
             HubScanConfig hubScanConfig = hubScanConfigBuilder.build()
-            offlineScanner.offlineScan(detectProject, hubScanConfig, detectConfiguration.hubSignatureScannerOfflineLocalPath)
-            scanSummaryResults.put(canonicalPath, Result.SUCCESS);
-            logger.info("${canonicalPath} was successfully scanned by the BlackDuck CLI.")
+            boolean pathWasScanned = offlineScanner.offlineScan(detectProject, hubScanConfig, detectConfiguration.hubSignatureScannerOfflineLocalPath)
+            if(pathWasScanned) {
+                scanSummaryResults.put(canonicalPath, Result.SUCCESS);
+                logger.info("${canonicalPath} was successfully scanned by the BlackDuck CLI.")
+            }
         } catch (Exception e) {
             logger.error("${detectProject.projectName}/${detectProject.projectVersionName} - ${canonicalPath} was not scanned by the BlackDuck CLI: ${e.message}")
         }
