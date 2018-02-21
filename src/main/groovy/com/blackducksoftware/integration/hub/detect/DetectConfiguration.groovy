@@ -344,6 +344,10 @@ class DetectConfiguration {
     @Value('${blackduck.hub.password:}')
     String hubPassword
 
+    @ValueDescription(description="Hub API Token", group=DetectConfiguration.GROUP_HUB_CONFIGURATION)
+    @Value('${blackduck.hub.api.token:}')
+    String hubApiToken
+
     @ValueDescription(description="Proxy host", group=DetectConfiguration.GROUP_HUB_CONFIGURATION)
     @Value('${blackduck.hub.proxy.host:}')
     String hubProxyHost
@@ -740,6 +744,9 @@ class DetectConfiguration {
     }
     public String getHubPassword() {
         return hubPassword
+    }
+    public String getHubApiToken() {
+        return hubApiToken
     }
     public String getHubProxyHost() {
         return hubProxyHost

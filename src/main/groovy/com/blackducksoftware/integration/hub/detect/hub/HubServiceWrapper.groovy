@@ -92,7 +92,7 @@ class HubServiceWrapper {
             }
             HubServerConfig hubServerConfig = createHubServerConfig(slf4jIntLogger);
 
-            final RestConnection connection = hubServerConfig.createCredentialsRestConnection(slf4jIntLogger)
+            final RestConnection connection = hubServerConfig.createRestConnection(slf4jIntLogger)
             connection.connect()
             logger.info("Connection to the Hub was successful")
             return true;
@@ -138,7 +138,7 @@ class HubServiceWrapper {
     }
 
     private HubServicesFactory createHubServicesFactory(IntLogger slf4jIntLogger, HubServerConfig hubServerConfig) {
-        RestConnection restConnection = hubServerConfig.createCredentialsRestConnection(slf4jIntLogger)
+        RestConnection restConnection = hubServerConfig.createRestConnection(slf4jIntLogger)
 
         new HubServicesFactory(restConnection)
     }
@@ -149,6 +149,7 @@ class HubServiceWrapper {
         hubServerConfigBuilder.setTimeout(detectConfiguration.getHubTimeout())
         hubServerConfigBuilder.setUsername(detectConfiguration.getHubUsername())
         hubServerConfigBuilder.setPassword(detectConfiguration.getHubPassword())
+        hubServerConfigBuilder.setApiToken(detectConfiguration.getHubApiToken())
 
         hubServerConfigBuilder.setProxyHost(detectConfiguration.getHubProxyHost())
         hubServerConfigBuilder.setProxyPort(detectConfiguration.getHubProxyPort())
