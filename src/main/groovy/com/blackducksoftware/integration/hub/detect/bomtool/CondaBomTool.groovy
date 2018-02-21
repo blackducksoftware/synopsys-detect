@@ -52,7 +52,6 @@ class CondaBomTool extends BomTool {
     @Autowired
     ExternalIdFactory externalIdFactory
 
-
     private String condaExecutablePath
 
     @Override

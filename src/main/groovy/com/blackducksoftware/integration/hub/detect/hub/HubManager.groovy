@@ -150,7 +150,7 @@ class HubManager implements ExitCodeReporter {
         } catch (IntegrationRestException e) {
             throw new DetectUserFriendlyException(e.message, e, ExitCodeType.FAILURE_HUB_CONNECTIVITY)
         } catch (Exception e) {
-            throw new DetectUserFriendlyException("There was a problem : ${e.message}", e, ExitCodeType.FAILURE_GENERAL_ERROR)
+            throw new DetectUserFriendlyException("There was a problem: ${e.message}", e, ExitCodeType.FAILURE_GENERAL_ERROR)
         }
     }
 
