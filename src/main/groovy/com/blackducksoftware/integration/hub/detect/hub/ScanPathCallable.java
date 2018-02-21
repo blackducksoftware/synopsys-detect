@@ -71,6 +71,7 @@ public class ScanPathCallable implements Callable<ProjectVersionView> {
             logger.info(String.format("%s was successfully scanned by the BlackDuck CLI.", canonicalPath));
         } catch (final Exception e) {
             logger.error(String.format("%s/%s - %s was not scanned by the BlackDuck CLI: %s", projectRequest.name, projectRequest.versionRequest.versionName, canonicalPath, e.getMessage()));
+            return null;
         }
         return projectVersionWrapper.getProjectVersionView();
     }
