@@ -40,6 +40,8 @@ import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.DetectInfo
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationName
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationNameService
+import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter
+import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.summary.Result
 import com.blackducksoftware.integration.hub.detect.summary.ScanSummaryResult
@@ -52,7 +54,7 @@ import groovy.transform.TypeChecked
 
 @Component
 @TypeChecked
-class HubSignatureScanner implements SummaryResultReporter {
+class HubSignatureScanner implements SummaryResultReporter, ExitCodeReporter {
     private final Logger logger = LoggerFactory.getLogger(HubSignatureScanner.class)
 
     @Autowired
@@ -175,6 +177,16 @@ class HubSignatureScanner implements SummaryResultReporter {
             detectSummaryResults.add(new ScanSummaryResult(entry.getKey(), entry.getValue()));
         }
         return detectSummaryResults;
+    }
+
+    @Override
+    public ExitCodeType getExitCodeType() {
+        for (Map.Entry<String, Result> entry : scanSummaryResults.entrySet()) {
+            if (Result.FAILURE == entry.getValue()) {
+                return ExitCodeType.FAILURE_SCAN;
+            }
+        }
+        return ExitCodeType.SUCCESS;
     }
 
     private void scanPathOffline(String canonicalPath, DetectProject detectProject) {

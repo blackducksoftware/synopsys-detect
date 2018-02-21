@@ -146,8 +146,10 @@ class HubManager implements ExitCodeReporter {
             }
         } catch (IllegalStateException e) {
             throw new DetectUserFriendlyException("Your Hub configuration is not valid: ${e.message}", e, ExitCodeType.FAILURE_HUB_CONNECTIVITY)
+        } catch (IntegrationException e) {
+            throw new DetectUserFriendlyException(e.message, e, ExitCodeType.FAILURE_HUB_CONNECTIVITY)
         } catch (Exception e) {
-            throw new DetectUserFriendlyException("There was a problem communicating with the Hub: ${e.message}", e, ExitCodeType.FAILURE_HUB_CONNECTIVITY)
+            throw new DetectUserFriendlyException("There was a problem : ${e.message}", e, ExitCodeType.FAILURE_GENERAL_ERROR)
         }
     }
 
