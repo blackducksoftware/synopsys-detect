@@ -23,7 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.help.print
 
-import org.apache.commons.lang3.text.WordUtils
+import org.apache.commons.text.WordUtils
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
@@ -86,7 +86,11 @@ tbody tr:hover:not(.noBorder) {
     DetectOptionManager detectOptionManager
 
     public void writeHelpMessage(String fileName) {
-        def columnHeaders = ['Property Name', 'Default', 'Description']
+        def columnHeaders = [
+            'Property Name',
+            'Default',
+            'Description'
+        ]
 
         Document doc = Jsoup.parse('<html/>')
 

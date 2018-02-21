@@ -25,7 +25,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool.gradle
 
 import javax.xml.parsers.DocumentBuilder
 
-import org.apache.commons.lang3.StringEscapeUtils
+import org.apache.commons.text.StringEscapeUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired

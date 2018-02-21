@@ -26,6 +26,8 @@ package com.blackducksoftware.integration.hub.detect.exception;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 
 public class DetectUserFriendlyException extends Exception {
+    private static final long serialVersionUID = 1L;
+
     private final ExitCodeType exitCodeType;
 
     public DetectUserFriendlyException(final String message, final ExitCodeType exitCodeType) {
