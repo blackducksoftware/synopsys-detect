@@ -28,19 +28,18 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.HubSupportHelper
 import com.blackducksoftware.integration.hub.cli.CLIDownloadUtility
 import com.blackducksoftware.integration.hub.cli.CLILocation
 import com.blackducksoftware.integration.hub.cli.OfflineCLILocation
 import com.blackducksoftware.integration.hub.cli.SimpleScanUtility
+import com.blackducksoftware.integration.hub.configuration.HubScanConfig
+import com.blackducksoftware.integration.hub.configuration.HubServerConfig
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
-import com.blackducksoftware.integration.hub.global.HubServerConfig
 import com.blackducksoftware.integration.hub.rest.RestConnection
 import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnectionBuilder
-import com.blackducksoftware.integration.hub.scan.HubScanConfig
 import com.blackducksoftware.integration.log.IntLogger
 import com.blackducksoftware.integration.log.SilentLogger
 import com.blackducksoftware.integration.log.Slf4jIntLogger
@@ -65,16 +64,13 @@ class OfflineScanner {
 
         def hubServerConfig = new HubServerConfig(null, 0, (String)null, null, false)
 
-        def hubSupportHelper = new HubSupportHelper()
-        hubSupportHelper.setHub3_7Support()
-        hubSupportHelper.setHasBeenChecked(true)
 
         def ciEnvironmentVariables = new CIEnvironmentVariables()
         ciEnvironmentVariables.putAll(System.getenv())
 
         def silentLogger = new SilentLogger()
 
-        def simpleScanUtility = new SimpleScanUtility(intLogger, gson, hubServerConfig, hubSupportHelper, ciEnvironmentVariables, hubScanConfig, detectProject.projectName, detectProject.projectVersionName)
+        def simpleScanUtility = new SimpleScanUtility(intLogger, gson, hubServerConfig, ciEnvironmentVariables, hubScanConfig, detectProject.projectName, detectProject.projectVersionName)
         final CLILocation cliLocation = new CLILocation(silentLogger, hubScanConfig.getToolsDir())
         if (hubSignatureScannerOfflineLocalPath) {
             cliLocation = new OfflineCLILocation(silentLogger, new File(hubSignatureScannerOfflineLocalPath))

@@ -23,40 +23,35 @@
  */
 package com.blackducksoftware.integration.hub.detect.hub
 
+import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.exception.IntegrationException
-import com.blackducksoftware.integration.hub.api.bom.BomImportService
-import com.blackducksoftware.integration.hub.api.codelocation.CodeLocationService
-import com.blackducksoftware.integration.hub.api.project.ProjectService
-import com.blackducksoftware.integration.hub.api.project.version.ProjectVersionService
-import com.blackducksoftware.integration.hub.api.scan.ScanSummaryService
+import com.blackducksoftware.integration.hub.api.generated.component.ProjectRequest
+import com.blackducksoftware.integration.hub.api.generated.view.CodeLocationView
+import com.blackducksoftware.integration.hub.api.generated.view.ProjectVersionView
 import com.blackducksoftware.integration.hub.api.view.MetaHandler
-import com.blackducksoftware.integration.hub.dataservice.cli.CLIDataService
-import com.blackducksoftware.integration.hub.dataservice.phonehome.PhoneHomeDataService
-import com.blackducksoftware.integration.hub.dataservice.policystatus.PolicyStatusDataService
-import com.blackducksoftware.integration.hub.dataservice.policystatus.PolicyStatusDescription
-import com.blackducksoftware.integration.hub.dataservice.project.ProjectDataService
-import com.blackducksoftware.integration.hub.dataservice.project.ProjectVersionWrapper
-import com.blackducksoftware.integration.hub.dataservice.report.RiskReportDataService
-import com.blackducksoftware.integration.hub.dataservice.scan.ScanStatusDataService
+import com.blackducksoftware.integration.hub.api.view.ScanSummaryView
+import com.blackducksoftware.integration.hub.configuration.HubServerConfig
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.exception.DoesNotExistException
-import com.blackducksoftware.integration.hub.global.HubServerConfig
-import com.blackducksoftware.integration.hub.model.request.ProjectRequest
-import com.blackducksoftware.integration.hub.model.view.CodeLocationView
-import com.blackducksoftware.integration.hub.model.view.ProjectVersionView
-import com.blackducksoftware.integration.hub.model.view.ProjectView
-import com.blackducksoftware.integration.hub.model.view.ScanSummaryView
-import com.blackducksoftware.integration.hub.request.builder.ProjectRequestBuilder
+import com.blackducksoftware.integration.hub.service.CodeLocationService
 import com.blackducksoftware.integration.hub.service.HubService
+import com.blackducksoftware.integration.hub.service.PhoneHomeService
+import com.blackducksoftware.integration.hub.service.ProjectService
+import com.blackducksoftware.integration.hub.service.ReportService
+import com.blackducksoftware.integration.hub.service.ScanStatusService
+import com.blackducksoftware.integration.hub.service.SignatureScannerService
+import com.blackducksoftware.integration.hub.service.model.PolicyStatusDescription
+import com.blackducksoftware.integration.hub.service.model.ProjectRequestBuilder
+import com.blackducksoftware.integration.hub.service.model.ProjectVersionWrapper
 
 import groovy.transform.TypeChecked
 
@@ -84,21 +79,20 @@ class HubManager implements ExitCodeReporter {
 
     public ProjectVersionView updateHubProjectVersion(DetectProject detectProject, List<File> createdBdioFiles) {
         ProjectService projectService = hubServiceWrapper.createProjectService()
-        ProjectVersionService projectVersionService = hubServiceWrapper.createProjectVersionService()
-        ProjectVersionView projectVersionView = ensureProjectVersionExists(detectProject, projectService, projectVersionService)
+        ProjectVersionView projectVersionView = ensureProjectVersionExists(detectProject, projectService)
         if (createdBdioFiles) {
             HubServerConfig hubServerConfig = hubServiceWrapper.hubServerConfig
-            BomImportService bomImportService = hubServiceWrapper.createBomImportService()
-            PhoneHomeDataService phoneHomeDataService = hubServiceWrapper.createPhoneHomeDataService()
-            bdioUploader.uploadBdioFiles(hubServerConfig, bomImportService, phoneHomeDataService, detectProject, createdBdioFiles)
+            CodeLocationService codeLocationService = hubServiceWrapper.createCodeLocationService()
+            PhoneHomeService phoneHomeService = hubServiceWrapper.createPhoneHomeService()
+            bdioUploader.uploadBdioFiles(hubServerConfig, codeLocationService, phoneHomeService, detectProject, createdBdioFiles)
         } else {
             logger.debug('Did not create any bdio files.')
         }
 
         if (!detectConfiguration.getHubSignatureScannerDisabled()) {
             HubServerConfig hubServerConfig = hubServiceWrapper.hubServerConfig
-            CLIDataService cliDataService = hubServiceWrapper.createCliDataService()
-            ProjectVersionView scanProject = hubSignatureScanner.scanPaths(hubServerConfig, cliDataService, detectProject)
+            SignatureScannerService signatureScannerService = hubServiceWrapper.createSignatureScannerService()
+            ProjectVersionView scanProject = hubSignatureScanner.scanPaths(hubServerConfig, signatureScannerService, detectProject)
             if (!projectVersionView) {
                 projectVersionView = scanProject
             }
@@ -109,16 +103,14 @@ class HubManager implements ExitCodeReporter {
     public void performPostHubActions(DetectProject detectProject, ProjectVersionView projectVersionView) throws DetectUserFriendlyException {
         try {
             if (detectConfiguration.getPolicyCheck() || detectConfiguration.getRiskReportPdf() || detectConfiguration.getNoticesReport()) {
-                ProjectDataService projectDataService = hubServiceWrapper.createProjectDataService()
+                ProjectService projectService = hubServiceWrapper.createProjectService()
                 CodeLocationService codeLocationService = hubServiceWrapper.createCodeLocationService()
-                ScanSummaryService scanSummaryService = hubServiceWrapper.createScanSummaryService()
-                ScanStatusDataService scanStatusDataService = hubServiceWrapper.createScanStatusDataService()
+                ScanStatusService scanStatusService = hubServiceWrapper.createScanStatusService()
 
-                waitForBomUpdate(projectDataService, codeLocationService, scanSummaryService, scanStatusDataService, projectVersionView)
+                waitForBomUpdate(hubServiceWrapper.createHubService(), scanStatusService, projectVersionView)
 
                 if (detectConfiguration.getPolicyCheck()) {
-                    PolicyStatusDataService policyStatusDataService = hubServiceWrapper.createPolicyStatusDataService()
-                    PolicyStatusDescription policyStatusDescription = policyChecker.getPolicyStatus(policyStatusDataService, projectVersionView)
+                    PolicyStatusDescription policyStatusDescription = policyChecker.getPolicyStatus(projectService, projectVersionView)
                     logger.info(policyStatusDescription.policyStatusMessage)
                     if (policyChecker.policyViolated(policyStatusDescription)) {
                         exitCodeType = ExitCodeType.FAILURE_POLICY_VIOLATION;
@@ -126,16 +118,16 @@ class HubManager implements ExitCodeReporter {
                 }
 
                 if (detectConfiguration.getRiskReportPdf()) {
-                    RiskReportDataService riskReportDataService = hubServiceWrapper.createRiskReportDataService()
+                    ReportService reportService = hubServiceWrapper.createReportService()
                     logger.info("Creating risk report pdf")
-                    File pdfFile = riskReportDataService.createReportPdfFile(new File(detectConfiguration.riskReportPdfOutputDirectory), detectProject.projectName, detectProject.projectVersionName)
+                    File pdfFile = reportService.createReportPdfFile(new File(detectConfiguration.riskReportPdfOutputDirectory), detectProject.projectName, detectProject.projectVersionName)
                     logger.info("Created risk report pdf : ${pdfFile.getCanonicalPath()}")
                 }
 
                 if (detectConfiguration.getNoticesReport()) {
-                    RiskReportDataService riskReportDataService = hubServiceWrapper.createRiskReportDataService()
+                    ReportService reportService = hubServiceWrapper.createReportService()
                     logger.info("Creating notices report")
-                    File noticesFile = riskReportDataService.createNoticesReportFile(new File(detectConfiguration.noticesReportOutputDirectory), detectProject.projectName, detectProject.projectVersionName)
+                    File noticesFile = reportService.createNoticesReportFile(new File(detectConfiguration.noticesReportOutputDirectory), detectProject.projectName, detectProject.projectVersionName)
                     if (noticesFile != null) {
                         logger.info("Created notices report : ${noticesFile.getCanonicalPath()}")
                     }
@@ -144,9 +136,9 @@ class HubManager implements ExitCodeReporter {
 
             if (detectProject.getDetectCodeLocations() && !detectConfiguration.getHubSignatureScannerDisabled()) {
                 // only log BOM URL if we have updated it in some way
-                ProjectDataService projectDataService = hubServiceWrapper.createProjectDataService()
+                ProjectService projectService = hubServiceWrapper.createProjectService()
                 HubService hubService = hubServiceWrapper.createHubService()
-                ProjectVersionWrapper projectVersionWrapper = projectDataService.getProjectVersion(detectProject.getProjectName(), detectProject.getProjectVersionName())
+                ProjectVersionWrapper projectVersionWrapper = projectService.getProjectVersion(detectProject.getProjectName(), detectProject.getProjectVersionName())
                 String componentsLink = hubService.getFirstLinkSafely(projectVersionWrapper.getProjectVersionView(), MetaHandler.COMPONENTS_LINK)
                 logger.info("To see your results, follow the URL: ${componentsLink}")
             } else {
@@ -159,20 +151,22 @@ class HubManager implements ExitCodeReporter {
         }
     }
 
-    public void waitForBomUpdate(ProjectDataService projectDataService, CodeLocationService codeLocationService, ScanSummaryService scanSummaryService, ScanStatusDataService scanStatusDataService, ProjectVersionView version) {
-        List<CodeLocationView> allCodeLocations = codeLocationService.getAllCodeLocationsForProjectVersion(version)
+    public void waitForBomUpdate(HubService hubService, ScanStatusService scanStatusService, ProjectVersionView version) {
+        List<CodeLocationView> allCodeLocations = hubService.getAllResponses(version, ProjectVersionView.CODELOCATIONS_LINK_RESPONSE)
         List<ScanSummaryView> scanSummaryViews = []
         allCodeLocations.each {
-            String scansLink = codeLocationService.getFirstLinkSafely(it, MetaHandler.SCANS_LINK)
-            List<ScanSummaryView> codeLocationScanSummaryViews = scanSummaryService.getAllScanSummaryItems(scansLink)
-            scanSummaryViews.addAll(codeLocationScanSummaryViews)
+            String scansLink = hubService.getFirstLinkSafely(it, CodeLocationView.SCANS_LINK)
+            if (StringUtils.isNotBlank(scansLink)) {
+                List<ScanSummaryView> codeLocationScanSummaryViews = hubService.getResponses(scansLink, ScanSummaryView.class, true)
+                scanSummaryViews.addAll(codeLocationScanSummaryViews)
+            }
         }
         logger.info("Waiting for the BOM to be updated")
-        scanStatusDataService.assertScansFinished(scanSummaryViews)
+        scanStatusService.assertScansFinished(scanSummaryViews)
         logger.info("The BOM has been updated")
     }
 
-    public ProjectVersionView ensureProjectVersionExists(DetectProject detectProject, ProjectService projectService, ProjectVersionService projectVersionService) {
+    public ProjectVersionView ensureProjectVersionExists(DetectProject detectProject, ProjectService projectService) {
         ProjectRequestBuilder builder = new ProjectRequestBuilder()
         builder.setProjectName(detectProject.getProjectName())
         builder.setVersionName(detectProject.getProjectVersionName())
@@ -180,20 +174,9 @@ class HubManager implements ExitCodeReporter {
         builder.setPhase(detectConfiguration.getProjectVersionPhase())
         builder.setDistribution(detectConfiguration.getProjectVersionDistribution())
         ProjectRequest projectRequest = builder.build()
-        ProjectView project = null
-        try {
-            project = projectService.getProjectByName(projectRequest.getName())
-        } catch (final DoesNotExistException e) {
-            final String projectURL = projectService.createHubProject(projectRequest)
-            project = projectService.getView(projectURL, ProjectView.class)
-        }
-        ProjectVersionView projectVersionView = null
-        try {
-            projectVersionView = projectVersionService.getProjectVersion(project, projectRequest.getVersionRequest().getVersionName())
-        } catch (final DoesNotExistException e) {
-            final String versionURL = projectVersionService.createHubVersion(project, projectRequest.getVersionRequest())
-            projectVersionView = projectVersionService.getView(versionURL, ProjectVersionView.class)
-        }
+
+        ProjectVersionWrapper projectVersionWrapper = projectService.getProjectVersionAndCreateIfNeeded(projectRequest)
+        projectVersionWrapper.projectVersionView
     }
 
     public void manageExistingCodeLocations(List<String> codeLocationNames) {

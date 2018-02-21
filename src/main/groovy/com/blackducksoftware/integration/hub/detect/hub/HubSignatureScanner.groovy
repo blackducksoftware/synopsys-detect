@@ -31,8 +31,11 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.builder.HubScanConfigBuilder
-import com.blackducksoftware.integration.hub.dataservice.cli.CLIDataService
+import com.blackducksoftware.integration.hub.api.generated.component.ProjectRequest
+import com.blackducksoftware.integration.hub.api.generated.view.ProjectVersionView
+import com.blackducksoftware.integration.hub.configuration.HubScanConfig
+import com.blackducksoftware.integration.hub.configuration.HubScanConfigBuilder
+import com.blackducksoftware.integration.hub.configuration.HubServerConfig
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.DetectInfo
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationName
@@ -42,11 +45,8 @@ import com.blackducksoftware.integration.hub.detect.summary.Result
 import com.blackducksoftware.integration.hub.detect.summary.ScanSummaryResult
 import com.blackducksoftware.integration.hub.detect.summary.SummaryResultReporter
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
-import com.blackducksoftware.integration.hub.global.HubServerConfig
-import com.blackducksoftware.integration.hub.model.request.ProjectRequest
-import com.blackducksoftware.integration.hub.model.view.ProjectVersionView
-import com.blackducksoftware.integration.hub.request.builder.ProjectRequestBuilder
-import com.blackducksoftware.integration.hub.scan.HubScanConfig
+import com.blackducksoftware.integration.hub.service.SignatureScannerService
+import com.blackducksoftware.integration.hub.service.model.ProjectRequestBuilder
 
 import groovy.transform.TypeChecked
 
@@ -118,7 +118,7 @@ class HubSignatureScanner implements SummaryResultReporter {
         }
     }
 
-    public ProjectVersionView scanPaths(HubServerConfig hubServerConfig, CLIDataService cliDataService, DetectProject detectProject) {
+    public ProjectVersionView scanPaths(HubServerConfig hubServerConfig, SignatureScannerService signatureScannerService, DetectProject detectProject) {
         ProjectVersionView projectVersionView = null
 
         ProjectRequest projectRequest = createProjectRequest(detectProject)
@@ -135,7 +135,7 @@ class HubSignatureScanner implements SummaryResultReporter {
         canonicalPathsToScan.each { String canonicalPath ->
             HubScanConfigBuilder hubScanConfigBuilder = createScanConfigBuilder(detectProject, canonicalPath)
             HubScanConfig hubScanConfig = hubScanConfigBuilder.build()
-            ScanPathCallable scanPathCallable = new ScanPathCallable(cliDataService, hubServerConfig, hubScanConfig, projectRequest, canonicalPath, hubDetectVersion, scanSummaryResults);
+            ScanPathCallable scanPathCallable = new ScanPathCallable(signatureScannerService, hubServerConfig, hubScanConfig, projectRequest, canonicalPath, hubDetectVersion, scanSummaryResults);
             scanPathCallables.add(scanPathCallable)
         }
 

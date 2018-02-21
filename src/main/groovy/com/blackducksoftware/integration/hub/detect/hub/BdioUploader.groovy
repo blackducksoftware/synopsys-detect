@@ -29,14 +29,14 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.api.bom.BomImportService
-import com.blackducksoftware.integration.hub.dataservice.phonehome.PhoneHomeDataService
+import com.blackducksoftware.integration.hub.configuration.HubServerConfig
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.DetectInfo
 import com.blackducksoftware.integration.hub.detect.DetectPhoneHomeManager
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
-import com.blackducksoftware.integration.hub.global.HubServerConfig
+import com.blackducksoftware.integration.hub.service.CodeLocationService
+import com.blackducksoftware.integration.hub.service.PhoneHomeService
 import com.blackducksoftware.integration.phonehome.PhoneHomeRequestBody
 import com.blackducksoftware.integration.phonehome.PhoneHomeRequestBodyBuilder
 import com.blackducksoftware.integration.phonehome.enums.ThirdPartyName
@@ -57,10 +57,10 @@ class BdioUploader {
     @Autowired
     DetectPhoneHomeManager detectPhoneHomeManager
 
-    void uploadBdioFiles(HubServerConfig hubServerConfig, BomImportService bomImportService, PhoneHomeDataService phoneHomeDataService, DetectProject detectProject, List<File> createdBdioFiles) {
+    void uploadBdioFiles(HubServerConfig hubServerConfig, CodeLocationService codeLocationService, PhoneHomeService phoneHomeService, DetectProject detectProject, List<File> createdBdioFiles) {
         createdBdioFiles.each { file ->
             logger.info("uploading ${file.name} to ${detectConfiguration.getHubUrl()}")
-            bomImportService.importBomFile(file)
+            codeLocationService.importBomFile(file)
             if (detectConfiguration.getCleanupBdioFiles()) {
                 file.delete()
             }
@@ -70,12 +70,12 @@ class BdioUploader {
         Set<BomToolType> applicableBomTools = detectProject.getApplicableBomTools();
         String applicableBomToolsString = StringUtils.join(applicableBomTools, ", ");
 
-        PhoneHomeRequestBodyBuilder phoneHomeRequestBodyBuilder = phoneHomeDataService.createInitialPhoneHomeRequestBodyBuilder(ThirdPartyName.DETECT, hubDetectVersion, hubDetectVersion);
+        PhoneHomeRequestBodyBuilder phoneHomeRequestBodyBuilder = phoneHomeService.createInitialPhoneHomeRequestBodyBuilder(ThirdPartyName.DETECT, hubDetectVersion, hubDetectVersion);
         phoneHomeRequestBodyBuilder.addToMetaDataMap('bomToolTypes', applicableBomToolsString);
         addAdditionalPhoneHomeMetaData(phoneHomeRequestBodyBuilder);
 
         PhoneHomeRequestBody phoneHomeRequestBody = phoneHomeRequestBodyBuilder.build();
-        detectPhoneHomeManager.startPhoneHome(phoneHomeDataService, phoneHomeRequestBody);
+        detectPhoneHomeManager.startPhoneHome(phoneHomeService, phoneHomeRequestBody);
     }
 
     public void addAdditionalPhoneHomeMetaData(PhoneHomeRequestBodyBuilder phoneHomeRequestBodyBuilder) {
