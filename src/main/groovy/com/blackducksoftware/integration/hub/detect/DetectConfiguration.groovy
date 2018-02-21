@@ -770,6 +770,12 @@ class DetectConfiguration {
     public String getHubProxyPassword() {
         return hubProxyPassword
     }
+    public String getHubProxyNtlmDomain() {
+        return hubProxyNtlmDomain
+    }
+    public String getHubProxyNtlmWorkstation() {
+        return hubProxyNtlmWorkstation
+    }
     public boolean getHubOfflineMode() {
         return BooleanUtils.toBoolean(hubOfflineMode)
     }
