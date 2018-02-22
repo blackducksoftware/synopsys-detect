@@ -52,7 +52,6 @@ import com.blackducksoftware.integration.hub.detect.summary.BomToolSummaryResult
 import com.blackducksoftware.integration.hub.detect.summary.Result
 import com.blackducksoftware.integration.hub.detect.summary.SummaryResultReporter
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
-import com.blackducksoftware.integration.util.ExcludedIncludedFilter
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil
 import com.google.gson.Gson
 
@@ -96,30 +95,24 @@ class DetectProjectManager implements SummaryResultReporter, ExitCodeReporter {
     public DetectProject createDetectProject() {
         DetectProject detectProject = new DetectProject()
 
-        String excludedBomTools = detectConfiguration.excludedBomToolTypes
-        String includedBomTools = detectConfiguration.includedBomToolTypes
-        final ExcludedIncludedFilter toolFilter = new ExcludedIncludedFilter(excludedBomTools, includedBomTools)
-
         for (BomTool bomTool : bomTools) {
             final BomToolType bomToolType = bomTool.bomToolType
             final String bomToolTypeString = bomToolType.toString()
             try {
-                if (!toolFilter.shouldInclude(bomToolTypeString)) {
+                if (!detectConfiguration.shouldRun(bomTool)) {
                     logger.debug("Skipping ${bomToolTypeString}.")
                     continue
                 }
 
-                if (bomTool.isBomToolApplicable() && detectConfiguration.shouldRun(bomTool)) {
-                    logger.info("${bomToolTypeString} applies given the current configuration.")
-                    bomToolSummaryResults.put(bomTool.getBomToolType(), Result.FAILURE);
-                    foundAnyBomTools = true
-                    List<DetectCodeLocation> codeLocations = bomTool.extractDetectCodeLocations(detectProject)
-                    if (codeLocations != null && codeLocations.size() > 0) {
-                        bomToolSummaryResults.put(bomTool.getBomToolType(), Result.SUCCESS)
-                        detectProject.addAllDetectCodeLocations(codeLocations)
-                    } else {
-                        logger.error("Did not find any projects from ${bomToolTypeString} even though it applied.")
-                    }
+                logger.info("${bomToolTypeString} applies given the current configuration.")
+                bomToolSummaryResults.put(bomTool.getBomToolType(), Result.FAILURE);
+                foundAnyBomTools = true
+                List<DetectCodeLocation> codeLocations = bomTool.extractDetectCodeLocations(detectProject)
+                if (codeLocations != null && codeLocations.size() > 0) {
+                    bomToolSummaryResults.put(bomTool.getBomToolType(), Result.SUCCESS)
+                    detectProject.addAllDetectCodeLocations(codeLocations)
+                } else {
+                    logger.error("Did not find any projects from ${bomToolTypeString} even though it applied.")
                 }
             } catch (final Exception e) {
                 // any bom tool failure should not prevent other bom tools from running
