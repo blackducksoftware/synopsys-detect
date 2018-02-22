@@ -115,6 +115,7 @@ class DetectConfiguration {
     private boolean usingDefaultSourcePath
     private boolean usingDefaultOutputPath
 
+    ExcludedIncludedFilter bomToolFilter
     List<String> excludedScanPaths = []
 
     void init() {
@@ -165,9 +166,9 @@ class DetectConfiguration {
             hubSignatureScannerParallelProcessors = Runtime.runtime.availableProcessors()
         }
 
-        final ExcludedIncludedFilter toolFilter = new ExcludedIncludedFilter(excludedBomToolTypes, includedBomToolTypes)
+        bomToolFilter = new ExcludedIncludedFilter(getExcludedBomToolTypes(), getIncludedBomToolTypes())
 
-        if (dockerBomTool.isBomToolApplicable() && toolFilter.shouldInclude(dockerBomTool.getBomToolType().toString())) {
+        if (dockerBomTool.isBomToolApplicable() && bomToolFilter.shouldInclude(dockerBomTool.getBomToolType().toString())) {
             configureForDocker()
         }
 
@@ -191,15 +192,15 @@ class DetectConfiguration {
             hubOfflineMode = true
         }
 
-        if (gradleBomTool.isBomToolApplicable() && toolFilter.shouldInclude(gradleBomTool.getBomToolType().toString())) {
+        if (gradleBomTool.isBomToolApplicable() && bomToolFilter.shouldInclude(gradleBomTool.getBomToolType().toString())) {
             gradleInspectorVersion = gradleBomTool.getInspectorVersion()
         }
 
-        if (nugetBomTool.isBomToolApplicable() && toolFilter.shouldInclude(nugetBomTool.getBomToolType().toString())) {
+        if (nugetBomTool.isBomToolApplicable() && bomToolFilter.shouldInclude(nugetBomTool.getBomToolType().toString())) {
             nugetInspectorPackageVersion = nugetBomTool.getInspectorVersion()
         }
 
-        if (dockerBomTool.isBomToolApplicable() && toolFilter.shouldInclude(dockerBomTool.getBomToolType().toString())) {
+        if (dockerBomTool.isBomToolApplicable() && bomToolFilter.shouldInclude(dockerBomTool.getBomToolType().toString())) {
             dockerInspectorVersion = dockerBomTool.getInspectorVersion()
         }
 
@@ -207,13 +208,18 @@ class DetectConfiguration {
     }
 
     /**
-     * If the default source path is being used AND docker is configured, don't run unless the tool is docker
+     * If the default source path is being used AND docker is configured, don't run unless the tool is docker.
+     *
+     * If the default source path is not used OR docker is not configured, return true if and only if:
+     *   the bom tool has not been excluded or is expressly included
+     *   AND
+     *   the bom tool is actually applicable
      */
     public boolean shouldRun(BomTool bomTool) {
         if (usingDefaultSourcePath && dockerBomTool.isBomToolApplicable()) {
             return BomToolType.DOCKER == bomTool.bomToolType
         } else {
-            return true
+            return bomToolFilter.shouldInclude(bomTool.getBomToolType().toString()) && bomTool.isBomToolApplicable()
         }
     }
 
