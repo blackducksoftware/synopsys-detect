@@ -37,7 +37,6 @@ import com.blackducksoftware.integration.hub.configuration.HubScanConfig
 import com.blackducksoftware.integration.hub.configuration.HubScanConfigBuilder
 import com.blackducksoftware.integration.hub.configuration.HubServerConfig
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
-import com.blackducksoftware.integration.hub.detect.DetectInfo
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationName
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationNameService
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter
@@ -56,9 +55,6 @@ import groovy.transform.TypeChecked
 @TypeChecked
 class HubSignatureScanner implements SummaryResultReporter, ExitCodeReporter {
     private final Logger logger = LoggerFactory.getLogger(HubSignatureScanner.class)
-
-    @Autowired
-    DetectInfo detectInfo
 
     @Autowired
     DetectConfiguration detectConfiguration
@@ -124,7 +120,6 @@ class HubSignatureScanner implements SummaryResultReporter, ExitCodeReporter {
         ProjectVersionView projectVersionView = null
 
         ProjectRequest projectRequest = createProjectRequest(detectProject)
-        String hubDetectVersion = detectInfo.detectVersion
         Set<String> canonicalPathsToScan = registeredPaths
         if (detectProject.projectName && detectProject.projectVersionName && detectConfiguration.hubSignatureScannerPaths) {
             canonicalPathsToScan = new HashSet<>()
@@ -137,7 +132,7 @@ class HubSignatureScanner implements SummaryResultReporter, ExitCodeReporter {
         canonicalPathsToScan.each { String canonicalPath ->
             HubScanConfigBuilder hubScanConfigBuilder = createScanConfigBuilder(detectProject, canonicalPath)
             HubScanConfig hubScanConfig = hubScanConfigBuilder.build()
-            ScanPathCallable scanPathCallable = new ScanPathCallable(signatureScannerService, hubServerConfig, hubScanConfig, projectRequest, canonicalPath, hubDetectVersion, scanSummaryResults);
+            ScanPathCallable scanPathCallable = new ScanPathCallable(signatureScannerService, hubServerConfig, hubScanConfig, projectRequest, canonicalPath, scanSummaryResults);
             scanPathCallables.add(scanPathCallable)
         }
 
