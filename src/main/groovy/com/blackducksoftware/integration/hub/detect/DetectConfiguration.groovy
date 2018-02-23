@@ -55,13 +55,13 @@ import groovy.transform.TypeChecked
 class DetectConfiguration {
     private final Logger logger = LoggerFactory.getLogger(DetectConfiguration.class)
 
-    static final String DETECT_PROPERTY_PREFIX = 'detect.'
-    static final String DOCKER_PROPERTY_PREFIX = 'detect.docker.passthrough.'
-    static final String PHONE_HOME_PROPERTY_PREFIX = 'detect.phone.home.passthrough.'
-    static final String DOCKER_ENVIRONMENT_PREFIX = 'DETECT_DOCKER_PASSTHROUGH_'
-    static final String NUGET = 'nuget'
-    static final String GRADLE = 'gradle'
-    static final String DOCKER = 'docker'
+    public static final String DETECT_PROPERTY_PREFIX = 'detect.'
+    public static final String DOCKER_PROPERTY_PREFIX = 'detect.docker.passthrough.'
+    public static final String PHONE_HOME_PROPERTY_PREFIX = 'detect.phone.home.passthrough.'
+    public static final String DOCKER_ENVIRONMENT_PREFIX = 'DETECT_DOCKER_PASSTHROUGH_'
+    public static final String NUGET = 'nuget'
+    public static final String GRADLE = 'gradle'
+    public static final String DOCKER = 'docker'
 
     private static final String GROUP_HUB_CONFIGURATION = 'hub configuration'
     private static final String GROUP_GENERAL = 'general'
