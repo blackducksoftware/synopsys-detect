@@ -33,7 +33,6 @@ import com.blackducksoftware.integration.exception.IntegrationException
 import com.blackducksoftware.integration.hub.api.generated.component.ProjectRequest
 import com.blackducksoftware.integration.hub.api.generated.view.CodeLocationView
 import com.blackducksoftware.integration.hub.api.generated.view.ProjectVersionView
-import com.blackducksoftware.integration.hub.api.view.MetaHandler
 import com.blackducksoftware.integration.hub.api.view.ScanSummaryView
 import com.blackducksoftware.integration.hub.configuration.HubServerConfig
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
@@ -140,7 +139,7 @@ class HubManager implements ExitCodeReporter {
                 ProjectService projectService = hubServiceWrapper.createProjectService()
                 HubService hubService = hubServiceWrapper.createHubService()
                 ProjectVersionWrapper projectVersionWrapper = projectService.getProjectVersion(detectProject.getProjectName(), detectProject.getProjectVersionName())
-                String componentsLink = hubService.getFirstLinkSafely(projectVersionWrapper.getProjectVersionView(), MetaHandler.COMPONENTS_LINK)
+                String componentsLink = hubService.getFirstLinkSafely(projectVersionWrapper.getProjectVersionView(), ProjectVersionView.COMPONENTS_LINK)
                 logger.info("To see your results, follow the URL: ${componentsLink}")
             } else {
                 logger.debug('Found no code locations and did not run a scan.')

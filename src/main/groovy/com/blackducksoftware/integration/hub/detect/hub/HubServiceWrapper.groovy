@@ -73,7 +73,7 @@ class HubServiceWrapper {
             throw new DetectUserFriendlyException("Not able to initialize Hub connection: ${e.message}", e, ExitCodeType.FAILURE_HUB_CONNECTIVITY)
         }
         HubService hubService = createHubService()
-        CurrentVersionView currentVersion = hubService.getResponseFromPath(ApiDiscovery.CURRENT_VERSION_LINK_RESPONSE)
+        CurrentVersionView currentVersion = hubService.getResponse(ApiDiscovery.CURRENT_VERSION_LINK_RESPONSE)
         logger.info(String.format("Successfully connected to Hub (version %s)!", currentVersion.version))
     }
 
