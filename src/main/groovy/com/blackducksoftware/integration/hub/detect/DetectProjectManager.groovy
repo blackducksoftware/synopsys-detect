@@ -42,6 +42,7 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationName
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationNameService
+import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
@@ -134,9 +135,12 @@ class DetectProjectManager implements SummaryResultReporter, ExitCodeReporter {
         detectProject
     }
 
-    public List<File> createBdioFiles(DetectProject detectProject) {
+    public List<File> createBdioFiles(DetectProject detectProject) throws DetectUserFriendlyException {
         List<File> bdioFiles = []
         MutableDependencyGraph aggregateDependencyGraph = simpleBdioFactory.createMutableDependencyGraph()
+
+        Set<String> codeLocationNames = new HashSet<>()
+        Set<String> bdioFileNames = new HashSet<>()
 
         Map<ExternalId, BdioNode> nodeMap = new HashMap<ExternalId, BdioNode>()
         detectProject.detectCodeLocations.each {
@@ -155,11 +159,19 @@ class DetectProjectManager implements SummaryResultReporter, ExitCodeReporter {
 
                 CodeLocationName codeLocationName = codeLocationNameService.createBomToolName(it.sourcePath, projectName, projectVersionName, it.bomToolType, prefix, suffix)
                 String codeLocationNameString = codeLocationNameService.generateBomToolCurrent(codeLocationName)
+                if (codeLocationNames.contains(codeLocationNameString)) {
+                    throw new DetectUserFriendlyException("Found duplicate Code Locations with the name : ${codeLocationNameString}", ExitCodeType.FAILURE_GENERAL_ERROR)
+                } else {
+                    codeLocationNames.add(codeLocationNameString)
+                }
                 final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(codeLocationNameString, detectProject, it)
-
                 String finalSourcePathPiece = detectFileManager.extractFinalPieceFromPath(it.sourcePath);
                 final String filename = generateShortenedFilename(it.bomToolType, finalSourcePathPiece, it.getBomToolProjectExternalId());
-
+                if (bdioFileNames.contains(filename)) {
+                    throw new DetectUserFriendlyException("Found duplicate Bdio files with the name : ${filename}", ExitCodeType.FAILURE_GENERAL_ERROR)
+                } else {
+                    bdioFileNames.add(filename)
+                }
                 final File outputFile = new File(detectConfiguration.bdioOutputDirectoryPath, filename)
                 if (outputFile.exists()) {
                     outputFile.delete()
