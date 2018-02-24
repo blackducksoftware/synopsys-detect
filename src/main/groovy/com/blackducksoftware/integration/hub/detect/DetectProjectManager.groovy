@@ -160,13 +160,13 @@ class DetectProjectManager implements SummaryResultReporter, ExitCodeReporter {
                 CodeLocationName codeLocationName = codeLocationNameService.createBomToolName(it.sourcePath, projectName, projectVersionName, it.bomToolType, prefix, suffix)
                 String codeLocationNameString = codeLocationNameService.generateBomToolCurrent(codeLocationName)
                 if (!codeLocationNames.add(codeLocationNameString)) {
-                    throw new DetectUserFriendlyException("Found duplicate Code Locations with the name : ${codeLocationNameString}", ExitCodeType.FAILURE_GENERAL_ERROR)
+                    throw new DetectUserFriendlyException("Found duplicate Code Locations with the name: ${codeLocationNameString}", ExitCodeType.FAILURE_GENERAL_ERROR)
                 }
                 final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(codeLocationNameString, detectProject, it)
                 String finalSourcePathPiece = detectFileManager.extractFinalPieceFromPath(it.sourcePath);
                 final String filename = generateShortenedFilename(it.bomToolType, finalSourcePathPiece, it.getBomToolProjectExternalId());
                 if (!bdioFileNames.add(filename)) {
-                    throw new DetectUserFriendlyException("Found duplicate Bdio files with the name : ${filename}", ExitCodeType.FAILURE_GENERAL_ERROR)
+                    throw new DetectUserFriendlyException("Found duplicate Bdio files with the name: ${filename}", ExitCodeType.FAILURE_GENERAL_ERROR)
                 }
                 final File outputFile = new File(detectConfiguration.bdioOutputDirectoryPath, filename)
                 if (outputFile.exists()) {
