@@ -53,12 +53,11 @@ public class DetectPhoneHomeManager {
 
     public void startPhoneHome() {
         // hub-detect will attempt to phone home twice - once upon startup and
-        // once upon completion of uploading all bdio files.
+        // once upon getting all the bom tool metadata.
         //
-        // We would prefer to always wait for all the bdio metadata, but
-        // sometimes after the bdio uploads, there is not enough time to
-        // complete a phone home before hub-detect exits (if the scanner is
-        // disabled, for example).
+        // We would prefer to always wait for all the bom tool metadata, but
+        // sometimes there is not enough time to complete a phone home before
+        // hub-detect exits (if the scanner is disabled, for example).
         endPhoneHome();
 
         final PhoneHomeRequestBodyBuilder phoneHomeRequestBodyBuilder = createBuilder();
