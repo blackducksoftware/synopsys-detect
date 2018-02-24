@@ -30,8 +30,6 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.configuration.HubServerConfig
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
-import com.blackducksoftware.integration.hub.detect.DetectPhoneHomeManager
-import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.service.CodeLocationService
 
@@ -45,9 +43,6 @@ class BdioUploader {
     @Autowired
     DetectConfiguration detectConfiguration
 
-    @Autowired
-    DetectPhoneHomeManager detectPhoneHomeManager
-
     void uploadBdioFiles(HubServerConfig hubServerConfig, CodeLocationService codeLocationService, DetectProject detectProject, List<File> createdBdioFiles) {
         createdBdioFiles.each { file ->
             logger.info("uploading ${file.name} to ${detectConfiguration.getHubUrl()}")
@@ -56,8 +51,5 @@ class BdioUploader {
                 file.delete()
             }
         }
-
-        Set<BomToolType> applicableBomTools = detectProject.getApplicableBomTools();
-        detectPhoneHomeManager.startPhoneHome(applicableBomTools);
     }
 }
