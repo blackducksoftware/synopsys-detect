@@ -41,7 +41,6 @@ import com.blackducksoftware.integration.hub.detect.bomtool.NugetBomTool
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType
 import com.blackducksoftware.integration.hub.detect.help.ValueDescription
-import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver
 import com.blackducksoftware.integration.hub.proxy.ProxyInfo
 import com.blackducksoftware.integration.hub.proxy.ProxyInfoBuilder
@@ -207,20 +206,8 @@ class DetectConfiguration {
         configureForPhoneHome();
     }
 
-    /**
-     * If the default source path is being used AND docker is configured, don't run unless the tool is docker.
-     *
-     * If the default source path is not used OR docker is not configured, return true if and only if:
-     *   the bom tool has not been excluded or is expressly included
-     *   AND
-     *   the bom tool is actually applicable
-     */
     public boolean shouldRun(BomTool bomTool) {
-        if (usingDefaultSourcePath && dockerBomTool.isBomToolApplicable()) {
-            return BomToolType.DOCKER == bomTool.bomToolType
-        } else {
-            return bomToolFilter.shouldInclude(bomTool.getBomToolType().toString()) && bomTool.isBomToolApplicable()
-        }
+        return bomToolFilter.shouldInclude(bomTool.getBomToolType().toString()) && bomTool.isBomToolApplicable()
     }
 
     public String getDetectProperty(String key) {
