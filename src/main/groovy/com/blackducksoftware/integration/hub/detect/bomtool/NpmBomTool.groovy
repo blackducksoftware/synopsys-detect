@@ -32,6 +32,7 @@ import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmCliDependencyFinder
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmLockfilePackager
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
+import com.blackducksoftware.integration.hub.detect.hub.ScanPathSource
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
@@ -133,7 +134,7 @@ class NpmBomTool extends BomTool {
         }
 
         if (!codeLocations.empty) {
-            hubSignatureScanner.registerPathToScan(sourceDirectory, NODE_MODULES)
+            hubSignatureScanner.registerPathToScan(ScanPathSource.NPM_SOURCE, sourceDirectory, NODE_MODULES)
         }
 
         codeLocations

@@ -31,6 +31,7 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleInspectorManager
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleReportParser
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
+import com.blackducksoftware.integration.hub.detect.hub.ScanPathSource
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
@@ -83,7 +84,7 @@ class GradleBomTool extends BomTool {
         File[] additionalTargets = detectFileManager.findFilesToDepth(detectConfiguration.sourceDirectory, 'build', detectConfiguration.searchDepth)
         if (additionalTargets) {
             additionalTargets.each { File file ->
-                hubSignatureScanner.registerPathToScan(file)
+                hubSignatureScanner.registerPathToScan(ScanPathSource.GRADLE_SOURCE, file)
             }
         }
         codeLocations

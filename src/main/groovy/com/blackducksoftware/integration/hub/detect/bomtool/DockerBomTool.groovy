@@ -39,6 +39,7 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFac
 import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerInspectorManager
 import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerProperties
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
+import com.blackducksoftware.integration.hub.detect.hub.ScanPathSource
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
@@ -147,11 +148,11 @@ class DockerBomTool extends BomTool {
         executableRunner.execute(dockerExecutable)
 
         if (usingTarFile) {
-            hubSignatureScanner.registerPathToScan(new File(detectConfiguration.dockerTar))
+            hubSignatureScanner.registerPathToScan(ScanPathSource.DOCKER_SOURCE, new File(detectConfiguration.dockerTar))
         } else {
             File producedTarFile = detectFileManager.findFile(dockerBomToolDirectory, tarFilenamePattern)
             if (producedTarFile) {
-                hubSignatureScanner.registerPathToScan(producedTarFile)
+                hubSignatureScanner.registerPathToScan(ScanPathSource.DOCKER_SOURCE, producedTarFile)
             } else {
                 logMissingFile(dockerBomToolDirectory, tarFilenamePattern)
             }

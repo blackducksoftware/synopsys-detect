@@ -75,58 +75,29 @@ class HubSignatureScanner implements SummaryResultReporter, ExitCodeReporter {
     private Set<String> registeredPathsToExclude = []
     private Map<String, Result> scanSummaryResults = new HashMap<>();
 
-    public void registerPathToScan(File file, String... fileNamesToExclude) {
-        registerPathToScan(file, fileNamesToExclude, false);
-    }
+    public void registerPathToScan(ScanPathSource scanPathSource, File file, String... fileNamesToExclude) {
+        boolean shouldRegisterPath = shouldRegisterPathForScanning(file, scanPathSource);
 
-    /**
-     * When the scanner is NOT enabled, no paths will be registered to scan.
-     *
-     * If the scanner is enabled and there is at least one explicit path set, ONLY the explicit path(s) will be scanned.
-     *
-     * If the scanner is enabled, no explicit paths are set, and snippet mode is enabled, ONLY the source path will be scanned.
-     *
-     * In all other cases, the bom tools will, when they can, identify good candidates for registering scan targets.
-     */
-    public void registerPathToScan(File file, String... fileNamesToExclude, boolean forceRegistering) {
-        boolean scannerEnabled = !detectConfiguration.hubSignatureScannerDisabled;
-        boolean customPathOverride = detectConfiguration.hubSignatureScannerPaths.size() > 0;
-        boolean snippetModeEnabled = detectConfiguration.hubSignatureScannerSnippetMode;
-
-        if (scannerEnabled && (!customPathOverride && !snippetModeEnabled || forceRegistering)) {
-            String matchingExcludedPath = detectConfiguration.hubSignatureScannerPathsToExclude.find {
-                file.canonicalPath.startsWith(it)
-            }
-
-            if (matchingExcludedPath) {
-                logger.info("Not registering excluded path ${file.canonicalPath} to scan")
-            } else if (file.exists() && (file.isFile() || file.isDirectory())) {
-                logger.info("Registering path ${file.canonicalPath} to scan")
-                scanSummaryResults.put(file.getCanonicalPath(), Result.FAILURE);
-                registeredPaths.add(file.canonicalPath)
-                if (fileNamesToExclude) {
-                    for (String fileNameToExclude : fileNamesToExclude) {
-                        File fileToExclude = detectFileManager.findFile(file, fileNameToExclude)
-                        if (fileToExclude) {
-                            String pattern = fileToExclude.getCanonicalPath().replace(file.canonicalPath, '')
-                            if (pattern.contains('\\\\')) {
-                                pattern = pattern.replace('\\\\', '/')
-                            }
-                            if (pattern.contains('\\')) {
-                                pattern = pattern.replace('\\', '/')
-                            }
-                            pattern = pattern + '/'
-                            registeredPathsToExclude.add(pattern)
+        if (shouldRegisterPath) {
+            logger.info("Registering path ${file.canonicalPath} to scan")
+            scanSummaryResults.put(file.getCanonicalPath(), Result.FAILURE);
+            registeredPaths.add(file.canonicalPath)
+            if (fileNamesToExclude) {
+                for (String fileNameToExclude : fileNamesToExclude) {
+                    File fileToExclude = detectFileManager.findFile(file, fileNameToExclude)
+                    if (fileToExclude) {
+                        String pattern = fileToExclude.getCanonicalPath().replace(file.canonicalPath, '')
+                        if (pattern.contains('\\\\')) {
+                            pattern = pattern.replace('\\\\', '/')
                         }
+                        if (pattern.contains('\\')) {
+                            pattern = pattern.replace('\\', '/')
+                        }
+                        pattern = pattern + '/'
+                        registeredPathsToExclude.add(pattern)
                     }
                 }
-            } else {
-                logger.warn("Tried to register a scan for ${file.canonicalPath} but it doesn't appear to exist or it isn't a file or directory.")
             }
-        } else if (!scannerEnabled) {
-            logger.info("Not registering path ${file.canonicalPath}, scan is disabled");
-        } else if (customPathOverride) {
-            logger.info("Not scanning path ${file.canonicalPath}, scan paths provided");
         }
     }
 
@@ -198,6 +169,41 @@ class HubSignatureScanner implements SummaryResultReporter, ExitCodeReporter {
         return ExitCodeType.SUCCESS;
     }
 
+    private boolean shouldRegisterPathForScanning(File file, ScanPathSource scanPathSource) {
+        if (detectConfiguration.hubSignatureScannerDisabled) {
+            logger.info("Not scanning path ${file.canonicalPath}, the signature scanner is disabled.");
+            return false;
+        }
+
+        boolean customPathOverride = detectConfiguration.hubSignatureScannerPaths.size() > 0;
+        if (customPathOverride) {
+            logger.info("Not scanning path ${file.canonicalPath}, explicit scan paths were provided.");
+            return false;
+        }
+
+        String matchingExcludedPath = detectConfiguration.hubSignatureScannerPathsToExclude.find {
+            file.canonicalPath.startsWith(it)
+        }
+        if (matchingExcludedPath) {
+            logger.info("Not scanning path ${file.canonicalPath}, it is excluded.")
+            return false;
+        }
+
+        if (!file.exists() || (!file.isFile() && !file.isDirectory())) {
+            logger.warn("Not scanning path ${file.canonicalPath}, it doesn't appear to exist or it isn't a file or directory.")
+            return false;
+        }
+
+        boolean snippetModeEnabled = detectConfiguration.hubSignatureScannerSnippetMode;
+        String sourcePath = detectConfiguration.sourcePath
+        if (snippetModeEnabled && !(scanPathSource.equals(ScanPathSource.DOCKER_SOURCE) || scanPathSource.equals(ScanPathSource.SNIPPET_SOURCE))) {
+            logger.info("Not scanning path ${file.canonicalPath}, snippet mode is enabled and ${scanPathSource.source} paths should be scanned when ${sourcePath} is scanned.")
+            return false;
+        }
+
+        return true;
+    }
+
     private void scanPathOffline(String canonicalPath, DetectProject detectProject) {
         try {
             HubScanConfigBuilder hubScanConfigBuilder = createScanConfigBuilder(detectProject, canonicalPath)
@@ -211,7 +217,7 @@ class HubSignatureScanner implements SummaryResultReporter, ExitCodeReporter {
 
             HubScanConfig hubScanConfig = hubScanConfigBuilder.build()
             boolean pathWasScanned = offlineScanner.offlineScan(detectProject, hubScanConfig, detectConfiguration.hubSignatureScannerOfflineLocalPath)
-            if(pathWasScanned) {
+            if (pathWasScanned) {
                 scanSummaryResults.put(canonicalPath, Result.SUCCESS);
                 logger.info("${canonicalPath} was successfully scanned by the BlackDuck CLI.")
             }
