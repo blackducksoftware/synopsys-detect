@@ -95,6 +95,11 @@ function Get-ProxyInfo () {
     try {
 
         $ProxyHost = ${Env:blackduck.hub.proxy.host};
+        
+        if ([string]::IsNullOrEmpty($ProxyHost)){
+			$ProxyHost = ${BLACKDUCK_HUB_PROXY_HOST};
+		}
+        
         if ([string]::IsNullOrEmpty($ProxyHost)){
             Write-Host "Skipping proxy, no host found."
         }else{
@@ -103,6 +108,10 @@ function Get-ProxyInfo () {
             $ProxyUrlBuilder.Host = $ProxyHost
 
             $ProxyPort = ${Env:blackduck.hub.proxy.port};
+
+			if ([string]::IsNullOrEmpty($ProxyPort)){
+				$ProxyPort = ${Env:BLACKDUCK_HUB_PROXY_PORT};
+			}
 
             if ([string]::IsNullOrEmpty($ProxyPort)){
                 Write-Host "No proxy port found."
@@ -116,6 +125,14 @@ function Get-ProxyInfo () {
             #Handle credentials
             $ProxyUsername = ${Env:blackduck.hub.proxy.username};
             $ProxyPassword = ${Env:blackduck.hub.proxy.password};
+            
+            if ([string]::IsNullOrEmpty($ProxyUsername)){
+				$ProxyUsername = ${BLACKDUCK_HUB_PROXY_USERNAME};
+			}
+			
+			if ([string]::IsNullOrEmpty($ProxyPassword)){
+				$ProxyPassword = ${BLACKDUCK_HUB_PROXY_PASSWORD};
+			}
 
             if ([string]::IsNullOrEmpty($ProxyPassword) -or [string]::IsNullOrEmpty($ProxyUsername)){
                 Write-Host "No proxy credentials found."
