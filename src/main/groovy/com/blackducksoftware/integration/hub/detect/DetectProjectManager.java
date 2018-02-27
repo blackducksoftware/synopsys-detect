@@ -67,7 +67,6 @@ import com.blackducksoftware.integration.hub.detect.summary.Result;
 import com.blackducksoftware.integration.hub.detect.summary.SummaryResultReporter;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
-import com.google.gson.Gson;
 
 import groovy.transform.TypeChecked;
 
@@ -77,34 +76,31 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     private final Logger logger = LoggerFactory.getLogger(DetectProjectManager.class);
 
     @Autowired
-    DetectInfo detectInfo;
+    private DetectInfo detectInfo;
 
     @Autowired
-    DetectConfiguration detectConfiguration;
+    private DetectConfiguration detectConfiguration;
 
     @Autowired
-    SimpleBdioFactory simpleBdioFactory;
+    private SimpleBdioFactory simpleBdioFactory;
 
     @Autowired
-    Gson gson;
+    private List<BomTool> bomTools;
 
     @Autowired
-    List<BomTool> bomTools;
+    private HubSignatureScanner hubSignatureScanner;
 
     @Autowired
-    HubSignatureScanner hubSignatureScanner;
+    private IntegrationEscapeUtil integrationEscapeUtil;
 
     @Autowired
-    IntegrationEscapeUtil integrationEscapeUtil;
+    private DetectFileManager detectFileManager;
 
     @Autowired
-    DetectFileManager detectFileManager;
+    private CodeLocationNameService codeLocationNameService;
 
     @Autowired
-    CodeLocationNameService codeLocationNameService;
-
-    @Autowired
-    DetectPhoneHomeManager detectPhoneHomeManager;
+    private DetectPhoneHomeManager detectPhoneHomeManager;
 
     private boolean foundAnyBomTools;
 
