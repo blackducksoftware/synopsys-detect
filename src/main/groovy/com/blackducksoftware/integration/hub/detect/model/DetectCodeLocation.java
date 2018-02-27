@@ -94,31 +94,31 @@ public class DetectCodeLocation {
         this.additionalNamePieces = additionalNamePieces;
     }
 
-    BomToolType getBomToolType() {
+    public BomToolType getBomToolType() {
         return bomToolType;
     }
 
-    String getSourcePath() {
+    public String getSourcePath() {
         return sourcePath;
     }
 
-    String getBomToolProjectName() {
+    public String getBomToolProjectName() {
         return bomToolProjectName;
     }
 
-    String getBomToolProjectVersionName() {
+    public String getBomToolProjectVersionName() {
         return bomToolProjectVersionName;
     }
 
-    ExternalId getBomToolProjectExternalId() {
+    public ExternalId getBomToolProjectExternalId() {
         return bomToolProjectExternalId;
     }
 
-    DependencyGraph getDependencyGraph() {
+    public DependencyGraph getDependencyGraph() {
         return dependencyGraph;
     }
 
-    List<String> getAdditionalNamePieces() {
+    public List<String> getAdditionalNamePieces() {
         return additionalNamePieces;
     }
 }
