@@ -116,7 +116,7 @@ class PipInspectorTreeParser {
         }
 
         if (project && !(project.name.equals('') && project.version.equals('') && dependencyGraph && dependencyGraph.getRootDependencyExternalIds().empty)) {
-            new DetectCodeLocation(BomToolType.PIP, sourcePath, project.name, project.version, project.externalId, dependencyGraph)
+            new DetectCodeLocation.Builder(BomToolType.PIP, sourcePath, project.externalId, dependencyGraph).bomToolProjectName(project.name).bomToolProjectVersionName(project.version).build()
         } else {
             null
         }

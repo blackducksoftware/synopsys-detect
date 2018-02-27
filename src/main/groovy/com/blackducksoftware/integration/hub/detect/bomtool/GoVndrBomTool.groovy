@@ -70,7 +70,7 @@ class GoVndrBomTool extends BomTool {
         DependencyGraph dependencyGraph = vndrParser.parseVendorConf(venderConfContents)
         ExternalId externalId = externalIdFactory.createPathExternalId(Forge.GOLANG, sourcePath)
 
-        def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, externalId, dependencyGraph)
+        def codeLocation = new DetectCodeLocation.Builder(getBomToolType(), sourcePath, externalId, dependencyGraph).build()
         [codeLocation]
     }
 }

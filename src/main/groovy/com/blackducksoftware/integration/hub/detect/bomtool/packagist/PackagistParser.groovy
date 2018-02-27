@@ -96,7 +96,7 @@ class PackagistParser {
             projectExternalId = externalIdFactory.createNameVersionExternalId(Forge.PACKAGIST, projectName, projectVersion);
         }
 
-        new DetectCodeLocation(BomToolType.PACKAGIST, sourcePath, projectName, projectVersion, projectExternalId, graph)
+        new DetectCodeLocation.Builder(BomToolType.PACKAGIST, sourcePath, projectExternalId, graph).bomToolProjectName(projectName).bomToolProjectVersionName(projectVersion).build()
     }
 
     private void convertFromJsonToDependency(MutableDependencyGraph graph, Dependency parent, List<String> currentPackages, JsonArray jsonArray, Boolean root) {

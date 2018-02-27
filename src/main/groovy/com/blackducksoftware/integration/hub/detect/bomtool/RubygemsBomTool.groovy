@@ -71,7 +71,7 @@ class RubygemsBomTool extends BomTool {
         DependencyGraph dependencyGraph = rubygemsNodePackager.extractProjectDependencies(gemlockText)
         ExternalId externalId = externalIdFactory.createPathExternalId(Forge.RUBYGEMS, sourcePath)
 
-        def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, externalId, dependencyGraph)
+        def codeLocation = new DetectCodeLocation.Builder(getBomToolType(), sourcePath, externalId, dependencyGraph).build()
         [codeLocation]
     }
 }

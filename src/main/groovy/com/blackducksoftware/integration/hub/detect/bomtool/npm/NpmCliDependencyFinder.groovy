@@ -77,7 +77,7 @@ class NpmCliDependencyFinder {
 
         def externalId = externalIdFactory.createNameVersionExternalId(Forge.NPM, projectName, projectVersion)
 
-        new DetectCodeLocation(BomToolType.NPM, sourcePath, projectName, projectVersion, externalId, graph)
+        new DetectCodeLocation.Builder(BomToolType.NPM, sourcePath, externalId, graph).bomToolProjectName(projectName).bomToolProjectVersionName(projectVersion).build()
     }
 
     private void populateChildren(MutableDependencyGraph graph, Dependency parentDependency, JsonObject parentNodeChildren, Boolean root) {

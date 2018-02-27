@@ -63,7 +63,7 @@ class YarnBomTool extends BomTool {
         final List<String> yarnLockText = Files.readAllLines(yarnLockFile.toPath(), StandardCharsets.UTF_8)
         final DependencyGraph dependencyGraph = yarnPackager.parse(yarnLockText)
         final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.NPM, sourcePath)
-        final def detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, externalId, dependencyGraph)
+        final def detectCodeLocation = new DetectCodeLocation.Builder(getBomToolType(), sourcePath, externalId, dependencyGraph).build()
 
         return [detectCodeLocation]
     }

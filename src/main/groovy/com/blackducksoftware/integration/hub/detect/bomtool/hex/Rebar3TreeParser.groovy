@@ -107,7 +107,7 @@ class Rebar3TreeParser {
 
         final ExternalId id = externalIdFactory.createNameVersionExternalId(Forge.HEX, projectName, projectVersionName);
 
-        return new DetectCodeLocation(BomToolType.HEX, sourcePath, projectName, projectVersionName, id, graph);
+        return new DetectCodeLocation.Builder(BomToolType.HEX, sourcePath,id, graph).bomToolProjectName(projectName).bomToolProjectVersionName(projectVersionName).build();
     }
 
     private Dependency createDependencyFromLine(final String line) {
