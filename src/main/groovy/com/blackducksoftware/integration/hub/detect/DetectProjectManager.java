@@ -107,11 +107,11 @@ class DetectProjectManager implements SummaryResultReporter, ExitCodeReporter {
             final String bomToolTypeString = bomToolType.toString();
             try {
                 if (!detectConfiguration.shouldRun(bomTool)) {
-                    logger.debug("Skipping %s.", bomToolTypeString);
+                    logger.debug("Skipping {}.", bomToolTypeString);
                     continue;
                 }
 
-                logger.info("%s applies given the current configuration.", bomToolTypeString);
+                logger.info("{} applies given the current configuration.", bomToolTypeString);
                 bomToolSummaryResults.put(bomTool.getBomToolType(), Result.FAILURE);
                 foundAnyBomTools = true;
                 final List<DetectCodeLocation> codeLocations = bomTool.extractDetectCodeLocations(detectProject);
@@ -120,11 +120,11 @@ class DetectProjectManager implements SummaryResultReporter, ExitCodeReporter {
                     detectProject.addAllDetectCodeLocations(codeLocations);
                     applicableBomTools.add(bomToolType);
                 } else {
-                    logger.error("Did not find any projects from %s even though it applied.", bomToolTypeString);
+                    logger.error("Did not find any projects from {} even though it applied.", bomToolTypeString);
                 }
             } catch (final Exception e) {
                 // any bom tool failure should not prevent other bom tools from running
-                logger.error("%s threw an Exception: %s", bomToolTypeString, e.getMessage());
+                logger.error("{} threw an Exception: {}", bomToolTypeString, e.getMessage());
                 if (logger.isTraceEnabled()) {
                     e.printStackTrace();
                 }
@@ -140,10 +140,10 @@ class DetectProjectManager implements SummaryResultReporter, ExitCodeReporter {
         detectProject.setProjectVersionName(getProjectVersionName(detectProject.getProjectVersionName()));
 
         if (!foundAnyBomTools) {
-            logger.info("No package managers were detected - will register %s for signature scanning of %s/%s", detectConfiguration.getSourcePath(), detectProject.getProjectName(), detectProject.getProjectVersionName());
+            logger.info("No package managers were detected - will register {} for signature scanning of {}/{}", detectConfiguration.getSourcePath(), detectProject.getProjectName(), detectProject.getProjectVersionName());
             hubSignatureScanner.registerPathToScan(ScanPathSource.DETECT_SOURCE, detectConfiguration.getSourceDirectory());
         } else if (detectConfiguration.getHubSignatureScannerSnippetMode()) {
-            logger.info("Snippet mode is enabled - will register %s for signature scanning of %s/%s", detectConfiguration.getSourcePath(), detectProject.getProjectName(), detectProject.getProjectVersionName());
+            logger.info("Snippet mode is enabled - will register {} for signature scanning of {}/{}", detectConfiguration.getSourcePath(), detectProject.getProjectName(), detectProject.getProjectVersionName());
             hubSignatureScanner.registerPathToScan(ScanPathSource.SNIPPET_SOURCE, detectConfiguration.getSourceDirectory());
         }
 
@@ -162,7 +162,7 @@ class DetectProjectManager implements SummaryResultReporter, ExitCodeReporter {
                 aggregateDependencyGraph.addGraphAsChildrenToRoot(detectCodeLocation.getDependencyGraph());
             } else {
                 if (detectCodeLocation.getDependencyGraph() == null || detectCodeLocation.getDependencyGraph().getRootDependencies().size() <= 0) {
-                    logger.warn("Could not find any dependencies for code location %s", detectCodeLocation.getSourcePath());
+                    logger.warn("Could not find any dependencies for code location {}", detectCodeLocation.getSourcePath());
                 }
 
                 final String projectName = detectProject.getProjectName();
@@ -174,13 +174,13 @@ class DetectProjectManager implements SummaryResultReporter, ExitCodeReporter {
                 final CodeLocationName codeLocationName = codeLocationNameService.createBomToolName(detectCodeLocation.getSourcePath(), projectName, projectVersionName, detectCodeLocation.getBomToolType(), prefix, suffix);
                 final String codeLocationNameString = codeLocationNameService.generateBomToolCurrent(codeLocationName);
                 if (!codeLocationNames.add(codeLocationNameString)) {
-                    throw new DetectUserFriendlyException(String.format("Found duplicate Code Locations with the name: %s", codeLocationNameString), ExitCodeType.FAILURE_GENERAL_ERROR);
+                    throw new DetectUserFriendlyException(String.format("Found duplicate Code Locations with the name: {}", codeLocationNameString), ExitCodeType.FAILURE_GENERAL_ERROR);
                 }
                 final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(codeLocationNameString, detectProject, detectCodeLocation);
                 final String finalSourcePathPiece = detectFileManager.extractFinalPieceFromPath(detectCodeLocation.getSourcePath());
                 final String filename = generateShortenedFilename(detectCodeLocation.getBomToolType(), finalSourcePathPiece, detectCodeLocation.getBomToolProjectExternalId());
                 if (!bdioFileNames.add(filename)) {
-                    throw new DetectUserFriendlyException(String.format("Found duplicate Bdio files with the name: %s", filename), ExitCodeType.FAILURE_GENERAL_ERROR);
+                    throw new DetectUserFriendlyException(String.format("Found duplicate Bdio files with the name: {}", filename), ExitCodeType.FAILURE_GENERAL_ERROR);
                 }
                 final File outputFile = new File(detectConfiguration.getBdioOutputDirectoryPath(), filename);
                 if (outputFile.exists()) {
@@ -193,7 +193,7 @@ class DetectProjectManager implements SummaryResultReporter, ExitCodeReporter {
 
         if (StringUtils.isNotBlank(detectConfiguration.getAggregateBomName())) {
             final SimpleBdioDocument aggregateBdioDocument = createAggregateSimpleBdioDocument(detectProject, aggregateDependencyGraph);
-            final String filename = String.format("%s.jsonld", integrationEscapeUtil.escapeForUri(detectConfiguration.getAggregateBomName()));
+            final String filename = String.format("{}.jsonld", integrationEscapeUtil.escapeForUri(detectConfiguration.getAggregateBomName()));
             final File aggregateBdioFile = new File(detectConfiguration.getOutputDirectory(), filename);
             if (aggregateBdioFile.exists()) {
                 aggregateBdioFile.delete();
@@ -207,7 +207,7 @@ class DetectProjectManager implements SummaryResultReporter, ExitCodeReporter {
     private void writeBdioFile(final File outputFile, final SimpleBdioDocument simpleBdioDocument) throws DetectUserFriendlyException {
         try {
             simpleBdioFactory.writeSimpleBdioDocumentToFile(outputFile, simpleBdioDocument);
-            logger.info("BDIO Generated: %s", outputFile.getAbsolutePath());
+            logger.info("BDIO Generated: {}", outputFile.getAbsolutePath());
         } catch (final IOException e) {
             throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_GENERAL_ERROR);
         }
