@@ -44,4 +44,5 @@ public enum BomToolType {
     RUBYGEMS,
     SBT,
     YARN;
+
 }

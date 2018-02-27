@@ -90,12 +90,16 @@ class DetectProjectManager implements SummaryResultReporter, ExitCodeReporter {
     @Autowired
     CodeLocationNameService codeLocationNameService
 
+    @Autowired
+    DetectPhoneHomeManager detectPhoneHomeManager
+
     private boolean foundAnyBomTools
     private Map<BomToolType, Result> bomToolSummaryResults = new HashMap<>();
 
     public DetectProject createDetectProject() {
         DetectProject detectProject = new DetectProject()
 
+        EnumSet<BomToolType> applicableBomTools = EnumSet.noneOf(BomToolType.class);
         for (BomTool bomTool : bomTools) {
             final BomToolType bomToolType = bomTool.bomToolType
             final String bomToolTypeString = bomToolType.toString()
@@ -112,6 +116,7 @@ class DetectProjectManager implements SummaryResultReporter, ExitCodeReporter {
                 if (codeLocations != null && codeLocations.size() > 0) {
                     bomToolSummaryResults.put(bomTool.getBomToolType(), Result.SUCCESS)
                     detectProject.addAllDetectCodeLocations(codeLocations)
+                    applicableBomTools.add(bomToolType);
                 } else {
                     logger.error("Did not find any projects from ${bomToolTypeString} even though it applied.")
                 }
@@ -123,7 +128,12 @@ class DetectProjectManager implements SummaryResultReporter, ExitCodeReporter {
                 }
             }
         }
-        //ensure that the project name is set, use some reasonable defaults
+
+        // we've gone through all applicable bom tools so we now have the
+        // complete metadata to phone home
+        detectPhoneHomeManager.startPhoneHome(applicableBomTools);
+
+        // ensure that the project name is set, use some reasonable defaults
         detectProject.setProjectName(getProjectName(detectProject.projectName))
         detectProject.setProjectVersionName(getProjectVersionName(detectProject.projectVersionName))
 
@@ -160,13 +170,13 @@ class DetectProjectManager implements SummaryResultReporter, ExitCodeReporter {
                 CodeLocationName codeLocationName = codeLocationNameService.createBomToolName(it.sourcePath, projectName, projectVersionName, it.bomToolType, prefix, suffix)
                 String codeLocationNameString = codeLocationNameService.generateBomToolCurrent(codeLocationName)
                 if (!codeLocationNames.add(codeLocationNameString)) {
-                    throw new DetectUserFriendlyException("Found duplicate Code Locations with the name : ${codeLocationNameString}", ExitCodeType.FAILURE_GENERAL_ERROR)
+                    throw new DetectUserFriendlyException("Found duplicate Code Locations with the name: ${codeLocationNameString}", ExitCodeType.FAILURE_GENERAL_ERROR)
                 }
                 final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(codeLocationNameString, detectProject, it)
                 String finalSourcePathPiece = detectFileManager.extractFinalPieceFromPath(it.sourcePath);
                 final String filename = generateShortenedFilename(it.bomToolType, finalSourcePathPiece, it.getBomToolProjectExternalId());
                 if (!bdioFileNames.add(filename)) {
-                    throw new DetectUserFriendlyException("Found duplicate Bdio files with the name : ${filename}", ExitCodeType.FAILURE_GENERAL_ERROR)
+                    throw new DetectUserFriendlyException("Found duplicate Bdio files with the name: ${filename}", ExitCodeType.FAILURE_GENERAL_ERROR)
                 }
                 final File outputFile = new File(detectConfiguration.bdioOutputDirectoryPath, filename)
                 if (outputFile.exists()) {

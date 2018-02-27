@@ -72,14 +72,6 @@ class DetectProject {
         detectCodeLocations.add(detectCodeLocation)
     }
 
-    public Set<BomToolType> getApplicableBomTools() {
-        Set<BomToolType> applicableBomTools = new HashSet<>();
-        for (DetectCodeLocation detectCodeLocation : detectCodeLocations) {
-            applicableBomTools.add(detectCodeLocation.getBomToolType());
-        }
-        return applicableBomTools;
-    }
-
     public List<DetectCodeLocation> getDetectCodeLocations() {
         detectCodeLocations
     }

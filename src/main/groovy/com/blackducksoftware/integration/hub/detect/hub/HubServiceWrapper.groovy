@@ -35,6 +35,7 @@ import com.blackducksoftware.integration.hub.api.generated.response.CurrentVersi
 import com.blackducksoftware.integration.hub.configuration.HubServerConfig
 import com.blackducksoftware.integration.hub.configuration.HubServerConfigBuilder
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
+import com.blackducksoftware.integration.hub.detect.DetectPhoneHomeManager
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType
 import com.blackducksoftware.integration.hub.rest.RestConnection
@@ -60,6 +61,9 @@ class HubServiceWrapper {
     @Autowired
     DetectConfiguration detectConfiguration
 
+    @Autowired
+    DetectPhoneHomeManager detectPhoneHomeManager
+
     Slf4jIntLogger slf4jIntLogger
     HubServerConfig hubServerConfig
     HubServicesFactory hubServicesFactory
@@ -75,6 +79,8 @@ class HubServiceWrapper {
         HubService hubService = createHubService()
         CurrentVersionView currentVersion = hubService.getResponse(ApiDiscovery.CURRENT_VERSION_LINK_RESPONSE)
         logger.info(String.format("Successfully connected to Hub (version %s)!", currentVersion.version))
+        detectPhoneHomeManager.init(createPhoneHomeService());
+        detectPhoneHomeManager.startPhoneHome();
     }
 
     public boolean testHubConnection() {
@@ -119,7 +125,6 @@ class HubServiceWrapper {
     PhoneHomeService createPhoneHomeService() {
         hubServicesFactory.createPhoneHomeService()
     }
-
 
     CodeLocationService createCodeLocationService() {
         hubServicesFactory.createCodeLocationService()

@@ -44,7 +44,6 @@ import com.blackducksoftware.integration.hub.exception.DoesNotExistException
 import com.blackducksoftware.integration.hub.rest.exception.IntegrationRestException
 import com.blackducksoftware.integration.hub.service.CodeLocationService
 import com.blackducksoftware.integration.hub.service.HubService
-import com.blackducksoftware.integration.hub.service.PhoneHomeService
 import com.blackducksoftware.integration.hub.service.ProjectService
 import com.blackducksoftware.integration.hub.service.ReportService
 import com.blackducksoftware.integration.hub.service.ScanStatusService
@@ -83,8 +82,7 @@ class HubManager implements ExitCodeReporter {
         if (createdBdioFiles) {
             HubServerConfig hubServerConfig = hubServiceWrapper.hubServerConfig
             CodeLocationService codeLocationService = hubServiceWrapper.createCodeLocationService()
-            PhoneHomeService phoneHomeService = hubServiceWrapper.createPhoneHomeService()
-            bdioUploader.uploadBdioFiles(hubServerConfig, codeLocationService, phoneHomeService, detectProject, createdBdioFiles)
+            bdioUploader.uploadBdioFiles(hubServerConfig, codeLocationService, detectProject, createdBdioFiles)
         } else {
             logger.debug('Did not create any bdio files.')
         }
