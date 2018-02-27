@@ -30,7 +30,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 @Component
-// used in 3.1.0
+// used in 2.0.0, updated in 3.1.0
 public class CodeLocationNameProvider3 extends CodeLocationNameProvider {
     @Override
     public String generateBomToolName(final CodeLocationName codeLocationName) {
