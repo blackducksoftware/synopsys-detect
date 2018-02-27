@@ -49,13 +49,14 @@ public class CodeLocationNameService {
     @Autowired
     private CodeLocationNameProvider3 codeLocationNameProvider3;
 
-    public CodeLocationName createBomToolName(final String sourcePath, final String projectName, final String projectVersionName, final BomToolType bomToolType, final String prefix, final String suffix) {
-        final CodeLocationName codeLocationName = new CodeLocationName(projectName, projectVersionName, bomToolType, sourcePath, null, prefix, suffix, CodeLocationType.BOM);
+    public CodeLocationName createBomToolName(final String sourcePath, final String projectName, final String projectVersionName, final BomToolType bomToolType, final String prefix, final String suffix,
+            final List<String> additionalNamePieces) {
+        final CodeLocationName codeLocationName = new CodeLocationName(projectName, projectVersionName, bomToolType, sourcePath, null, prefix, suffix, additionalNamePieces, CodeLocationType.BOM);
         return codeLocationName;
     }
 
     public CodeLocationName createScanName(final String sourcePath, final String scanTargetPath, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
-        final CodeLocationName codeLocationName = new CodeLocationName(projectName, projectVersionName, null, sourcePath, scanTargetPath, prefix, suffix, CodeLocationType.SCAN);
+        final CodeLocationName codeLocationName = new CodeLocationName(projectName, projectVersionName, null, sourcePath, scanTargetPath, prefix, suffix, null, CodeLocationType.SCAN);
         return codeLocationName;
     }
 
@@ -64,6 +65,7 @@ public class CodeLocationNameService {
         final List<String> possiblePreviousCodeLocations = new ArrayList<>();
         possiblePreviousCodeLocations.add(codeLocationNameProvider1.generateBomToolName(codeLocationName));
         possiblePreviousCodeLocations.add(codeLocationNameProvider2.generateBomToolName(codeLocationName));
+        possiblePreviousCodeLocations.add(codeLocationNameProvider3.generateBomToolName(codeLocationName));
         hubManager.manageExistingCodeLocations(possiblePreviousCodeLocations);
 
         return codeLocationNameProvider3.generateBomToolName(codeLocationName);
@@ -74,6 +76,7 @@ public class CodeLocationNameService {
         final List<String> possiblePreviousCodeLocations = new ArrayList<>();
         possiblePreviousCodeLocations.add(codeLocationNameProvider1.generateScanName(codeLocationName));
         possiblePreviousCodeLocations.add(codeLocationNameProvider2.generateScanName(codeLocationName));
+        possiblePreviousCodeLocations.add(codeLocationNameProvider3.generateScanName(codeLocationName));
         hubManager.manageExistingCodeLocations(possiblePreviousCodeLocations);
 
         return codeLocationNameProvider3.generateScanName(codeLocationName);

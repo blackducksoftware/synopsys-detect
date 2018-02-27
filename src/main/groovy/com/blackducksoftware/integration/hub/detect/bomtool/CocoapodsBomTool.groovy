@@ -66,7 +66,7 @@ class CocoapodsBomTool extends BomTool {
         DependencyGraph dependencyGraph = cocoapodsPackager.extractDependencyGraph(podLockText)
         ExternalId externalId = externalIdFactory.createPathExternalId(Forge.COCOAPODS, sourcePath)
 
-        def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, externalId, dependencyGraph)
+        def codeLocation = new DetectCodeLocation.Builder(getBomToolType(), sourcePath, externalId, dependencyGraph).build()
         [codeLocation]
     }
 }

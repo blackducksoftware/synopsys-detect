@@ -108,7 +108,7 @@ class NugetInspectorPackager {
                 if (!projectVersionName) {
                     projectVersionName = container.version
                 }
-                new DetectCodeLocation(BomToolType.NUGET, sourcePath, projectName, projectVersionName, externalIdFactory.createNameVersionExternalId(Forge.NUGET, projectName, projectVersionName), children)
+                new DetectCodeLocation.Builder(BomToolType.NUGET, sourcePath, externalIdFactory.createNameVersionExternalId(Forge.NUGET, projectName, projectVersionName), children).bomToolProjectName(projectName).bomToolProjectVersionName(projectVersionName).build()
             }
             return codeLocations
         } else if (NugetContainerType.PROJECT == nugetContainer.type) {
@@ -120,7 +120,7 @@ class NugetInspectorPackager {
             def children = builder.createDependencyGraph(nugetContainer.dependencies)
 
             return [
-                new DetectCodeLocation(BomToolType.NUGET, sourcePath, projectName, projectVersionName, externalIdFactory.createNameVersionExternalId(Forge.NUGET, projectName, projectVersionName), children)
+                new DetectCodeLocation.Builder(BomToolType.NUGET, sourcePath, externalIdFactory.createNameVersionExternalId(Forge.NUGET, projectName, projectVersionName), children).bomToolProjectName(projectName).bomToolProjectVersionName(projectVersionName).build()
             ]
         }
     }

@@ -86,7 +86,7 @@ class CpanBomTool extends BomTool {
 
         DependencyGraph dependencyGraph = cpanPackager.makeDependencyGraph(listText, showdeps)
         ExternalId externalId = externalIdFactory.createPathExternalId(Forge.CPAN, detectConfiguration.sourcePath)
-        def detectCodeLocation = new DetectCodeLocation(BomToolType.CPAN, detectConfiguration.sourcePath, externalId, dependencyGraph)
+        def detectCodeLocation = new DetectCodeLocation.Builder(BomToolType.CPAN, detectConfiguration.sourcePath, externalId, dependencyGraph).build()
 
         [detectCodeLocation]
     }

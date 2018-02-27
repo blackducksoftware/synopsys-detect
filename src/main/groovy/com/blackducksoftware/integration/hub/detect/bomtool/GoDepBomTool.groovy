@@ -102,7 +102,7 @@ class GoDepBomTool extends BomTool {
             graph = new MutableMapDependencyGraph()
         }
         ExternalId externalId = externalIdFactory.createPathExternalId(Forge.GOLANG, sourcePath)
-        DetectCodeLocation detectCodeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, externalId, graph)
+        DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(getBomToolType(), sourcePath, externalId, graph).build()
 
         [detectCodeLocation]
     }

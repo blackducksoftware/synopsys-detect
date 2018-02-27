@@ -171,7 +171,7 @@ class DetectProjectManager implements SummaryResultReporter, ExitCodeReporter {
                 String prefix = detectConfiguration.getProjectCodeLocationPrefix()
                 String suffix = detectConfiguration.getProjectCodeLocationSuffix()
 
-                CodeLocationName codeLocationName = codeLocationNameService.createBomToolName(it.sourcePath, projectName, projectVersionName, it.bomToolType, prefix, suffix)
+                CodeLocationName codeLocationName = codeLocationNameService.createBomToolName(it.sourcePath, projectName, projectVersionName, it.bomToolType, prefix, suffix, it.additionalNamePieces)
                 String codeLocationNameString = codeLocationNameService.generateBomToolCurrent(codeLocationName)
                 if (!codeLocationNames.add(codeLocationNameString)) {
                     throw new DetectUserFriendlyException("Found duplicate Code Locations with the name: ${codeLocationNameString}", ExitCodeType.FAILURE_GENERAL_ERROR)

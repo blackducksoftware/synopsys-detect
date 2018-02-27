@@ -73,7 +73,7 @@ class CranBomTool extends BomTool {
         DependencyGraph dependencyGraph = packratPackager.extractProjectDependencies(packratLockText)
         ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.CRAN, projectName, projectVersion)
 
-        def codeLocation = new DetectCodeLocation(getBomToolType(), sourcePath, projectName, projectVersion, externalId, dependencyGraph)
+        def codeLocation = new DetectCodeLocation.Builder(getBomToolType(), sourcePath, externalId, dependencyGraph).bomToolProjectName(projectName).bomToolProjectVersionName(projectVersion).build()
         [codeLocation]
     }
 }

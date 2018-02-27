@@ -159,7 +159,7 @@ class MavenCodeLocationPackager {
         if (!sourcePath.endsWith(dependency.name)) {
             codeLocationSourcePath += '/' + dependency.name
         }
-        new DetectCodeLocation(BomToolType.MAVEN, codeLocationSourcePath, dependency.name, dependency.version, dependency.externalId, graph)
+        new DetectCodeLocation.Builder(BomToolType.MAVEN, codeLocationSourcePath, dependency.externalId, graph).bomToolProjectName(dependency.name).bomToolProjectVersionName(dependency.version).build()
     }
 
     String calculateCurrentLevelAndCleanLine(String line) {

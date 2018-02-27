@@ -74,6 +74,6 @@ class NpmLockfilePackager {
 
         ExternalId projectId = externalIdFactory.createNameVersionExternalId(Forge.NPM, npmProject.name, npmProject.version)
         DependencyGraph graph = nameVersionNodeTransformer.createDependencyGraph(Forge.NPM, builder.build(), false)
-        DetectCodeLocation codeLocation = new DetectCodeLocation(BomToolType.NPM, sourcePath, npmProject.name, npmProject.version, projectId, graph);
+        DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolType.NPM, sourcePath, projectId, graph).bomToolProjectName(npmProject.name).bomToolProjectVersionName(npmProject.version).build();
     }
 }
