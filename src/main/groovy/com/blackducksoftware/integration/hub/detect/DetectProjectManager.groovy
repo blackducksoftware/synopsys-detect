@@ -46,6 +46,7 @@ import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendly
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
+import com.blackducksoftware.integration.hub.detect.hub.ScanPathSource
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
@@ -139,7 +140,10 @@ class DetectProjectManager implements SummaryResultReporter, ExitCodeReporter {
 
         if (!foundAnyBomTools) {
             logger.info("No package managers were detected - will register ${detectConfiguration.sourcePath} for signature scanning of ${detectProject.projectName}/${detectProject.projectVersionName}")
-            hubSignatureScanner.registerPathToScan(detectConfiguration.sourceDirectory)
+            hubSignatureScanner.registerPathToScan(ScanPathSource.DETECT_SOURCE, detectConfiguration.sourceDirectory)
+        } else if (detectConfiguration.hubSignatureScannerSnippetMode) {
+            logger.info("Snippet mode is enabled - will register ${detectConfiguration.sourcePath} for signature scanning of ${detectProject.projectName}/${detectProject.projectVersionName}")
+            hubSignatureScanner.registerPathToScan(ScanPathSource.SNIPPET_SOURCE, detectConfiguration.sourceDirectory)
         }
 
         detectProject

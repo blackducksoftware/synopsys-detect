@@ -37,6 +37,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.nuget.model.NugetCon
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.model.NugetContainerType
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.model.NugetInspection
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
+import com.blackducksoftware.integration.hub.detect.hub.ScanPathSource
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
@@ -87,7 +88,7 @@ class NugetInspectorPackager {
 
     private void registerScanPaths(NugetContainer nugetContainer) {
         nugetContainer.outputPaths?.each {
-            hubSignatureScanner?.registerPathToScan(new File(it))
+            hubSignatureScanner?.registerPathToScan(ScanPathSource.NUGET_SOURCE, new File(it))
         }
         nugetContainer.children?.each { registerScanPaths(it) }
     }

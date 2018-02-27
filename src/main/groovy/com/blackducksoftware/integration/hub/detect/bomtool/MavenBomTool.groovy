@@ -31,6 +31,7 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.detect.bomtool.maven.MavenCodeLocationPackager
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
+import com.blackducksoftware.integration.hub.detect.hub.ScanPathSource
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
@@ -95,7 +96,9 @@ class MavenBomTool extends BomTool {
 
         File[] additionalTargets = detectFileManager.findFilesToDepth(detectConfiguration.sourceDirectory, 'target', detectConfiguration.searchDepth)
         if (additionalTargets) {
-            additionalTargets.each { File target -> hubSignatureScanner.registerPathToScan(target) }
+            additionalTargets.each { File target ->
+                hubSignatureScanner.registerPathToScan(ScanPathSource.MAVEN_SOURCE, target)
+            }
         }
 
         codeLocations

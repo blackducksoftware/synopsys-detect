@@ -34,6 +34,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.sbt.SbtPackager
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtDependencyModule
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtProject
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
+import com.blackducksoftware.integration.hub.detect.hub.ScanPathSource
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 
@@ -169,7 +170,7 @@ class SbtBomTool extends BomTool {
         if (additionalTargets) {
             additionalTargets.each { file ->
                 if (!isInProject(file, sourcePath) && isNotChildOfScanned(file, scanned)) {
-                    hubSignatureScanner.registerPathToScan(file)
+                    hubSignatureScanner.registerPathToScan(ScanPathSource.SBT_SOURCE, file)
                     scanned.add(file)
                 }
             }
