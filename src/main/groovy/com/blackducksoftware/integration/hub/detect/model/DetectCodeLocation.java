@@ -23,6 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
@@ -44,7 +45,7 @@ public class DetectCodeLocation {
         private String bomToolProjectVersionName;
         private final ExternalId bomToolProjectExternalId;
         private final DependencyGraph dependencyGraph;
-        private List<String> additionalNamePieces;
+        private final List<String> additionalNamePieces = new ArrayList<>();
 
         public Builder(final BomToolType bomToolType, final String sourcePath, final ExternalId bomToolProjectExternalId, final DependencyGraph dependencyGraph) {
             this.bomToolType = bomToolType;
@@ -64,7 +65,12 @@ public class DetectCodeLocation {
         }
 
         public Builder additionalNamePieces(final List<String> additionalNamePieces) {
-            this.additionalNamePieces = additionalNamePieces;
+            this.additionalNamePieces.addAll(additionalNamePieces);
+            return this;
+        }
+
+        public Builder addAdditionalNamePiece(final String additionalNamePiece) {
+            this.additionalNamePieces.add(additionalNamePiece);
             return this;
         }
 
