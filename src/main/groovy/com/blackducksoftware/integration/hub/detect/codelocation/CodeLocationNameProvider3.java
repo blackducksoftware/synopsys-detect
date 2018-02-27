@@ -23,11 +23,14 @@
  */
 package com.blackducksoftware.integration.hub.detect.codelocation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 @Component
-// used in 2.0.0
+// used in 3.1.0
 public class CodeLocationNameProvider3 extends CodeLocationNameProvider {
     @Override
     public String generateBomToolName(final CodeLocationName codeLocationName) {
@@ -38,10 +41,11 @@ public class CodeLocationNameProvider3 extends CodeLocationNameProvider {
         final String suffix = codeLocationName.getSuffix();
         final String codeLocationTypeString = codeLocationName.getCodeLocationType().toString().toLowerCase();
         final String bomToolTypeString = codeLocationName.getBomToolType() == null ? "" : codeLocationName.getBomToolType().toString().toLowerCase();
+        final List<String> additionalNamePieces = codeLocationName.getAdditonalNamePieces();
 
-        final String codeLocationNameString = createCommonName(finalSourcePathPiece, projectName, projectVersionName, prefix, suffix, codeLocationTypeString, bomToolTypeString);
+        final String codeLocationNameString = createCommonName(finalSourcePathPiece, projectName, projectVersionName, prefix, suffix, codeLocationTypeString, bomToolTypeString, additionalNamePieces);
         if (codeLocationNameString.length() > 250) {
-            return shortenCodeLocationName(finalSourcePathPiece, projectName, projectVersionName, prefix, suffix, codeLocationTypeString, bomToolTypeString);
+            return shortenCodeLocationName(finalSourcePathPiece, projectName, projectVersionName, prefix, suffix, codeLocationTypeString, bomToolTypeString, additionalNamePieces);
         } else {
             return codeLocationNameString;
         }
@@ -57,23 +61,28 @@ public class CodeLocationNameProvider3 extends CodeLocationNameProvider {
         final String codeLocationTypeString = codeLocationName.getCodeLocationType().toString().toLowerCase();
         final String bomToolTypeString = "";
 
-        final String codeLocationNameString = createCommonName(cleanedTargetPath, projectName, projectVersionName, prefix, suffix, codeLocationTypeString, bomToolTypeString);
+        final String codeLocationNameString = createCommonName(cleanedTargetPath, projectName, projectVersionName, prefix, suffix, codeLocationTypeString, bomToolTypeString, null);
         if (codeLocationNameString.length() > 250) {
-            return shortenCodeLocationName(cleanedTargetPath, projectName, projectVersionName, prefix, suffix, codeLocationTypeString, bomToolTypeString);
+            return shortenCodeLocationName(cleanedTargetPath, projectName, projectVersionName, prefix, suffix, codeLocationTypeString, bomToolTypeString, null);
         } else {
             return codeLocationNameString;
         }
     }
 
-    private String createCommonName(final String pathPiece, final String projectName, final String projectVersionName, final String prefix, final String suffix, final String codeLocationType, final String bomToolType) {
+    private String createCommonName(final String pathPiece, final String projectName, final String projectVersionName, final String prefix, final String suffix, final String codeLocationType, final String bomToolType,
+            final List<String> additionalNamePieces) {
         String name = String.format("%s/%s/%s", pathPiece, projectName, projectVersionName);
         if (StringUtils.isNotBlank(prefix)) {
             name = String.format("%s/%s", prefix, name);
         }
+        if (null != additionalNamePieces && !additionalNamePieces.isEmpty()) {
+            for (final String additionalNamePiece : additionalNamePieces) {
+                name = String.format("%s/%s", name, additionalNamePiece);
+            }
+        }
         if (StringUtils.isNotBlank(suffix)) {
             name = String.format("%s/%s", name, suffix);
         }
-
         String endPiece = codeLocationType;
         if (StringUtils.isNotBlank(bomToolType)) {
             endPiece = String.format("%s/%s", bomToolType, endPiece);
@@ -83,14 +92,22 @@ public class CodeLocationNameProvider3 extends CodeLocationNameProvider {
         return name;
     }
 
-    private String shortenCodeLocationName(final String pathPiece, final String projectName, final String projectVersionName, final String prefix, final String suffix, final String codeLocationType, final String bomToolType) {
+    private String shortenCodeLocationName(final String pathPiece, final String projectName, final String projectVersionName, final String prefix, final String suffix, final String codeLocationType, final String bomToolType,
+            final List<String> additionalNamePieces) {
         final String shortenedPathPiece = shortenPiece(pathPiece);
         final String shortenedProjectName = shortenPiece(projectName);
         final String shortenedProjectVersionName = shortenPiece(projectVersionName);
         final String shortenedPrefix = shortenPiece(prefix);
         final String shortenedSuffix = shortenPiece(suffix);
 
-        return createCommonName(shortenedPathPiece, shortenedProjectName, shortenedProjectVersionName, shortenedPrefix, shortenedSuffix, codeLocationType, bomToolType);
+        final List<String> shortenedAdditionalNamePieces = new ArrayList<>();
+        if (null != additionalNamePieces && !additionalNamePieces.isEmpty()) {
+            for (final String additionalNamePiece : additionalNamePieces) {
+                shortenedAdditionalNamePieces.add(shortenPiece(additionalNamePiece));
+            }
+        }
+
+        return createCommonName(shortenedPathPiece, shortenedProjectName, shortenedProjectVersionName, shortenedPrefix, shortenedSuffix, codeLocationType, bomToolType, shortenedAdditionalNamePieces);
     }
 
     private String shortenPiece(final String piece) {
