@@ -184,7 +184,6 @@ class HubSignatureScanner implements SummaryResultReporter, ExitCodeReporter {
         String matchingExcludedPath = detectConfiguration.hubSignatureScannerPathsToExclude.find {
             file.canonicalPath.startsWith(it)
         }
-
         if (matchingExcludedPath) {
             logger.info("Not scanning path ${file.canonicalPath}, it is excluded.")
             return false;
