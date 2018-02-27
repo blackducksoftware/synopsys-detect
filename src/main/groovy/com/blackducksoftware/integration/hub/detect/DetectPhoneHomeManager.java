@@ -58,21 +58,23 @@ public class DetectPhoneHomeManager {
         // We would prefer to always wait for all the bom tool metadata, but
         // sometimes there is not enough time to complete a phone home before
         // hub-detect exits (if the scanner is disabled, for example).
-        endPhoneHome();
-
-        final PhoneHomeRequestBodyBuilder phoneHomeRequestBodyBuilder = createBuilder();
-        final PhoneHomeRequestBody phoneHomeRequestBody = phoneHomeRequestBodyBuilder.build();
-
-        phoneHomeResponse = phoneHomeService.startPhoneHome(phoneHomeRequestBody);
+        performPhoneHome(null);
     }
 
     public void startPhoneHome(final Set<BomToolType> applicableBomToolTypes) {
+        performPhoneHome(applicableBomToolTypes);
+    }
+
+    private void performPhoneHome(final Set<BomToolType> applicableBomToolTypes) {
         endPhoneHome();
 
-        final String applicableBomToolsString = StringUtils.join(applicableBomToolTypes, ", ");
-
         final PhoneHomeRequestBodyBuilder phoneHomeRequestBodyBuilder = createBuilder();
-        phoneHomeRequestBodyBuilder.addToMetaDataMap("bomToolTypes", applicableBomToolsString);
+
+        if (applicableBomToolTypes != null) {
+            final String applicableBomToolsString = StringUtils.join(applicableBomToolTypes, ", ");
+            phoneHomeRequestBodyBuilder.addToMetaDataMap("bomToolTypes", applicableBomToolsString);
+        }
+
         final PhoneHomeRequestBody phoneHomeRequestBody = phoneHomeRequestBodyBuilder.build();
 
         phoneHomeResponse = phoneHomeService.startPhoneHome(phoneHomeRequestBody);

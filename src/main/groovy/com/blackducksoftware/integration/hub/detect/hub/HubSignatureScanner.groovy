@@ -76,10 +76,24 @@ class HubSignatureScanner implements SummaryResultReporter, ExitCodeReporter {
     private Map<String, Result> scanSummaryResults = new HashMap<>();
 
     public void registerPathToScan(File file, String... fileNamesToExclude) {
+        registerPathToScan(file, fileNamesToExclude, false);
+    }
+
+    /**
+     * When the scanner is NOT enabled, no paths will be registered to scan.
+     *
+     * If the scanner is enabled and there is at least one explicit path set, ONLY the explicit path(s) will be scanned.
+     *
+     * If the scanner is enabled, no explicit paths are set, and snippet mode is enabled, ONLY the source path will be scanned.
+     *
+     * In all other cases, the bom tools will, when they can, identify good candidates for registering scan targets.
+     */
+    public void registerPathToScan(File file, String... fileNamesToExclude, boolean forceRegistering) {
         boolean scannerEnabled = !detectConfiguration.hubSignatureScannerDisabled;
         boolean customPathOverride = detectConfiguration.hubSignatureScannerPaths.size() > 0;
+        boolean snippetModeEnabled = detectConfiguration.hubSignatureScannerSnippetMode;
 
-        if (scannerEnabled && !customPathOverride) {
+        if (scannerEnabled && (!customPathOverride && !snippetModeEnabled || forceRegistering)) {
             String matchingExcludedPath = detectConfiguration.hubSignatureScannerPathsToExclude.find {
                 file.canonicalPath.startsWith(it)
             }
