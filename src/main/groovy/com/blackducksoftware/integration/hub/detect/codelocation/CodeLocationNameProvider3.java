@@ -77,7 +77,9 @@ public class CodeLocationNameProvider3 extends CodeLocationNameProvider {
         }
         if (null != additionalNamePieces && !additionalNamePieces.isEmpty()) {
             for (final String additionalNamePiece : additionalNamePieces) {
-                name = String.format("%s/%s", name, additionalNamePiece);
+                if (StringUtils.isNotBlank(additionalNamePiece)) {
+                    name = String.format("%s/%s", name, additionalNamePiece);
+                }
             }
         }
         if (StringUtils.isNotBlank(suffix)) {
@@ -103,7 +105,9 @@ public class CodeLocationNameProvider3 extends CodeLocationNameProvider {
         final List<String> shortenedAdditionalNamePieces = new ArrayList<>();
         if (null != additionalNamePieces && !additionalNamePieces.isEmpty()) {
             for (final String additionalNamePiece : additionalNamePieces) {
-                shortenedAdditionalNamePieces.add(shortenPiece(additionalNamePiece));
+                if (StringUtils.isNotBlank(additionalNamePiece)) {
+                    shortenedAdditionalNamePieces.add(shortenPiece(additionalNamePiece));
+                }
             }
         }
 
