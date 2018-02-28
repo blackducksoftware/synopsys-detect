@@ -36,6 +36,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.builder.SpringApplicationBuilder
 import org.springframework.context.annotation.Bean
 
+import com.blackducksoftware.integration.exception.IntegrationCertificateException
 import com.blackducksoftware.integration.exception.IntegrationException
 import com.blackducksoftware.integration.hub.api.generated.view.ProjectVersionView
 import com.blackducksoftware.integration.hub.bdio.BdioNodeFactory
@@ -166,7 +167,7 @@ class Application {
             }
 
             if (detectConfiguration.testConnection) {
-                hubServiceWrapper.testHubConnection()
+                hubServiceWrapper.assertHubConnection()
                 return
             }
 
@@ -230,7 +231,7 @@ class Application {
                 logger.debug(e.getCause().getMessage(), e.getCause());
             }
             exitCodeType = e.getExitCodeType();
-        } else if (e instanceof IntegrationException) {
+        } else if (e instanceof IntegrationException || e instanceof IntegrationCertificateException) {
             logger.error('An unrecoverable error occurred - most likely this is due to your environment and/or configuration. Please double check the Hub Detect documentation: https://blackducksoftware.atlassian.net/wiki/x/Y7HtAg');
             logger.debug(e.getMessage(), e);
             exitCodeType = ExitCodeType.FAILURE_GENERAL_ERROR;
