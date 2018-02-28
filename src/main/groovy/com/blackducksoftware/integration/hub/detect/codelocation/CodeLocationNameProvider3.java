@@ -27,11 +27,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
 
 @Component
 // used in 2.0.0, updated in 3.1.0
 public class CodeLocationNameProvider3 extends CodeLocationNameProvider {
+    @Autowired
+    private IntegrationEscapeUtil integrationEscapeUtil;
+
     @Override
     public String generateBomToolName(final CodeLocationName codeLocationName) {
         final String finalSourcePathPiece = detectFileManager.extractFinalPieceFromPath(codeLocationName.getSourcePath());
@@ -76,9 +82,10 @@ public class CodeLocationNameProvider3 extends CodeLocationNameProvider {
             name = String.format("%s/%s", prefix, name);
         }
         if (null != additionalNamePieces && !additionalNamePieces.isEmpty()) {
-            for (final String additionalNamePiece : additionalNamePieces) {
-                if (StringUtils.isNotBlank(additionalNamePiece)) {
-                    name = String.format("%s/%s", name, additionalNamePiece);
+            final List<String> escapedPieces = integrationEscapeUtil.escapePiecesForUri(additionalNamePieces);
+            for (final String escapedAdditionalNamePiece : escapedPieces) {
+                if (StringUtils.isNotBlank(escapedAdditionalNamePiece)) {
+                    name = String.format("%s/%s", name, escapedAdditionalNamePiece);
                 }
             }
         }

@@ -127,4 +127,5 @@ public class DetectCodeLocation {
     public List<String> getAdditionalNamePieces() {
         return additionalNamePieces;
     }
+
 }

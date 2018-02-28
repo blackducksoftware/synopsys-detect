@@ -113,12 +113,15 @@ class DockerBomTool extends BomTool {
         dockerProperties.populateEnvironmentVariables(environmentVariables, dockerExecutablePath)
 
         boolean usingTarFile = false
+        String imagePiece = ''
         String imageArgument = ''
         if (detectConfiguration.dockerImage) {
             imageArgument = String.format("--docker.image=%s", detectConfiguration.dockerImage)
+            imagePiece = detectConfiguration.dockerImage
         } else {
             File dockerTarFile = new File(detectConfiguration.dockerTar)
             imageArgument = String.format("--docker.tar=%s", dockerTarFile.getCanonicalPath())
+            imagePiece = detectFileManager.extractFinalPieceFromPath(dockerTarFile.getCanonicalPath())
             usingTarFile = true
         }
 
@@ -179,7 +182,7 @@ class DockerBomTool extends BomTool {
             String externalIdPath = simpleBdioDocument.project.bdioExternalIdentifier.externalId
             ExternalId projectExternalId = externalIdFactory.createPathExternalId(dockerForge, externalIdPath)
 
-            DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(getBomToolType(), sourcePath, projectExternalId, dependencyGraph).bomToolProjectName(projectName).bomToolProjectVersionName(projectVersionName).build()
+            DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(getBomToolType(), sourcePath, projectExternalId, dependencyGraph).bomToolProjectName(projectName).bomToolProjectVersionName(projectVersionName).addAdditionalNamePiece(imagePiece).build()
             return [detectCodeLocation]
         } else {
             logMissingFile(dockerBomToolDirectory, dependenciesFilenamePattern)
