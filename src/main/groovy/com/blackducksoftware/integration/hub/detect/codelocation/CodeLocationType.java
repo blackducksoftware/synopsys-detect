@@ -25,5 +25,7 @@ package com.blackducksoftware.integration.hub.detect.codelocation;
 
 public enum CodeLocationType {
     SCAN,
-    BOM
+    BOM,
+    DOCKER;
+
 }
