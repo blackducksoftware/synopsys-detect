@@ -35,9 +35,15 @@ import org.w3c.dom.Node
 import org.w3c.dom.NodeList
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
+import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
+import com.blackducksoftware.integration.hub.request.Request
+import com.blackducksoftware.integration.hub.request.Response
+import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnection
+import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnectionBuilder
+import com.blackducksoftware.integration.log.Slf4jIntLogger
 
 import freemarker.template.Configuration
 import freemarker.template.Template
@@ -63,6 +69,9 @@ class GradleInspectorManager {
     @Autowired
     DetectFileManager detectFileManager
 
+    @Autowired
+    HubServiceWrapper hubServiceWrapper
+
     private String inspectorVersion
     private String initScriptPath
 
@@ -70,15 +79,33 @@ class GradleInspectorManager {
         if (!inspectorVersion) {
             if ('latest'.equalsIgnoreCase(detectConfiguration.getGradleInspectorVersion())) {
                 try {
-                    InputStream inputStream
+                    Document xmlDocument = null
                     File airGapMavenMetadataFile = new File(detectConfiguration.getGradleInspectorAirGapPath(), 'maven-metadata.xml')
                     if (airGapMavenMetadataFile.exists()) {
-                        inputStream = new FileInputStream(airGapMavenMetadataFile)
+                        InputStream inputStream = new FileInputStream(airGapMavenMetadataFile)
+                        xmlDocument = xmlDocumentBuilder.parse(inputStream)
                     } else {
-                        URL mavenMetadataUrl = new URL('http://repo2.maven.org/maven2/com/blackducksoftware/integration/integration-gradle-inspector/maven-metadata.xml')
-                        inputStream = mavenMetadataUrl.openStream()
+                        String mavenMetadataUrl = 'http://repo2.maven.org/maven2/com/blackducksoftware/integration/integration-gradle-inspector/maven-metadata.xml'
+                        UnauthenticatedRestConnectionBuilder restConnectionBuilder = new UnauthenticatedRestConnectionBuilder();
+                        restConnectionBuilder.setBaseUrl(mavenMetadataUrl)
+                        restConnectionBuilder.setTimeout(detectConfiguration.getHubTimeout())
+                        restConnectionBuilder.applyProxyInfo(detectConfiguration.getHubProxyInfo())
+                        restConnectionBuilder.setLogger(new Slf4jIntLogger(logger))
+                        restConnectionBuilder.alwaysTrustServerCertificate = detectConfiguration.hubTrustCertificate
+                        UnauthenticatedRestConnection restConnection = restConnectionBuilder.build()
+
+                        Request request = new Request.Builder().uri(mavenMetadataUrl).build();
+                        Response response = null
+                        try {
+                            response = restConnection.executeRequest(request)
+                            InputStream inputStream = response.getContent()
+                            xmlDocument = xmlDocumentBuilder.parse(inputStream)
+                        } finally {
+                            if ( null != response) {
+                                response.close()
+                            }
+                        }
                     }
-                    final Document xmlDocument = xmlDocumentBuilder.parse(inputStream)
                     final NodeList latestVersionNodes = xmlDocument.getElementsByTagName('latest')
                     final Node latestVersion = latestVersionNodes.item(0)
                     inspectorVersion = latestVersion.getTextContent()

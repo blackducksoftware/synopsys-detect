@@ -108,8 +108,8 @@ class DockerInspectorManager {
                     restConnectionBuilder.setTimeout(detectConfiguration.getHubTimeout())
                     restConnectionBuilder.applyProxyInfo(detectConfiguration.getHubProxyInfo())
                     restConnectionBuilder.setLogger(new Slf4jIntLogger(logger))
+                    restConnectionBuilder.alwaysTrustServerCertificate = detectConfiguration.hubTrustCertificate
                     UnauthenticatedRestConnection restConnection = restConnectionBuilder.build()
-                    restConnection.alwaysTrustServerCertificate = detectConfiguration.hubTrustCertificate
 
                     Request request = new Request.Builder().uri(hubDockerInspectorShellScriptUrl).build();
                     String shellScriptContents = null
