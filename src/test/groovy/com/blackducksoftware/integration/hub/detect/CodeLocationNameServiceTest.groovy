@@ -103,7 +103,7 @@ class CodeLocationNameServiceTest {
         String projectVersionName = '2.5.1-SNAPSHOT'
         String prefix = ''
         String suffix = ''
-        CodeLocationName codeLocationName = codeLocationNameService.createBomToolName(sourcePath, projectName, projectVersionName, BomToolType.NPM, prefix, suffix, [])
+        CodeLocationName codeLocationName = codeLocationNameService.createBomToolName(sourcePath, projectName, projectVersionName, BomToolType.NPM, prefix, suffix)
         String actual = codeLocationNameProvider.generateName(codeLocationName)
 
         assertEquals(expected, actual)
@@ -122,7 +122,7 @@ class CodeLocationNameServiceTest {
         String projectVersionName = '2.5.1-SNAPSHOT'
         String prefix = ''
         String suffix = ''
-        CodeLocationName codeLocationName = codeLocationNameService.createBomToolName(sourcePath, projectName, projectVersionName, BomToolType.NPM, prefix, suffix, [])
+        CodeLocationName codeLocationName = codeLocationNameService.createBomToolName(sourcePath, projectName, projectVersionName, BomToolType.NPM, prefix, suffix)
         String actual = codeLocationNameProvider.generateName(codeLocationName)
 
         assertEquals(expected, actual)
@@ -141,7 +141,7 @@ class CodeLocationNameServiceTest {
         String projectVersionName = '2.5.1-SNAPSHOT'
         String prefix = ''
         String suffix = ''
-        CodeLocationName codeLocationName = codeLocationNameService.createBomToolName(sourcePath, projectName, projectVersionName, BomToolType.NPM, prefix, suffix, [])
+        CodeLocationName codeLocationName = codeLocationNameService.createBomToolName(sourcePath, projectName, projectVersionName, BomToolType.NPM, prefix, suffix)
         String actual = codeLocationNameProvider.generateName(codeLocationName)
 
         assertEquals(expected, actual)
@@ -160,7 +160,7 @@ class CodeLocationNameServiceTest {
         String projectVersionName = '2.5.1-SNAPSHOT'
         String prefix = ''
         String suffix = ''
-        CodeLocationName codeLocationName = codeLocationNameService.createBomToolName(sourcePath, projectName, projectVersionName, BomToolType.NPM, prefix, suffix, [])
+        CodeLocationName codeLocationName = codeLocationNameService.createBomToolName(sourcePath, projectName, projectVersionName, BomToolType.NPM, prefix, suffix)
         String actual = codeLocationNameProvider.generateName(codeLocationName)
 
         assertEquals(expected, actual)
