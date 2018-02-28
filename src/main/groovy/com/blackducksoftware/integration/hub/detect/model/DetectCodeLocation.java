@@ -25,22 +25,24 @@ package com.blackducksoftware.integration.hub.detect.model;
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
+import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationName;
+import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationNameService;
 
 public class DetectCodeLocation {
     private final BomToolType bomToolType;
     private final String sourcePath;
-    private final String dockerImage;
     private final String bomToolProjectName;
     private final String bomToolProjectVersionName;
+    private final String dockerImage;
     private final ExternalId bomToolProjectExternalId;
     private final DependencyGraph dependencyGraph;
 
     public static class Builder {
         private final BomToolType bomToolType;
         private final String sourcePath;
-        private String dockerImage;
         private String bomToolProjectName;
         private String bomToolProjectVersionName;
+        private String dockerImage;
         private final ExternalId bomToolProjectExternalId;
         private final DependencyGraph dependencyGraph;
 
@@ -49,11 +51,6 @@ public class DetectCodeLocation {
             this.sourcePath = sourcePath;
             this.bomToolProjectExternalId = bomToolProjectExternalId;
             this.dependencyGraph = dependencyGraph;
-        }
-
-        public Builder dockerImage(final String dockerImage) {
-            this.dockerImage = dockerImage;
-            return this;
         }
 
         public Builder bomToolProjectName(final String bomToolProjectName) {
@@ -66,6 +63,11 @@ public class DetectCodeLocation {
             return this;
         }
 
+        public Builder dockerImage(final String dockerImage) {
+            this.dockerImage = dockerImage;
+            return this;
+        }
+
         public DetectCodeLocation build() {
             return new DetectCodeLocation(this);
         }
@@ -74,11 +76,27 @@ public class DetectCodeLocation {
     private DetectCodeLocation(final Builder builder) {
         this.bomToolType = builder.bomToolType;
         this.sourcePath = builder.sourcePath;
-        this.dockerImage = builder.dockerImage;
         this.bomToolProjectName = builder.bomToolProjectName;
         this.bomToolProjectVersionName = builder.bomToolProjectVersionName;
+        this.dockerImage = builder.dockerImage;
         this.bomToolProjectExternalId = builder.bomToolProjectExternalId;
         this.dependencyGraph = builder.dependencyGraph;
+    }
+
+    public CodeLocationName createCodeLocationName(final CodeLocationNameService codeLocationNameService, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
+        if (BomToolType.DOCKER == getBomToolType()) {
+            return codeLocationNameService.createDockerName(getSourcePath(), projectName, projectVersionName, dockerImage, getBomToolType(), prefix, suffix);
+        } else {
+            return codeLocationNameService.createBomToolName(getSourcePath(), projectName, projectVersionName, getBomToolType(), prefix, suffix);
+        }
+    }
+
+    public String getCodeLocationNameString(final CodeLocationNameService codeLocationNameService, final CodeLocationName codeLocationName) {
+        if (BomToolType.DOCKER == getBomToolType()) {
+            return codeLocationNameService.generateDockerCurrent(codeLocationName);
+        } else {
+            return codeLocationNameService.generateBomToolCurrent(codeLocationName);
+        }
     }
 
     public BomToolType getBomToolType() {
@@ -89,16 +107,16 @@ public class DetectCodeLocation {
         return sourcePath;
     }
 
-    public String getDockerImage() {
-        return dockerImage;
-    }
-
     public String getBomToolProjectName() {
         return bomToolProjectName;
     }
 
     public String getBomToolProjectVersionName() {
         return bomToolProjectVersionName;
+    }
+
+    public String getDockerImage() {
+        return dockerImage;
     }
 
     public ExternalId getBomToolProjectExternalId() {
