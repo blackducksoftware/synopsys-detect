@@ -23,9 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 
@@ -36,7 +33,6 @@ public class DetectCodeLocation {
     private final String bomToolProjectVersionName;
     private final ExternalId bomToolProjectExternalId;
     private final DependencyGraph dependencyGraph;
-    private final List<String> additionalNamePieces;
 
     public static class Builder {
         private final BomToolType bomToolType;
@@ -45,7 +41,6 @@ public class DetectCodeLocation {
         private String bomToolProjectVersionName;
         private final ExternalId bomToolProjectExternalId;
         private final DependencyGraph dependencyGraph;
-        private final List<String> additionalNamePieces = new ArrayList<>();
 
         public Builder(final BomToolType bomToolType, final String sourcePath, final ExternalId bomToolProjectExternalId, final DependencyGraph dependencyGraph) {
             this.bomToolType = bomToolType;
@@ -64,16 +59,6 @@ public class DetectCodeLocation {
             return this;
         }
 
-        public Builder additionalNamePieces(final List<String> additionalNamePieces) {
-            this.additionalNamePieces.addAll(additionalNamePieces);
-            return this;
-        }
-
-        public Builder addAdditionalNamePiece(final String additionalNamePiece) {
-            this.additionalNamePieces.add(additionalNamePiece);
-            return this;
-        }
-
         public DetectCodeLocation build() {
             return new DetectCodeLocation(this);
         }
@@ -86,18 +71,6 @@ public class DetectCodeLocation {
         this.bomToolProjectVersionName = builder.bomToolProjectVersionName;
         this.bomToolProjectExternalId = builder.bomToolProjectExternalId;
         this.dependencyGraph = builder.dependencyGraph;
-        this.additionalNamePieces = builder.additionalNamePieces;
-    }
-
-    DetectCodeLocation(final BomToolType bomToolType, final String sourcePath, final String bomToolProjectName, final String bomToolProjectVersionName, final ExternalId bomToolProjectExternalId, final DependencyGraph dependencyGraph,
-            final List<String> additionalNamePieces) {
-        this.bomToolType = bomToolType;
-        this.sourcePath = sourcePath;
-        this.bomToolProjectName = bomToolProjectName;
-        this.bomToolProjectVersionName = bomToolProjectVersionName;
-        this.bomToolProjectExternalId = bomToolProjectExternalId;
-        this.dependencyGraph = dependencyGraph;
-        this.additionalNamePieces = additionalNamePieces;
     }
 
     public BomToolType getBomToolType() {
@@ -122,10 +95,6 @@ public class DetectCodeLocation {
 
     public DependencyGraph getDependencyGraph() {
         return dependencyGraph;
-    }
-
-    public List<String> getAdditionalNamePieces() {
-        return additionalNamePieces;
     }
 
 }

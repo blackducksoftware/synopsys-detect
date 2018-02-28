@@ -23,8 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.codelocation;
 
-import java.util.List;
-
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 
 public class CodeLocationName {
@@ -35,11 +33,9 @@ public class CodeLocationName {
     private final String scanTargetPath;
     private final String prefix;
     private final String suffix;
-    private final List<String> additionalNamePieces;
     private final CodeLocationType codeLocationType;
 
     public CodeLocationName(final String projectName, final String projectVersionName, final BomToolType bomToolType, final String sourcePath, final String scanTargetPath, final String prefix, final String suffix,
-            final List<String> additionalNamePieces,
             final CodeLocationType codeLocationType) {
         this.projectName = projectName;
         this.projectVersionName = projectVersionName;
@@ -48,7 +44,6 @@ public class CodeLocationName {
         this.scanTargetPath = scanTargetPath;
         this.prefix = prefix;
         this.suffix = suffix;
-        this.additionalNamePieces = additionalNamePieces;
         this.codeLocationType = codeLocationType;
     }
 
@@ -78,10 +73,6 @@ public class CodeLocationName {
 
     public String getSuffix() {
         return suffix;
-    }
-
-    public List<String> getAdditonalNamePieces() {
-        return additionalNamePieces;
     }
 
     public CodeLocationType getCodeLocationType() {
