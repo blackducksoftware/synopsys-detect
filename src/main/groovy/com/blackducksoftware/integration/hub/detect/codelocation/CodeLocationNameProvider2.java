@@ -27,7 +27,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 @Component
-// used in 1.2.0
+// used in 1.2.0 to 2.0.0
 public class CodeLocationNameProvider2 extends CodeLocationNameProvider {
     @Override
     public String generateBomToolName(final CodeLocationName codeLocationName) {
