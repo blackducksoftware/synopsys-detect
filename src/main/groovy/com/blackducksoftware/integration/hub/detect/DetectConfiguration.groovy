@@ -44,6 +44,9 @@ import com.blackducksoftware.integration.hub.detect.help.ValueDescription
 import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver
 import com.blackducksoftware.integration.hub.proxy.ProxyInfo
 import com.blackducksoftware.integration.hub.proxy.ProxyInfoBuilder
+import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnection
+import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnectionBuilder
+import com.blackducksoftware.integration.log.Slf4jIntLogger
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter
 import com.google.gson.Gson
 
@@ -298,6 +301,16 @@ class DetectConfiguration {
         if (!directory.exists() || !directory.isDirectory()) {
             throw new DetectUserFriendlyException("The directory ${directoryPath} does not exist. ${failureMessage}", ExitCodeType.FAILURE_GENERAL_ERROR)
         }
+    }
+
+    public UnauthenticatedRestConnection createUnauthenticatedRestConnection(String url) {
+        UnauthenticatedRestConnectionBuilder restConnectionBuilder = new UnauthenticatedRestConnectionBuilder()
+        restConnectionBuilder.setBaseUrl(url)
+        restConnectionBuilder.setTimeout(getHubTimeout())
+        restConnectionBuilder.applyProxyInfo(getHubProxyInfo())
+        restConnectionBuilder.setLogger(new Slf4jIntLogger(logger))
+        restConnectionBuilder.alwaysTrustServerCertificate = getHubTrustCertificate()
+        restConnectionBuilder.build()
     }
 
     //properties start

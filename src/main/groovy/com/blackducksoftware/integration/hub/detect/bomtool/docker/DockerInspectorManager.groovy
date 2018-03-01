@@ -39,8 +39,6 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 import com.blackducksoftware.integration.hub.request.Request
 import com.blackducksoftware.integration.hub.request.Response
 import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnection
-import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnectionBuilder
-import com.blackducksoftware.integration.log.Slf4jIntLogger
 
 import groovy.transform.TypeChecked
 
@@ -103,13 +101,7 @@ class DockerInspectorManager {
                         hubDockerInspectorShellScriptUrl = "https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector-${detectConfiguration.getDockerInspectorVersion()}.sh"
                     }
                     logger.info("Getting the Docker inspector shell script from ${hubDockerInspectorShellScriptUrl.toURI().toString()}")
-                    UnauthenticatedRestConnectionBuilder restConnectionBuilder = new UnauthenticatedRestConnectionBuilder();
-                    restConnectionBuilder.setBaseUrl(hubDockerInspectorShellScriptUrl)
-                    restConnectionBuilder.setTimeout(detectConfiguration.getHubTimeout())
-                    restConnectionBuilder.applyProxyInfo(detectConfiguration.getHubProxyInfo())
-                    restConnectionBuilder.setLogger(new Slf4jIntLogger(logger))
-                    restConnectionBuilder.alwaysTrustServerCertificate = detectConfiguration.hubTrustCertificate
-                    UnauthenticatedRestConnection restConnection = restConnectionBuilder.build()
+                    UnauthenticatedRestConnection restConnection = detectConfiguration.createUnauthenticatedRestConnection(hubDockerInspectorShellScriptUrl)
 
                     Request request = new Request.Builder().uri(hubDockerInspectorShellScriptUrl).build();
                     String shellScriptContents = null
