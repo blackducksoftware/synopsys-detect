@@ -27,32 +27,17 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 @Component
-// used in 0.0.7 to 1.1.0
-public class CodeLocationNameProvider1 extends CodeLocationNameProvider {
+// used in 1.2.0
+public class BomCodeLocationNameProvider2 extends CodeLocationNameProvider {
     @Override
-    public String generateBomToolName(final CodeLocationName codeLocationName) {
+    public String generateName(final CodeLocationName codeLocationName) {
         final String projectName = codeLocationName.getProjectName();
         final String projectVersionName = codeLocationName.getProjectVersionName();
         final String finalSourcePathPiece = detectFileManager.extractFinalPieceFromPath(codeLocationName.getSourcePath());
         final String bomToolString = codeLocationName.getBomToolType() == null ? "" : codeLocationName.getBomToolType().toString();
         final String prefix = codeLocationName.getPrefix();
 
-        String name = String.format("%s/%s/%s/%s %s", bomToolString, finalSourcePathPiece, projectName, projectVersionName, "Hub Detect Tool");
-        if (StringUtils.isNotBlank(prefix)) {
-            name = String.format("%s/%s", prefix, name);
-        }
-
-        return name;
-    }
-
-    @Override
-    public String generateScanName(final CodeLocationName codeLocationName) {
-        final String projectName = codeLocationName.getProjectName();
-        final String projectVersionName = codeLocationName.getProjectVersionName();
-        final String prefix = codeLocationName.getPrefix();
-        final String cleanedTargetPath = cleanScanTargetPath(codeLocationName);
-
-        String name = String.format("%s/%s/%s %s", cleanedTargetPath, projectName, projectVersionName, "Hub Detect Scan");
+        String name = String.format("%s/%s/%s/%s %s", bomToolString, finalSourcePathPiece, projectName, projectVersionName, CodeLocationType.BOM.toString());
         if (StringUtils.isNotBlank(prefix)) {
             name = String.format("%s/%s", prefix, name);
         }

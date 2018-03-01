@@ -32,9 +32,7 @@ public abstract class CodeLocationNameProvider {
     @Autowired
     protected DetectFileManager detectFileManager;
 
-    public abstract String generateBomToolName(CodeLocationName codeLocationName);
-
-    public abstract String generateScanName(CodeLocationName codeLocationName);
+    public abstract String generateName(CodeLocationName codeLocationName);
 
     public String cleanScanTargetPath(final CodeLocationName codeLocationName) {
         final String scanTargetPath = codeLocationName.getScanTargetPath();

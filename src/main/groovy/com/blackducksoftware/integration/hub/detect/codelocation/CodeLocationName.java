@@ -25,9 +25,23 @@ package com.blackducksoftware.integration.hub.detect.codelocation;
 
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 
+// In order to support the changes to code location names that have occurred
+// over time, this class can only be added to. Fields and methods can't be
+// changed or removed unless additional code is written to manage the
+// 'orphaned' code locations that can occur.
+
+// In normal practice, we create a code location for a project/version and each
+// run of detect will replace that old code location with the new one. This is
+// achieved by using the same code location name.
+
+// 'Orphaned' code locations are those code locations created with a previous
+// code location name style. When we create a new style, those 'orphans' will
+// still exist and because the new name won't have anything to replace and will
+// ADD to the BOM, creating duplicate BOM entries.
 public class CodeLocationName {
     private final String projectName;
     private final String projectVersionName;
+    private final String dockerImage;
     private final BomToolType bomToolType;
     private final String sourcePath;
     private final String scanTargetPath;
@@ -35,10 +49,22 @@ public class CodeLocationName {
     private final String suffix;
     private final CodeLocationType codeLocationType;
 
-    public CodeLocationName(final String projectName, final String projectVersionName, final BomToolType bomToolType, final String sourcePath, final String scanTargetPath, final String prefix, final String suffix,
+    /**
+     * A code location might need to shorten various pieces. Remember that this method can not be changed or removed.
+     */
+    public static String shortenPiece(final String piece) {
+        if (piece.length() <= 40) {
+            return piece;
+        } else {
+            return piece.substring(0, 19) + "..." + piece.substring(piece.length() - 18);
+        }
+    }
+
+    public CodeLocationName(final String projectName, final String projectVersionName, final String dockerImage, final BomToolType bomToolType, final String sourcePath, final String scanTargetPath, final String prefix, final String suffix,
             final CodeLocationType codeLocationType) {
         this.projectName = projectName;
         this.projectVersionName = projectVersionName;
+        this.dockerImage = dockerImage;
         this.bomToolType = bomToolType;
         this.sourcePath = sourcePath;
         this.scanTargetPath = scanTargetPath;
@@ -53,6 +79,10 @@ public class CodeLocationName {
 
     public String getProjectVersionName() {
         return projectVersionName;
+    }
+
+    public String getDockerImage() {
+        return dockerImage;
     }
 
     public BomToolType getBomToolType() {

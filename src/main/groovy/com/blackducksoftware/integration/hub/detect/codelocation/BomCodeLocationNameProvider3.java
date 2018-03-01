@@ -28,38 +28,20 @@ import org.springframework.stereotype.Component;
 
 @Component
 // used in 2.0.0
-public class CodeLocationNameProvider3 extends CodeLocationNameProvider {
+public class BomCodeLocationNameProvider3 extends CodeLocationNameProvider {
     @Override
-    public String generateBomToolName(final CodeLocationName codeLocationName) {
+    public String generateName(final CodeLocationName codeLocationName) {
         final String finalSourcePathPiece = detectFileManager.extractFinalPieceFromPath(codeLocationName.getSourcePath());
         final String projectName = codeLocationName.getProjectName();
         final String projectVersionName = codeLocationName.getProjectVersionName();
         final String prefix = codeLocationName.getPrefix();
         final String suffix = codeLocationName.getSuffix();
         final String codeLocationTypeString = codeLocationName.getCodeLocationType().toString().toLowerCase();
-        final String bomToolTypeString = codeLocationName.getBomToolType() == null ? "" : codeLocationName.getBomToolType().toString().toLowerCase();
+        final String bomToolTypeString = codeLocationName.getBomToolType().toString().toLowerCase();
 
         final String codeLocationNameString = createCommonName(finalSourcePathPiece, projectName, projectVersionName, prefix, suffix, codeLocationTypeString, bomToolTypeString);
         if (codeLocationNameString.length() > 250) {
             return shortenCodeLocationName(finalSourcePathPiece, projectName, projectVersionName, prefix, suffix, codeLocationTypeString, bomToolTypeString);
-        } else {
-            return codeLocationNameString;
-        }
-    }
-
-    @Override
-    public String generateScanName(final CodeLocationName codeLocationName) {
-        final String cleanedTargetPath = cleanScanTargetPath(codeLocationName);
-        final String projectName = codeLocationName.getProjectName();
-        final String projectVersionName = codeLocationName.getProjectVersionName();
-        final String prefix = codeLocationName.getPrefix();
-        final String suffix = codeLocationName.getSuffix();
-        final String codeLocationTypeString = codeLocationName.getCodeLocationType().toString().toLowerCase();
-        final String bomToolTypeString = "";
-
-        final String codeLocationNameString = createCommonName(cleanedTargetPath, projectName, projectVersionName, prefix, suffix, codeLocationTypeString, bomToolTypeString);
-        if (codeLocationNameString.length() > 250) {
-            return shortenCodeLocationName(cleanedTargetPath, projectName, projectVersionName, prefix, suffix, codeLocationTypeString, bomToolTypeString);
         } else {
             return codeLocationNameString;
         }
@@ -75,30 +57,20 @@ public class CodeLocationNameProvider3 extends CodeLocationNameProvider {
         }
 
         String endPiece = codeLocationType;
-        if (StringUtils.isNotBlank(bomToolType)) {
-            endPiece = String.format("%s/%s", bomToolType, endPiece);
-        }
+        endPiece = String.format("%s/%s", bomToolType, endPiece);
 
         name = String.format("%s %s", name, endPiece);
         return name;
     }
 
     private String shortenCodeLocationName(final String pathPiece, final String projectName, final String projectVersionName, final String prefix, final String suffix, final String codeLocationType, final String bomToolType) {
-        final String shortenedPathPiece = shortenPiece(pathPiece);
-        final String shortenedProjectName = shortenPiece(projectName);
-        final String shortenedProjectVersionName = shortenPiece(projectVersionName);
-        final String shortenedPrefix = shortenPiece(prefix);
-        final String shortenedSuffix = shortenPiece(suffix);
+        final String shortenedPathPiece = CodeLocationName.shortenPiece(pathPiece);
+        final String shortenedProjectName = CodeLocationName.shortenPiece(projectName);
+        final String shortenedProjectVersionName = CodeLocationName.shortenPiece(projectVersionName);
+        final String shortenedPrefix = CodeLocationName.shortenPiece(prefix);
+        final String shortenedSuffix = CodeLocationName.shortenPiece(suffix);
 
         return createCommonName(shortenedPathPiece, shortenedProjectName, shortenedProjectVersionName, shortenedPrefix, shortenedSuffix, codeLocationType, bomToolType);
-    }
-
-    private String shortenPiece(final String piece) {
-        if (piece.length() <= 40) {
-            return piece;
-        } else {
-            return piece.substring(0, 19) + "..." + piece.substring(piece.length() - 18);
-        }
     }
 
 }

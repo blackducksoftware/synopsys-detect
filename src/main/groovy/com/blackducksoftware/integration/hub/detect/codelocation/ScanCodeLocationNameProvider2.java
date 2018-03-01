@@ -23,9 +23,25 @@
  */
 package com.blackducksoftware.integration.hub.detect.codelocation;
 
-public enum CodeLocationType {
-    SCAN,
-    BOM,
-    DOCKER;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
+
+@Component
+// used in 1.2.0
+public class ScanCodeLocationNameProvider2 extends CodeLocationNameProvider {
+    @Override
+    public String generateName(final CodeLocationName codeLocationName) {
+        final String projectName = codeLocationName.getProjectName();
+        final String projectVersionName = codeLocationName.getProjectVersionName();
+        final String prefix = codeLocationName.getPrefix();
+        final String cleanedTargetPath = cleanScanTargetPath(codeLocationName);
+
+        String name = String.format("%s/%s/%s %s", cleanedTargetPath, projectName, projectVersionName, CodeLocationType.SCAN.toString());
+        if (StringUtils.isNotBlank(prefix)) {
+            name = String.format("%s/%s", prefix, name);
+        }
+
+        return name;
+    }
 
 }

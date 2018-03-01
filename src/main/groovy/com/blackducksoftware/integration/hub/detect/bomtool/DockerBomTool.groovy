@@ -182,7 +182,7 @@ class DockerBomTool extends BomTool {
             String externalIdPath = simpleBdioDocument.project.bdioExternalIdentifier.externalId
             ExternalId projectExternalId = externalIdFactory.createPathExternalId(dockerForge, externalIdPath)
 
-            DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(getBomToolType(), sourcePath, projectExternalId, dependencyGraph).bomToolProjectName(projectName).bomToolProjectVersionName(projectVersionName).build()
+            DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(getBomToolType(), sourcePath, projectExternalId, dependencyGraph).bomToolProjectName(projectName).bomToolProjectVersionName(projectVersionName).dockerImage(imagePiece).build()
             return [detectCodeLocation]
         } else {
             logMissingFile(dockerBomToolDirectory, dependenciesFilenamePattern)
