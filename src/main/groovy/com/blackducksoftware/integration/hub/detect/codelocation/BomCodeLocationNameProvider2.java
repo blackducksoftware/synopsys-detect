@@ -24,26 +24,25 @@
 package com.blackducksoftware.integration.hub.detect.codelocation;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+@Component
+// used in 1.2.0 to 2.0.0
+public class BomCodeLocationNameProvider2 extends CodeLocationNameProvider {
+    @Override
+    public String generateName(final CodeLocationName codeLocationName) {
+        final String projectName = codeLocationName.getProjectName();
+        final String projectVersionName = codeLocationName.getProjectVersionName();
+        final String finalSourcePathPiece = detectFileManager.extractFinalPieceFromPath(codeLocationName.getSourcePath());
+        final String bomToolString = codeLocationName.getBomToolType() == null ? "" : codeLocationName.getBomToolType().toString();
+        final String prefix = codeLocationName.getPrefix();
 
-public abstract class CodeLocationNameProvider {
-    @Autowired
-    protected DetectFileManager detectFileManager;
-
-    public abstract String generateName(CodeLocationName codeLocationName);
-
-    public String cleanScanTargetPath(final CodeLocationName codeLocationName) {
-        final String scanTargetPath = codeLocationName.getScanTargetPath();
-        final String sourcePath = codeLocationName.getSourcePath();
-        final String finalSourcePathPiece = detectFileManager.extractFinalPieceFromPath(sourcePath);
-        String cleanedTargetPath = "";
-        if (StringUtils.isNotBlank(scanTargetPath) && StringUtils.isNotBlank(finalSourcePathPiece)) {
-            cleanedTargetPath = scanTargetPath.replace(sourcePath, finalSourcePathPiece);
+        String name = String.format("%s/%s/%s/%s %s", bomToolString, finalSourcePathPiece, projectName, projectVersionName, CodeLocationType.BOM.toString());
+        if (StringUtils.isNotBlank(prefix)) {
+            name = String.format("%s/%s", prefix, name);
         }
 
-        return cleanedTargetPath;
+        return name;
     }
 
 }
