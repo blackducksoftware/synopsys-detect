@@ -29,7 +29,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
-import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleInspectorManager
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
@@ -47,7 +46,7 @@ import groovy.transform.TypeChecked
 @Component
 @TypeChecked
 class DockerInspectorManager {
-    private final Logger logger = LoggerFactory.getLogger(GradleInspectorManager.class)
+    private final Logger logger = LoggerFactory.getLogger(DockerInspectorManager.class)
 
     static final String LATEST_URL = 'https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector.sh'
 
