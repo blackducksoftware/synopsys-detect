@@ -70,6 +70,11 @@ class DockerProperties {
             environmentVariables.put('DOCKER_INSPECTOR_CURL_OPTS', detectCurlOpts)
         }
 
+        environmentVariables.put('BLACKDUCK_HUB_PROXY_HOST', detectConfiguration.hubProxyHost)
+        environmentVariables.put('BLACKDUCK_HUB_PROXY_PORT', detectConfiguration.hubProxyPort)
+        environmentVariables.put('BLACKDUCK_HUB_PROXY_USERNAME', detectConfiguration.hubProxyUsername)
+        environmentVariables.put('BLACKDUCK_HUB_PROXY_PASSWORD', detectConfiguration.hubProxyPassword)
+
         for (Map.Entry<String, String> environmentProperty : System.getenv()) {
             String key = environmentProperty.getKey()
             if (key != null && key.startsWith(DetectConfiguration.DOCKER_ENVIRONMENT_PREFIX)) {
