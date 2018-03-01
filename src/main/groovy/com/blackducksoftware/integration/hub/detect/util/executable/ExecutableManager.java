@@ -27,6 +27,8 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -37,6 +39,8 @@ import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 
 @Component
 public class ExecutableManager {
+    private final Logger logger = LoggerFactory.getLogger(ExecutableManager.class);
+
     @Autowired
     private DetectFileManager detectFileManager;
 
@@ -89,6 +93,7 @@ public class ExecutableManager {
                 }
             }
         }
+        logger.debug(String.format("Could not find the executable: %s while searching through: %s", executableName, path));
         return null;
     }
 }
