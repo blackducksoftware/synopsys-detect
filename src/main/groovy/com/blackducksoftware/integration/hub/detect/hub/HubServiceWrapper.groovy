@@ -95,10 +95,6 @@ class HubServiceWrapper {
                 assertHubConnection()
             }
             return true;
-        } catch (IllegalStateException e) {
-            if (detailedLog) {
-                logger.error("Failed to build the server configuration: ${e.message}", e)
-            }
         } catch (IntegrationException e) {
             if (detailedLog) {
                 logger.error("Could not reach the Hub server or the credentials were invalid: ${e.message}", e)
