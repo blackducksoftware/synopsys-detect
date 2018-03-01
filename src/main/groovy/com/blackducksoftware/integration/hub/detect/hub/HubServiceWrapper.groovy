@@ -114,10 +114,14 @@ class HubServiceWrapper {
 
     public void assertHubConnection(IntLogger intLogger) {
         logger.info("Attempting connection to the Hub")
-        HubServerConfig hubServerConfig = createHubServerConfig(intLogger)
-        final RestConnection connection = hubServerConfig.createRestConnection(intLogger)
-        connection.connect()
-        logger.info("Connection to the Hub was successful")
+        try {
+            HubServerConfig hubServerConfig = createHubServerConfig(intLogger)
+            final RestConnection connection = hubServerConfig.createRestConnection(intLogger)
+            connection.connect()
+            logger.info("Connection to the Hub was successful")
+        } catch (IllegalStateException e) {
+            throw new IntegrationException(e.getMessage(), e)
+        }
     }
 
     HubService createHubService() {
