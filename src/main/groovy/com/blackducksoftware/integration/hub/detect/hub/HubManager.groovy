@@ -173,7 +173,7 @@ class HubManager implements ExitCodeReporter {
         builder.setPhase(detectConfiguration.getProjectVersionPhase())
         builder.setDistribution(detectConfiguration.getProjectVersionDistribution())
         int projectTier = detectConfiguration.projectTier
-        if (projectTier > 0) {
+        if (projectTier > 0 && projectTier <= 5) {
             builder.setProjectTier(projectTier)
         }
         ProjectRequest projectRequest = builder.build()
