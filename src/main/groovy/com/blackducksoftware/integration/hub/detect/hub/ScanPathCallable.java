@@ -30,14 +30,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.api.generated.component.ProjectRequest;
-import com.blackducksoftware.integration.hub.api.generated.view.ProjectVersionView;
 import com.blackducksoftware.integration.hub.configuration.HubScanConfig;
 import com.blackducksoftware.integration.hub.configuration.HubServerConfig;
 import com.blackducksoftware.integration.hub.detect.summary.Result;
 import com.blackducksoftware.integration.hub.service.SignatureScannerService;
 import com.blackducksoftware.integration.hub.service.model.ProjectVersionWrapper;
 
-public class ScanPathCallable implements Callable<ProjectVersionView> {
+public class ScanPathCallable implements Callable<ProjectVersionWrapper> {
     private final Logger logger = LoggerFactory.getLogger(ScanPathCallable.class);
 
     private final SignatureScannerService signatureScannerService;
@@ -58,7 +57,7 @@ public class ScanPathCallable implements Callable<ProjectVersionView> {
     }
 
     @Override
-    public ProjectVersionView call() throws Exception {
+    public ProjectVersionWrapper call() throws Exception {
         ProjectVersionWrapper projectVersionWrapper = null;
         try {
             logger.info(String.format("Attempting to scan %s for %s/%s", canonicalPath, projectRequest.name, projectRequest.versionRequest.versionName));
@@ -69,7 +68,7 @@ public class ScanPathCallable implements Callable<ProjectVersionView> {
             logger.error(String.format("%s/%s - %s was not scanned by the BlackDuck CLI: %s", projectRequest.name, projectRequest.versionRequest.versionName, canonicalPath, e.getMessage()));
             return null;
         }
-        return projectVersionWrapper.getProjectVersionView();
+        return projectVersionWrapper;
     }
 
 }

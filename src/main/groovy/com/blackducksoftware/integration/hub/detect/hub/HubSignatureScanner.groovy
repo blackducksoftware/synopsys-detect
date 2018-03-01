@@ -48,6 +48,7 @@ import com.blackducksoftware.integration.hub.detect.summary.SummaryResultReporte
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.service.SignatureScannerService
 import com.blackducksoftware.integration.hub.service.model.ProjectRequestBuilder
+import com.blackducksoftware.integration.hub.service.model.ProjectVersionWrapper
 
 import groovy.transform.TypeChecked
 
@@ -124,9 +125,9 @@ class HubSignatureScanner implements SummaryResultReporter, ExitCodeReporter {
         ExecutorService pool = Executors.newFixedThreadPool(detectConfiguration.hubSignatureScannerParallelProcessors)
         try {
             scanPathCallables.collect { pool.submit(it) }.each {
-                ProjectVersionView projectVersionViewFromScan = it.get()
-                if (projectVersionViewFromScan != null) {
-                    projectVersionView = projectVersionViewFromScan
+                ProjectVersionWrapper projectVersionWrapperFromScan = it.get()
+                if (projectVersionWrapperFromScan != null) {
+                    projectVersionView = projectVersionWrapperFromScan.getProjectVersionView()
                 }
             }
         } finally {
