@@ -35,15 +35,12 @@ import org.w3c.dom.Node
 import org.w3c.dom.NodeList
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
-import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
 import com.blackducksoftware.integration.hub.request.Request
 import com.blackducksoftware.integration.hub.request.Response
 import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnection
-import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnectionBuilder
-import com.blackducksoftware.integration.log.Slf4jIntLogger
 
 import freemarker.template.Configuration
 import freemarker.template.Template
@@ -69,9 +66,6 @@ class GradleInspectorManager {
     @Autowired
     DetectFileManager detectFileManager
 
-    @Autowired
-    HubServiceWrapper hubServiceWrapper
-
     private String inspectorVersion
     private String initScriptPath
 
@@ -86,14 +80,7 @@ class GradleInspectorManager {
                         xmlDocument = xmlDocumentBuilder.parse(inputStream)
                     } else {
                         String mavenMetadataUrl = 'http://repo2.maven.org/maven2/com/blackducksoftware/integration/integration-gradle-inspector/maven-metadata.xml'
-                        UnauthenticatedRestConnectionBuilder restConnectionBuilder = new UnauthenticatedRestConnectionBuilder();
-                        restConnectionBuilder.setBaseUrl(mavenMetadataUrl)
-                        restConnectionBuilder.setTimeout(detectConfiguration.getHubTimeout())
-                        restConnectionBuilder.applyProxyInfo(detectConfiguration.getHubProxyInfo())
-                        restConnectionBuilder.setLogger(new Slf4jIntLogger(logger))
-                        restConnectionBuilder.alwaysTrustServerCertificate = detectConfiguration.hubTrustCertificate
-                        UnauthenticatedRestConnection restConnection = restConnectionBuilder.build()
-
+                        UnauthenticatedRestConnection restConnection = detectConfiguration.createUnauthenticatedRestConnection(mavenMetadataUrl)
                         Request request = new Request.Builder().uri(mavenMetadataUrl).build();
                         Response response = null
                         try {
