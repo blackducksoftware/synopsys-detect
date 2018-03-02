@@ -61,9 +61,7 @@ class DockerProperties {
         File dockerExecutableFile = new File(dockerExecutablePath)
         path += File.pathSeparator + dockerExecutableFile.parentFile.getCanonicalPath()
         environmentVariables.put('PATH', path)
-        if (!'latest'.equals(detectConfiguration.dockerInspectorVersion)) {
-            environmentVariables.put('DOCKER_INSPECTOR_VERSION', detectConfiguration.dockerInspectorVersion)
-        }
+        environmentVariables.put('DOCKER_INSPECTOR_VERSION', detectConfiguration.dockerInspectorVersion)
 
         String detectCurlOpts = System.getenv('DETECT_CURL_OPTS')
         if (StringUtils.isNotBlank(detectCurlOpts)) {
