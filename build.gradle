@@ -68,8 +68,6 @@ artifactory {
 }
 
 dependencies {
-    compile 'org.springframework.boot:spring-boot-properties-migrator'
-
     compile 'com.blackducksoftware.integration:hub-common:27.0.0'
     compile 'org.apache.commons:commons-text:1.2'
     compile 'org.springframework.boot:spring-boot-starter'
