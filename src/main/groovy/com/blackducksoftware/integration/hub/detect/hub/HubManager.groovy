@@ -102,7 +102,6 @@ class HubManager implements ExitCodeReporter {
         try {
             if (detectConfiguration.getPolicyCheck() || detectConfiguration.getRiskReportPdf() || detectConfiguration.getNoticesReport()) {
                 ProjectService projectService = hubServiceWrapper.createProjectService()
-                CodeLocationService codeLocationService = hubServiceWrapper.createCodeLocationService()
                 ScanStatusService scanStatusService = hubServiceWrapper.createScanStatusService()
 
                 waitForBomUpdate(hubServiceWrapper.createHubService(), scanStatusService, projectVersionView)
@@ -173,6 +172,7 @@ class HubManager implements ExitCodeReporter {
         builder.setProjectLevelAdjustments(detectConfiguration.getProjectLevelMatchAdjustments())
         builder.setPhase(detectConfiguration.getProjectVersionPhase())
         builder.setDistribution(detectConfiguration.getProjectVersionDistribution())
+        builder.setProjectTier(detectConfiguration.getProjectTier())
         ProjectRequest projectRequest = builder.build()
 
         ProjectVersionWrapper projectVersionWrapper = projectService.getProjectVersionAndCreateIfNeeded(projectRequest)

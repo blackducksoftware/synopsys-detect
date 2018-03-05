@@ -431,6 +431,10 @@ class DetectConfiguration {
     @Value('${detect.project.version.name:}')
     String projectVersionName
 
+    @ValueDescription(description="By default, no tier is set for the project created. If a hub project tier is specified, your project will be created with this tier.", group=DetectConfiguration.GROUP_PROJECT_INFO)
+    @Value('${detect.project.tier:}')
+    Integer projectTier
+
     @ValueDescription(description="A prefix to the name of the codelocations created by Detect. Useful for running against the same projects on multiple machines.", defaultValue="", group=DetectConfiguration.GROUP_PROJECT_INFO)
     @Value('${detect.project.codelocation.prefix:}')
     String projectCodeLocationPrefix
@@ -820,6 +824,9 @@ class DetectConfiguration {
     }
     public String getProjectVersionName() {
         return projectVersionName?.trim()
+    }
+    public int getProjectTier() {
+        return convertInt(projectTier)
     }
     public String getProjectCodeLocationPrefix() {
         return projectCodeLocationPrefix?.trim()
