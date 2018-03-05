@@ -28,25 +28,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 // used in 1.2.0
-public class CodeLocationNameProvider2 extends CodeLocationNameProvider {
+public class ScanCodeLocationNameProvider2 extends CodeLocationNameProvider {
     @Override
-    public String generateBomToolName(final CodeLocationName codeLocationName) {
-        final String projectName = codeLocationName.getProjectName();
-        final String projectVersionName = codeLocationName.getProjectVersionName();
-        final String finalSourcePathPiece = detectFileManager.extractFinalPieceFromPath(codeLocationName.getSourcePath());
-        final String bomToolString = codeLocationName.getBomToolType() == null ? "" : codeLocationName.getBomToolType().toString();
-        final String prefix = codeLocationName.getPrefix();
-
-        String name = String.format("%s/%s/%s/%s %s", bomToolString, finalSourcePathPiece, projectName, projectVersionName, CodeLocationType.BOM.toString());
-        if (StringUtils.isNotBlank(prefix)) {
-            name = String.format("%s/%s", prefix, name);
-        }
-
-        return name;
-    }
-
-    @Override
-    public String generateScanName(final CodeLocationName codeLocationName) {
+    public String generateName(final CodeLocationName codeLocationName) {
         final String projectName = codeLocationName.getProjectName();
         final String projectVersionName = codeLocationName.getProjectVersionName();
         final String prefix = codeLocationName.getPrefix();

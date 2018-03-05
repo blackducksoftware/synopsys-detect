@@ -166,25 +166,29 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         final Set<String> bdioFileNames = new HashSet<>();
 
         for (final DetectCodeLocation detectCodeLocation : detectProject.getDetectCodeLocations()) {
+            if (detectCodeLocation.getDependencyGraph() == null) {
+                logger.warn(String.format("Dependency graph is null for code location %s", detectCodeLocation.getSourcePath()));
+                continue;
+            }
+            if (detectCodeLocation.getDependencyGraph().getRootDependencies().size() <= 0) {
+                logger.warn(String.format("Could not find any dependencies for code location %s", detectCodeLocation.getSourcePath()));
+            }
             if (StringUtils.isNotBlank(detectConfiguration.getAggregateBomName())) {
                 aggregateDependencyGraph.addGraphAsChildrenToRoot(detectCodeLocation.getDependencyGraph());
             } else {
-                if (detectCodeLocation.getDependencyGraph() == null || detectCodeLocation.getDependencyGraph().getRootDependencies().size() <= 0) {
-                    logger.warn(String.format("Could not find any dependencies for code location %s", detectCodeLocation.getSourcePath()));
-                }
-
                 final String projectName = detectProject.getProjectName();
                 final String projectVersionName = detectProject.getProjectVersionName();
 
                 final String prefix = detectConfiguration.getProjectCodeLocationPrefix();
                 final String suffix = detectConfiguration.getProjectCodeLocationSuffix();
 
-                final CodeLocationName codeLocationName = codeLocationNameService.createBomToolName(detectCodeLocation.getSourcePath(), projectName, projectVersionName, detectCodeLocation.getBomToolType(), prefix, suffix);
-                final String codeLocationNameString = codeLocationNameService.generateBomToolCurrent(codeLocationName);
+                final CodeLocationName codeLocationName = detectCodeLocation.createCodeLocationName(codeLocationNameService, projectName, projectVersionName, prefix, suffix);
+                final String codeLocationNameString = detectCodeLocation.getCodeLocationNameString(codeLocationNameService, codeLocationName);
                 if (!codeLocationNames.add(codeLocationNameString)) {
                     throw new DetectUserFriendlyException(String.format("Found duplicate Code Locations with the name: %s", codeLocationNameString), ExitCodeType.FAILURE_GENERAL_ERROR);
                 }
                 final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(codeLocationNameString, detectProject, detectCodeLocation);
+
                 final String finalSourcePathPiece = detectFileManager.extractFinalPieceFromPath(detectCodeLocation.getSourcePath());
                 final String filename = generateShortenedFilename(detectCodeLocation.getBomToolType(), finalSourcePathPiece, detectCodeLocation.getBomToolProjectExternalId());
                 if (!bdioFileNames.add(filename)) {

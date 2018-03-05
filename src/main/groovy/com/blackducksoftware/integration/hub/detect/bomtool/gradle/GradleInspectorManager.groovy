@@ -38,6 +38,9 @@ import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
+import com.blackducksoftware.integration.hub.request.Request
+import com.blackducksoftware.integration.hub.request.Response
+import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnection
 
 import freemarker.template.Configuration
 import freemarker.template.Template
@@ -70,15 +73,26 @@ class GradleInspectorManager {
         if (!inspectorVersion) {
             if ('latest'.equalsIgnoreCase(detectConfiguration.getGradleInspectorVersion())) {
                 try {
-                    InputStream inputStream
+                    Document xmlDocument = null
                     File airGapMavenMetadataFile = new File(detectConfiguration.getGradleInspectorAirGapPath(), 'maven-metadata.xml')
                     if (airGapMavenMetadataFile.exists()) {
-                        inputStream = new FileInputStream(airGapMavenMetadataFile)
+                        InputStream inputStream = new FileInputStream(airGapMavenMetadataFile)
+                        xmlDocument = xmlDocumentBuilder.parse(inputStream)
                     } else {
-                        URL mavenMetadataUrl = new URL('http://repo2.maven.org/maven2/com/blackducksoftware/integration/integration-gradle-inspector/maven-metadata.xml')
-                        inputStream = mavenMetadataUrl.openStream()
+                        String mavenMetadataUrl = 'http://repo2.maven.org/maven2/com/blackducksoftware/integration/integration-gradle-inspector/maven-metadata.xml'
+                        UnauthenticatedRestConnection restConnection = detectConfiguration.createUnauthenticatedRestConnection(mavenMetadataUrl)
+                        Request request = new Request.Builder().uri(mavenMetadataUrl).build();
+                        Response response = null
+                        try {
+                            response = restConnection.executeRequest(request)
+                            InputStream inputStream = response.getContent()
+                            xmlDocument = xmlDocumentBuilder.parse(inputStream)
+                        } finally {
+                            if ( null != response) {
+                                response.close()
+                            }
+                        }
                     }
-                    final Document xmlDocument = xmlDocumentBuilder.parse(inputStream)
                     final NodeList latestVersionNodes = xmlDocument.getElementsByTagName('latest')
                     final Node latestVersion = latestVersionNodes.item(0)
                     inspectorVersion = latestVersion.getTextContent()

@@ -29,7 +29,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
-import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleInspectorManager
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
@@ -39,15 +38,13 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 import com.blackducksoftware.integration.hub.request.Request
 import com.blackducksoftware.integration.hub.request.Response
 import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnection
-import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnectionBuilder
-import com.blackducksoftware.integration.log.Slf4jIntLogger
 
 import groovy.transform.TypeChecked
 
 @Component
 @TypeChecked
 class DockerInspectorManager {
-    private final Logger logger = LoggerFactory.getLogger(GradleInspectorManager.class)
+    private final Logger logger = LoggerFactory.getLogger(DockerInspectorManager.class)
 
     static final String LATEST_URL = 'https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector.sh'
 
@@ -103,13 +100,7 @@ class DockerInspectorManager {
                         hubDockerInspectorShellScriptUrl = "https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector-${detectConfiguration.getDockerInspectorVersion()}.sh"
                     }
                     logger.info("Getting the Docker inspector shell script from ${hubDockerInspectorShellScriptUrl.toURI().toString()}")
-                    UnauthenticatedRestConnectionBuilder restConnectionBuilder = new UnauthenticatedRestConnectionBuilder();
-                    restConnectionBuilder.setBaseUrl(hubDockerInspectorShellScriptUrl)
-                    restConnectionBuilder.setTimeout(detectConfiguration.getHubTimeout())
-                    restConnectionBuilder.applyProxyInfo(detectConfiguration.getHubProxyInfo())
-                    restConnectionBuilder.setLogger(new Slf4jIntLogger(logger))
-                    UnauthenticatedRestConnection restConnection = restConnectionBuilder.build()
-                    restConnection.alwaysTrustServerCertificate = detectConfiguration.hubTrustCertificate
+                    UnauthenticatedRestConnection restConnection = detectConfiguration.createUnauthenticatedRestConnection(hubDockerInspectorShellScriptUrl)
 
                     Request request = new Request.Builder().uri(hubDockerInspectorShellScriptUrl).build();
                     String shellScriptContents = null

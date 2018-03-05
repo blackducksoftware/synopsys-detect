@@ -61,14 +61,17 @@ class DockerProperties {
         File dockerExecutableFile = new File(dockerExecutablePath)
         path += File.pathSeparator + dockerExecutableFile.parentFile.getCanonicalPath()
         environmentVariables.put('PATH', path)
-        if (!'latest'.equals(detectConfiguration.dockerInspectorVersion)) {
-            environmentVariables.put('DOCKER_INSPECTOR_VERSION', detectConfiguration.dockerInspectorVersion)
-        }
+        environmentVariables.put('DOCKER_INSPECTOR_VERSION', detectConfiguration.dockerInspectorVersion)
 
         String detectCurlOpts = System.getenv('DETECT_CURL_OPTS')
         if (StringUtils.isNotBlank(detectCurlOpts)) {
             environmentVariables.put('DOCKER_INSPECTOR_CURL_OPTS', detectCurlOpts)
         }
+
+        environmentVariables.put('BLACKDUCK_HUB_PROXY_HOST', detectConfiguration.hubProxyHost)
+        environmentVariables.put('BLACKDUCK_HUB_PROXY_PORT', detectConfiguration.hubProxyPort)
+        environmentVariables.put('BLACKDUCK_HUB_PROXY_USERNAME', detectConfiguration.hubProxyUsername)
+        environmentVariables.put('BLACKDUCK_HUB_PROXY_PASSWORD', detectConfiguration.hubProxyPassword)
 
         for (Map.Entry<String, String> environmentProperty : System.getenv()) {
             String key = environmentProperty.getKey()

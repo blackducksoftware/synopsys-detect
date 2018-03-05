@@ -28,9 +28,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 // used in 0.0.7 to 1.1.0
-public class CodeLocationNameProvider1 extends CodeLocationNameProvider {
+public class BomCodeLocationNameProvider1 extends CodeLocationNameProvider {
     @Override
-    public String generateBomToolName(final CodeLocationName codeLocationName) {
+    public String generateName(final CodeLocationName codeLocationName) {
         final String projectName = codeLocationName.getProjectName();
         final String projectVersionName = codeLocationName.getProjectVersionName();
         final String finalSourcePathPiece = detectFileManager.extractFinalPieceFromPath(codeLocationName.getSourcePath());
@@ -38,21 +38,6 @@ public class CodeLocationNameProvider1 extends CodeLocationNameProvider {
         final String prefix = codeLocationName.getPrefix();
 
         String name = String.format("%s/%s/%s/%s %s", bomToolString, finalSourcePathPiece, projectName, projectVersionName, "Hub Detect Tool");
-        if (StringUtils.isNotBlank(prefix)) {
-            name = String.format("%s/%s", prefix, name);
-        }
-
-        return name;
-    }
-
-    @Override
-    public String generateScanName(final CodeLocationName codeLocationName) {
-        final String projectName = codeLocationName.getProjectName();
-        final String projectVersionName = codeLocationName.getProjectVersionName();
-        final String prefix = codeLocationName.getPrefix();
-        final String cleanedTargetPath = cleanScanTargetPath(codeLocationName);
-
-        String name = String.format("%s/%s/%s %s", cleanedTargetPath, projectName, projectVersionName, "Hub Detect Scan");
         if (StringUtils.isNotBlank(prefix)) {
             name = String.format("%s/%s", prefix, name);
         }
