@@ -431,7 +431,7 @@ class DetectConfiguration {
     @Value('${detect.project.version.name:}')
     String projectVersionName
 
-    @ValueDescription(description="By default, no tier is set for the project created. If a value between 1-5 is supplied, your project will be created with this tier", group=DetectConfiguration.GROUP_PROJECT_INFO)
+    @ValueDescription(description="By default, no tier is set for the project created. If a hub project tier is specified, your project will be created with this tier.", group=DetectConfiguration.GROUP_PROJECT_INFO)
     @Value('${detect.project.tier:}')
     Integer projectTier
 
