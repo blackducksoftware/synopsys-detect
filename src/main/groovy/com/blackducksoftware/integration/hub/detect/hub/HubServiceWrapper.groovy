@@ -92,7 +92,7 @@ class HubServiceWrapper {
             if (detailedLog) {
                 assertHubConnection(new Slf4jIntLogger(logger))
             } else {
-                assertHubConnection()
+                assertHubConnection(new SilentLogger())
             }
             return true;
         } catch (IntegrationException e) {
@@ -101,11 +101,6 @@ class HubServiceWrapper {
             }
         }
         return false;
-    }
-
-    public void assertHubConnection() {
-        IntLogger intLogger = new SilentLogger()
-        assertHubConnection(intLogger)
     }
 
     public void assertHubConnection(IntLogger intLogger) {

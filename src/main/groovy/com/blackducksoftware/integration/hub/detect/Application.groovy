@@ -64,6 +64,7 @@ import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.summary.DetectSummary
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.exception.HubTimeoutExceededException
+import com.blackducksoftware.integration.log.SilentLogger
 import com.blackducksoftware.integration.log.Slf4jIntLogger
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil
 import com.google.gson.Gson
@@ -166,7 +167,7 @@ class Application {
             }
 
             if (detectConfiguration.testConnection) {
-                hubServiceWrapper.assertHubConnection()
+                hubServiceWrapper.assertHubConnection(new SilentLogger())
                 return
             }
 
