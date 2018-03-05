@@ -431,7 +431,11 @@ class DetectConfiguration {
     @Value('${detect.project.version.name:}')
     String projectVersionName
 
-    @ValueDescription(description="By default, no tier is set for the project created. If a hub project tier is specified, your project will be created with this tier.", group=DetectConfiguration.GROUP_PROJECT_INFO)
+    @ValueDescription(description="If project version notes are specified, your project version will be created with these notes.", group=DetectConfiguration.GROUP_PROJECT_INFO)
+    @Value('${detect.project.version.notes:}')
+    String projectVersionNotes
+
+    @ValueDescription(description="If a hub project tier is specified, your project will be created with this tier.", group=DetectConfiguration.GROUP_PROJECT_INFO)
     @Value('${detect.project.tier:}')
     Integer projectTier
 
@@ -824,6 +828,9 @@ class DetectConfiguration {
     }
     public String getProjectVersionName() {
         return projectVersionName?.trim()
+    }
+    public String getProjectVersionNotes() {
+        return projectVersionNotes
     }
     public int getProjectTier() {
         return convertInt(projectTier)
