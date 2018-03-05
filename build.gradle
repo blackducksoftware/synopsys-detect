@@ -7,19 +7,20 @@ buildscript {
 
     dependencies {
         classpath 'com.blackducksoftware.integration:common-gradle-plugin:0.0.+'
-        classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.5.10.RELEASE'
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.0.0.RELEASE'
     }
 }
 
 plugins {
     id 'groovy'
-    id 'org.springframework.boot' version '1.5.10.RELEASE'
     id 'maven-publish'
 }
 
 version = '3.1.0-SNAPSHOT'
 
 apply plugin: 'com.blackducksoftware.integration.solution'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
 
 final def versionFile = new File("${projectDir}/src/main/resources/version.txt")
 versionFile.delete()
@@ -85,4 +86,4 @@ dependencies {
     testCompile 'org.springframework.boot:spring-boot-starter-test'
 }
 
-springBoot { mainClass = 'com.blackducksoftware.integration.hub.detect.Application' }
+springBoot { mainClassName = 'com.blackducksoftware.integration.hub.detect.Application' }
