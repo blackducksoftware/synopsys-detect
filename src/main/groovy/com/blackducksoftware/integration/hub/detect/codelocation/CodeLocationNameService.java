@@ -61,18 +61,26 @@ public class CodeLocationNameService {
     @Autowired
     private DockerCodeLocationNameProvider1 dockerCodeLocationNameProvider1;
 
+    @Autowired
+    private NugetCodeLocationNameProvider1 nugetCodeLocationNameProvider1;
+
     public CodeLocationName createBomToolName(final String sourcePath, final String projectName, final String projectVersionName, final BomToolType bomToolType, final String prefix, final String suffix) {
-        final CodeLocationName codeLocationName = new CodeLocationName(projectName, projectVersionName, null, bomToolType, sourcePath, null, prefix, suffix, CodeLocationType.BOM);
+        final CodeLocationName codeLocationName = new CodeLocationName(projectName, projectVersionName, null, null, bomToolType, sourcePath, null, prefix, suffix, CodeLocationType.BOM);
         return codeLocationName;
     }
 
     public CodeLocationName createScanName(final String sourcePath, final String scanTargetPath, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
-        final CodeLocationName codeLocationName = new CodeLocationName(projectName, projectVersionName, null, null, sourcePath, scanTargetPath, prefix, suffix, CodeLocationType.SCAN);
+        final CodeLocationName codeLocationName = new CodeLocationName(projectName, projectVersionName, null, null, null, sourcePath, scanTargetPath, prefix, suffix, CodeLocationType.SCAN);
         return codeLocationName;
     }
 
     public CodeLocationName createDockerName(final String sourcePath, final String projectName, final String projectVersionName, final String dockerImage, final BomToolType bomToolType, final String prefix, final String suffix) {
-        final CodeLocationName codeLocationName = new CodeLocationName(projectName, projectVersionName, dockerImage, bomToolType, sourcePath, null, prefix, suffix, CodeLocationType.DOCKER);
+        final CodeLocationName codeLocationName = new CodeLocationName(projectName, projectVersionName, dockerImage, null, bomToolType, sourcePath, null, prefix, suffix, CodeLocationType.DOCKER);
+        return codeLocationName;
+    }
+
+    public CodeLocationName createNugetName(final String sourcePath, final String projectName, final String projectVersionName, final String nugetPath, final BomToolType bomToolType, final String prefix, final String suffix) {
+        final CodeLocationName codeLocationName = new CodeLocationName(projectName, projectVersionName, null, nugetPath, bomToolType, sourcePath, null, prefix, suffix, CodeLocationType.NUGET);
         return codeLocationName;
     }
 

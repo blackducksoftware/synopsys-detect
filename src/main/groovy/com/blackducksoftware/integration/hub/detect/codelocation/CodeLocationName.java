@@ -42,6 +42,7 @@ public class CodeLocationName {
     private final String projectName;
     private final String projectVersionName;
     private final String dockerImage;
+    private final String nugetPath;
     private final BomToolType bomToolType;
     private final String sourcePath;
     private final String scanTargetPath;
@@ -60,11 +61,13 @@ public class CodeLocationName {
         }
     }
 
-    public CodeLocationName(final String projectName, final String projectVersionName, final String dockerImage, final BomToolType bomToolType, final String sourcePath, final String scanTargetPath, final String prefix, final String suffix,
+    public CodeLocationName(final String projectName, final String projectVersionName, final String dockerImage, final String nugetPath, final BomToolType bomToolType, final String sourcePath, final String scanTargetPath,
+            final String prefix, final String suffix,
             final CodeLocationType codeLocationType) {
         this.projectName = projectName;
         this.projectVersionName = projectVersionName;
         this.dockerImage = dockerImage;
+        this.nugetPath = nugetPath;
         this.bomToolType = bomToolType;
         this.sourcePath = sourcePath;
         this.scanTargetPath = scanTargetPath;
@@ -83,6 +86,10 @@ public class CodeLocationName {
 
     public String getDockerImage() {
         return dockerImage;
+    }
+
+    public String getNugetPath() {
+        return nugetPath;
     }
 
     public BomToolType getBomToolType() {

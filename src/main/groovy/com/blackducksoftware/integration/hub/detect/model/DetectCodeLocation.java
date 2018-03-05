@@ -34,6 +34,7 @@ public class DetectCodeLocation {
     private final String bomToolProjectName;
     private final String bomToolProjectVersionName;
     private final String dockerImage;
+    private final String nugetPath;
     private final ExternalId bomToolProjectExternalId;
     private final DependencyGraph dependencyGraph;
 
@@ -43,6 +44,7 @@ public class DetectCodeLocation {
         private String bomToolProjectName;
         private String bomToolProjectVersionName;
         private String dockerImage;
+        private String nugetPath;
         private final ExternalId bomToolProjectExternalId;
         private final DependencyGraph dependencyGraph;
 
@@ -68,6 +70,11 @@ public class DetectCodeLocation {
             return this;
         }
 
+        public Builder nugetPath(final String nugetPath) {
+            this.nugetPath = nugetPath;
+            return this;
+        }
+
         public DetectCodeLocation build() {
             return new DetectCodeLocation(this);
         }
@@ -79,6 +86,7 @@ public class DetectCodeLocation {
         this.bomToolProjectName = builder.bomToolProjectName;
         this.bomToolProjectVersionName = builder.bomToolProjectVersionName;
         this.dockerImage = builder.dockerImage;
+        this.nugetPath = builder.nugetPath;
         this.bomToolProjectExternalId = builder.bomToolProjectExternalId;
         this.dependencyGraph = builder.dependencyGraph;
     }
