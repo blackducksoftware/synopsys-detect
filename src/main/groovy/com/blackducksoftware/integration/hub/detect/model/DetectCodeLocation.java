@@ -94,6 +94,8 @@ public class DetectCodeLocation {
     public CodeLocationName createCodeLocationName(final CodeLocationNameService codeLocationNameService, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
         if (BomToolType.DOCKER == getBomToolType()) {
             return codeLocationNameService.createDockerName(getSourcePath(), projectName, projectVersionName, dockerImage, getBomToolType(), prefix, suffix);
+        } else if (BomToolType.NUGET == getBomToolType()) {
+            return codeLocationNameService.createNugetName(getSourcePath(), projectName, projectVersionName, nugetPath, getBomToolType(), prefix, suffix);
         } else {
             return codeLocationNameService.createBomToolName(getSourcePath(), projectName, projectVersionName, getBomToolType(), prefix, suffix);
         }
@@ -102,6 +104,8 @@ public class DetectCodeLocation {
     public String getCodeLocationNameString(final CodeLocationNameService codeLocationNameService, final CodeLocationName codeLocationName) {
         if (BomToolType.DOCKER == getBomToolType()) {
             return codeLocationNameService.generateDockerCurrent(codeLocationName);
+        } else if (BomToolType.NUGET == getBomToolType()) {
+            return codeLocationNameService.generateNugetCurrent(codeLocationName);
         } else {
             return codeLocationNameService.generateBomToolCurrent(codeLocationName);
         }

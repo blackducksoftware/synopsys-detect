@@ -115,4 +115,15 @@ public class CodeLocationNameService {
         return dockerCodeLocationNameProvider1.generateName(codeLocationName);
     }
 
+    public String generateNugetCurrent(final CodeLocationName codeLocationName) {
+        // for any previously supported code location names, log if we find them
+        final List<String> possiblePreviousCodeLocations = new ArrayList<>();
+        possiblePreviousCodeLocations.add(bomCodeLocationNameProvider1.generateName(codeLocationName));
+        possiblePreviousCodeLocations.add(bomCodeLocationNameProvider2.generateName(codeLocationName));
+        possiblePreviousCodeLocations.add(bomCodeLocationNameProvider3.generateName(codeLocationName));
+        hubManager.manageExistingCodeLocations(possiblePreviousCodeLocations);
+
+        return nugetCodeLocationNameProvider1.generateName(codeLocationName);
+    }
+
 }
