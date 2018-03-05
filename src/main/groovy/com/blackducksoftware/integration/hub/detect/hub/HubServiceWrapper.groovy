@@ -88,30 +88,31 @@ class HubServiceWrapper {
     }
 
     public boolean testHubConnection(boolean detailedLog) {
-        logger.info("Attempting connection to the Hub")
         try {
-            IntLogger slf4jIntLogger;
             if (detailedLog) {
-                slf4jIntLogger = new Slf4jIntLogger(logger);
+                assertHubConnection(new Slf4jIntLogger(logger))
             } else {
-                slf4jIntLogger = new SilentLogger();
+                assertHubConnection(new SilentLogger())
             }
-            HubServerConfig hubServerConfig = createHubServerConfig(slf4jIntLogger);
-
-            final RestConnection connection = hubServerConfig.createRestConnection(slf4jIntLogger)
-            connection.connect()
-            logger.info("Connection to the Hub was successful")
             return true;
-        } catch (IllegalStateException e) {
-            if (detailedLog) {
-                logger.error("Failed to build the server configuration: ${e.message}", e)
-            }
         } catch (IntegrationException e) {
             if (detailedLog) {
                 logger.error("Could not reach the Hub server or the credentials were invalid: ${e.message}", e)
             }
         }
         return false;
+    }
+
+    public void assertHubConnection(IntLogger intLogger) {
+        logger.info("Attempting connection to the Hub")
+        try {
+            HubServerConfig hubServerConfig = createHubServerConfig(intLogger)
+            final RestConnection connection = hubServerConfig.createRestConnection(intLogger)
+            connection.connect()
+            logger.info("Connection to the Hub was successful")
+        } catch (IllegalStateException e) {
+            throw new IntegrationException(e.getMessage(), e)
+        }
     }
 
     HubService createHubService() {
