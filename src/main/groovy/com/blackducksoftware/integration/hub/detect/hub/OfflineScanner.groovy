@@ -41,7 +41,6 @@ import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.rest.RestConnection
 import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnectionBuilder
 import com.blackducksoftware.integration.log.IntLogger
-import com.blackducksoftware.integration.log.SilentLogger
 import com.blackducksoftware.integration.log.Slf4jIntLogger
 import com.blackducksoftware.integration.util.CIEnvironmentVariables
 import com.google.gson.Gson
@@ -64,22 +63,19 @@ class OfflineScanner {
 
         def hubServerConfig = new HubServerConfig(null, 0, (String)null, null, false)
 
-
         def ciEnvironmentVariables = new CIEnvironmentVariables()
         ciEnvironmentVariables.putAll(System.getenv())
 
-        def silentLogger = new SilentLogger()
-
         def simpleScanUtility = new SimpleScanUtility(intLogger, gson, hubServerConfig, ciEnvironmentVariables, hubScanConfig, detectProject.projectName, detectProject.projectVersionName)
-        final CLILocation cliLocation = new CLILocation(silentLogger, hubScanConfig.getToolsDir())
+        final CLILocation cliLocation = new CLILocation(intLogger, hubScanConfig.getToolsDir())
         if (hubSignatureScannerOfflineLocalPath) {
-            cliLocation = new OfflineCLILocation(silentLogger, new File(hubSignatureScannerOfflineLocalPath))
+            cliLocation = new OfflineCLILocation(intLogger, new File(hubSignatureScannerOfflineLocalPath))
         }
 
-        boolean cliInstalledOkay = checkCliInstall(cliLocation, silentLogger)
+        boolean cliInstalledOkay = checkCliInstall(cliLocation, intLogger)
         if (!cliInstalledOkay && detectConfiguration.hubSignatureScannerHostUrl) {
             installSignatureScannerFromUrl(intLogger, hubScanConfig, ciEnvironmentVariables);
-            cliInstalledOkay = checkCliInstall(cliLocation, silentLogger)
+            cliInstalledOkay = checkCliInstall(cliLocation, intLogger)
         }
 
         if (!cliInstalledOkay && hubSignatureScannerOfflineLocalPath) {
