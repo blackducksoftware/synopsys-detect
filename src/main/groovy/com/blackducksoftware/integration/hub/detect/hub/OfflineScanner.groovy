@@ -71,7 +71,7 @@ class OfflineScanner {
         def silentLogger = new SilentLogger()
 
         def simpleScanUtility = new SimpleScanUtility(intLogger, gson, hubServerConfig, ciEnvironmentVariables, hubScanConfig, detectProject.projectName, detectProject.projectVersionName)
-        final CLILocation cliLocation = new CLILocation(silentLogger, hubScanConfig.getToolsDir())
+        CLILocation cliLocation = new CLILocation(silentLogger, hubScanConfig.getToolsDir())
         if (hubSignatureScannerOfflineLocalPath) {
             cliLocation = new OfflineCLILocation(silentLogger, new File(hubSignatureScannerOfflineLocalPath))
         }

@@ -108,7 +108,13 @@ class NugetInspectorPackager {
                 if (!projectVersionName) {
                     projectVersionName = container.version
                 }
-                new DetectCodeLocation.Builder(BomToolType.NUGET, sourcePath, externalIdFactory.createNameVersionExternalId(Forge.NUGET, projectName, projectVersionName), children).bomToolProjectName(projectName).bomToolProjectVersionName(projectVersionName).build()
+				
+				def externalId = externalIdFactory.createNameVersionExternalId(Forge.NUGET, projectName, projectVersionName);
+                new DetectCodeLocation.Builder(BomToolType.NUGET, sourcePath, externalId, children)
+					.bomToolProjectName(projectName)
+					.bomToolProjectVersionName(projectVersionName)
+					.nugetPath(container.name)
+					.build()
             }
             return codeLocations
         } else if (NugetContainerType.PROJECT == nugetContainer.type) {
