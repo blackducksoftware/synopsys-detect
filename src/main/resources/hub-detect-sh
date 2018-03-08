@@ -30,47 +30,18 @@ DETECT_JAVA_OPTS=${DETECT_JAVA_OPTS:-}
 # DETECT_CURL_OPTS=--proxy http://myproxy:3128
 DETECT_CURL_OPTS=${DETECT_CURL_OPTS:-}
 
-PROXY_HOST=${BLACKDUCK_HUB_PROXY_HOST}
-PROXY_PORT=${BLACKDUCK_HUB_PROXY_PORT}
-PROXY_USERNAME=${BLACKDUCK_HUB_PROXY_USERNAME}
-PROXY_PASSWORD=${BLACKDUCK_HUB_PROXY_PASSWORD}
-
 SCRIPT_ARGS="$@"
+LOGGABLE_SCRIPT_ARGS=""
 
-for i in "$SCRIPT_ARGS"
-do
-case $i in
-    --blackduck.hub.proxy.host=*)
-    PROXY_HOST="${i#*=}"
-    shift # past argument=value
-    ;;
-    --blackduck.hub.proxy.port=*)
-    PROXY_PORT="${i#*=}"
-    shift # past argument=value
-    ;;
-    --blackduck.hub.proxy.username=*)
-    PROXY_USERNAME="${i#*=}"
-    shift # past argument=value
-    ;;
-     --blackduck.hub.proxy.password=*)
-    PROXY_PASSWORD="${i#*=}"
-    shift # past argument=value
-    ;;
-    *)
-          # ignored option
-    ;;
-esac
+for i in $*; do
+  if [[ $i == --blackduck.hub.password=* ]]; then
+    LOGGABLE_SCRIPT_ARGS="$LOGGABLE_SCRIPT_ARGS --blackduck.hub.password=<redacted>"
+  elif [[ $i == --blackduck.hub.proxy.password=* ]]; then
+    LOGGABLE_SCRIPT_ARGS="$LOGGABLE_SCRIPT_ARGS --blackduck.hub.proxy.password=<redacted>"
+  else
+    LOGGABLE_SCRIPT_ARGS="$LOGGABLE_SCRIPT_ARGS $i"
+  fi
 done
-
-DETECT_CURL_PROXY_OPTIONS=""
-
-if [ ! -z "${PROXY_HOST}" ]; then
-	DETECT_CURL_PROXY_OPTIONS="--proxy ${PROXY_HOST}:${PROXY_PORT}"
-
-	if [ ! -z "${PROXY_USERNAME}" ]; then
-		DETECT_CURL_PROXY_OPTIONS="${DETECT_CURL_PROXY_OPTIONS} --proxy-anyauth --proxy-user ${PROXY_USERNAME}:${PROXY_PASSWORD}"
-	fi
-fi
 
 run() {
   get_detect
@@ -84,7 +55,7 @@ get_detect() {
     CURRENT_VERSION=$( <$VERSION_FILE_DESTINATION )
   fi
 
-  curl $DETECT_CURL_OPTS $DETECT_CURL_PROXY_OPTIONS -o $VERSION_FILE_DESTINATION https://blackducksoftware.github.io/hub-detect/latest-commit-id.txt
+  curl $DETECT_CURL_OPTS -o $VERSION_FILE_DESTINATION https://blackducksoftware.github.io/hub-detect/latest-commit-id.txt
   LATEST_VERSION=$( <$VERSION_FILE_DESTINATION )
 
   if [ $DETECT_USE_SNAPSHOT -eq 1 ]; then
@@ -98,7 +69,7 @@ get_detect() {
     fi
   else
     if [ -z "${DETECT_RELEASE_VERSION}" ]; then
-      DETECT_RELEASE_VERSION=$(curl $DETECT_CURL_OPTS $DETECT_CURL_PROXY_OPTIONS 'https://test-repo.blackducksoftware.com/artifactory/api/search/latestVersion?g=com.blackducksoftware.integration&a=hub-detect&repos=bds-integrations-release')
+      DETECT_RELEASE_VERSION=$(curl $DETECT_CURL_OPTS 'https://test-repo.blackducksoftware.com/artifactory/api/search/latestVersion?g=com.blackducksoftware.integration&a=hub-detect&repos=bds-integrations-release')
       DETECT_SOURCE="https://test-repo.blackducksoftware.com/artifactory/bds-integrations-release/com/blackducksoftware/integration/hub-detect/${DETECT_RELEASE_VERSION}/hub-detect-${DETECT_RELEASE_VERSION}.jar"
       DETECT_DESTINATION="${DETECT_JAR_PATH}/hub-detect-${DETECT_RELEASE_VERSION}.jar"
     else
@@ -120,14 +91,14 @@ get_detect() {
 
   if [ $USE_REMOTE -eq 1 ]; then
     echo "getting ${DETECT_SOURCE} from remote"
-    curl $DETECT_CURL_OPTS $DETECT_CURL_PROXY_OPTIONS -L -o $DETECT_DESTINATION "${DETECT_SOURCE}"
+    curl $DETECT_CURL_OPTS -L -o $DETECT_DESTINATION "${DETECT_SOURCE}"
     echo "saved ${DETECT_SOURCE} to ${DETECT_DESTINATION}"
   fi
 }
 
 run_detect() {
   JAVACMD="java ${DETECT_JAVA_OPTS} -jar ${DETECT_DESTINATION}"
-  echo "running detect: ${JAVACMD} ${SCRIPT_ARGS}"
+  echo "running detect: ${JAVACMD} ${LOGGABLE_SCRIPT_ARGS}"
 
   # first, silently delete (-f ignores missing
   # files) any existing shell script, then create
