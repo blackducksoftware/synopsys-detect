@@ -33,29 +33,19 @@ DETECT_CURL_OPTS=${DETECT_CURL_OPTS:-}
 SCRIPT_ARGS="$@"
 LOGGABLE_SCRIPT_ARGS=""
 
-for i in "$SCRIPT_ARGS"
-do
-echo "thing thing thing"
-echo "$i"
-echo "${i#*=}"
-case $i in
-    --blackduck.hub.password=*)
+for i in $*; do
+  if [[ $i == --blackduck.hub.password=* ]]; then
     LOGGABLE_SCRIPT_ARGS="$LOGGABLE_SCRIPT_ARGS --blackduck.hub.password=<redacted>"
-    shift # past argument=value
-    ;;
-    --blackduck.hub.proxy.password=*)
+  elif [[ $i == --blackduck.hub.proxy.password=* ]]; then
     LOGGABLE_SCRIPT_ARGS="$LOGGABLE_SCRIPT_ARGS --blackduck.hub.proxy.password=<redacted>"
-    shift # past argument=value
-    ;;
-    *)
-    LOGGABLE_SCRIPT_ARGS="$LOGGABLE_SCRIPT_ARGS ${i#*=}"
-    ;;
-esac
+  else
+    LOGGABLE_SCRIPT_ARGS="$LOGGABLE_SCRIPT_ARGS $i"
+  fi
 done
 
 run() {
   get_detect
-  #run_detect
+  run_detect
 }
 
 get_detect() {
