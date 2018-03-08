@@ -46,7 +46,7 @@ class HelpPrinter {
 
         String headerText = formatColumns(headerColumns, 51, 30, 95)
         helpMessagePieces.add(headerText)
-        helpMessagePieces.add(StringUtils.repeat('_', 175))
+        helpMessagePieces.add(StringUtils.repeat('=', 175))
 
         String group = null
 
@@ -55,8 +55,11 @@ class HelpPrinter {
             if (group == null) {
                 group = currentGroup
             } else if (!group.equals(currentGroup)) {
-                helpMessagePieces.add('')
+                helpMessagePieces.add(' ')
+                helpMessagePieces.add(StringUtils.repeat('=', 175))
                 group = currentGroup
+            } else {
+                helpMessagePieces.add(StringUtils.repeat('_', 175))
             }
 
             def bodyColumns = [
@@ -65,7 +68,6 @@ class HelpPrinter {
                 detectValue.getDescription()
             ]
             String bodyText = formatColumns(bodyColumns, 51, 30, 95)
-
             helpMessagePieces.add(bodyText)
         }
         helpMessagePieces.add('')
