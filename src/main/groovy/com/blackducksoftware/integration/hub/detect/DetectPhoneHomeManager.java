@@ -67,7 +67,7 @@ public class DetectPhoneHomeManager {
 
     private void performPhoneHome(final Set<BomToolType> applicableBomToolTypes) {
         endPhoneHome();
-        // When we begin to phone home in offline mode, we should re-address this section
+        // TODO When we begin to phone home in offline mode, we should re-address this section
         if (null != phoneHomeService) {
             final PhoneHomeRequestBodyBuilder phoneHomeRequestBodyBuilder = createBuilder();
 
