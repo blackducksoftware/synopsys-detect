@@ -832,8 +832,9 @@ class DetectConfiguration {
     public String getProjectVersionNotes() {
         return projectVersionNotes
     }
-    public int getProjectTier() {
-        return convertInt(projectTier)
+	// we want to perserve the possibility of a null tier
+    public Integer getProjectTier() {
+        return projectTier
     }
     public String getProjectCodeLocationPrefix() {
         return projectCodeLocationPrefix?.trim()
