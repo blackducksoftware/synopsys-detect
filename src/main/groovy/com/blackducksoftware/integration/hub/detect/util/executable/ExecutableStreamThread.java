@@ -36,7 +36,7 @@ public class ExecutableStreamThread extends Thread {
     private final StringBuilder stringBuilder;
     private final Logger logger;
 
-    public String executableOutput;
+    private String executableOutput;
 
     public ExecutableStreamThread(final InputStream executableStream, final Logger logger) {
         super("Executable Stream Thread");
@@ -60,6 +60,10 @@ public class ExecutableStreamThread extends Thread {
             logger.trace(e.toString());
         }
         this.executableOutput = stringBuilder.toString();
+    }
+
+    public String getExecutableOutput() {
+    		return executableOutput;
     }
 
 }
