@@ -119,19 +119,19 @@ public class DetectOptionManager {
     public void applyInteractiveOptions(List<InteractiveOption> interactiveOptions) {
         for (final InteractiveOption interactiveOption : interactiveOptions) {
             for (DetectOption detectOption : detectOptions) {
-                if (detectOption.getFieldName().equals(interactiveOption.fieldName)) {
-                    detectOption.interactiveValue = interactiveOption.interactiveValue;
+                if (detectOption.getFieldName().equals(interactiveOption.getFieldName())) {
+                    detectOption.interactiveValue = interactiveOption.getInteractiveValue();
                 }
             }
 
             Field field;
             try {
-                field = detectConfiguration.getClass().getDeclaredField(interactiveOption.fieldName);
+                field = detectConfiguration.getClass().getDeclaredField(interactiveOption.getFieldName());
             } catch (NoSuchFieldException | SecurityException e) {
                 throw new RuntimeException(e);
             }
             field.setAccessible(true);
-            setValue(field, detectConfiguration, interactiveOption.interactiveValue);
+            setValue(field, detectConfiguration, interactiveOption.getInteractiveValue());
         }
     }
 

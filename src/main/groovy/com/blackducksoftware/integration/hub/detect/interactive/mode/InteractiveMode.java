@@ -80,13 +80,13 @@ public abstract class InteractiveMode {
         InteractiveOption option;
         if (!propertyToOptionMap.containsKey(propertyName)) {
             option = new InteractiveOption();
-            option.fieldName = propertyName;
-            option.springKey = springKeyFromFieldName(propertyName);
+            option.setFieldName(propertyName);
+            option.setSpringKey(springKeyFromFieldName(propertyName));
             propertyToOptionMap.put(propertyName, option);
         } else {
             option = propertyToOptionMap.get(propertyName);
         }
-        option.interactiveValue = value;
+        option.setInteractiveValue(value);
     }
 
     public Boolean askYesOrNo(final String question) {
@@ -125,7 +125,7 @@ public abstract class InteractiveMode {
     public Map<String, String> optionsToSpringKeys() {
         final Map<String, String> springKeyMap = new HashMap<>();
         for (final InteractiveOption interactiveOption : propertyToOptionMap.values()) {
-            springKeyMap.put(interactiveOption.springKey, interactiveOption.interactiveValue);
+            springKeyMap.put(interactiveOption.getSpringKey(), interactiveOption.getInteractiveValue());
         }
 
         return springKeyMap;
@@ -134,7 +134,7 @@ public abstract class InteractiveMode {
     public Properties optionsToProperties() {
         final Properties properties = new Properties();
         for (final InteractiveOption interactiveOption : propertyToOptionMap.values()) {
-            properties.put(interactiveOption.springKey, interactiveOption.interactiveValue);
+            properties.put(interactiveOption.getSpringKey(), interactiveOption.getInteractiveValue());
         }
 
         return properties;
@@ -187,14 +187,14 @@ public abstract class InteractiveMode {
 
     public void printOptions() {
         for (final InteractiveOption interactiveOption : propertyToOptionMap.values()) {
-            String fieldValue = interactiveOption.interactiveValue;
-            if (interactiveOption.fieldName.toLowerCase().contains("password")) {
+            String fieldValue = interactiveOption.getInteractiveValue();
+            if (interactiveOption.getFieldName().toLowerCase().contains("password")) {
                 fieldValue = "";
-                for (int i = 0; i < interactiveOption.interactiveValue.length(); i++) {
+                for (int i = 0; i < interactiveOption.getInteractiveValue().length(); i++) {
                     fieldValue += "*";
                 }
             }
-            printStream.println("--" + interactiveOption.springKey + "=" + fieldValue);
+            printStream.println("--" + interactiveOption.getSpringKey() + "=" + fieldValue);
         }
     }
 
