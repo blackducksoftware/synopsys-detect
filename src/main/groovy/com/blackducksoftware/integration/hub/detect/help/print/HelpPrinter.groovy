@@ -33,7 +33,6 @@ import groovy.transform.TypeChecked
 @Component
 @TypeChecked
 class HelpPrinter {
-
     void printHelpMessage(PrintStream printStream, List<DetectOption> options) {
         def helpMessagePieces = []
         helpMessagePieces.add('')
