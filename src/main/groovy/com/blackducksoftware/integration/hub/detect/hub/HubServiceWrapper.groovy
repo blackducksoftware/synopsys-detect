@@ -150,6 +150,8 @@ class HubServiceWrapper {
         hubServerConfigBuilder.setProxyPort(detectConfiguration.getHubProxyPort())
         hubServerConfigBuilder.setProxyUsername(detectConfiguration.getHubProxyUsername())
         hubServerConfigBuilder.setProxyPassword(detectConfiguration.getHubProxyPassword())
+        hubServerConfigBuilder.setProxyNtlmDomain(detectConfiguration.getHubProxyNtlmDomain())
+        hubServerConfigBuilder.setProxyNtlmWorkstation(detectConfiguration.getHubProxyNtlmWorkstation())
         hubServerConfigBuilder.setAlwaysTrustServerCertificate(detectConfiguration.getHubTrustCertificate())
         hubServerConfigBuilder.setLogger(slf4jIntLogger)
 

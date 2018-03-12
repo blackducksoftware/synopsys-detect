@@ -64,6 +64,11 @@ public class DefaultInteractiveMode extends InteractiveMode {
                     setPropertyFromQuestion("hubProxyPort", "What is the hub proxy port?");
                     setPropertyFromQuestion("hubProxyUsername", "What is the hub proxy username?");
                     setPropertyFromSecretQuestion("hubProxyPassword", "What is the hub proxy password?");
+                    final Boolean useNtlmProxy = askYesOrNo("Do you use a ntlm proxy?");
+                    if (useNtlmProxy) {
+                        setPropertyFromQuestion("hubProxyNtlmDomain", "What is the ntlm proxy domain?");
+                        setPropertyFromQuestion("hubProxyNtlmWorkstation", "What is the ntlm proxy workstation?");
+                    }
                 }
 
                 final Boolean trustCert = askYesOrNo("Would you like to automatically trust the hub certificate?");
