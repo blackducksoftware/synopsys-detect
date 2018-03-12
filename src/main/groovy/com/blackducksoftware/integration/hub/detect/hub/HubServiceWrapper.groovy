@@ -56,114 +56,104 @@ import groovy.transform.TypeChecked
 @Component
 @TypeChecked
 class HubServiceWrapper {
-    private final Logger logger = LoggerFactory.getLogger(HubServiceWrapper.class)
+	private final Logger logger = LoggerFactory.getLogger(HubServiceWrapper.class)
 
-    @Autowired
-    DetectConfiguration detectConfiguration
+	@Autowired
+	DetectConfiguration detectConfiguration
 
-    @Autowired
-    DetectPhoneHomeManager detectPhoneHomeManager
+	@Autowired
+	DetectPhoneHomeManager detectPhoneHomeManager
 
-    Slf4jIntLogger slf4jIntLogger
-    HubServerConfig hubServerConfig
-    HubServicesFactory hubServicesFactory
+	Slf4jIntLogger slf4jIntLogger
+	HubServerConfig hubServerConfig
+	HubServicesFactory hubServicesFactory
 
-    void init() {
-        try {
-            slf4jIntLogger = new Slf4jIntLogger(logger)
-            hubServerConfig = createHubServerConfig(slf4jIntLogger)
-            hubServicesFactory = createHubServicesFactory(slf4jIntLogger, hubServerConfig)
-        } catch (IllegalStateException | EncryptionException e) {
-            throw new DetectUserFriendlyException("Not able to initialize Hub connection: ${e.message}", e, ExitCodeType.FAILURE_HUB_CONNECTIVITY)
-        }
-        HubService hubService = createHubService()
-        CurrentVersionView currentVersion = hubService.getResponse(ApiDiscovery.CURRENT_VERSION_LINK_RESPONSE)
-        logger.info(String.format("Successfully connected to Hub (version %s)!", currentVersion.version))
-        detectPhoneHomeManager.init(createPhoneHomeService());
-        detectPhoneHomeManager.startPhoneHome();
-    }
+	void init() {
+		try {
+			slf4jIntLogger = new Slf4jIntLogger(logger)
+			hubServerConfig = createHubServerConfig(slf4jIntLogger)
+			hubServicesFactory = createHubServicesFactory(slf4jIntLogger, hubServerConfig)
+		} catch (IllegalStateException | EncryptionException e) {
+			throw new DetectUserFriendlyException("Not able to initialize Hub connection: ${e.message}", e, ExitCodeType.FAILURE_HUB_CONNECTIVITY)
+		}
+		HubService hubService = createHubService()
+		CurrentVersionView currentVersion = hubService.getResponse(ApiDiscovery.CURRENT_VERSION_LINK_RESPONSE)
+		logger.info(String.format("Successfully connected to Hub (version %s)!", currentVersion.version))
+		detectPhoneHomeManager.init(createPhoneHomeService());
+		detectPhoneHomeManager.startPhoneHome();
+	}
 
-    public boolean testHubConnection() {
-        testHubConnection(true);
-    }
+	public boolean testHubConnection(IntLogger intLogger) {
+		try {
+			assertHubConnection(intLogger)
+			return true;
+		} catch (IntegrationException e) {
+			intLogger.error("Could not reach the Hub server or the credentials were invalid: ${e.message}", e)
+		}
+		return false;
+	}
 
-    public boolean testHubConnection(boolean detailedLog) {
-        try {
-            if (detailedLog) {
-                assertHubConnection(new Slf4jIntLogger(logger))
-            } else {
-                assertHubConnection(new SilentLogger())
-            }
-            return true;
-        } catch (IntegrationException e) {
-            if (detailedLog) {
-                logger.error("Could not reach the Hub server or the credentials were invalid: ${e.message}", e)
-            }
-        }
-        return false;
-    }
+	public void assertHubConnection(IntLogger intLogger) {
+		logger.info("Attempting connection to the Hub")
+		try {
+			HubServerConfig hubServerConfig = createHubServerConfig(intLogger)
+			final RestConnection connection = hubServerConfig.createRestConnection(intLogger)
+			connection.connect()
+			logger.info("Connection to the Hub was successful")
+		} catch (IllegalStateException e) {
+			throw new IntegrationException(e.getMessage(), e)
+		}
+	}
 
-    public void assertHubConnection(IntLogger intLogger) {
-        logger.info("Attempting connection to the Hub")
-        try {
-            HubServerConfig hubServerConfig = createHubServerConfig(intLogger)
-            final RestConnection connection = hubServerConfig.createRestConnection(intLogger)
-            connection.connect()
-            logger.info("Connection to the Hub was successful")
-        } catch (IllegalStateException e) {
-            throw new IntegrationException(e.getMessage(), e)
-        }
-    }
+	HubService createHubService() {
+		hubServicesFactory.createHubService()
+	}
 
-    HubService createHubService() {
-        hubServicesFactory.createHubService()
-    }
+	ProjectService createProjectService() {
+		hubServicesFactory.createProjectService()
+	}
 
-    ProjectService createProjectService() {
-        hubServicesFactory.createProjectService()
-    }
+	PhoneHomeService createPhoneHomeService() {
+		hubServicesFactory.createPhoneHomeService()
+	}
 
-    PhoneHomeService createPhoneHomeService() {
-        hubServicesFactory.createPhoneHomeService()
-    }
+	CodeLocationService createCodeLocationService() {
+		hubServicesFactory.createCodeLocationService()
+	}
 
-    CodeLocationService createCodeLocationService() {
-        hubServicesFactory.createCodeLocationService()
-    }
+	ScanStatusService createScanStatusService() {
+		hubServicesFactory.createScanStatusService(detectConfiguration.getApiTimeout())
+	}
 
-    ScanStatusService createScanStatusService() {
-        hubServicesFactory.createScanStatusService(detectConfiguration.getApiTimeout())
-    }
+	ReportService createReportService() {
+		hubServicesFactory.createReportService(detectConfiguration.getApiTimeout())
+	}
 
-    ReportService createReportService() {
-        hubServicesFactory.createReportService(detectConfiguration.getApiTimeout())
-    }
+	SignatureScannerService createSignatureScannerService() {
+		hubServicesFactory.createSignatureScannerService(120000L)
+	}
 
-    SignatureScannerService createSignatureScannerService() {
-        hubServicesFactory.createSignatureScannerService(120000L)
-    }
+	private HubServicesFactory createHubServicesFactory(IntLogger slf4jIntLogger, HubServerConfig hubServerConfig) {
+		RestConnection restConnection = hubServerConfig.createRestConnection(slf4jIntLogger)
 
-    private HubServicesFactory createHubServicesFactory(IntLogger slf4jIntLogger, HubServerConfig hubServerConfig) {
-        RestConnection restConnection = hubServerConfig.createRestConnection(slf4jIntLogger)
+		new HubServicesFactory(restConnection)
+	}
 
-        new HubServicesFactory(restConnection)
-    }
+	private HubServerConfig createHubServerConfig(IntLogger slf4jIntLogger) {
+		HubServerConfigBuilder hubServerConfigBuilder = new HubServerConfigBuilder()
+		hubServerConfigBuilder.setHubUrl(detectConfiguration.getHubUrl())
+		hubServerConfigBuilder.setTimeout(detectConfiguration.getHubTimeout())
+		hubServerConfigBuilder.setUsername(detectConfiguration.getHubUsername())
+		hubServerConfigBuilder.setPassword(detectConfiguration.getHubPassword())
+		hubServerConfigBuilder.setApiToken(detectConfiguration.getHubApiToken())
 
-    private HubServerConfig createHubServerConfig(IntLogger slf4jIntLogger) {
-        HubServerConfigBuilder hubServerConfigBuilder = new HubServerConfigBuilder()
-        hubServerConfigBuilder.setHubUrl(detectConfiguration.getHubUrl())
-        hubServerConfigBuilder.setTimeout(detectConfiguration.getHubTimeout())
-        hubServerConfigBuilder.setUsername(detectConfiguration.getHubUsername())
-        hubServerConfigBuilder.setPassword(detectConfiguration.getHubPassword())
-        hubServerConfigBuilder.setApiToken(detectConfiguration.getHubApiToken())
+		hubServerConfigBuilder.setProxyHost(detectConfiguration.getHubProxyHost())
+		hubServerConfigBuilder.setProxyPort(detectConfiguration.getHubProxyPort())
+		hubServerConfigBuilder.setProxyUsername(detectConfiguration.getHubProxyUsername())
+		hubServerConfigBuilder.setProxyPassword(detectConfiguration.getHubProxyPassword())
+		hubServerConfigBuilder.setAlwaysTrustServerCertificate(detectConfiguration.getHubTrustCertificate())
+		hubServerConfigBuilder.setLogger(slf4jIntLogger)
 
-        hubServerConfigBuilder.setProxyHost(detectConfiguration.getHubProxyHost())
-        hubServerConfigBuilder.setProxyPort(detectConfiguration.getHubProxyPort())
-        hubServerConfigBuilder.setProxyUsername(detectConfiguration.getHubProxyUsername())
-        hubServerConfigBuilder.setProxyPassword(detectConfiguration.getHubProxyPassword())
-        hubServerConfigBuilder.setAlwaysTrustServerCertificate(detectConfiguration.getHubTrustCertificate())
-        hubServerConfigBuilder.setLogger(slf4jIntLogger)
-
-        hubServerConfigBuilder.build()
-    }
+		hubServerConfigBuilder.build()
+	}
 }

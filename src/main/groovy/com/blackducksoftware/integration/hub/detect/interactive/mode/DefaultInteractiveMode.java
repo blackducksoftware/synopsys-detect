@@ -28,6 +28,7 @@ import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper;
+import com.blackducksoftware.integration.log.SilentLogger;
 
 @Component
 public class DefaultInteractiveMode extends InteractiveMode {
@@ -74,7 +75,7 @@ public class DefaultInteractiveMode extends InteractiveMode {
                 if (testHub) {
                     try {
                         detectOptionManager.applyInteractiveOptions(getInteractiveOptions());
-                        connected = hubServiceWrapper.testHubConnection(false);
+                        connected = hubServiceWrapper.testHubConnection(new SilentLogger());
                     } catch (final Exception e) {
                         println("Failed to test hub connection.");
                         println(e.toString());
