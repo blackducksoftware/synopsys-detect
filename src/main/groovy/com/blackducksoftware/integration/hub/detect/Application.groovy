@@ -49,10 +49,10 @@ import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType
 import com.blackducksoftware.integration.hub.detect.help.DetectOption
 import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager
+import com.blackducksoftware.integration.hub.detect.help.HelpManager
 import com.blackducksoftware.integration.hub.detect.help.print.DetectConfigurationPrinter
 import com.blackducksoftware.integration.hub.detect.help.print.DetectInfoPrinter
 import com.blackducksoftware.integration.hub.detect.help.print.HelpHtmlWriter
-import com.blackducksoftware.integration.hub.detect.help.print.HelpPrinter
 import com.blackducksoftware.integration.hub.detect.hub.HubManager
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
@@ -94,10 +94,10 @@ class Application {
     ApplicationArguments applicationArguments
 
     @Autowired
-    HelpPrinter helpPrinter
+    HelpHtmlWriter helpHtmlWriter
 
     @Autowired
-    HelpHtmlWriter helpHtmlWriter
+    HelpManager helpManager
 
     @Autowired
     HubManager hubManager
@@ -138,17 +138,17 @@ class Application {
             detectOptionManager.init()
 
             List<DetectOption> options = detectOptionManager.getDetectOptions()
-            if ('-h' in applicationArguments.getSourceArgs() || '--help' in applicationArguments.getSourceArgs()) {
-                helpPrinter.printHelpMessage(System.out, options)
+            if (helpManager.isHelpMessageApplicable(applicationArguments.getSourceArgs())) {
+                helpManager.printAppropriateHelpMessage(applicationArguments.getSourceArgs(), options)
                 return
             }
 
-            if ('-hdoc' in applicationArguments.getSourceArgs() || '--helpdocument' in applicationArguments.getSourceArgs()) {
+            if (helpHtmlWriter.isHtmlHelpApplicable(applicationArguments.getSourceArgs())) {
                 helpHtmlWriter.writeHelpMessage("hub-detect-${detectInfo.detectVersion}-help.html".toString())
                 return
             }
 
-            if ('-i' in applicationArguments.getSourceArgs() || '--interactive' in applicationArguments.getSourceArgs()) {
+            if (interactiveManager.isInteractiveApplicable(applicationArguments.getSourceArgs())) {
                 InteractiveReader interactiveReader = createInteractiveReader();
                 PrintStream interactivePrintStream = new PrintStream(System.out);
                 interactiveManager.interact(interactiveReader, interactivePrintStream);

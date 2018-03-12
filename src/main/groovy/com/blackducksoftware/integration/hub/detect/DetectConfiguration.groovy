@@ -65,7 +65,7 @@ class DetectConfiguration {
     public static final String GRADLE = 'gradle'
     public static final String DOCKER = 'docker'
 
-    private static final String GROUP_IMPORTANT = '!important'
+    public static final String GROUP_COMMON = '!common'
     private static final String GROUP_HUB_CONFIGURATION = 'hub configuration'
     private static final String GROUP_GENERAL = 'general'
     private static final String GROUP_LOGGING = 'logging'
@@ -340,23 +340,23 @@ class DetectConfiguration {
     @Value('${detect.api.timeout:}')
     Long apiTimeout
 
-    @ValueDescription(description="URL of the Hub server", group=DetectConfiguration.GROUP_IMPORTANT)
+    @ValueDescription(description="URL of the Hub server", group=DetectConfiguration.GROUP_COMMON)
     @Value('${blackduck.hub.url:}')
     String hubUrl
 
-    @ValueDescription(description="Time to wait for rest connections to complete", defaultValue="120", group=DetectConfiguration.GROUP_IMPORTANT)
+    @ValueDescription(description="Time to wait for rest connections to complete", defaultValue="120", group=DetectConfiguration.GROUP_COMMON)
     @Value('${blackduck.hub.timeout:}')
     Integer hubTimeout
 
-    @ValueDescription(description="Hub username", group=DetectConfiguration.GROUP_IMPORTANT)
+    @ValueDescription(description="Hub username", group=DetectConfiguration.GROUP_COMMON)
     @Value('${blackduck.hub.username:}')
     String hubUsername
 
-    @ValueDescription(description="Hub password", group=DetectConfiguration.GROUP_IMPORTANT)
+    @ValueDescription(description="Hub password", group=DetectConfiguration.GROUP_COMMON)
     @Value('${blackduck.hub.password:}')
     String hubPassword
 
-    @ValueDescription(description="Hub API Token", group=DetectConfiguration.GROUP_IMPORTANT)
+    @ValueDescription(description="Hub API Token", group=DetectConfiguration.GROUP_COMMON)
     @Value('${blackduck.hub.api.token:}')
     String hubApiToken
 
@@ -384,7 +384,7 @@ class DetectConfiguration {
     @Value('${blackduck.hub.proxy.ntlm.workstation:}')
     String hubProxyNtlmWorkstation
 
-    @ValueDescription(description="If true, automatically trust the certificate for the current run of Detect only", defaultValue="false", group=DetectConfiguration.GROUP_IMPORTANT)
+    @ValueDescription(description="If true, automatically trust the certificate for the current run of Detect only", defaultValue="false", group=DetectConfiguration.GROUP_COMMON)
     @Value('${blackduck.hub.trust.cert:}')
     Boolean hubTrustCertificate
 
@@ -396,7 +396,7 @@ class DetectConfiguration {
     @Value('${detect.resolve.tilde.in.paths:}')
     Boolean resolveTildeInPaths
 
-    @ValueDescription(description="Source path to inspect", group=DetectConfiguration.GROUP_IMPORTANT)
+    @ValueDescription(description="Source path to inspect", group=DetectConfiguration.GROUP_COMMON)
     @Value('${detect.source.path:}')
     String sourcePath
 
@@ -636,7 +636,7 @@ class DetectConfiguration {
     @Value('${detect.hub.signature.scanner.exclusion.patterns:}')
     String[] hubSignatureScannerExclusionPatterns
 
-    @ValueDescription(description="These paths and only these paths will be scanned.", group=DetectConfiguration.GROUP_IMPORTANT)
+    @ValueDescription(description="These paths and only these paths will be scanned.", group=DetectConfiguration.GROUP_COMMON)
     @Value('${detect.hub.signature.scanner.paths:}')
     String[] hubSignatureScannerPaths
 

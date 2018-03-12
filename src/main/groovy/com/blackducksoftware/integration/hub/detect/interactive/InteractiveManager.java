@@ -49,6 +49,11 @@ public class InteractiveManager {
     @Autowired
     DefaultInteractiveMode defaultInteractiveMode;
 
+    public boolean isInteractiveApplicable(final String[] applicationArgs) {
+        final String firstArg = applicationArgs[0];
+        return ("-i".equals(firstArg) || "--interactive".equals(firstArg));
+    }
+
     public void interact(final InteractiveReader interactiveReader, final PrintStream printStream) {
         final InteractiveMode interactiveMode = defaultInteractiveMode;
 

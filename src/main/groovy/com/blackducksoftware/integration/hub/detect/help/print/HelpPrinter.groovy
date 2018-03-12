@@ -24,18 +24,23 @@
 package com.blackducksoftware.integration.hub.detect.help.print
 
 import org.apache.commons.lang3.StringUtils
-import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.detect.help.DetectOption
 
 import groovy.transform.TypeChecked
 
-@Component
 @TypeChecked
 class HelpPrinter {
+    private PrintStream printStream
 
-    void printHelpMessage(PrintStream printStream, List<DetectOption> options) {
+    public HelpPrinter(PrintStream printStream) {
+        this.printStream = printStream
+    }
+
+    void printHelpMessage(List<DetectOption> options) {
         def helpMessagePieces = []
+        helpMessagePieces.add('')
+        helpMessagePieces.add("To get further details on a specific property, please run -h 'specific.property.name'.")
         helpMessagePieces.add('')
 
         def headerColumns = [
@@ -55,7 +60,6 @@ class HelpPrinter {
             if (group == null) {
                 group = currentGroup
             } else if (!group.equals(currentGroup)) {
-                helpMessagePieces.add(' ')
                 helpMessagePieces.add(StringUtils.repeat('=', 175))
                 group = currentGroup
             } else {
@@ -75,7 +79,33 @@ class HelpPrinter {
         helpMessagePieces.add('\t--<property name>=<value>')
         helpMessagePieces.add('')
 
-        printStream.println(helpMessagePieces.join(System.getProperty("line.separator")))
+        printStream.println(helpMessagePieces.join(System.lineSeparator))
+    }
+
+    void printVerboseMessage() {
+        def verboseMessagePieces = []
+
+        verboseMessagePieces.add(' ')
+        verboseMessagePieces.add('Basic list of properties:')
+        verboseMessagePieces.add('(To see a more complete listing of all properties, please run the -v or --verbose command as well.)')
+
+        printStream.println(verboseMessagePieces.join(System.lineSeparator))
+    }
+
+    void printHelpDetailedMessage(DetectOption detectOption) {
+        def detailedMessage = []
+
+        detailedMessage.add(' ')
+        detailedMessage.add("Detailed information for ${detectOption.key}:")
+        detailedMessage.add(detectOption.description)
+        detailedMessage.add(' ')
+        detailedMessage.add("The default value is: ${detectOption.defaultValue}")
+        detailedMessage.add(' ')
+
+        detailedMessage.add('Use cases and common issues will be printed here')
+        detailedMessage.add(' ')
+
+        printStream.println(detailedMessage.join(System.lineSeparator))
     }
 
     private String formatColumns(List<String> columns, int... columnWidths) {

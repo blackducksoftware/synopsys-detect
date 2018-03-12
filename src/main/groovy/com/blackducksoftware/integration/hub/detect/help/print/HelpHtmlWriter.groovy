@@ -85,6 +85,10 @@ tbody tr:hover:not(.noBorder) {
     @Autowired
     DetectOptionManager detectOptionManager
 
+    public boolean isHtmlHelpApplicable(String[] applicationArgs) {
+        '-hdoc' in applicationArgs || '--helpdocument' in applicationArgs
+    }
+
     public void writeHelpMessage(String fileName) {
         def columnHeaders = [
             'Property Name',
