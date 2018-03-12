@@ -107,10 +107,10 @@ class OfflineScanner {
         }
     }
 
-    private boolean checkCliInstall(CLILocation cliLocation, IntLogger silentLogger) {
+    private boolean checkCliInstall(CLILocation cliLocation, IntLogger intLogger) {
         boolean cliInstalledOkay = false
         try {
-            cliInstalledOkay = cliLocation.getCLIExists(silentLogger)
+            cliInstalledOkay = cliLocation.getCLIExists(intLogger)
         } catch (IOException e) {
             logger.error("Couldn't check the signature scanner install: ${e.message}")
         }
