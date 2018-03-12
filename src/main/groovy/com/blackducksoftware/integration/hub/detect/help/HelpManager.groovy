@@ -28,6 +28,8 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
+import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException
+import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType
 import com.blackducksoftware.integration.hub.detect.help.print.HelpPrinter
 
 import groovy.transform.TypeChecked
@@ -36,6 +38,7 @@ import groovy.transform.TypeChecked
 @TypeChecked
 class HelpManager {
     private final Logger logger = LoggerFactory.getLogger(HelpManager.class)
+
     public boolean isHelpMessageApplicable(String[] applicationArgs) {
         '-h' in applicationArgs || '--help' in applicationArgs
     }
@@ -54,6 +57,9 @@ class HelpManager {
             } else {
                 DetectOption detectOption = detectOptions?.find {
                     it.key.equals(secondArg)
+                }
+                if (detectOption == null) {
+                    throw new DetectUserFriendlyException("${secondArg} does not match any known property name", ExitCodeType.FAILURE_GENERAL_ERROR)
                 }
                 printDetailedHelp(helpPrinter, detectOption)
             }

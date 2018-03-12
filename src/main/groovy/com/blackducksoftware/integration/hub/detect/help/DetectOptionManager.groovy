@@ -39,7 +39,6 @@ import com.blackducksoftware.integration.hub.detect.util.SpringValueUtils
 import groovy.json.JsonSlurper
 
 @Component
-//@TypeChecked
 public class DetectOptionManager {
     private final Logger logger = LoggerFactory.getLogger(DetectOptionManager.class)
 
