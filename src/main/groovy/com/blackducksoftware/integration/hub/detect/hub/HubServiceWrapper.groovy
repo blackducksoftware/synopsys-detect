@@ -48,7 +48,6 @@ import com.blackducksoftware.integration.hub.service.ReportService
 import com.blackducksoftware.integration.hub.service.ScanStatusService
 import com.blackducksoftware.integration.hub.service.SignatureScannerService
 import com.blackducksoftware.integration.log.IntLogger
-import com.blackducksoftware.integration.log.SilentLogger
 import com.blackducksoftware.integration.log.Slf4jIntLogger
 
 import groovy.transform.TypeChecked
@@ -83,22 +82,12 @@ class HubServiceWrapper {
         detectPhoneHomeManager.startPhoneHome();
     }
 
-    public boolean testHubConnection() {
-        testHubConnection(true);
-    }
-
-    public boolean testHubConnection(boolean detailedLog) {
+    public boolean testHubConnection(IntLogger intLogger) {
         try {
-            if (detailedLog) {
-                assertHubConnection(new Slf4jIntLogger(logger))
-            } else {
-                assertHubConnection(new SilentLogger())
-            }
+            assertHubConnection(intLogger)
             return true;
         } catch (IntegrationException e) {
-            if (detailedLog) {
-                logger.error("Could not reach the Hub server or the credentials were invalid: ${e.message}", e)
-            }
+            intLogger.error("Could not reach the Hub server or the credentials were invalid: ${e.message}", e)
         }
         return false;
     }
@@ -161,6 +150,8 @@ class HubServiceWrapper {
         hubServerConfigBuilder.setProxyPort(detectConfiguration.getHubProxyPort())
         hubServerConfigBuilder.setProxyUsername(detectConfiguration.getHubProxyUsername())
         hubServerConfigBuilder.setProxyPassword(detectConfiguration.getHubProxyPassword())
+        hubServerConfigBuilder.setProxyNtlmDomain(detectConfiguration.getHubProxyNtlmDomain())
+        hubServerConfigBuilder.setProxyNtlmWorkstation(detectConfiguration.getHubProxyNtlmWorkstation())
         hubServerConfigBuilder.setAlwaysTrustServerCertificate(detectConfiguration.getHubTrustCertificate())
         hubServerConfigBuilder.setLogger(slf4jIntLogger)
 

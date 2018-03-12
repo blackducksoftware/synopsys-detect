@@ -133,8 +133,10 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
             } catch (final Exception e) {
                 // any bom tool failure should not prevent other bom tools from running
                 logger.error(String.format("%s threw an Exception: %s", bomToolTypeString, e.getMessage()));
+
+                // log the stacktrace if and only if running at trace level
                 if (logger.isTraceEnabled()) {
-                    e.printStackTrace();
+                    logger.error("Exception details: ", e);
                 }
             }
         }
@@ -196,7 +198,8 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
                 }
                 final File outputFile = new File(detectConfiguration.getBdioOutputDirectoryPath(), filename);
                 if (outputFile.exists()) {
-                    outputFile.delete();
+                    boolean deleteSuccess = outputFile.delete();
+                    logger.debug(String.format("%s deleted: %b", outputFile.getAbsolutePath(), deleteSuccess));
                 }
                 writeBdioFile(outputFile, simpleBdioDocument);
                 bdioFiles.add(outputFile);
@@ -208,7 +211,8 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
             final String filename = String.format("%s.jsonld", integrationEscapeUtil.escapeForUri(detectConfiguration.getAggregateBomName()));
             final File aggregateBdioFile = new File(detectConfiguration.getOutputDirectory(), filename);
             if (aggregateBdioFile.exists()) {
-                aggregateBdioFile.delete();
+                boolean deleteSuccess = aggregateBdioFile.delete();
+                logger.debug(String.format("%s deleted: %b", aggregateBdioFile.getAbsolutePath(), deleteSuccess));
             }
             writeBdioFile(aggregateBdioFile, aggregateBdioDocument);
         }

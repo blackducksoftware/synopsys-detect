@@ -60,8 +60,8 @@ public class ExecutableRunner {
                 standardOutputThread.join();
                 errorOutputThread.join();
 
-                final String standardOutput = standardOutputThread.executableOutput.trim();
-                final String errorOutput = errorOutputThread.executableOutput.trim();
+                final String standardOutput = standardOutputThread.getExecutableOutput().trim();
+                final String errorOutput = errorOutputThread.getExecutableOutput().trim();
 
                 final ExecutableOutput output = new ExecutableOutput(standardOutput, errorOutput);
                 return output;
