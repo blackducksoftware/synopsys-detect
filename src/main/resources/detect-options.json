@@ -1,0 +1,10 @@
+{
+	"blackduck.hub.url": {
+		"useCases": "This is where the use cases go",
+		"issues": "Here are a bunch of issues people usually run into"
+	},
+	"blackduck.hub.username": {
+		"useCases": "Uses cases for hubUsername",
+		"issues": "Issues for hubUsername"
+	}
+}

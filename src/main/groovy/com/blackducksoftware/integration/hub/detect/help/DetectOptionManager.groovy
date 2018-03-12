@@ -36,10 +36,10 @@ import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.interactive.InteractiveOption
 import com.blackducksoftware.integration.hub.detect.util.SpringValueUtils
 
-import groovy.transform.TypeChecked
+import groovy.json.JsonSlurper
 
 @Component
-@TypeChecked
+//@TypeChecked
 public class DetectOptionManager {
     private final Logger logger = LoggerFactory.getLogger(DetectOptionManager.class)
 
@@ -111,7 +111,23 @@ public class DetectOptionManager {
                 resolvedValue = field.get(obj).toString()
             }
 
-            return new DetectOption(key, fieldName, originalValue, resolvedValue, description, valueType, defaultValue, group)
+            JsonSlurper jsonSlurper = new JsonSlurper()
+            def detailedMessageUrl = getClass().getResource('/detect-options.json')
+            def detailedMessageJson = jsonSlurper.parseText(detailedMessageUrl.text)
+
+            String useCases = detailedMessageJson?."$key"?.useCases
+            String issues = detailedMessageJson?."$key"?.issues
+
+            DetectOption detectOption = new DetectOption(key, fieldName, originalValue, resolvedValue, description, valueType, defaultValue, group)
+
+            if (useCases) {
+                detectOption.useCases = useCases
+            }
+            if (issues) {
+                detectOption.issues = issues
+            }
+
+            return detectOption
         }
         return null
     }

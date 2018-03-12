@@ -96,13 +96,15 @@ class HelpPrinter {
         def detailedMessage = []
 
         detailedMessage.add(' ')
-        detailedMessage.add("Detailed information for ${detectOption.key}:")
-        detailedMessage.add(detectOption.description)
+        detailedMessage.add("Detailed information for ${detectOption.key}")
         detailedMessage.add(' ')
-        detailedMessage.add("The default value is: ${detectOption.defaultValue}")
+        detailedMessage.add("Property description: ${detectOption.description}")
+        detailedMessage.add("Property default value: ${detectOption.defaultValue}")
         detailedMessage.add(' ')
 
-        detailedMessage.add('Use cases and common issues will be printed here')
+        detailedMessage.add("Use cases: ${detectOption.useCases}")
+        detailedMessage.add(' ')
+        detailedMessage.add("Common issues: ${detectOption.issues}")
         detailedMessage.add(' ')
 
         printStream.println(detailedMessage.join(System.lineSeparator))
