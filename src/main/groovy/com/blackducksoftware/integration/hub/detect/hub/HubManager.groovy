@@ -166,14 +166,7 @@ class HubManager implements ExitCodeReporter {
     }
 
     public ProjectVersionView ensureProjectVersionExists(DetectProject detectProject, ProjectService projectService) {
-        ProjectRequestBuilder builder = new ProjectRequestBuilder()
-        builder.setProjectName(detectProject.getProjectName())
-        builder.setVersionName(detectProject.getProjectVersionName())
-        builder.setProjectLevelAdjustments(detectConfiguration.getProjectLevelMatchAdjustments())
-        builder.setPhase(detectConfiguration.getProjectVersionPhase())
-        builder.setDistribution(detectConfiguration.getProjectVersionDistribution())
-        builder.setProjectTier(detectConfiguration.getProjectTier())
-        builder.setReleaseComments(detectConfiguration.getProjectVersionNotes())
+        ProjectRequestBuilder builder = detectProject.createDefaultProjectRequestBuilder(detectConfiguration)
         ProjectRequest projectRequest = builder.build()
 
         ProjectVersionWrapper projectVersionWrapper = projectService.getProjectVersionAndCreateIfNeeded(projectRequest)
