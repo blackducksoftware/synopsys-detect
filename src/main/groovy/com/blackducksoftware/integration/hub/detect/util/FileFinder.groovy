@@ -123,7 +123,7 @@ class FileFinder {
         return files as File[]
     }
 
-    private File[] findDirectoriesContainingDirectoriesToDepth(final File sourceDirectory, final String directoryPattern, int maxDepth) {
+    public File[] findDirectoriesContainingDirectoriesToDepth(final File sourceDirectory, final String directoryPattern, int maxDepth) {
         findDirectoriesContainingDirectoriesToDepthRecursive(sourceDirectory, directoryPattern, 0, maxDepth)
     }
 
