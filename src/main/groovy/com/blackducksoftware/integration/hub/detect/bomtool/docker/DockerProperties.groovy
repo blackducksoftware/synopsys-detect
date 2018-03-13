@@ -72,6 +72,8 @@ class DockerProperties {
         environmentVariables.put('BLACKDUCK_HUB_PROXY_PORT', detectConfiguration.hubProxyPort)
         environmentVariables.put('BLACKDUCK_HUB_PROXY_USERNAME', detectConfiguration.hubProxyUsername)
         environmentVariables.put('BLACKDUCK_HUB_PROXY_PASSWORD', detectConfiguration.hubProxyPassword)
+        environmentVariables.putAt('BLACKDUCK_HUB_PROXY_NTLM_DOMAIN', detectConfiguration.hubProxyNtlmDomain)
+        environmentVariables.putAt('BLACKDUCK_HUB_PROXY_NTLM_WORKSTATION', detectConfiguration.hubProxyNtlmWorkstation)
 
         for (Map.Entry<String, String> environmentProperty : System.getenv()) {
             String key = environmentProperty.getKey()
