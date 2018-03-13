@@ -23,6 +23,9 @@
  */
 package com.blackducksoftware.integration.hub.detect.model
 
+import com.blackducksoftware.integration.hub.detect.DetectConfiguration
+import com.blackducksoftware.integration.hub.service.model.ProjectRequestBuilder
+
 class DetectProject {
     private String projectName
     private String projectVersionName
@@ -74,5 +77,18 @@ class DetectProject {
 
     public List<DetectCodeLocation> getDetectCodeLocations() {
         detectCodeLocations
+    }
+
+    public ProjectRequestBuilder createDefaultProjectRequestBuilder(DetectConfiguration detectConfiguration) {
+        ProjectRequestBuilder builder = new ProjectRequestBuilder()
+        builder.setProjectName(getProjectName())
+        builder.setVersionName(getProjectVersionName())
+        builder.setProjectLevelAdjustments(detectConfiguration.getProjectLevelMatchAdjustments())
+        builder.setPhase(detectConfiguration.getProjectVersionPhase())
+        builder.setDistribution(detectConfiguration.getProjectVersionDistribution())
+        builder.setProjectTier(detectConfiguration.getProjectTier())
+        builder.setReleaseComments(detectConfiguration.getProjectVersionNotes())
+
+        return builder
     }
 }

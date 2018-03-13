@@ -228,12 +228,7 @@ class HubSignatureScanner implements SummaryResultReporter, ExitCodeReporter {
     }
 
     private ProjectRequest createProjectRequest(DetectProject detectProject) {
-        ProjectRequestBuilder builder = new ProjectRequestBuilder()
-        builder.setProjectName(detectProject.projectName)
-        builder.setVersionName(detectProject.projectVersionName)
-        builder.setProjectLevelAdjustments(detectConfiguration.projectLevelMatchAdjustments)
-        builder.setPhase(detectConfiguration.projectVersionPhase)
-        builder.setDistribution(detectConfiguration.projectVersionDistribution)
+        ProjectRequestBuilder builder = detectProject.createDefaultProjectRequestBuilder(detectConfiguration)
         return builder.build()
     }
 
