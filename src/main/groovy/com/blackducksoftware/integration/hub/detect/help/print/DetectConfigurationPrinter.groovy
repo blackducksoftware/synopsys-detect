@@ -58,7 +58,7 @@ public class DetectConfigurationPrinter {
                 fieldValue = rawFieldValue.toString()
             }
             if (fieldName && fieldValue && 'metaClass' != fieldName) {
-                boolean containsPassword =  fieldName.toLowerCase().contains('password');
+                boolean containsPassword = fieldName.toLowerCase().contains('password') || fieldName.toLowerCase().contains('apitoken');
                 if (containsPassword) {
                     fieldValue = '*'.multiply((fieldValue as String).length())
                 }
