@@ -40,7 +40,8 @@ class HelpPrinter {
     void printHelpMessage(List<DetectOption> options) {
         def helpMessagePieces = []
         helpMessagePieces.add('')
-        helpMessagePieces.add("To get further details on a specific property, please run -h 'specific.property.name'.")
+        helpMessagePieces.add("To get further details on a specific property, please run -h specific.property.name.")
+        helpMessagePieces.add("To get a list of all property groups, please run -h -g. With a group name, you can print all properties of a spceific group using -h -g groupName")
         helpMessagePieces.add('')
 
         def headerColumns = [
@@ -79,7 +80,7 @@ class HelpPrinter {
         helpMessagePieces.add('\t--<property name>=<value>')
         helpMessagePieces.add('')
 
-        printStream.println(helpMessagePieces.join(System.lineSeparator))
+        printMessage(helpMessagePieces)
     }
 
     void printVerboseMessage() {
@@ -87,9 +88,9 @@ class HelpPrinter {
 
         verboseMessagePieces.add(' ')
         verboseMessagePieces.add('Basic list of properties:')
-        verboseMessagePieces.add('(To see a more complete listing of all properties, please run the -v or --verbose command as well.)')
+        verboseMessagePieces.add('(To see a more complete listing of all properties, please run the -h -v or -h --verbose command as well.)')
 
-        printStream.println(verboseMessagePieces.join(System.lineSeparator))
+        printMessage(verboseMessagePieces)
     }
 
     void printHelpDetailedMessage(DetectOption detectOption) {
@@ -107,7 +108,25 @@ class HelpPrinter {
         detailedMessage.add("Common issues: ${detectOption.issues}")
         detailedMessage.add(' ')
 
-        printStream.println(detailedMessage.join(System.lineSeparator))
+        printMessage(detailedMessage)
+    }
+
+    void printHelpGroupsMessage(List<String> detectGroups) {
+        def groupsMessage = []
+
+        groupsMessage.add(' ')
+        groupsMessage.add("To get a list of all properties related to a group, please run -h -g groupName")
+        groupsMessage.add(' ')
+
+        groupsMessage.add('Group Listing:')
+        detectGroups.each { groupsMessage.add(it) }
+        groupsMessage.add(' ')
+
+        printMessage(groupsMessage)
+    }
+
+    private void printMessage(List<String> message) {
+        printStream.println(message.join(System.lineSeparator))
     }
 
     private String formatColumns(List<String> columns, int... columnWidths) {

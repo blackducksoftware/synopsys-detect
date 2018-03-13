@@ -43,25 +43,37 @@ class HelpManager {
         '-h' in applicationArgs || '--help' in applicationArgs
     }
 
-    public void printAppropriateHelpMessage(String[] applicationArgs, List<DetectOption> detectOptions) {
+    public void printAppropriateHelpMessage(String[] applicationArgs, DetectOptionManager detectOptionManager) {
+        List<DetectOption> detectOptions = detectOptionManager.getDetectOptions()
         HelpPrinter helpPrinter = new HelpPrinter(System.out);
         if (applicationArgs.size() == 1) {
             List<DetectOption> options = detectOptions.findAll {
                 DetectConfiguration.GROUP_COMMON.equals(it.group)
             }
             printSimpleHelp(helpPrinter, options)
-        } else if (applicationArgs.size() == 2) {
+        } else if (applicationArgs.size() >= 2) {
             String secondArg = applicationArgs[1]
             if ('-v'.equals(secondArg) || '--verbose'.equals(secondArg)) {
-                printVerboseHelp(helpPrinter, detectOptions)
-            } else {
+                helpPrinter.printHelpMessage(detectOptions)
+            } else if('-g'.equals(secondArg) || '--group'.equals(secondArg)) {
+                if (applicationArgs.size() >= 3) {
+                    String thirdArg = applicationArgs[2]
+                    List<DetectOption> options = detectOptions.findAll {
+                        thirdArg.equals(it.group)
+                    }
+                    printSimpleHelp(helpPrinter, options)
+                } else {
+                    List<String> detectGroups = detectOptionManager.getDetectGroups()
+                    helpPrinter.printHelpGroupsMessage(detectGroups.sort())
+                }
+            }else {
                 DetectOption detectOption = detectOptions?.find {
                     it.key.equals(secondArg)
                 }
                 if (detectOption == null) {
                     throw new DetectUserFriendlyException("${secondArg} does not match any known property name", ExitCodeType.FAILURE_GENERAL_ERROR)
                 }
-                printDetailedHelp(helpPrinter, detectOption)
+                helpPrinter.printHelpDetailedMessage(detectOption)
             }
         }
     }
@@ -69,13 +81,5 @@ class HelpManager {
     public void printSimpleHelp(HelpPrinter helpPrinter, List<DetectOption> detectOptions) {
         helpPrinter.printVerboseMessage()
         helpPrinter.printHelpMessage(detectOptions)
-    }
-
-    public void printVerboseHelp(HelpPrinter helpPrinter, List<DetectOption> detectOptions) {
-        helpPrinter.printHelpMessage(detectOptions)
-    }
-
-    public void printDetailedHelp(HelpPrinter helpPrinter, DetectOption detectOption) {
-        helpPrinter.printHelpDetailedMessage(detectOption)
     }
 }

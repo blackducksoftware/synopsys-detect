@@ -46,19 +46,31 @@ public class DetectOptionManager {
     public DetectConfiguration detectConfiguration
 
     List<DetectOption> detectOptions
+    List<String> detectGroups
+
     public List<DetectOption> getDetectOptions() {
         detectOptions
     }
 
+    public List<String> getDetectGroups() {
+        detectGroups
+    }
+
     public void init() {
         Map<String, DetectOption> detectOptionsMap = [:]
+        detectGroups = []
 
         DetectConfiguration.class.declaredFields.each { Field field ->
-            DetectOption option = processField(detectConfiguration, DetectConfiguration.class, field)
-            if (option != null) {
-                if (!detectOptionsMap.containsKey(option.key)) {
-                    detectOptionsMap.put(option.key, option)
+            if (field.isAnnotationPresent(ValueDescription.class)) {
+                DetectOption option = processField(detectConfiguration, DetectConfiguration.class, field)
+                if (option != null) {
+                    if (!detectOptionsMap.containsKey(option.key)) {
+                        detectOptionsMap.put(option.key, option)
+                    }
                 }
+            } else if(field.getName().startsWith('GROUP_')) {
+                field.setAccessible(true)
+                detectGroups.add(field.get(null))
             }
         }
 
@@ -77,58 +89,55 @@ public class DetectOptionManager {
     }
 
     private DetectOption processField(Object obj, Class<?> objClz, Field field) {
-        if (field.isAnnotationPresent(ValueDescription.class)) {
-            String fieldName = field.getName()
-            String key = ''
-            String description = ''
-            Class valueType = field.getType()
-            String defaultValue = ''
-            String group = ''
-            final ValueDescription valueDescription = field.getAnnotation(ValueDescription.class)
-            description = valueDescription.description()
-            defaultValue = valueDescription.defaultValue()
-            group = valueDescription.group()
-            if (field.isAnnotationPresent(Value.class)) {
-                String valueKey = field.getAnnotation(Value.class).value().trim()
-                key = SpringValueUtils.springKeyFromValueAnnotation(valueKey)
-            }
-
-            field.setAccessible(true)
-            boolean hasValue = !isValueNull(field, obj)
-
-            String originalValue = defaultValue
-            String resolvedValue = originalValue
-
-            if (defaultValue?.trim() && !hasValue) {
-                try {
-                    resolvedValue = defaultValue
-                    setValue(field, obj, defaultValue)
-                } catch (final IllegalAccessException e) {
-                    logger.error(String.format("Could not set defaultValue on field %s with %s: %s", field.getName(), defaultValue, e.getMessage()))
-                }
-            } else if (hasValue) {
-                resolvedValue = field.get(obj).toString()
-            }
-
-            JsonSlurper jsonSlurper = new JsonSlurper()
-            def detailedMessageUrl = getClass().getResource('/detect-options.json')
-            def detailedMessageJson = jsonSlurper.parseText(detailedMessageUrl.text)
-
-            String useCases = detailedMessageJson?."$key"?.useCases
-            String issues = detailedMessageJson?."$key"?.issues
-
-            DetectOption detectOption = new DetectOption(key, fieldName, originalValue, resolvedValue, description, valueType, defaultValue, group)
-
-            if (useCases) {
-                detectOption.useCases = useCases
-            }
-            if (issues) {
-                detectOption.issues = issues
-            }
-
-            return detectOption
+        String fieldName = field.getName()
+        String key = ''
+        String description = ''
+        Class valueType = field.getType()
+        String defaultValue = ''
+        String group = ''
+        final ValueDescription valueDescription = field.getAnnotation(ValueDescription.class)
+        description = valueDescription.description()
+        defaultValue = valueDescription.defaultValue()
+        group = valueDescription.group()
+        if (field.isAnnotationPresent(Value.class)) {
+            String valueKey = field.getAnnotation(Value.class).value().trim()
+            key = SpringValueUtils.springKeyFromValueAnnotation(valueKey)
         }
-        return null
+
+        field.setAccessible(true)
+        boolean hasValue = !isValueNull(field, obj)
+
+        String originalValue = defaultValue
+        String resolvedValue = originalValue
+
+        if (defaultValue?.trim() && !hasValue) {
+            try {
+                resolvedValue = defaultValue
+                setValue(field, obj, defaultValue)
+            } catch (final IllegalAccessException e) {
+                logger.error(String.format("Could not set defaultValue on field %s with %s: %s", field.getName(), defaultValue, e.getMessage()))
+            }
+        } else if (hasValue) {
+            resolvedValue = field.get(obj).toString()
+        }
+
+        JsonSlurper jsonSlurper = new JsonSlurper()
+        def detailedMessageUrl = getClass().getResource('/detect-options.json')
+        def detailedMessageJson = jsonSlurper.parseText(detailedMessageUrl.text)
+
+        String useCases = detailedMessageJson?."$key"?.useCases
+        String issues = detailedMessageJson?."$key"?.issues
+
+        DetectOption detectOption = new DetectOption(key, fieldName, originalValue, resolvedValue, description, valueType, defaultValue, group)
+
+        if (useCases) {
+            detectOption.useCases = useCases
+        }
+        if (issues) {
+            detectOption.issues = issues
+        }
+
+        return detectOption
     }
 
     public void applyInteractiveOptions(List<InteractiveOption> interactiveOptions) {

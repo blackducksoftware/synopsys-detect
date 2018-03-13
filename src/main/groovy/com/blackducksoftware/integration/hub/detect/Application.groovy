@@ -137,9 +137,8 @@ class Application {
             detectInfo.init()
             detectOptionManager.init()
 
-            List<DetectOption> options = detectOptionManager.getDetectOptions()
             if (helpManager.isHelpMessageApplicable(applicationArguments.getSourceArgs())) {
-                helpManager.printAppropriateHelpMessage(applicationArguments.getSourceArgs(), options)
+                helpManager.printAppropriateHelpMessage(applicationArguments.getSourceArgs(), detectOptionManager)
                 return
             }
 
@@ -163,6 +162,7 @@ class Application {
                 DetectConfigurationPrinter detectConfigurationPrinter = new DetectConfigurationPrinter()
 
                 infoPrinter.printInfo(System.out, detectInfo)
+                List<DetectOption> options = detectOptionManager.getDetectOptions()
                 detectConfigurationPrinter.print(System.out, detectInfo, detectConfiguration, options)
             }
 
