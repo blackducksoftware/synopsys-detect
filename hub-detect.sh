@@ -38,6 +38,8 @@ for i in $*; do
     LOGGABLE_SCRIPT_ARGS="$LOGGABLE_SCRIPT_ARGS --blackduck.hub.password=<redacted>"
   elif [[ $i == --blackduck.hub.proxy.password=* ]]; then
     LOGGABLE_SCRIPT_ARGS="$LOGGABLE_SCRIPT_ARGS --blackduck.hub.proxy.password=<redacted>"
+  elif [[ $i == --blackduck.hub.api.token=* ]]; then
+    LOGGABLE_SCRIPT_ARGS="$LOGGABLE_SCRIPT_ARGS --blackduck.hub.api.token=<redacted>"
   else
     LOGGABLE_SCRIPT_ARGS="$LOGGABLE_SCRIPT_ARGS $i"
   fi
