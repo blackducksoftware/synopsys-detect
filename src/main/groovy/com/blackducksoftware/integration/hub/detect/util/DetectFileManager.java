@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
@@ -129,23 +130,23 @@ public class DetectFileManager {
         return fileFinder.findFile(sourceDirectory, filenamePattern);
     }
 
-    public File[] findFiles(final File sourceDirectory, final String filenamePattern) {
+    public List<File> findFiles(final File sourceDirectory, final String filenamePattern) {
         return fileFinder.findFiles(sourceDirectory, filenamePattern);
     }
 
-    public File[] findFilesToDepth(final String sourceDirectory, final String filenamePattern, final int maxDepth) {
+    public List<File> findFilesToDepth(final String sourceDirectory, final String filenamePattern, final int maxDepth) {
         return findFilesToDepth(new File(sourceDirectory), filenamePattern, maxDepth);
     }
 
-    public File[] findFilesToDepth(final File sourceDirectory, final String filenamePattern, final int maxDepth) {
+    public List<File> findFilesToDepth(final File sourceDirectory, final String filenamePattern, final int maxDepth) {
         return fileFinder.findFilesToDepth(sourceDirectory, filenamePattern, maxDepth);
     }
 
-    public File[] findDirectoriesContainingDirectoriesToDepth(final String sourceDirectory, final String filenamePattern, final int maxDepth) {
+    public List<File> findDirectoriesContainingDirectoriesToDepth(final String sourceDirectory, final String filenamePattern, final int maxDepth) {
         return fileFinder.findDirectoriesContainingDirectoriesToDepth(new File(sourceDirectory), filenamePattern, maxDepth);
     }
 
-    public File[] findDirectoriesContainingFilesToDepth(final File sourceDirectory, final String filenamePattern, final int maxDepth) {
+    public List<File> findDirectoriesContainingFilesToDepth(final File sourceDirectory, final String filenamePattern, final int maxDepth) {
         return fileFinder.findDirectoriesContainingFilesToDepth(sourceDirectory, filenamePattern, maxDepth);
     }
 
