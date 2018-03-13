@@ -197,7 +197,7 @@ class HubSignatureScanner implements SummaryResultReporter, ExitCodeReporter {
 
         boolean snippetModeEnabled = detectConfiguration.hubSignatureScannerSnippetMode;
         String sourcePath = detectConfiguration.sourcePath
-        if (snippetModeEnabled && !(scanPathSource.equals(ScanPathSource.DOCKER_SOURCE) || scanPathSource.equals(ScanPathSource.SNIPPET_SOURCE))) {
+        if (snippetModeEnabled && !(scanPathSource.equals(ScanPathSource.DOCKER_SOURCE) || scanPathSource.equals(ScanPathSource.DETECT_SOURCE) || scanPathSource.equals(ScanPathSource.SNIPPET_SOURCE))) {
             logger.info("Not scanning path ${file.canonicalPath}, snippet mode is enabled and ${scanPathSource.source} paths should be scanned when ${sourcePath} is scanned.")
             return false;
         }
