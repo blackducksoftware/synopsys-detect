@@ -19,7 +19,7 @@ import org.junit.Test
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.nameversion.builder.LinkedNameVersionNodeBuilder
 import com.blackducksoftware.integration.hub.detect.nameversion.metadata.LinkMetadata
@@ -82,7 +82,7 @@ class YarnPackagerTest {
 
     @Test
     public void lineToNameVersionLinkNodeSingleTest() {
-        final def root = new NameVersionNodeImpl(name: 'test')
+        final def root = new NameVersionNode(name: 'test')
         final def nameVersionLinkNodeBuilder = new LinkedNameVersionNodeBuilder(root)
         final String line = '"@types/node@^6.0.46":'
         final NameVersionNode result = yarnPackager.lineToNameVersionNode(nameVersionLinkNodeBuilder, root, line)
@@ -98,7 +98,7 @@ class YarnPackagerTest {
 
     @Test
     public void lineToNameVersionLinkNodeMultipleTest() {
-        final def root = new NameVersionNodeImpl()
+        final def root = new NameVersionNode()
         final def nameVersionLinkNodeBuilder = new LinkedNameVersionNodeBuilder(root)
         final String line = 'acorn@^4.0.3, acorn@^4.0.4:'
         final NameVersionNode result = yarnPackager.lineToNameVersionNode(nameVersionLinkNodeBuilder, root, line)

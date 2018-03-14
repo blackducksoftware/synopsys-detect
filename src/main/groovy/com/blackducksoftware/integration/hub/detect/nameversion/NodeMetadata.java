@@ -1,4 +1,4 @@
-/*
+/**
  * hub-detect
  *
  * Copyright (C) 2018 Black Duck Software, Inc.
@@ -21,15 +21,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.nameversion
+package com.blackducksoftware.integration.hub.detect.nameversion;
 
-import com.blackducksoftware.integration.hub.bdio.model.Forge
+import com.blackducksoftware.integration.hub.bdio.model.Forge;
 
-import groovy.transform.TypeChecked
+public interface NodeMetadata {
+    public Forge getForge();
 
-@TypeChecked
-interface NodeMetadata {
-    public Forge getForge()
+    public void setForge(Forge forge);
 
-    public void setForge(Forge forge)
 }

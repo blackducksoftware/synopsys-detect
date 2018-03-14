@@ -32,7 +32,6 @@ import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGrap
 import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.nameversion.NodeMetadata
 import com.blackducksoftware.integration.hub.detect.nameversion.builder.NameVersionNodeBuilder
@@ -57,14 +56,14 @@ class CocoapodsPackager {
         YAMLMapper mapper = new YAMLMapper()
         PodfileLock podfileLock = mapper.readValue(podLockText, PodfileLock.class)
 
-        def root = new NameVersionNodeImpl()
+        def root = new NameVersionNode()
         root.name = "detectRootNode - ${UUID.randomUUID()}"
         def builder = new SubcomponentNodeBuilder(root)
 
         podfileLock.pods.each { buildNameVersionNode(builder, it) }
 
         podfileLock.dependencies.each {
-            def child = new NameVersionNodeImpl([name: cleanPodName(it.name)])
+            def child = new NameVersionNode([name: cleanPodName(it.name)])
             builder.addChildNodeToParent(child, root)
         }
 
@@ -90,7 +89,7 @@ class CocoapodsPackager {
     }
 
     private NameVersionNode buildNameVersionNode(SubcomponentNodeBuilder builder, Pod pod) {
-        NameVersionNode nameVersionNode = new NameVersionNodeImpl()
+        NameVersionNode nameVersionNode = new NameVersionNode()
         nameVersionNode.name = cleanPodName(pod.name)
         pod.cleanName = nameVersionNode.name
         String[] segments = pod.name.split(' ')
@@ -110,7 +109,7 @@ class CocoapodsPackager {
 
         if (nameVersionNode.name.contains('/')) {
             String superNodeName = nameVersionNode.name.split('/')[0].trim()
-            def superNode = builder.addToCache(new NameVersionNodeImpl([name: superNodeName]))
+            def superNode = builder.addToCache(new NameVersionNode([name: superNodeName]))
             SubcomponentMetadata superNodeMetadata = createMetadata(builder, superNode.name)
             superNodeMetadata.subcomponents.add(nameVersionNode)
 

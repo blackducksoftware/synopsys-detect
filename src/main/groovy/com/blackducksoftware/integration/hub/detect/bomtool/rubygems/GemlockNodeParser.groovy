@@ -32,7 +32,6 @@ import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGrap
 import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.nameversion.builder.NameVersionNodeBuilder
 
@@ -52,7 +51,7 @@ class GemlockNodeParser {
     private boolean previousLineWasBundledWith = false;
 
     DependencyGraph parseProjectDependencies(NameVersionNodeTransformer nameVersionNodeTransformer, final List<String> gemfileLockLines) {
-        rootNameVersionNode = new NameVersionNodeImpl([name: 'gemfileLockRoot'])
+        rootNameVersionNode = new NameVersionNode([name: 'gemfileLockRoot'])
         nameVersionNodeBuilder = new NameVersionNodeBuilder(rootNameVersionNode)
         directDependencyNames = new HashSet<>()
         currentParent = null
@@ -146,7 +145,7 @@ class GemlockNodeParser {
         if (name.endsWith('!')) {
             name = name[0..-2]
         }
-        new NameVersionNodeImpl([name: name, version: version])
+        new NameVersionNode([name: name, version: version])
     }
 
     //a valid version looks like (###.###.###)
