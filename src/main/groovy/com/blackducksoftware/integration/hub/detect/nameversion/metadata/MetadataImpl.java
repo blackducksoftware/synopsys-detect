@@ -1,4 +1,4 @@
-/*
+/**
  * hub-detect
  *
  * Copyright (C) 2018 Black Duck Software, Inc.
@@ -21,14 +21,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.nameversion.metadata
+package com.blackducksoftware.integration.hub.detect.nameversion.metadata;
 
-import com.blackducksoftware.integration.hub.bdio.model.Forge
-import com.blackducksoftware.integration.hub.detect.nameversion.NodeMetadata
+import com.blackducksoftware.integration.hub.bdio.model.Forge;
+import com.blackducksoftware.integration.hub.detect.nameversion.NodeMetadata;
 
-import groovy.transform.TypeChecked
+public class MetadataImpl implements NodeMetadata {
+    private Forge forge;
 
-@TypeChecked
-class MetadataImpl implements NodeMetadata {
-    Forge forge
+    @Override
+    public Forge getForge() {
+        return forge;
+    }
+
+    @Override
+    public void setForge(final Forge forge) {
+        this.forge = forge;
+    }
+
 }
