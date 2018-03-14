@@ -1,5 +1,5 @@
-/*
- * hub-detect
+/**
+ * hub-detect-ws
  *
  * Copyright (C) 2018 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
@@ -21,25 +21,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.util.executable
+package com.blackducksoftware.integration.hub.detect.util.executable;
 
-import groovy.transform.TypeChecked
+public class ExecutableRunnerException extends Exception {
+    private static final long serialVersionUID = -4117278710469900787L;
 
-@TypeChecked
-class ExecutableOutput {
-    final String standardOutput
-    final String errorOutput
-
-    public ExecutableOutput(final String standardOutput, final String errorOutput) {
-        this.standardOutput = standardOutput
-        this.errorOutput = errorOutput
+    ExecutableRunnerException(final Throwable innerException) {
+        super(innerException);
     }
 
-    public List<String> getStandardOutputAsList() {
-        Arrays.asList(standardOutput.split(System.lineSeparator))
-    }
-
-    public List<String> getErrorOutputAsList() {
-        Arrays.asList(errorOutput.split(System.lineSeparator))
+    ExecutableRunnerException(final String exceptionOutput) {
+        super(exceptionOutput);
     }
 }

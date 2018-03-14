@@ -1,5 +1,5 @@
-/*
- * hub-detect
+/**
+ * hub-detect-ws
  *
  * Copyright (C) 2018 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
@@ -21,17 +21,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.util.executable
+package com.blackducksoftware.integration.hub.detect.util.executable;
 
-import groovy.transform.TypeChecked
+import java.util.Arrays;
+import java.util.List;
 
-@TypeChecked
-class ExecutableRunnerException extends Exception {
-    ExecutableRunnerException(final Throwable innerException) {
-        super(innerException)
+public class ExecutableOutput {
+    private final String standardOutput;
+    private final String errorOutput;
+
+    public ExecutableOutput(final String standardOutput, final String errorOutput) {
+        this.standardOutput = standardOutput;
+        this.errorOutput = errorOutput;
     }
 
-    ExecutableRunnerException(String exceptionOutput) {
-        super(exceptionOutput)
+    public List<String> getStandardOutputAsList() {
+        return Arrays.asList(standardOutput.split(System.lineSeparator()));
+    }
+
+    public List<String> getErrorOutputAsList() {
+        return Arrays.asList(errorOutput.split(System.lineSeparator()));
     }
 }
