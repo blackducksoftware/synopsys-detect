@@ -32,7 +32,6 @@ import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGrap
 import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.nameversion.builder.LinkedNameVersionNodeBuilder
 import com.blackducksoftware.integration.hub.detect.nameversion.builder.NameVersionNodeBuilder
@@ -47,7 +46,7 @@ class YarnPackager {
     NameVersionNodeTransformer nameVersionNodeTransformer
 
     public DependencyGraph parse(List<String> yarnLockText) {
-        def rootNode = new NameVersionNodeImpl()
+        def rootNode = new NameVersionNode()
         rootNode.name = "detectRootNode - ${UUID.randomUUID()}"
         def nameVersionLinkNodeBuilder = new LinkedNameVersionNodeBuilder(rootNode)
 
@@ -117,7 +116,7 @@ class YarnPackager {
     }
 
     private NameVersionNode dependencyLineToNameVersionNode(String line) {
-        final NameVersionNode nameVersionNode = new NameVersionNodeImpl()
+        final NameVersionNode nameVersionNode = new NameVersionNode()
         nameVersionNode.name = line.trim().replaceFirst(' ', '@').replace('"', '')
 
         nameVersionNode
@@ -133,11 +132,11 @@ class YarnPackager {
 
         String name = cleanFuzzyName(fuzzyNames[0] as String)
 
-        NameVersionNode linkedNameVersionNode = new NameVersionNodeImpl()
+        NameVersionNode linkedNameVersionNode = new NameVersionNode()
         linkedNameVersionNode.name = cleanFuzzyName(fuzzyNames[0] as String)
 
         fuzzyNames.each {
-            def nameVersionLinkNode = new NameVersionNodeImpl()
+            def nameVersionLinkNode = new NameVersionNode()
             nameVersionLinkNode.name = it
             nameVersionLinkNode.metadata = new LinkMetadata(linkNode: linkedNameVersionNode)
             nameVersionNodeBuilder.addChildNodeToParent(nameVersionLinkNode, root)

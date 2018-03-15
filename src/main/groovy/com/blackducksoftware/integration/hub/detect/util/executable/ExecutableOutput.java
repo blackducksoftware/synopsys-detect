@@ -1,4 +1,4 @@
-/*
+/**
  * hub-detect
  *
  * Copyright (C) 2018 Black Duck Software, Inc.
@@ -21,22 +21,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.nameversion
+package com.blackducksoftware.integration.hub.detect.util.executable;
 
-import org.apache.commons.lang3.builder.RecursiveToStringStyle
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder
+import java.util.Arrays;
+import java.util.List;
 
-import groovy.transform.TypeChecked
+public class ExecutableOutput {
+    private final String standardOutput;
+    private final String errorOutput;
 
-@TypeChecked
-class NameVersionNodeImpl implements NameVersionNode {
-    String name
-    String version
-    List<NameVersionNodeImpl> children = []
-    NodeMetadata metadata
+    public ExecutableOutput(final String standardOutput, final String errorOutput) {
+        this.standardOutput = standardOutput;
+        this.errorOutput = errorOutput;
+    }
 
-    @Override
-    String toString() {
-        return ReflectionToStringBuilder.toString(this, RecursiveToStringStyle.JSON_STYLE)
+    public List<String> getStandardOutputAsList() {
+        return Arrays.asList(standardOutput.split(System.lineSeparator()));
+    }
+
+    public List<String> getErrorOutputAsList() {
+        return Arrays.asList(errorOutput.split(System.lineSeparator()));
     }
 }

@@ -1,4 +1,4 @@
-/*
+/**
  * hub-detect
  *
  * Copyright (C) 2018 Black Duck Software, Inc.
@@ -21,17 +21,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.util.executable
+package com.blackducksoftware.integration.hub.detect.nameversion;
 
-import groovy.transform.TypeChecked
+import com.blackducksoftware.integration.hub.bdio.model.Forge;
 
-@TypeChecked
-class ExecutableRunnerException extends Exception {
-    ExecutableRunnerException(final Throwable innerException) {
-        super(innerException)
-    }
+public interface NodeMetadata {
+    public Forge getForge();
 
-    ExecutableRunnerException(String exceptionOutput) {
-        super(exceptionOutput)
-    }
+    public void setForge(Forge forge);
+
 }
