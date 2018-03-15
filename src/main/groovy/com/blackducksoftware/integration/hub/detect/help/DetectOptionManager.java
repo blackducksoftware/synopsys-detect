@@ -21,104 +21,113 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.help
+package com.blackducksoftware.integration.hub.detect.help;
 
-import java.lang.reflect.Field
+import java.lang.reflect.Field;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.math.NumberUtils
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.stereotype.Component
+import org.apache.commons.lang3.math.NumberUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration
-import com.blackducksoftware.integration.hub.detect.interactive.InteractiveOption
-import com.blackducksoftware.integration.hub.detect.util.SpringValueUtils
-
-import groovy.transform.TypeChecked
+import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.interactive.InteractiveOption;
+import com.blackducksoftware.integration.hub.detect.util.SpringValueUtils;
 
 @Component
-@TypeChecked
 public class DetectOptionManager {
-    private final Logger logger = LoggerFactory.getLogger(DetectOptionManager.class)
+    private final Logger logger = LoggerFactory.getLogger(DetectOptionManager.class);
 
     @Autowired
-    public DetectConfiguration detectConfiguration
+    public DetectConfiguration detectConfiguration;
 
-    List<DetectOption> detectOptions
+    private List<DetectOption> detectOptions;
+
     public List<DetectOption> getDetectOptions() {
-        detectOptions
+        return detectOptions;
     }
 
     public void init() {
-        Map<String, DetectOption> detectOptionsMap = [:]
+        final Map<String, DetectOption> detectOptionsMap = new HashMap<>();
 
-        DetectConfiguration.class.declaredFields.each { Field field ->
-            DetectOption option = processField(detectConfiguration, DetectConfiguration.class, field)
+        for (final Field field : DetectConfiguration.class.getDeclaredFields()) {
+            final DetectOption option = processField(detectConfiguration, DetectConfiguration.class, field);
             if (option != null) {
                 if (!detectOptionsMap.containsKey(option.key)) {
-                    detectOptionsMap.put(option.key, option)
+                    detectOptionsMap.put(option.key, option);
                 }
             }
         }
 
-        detectOptions = detectOptionsMap.values().toSorted(new Comparator<DetectOption>() {
+        detectOptions = detectOptionsMap.values().stream()
+                .sorted(new Comparator<DetectOption>() {
                     @Override
-                    public int compare(DetectOption o1, DetectOption o2) {
+                    public int compare(final DetectOption o1, final DetectOption o2) {
                         if (o1.group.isEmpty()) {
-                            return 1
+                            return 1;
                         } else if (o2.group.isEmpty()) {
-                            return -1
+                            return -1;
                         } else {
-                            return o1.group.compareTo(o2.group)
+                            return o1.group.compareTo(o2.group);
                         }
                     }
                 })
+                .collect(Collectors.toList());
     }
 
-    private DetectOption processField(Object obj, Class<?> objClz, Field field) {
+    private DetectOption processField(final Object obj, final Class<?> objClz, final Field field) {
         if (field.isAnnotationPresent(ValueDescription.class)) {
-            String fieldName = field.getName()
-            String key = ''
-            String description = ''
-            Class valueType = field.getType()
-            String defaultValue = ''
-            String group = ''
-            final ValueDescription valueDescription = field.getAnnotation(ValueDescription.class)
-            description = valueDescription.description()
-            defaultValue = valueDescription.defaultValue()
-            group = valueDescription.group()
+            final String fieldName = field.getName();
+            String key = "";
+            String description = "";
+            final Class<?> valueType = field.getType();
+            String defaultValue = "";
+            String group = "";
+            final ValueDescription valueDescription = field.getAnnotation(ValueDescription.class);
+            description = valueDescription.description();
+            defaultValue = valueDescription.defaultValue();
+            group = valueDescription.group();
             if (field.isAnnotationPresent(Value.class)) {
-                String valueKey = field.getAnnotation(Value.class).value().trim()
-                key = SpringValueUtils.springKeyFromValueAnnotation(valueKey)
+                final String valueKey = field.getAnnotation(Value.class).value().trim();
+                key = SpringValueUtils.springKeyFromValueAnnotation(valueKey);
             }
 
-            field.setAccessible(true)
-            boolean hasValue = !isValueNull(field, obj)
+            field.setAccessible(true);
+            final boolean hasValue = !isValueNull(field, obj);
 
-            String originalValue = defaultValue
-            String resolvedValue = originalValue
+            final String originalValue = defaultValue;
+            String resolvedValue = originalValue;
 
-            if (defaultValue?.trim() && !hasValue) {
+            if (defaultValue != null && !defaultValue.trim().isEmpty() && !hasValue) {
                 try {
-                    resolvedValue = defaultValue
-                    setValue(field, obj, defaultValue)
-                } catch (final IllegalAccessException e) {
-                    logger.error(String.format("Could not set defaultValue on field %s with %s: %s", field.getName(), defaultValue, e.getMessage()))
+                    resolvedValue = defaultValue;
+                    setValue(field, obj, defaultValue);
+                } catch (final RuntimeException e) {
+                    logger.error(String.format("Could not set defaultValue on field %s with %s: %s", field.getName(), defaultValue, e.getMessage()));
                 }
             } else if (hasValue) {
-                resolvedValue = field.get(obj).toString()
+                try {
+                    resolvedValue = field.get(obj).toString();
+                } catch (IllegalArgumentException | IllegalAccessException e) {
+                    logger.error(String.format("Could not get resolvedValue on field %s with %s: %s", field.getName(), resolvedValue, e.getMessage()));
+                }
             }
 
-            return new DetectOption(key, fieldName, originalValue, resolvedValue, description, valueType, defaultValue, group)
+            return new DetectOption(key, fieldName, originalValue, resolvedValue, description, valueType, defaultValue, group);
         }
-        return null
+        return null;
     }
 
-    public void applyInteractiveOptions(List<InteractiveOption> interactiveOptions) {
+    public void applyInteractiveOptions(final List<InteractiveOption> interactiveOptions) {
         for (final InteractiveOption interactiveOption : interactiveOptions) {
-            for (DetectOption detectOption : detectOptions) {
+            for (final DetectOption detectOption : detectOptions) {
                 if (detectOption.getFieldName().equals(interactiveOption.getFieldName())) {
                     detectOption.interactiveValue = interactiveOption.getInteractiveValue();
                 }
