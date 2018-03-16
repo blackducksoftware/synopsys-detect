@@ -29,9 +29,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 
+@Component
 public class HelpPrinter {
 
     public void printHelpMessage(final PrintStream printStream, final List<DetectOption> options) {
