@@ -8,8 +8,8 @@
         
         th,
         td {
-            border: 1 final px solid#ddd;
-            padding: 7 px 10 px;
+            border: 1px solid #ddd;
+            padding: 7px 10px;
         }
         
         th.groupHeader {
@@ -24,7 +24,7 @@
             text-align: left;
         }
         
-        tbody tr:hover:not(final .noBorder) {
+        tbody tr:hover:not(.noBorder) {
             background-color: #f8f8f8;
         }
         
@@ -54,18 +54,20 @@
             		<td colspan="3" class="noBorder"></td>
 	        </tr>
 	        <tr>
-	            <th colspan="3" class="groupHeader">Group</th>
+	            <th colspan="3" class="groupHeader">${option.getGroupName()}</th>
 	        </tr>
 	        <tr>
 	            <th>Property Name</th>
 	            <th>Default</th>
 	            <th>Description</th>
 	        </tr>
-	        <tr>
-	            <td>--${option.getKey()}</td>
-	            <td>${option.getDefaultValue()}</td>
-	            <td>${option.getDescription()}</td>
-	        </tr>
+	        <#list option.detectOptions as detectOption>
+		        <tr>
+		            <td>--${detectOption.getKey()}</td>
+		            <td>${detectOption.getDefaultValue()}</td>
+		            <td>${detectOption.getDescription()}</td>
+		        </tr>
+	        </#list> 
         </#list> 
     </table>
 </body>

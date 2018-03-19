@@ -26,14 +26,18 @@ package com.blackducksoftware.integration.hub.detect.help.print;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
 
 import freemarker.template.Configuration;
@@ -51,16 +55,35 @@ public class HelpHtmlWriter {
         final Configuration configuration = new Configuration(Configuration.VERSION_2_3_26);
         configuration.setClassForTemplateLoading(getClass(), "/");
         configuration.setDefaultEncoding("UTF-8");
-        final File htmlHelpFile = new File(fileName);
+
+        final List<GroupOptionListing> groupOptions = new ArrayList<>();
+        final List<DetectOption> detectOptions = detectOptionManager.getDetectOptions();
+        while (detectOptions.size() > 0) {
+            final String group = detectOptions.get(0).getGroup();
+            final GroupOptionListing groupOptionListing = getGroupDetectOptions(group, detectOptions);
+            detectOptions.removeAll(groupOptionListing.detectOptions);
+            groupOptions.add(groupOptionListing);
+        }
+
         final Map<String, Object> dataModel = new HashMap<>();
-        dataModel.put("options", detectOptionManager.getDetectOptions());
+        dataModel.put("options", groupOptions);
         try {
+            final File htmlHelpFile = new File(fileName);
             final Template htmlTemplate = configuration.getTemplate("HelpHtml.ftl");
             htmlTemplate.process(dataModel, new FileWriter(htmlHelpFile));
-            logger.info(fileName + " created at " + htmlHelpFile.getPath());
+            logger.info("The " + fileName + " file was created in your working directory.");
         } catch (final IOException | TemplateException e) {
             logger.error("There was an error when creating the html file", e);
         }
     }
 
+    private GroupOptionListing getGroupDetectOptions(final String group, final List<DetectOption> detectOptions) {
+        final List<DetectOption> filteredOptions = detectOptions.stream()
+                .filter(option -> group.equals(option.getGroup()))
+                .collect(Collectors.toList());
+        final GroupOptionListing groupOptionListing = new GroupOptionListing();
+        groupOptionListing.groupName = group;
+        groupOptionListing.detectOptions = filteredOptions;
+        return groupOptionListing;
+    }
 }
