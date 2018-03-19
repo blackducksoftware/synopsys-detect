@@ -8,6 +8,12 @@ public class GroupOptionListing {
     String groupName;
     List<DetectOption> detectOptions;
 
+    public GroupOptionListing(final String groupName, final List<DetectOption> detectOptions) {
+        super();
+        this.groupName = groupName;
+        this.detectOptions = detectOptions;
+    }
+
     public String getGroupName() {
         return groupName;
     }

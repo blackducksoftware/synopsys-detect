@@ -1,4 +1,4 @@
-/*
+/**
  * hub-detect
  *
  * Copyright (C) 2018 Black Duck Software, Inc.
@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.codehaus.plexus.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,12 +58,10 @@ public class HelpHtmlWriter {
         configuration.setDefaultEncoding("UTF-8");
 
         final List<GroupOptionListing> groupOptions = new ArrayList<>();
-        final List<DetectOption> detectOptions = detectOptionManager.getDetectOptions();
-        while (detectOptions.size() > 0) {
-            final String group = detectOptions.get(0).getGroup();
-            final GroupOptionListing groupOptionListing = getGroupDetectOptions(group, detectOptions);
-            detectOptions.removeAll(groupOptionListing.detectOptions);
-            groupOptions.add(groupOptionListing);
+
+        for (final String groupName : detectOptionManager.getDetectGroups()) {
+            final List<DetectOption> filteredOptions = getGroupDetectOptions(groupName);
+            groupOptions.add(new GroupOptionListing(StringUtils.capitalise(groupName), filteredOptions));
         }
 
         final Map<String, Object> dataModel = new HashMap<>();
@@ -71,19 +70,17 @@ public class HelpHtmlWriter {
             final File htmlHelpFile = new File(fileName);
             final Template htmlTemplate = configuration.getTemplate("HelpHtml.ftl");
             htmlTemplate.process(dataModel, new FileWriter(htmlHelpFile));
-            logger.info("The " + fileName + " file was created in your working directory.");
+            logger.info(fileName + " was created in your working directory.");
         } catch (final IOException | TemplateException e) {
             logger.error("There was an error when creating the html file", e);
         }
     }
 
-    private GroupOptionListing getGroupDetectOptions(final String group, final List<DetectOption> detectOptions) {
+    private List<DetectOption> getGroupDetectOptions(final String group) {
+        final List<DetectOption> detectOptions = detectOptionManager.getDetectOptions();
         final List<DetectOption> filteredOptions = detectOptions.stream()
                 .filter(option -> group.equals(option.getGroup()))
                 .collect(Collectors.toList());
-        final GroupOptionListing groupOptionListing = new GroupOptionListing();
-        groupOptionListing.groupName = group;
-        groupOptionListing.detectOptions = filteredOptions;
-        return groupOptionListing;
+        return filteredOptions;
     }
 }

@@ -54,7 +54,7 @@
             		<td colspan="3" class="noBorder"></td>
 	        </tr>
 	        <tr>
-	            <th colspan="3" class="groupHeader">${option.getGroupName()}</th>
+	            <th colspan="3" class="groupHeader">${option.groupName}</th>
 	        </tr>
 	        <tr>
 	            <th>Property Name</th>

@@ -1,4 +1,4 @@
-/*
+/**
  * hub-detect
  *
  * Copyright (C) 2018 Black Duck Software, Inc.
@@ -21,19 +21,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.nameversion
+package com.blackducksoftware.integration.hub.detect.nameversion.metadata;
 
-import groovy.transform.TypeChecked
+import java.util.ArrayList;
+import java.util.List;
 
-@TypeChecked
-interface NameVersionNode {
-    public String getName()
-    public String getVersion()
-    public List<NameVersionNode> getChildren()
-    public NodeMetadata getMetadata()
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode;
 
-    public void setName(String name)
-    public void setVersion(String version)
-    public void setChildren(List<NameVersionNode> children)
-    public void setMetadata(NodeMetadata metadata)
+public class SubcomponentMetadata extends LinkMetadata {
+    private final List<NameVersionNode> subcomponents = new ArrayList<>();
+
+    public List<NameVersionNode> getSubcomponents() {
+        return subcomponents;
+    }
+
 }

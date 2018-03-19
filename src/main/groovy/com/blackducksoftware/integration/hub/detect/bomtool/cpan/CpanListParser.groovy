@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
 
 import groovy.transform.TypeChecked
 
@@ -51,7 +50,7 @@ class CpanListParser {
 
             try {
                 String[] module = line.trim().split('\t')
-                def nameVersionNode = new NameVersionNodeImpl()
+                def nameVersionNode = new NameVersionNode()
                 nameVersionNode.name = module[0].trim()
                 nameVersionNode.version = module[1].trim()
                 moduleMap[nameVersionNode.name] = nameVersionNode

@@ -1,4 +1,4 @@
-/*
+/**
  * hub-detect
  *
  * Copyright (C) 2018 Black Duck Software, Inc.
@@ -21,16 +21,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.nameversion.metadata
+package com.blackducksoftware.integration.hub.detect.util.executable;
 
-import com.blackducksoftware.integration.hub.bdio.model.Forge
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
-import com.blackducksoftware.integration.hub.detect.nameversion.NodeMetadata
+public class ExecutableRunnerException extends Exception {
+    private static final long serialVersionUID = -4117278710469900787L;
 
-import groovy.transform.TypeChecked
+    ExecutableRunnerException(final Throwable innerException) {
+        super(innerException);
+    }
 
-@TypeChecked
-class LinkMetadata implements NodeMetadata {
-    Forge forge
-    NameVersionNode linkNode
+    ExecutableRunnerException(final String exceptionOutput) {
+        super(exceptionOutput);
+    }
 }
