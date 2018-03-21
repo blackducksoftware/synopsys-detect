@@ -45,6 +45,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.bdio.SimpleBdioFactory;
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
@@ -106,7 +107,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
 
     private final Map<BomToolType, Result> bomToolSummaryResults = new HashMap<>();
 
-    public DetectProject createDetectProject() {
+    public DetectProject createDetectProject() throws IntegrationException {
         final DetectProject detectProject = new DetectProject();
 
         final EnumSet<BomToolType> applicableBomTools = EnumSet.noneOf(BomToolType.class);
@@ -198,7 +199,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
                 }
                 final File outputFile = new File(detectConfiguration.getBdioOutputDirectoryPath(), filename);
                 if (outputFile.exists()) {
-                    boolean deleteSuccess = outputFile.delete();
+                    final boolean deleteSuccess = outputFile.delete();
                     logger.debug(String.format("%s deleted: %b", outputFile.getAbsolutePath(), deleteSuccess));
                 }
                 writeBdioFile(outputFile, simpleBdioDocument);
@@ -211,7 +212,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
             final String filename = String.format("%s.jsonld", integrationEscapeUtil.escapeForUri(detectConfiguration.getAggregateBomName()));
             final File aggregateBdioFile = new File(detectConfiguration.getOutputDirectory(), filename);
             if (aggregateBdioFile.exists()) {
-                boolean deleteSuccess = aggregateBdioFile.delete();
+                final boolean deleteSuccess = aggregateBdioFile.delete();
                 logger.debug(String.format("%s deleted: %b", aggregateBdioFile.getAbsolutePath(), deleteSuccess));
             }
             writeBdioFile(aggregateBdioFile, aggregateBdioDocument);
