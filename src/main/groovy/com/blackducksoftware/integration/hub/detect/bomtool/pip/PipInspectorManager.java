@@ -39,6 +39,9 @@ public class PipInspectorManager {
     }
 
     public  String runInspector(File sourceDirectory, String pythonPath, File inspectorScript, String projectName, String requirementsFilePath) throws ExecutableRunnerException {
+        logger.info("PIP INSPECTOR MANAGER");
+        logger.info("PIP INSPECTORY SCRIPT " + inspectorScript);
+        logger.info("PIP INSPECTORY SCRIPT " + inspectorScript.getAbsolutePath());
         List<String> inspectorArguments = new ArrayList<>();
         inspectorArguments.add(inspectorScript.getAbsolutePath());
 
