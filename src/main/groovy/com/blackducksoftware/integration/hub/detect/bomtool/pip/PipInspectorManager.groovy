@@ -62,10 +62,8 @@ class PipInspectorManager {
             inspectorScript.absolutePath
         ]
 
-        logger.info("Requirements File : "  + requirementsFilePath);
         if (requirementsFilePath) {
             def requirementsFile = new File(requirementsFilePath)
-            logger.info("Requirements File : "  + requirementsFile);
             inspectorArguments.add("--requirements=${requirementsFile.absolutePath}" as String)
         }
 
