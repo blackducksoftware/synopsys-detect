@@ -53,6 +53,7 @@ class PipInspectorManager {
     File extractInspectorScript() {
         String inpsectorScriptContents = getClass().getResourceAsStream("/${INSPECTOR_NAME}").getText(StandardCharsets.UTF_8.toString())
         def inspectorScript = detectFileManager.createFile(BomToolType.PIP, INSPECTOR_NAME)
+        logger.info("INSPECTOR SCRIPT : "  + inspectorScript);
         detectFileManager.writeToFile(inspectorScript, inpsectorScriptContents)
     }
 
