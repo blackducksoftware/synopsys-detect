@@ -74,13 +74,11 @@ public class DetectConfigurationPrinter {
             final String fieldName = field.getName();
             Object rawFieldValue;
             rawFieldValue = field.get(detectConfiguration);
-            String fieldValue;
+            String fieldValue = "";
             if (field.getType().isArray()) {
                 fieldValue = String.join(", ", (String[]) rawFieldValue);
             } else {
-                if (rawFieldValue == null) {
-                    fieldValue = "";
-                } else {
+                if (rawFieldValue != null) {
                     fieldValue = rawFieldValue.toString();
                 }
             }
