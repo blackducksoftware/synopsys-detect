@@ -111,6 +111,7 @@ class PipBomTool extends BomTool {
     String getProjectName() {
         def projectName = detectConfiguration.pipProjectName
         def setupFile = detectFileManager.findFile(sourceDirectory, SETUP_FILE_NAME)
+        logger.info("INSPECTOR SCRIPT : "  + inspectorScript);
         if (setupFile) {
             if (!projectName) {
                 def findProjectNameExecutable = new Executable(sourceDirectory, pythonPath, [
