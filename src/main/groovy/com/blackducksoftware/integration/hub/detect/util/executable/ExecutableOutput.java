@@ -42,4 +42,12 @@ public class ExecutableOutput {
     public List<String> getErrorOutputAsList() {
         return Arrays.asList(errorOutput.split(System.lineSeparator()));
     }
+
+    public String getStandardOutput() {
+        return standardOutput;
+    }
+
+    public String getErrorOutput() {
+        return errorOutput;
+    }
 }

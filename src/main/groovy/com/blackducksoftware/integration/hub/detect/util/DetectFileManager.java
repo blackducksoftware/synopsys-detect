@@ -94,13 +94,11 @@ public class DetectFileManager {
         if (detectConfiguration.getCleanupBomToolFiles()) {
             newFile.deleteOnExit();
         }
-        logger.info("Created FIle " + newFile);
         return newFile;
     }
 
     public File createFile(final BomToolType bomToolType, final String filename) {
         final File directory = createDirectory(bomToolType);
-        logger.info("Created Directory " + directory);
         return createFile(directory, filename);
     }
 

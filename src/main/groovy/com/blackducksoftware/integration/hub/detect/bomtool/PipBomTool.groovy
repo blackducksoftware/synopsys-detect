@@ -97,7 +97,6 @@ class PipBomTool extends BomTool {
         File outputDirectory = detectFileManager.createDirectory(BomToolType.PIP)
         File setupFile = detectFileManager.findFile(sourceDirectory, SETUP_FILE_NAME)
         File inspectorScript = pipInspectorManager.extractInspectorScript()
-        logger.info("INSPECTOR SCRIPT FILE " + inspectorScript);
         String inspectorOutput = pipInspectorManager.runInspector(sourceDirectory, pythonPath, inspectorScript, projectName, detectConfiguration.requirementsFilePath)
         def codeLocation = pipInspectorTreeParser.parse(inspectorOutput, sourcePath)
 
