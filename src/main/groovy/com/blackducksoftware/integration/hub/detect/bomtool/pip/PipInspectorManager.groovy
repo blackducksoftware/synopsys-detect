@@ -53,15 +53,16 @@ class PipInspectorManager {
     File extractInspectorScript() {
         String inpsectorScriptContents = getClass().getResourceAsStream("/${INSPECTOR_NAME}").getText(StandardCharsets.UTF_8.toString())
         def inspectorScript = detectFileManager.createFile(BomToolType.PIP, INSPECTOR_NAME)
-        logger.info("INSPECTOR SCRIPT : "  + inspectorScript);
         detectFileManager.writeToFile(inspectorScript, inpsectorScriptContents)
     }
 
     String runInspector(File sourceDirectory, String pythonPath, File inspectorScript, String projectName, String requirementsFilePath) {
+        logger.info("INSPECTOR SCRIPT : "  + inspectorScript);
         List<String> inspectorArguments = [
             inspectorScript.absolutePath
         ]
 
+        logger.info("Requirements File : "  + requirementsFilePath);
         if (requirementsFilePath) {
             def requirementsFile = new File(requirementsFilePath)
             logger.info("Requirements File : "  + requirementsFile);
