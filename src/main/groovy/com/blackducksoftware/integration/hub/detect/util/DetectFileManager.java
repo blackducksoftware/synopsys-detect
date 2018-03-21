@@ -108,10 +108,10 @@ public class DetectFileManager {
 
     public File writeToFile(final File file, final String contents, final boolean overwrite) throws IOException {
         logger.info("Detect File Manager : " + file);
-        if (file == null || !file.isFile()) {
+        if (file == null) {
             return null;
         }
-        if (overwrite) {
+        if (overwrite && file.exists()) {
             file.delete();
         }
         logger.info("Detect File Manager : " + file);
