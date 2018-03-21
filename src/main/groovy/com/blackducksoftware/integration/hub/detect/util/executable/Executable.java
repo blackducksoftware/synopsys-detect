@@ -82,6 +82,10 @@ public class Executable {
         return StringUtils.join(createProcessBuilderArguments(), ' ');
     }
 
+    public void addExecutableArguments(final List<String> executableArguments) {
+        this.executableArguments.addAll(executableArguments);
+    }
+
     private List<String> createProcessBuilderArguments() {
         // ProcessBuilder can only be called with a List<java.lang.String> so do any needed conversion
         final List<String> processBuilderArguments = new ArrayList<>();
