@@ -41,7 +41,7 @@ public class CondaListParser {
 
     public Dependency condaListElementToDependency(String platform, CondaListElement element) {
         String name = element.getName();
-        String version = String.format("%s-%s-%s}",element.getVersion(),element.getBuildString(),platform);
+        String version = String.format("%s-%s-%s",element.getVersion(),element.getBuildString(),platform);
         ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.ANACONDA, name, version);
 
         return new Dependency(name, version, externalId);
