@@ -39,7 +39,7 @@ public class PipInspectorManager {
         logger.info("PIP CREATED INSPECTORY SCRIPT " + inspectorScript);
         logger.info("PIP CREATED INSPECTORY SCRIPT " + inspectorScript.getAbsolutePath());
 
-        File wroteTo  =detectFileManager.writeToFile(inspectorScript, inpsectorScriptContents);
+        File wroteTo = detectFileManager.writeToFile(inspectorScript, inpsectorScriptContents);
 
         logger.info("PIP WROTE TO INSPECTORY SCRIPT " + wroteTo);
         logger.info("PIP WROTE TO INSPECTORY SCRIPT " + wroteTo.getAbsolutePath());

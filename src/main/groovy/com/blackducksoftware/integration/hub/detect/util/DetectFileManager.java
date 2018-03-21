@@ -107,18 +107,20 @@ public class DetectFileManager {
     }
 
     public File writeToFile(final File file, final String contents, final boolean overwrite) throws IOException {
+        logger.info("Detect File Manager : " + file);
         if (file == null || !file.isFile()) {
             return null;
         }
         if (overwrite) {
             file.delete();
         }
+        logger.info("Detect File Manager : " + file);
         if (file.exists()) {
             logger.info(String.format("%s exists and not being overwritten", file.getAbsolutePath()));
         } else {
             FileUtils.write(file, contents, StandardCharsets.UTF_8);
         }
-
+        logger.info("Detect File Manager : " + file);
         return file;
     }
 
