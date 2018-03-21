@@ -35,7 +35,15 @@ public class PipInspectorManager {
         InputStream insptectorFileStream = getClass().getResourceAsStream(String.format("/%s" ,INSPECTOR_NAME));
         String inpsectorScriptContents = IOUtils.toString(insptectorFileStream, StandardCharsets.UTF_8);
         File inspectorScript = detectFileManager.createFile(BomToolType.PIP, INSPECTOR_NAME);
-        return detectFileManager.writeToFile(inspectorScript, inpsectorScriptContents);
+        logger.info("PIP INSPECTOR MANAGER");
+        logger.info("PIP CREATED INSPECTORY SCRIPT " + inspectorScript);
+        logger.info("PIP CREATED INSPECTORY SCRIPT " + inspectorScript.getAbsolutePath());
+
+        File wroteTo  =detectFileManager.writeToFile(inspectorScript, inpsectorScriptContents);
+
+        logger.info("PIP WROTE TO INSPECTORY SCRIPT " + wroteTo);
+        logger.info("PIP WROTE TO INSPECTORY SCRIPT " + wroteTo.getAbsolutePath());
+        return wroteTo;
     }
 
     public  String runInspector(File sourceDirectory, String pythonPath, File inspectorScript, String projectName, String requirementsFilePath) throws ExecutableRunnerException {
