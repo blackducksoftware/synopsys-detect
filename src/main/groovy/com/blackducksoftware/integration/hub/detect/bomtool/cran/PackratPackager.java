@@ -1,4 +1,4 @@
-/*
+/**
  * hub-detect
  *
  * Copyright (C) 2018 Black Duck Software, Inc.
@@ -21,50 +21,45 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.cran
+package com.blackducksoftware.integration.hub.detect.bomtool.cran;
 
-import org.springframework.stereotype.Component
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-
-import groovy.transform.TypeChecked
+import java.util.List;
 
 @Component
-@TypeChecked
 public class PackratPackager {
-
-    public ExternalIdFactory externalIdFactory
+    public ExternalIdFactory externalIdFactory;
 
     public PackratPackager(ExternalIdFactory externalIdFactory) {
-        this.externalIdFactory = externalIdFactory
+        this.externalIdFactory = externalIdFactory;
     }
 
     public DependencyGraph extractProjectDependencies(final List<String> packratLock) {
-        def packRatNodeParser = new PackRatNodeParser(externalIdFactory)
-        packRatNodeParser.parseProjectDependencies(packratLock)
+        PackRatNodeParser packRatNodeParser = new PackRatNodeParser(externalIdFactory);
+        return packRatNodeParser.parseProjectDependencies(packratLock);
     }
 
     public String getProjectName(final List<String> descriptionContents) {
-        String name
-
+        String name = null;
         for (String line : descriptionContents) {
-            if (line.contains('Package: ')) {
-                name = line.replace('Package: ', '').trim()
-                break
+            if (line.contains("Package: ")) {
+                name = line.replace("Package: ", "").trim();
+                break;
             }
         }
-
-        name
+        return name;
     }
 
     public String getVersion(final List<String> descriptionContents) {
-        String versionLine = descriptionContents.find { it.contains('Version: ') }
-
-        if (versionLine != null) {
-            return versionLine.replace('Version: ', '').trim()
+        for(String descriptionContent : descriptionContents) {
+            if(descriptionContent.contains("Version: ")) {
+               return  descriptionContent.replace("Version: ", "").trim();
+            }
         }
-
-        null
+        return null;
     }
+
 }

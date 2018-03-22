@@ -94,7 +94,6 @@ public class DetectFileManager {
         if (detectConfiguration.getCleanupBomToolFiles()) {
             newFile.deleteOnExit();
         }
-
         return newFile;
     }
 
@@ -108,10 +107,10 @@ public class DetectFileManager {
     }
 
     public File writeToFile(final File file, final String contents, final boolean overwrite) throws IOException {
-        if (file == null || !file.isFile()) {
+        if (file == null) {
             return null;
         }
-        if (overwrite) {
+        if (overwrite && file.exists()) {
             file.delete();
         }
         if (file.exists()) {
@@ -119,7 +118,6 @@ public class DetectFileManager {
         } else {
             FileUtils.write(file, contents, StandardCharsets.UTF_8);
         }
-
         return file;
     }
 
