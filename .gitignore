@@ -8,6 +8,7 @@
 bin/
 .idea
 *.iml
+out/
 
 # build tool
 .gradle/

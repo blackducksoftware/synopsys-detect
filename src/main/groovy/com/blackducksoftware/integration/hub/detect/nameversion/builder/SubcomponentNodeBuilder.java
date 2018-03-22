@@ -69,4 +69,8 @@ public class SubcomponentNodeBuilder extends LinkedNameVersionNodeBuilder {
 
         return nameVersionNode;
     }
+
+    public List<NameVersionNode> getSuperComponents() {
+        return superComponents;
+    }
 }
