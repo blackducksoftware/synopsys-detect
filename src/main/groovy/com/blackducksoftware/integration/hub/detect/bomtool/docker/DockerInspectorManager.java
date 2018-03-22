@@ -114,7 +114,7 @@ public class DockerInspectorManager {
                             response.close();
                         }
                     }
-                    shellScriptFile = this.detectFileManager.createFile(BomToolType.DOCKER, "hub-docker-inspector-${detectConfiguration.dockerInspectorVersion}.sh");
+                    shellScriptFile = this.detectFileManager.createFile(BomToolType.DOCKER, String.format("hub-docker-inspector-%s.sh", this.detectConfiguration.getDockerInspectorVersion()));
                     this.detectFileManager.writeToFile(shellScriptFile, shellScriptContents);
                     shellScriptFile.setExecutable(true);
                 }
