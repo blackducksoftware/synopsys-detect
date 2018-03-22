@@ -1,9 +1,9 @@
 /**
  * hub-detect
- *
+ * <p>
  * Copyright (C) 2018 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
- *
+ * <p>
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
  * distributed with this work for additional information
@@ -11,9 +11,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -35,20 +35,20 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFac
 import java.util.List;
 
 public class PackRatNodeParser {
-    private final  ExternalIdFactory externalIdFactory;
+    private final ExternalIdFactory externalIdFactory;
 
-    public PackRatNodeParser(ExternalIdFactory externalIdFactory) {
+    public PackRatNodeParser(final ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }
 
     DependencyGraph parseProjectDependencies(final List<String> packratLockContents) {
-        LazyExternalIdDependencyGraphBuilder graphBuilder = new LazyExternalIdDependencyGraphBuilder();
+        final LazyExternalIdDependencyGraphBuilder graphBuilder = new LazyExternalIdDependencyGraphBuilder();
 
         DependencyId currentParent = null;
         String name = null;
         String version = null;
 
-        for (String line : packratLockContents) {
+        for (final String line : packratLockContents) {
             if (line.startsWith("PackratFormat:")) {
                 continue;
             } else if (line.startsWith("PackratVersion:")) {
@@ -69,17 +69,17 @@ public class PackRatNodeParser {
             if (line.contains("Version: ")) {
                 version = line.replace("Version: ", "").trim();
                 graphBuilder.setDependencyVersion(currentParent, version);
-                DependencyId realId = new NameVersionDependencyId(name, version);
-                ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.CRAN, name, version);
+                final DependencyId realId = new NameVersionDependencyId(name, version);
+                final ExternalId externalId = this.externalIdFactory.createNameVersionExternalId(Forge.CRAN, name, version);
                 graphBuilder.setDependencyAsAlias(realId, currentParent);
                 graphBuilder.setDependencyInfo(realId, name, version, externalId);
                 currentParent = realId;
             }
 
             if (line.contains("Requires: ")) {
-                String[] parts = line.replace("Requires: ","").split(",");
+                final String[] parts = line.replace("Requires: ", "").split(",");
                 for (int i = 0; i < parts.length; i++) {
-                    String childName = parts[i].trim();
+                    final String childName = parts[i].trim();
                     graphBuilder.addParentWithChild(currentParent, new NameDependencyId(childName));
                 }
             }
@@ -89,7 +89,7 @@ public class PackRatNodeParser {
     }
 
     public ExternalIdFactory getExternalIdFactory() {
-        return externalIdFactory;
+        return this.externalIdFactory;
     }
 
 }
