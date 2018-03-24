@@ -23,21 +23,20 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool
 
-import java.nio.charset.StandardCharsets
-import java.nio.file.Files
-
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
-
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnBomToolSearcher
 import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnPackager
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
-
 import groovy.transform.TypeChecked
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Component
+
+import java.nio.charset.StandardCharsets
+import java.nio.file.Files
 
 @Component
 @TypeChecked
@@ -48,6 +47,9 @@ class YarnBomTool extends BomTool {
     @Autowired
     ExternalIdFactory externalIdFactory
 
+    @Autowired
+    YarnBomToolSearcher yarnBomToolSearcher
+
     @Override
     public BomToolType getBomToolType() {
         BomToolType.YARN
@@ -55,7 +57,7 @@ class YarnBomTool extends BomTool {
 
     @Override
     public boolean isBomToolApplicable() {
-        detectFileManager.containsAllFiles(sourcePath, 'yarn.lock')
+        return yarnBomToolSearcher.isBomToolApplicable(sourcePath).applicable;
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {

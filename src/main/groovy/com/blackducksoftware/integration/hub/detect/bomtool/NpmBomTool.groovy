@@ -43,34 +43,33 @@ import groovy.transform.TypeChecked
 @Component
 @TypeChecked
 class NpmBomTool extends BomTool {
-    private final Logger logger = LoggerFactory.getLogger(NpmBomTool.class)
+    private final Logger logger = LoggerFactory.getLogger(NpmBomTool.class);
 
-    public static final String NODE_MODULES = 'node_modules'
-    public static final String PACKAGE_JSON = 'package.json'
-    public static final String PACKAGE_LOCK_JSON = 'package-lock.json'
-    public static final String SHRINKWRAP_JSON = 'npm-shrinkwrap.json'
-    public static final String OUTPUT_FILE = 'detect_npm_proj_dependencies.json'
-    public static final String ERROR_FILE = 'detect_npm_error.json'
-
-    private String npmExePath
+    public static final String NODE_MODULES = "node_modules";
+    public static final String PACKAGE_JSON = "package.json";
+    public static final String PACKAGE_LOCK_JSON = "package-lock.json";
+    public static final String SHRINKWRAP_JSON = "npm-shrinkwrap.json";
+    public static final String OUTPUT_FILE = "detect_npm_proj_dependencies.json";
+    public static final String ERROR_FILE = "detect_npm_error.json";
 
     @Autowired
-    NpmCliDependencyFinder npmCliDependencyFinder
+    private NpmCliDependencyFinder npmCliDependencyFinder;
 
     @Autowired
-    NpmLockfilePackager npmLockfilePackager
+    private NpmLockfilePackager npmLockfilePackager;
 
     @Autowired
-    YarnBomTool yarnBomTool
+    private YarnBomTool yarnBomTool;
 
     @Autowired
-    HubSignatureScanner hubSignatureScanner
+    private HubSignatureScanner hubSignatureScanner;
 
     @Autowired
-    DetectConfiguration detectConfiguration
+    private DetectConfiguration detectConfiguration;
 
-    private File packageLockJson
-    private File shrinkwrapJson
+    private String npmExePath;
+    private File packageLockJson;
+    private File shrinkwrapJson;
 
     @Override
     public BomToolType getBomToolType() {

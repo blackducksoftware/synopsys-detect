@@ -1,9 +1,9 @@
 /**
  * hub-detect
- *
+ * <p>
  * Copyright (C) 2018 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
- *
+ * <p>
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
  * distributed with this work for additional information
@@ -11,9 +11,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -45,8 +45,15 @@ public class FileFinder {
     private final Logger logger = LoggerFactory.getLogger(FileFinder.class);
 
     public boolean containsAllFiles(final String sourcePath, final String... filenamePatterns) {
+        if (StringUtils.isBlank(sourcePath)) {
+            return false;
+        }
         final File sourceDirectory = new File(sourcePath);
-        if (StringUtils.isBlank(sourcePath) || !sourceDirectory.isDirectory()) {
+        return containsAllFiles(sourceDirectory, filenamePatterns);
+    }
+
+    public boolean containsAllFiles(final File sourceDirectory, final String... filenamePatterns) {
+        if (!sourceDirectory.isDirectory()) {
             return false;
         }
 
@@ -55,7 +62,7 @@ public class FileFinder {
             final File foundFile = findFile(sourceDirectory, filenamePattern);
             if (foundFile == null) {
                 containsFiles = false;
-                logger.debug(String.format("No file detected: %s in %s", filenamePattern, sourcePath));
+                logger.debug(String.format("No file detected: %s in %s", filenamePattern, sourceDirectory.getAbsolutePath()));
                 break;
             }
         }
