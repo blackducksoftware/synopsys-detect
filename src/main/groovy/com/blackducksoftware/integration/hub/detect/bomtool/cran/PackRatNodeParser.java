@@ -49,11 +49,7 @@ public class PackRatNodeParser {
         String version = null;
 
         for (final String line : packratLockContents) {
-            if (line.startsWith("PackratFormat:")) {
-                continue;
-            } else if (line.startsWith("PackratVersion:")) {
-                continue;
-            } else if (line.startsWith("RVersion:")) {
+            if (line.startsWith("PackratFormat:") || line.startsWith("PackratVersion:") || line.startsWith("RVersion:")) {
                 continue;
             }
 
