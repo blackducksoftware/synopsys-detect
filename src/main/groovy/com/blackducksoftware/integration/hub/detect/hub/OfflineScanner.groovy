@@ -40,6 +40,7 @@ import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.rest.RestConnection
 import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnectionBuilder
+import com.blackducksoftware.integration.hub.rest.UriCombiner
 import com.blackducksoftware.integration.log.IntLogger
 import com.blackducksoftware.integration.log.Slf4jIntLogger
 import com.blackducksoftware.integration.util.CIEnvironmentVariables
@@ -61,7 +62,7 @@ class OfflineScanner {
     boolean offlineScan(DetectProject detectProject, HubScanConfig hubScanConfig, String hubSignatureScannerOfflineLocalPath) {
         def intLogger = new Slf4jIntLogger(logger)
 
-        def hubServerConfig = new HubServerConfig(null, 0, (String)null, null, false)
+        def hubServerConfig = new HubServerConfig(null, 0, (String)null, null, false, new UriCombiner())
 
         def ciEnvironmentVariables = new CIEnvironmentVariables()
         ciEnvironmentVariables.putAll(System.getenv())
