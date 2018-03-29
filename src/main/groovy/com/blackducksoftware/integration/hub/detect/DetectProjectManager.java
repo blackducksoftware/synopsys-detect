@@ -158,7 +158,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
             for (final Map.Entry<String, DetectCodeLocation> codeLocationNameEntry : codeLocationNameMap.entrySet()) {
                 final String codeLocationNameString = codeLocationNameEntry.getKey();
                 final DetectCodeLocation detectCodeLocation = codeLocationNameEntry.getValue();
-                final String bdioFileName = codeLocationNameToBdioNameMap.get(codeLocationNameEntry.getKey());
+                final String bdioFileName = codeLocationNameToBdioNameMap.get(codeLocationNameString);
                 final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(codeLocationNameString, detectProject.getProjectName(), detectProject.getProjectVersionName(), detectCodeLocation);
 
                 final File outputFile = new File(detectConfiguration.getBdioOutputDirectoryPath(), bdioFileName);
