@@ -64,9 +64,8 @@ public class OfflineScanner {
     @Autowired
     private Gson gson;
 
-    boolean offlineScan(final DetectProject detectProject, final HubScanConfig hubScanConfig, final String hubSignatureScannerOfflineLocalPath)
-            throws IllegalArgumentException, IntegrationException, DetectUserFriendlyException, InterruptedException {
-        final IntLogger intLogger = new Slf4jIntLogger(OfflineScanner.logger);
+    boolean offlineScan(final DetectProject detectProject, final HubScanConfig hubScanConfig, final String hubSignatureScannerOfflineLocalPath) throws IllegalArgumentException, IntegrationException, DetectUserFriendlyException, InterruptedException {
+        final IntLogger intLogger = new Slf4jIntLogger(logger);
 
         final HubServerConfig hubServerConfig = new HubServerConfig(null, 0, (String) null, null, false, new UriCombiner());
 
