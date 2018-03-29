@@ -159,17 +159,15 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
                 final String codeLocationNameString = codeLocationNameEntry.getKey();
                 final DetectCodeLocation detectCodeLocation = codeLocationNameEntry.getValue();
                 final String bdioFileName = codeLocationNameToBdioNameMap.get(codeLocationNameEntry.getKey());
-                if (StringUtils.isNotBlank(bdioFileName)) {
-                    final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(codeLocationNameString, detectProject.getProjectName(), detectProject.getProjectVersionName(), detectCodeLocation);
+                final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(codeLocationNameString, detectProject.getProjectName(), detectProject.getProjectVersionName(), detectCodeLocation);
 
-                    final File outputFile = new File(detectConfiguration.getBdioOutputDirectoryPath(), bdioFileName);
-                    if (outputFile.exists()) {
-                        final boolean deleteSuccess = outputFile.delete();
-                        logger.debug(String.format("%s deleted: %b", outputFile.getAbsolutePath(), deleteSuccess));
-                    }
-                    writeBdioFile(outputFile, simpleBdioDocument);
-                    bdioFiles.add(outputFile);
+                final File outputFile = new File(detectConfiguration.getBdioOutputDirectoryPath(), bdioFileName);
+                if (outputFile.exists()) {
+                    final boolean deleteSuccess = outputFile.delete();
+                    logger.debug(String.format("%s deleted: %b", outputFile.getAbsolutePath(), deleteSuccess));
                 }
+                writeBdioFile(outputFile, simpleBdioDocument);
+                bdioFiles.add(outputFile);
             }
         } else {
             for (final DetectCodeLocation detectCodeLocation : detectProject.getDetectCodeLocations()) {
