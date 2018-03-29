@@ -23,18 +23,26 @@
  */
 package com.blackducksoftware.integration.hub.detect.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationName;
+import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationNameService;
+import com.blackducksoftware.integration.hub.detect.util.BdioFileNamer;
+import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.service.model.ProjectRequestBuilder;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+
+import java.util.*;
 
 public class DetectProject {
+    final Map<String, DetectCodeLocation> codeLocationNameMap = new HashMap<>();
+    final Map<String, String> codeLocationNameToBdioName = new HashMap<>();
+    private final List<DetectCodeLocation> detectCodeLocations = new ArrayList<>();
+
     private String projectName;
     private String projectVersionName;
-    private final List<DetectCodeLocation> detectCodeLocations = new ArrayList<>();
+    private String codeLocationNamePrefix;
+    private String codeLocationNameSuffix;
 
     public String getProjectName() {
         return projectName;
@@ -44,18 +52,30 @@ public class DetectProject {
         return projectVersionName;
     }
 
-    /**
-     * Only the DetectProjectManager should invoke this method.
-     */
-    public void setProjectName(final String projectName) {
-        this.projectName = projectName;
+    public String getCodeLocationNamePrefix() {
+        return codeLocationNamePrefix;
+    }
+
+    public String getCodeLocationNameSuffix() {
+        return codeLocationNameSuffix;
+    }
+
+    public Map<String, DetectCodeLocation> getCodeLocationNameMap() {
+        return codeLocationNameMap;
+    }
+
+    public Map<String, String> getCodeLocationNameToBdioName() {
+        return codeLocationNameToBdioName;
     }
 
     /**
      * Only the DetectProjectManager should invoke this method.
      */
-    public void setProjectVersionName(final String projectVersionName) {
+    public void setProjectDetails(final String projectName, final String projectVersionName, final String codeLocationNamePrefix, final String codeLocationNameSuffix) {
+        this.projectName = projectName;
         this.projectVersionName = projectVersionName;
+        this.codeLocationNamePrefix = codeLocationNamePrefix;
+        this.codeLocationNameSuffix = codeLocationNameSuffix;
     }
 
     public void setProjectNameIfNotSet(final String projectName) {
@@ -98,6 +118,47 @@ public class DetectProject {
         builder.setReleaseComments(detectConfiguration.getProjectVersionNotes());
 
         return builder;
+    }
+
+    public List<BomToolType> processDetectCodeLocations(final Logger logger, final DetectFileManager detectFileManager, final BdioFileNamer bdioFileNamer, final CodeLocationNameService codeLocationNameService) {
+        final List<BomToolType> bomToolFailures = new ArrayList<>();
+        final List<DetectCodeLocation> detectCodeLocations = getDetectCodeLocations();
+        final Map<String, DetectCodeLocation> codeLocationNameMap = new HashMap<>(detectCodeLocations.size());
+        for (final DetectCodeLocation detectCodeLocation : getDetectCodeLocations()) {
+            if (detectCodeLocation.getDependencyGraph() == null) {
+                logger.warn(String.format("Dependency graph is null for code location %s", detectCodeLocation.getSourcePath()));
+                continue;
+            }
+            if (detectCodeLocation.getDependencyGraph().getRootDependencies().size() <= 0) {
+                logger.warn(String.format("Could not find any dependencies for code location %s", detectCodeLocation.getSourcePath()));
+            }
+
+            final CodeLocationName codeLocationName = detectCodeLocation.createCodeLocationName(codeLocationNameService, projectName, projectVersionName, getCodeLocationNamePrefix(), getCodeLocationNameSuffix());
+            final String codeLocationNameString = detectCodeLocation.getCodeLocationNameString(codeLocationNameService, codeLocationName);
+
+            if (codeLocationNameMap.containsKey(codeLocationNameString)) {
+                bomToolFailures.add(detectCodeLocation.getBomToolType());
+                logger.error(String.format("Found duplicate Code Locations with the name: %s", codeLocationNameString));
+            } else {
+                codeLocationNameMap.put(codeLocationNameString, detectCodeLocation);
+            }
+        }
+        final Set<String> bdioFileNames = new HashSet<>();
+        for (final Map.Entry<String, DetectCodeLocation> codeLocationEntry : codeLocationNameMap.entrySet()) {
+            final String codeLocationNameString = codeLocationEntry.getKey();
+            final DetectCodeLocation detectCodeLocation = codeLocationEntry.getValue();
+
+            final String finalSourcePathPiece = detectFileManager.extractFinalPieceFromPath(detectCodeLocation.getSourcePath());
+            final String filename = bdioFileNamer.generateShortenedFilename(detectCodeLocation.getBomToolType(), finalSourcePathPiece, detectCodeLocation.getBomToolProjectExternalId());
+
+            if (!bdioFileNames.add(filename)) {
+                bomToolFailures.add(detectCodeLocation.getBomToolType());
+                logger.error(String.format("Found duplicate Bdio files with the name: %s", filename));
+            } else {
+                codeLocationNameToBdioName.put(codeLocationNameString, filename);
+            }
+        }
+        return bomToolFailures;
     }
 
 }
