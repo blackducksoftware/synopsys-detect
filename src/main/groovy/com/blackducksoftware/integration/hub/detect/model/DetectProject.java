@@ -120,8 +120,8 @@ public class DetectProject {
         return builder;
     }
 
-    public List<BomToolType> processDetectCodeLocations(final Logger logger, final DetectFileManager detectFileManager, final BdioFileNamer bdioFileNamer, final CodeLocationNameService codeLocationNameService) {
-        final List<BomToolType> bomToolFailures = new ArrayList<>();
+    public Set<BomToolType> processDetectCodeLocations(final Logger logger, final DetectFileManager detectFileManager, final BdioFileNamer bdioFileNamer, final CodeLocationNameService codeLocationNameService) {
+        final Set<BomToolType> bomToolFailures = new HashSet<>();
         final List<DetectCodeLocation> detectCodeLocations = getDetectCodeLocations();
         final Map<String, DetectCodeLocation> codeLocationNameMap = new HashMap<>(detectCodeLocations.size());
         for (final DetectCodeLocation detectCodeLocation : getDetectCodeLocations()) {

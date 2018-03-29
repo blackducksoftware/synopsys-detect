@@ -139,7 +139,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         }
 
         if (StringUtils.isBlank(detectConfiguration.getAggregateBomName())) {
-            final List<BomToolType> failedBomToolTypes = detectProject.processDetectCodeLocations(logger, detectFileManager, bdioFileNamer, codeLocationNameService);
+            final Set<BomToolType> failedBomToolTypes = detectProject.processDetectCodeLocations(logger, detectFileManager, bdioFileNamer, codeLocationNameService);
             for (final BomToolType bomToolType : failedBomToolTypes) {
                 bomToolSummaryResults.put(bomToolType, Result.FAILURE);
             }
@@ -159,7 +159,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
                 final String codeLocationNameString = codeLocationNameEntry.getKey();
                 final DetectCodeLocation detectCodeLocation = codeLocationNameEntry.getValue();
                 final String bdioFileName = codeLocationNameToBdioNameMap.get(codeLocationNameEntry.getKey());
-                if (StringUtils.isBlank(bdioFileName)) {
+                if (StringUtils.isNotBlank(bdioFileName)) {
                     final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(codeLocationNameString, detectProject.getProjectName(), detectProject.getProjectVersionName(), detectCodeLocation);
 
                     final File outputFile = new File(detectConfiguration.getBdioOutputDirectoryPath(), bdioFileName);
