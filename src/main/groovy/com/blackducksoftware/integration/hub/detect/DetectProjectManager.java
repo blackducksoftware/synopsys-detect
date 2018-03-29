@@ -182,7 +182,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
                 }
                 aggregateDependencyGraph.addGraphAsChildrenToRoot(detectCodeLocation.getDependencyGraph());
             }
-            final SimpleBdioDocument aggregateBdioDocument = createAggregateSimpleBdioDocument(detectProject, aggregateDependencyGraph);
+            final SimpleBdioDocument aggregateBdioDocument = createAggregateSimpleBdioDocument(detectProject.getProjectName(), detectProject.getProjectVersionName(), aggregateDependencyGraph);
             final String filename = String.format("%s.jsonld", integrationEscapeUtil.escapeForUri(detectConfiguration.getAggregateBomName()));
             final File aggregateBdioFile = new File(detectConfiguration.getOutputDirectory(), filename);
             if (aggregateBdioFile.exists()) {
@@ -223,12 +223,8 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         return ExitCodeType.SUCCESS;
     }
 
-
-
-    private SimpleBdioDocument createAggregateSimpleBdioDocument(final DetectProject detectProject, final DependencyGraph dependencyGraph) {
+    private SimpleBdioDocument createAggregateSimpleBdioDocument(final String projectName, final String projectVersionName, final DependencyGraph dependencyGraph) {
         final String codeLocationName = "";
-        final String projectName = detectProject.getProjectName();
-        final String projectVersionName = detectProject.getProjectVersionName();
         final ExternalId projectExternalId = simpleBdioFactory.createNameVersionExternalId(new Forge("/", "/", ""), projectName, projectVersionName);
 
         return createSimpleBdioDocument(codeLocationName, projectName, projectVersionName, projectExternalId, dependencyGraph);
