@@ -23,13 +23,9 @@
  */
 package com.blackducksoftware.integration.hub.detect.help;
 
-import java.lang.reflect.Field;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
+import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.interactive.InteractiveOption;
+import com.blackducksoftware.integration.hub.detect.util.SpringValueUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,9 +33,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.interactive.InteractiveOption;
-import com.blackducksoftware.integration.hub.detect.util.SpringValueUtils;
+import java.lang.reflect.Field;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 public class DetectOptionManager {
@@ -133,7 +132,7 @@ public class DetectOptionManager {
                 }
             }
 
-            Field field;
+            final Field field;
             try {
                 field = detectConfiguration.getClass().getDeclaredField(interactiveOption.getFieldName());
             } catch (NoSuchFieldException | SecurityException e) {
@@ -163,19 +162,13 @@ public class DetectOptionManager {
 
     public boolean isValueNull(final Field field, final Object obj) {
         final Class<?> type = field.getType();
-        Object fieldValue;
+        final Object fieldValue;
         try {
             fieldValue = field.get(obj);
         } catch (IllegalArgumentException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
-        if (String.class == type && fieldValue.toString().trim().length() == 0) {
-            return true;
-        } else if (Integer.class == type && fieldValue == null) {
-            return true;
-        } else if (Long.class == type && fieldValue == null) {
-            return true;
-        } else if (Boolean.class == type && fieldValue == null) {
+        if ((String.class == type && fieldValue.toString().trim().length() == 0) || (Integer.class == type && fieldValue == null) || (Long.class == type && fieldValue == null) || (Boolean.class == type && fieldValue == null)) {
             return true;
         }
         return false;

@@ -45,6 +45,7 @@ import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.model.DetectProject;
 import com.blackducksoftware.integration.hub.rest.RestConnection;
 import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnectionBuilder;
+import com.blackducksoftware.integration.hub.rest.UriCombiner;
 import com.blackducksoftware.integration.log.IntLogger;
 import com.blackducksoftware.integration.log.Slf4jIntLogger;
 import com.blackducksoftware.integration.util.CIEnvironmentVariables;
@@ -66,7 +67,7 @@ public class OfflineScanner {
     boolean offlineScan(final DetectProject detectProject, final HubScanConfig hubScanConfig, final String hubSignatureScannerOfflineLocalPath) throws IllegalArgumentException, IntegrationException, DetectUserFriendlyException {
         final IntLogger intLogger = new Slf4jIntLogger(logger);
 
-        final HubServerConfig hubServerConfig = new HubServerConfig(null, 0, (String) null, null, false);
+        final HubServerConfig hubServerConfig = new HubServerConfig(null, 0, (String) null, null, false, new UriCombiner());
 
         final CIEnvironmentVariables ciEnvironmentVariables = new CIEnvironmentVariables();
         ciEnvironmentVariables.putAll(System.getenv());

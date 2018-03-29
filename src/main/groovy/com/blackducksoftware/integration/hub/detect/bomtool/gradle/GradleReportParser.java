@@ -73,6 +73,7 @@ public class GradleReportParser {
                 /**
                  * The meta data section will be at the end of the file after all of the "gradle dependencies" output
                  */
+                System.out.println(line);
                 if (line.startsWith("DETECT META DATA START")) {
                     processingMetaData = true;
                     continue;
