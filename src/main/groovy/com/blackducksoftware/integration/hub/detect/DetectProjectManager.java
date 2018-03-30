@@ -23,12 +23,31 @@
  */
 package com.blackducksoftware.integration.hub.detect;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.bdio.SimpleBdioFactory;
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.SimpleBdioDocument;
+import com.blackducksoftware.integration.hub.bdio.model.ToolSpdxCreator;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationNameService;
@@ -46,43 +65,42 @@ import com.blackducksoftware.integration.hub.detect.summary.SummaryResultReporte
 import com.blackducksoftware.integration.hub.detect.util.BdioFileNamer;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
-import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormat;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
 
 @Component
 public class DetectProjectManager implements SummaryResultReporter, ExitCodeReporter {
     private final Logger logger = LoggerFactory.getLogger(DetectProjectManager.class);
-    private final Map<BomToolType, Result> bomToolSummaryResults = new HashMap<>();
+
     @Autowired
     private DetectInfo detectInfo;
+
     @Autowired
     private DetectConfiguration detectConfiguration;
+
     @Autowired
     private SimpleBdioFactory simpleBdioFactory;
+
     @Autowired
     private List<BomTool> bomTools;
+
     @Autowired
     private HubSignatureScanner hubSignatureScanner;
+
     @Autowired
     private IntegrationEscapeUtil integrationEscapeUtil;
+
     @Autowired
     private BdioFileNamer bdioFileNamer;
+
     @Autowired
     private DetectFileManager detectFileManager;
+
     @Autowired
     private CodeLocationNameService codeLocationNameService;
+
     @Autowired
     private DetectPhoneHomeManager detectPhoneHomeManager;
+
+    private final Map<BomToolType, Result> bomToolSummaryResults = new HashMap<>();
     private boolean foundAnyBomTools;
 
     public DetectProject createDetectProject() throws IntegrationException {
@@ -274,9 +292,8 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         final SimpleBdioDocument simpleBdioDocument = simpleBdioFactory.createSimpleBdioDocument(codeLocationName, projectName, projectVersionName, projectExternalId, dependencyGraph);
 
         final String hubDetectVersion = detectInfo.getDetectVersion();
-        final Map<String, String> detectVersionData = new HashMap<>();
-        detectVersionData.put("detectVersion", hubDetectVersion);
-        simpleBdioDocument.billOfMaterials.customData = detectVersionData;
+        final ToolSpdxCreator hubDetectCreator = new ToolSpdxCreator("HubDetect", hubDetectVersion);
+        simpleBdioDocument.billOfMaterials.creationInfo.addSpdxCreator(hubDetectCreator);
 
         return simpleBdioDocument;
     }

@@ -85,21 +85,21 @@ public class OfflineScanner {
         }
 
         if (!cliInstalledOkay && StringUtils.isNotBlank(hubSignatureScannerOfflineLocalPath)) {
-            logger.warn(String.format("The signature scanner is not correctly installed at %s", hubSignatureScannerOfflineLocalPath));
+            OfflineScanner.logger.warn(String.format("The signature scanner is not correctly installed at %s", hubSignatureScannerOfflineLocalPath));
             return false;
         } else if (!cliInstalledOkay) {
-            logger.warn(String.format("The signature scanner is not correctly installed at %s", hubScanConfig.getToolsDir()));
+            OfflineScanner.logger.warn(String.format("The signature scanner is not correctly installed at %s", hubScanConfig.getToolsDir()));
             return false;
         } else {
             simpleScanUtility.setupAndExecuteScan(cliLocation);
-            logger.info(String.format("The scan dry run files can be found in : %s", simpleScanUtility.getDataDirectory()));
+            OfflineScanner.logger.info(String.format("The scan dry run files can be found in : %s", simpleScanUtility.getDataDirectory()));
             return true;
         }
     }
 
     private void installSignatureScannerFromUrl(final IntLogger intLogger, final HubScanConfig hubScanConfig, final CIEnvironmentVariables ciEnvironmentVariables) throws DetectUserFriendlyException {
         try {
-            logger.info(String.format("Attempting to download the signature scanner from %s", detectConfiguration.getHubSignatureScannerHostUrl()));
+            OfflineScanner.logger.info(String.format("Attempting to download the signature scanner from %s", detectConfiguration.getHubSignatureScannerHostUrl()));
             final UnauthenticatedRestConnectionBuilder restConnectionBuilder = new UnauthenticatedRestConnectionBuilder();
             restConnectionBuilder.setBaseUrl(detectConfiguration.getHubSignatureScannerHostUrl());
             restConnectionBuilder.setTimeout(detectConfiguration.getHubTimeout());
@@ -119,7 +119,7 @@ public class OfflineScanner {
         try {
             cliInstalledOkay = cliLocation.getCLIExists(intLogger);
         } catch (final IOException e) {
-            logger.error(String.format("Couldn't check the signature scanner install: %s", e.getMessage()));
+            OfflineScanner.logger.error(String.format("Couldn't check the signature scanner install: %s", e.getMessage()));
         }
 
         return cliInstalledOkay;
