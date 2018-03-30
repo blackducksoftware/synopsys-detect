@@ -1,10 +1,10 @@
-package com.blackducksoftware.integration.hub.detect.bomtool.npm;
-
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolSearchResult;
+package com.blackducksoftware.integration.hub.detect.bomtool.search;
 
 import java.io.File;
 
 public class NpmBomToolSearchResult extends BomToolSearchResult {
+    public static final NpmBomToolSearchResult NPM_BOM_TOOL_DOES_NOT_APPLY = new NpmBomToolSearchResult(false, null, null, null);
+
     private final String npmExePath;
     private final File packageLockJson;
     private final File shrinkwrapJson;

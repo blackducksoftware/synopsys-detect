@@ -31,7 +31,8 @@ import com.blackducksoftware.integration.hub.bdio.BdioTransformer;
 import com.blackducksoftware.integration.hub.bdio.SimpleBdioFactory;
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
-import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnBomToolSearcher;
+import com.blackducksoftware.integration.hub.detect.bomtool.search.NpmBomToolSearcher;
+import com.blackducksoftware.integration.hub.detect.bomtool.search.YarnBomToolSearcher;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
@@ -51,6 +52,8 @@ import com.blackducksoftware.integration.hub.detect.interactive.reader.ScannerIn
 import com.blackducksoftware.integration.hub.detect.model.DetectProject;
 import com.blackducksoftware.integration.hub.detect.summary.DetectSummary;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.log.SilentLogger;
 import com.blackducksoftware.integration.log.Slf4jIntLogger;
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
@@ -116,6 +119,12 @@ public class Application {
 
     @Autowired
     private InteractiveManager interactiveManager;
+
+    @Autowired
+    private ExecutableManager executableManager;
+
+    @Autowired
+    private ExecutableRunner executableRunner;
 
     @Autowired
     private DetectFileManager detectFileManager;
@@ -303,7 +312,12 @@ public class Application {
 
     @Bean
     public YarnBomToolSearcher yarnBomToolSearcher() {
-        return new YarnBomToolSearcher(detectFileManager);
+        return new YarnBomToolSearcher(executableManager, executableRunner, detectFileManager, detectConfiguration);
+    }
+
+    @Bean
+    public NpmBomToolSearcher npmBomToolSearcher() {
+        return new NpmBomToolSearcher(executableManager, executableRunner, detectFileManager, detectConfiguration, yarnBomToolSearcher());
     }
 
 }
