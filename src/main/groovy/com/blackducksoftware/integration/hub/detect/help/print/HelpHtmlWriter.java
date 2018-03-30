@@ -52,11 +52,10 @@ public class HelpHtmlWriter {
     @Autowired
     DetectOptionManager detectOptionManager;
 
-    public void writeHelpMessage(final String fileName) {
-        final Configuration configuration = new Configuration(Configuration.VERSION_2_3_26);
-        configuration.setClassForTemplateLoading(getClass(), "/");
-        configuration.setDefaultEncoding("UTF-8");
+    @Autowired
+    Configuration configuration;
 
+    public void writeHelpMessage(final String filename) {
         final List<GroupOptionListing> groupOptions = new ArrayList<>();
 
         for (final String groupName : detectOptionManager.getDetectGroups()) {
@@ -67,18 +66,18 @@ public class HelpHtmlWriter {
         final Map<String, Object> dataModel = new HashMap<>();
         dataModel.put("options", groupOptions);
         try {
-            final File htmlHelpFile = new File(fileName);
-            final Template htmlTemplate = configuration.getTemplate("HelpHtml.ftl");
+            final File htmlHelpFile = new File(filename);
+            final Template htmlTemplate = configuration.getTemplate("helpHtml.ftl");
             htmlTemplate.process(dataModel, new FileWriter(htmlHelpFile));
-            logger.info(fileName + " was created in your working directory.");
+            logger.info(filename + " was created in your current directory.");
         } catch (final IOException | TemplateException e) {
             logger.error("There was an error when creating the html file", e);
         }
     }
 
     private List<DetectOption> getGroupDetectOptions(final String group) {
-        final List<DetectOption> detectOptions = detectOptionManager.getDetectOptions();
-        final List<DetectOption> filteredOptions = detectOptions.stream()
+        final List<DetectOption> filteredOptions = detectOptionManager.getDetectOptions()
+                .stream()
                 .filter(option -> group.equals(option.getGroup()))
                 .collect(Collectors.toList());
         return filteredOptions;

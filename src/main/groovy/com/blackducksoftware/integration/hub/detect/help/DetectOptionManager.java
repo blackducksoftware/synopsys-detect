@@ -23,9 +23,15 @@
  */
 package com.blackducksoftware.integration.hub.detect.help;
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.interactive.InteractiveOption;
-import com.blackducksoftware.integration.hub.detect.util.SpringValueUtils;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,12 +39,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.Field;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.interactive.InteractiveOption;
+import com.blackducksoftware.integration.hub.detect.util.SpringValueUtils;
 
 @Component
 public class DetectOptionManager {
@@ -81,20 +84,18 @@ public class DetectOptionManager {
         }
 
         Collections.sort(detectGroups);
-        detectOptions = detectOptionsMap.values().stream()
-                .sorted(new Comparator<DetectOption>() {
-                    @Override
-                    public int compare(final DetectOption o1, final DetectOption o2) {
-                        if (o1.group.isEmpty()) {
-                            return 1;
-                        } else if (o2.group.isEmpty()) {
-                            return -1;
-                        } else {
-                            return o1.group.compareTo(o2.group);
-                        }
-                    }
-                })
-                .collect(Collectors.toList());
+        detectOptions = detectOptionsMap.values().stream().sorted(new Comparator<DetectOption>() {
+            @Override
+            public int compare(final DetectOption o1, final DetectOption o2) {
+                if (o1.group.isEmpty()) {
+                    return 1;
+                } else if (o2.group.isEmpty()) {
+                    return -1;
+                } else {
+                    return o1.group.compareTo(o2.group);
+                }
+            }
+        }).collect(Collectors.toList());
     }
 
     private DetectOption processField(final Object obj, final Class<?> objClz, final Field field) throws IllegalArgumentException, IllegalAccessException {
