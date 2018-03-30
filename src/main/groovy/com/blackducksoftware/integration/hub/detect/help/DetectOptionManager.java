@@ -23,9 +23,15 @@
  */
 package com.blackducksoftware.integration.hub.detect.help;
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.interactive.InteractiveOption;
-import com.blackducksoftware.integration.hub.detect.util.SpringValueUtils;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,12 +39,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.Field;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.interactive.InteractiveOption;
+import com.blackducksoftware.integration.hub.detect.util.SpringValueUtils;
 
 @Component
 public class DetectOptionManager {
@@ -48,80 +51,83 @@ public class DetectOptionManager {
     public DetectConfiguration detectConfiguration;
 
     private List<DetectOption> detectOptions;
+    private List<String> detectGroups;
 
     public List<DetectOption> getDetectOptions() {
         return detectOptions;
     }
 
-    public void init() {
-        final Map<String, DetectOption> detectOptionsMap = new HashMap<>();
-
-        for (final Field field : DetectConfiguration.class.getDeclaredFields()) {
-            final DetectOption option = processField(detectConfiguration, DetectConfiguration.class, field);
-            if (option != null) {
-                if (!detectOptionsMap.containsKey(option.key)) {
-                    detectOptionsMap.put(option.key, option);
-                }
-            }
-        }
-
-        detectOptions = detectOptionsMap.values().stream()
-                .sorted(new Comparator<DetectOption>() {
-                    @Override
-                    public int compare(final DetectOption o1, final DetectOption o2) {
-                        if (o1.group.isEmpty()) {
-                            return 1;
-                        } else if (o2.group.isEmpty()) {
-                            return -1;
-                        } else {
-                            return o1.group.compareTo(o2.group);
-                        }
-                    }
-                })
-                .collect(Collectors.toList());
+    public List<String> getDetectGroups() {
+        return detectGroups;
     }
 
-    private DetectOption processField(final Object obj, final Class<?> objClz, final Field field) {
-        if (field.isAnnotationPresent(ValueDescription.class)) {
-            final String fieldName = field.getName();
-            String key = "";
-            String description = "";
-            final Class<?> valueType = field.getType();
-            String defaultValue = "";
-            String group = "";
-            final ValueDescription valueDescription = field.getAnnotation(ValueDescription.class);
-            description = valueDescription.description();
-            defaultValue = valueDescription.defaultValue();
-            group = valueDescription.group();
-            if (field.isAnnotationPresent(Value.class)) {
-                final String valueKey = field.getAnnotation(Value.class).value().trim();
-                key = SpringValueUtils.springKeyFromValueAnnotation(valueKey);
-            }
+    public void init() {
+        final Map<String, DetectOption> detectOptionsMap = new HashMap<>();
+        detectGroups = new ArrayList<>();
 
-            field.setAccessible(true);
-            final boolean hasValue = !isValueNull(field, obj);
-
-            final String originalValue = defaultValue;
-            String resolvedValue = originalValue;
-
-            if (defaultValue != null && !defaultValue.trim().isEmpty() && !hasValue) {
-                try {
-                    resolvedValue = defaultValue;
-                    setValue(field, obj, defaultValue);
-                } catch (final RuntimeException e) {
-                    logger.error(String.format("Could not set defaultValue on field %s with %s: %s", field.getName(), defaultValue, e.getMessage()));
+        for (final Field field : DetectConfiguration.class.getDeclaredFields()) {
+            try {
+                if (field.isAnnotationPresent(ValueDescription.class)) {
+                    final DetectOption option = processField(detectConfiguration, DetectConfiguration.class, field);
+                    if (option != null) {
+                        if (!detectOptionsMap.containsKey(option.key)) {
+                            detectOptionsMap.put(option.key, option);
+                        }
+                    }
+                } else if (field.getName().startsWith("GROUP_")) {
+                    field.setAccessible(true);
+                    detectGroups.add(field.get(null).toString());
                 }
-            } else if (hasValue) {
-                try {
-                    resolvedValue = field.get(obj).toString();
-                } catch (IllegalArgumentException | IllegalAccessException e) {
-                    logger.error(String.format("Could not get resolvedValue on field %s with %s: %s", field.getName(), resolvedValue, e.getMessage()));
-                }
+            } catch (IllegalArgumentException | IllegalAccessException e) {
+                logger.error(String.format("Could not resolve field %s: %s", field.getName(), e.getMessage()));
             }
-
-            return new DetectOption(key, fieldName, originalValue, resolvedValue, description, valueType, defaultValue, group);
         }
-        return null;
+
+        Collections.sort(detectGroups);
+        detectOptions = detectOptionsMap.values().stream().sorted(new Comparator<DetectOption>() {
+            @Override
+            public int compare(final DetectOption o1, final DetectOption o2) {
+                if (o1.group.isEmpty()) {
+                    return 1;
+                } else if (o2.group.isEmpty()) {
+                    return -1;
+                } else {
+                    return o1.group.compareTo(o2.group);
+                }
+            }
+        }).collect(Collectors.toList());
+    }
+
+    private DetectOption processField(final Object obj, final Class<?> objClz, final Field field) throws IllegalArgumentException, IllegalAccessException {
+        final String fieldName = field.getName();
+        String key = "";
+        String description = "";
+        final Class<?> valueType = field.getType();
+        String defaultValue = "";
+        String group = "";
+        final ValueDescription valueDescription = field.getAnnotation(ValueDescription.class);
+        description = valueDescription.description();
+        defaultValue = valueDescription.defaultValue();
+        group = valueDescription.group();
+        if (field.isAnnotationPresent(Value.class)) {
+            final String valueKey = field.getAnnotation(Value.class).value().trim();
+            key = SpringValueUtils.springKeyFromValueAnnotation(valueKey);
+        }
+
+        field.setAccessible(true);
+        final boolean hasValue = !isValueNull(field, obj);
+
+        final String originalValue = defaultValue;
+        String resolvedValue = originalValue;
+
+        if (defaultValue != null && !defaultValue.trim().isEmpty() && !hasValue) {
+            resolvedValue = defaultValue;
+            setValue(field, obj, defaultValue);
+        } else if (hasValue) {
+            resolvedValue = field.get(obj).toString();
+        }
+
+        return new DetectOption(key, fieldName, originalValue, resolvedValue, description, valueType, defaultValue, group);
     }
 
     public void applyInteractiveOptions(final List<InteractiveOption> interactiveOptions) {
