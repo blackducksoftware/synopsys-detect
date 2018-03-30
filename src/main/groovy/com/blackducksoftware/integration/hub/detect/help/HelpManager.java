@@ -72,7 +72,7 @@ public class HelpManager {
             helpPrinter.printVerboseMessage();
             final List<DetectOption> options = detectOptionManager.getDetectOptions();
             final List<DetectOption> filteredCommonOptions = options.stream()
-                    .filter(option -> DetectConfiguration.GROUP_COMMON.equals(option.getGroup()))
+                    .filter(option -> DetectConfiguration.GROUP_HUB_CONFIGURATION.equals(option.getGroup()))
                     .collect(Collectors.toList());
             helpPrinter.printHelpMessage(filteredCommonOptions);
         }

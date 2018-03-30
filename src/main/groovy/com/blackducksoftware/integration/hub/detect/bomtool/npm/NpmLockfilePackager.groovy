@@ -33,7 +33,6 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFac
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeImpl
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.nameversion.builder.LinkedNameVersionNodeBuilder
 import com.blackducksoftware.integration.hub.detect.nameversion.builder.NameVersionNodeBuilder
@@ -56,18 +55,17 @@ class NpmLockfilePackager {
     public DetectCodeLocation parse(String sourcePath, String lockFileText, boolean includeDevDependencies) {
         NpmProject npmProject = gson.fromJson(lockFileText, NpmProject.class)
 
-        NameVersionNode root = new NameVersionNodeImpl([name: npmProject.name, version: npmProject.version])
+        NameVersionNode root = new NameVersionNode([name: npmProject.name, version: npmProject.version])
         NameVersionNodeBuilder builder = new LinkedNameVersionNodeBuilder(root)
 
         npmProject.dependencies.each { name, npmDependency ->
-
             if (!includeDevDependencies && npmDependency.dev == true) return;
 
-            NameVersionNode dependency = new NameVersionNodeImpl([name: name, version: npmDependency.version])
+            NameVersionNode dependency = new NameVersionNode([name: name, version: npmDependency.version])
             builder.addChildNodeToParent(dependency, root)
 
             npmDependency.requires?.each { childName, childVersion ->
-                NameVersionNode child = new NameVersionNodeImpl([name: childName, version: childVersion])
+                NameVersionNode child = new NameVersionNode([name: childName, version: childVersion])
                 builder.addChildNodeToParent(child, dependency)
             }
         }

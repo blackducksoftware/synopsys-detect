@@ -26,16 +26,11 @@ package com.blackducksoftware.integration.hub.detect;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -45,14 +40,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.bdio.SimpleBdioFactory;
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.SimpleBdioDocument;
+import com.blackducksoftware.integration.hub.bdio.model.ToolSpdxCreator;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
-import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationName;
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
@@ -65,13 +61,11 @@ import com.blackducksoftware.integration.hub.detect.model.DetectProject;
 import com.blackducksoftware.integration.hub.detect.summary.BomToolSummaryResult;
 import com.blackducksoftware.integration.hub.detect.summary.Result;
 import com.blackducksoftware.integration.hub.detect.summary.SummaryResultReporter;
+import com.blackducksoftware.integration.hub.detect.util.BdioFileNamer;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
 
-import groovy.transform.TypeChecked;
-
 @Component
-@TypeChecked
 public class DetectProjectManager implements SummaryResultReporter, ExitCodeReporter {
     private final Logger logger = LoggerFactory.getLogger(DetectProjectManager.class);
 
@@ -94,6 +88,9 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     private IntegrationEscapeUtil integrationEscapeUtil;
 
     @Autowired
+    private BdioFileNamer bdioFileNamer;
+
+    @Autowired
     private DetectFileManager detectFileManager;
 
     @Autowired
@@ -102,11 +99,10 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     @Autowired
     private DetectPhoneHomeManager detectPhoneHomeManager;
 
+    private final Map<BomToolType, Result> bomToolSummaryResults = new HashMap<>();
     private boolean foundAnyBomTools;
 
-    private final Map<BomToolType, Result> bomToolSummaryResults = new HashMap<>();
-
-    public DetectProject createDetectProject() {
+    public DetectProject createDetectProject() throws IntegrationException {
         final DetectProject detectProject = new DetectProject();
 
         final EnumSet<BomToolType> applicableBomTools = EnumSet.noneOf(BomToolType.class);
@@ -145,9 +141,11 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         // complete metadata to phone home
         detectPhoneHomeManager.startPhoneHome(applicableBomTools);
 
+        final String prefix = detectConfiguration.getProjectCodeLocationPrefix();
+        final String suffix = detectConfiguration.getProjectCodeLocationSuffix();
+
         // ensure that the project name is set, use some reasonable defaults
-        detectProject.setProjectName(getProjectName(detectProject.getProjectName()));
-        detectProject.setProjectVersionName(getProjectVersionName(detectProject.getProjectVersionName()));
+        detectProject.setProjectDetails(getProjectName(detectProject.getProjectName()), getProjectVersionName(detectProject.getProjectVersionName()), prefix, suffix);
 
         if (!foundAnyBomTools) {
             logger.info(String.format("No package managers were detected - will register %s for signature scanning of %s/%s", detectConfiguration.getSourcePath(), detectProject.getProjectName(), detectProject.getProjectVersionName()));
@@ -157,6 +155,14 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
             hubSignatureScanner.registerPathToScan(ScanPathSource.SNIPPET_SOURCE, detectConfiguration.getSourceDirectory());
         }
 
+        if (StringUtils.isBlank(detectConfiguration.getAggregateBomName())) {
+            detectProject.processDetectCodeLocations(logger, detectFileManager, bdioFileNamer, codeLocationNameService);
+
+            for (final BomToolType bomToolType : detectProject.getFailedBomTools()) {
+                bomToolSummaryResults.put(bomToolType, Result.FAILURE);
+            }
+        }
+
         return detectProject;
     }
 
@@ -164,54 +170,36 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         final List<File> bdioFiles = new ArrayList<>();
         final MutableDependencyGraph aggregateDependencyGraph = simpleBdioFactory.createMutableDependencyGraph();
 
-        final Set<String> codeLocationNames = new HashSet<>();
-        final Set<String> bdioFileNames = new HashSet<>();
+        if (StringUtils.isBlank(detectConfiguration.getAggregateBomName())) {
+            for (final String codeLocationNameString : detectProject.getCodeLocationNameStrings()) {
+                final DetectCodeLocation detectCodeLocation = detectProject.getDetectCodeLocation(codeLocationNameString);
+                final String bdioFileName = detectProject.getBdioFilename(codeLocationNameString);
+                final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(codeLocationNameString, detectProject.getProjectName(), detectProject.getProjectVersionName(), detectCodeLocation);
 
-        for (final DetectCodeLocation detectCodeLocation : detectProject.getDetectCodeLocations()) {
-            if (detectCodeLocation.getDependencyGraph() == null) {
-                logger.warn(String.format("Dependency graph is null for code location %s", detectCodeLocation.getSourcePath()));
-                continue;
-            }
-            if (detectCodeLocation.getDependencyGraph().getRootDependencies().size() <= 0) {
-                logger.warn(String.format("Could not find any dependencies for code location %s", detectCodeLocation.getSourcePath()));
-            }
-            if (StringUtils.isNotBlank(detectConfiguration.getAggregateBomName())) {
-                aggregateDependencyGraph.addGraphAsChildrenToRoot(detectCodeLocation.getDependencyGraph());
-            } else {
-                final String projectName = detectProject.getProjectName();
-                final String projectVersionName = detectProject.getProjectVersionName();
-
-                final String prefix = detectConfiguration.getProjectCodeLocationPrefix();
-                final String suffix = detectConfiguration.getProjectCodeLocationSuffix();
-
-                final CodeLocationName codeLocationName = detectCodeLocation.createCodeLocationName(codeLocationNameService, projectName, projectVersionName, prefix, suffix);
-                final String codeLocationNameString = detectCodeLocation.getCodeLocationNameString(codeLocationNameService, codeLocationName);
-                if (!codeLocationNames.add(codeLocationNameString)) {
-                    throw new DetectUserFriendlyException(String.format("Found duplicate Code Locations with the name: %s", codeLocationNameString), ExitCodeType.FAILURE_GENERAL_ERROR);
-                }
-                final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(codeLocationNameString, detectProject, detectCodeLocation);
-
-                final String finalSourcePathPiece = detectFileManager.extractFinalPieceFromPath(detectCodeLocation.getSourcePath());
-                final String filename = generateShortenedFilename(detectCodeLocation.getBomToolType(), finalSourcePathPiece, detectCodeLocation.getBomToolProjectExternalId());
-                if (!bdioFileNames.add(filename)) {
-                    throw new DetectUserFriendlyException(String.format("Found duplicate Bdio files with the name: %s", filename), ExitCodeType.FAILURE_GENERAL_ERROR);
-                }
-                final File outputFile = new File(detectConfiguration.getBdioOutputDirectoryPath(), filename);
+                final File outputFile = new File(detectConfiguration.getBdioOutputDirectoryPath(), bdioFileName);
                 if (outputFile.exists()) {
-                    boolean deleteSuccess = outputFile.delete();
+                    final boolean deleteSuccess = outputFile.delete();
                     logger.debug(String.format("%s deleted: %b", outputFile.getAbsolutePath(), deleteSuccess));
                 }
                 writeBdioFile(outputFile, simpleBdioDocument);
                 bdioFiles.add(outputFile);
             }
-        }
-
-        if (StringUtils.isNotBlank(detectConfiguration.getAggregateBomName())) {
-            final SimpleBdioDocument aggregateBdioDocument = createAggregateSimpleBdioDocument(detectProject, aggregateDependencyGraph);
+        } else {
+            for (final DetectCodeLocation detectCodeLocation : detectProject.getDetectCodeLocations()) {
+                if (detectCodeLocation.getDependencyGraph() == null) {
+                    logger.warn(String.format("Dependency graph is null for code location %s", detectCodeLocation.getSourcePath()));
+                    continue;
+                }
+                if (detectCodeLocation.getDependencyGraph().getRootDependencies().size() <= 0) {
+                    logger.warn(String.format("Could not find any dependencies for code location %s", detectCodeLocation.getSourcePath()));
+                }
+                aggregateDependencyGraph.addGraphAsChildrenToRoot(detectCodeLocation.getDependencyGraph());
+            }
+            final SimpleBdioDocument aggregateBdioDocument = createAggregateSimpleBdioDocument(detectProject.getProjectName(), detectProject.getProjectVersionName(), aggregateDependencyGraph);
             final String filename = String.format("%s.jsonld", integrationEscapeUtil.escapeForUri(detectConfiguration.getAggregateBomName()));
             final File aggregateBdioFile = new File(detectConfiguration.getOutputDirectory(), filename);
             if (aggregateBdioFile.exists()) {
-                boolean deleteSuccess = aggregateBdioFile.delete();
+                final boolean deleteSuccess = aggregateBdioFile.delete();
                 logger.debug(String.format("%s deleted: %b", aggregateBdioFile.getAbsolutePath(), deleteSuccess));
             }
             writeBdioFile(aggregateBdioFile, aggregateBdioDocument);
@@ -248,72 +236,11 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         return ExitCodeType.SUCCESS;
     }
 
-    private String generateShortenedFilename(final BomToolType bomToolType, final String finalSourcePathPiece, final ExternalId externalId) {
-        final List<String> filenamePieces = new ArrayList<>();
-        filenamePieces.addAll(Arrays.asList(externalId.getExternalIdPieces()));
-        filenamePieces.add(finalSourcePathPiece);
-        String filename = generateFilename(bomToolType, filenamePieces);
-
-        if (filename.length() >= 255) {
-            filenamePieces.sort(new Comparator<String>() {
-                @Override
-                public int compare(final String s1, final String s2) {
-                    return s1.length() - s2.length();
-                }
-            });
-            for (int i = filenamePieces.size() - 1; (filename.length() >= 255) && (i >= 0); i--) {
-                filenamePieces.set(i, DigestUtils.sha1Hex(filenamePieces.get(i)));
-                if (filenamePieces.get(i).length() > 15) {
-                    filenamePieces.set(i, filenamePieces.get(i).substring(0, 15));
-                }
-                filename = generateFilename(bomToolType, filenamePieces);
-            }
-        }
-
-        return filename;
-    }
-
-    private String generateFilename(final BomToolType bomToolType, final List<String> pieces) {
-        final List<String> rawPieces = new ArrayList<>();
-        rawPieces.add(bomToolType.toString());
-        rawPieces.addAll(pieces);
-        rawPieces.add("bdio");
-
-        final List<String> safePieces = new ArrayList<>();
-        for (final String rawPiece : rawPieces) {
-            safePieces.add(integrationEscapeUtil.escapeForUri(rawPiece));
-        }
-        final String filename = StringUtils.join(safePieces, "_") + ".jsonld";
-        return filename;
-    }
-
-    private SimpleBdioDocument createAggregateSimpleBdioDocument(final DetectProject detectProject, final DependencyGraph dependencyGraph) {
+    private SimpleBdioDocument createAggregateSimpleBdioDocument(final String projectName, final String projectVersionName, final DependencyGraph dependencyGraph) {
         final String codeLocationName = "";
-        final String projectName = detectProject.getProjectName();
-        final String projectVersionName = detectProject.getProjectVersionName();
         final ExternalId projectExternalId = simpleBdioFactory.createNameVersionExternalId(new Forge("/", "/", ""), projectName, projectVersionName);
 
         return createSimpleBdioDocument(codeLocationName, projectName, projectVersionName, projectExternalId, dependencyGraph);
-    }
-
-    private SimpleBdioDocument createSimpleBdioDocument(final String codeLocationName, final DetectProject detectProject, final DetectCodeLocation detectCodeLocation) {
-        final String projectName = detectProject.getProjectName();
-        final String projectVersionName = detectProject.getProjectVersionName();
-        final ExternalId projectExternalId = detectCodeLocation.getBomToolProjectExternalId();
-        final DependencyGraph dependencyGraph = detectCodeLocation.getDependencyGraph();
-
-        return createSimpleBdioDocument(codeLocationName, projectName, projectVersionName, projectExternalId, dependencyGraph);
-    }
-
-    private SimpleBdioDocument createSimpleBdioDocument(final String codeLocationName, final String projectName, final String projectVersionName, final ExternalId projectExternalId, final DependencyGraph dependencyGraph) {
-        final SimpleBdioDocument simpleBdioDocument = simpleBdioFactory.createSimpleBdioDocument(codeLocationName, projectName, projectVersionName, projectExternalId, dependencyGraph);
-
-        final String hubDetectVersion = detectInfo.getDetectVersion();
-        final Map<String, String> detectVersionData = new HashMap<>();
-        detectVersionData.put("detectVersion", hubDetectVersion);
-        simpleBdioDocument.billOfMaterials.customData = detectVersionData;
-
-        return simpleBdioDocument;
     }
 
     private String getProjectName(final String defaultProjectName) {
@@ -349,6 +276,23 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         }
 
         return projectVersion;
+    }
+
+    private SimpleBdioDocument createSimpleBdioDocument(final String codeLocationName, final String projectName, final String projectVersionName, final DetectCodeLocation detectCodeLocation) {
+        final ExternalId projectExternalId = detectCodeLocation.getBomToolProjectExternalId();
+        final DependencyGraph dependencyGraph = detectCodeLocation.getDependencyGraph();
+
+        return createSimpleBdioDocument(codeLocationName, projectName, projectVersionName, projectExternalId, dependencyGraph);
+    }
+
+    private SimpleBdioDocument createSimpleBdioDocument(final String codeLocationName, final String projectName, final String projectVersionName, final ExternalId projectExternalId, final DependencyGraph dependencyGraph) {
+        final SimpleBdioDocument simpleBdioDocument = simpleBdioFactory.createSimpleBdioDocument(codeLocationName, projectName, projectVersionName, projectExternalId, dependencyGraph);
+
+        final String hubDetectVersion = detectInfo.getDetectVersion();
+        final ToolSpdxCreator hubDetectCreator = new ToolSpdxCreator("HubDetect", hubDetectVersion);
+        simpleBdioDocument.billOfMaterials.creationInfo.addSpdxCreator(hubDetectCreator);
+
+        return simpleBdioDocument;
     }
 
 }

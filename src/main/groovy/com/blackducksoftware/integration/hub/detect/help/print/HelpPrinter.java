@@ -62,6 +62,8 @@ public class HelpPrinter {
                 group = currentGroup;
             } else {
                 helpMessagePieces.add(StringUtils.repeat('_', 175));
+                helpMessagePieces.add("");
+                group = currentGroup;
             }
 
             final List<String> bodyColumns = Arrays.asList("--" + detectValue.getKey(), detectValue.getDefaultValue(), detectValue.getDescription());
@@ -96,9 +98,9 @@ public class HelpPrinter {
         detailedMessage.add("Property default value: " + detectOption.getDefaultValue());
         detailedMessage.add("");
 
-        detailedMessage.add("Use cases: " + detectOption.getUseCases());
+        detailedMessage.add("Use cases: " + detectOption.getDetailedDetectOption().useCases);
         detailedMessage.add("");
-        detailedMessage.add("Common issues: " + detectOption.getIssues());
+        detailedMessage.add("Common issues: " + detectOption.getDetailedDetectOption().issues);
         detailedMessage.add("");
 
         printMessage(detailedMessage);
@@ -139,7 +141,7 @@ public class HelpPrinter {
                 int endOfWordIndex = firstRow.lastIndexOf(' ');
                 if (endOfWordIndex == -1) {
                     endOfWordIndex = columnWidths[i] - 1;
-                    columnfirstRow.add(firstRow.substring(0, endOfWordIndex) + ' ');
+                    columnfirstRow.add(firstRow.substring(0, endOfWordIndex) + " ");
                 } else {
                     columnfirstRow.add(firstRow.substring(0, endOfWordIndex));
                 }
@@ -149,7 +151,7 @@ public class HelpPrinter {
         }
 
         for (int i = 0; i < columnfirstRow.size(); i++) {
-            createColumns.append(StringUtils.rightPad(columnfirstRow.get(i), columnWidths[i], ' '));
+            createColumns.append(StringUtils.rightPad(columnfirstRow.get(i), columnWidths[i], " "));
         }
 
         if (!allColumnsEmpty(columnRemainingRows)) {

@@ -16,7 +16,7 @@ plugins {
     id 'maven-publish'
 }
 
-version = '3.1.0-SNAPSHOT'
+version = '3.2.0-SNAPSHOT'
 
 apply plugin: 'com.blackducksoftware.integration.solution'
 apply plugin: 'org.springframework.boot'
@@ -26,7 +26,7 @@ final def versionFile = new File("${projectDir}/src/main/resources/version.txt")
 versionFile.delete()
 versionFile << version
 
-// the override.snaphot property should be set to true for a CI build so
+// the override.snapshot property should be set to true for a CI build so
 // that the version is omitted from a snapshot build artifact
 if (project.isSnapshot && "true" == project.findProperty('override.snapshot')) {
     version = 'latest-SNAPSHOT'
@@ -56,19 +56,26 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             def artifactName = "${buildDir}/libs/${project.name}-${version}.jar"
-            artifact (artifactName)
+            artifact(artifactName)
         }
     }
 }
 
 artifactory {
     publish {
-        defaults { publications ('mavenJava') }
+        defaults { publications('mavenJava') }
     }
 }
 
+repositories {
+    mavenLocal()
+}
+
 dependencies {
-    compile 'com.blackducksoftware.integration:hub-common:28.0.4'
+    compile ('com.blackducksoftware.integration:hub-common:29.1.1') {
+        exclude group: 'com.blackducksoftware.integration', module: 'integration-bdio'
+    }
+    compile 'com.blackducksoftware.integration:integration-bdio:13.0.0'
     compile 'org.apache.commons:commons-text:1.2'
     compile 'org.springframework.boot:spring-boot-starter'
     compile 'org.apache.maven.shared:maven-invoker:3.0.0'
@@ -77,11 +84,9 @@ dependencies {
     compile 'org.codehaus.groovy:groovy-all:2.4.12'
     compile 'org.freemarker:freemarker:2.3.26-incubating'
 
-    compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.4'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.9.4'
-    compile 'com.fasterxml.jackson.core:jackson-annotations:2.9.4'
-
-    compile 'org.jsoup:jsoup:1.7.2'
+    compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.5'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.9.5'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.9.5'
 
     testCompile 'org.springframework.boot:spring-boot-starter-test'
 }

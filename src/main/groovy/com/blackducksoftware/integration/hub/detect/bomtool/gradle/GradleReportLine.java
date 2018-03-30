@@ -23,6 +23,10 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.gradle;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,25 +66,33 @@ public class GradleReportLine {
             cleanedOutput = cleanedOutput.substring(0, lastSeenElsewhereIndex);
         }
 
-        String[] gav = cleanedOutput.split(":");
+        // we might need to modify the returned list, so it needs to be an actual ArrayList
+        List<String> gavPieces = new ArrayList<>(Arrays.asList(cleanedOutput.split(":")));
         if (cleanedOutput.contains(WINNING_INDICATOR)) {
             // WINNING_INDICATOR can point to an entire GAV not just a version
             final String winningSection = cleanedOutput.substring(cleanedOutput.indexOf(WINNING_INDICATOR) + WINNING_INDICATOR.length());
             if (winningSection.contains(":")) {
-                gav = winningSection.split(":");
+                gavPieces = Arrays.asList(winningSection.split(":"));
             } else {
-                gav[2] = winningSection;
+                // the WINNING_INDICATOR is not always preceded by a : so if isn't, we need to clean up from the original split
+                if (gavPieces.get(1).contains(WINNING_INDICATOR)) {
+                    final String withoutWinningIndicator = gavPieces.get(1).substring(0, gavPieces.get(1).indexOf(WINNING_INDICATOR));
+                    gavPieces.set(1, withoutWinningIndicator);
+                    // since there was no : we don't have a gav piece for version yet
+                    gavPieces.add("");
+                }
+                gavPieces.set(2, winningSection);
             }
         }
 
-        if (gav.length != 3) {
+        if (gavPieces.size() != 3) {
             logger.error(String.format("The line can not be reasonably split in to the neccessary parts: %s", originalLine));
             return null;
         }
 
-        final String group = gav[0];
-        final String artifact = gav[1];
-        final String version = gav[2];
+        final String group = gavPieces.get(0);
+        final String artifact = gavPieces.get(1);
+        final String version = gavPieces.get(2);
         final Dependency dependency = new Dependency(artifact, version, externalIdFactory.createMavenExternalId(group, artifact, version));
         return dependency;
     }

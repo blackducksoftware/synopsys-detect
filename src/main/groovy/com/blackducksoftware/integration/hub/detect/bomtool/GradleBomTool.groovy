@@ -108,8 +108,8 @@ class GradleBomTool extends BomTool {
         if (gradleCommand) {
             arguments.addAll(gradleCommand.split(' ') as List)
         }
-        arguments.add('dependencies')
-        arguments.add("--init-script=${gradleInspectorManager.getInitScriptPath()}")
+        arguments.add("dependencies");
+        arguments.add(String.format("--init-script=%s",gradleInspectorManager.getInitScriptPath()));
 
         logger.info("using ${gradleInspectorManager.getInitScriptPath()} as the path for the gradle init script")
         Executable executable = new Executable(sourceDirectory, gradleExecutable, arguments)

@@ -57,7 +57,7 @@ public class ScanPathCallable implements Callable<ProjectVersionWrapper> {
     }
 
     @Override
-    public ProjectVersionWrapper call() throws Exception {
+    public ProjectVersionWrapper call() {
         ProjectVersionWrapper projectVersionWrapper = null;
         try {
             logger.info(String.format("Attempting to scan %s for %s/%s", canonicalPath, projectRequest.name, projectRequest.versionRequest.versionName));

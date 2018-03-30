@@ -71,7 +71,6 @@ class NpmBomTool extends BomTool {
 
     private File packageLockJson
     private File shrinkwrapJson
-    private Executable npmLsExe
 
     @Override
     public BomToolType getBomToolType() {
@@ -100,14 +99,17 @@ class NpmBomTool extends BomTool {
             if (!npmExePath) {
                 logger.warn("Could not find an ${executableManager.getExecutableName(ExecutableType.NPM)} executable")
             } else {
-                npmLsExe = new Executable(new File(sourcePath), npmExePath, ['-version'])
+                Executable npmLsExe = null
                 String npmNodePath = detectConfiguration.getNpmNodePath()
                 if (!npmNodePath.isEmpty()) {
                     int lastSlashIndex = npmNodePath.lastIndexOf('/')
                     if (lastSlashIndex >= 0) {
                         npmNodePath = npmNodePath.substring(0, lastSlashIndex)
                     }
-                    npmLsExe.environmentVariables.put('PATH', npmNodePath)
+                    Map<String, String> environmentVariables = ['PATH' : npmNodePath]
+                    npmLsExe = new Executable(new File(sourcePath), environmentVariables, npmExePath, ['-version'])
+                } else {
+                    npmLsExe = new Executable(new File(sourcePath), npmExePath, ['-version'])
                 }
                 logger.debug("Npm version ${executableRunner.execute(npmLsExe).standardOutput}")
             }
@@ -156,8 +158,7 @@ class NpmBomTool extends BomTool {
         if (!includeDevDeps) {
             exeArgs.add('-prod')
         }
-
-        npmLsExe.executableArguments = exeArgs
+        Executable npmLsExe = new Executable(new File(sourcePath), npmExePath, exeArgs)
         executableRunner.executeToFile(npmLsExe, npmLsOutputFile, npmLsErrorFile)
 
         if (npmLsOutputFile.length() > 0) {
