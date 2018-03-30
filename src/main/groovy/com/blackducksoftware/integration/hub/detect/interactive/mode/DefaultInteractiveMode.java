@@ -56,9 +56,9 @@ public class DefaultInteractiveMode extends InteractiveMode {
                 } else {
                     setPropertyFromQuestion("hubUsername", "What is the hub username?");
 
-                    final Boolean setHubPassword = askYesOrNo("Would you like to set the hub password?");
+                    final Boolean setHubPassword = askYesOrNoWithMessage("Would you like to set the hub password?",
+                            "WARNING: If you choose to save the settings, this password will be stored in plain text. You can set this password as an environment variable BLACKDUCK_HUB_PASSWORD.");
                     if (setHubPassword) {
-                        println("WARNING: If you choose to save the settings, this password will be stored in plain text. You can set this password as an environment variable BLACKDUCK_HUB_PASSWORD.");
                         setPropertyFromSecretQuestion("hubPassword", "What is the hub password?");
                     }
                 }
@@ -68,9 +68,9 @@ public class DefaultInteractiveMode extends InteractiveMode {
                     setPropertyFromQuestion("hubProxyHost", "What is the hub proxy host?");
                     setPropertyFromQuestion("hubProxyPort", "What is the hub proxy port?");
                     setPropertyFromQuestion("hubProxyUsername", "What is the hub proxy username?");
-                    final Boolean setHubPassword = askYesOrNo("Would you like to set the hub proxy password?");
+                    final Boolean setHubPassword = askYesOrNoWithMessage("Would you like to set the hub proxy password?",
+                            "WARNING: If you choose to save the settings, this password will be stored in plain text. You can set this password as an environment variable BLACKDUCK_HUB_PROXY_PASSWORD.");
                     if (setHubPassword) {
-                        println("WARNING: If you choose to save the settings, this password will be stored in plain text. You can set this password as an environment variable BLACKDUCK_HUB_PROXY_PASSWORD.");
                         setPropertyFromSecretQuestion("hubProxyPassword", "What is the hub proxy password?");
                     }
                     final Boolean useNtlmProxy = askYesOrNo("Do you use a ntlm proxy?");
