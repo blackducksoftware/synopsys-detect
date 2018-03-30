@@ -67,7 +67,7 @@ public class HelpHtmlWriter {
         dataModel.put("options", groupOptions);
         try {
             final File htmlHelpFile = new File(filename);
-            final Template htmlTemplate = configuration.getTemplate("helpHtml.ftl");
+            final Template htmlTemplate = configuration.getTemplate("templates/helpHtml.ftl");
             htmlTemplate.process(dataModel, new FileWriter(htmlHelpFile));
             logger.info(filename + " was created in your current directory.");
         } catch (final IOException | TemplateException e) {
