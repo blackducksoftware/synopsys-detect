@@ -23,17 +23,16 @@
  */
 package com.blackducksoftware.integration.hub.detect.help.print;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-import org.apache.commons.text.WordUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
+import org.codehaus.plexus.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +41,10 @@ import org.springframework.stereotype.Component;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
 
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+
 @Component
 public class HelpHtmlWriter {
     private final Logger logger = LoggerFactory.getLogger(HelpHtmlWriter.class);
@@ -49,96 +52,34 @@ public class HelpHtmlWriter {
     @Autowired
     DetectOptionManager detectOptionManager;
 
-    private final String cssStyles = "table {\n" +
-            "    border-collapse: collapse;\n" +
-            "}\n" +
-            "th,td {\n" +
-            "    border: 1\n" +
-            "    final px solid#ddd;padding:7 px 10 px;\n" +
-            "}\n" +
-            "\n" +
-            "th.groupHeader {\n" +
-            "    font-weight:bold;\n" +
-            "    background-color:#ddd;\n" +
-            "    text-align:left;\n" +
-            "}\n" +
-            "\n" +
-            "th {\n" +
-            "    font-weight:normal;\n" +
-            "    background-color:#eee;\n" +
-            "    text-align:left;\n" +
-            "}\n" +
-            "\n" +
-            "tbody tr:hover:not(final .noBorder) {\n" +
-            "    background-color: #f8f8f8;\n" +
-            "}\n" +
-            "\n" +
-            ".propertyColumn {\n" +
-            "    width: 400px;\n" +
-            "}\n" +
-            "\n" +
-            ".defaultColumn {\n" +
-            "    width: 300px;\n" +
-            "}\n" +
-            "\n" +
-            ".noBorder {\n" +
-            "    border: 0px;\n" +
-            "}";
+    @Autowired
+    Configuration configuration;
 
-    public void writeHelpMessage(final String fileName) {
-        final List<String> columnHeaders = Arrays.asList("Property Name",
-                "Default",
-                "Description");
+    public void writeHelpMessage(final String filename) {
+        final List<GroupOptionListing> groupOptions = new ArrayList<>();
 
-        final Document doc = Jsoup.parse("<html/>");
-
-        final Element head = doc.select("head").first();
-        final Element style = head.appendElement("style");
-        style.appendText(cssStyles);
-
-        final Element body = doc.select("body").first();
-        final Element table = body.appendElement("table");
-        final Element columnGroup = table.appendElement("colGroup");
-        columnGroup.appendElement("col").attr("class", "propertyColumn");
-        columnGroup.appendElement("col").attr("class", "defaultColumn");
-        columnGroup.appendElement("col");
-
-        String group = "";
-        for (final DetectOption detectOption : detectOptionManager.getDetectOptions()) {
-            if (!group.equals(detectOption.getGroup())) {
-                group = detectOption.getGroup();
-                final Element spacerRow = table.appendElement("tr").attr("class", "noBorder");
-                spacerRow.appendElement("td").attr("colspan", "3").attr("class", "noBorder");
-
-                final Element groupHeaderRow = table.appendElement("tr");
-                final Element groupHeader = groupHeaderRow.appendElement("th").attr("colspan", "3").attr("class", "groupHeader");
-                groupHeader.appendText(WordUtils.capitalize(group));
-
-                final Element columnHeadersRow = table.appendElement("tr");
-                for (final String columnHeaderText : columnHeaders) {
-                    final Element headerCell = columnHeadersRow.appendElement("th");
-                    headerCell.appendText(columnHeaderText);
-                }
-            }
-
-            final List<String> bodyColumns = Arrays.asList("--" + detectOption.getKey(),
-                    detectOption.getDefaultValue(),
-                    detectOption.getDescription());
-
-            final Element row = table.appendElement("tr");
-            for (final String cellText : bodyColumns) {
-                final Element cell = row.appendElement("td");
-                cell.appendText(cellText);
-            }
+        for (final String groupName : detectOptionManager.getDetectGroups()) {
+            final List<DetectOption> filteredOptions = getGroupDetectOptions(groupName);
+            groupOptions.add(new GroupOptionListing(StringUtils.capitalise(groupName), filteredOptions));
         }
 
-        logger.info("Writing help document " + fileName);
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
-            writer.write(doc.html());
-            final File producedFile = new File(fileName);
-            logger.info("Finished writing help document, document can be found at: " + producedFile.getCanonicalPath());
-        } catch (final IOException e) {
-            logger.error("Issue writing to file " + fileName);
+        final Map<String, Object> dataModel = new HashMap<>();
+        dataModel.put("options", groupOptions);
+        try {
+            final File htmlHelpFile = new File(filename);
+            final Template htmlTemplate = configuration.getTemplate("templates/helpHtml.ftl");
+            htmlTemplate.process(dataModel, new FileWriter(htmlHelpFile));
+            logger.info(filename + " was created in your current directory.");
+        } catch (final IOException | TemplateException e) {
+            logger.error("There was an error when creating the html file", e);
         }
+    }
+
+    private List<DetectOption> getGroupDetectOptions(final String group) {
+        final List<DetectOption> filteredOptions = detectOptionManager.getDetectOptions()
+                .stream()
+                .filter(option -> group.equals(option.getGroup()))
+                .collect(Collectors.toList());
+        return filteredOptions;
     }
 }
