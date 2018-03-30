@@ -23,50 +23,33 @@
  */
 package com.blackducksoftware.integration.hub.detect.model;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationName;
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.util.BdioFileNamer;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.service.model.ProjectRequestBuilder;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-
-import java.util.*;
 
 public class DetectProject {
-    final Map<String, DetectCodeLocation> codeLocationNameMap = new HashMap<>();
-    final Map<String, String> codeLocationNameToBdioName = new HashMap<>();
+    private final Map<String, DetectCodeLocation> codeLocationNameMap = new HashMap<>();
+    private final Map<String, String> codeLocationNameToBdioName = new HashMap<>();
     private final List<DetectCodeLocation> detectCodeLocations = new ArrayList<>();
+    private final Set<BomToolType> failedBomTools = new HashSet<>();
 
     private String projectName;
     private String projectVersionName;
     private String codeLocationNamePrefix;
     private String codeLocationNameSuffix;
-
-    public String getProjectName() {
-        return projectName;
-    }
-
-    public String getProjectVersionName() {
-        return projectVersionName;
-    }
-
-    public String getCodeLocationNamePrefix() {
-        return codeLocationNamePrefix;
-    }
-
-    public String getCodeLocationNameSuffix() {
-        return codeLocationNameSuffix;
-    }
-
-    public Map<String, DetectCodeLocation> getCodeLocationNameMap() {
-        return codeLocationNameMap;
-    }
-
-    public Map<String, String> getCodeLocationNameToBdioName() {
-        return codeLocationNameToBdioName;
-    }
 
     /**
      * Only the DetectProjectManager should invoke this method.
@@ -120,8 +103,7 @@ public class DetectProject {
         return builder;
     }
 
-    public Set<BomToolType> processDetectCodeLocations(final Logger logger, final DetectFileManager detectFileManager, final BdioFileNamer bdioFileNamer, final CodeLocationNameService codeLocationNameService) {
-        final Set<BomToolType> bomToolFailures = new HashSet<>();
+    public void processDetectCodeLocations(final Logger logger, final DetectFileManager detectFileManager, final BdioFileNamer bdioFileNamer, final CodeLocationNameService codeLocationNameService) {
         final List<DetectCodeLocation> detectCodeLocations = getDetectCodeLocations();
         final Map<String, DetectCodeLocation> codeLocationNameMap = new HashMap<>(detectCodeLocations.size());
         for (final DetectCodeLocation detectCodeLocation : getDetectCodeLocations()) {
@@ -137,7 +119,7 @@ public class DetectProject {
             final String codeLocationNameString = detectCodeLocation.getCodeLocationNameString(codeLocationNameService, codeLocationName);
 
             if (codeLocationNameMap.containsKey(codeLocationNameString)) {
-                bomToolFailures.add(detectCodeLocation.getBomToolType());
+                failedBomTools.add(detectCodeLocation.getBomToolType());
                 logger.error(String.format("Found duplicate Code Locations with the name: %s", codeLocationNameString));
             } else {
                 codeLocationNameMap.put(codeLocationNameString, detectCodeLocation);
@@ -152,13 +134,44 @@ public class DetectProject {
             final String filename = bdioFileNamer.generateShortenedFilename(detectCodeLocation.getBomToolType(), finalSourcePathPiece, detectCodeLocation.getBomToolProjectExternalId());
 
             if (!bdioFileNames.add(filename)) {
-                bomToolFailures.add(detectCodeLocation.getBomToolType());
+                failedBomTools.add(detectCodeLocation.getBomToolType());
                 logger.error(String.format("Found duplicate Bdio files with the name: %s", filename));
             } else {
                 codeLocationNameToBdioName.put(codeLocationNameString, filename);
             }
         }
-        return bomToolFailures;
+    }
+
+    public Set<String> getCodeLocationNameStrings() {
+        return codeLocationNameMap.keySet();
+    }
+
+    public DetectCodeLocation getDetectCodeLocation(final String codeLocationNameString) {
+        return codeLocationNameMap.get(codeLocationNameString);
+    }
+
+    public String getBdioFilename(final String codeLocationNameString) {
+        return codeLocationNameToBdioName.get(codeLocationNameString);
+    }
+
+    public Set<BomToolType> getFailedBomTools() {
+        return failedBomTools;
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public String getProjectVersionName() {
+        return projectVersionName;
+    }
+
+    public String getCodeLocationNamePrefix() {
+        return codeLocationNamePrefix;
+    }
+
+    public String getCodeLocationNameSuffix() {
+        return codeLocationNameSuffix;
     }
 
 }
