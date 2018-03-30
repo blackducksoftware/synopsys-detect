@@ -30,7 +30,6 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -157,8 +156,9 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         }
 
         if (StringUtils.isBlank(detectConfiguration.getAggregateBomName())) {
-            final Set<BomToolType> failedBomToolTypes = detectProject.processDetectCodeLocations(logger, detectFileManager, bdioFileNamer, codeLocationNameService);
-            for (final BomToolType bomToolType : failedBomToolTypes) {
+            detectProject.processDetectCodeLocations(logger, detectFileManager, bdioFileNamer, codeLocationNameService);
+
+            for (final BomToolType bomToolType : detectProject.getFailedBomTools()) {
                 bomToolSummaryResults.put(bomToolType, Result.FAILURE);
             }
         }
@@ -171,12 +171,9 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         final MutableDependencyGraph aggregateDependencyGraph = simpleBdioFactory.createMutableDependencyGraph();
 
         if (StringUtils.isBlank(detectConfiguration.getAggregateBomName())) {
-            final Map<String, DetectCodeLocation> codeLocationNameMap = detectProject.getCodeLocationNameMap();
-            final Map<String, String> codeLocationNameToBdioNameMap = detectProject.getCodeLocationNameToBdioName();
-            for (final Map.Entry<String, DetectCodeLocation> codeLocationNameEntry : codeLocationNameMap.entrySet()) {
-                final String codeLocationNameString = codeLocationNameEntry.getKey();
-                final DetectCodeLocation detectCodeLocation = codeLocationNameEntry.getValue();
-                final String bdioFileName = codeLocationNameToBdioNameMap.get(codeLocationNameString);
+            for (final String codeLocationNameString : detectProject.getCodeLocationNameStrings()) {
+                final DetectCodeLocation detectCodeLocation = detectProject.getDetectCodeLocation(codeLocationNameString);
+                final String bdioFileName = detectProject.getBdioFilename(codeLocationNameString);
                 final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(codeLocationNameString, detectProject.getProjectName(), detectProject.getProjectVersionName(), detectCodeLocation);
 
                 final File outputFile = new File(detectConfiguration.getBdioOutputDirectoryPath(), bdioFileName);
