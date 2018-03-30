@@ -63,7 +63,7 @@ public class ExecutableRunner {
                 final String standardOutput = standardOutputThread.getExecutableOutput().trim();
                 final String errorOutput = errorOutputThread.getExecutableOutput().trim();
 
-                final ExecutableOutput output = new ExecutableOutput(standardOutput, errorOutput);
+                final ExecutableOutput output = new ExecutableOutput(returnCode, standardOutput, errorOutput);
                 return output;
             }
         } catch (final Exception e) {

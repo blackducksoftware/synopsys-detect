@@ -155,7 +155,7 @@ class NugetBomTool extends BomTool {
             options.add("--included_modules=${detectConfiguration.getNugetInspectorIncludedModules()}" as String)
         }
         if (detectConfiguration.getNugetPackagesRepoUrl()) {
-            options.add("--packages_repo_url=${detectConfiguration.getNugetPackagesRepoUrl()}" as String)
+            options.add("--packages_repo_url=${detectConfiguration.getNugetPackagesRepoUrl().join(',')}" as String)
         }
         if (logger.isTraceEnabled()) {
             options.add('-v')
