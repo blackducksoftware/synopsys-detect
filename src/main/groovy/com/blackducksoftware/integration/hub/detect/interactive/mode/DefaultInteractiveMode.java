@@ -55,7 +55,12 @@ public class DefaultInteractiveMode extends InteractiveMode {
                     setPropertyFromQuestion("hubApiToken", "What is the hub API token?");
                 } else {
                     setPropertyFromQuestion("hubUsername", "What is the hub username?");
-                    setPropertyFromSecretQuestion("hubPassword", "What is the hub password?");
+
+                    final Boolean setHubPassword = askYesOrNo("Would you like to set the hub password?");
+                    if (setHubPassword) {
+                        println("WARNING: If you choose to save the settings, this password will be stored in plain text.");
+                        setPropertyFromSecretQuestion("hubPassword", "What is the hub password?");
+                    }
                 }
 
                 final Boolean useProxy = askYesOrNo("Would you like to configure a proxy for the hub?");
@@ -63,7 +68,11 @@ public class DefaultInteractiveMode extends InteractiveMode {
                     setPropertyFromQuestion("hubProxyHost", "What is the hub proxy host?");
                     setPropertyFromQuestion("hubProxyPort", "What is the hub proxy port?");
                     setPropertyFromQuestion("hubProxyUsername", "What is the hub proxy username?");
-                    setPropertyFromSecretQuestion("hubProxyPassword", "What is the hub proxy password?");
+                    final Boolean setHubPassword = askYesOrNo("Would you like to set the hub proxy password?");
+                    if (setHubPassword) {
+                        println("WARNING: If you choose to save the settings, this password will be stored in plain text.");
+                        setPropertyFromSecretQuestion("hubProxyPassword", "What is the hub proxy password?");
+                    }
                     final Boolean useNtlmProxy = askYesOrNo("Do you use a ntlm proxy?");
                     if (useNtlmProxy) {
                         setPropertyFromQuestion("hubProxyNtlmDomain", "What is the ntlm proxy domain?");
