@@ -76,9 +76,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import freemarker.template.Configuration;
-import groovy.transform.TypeChecked;
 
-@TypeChecked
 @SpringBootApplication
 public class Application {
     private final Logger logger = LoggerFactory.getLogger(Application.class);
