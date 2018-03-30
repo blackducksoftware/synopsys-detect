@@ -58,7 +58,7 @@ public class DefaultInteractiveMode extends InteractiveMode {
 
                     final Boolean setHubPassword = askYesOrNo("Would you like to set the hub password?");
                     if (setHubPassword) {
-                        println("WARNING: If you choose to save the settings, this password will be stored in plain text.");
+                        println("WARNING: If you choose to save the settings, this password will be stored in plain text. You can set this password as an environment variable BLACKDUCK_HUB_PASSWORD.");
                         setPropertyFromSecretQuestion("hubPassword", "What is the hub password?");
                     }
                 }
@@ -70,7 +70,7 @@ public class DefaultInteractiveMode extends InteractiveMode {
                     setPropertyFromQuestion("hubProxyUsername", "What is the hub proxy username?");
                     final Boolean setHubPassword = askYesOrNo("Would you like to set the hub proxy password?");
                     if (setHubPassword) {
-                        println("WARNING: If you choose to save the settings, this password will be stored in plain text.");
+                        println("WARNING: If you choose to save the settings, this password will be stored in plain text. You can set this password as an environment variable BLACKDUCK_HUB_PROXY_PASSWORD.");
                         setPropertyFromSecretQuestion("hubProxyPassword", "What is the hub proxy password?");
                     }
                     final Boolean useNtlmProxy = askYesOrNo("Do you use a ntlm proxy?");
