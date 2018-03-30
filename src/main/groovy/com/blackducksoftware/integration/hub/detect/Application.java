@@ -23,9 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect;
 
-import java.io.Console;
 import java.io.File;
-import java.io.PrintStream;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -58,14 +56,9 @@ import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
 import com.blackducksoftware.integration.hub.detect.help.HelpManager;
 import com.blackducksoftware.integration.hub.detect.help.print.DetectConfigurationPrinter;
 import com.blackducksoftware.integration.hub.detect.help.print.DetectInfoPrinter;
-import com.blackducksoftware.integration.hub.detect.help.print.HelpHtmlWriter;
 import com.blackducksoftware.integration.hub.detect.hub.HubManager;
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper;
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner;
-import com.blackducksoftware.integration.hub.detect.interactive.InteractiveManager;
-import com.blackducksoftware.integration.hub.detect.interactive.reader.ConsoleInteractiveReader;
-import com.blackducksoftware.integration.hub.detect.interactive.reader.InteractiveReader;
-import com.blackducksoftware.integration.hub.detect.interactive.reader.ScannerInteractiveReader;
 import com.blackducksoftware.integration.hub.detect.model.DetectProject;
 import com.blackducksoftware.integration.hub.detect.summary.DetectSummary;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
@@ -100,9 +93,6 @@ public class Application {
     private HelpManager helpManager;
 
     @Autowired
-    private HelpHtmlWriter helpHtmlWriter;
-
-    @Autowired
     private HubManager hubManager;
 
     @Autowired
@@ -113,9 +103,6 @@ public class Application {
 
     @Autowired
     private DetectSummary detectSummary;
-
-    @Autowired
-    private InteractiveManager interactiveManager;
 
     @Autowired
     private DetectFileManager detectFileManager;
@@ -141,32 +128,20 @@ public class Application {
             detectOptionManager.init();
 
             final List<DetectOption> options = detectOptionManager.getDetectOptions();
-            boolean isPrintHelp = false;
-            boolean isPrintHelpDoc = false;
-            boolean isInteractive = false;
-            for (final String arg : applicationArguments.getSourceArgs()) {
-                if (arg.equals("-h") || arg.equals("--help")) {
-                    isPrintHelp = true;
-                } else if (arg.equals("-hdoc") || arg.equals("--helpdocument")) {
-                    isPrintHelpDoc = true;
-                } else if (arg.equals("-i") || arg.equals("--interactive")) {
-                    isInteractive = true;
-                }
-            }
-            if (isPrintHelp) {
+            final String[] applicationArgs = applicationArguments.getSourceArgs();
+
+            if (helpManager.isHelpMessageApplicable(applicationArgs)) {
                 helpManager.printAppropriateHelpMessage(applicationArguments.getSourceArgs(), detectOptionManager);
                 return;
             }
 
-            if (isPrintHelpDoc) {
-                helpHtmlWriter.writeHelpMessage(String.format("hub-detect-%s-help.html", detectInfo.getDetectVersion()));
+            if (helpManager.isHelpDocumentApplicable(applicationArgs)) {
+                helpManager.writeHelpMessage(detectInfo.getDetectVersion());
                 return;
             }
 
-            if (isInteractive) {
-                final InteractiveReader interactiveReader = createInteractiveReader();
-                final PrintStream interactivePrintStream = new PrintStream(System.out);
-                interactiveManager.interact(interactiveReader, interactivePrintStream);
+            if (helpManager.isInteractiveModeApplicable(applicationArgs)) {
+                helpManager.runInteractiveMode();
             }
 
             detectConfiguration.init();
@@ -225,16 +200,6 @@ public class Application {
             System.exit(0);
         } else {
             System.exit(exitCodeType.getExitCode());
-        }
-    }
-
-    private InteractiveReader createInteractiveReader() {
-        final Console console = System.console();
-        if (console != null) {
-            return new ConsoleInteractiveReader(console);
-        } else {
-            logger.warn("It may be insecure to enter passwords because you are running in a virtual console.");
-            return new ScannerInteractiveReader(System.in);
         }
     }
 

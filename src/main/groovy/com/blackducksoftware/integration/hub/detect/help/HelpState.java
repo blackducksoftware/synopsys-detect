@@ -30,10 +30,6 @@ public class HelpState {
         this.args = args;
     }
 
-    public boolean isHelpMessage() {
-        return isHelpCommand();
-    }
-
     public boolean isVerboseHelpMessage() {
         return checkSecondCommand("-v", "--verbose");
     }
