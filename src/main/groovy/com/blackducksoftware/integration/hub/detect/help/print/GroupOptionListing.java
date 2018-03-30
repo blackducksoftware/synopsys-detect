@@ -28,11 +28,10 @@ import java.util.List;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 
 public class GroupOptionListing {
-    String groupName;
-    List<DetectOption> detectOptions;
+    private String groupName;
+    private List<DetectOption> detectOptions;
 
     public GroupOptionListing(final String groupName, final List<DetectOption> detectOptions) {
-        super();
         this.groupName = groupName;
         this.detectOptions = detectOptions;
     }
