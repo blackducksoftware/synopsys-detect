@@ -1,3 +1,26 @@
+/**
+ * hub-detect
+ *
+ * Copyright (C) 2018 Black Duck Software, Inc.
+ * http://www.blackducksoftware.com/
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package com.blackducksoftware.integration.hub.detect.util;
 
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
@@ -19,6 +42,17 @@ public class BdioFileNamer {
     @Autowired
     private IntegrationEscapeUtil integrationEscapeUtil;
 
+    public static String shortHashString(final String value) {
+        String shortHashString = "";
+        final String hashedString = DigestUtils.sha1Hex(value);
+        if (hashedString.length() > 15) {
+            shortHashString = hashedString.substring(0, 15);
+        } else {
+            shortHashString = hashedString;
+        }
+        return shortHashString;
+    }
+
     public String generateShortenedFilename(final BomToolType bomToolType, final String finalSourcePathPiece, final ExternalId externalId) {
         final List<String> filenamePieces = new ArrayList<>(Arrays.asList(externalId.getExternalIdPieces()));
         filenamePieces.add(finalSourcePathPiece);
@@ -32,10 +66,8 @@ public class BdioFileNamer {
                 }
             });
             for (int i = filenamePieces.size() - 1; (filename.length() >= 255) && (i >= 0); i--) {
-                filenamePieces.set(i, DigestUtils.sha1Hex(filenamePieces.get(i)));
-                if (filenamePieces.get(i).length() > 15) {
-                    filenamePieces.set(i, filenamePieces.get(i).substring(0, 15));
-                }
+                final String shortHashString = shortHashString(filenamePieces.get(i));
+                filenamePieces.set(i, shortHashString);
                 filename = generateFilename(bomToolType, filenamePieces);
             }
         }

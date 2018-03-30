@@ -4,7 +4,6 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil
-import org.apache.commons.codec.digest.DigestUtils
 import org.junit.Test
 
 import static org.junit.Assert.assertEquals
@@ -31,7 +30,7 @@ class BdioFileNamerTest {
         String version = "shouldbethird"
         String path = "first"
 
-        String hashedGroup = DigestUtils.sha1Hex(group).substring(0, 15)
+        String hashedGroup = BdioFileNamer.shortHashString(group)
         // pieces are hashed if they are too big and the pieces are all sorted by length
         String expected = "MAVEN_first_second_shouldbethird_${hashedGroup}_bdio.jsonld"
 
@@ -51,7 +50,7 @@ class BdioFileNamerTest {
         String version = "second"
         String path = "first"
 
-        String hashedName = DigestUtils.sha1Hex(name).substring(0, 15)
+        String hashedName = BdioFileNamer.shortHashString(name)
         // pieces are hashed if they are too big and the pieces are all sorted by length
         String expected = "MAVEN_first_second_shouldbethird_${hashedName}_bdio.jsonld"
 
@@ -71,7 +70,7 @@ class BdioFileNamerTest {
         String version = "second"
         String path = "LongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPathLongPath"
 
-        String hashedPath = DigestUtils.sha1Hex(path).substring(0, 15)
+        String hashedPath = BdioFileNamer.shortHashString(path)
         // pieces are hashed if they are too big and the pieces are all sorted by length
         String expected = "MAVEN_first_second_shouldbethird_${hashedPath}_bdio.jsonld"
 
