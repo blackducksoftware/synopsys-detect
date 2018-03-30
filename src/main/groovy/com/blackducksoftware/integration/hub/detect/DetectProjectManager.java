@@ -137,6 +137,12 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
             }
         }
 
+        // we have already searched the given source path for bom tools and now, if we have to, we will walk
+        // the directory tree to find additional bom tools (npm might be nested beneath the source directory, for example)
+        if (detectConfiguration.getBomToolApplicableSearchDepth() > 0) {
+            bomToolTreeSearcher.searchForBomTools
+        }
+
         // we've gone through all applicable bom tools so we now have the
         // complete metadata to phone home
         detectPhoneHomeManager.startPhoneHome(applicableBomTools);

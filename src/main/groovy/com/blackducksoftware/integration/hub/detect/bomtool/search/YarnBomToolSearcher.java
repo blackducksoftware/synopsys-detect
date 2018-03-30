@@ -16,9 +16,9 @@ public class YarnBomToolSearcher extends PartialBomToolSearcher<BomToolSearchRes
     public BomToolSearchResult getSearchResult(final File directoryToSearch) {
         final boolean yarnApplies = detectFileManager.containsAllFiles(directoryToSearch, "yarn.lock");
         if (yarnApplies) {
-            return BomToolSearchResult.BOM_TOOL_APPLIES;
+            return BomToolSearchResultFactory.createApplies(directoryToSearch);
         } else {
-            return BomToolSearchResult.BOM_TOOL_DOES_NOT_APPLY;
+            return BomToolSearchResultFactory.createDoesNotApply();
         }
     }
 

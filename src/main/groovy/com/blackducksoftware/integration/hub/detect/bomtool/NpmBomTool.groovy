@@ -41,7 +41,7 @@ import org.springframework.stereotype.Component
 
 @Component
 @TypeChecked
-class NpmBomTool extends BomTool {
+class NpmBomTool extends BomTool implements NestedBomTool<NpmBomToolSearchResult> {
     private final Logger logger = LoggerFactory.getLogger(NpmBomTool.class);
 
     public static final String OUTPUT_FILE = "detect_npm_proj_dependencies.json";
@@ -65,9 +65,7 @@ class NpmBomTool extends BomTool {
     @Autowired
     private NpmBomToolSearcher npmBomToolSearcher;
 
-    private String npmExePath;
-    private File packageLockJson;
-    private File shrinkwrapJson;
+    private NpmBomToolSearchResult searchResult;
 
     @Override
     public BomToolType getBomToolType() {
@@ -78,40 +76,42 @@ class NpmBomTool extends BomTool {
     public boolean isBomToolApplicable() {
         NpmBomToolSearchResult searchResult = npmBomToolSearcher.getBomToolSearchResult(sourcePath);
         if (searchResult.isApplicable()) {
-            npmExePath = searchResult.getNpmExePath();
-            packageLockJson = searchResult.getPackageLockJson();
-            shrinkwrapJson = searchResult.getShrinkwrapJson();
+            this.searchResult = searchResult;
             return true;
         }
 
         return false;
     }
 
-    List<DetectCodeLocation> extractDetectCodeLocations() {
+    public List<DetectCodeLocation> extractDetectCodeLocations(NpmBomToolSearchResult searchResult) {
         List<DetectCodeLocation> codeLocations = []
-        if (npmExePath) {
-            codeLocations.addAll(extractFromCommand())
-        } else if (packageLockJson) {
-            codeLocations.addAll(extractFromLockFile(packageLockJson))
-        } else if (shrinkwrapJson) {
-            codeLocations.addAll(extractFromLockFile(shrinkwrapJson))
+        if (searchResult.npmExePath) {
+            codeLocations.addAll(extractFromCommand(searchResult))
+        } else if (searchResult.packageLockJson) {
+            codeLocations.addAll(extractFromLockFile(searchResult.packageLockJson, searchResult.searchedDirectory))
+        } else if (searchResult.shrinkwrapJson) {
+            codeLocations.addAll(extractFromLockFile(searchResult.shrinkwrapJson, searchResult.searchedDirectory))
         }
 
         if (!codeLocations.empty) {
-            hubSignatureScanner.registerPathToScan(ScanPathSource.NPM_SOURCE, sourceDirectory, NpmBomToolSearcher.NODE_MODULES)
+            hubSignatureScanner.registerPathToScan(ScanPathSource.NPM_SOURCE, searchResult.searchedDirectory, NpmBomToolSearcher.NODE_MODULES)
         }
 
         codeLocations
     }
 
-    private List<DetectCodeLocation> extractFromLockFile(File lockFile) {
+    public List<DetectCodeLocation> extractDetectCodeLocations() {
+        return extractDetectCodeLocations(searchResult)
+    }
+
+    private List<DetectCodeLocation> extractFromLockFile(File lockFile, File searchedDirectory) {
         String lockFileText = lockFile.getText()
-        DetectCodeLocation detectCodeLocation = npmLockfilePackager.parse(sourcePath, lockFileText, detectConfiguration.npmIncludeDevDependencies)
+        DetectCodeLocation detectCodeLocation = npmLockfilePackager.parse(searchedDirectory.canonicalPath, lockFileText, detectConfiguration.npmIncludeDevDependencies)
 
         [detectCodeLocation]
     }
 
-    private List<DetectCodeLocation> extractFromCommand() {
+    private List<DetectCodeLocation> extractFromCommand(NpmBomToolSearchResult searchResult) {
         File npmLsOutputFile = detectFileManager.createFile(BomToolType.NPM, NpmBomTool.OUTPUT_FILE)
         File npmLsErrorFile = detectFileManager.createFile(BomToolType.NPM, NpmBomTool.ERROR_FILE)
 
@@ -120,7 +120,7 @@ class NpmBomTool extends BomTool {
         if (!includeDevDeps) {
             exeArgs.add('-prod')
         }
-        Executable npmLsExe = new Executable(new File(sourcePath), npmExePath, exeArgs)
+        Executable npmLsExe = new Executable(searchResult.searchedDirectory, searchResult.npmExePath, exeArgs)
         executableRunner.executeToFile(npmLsExe, npmLsOutputFile, npmLsErrorFile)
 
         if (npmLsOutputFile.length() > 0) {
@@ -128,7 +128,7 @@ class NpmBomTool extends BomTool {
                 logger.debug("Error when running npm ls -json command")
                 logger.debug(npmLsErrorFile.text)
             }
-            def detectCodeLocation = npmCliDependencyFinder.generateCodeLocation(sourcePath, npmLsOutputFile)
+            def detectCodeLocation = npmCliDependencyFinder.generateCodeLocation(searchResult.searchedDirectory.canonicalPath, npmLsOutputFile)
 
             return [detectCodeLocation]
         } else if (npmLsErrorFile.length() > 0) {

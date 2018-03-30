@@ -450,6 +450,10 @@ public class DetectConfiguration {
     @Value("${detect.search.depth:}")
     private Integer searchDepth;
 
+    @ValueDescription(description = "Depth from source paths to search for files to determine if a bom tool applies.", defaultValue = "0", group = DetectConfiguration.GROUP_PATHS)
+    @Value("${detect.bom.tool.applicable.search.depth:}")
+    private Integer bomToolApplicableSearchDepth;
+
     @ValueDescription(description = "By default, all tools will be included. If you want to exclude specific tools, specify the ones to exclude here. Exclusion rules always win.", group = DetectConfiguration.GROUP_BOMTOOL)
     @Value("${detect.excluded.bom.tool.types:}")
     private String excludedBomToolTypes;
@@ -872,6 +876,10 @@ public class DetectConfiguration {
 
     public int getSearchDepth() {
         return convertInt(searchDepth);
+    }
+
+    public int getBomToolApplicableSearchDepth() {
+        return convertInt(bomToolApplicableSearchDepth);
     }
 
     public String getExcludedBomToolTypes() {

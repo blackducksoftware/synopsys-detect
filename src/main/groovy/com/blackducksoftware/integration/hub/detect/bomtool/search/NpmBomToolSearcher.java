@@ -37,7 +37,7 @@ public class NpmBomToolSearcher extends PartialBomToolSearcher<NpmBomToolSearchR
     public NpmBomToolSearchResult getSearchResult(final File directoryToSearch) {
         if (yarnBomToolSearcher.getSearchResult(directoryToSearch).isApplicable()) {
             logger.debug("The npm bomtool does not apply because yarn applies.");
-            return NpmBomToolSearchResult.NPM_BOM_TOOL_DOES_NOT_APPLY;
+            return BomToolSearchResultFactory.createNpmDoesNotApply();
         }
 
         String npmExePath = null;
@@ -78,7 +78,7 @@ public class NpmBomToolSearcher extends PartialBomToolSearcher<NpmBomToolSearchR
                     logger.debug(String.format("Npm version %s", npmVersion));
                 } catch (final ExecutableRunnerException e) {
                     logger.error(String.format("Could not run npm to get the version: %s", e.getMessage()));
-                    return NpmBomToolSearchResult.NPM_BOM_TOOL_DOES_NOT_APPLY;
+                    return BomToolSearchResultFactory.createNpmDoesNotApply();
                 }
             }
         } else if (containsPackageLockJson) {
@@ -91,9 +91,9 @@ public class NpmBomToolSearcher extends PartialBomToolSearcher<NpmBomToolSearchR
         final boolean isApplicable = lockFileIsApplicable || (containsNodeModules && StringUtils.isNotBlank(npmExePath));
 
         if (isApplicable) {
-            return new NpmBomToolSearchResult(true, npmExePath, packageLockJson, shrinkwrapJson);
+            return BomToolSearchResultFactory.createNpmApplies(directoryToSearch, npmExePath, packageLockJson, shrinkwrapJson);
         } else {
-            return NpmBomToolSearchResult.NPM_BOM_TOOL_DOES_NOT_APPLY;
+            return BomToolSearchResultFactory.createNpmDoesNotApply();
         }
     }
 
