@@ -29,6 +29,7 @@ import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.SimpleBdioDocument;
+import com.blackducksoftware.integration.hub.bdio.model.ToolSpdxCreator;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationNameService;
@@ -57,7 +58,12 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Component
 public class DetectProjectManager implements SummaryResultReporter, ExitCodeReporter {
@@ -274,9 +280,9 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         final SimpleBdioDocument simpleBdioDocument = simpleBdioFactory.createSimpleBdioDocument(codeLocationName, projectName, projectVersionName, projectExternalId, dependencyGraph);
 
         final String hubDetectVersion = detectInfo.getDetectVersion();
-        final Map<String, String> detectVersionData = new HashMap<>();
-        detectVersionData.put("detectVersion", hubDetectVersion);
-        simpleBdioDocument.billOfMaterials.customData = detectVersionData;
+
+        final ToolSpdxCreator hubDetectCreator = new ToolSpdxCreator("HubDetect", hubDetectVersion);
+        simpleBdioDocument.billOfMaterials.creationInfo.addSpdxCreator(hubDetectCreator);
 
         return simpleBdioDocument;
     }
