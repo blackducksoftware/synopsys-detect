@@ -160,6 +160,8 @@ public class DetectOptionManager {
                 field.set(obj, NumberUtils.toLong(value));
             } else if (Boolean.class == type) {
                 field.set(obj, Boolean.parseBoolean(value));
+            }else if (String[].class == type) {
+                field.set(obj, value.split(","));
             }
         } catch (IllegalArgumentException | IllegalAccessException e) {
             throw new RuntimeException(e);
@@ -174,9 +176,23 @@ public class DetectOptionManager {
         } catch (IllegalArgumentException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
-        if ((String.class == type && fieldValue.toString().trim().length() == 0) || (Integer.class == type && fieldValue == null) || (Long.class == type && fieldValue == null) || (Boolean.class == type && fieldValue == null)) {
+        if (String.class == type && fieldValue.toString().trim().length() == 0) {
             return true;
+        } else if (Integer.class == type && fieldValue == null) {
+            return true;
+        } else if (Long.class == type && fieldValue == null) {
+            return true;
+        } else if (Boolean.class == type && fieldValue == null) {
+            return true;
+        } else if (String[].class == type) {
+            if (fieldValue == null) {
+                return true;
+            }
+            String[] realValue = (String[]) fieldValue;
+            return realValue.length <= 0;
+        } else {
+            return false;
         }
-        return false;
+        
     }
 }

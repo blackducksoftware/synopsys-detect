@@ -55,31 +55,15 @@ class NugetInspectorManager {
     public String getInspectorVersion(final String nugetExecutablePath) {
         if (!inspectorVersion) {
             if ('latest'.equalsIgnoreCase(detectConfiguration.getNugetInspectorPackageVersion())) {
-                final def nugetOptions = [
-                    'list',
-                    detectConfiguration.getNugetInspectorPackageName()
-                ]
-                def airGapNugetInspectorDirectory = new File(detectConfiguration.getNugetInspectorAirGapPath())
-                if (airGapNugetInspectorDirectory.exists()) {
+                if (shouldUseAirGap()) {
                     logger.debug('Running in airgap mode. Resolving version from local path')
-                    nugetOptions.addAll([
-                        '-Source',
-                        detectConfiguration.getNugetInspectorAirGapPath()
-                    ])
+                    inspectorVersion = resolveVersionFromSource(detectConfiguration.getNugetInspectorAirGapPath(), nugetExecutablePath);
                 } else {
                     logger.debug('Running online. Resolving version through nuget')
-                    nugetOptions.addAll([
-                        '-Source',
-                        detectConfiguration.getNugetPackagesRepoUrl()
-                    ])
-                }
-                Executable getInspectorVersionExecutable = new Executable(detectConfiguration.sourceDirectory, nugetExecutablePath, nugetOptions)
-
-                List<String> output = executableRunner.execute(getInspectorVersionExecutable).standardOutputAsList
-                for (String line : output) {
-                    String[] lineChunks = line.split(' ')
-                    if (detectConfiguration.getNugetInspectorPackageName()?.equalsIgnoreCase(lineChunks[0])) {
-                        inspectorVersion = lineChunks[1]
+                    for (String source : detectConfiguration.getNugetPackagesRepoUrl()) {
+                        logger.debug('Attempting source: ' + source);
+                        inspectorVersion = resolveVersionFromSource(source, nugetExecutablePath);
+                        if (inspectorVersion) break;
                     }
                 }
                 logger.info("Resolved nuget inspector version from latest to: ${inspectorVersion}")
@@ -89,8 +73,37 @@ class NugetInspectorManager {
         }
         return inspectorVersion
     }
+    
+    private boolean shouldUseAirGap() {
+        def airGapNugetInspectorDirectory = new File(detectConfiguration.getNugetInspectorAirGapPath())
+        return airGapNugetInspectorDirectory.exists()
+    }
+    
+    private String resolveVersionFromSource(String source, final String nugetExecutablePath) {
+        String version = null;
+        
+        final def nugetOptions = [
+            'list',
+            detectConfiguration.getNugetInspectorPackageName(),
+            '-Source',
+            source
+        ];
+        
+        Executable getInspectorVersionExecutable = new Executable(detectConfiguration.sourceDirectory, nugetExecutablePath, nugetOptions)
+        
+        List<String> output = executableRunner.execute(getInspectorVersionExecutable).standardOutputAsList
+        for (String line : output) {
+            String[] lineChunks = line.split(' ')
+            if (detectConfiguration.getNugetInspectorPackageName()?.equalsIgnoreCase(lineChunks[0])) {
+                version = lineChunks[1]
+            }
+        }
+        
+        return version;
 
-    private void installInspector(final String nugetExecutablePath, final File outputDirectory) {
+    }
+
+    public void installInspector(final String nugetExecutablePath, final File outputDirectory) {
         File toolsDirectory
         String inspectorVersion = detectConfiguration.getNugetInspectorPackageVersion()
 
@@ -100,20 +113,12 @@ class NugetInspectorManager {
             toolsDirectory = new File(airGapNugetInspectorDirectory, 'tools')
         } else {
             logger.debug('Running online. Resolving through nuget')
-            final def nugetOptions = [
-                'install',
-                detectConfiguration.getNugetInspectorPackageName(),
-                '-OutputDirectory',
-                outputDirectory.getCanonicalPath(),
-                '-Source',
-                detectConfiguration.getNugetPackagesRepoUrl()
-            ]
-            nugetOptions.addAll([
-                '-Version',
-                inspectorVersion
-            ])
-            Executable installInspectorExecutable = new Executable(detectConfiguration.getSourceDirectory(), nugetExecutablePath, nugetOptions)
-            executableRunner.execute(installInspectorExecutable)
+            
+            for (String source : detectConfiguration.getNugetPackagesRepoUrl()) {
+                logger.debug('Attempting source: ' + source);
+                def success = attemptInstallInspectorFromSource(source, nugetExecutablePath, outputDirectory);
+                if (success) break;
+            }
 
             final File inspectorVersionDirectory = new File(outputDirectory, "${detectConfiguration.getNugetInspectorPackageName()}.${detectConfiguration.getNugetInspectorPackageVersion()}")
             toolsDirectory = new File(inspectorVersionDirectory, 'tools')
@@ -126,5 +131,27 @@ class NugetInspectorManager {
         }
 
         nugetInspectorExecutable = inspectorExe.getCanonicalPath()
+    }
+    
+    private boolean attemptInstallInspectorFromSource(String source, final String nugetExecutablePath, final File outputDirectory) {
+        final def nugetOptions = [
+            'install',
+            detectConfiguration.getNugetInspectorPackageName(),
+            '-OutputDirectory',
+            outputDirectory.getCanonicalPath(),
+            '-Source',
+            source,
+            '-Version',
+            inspectorVersion
+        ]
+        
+        Executable installInspectorExecutable = new Executable(detectConfiguration.getSourceDirectory(), nugetExecutablePath, nugetOptions)
+        def result = executableRunner.execute(installInspectorExecutable)
+        
+        if (result.returnCode == 0 && result.getErrorOutputAsList().size() == 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

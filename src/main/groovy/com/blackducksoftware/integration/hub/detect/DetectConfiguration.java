@@ -780,7 +780,7 @@ public class DetectConfiguration {
 
     @ValueDescription(description = "The source for nuget packages", defaultValue = "https://www.nuget.org/api/v2/", group = DetectConfiguration.GROUP_NUGET)
     @Value("${detect.nuget.packages.repo.url:}")
-    private String nugetPackagesRepoUrl;
+    private String[] nugetPackagesRepoUrl;
 
     @ValueDescription(description = "The respository gradle should use to look for the gradle inspector", group = DetectConfiguration.GROUP_GRADLE)
     @Value("${detect.gradle.inspector.repository.url:}")
@@ -1219,8 +1219,8 @@ public class DetectConfiguration {
         return getInspectorAirGapPath(nugetInspectorAirGapPath, NUGET);
     }
 
-    public String getNugetPackagesRepoUrl() {
-        return nugetPackagesRepoUrl == null ? null : nugetPackagesRepoUrl.trim();
+    public String[] getNugetPackagesRepoUrl() {
+        return nugetPackagesRepoUrl;
     }
 
     public String getGradleInspectorRepositoryUrl() {
