@@ -42,12 +42,10 @@ public class BomToolTreeSearcher {
     public void startSearching(final List<NestedBomTool> nestedBomTools, final File initialDirectory, int maximumDepth) throws BomToolException {
         File[] subDirectories = getSubDirectories(initialDirectory);
 
-        for (NestedBomTool nestedBomTool : nestedBomTools) {
-            searchDirectories(results, nestedBomTool, subDirectories, 1, maximumDepth);
-        }
+        searchDirectories(results, nestedBomTools, subDirectories, 1, maximumDepth);
     }
 
-    private <T extends BomToolSearchResult> void searchDirectories(List<NestedBomToolResult> results, NestedBomTool<T> nestedBomTool, File[] directoriesToSearch, int depth, int maximumDepth) throws BomToolException {
+    private void searchDirectories(List<NestedBomToolResult> results, final List<NestedBomTool> nestedBomTools, File[] directoriesToSearch, int depth, int maximumDepth) throws BomToolException {
         if (depth > maximumDepth) {
             return;
         }
@@ -56,16 +54,27 @@ public class BomToolTreeSearcher {
             return;
         }
 
-        BomToolSearcher<T> bomToolSearcher = nestedBomTool.getBomToolSearcher();
         for (File directory : directoriesToSearch) {
-            T searchResult = bomToolSearcher.getBomToolSearchResult(directory);
-            if (searchResult.isApplicable()) {
-                List<DetectCodeLocation> detectCodeLocations = nestedBomTool.extractDetectCodeLocations(searchResult);
-                NestedBomToolResult result = new NestedBomToolResult(nestedBomTool.getBomToolType(), directory, detectCodeLocations);
-                results.add(result);
+            List<NestedBomTool> remainingNestedBomTools = new ArrayList<>();
+            for (NestedBomTool nestedBomTool : nestedBomTools) {
+                BomToolSearcher bomToolSearcher = nestedBomTool.getBomToolSearcher();
+                if (nestedBomTool.getDirectoriesToExclude().contains(directory)) {
+                    continue;
+                }
+                BomToolSearchResult searchResult = bomToolSearcher.getBomToolSearchResult(directory);
+                if (searchResult.isApplicable()) {
+                    List<DetectCodeLocation> detectCodeLocations = nestedBomTool.extractDetectCodeLocations(searchResult);
+                    NestedBomToolResult result = new NestedBomToolResult(nestedBomTool.getBomToolType(), directory, detectCodeLocations);
+                    results.add(result);
+                    if(nestedBomTool.canSearchWithinApplicableDirectory()) {
+                        remainingNestedBomTools.add(nestedBomTool);
+                    }
+                } else {
+                    remainingNestedBomTools.add(nestedBomTool);
+                }
             }
 
-            searchDirectories(results, nestedBomTool, getSubDirectories(directory), depth + 1, maximumDepth);
+            searchDirectories(results, remainingNestedBomTools, getSubDirectories(directory), depth + 1, maximumDepth);
         }
     }
 

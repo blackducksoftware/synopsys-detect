@@ -37,4 +37,8 @@ public interface NestedBomTool<T extends BomToolSearchResult> {
 
     BomToolType getBomToolType();
 
+    Boolean canSearchWithinApplicableDirectory();
+
+    List<String> getDirectoriesToExclude();
+
 }

@@ -29,6 +29,7 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolSearchResult
 import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolSearcher
+import com.blackducksoftware.integration.hub.detect.bomtool.search.NpmBomToolSearcher
 import com.blackducksoftware.integration.hub.detect.bomtool.search.YarnBomToolSearcher
 import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnPackager
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
@@ -86,6 +87,14 @@ class YarnBomTool extends BomTool implements NestedBomTool<BomToolSearchResult> 
 
     public BomToolSearcher getBomToolSearcher() {
         return yarnBomToolSearcher;
+    }
+
+    public Boolean canSearchWithinApplicableDirectory(){
+        return false;
+    }
+
+    public List<String> getDirectoriesToExclude(){
+        return Collections.EMPTY_LIST;
     }
 
 }

@@ -34,7 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 
-public abstract class PartialBomToolSearcher<T extends BomToolSearchResult> implements BomToolSearcher<T> {
+public abstract class BaseBomToolSearcher<T extends BomToolSearchResult> implements BomToolSearcher<T> {
     @Autowired
     ExecutableManager executableManager;
 

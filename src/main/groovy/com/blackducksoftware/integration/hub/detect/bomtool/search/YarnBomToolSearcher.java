@@ -34,7 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class YarnBomToolSearcher extends PartialBomToolSearcher<BomToolSearchResult> {
+public class YarnBomToolSearcher extends BaseBomToolSearcher<BomToolSearchResult> {
     @Override
     public BomToolSearchResult getSearchResult(final File directoryToSearch) {
         final boolean yarnApplies = detectFileManager.containsAllFiles(directoryToSearch, "yarn.lock");

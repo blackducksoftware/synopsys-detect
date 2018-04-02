@@ -111,6 +111,16 @@ class NpmBomTool extends BomTool implements NestedBomTool<NpmBomToolSearchResult
         return npmBomToolSearcher;
     }
 
+    public Boolean canSearchWithinApplicableDirectory(){
+        return false;
+    }
+
+    public List<String> getDirectoriesToExclude(){
+        List<String> directories = new ArrayList<>();
+        directories.add(NpmBomToolSearcher.NODE_MODULES);
+        return directories;
+    }
+
     private List<DetectCodeLocation> extractFromLockFile(File lockFile, File searchedDirectory) {
         String lockFileText = lockFile.getText()
         DetectCodeLocation detectCodeLocation = npmLockfilePackager.parse(searchedDirectory.canonicalPath, lockFileText, detectConfiguration.npmIncludeDevDependencies)

@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class NpmBomToolSearcher extends PartialBomToolSearcher<NpmBomToolSearchResult> {
+public class NpmBomToolSearcher extends BaseBomToolSearcher<NpmBomToolSearchResult> {
     private final Logger logger = LoggerFactory.getLogger(NpmBomToolSearcher.class);
 
     public static final String NODE_MODULES = "node_modules";
