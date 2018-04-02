@@ -104,8 +104,6 @@ public class DetectProject {
     }
 
     public void processDetectCodeLocations(final Logger logger, final DetectFileManager detectFileManager, final BdioFileNamer bdioFileNamer, final CodeLocationNameService codeLocationNameService) {
-        final List<DetectCodeLocation> detectCodeLocations = getDetectCodeLocations();
-        final Map<String, DetectCodeLocation> codeLocationNameMap = new HashMap<>(detectCodeLocations.size());
         for (final DetectCodeLocation detectCodeLocation : getDetectCodeLocations()) {
             if (detectCodeLocation.getDependencyGraph() == null) {
                 logger.warn(String.format("Dependency graph is null for code location %s", detectCodeLocation.getSourcePath()));

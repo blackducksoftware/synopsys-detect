@@ -21,20 +21,35 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool;
+package com.blackducksoftware.integration.hub.detect.bomtool.search;
 
+import java.io.File;
 import java.util.List;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolSearchResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolSearcher;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 
-public interface NestedBomTool<T extends BomToolSearchResult> {
-    List<DetectCodeLocation> extractDetectCodeLocations(T bomToolSearchResult);
+public class NestedBomToolResult {
+    private BomToolType bomToolType;
+    private File applicableDirectory;
+    private List<DetectCodeLocation> codeLocations;
 
-    BomToolSearcher<T> getBomToolSearcher();
+    public NestedBomToolResult(final BomToolType bomToolType, final File applicableDirectory, final List<DetectCodeLocation> codeLocations) {
+        this.bomToolType = bomToolType;
+        this.applicableDirectory = applicableDirectory;
+        this.codeLocations = codeLocations;
+    }
 
-    BomToolType getBomToolType();
+    public BomToolType getBomToolType() {
+        return bomToolType;
+    }
+
+    public File getApplicableDirectory() {
+        return applicableDirectory;
+    }
+
+    public List<DetectCodeLocation> getCodeLocations() {
+        return codeLocations;
+    }
 
 }

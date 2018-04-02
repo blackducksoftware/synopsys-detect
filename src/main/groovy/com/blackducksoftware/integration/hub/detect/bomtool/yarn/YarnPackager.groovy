@@ -52,7 +52,12 @@ class YarnPackager {
 
         NameVersionNode currentNode = null
         boolean dependenciesStarted = false
+        int count = 0;
         for (String line : yarnLockText) {
+            if (count % 100 == 0) {
+                println count
+            }
+            count++;
             if (!line.trim()) {
                 continue
             }

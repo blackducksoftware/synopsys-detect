@@ -21,11 +21,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool
+package com.blackducksoftware.integration.hub.detect.bomtool.npm
+
+import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
+import com.blackducksoftware.integration.hub.detect.bomtool.NestedBomTool
+import com.blackducksoftware.integration.hub.detect.bomtool.YarnBomTool
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
-import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmCliDependencyFinder
-import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmLockfilePackager
 import com.blackducksoftware.integration.hub.detect.bomtool.search.NpmBomToolSearchResult
 import com.blackducksoftware.integration.hub.detect.bomtool.search.NpmBomToolSearcher
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
@@ -33,11 +39,8 @@ import com.blackducksoftware.integration.hub.detect.hub.ScanPathSource
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
+
 import groovy.transform.TypeChecked
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 
 @Component
 @TypeChecked
@@ -102,6 +105,10 @@ class NpmBomTool extends BomTool implements NestedBomTool<NpmBomToolSearchResult
 
     public List<DetectCodeLocation> extractDetectCodeLocations() {
         return extractDetectCodeLocations(searchResult)
+    }
+
+    public NpmBomToolSearcher getBomToolSearcher() {
+        return npmBomToolSearcher;
     }
 
     private List<DetectCodeLocation> extractFromLockFile(File lockFile, File searchedDirectory) {

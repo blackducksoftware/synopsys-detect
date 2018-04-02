@@ -49,7 +49,10 @@ import com.blackducksoftware.integration.hub.bdio.model.SimpleBdioDocument;
 import com.blackducksoftware.integration.hub.bdio.model.ToolSpdxCreator;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
+import com.blackducksoftware.integration.hub.detect.bomtool.NestedBomTool;
+import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolTreeSearcher;
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationNameService;
+import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
@@ -80,6 +83,9 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
 
     @Autowired
     private List<BomTool> bomTools;
+
+    @Autowired
+    private List<NestedBomTool> nestedBomTools;
 
     @Autowired
     private HubSignatureScanner hubSignatureScanner;
@@ -140,7 +146,12 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         // we have already searched the given source path for bom tools and now, if we have to, we will walk
         // the directory tree to find additional bom tools (npm might be nested beneath the source directory, for example)
         if (detectConfiguration.getBomToolApplicableSearchDepth() > 0) {
-            bomToolTreeSearcher.searchForBomTools
+            BomToolTreeSearcher bomToolTreeSearcher = new BomToolTreeSearcher();
+            try {
+                bomToolTreeSearcher.startSearching(nestedBomTools, detectConfiguration.getSourceDirectory(), detectConfiguration.getBomToolApplicableSearchDepth());
+            } catch (BomToolException e) {
+                e.printStackTrace();
+            }
         }
 
         // we've gone through all applicable bom tools so we now have the
