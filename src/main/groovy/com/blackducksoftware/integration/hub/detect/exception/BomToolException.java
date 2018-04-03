@@ -30,4 +30,8 @@ public class BomToolException extends Exception {
         super(message);
     }
 
+    public BomToolException(final String message, Exception e) {
+        super(message, e);
+    }
+
 }

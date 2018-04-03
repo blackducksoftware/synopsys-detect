@@ -24,69 +24,82 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.search;
 
 import java.io.File;
-import java.io.FilenameFilter;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.NestedBomTool;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 
 public class BomToolTreeSearcher {
+    private final Boolean bomToolForceSearch;
+
     private List<NestedBomToolResult> results = new ArrayList<>();
+
+    public BomToolTreeSearcher(final Boolean bomToolForceSearch) {
+        this.bomToolForceSearch = bomToolForceSearch;
+    }
 
     public List<NestedBomToolResult> getResults() {
         return results;
     }
 
-    public void startSearching(final List<NestedBomTool> nestedBomTools, final File initialDirectory, int maximumDepth) throws BomToolException {
-        File[] subDirectories = getSubDirectories(initialDirectory);
+    public void startSearching(final Set<NestedBomTool> nestedBomTools, final File initialDirectory, int maximumDepth) throws BomToolException {
+        List<File> subDirectories = getSubDirectories(initialDirectory);
 
         searchDirectories(results, nestedBomTools, subDirectories, 1, maximumDepth);
     }
 
-    private void searchDirectories(List<NestedBomToolResult> results, final List<NestedBomTool> nestedBomTools, File[] directoriesToSearch, int depth, int maximumDepth) throws BomToolException {
+    private void searchDirectories(List<NestedBomToolResult> results, final Set<NestedBomTool> nestedBomTools, List<File> directoriesToSearch, int depth, int maximumDepth) throws BomToolException {
         if (depth > maximumDepth) {
             return;
         }
 
-        if (directoriesToSearch == null || directoriesToSearch.length == 0) {
+        if (null == directoriesToSearch || directoriesToSearch.size() == 0) {
             return;
         }
 
         for (File directory : directoriesToSearch) {
-            List<NestedBomTool> remainingNestedBomTools = new ArrayList<>();
+            Set<NestedBomTool> remainingNestedBomTools = new HashSet<>();
+            if (bomToolForceSearch) {
+                remainingNestedBomTools.addAll(nestedBomTools);
+            }
             for (NestedBomTool nestedBomTool : nestedBomTools) {
                 BomToolSearcher bomToolSearcher = nestedBomTool.getBomToolSearcher();
-                if (nestedBomTool.getDirectoriesToExclude().contains(directory)) {
-                    continue;
-                }
+                //                if (nestedBomTool.getDirectoriesToExclude().contains(directory)) {
+                //                    continue;
+                //                }
                 BomToolSearchResult searchResult = bomToolSearcher.getBomToolSearchResult(directory);
                 if (searchResult.isApplicable()) {
                     List<DetectCodeLocation> detectCodeLocations = nestedBomTool.extractDetectCodeLocations(searchResult);
                     NestedBomToolResult result = new NestedBomToolResult(nestedBomTool.getBomToolType(), directory, detectCodeLocations);
                     results.add(result);
-                    if(nestedBomTool.canSearchWithinApplicableDirectory()) {
+                    if (nestedBomTool.canSearchWithinApplicableDirectory()) {
                         remainingNestedBomTools.add(nestedBomTool);
                     }
                 } else {
                     remainingNestedBomTools.add(nestedBomTool);
                 }
             }
-            // TODO if remainingNestedBomTools is 0 stop
-            searchDirectories(results, remainingNestedBomTools, getSubDirectories(directory), depth + 1, maximumDepth);
+            if (!remainingNestedBomTools.isEmpty()) {
+                searchDirectories(results, remainingNestedBomTools, getSubDirectories(directory), depth + 1, maximumDepth);
+            }
         }
     }
 
-    private File[] getSubDirectories(File directory) {
-        return directory.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(final File file, final String name) {
-                return new File(file, name).isDirectory();
-            }
-        });
+    private List<File> getSubDirectories(File directory) throws BomToolException {
+        try {
+            return Files.list(directory.toPath())
+                           .filter(path -> Files.isDirectory(path))
+                           .map(path -> path.toFile())
+                           .collect(Collectors.toList());
+        } catch (IOException e) {
+            throw new BomToolException(e.getMessage(), e);
+        }
     }
-    //TODO global exclude directories
-    //TODO consider user override/addition
-    //TODO file of directories to exclude from searching, generate at runtime if doesnt exist
 }

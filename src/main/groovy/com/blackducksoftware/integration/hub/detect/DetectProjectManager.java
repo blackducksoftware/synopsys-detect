@@ -30,6 +30,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -72,6 +73,7 @@ import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
 @Component
 public class DetectProjectManager implements SummaryResultReporter, ExitCodeReporter {
     private final Logger logger = LoggerFactory.getLogger(DetectProjectManager.class);
+    private final Map<BomToolType, Result> bomToolSummaryResults = new HashMap<>();
 
     @Autowired
     private DetectInfo detectInfo;
@@ -86,7 +88,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     private List<BomTool> bomTools;
 
     @Autowired
-    private List<NestedBomTool> nestedBomTools;
+    private Set<NestedBomTool> nestedBomTools;
 
     @Autowired
     private HubSignatureScanner hubSignatureScanner;
@@ -106,7 +108,6 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     @Autowired
     private DetectPhoneHomeManager detectPhoneHomeManager;
 
-    private final Map<BomToolType, Result> bomToolSummaryResults = new HashMap<>();
     private boolean foundAnyBomTools;
 
     public DetectProject createDetectProject() throws IntegrationException {
@@ -147,26 +148,26 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         // we have already searched the given source path for bom tools and now, if we have to, we will walk
         // the directory tree to find additional bom tools (npm might be nested beneath the source directory, for example)
         if (detectConfiguration.getBomToolApplicableSearchDepth() > 0) {
-            BomToolTreeSearcher bomToolTreeSearcher = new BomToolTreeSearcher();
+            BomToolTreeSearcher bomToolTreeSearcher = new BomToolTreeSearcher(detectConfiguration.getBomToolForceSearch());
             try {
                 bomToolTreeSearcher.startSearching(nestedBomTools, detectConfiguration.getSourceDirectory(), detectConfiguration.getBomToolApplicableSearchDepth());
             } catch (BomToolException e) {
                 e.printStackTrace();
             }
             List<NestedBomToolResult> results = bomToolTreeSearcher.getResults();
-            if (null!= results && results.size() > 0) {
+            if (null != results && results.size() > 0) {
                 foundAnyBomTools = true;
                 for (NestedBomToolResult result : results) {
                     final BomToolType bomToolType = result.getBomToolType();
                     final String bomToolTypeString = bomToolType.toString();
-                     String applicablePath;
-                     try {
-                         applicablePath = result.getApplicableDirectory().getCanonicalPath();
-                     } catch (IOException e) {
-                         applicablePath = result.getApplicableDirectory().getAbsolutePath();
-                     }
+                    String applicablePath;
+                    try {
+                        applicablePath = result.getApplicableDirectory().getCanonicalPath();
+                    } catch (IOException e) {
+                        applicablePath = result.getApplicableDirectory().getAbsolutePath();
+                    }
                     List<DetectCodeLocation> codeLocations = result.getCodeLocations();
-                    if(null == codeLocations || codeLocations.isEmpty()){
+                    if (null == codeLocations || codeLocations.isEmpty()) {
                         bomToolSummaryResults.put(result.getBomToolType(), Result.FAILURE);
                         logger.error(String.format("Did not find any projects from %s even though it applied to %s.", bomToolTypeString, applicablePath));
                     } else {
