@@ -73,7 +73,7 @@ public class BomToolTreeSearcher {
                     remainingNestedBomTools.add(nestedBomTool);
                 }
             }
-
+            // TODO if remainingNestedBomTools is 0 stop
             searchDirectories(results, remainingNestedBomTools, getSubDirectories(directory), depth + 1, maximumDepth);
         }
     }
@@ -82,8 +82,11 @@ public class BomToolTreeSearcher {
         return directory.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(final File file, final String name) {
-                return file.isDirectory();
+                return new File(file, name).isDirectory();
             }
         });
     }
+    //TODO global exclude directories
+    //TODO consider user override/addition
+    //TODO file of directories to exclude from searching, generate at runtime if doesnt exist
 }

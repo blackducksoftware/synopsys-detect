@@ -111,10 +111,12 @@ class NpmBomTool extends BomTool implements NestedBomTool<NpmBomToolSearchResult
         return npmBomToolSearcher;
     }
 
+    //TODO global search force to search to maximum depth
     public Boolean canSearchWithinApplicableDirectory(){
         return false;
     }
 
+    //TODO replace by global search exclusion
     public List<String> getDirectoriesToExclude(){
         List<String> directories = new ArrayList<>();
         directories.add(NpmBomToolSearcher.NODE_MODULES);

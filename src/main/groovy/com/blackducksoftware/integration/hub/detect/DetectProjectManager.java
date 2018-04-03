@@ -51,6 +51,7 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.NestedBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolTreeSearcher;
+import com.blackducksoftware.integration.hub.detect.bomtool.search.NestedBomToolResult;
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
@@ -125,7 +126,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
                 bomToolSummaryResults.put(bomTool.getBomToolType(), Result.FAILURE);
                 foundAnyBomTools = true;
                 final List<DetectCodeLocation> codeLocations = bomTool.extractDetectCodeLocations(detectProject);
-                if (codeLocations != null && codeLocations.size() > 0) {
+                if (null != codeLocations && codeLocations.size() > 0) {
                     bomToolSummaryResults.put(bomTool.getBomToolType(), Result.SUCCESS);
                     detectProject.addAllDetectCodeLocations(codeLocations);
                     applicableBomTools.add(bomToolType);
@@ -151,6 +152,29 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
                 bomToolTreeSearcher.startSearching(nestedBomTools, detectConfiguration.getSourceDirectory(), detectConfiguration.getBomToolApplicableSearchDepth());
             } catch (BomToolException e) {
                 e.printStackTrace();
+            }
+            List<NestedBomToolResult> results = bomToolTreeSearcher.getResults();
+            if (null!= results && results.size() > 0) {
+                foundAnyBomTools = true;
+                for (NestedBomToolResult result : results) {
+                    final BomToolType bomToolType = result.getBomToolType();
+                    final String bomToolTypeString = bomToolType.toString();
+                     String applicablePath;
+                     try {
+                         applicablePath = result.getApplicableDirectory().getCanonicalPath();
+                     } catch (IOException e) {
+                         applicablePath = result.getApplicableDirectory().getAbsolutePath();
+                     }
+                    List<DetectCodeLocation> codeLocations = result.getCodeLocations();
+                    if(null == codeLocations || codeLocations.isEmpty()){
+                        bomToolSummaryResults.put(result.getBomToolType(), Result.FAILURE);
+                        logger.error(String.format("Did not find any projects from %s even though it applied to %s.", bomToolTypeString, applicablePath));
+                    } else {
+                        bomToolSummaryResults.put(result.getBomToolType(), Result.SUCCESS);
+                        detectProject.addAllDetectCodeLocations(codeLocations);
+                        applicableBomTools.add(result.getBomToolType());
+                    }
+                }
             }
         }
 
