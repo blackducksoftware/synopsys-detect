@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.codehaus.plexus.util.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
@@ -44,9 +45,9 @@ import com.blackducksoftware.integration.hub.detect.interactive.reader.Interacti
 import com.blackducksoftware.integration.hub.detect.util.SpringValueUtils;
 
 public abstract class InteractiveMode {
+    private final Map<String, InteractiveOption> propertyToOptionMap = new HashMap<>();
     private PrintStream printStream;
     private InteractiveReader interactiveReader;
-    private final Map<String, InteractiveOption> propertyToOptionMap = new HashMap<>();
     private String profileName = null;
 
     public void init(final PrintStream printStream, final InteractiveReader reader) {
@@ -77,7 +78,7 @@ public abstract class InteractiveMode {
     }
 
     public void setProperty(final String propertyName, final String value) {
-        InteractiveOption option;
+        final InteractiveOption option;
         if (!propertyToOptionMap.containsKey(propertyName)) {
             option = new InteractiveOption();
             option.setFieldName(propertyName);
@@ -90,7 +91,14 @@ public abstract class InteractiveMode {
     }
 
     public Boolean askYesOrNo(final String question) {
+        return askYesOrNoWithMessage(question, null);
+    }
+
+    public Boolean askYesOrNoWithMessage(final String question, final String message) {
         printStream.print(question);
+        if (StringUtils.isNotBlank(message)) {
+            printStream.print(message);
+        }
         printStream.print(" (Y|n)");
         printStream.println();
         final int maxAttempts = 3;
@@ -207,7 +215,7 @@ public abstract class InteractiveMode {
         }
 
         final File applicationsProperty = new File(directory, fileName);
-        OutputStream outputStream;
+        final OutputStream outputStream;
         try {
             outputStream = new FileOutputStream(applicationsProperty);
             properties.store(outputStream, "Automatically generated during Detect Interactive Mode.");
