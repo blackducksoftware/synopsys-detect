@@ -104,6 +104,7 @@ public class DetectConfiguration {
     private static final String PRINT_GROUP_PROJECT = "project";
     private static final String PRINT_GROUP_DEBUG = "debug";
 
+    public static final String PRINT_GROUP_DEFAULT = PRINT_GROUP_HUB;
     
     @Autowired
     private ConfigurableEnvironment configurableEnvironment;

@@ -60,7 +60,7 @@ public class DetectOption {
             }
         }
     }
-
+    
     public String getInteractiveValue() {
         return interactiveValue;
     }

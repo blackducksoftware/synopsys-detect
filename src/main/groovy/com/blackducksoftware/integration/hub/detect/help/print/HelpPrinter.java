@@ -23,93 +23,111 @@
  */
 package com.blackducksoftware.integration.hub.detect.help.print;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.PrintStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.help.ArgumentState;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 
 @Component
 public class HelpPrinter {
 
-    public void printHelpMessage(final PrintStream printStream, final List<DetectOption> options, String filterGroup) {
+    @Autowired
+    private HelpOptionPrinter optionPrinter;
+    
+    @Autowired
+    private HelpDetailedOptionPrinter detailPrinter;
+    
+    public void printAppropriateHelpMessage(final PrintStream printStream, final List<DetectOption> options, ArgumentState state) {
         final HelpTextWriter writer = new HelpTextWriter();
-        writer.println();
         
-        List<String> printGroups = options.stream()
+        List<String> allPrintGroups = getPrintGroups(options);
+
+        if (state.isVerboseHelpMessage) {
+            optionPrinter.printOptions(writer, options, null);
+        }else if (state.isGroup) {
+            printHelpFilteredByPrintGroup( writer, options, state.parsedValue);
+        }else if (state.isGroupList) {
+            optionPrinter.printStandardFooter(writer, getPrintGroupText(allPrintGroups));
+        }else if (state.isProperty) {
+            printDetailedHelp(writer, options, state.parsedValue);
+        }else {
+            if (state.parsedValue != null) {
+                if (state.parsedValue.endsWith("*")) {
+                    printHelpFilteredBySearchTerm(writer, options, state.parsedValue);
+                } else if (isPrintGroup(allPrintGroups, state.parsedValue)){
+                    printHelpFilteredByPrintGroup( writer, options, state.parsedValue);
+                } else {
+                    printDefaultHelp(writer, options);
+                }
+            }else {
+                printDefaultHelp(writer, options);
+            }
+        }
+        
+        optionPrinter.printStandardFooter(writer, getPrintGroupText(allPrintGroups));
+        
+        writer.write(printStream);
+    }
+    
+    private void printDetailedHelp(final HelpTextWriter writer, final List<DetectOption> options, String optionName) {
+        DetectOption option = options.stream()
+                .filter(it -> it.getKey().equals(optionName))
+                .findFirst().orElse(null);
+        
+        if (option == null) {
+            writer.println("Could not find option named: " + optionName);
+        } else {
+            detailPrinter.printDetailedOption(writer, option);
+        }
+    }
+    
+    private void printDefaultHelp(final HelpTextWriter writer, final List<DetectOption> options) {
+        printHelpFilteredByPrintGroup(writer, options, DetectConfiguration.PRINT_GROUP_DEFAULT);
+    }
+    
+    private void printHelpFilteredByPrintGroup(final HelpTextWriter writer, final List<DetectOption> options, String filterGroup) {
+        String notes = "Showing help only for: " + filterGroup;
+        
+        List<DetectOption> filteredOptions = options.stream()
+                .filter(it -> it.getPrintGroupsAsList().stream().anyMatch(printGroup -> printGroup.equalsIgnoreCase(filterGroup)))
+                .collect(Collectors.toList());
+        
+        optionPrinter.printOptions(writer, filteredOptions, notes);
+    }
+    
+    private void printHelpFilteredBySearchTerm(final HelpTextWriter writer, final List<DetectOption> options, String filterTerm) {
+        String searchTerm = filterTerm.substring(0, filterTerm.length() - 1).toLowerCase();
+        String notes = "Showing help only for fields that contain: " + searchTerm;
+
+        List<DetectOption> filteredOptions = options.stream()
+                .filter(it -> it.getKey().contains(searchTerm))
+                .collect(Collectors.toList());
+        
+        optionPrinter.printOptions(writer, filteredOptions, notes);
+    }
+    
+    private boolean isPrintGroup (List<String> allPrintGroups, String filterGroup) {
+        return allPrintGroups.contains(filterGroup);
+    }
+    
+    private List<String> getPrintGroups(List<DetectOption> options) {
+        return options.stream()
                 .flatMap(it -> it.getPrintGroupsAsList().stream())
                 .distinct()
                 .sorted()
                 .collect(Collectors.toList());
-        
-        String groupText = printGroups.stream().collect(Collectors.joining(","));
-
-        String notes = null;
-        List<DetectOption> filteredOptions;
-        
-        boolean filterByGroup = printGroups.contains(filterGroup);
-        if (filterByGroup) {
-            
-            notes = "Showing help only for: " + filterGroup;
-            
-            filteredOptions = options.stream()
-                    .filter(it -> it.getPrintGroupsAsList().stream().anyMatch(printGroup -> printGroup.equalsIgnoreCase(filterGroup)))
-                    .collect(Collectors.toList());
-            
-        }else if (filterGroup.endsWith("*")) {
-            
-            String searchTerm = filterGroup.substring(0, filterGroup.length() - 1).toLowerCase();
-            notes = "Showing help only for fields that contain: " + searchTerm;
-
-            filteredOptions = options.stream()
-                    .filter(it -> it.getKey().contains(searchTerm))
-                    .collect(Collectors.toList());
-            
-        }else {
-            filteredOptions = options;
-        }
-        
-        
-        printOptions(writer, filteredOptions, groupText, notes);
-        
-        writer.write(printStream);
-
     }
     
-
-    private void printOptions(HelpTextWriter writer, List<DetectOption> options, String groupText, String notes) {
-        writer.printColumns("Property Name", "Default", "Description");
-        writer.printSeperator();
-
-        if (notes != null) {
-            writer.println(notes);
-            writer.println();
-        }
-        
-        String group = null;
-        for (final DetectOption detectValue : options) {
-            final String currentGroup = detectValue.getGroup();
-            if (group == null) {
-                group = currentGroup;
-            } else if (!group.equals(currentGroup)) {
-                writer.println();
-                group = currentGroup;
-            }
-            writer.printColumns("--" + detectValue.getKey(), detectValue.getDefaultValue(), detectValue.getDescription());
-        }
-        
-        writer.println();
-        writer.println("Usage : ");
-        writer.println("\t--<property name>=<value>");
-        writer.println();
-        writer.println("To print only a subset of options, you may specify one of the following printable groups with '-h [group]' or '--help [group]': ");
-        writer.println("\t" + groupText);
-        writer.println();        
-        writer.println("To search options, you may specify a search term followed by * with '-h [term]*' or '--help [term]*': ");
-        writer.println();
-
+    private String getPrintGroupText(List<String> printGroups) {
+        return printGroups.stream().collect(Collectors.joining(","));
     }
 
 }

@@ -53,6 +53,7 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFac
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
+import com.blackducksoftware.integration.hub.detect.help.ArgumentState;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
 import com.blackducksoftware.integration.hub.detect.help.html.HelpHtmlWriter;
@@ -97,11 +98,14 @@ public class Application {
     private ApplicationArguments applicationArguments;
 
     @Autowired
-    private HelpPrinter helpPrinter;
+    private InteractiveManager interactiveManager;
 
     @Autowired
+    private HelpPrinter helpPrinter;
+    
+    @Autowired
     private HelpHtmlWriter helpHtmlWriter;
-
+    
     @Autowired
     private HubManager hubManager;
 
@@ -113,9 +117,6 @@ public class Application {
 
     @Autowired
     private DetectSummary detectSummary;
-
-    @Autowired
-    private InteractiveManager interactiveManager;
 
     @Autowired
     private DetectFileManager detectFileManager;
@@ -141,40 +142,21 @@ public class Application {
             detectOptionManager.init();
 
             final List<DetectOption> options = detectOptionManager.getDetectOptions();
-            boolean isPrintHelp = false;
-            boolean previousWasHelp = false;
-            String helpGroup = "";
-            boolean isPrintHelpDoc = false;
-            boolean isInteractive = false;
-            for (final String arg : applicationArguments.getSourceArgs()) {
-                if (arg.equals("-h") || arg.equals("--help")) {
-                    isPrintHelp = true;
-                    previousWasHelp = true;
-                } else if (arg.equals("-hdoc") || arg.equals("--helpdocument")) {
-                    isPrintHelpDoc = true;
-                    previousWasHelp = false;
-                } else if (arg.equals("-i") || arg.equals("--interactive")) {
-                    isInteractive = true;
-                    previousWasHelp = false;
-                }else if (previousWasHelp) {
-                    helpGroup = arg;
-                    previousWasHelp = false;
-                }else {
-                    previousWasHelp = false;
-                }
-                
-            }
-            if (isPrintHelp) {
-                helpPrinter.printHelpMessage(System.out, options, helpGroup);
+
+            final String[] applicationArgs = applicationArguments.getSourceArgs();
+            final ArgumentState argumentState = new ArgumentState(applicationArgs);
+
+            if (argumentState.isHelp) {
+                helpPrinter.printAppropriateHelpMessage(System.out, options, argumentState);
                 return;
             }
 
-            if (isPrintHelpDoc) {
+            if (argumentState.isHelpDocument) {
                 helpHtmlWriter.writeHelpMessage(String.format("hub-detect-%s-help.html", detectInfo.getDetectVersion()));
                 return;
             }
 
-            if (isInteractive) {
+            if (argumentState.isInteractive) {
                 final InteractiveReader interactiveReader = createInteractiveReader();
                 final PrintStream interactivePrintStream = new PrintStream(System.out);
                 interactiveManager.interact(interactiveReader, interactivePrintStream);
@@ -248,7 +230,7 @@ public class Application {
             return new ScannerInteractiveReader(System.in);
         }
     }
-
+    
     private void populateExitCodeFromExceptionDetails(final Exception e) {
         if (e instanceof DetectUserFriendlyException) {
             if (e.getCause() != null) {
