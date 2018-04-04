@@ -30,7 +30,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
@@ -39,8 +38,8 @@ import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 public class HelpPrinter {
 
     public void printHelpMessage(final PrintStream printStream, final List<DetectOption> options, String filterGroup) {
-        final List<String> helpMessagePieces = new ArrayList<>();
-        helpMessagePieces.add("");
+        final HelpTextWriter writer = new HelpTextWriter();
+        writer.println();
         
         Set<String> groups = new HashSet<String>();
         boolean filterByGroup = false; // must match at least one group
@@ -56,11 +55,9 @@ public class HelpPrinter {
         }
         
 
-        final List<String> headerColumns = Arrays.asList("Property Name", "Default", "Description");
-        final String headerText = formatColumns(headerColumns, 51, 30, 95);
-        helpMessagePieces.add(headerText);
-        helpMessagePieces.add(StringUtils.repeat('_', 175));
-
+        writer.printColumns(Arrays.asList("Property Name", "Default", "Description"));
+        writer.printSeperator();
+        
         String groupText = "";
         List<String> groupList = new ArrayList<String>(groups);
         java.util.Collections.sort(groupList);
@@ -73,8 +70,8 @@ public class HelpPrinter {
         }
         
         if (filterByGroup) {
-            helpMessagePieces.add("Showing help only for: " + filterGroup);
-            helpMessagePieces.add("");
+            writer.println("Showing help only for: " + filterGroup);
+            writer.println();
         }
         
         String group = null;
@@ -93,67 +90,24 @@ public class HelpPrinter {
             if (group == null) {
                 group = currentGroup;
             } else if (!group.equals(currentGroup)) {
-                helpMessagePieces.add("");
+                writer.println();
                 group = currentGroup;
             }
 
-            final List<String> bodyColumns = Arrays.asList("--" + detectValue.getKey(), detectValue.getDefaultValue(), detectValue.getDescription());
-            final String bodyText = formatColumns(bodyColumns, 51, 30, 95);
-            helpMessagePieces.add(bodyText);
+            writer.printColumns(Arrays.asList("--" + detectValue.getKey(), detectValue.getDefaultValue(), detectValue.getDescription()));
         }
-        helpMessagePieces.add("");
-        helpMessagePieces.add("Usage : ");
-        helpMessagePieces.add("\t--<property name>=<value>");
-        helpMessagePieces.add("");
-        helpMessagePieces.add("To print only a subset of options, you may specify one of the following printable groups with '-h [group]' or '--help [group]': ");
-        helpMessagePieces.add("\t" + groupText);
-        helpMessagePieces.add("");
+        
+        writer.println();
+        writer.println("Usage : ");
+        writer.println("\t--<property name>=<value>");
+        writer.println();
+        writer.println("To print only a subset of options, you may specify one of the following printable groups with '-h [group]' or '--help [group]': ");
+        writer.println("\t" + groupText);
+        writer.println();        
+        writer.println("To search options, you may specify a search term followed by * '-h [term]*' or '--help [term]*': ");
+        writer.println();
 
-        printMessage(printStream, helpMessagePieces);
+        writer.write(printStream);
     }
 
-    private void printMessage(final PrintStream printStream, final List<String> message) {
-        printStream.println(String.join(System.lineSeparator(), message));
-    }
-
-    private String formatColumns(final List<String> columns, final int... columnWidths) {
-        final StringBuilder createColumns = new StringBuilder();
-        final List<String> columnfirstRow = new ArrayList<>();
-        final List<String> columnRemainingRows = new ArrayList<>();
-        for (int i = 0; i < columns.size(); i++) {
-            if (columns.get(i).length() < columnWidths[i]) {
-                columnfirstRow.add(columns.get(i));
-                columnRemainingRows.add("");
-            } else {
-                final String firstRow = columns.get(i).substring(0, columnWidths[i]);
-                int endOfWordIndex = firstRow.lastIndexOf(' ');
-                if (endOfWordIndex == -1) {
-                    endOfWordIndex = columnWidths[i] - 1;
-                    columnfirstRow.add(firstRow.substring(0, endOfWordIndex) + " ");
-                } else {
-                    columnfirstRow.add(firstRow.substring(0, endOfWordIndex));
-                }
-
-                columnRemainingRows.add(columns.get(i).substring(endOfWordIndex).trim());
-            }
-        }
-
-        for (int i = 0; i < columnfirstRow.size(); i++) {
-            createColumns.append(StringUtils.rightPad(columnfirstRow.get(i), columnWidths[i], " "));
-        }
-
-        if (!allColumnsEmpty(columnRemainingRows)) {
-            createColumns.append(System.lineSeparator() + formatColumns(columnRemainingRows, columnWidths));
-        }
-        return createColumns.toString();
-    }
-
-    private boolean allColumnsEmpty(final List<String> columns) {
-        for (final String column : columns) {
-            if (!column.isEmpty()) {
-                return false;
-            }
-        }
-        return true;
-    }
 }
