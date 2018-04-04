@@ -81,7 +81,7 @@ public class HubManager implements ExitCodeReporter {
 
     private ExitCodeType exitCodeType = ExitCodeType.SUCCESS;
 
-    public ProjectVersionView updateHubProjectVersion(final DetectProject detectProject, final List<File> createdBdioFiles) throws IntegrationException {
+    public ProjectVersionView updateHubProjectVersion(final DetectProject detectProject, final List<File> createdBdioFiles) throws IntegrationException, DetectUserFriendlyException, InterruptedException {
         final ProjectService projectService = hubServiceWrapper.createProjectService();
         ProjectVersionView projectVersionView = ensureProjectVersionExists(detectProject, projectService);
         if (null != createdBdioFiles && !createdBdioFiles.isEmpty()) {
