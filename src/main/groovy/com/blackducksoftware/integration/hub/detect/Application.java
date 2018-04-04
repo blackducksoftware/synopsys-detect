@@ -28,7 +28,6 @@ import java.io.File;
 import java.io.PrintStream;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -38,6 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Bean;
@@ -78,7 +78,7 @@ import com.google.gson.GsonBuilder;
 import freemarker.template.Configuration;
 
 @SpringBootApplication
-public class Application {
+public class Application implements ApplicationRunner {
     private final Logger logger = LoggerFactory.getLogger(Application.class);
 
     @Autowired
@@ -93,8 +93,8 @@ public class Application {
     @Autowired
     private DetectProjectManager detectProjectManager;
 
-    @Autowired
-    private ApplicationArguments applicationArguments;
+    //    @Autowired
+    //    private ApplicationArguments applicationArguments;
 
     @Autowired
     private HelpPrinter helpPrinter;
@@ -132,8 +132,13 @@ public class Application {
         new SpringApplicationBuilder(Application.class).logStartupInfo(false).run(args);
     }
 
-    @PostConstruct
-    public void init() {
+    @Override
+    public void run(ApplicationArguments applicationArguments) throws Exception {
+
+        //    }
+        //
+        //    @PostConstruct
+        //    public void init() {
         final long start = System.currentTimeMillis();
 
         try {

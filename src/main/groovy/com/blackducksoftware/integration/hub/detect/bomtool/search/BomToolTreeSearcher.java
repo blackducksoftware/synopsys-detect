@@ -37,6 +37,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FilenameUtils;
+import org.codehaus.plexus.util.StringUtils;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.NestedBomTool;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
@@ -138,12 +139,16 @@ public class BomToolTreeSearcher {
         if (bomToolForceSearch) {
             return Collections.emptyList();
         }
-        List<String> directoriesToExclude;
+        List<String> directoriesToExclude = null;
         try {
-            File excludedDirectoriesBomToolSearchFile = new File(excludedDirectoriesBomToolSearchFilePath);
-            if (excludedDirectoriesBomToolSearchFile.exists()) {
-                directoriesToExclude = Files.readAllLines(excludedDirectoriesBomToolSearchFile.toPath(), StandardCharsets.UTF_8);
-            } else {
+            if (StringUtils.isNotBlank(excludedDirectoriesBomToolSearchFilePath)) {
+                File excludedDirectoriesBomToolSearchFile = new File(excludedDirectoriesBomToolSearchFilePath);
+                if (excludedDirectoriesBomToolSearchFile.exists()) {
+                    directoriesToExclude = Files.readAllLines(excludedDirectoriesBomToolSearchFile.toPath(), StandardCharsets.UTF_8);
+                }
+            }
+
+            if (null == directoriesToExclude) {
                 String fileContent = ResourceUtil.getResourceAsString(BomToolTreeSearcher.class, "/excludedDirectoriesBomToolSearch.txt", StandardCharsets.UTF_8);
                 directoriesToExclude = Arrays.asList(fileContent.split("\n"));
             }
