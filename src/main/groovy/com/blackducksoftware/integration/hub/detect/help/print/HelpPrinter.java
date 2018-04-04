@@ -24,11 +24,8 @@
 package com.blackducksoftware.integration.hub.detect.help.print;
 
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
@@ -41,60 +38,66 @@ public class HelpPrinter {
         final HelpTextWriter writer = new HelpTextWriter();
         writer.println();
         
-        Set<String> groups = new HashSet<String>();
-        boolean filterByGroup = false; // must match at least one group
-        if (filterGroup != null && filterGroup.trim().length() >= 0) {
-            for (final DetectOption detectValue : options) {
-                for (final String printGroup : detectValue.getPrintGroups()) {
-                    if (printGroup.equalsIgnoreCase(filterGroup)) {
-                        filterByGroup = true;
-                    }
-                    groups.add(printGroup);
-                }
-            }
-        }
+        List<String> printGroups = options.stream()
+                .flatMap(it -> it.getPrintGroupsAsList().stream())
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
         
+        String groupText = printGroups.stream().collect(Collectors.joining(","));
 
-        writer.printColumns(Arrays.asList("Property Name", "Default", "Description"));
-        writer.printSeperator();
+        String notes = null;
+        List<DetectOption> filteredOptions;
         
-        String groupText = "";
-        List<String> groupList = new ArrayList<String>(groups);
-        java.util.Collections.sort(groupList);
-        for (String group : groupList) {
-            if (group.contains(" ")) continue;
-            if (!groupText.equals("")) {
-                groupText += ", ";
-            }
-            groupText += group;
+        boolean filterByGroup = printGroups.contains(filterGroup);
+        if (filterByGroup) {
+            
+            notes = "Showing help only for: " + filterGroup;
+            
+            filteredOptions = options.stream()
+                    .filter(it -> it.getPrintGroupsAsList().stream().anyMatch(printGroup -> printGroup.equalsIgnoreCase(filterGroup)))
+                    .collect(Collectors.toList());
+            
+        }else if (filterGroup.endsWith("*")) {
+            
+            String searchTerm = filterGroup.substring(0, filterGroup.length() - 1).toLowerCase();
+            notes = "Showing help only for fields that contain: " + searchTerm;
+
+            filteredOptions = options.stream()
+                    .filter(it -> it.getKey().contains(searchTerm))
+                    .collect(Collectors.toList());
+            
+        }else {
+            filteredOptions = options;
         }
         
-        if (filterByGroup) {
-            writer.println("Showing help only for: " + filterGroup);
+        
+        printOptions(writer, filteredOptions, groupText, notes);
+        
+        writer.write(printStream);
+
+    }
+    
+
+    private void printOptions(HelpTextWriter writer, List<DetectOption> options, String groupText, String notes) {
+        writer.printColumns("Property Name", "Default", "Description");
+        writer.printSeperator();
+
+        if (notes != null) {
+            writer.println(notes);
             writer.println();
         }
         
         String group = null;
-
         for (final DetectOption detectValue : options) {
             final String currentGroup = detectValue.getGroup();
-            
-            if (filterByGroup) {
-                boolean inAnyGroup = false;
-                for (final String printGroup : detectValue.getPrintGroups()) {
-                    inAnyGroup = inAnyGroup || printGroup.equalsIgnoreCase(filterGroup);
-                }
-                if (!inAnyGroup) continue;
-            }
-            
             if (group == null) {
                 group = currentGroup;
             } else if (!group.equals(currentGroup)) {
                 writer.println();
                 group = currentGroup;
             }
-
-            writer.printColumns(Arrays.asList("--" + detectValue.getKey(), detectValue.getDefaultValue(), detectValue.getDescription()));
+            writer.printColumns("--" + detectValue.getKey(), detectValue.getDefaultValue(), detectValue.getDescription());
         }
         
         writer.println();
@@ -104,10 +107,9 @@ public class HelpPrinter {
         writer.println("To print only a subset of options, you may specify one of the following printable groups with '-h [group]' or '--help [group]': ");
         writer.println("\t" + groupText);
         writer.println();        
-        writer.println("To search options, you may specify a search term followed by * '-h [term]*' or '--help [term]*': ");
+        writer.println("To search options, you may specify a search term followed by * with '-h [term]*' or '--help [term]*': ");
         writer.println();
 
-        writer.write(printStream);
     }
 
 }

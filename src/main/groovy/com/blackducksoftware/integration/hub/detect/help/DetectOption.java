@@ -23,7 +23,10 @@
  */
 package com.blackducksoftware.integration.hub.detect.help;
 
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
+import org.assertj.core.util.Arrays;
 
 public class DetectOption {
     final String key;
@@ -88,6 +91,10 @@ public class DetectOption {
 
     public String[] getPrintGroups() {
         return printGroups;
+    }
+    
+    public List<String> getPrintGroupsAsList() {
+        return Arrays.nonNullElementsIn(printGroups);
     }
 
     public String getOriginalValue() {

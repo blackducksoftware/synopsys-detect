@@ -63,7 +63,6 @@ public class DetectOptionManager {
 
     public void init() {
         final Map<String, DetectOption> detectOptionsMap = new HashMap<>();
-        detectGroups = new ArrayList<>();
 
         for (final Field field : DetectConfiguration.class.getDeclaredFields()) {
             try {
@@ -74,16 +73,12 @@ public class DetectOptionManager {
                             detectOptionsMap.put(option.key, option);
                         }
                     }
-                } else if (field.getName().startsWith("GROUP_")) {
-                    field.setAccessible(true);
-                    detectGroups.add(field.get(null).toString());
                 }
             } catch (IllegalArgumentException | IllegalAccessException e) {
                 logger.error(String.format("Could not resolve field %s: %s", field.getName(), e.getMessage()));
             }
         }
 
-        Collections.sort(detectGroups);
         detectOptions = detectOptionsMap.values().stream().sorted(new Comparator<DetectOption>() {
             @Override
             public int compare(final DetectOption o1, final DetectOption o2) {
@@ -96,6 +91,12 @@ public class DetectOptionManager {
                 }
             }
         }).collect(Collectors.toList());
+        
+        detectGroups = detectOptions.stream()
+                .map(it -> it.getGroup())
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
     }
 
     private DetectOption processField(final Object obj, final Class<?> objClz, final Field field) throws IllegalArgumentException, IllegalAccessException {

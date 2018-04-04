@@ -19,8 +19,8 @@ public class HelpTextWriter {
         pieces.add(line);
     }
     
-    public void printColumns(List<String> columns) {
-        final List<String> headerColumns = Arrays.asList("Property Name", "Default", "Description");
+    public void printColumns(String... columns) {
+        final List<String> headerColumns = Arrays.asList(columns);
         final String headerText = formatColumns(headerColumns, 51, 30, 95);
         pieces.add(headerText);
     }
