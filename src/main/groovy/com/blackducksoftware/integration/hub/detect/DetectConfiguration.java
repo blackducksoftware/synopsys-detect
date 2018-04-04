@@ -895,7 +895,7 @@ public class DetectConfiguration {
     }
 
     public Boolean getBomToolForceSearch() {
-        return bomToolForceSearch;
+        return BooleanUtils.toBoolean(bomToolForceSearch);
     }
 
     public String getBomToolSearchExclusionFile() {
@@ -1124,11 +1124,11 @@ public class DetectConfiguration {
     }
 
     public boolean getHubSignatureScannerDryRun() {
-        return hubSignatureScannerDryRun;
+        return BooleanUtils.toBoolean(hubSignatureScannerDryRun);
     }
 
     public boolean getHubSignatureScannerSnippetMode() {
-        return hubSignatureScannerSnippetMode;
+        return BooleanUtils.toBoolean(hubSignatureScannerSnippetMode);
     }
 
     public String[] getHubSignatureScannerPaths() {
