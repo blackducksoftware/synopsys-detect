@@ -75,6 +75,7 @@ import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
 public class DetectProjectManager implements SummaryResultReporter, ExitCodeReporter {
     private final Logger logger = LoggerFactory.getLogger(DetectProjectManager.class);
     private final Map<BomToolType, Result> bomToolSummaryResults = new HashMap<>();
+    private ExitCodeType bomToolSearchExitCodeType;
 
     @Autowired
     private DetectInfo detectInfo;
@@ -133,7 +134,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
                     detectProject.addAllDetectCodeLocations(codeLocations);
                     applicableBomTools.add(bomToolType);
                 } else {
-                    logger.error(String.format("Did not find any projects from %s even though it applied.", bomToolTypeString));
+                    logger.error(String.format("Did not find any code locations from %s even though it applied to %s.", bomToolTypeString, detectConfiguration.getSourcePath()));
                 }
             } catch (final Exception e) {
                 // any bom tool failure should not prevent other bom tools from running
@@ -145,7 +146,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
                 }
             }
         }
-        // TODO cleanup this code
+        
         // we have already searched the given source path for bom tools and now, if we have to, we will walk
         // the directory tree to find additional bom tools (npm might be nested beneath the source directory, for example)
         if (detectConfiguration.getBomToolApplicableSearchDepth() > 0) {
@@ -153,8 +154,11 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
             try {
                 bomToolTreeSearcher.startSearching(detectConfiguration.getBomToolSearchExclusionFile(), nestedBomTools, detectConfiguration.getSourceDirectory(), detectConfiguration.getBomToolApplicableSearchDepth());
             } catch (BomToolException e) {
-                //TODO fix exception handling
-                e.printStackTrace();
+                bomToolSearchExitCodeType = ExitCodeType.FAILURE_BOM_TOOL;
+                logger.error(e.getMessage(), e);
+            } catch (DetectUserFriendlyException e) {
+                bomToolSearchExitCodeType = e.getExitCodeType();
+                logger.error(e.getMessage(), e);
             }
             List<NestedBomToolResult> results = bomToolTreeSearcher.getResults();
             if (null != results && results.size() > 0) {
@@ -171,7 +175,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
                     List<DetectCodeLocation> codeLocations = result.getCodeLocations();
                     if (null == codeLocations || codeLocations.isEmpty()) {
                         bomToolSummaryResults.put(result.getBomToolType(), Result.FAILURE);
-                        logger.error(String.format("Did not find any projects from %s even though it applied to %s.", bomToolTypeString, applicablePath));
+                        logger.error(String.format("Did not find any code locations from %s even though it applied to %s.", bomToolTypeString, applicablePath));
                     } else {
                         bomToolSummaryResults.put(result.getBomToolType(), Result.SUCCESS);
                         detectProject.addAllDetectCodeLocations(codeLocations);
@@ -276,6 +280,9 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
             if (Result.FAILURE == entry.getValue()) {
                 return ExitCodeType.FAILURE_BOM_TOOL;
             }
+        }
+        if (null != bomToolSearchExitCodeType) {
+            return bomToolSearchExitCodeType;
         }
         return ExitCodeType.SUCCESS;
     }
