@@ -29,6 +29,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -114,8 +115,7 @@ public class BomToolTreeSearcher {
                 excludeDirectoriesPredicate = file -> {
                     boolean matches = false;
                     for (String excludedDirectory : excludedDirectories) {
-                        String name = FilenameUtils.removeExtension(file.getName());
-                        if (FilenameUtils.wildcardMatchOnSystem(name, excludedDirectory)) {
+                        if (FilenameUtils.wildcardMatchOnSystem(file.getName(), excludedDirectory)) {
                             matches = true;
                             break;
                         }
@@ -135,19 +135,23 @@ public class BomToolTreeSearcher {
     }
 
     private List<String> determineDirectoriesToExclude(final String excludedDirectoriesBomToolSearchFilePath) throws DetectUserFriendlyException {
+        if (bomToolForceSearch) {
+            return Collections.emptyList();
+        }
+        List<String> directoriesToExclude;
         try {
             File excludedDirectoriesBomToolSearchFile = new File(excludedDirectoriesBomToolSearchFilePath);
             if (excludedDirectoriesBomToolSearchFile.exists()) {
-                return Files.readAllLines(excludedDirectoriesBomToolSearchFile.toPath(), StandardCharsets.UTF_8);
+                directoriesToExclude = Files.readAllLines(excludedDirectoriesBomToolSearchFile.toPath(), StandardCharsets.UTF_8);
             } else {
                 String fileContent = ResourceUtil.getResourceAsString(BomToolTreeSearcher.class, "/excludedDirectoriesBomToolSearch.txt", StandardCharsets.UTF_8);
-                List<String> directoriesToExclude = Arrays.asList(fileContent.split("\n"));
-                logger.info("Excluding these default directories from the search");
-                directoriesToExclude.forEach(name -> logger.info(name));
-                return directoriesToExclude;
+                directoriesToExclude = Arrays.asList(fileContent.split("\n"));
             }
         } catch (IOException e) {
             throw new DetectUserFriendlyException(String.format("Could not determine the directories to exclude from the bom tool search. %s", e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
         }
+        logger.info("Excluding these directories from the bom tool search");
+        directoriesToExclude.forEach(name -> logger.info(name));
+        return directoriesToExclude;
     }
 }
