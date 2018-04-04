@@ -52,7 +52,6 @@ public class BomToolTreeSearcherTest {
         String npmPackageLockContent = ResourceUtil.getResourceAsString(BomToolTreeSearcherTest.class, "/npm/package-lock.json", StandardCharsets.UTF_8);
         sourceDirectoryWithNestedNPM = folder.newFolder();
         File npmBaseDir = new File(sourceDirectoryWithNestedNPM, "npmBaseDir");
-        npmBaseDir.mkdirs();
         File npmDirectory = new File(npmBaseDir, "npmDir");
         File subNpmDirectory = new File(npmDirectory, "subNpmDirectory");
         subNpmDirectory.mkdirs();
@@ -119,6 +118,7 @@ public class BomToolTreeSearcherTest {
         BomToolTreeSearcher bomToolTreeSearcher = new BomToolTreeSearcher(new TestLogger(), false);
 
         bomToolTreeSearcher.startSearching(null, nestedBomTools, sourceDirectoryWithNestedNPM, maximumDepth);
+        // Should not have found anything because the Npm project is deeper than 2 directories down
         assertEquals(0, bomToolTreeSearcher.getResults().size());
 
         maximumDepth = 3;
@@ -133,11 +133,13 @@ public class BomToolTreeSearcherTest {
         BomToolTreeSearcher bomToolTreeSearcher = new BomToolTreeSearcher(new TestLogger(), false);
 
         bomToolTreeSearcher.startSearching(null, nestedBomTools, sourceDirectoryWithNestedNPMInsideNodeModules, maximumDepth);
+        // Should not have found the Npm project because it is in a node_modules directory
         assertEquals(0, bomToolTreeSearcher.getResults().size());
 
         bomToolTreeSearcher = new BomToolTreeSearcher(new TestLogger(), true);
 
         bomToolTreeSearcher.startSearching(null, nestedBomTools, sourceDirectoryWithNestedNPMInsideNodeModules, maximumDepth);
+        // Should  have found the Npm project because we are now forcing the search
         assertEquals(1, bomToolTreeSearcher.getResults().size());
     }
 
