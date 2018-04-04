@@ -23,24 +23,25 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.cpan;
 
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.codehaus.plexus.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode;
 
 @Component
 public class CpanListParser {
     private final Logger logger = LoggerFactory.getLogger(CpanListParser.class);
 
-    public Map<String, NameVersionNode> parse(List<String> listText) {
+    public Map<String, NameVersionNode> parse(final List<String> listText) {
         Map<String, NameVersionNode> moduleMap = new HashMap<>();
 
-        for (String line: listText) {
+        for (String line : listText) {
             if (StringUtils.isBlank(line)) {
                 continue;
             }
@@ -56,7 +57,7 @@ public class CpanListParser {
                 nameVersionNode.setVersion(module[1].trim());
                 moduleMap.put(nameVersionNode.getName(), nameVersionNode);
             } catch (IndexOutOfBoundsException indexOutOfBoundsException) {
-                logger.debug(String.format("Failed to handle the following line:%s",line));
+                logger.debug(String.format("Failed to handle the following line:%s", line));
             }
         }
 

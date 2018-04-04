@@ -29,7 +29,7 @@ public class BomToolSearchResult {
     private final boolean applicable;
     private File searchedDirectory;
 
-    public BomToolSearchResult(final boolean applicable, File searchedDirectory) {
+    public BomToolSearchResult(final boolean applicable, final File searchedDirectory) {
         this.applicable = applicable;
         this.searchedDirectory = searchedDirectory;
     }

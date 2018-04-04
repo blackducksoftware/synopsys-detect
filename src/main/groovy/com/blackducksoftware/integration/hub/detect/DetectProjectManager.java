@@ -68,6 +68,7 @@ import com.blackducksoftware.integration.hub.detect.summary.Result;
 import com.blackducksoftware.integration.hub.detect.summary.SummaryResultReporter;
 import com.blackducksoftware.integration.hub.detect.util.BdioFileNamer;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.log.Slf4jIntLogger;
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
 
 @Component
@@ -144,14 +145,15 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
                 }
             }
         }
-
+        // TODO cleanup this code
         // we have already searched the given source path for bom tools and now, if we have to, we will walk
         // the directory tree to find additional bom tools (npm might be nested beneath the source directory, for example)
         if (detectConfiguration.getBomToolApplicableSearchDepth() > 0) {
-            BomToolTreeSearcher bomToolTreeSearcher = new BomToolTreeSearcher(detectConfiguration.getBomToolForceSearch());
+            BomToolTreeSearcher bomToolTreeSearcher = new BomToolTreeSearcher(new Slf4jIntLogger(logger), detectConfiguration.getBomToolForceSearch());
             try {
-                bomToolTreeSearcher.startSearching(nestedBomTools, detectConfiguration.getSourceDirectory(), detectConfiguration.getBomToolApplicableSearchDepth());
+                bomToolTreeSearcher.startSearching(detectConfiguration.getBomToolSearchExclusionFile(), nestedBomTools, detectConfiguration.getSourceDirectory(), detectConfiguration.getBomToolApplicableSearchDepth());
             } catch (BomToolException e) {
+                //TODO fix exception handling
                 e.printStackTrace();
             }
             List<NestedBomToolResult> results = bomToolTreeSearcher.getResults();

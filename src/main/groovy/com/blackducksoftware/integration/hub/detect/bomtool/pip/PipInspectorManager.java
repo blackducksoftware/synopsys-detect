@@ -23,18 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.pip;
 
-import com.blackducksoftware.integration.hub.detect.model.BomToolType;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
-import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
-import org.apache.commons.io.IOUtils;
-import org.codehaus.plexus.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,12 +30,23 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
+import org.codehaus.plexus.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.blackducksoftware.integration.hub.detect.model.BomToolType;
+import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
+
 @Component
 public class PipInspectorManager {
-    final Logger logger = LoggerFactory.getLogger(PipInspectorManager.class);
-
     public static final String INSPECTOR_NAME = "pip-inspector.py";
-
+    final Logger logger = LoggerFactory.getLogger(PipInspectorManager.class);
     @Autowired
     private ExecutableRunner executableRunner;
 
@@ -55,19 +54,19 @@ public class PipInspectorManager {
     private DetectFileManager detectFileManager;
 
     public File extractInspectorScript() throws IOException {
-        InputStream insptectorFileStream = getClass().getResourceAsStream(String.format("/%s" ,INSPECTOR_NAME));
+        InputStream insptectorFileStream = getClass().getResourceAsStream(String.format("/%s", INSPECTOR_NAME));
         String inpsectorScriptContents = IOUtils.toString(insptectorFileStream, StandardCharsets.UTF_8);
         File inspectorScript = detectFileManager.createFile(BomToolType.PIP, INSPECTOR_NAME);
         return detectFileManager.writeToFile(inspectorScript, inpsectorScriptContents);
     }
 
-    public  String runInspector(File sourceDirectory, String pythonPath, File inspectorScript, String projectName, String requirementsFilePath) throws ExecutableRunnerException {
+    public String runInspector(final File sourceDirectory, final String pythonPath, final File inspectorScript, final String projectName, final String requirementsFilePath) throws ExecutableRunnerException {
         List<String> inspectorArguments = new ArrayList<>();
         inspectorArguments.add(inspectorScript.getAbsolutePath());
 
         if (StringUtils.isNotBlank(requirementsFilePath)) {
             File requirementsFile = new File(requirementsFilePath);
-            inspectorArguments.add(String.format("--requirements=%s",requirementsFile.getAbsolutePath()));
+            inspectorArguments.add(String.format("--requirements=%s", requirementsFile.getAbsolutePath()));
         }
 
         if (StringUtils.isNotBlank(projectName)) {

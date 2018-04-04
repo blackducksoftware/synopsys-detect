@@ -25,11 +25,14 @@ package com.blackducksoftware.integration.hub.detect;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -56,6 +59,7 @@ import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnection;
 import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnectionBuilder;
 import com.blackducksoftware.integration.log.Slf4jIntLogger;
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
+import com.blackducksoftware.integration.util.ResourceUtil;
 
 import groovy.transform.TypeChecked;
 
@@ -455,8 +459,12 @@ public class DetectConfiguration {
     private Integer bomToolApplicableSearchDepth;
 
     @ValueDescription(description = "Force the search to continue to search to the maximum search depth.", defaultValue = "false", group = DetectConfiguration.GROUP_PATHS)
-    @Value("${detect.bom.tool.applicable.search.force:}")
+    @Value("${detect.bom.tool.search.force:}")
     private Boolean bomToolForceSearch;
+
+    @ValueDescription(description = "File containing directory names to exclude from the search. Will not search within these directories for applicable bom tools. One name per line.", group = DetectConfiguration.GROUP_PATHS)
+    @Value("${detect.bom.tool.search.exclusion.file:}")
+    private String bomToolSearchExclusionFile;
 
     @ValueDescription(description = "By default, all tools will be included. If you want to exclude specific tools, specify the ones to exclude here. Exclusion rules always win.", group = DetectConfiguration.GROUP_BOMTOOL)
     @Value("${detect.excluded.bom.tool.types:}")
@@ -888,6 +896,10 @@ public class DetectConfiguration {
 
     public Boolean getBomToolForceSearch() {
         return bomToolForceSearch;
+    }
+
+    public String getBomToolSearchExclusionFile() {
+        return bomToolSearchExclusionFile;
     }
 
     public String getExcludedBomToolTypes() {

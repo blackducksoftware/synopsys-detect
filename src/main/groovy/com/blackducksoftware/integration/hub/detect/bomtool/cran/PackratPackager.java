@@ -23,17 +23,18 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.cran;
 
-import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 
 @Component
 public class PackratPackager {
     public ExternalIdFactory externalIdFactory;
 
-    public PackratPackager(ExternalIdFactory externalIdFactory) {
+    public PackratPackager(final ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }
 
@@ -54,9 +55,9 @@ public class PackratPackager {
     }
 
     public String getVersion(final List<String> descriptionContents) {
-        for(String descriptionContent : descriptionContents) {
-            if(descriptionContent.contains("Version: ")) {
-               return  descriptionContent.replace("Version: ", "").trim();
+        for (String descriptionContent : descriptionContents) {
+            if (descriptionContent.contains("Version: ")) {
+                return descriptionContent.replace("Version: ", "").trim();
             }
         }
         return null;

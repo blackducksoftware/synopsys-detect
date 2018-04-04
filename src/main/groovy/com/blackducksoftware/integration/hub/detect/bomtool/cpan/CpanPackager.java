@@ -23,6 +23,16 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.cpan;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.codehaus.plexus.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph;
@@ -30,15 +40,6 @@ import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency;
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode;
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer;
-import org.codehaus.plexus.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 @Component
 public class CpanPackager {
@@ -50,7 +51,7 @@ public class CpanPackager {
     @Autowired
     private NameVersionNodeTransformer nameVersionNodeTransformer;
 
-    public DependencyGraph makeDependencyGraph(List<String> cpanListText, List<String> directDependenciesText) {
+    public DependencyGraph makeDependencyGraph(final List<String> cpanListText, final List<String> directDependenciesText) {
         Map<String, NameVersionNode> allModules = cpanListParser.parse(cpanListText);
         List<String> directModuleNames = getDirectModuleNames(directDependenciesText);
 
@@ -62,17 +63,17 @@ public class CpanPackager {
                 Dependency module = nameVersionNodeTransformer.addNameVersionNodeToDependencyGraph(graph, Forge.CPAN, nameVersionNode);
                 graph.addChildToRoot(module);
             } else {
-                logger.warn(String.format("Could node find resolved version for module: %s",moduleName));
+                logger.warn(String.format("Could node find resolved version for module: %s", moduleName));
             }
         }
 
         return graph;
     }
 
-    private List<String> getDirectModuleNames(List<String> directDependenciesText) {
+    private List<String> getDirectModuleNames(final List<String> directDependenciesText) {
         List<String> modules = new ArrayList<>();
         for (String line : directDependenciesText) {
-            if(StringUtils.isBlank(line)) {
+            if (StringUtils.isBlank(line)) {
                 continue;
             }
             if (line.contains("-->") || ((line.contains(" ... ") && line.contains("Configuring")))) {
@@ -81,7 +82,7 @@ public class CpanPackager {
             modules.add(line.split("~")[0].trim());
         }
 
-       return  modules;
+        return modules;
     }
 
 }
