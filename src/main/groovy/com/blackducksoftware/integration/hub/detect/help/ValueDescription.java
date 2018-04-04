@@ -39,4 +39,6 @@ public @interface ValueDescription {
     String defaultValue() default "";
 
     String group() default "";
+    
+    String[] printGroups() default {};
 }

@@ -109,6 +109,7 @@ public class DetectOptionManager {
         description = valueDescription.description();
         defaultValue = valueDescription.defaultValue();
         group = valueDescription.group();
+        String[] printGroups = valueDescription.printGroups();
         if (field.isAnnotationPresent(Value.class)) {
             final String valueKey = field.getAnnotation(Value.class).value().trim();
             key = SpringValueUtils.springKeyFromValueAnnotation(valueKey);
@@ -127,7 +128,7 @@ public class DetectOptionManager {
             resolvedValue = field.get(obj).toString();
         }
 
-        return new DetectOption(key, fieldName, originalValue, resolvedValue, description, valueType, defaultValue, group);
+        return new DetectOption(key, fieldName, originalValue, resolvedValue, description, valueType, defaultValue, group, printGroups);
     }
 
     public void applyInteractiveOptions(final List<InteractiveOption> interactiveOptions) {

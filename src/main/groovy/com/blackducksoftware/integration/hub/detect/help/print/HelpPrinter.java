@@ -26,7 +26,9 @@ package com.blackducksoftware.integration.hub.detect.help.print;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -36,19 +38,58 @@ import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 @Component
 public class HelpPrinter {
 
-    public void printHelpMessage(final PrintStream printStream, final List<DetectOption> options) {
+    public void printHelpMessage(final PrintStream printStream, final List<DetectOption> options, String filterGroup) {
         final List<String> helpMessagePieces = new ArrayList<>();
         helpMessagePieces.add("");
+        
+        Set<String> groups = new HashSet<String>();
+        boolean filterByGroup = false; // must match at least one group
+        if (filterGroup != null && filterGroup.trim().length() >= 0) {
+            for (final DetectOption detectValue : options) {
+                for (final String printGroup : detectValue.getPrintGroups()) {
+                    if (printGroup.equalsIgnoreCase(filterGroup)) {
+                        filterByGroup = true;
+                    }
+                    groups.add(printGroup);
+                }
+            }
+        }
+        
 
         final List<String> headerColumns = Arrays.asList("Property Name", "Default", "Description");
         final String headerText = formatColumns(headerColumns, 51, 30, 95);
         helpMessagePieces.add(headerText);
         helpMessagePieces.add(StringUtils.repeat('_', 175));
 
+        String groupText = "";
+        List<String> groupList = new ArrayList<String>(groups);
+        java.util.Collections.sort(groupList);
+        for (String group : groupList) {
+            if (group.contains(" ")) continue;
+            if (!groupText.equals("")) {
+                groupText += ", ";
+            }
+            groupText += group;
+        }
+        
+        if (filterByGroup) {
+            helpMessagePieces.add("Showing help only for: " + filterGroup);
+            helpMessagePieces.add("");
+        }
+        
         String group = null;
 
         for (final DetectOption detectValue : options) {
             final String currentGroup = detectValue.getGroup();
+            
+            if (filterByGroup) {
+                boolean inAnyGroup = false;
+                for (final String printGroup : detectValue.getPrintGroups()) {
+                    inAnyGroup = inAnyGroup || printGroup.equalsIgnoreCase(filterGroup);
+                }
+                if (!inAnyGroup) continue;
+            }
+            
             if (group == null) {
                 group = currentGroup;
             } else if (!group.equals(currentGroup)) {
@@ -63,6 +104,9 @@ public class HelpPrinter {
         helpMessagePieces.add("");
         helpMessagePieces.add("Usage : ");
         helpMessagePieces.add("\t--<property name>=<value>");
+        helpMessagePieces.add("");
+        helpMessagePieces.add("To print only a subset of options, you may specify one of the following printable groups with '-h [group]' or '--help [group]': ");
+        helpMessagePieces.add("\t" + groupText);
         helpMessagePieces.add("");
 
         printMessage(printStream, helpMessagePieces);

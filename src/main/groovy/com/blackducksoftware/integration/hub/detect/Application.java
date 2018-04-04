@@ -142,19 +142,30 @@ public class Application {
 
             final List<DetectOption> options = detectOptionManager.getDetectOptions();
             boolean isPrintHelp = false;
+            boolean previousWasHelp = false;
+            String helpGroup = "";
             boolean isPrintHelpDoc = false;
             boolean isInteractive = false;
             for (final String arg : applicationArguments.getSourceArgs()) {
                 if (arg.equals("-h") || arg.equals("--help")) {
                     isPrintHelp = true;
+                    previousWasHelp = true;
                 } else if (arg.equals("-hdoc") || arg.equals("--helpdocument")) {
                     isPrintHelpDoc = true;
+                    previousWasHelp = false;
                 } else if (arg.equals("-i") || arg.equals("--interactive")) {
                     isInteractive = true;
+                    previousWasHelp = false;
+                }else if (previousWasHelp) {
+                    helpGroup = arg;
+                    previousWasHelp = false;
+                }else {
+                    previousWasHelp = false;
                 }
+                
             }
             if (isPrintHelp) {
-                helpPrinter.printHelpMessage(System.out, options);
+                helpPrinter.printHelpMessage(System.out, options, helpGroup);
                 return;
             }
 

@@ -96,6 +96,15 @@ public class DetectConfiguration {
     private static final String GROUP_SBT = "sbt";
     private static final String GROUP_SIGNATURE_SCANNER = "signature scanner";
 
+    private static final String PRINT_GROUP_SIGNATURE_SCANNER = "scanner";
+    private static final String PRINT_GROUP_POLICY = "policy";
+    private static final String PRINT_GROUP_HUB = "hub";
+    private static final String PRINT_GROUP_PROXY = "proxy";
+    private static final String PRINT_GROUP_OFFLINE = "offline";
+    private static final String PRINT_GROUP_PROJECT = "project";
+    private static final String PRINT_GROUP_DEBUG = "debug";
+
+    
     @Autowired
     private ConfigurableEnvironment configurableEnvironment;
 
@@ -366,63 +375,63 @@ public class DetectConfiguration {
     @Value("${detect.cleanup.bdio.files:}")
     private Boolean cleanupBdioFiles;
 
-    @ValueDescription(description = "Test the connection to the Hub with the current configuration", defaultValue = "false", group = DetectConfiguration.GROUP_HUB_CONFIGURATION)
+    @ValueDescription(description = "Test the connection to the Hub with the current configuration", defaultValue = "false", group = DetectConfiguration.GROUP_HUB_CONFIGURATION, printGroups = {PRINT_GROUP_HUB})
     @Value("${detect.test.connection:}")
     private Boolean testConnection;
 
-    @ValueDescription(description = "Timeout for response from the hub regarding your project (i.e. risk reports and policy check). When changing this value, keep in mind the checking of policies might have to wait for a new scan to process which can take some time.", defaultValue = "300000", group = DetectConfiguration.GROUP_PROJECT_INFO)
+    @ValueDescription(description = "Timeout for response from the hub regarding your project (i.e. risk reports and policy check). When changing this value, keep in mind the checking of policies might have to wait for a new scan to process which can take some time.", defaultValue = "300000", group = DetectConfiguration.GROUP_PROJECT_INFO, printGroups = {PRINT_GROUP_PROJECT})
     @Value("${detect.api.timeout:}")
     private Long apiTimeout;
 
-    @ValueDescription(description = "URL of the Hub server", group = DetectConfiguration.GROUP_HUB_CONFIGURATION)
+    @ValueDescription(description = "URL of the Hub server", group = DetectConfiguration.GROUP_HUB_CONFIGURATION, printGroups = {PRINT_GROUP_HUB})
     @Value("${blackduck.hub.url:}")
     private String hubUrl;
 
-    @ValueDescription(description = "Time to wait for rest connections to complete", defaultValue = "120", group = DetectConfiguration.GROUP_HUB_CONFIGURATION)
+    @ValueDescription(description = "Time to wait for rest connections to complete", defaultValue = "120", group = DetectConfiguration.GROUP_HUB_CONFIGURATION, printGroups = {PRINT_GROUP_HUB})
     @Value("${blackduck.hub.timeout:}")
     private Integer hubTimeout;
 
-    @ValueDescription(description = "Hub username", group = DetectConfiguration.GROUP_HUB_CONFIGURATION)
+    @ValueDescription(description = "Hub username", group = DetectConfiguration.GROUP_HUB_CONFIGURATION, printGroups = {PRINT_GROUP_HUB})
     @Value("${blackduck.hub.username:}")
     private String hubUsername;
 
-    @ValueDescription(description = "Hub password", group = DetectConfiguration.GROUP_HUB_CONFIGURATION)
+    @ValueDescription(description = "Hub password", group = DetectConfiguration.GROUP_HUB_CONFIGURATION, printGroups = {PRINT_GROUP_HUB})
     @Value("${blackduck.hub.password:}")
     private String hubPassword;
 
-    @ValueDescription(description = "Hub API Token", group = DetectConfiguration.GROUP_HUB_CONFIGURATION)
+    @ValueDescription(description = "Hub API Token", group = DetectConfiguration.GROUP_HUB_CONFIGURATION, printGroups = {PRINT_GROUP_HUB})
     @Value("${blackduck.hub.api.token:}")
     private String hubApiToken;
 
-    @ValueDescription(description = "Proxy host", group = DetectConfiguration.GROUP_HUB_CONFIGURATION)
+    @ValueDescription(description = "Proxy host", group = DetectConfiguration.GROUP_HUB_CONFIGURATION, printGroups = {PRINT_GROUP_HUB, PRINT_GROUP_PROXY})
     @Value("${blackduck.hub.proxy.host:}")
     private String hubProxyHost;
 
-    @ValueDescription(description = "Proxy port", group = DetectConfiguration.GROUP_HUB_CONFIGURATION)
+    @ValueDescription(description = "Proxy port", group = DetectConfiguration.GROUP_HUB_CONFIGURATION, printGroups = {PRINT_GROUP_HUB, PRINT_GROUP_PROXY})
     @Value("${blackduck.hub.proxy.port:}")
     private String hubProxyPort;
 
-    @ValueDescription(description = "Proxy username", group = DetectConfiguration.GROUP_HUB_CONFIGURATION)
+    @ValueDescription(description = "Proxy username", group = DetectConfiguration.GROUP_HUB_CONFIGURATION, printGroups = {PRINT_GROUP_HUB, PRINT_GROUP_PROXY})
     @Value("${blackduck.hub.proxy.username:}")
     private String hubProxyUsername;
 
-    @ValueDescription(description = "Proxy password", group = DetectConfiguration.GROUP_HUB_CONFIGURATION)
+    @ValueDescription(description = "Proxy password", group = DetectConfiguration.GROUP_HUB_CONFIGURATION, printGroups = {PRINT_GROUP_HUB, PRINT_GROUP_PROXY})
     @Value("${blackduck.hub.proxy.password:}")
     private String hubProxyPassword;
 
-    @ValueDescription(description = "Ntlm Proxy domain", group = DetectConfiguration.GROUP_HUB_CONFIGURATION)
+    @ValueDescription(description = "Ntlm Proxy domain", group = DetectConfiguration.GROUP_HUB_CONFIGURATION, printGroups = {PRINT_GROUP_HUB, PRINT_GROUP_PROXY})
     @Value("${blackduck.hub.proxy.ntlm.domain:}")
     private String hubProxyNtlmDomain;
 
-    @ValueDescription(description = "Ntlm Proxy workstation", group = DetectConfiguration.GROUP_HUB_CONFIGURATION)
+    @ValueDescription(description = "Ntlm Proxy workstation", group = DetectConfiguration.GROUP_HUB_CONFIGURATION, printGroups = {PRINT_GROUP_HUB, PRINT_GROUP_PROXY})
     @Value("${blackduck.hub.proxy.ntlm.workstation:}")
     private String hubProxyNtlmWorkstation;
 
-    @ValueDescription(description = "If true, automatically trust the certificate for the current run of Detect only", defaultValue = "false", group = DetectConfiguration.GROUP_HUB_CONFIGURATION)
+    @ValueDescription(description = "If true, automatically trust the certificate for the current run of Detect only", defaultValue = "false", group = DetectConfiguration.GROUP_HUB_CONFIGURATION, printGroups = {PRINT_GROUP_HUB})
     @Value("${blackduck.hub.trust.cert:}")
     private Boolean hubTrustCertificate;
 
-    @ValueDescription(description = "This can disable any Hub communication - if true, Detect will not upload BDIO files, it will not check policies, and it will not download and install the signature scanner.", defaultValue = "false", group = DetectConfiguration.GROUP_HUB_CONFIGURATION)
+    @ValueDescription(description = "This can disable any Hub communication - if true, Detect will not upload BDIO files, it will not check policies, and it will not download and install the signature scanner.", defaultValue = "false", group = DetectConfiguration.GROUP_HUB_CONFIGURATION, printGroups = {PRINT_GROUP_HUB, PRINT_GROUP_OFFLINE})
     @Value("${blackduck.hub.offline.mode:}")
     private Boolean hubOfflineMode;
 
@@ -458,51 +467,51 @@ public class DetectConfiguration {
     @Value("${detect.included.bom.tool.types:}")
     private String includedBomToolTypes;
 
-    @ValueDescription(description = "An override for the name to use for the Hub project. If not supplied, detect will attempt to use the tools to figure out a reasonable project name. If that fails, the final part of the directory path where the inspection is taking place will be used.", group = DetectConfiguration.GROUP_PROJECT_INFO)
+    @ValueDescription(description = "An override for the name to use for the Hub project. If not supplied, detect will attempt to use the tools to figure out a reasonable project name. If that fails, the final part of the directory path where the inspection is taking place will be used.", group = DetectConfiguration.GROUP_PROJECT_INFO, printGroups = {PRINT_GROUP_PROJECT})
     @Value("${detect.project.name:}")
     private String projectName;
 
-    @ValueDescription(description = "An override for the version to use for the Hub project. If not supplied, detect will attempt to use the tools to figure out a reasonable version name. If that fails, the current date will be used.", group = DetectConfiguration.GROUP_PROJECT_INFO)
+    @ValueDescription(description = "An override for the version to use for the Hub project. If not supplied, detect will attempt to use the tools to figure out a reasonable version name. If that fails, the current date will be used.", group = DetectConfiguration.GROUP_PROJECT_INFO, printGroups = {PRINT_GROUP_PROJECT})
     @Value("${detect.project.version.name:}")
     private String projectVersionName;
 
-    @ValueDescription(description = "If project version notes are specified, your project version will be created with these notes.", group = DetectConfiguration.GROUP_PROJECT_INFO)
+    @ValueDescription(description = "If project version notes are specified, your project version will be created with these notes.", group = DetectConfiguration.GROUP_PROJECT_INFO, printGroups = {PRINT_GROUP_PROJECT})
     @Value("${detect.project.version.notes:}")
     private String projectVersionNotes;
 
-    @ValueDescription(description = "If a hub project tier is specified, your project will be created with this tier.", group = DetectConfiguration.GROUP_PROJECT_INFO)
+    @ValueDescription(description = "If a hub project tier is specified, your project will be created with this tier.", group = DetectConfiguration.GROUP_PROJECT_INFO, printGroups = {PRINT_GROUP_PROJECT})
     @Value("${detect.project.tier:}")
     private Integer projectTier;
 
-    @ValueDescription(description = "A prefix to the name of the codelocations created by Detect. Useful for running against the same projects on multiple machines.", defaultValue = "", group = DetectConfiguration.GROUP_PROJECT_INFO)
+    @ValueDescription(description = "A prefix to the name of the codelocations created by Detect. Useful for running against the same projects on multiple machines.", defaultValue = "", group = DetectConfiguration.GROUP_PROJECT_INFO, printGroups = {PRINT_GROUP_PROJECT})
     @Value("${detect.project.codelocation.prefix:}")
     private String projectCodeLocationPrefix;
 
-    @ValueDescription(description = "A suffix to the name of the codelocations created by Detect.", defaultValue = "", group = DetectConfiguration.GROUP_PROJECT_INFO)
+    @ValueDescription(description = "A suffix to the name of the codelocations created by Detect.", defaultValue = "", group = DetectConfiguration.GROUP_PROJECT_INFO, printGroups = {PRINT_GROUP_PROJECT})
     @Value("${detect.project.codelocation.suffix:}")
     private String projectCodeLocationSuffix;
 
-    @ValueDescription(description = "If set to true, when an old code location format is found in the Hub, instead of logging a warning, the code location will be deleted. USE WITH CAUTION - THIS CAN DELETE CODE LOCATIONS IN THE HUB.", defaultValue = "false", group = DetectConfiguration.GROUP_PROJECT_INFO)
+    @ValueDescription(description = "If set to true, when an old code location format is found in the Hub, instead of logging a warning, the code location will be deleted. USE WITH CAUTION - THIS CAN DELETE CODE LOCATIONS IN THE HUB.", defaultValue = "false", group = DetectConfiguration.GROUP_PROJECT_INFO, printGroups = {PRINT_GROUP_PROJECT})
     @Value("${detect.project.codelocation.delete.old.names:}")
     private Boolean projectCodeLocationDeleteOldNames;
 
-    @ValueDescription(description = "An override for the Project level matches.", defaultValue = "true", group = DetectConfiguration.GROUP_PROJECT_INFO)
+    @ValueDescription(description = "An override for the Project level matches.", defaultValue = "true", group = DetectConfiguration.GROUP_PROJECT_INFO, printGroups = {PRINT_GROUP_PROJECT})
     @Value("${detect.project.level.adjustments:}")
     private String projectLevelMatchAdjustments;
 
-    @ValueDescription(description = "An override for the Project Version phase.", defaultValue = "Development", group = DetectConfiguration.GROUP_PROJECT_INFO)
+    @ValueDescription(description = "An override for the Project Version phase.", defaultValue = "Development", group = DetectConfiguration.GROUP_PROJECT_INFO, printGroups = {PRINT_GROUP_PROJECT})
     @Value("${detect.project.version.phase:}")
     private String projectVersionPhase;
 
-    @ValueDescription(description = "An override for the Project Version distribution", defaultValue = "External", group = DetectConfiguration.GROUP_PROJECT_INFO)
+    @ValueDescription(description = "An override for the Project Version distribution", defaultValue = "External", group = DetectConfiguration.GROUP_PROJECT_INFO, printGroups = {PRINT_GROUP_PROJECT})
     @Value("${detect.project.version.distribution:}")
     private String projectVersionDistribution;
 
-    @ValueDescription(description = "Set to true if you would like a policy check from the hub for your project. False by default", defaultValue = "false", group = DetectConfiguration.GROUP_POLICY_CHECK)
+    @ValueDescription(description = "Set to true if you would like a policy check from the hub for your project. False by default", defaultValue = "false", group = DetectConfiguration.GROUP_POLICY_CHECK, printGroups = {PRINT_GROUP_POLICY})
     @Value("${detect.policy.check:}")
     private Boolean policyCheck;
 
-    @ValueDescription(description = "A comma-separated list of policy violation severities that will fail detect if checking policies is enabled. If no severity is provided, any policy violation will fail detect.", group = DetectConfiguration.GROUP_POLICY_CHECK)
+    @ValueDescription(description = "A comma-separated list of policy violation severities that will fail detect if checking policies is enabled. If no severity is provided, any policy violation will fail detect.", group = DetectConfiguration.GROUP_POLICY_CHECK, printGroups = {PRINT_GROUP_POLICY})
     @Value("${detect.policy.check.fail.on.severities:}")
     private String policyCheckFailOnSeverities;
 
@@ -650,51 +659,51 @@ public class DetectConfiguration {
     @Value("${detect.bash.path:}")
     private String bashPath;
 
-    @ValueDescription(description = "The logging level of Detect (ALL|TRACE|DEBUG|INFO|WARN|ERROR|FATAL|OFF)", defaultValue = "INFO", group = DetectConfiguration.GROUP_LOGGING)
+    @ValueDescription(description = "The logging level of Detect (ALL|TRACE|DEBUG|INFO|WARN|ERROR|FATAL|OFF)", defaultValue = "INFO", group = DetectConfiguration.GROUP_LOGGING, printGroups = {GROUP_LOGGING, PRINT_GROUP_DEBUG})
     @Value("${logging.level.com.blackducksoftware.integration:}")
     private String loggingLevel;
 
-    @ValueDescription(description = "Detect creates temporary files in the output directory. If set to true this will clean them up after execution", defaultValue = "true", group = DetectConfiguration.GROUP_CLEANUP)
+    @ValueDescription(description = "Detect creates temporary files in the output directory. If set to true this will clean them up after execution", defaultValue = "true", group = DetectConfiguration.GROUP_CLEANUP, printGroups = {GROUP_CLEANUP, PRINT_GROUP_DEBUG})
     @Value("${detect.cleanup.bom.tool.files:}")
     private Boolean cleanupBomToolFiles;
 
-    @ValueDescription(description = "If set to true, the signature scanner results will not be uploaded to the Hub and the scanner results will be written to disk.", defaultValue = "false", group = DetectConfiguration.GROUP_SIGNATURE_SCANNER)
+    @ValueDescription(description = "If set to true, the signature scanner results will not be uploaded to the Hub and the scanner results will be written to disk.", defaultValue = "false", group = DetectConfiguration.GROUP_SIGNATURE_SCANNER, printGroups = {PRINT_GROUP_SIGNATURE_SCANNER})
     @Value("${detect.hub.signature.scanner.dry.run:}")
     private Boolean hubSignatureScannerDryRun;
 
-    @ValueDescription(description = "If set to true, the signature scanner will, if supported by your Hub version, run in snippet scanning mode.", defaultValue = "false", group = DetectConfiguration.GROUP_SIGNATURE_SCANNER)
+    @ValueDescription(description = "If set to true, the signature scanner will, if supported by your Hub version, run in snippet scanning mode.", defaultValue = "false", group = DetectConfiguration.GROUP_SIGNATURE_SCANNER, printGroups = {PRINT_GROUP_SIGNATURE_SCANNER})
     @Value("${detect.hub.signature.scanner.snippet.mode:}")
     private Boolean hubSignatureScannerSnippetMode;
 
-    @ValueDescription(description = "Enables you to specify sub-directories to exclude from scans", group = DetectConfiguration.GROUP_SIGNATURE_SCANNER)
+    @ValueDescription(description = "Enables you to specify sub-directories to exclude from scans", group = DetectConfiguration.GROUP_SIGNATURE_SCANNER, printGroups = {PRINT_GROUP_SIGNATURE_SCANNER})
     @Value("${detect.hub.signature.scanner.exclusion.patterns:}")
     private String[] hubSignatureScannerExclusionPatterns;
 
-    @ValueDescription(description = "These paths and only these paths will be scanned.", group = DetectConfiguration.GROUP_SIGNATURE_SCANNER)
+    @ValueDescription(description = "These paths and only these paths will be scanned.", group = DetectConfiguration.GROUP_SIGNATURE_SCANNER, printGroups = {PRINT_GROUP_SIGNATURE_SCANNER})
     @Value("${detect.hub.signature.scanner.paths:}")
     private String[] hubSignatureScannerPaths;
 
-    @ValueDescription(description = "The relative paths of directories to be excluded from scan registration", group = DetectConfiguration.GROUP_SIGNATURE_SCANNER)
+    @ValueDescription(description = "The relative paths of directories to be excluded from scan registration", group = DetectConfiguration.GROUP_SIGNATURE_SCANNER, printGroups = {PRINT_GROUP_SIGNATURE_SCANNER})
     @Value("${detect.hub.signature.scanner.relative.paths.to.exclude:}")
     private String[] hubSignatureScannerRelativePathsToExclude;
 
-    @ValueDescription(description = "The memory for the scanner to use.", defaultValue = "4096", group = DetectConfiguration.GROUP_SIGNATURE_SCANNER)
+    @ValueDescription(description = "The memory for the scanner to use.", defaultValue = "4096", group = DetectConfiguration.GROUP_SIGNATURE_SCANNER, printGroups = {PRINT_GROUP_SIGNATURE_SCANNER})
     @Value("${detect.hub.signature.scanner.memory:}")
     private Integer hubSignatureScannerMemory;
 
-    @ValueDescription(description = "Set to true to disable the Hub Signature Scanner.", defaultValue = "false", group = DetectConfiguration.GROUP_SIGNATURE_SCANNER)
+    @ValueDescription(description = "Set to true to disable the Hub Signature Scanner.", defaultValue = "false", group = DetectConfiguration.GROUP_SIGNATURE_SCANNER, printGroups = {PRINT_GROUP_SIGNATURE_SCANNER, PRINT_GROUP_DEBUG})
     @Value("${detect.hub.signature.scanner.disabled:}")
     private Boolean hubSignatureScannerDisabled;
 
-    @ValueDescription(description = "To use a local signature scanner, set its location with this property. This will be the path where the signature scanner was unzipped. This will likely look similar to /some/path/scan.cli-x.y.z", group = DetectConfiguration.GROUP_SIGNATURE_SCANNER)
+    @ValueDescription(description = "To use a local signature scanner, set its location with this property. This will be the path where the signature scanner was unzipped. This will likely look similar to /some/path/scan.cli-x.y.z", group = DetectConfiguration.GROUP_SIGNATURE_SCANNER, printGroups = {PRINT_GROUP_SIGNATURE_SCANNER, PRINT_GROUP_OFFLINE})
     @Value("${detect.hub.signature.scanner.offline.local.path:}")
     private String hubSignatureScannerOfflineLocalPath;
 
-    @ValueDescription(description = "If this url is set, an attempt will be made to use it to download the signature scanner. The server url provided must respect the Hub's urls for different operating systems.", group = DetectConfiguration.GROUP_SIGNATURE_SCANNER)
+    @ValueDescription(description = "If this url is set, an attempt will be made to use it to download the signature scanner. The server url provided must respect the Hub's urls for different operating systems.", group = DetectConfiguration.GROUP_SIGNATURE_SCANNER, printGroups = {PRINT_GROUP_SIGNATURE_SCANNER})
     @Value("${detect.hub.signature.scanner.host.url:}")
     private String hubSignatureScannerHostUrl;
 
-    @ValueDescription(description = "The number of scans to run in parallel, defaults to 1, but if you specify -1, the number of processors on the machine will be used.", defaultValue = "1", group = DetectConfiguration.GROUP_SIGNATURE_SCANNER)
+    @ValueDescription(description = "The number of scans to run in parallel, defaults to 1, but if you specify -1, the number of processors on the machine will be used.", defaultValue = "1", group = DetectConfiguration.GROUP_SIGNATURE_SCANNER, printGroups = {PRINT_GROUP_SIGNATURE_SCANNER})
     @Value("${detect.hub.signature.scanner.parallel.processors:}")
     private Integer hubSignatureScannerParallelProcessors;
 
@@ -722,35 +731,35 @@ public class DetectConfiguration {
     @Value("${detect.sbt.included.configurations:}")
     private String sbtIncludedConfigurationNames;
 
-    @ValueDescription(description = "The scheme to use when the package managers can not determine a version, either 'text' or 'timestamp'", defaultValue = "text", group = DetectConfiguration.GROUP_PROJECT_INFO)
+    @ValueDescription(description = "The scheme to use when the package managers can not determine a version, either 'text' or 'timestamp'", defaultValue = "text", group = DetectConfiguration.GROUP_PROJECT_INFO, printGroups = {PRINT_GROUP_PROJECT})
     @Value("${detect.default.project.version.scheme:}")
     private String defaultProjectVersionScheme;
 
-    @ValueDescription(description = "The text to use as the default project version", defaultValue = "Detect Unknown Version", group = DetectConfiguration.GROUP_PROJECT_INFO)
+    @ValueDescription(description = "The text to use as the default project version", defaultValue = "Detect Unknown Version", group = DetectConfiguration.GROUP_PROJECT_INFO, printGroups = {PRINT_GROUP_PROJECT})
     @Value("${detect.default.project.version.text:}")
     private String defaultProjectVersionText;
 
-    @ValueDescription(description = "The timestamp format to use as the default project version", defaultValue = "yyyy-MM-dd\'T\'HH:mm:ss.SSS", group = DetectConfiguration.GROUP_PROJECT_INFO)
+    @ValueDescription(description = "The timestamp format to use as the default project version", defaultValue = "yyyy-MM-dd\'T\'HH:mm:ss.SSS", group = DetectConfiguration.GROUP_PROJECT_INFO, printGroups = {PRINT_GROUP_PROJECT})
     @Value("${detect.default.project.version.timeformat:}")
     private String defaultProjectVersionTimeformat;
 
-    @ValueDescription(description = "If set, this will aggregate all the BOMs to create a single BDIO file with the name provided. For Co-Pilot use only", group = DetectConfiguration.GROUP_PROJECT_INFO)
+    @ValueDescription(description = "If set, this will aggregate all the BOMs to create a single BDIO file with the name provided. For Co-Pilot use only", group = DetectConfiguration.GROUP_PROJECT_INFO, printGroups = {PRINT_GROUP_PROJECT})
     @Value("${detect.bom.aggregate.name:}")
     private String aggregateBomName;
 
-    @ValueDescription(description = "When set to true, a Black Duck risk report in PDF form will be created", defaultValue = "false", group = DetectConfiguration.GROUP_PROJECT_INFO)
+    @ValueDescription(description = "When set to true, a Black Duck risk report in PDF form will be created", defaultValue = "false", group = DetectConfiguration.GROUP_PROJECT_INFO, printGroups = {PRINT_GROUP_PROJECT})
     @Value("${detect.risk.report.pdf:}")
     private Boolean riskReportPdf;
 
-    @ValueDescription(description = "The output directory for risk report in PDF. Default is the source directory", defaultValue = ".", group = DetectConfiguration.GROUP_PROJECT_INFO)
+    @ValueDescription(description = "The output directory for risk report in PDF. Default is the source directory", defaultValue = ".", group = DetectConfiguration.GROUP_PROJECT_INFO, printGroups = {PRINT_GROUP_PROJECT})
     @Value("${detect.risk.report.pdf.path:}")
     private String riskReportPdfOutputDirectory;
 
-    @ValueDescription(description = "When set to true, a Black Duck notices report in text form will be created in your source directory", defaultValue = "false", group = DetectConfiguration.GROUP_PROJECT_INFO)
+    @ValueDescription(description = "When set to true, a Black Duck notices report in text form will be created in your source directory", defaultValue = "false", group = DetectConfiguration.GROUP_PROJECT_INFO, printGroups = {PRINT_GROUP_PROJECT})
     @Value("${detect.notices.report:}")
     private Boolean noticesReport;
 
-    @ValueDescription(description = "The output directory for notices report. Default is the source directory", defaultValue = ".", group = DetectConfiguration.GROUP_PROJECT_INFO)
+    @ValueDescription(description = "The output directory for notices report. Default is the source directory", defaultValue = ".", group = DetectConfiguration.GROUP_PROJECT_INFO, printGroups = {PRINT_GROUP_PROJECT})
     @Value("${detect.notices.report.path:}")
     private String noticesReportOutputDirectory;
 

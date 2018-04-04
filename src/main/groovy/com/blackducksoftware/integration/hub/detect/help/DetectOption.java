@@ -23,18 +23,22 @@
  */
 package com.blackducksoftware.integration.hub.detect.help;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class DetectOption {
     final String key;
     final String fieldName;
     final String description;
     final Class<?> valueType;
     final String group;
+    final String[] printGroups;
     final String originalValue;
     final String defaultValue;
     final String resolvedValue;
     public String interactiveValue = null;
 
-    public DetectOption(final String key, final String fieldName, final String originalValue, final String resolvedValue, final String description, final Class<?> valueType, final String defaultValue, final String group) {
+    public DetectOption(final String key, final String fieldName, final String originalValue, final String resolvedValue, final String description, final Class<?> valueType, final String defaultValue, final String group,
+            final String[] printGroups) {
         this.key = key;
         this.description = description;
         this.valueType = valueType;
@@ -43,6 +47,15 @@ public class DetectOption {
         this.fieldName = fieldName;
         this.originalValue = originalValue;
         this.resolvedValue = resolvedValue;
+        if (printGroups.length > 0) {
+            this.printGroups = printGroups;
+        } else {
+            if (StringUtils.isNotBlank(group)) {
+                this.printGroups = new String[] { group };
+            } else {
+                this.printGroups = new String[] {};
+            }
+        }
     }
 
     public String getInteractiveValue() {
@@ -71,6 +84,10 @@ public class DetectOption {
 
     public String getGroup() {
         return group;
+    }
+
+    public String[] getPrintGroups() {
+        return printGroups;
     }
 
     public String getOriginalValue() {
