@@ -1,6 +1,10 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.search;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Set;
 
 import org.junit.Before;
@@ -15,6 +19,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.blackducksoftware.integration.hub.detect.Application;
 import com.blackducksoftware.integration.hub.detect.bomtool.NestedBomTool;
 import com.blackducksoftware.integration.test.TestLogger;
+import com.blackducksoftware.integration.util.ResourceUtil;
 
 @ContextConfiguration(classes = { Application.class })
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -34,30 +39,55 @@ public class BomToolTreeSearcherTest {
     @Before
     public void setupSearchStructure() throws Exception {
         sourceDirectoryWithMultipleYarn = folder.newFolder();
-        File baseYarnLock = new File(sourceDirectoryWithMultipleYarn, "yarn.lock");
-        File yarnDirectory = new File(sourceDirectoryWithMultipleYarn, "yarnDir");
+        File yarnBaseDir = new File(sourceDirectoryWithMultipleYarn, "yarnBaseDir");
+        yarnBaseDir.mkdirs();
+        String yarnLockContent = ResourceUtil.getResourceAsString(BomToolTreeSearcherTest.class, "/yarn/yarn.lock", StandardCharsets.UTF_8);
+        File baseYarnLock = new File(yarnBaseDir, "yarn.lock");
+        Files.write(baseYarnLock.toPath(), yarnLockContent.getBytes(StandardCharsets.UTF_8));
+        File yarnDirectory = new File(yarnBaseDir, "yarnDir");
         yarnDirectory.mkdirs();
         File subYarnLock = new File(yarnDirectory, "yarn.lock");
+        Files.write(subYarnLock.toPath(), yarnLockContent.getBytes(StandardCharsets.UTF_8));
 
+        String npmPackageLockContent = ResourceUtil.getResourceAsString(BomToolTreeSearcherTest.class, "/npm/package-lock.json", StandardCharsets.UTF_8);
         sourceDirectoryWithNestedNPM = folder.newFolder();
-        File npmDirectory = new File(sourceDirectoryWithNestedNPM, "npmDir");
+        File npmBaseDir = new File(sourceDirectoryWithNestedNPM, "npmBaseDir");
+        npmBaseDir.mkdirs();
+        File npmDirectory = new File(npmBaseDir, "npmDir");
         File subNpmDirectory = new File(npmDirectory, "subNpmDirectory");
         subNpmDirectory.mkdirs();
         File npmPackageLock = new File(subNpmDirectory, "package-lock.json");
+        Files.write(npmPackageLock.toPath(), npmPackageLockContent.getBytes(StandardCharsets.UTF_8));
 
         sourceDirectoryWithNestedNPMInsideNodeModules = folder.newFolder();
-        File nodeModulesDirectory = new File(sourceDirectoryWithNestedNPMInsideNodeModules, "node_modules");
+        File npmBaseWithNodeModulesDir = new File(sourceDirectoryWithNestedNPMInsideNodeModules, "npmBaseDir");
+        npmBaseWithNodeModulesDir.mkdirs();
+        File nodeModulesDirectory = new File(npmBaseWithNodeModulesDir, "node_modules");
         nodeModulesDirectory.mkdirs();
         File nodeModulesNpmPackageLock = new File(nodeModulesDirectory, "package-lock.json");
+        Files.write(nodeModulesNpmPackageLock.toPath(), npmPackageLockContent.getBytes(StandardCharsets.UTF_8));
     }
 
     @Test
-    public void testSearchBomToolSearchYarn() throws Exception {
+    public void testSearchBomToolSearchYarnNoDepth() throws Exception {
         final int maximumDepth = 0;
 
         BomToolTreeSearcher bomToolTreeSearcher = new BomToolTreeSearcher(new TestLogger(), false);
 
-        bomToolTreeSearcher.startSearching(null, nestedBomTools, sourceDirectoryWithMultipleYarn, 0);
+        bomToolTreeSearcher.startSearching(null, nestedBomTools, sourceDirectoryWithMultipleYarn, maximumDepth);
+
+        assertEquals(0, bomToolTreeSearcher.getResults().size());
+    }
+
+    @Test
+    public void testSearchBomToolSearchYarnDepth1() throws Exception {
+        final int maximumDepth = 1;
+
+        BomToolTreeSearcher bomToolTreeSearcher = new BomToolTreeSearcher(new TestLogger(), false);
+
+        bomToolTreeSearcher.startSearching(null, nestedBomTools, sourceDirectoryWithMultipleYarn, maximumDepth);
+
+        assertEquals(2, bomToolTreeSearcher.getResults().size());
     }
 
 }

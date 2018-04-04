@@ -156,7 +156,7 @@ public class BomToolTreeSearcher {
             throw new DetectUserFriendlyException(String.format("Could not determine the directories to exclude from the bom tool search. %s", e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
         }
         logger.debug("Excluding these directories from the bom tool search");
-        directoriesToExclude.forEach(name -> logger.info(name));
+        directoriesToExclude.forEach(name -> logger.debug(name));
         return directoriesToExclude;
     }
 }
