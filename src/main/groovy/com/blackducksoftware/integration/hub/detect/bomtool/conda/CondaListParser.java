@@ -47,7 +47,7 @@ public class CondaListParser {
     @Autowired
     private ExternalIdFactory externalIdFactory;
 
-    public DependencyGraph parse(String listJsonText, String infoJsonText) {
+    public DependencyGraph parse(final String listJsonText, final String infoJsonText) {
         final Type listType = new TypeToken<ArrayList<CondaListElement>>() {}.getType();
         final List<CondaListElement> condaList = gson.fromJson(listJsonText, listType);
         final CondaInfo condaInfo = gson.fromJson(infoJsonText, CondaInfo.class);
@@ -62,7 +62,7 @@ public class CondaListParser {
         return graph;
     }
 
-    public Dependency condaListElementToDependency(String platform, CondaListElement element) {
+    public Dependency condaListElementToDependency(final String platform, final CondaListElement element) {
         String name = element.getName();
         String version = String.format("%s-%s-%s",element.getVersion(),element.getBuildString(),platform);
         ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.ANACONDA, name, version);

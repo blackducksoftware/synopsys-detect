@@ -32,7 +32,7 @@ public class InteractiveOption {
 		return fieldName;
 	}
 
-	public void setFieldName(String fieldName) {
+	public void setFieldName(final String fieldName) {
 		this.fieldName = fieldName;
 	}
 
@@ -40,7 +40,7 @@ public class InteractiveOption {
 		return springKey;
 	}
 
-	public void setSpringKey(String springKey) {
+	public void setSpringKey(final String springKey) {
 		this.springKey = springKey;
 	}
 
@@ -48,7 +48,7 @@ public class InteractiveOption {
 		return interactiveValue;
 	}
 
-	public void setInteractiveValue(String interactiveValue) {
+	public void setInteractiveValue(final String interactiveValue) {
 		this.interactiveValue = interactiveValue;
 	}
 

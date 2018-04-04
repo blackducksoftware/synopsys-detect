@@ -33,7 +33,7 @@ import java.util.List;
 public class PackratPackager {
     public ExternalIdFactory externalIdFactory;
 
-    public PackratPackager(ExternalIdFactory externalIdFactory) {
+    public PackratPackager(final ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }
 

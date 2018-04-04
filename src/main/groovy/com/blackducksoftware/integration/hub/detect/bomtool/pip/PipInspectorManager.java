@@ -44,10 +44,8 @@ import java.util.List;
 
 @Component
 public class PipInspectorManager {
-    final Logger logger = LoggerFactory.getLogger(PipInspectorManager.class);
-
     public static final String INSPECTOR_NAME = "pip-inspector.py";
-
+    final Logger logger = LoggerFactory.getLogger(PipInspectorManager.class);
     @Autowired
     private ExecutableRunner executableRunner;
 
@@ -61,7 +59,7 @@ public class PipInspectorManager {
         return detectFileManager.writeToFile(inspectorScript, inpsectorScriptContents);
     }
 
-    public  String runInspector(File sourceDirectory, String pythonPath, File inspectorScript, String projectName, String requirementsFilePath) throws ExecutableRunnerException {
+    public  String runInspector(final File sourceDirectory, final String pythonPath, final File inspectorScript, final String projectName, final String requirementsFilePath) throws ExecutableRunnerException {
         List<String> inspectorArguments = new ArrayList<>();
         inspectorArguments.add(inspectorScript.getAbsolutePath());
 

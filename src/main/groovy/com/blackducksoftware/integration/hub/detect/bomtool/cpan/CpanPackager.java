@@ -50,7 +50,7 @@ public class CpanPackager {
     @Autowired
     private NameVersionNodeTransformer nameVersionNodeTransformer;
 
-    public DependencyGraph makeDependencyGraph(List<String> cpanListText, List<String> directDependenciesText) {
+    public DependencyGraph makeDependencyGraph(final List<String> cpanListText, final List<String> directDependenciesText) {
         Map<String, NameVersionNode> allModules = cpanListParser.parse(cpanListText);
         List<String> directModuleNames = getDirectModuleNames(directDependenciesText);
 
@@ -69,7 +69,7 @@ public class CpanPackager {
         return graph;
     }
 
-    private List<String> getDirectModuleNames(List<String> directDependenciesText) {
+    private List<String> getDirectModuleNames(final List<String> directDependenciesText) {
         List<String> modules = new ArrayList<>();
         for (String line : directDependenciesText) {
             if(StringUtils.isBlank(line)) {

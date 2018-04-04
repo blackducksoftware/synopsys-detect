@@ -37,7 +37,7 @@ import java.util.Map;
 public class CpanListParser {
     private final Logger logger = LoggerFactory.getLogger(CpanListParser.class);
 
-    public Map<String, NameVersionNode> parse(List<String> listText) {
+    public Map<String, NameVersionNode> parse(final List<String> listText) {
         Map<String, NameVersionNode> moduleMap = new HashMap<>();
 
         for (String line: listText) {

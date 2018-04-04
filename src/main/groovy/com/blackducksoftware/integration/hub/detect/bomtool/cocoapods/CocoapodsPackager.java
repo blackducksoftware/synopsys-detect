@@ -93,7 +93,7 @@ public class CocoapodsPackager {
         return graph;
     }
 
-    private NameVersionNode buildNameVersionNode(SubcomponentNodeBuilder builder, Pod pod) {
+    private NameVersionNode buildNameVersionNode(final SubcomponentNodeBuilder builder, final Pod pod) {
         NameVersionNode nameVersionNode = new NameVersionNode();
         nameVersionNode.setName(cleanPodName(pod.getName()));
         pod.setCleanName(nameVersionNode.getName());
@@ -130,7 +130,7 @@ public class CocoapodsPackager {
         return nameVersionNode;
     }
 
-    private SubcomponentMetadata createMetadata(NameVersionNodeBuilder builder, String name) {
+    private SubcomponentMetadata createMetadata(final NameVersionNodeBuilder builder, final String name) {
         SubcomponentMetadata metadata = (SubcomponentMetadata) builder.getNodeMetadata(cleanPodName(name));
         if (null == metadata) {
             metadata = new SubcomponentMetadata();
@@ -149,7 +149,7 @@ public class CocoapodsPackager {
         return false;
     }
 
-    private String cleanPodName(String rawPodName) {
+    private String cleanPodName(final String rawPodName) {
         if(StringUtils.isNotBlank(rawPodName)) {
             return rawPodName.split(" ")[0].trim();
         }
