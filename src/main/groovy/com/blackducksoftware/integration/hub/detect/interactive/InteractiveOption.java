@@ -24,32 +24,32 @@
 package com.blackducksoftware.integration.hub.detect.interactive;
 
 public class InteractiveOption {
-	private String fieldName;
-	private String springKey;
-	private String interactiveValue;
+    private String fieldName;
+    private String springKey;
+    private String interactiveValue;
 
-	public String getFieldName() {
-		return fieldName;
-	}
+    public String getFieldName() {
+        return fieldName;
+    }
 
-	public void setFieldName(final String fieldName) {
-		this.fieldName = fieldName;
-	}
+    public void setFieldName(final String fieldName) {
+        this.fieldName = fieldName;
+    }
 
-	public String getSpringKey() {
-		return springKey;
-	}
+    public String getSpringKey() {
+        return springKey;
+    }
 
-	public void setSpringKey(final String springKey) {
-		this.springKey = springKey;
-	}
+    public void setSpringKey(final String springKey) {
+        this.springKey = springKey;
+    }
 
-	public String getInteractiveValue() {
-		return interactiveValue;
-	}
+    public String getInteractiveValue() {
+        return interactiveValue;
+    }
 
-	public void setInteractiveValue(final String interactiveValue) {
-		this.interactiveValue = interactiveValue;
-	}
+    public void setInteractiveValue(final String interactiveValue) {
+        this.interactiveValue = interactiveValue;
+    }
 
 }
