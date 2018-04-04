@@ -68,14 +68,12 @@ public class CocoapodsPackager {
         for (Pod pod : podfileLock.getPods()) {
             buildNameVersionNode(builder, pod);
         }
-        ;
 
         for (Pod dependency : podfileLock.getDependencies()) {
             NameVersionNode child = new NameVersionNode();
             child.setName(cleanPodName(dependency.getName()));
             builder.addChildNodeToParent(child, root);
         }
-        ;
 
         if (null != podfileLock.getExternalSources() && !podfileLock.getExternalSources().getSources().isEmpty()) {
             for (PodSource podSource : podfileLock.getExternalSources().getSources()) {
