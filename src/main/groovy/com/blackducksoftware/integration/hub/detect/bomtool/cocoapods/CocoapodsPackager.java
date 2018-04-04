@@ -23,6 +23,16 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.cocoapods;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+
+import org.codehaus.plexus.util.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph;
@@ -36,12 +46,6 @@ import com.blackducksoftware.integration.hub.detect.nameversion.builder.NameVers
 import com.blackducksoftware.integration.hub.detect.nameversion.builder.SubcomponentNodeBuilder;
 import com.blackducksoftware.integration.hub.detect.nameversion.metadata.SubcomponentMetadata;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
-import org.codehaus.plexus.util.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import java.io.IOException;
-import java.util.*;
 
 @Component
 public class CocoapodsPackager {
@@ -63,16 +67,16 @@ public class CocoapodsPackager {
 
         for (Pod pod : podfileLock.getPods()) {
             buildNameVersionNode(builder, pod);
-        };
+        }
 
         for (Pod dependency : podfileLock.getDependencies()) {
             NameVersionNode child = new NameVersionNode();
             child.setName(cleanPodName(dependency.getName()));
             builder.addChildNodeToParent(child, root);
-        };
+        }
 
-        if(null != podfileLock.getExternalSources() && !podfileLock.getExternalSources().getSources().isEmpty()){
-            for(PodSource podSource : podfileLock.getExternalSources().getSources()) {
+        if (null != podfileLock.getExternalSources() && !podfileLock.getExternalSources().getSources().isEmpty()) {
+            for (PodSource podSource : podfileLock.getExternalSources().getSources()) {
                 NodeMetadata nodeMetadata = createMetadata(builder, podSource.getName());
                 if (null != podSource.getGit() && podSource.getGit().contains("github")) {
                     // Change the forge to GitHub when there is better KB support
@@ -85,7 +89,7 @@ public class CocoapodsPackager {
 
         MutableDependencyGraph graph = new MutableMapDependencyGraph();
 
-        for(NameVersionNode nameVersionNode : builder.build().getChildren()) {
+        for (NameVersionNode nameVersionNode : builder.build().getChildren()) {
             Dependency childDependency = nameVersionNodeTransformer.addNameVersionNodeToDependencyGraph(graph, Forge.COCOAPODS, nameVersionNode);
             graph.addChildToRoot(childDependency);
         }
@@ -100,12 +104,12 @@ public class CocoapodsPackager {
         String[] segments = pod.getName().split(" ");
         if (segments.length > 1) {
             String version = segments[1];
-            version = version.replace("(","").replace(")","").trim();
+            version = version.replace("(", "").replace(")", "").trim();
             if (!isVersionFuzzy(version)) {
                 nameVersionNode.setVersion(version);
             }
         }
-        for(String dependency : pod.getDependencies()) {
+        for (String dependency : pod.getDependencies()) {
             builder.addChildNodeToParent(buildNameVersionNode(builder, new Pod(dependency)), nameVersionNode);
         }
 
@@ -141,8 +145,8 @@ public class CocoapodsPackager {
     }
 
     private boolean isVersionFuzzy(final String versionName) {
-        for (String identifier: fuzzyVersionIdentifiers) {
-            if(versionName.contains(identifier)) {
+        for (String identifier : fuzzyVersionIdentifiers) {
+            if (versionName.contains(identifier)) {
                 return true;
             }
         }
@@ -150,7 +154,7 @@ public class CocoapodsPackager {
     }
 
     private String cleanPodName(final String rawPodName) {
-        if(StringUtils.isNotBlank(rawPodName)) {
+        if (StringUtils.isNotBlank(rawPodName)) {
             return rawPodName.split(" ")[0].trim();
         }
         return null;
