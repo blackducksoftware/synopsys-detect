@@ -220,9 +220,10 @@ public class Application implements ApplicationRunner {
         if (detectConfiguration.getForceSuccess() && exitCodeType.getExitCode() != 0) {
             logger.warn("Forcing success: Exiting with 0. Desired exit code was ${exitCodeType.getExitCode()}.");
             System.exit(0);
-        } else {
-            System.exit(exitCodeType.getExitCode());
+        } else if (exitCodeType.getExitCode() != 0) {
+            logger.error(String.format("Exiting with code %s - %s", exitCodeType.getExitCode(), exitCodeType.toString()));
         }
+        System.exit(exitCodeType.getExitCode());
     }
 
     private InteractiveReader createInteractiveReader() {
