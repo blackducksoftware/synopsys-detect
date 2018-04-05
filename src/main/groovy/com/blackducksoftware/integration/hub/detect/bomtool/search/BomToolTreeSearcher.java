@@ -39,7 +39,9 @@ import java.util.stream.Collectors;
 import org.apache.commons.io.FilenameUtils;
 import org.codehaus.plexus.util.StringUtils;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.blackducksoftware.integration.hub.detect.DetectProjectManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.NestedBomTool;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
@@ -49,21 +51,25 @@ import com.blackducksoftware.integration.log.IntLogger;
 import com.blackducksoftware.integration.util.ResourceUtil;
 
 public class BomToolTreeSearcher {
-    private final IntLogger logger;
+    private final Logger logger = LoggerFactory.getLogger(BomToolTreeSearcher.class);
+
+    private final File excludedDirectoriesBomToolSearchFile;
     private final Boolean bomToolForceSearch;
+    private final int maximumDepth;
 
     private List<NestedBomToolResult> results = new ArrayList<>();
 
-    public BomToolTreeSearcher(final IntLogger logger, final Boolean bomToolForceSearch) {
-        this.logger = logger;
+    public BomToolTreeSearcher(final File excludedDirectoriesBomToolSearchFile, final Boolean bomToolForceSearch, final int maximumDepth) {
+        this.excludedDirectoriesBomToolSearchFile = excludedDirectoriesBomToolSearchFile;
         this.bomToolForceSearch = bomToolForceSearch;
+        this.maximumDepth = maximumDepth;
     }
 
     public List<NestedBomToolResult> getResults() {
         return results;
     }
 
-    public void startSearching(final File excludedDirectoriesBomToolSearchFile, final Set<NestedBomTool> nestedBomTools, final File initialDirectory, final int maximumDepth) throws BomToolException, DetectUserFriendlyException {
+    public void startSearching(final Set<NestedBomTool> nestedBomTools, final File initialDirectory) throws BomToolException, DetectUserFriendlyException {
         List<String> excludedDirectories = determineDirectoriesToExclude(excludedDirectoriesBomToolSearchFile);
         List<File> subDirectories = getSubDirectories(initialDirectory, excludedDirectories);
         searchDirectories(results, excludedDirectories, nestedBomTools, subDirectories, 1, maximumDepth);
@@ -99,7 +105,7 @@ public class BomToolTreeSearcher {
         }
     }
 
-    private boolean shouldStopSearchingIfApplicable(NestedBomTool nestedBomTool) {
+    private boolean shouldStopSearchingIfApplicable(final NestedBomTool nestedBomTool) {
         if (bomToolForceSearch) {
             return false;
         }

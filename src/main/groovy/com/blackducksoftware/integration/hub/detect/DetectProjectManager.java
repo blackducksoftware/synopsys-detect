@@ -110,6 +110,9 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     @Autowired
     private DetectPhoneHomeManager detectPhoneHomeManager;
 
+    @Autowired
+    private BomToolTreeSearcher bomToolTreeSearcher;
+
     private boolean foundAnyBomTools;
 
     public DetectProject createDetectProject() throws IntegrationException {
@@ -150,16 +153,9 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         // we have already searched the given source path for bom tools and now, if we have to, we will walk
         // the directory tree to find additional bom tools (npm might be nested beneath the source directory, for example)
         if (detectConfiguration.getBomToolApplicableSearchDepth() > 0) {
-            BomToolTreeSearcher bomToolTreeSearcher = new BomToolTreeSearcher(new Slf4jIntLogger(logger), detectConfiguration.getBomToolForceSearch());
             try {
-                File exclusionFile = null;
-                String exclusionFilePath = detectConfiguration.getBomToolSearchExclusionFile();
-                if (StringUtils.isNotBlank(exclusionFilePath)) {
-                    exclusionFile = new File(exclusionFilePath);
-                }
                 File initialDirectory = detectConfiguration.getSourceDirectory();
-                int searchDepth = detectConfiguration.getBomToolApplicableSearchDepth();
-                bomToolTreeSearcher.startSearching(exclusionFile, nestedBomTools, initialDirectory, searchDepth);
+                bomToolTreeSearcher.startSearching(nestedBomTools, initialDirectory);
             } catch (BomToolException e) {
                 bomToolSearchExitCodeType = ExitCodeType.FAILURE_BOM_TOOL;
                 logger.error(e.getMessage(), e);

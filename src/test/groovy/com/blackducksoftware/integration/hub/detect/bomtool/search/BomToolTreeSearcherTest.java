@@ -71,9 +71,9 @@ public class BomToolTreeSearcherTest {
     public void testSearchBomToolSearchYarnNoDepth() throws Exception {
         final int maximumDepth = 0;
 
-        BomToolTreeSearcher bomToolTreeSearcher = new BomToolTreeSearcher(new TestLogger(), false);
+        BomToolTreeSearcher bomToolTreeSearcher = new BomToolTreeSearcher(null, false, maximumDepth);
 
-        bomToolTreeSearcher.startSearching(null, nestedBomTools, sourceDirectoryWithMultipleYarn, maximumDepth);
+        bomToolTreeSearcher.startSearching(nestedBomTools, sourceDirectoryWithMultipleYarn);
 
         assertEquals(0, bomToolTreeSearcher.getResults().size());
     }
@@ -82,9 +82,9 @@ public class BomToolTreeSearcherTest {
     public void testSearchBomToolSearchYarnDepth1() throws Exception {
         final int maximumDepth = 1;
 
-        BomToolTreeSearcher bomToolTreeSearcher = new BomToolTreeSearcher(new TestLogger(), false);
+        BomToolTreeSearcher bomToolTreeSearcher = new BomToolTreeSearcher(null, false, maximumDepth);
 
-        bomToolTreeSearcher.startSearching(null, nestedBomTools, sourceDirectoryWithMultipleYarn, maximumDepth);
+        bomToolTreeSearcher.startSearching(nestedBomTools, sourceDirectoryWithMultipleYarn);
 
         assertEquals(1, bomToolTreeSearcher.getResults().size());
     }
@@ -93,9 +93,9 @@ public class BomToolTreeSearcherTest {
     public void testSearchBomToolSearchYarnDepth2() throws Exception {
         final int maximumDepth = 2;
 
-        BomToolTreeSearcher bomToolTreeSearcher = new BomToolTreeSearcher(new TestLogger(), false);
+        BomToolTreeSearcher bomToolTreeSearcher = new BomToolTreeSearcher(null, false, maximumDepth);
 
-        bomToolTreeSearcher.startSearching(null, nestedBomTools, sourceDirectoryWithMultipleYarn, maximumDepth);
+        bomToolTreeSearcher.startSearching(nestedBomTools, sourceDirectoryWithMultipleYarn);
         // Should have only found one because the yarn projects are nested
         assertEquals(1, bomToolTreeSearcher.getResults().size());
     }
@@ -104,9 +104,9 @@ public class BomToolTreeSearcherTest {
     public void testSearchBomToolSearchYarnDepth2Forced() throws Exception {
         final int maximumDepth = 2;
 
-        BomToolTreeSearcher bomToolTreeSearcher = new BomToolTreeSearcher(new TestLogger(), true);
+        BomToolTreeSearcher bomToolTreeSearcher = new BomToolTreeSearcher(null, true, maximumDepth);
 
-        bomToolTreeSearcher.startSearching(null, nestedBomTools, sourceDirectoryWithMultipleYarn, maximumDepth);
+        bomToolTreeSearcher.startSearching(nestedBomTools, sourceDirectoryWithMultipleYarn);
 
         assertEquals(2, bomToolTreeSearcher.getResults().size());
     }
@@ -115,14 +115,15 @@ public class BomToolTreeSearcherTest {
     public void testSearchBomToolSearchNpm() throws Exception {
         int maximumDepth = 2;
 
-        BomToolTreeSearcher bomToolTreeSearcher = new BomToolTreeSearcher(new TestLogger(), false);
+        BomToolTreeSearcher bomToolTreeSearcher = new BomToolTreeSearcher(null, false, maximumDepth);
 
-        bomToolTreeSearcher.startSearching(null, nestedBomTools, sourceDirectoryWithNestedNPM, maximumDepth);
+        bomToolTreeSearcher.startSearching(nestedBomTools, sourceDirectoryWithNestedNPM);
         // Should not have found anything because the Npm project is deeper than 2 directories down
         assertEquals(0, bomToolTreeSearcher.getResults().size());
 
         maximumDepth = 3;
-        bomToolTreeSearcher.startSearching(null, nestedBomTools, sourceDirectoryWithNestedNPM, maximumDepth);
+        bomToolTreeSearcher = new BomToolTreeSearcher(null, false, maximumDepth);
+        bomToolTreeSearcher.startSearching(nestedBomTools, sourceDirectoryWithNestedNPM);
         assertEquals(1, bomToolTreeSearcher.getResults().size());
     }
 
@@ -130,15 +131,15 @@ public class BomToolTreeSearcherTest {
     public void testSearchBomToolSearchNpmWithinNodeModules() throws Exception {
         final int maximumDepth = 2;
 
-        BomToolTreeSearcher bomToolTreeSearcher = new BomToolTreeSearcher(new TestLogger(), false);
+        BomToolTreeSearcher bomToolTreeSearcher = new BomToolTreeSearcher(null, false, maximumDepth);
 
-        bomToolTreeSearcher.startSearching(null, nestedBomTools, sourceDirectoryWithNestedNPMInsideNodeModules, maximumDepth);
+        bomToolTreeSearcher.startSearching( nestedBomTools, sourceDirectoryWithNestedNPMInsideNodeModules);
         // Should not have found the Npm project because it is in a node_modules directory
         assertEquals(0, bomToolTreeSearcher.getResults().size());
 
-        bomToolTreeSearcher = new BomToolTreeSearcher(new TestLogger(), true);
+        bomToolTreeSearcher = new BomToolTreeSearcher(null, true, maximumDepth);
 
-        bomToolTreeSearcher.startSearching(null, nestedBomTools, sourceDirectoryWithNestedNPMInsideNodeModules, maximumDepth);
+        bomToolTreeSearcher.startSearching( nestedBomTools, sourceDirectoryWithNestedNPMInsideNodeModules);
         // Should  have found the Npm project because we are now forcing the search
         assertEquals(1, bomToolTreeSearcher.getResults().size());
     }

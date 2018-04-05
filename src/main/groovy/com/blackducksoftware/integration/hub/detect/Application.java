@@ -32,6 +32,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +51,7 @@ import com.blackducksoftware.integration.hub.bdio.BdioTransformer;
 import com.blackducksoftware.integration.hub.bdio.SimpleBdioFactory;
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolTreeSearcher;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
@@ -253,6 +255,16 @@ public class Application implements ApplicationRunner {
             exitCodeType = ExitCodeType.FAILURE_UNKNOWN_ERROR;
         }
         logger.error(e.getMessage());
+    }
+
+    @Bean
+    public BomToolTreeSearcher bomToolTreeSearcher(){
+        File exclusionFile = null;
+        String exclusionFilePath = detectConfiguration.getBomToolSearchExclusionFile();
+        if (StringUtils.isNotBlank(exclusionFilePath)) {
+            exclusionFile = new File(exclusionFilePath);
+        }
+        return new BomToolTreeSearcher(exclusionFile, detectConfiguration.getBomToolForceSearch(), detectConfiguration.getBomToolApplicableSearchDepth());
     }
 
     @Bean
