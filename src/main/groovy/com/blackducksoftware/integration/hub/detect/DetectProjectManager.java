@@ -152,7 +152,14 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         if (detectConfiguration.getBomToolApplicableSearchDepth() > 0) {
             BomToolTreeSearcher bomToolTreeSearcher = new BomToolTreeSearcher(new Slf4jIntLogger(logger), detectConfiguration.getBomToolForceSearch());
             try {
-                bomToolTreeSearcher.startSearching(detectConfiguration.getBomToolSearchExclusionFile(), nestedBomTools, detectConfiguration.getSourceDirectory(), detectConfiguration.getBomToolApplicableSearchDepth());
+                File exclusionFile = null;
+                String exclusionFilePath = detectConfiguration.getBomToolSearchExclusionFile();
+                if (StringUtils.isNotBlank(exclusionFilePath)) {
+                    exclusionFile = new File(exclusionFilePath);
+                }
+                File initialDirectory = detectConfiguration.getSourceDirectory();
+                int searchDepth = detectConfiguration.getBomToolApplicableSearchDepth();
+                bomToolTreeSearcher.startSearching(exclusionFile, nestedBomTools, initialDirectory, searchDepth);
             } catch (BomToolException e) {
                 bomToolSearchExitCodeType = ExitCodeType.FAILURE_BOM_TOOL;
                 logger.error(e.getMessage(), e);

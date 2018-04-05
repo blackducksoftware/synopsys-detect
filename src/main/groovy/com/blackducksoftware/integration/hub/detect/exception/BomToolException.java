@@ -23,7 +23,9 @@
  */
 package com.blackducksoftware.integration.hub.detect.exception;
 
-public class BomToolException extends Exception {
+import com.blackducksoftware.integration.exception.IntegrationException;
+
+public class BomToolException extends IntegrationException {
     private static final long serialVersionUID = 1L;
 
     public BomToolException(final String message) {
