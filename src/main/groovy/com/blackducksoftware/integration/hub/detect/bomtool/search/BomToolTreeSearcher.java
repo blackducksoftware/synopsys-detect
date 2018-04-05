@@ -114,14 +114,14 @@ public class BomToolTreeSearcher {
             } else {
                 // only include directories that do not match the excluded directories
                 excludeDirectoriesPredicate = file -> {
-                    boolean matches = false;
+                    boolean matchesExcludedDirectory = false;
                     for (String excludedDirectory : excludedDirectories) {
                         if (FilenameUtils.wildcardMatchOnSystem(file.getName(), excludedDirectory)) {
-                            matches = true;
+                            matchesExcludedDirectory = true;
                             break;
                         }
                     }
-                    return !matches;
+                    return !matchesExcludedDirectory;
                 };
             }
 
