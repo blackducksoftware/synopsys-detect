@@ -31,8 +31,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -49,6 +51,7 @@ import com.blackducksoftware.integration.hub.configuration.HubServerConfig;
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationName;
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationNameService;
+import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.model.DetectProject;
@@ -66,22 +69,17 @@ import groovy.transform.TypeChecked;
 @TypeChecked
 public class HubSignatureScanner implements SummaryResultReporter, ExitCodeReporter {
     private final Logger logger = LoggerFactory.getLogger(HubSignatureScanner.class);
-
-    @Autowired
-    private DetectConfiguration detectConfiguration;
-
-    @Autowired
-    private DetectFileManager detectFileManager;
-
-    @Autowired
-    private OfflineScanner offlineScanner;
-
-    @Autowired
-    private CodeLocationNameService codeLocationNameService;
-
     private final Set<String> registeredPaths = new HashSet<>();
     private final Set<String> registeredPathsToExclude = new HashSet<>();
     private final Map<String, Result> scanSummaryResults = new HashMap<>();
+    @Autowired
+    private DetectConfiguration detectConfiguration;
+    @Autowired
+    private DetectFileManager detectFileManager;
+    @Autowired
+    private OfflineScanner offlineScanner;
+    @Autowired
+    private CodeLocationNameService codeLocationNameService;
 
     public void registerPathToScan(final ScanPathSource scanPathSource, final File file, final String... fileNamesToExclude) throws IntegrationException {
         try {
@@ -113,7 +111,8 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
         }
     }
 
-    public ProjectVersionView scanPaths(final HubServerConfig hubServerConfig, final SignatureScannerService signatureScannerService, final DetectProject detectProject) throws IntegrationException {
+    public ProjectVersionView scanPaths(final HubServerConfig hubServerConfig, final SignatureScannerService signatureScannerService, final DetectProject detectProject)
+            throws IntegrationException, DetectUserFriendlyException, InterruptedException {
         ProjectVersionView projectVersionView = null;
         final ProjectRequest projectRequest = createProjectRequest(detectProject);
         Set<String> canonicalPathsToScan = registeredPaths;
@@ -136,17 +135,21 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
             scanPathCallables.add(scanPathCallable);
         }
 
+        final List<Future<ProjectVersionWrapper>> submittedScanPathCallables = new ArrayList<>();
         final ExecutorService pool = Executors.newFixedThreadPool(detectConfiguration.getHubSignatureScannerParallelProcessors());
         try {
             for (final ScanPathCallable scanPathCallable : scanPathCallables) {
-                pool.submit(scanPathCallable);
+                submittedScanPathCallables.add(pool.submit(scanPathCallable));
             }
-            for (final ScanPathCallable scanPathCallable : scanPathCallables) {
-                final ProjectVersionWrapper projectVersionWrapperFromScan = scanPathCallable.call();
+            for (final Future<ProjectVersionWrapper> futureProjectVersionWrapper : submittedScanPathCallables) {
+                final ProjectVersionWrapper projectVersionWrapperFromScan = futureProjectVersionWrapper.get();
                 if (projectVersionWrapperFromScan != null) {
                     projectVersionView = projectVersionWrapperFromScan.getProjectVersionView();
                 }
             }
+        } catch (ExecutionException e) {
+            throw new DetectUserFriendlyException(String.format("Encountered a problem waiting for a scan to finish. %s", e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
+
         } finally {
             // get() was called on every java.util.concurrent.Future, no need to wait any longer
             pool.shutdownNow();

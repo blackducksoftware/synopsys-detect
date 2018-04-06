@@ -28,7 +28,6 @@ import java.io.File;
 import java.io.PrintStream;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -38,6 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Bean;
@@ -53,12 +53,11 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFac
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
-import com.blackducksoftware.integration.hub.detect.help.ArgumentState;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
-import com.blackducksoftware.integration.hub.detect.help.html.HelpHtmlWriter;
 import com.blackducksoftware.integration.hub.detect.help.print.DetectConfigurationPrinter;
 import com.blackducksoftware.integration.hub.detect.help.print.DetectInfoPrinter;
+import com.blackducksoftware.integration.hub.detect.help.print.HelpHtmlWriter;
 import com.blackducksoftware.integration.hub.detect.help.print.HelpPrinter;
 import com.blackducksoftware.integration.hub.detect.hub.HubManager;
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper;
@@ -79,7 +78,7 @@ import com.google.gson.GsonBuilder;
 import freemarker.template.Configuration;
 
 @SpringBootApplication
-public class Application {
+public class Application implements ApplicationRunner {
     private final Logger logger = LoggerFactory.getLogger(Application.class);
 
     @Autowired
@@ -95,17 +94,11 @@ public class Application {
     private DetectProjectManager detectProjectManager;
 
     @Autowired
-    private ApplicationArguments applicationArguments;
-
-    @Autowired
-    private InteractiveManager interactiveManager;
-
-    @Autowired
     private HelpPrinter helpPrinter;
-    
+
     @Autowired
     private HelpHtmlWriter helpHtmlWriter;
-    
+
     @Autowired
     private HubManager hubManager;
 
@@ -117,6 +110,9 @@ public class Application {
 
     @Autowired
     private DetectSummary detectSummary;
+
+    @Autowired
+    private InteractiveManager interactiveManager;
 
     @Autowired
     private DetectFileManager detectFileManager;
@@ -133,8 +129,8 @@ public class Application {
         new SpringApplicationBuilder(Application.class).logStartupInfo(false).run(args);
     }
 
-    @PostConstruct
-    public void init() {
+    @Override
+    public void run(ApplicationArguments applicationArguments) throws Exception {
         final long start = System.currentTimeMillis();
 
         try {
@@ -142,21 +138,29 @@ public class Application {
             detectOptionManager.init();
 
             final List<DetectOption> options = detectOptionManager.getDetectOptions();
-
-            final String[] applicationArgs = applicationArguments.getSourceArgs();
-            final ArgumentState argumentState = new ArgumentState(applicationArgs);
-
-            if (argumentState.isHelp) {
-                helpPrinter.printAppropriateHelpMessage(System.out, options, argumentState);
+            boolean isPrintHelp = false;
+            boolean isPrintHelpDoc = false;
+            boolean isInteractive = false;
+            for (final String arg : applicationArguments.getSourceArgs()) {
+                if (arg.equals("-h") || arg.equals("--help")) {
+                    isPrintHelp = true;
+                } else if (arg.equals("-hdoc") || arg.equals("--helpdocument")) {
+                    isPrintHelpDoc = true;
+                } else if (arg.equals("-i") || arg.equals("--interactive")) {
+                    isInteractive = true;
+                }
+            }
+            if (isPrintHelp) {
+                helpPrinter.printHelpMessage(System.out, options);
                 return;
             }
 
-            if (argumentState.isHelpDocument) {
+            if (isPrintHelpDoc) {
                 helpHtmlWriter.writeHelpMessage(String.format("hub-detect-%s-help.html", detectInfo.getDetectVersion()));
                 return;
             }
 
-            if (argumentState.isInteractive) {
+            if (isInteractive) {
                 final InteractiveReader interactiveReader = createInteractiveReader();
                 final PrintStream interactivePrintStream = new PrintStream(System.out);
                 interactiveManager.interact(interactiveReader, interactivePrintStream);
@@ -216,9 +220,10 @@ public class Application {
         if (detectConfiguration.getForceSuccess() && exitCodeType.getExitCode() != 0) {
             logger.warn("Forcing success: Exiting with 0. Desired exit code was ${exitCodeType.getExitCode()}.");
             System.exit(0);
-        } else {
-            System.exit(exitCodeType.getExitCode());
+        } else if (exitCodeType.getExitCode() != 0) {
+            logger.error(String.format("Exiting with code %s - %s", exitCodeType.getExitCode(), exitCodeType.toString()));
         }
+        System.exit(exitCodeType.getExitCode());
     }
 
     private InteractiveReader createInteractiveReader() {
@@ -230,7 +235,7 @@ public class Application {
             return new ScannerInteractiveReader(System.in);
         }
     }
-    
+
     private void populateExitCodeFromExceptionDetails(final Exception e) {
         if (e instanceof DetectUserFriendlyException) {
             if (e.getCause() != null) {
