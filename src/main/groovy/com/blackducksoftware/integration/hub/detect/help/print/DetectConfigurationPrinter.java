@@ -40,6 +40,9 @@ import org.springframework.beans.factory.annotation.Value;
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.DetectInfo;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
+import com.blackducksoftware.integration.hub.detect.help.DetectOptionHelp;
+import com.blackducksoftware.integration.hub.detect.help.FieldWarnings;
+import com.blackducksoftware.integration.hub.detect.help.FieldWarnings.FieldWarning;
 
 public class DetectConfigurationPrinter {
 
@@ -49,7 +52,10 @@ public class DetectConfigurationPrinter {
         printStream.println("Current property values:");
         printStream.println("--property = value [notes]");
         printStream.println(StringUtils.repeat("-", 60));
+        
         List<Field> annotatedProperties = new ArrayList<>();
+        FieldWarnings warnings = detectConfiguration.getFieldWarnings();
+        
         final Field[] propertyFields = DetectConfiguration.class.getDeclaredFields();
         for (final Field propertyField : propertyFields) {
             final Optional<Annotation> foundField = Arrays.stream(propertyField.getAnnotations())
@@ -69,6 +75,8 @@ public class DetectConfigurationPrinter {
                 })
                 .collect(Collectors.toList());
 
+        
+        List<DetectOption> deprecatedInUse = new ArrayList<>();
         for (final Field field : annotatedProperties) {
             field.setAccessible(true);
             final String fieldName = field.getName();
@@ -93,23 +101,66 @@ public class DetectConfigurationPrinter {
                         option = opt;
                     }
                 }
-                if (option != null && !option.getResolvedValue().equals(fieldValue) && !containsPassword) {
-                    if (option.interactiveValue != null) {
-                        printStream.println(fieldName + " = " + fieldValue + " [interactive]");
+                if (option == null) throw new RuntimeException();
+                
+                String text = "";
+                String displayName = option.getKey();// + " (" + fieldName + ")";
+                if (!option.getResolvedValue().equals(fieldValue) && !containsPassword) {
+                    if (option.getInteractiveValue() != null) {
+                        text = displayName + " = " + fieldValue + " [interactive]";
                     } else if (option.getResolvedValue().equals("latest")) {
-                        printStream.println(fieldName + " = " + fieldValue + " [latest]");
+                        text = displayName + " = " + fieldValue + " [latest]";
                     } else if (option.getResolvedValue().trim().length() == 0) {
-                        printStream.println(fieldName + " = " + fieldValue + " [calculated]");
+                        text = displayName + " = " + fieldValue + " [calculated]";
                     } else {
-                        printStream.println(fieldName + " = " + fieldValue + " + [" + option.getResolvedValue() + "]");
+                        text = displayName + " = " + fieldValue + " [" + option.getResolvedValue() + "]";
                     }
                 } else {
-                    printStream.println(fieldName + " = " + fieldValue);
+                    text = displayName + " = " + fieldValue;
+                    if (option.getHelp().isDeprecated && !fieldValue.equals(option.getDefaultValue())) {
+                        warnings.addWarning(fieldName, "As of version " + option.getHelp().deprecationVersion + " this property will be removed: " + option.getHelp().deprecation);
+                    }
                 }
+                
+                if (option.getAcceptableValues().size() > 0) {
+                    if (!option.getAcceptableValues().contains(fieldValue)) {
+                        text += " [unknown value]";
+                    }
+                }
+                
+                if (warnings.warningsForField(fieldName).size() > 0) {
+                    deprecatedInUse.add(option);
+                    DetectOptionHelp help = option.getHelp();
+                    text += "\t *** WARNING ***";
+                }
+                printStream.println(text);
             }
             field.setAccessible(false);
         }
-        printStream.println(StringUtils.repeat("-", 60));
-        printStream.println("");
+        List<FieldWarning> allWarnings = warnings.getWarnings();
+        if (allWarnings.size() > 0) {
+            printStream.println("");
+            printStream.println(StringUtils.repeat("*", 60));
+            if (allWarnings.size() == 1) {
+                printStream.println("WARNING (" + allWarnings.size() + ")");
+            } else {
+                printStream.println("WARNINGS (" + allWarnings.size() + ")");
+            }
+            for (FieldWarning warning : allWarnings) {
+                DetectOption option = null;
+                for (final DetectOption opt : detectOptions) {
+                    if (opt.getFieldName().equals(warning.fieldName)) {
+                        option = opt;
+                    }
+                }
+                DetectOptionHelp help = option.getHelp();
+                printStream.println(option.getKey() + ": " + warning.description);
+            }
+            printStream.println(StringUtils.repeat("*", 60));
+            printStream.println("");
+        }else {
+            printStream.println(StringUtils.repeat("-", 60));
+            printStream.println("");
+        }
     }
 }

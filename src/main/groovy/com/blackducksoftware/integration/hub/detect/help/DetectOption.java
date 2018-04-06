@@ -25,40 +25,30 @@ package com.blackducksoftware.integration.hub.detect.help;
 
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.util.Arrays;
 
 public class DetectOption {
     final String key;
     final String fieldName;
-    final String description;
     final Class<?> valueType;
-    final String group;
-    final String[] printGroups;
     final String originalValue;
     final String defaultValue;
     final String resolvedValue;
-    public String interactiveValue = null;
+    final List<String> acceptableValues;
+    String interactiveValue = null;
 
-    public DetectOption(final String key, final String fieldName, final String originalValue, final String resolvedValue, final String description, final Class<?> valueType, final String defaultValue, final String group,
-            final String[] printGroups) {
+    final DetectOptionHelp help;
+    
+    public DetectOption(final String key, final String fieldName, final String originalValue, final String resolvedValue, final Class<?> valueType, final String defaultValue, final String[] acceptableValues, DetectOptionHelp help) {
         this.key = key;
-        this.description = description;
         this.valueType = valueType;
-        this.group = group;
         this.defaultValue = defaultValue;
+        this.acceptableValues = Arrays.nonNullElementsIn(acceptableValues);
         this.fieldName = fieldName;
         this.originalValue = originalValue;
         this.resolvedValue = resolvedValue;
-        if (printGroups.length > 0) {
-            this.printGroups = printGroups;
-        } else {
-            if (StringUtils.isNotBlank(group)) {
-                this.printGroups = new String[] { group };
-            } else {
-                this.printGroups = new String[] {};
-            }
-        }
+        
+        this.help = help;
     }
     
     public String getInteractiveValue() {
@@ -77,24 +67,8 @@ public class DetectOption {
         return fieldName;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
     public Class<?> getValueType() {
         return valueType;
-    }
-
-    public String getGroup() {
-        return group;
-    }
-
-    public String[] getPrintGroups() {
-        return printGroups;
-    }
-    
-    public List<String> getPrintGroupsAsList() {
-        return Arrays.nonNullElementsIn(printGroups);
     }
 
     public String getOriginalValue() {
@@ -109,4 +83,12 @@ public class DetectOption {
         return resolvedValue;
     }
 
+    public DetectOptionHelp getHelp() {
+        return help;
+    }
+    
+    public List<String> getAcceptableValues() {
+        return acceptableValues;
+    }
+    
 }

@@ -30,7 +30,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.assertj.core.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +66,7 @@ public class DetectOptionManager {
 
         for (final Field field : DetectConfiguration.class.getDeclaredFields()) {
             try {
-                if (field.isAnnotationPresent(ValueDescription.class)) {
+                if (field.isAnnotationPresent(Value.class)) {
                     final DetectOption option = processField(detectConfiguration, DetectConfiguration.class, field);
                     if (option != null) {
                         if (!detectOptionsMap.containsKey(option.key)) {
@@ -80,18 +82,18 @@ public class DetectOptionManager {
         detectOptions = detectOptionsMap.values().stream().sorted(new Comparator<DetectOption>() {
             @Override
             public int compare(final DetectOption o1, final DetectOption o2) {
-                if (o1.group.isEmpty()) {
+                if (o1.help.primaryGroup.isEmpty()) {
                     return 1;
-                } else if (o2.group.isEmpty()) {
+                } else if (o2.help.primaryGroup.isEmpty()) {
                     return -1;
                 } else {
-                    return o1.group.compareTo(o2.group);
+                    return o1.help.primaryGroup.compareTo(o2.help.primaryGroup);
                 }
             }
         }).collect(Collectors.toList());
         
         detectGroups = detectOptions.stream()
-                .map(it -> it.getGroup())
+                .map(it -> it.help.primaryGroup)
                 .distinct()
                 .sorted()
                 .collect(Collectors.toList());
@@ -99,35 +101,75 @@ public class DetectOptionManager {
 
     private DetectOption processField(final Object obj, final Class<?> objClz, final Field field) throws IllegalArgumentException, IllegalAccessException {
         final String fieldName = field.getName();
-        String key = "";
-        String description = "";
         final Class<?> valueType = field.getType();
+
+        final Value valueAnnotation = field.getAnnotation(Value.class);
+        String key = SpringValueUtils.springKeyFromValueAnnotation(valueAnnotation.value());
+        
         String defaultValue = "";
-        String group = "";
-        final ValueDescription valueDescription = field.getAnnotation(ValueDescription.class);
-        description = valueDescription.description();
-        defaultValue = valueDescription.defaultValue();
-        group = valueDescription.group();
-        String[] printGroups = valueDescription.printGroups();
-        if (field.isAnnotationPresent(Value.class)) {
-            final String valueKey = field.getAnnotation(Value.class).value().trim();
-            key = SpringValueUtils.springKeyFromValueAnnotation(valueKey);
+        DefaultValue defaultValueAnnotation = field.getAnnotation(DefaultValue.class);
+        if (defaultValueAnnotation != null) {
+            defaultValue = defaultValueAnnotation.value();
         }
-
-        field.setAccessible(true);
-        final boolean hasValue = !isValueNull(field, obj);
-
+        
+        String[] acceptableValues = new String[] {};
+        AcceptableValues acceptableValueAnnotation = field.getAnnotation(AcceptableValues.class);
+        if (acceptableValueAnnotation != null) {
+            acceptableValues = acceptableValueAnnotation.value();
+        }
+        
         final String originalValue = defaultValue;
         String resolvedValue = originalValue;
+        field.setAccessible(true);
 
+        boolean hasValue = !isValueNull(field, obj);
         if (defaultValue != null && !defaultValue.trim().isEmpty() && !hasValue) {
             resolvedValue = defaultValue;
             setValue(field, obj, defaultValue);
         } else if (hasValue) {
             resolvedValue = field.get(obj).toString();
         }
+        
+        DetectOptionHelp help = helpFromField(field);
 
-        return new DetectOption(key, fieldName, originalValue, resolvedValue, description, valueType, defaultValue, group, printGroups);
+        return new DetectOption(key, fieldName, originalValue, resolvedValue, valueType, defaultValue, acceptableValues, help);
+    }
+    
+    public DetectOptionHelp helpFromField(final Field field) {
+        DetectOptionHelp help = new DetectOptionHelp();
+        
+        final HelpDescription descriptionAnnotation = field.getAnnotation(HelpDescription.class);
+        help.description = descriptionAnnotation.value();
+        
+        final HelpGroup groupAnnotation = field.getAnnotation(HelpGroup.class);
+        String primaryGroup = groupAnnotation.primary();
+        String[] additionalGroups = groupAnnotation.additional();
+        if (additionalGroups.length > 0) {
+            help.groups.addAll(Arrays.nonNullElementsIn(additionalGroups));
+        } else {
+            if (StringUtils.isNotBlank(primaryGroup)) {
+                help.groups.add(primaryGroup);
+            }
+        }
+        
+        final HelpUseCases useCasesAnnotation = field.getAnnotation(HelpUseCases.class);
+        if (useCasesAnnotation != null) {
+            help.useCases = useCasesAnnotation.value();
+        }
+        
+        final HelpIssues issuesAnnotation = field.getAnnotation(HelpIssues.class);
+        if (issuesAnnotation != null) {
+            help.issues = issuesAnnotation.value();
+        }
+        
+        final ValueDeprecation deprecationAnnotation = field.getAnnotation(ValueDeprecation.class);
+        if (deprecationAnnotation != null) {
+            help.isDeprecated = true;
+            help.deprecation = deprecationAnnotation.description();
+            help.deprecationVersion = deprecationAnnotation.willRemoveInVersion();
+        }
+        
+        return help;
     }
 
     public void applyInteractiveOptions(final List<InteractiveOption> interactiveOptions) {
@@ -149,20 +191,23 @@ public class DetectOptionManager {
         }
     }
 
-    public void setValue(final Field field, final Object obj, final String value) {
+    public Object setValue(final Field field, final Object obj, final String value) {
         final Class<?> type = field.getType();
         try {
+            Object objectValue = null;
             if (String.class == type) {
-                field.set(obj, value);
+                objectValue = value;
             } else if (Integer.class == type) {
-                field.set(obj, NumberUtils.toInt(value));
+                objectValue = NumberUtils.toInt(value);
             } else if (Long.class == type) {
-                field.set(obj, NumberUtils.toLong(value));
+                objectValue = NumberUtils.toLong(value);
             } else if (Boolean.class == type) {
-                field.set(obj, Boolean.parseBoolean(value));
+                objectValue = Boolean.parseBoolean(value);
             }else if (String[].class == type) {
-                field.set(obj, value.split(","));
+                objectValue = value.split(",");
             }
+            field.set(obj, objectValue);
+            return objectValue;
         } catch (IllegalArgumentException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }

@@ -1,6 +1,7 @@
 package com.blackducksoftware.integration.hub.detect.help.print;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
@@ -19,15 +20,19 @@ public class HelpOptionPrinter {
         }
         
         String group = null;
-        for (final DetectOption detectValue : options) {
-            final String currentGroup = detectValue.getGroup();
+        for (final DetectOption detectOption : options) {
+            final String currentGroup = detectOption.getHelp().primaryGroup;
             if (group == null) {
                 group = currentGroup;
             } else if (!group.equals(currentGroup)) {
                 writer.println();
                 group = currentGroup;
             }
-            writer.printColumns("--" + detectValue.getKey(), detectValue.getDefaultValue(), detectValue.getDescription());
+            String description = detectOption.getHelp().description;
+            if (detectOption.getAcceptableValues().size() > 0) {
+                description += " (" + detectOption.getAcceptableValues().stream().collect(Collectors.joining("|")) + ")";
+            }
+            writer.printColumns("--" + detectOption.getKey(), detectOption.getDefaultValue(), description);
         }
     }
     

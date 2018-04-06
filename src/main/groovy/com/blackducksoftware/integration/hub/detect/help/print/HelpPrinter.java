@@ -97,7 +97,7 @@ public class HelpPrinter {
         String notes = "Showing help only for: " + filterGroup;
         
         List<DetectOption> filteredOptions = options.stream()
-                .filter(it -> it.getPrintGroupsAsList().stream().anyMatch(printGroup -> printGroup.equalsIgnoreCase(filterGroup)))
+                .filter(it -> it.getHelp().groups.stream().anyMatch(printGroup -> printGroup.equalsIgnoreCase(filterGroup)))
                 .collect(Collectors.toList());
         
         optionPrinter.printOptions(writer, filteredOptions, notes);
@@ -120,7 +120,7 @@ public class HelpPrinter {
     
     private List<String> getPrintGroups(List<DetectOption> options) {
         return options.stream()
-                .flatMap(it -> it.getPrintGroupsAsList().stream())
+                .flatMap(it -> it.getHelp().groups.stream())
                 .distinct()
                 .sorted()
                 .collect(Collectors.toList());
