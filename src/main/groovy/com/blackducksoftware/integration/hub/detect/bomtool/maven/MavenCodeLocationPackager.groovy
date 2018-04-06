@@ -87,6 +87,7 @@ class MavenCodeLocationPackager {
                 // Line has no content or doesn't contain INFO
                 continue
             }
+            // We only want to parse the dependency:tree output
             if (line ==~ /.*---.*maven-dependency-plugin.*:tree.*/) {
                 parsingProjectSection = true
                 continue
