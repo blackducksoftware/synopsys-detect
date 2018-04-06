@@ -462,8 +462,9 @@ public class DetectConfiguration {
     @Value("${detect.bom.tool.search.force:}")
     private Boolean bomToolForceSearch;
 
-    @ValueDescription(description = "File containing directory names to exclude from the search. Will not search within these directories for applicable bom tools. One name per line.", group = DetectConfiguration.GROUP_PATHS)
-    @Value("${detect.bom.tool.search.exclusion.file:}")
+    //TODO not exposing this property until we can determine the best way to handle additional exclusions
+    //@ValueDescription(description = "File containing directory names to exclude from the search. Will not search within these directories for applicable bom tools. One name per line.", group = DetectConfiguration.GROUP_PATHS)
+    //@Value("${detect.bom.tool.search.exclusion.file:}")
     private String bomToolSearchExclusionFile;
 
     @ValueDescription(description = "By default, all tools will be included. If you want to exclude specific tools, specify the ones to exclude here. Exclusion rules always win.", group = DetectConfiguration.GROUP_BOMTOOL)
