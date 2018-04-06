@@ -1,12 +1,11 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.maven
 
-import static org.junit.Assert.*
-
-import org.junit.Test
-
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
+import org.junit.Test
+
+import static org.junit.Assert.assertEquals
 
 class MavenCodeLocationPackagerTest {
     private TestUtil testUtil = new TestUtil()
@@ -26,6 +25,12 @@ class MavenCodeLocationPackagerTest {
     @Test
     public void extractCodeLocationsTestTeamCity() {
         final String mavenOutputText = testUtil.getResourceAsUTF8String('/maven/hubTeamcityOutput.txt')
+        createNewCodeLocationTest(mavenOutputText, '/maven/hubTeamCityCodeLocation.json', 5, "", "")
+    }
+
+    @Test
+    public void extractCodeLocationsTestTeamCityWithUnpackDependencies() {
+        final String mavenOutputText = testUtil.getResourceAsUTF8String('/maven/hubTeamcityOutputWithDependencyUnpack.txt')
         createNewCodeLocationTest(mavenOutputText, '/maven/hubTeamCityCodeLocation.json', 5, "", "")
     }
 

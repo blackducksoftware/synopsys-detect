@@ -23,13 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.maven
 
-import java.util.regex.Matcher
-import java.util.regex.Pattern
-
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-import org.springframework.stereotype.Component
-
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph
 import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph
@@ -39,8 +32,13 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFac
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter
-
 import groovy.transform.TypeChecked
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Component
+
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 @Component
 @TypeChecked
@@ -57,6 +55,7 @@ class MavenCodeLocationPackager {
     private MutableDependencyGraph currentGraph = null
 
     public ExternalIdFactory externalIdFactory;
+
     public MavenCodeLocationPackager(ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }
@@ -77,12 +76,18 @@ class MavenCodeLocationPackager {
                 continue
             }
 
-            String[] groups = (line =~ /.*INFO.*? (.*)/)[0] as String[]
-            line = groups[1]
-            if (!line.trim()) {
+            Matcher lineMatcher = (line =~ /.*INFO.*? (.*)/)
+            if (lineMatcher.count > 0) {
+                String[] groups = lineMatcher[0] as String[]
+                line = groups[1]
+                if (!line.trim()) {
+                    continue
+                }
+            } else {
+                // Line has no content or doesn't contain INFO
                 continue
             }
-            if (line ==~ /.*---.*maven-dependency-plugin.*/) {
+            if (line ==~ /.*---.*maven-dependency-plugin.*:tree.*/) {
                 parsingProjectSection = true
                 continue
             }
@@ -95,7 +100,7 @@ class MavenCodeLocationPackager {
                 //this is the first line of a new code location, the following lines will be the tree of dependencies for this code location
                 currentGraph = new MutableMapDependencyGraph();
                 DetectCodeLocation detectCodeLocation = createNewCodeLocation(sourcePath, line, currentGraph)
-                if (filter.shouldInclude(detectCodeLocation.getBomToolProjectName())) {
+                if (null != detectCodeLocation && filter.shouldInclude(detectCodeLocation.getBomToolProjectName())) {
                     this.currentCodeLocation = detectCodeLocation
                     codeLocations.add(detectCodeLocation)
                 } else {
@@ -155,11 +160,14 @@ class MavenCodeLocationPackager {
 
     DetectCodeLocation createNewCodeLocation(String sourcePath, String line, DependencyGraph graph) {
         Dependency dependency = textToDependency(line)
-        String codeLocationSourcePath = sourcePath
-        if (!sourcePath.endsWith(dependency.name)) {
-            codeLocationSourcePath += '/' + dependency.name
+        if (null != dependency) {
+            String codeLocationSourcePath = sourcePath
+            if (!sourcePath.endsWith(dependency.name)) {
+                codeLocationSourcePath += '/' + dependency.name
+            }
+            return new DetectCodeLocation.Builder(BomToolType.MAVEN, codeLocationSourcePath, dependency.externalId, graph).bomToolProjectName(dependency.name).bomToolProjectVersionName(dependency.version).build();
         }
-        new DetectCodeLocation.Builder(BomToolType.MAVEN, codeLocationSourcePath, dependency.externalId, graph).bomToolProjectName(dependency.name).bomToolProjectVersionName(dependency.version).build()
+        return null;
     }
 
     String calculateCurrentLevelAndCleanLine(String line) {
