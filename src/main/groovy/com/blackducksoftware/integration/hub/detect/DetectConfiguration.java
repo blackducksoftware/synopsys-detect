@@ -455,17 +455,20 @@ public class DetectConfiguration {
     private Integer searchDepth;
 
     @ValueDescription(description = "Depth from source paths to search for files to determine if a bom tool applies.", defaultValue = "0", group = DetectConfiguration.GROUP_PATHS)
-    @Value("${detect.bom.tool.applicable.search.depth:}")
-    private Integer bomToolApplicableSearchDepth;
+    @Value("${detect.bom.tool.search.depth:}")
+    private Integer bomToolSearchDepth;
 
-    @ValueDescription(description = "Force the search to continue to search to the maximum search depth.", defaultValue = "false", group = DetectConfiguration.GROUP_PATHS)
-    @Value("${detect.bom.tool.search.force:}")
-    private Boolean bomToolForceSearch;
+    @ValueDescription(description = "If true, the bom tool search will continue to look for bom tools to the maximum search depth, even if they applied earlier in the path.", defaultValue = "false", group = DetectConfiguration.GROUP_PATHS)
+    @Value("${detect.bom.tool.search.continue:}")
+    private Boolean bomToolContinueSearch;
 
-    //TODO not exposing this property until we can determine the best way to handle additional exclusions
-    //@ValueDescription(description = "File containing directory names to exclude from the search. Will not search within these directories for applicable bom tools. One name per line.", group = DetectConfiguration.GROUP_PATHS)
-    //@Value("${detect.bom.tool.search.exclusion.file:}")
-    private String bomToolSearchExclusionFile;
+    @ValueDescription(description = "A comma-separated list of directory names to exclude from the bom tool search.", group = DetectConfiguration.GROUP_PATHS)
+    @Value("${detect.bom.tool.search.exclusion:}")
+    private String[] bomToolSearchExclusion;
+
+    @ValueDescription(description = "If true, the bom tool search will exclude the default directory names.", defaultValue = "true", group = DetectConfiguration.GROUP_PATHS)
+    @Value("${detect.bom.tool.search.exclusion.defaults:}")
+    private Boolean bomToolSearchExclusionDefaults;
 
     @ValueDescription(description = "By default, all tools will be included. If you want to exclude specific tools, specify the ones to exclude here. Exclusion rules always win.", group = DetectConfiguration.GROUP_BOMTOOL)
     @Value("${detect.excluded.bom.tool.types:}")
@@ -891,16 +894,20 @@ public class DetectConfiguration {
         return convertInt(searchDepth);
     }
 
-    public int getBomToolApplicableSearchDepth() {
-        return convertInt(bomToolApplicableSearchDepth);
+    public int getBomToolSearchDepth() {
+        return convertInt(bomToolSearchDepth);
     }
 
-    public Boolean getBomToolForceSearch() {
-        return BooleanUtils.toBoolean(bomToolForceSearch);
+    public Boolean getBomToolContinueSearch() {
+        return BooleanUtils.toBoolean(bomToolContinueSearch);
     }
 
-    public String getBomToolSearchExclusionFile() {
-        return bomToolSearchExclusionFile;
+    public String[] getBomToolSearchExclusion() {
+        return bomToolSearchExclusion;
+    }
+
+    public Boolean getBomToolSearchExclusionDefaults() {
+        return BooleanUtils.toBoolean(bomToolSearchExclusionDefaults);
     }
 
     public String getExcludedBomToolTypes() {

@@ -26,13 +26,13 @@ package com.blackducksoftware.integration.hub.detect;
 import java.io.Console;
 import java.io.File;
 import java.io.PrintStream;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -258,13 +258,9 @@ public class Application implements ApplicationRunner {
     }
 
     @Bean
-    public BomToolTreeSearcher bomToolTreeSearcher(){
-        File exclusionFile = null;
-        String exclusionFilePath = detectConfiguration.getBomToolSearchExclusionFile();
-        if (StringUtils.isNotBlank(exclusionFilePath)) {
-            exclusionFile = new File(exclusionFilePath);
-        }
-        return new BomToolTreeSearcher(exclusionFile, detectConfiguration.getBomToolForceSearch(), detectConfiguration.getBomToolApplicableSearchDepth());
+    public BomToolTreeSearcher bomToolTreeSearcher() {
+        return new BomToolTreeSearcher(Arrays.asList(detectConfiguration.getBomToolSearchExclusion()), detectConfiguration.getBomToolSearchExclusionDefaults(), detectConfiguration.getBomToolContinueSearch(),
+                detectConfiguration.getBomToolSearchDepth());
     }
 
     @Bean

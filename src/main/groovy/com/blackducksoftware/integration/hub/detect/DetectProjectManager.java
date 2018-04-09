@@ -68,7 +68,6 @@ import com.blackducksoftware.integration.hub.detect.summary.Result;
 import com.blackducksoftware.integration.hub.detect.summary.SummaryResultReporter;
 import com.blackducksoftware.integration.hub.detect.util.BdioFileNamer;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
-import com.blackducksoftware.integration.log.Slf4jIntLogger;
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
 
 @Component
@@ -149,10 +148,10 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
                 }
             }
         }
-        
+
         // we have already searched the given source path for bom tools and now, if we have to, we will walk
         // the directory tree to find additional bom tools (npm might be nested beneath the source directory, for example)
-        if (detectConfiguration.getBomToolApplicableSearchDepth() > 0) {
+        if (detectConfiguration.getBomToolSearchDepth() > 0) {
             try {
                 File initialDirectory = detectConfiguration.getSourceDirectory();
                 bomToolTreeSearcher.startSearching(nestedBomTools, initialDirectory);
