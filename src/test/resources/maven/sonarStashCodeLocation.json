@@ -1100,9 +1100,9 @@
           "version": "3.21.0-GA"
         }
       },
-      "{\"forge\":\"maven\",\"group\":\"io.netty\",\"name\":\"netty-transport-native-epoll\",\"version\":\"linux-x86_64\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
+      "{\"forge\":\"maven\",\"group\":\"io.netty\",\"name\":\"netty-transport-native-epoll\",\"version\":\"4.0.44.Final\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
         "name": "netty-transport-native-epoll",
-        "version": "linux-x86_64",
+        "version": "4.0.44.Final",
         "externalId": {
           "forge": {
             "name": "maven",
@@ -1110,7 +1110,7 @@
           },
           "group": "io.netty",
           "name": "netty-transport-native-epoll",
-          "version": "linux-x86_64"
+          "version": "4.0.44.Final"
         }
       },
       "{\"forge\":\"maven\",\"group\":\"org.slf4j\",\"name\":\"log4j-over-slf4j\",\"version\":\"1.7.5\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
@@ -1816,7 +1816,7 @@
           "version": "2.2.1"
         }
       ],
-      "{\"forge\":\"maven\",\"group\":\"io.netty\",\"name\":\"netty-transport-native-epoll\",\"version\":\"linux-x86_64\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
+      "{\"forge\":\"maven\",\"group\":\"io.netty\",\"name\":\"netty-transport-native-epoll\",\"version\":\"4.0.44.Final\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
         {
           "forge": {
             "name": "maven",
@@ -2152,7 +2152,7 @@
           },
           "group": "io.netty",
           "name": "netty-transport-native-epoll",
-          "version": "linux-x86_64"
+          "version": "4.0.44.Final"
         }
       ],
       "{\"forge\":\"maven\",\"group\":\"org.eclipse.jetty\",\"name\":\"jetty-servlet\",\"version\":\"9.2.13.v20150730\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
