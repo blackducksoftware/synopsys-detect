@@ -23,12 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool
 
-import java.nio.charset.StandardCharsets
-import java.nio.file.Files
-
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
-
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
@@ -36,8 +30,12 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFac
 import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnPackager
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
-
 import groovy.transform.TypeChecked
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Component
+
+import java.nio.charset.StandardCharsets
+import java.nio.file.Files
 
 @Component
 @TypeChecked
@@ -59,11 +57,20 @@ class YarnBomTool extends BomTool {
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
-        final File yarnLockFile = detectFileManager.findFile(sourceDirectory, 'yarn.lock')
-        final List<String> yarnLockText = Files.readAllLines(yarnLockFile.toPath(), StandardCharsets.UTF_8)
-        final DependencyGraph dependencyGraph = yarnPackager.parse(yarnLockText)
-        final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.NPM, sourcePath)
-        final def detectCodeLocation = new DetectCodeLocation.Builder(getBomToolType(), sourcePath, externalId, dependencyGraph).build()
+        DependencyGraph dependencyGraph
+        ExternalId externalId
+        def detectCodeLocation
+        if (detectConfiguration.yarnProductionDependenciesOnly) {
+            dependencyGraph = yarnPackager.parseYarnList()
+            externalId = externalIdFactory.createPathExternalId(Forge.NPM, sourcePath)
+            detectCodeLocation = new DetectCodeLocation.Builder(getBomToolType(), sourcePath, externalId, dependencyGraph).build()
+        } else {
+            File yarnLockFile = detectFileManager.findFile(sourceDirectory, 'yarn.lock')
+            List<String> yarnText = Files.readAllLines(yarnLockFile.toPath(), StandardCharsets.UTF_8)
+            dependencyGraph = yarnPackager.parseYarnLock(yarnText)
+            externalId = externalIdFactory.createPathExternalId(Forge.NPM, sourcePath)
+            detectCodeLocation = new DetectCodeLocation.Builder(getBomToolType(), sourcePath, externalId, dependencyGraph).build()
+        }
 
         return [detectCodeLocation]
     }

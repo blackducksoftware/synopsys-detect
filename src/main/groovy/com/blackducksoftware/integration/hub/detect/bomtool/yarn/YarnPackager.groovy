@@ -23,9 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.yarn
 
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
-
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph
 import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph
@@ -36,8 +33,9 @@ import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeT
 import com.blackducksoftware.integration.hub.detect.nameversion.builder.LinkedNameVersionNodeBuilder
 import com.blackducksoftware.integration.hub.detect.nameversion.builder.NameVersionNodeBuilder
 import com.blackducksoftware.integration.hub.detect.nameversion.metadata.LinkMetadata
-
 import groovy.transform.TypeChecked
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Component
 
 @Component
 @TypeChecked
@@ -45,7 +43,7 @@ class YarnPackager {
     @Autowired
     NameVersionNodeTransformer nameVersionNodeTransformer
 
-    public DependencyGraph parse(List<String> yarnLockText) {
+    public DependencyGraph parseYarnLock(List<String> yarnLockText) {
         def rootNode = new NameVersionNode()
         rootNode.name = "detectRootNode - ${UUID.randomUUID()}"
         def nameVersionLinkNodeBuilder = new LinkedNameVersionNodeBuilder(rootNode)
@@ -70,7 +68,7 @@ class YarnPackager {
 
             if (level == 1 && line.trim().startsWith('version')) {
                 String fieldName = line.trim().split(' ')[0]
-                currentNode.version = line.trim().substring(fieldName.length()).replaceAll('"','').trim()
+                currentNode.version = line.trim().substring(fieldName.length()).replaceAll('"', '').trim()
                 continue
             }
 
@@ -143,5 +141,10 @@ class YarnPackager {
         }
 
         linkedNameVersionNode
+    }
+
+    DependencyGraph parseYarnList() {
+        // TODO write tests to parse a 'yarn list --prod' call. Tests can be similar to NPM ones
+        null
     }
 }

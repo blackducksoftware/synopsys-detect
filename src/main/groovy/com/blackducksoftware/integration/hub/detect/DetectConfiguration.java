@@ -1,9 +1,9 @@
 /**
  * hub-detect
- *
+ * <p>
  * Copyright (C) 2018 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
- *
+ * <p>
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
  * distributed with this work for additional information
@@ -11,9 +11,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -22,25 +22,6 @@
  * under the License.
  */
 package com.blackducksoftware.integration.hub.detect;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.EnumerablePropertySource;
-import org.springframework.core.env.MutablePropertySources;
-import org.springframework.core.env.PropertySource;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.DockerBomTool;
@@ -56,8 +37,25 @@ import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnection;
 import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnectionBuilder;
 import com.blackducksoftware.integration.log.Slf4jIntLogger;
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
-
 import groovy.transform.TypeChecked;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.EnumerablePropertySource;
+import org.springframework.core.env.MutablePropertySources;
+import org.springframework.core.env.PropertySource;
+import org.springframework.stereotype.Component;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Component
 @TypeChecked
@@ -95,6 +93,7 @@ public class DetectConfiguration {
     private static final String GROUP_PYTHON = "python";
     private static final String GROUP_SBT = "sbt";
     private static final String GROUP_SIGNATURE_SCANNER = "signature scanner";
+    private static final String GROUP_YARN = "yarn";
 
     @Autowired
     private ConfigurableEnvironment configurableEnvironment;
@@ -211,7 +210,6 @@ public class DetectConfiguration {
         if (dockerBomTool.isBomToolApplicable() && bomToolFilter.shouldInclude(dockerBomTool.getBomToolType().toString())) {
             dockerInspectorVersion = dockerBomTool.getInspectorVersion();
         }
-
         configureForPhoneHome();
     }
 
@@ -786,6 +784,10 @@ public class DetectConfiguration {
     @Value("${detect.hex.rebar3.path:}")
     private String hexRebar3Path;
 
+    @ValueDescription(description = "Set this to true to only scan production dependencies", defaultValue = "false", group = DetectConfiguration.GROUP_YARN)
+    @Value("{detect.yarn.prod.only:}")
+    private String yarnProductionDependenciesOnly;
+
     public boolean getCleanupBdioFiles() {
         return BooleanUtils.toBoolean(cleanupBdioFiles);
     }
@@ -1221,6 +1223,10 @@ public class DetectConfiguration {
 
     public String getHexRebar3Path() {
         return hexRebar3Path;
+    }
+
+    public Boolean getYarnProductionDependenciesOnly() {
+        return BooleanUtils.toBoolean(yarnProductionDependenciesOnly);
     }
 
     // properties end
