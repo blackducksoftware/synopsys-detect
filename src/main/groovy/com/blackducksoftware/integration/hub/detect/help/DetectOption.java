@@ -23,9 +23,10 @@
  */
 package com.blackducksoftware.integration.hub.detect.help;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.assertj.core.util.Arrays;
 
 public class DetectOption {
     final String key;
@@ -34,20 +35,21 @@ public class DetectOption {
     final String originalValue;
     final String defaultValue;
     final String resolvedValue;
+    final boolean strictAcceptableValues;
     final List<String> acceptableValues;
     String interactiveValue = null;
 
     final DetectOptionHelp help;
     
-    public DetectOption(final String key, final String fieldName, final String originalValue, final String resolvedValue, final Class<?> valueType, final String defaultValue, final String[] acceptableValues, DetectOptionHelp help) {
+    public DetectOption(final String key, final String fieldName, final String originalValue, final String resolvedValue, final Class<?> valueType, final String defaultValue, final boolean strictAcceptableValue, final String[] acceptableValues, DetectOptionHelp help) {
         this.key = key;
         this.valueType = valueType;
         this.defaultValue = defaultValue;
-        this.acceptableValues = Arrays.nonNullElementsIn(acceptableValues);
+        this.acceptableValues = Arrays.stream(acceptableValues).collect(Collectors.toList());
         this.fieldName = fieldName;
         this.originalValue = originalValue;
         this.resolvedValue = resolvedValue;
-        
+        this.strictAcceptableValues = strictAcceptableValue;
         this.help = help;
     }
     

@@ -24,6 +24,8 @@
 package com.blackducksoftware.integration.hub.detect.help;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -32,16 +34,19 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.assertj.core.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
+import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.interactive.InteractiveOption;
 import com.blackducksoftware.integration.hub.detect.util.SpringValueUtils;
+import com.blackducksoftware.integration.log.IntLogger;
 
 @Component
 public class DetectOptionManager {
@@ -79,19 +84,10 @@ public class DetectOptionManager {
             }
         }
 
-        detectOptions = detectOptionsMap.values().stream().sorted(new Comparator<DetectOption>() {
-            @Override
-            public int compare(final DetectOption o1, final DetectOption o2) {
-                if (o1.help.primaryGroup.isEmpty()) {
-                    return 1;
-                } else if (o2.help.primaryGroup.isEmpty()) {
-                    return -1;
-                } else {
-                    return o1.help.primaryGroup.compareTo(o2.help.primaryGroup);
-                }
-            }
-        }).collect(Collectors.toList());
-        
+        detectOptions = detectOptionsMap.values().stream()
+                .sorted((o1, o2) -> o1.getHelp().primaryGroup.compareTo(o2.getHelp().primaryGroup))
+                .collect(Collectors.toList());
+
         detectGroups = detectOptions.stream()
                 .map(it -> it.help.primaryGroup)
                 .distinct()
@@ -105,19 +101,21 @@ public class DetectOptionManager {
 
         final Value valueAnnotation = field.getAnnotation(Value.class);
         String key = SpringValueUtils.springKeyFromValueAnnotation(valueAnnotation.value());
-        
+
         String defaultValue = "";
         DefaultValue defaultValueAnnotation = field.getAnnotation(DefaultValue.class);
         if (defaultValueAnnotation != null) {
             defaultValue = defaultValueAnnotation.value();
         }
-        
+
         String[] acceptableValues = new String[] {};
+        boolean strictAcceptableValue = false;
         AcceptableValues acceptableValueAnnotation = field.getAnnotation(AcceptableValues.class);
         if (acceptableValueAnnotation != null) {
             acceptableValues = acceptableValueAnnotation.value();
+            strictAcceptableValue = acceptableValueAnnotation.strict();
         }
-        
+
         final String originalValue = defaultValue;
         String resolvedValue = originalValue;
         field.setAccessible(true);
@@ -129,47 +127,59 @@ public class DetectOptionManager {
         } else if (hasValue) {
             resolvedValue = field.get(obj).toString();
         }
-        
-        DetectOptionHelp help = helpFromField(field);
 
-        return new DetectOption(key, fieldName, originalValue, resolvedValue, valueType, defaultValue, acceptableValues, help);
+        DetectOptionHelp help = processFieldHelp(field);
+
+        return new DetectOption(key, fieldName, originalValue, resolvedValue, valueType, defaultValue, strictAcceptableValue, acceptableValues, help);
     }
-    
-    public DetectOptionHelp helpFromField(final Field field) {
+
+    private DetectOptionHelp processFieldHelp(final Field field) {
         DetectOptionHelp help = new DetectOptionHelp();
-        
+
         final HelpDescription descriptionAnnotation = field.getAnnotation(HelpDescription.class);
         help.description = descriptionAnnotation.value();
-        
+
         final HelpGroup groupAnnotation = field.getAnnotation(HelpGroup.class);
         String primaryGroup = groupAnnotation.primary();
         String[] additionalGroups = groupAnnotation.additional();
         if (additionalGroups.length > 0) {
-            help.groups.addAll(Arrays.nonNullElementsIn(additionalGroups));
+            help.groups.addAll(Arrays.stream(additionalGroups).collect(Collectors.toList()));
         } else {
             if (StringUtils.isNotBlank(primaryGroup)) {
                 help.groups.add(primaryGroup);
             }
         }
-        
+
         final HelpUseCases useCasesAnnotation = field.getAnnotation(HelpUseCases.class);
         if (useCasesAnnotation != null) {
             help.useCases = useCasesAnnotation.value();
         }
-        
+
         final HelpIssues issuesAnnotation = field.getAnnotation(HelpIssues.class);
         if (issuesAnnotation != null) {
             help.issues = issuesAnnotation.value();
         }
-        
+
         final ValueDeprecation deprecationAnnotation = field.getAnnotation(ValueDeprecation.class);
         if (deprecationAnnotation != null) {
             help.isDeprecated = true;
             help.deprecation = deprecationAnnotation.description();
             help.deprecationVersion = deprecationAnnotation.willRemoveInVersion();
         }
-        
+
         return help;
+    }
+
+    public List<DetectOption> findUnacceptableValues() throws DetectUserFriendlyException {
+        List<DetectOption> unacceptableDetectOptions = new ArrayList<>();
+        for (DetectOption option : detectOptions) {
+            if (option.strictAcceptableValues) {
+                if (!option.acceptableValues.contains(option.resolvedValue)) {
+                    unacceptableDetectOptions.add(option);
+                }
+            }
+        }
+        return unacceptableDetectOptions;
     }
 
     public void applyInteractiveOptions(final List<InteractiveOption> interactiveOptions) {
@@ -203,7 +213,7 @@ public class DetectOptionManager {
                 objectValue = NumberUtils.toLong(value);
             } else if (Boolean.class == type) {
                 objectValue = Boolean.parseBoolean(value);
-            }else if (String[].class == type) {
+            } else if (String[].class == type) {
                 objectValue = value.split(",");
             }
             field.set(obj, objectValue);
@@ -238,6 +248,6 @@ public class DetectOptionManager {
         } else {
             return false;
         }
-        
+
     }
 }

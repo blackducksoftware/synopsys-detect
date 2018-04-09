@@ -27,6 +27,7 @@ import java.io.Console;
 import java.io.File;
 import java.io.PrintStream;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -169,6 +170,13 @@ public class Application implements ApplicationRunner {
 
                 infoPrinter.printInfo(System.out, detectInfo);
                 detectConfigurationPrinter.print(System.out, detectInfo, detectConfiguration, options);
+            }
+            
+            List<DetectOption> unacceptableDetectOtions = detectOptionManager.findUnacceptableValues();
+            if (unacceptableDetectOtions.size() > 0) {
+                DetectOption firstUnacceptableDetectOption = unacceptableDetectOtions.get(0);
+                String msg = firstUnacceptableDetectOption.getKey() + ": Unkown value '" + firstUnacceptableDetectOption.getResolvedValue() + "', acceptable values are " + firstUnacceptableDetectOption.getAcceptableValues().stream().collect(Collectors.joining(","));
+                throw new DetectUserFriendlyException(msg, ExitCodeType.FAILURE_GENERAL_ERROR);
             }
 
             if (detectConfiguration.getTestConnection()) {

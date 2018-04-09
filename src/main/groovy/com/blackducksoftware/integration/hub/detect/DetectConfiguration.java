@@ -787,7 +787,7 @@ public class DetectConfiguration {
     @DefaultValue("INFO")
     @HelpGroup(primary = GROUP_LOGGING, additional = {GROUP_LOGGING, PRINT_GROUP_DEBUG})
     @HelpDescription("The logging level of Detect")
-    @AcceptableValues({"ALL", "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF"})
+    @AcceptableValues(strict = true, value = {"ALL", "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF"})
     private String loggingLevel;
 
     @Value("${detect.cleanup.bom.tool.files:}")
