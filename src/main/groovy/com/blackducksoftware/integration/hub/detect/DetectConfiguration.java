@@ -156,6 +156,16 @@ public class DetectConfiguration {
         if (!sourceDirectory.exists() || !sourceDirectory.isDirectory()) {
             throw new DetectUserFriendlyException("The source path ${sourcePath} either doesn't exist, isn't a directory, or doesn't have appropriate permissions.", ExitCodeType.FAILURE_GENERAL_ERROR);
         }
+        
+        boolean atLeastOnePolicySeverity = StringUtils.isNotBlank(policyCheckFailOnSeverities); 
+        if (atLeastOnePolicySeverity) {
+            if (policyCheck) {
+                warnings.addDeprecation("policyCheck");
+            }else {
+                policyCheck = true;
+            }
+        }
+        
         // make sure the path is absolute
         sourcePath = sourceDirectory.getCanonicalPath();
 
@@ -236,6 +246,8 @@ public class DetectConfiguration {
         if (dockerBomTool.isBomToolApplicable() && bomToolFilter.shouldInclude(dockerBomTool.getBomToolType().toString())) {
             dockerInspectorVersion = dockerBomTool.getInspectorVersion();
         }
+        
+        
 
         configureForPhoneHome();
     }
@@ -543,6 +555,7 @@ public class DetectConfiguration {
     @Value("${detect.project.tier:}")
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = {PRINT_GROUP_PROJECT})
     @HelpDescription("If a hub project tier is specified, your project will be created with this tier.")
+    @AcceptableValues(value = {"1","2","3","4","5"}, caseSensitive = false, strict = false)
     private Integer projectTier;
 
     @Value("${detect.project.codelocation.prefix:}")
@@ -573,12 +586,14 @@ public class DetectConfiguration {
     @DefaultValue("Development")
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = {PRINT_GROUP_PROJECT})
     @HelpDescription("An override for the Project Version phase.")
+    @AcceptableValues(value = {"PLANNING","DEVELOPMENT","RELEASED","DEPRECATED","ARCHIVED"}, caseSensitive = false, strict = false)
     private String projectVersionPhase;
 
     @Value("${detect.project.version.distribution:}")
     @DefaultValue("External")
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = {PRINT_GROUP_PROJECT})
     @HelpDescription("An override for the Project Version distribution")
+    @AcceptableValues(value = {"EXTERNAL","SAAS","INTERNAL","OPENSOURCE"}, caseSensitive = false, strict = false)
     private String projectVersionDistribution;
 
     @ValueDeprecation(willRemoveInVersion="4.0.0", description = "To fail on any policy, set --detect.policy.check.fail.on.severities=ALL.") 
@@ -591,6 +606,7 @@ public class DetectConfiguration {
     @Value("${detect.policy.check.fail.on.severities:}")
     @HelpGroup(primary = GROUP_POLICY_CHECK, additional = {PRINT_GROUP_POLICY})
     @HelpDescription("A comma-separated list of policy violation severities that will fail detect if checking policies is enabled. If no severity is provided, any policy violation will fail detect.")
+    @AcceptableValues(value = {"ALL", "LOW","MEDIUM","HIGH"}, caseSensitive = false, strict = false)
     private String policyCheckFailOnSeverities;
 
     @Value("${detect.gradle.inspector.version:}")
@@ -787,7 +803,7 @@ public class DetectConfiguration {
     @DefaultValue("INFO")
     @HelpGroup(primary = GROUP_LOGGING, additional = {GROUP_LOGGING, PRINT_GROUP_DEBUG})
     @HelpDescription("The logging level of Detect")
-    @AcceptableValues(strict = true, value = {"ALL", "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF"})
+    @AcceptableValues(value = {"ALL", "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF"}, caseSensitive = false, strict = true)
     private String loggingLevel;
 
     @Value("${detect.cleanup.bom.tool.files:}")
@@ -1108,7 +1124,7 @@ public class DetectConfiguration {
     }
 
     public boolean getPolicyCheck() {
-        return BooleanUtils.toBoolean(policyCheck);
+        return policyCheck;
     }
 
     public String getPolicyCheckFailOnSeverities() {

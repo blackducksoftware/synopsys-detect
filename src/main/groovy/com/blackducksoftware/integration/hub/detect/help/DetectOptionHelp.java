@@ -12,7 +12,7 @@ public class DetectOptionHelp {
     public List<String> groups = new ArrayList<String>();
     public String primaryGroup = "";
     
-    public boolean isDeprecated = false; 
+    public boolean isDeprecated = false;
     public String deprecation = "";
     public String deprecationVersion = "";
     

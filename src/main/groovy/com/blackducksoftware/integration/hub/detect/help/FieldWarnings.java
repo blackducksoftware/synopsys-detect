@@ -7,6 +7,11 @@ import java.util.stream.Collectors;
 public class FieldWarnings {
 
     public List<FieldWarning> warnings = new ArrayList<>();
+    public List<String> requestedDeprecations = new ArrayList<>();
+    
+    public void addDeprecation(String fieldName) {
+        requestedDeprecations.add(fieldName);
+    }
     
     public void addWarning(String fieldName, String description) {
         warnings.add(new FieldWarning(fieldName, description));
@@ -18,6 +23,10 @@ public class FieldWarnings {
     
     public List<FieldWarning> getWarnings() {
         return warnings.stream().sorted((o1, o2)->o1.fieldName.compareTo(o2.fieldName)).collect(Collectors.toList());
+    }
+    
+    public boolean isRequestedDeprecation(String fieldName) {
+        return requestedDeprecations.contains(fieldName); 
     }
     
     public class FieldWarning {       

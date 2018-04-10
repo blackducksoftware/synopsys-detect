@@ -36,12 +36,13 @@ public class DetectOption {
     final String defaultValue;
     final String resolvedValue;
     final boolean strictAcceptableValues;
+    final boolean caseSensitiveAcceptableValues;
     final List<String> acceptableValues;
     String interactiveValue = null;
 
     final DetectOptionHelp help;
     
-    public DetectOption(final String key, final String fieldName, final String originalValue, final String resolvedValue, final Class<?> valueType, final String defaultValue, final boolean strictAcceptableValue, final String[] acceptableValues, DetectOptionHelp help) {
+    public DetectOption(final String key, final String fieldName, final String originalValue, final String resolvedValue, final Class<?> valueType, final String defaultValue, final boolean strictAcceptableValue, final boolean caseSensitiveAcceptableValues, final String[] acceptableValues, DetectOptionHelp help) {
         this.key = key;
         this.valueType = valueType;
         this.defaultValue = defaultValue;
@@ -50,6 +51,7 @@ public class DetectOption {
         this.originalValue = originalValue;
         this.resolvedValue = resolvedValue;
         this.strictAcceptableValues = strictAcceptableValue;
+        this.caseSensitiveAcceptableValues = caseSensitiveAcceptableValues;
         this.help = help;
     }
     
@@ -91,6 +93,21 @@ public class DetectOption {
     
     public List<String> getAcceptableValues() {
         return acceptableValues;
+    }
+    
+    public boolean getCaseSensistiveAcceptableValues() {
+        return caseSensitiveAcceptableValues;
+    }
+    
+    public boolean isAcceptableValue(String value) { 
+        return acceptableValues.stream()
+            .anyMatch(it -> { 
+                if (caseSensitiveAcceptableValues) { 
+                    return it.equals(value);
+                } else {
+                    return it.equalsIgnoreCase(value);
+                }
+            });
     }
     
 }

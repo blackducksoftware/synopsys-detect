@@ -110,10 +110,12 @@ public class DetectOptionManager {
 
         String[] acceptableValues = new String[] {};
         boolean strictAcceptableValue = false;
+        boolean caseSensitiveAcceptableValues = false;
         AcceptableValues acceptableValueAnnotation = field.getAnnotation(AcceptableValues.class);
         if (acceptableValueAnnotation != null) {
             acceptableValues = acceptableValueAnnotation.value();
             strictAcceptableValue = acceptableValueAnnotation.strict();
+            caseSensitiveAcceptableValues = acceptableValueAnnotation.caseSensitive();
         }
 
         final String originalValue = defaultValue;
@@ -130,7 +132,7 @@ public class DetectOptionManager {
 
         DetectOptionHelp help = processFieldHelp(field);
 
-        return new DetectOption(key, fieldName, originalValue, resolvedValue, valueType, defaultValue, strictAcceptableValue, acceptableValues, help);
+        return new DetectOption(key, fieldName, originalValue, resolvedValue, valueType, defaultValue, strictAcceptableValue, caseSensitiveAcceptableValues, acceptableValues, help);
     }
 
     private DetectOptionHelp processFieldHelp(final Field field) {
@@ -174,7 +176,7 @@ public class DetectOptionManager {
         List<DetectOption> unacceptableDetectOptions = new ArrayList<>();
         for (DetectOption option : detectOptions) {
             if (option.strictAcceptableValues) {
-                if (!option.acceptableValues.contains(option.resolvedValue)) {
+                if (!option.isAcceptableValue(option.resolvedValue)) {
                     unacceptableDetectOptions.add(option);
                 }
             }

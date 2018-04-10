@@ -64,6 +64,7 @@ public class DetectConfigurationPrinter {
                 
                 String text = "";
                 String displayName = option.getKey();
+                boolean requestDeprecatedNotice = warnings.isRequestedDeprecation(option.getFieldName());
                 if (!option.getResolvedValue().equals(fieldValue) && !containsPassword) {
                     if (option.getInteractiveValue() != null) {
                         text = displayName + " = " + fieldValue + " [interactive]";
@@ -77,14 +78,18 @@ public class DetectConfigurationPrinter {
                 } else {
                     text = displayName + " = " + fieldValue;
                     if (option.getHelp().isDeprecated && !fieldValue.equals(option.getDefaultValue())) {
-                        warnings.addWarning(fieldName, "As of version " + option.getHelp().deprecationVersion + " this property will be removed: " + option.getHelp().deprecation);
+                        requestDeprecatedNotice = true;
                     }
                 }
                 
                 if (option.getAcceptableValues().size() > 0) {
-                    if (!option.getAcceptableValues().contains(fieldValue)) {
+                    if (!option.isAcceptableValue(fieldValue)) {
                         text += " [unknown value]";
                     }
+                }
+                
+                if (requestDeprecatedNotice) {
+                    warnings.addWarning(fieldName, "As of version " + option.getHelp().deprecationVersion + " this property will be removed: " + option.getHelp().deprecation);
                 }
                 
                 if (warnings.warningsForField(fieldName).size() > 0) {

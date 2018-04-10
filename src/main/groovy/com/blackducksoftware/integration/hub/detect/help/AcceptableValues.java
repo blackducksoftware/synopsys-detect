@@ -35,5 +35,6 @@ import groovy.transform.TypeChecked;
 @Target(ElementType.FIELD)
 public @interface AcceptableValues {
     String[] value() default {};
-    boolean strict() default true;
+    boolean strict() default false;
+    boolean caseSensitive() default false;
 }
