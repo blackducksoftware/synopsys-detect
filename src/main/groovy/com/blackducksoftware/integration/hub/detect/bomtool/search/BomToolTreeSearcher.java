@@ -115,9 +115,8 @@ public class BomToolTreeSearcher {
 
     private List<File> getSubDirectories(final File directory, final List<String> excludedDirectories) throws DetectUserFriendlyException {
         try {
-            Predicate<File> excludeDirectoriesPredicate;
             // only include directories that do not match the excluded directories
-            excludeDirectoriesPredicate = file -> {
+            Predicate<File> excludeDirectoriesPredicate = file -> {
                 boolean matchesExcludedDirectory = false;
                 for (String excludedDirectory : excludedDirectories) {
                     if (FilenameUtils.wildcardMatchOnSystem(file.getName(), excludedDirectory)) {
