@@ -60,12 +60,12 @@ public class HelpPrinter {
             printDetailedHelp(writer, options, state.parsedValue);
         }else {
             if (state.parsedValue != null) {
-                if (state.parsedValue.endsWith("*")) {
-                    printHelpFilteredBySearchTerm(writer, options, state.parsedValue);
+                if (isProperty(options, state.parsedValue)) {
+                    printDetailedHelp(writer, options, state.parsedValue);
                 } else if (isPrintGroup(allPrintGroups, state.parsedValue)){
-                    printHelpFilteredByPrintGroup( writer, options, state.parsedValue);
+                    printHelpFilteredByPrintGroup(writer, options, state.parsedValue);
                 } else {
-                    printDefaultHelp(writer, options);
+                    printHelpFilteredBySearchTerm(writer, options, state.parsedValue);
                 }
             }else {
                 printDefaultHelp(writer, options);
@@ -98,13 +98,13 @@ public class HelpPrinter {
         
         List<DetectOption> filteredOptions = options.stream()
                 .filter(it -> it.getHelp().groups.stream().anyMatch(printGroup -> printGroup.equalsIgnoreCase(filterGroup)))
+                .sorted((o1, o2) -> o1.getKey().compareTo(o2.getKey()))
                 .collect(Collectors.toList());
         
         optionPrinter.printOptions(writer, filteredOptions, notes);
     }
     
-    private void printHelpFilteredBySearchTerm(final HelpTextWriter writer, final List<DetectOption> options, String filterTerm) {
-        String searchTerm = filterTerm.substring(0, filterTerm.length() - 1).toLowerCase();
+    private void printHelpFilteredBySearchTerm(final HelpTextWriter writer, final List<DetectOption> options, String searchTerm) {
         String notes = "Showing help only for fields that contain: " + searchTerm;
 
         List<DetectOption> filteredOptions = options.stream()
@@ -116,6 +116,12 @@ public class HelpPrinter {
     
     private boolean isPrintGroup (List<String> allPrintGroups, String filterGroup) {
         return allPrintGroups.contains(filterGroup);
+    }
+    
+    private boolean isProperty (List<DetectOption> allOptions, String filterTerm) {
+        return allOptions.stream()
+                .map(it -> it.getKey())
+                .anyMatch(it -> it.equals(filterTerm));
     }
     
     private List<String> getPrintGroups(List<DetectOption> options) {

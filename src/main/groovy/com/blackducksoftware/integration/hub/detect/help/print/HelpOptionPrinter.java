@@ -41,10 +41,14 @@ public class HelpOptionPrinter {
         writer.println("Usage : ");
         writer.println("\t--<property name>=<value>");
         writer.println();
-        writer.println("To print only a subset of options, you may specify one of the following printable groups with '-h [group]' or '--help [group]': ");
+        writer.println("To see all properties, you may request verbose help log with '-h -v'");
+        writer.println();
+        writer.println("To get detailed help for a specific property, you may specify the property name with '-h [property]' or '-h -p [property]'");
+        writer.println();
+        writer.println("To print only a subset of options, you may specify one of the following printable groups with '-h [group]' or '-h -g [group]': ");
         writer.println("\t" + groupText);
         writer.println();        
-        writer.println("To search options, you may specify a search term followed by * with '-h [term]*' or '--help [term]*': ");
+        writer.println("To search options, you may specify a search term with '-h [term]'");
         writer.println();
     }
 }
