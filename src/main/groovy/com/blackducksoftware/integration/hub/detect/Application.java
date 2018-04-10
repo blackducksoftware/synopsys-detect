@@ -183,7 +183,9 @@ public class Application implements ApplicationRunner {
                 return;
             }
 
-            if (!detectConfiguration.getHubOfflineMode()) {
+            if (detectConfiguration.getHubOfflineMode()) {
+                detectPhoneHomeManager.initOffline();
+            } else {
                 hubServiceWrapper.init();
             }
 
