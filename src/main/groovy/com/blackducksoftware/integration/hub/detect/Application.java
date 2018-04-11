@@ -55,6 +55,7 @@ import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendly
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.help.ArgumentState;
+import com.blackducksoftware.integration.hub.detect.help.ArgumentStateParser;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
 import com.blackducksoftware.integration.hub.detect.help.html.HelpHtmlWriter;
@@ -125,6 +126,9 @@ public class Application implements ApplicationRunner {
     @Autowired
     private DetectPhoneHomeManager detectPhoneHomeManager;
 
+    @Autowired
+    private ArgumentStateParser argumentStateParser;
+
     private ExitCodeType exitCodeType = ExitCodeType.SUCCESS;
 
     public static void main(final String[] args) {
@@ -142,7 +146,7 @@ public class Application implements ApplicationRunner {
             final List<DetectOption> options = detectOptionManager.getDetectOptions();
 
             final String[] applicationArgs = applicationArguments.getSourceArgs();
-            final ArgumentState argumentState = new ArgumentState(applicationArgs);
+            final ArgumentState argumentState = argumentStateParser.parseArgs(applicationArgs);
 
             if (argumentState.isHelp) {
                 helpPrinter.printAppropriateHelpMessage(System.out, options, argumentState);

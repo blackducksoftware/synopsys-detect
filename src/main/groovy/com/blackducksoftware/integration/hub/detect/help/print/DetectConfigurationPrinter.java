@@ -130,8 +130,7 @@ public class DetectConfigurationPrinter {
     public String getCurrentValue(DetectConfiguration detectConfiguration, DetectOption detectOption) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
         Field field = detectConfiguration.getClass().getDeclaredField(detectOption.getFieldName());
         field.setAccessible(true);
-        Object rawFieldValue;
-        rawFieldValue = field.get(detectConfiguration);
+        Object rawFieldValue = field.get(detectConfiguration);
         String fieldValue = "";
         if (field.getType().isArray()) {
             fieldValue = String.join(", ", (String[]) rawFieldValue);
