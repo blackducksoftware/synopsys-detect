@@ -114,7 +114,7 @@ class SbtBomTool extends BomTool {
             result.projectVersion = modules[0].version
             result.projectExternalId = externalIdFactory.createMavenExternalId(modules[0].org, modules[0].name, modules[0].version)
         } else {
-            logger.warn("Unable to find exactly ony root module. Using source path for root project name.")
+            logger.warn("Unable to find exactly one root module. Using source path for root project name.")
             result.projectName = detectFileManager.extractFinalPieceFromPath(sourcePath)
             result.projectVersion = findFirstModuleVersion(modules, result.projectName, "root")
             result.projectExternalId = externalIdFactory.createPathExternalId(Forge.MAVEN, sourcePath)

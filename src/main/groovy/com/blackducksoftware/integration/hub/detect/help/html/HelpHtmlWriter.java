@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.help.print;
+package com.blackducksoftware.integration.hub.detect.help.html;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -56,30 +56,20 @@ public class HelpHtmlWriter {
     Configuration configuration;
 
     public void writeHelpMessage(final String filename) {
-        final List<GroupOptionListing> groupOptions = new ArrayList<>();
-
-        for (final String groupName : detectOptionManager.getDetectGroups()) {
-            final List<DetectOption> filteredOptions = getGroupDetectOptions(groupName);
-            groupOptions.add(new GroupOptionListing(StringUtils.capitalise(groupName), filteredOptions));
+        final HelpHtmlDataBuilder builder = new HelpHtmlDataBuilder();
+        
+        for (DetectOption option : detectOptionManager.getDetectOptions()) {
+            builder.addDetectOption(option);
         }
+        final HelpHtmlData templateData = builder.build();
 
-        final Map<String, Object> dataModel = new HashMap<>();
-        dataModel.put("options", groupOptions);
         try {
             final File htmlHelpFile = new File(filename);
             final Template htmlTemplate = configuration.getTemplate("templates/helpHtml.ftl");
-            htmlTemplate.process(dataModel, new FileWriter(htmlHelpFile));
+            htmlTemplate.process(templateData, new FileWriter(htmlHelpFile));
             logger.info(filename + " was created in your current directory.");
         } catch (final IOException | TemplateException e) {
             logger.error("There was an error when creating the html file", e);
         }
-    }
-
-    private List<DetectOption> getGroupDetectOptions(final String group) {
-        final List<DetectOption> filteredOptions = detectOptionManager.getDetectOptions()
-                .stream()
-                .filter(option -> group.equals(option.getGroup()))
-                .collect(Collectors.toList());
-        return filteredOptions;
     }
 }

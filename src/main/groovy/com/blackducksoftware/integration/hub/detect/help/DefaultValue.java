@@ -21,35 +21,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.help.print;
+package com.blackducksoftware.integration.hub.detect.help;
 
-import java.util.List;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import com.blackducksoftware.integration.hub.detect.help.DetectOption;
+import groovy.transform.TypeChecked;
 
-public class GroupOptionListing {
-    private String groupName;
-    private List<DetectOption> detectOptions;
-
-    public GroupOptionListing(final String groupName, final List<DetectOption> detectOptions) {
-        this.groupName = groupName;
-        this.detectOptions = detectOptions;
-    }
-
-    public String getGroupName() {
-        return groupName;
-    }
-
-    public void setGroupName(final String groupName) {
-        this.groupName = groupName;
-    }
-
-    public List<DetectOption> getDetectOptions() {
-        return detectOptions;
-    }
-
-    public void setDetectOptions(final List<DetectOption> detectOptions) {
-        this.detectOptions = detectOptions;
-    }
-
+@TypeChecked
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+public @interface DefaultValue {
+    String value() default "";
 }

@@ -49,23 +49,23 @@
             <col class="defaultColumn" />
             <col />
         </colgroup>
-        <#list options as option>
+        <#list groups as group>
         		<tr class="noBorder">
             		<td colspan="3" class="noBorder"></td>
 	        </tr>
 	        <tr>
-	            <th colspan="3" class="groupHeader">${option.groupName}</th>
+	            <th colspan="3" class="groupHeader">${group.groupName}</th>
 	        </tr>
 	        <tr>
 	            <th>Property Name</th>
 	            <th>Default</th>
 	            <th>Description</th>
 	        </tr>
-	        <#list option.detectOptions as detectOption>
+	        <#list group.options as option>
 		        <tr>
-		            <td>--${detectOption.getKey()}</td>
-		            <td>${detectOption.getDefaultValue()}</td>
-		            <td>${detectOption.getDescription()}</td>
+		            <td>--${option.key}</td>
+		            <td>${option.defaultValue}</td>
+		            <td>${option.description}</td>
 		        </tr>
 	        </#list> 
         </#list> 
