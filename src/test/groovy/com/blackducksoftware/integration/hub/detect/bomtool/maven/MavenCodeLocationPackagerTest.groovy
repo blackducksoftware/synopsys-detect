@@ -89,7 +89,7 @@ class MavenCodeLocationPackagerTest {
 
     @Test
     public void testIsLineRelevant() {
-        MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(new ExternalIdFactory())
+        MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(null)
 
         assertTrue(mavenCodeLocationPackager.isLineRelevant("weird garbage 3525356 [thingsINFO 346534623465] stuff"))
 
@@ -120,7 +120,7 @@ class MavenCodeLocationPackagerTest {
 
     @Test
     public void testTrimLogLevel() {
-        MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(new ExternalIdFactory())
+        MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(null)
 
         String actualLine = "";
         String expectedValue = "thing"
@@ -140,7 +140,7 @@ class MavenCodeLocationPackagerTest {
 
     @Test
     public void testIsProjectSection() {
-        MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(new ExternalIdFactory())
+        MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(null)
 
         assertFalse(mavenCodeLocationPackager.isProjectSection(" "))
 
@@ -163,7 +163,7 @@ class MavenCodeLocationPackagerTest {
 
     @Test
     public void testIsGav() {
-        MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(new ExternalIdFactory())
+        MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(null)
 
         assertFalse(mavenCodeLocationPackager.isGav(" "))
 
@@ -191,6 +191,52 @@ class MavenCodeLocationPackagerTest {
 
         assertTrue(mavenCodeLocationPackager.isGav("group:artifact:type:classifier:version:scope:garbage"))
 
+    }
+
+    @Test
+    public void testIndexOfEndOfSegments() {
+        MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(null)
+
+        assertEquals(-1, mavenCodeLocationPackager.indexOfEndOfSegments(""))
+
+        assertEquals(-1, mavenCodeLocationPackager.indexOfEndOfSegments("stuff and things"))
+
+        assertEquals(-1, mavenCodeLocationPackager.indexOfEndOfSegments("stuff and things", "things", "and"))
+
+        assertEquals(-1, mavenCodeLocationPackager.indexOfEndOfSegments("stuff and things", "things", "and", "stuff"))
+
+        assertEquals(5, mavenCodeLocationPackager.indexOfEndOfSegments("stuff and things", "stuff"))
+
+        assertEquals(9, mavenCodeLocationPackager.indexOfEndOfSegments("stuff and things", "stuff", "and"))
+
+        assertEquals(16, mavenCodeLocationPackager.indexOfEndOfSegments("stuff and things", "stuff", "and", "things"))
+
+        assertEquals(9, mavenCodeLocationPackager.indexOfEndOfSegments("stuff and things", "and"))
+
+        assertEquals(16, mavenCodeLocationPackager.indexOfEndOfSegments("stuff and things", "things"))
+    }
+
+    @Test
+    public void testDoesLineContainSegmentsInOrder() {
+        MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(null)
+
+        assertFalse(mavenCodeLocationPackager.doesLineContainSegmentsInOrder(""))
+
+        assertFalse(mavenCodeLocationPackager.doesLineContainSegmentsInOrder("stuff and things"))
+
+        assertFalse(mavenCodeLocationPackager.doesLineContainSegmentsInOrder("stuff and things", "things", "and"))
+
+        assertFalse(mavenCodeLocationPackager.doesLineContainSegmentsInOrder("stuff and things", "things", "and", "stuff"))
+
+        assertTrue(mavenCodeLocationPackager.doesLineContainSegmentsInOrder("stuff and things", "stuff"))
+
+        assertTrue(mavenCodeLocationPackager.doesLineContainSegmentsInOrder("stuff and things", "stuff", "and"))
+
+        assertTrue(mavenCodeLocationPackager.doesLineContainSegmentsInOrder("stuff and things", "stuff", "and", "things"))
+
+        assertTrue(mavenCodeLocationPackager.doesLineContainSegmentsInOrder("stuff and things", "and"))
+
+        assertTrue(mavenCodeLocationPackager.doesLineContainSegmentsInOrder("stuff and things", "things"))
     }
 
     private void createNewCodeLocationTest(String mavenOutputText, String expectedResourcePath) {

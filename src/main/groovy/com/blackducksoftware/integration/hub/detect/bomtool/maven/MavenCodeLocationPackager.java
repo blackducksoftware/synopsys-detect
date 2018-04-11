@@ -219,20 +219,13 @@ class MavenCodeLocationPackager {
 
     private boolean isLineRelevant(String line) {
         String editableLine = line;
-
-        int indexOfLeftBracket = editableLine.indexOf("[");
-        editableLine = editableLine.substring(indexOfLeftBracket + 1);
-
-        int indexOfInfo = editableLine.indexOf("INFO");
-        editableLine = editableLine.substring(indexOfInfo + 1);
-
-        int indexOfRightBracket = editableLine.indexOf("]");
-
-        if (indexOfLeftBracket == -1 || indexOfInfo == -1 || indexOfRightBracket == -1) {
+        if (!doesLineContainSegmentsInOrder(line, "[", "INFO", "]")) {
             // Does not contain [INFO]
             return false;
         }
-        String trimmedLine = editableLine.substring(indexOfRightBracket + 1).trim();
+        int index = indexOfEndOfSegments(line, "[", "INFO", "]");
+        String trimmedLine = editableLine.substring(index);
+
         if (StringUtils.isBlank(trimmedLine) || trimmedLine.contains("Downloaded") || trimmedLine.contains("Downloading")) {
             // Does not have content or this a line about download information
             return false;
@@ -243,14 +236,8 @@ class MavenCodeLocationPackager {
     private String trimLogLevel(String line) {
         String editableLine = line;
 
-        int indexOfLeftBracket = editableLine.indexOf("[");
-        editableLine = editableLine.substring(indexOfLeftBracket + 1);
-
-        int indexOfInfo = editableLine.indexOf("INFO");
-        editableLine = editableLine.substring(indexOfInfo + 1);
-
-        int indexOfRightBracket = editableLine.indexOf("]");
-        String trimmedLine = editableLine.substring(indexOfRightBracket + 1);
+        int index = indexOfEndOfSegments(line, "[", "INFO", "]");
+        String trimmedLine = editableLine.substring(index);
 
         if (trimmedLine.startsWith(" ")) {
             trimmedLine = trimmedLine.substring(1);
@@ -259,22 +246,8 @@ class MavenCodeLocationPackager {
     }
 
     private boolean isProjectSection(String line) {
-        String editableLine = line;
-
-        int indexOfDashes = editableLine.indexOf("---");
-        editableLine = editableLine.substring(indexOfDashes + 1);
-
-        int indexOfDependencyPlugin = editableLine.indexOf("maven-dependency-plugin");
-        editableLine = editableLine.substring(indexOfDependencyPlugin + 1);
-
-        int indexOfTreeCommand = editableLine.indexOf(":tree");
-
         // We only want to parse the dependency:tree output
-        if (indexOfDashes == -1 || indexOfDependencyPlugin == -1 || indexOfTreeCommand == -1) {
-            // Does not contain --maven-dependency-plugin:tree
-            return false;
-        }
-        return true;
+        return doesLineContainSegmentsInOrder(line, "---", "maven-dependency-plugin", ":", "tree");
     }
 
     private boolean isGav(final String componentText) {
@@ -291,6 +264,42 @@ class MavenCodeLocationPackager {
         }
         logger.debug(debugMessage);
         return false;
+    }
+
+    private boolean doesLineContainSegmentsInOrder(String line, String... segments) {
+        Boolean lineContainsSegments = true;
+
+        int index = indexOfEndOfSegments(line, segments);
+        if (index == -1) {
+            lineContainsSegments = false;
+        }
+
+        return lineContainsSegments;
+    }
+
+    private int indexOfEndOfSegments(String line, String... segments) {
+        int endOfSegments;
+        if (segments.length == 0) {
+            endOfSegments = -1;
+        } else {
+            endOfSegments = 0;
+        }
+
+        String editableLine = line;
+        for (String segment : segments) {
+            int index = editableLine.indexOf(segment);
+            // If the string does not contain the segment indexOf returns -1
+            if (index == -1) {
+                endOfSegments = -1;
+                break;
+            }
+            // Add the index to the total to keep track of the index in the original String
+            endOfSegments += (index + segment.length());
+
+            // cut the string off right after the segment we just found so we are only looking at the remainder of the line for the next segment
+            editableLine = editableLine.substring(index + segment.length());
+        }
+        return endOfSegments;
     }
 
 }
