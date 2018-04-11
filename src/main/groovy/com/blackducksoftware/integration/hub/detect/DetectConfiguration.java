@@ -25,11 +25,14 @@ package com.blackducksoftware.integration.hub.detect;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -48,7 +51,12 @@ import com.blackducksoftware.integration.hub.detect.bomtool.GradleBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.NugetBomTool;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
-import com.blackducksoftware.integration.hub.detect.help.ValueDescription;
+import com.blackducksoftware.integration.hub.detect.help.HelpDescription;
+import com.blackducksoftware.integration.hub.detect.help.HelpGroup;
+import com.blackducksoftware.integration.hub.detect.help.ValueDeprecation;
+import com.blackducksoftware.integration.hub.detect.help.DefaultValue;
+import com.blackducksoftware.integration.hub.detect.help.FieldWarnings;
+import com.blackducksoftware.integration.hub.detect.help.AcceptableValues;
 import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver;
 import com.blackducksoftware.integration.hub.proxy.ProxyInfo;
 import com.blackducksoftware.integration.hub.proxy.ProxyInfoBuilder;
@@ -56,6 +64,7 @@ import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnection;
 import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnectionBuilder;
 import com.blackducksoftware.integration.log.Slf4jIntLogger;
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
+import com.blackducksoftware.integration.util.ResourceUtil;
 
 import groovy.transform.TypeChecked;
 
@@ -96,6 +105,16 @@ public class DetectConfiguration {
     private static final String GROUP_SBT = "sbt";
     private static final String GROUP_SIGNATURE_SCANNER = "signature scanner";
 
+    private static final String SEARCH_GROUP_SIGNATURE_SCANNER = "scanner";
+    private static final String SEARCH_GROUP_POLICY = "policy";
+    private static final String SEARCH_GROUP_HUB = "hub";
+    private static final String SEARCH_GROUP_PROXY = "proxy";
+    private static final String SEARCH_GROUP_OFFLINE = "offline";
+    private static final String SEARCH_GROUP_PROJECT = "project";
+    private static final String SEARCH_GROUP_DEBUG = "debug";
+
+    public static final String PRINT_GROUP_DEFAULT = SEARCH_GROUP_HUB;
+    
     @Autowired
     private ConfigurableEnvironment configurableEnvironment;
 
@@ -124,6 +143,8 @@ public class DetectConfiguration {
     private ExcludedIncludedFilter bomToolFilter;
     private final List<String> excludedScanPaths = new ArrayList<>();
 
+    private final FieldWarnings warnings = new FieldWarnings();
+
     public void init() throws DetectUserFriendlyException, IOException, IllegalArgumentException, IllegalAccessException {
         final String systemUserHome = System.getProperty("user.home");
         if (resolveTildeInPaths) {
@@ -139,6 +160,16 @@ public class DetectConfiguration {
         if (!sourceDirectory.exists() || !sourceDirectory.isDirectory()) {
             throw new DetectUserFriendlyException("The source path ${sourcePath} either doesn't exist, isn't a directory, or doesn't have appropriate permissions.", ExitCodeType.FAILURE_GENERAL_ERROR);
         }
+
+        boolean atLeastOnePolicySeverity = StringUtils.isNotBlank(policyCheckFailOnSeverities);
+        if (atLeastOnePolicySeverity) {
+            if (policyCheck) {
+                warnings.addDeprecation("policyCheck");
+            }else {
+                policyCheck = true;
+            }
+        }
+
         // make sure the path is absolute
         sourcePath = sourceDirectory.getCanonicalPath();
 
@@ -192,11 +223,19 @@ public class DetectConfiguration {
 
         if (StringUtils.isNotBlank(hubSignatureScannerHostUrl)) {
             logger.info("A hub signature scanner url was provided, which requires hub offline mode. Setting hub offline mode to true.");
+            if (hubOfflineMode == false) {
+                warnings.addWarning("hubSignatureScannerHostUrl", "A hub signature scanner host url was provided but hub offline mode was false. In the future set hub offline mode to true.");
+                warnings.addWarning("hubOfflineMode", "A signature scanner url was provided, so hub offline mode was forced to true.");
+            }
             hubOfflineMode = true;
         }
 
         if (StringUtils.isNotBlank(hubSignatureScannerOfflineLocalPath)) {
             logger.info("A local hub signature scanner path was provided, which requires hub offline mode. Setting hub offline mode to true.");
+            if (hubOfflineMode == false) {
+                warnings.addWarning("hubSignatureScannerOfflineLocalPath", "A local hub signature scanner was provided but hub offline mode was false. In the future set hub offline mode to true.");
+                warnings.addWarning("hubOfflineMode", "A signature scanner path was provided, so hub offline mode was forced to true.");
+            }
             hubOfflineMode = true;
         }
 
@@ -212,7 +251,13 @@ public class DetectConfiguration {
             dockerInspectorVersion = dockerBomTool.getInspectorVersion();
         }
 
+
+
         configureForPhoneHome();
+    }
+
+    public FieldWarnings getFieldWarnings() {
+        return this.warnings;
     }
 
     public File getSourceDirectory() {
@@ -351,444 +396,627 @@ public class DetectConfiguration {
 
     // properties start
 
-    @ValueDescription(description = "If true, detect will always exit with code 0.", defaultValue = "false", group = DetectConfiguration.GROUP_GENERAL)
     @Value("${detect.force.success:}")
+    @DefaultValue("false")
+    @HelpGroup(primary = GROUP_GENERAL)
+    @HelpDescription("If true, detect will always exit with code 0.")
     private Boolean forceSuccess;
 
-    @ValueDescription(description = "If true, the default behavior of printing your configuration properties at startup will be suppressed.", defaultValue = "false", group = DetectConfiguration.GROUP_LOGGING)
     @Value("${detect.suppress.configuration.output:}")
+    @DefaultValue("false")
+    @HelpGroup(primary = GROUP_LOGGING)
+    @HelpDescription("If true, the default behavior of printing your configuration properties at startup will be suppressed.")
     private Boolean suppressConfigurationOutput;
 
-    @ValueDescription(description = "If true, the default behavior of printing the Detect Results will be suppressed.", defaultValue = "false", group = DetectConfiguration.GROUP_LOGGING)
     @Value("${detect.suppress.results.output:}")
+    @DefaultValue("false")
+    @HelpGroup(primary = GROUP_LOGGING)
+    @HelpDescription("If true, the default behavior of printing the Detect Results will be suppressed.")
     private Boolean suppressResultsOutput;
 
-    @ValueDescription(description = "If true the bdio files will be deleted after upload", defaultValue = "true", group = DetectConfiguration.GROUP_CLEANUP)
     @Value("${detect.cleanup.bdio.files:}")
+    @DefaultValue("true")
+    @HelpGroup(primary = GROUP_CLEANUP)
+    @HelpDescription("If true the bdio files will be deleted after upload")
     private Boolean cleanupBdioFiles;
 
-    @ValueDescription(description = "Test the connection to the Hub with the current configuration", defaultValue = "false", group = DetectConfiguration.GROUP_HUB_CONFIGURATION)
     @Value("${detect.test.connection:}")
+    @DefaultValue("false")
+    @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = {SEARCH_GROUP_HUB})
+    @HelpDescription("Test the connection to the Hub with the current configuration")
     private Boolean testConnection;
 
-    @ValueDescription(description = "Timeout for response from the hub regarding your project (i.e. risk reports and policy check). When changing this value, keep in mind the checking of policies might have to wait for a new scan to process which can take some time.", defaultValue = "300000", group = DetectConfiguration.GROUP_PROJECT_INFO)
     @Value("${detect.api.timeout:}")
+    @DefaultValue("300000")
+    @HelpGroup(primary = GROUP_PROJECT_INFO, additional = {SEARCH_GROUP_PROJECT})
+    @HelpDescription("Timeout for response from the hub regarding your project (i.e. risk reports and policy check). When changing this value, keep in mind the checking of policies might have to wait for a new scan to process which can take some time.")
     private Long apiTimeout;
 
-    @ValueDescription(description = "URL of the Hub server", group = DetectConfiguration.GROUP_HUB_CONFIGURATION)
     @Value("${blackduck.hub.url:}")
+    @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = {SEARCH_GROUP_HUB})
+    @HelpDescription("URL of the Hub server")
     private String hubUrl;
 
-    @ValueDescription(description = "Time to wait for rest connections to complete", defaultValue = "120", group = DetectConfiguration.GROUP_HUB_CONFIGURATION)
     @Value("${blackduck.hub.timeout:}")
+    @DefaultValue("120")
+    @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = {SEARCH_GROUP_HUB})
+    @HelpDescription("Time to wait for rest connections to complete")
     private Integer hubTimeout;
 
-    @ValueDescription(description = "Hub username", group = DetectConfiguration.GROUP_HUB_CONFIGURATION)
     @Value("${blackduck.hub.username:}")
+    @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = {SEARCH_GROUP_HUB})
+    @HelpDescription("Hub username")
     private String hubUsername;
 
-    @ValueDescription(description = "Hub password", group = DetectConfiguration.GROUP_HUB_CONFIGURATION)
     @Value("${blackduck.hub.password:}")
+    @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = {SEARCH_GROUP_HUB})
+    @HelpDescription("Hub password")
     private String hubPassword;
 
-    @ValueDescription(description = "Hub API Token", group = DetectConfiguration.GROUP_HUB_CONFIGURATION)
     @Value("${blackduck.hub.api.token:}")
+    @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = {SEARCH_GROUP_HUB})
+    @HelpDescription("Hub API Token")
     private String hubApiToken;
 
-    @ValueDescription(description = "Proxy host", group = DetectConfiguration.GROUP_HUB_CONFIGURATION)
     @Value("${blackduck.hub.proxy.host:}")
+    @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = {SEARCH_GROUP_HUB, SEARCH_GROUP_PROXY})
+    @HelpDescription("Proxy host")
     private String hubProxyHost;
 
-    @ValueDescription(description = "Proxy port", group = DetectConfiguration.GROUP_HUB_CONFIGURATION)
     @Value("${blackduck.hub.proxy.port:}")
+    @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = {SEARCH_GROUP_HUB, SEARCH_GROUP_PROXY})
+    @HelpDescription("Proxy port")
     private String hubProxyPort;
 
-    @ValueDescription(description = "Proxy username", group = DetectConfiguration.GROUP_HUB_CONFIGURATION)
     @Value("${blackduck.hub.proxy.username:}")
+    @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = {SEARCH_GROUP_HUB, SEARCH_GROUP_PROXY})
+    @HelpDescription("Proxy username")
     private String hubProxyUsername;
 
-    @ValueDescription(description = "Proxy password", group = DetectConfiguration.GROUP_HUB_CONFIGURATION)
     @Value("${blackduck.hub.proxy.password:}")
+    @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = {SEARCH_GROUP_HUB, SEARCH_GROUP_PROXY})
+    @HelpDescription("Proxy password")
     private String hubProxyPassword;
 
-    @ValueDescription(description = "Comma separated list of host patterns that should not use the proxy", group = DetectConfiguration.GROUP_HUB_CONFIGURATION)
-    @Value("${blackduck.hub.proxy.ignored.hosts:}")
-    private String hubProxyIgnoredHosts;
-
-    @ValueDescription(description = "Ntlm Proxy domain", group = DetectConfiguration.GROUP_HUB_CONFIGURATION)
     @Value("${blackduck.hub.proxy.ntlm.domain:}")
+    @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = {SEARCH_GROUP_HUB, SEARCH_GROUP_PROXY})
+    @HelpDescription("Ntlm Proxy domain")
     private String hubProxyNtlmDomain;
 
-    @ValueDescription(description = "Ntlm Proxy workstation", group = DetectConfiguration.GROUP_HUB_CONFIGURATION)
+    @Value("${blackduck.hub.proxy.ignored.hosts:}")
+    @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = {SEARCH_GROUP_HUB, SEARCH_GROUP_PROXY})
+    @HelpDescription("Comma separated list of host patterns that should not use the proxy")
+    private String hubProxyIgnoredHosts;
+
     @Value("${blackduck.hub.proxy.ntlm.workstation:}")
+    @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = {SEARCH_GROUP_HUB, SEARCH_GROUP_PROXY})
+    @HelpDescription("Ntlm Proxy workstation")
     private String hubProxyNtlmWorkstation;
 
-    @ValueDescription(description = "If true, automatically trust the certificate for the current run of Detect only", defaultValue = "false", group = DetectConfiguration.GROUP_HUB_CONFIGURATION)
     @Value("${blackduck.hub.trust.cert:}")
+    @DefaultValue("false")
+    @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = {SEARCH_GROUP_HUB})
+    @HelpDescription("If true, automatically trust the certificate for the current run of Detect only")
     private Boolean hubTrustCertificate;
 
-    @ValueDescription(description = "This can disable any Hub communication - if true, Detect will not upload BDIO files, it will not check policies, and it will not download and install the signature scanner.", defaultValue = "false", group = DetectConfiguration.GROUP_HUB_CONFIGURATION)
     @Value("${blackduck.hub.offline.mode:}")
+    @DefaultValue("false")
+    @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = {SEARCH_GROUP_HUB, SEARCH_GROUP_OFFLINE})
+    @HelpDescription("This can disable any Hub communication - if true, Detect will not upload BDIO files, it will not check policies, and it will not download and install the signature scanner.")
     private Boolean hubOfflineMode;
 
-    @ValueDescription(description = "If set to false we will not automatically resolve the '~/' prefix in a mac or linux path to the user's home directory.", defaultValue = "true", group = DetectConfiguration.GROUP_PATHS)
     @Value("${detect.resolve.tilde.in.paths:}")
+    @DefaultValue("true")
+    @HelpGroup(primary = GROUP_PATHS)
+    @HelpDescription("If set to false we will not automatically resolve the '~/' prefix in a mac or linux path to the user's home directory.")
     private Boolean resolveTildeInPaths;
 
-    @ValueDescription(description = "Source path to inspect", group = DetectConfiguration.GROUP_PATHS)
     @Value("${detect.source.path:}")
+    @HelpGroup(primary = GROUP_PATHS)
+    @HelpDescription("Source path to inspect")
     private String sourcePath;
 
-    @ValueDescription(description = "Output path", group = DetectConfiguration.GROUP_PATHS)
     @Value("${detect.output.path:}")
+    @HelpGroup(primary = GROUP_PATHS)
+    @HelpDescription("Output path")
     private String outputDirectoryPath;
 
-    @ValueDescription(description = "The output directory for all bdio files. If not set, the bdio files will be in a 'bdio' subdirectory of the output path.", group = DetectConfiguration.GROUP_PATHS)
     @Value("${detect.bdio.output.path:}")
+    @HelpGroup(primary = GROUP_PATHS)
+    @HelpDescription("The output directory for all bdio files. If not set, the bdio files will be in a 'bdio' subdirectory of the output path.")
     private String bdioOutputDirectoryPath;
 
-    @ValueDescription(description = "The output directory for all scan files. If not set, the scan files will be in a 'scan' subdirectory of the output path.", group = DetectConfiguration.GROUP_PATHS)
     @Value("${detect.scan.output.path:}")
+    @HelpGroup(primary = GROUP_PATHS)
+    @HelpDescription("The output directory for all scan files. If not set, the scan files will be in a 'scan' subdirectory of the output path.")
     private String scanOutputDirectoryPath;
 
-    @ValueDescription(description = "Depth from source paths to search for files.", defaultValue = "3", group = DetectConfiguration.GROUP_PATHS)
     @Value("${detect.search.depth:}")
+    @DefaultValue("3")
+    @HelpGroup(primary = GROUP_PATHS)
+    @HelpDescription("Depth from source paths to search for files.")
     private Integer searchDepth;
 
-    @ValueDescription(description = "By default, all tools will be included. If you want to exclude specific tools, specify the ones to exclude here. Exclusion rules always win.", group = DetectConfiguration.GROUP_BOMTOOL)
+    @Value("${detect.bom.tool.search.depth:}")
+    @DefaultValue("0")
+    @HelpGroup(primary = GROUP_PATHS)
+    @HelpDescription("Depth from source paths to search for files to determine if a bom tool applies.")
+    private Integer bomToolSearchDepth;
+
+    @Value("${detect.bom.tool.search.continue:}")
+    @DefaultValue("false")
+    @HelpGroup(primary = GROUP_PATHS)
+    @HelpDescription("If true, the bom tool search will continue to look for bom tools to the maximum search depth, even if they applied earlier in the path.")
+    private Boolean bomToolContinueSearch;
+
+    @Value("${detect.bom.tool.search.exclusion:}")
+    @HelpGroup(primary = GROUP_PATHS)
+    @HelpDescription("A comma-separated list of directory names to exclude from the bom tool search.")
+    private String[] bomToolSearchExclusion;
+
+    @Value("${detect.bom.tool.search.exclusion.defaults:}")
+    @DefaultValue("true")
+    @HelpGroup(primary = GROUP_PATHS)
+    @HelpDescription("If true, the bom tool search will exclude the default directory names.")
+    private Boolean bomToolSearchExclusionDefaults;
+
     @Value("${detect.excluded.bom.tool.types:}")
+    @HelpGroup(primary = GROUP_BOMTOOL)
+    @HelpDescription("By default, all tools will be included. If you want to exclude specific tools, specify the ones to exclude here. Exclusion rules always win.")
     private String excludedBomToolTypes;
 
-    @ValueDescription(description = "By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.", group = DetectConfiguration.GROUP_BOMTOOL)
     @Value("${detect.included.bom.tool.types:}")
+    @HelpGroup(primary = GROUP_BOMTOOL)
+    @HelpDescription("By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.")
     private String includedBomToolTypes;
 
-    @ValueDescription(description = "An override for the name to use for the Hub project. If not supplied, detect will attempt to use the tools to figure out a reasonable project name. If that fails, the final part of the directory path where the inspection is taking place will be used.", group = DetectConfiguration.GROUP_PROJECT_INFO)
     @Value("${detect.project.name:}")
+    @HelpGroup(primary = GROUP_PROJECT_INFO, additional = {SEARCH_GROUP_PROJECT})
+    @HelpDescription("An override for the name to use for the Hub project. If not supplied, detect will attempt to use the tools to figure out a reasonable project name. If that fails, the final part of the directory path where the inspection is taking place will be used.")
     private String projectName;
 
-    @ValueDescription(description = "An override for the version to use for the Hub project. If not supplied, detect will attempt to use the tools to figure out a reasonable version name. If that fails, the current date will be used.", group = DetectConfiguration.GROUP_PROJECT_INFO)
     @Value("${detect.project.version.name:}")
+    @HelpGroup(primary = GROUP_PROJECT_INFO, additional = {SEARCH_GROUP_PROJECT})
+    @HelpDescription("An override for the version to use for the Hub project. If not supplied, detect will attempt to use the tools to figure out a reasonable version name. If that fails, the current date will be used.")
     private String projectVersionName;
 
-    @ValueDescription(description = "If project version notes are specified, your project version will be created with these notes.", group = DetectConfiguration.GROUP_PROJECT_INFO)
     @Value("${detect.project.version.notes:}")
+    @HelpGroup(primary = GROUP_PROJECT_INFO, additional = {SEARCH_GROUP_PROJECT})
+    @HelpDescription("If project version notes are specified, your project version will be created with these notes.")
     private String projectVersionNotes;
 
-    @ValueDescription(description = "If a hub project tier is specified, your project will be created with this tier.", group = DetectConfiguration.GROUP_PROJECT_INFO)
     @Value("${detect.project.tier:}")
+    @HelpGroup(primary = GROUP_PROJECT_INFO, additional = {SEARCH_GROUP_PROJECT})
+    @HelpDescription("If a hub project tier is specified, your project will be created with this tier.")
+    @AcceptableValues(value = {"1","2","3","4","5"}, caseSensitive = false, strict = false)
     private Integer projectTier;
 
-    @ValueDescription(description = "A prefix to the name of the codelocations created by Detect. Useful for running against the same projects on multiple machines.", defaultValue = "", group = DetectConfiguration.GROUP_PROJECT_INFO)
     @Value("${detect.project.codelocation.prefix:}")
+    @DefaultValue("")
+    @HelpGroup(primary = GROUP_PROJECT_INFO, additional = {SEARCH_GROUP_PROJECT})
+    @HelpDescription("A prefix to the name of the codelocations created by Detect. Useful for running against the same projects on multiple machines.")
     private String projectCodeLocationPrefix;
 
-    @ValueDescription(description = "A suffix to the name of the codelocations created by Detect.", defaultValue = "", group = DetectConfiguration.GROUP_PROJECT_INFO)
     @Value("${detect.project.codelocation.suffix:}")
+    @DefaultValue("")
+    @HelpGroup(primary = GROUP_PROJECT_INFO, additional = {SEARCH_GROUP_PROJECT})
+    @HelpDescription("A suffix to the name of the codelocations created by Detect.")
     private String projectCodeLocationSuffix;
 
-    @ValueDescription(description = "If set to true, when an old code location format is found in the Hub, instead of logging a warning, the code location will be deleted. USE WITH CAUTION - THIS CAN DELETE CODE LOCATIONS IN THE HUB.", defaultValue = "false", group = DetectConfiguration.GROUP_PROJECT_INFO)
     @Value("${detect.project.codelocation.delete.old.names:}")
+    @DefaultValue("false")
+    @HelpGroup(primary = GROUP_PROJECT_INFO, additional = {SEARCH_GROUP_PROJECT})
+    @HelpDescription("If set to true, when an old code location format is found in the Hub, instead of logging a warning, the code location will be deleted. USE WITH CAUTION - THIS CAN DELETE CODE LOCATIONS IN THE HUB.")
     private Boolean projectCodeLocationDeleteOldNames;
 
-    @ValueDescription(description = "An override for the Project level matches.", defaultValue = "true", group = DetectConfiguration.GROUP_PROJECT_INFO)
     @Value("${detect.project.level.adjustments:}")
+    @DefaultValue("true")
+    @HelpGroup(primary = GROUP_PROJECT_INFO, additional = {SEARCH_GROUP_PROJECT})
+    @HelpDescription("An override for the Project level matches.")
     private String projectLevelMatchAdjustments;
 
-    @ValueDescription(description = "An override for the Project Version phase.", defaultValue = "Development", group = DetectConfiguration.GROUP_PROJECT_INFO)
     @Value("${detect.project.version.phase:}")
+    @DefaultValue("Development")
+    @HelpGroup(primary = GROUP_PROJECT_INFO, additional = {SEARCH_GROUP_PROJECT})
+    @HelpDescription("An override for the Project Version phase.")
+    @AcceptableValues(value = {"PLANNING","DEVELOPMENT","RELEASED","DEPRECATED","ARCHIVED"}, caseSensitive = false, strict = false)
     private String projectVersionPhase;
 
-    @ValueDescription(description = "An override for the Project Version distribution", defaultValue = "External", group = DetectConfiguration.GROUP_PROJECT_INFO)
     @Value("${detect.project.version.distribution:}")
+    @DefaultValue("External")
+    @HelpGroup(primary = GROUP_PROJECT_INFO, additional = {SEARCH_GROUP_PROJECT})
+    @HelpDescription("An override for the Project Version distribution")
+    @AcceptableValues(value = {"EXTERNAL","SAAS","INTERNAL","OPENSOURCE"}, caseSensitive = false, strict = false)
     private String projectVersionDistribution;
 
-    @ValueDescription(description = "Set to true if you would like a policy check from the hub for your project. False by default", defaultValue = "false", group = DetectConfiguration.GROUP_POLICY_CHECK)
+    @ValueDeprecation(willRemoveInVersion="4.0.0", description = "To fail on any policy, set --detect.policy.check.fail.on.severities=ALL.")
     @Value("${detect.policy.check:}")
+    @DefaultValue("false")
+    @HelpGroup(primary = GROUP_POLICY_CHECK, additional = {SEARCH_GROUP_POLICY})
+    @HelpDescription("Set to true if you would like a policy check from the hub for your project. False by default")
     private Boolean policyCheck;
 
-    @ValueDescription(description = "A comma-separated list of policy violation severities that will fail detect if checking policies is enabled. If no severity is provided, any policy violation will fail detect.", group = DetectConfiguration.GROUP_POLICY_CHECK)
     @Value("${detect.policy.check.fail.on.severities:}")
+    @HelpGroup(primary = GROUP_POLICY_CHECK, additional = {SEARCH_GROUP_POLICY})
+    @HelpDescription("A comma-separated list of policy violation severities that will fail detect if checking policies is enabled. If no severity is provided, any policy violation will fail detect.")
+    @AcceptableValues(value = {"ALL", "LOW","MEDIUM","HIGH"}, caseSensitive = false, strict = false)
     private String policyCheckFailOnSeverities;
 
-    @ValueDescription(description = "Version of the Gradle Inspector", defaultValue = "latest", group = DetectConfiguration.GROUP_GRADLE)
     @Value("${detect.gradle.inspector.version:}")
+    @DefaultValue("latest")
+    @HelpGroup(primary = GROUP_GRADLE)
+    @HelpDescription("Version of the Gradle Inspector")
     private String gradleInspectorVersion;
 
-    @ValueDescription(description = "Gradle build command", group = DetectConfiguration.GROUP_GRADLE)
     @Value("${detect.gradle.build.command:}")
+    @HelpGroup(primary = GROUP_GRADLE)
+    @HelpDescription("Gradle build command")
     private String gradleBuildCommand;
 
-    @ValueDescription(description = "The names of the dependency configurations to exclude", group = DetectConfiguration.GROUP_GRADLE)
     @Value("${detect.gradle.excluded.configurations:}")
+    @HelpGroup(primary = GROUP_GRADLE)
+    @HelpDescription("The names of the dependency configurations to exclude")
     private String gradleExcludedConfigurationNames;
 
-    @ValueDescription(description = "The names of the dependency configurations to include", group = DetectConfiguration.GROUP_GRADLE)
     @Value("${detect.gradle.included.configurations:}")
+    @HelpGroup(primary = GROUP_GRADLE)
+    @HelpDescription("The names of the dependency configurations to include")
     private String gradleIncludedConfigurationNames;
 
-    @ValueDescription(description = "The names of the projects to exclude", group = DetectConfiguration.GROUP_GRADLE)
     @Value("${detect.gradle.excluded.projects:}")
+    @HelpGroup(primary = GROUP_GRADLE)
+    @HelpDescription("The names of the projects to exclude")
     private String gradleExcludedProjectNames;
 
-    @ValueDescription(description = "The names of the projects to include", group = DetectConfiguration.GROUP_GRADLE)
     @Value("${detect.gradle.included.projects:}")
+    @HelpGroup(primary = GROUP_GRADLE)
+    @HelpDescription("The names of the projects to include")
     private String gradleIncludedProjectNames;
 
-    @ValueDescription(description = "Set this to false if you do not want the 'blackduck' directory in your build directory to be deleted.", defaultValue = "true", group = DetectConfiguration.GROUP_GRADLE)
     @Value("${detect.gradle.cleanup.build.blackduck.directory:}")
+    @DefaultValue("true")
+    @HelpGroup(primary = GROUP_GRADLE)
+    @HelpDescription("Set this to false if you do not want the 'blackduck' directory in your build directory to be deleted.")
     private Boolean gradleCleanupBuildBlackduckDirectory;
 
-    @ValueDescription(description = "Name of the Nuget Inspector", defaultValue = "IntegrationNugetInspector", group = DetectConfiguration.GROUP_NUGET)
     @Value("${detect.nuget.inspector.name:}")
+    @DefaultValue("IntegrationNugetInspector")
+    @HelpGroup(primary = GROUP_NUGET)
+    @HelpDescription("Name of the Nuget Inspector")
     private String nugetInspectorPackageName;
 
-    @ValueDescription(description = "Version of the Nuget Inspector", defaultValue = "latest", group = DetectConfiguration.GROUP_NUGET)
     @Value("${detect.nuget.inspector.version:}")
+    @DefaultValue("latest")
+    @HelpGroup(primary = GROUP_NUGET)
+    @HelpDescription("Version of the Nuget Inspector")
     private String nugetInspectorPackageVersion;
 
-    @ValueDescription(description = "The names of the projects in a solution to exclude", group = DetectConfiguration.GROUP_NUGET)
     @Value("${detect.nuget.excluded.modules:}")
+    @HelpGroup(primary = GROUP_NUGET)
+    @HelpDescription("The names of the projects in a solution to exclude")
     private String nugetInspectorExcludedModules;
 
-    @ValueDescription(description = "The names of the projects in a solution to include (overrides exclude)", group = DetectConfiguration.GROUP_NUGET)
     @Value("${detect.nuget.included.modules:}")
+    @HelpGroup(primary = GROUP_NUGET)
+    @HelpDescription("The names of the projects in a solution to include (overrides exclude)")
     private String nugetInspectorIncludedModules;
 
-    @ValueDescription(description = "If true errors will be logged and then ignored.", defaultValue = "false", group = DetectConfiguration.GROUP_NUGET)
     @Value("${detect.nuget.ignore.failure:}")
+    @DefaultValue("false")
+    @HelpGroup(primary = GROUP_NUGET)
+    @HelpDescription("If true errors will be logged and then ignored.")
     private Boolean nugetInspectorIgnoreFailure;
 
-    @ValueDescription(description = "The name of the dependency scope to include", group = DetectConfiguration.GROUP_MAVEN)
     @Value("${detect.maven.scope:}")
+    @HelpGroup(primary = GROUP_MAVEN)
+    @HelpDescription("The name of the dependency scope to include")
     private String mavenScope;
 
-    @ValueDescription(description = "Maven build command", group = DetectConfiguration.GROUP_MAVEN)
     @Value("${detect.maven.build.command:}")
+    @HelpGroup(primary = GROUP_MAVEN)
+    @HelpDescription("Maven build command")
     private String mavenBuildCommand;
 
-    @ValueDescription(description = "Path of the Gradle executable", group = DetectConfiguration.GROUP_GRADLE)
     @Value("${detect.gradle.path:}")
+    @HelpGroup(primary = GROUP_GRADLE)
+    @HelpDescription("Path of the Gradle executable")
     private String gradlePath;
 
-    @ValueDescription(description = "The path of the Maven executable", group = DetectConfiguration.GROUP_MAVEN)
     @Value("${detect.maven.path:}")
+    @HelpGroup(primary = GROUP_MAVEN)
+    @HelpDescription("The path of the Maven executable")
     private String mavenPath;
 
-    @ValueDescription(description = "The names of the module to exclude", group = DetectConfiguration.GROUP_MAVEN)
     @Value("${detect.maven.excluded.modules:}")
+    @HelpGroup(primary = GROUP_MAVEN)
+    @HelpDescription("The names of the module to exclude")
     private String mavenExcludedModuleNames;
 
-    @ValueDescription(description = "The names of the module to include", group = DetectConfiguration.GROUP_MAVEN)
     @Value("${detect.maven.included.modules:}")
+    @HelpGroup(primary = GROUP_MAVEN)
+    @HelpDescription("The names of the module to include")
     private String mavenIncludedModuleNames;
 
-    @ValueDescription(description = "The path of the Nuget executable", group = DetectConfiguration.GROUP_NUGET)
     @Value("${detect.nuget.path:}")
+    @HelpGroup(primary = GROUP_NUGET)
+    @HelpDescription("The path of the Nuget executable")
     private String nugetPath;
 
-    @ValueDescription(description = "Override for pip inspector to find your project", group = DetectConfiguration.GROUP_PIP)
     @Value("${detect.pip.project.name:}")
+    @HelpGroup(primary = GROUP_PIP)
+    @HelpDescription("Override for pip inspector to find your project")
     private String pipProjectName;
 
-    @ValueDescription(description = "If true will use Python 3 if available on class path", defaultValue = "false", group = DetectConfiguration.GROUP_PYTHON)
     @Value("${detect.python.python3:}")
+    @DefaultValue("false")
+    @HelpGroup(primary = GROUP_PYTHON)
+    @HelpDescription("If true will use Python 3 if available on class path")
     private Boolean pythonThreeOverride;
 
-    @ValueDescription(description = "The path of the Python executable", group = DetectConfiguration.GROUP_PYTHON)
     @Value("${detect.python.path:}")
+    @HelpGroup(primary = GROUP_PYTHON)
+    @HelpDescription("The path of the Python executable")
     private String pythonPath;
 
-    @ValueDescription(description = "The path of the Npm executable", group = DetectConfiguration.GROUP_NPM)
     @Value("${detect.npm.path:}")
+    @HelpGroup(primary = GROUP_NPM)
+    @HelpDescription("The path of the Npm executable")
     private String npmPath;
 
-    @ValueDescription(description = "Set this value to false if you would like to exclude your dev dependencies when ran", defaultValue = "true", group = DetectConfiguration.GROUP_NPM)
     @Value("${detect.npm.include.dev.dependencies:}")
+    @DefaultValue("true")
+    @HelpGroup(primary = GROUP_NPM)
+    @HelpDescription("Set this value to false if you would like to exclude your dev dependencies when ran")
     private String npmIncludeDevDependencies;
 
-    @ValueDescription(description = "The path of the node executable that is used by Npm", group = DetectConfiguration.GROUP_NPM)
     @Value("${detect.npm.node.path:}")
+    @HelpGroup(primary = GROUP_NPM)
+    @HelpDescription("The path of the node executable that is used by Npm")
     private String npmNodePath;
 
-    @ValueDescription(description = "The path of the pear executable", group = DetectConfiguration.GROUP_PEAR)
     @Value("${detect.pear.path:}")
+    @HelpGroup(primary = GROUP_PEAR)
+    @HelpDescription("The path of the pear executable")
     private String pearPath;
 
-    @ValueDescription(description = "Set to true if you would like to include only required packages", defaultValue = "false", group = DetectConfiguration.GROUP_PEAR)
     @Value("${detect.pear.only.required.deps:}")
+    @DefaultValue("false")
+    @HelpGroup(primary = GROUP_PEAR)
+    @HelpDescription("Set to true if you would like to include only required packages")
     private Boolean pearOnlyRequiredDependencies;
 
-    @ValueDescription(description = "The path of the requirements.txt file", group = DetectConfiguration.GROUP_PIP)
     @Value("${detect.pip.requirements.path:}")
+    @HelpGroup(primary = GROUP_PIP)
+    @HelpDescription("The path of the requirements.txt file")
     private String requirementsFilePath;
 
-    @ValueDescription(description = "Path of the Go Dep executable", group = DetectConfiguration.GROUP_GO)
     @Value("${detect.go.dep.path:}")
+    @HelpGroup(primary = GROUP_GO)
+    @HelpDescription("Path of the Go Dep executable")
     private String goDepPath;
 
-    @ValueDescription(description = "If set to true, we will attempt to run 'init' and 'ensure' which can modify your development environment.", defaultValue = "false", group = DetectConfiguration.GROUP_GO)
     @Value("${detect.go.run.dep.init:}")
+    @DefaultValue("false")
+    @HelpGroup(primary = GROUP_GO)
+    @HelpDescription("If set to true, we will attempt to run 'init' and 'ensure' which can modify your development environment.")
     private Boolean goRunDepInit;
 
-    @ValueDescription(description = "Path of the docker executable", group = DetectConfiguration.GROUP_DOCKER)
     @Value("${detect.docker.path:}")
+    @HelpGroup(primary = GROUP_DOCKER)
+    @HelpDescription("Path of the docker executable")
     private String dockerPath;
 
-    @ValueDescription(description = "This is used to override using the hosted script by github url. You can provide your own script at this path.", group = DetectConfiguration.GROUP_DOCKER)
     @Value("${detect.docker.inspector.path:}")
+    @HelpGroup(primary = GROUP_DOCKER)
+    @HelpDescription("This is used to override using the hosted script by github url. You can provide your own script at this path.")
     private String dockerInspectorPath;
 
-    @ValueDescription(description = "Version of the Hub Docker Inspector to use", defaultValue = "latest", group = DetectConfiguration.GROUP_DOCKER)
     @Value("${detect.docker.inspector.version:}")
+    @DefaultValue("latest")
+    @HelpGroup(primary = GROUP_DOCKER)
+    @HelpDescription("Version of the Hub Docker Inspector to use")
     private String dockerInspectorVersion;
 
-    @ValueDescription(description = "A saved docker image - must be a .tar file. For detect to run docker either this property or detect.docker.image must be set.", group = DetectConfiguration.GROUP_DOCKER)
     @Value("${detect.docker.tar:}")
+    @HelpGroup(primary = GROUP_DOCKER)
+    @HelpDescription("A saved docker image - must be a .tar file. For detect to run docker either this property or detect.docker.image must be set.")
     private String dockerTar;
 
-    @ValueDescription(description = "The docker image name to inspect. For detect to run docker either this property or detect.docker.tar must be set.", group = DetectConfiguration.GROUP_DOCKER)
     @Value("${detect.docker.image:}")
+    @HelpGroup(primary = GROUP_DOCKER)
+    @HelpDescription("The docker image name to inspect. For detect to run docker either this property or detect.docker.tar must be set.")
     private String dockerImage;
 
-    @ValueDescription(description = "Path of the bash executable", group = DetectConfiguration.GROUP_PATHS)
     @Value("${detect.bash.path:}")
+    @HelpGroup(primary = GROUP_PATHS)
+    @HelpDescription("Path of the bash executable")
     private String bashPath;
 
-    @ValueDescription(description = "The logging level of Detect (ALL|TRACE|DEBUG|INFO|WARN|ERROR|FATAL|OFF)", defaultValue = "INFO", group = DetectConfiguration.GROUP_LOGGING)
     @Value("${logging.level.com.blackducksoftware.integration:}")
+    @DefaultValue("INFO")
+    @HelpGroup(primary = GROUP_LOGGING, additional = {GROUP_LOGGING, SEARCH_GROUP_DEBUG})
+    @HelpDescription("The logging level of Detect")
+    @AcceptableValues(value = {"ALL", "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF"}, caseSensitive = false, strict = true)
     private String loggingLevel;
 
-    @ValueDescription(description = "Detect creates temporary files in the output directory. If set to true this will clean them up after execution", defaultValue = "true", group = DetectConfiguration.GROUP_CLEANUP)
     @Value("${detect.cleanup.bom.tool.files:}")
+    @DefaultValue("true")
+    @HelpGroup(primary = GROUP_CLEANUP, additional = {GROUP_CLEANUP, SEARCH_GROUP_DEBUG})
+    @HelpDescription("Detect creates temporary files in the output directory. If set to true this will clean them up after execution")
     private Boolean cleanupBomToolFiles;
 
-    @ValueDescription(description = "If set to true, the signature scanner results will not be uploaded to the Hub and the scanner results will be written to disk.", defaultValue = "false", group = DetectConfiguration.GROUP_SIGNATURE_SCANNER)
     @Value("${detect.hub.signature.scanner.dry.run:}")
+    @DefaultValue("false")
+    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = {SEARCH_GROUP_SIGNATURE_SCANNER})
+    @HelpDescription("If set to true, the signature scanner results will not be uploaded to the Hub and the scanner results will be written to disk.")
     private Boolean hubSignatureScannerDryRun;
 
-    @ValueDescription(description = "If set to true, the signature scanner will, if supported by your Hub version, run in snippet scanning mode.", defaultValue = "false", group = DetectConfiguration.GROUP_SIGNATURE_SCANNER)
     @Value("${detect.hub.signature.scanner.snippet.mode:}")
+    @DefaultValue("false")
+    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = {SEARCH_GROUP_SIGNATURE_SCANNER})
+    @HelpDescription("If set to true, the signature scanner will, if supported by your Hub version, run in snippet scanning mode.")
     private Boolean hubSignatureScannerSnippetMode;
 
-    @ValueDescription(description = "Enables you to specify sub-directories to exclude from scans", group = DetectConfiguration.GROUP_SIGNATURE_SCANNER)
     @Value("${detect.hub.signature.scanner.exclusion.patterns:}")
+    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = {SEARCH_GROUP_SIGNATURE_SCANNER})
+    @HelpDescription("Enables you to specify sub-directories to exclude from scans")
     private String[] hubSignatureScannerExclusionPatterns;
 
-    @ValueDescription(description = "These paths and only these paths will be scanned.", group = DetectConfiguration.GROUP_SIGNATURE_SCANNER)
     @Value("${detect.hub.signature.scanner.paths:}")
+    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = {SEARCH_GROUP_SIGNATURE_SCANNER})
+    @HelpDescription("These paths and only these paths will be scanned.")
     private String[] hubSignatureScannerPaths;
 
-    @ValueDescription(description = "The relative paths of directories to be excluded from scan registration", group = DetectConfiguration.GROUP_SIGNATURE_SCANNER)
     @Value("${detect.hub.signature.scanner.relative.paths.to.exclude:}")
+    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = {SEARCH_GROUP_SIGNATURE_SCANNER})
+    @HelpDescription("The relative paths of directories to be excluded from scan registration")
     private String[] hubSignatureScannerRelativePathsToExclude;
 
-    @ValueDescription(description = "The memory for the scanner to use.", defaultValue = "4096", group = DetectConfiguration.GROUP_SIGNATURE_SCANNER)
     @Value("${detect.hub.signature.scanner.memory:}")
+    @DefaultValue("4096")
+    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = {SEARCH_GROUP_SIGNATURE_SCANNER})
+    @HelpDescription("The memory for the scanner to use.")
     private Integer hubSignatureScannerMemory;
 
-    @ValueDescription(description = "Set to true to disable the Hub Signature Scanner.", defaultValue = "false", group = DetectConfiguration.GROUP_SIGNATURE_SCANNER)
     @Value("${detect.hub.signature.scanner.disabled:}")
+    @DefaultValue("false")
+    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = {SEARCH_GROUP_SIGNATURE_SCANNER, SEARCH_GROUP_DEBUG})
+    @HelpDescription("Set to true to disable the Hub Signature Scanner.")
     private Boolean hubSignatureScannerDisabled;
 
-    @ValueDescription(description = "To use a local signature scanner, set its location with this property. This will be the path where the signature scanner was unzipped. This will likely look similar to /some/path/scan.cli-x.y.z", group = DetectConfiguration.GROUP_SIGNATURE_SCANNER)
     @Value("${detect.hub.signature.scanner.offline.local.path:}")
+    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = {SEARCH_GROUP_SIGNATURE_SCANNER, SEARCH_GROUP_OFFLINE})
+    @HelpDescription("To use a local signature scanner, set its location with this property. This will be the path where the signature scanner was unzipped. This will likely look similar to /some/path/scan.cli-x.y.z")
     private String hubSignatureScannerOfflineLocalPath;
 
-    @ValueDescription(description = "If this url is set, an attempt will be made to use it to download the signature scanner. The server url provided must respect the Hub's urls for different operating systems.", group = DetectConfiguration.GROUP_SIGNATURE_SCANNER)
     @Value("${detect.hub.signature.scanner.host.url:}")
+    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = {SEARCH_GROUP_SIGNATURE_SCANNER})
+    @HelpDescription("If this url is set, an attempt will be made to use it to download the signature scanner. The server url provided must respect the Hub's urls for different operating systems.")
     private String hubSignatureScannerHostUrl;
 
-    @ValueDescription(description = "The number of scans to run in parallel, defaults to 1, but if you specify -1, the number of processors on the machine will be used.", defaultValue = "1", group = DetectConfiguration.GROUP_SIGNATURE_SCANNER)
     @Value("${detect.hub.signature.scanner.parallel.processors:}")
+    @DefaultValue("1")
+    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = {SEARCH_GROUP_SIGNATURE_SCANNER})
+    @HelpDescription("The number of scans to run in parallel, defaults to 1, but if you specify -1, the number of processors on the machine will be used.")
     private Integer hubSignatureScannerParallelProcessors;
 
-    @ValueDescription(description = "Set this value to false if you would like to exclude your dev requires dependencies when ran", defaultValue = "true", group = DetectConfiguration.GROUP_PACKAGIST)
     @Value("${detect.packagist.include.dev.dependencies:}")
+    @DefaultValue("true")
+    @HelpGroup(primary = GROUP_PACKAGIST)
+    @HelpDescription("Set this value to false if you would like to exclude your dev requires dependencies when ran")
     private Boolean packagistIncludeDevDependencies;
 
-    @ValueDescription(description = "The path of the perl executable", group = DetectConfiguration.GROUP_CPAN)
     @Value("${detect.perl.path:}")
+    @HelpGroup(primary = GROUP_CPAN)
+    @HelpDescription("The path of the perl executable")
     private String perlPath;
 
-    @ValueDescription(description = "The path of the cpan executable", group = DetectConfiguration.GROUP_CPAN)
     @Value("${detect.cpan.path:}")
+    @HelpGroup(primary = GROUP_CPAN)
+    @HelpDescription("The path of the cpan executable")
     private String cpanPath;
 
-    @ValueDescription(description = "The path of the cpanm executable", group = DetectConfiguration.GROUP_CPAN)
     @Value("${detect.cpanm.path:}")
+    @HelpGroup(primary = GROUP_CPAN)
+    @HelpDescription("The path of the cpanm executable")
     private String cpanmPath;
 
-    @ValueDescription(description = "The names of the sbt configurations to exclude", group = DetectConfiguration.GROUP_SBT)
     @Value("${detect.sbt.excluded.configurations:}")
+    @HelpGroup(primary = GROUP_SBT)
+    @HelpDescription("The names of the sbt configurations to exclude")
     private String sbtExcludedConfigurationNames;
 
-    @ValueDescription(description = "The names of the sbt configurations to include", group = DetectConfiguration.GROUP_SBT)
     @Value("${detect.sbt.included.configurations:}")
+    @HelpGroup(primary = GROUP_SBT)
+    @HelpDescription("The names of the sbt configurations to include")
     private String sbtIncludedConfigurationNames;
 
-    @ValueDescription(description = "The scheme to use when the package managers can not determine a version, either 'text' or 'timestamp'", defaultValue = "text", group = DetectConfiguration.GROUP_PROJECT_INFO)
     @Value("${detect.default.project.version.scheme:}")
+    @DefaultValue("text")
+    @HelpGroup(primary = GROUP_PROJECT_INFO, additional = {SEARCH_GROUP_PROJECT})
+    @HelpDescription("The scheme to use when the package managers can not determine a version, either 'text' or 'timestamp'")
     private String defaultProjectVersionScheme;
 
-    @ValueDescription(description = "The text to use as the default project version", defaultValue = "Detect Unknown Version", group = DetectConfiguration.GROUP_PROJECT_INFO)
     @Value("${detect.default.project.version.text:}")
+    @DefaultValue("Detect Unknown Version")
+    @HelpGroup(primary = GROUP_PROJECT_INFO, additional = {SEARCH_GROUP_PROJECT})
+    @HelpDescription("The text to use as the default project version")
     private String defaultProjectVersionText;
 
-    @ValueDescription(description = "The timestamp format to use as the default project version", defaultValue = "yyyy-MM-dd\'T\'HH:mm:ss.SSS", group = DetectConfiguration.GROUP_PROJECT_INFO)
     @Value("${detect.default.project.version.timeformat:}")
+    @DefaultValue("yyyy-MM-dd\\'T\\'HH:mm:ss.SSS")
+    @HelpGroup(primary = GROUP_PROJECT_INFO, additional = {SEARCH_GROUP_PROJECT})
+    @HelpDescription("The timestamp format to use as the default project version")
     private String defaultProjectVersionTimeformat;
 
-    @ValueDescription(description = "If set, this will aggregate all the BOMs to create a single BDIO file with the name provided. For Co-Pilot use only", group = DetectConfiguration.GROUP_PROJECT_INFO)
     @Value("${detect.bom.aggregate.name:}")
+    @HelpGroup(primary = GROUP_PROJECT_INFO, additional = {SEARCH_GROUP_PROJECT})
+    @HelpDescription("If set, this will aggregate all the BOMs to create a single BDIO file with the name provided. For Co-Pilot use only")
     private String aggregateBomName;
 
-    @ValueDescription(description = "When set to true, a Black Duck risk report in PDF form will be created", defaultValue = "false", group = DetectConfiguration.GROUP_PROJECT_INFO)
     @Value("${detect.risk.report.pdf:}")
+    @DefaultValue("false")
+    @HelpGroup(primary = GROUP_PROJECT_INFO, additional = {SEARCH_GROUP_PROJECT})
+    @HelpDescription("When set to true, a Black Duck risk report in PDF form will be created")
     private Boolean riskReportPdf;
 
-    @ValueDescription(description = "The output directory for risk report in PDF. Default is the source directory", defaultValue = ".", group = DetectConfiguration.GROUP_PROJECT_INFO)
     @Value("${detect.risk.report.pdf.path:}")
+    @DefaultValue(".")
+    @HelpGroup(primary = GROUP_PROJECT_INFO, additional = {SEARCH_GROUP_PROJECT})
+    @HelpDescription("The output directory for risk report in PDF. Default is the source directory")
     private String riskReportPdfOutputDirectory;
 
-    @ValueDescription(description = "When set to true, a Black Duck notices report in text form will be created in your source directory", defaultValue = "false", group = DetectConfiguration.GROUP_PROJECT_INFO)
     @Value("${detect.notices.report:}")
+    @DefaultValue("false")
+    @HelpGroup(primary = GROUP_PROJECT_INFO, additional = {SEARCH_GROUP_PROJECT})
+    @HelpDescription("When set to true, a Black Duck notices report in text form will be created in your source directory")
     private Boolean noticesReport;
 
-    @ValueDescription(description = "The output directory for notices report. Default is the source directory", defaultValue = ".", group = DetectConfiguration.GROUP_PROJECT_INFO)
     @Value("${detect.notices.report.path:}")
+    @DefaultValue(".")
+    @HelpGroup(primary = GROUP_PROJECT_INFO, additional = {SEARCH_GROUP_PROJECT})
+    @HelpDescription( "The output directory for notices report. Default is the source directory")
     private String noticesReportOutputDirectory;
 
-    @ValueDescription(description = "The path of the conda executable", group = DetectConfiguration.GROUP_CONDA)
     @Value("${detect.conda.path:}")
+    @HelpGroup(primary = GROUP_CONDA)
+    @HelpDescription("The path of the conda executable")
     private String condaPath;
 
-    @ValueDescription(description = "The name of the anaconda environment used by your project", group = DetectConfiguration.GROUP_CONDA)
     @Value("${detect.conda.environment.name:}")
+    @HelpGroup(primary = GROUP_CONDA)
+    @HelpDescription("The name of the anaconda environment used by your project")
     private String condaEnvironmentName;
 
-    @ValueDescription(description = "The path to the directory containing the docker inspector script, jar, and images", group = DetectConfiguration.GROUP_DOCKER)
     @Value("${detect.docker.inspector.air.gap.path:}")
+    @HelpGroup(primary = GROUP_DOCKER)
+    @HelpDescription("The path to the directory containing the docker inspector script, jar, and images")
     private String dockerInspectorAirGapPath;
 
-    @ValueDescription(description = "The path to the directory containing the air gap dependencies for the gradle inspector", group = DetectConfiguration.GROUP_GRADLE)
     @Value("${detect.gradle.inspector.air.gap.path:}")
+    @HelpGroup(primary = GROUP_GRADLE)
+    @HelpDescription("The path to the directory containing the air gap dependencies for the gradle inspector")
     private String gradleInspectorAirGapPath;
 
-    @ValueDescription(description = "The path to the directory containing the nuget inspector nupkg", group = DetectConfiguration.GROUP_NUGET)
     @Value("${detect.nuget.inspector.air.gap.path:}")
+    @HelpGroup(primary = GROUP_NUGET)
+    @HelpDescription("The path to the directory containing the nuget inspector nupkg")
     private String nugetInspectorAirGapPath;
 
-    @ValueDescription(description = "The source for nuget packages", defaultValue = "https://www.nuget.org/api/v2/", group = DetectConfiguration.GROUP_NUGET)
     @Value("${detect.nuget.packages.repo.url:}")
+    @DefaultValue("https://www.nuget.org/api/v2/")
+    @HelpGroup(primary = GROUP_NUGET)
+    @HelpDescription("The source for nuget packages")
     private String[] nugetPackagesRepoUrl;
 
-    @ValueDescription(description = "The respository gradle should use to look for the gradle inspector", group = DetectConfiguration.GROUP_GRADLE)
     @Value("${detect.gradle.inspector.repository.url:}")
+    @HelpGroup(primary = GROUP_GRADLE)
+    @HelpDescription("The respository gradle should use to look for the gradle inspector")
     private String gradleInspectorRepositoryUrl;
 
-    @ValueDescription(description = "The path of the rebar3 executable", group = DetectConfiguration.GROUP_HEX)
     @Value("${detect.hex.rebar3.path:}")
+    @HelpGroup(primary = GROUP_HEX)
+    @HelpDescription("The path of the rebar3 executable")
     private String hexRebar3Path;
 
     public boolean getCleanupBdioFiles() {
@@ -881,6 +1109,22 @@ public class DetectConfiguration {
 
     public int getSearchDepth() {
         return convertInt(searchDepth);
+    }
+
+    public int getBomToolSearchDepth() {
+        return convertInt(bomToolSearchDepth);
+    }
+
+    public Boolean getBomToolContinueSearch() {
+        return BooleanUtils.toBoolean(bomToolContinueSearch);
+    }
+
+    public String[] getBomToolSearchExclusion() {
+        return bomToolSearchExclusion;
+    }
+
+    public Boolean getBomToolSearchExclusionDefaults() {
+        return BooleanUtils.toBoolean(bomToolSearchExclusionDefaults);
     }
 
     public String getExcludedBomToolTypes() {
@@ -1105,11 +1349,11 @@ public class DetectConfiguration {
     }
 
     public boolean getHubSignatureScannerDryRun() {
-        return hubSignatureScannerDryRun;
+        return BooleanUtils.toBoolean(hubSignatureScannerDryRun);
     }
 
     public boolean getHubSignatureScannerSnippetMode() {
-        return hubSignatureScannerSnippetMode;
+        return BooleanUtils.toBoolean(hubSignatureScannerSnippetMode);
     }
 
     public String[] getHubSignatureScannerPaths() {

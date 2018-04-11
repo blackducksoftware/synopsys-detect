@@ -33,7 +33,7 @@ import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.DetectInfo;
-import com.blackducksoftware.integration.hub.detect.help.ValueDescription;
+import com.blackducksoftware.integration.hub.detect.help.HelpGroup;
 import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType;
 
 /**
@@ -60,7 +60,7 @@ public class TildeInPathResolver {
         final OperatingSystemType currentOs = detectInfo.getCurrentOs();
         final Field[] fields = DetectConfiguration.class.getDeclaredFields();
         for (final Field field : fields) {
-            if (field.isAnnotationPresent(ValueDescription.class) && field.getType() == String.class) {
+            if (field.isAnnotationPresent(HelpGroup.class) && field.getType() == String.class) {
                 final boolean wasAccessible = field.isAccessible();
                 field.setAccessible(true);
                 final String providedPath = (String) field.get(detectConfiguration);

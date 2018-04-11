@@ -39,9 +39,9 @@ import com.blackducksoftware.integration.hub.service.model.PhoneHomeResponse;
 import com.blackducksoftware.integration.log.Slf4jIntLogger;
 import com.blackducksoftware.integration.phonehome.PhoneHomeClient;
 import com.blackducksoftware.integration.phonehome.PhoneHomeRequestBody;
-import com.blackducksoftware.integration.phonehome.PhoneHomeRequestBodyBuilder;
-import com.blackducksoftware.integration.phonehome.enums.ThirdPartyName;
+import com.blackducksoftware.integration.phonehome.google.analytics.GoogleAnalyticsConstants;
 import com.blackducksoftware.integration.util.CIEnvironmentVariables;
+import com.google.gson.Gson;
 
 @Component
 public class DetectPhoneHomeManager {
@@ -52,6 +52,9 @@ public class DetectPhoneHomeManager {
 
     @Autowired
     private DetectConfiguration detectConfiguration;
+
+    @Autowired
+    private Gson gson;
 
     private PhoneHomeService phoneHomeService;
     private PhoneHomeResponse phoneHomeResponse;
@@ -64,7 +67,7 @@ public class DetectPhoneHomeManager {
         CIEnvironmentVariables ciEnvironmentVariables = new CIEnvironmentVariables();
         ciEnvironmentVariables.putAll(System.getenv());
 
-        PhoneHomeClient phoneHomeClient = new PhoneHomeClient(new Slf4jIntLogger(logger), detectConfiguration.getHubTimeout(), detectConfiguration.getHubProxyInfo(), detectConfiguration.getHubTrustCertificate());
+        PhoneHomeClient phoneHomeClient = new PhoneHomeClient(new Slf4jIntLogger(logger), GoogleAnalyticsConstants.PRODUCTION_INTEGRATIONS_TRACKING_ID, detectConfiguration.getHubTimeout(), detectConfiguration.getHubProxyInfo(), detectConfiguration.getHubTrustCertificate(), gson);
         
         this.phoneHomeService = new OfflinePhoneHomeService(phoneHomeClient, ciEnvironmentVariables);
     }
@@ -86,11 +89,11 @@ public class DetectPhoneHomeManager {
     private void performPhoneHome(final Set<BomToolType> applicableBomToolTypes) {
         endPhoneHome();
         if (null != phoneHomeService) {
-            final PhoneHomeRequestBodyBuilder phoneHomeRequestBodyBuilder = createBuilder();
+            final PhoneHomeRequestBody.Builder phoneHomeRequestBodyBuilder = createBuilder();
 
             if (applicableBomToolTypes != null) {
                 final String applicableBomToolsString = StringUtils.join(applicableBomToolTypes, ", ");
-                phoneHomeRequestBodyBuilder.addToMetaDataMap("bomToolTypes", applicableBomToolsString);
+                phoneHomeRequestBodyBuilder.addToMetaData("bomToolTypes", applicableBomToolsString);
             }
 
             final PhoneHomeRequestBody phoneHomeRequestBody = phoneHomeRequestBodyBuilder.build();
@@ -109,12 +112,12 @@ public class DetectPhoneHomeManager {
         return phoneHomeResponse;
     }
 
-    private PhoneHomeRequestBodyBuilder createBuilder() {
-        final PhoneHomeRequestBodyBuilder phoneHomeRequestBodyBuilder = phoneHomeService.createInitialPhoneHomeRequestBodyBuilder(ThirdPartyName.DETECT, detectInfo.getDetectVersion(), detectInfo.getDetectVersion());
+    private PhoneHomeRequestBody.Builder createBuilder() {
+        final PhoneHomeRequestBody.Builder phoneHomeRequestBodyBuilder = phoneHomeService.createInitialPhoneHomeRequestBodyBuilder("hub-detect", detectInfo.getDetectVersion());
         detectConfiguration.getAdditionalPhoneHomePropertyNames().stream().forEach(propertyName -> {
             final String actualKey = getKeyWithoutPrefix(propertyName, DetectConfiguration.PHONE_HOME_PROPERTY_PREFIX);
             final String value = detectConfiguration.getDetectProperty(propertyName);
-            phoneHomeRequestBodyBuilder.addToMetaDataMap(actualKey, value);
+            phoneHomeRequestBodyBuilder.addToMetaData(actualKey, value);
         });
 
         return phoneHomeRequestBodyBuilder;

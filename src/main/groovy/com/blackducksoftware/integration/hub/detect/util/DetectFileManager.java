@@ -135,6 +135,10 @@ public class DetectFileManager {
         return relativeDirectory.isDirectory();
     }
 
+    public boolean containsAllFiles(final File sourcePath, final String... filenamePatterns) {
+        return fileFinder.containsAllFiles(sourcePath, filenamePatterns);
+    }
+
     public boolean containsAllFiles(final String sourcePath, final String... filenamePatterns) {
         return fileFinder.containsAllFiles(sourcePath, filenamePatterns);
     }

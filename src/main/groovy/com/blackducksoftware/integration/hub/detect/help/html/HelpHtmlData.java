@@ -21,35 +21,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.help.print;
+package com.blackducksoftware.integration.hub.detect.help.html;
 
 import java.util.List;
 
-import com.blackducksoftware.integration.hub.detect.help.DetectOption;
-
-public class GroupOptionListing {
-    private String groupName;
-    private List<DetectOption> detectOptions;
-
-    public GroupOptionListing(final String groupName, final List<DetectOption> detectOptions) {
-        this.groupName = groupName;
-        this.detectOptions = detectOptions;
+public class HelpHtmlData {
+    public List<HelpHtmlGroup> groups;
+    
+    public HelpHtmlData(List<HelpHtmlGroup> groups) { 
+        this.groups = groups;
     }
-
-    public String getGroupName() {
-        return groupName;
+    
+    public List<HelpHtmlGroup> getGroups() {
+        return groups;
     }
-
-    public void setGroupName(final String groupName) {
-        this.groupName = groupName;
-    }
-
-    public List<DetectOption> getDetectOptions() {
-        return detectOptions;
-    }
-
-    public void setDetectOptions(final List<DetectOption> detectOptions) {
-        this.detectOptions = detectOptions;
-    }
-
 }

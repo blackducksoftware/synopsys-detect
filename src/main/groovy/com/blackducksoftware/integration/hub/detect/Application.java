@@ -26,7 +26,9 @@ package com.blackducksoftware.integration.hub.detect;
 import java.io.Console;
 import java.io.File;
 import java.io.PrintStream;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -50,14 +52,17 @@ import com.blackducksoftware.integration.hub.bdio.BdioTransformer;
 import com.blackducksoftware.integration.hub.bdio.SimpleBdioFactory;
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolTreeWalker;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
+import com.blackducksoftware.integration.hub.detect.help.ArgumentState;
+import com.blackducksoftware.integration.hub.detect.help.ArgumentStateParser;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
+import com.blackducksoftware.integration.hub.detect.help.html.HelpHtmlWriter;
 import com.blackducksoftware.integration.hub.detect.help.print.DetectConfigurationPrinter;
 import com.blackducksoftware.integration.hub.detect.help.print.DetectInfoPrinter;
-import com.blackducksoftware.integration.hub.detect.help.print.HelpHtmlWriter;
 import com.blackducksoftware.integration.hub.detect.help.print.HelpPrinter;
 import com.blackducksoftware.integration.hub.detect.hub.HubManager;
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper;
@@ -123,6 +128,9 @@ public class Application implements ApplicationRunner {
     @Autowired
     private DetectPhoneHomeManager detectPhoneHomeManager;
 
+    @Autowired
+    private ArgumentStateParser argumentStateParser;
+
     private ExitCodeType exitCodeType = ExitCodeType.SUCCESS;
 
     public static void main(final String[] args) {
@@ -138,29 +146,21 @@ public class Application implements ApplicationRunner {
             detectOptionManager.init();
 
             final List<DetectOption> options = detectOptionManager.getDetectOptions();
-            boolean isPrintHelp = false;
-            boolean isPrintHelpDoc = false;
-            boolean isInteractive = false;
-            for (final String arg : applicationArguments.getSourceArgs()) {
-                if (arg.equals("-h") || arg.equals("--help")) {
-                    isPrintHelp = true;
-                } else if (arg.equals("-hdoc") || arg.equals("--helpdocument")) {
-                    isPrintHelpDoc = true;
-                } else if (arg.equals("-i") || arg.equals("--interactive")) {
-                    isInteractive = true;
-                }
-            }
-            if (isPrintHelp) {
-                helpPrinter.printHelpMessage(System.out, options);
+
+            final String[] applicationArgs = applicationArguments.getSourceArgs();
+            final ArgumentState argumentState = argumentStateParser.parseArgs(applicationArgs);
+
+            if (argumentState.isHelp) {
+                helpPrinter.printAppropriateHelpMessage(System.out, options, argumentState);
                 return;
             }
 
-            if (isPrintHelpDoc) {
+            if (argumentState.isHelpDocument) {
                 helpHtmlWriter.writeHelpMessage(String.format("hub-detect-%s-help.html", detectInfo.getDetectVersion()));
                 return;
             }
 
-            if (isInteractive) {
+            if (argumentState.isInteractive) {
                 final InteractiveReader interactiveReader = createInteractiveReader();
                 final PrintStream interactivePrintStream = new PrintStream(System.out);
                 interactiveManager.interact(interactiveReader, interactivePrintStream);
@@ -176,6 +176,14 @@ public class Application implements ApplicationRunner {
 
                 infoPrinter.printInfo(System.out, detectInfo);
                 detectConfigurationPrinter.print(System.out, detectInfo, detectConfiguration, options);
+            }
+
+            List<DetectOption> unacceptableDetectOtions = detectOptionManager.findUnacceptableValues();
+            if (unacceptableDetectOtions.size() > 0) {
+                DetectOption firstUnacceptableDetectOption = unacceptableDetectOtions.get(0);
+                String msg = firstUnacceptableDetectOption.getKey() + ": Unknown value '" + firstUnacceptableDetectOption.getResolvedValue() + "', acceptable values are " + firstUnacceptableDetectOption.getAcceptableValues().stream()
+                                                                                                                                                                                     .collect(Collectors.joining(","));
+                throw new DetectUserFriendlyException(msg, ExitCodeType.FAILURE_GENERAL_ERROR);
             }
 
             if (detectConfiguration.getTestConnection()) {
@@ -255,6 +263,12 @@ public class Application implements ApplicationRunner {
             exitCodeType = ExitCodeType.FAILURE_UNKNOWN_ERROR;
         }
         logger.error(e.getMessage());
+    }
+
+    @Bean
+    public BomToolTreeWalker bomToolTreeSearcher() {
+        return new BomToolTreeWalker(Arrays.asList(detectConfiguration.getBomToolSearchExclusion()), detectConfiguration.getBomToolSearchExclusionDefaults(), detectConfiguration.getBomToolContinueSearch(),
+                detectConfiguration.getBomToolSearchDepth());
     }
 
     @Bean

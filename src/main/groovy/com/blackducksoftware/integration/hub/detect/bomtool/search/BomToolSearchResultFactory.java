@@ -21,22 +21,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.help;
+package com.blackducksoftware.integration.hub.detect.bomtool.search;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.io.File;
 
-import groovy.transform.TypeChecked;
+public class BomToolSearchResultFactory {
+    public static BomToolSearchResult createApplies(final File searchedDirectory) {
+        return new BomToolSearchResult(true, searchedDirectory);
+    }
 
-@TypeChecked
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
-public @interface ValueDescription {
-    String description() default "";
+    public static BomToolSearchResult createDoesNotApply() {
+        return new BomToolSearchResult(false, null);
+    }
 
-    String defaultValue() default "";
+    public static NpmBomToolSearchResult createNpmApplies(final File searchedDirectory, final String npmExePath, final File packageLockJson, final File shrinkwrapJson) {
+        return new NpmBomToolSearchResult(true, searchedDirectory, npmExePath, packageLockJson, shrinkwrapJson);
+    }
 
-    String group() default "";
+    public static NpmBomToolSearchResult createNpmDoesNotApply() {
+        return new NpmBomToolSearchResult(false, null, null, null, null);
+    }
+
 }
