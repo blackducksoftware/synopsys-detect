@@ -24,6 +24,7 @@
 package com.blackducksoftware.integration.hub.detect.hub;
 
 import com.blackducksoftware.integration.hub.service.PhoneHomeService;
+import com.blackducksoftware.integration.log.IntLogger;
 import com.blackducksoftware.integration.phonehome.PhoneHomeClient;
 import com.blackducksoftware.integration.phonehome.PhoneHomeRequestBody;
 import com.blackducksoftware.integration.phonehome.enums.ProductIdEnum;
@@ -31,18 +32,18 @@ import com.blackducksoftware.integration.util.CIEnvironmentVariables;
 
 public class OfflinePhoneHomeService extends PhoneHomeService {
 
-    public OfflinePhoneHomeService(PhoneHomeClient phoneHomeClient,
+    public OfflinePhoneHomeService(IntLogger logger, PhoneHomeClient phoneHomeClient,
             CIEnvironmentVariables ciEnvironmentVariables) {
-        super(null, phoneHomeClient, null, ciEnvironmentVariables);
+        super(null, logger, phoneHomeClient, null, ciEnvironmentVariables);
     }
 
     @Override
     public PhoneHomeRequestBody.Builder createInitialPhoneHomeRequestBodyBuilder() {
         final PhoneHomeRequestBody.Builder phoneHomeRequestBodyBuilder = new PhoneHomeRequestBody.Builder();
-        phoneHomeRequestBodyBuilder.setCustomerId("<unknown>");
-        phoneHomeRequestBodyBuilder.setHostName("<unknown>");
+        phoneHomeRequestBodyBuilder.setCustomerId(PhoneHomeRequestBody.Builder.UNKNOWN_ID);
+        phoneHomeRequestBodyBuilder.setHostName(PhoneHomeRequestBody.Builder.UNKNOWN_ID);
         phoneHomeRequestBodyBuilder.setProductId(ProductIdEnum.HUB);
-        phoneHomeRequestBodyBuilder.setProductVersion("<unknown>");
+        phoneHomeRequestBodyBuilder.setProductVersion(PhoneHomeRequestBody.Builder.UNKNOWN_ID);
         return phoneHomeRequestBodyBuilder;
     }
 

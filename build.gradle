@@ -72,7 +72,7 @@ repositories {
 }
 
 dependencies {
-    compile ('com.blackducksoftware.integration:hub-common:30.0.0') {
+    compile ('com.blackducksoftware.integration:hub-common:30.0.1') {
         exclude group: 'com.blackducksoftware.integration', module: 'integration-bdio'
     }
     compile 'com.blackducksoftware.integration:integration-bdio:13.0.0'

@@ -36,6 +36,7 @@ import com.blackducksoftware.integration.hub.detect.hub.OfflinePhoneHomeService;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.service.PhoneHomeService;
 import com.blackducksoftware.integration.hub.service.model.PhoneHomeResponse;
+import com.blackducksoftware.integration.log.IntLogger;
 import com.blackducksoftware.integration.log.Slf4jIntLogger;
 import com.blackducksoftware.integration.phonehome.PhoneHomeClient;
 import com.blackducksoftware.integration.phonehome.PhoneHomeRequestBody;
@@ -67,9 +68,12 @@ public class DetectPhoneHomeManager {
         CIEnvironmentVariables ciEnvironmentVariables = new CIEnvironmentVariables();
         ciEnvironmentVariables.putAll(System.getenv());
 
-        PhoneHomeClient phoneHomeClient = new PhoneHomeClient(new Slf4jIntLogger(logger), GoogleAnalyticsConstants.PRODUCTION_INTEGRATIONS_TRACKING_ID, detectConfiguration.getHubTimeout(), detectConfiguration.getHubProxyInfo(), detectConfiguration.getHubTrustCertificate(), gson);
-        
-        this.phoneHomeService = new OfflinePhoneHomeService(phoneHomeClient, ciEnvironmentVariables);
+        IntLogger intLogger = new Slf4jIntLogger(logger);
+
+        PhoneHomeClient phoneHomeClient = new PhoneHomeClient(intLogger, GoogleAnalyticsConstants.PRODUCTION_INTEGRATIONS_TRACKING_ID, detectConfiguration.getHubTimeout(), detectConfiguration.getHubProxyInfo(),
+                detectConfiguration.getHubTrustCertificate(), gson);
+
+        this.phoneHomeService = new OfflinePhoneHomeService(intLogger, phoneHomeClient, ciEnvironmentVariables);
     }
 
     public void startPhoneHome() {
