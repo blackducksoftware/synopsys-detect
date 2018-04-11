@@ -421,7 +421,7 @@ public class DetectConfiguration {
     private Boolean cleanupBdioFiles;
 
     @Value("${detect.test.connection:}")
-    @DefaultValue("true")
+    @DefaultValue("false")
     @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = {SEARCH_GROUP_HUB})
     @HelpDescription("Test the connection to the Hub with the current configuration")
     private Boolean testConnection;
