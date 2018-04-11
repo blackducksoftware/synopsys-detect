@@ -50,6 +50,7 @@ import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.SimpleBdioDocument;
+import com.blackducksoftware.integration.hub.bdio.model.ToolSpdxCreator;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationName;
@@ -198,7 +199,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
                 }
                 final File outputFile = new File(detectConfiguration.getBdioOutputDirectoryPath(), filename);
                 if (outputFile.exists()) {
-                    boolean deleteSuccess = outputFile.delete();
+                    final boolean deleteSuccess = outputFile.delete();
                     logger.debug(String.format("%s deleted: %b", outputFile.getAbsolutePath(), deleteSuccess));
                 }
                 writeBdioFile(outputFile, simpleBdioDocument);
@@ -211,7 +212,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
             final String filename = String.format("%s.jsonld", integrationEscapeUtil.escapeForUri(detectConfiguration.getAggregateBomName()));
             final File aggregateBdioFile = new File(detectConfiguration.getOutputDirectory(), filename);
             if (aggregateBdioFile.exists()) {
-                boolean deleteSuccess = aggregateBdioFile.delete();
+                final boolean deleteSuccess = aggregateBdioFile.delete();
                 logger.debug(String.format("%s deleted: %b", aggregateBdioFile.getAbsolutePath(), deleteSuccess));
             }
             writeBdioFile(aggregateBdioFile, aggregateBdioDocument);
@@ -309,9 +310,8 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         final SimpleBdioDocument simpleBdioDocument = simpleBdioFactory.createSimpleBdioDocument(codeLocationName, projectName, projectVersionName, projectExternalId, dependencyGraph);
 
         final String hubDetectVersion = detectInfo.getDetectVersion();
-        final Map<String, String> detectVersionData = new HashMap<>();
-        detectVersionData.put("detectVersion", hubDetectVersion);
-        simpleBdioDocument.billOfMaterials.customData = detectVersionData;
+        final ToolSpdxCreator hubDetectCreator = new ToolSpdxCreator("HubDetect", hubDetectVersion);
+        simpleBdioDocument.billOfMaterials.creationInfo.addSpdxCreator(hubDetectCreator);
 
         return simpleBdioDocument;
     }
