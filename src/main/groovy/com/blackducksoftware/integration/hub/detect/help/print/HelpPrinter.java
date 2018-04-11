@@ -23,8 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.help.print;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.PrintStream;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,12 +50,6 @@ public class HelpPrinter {
 
         if (state.isVerboseHelpMessage) {
             optionPrinter.printOptions(writer, options, null);
-        }else if (state.isGroup) {
-            printHelpFilteredByPrintGroup( writer, options, state.parsedValue);
-        }else if (state.isGroupList) {
-            optionPrinter.printStandardFooter(writer, getPrintGroupText(allPrintGroups));
-        }else if (state.isProperty) {
-            printDetailedHelp(writer, options, state.parsedValue);
         }else {
             if (state.parsedValue != null) {
                 if (isProperty(options, state.parsedValue)) {

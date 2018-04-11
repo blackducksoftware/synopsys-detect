@@ -24,59 +24,21 @@
 package com.blackducksoftware.integration.hub.detect.help;
 
 public class ArgumentState {
-    String[] args;
-
-    public boolean isHelp = false;
-    public boolean isHelpDocument = false;
-    public boolean isInteractive = false;
+    public final boolean isHelp;
+    public final boolean isHelpDocument;
+    public final boolean isInteractive;
     
-    public boolean isVerboseHelpMessage = false;
-    public boolean isGroup = false;
-    public boolean isProperty = false;
-    public boolean isGroupList = false;
-
-    public String parsedValue; 
+    public final boolean isVerboseHelpMessage;
+    public final String parsedValue; 
     
-    public ArgumentState(final String[] args) {
-        this.args = args;
-        isHelp = checkFirstArgument("-h", "--help");
-        isHelpDocument = checkFirstArgument("-hdoc", "--helpdocument");
-        isInteractive = checkFirstArgument("-i", "--interactive");
-        
-        isVerboseHelpMessage = isHelp && checkSecondArgument("-v", "--verbose");
-        isGroup = isHelp && checkSecondArgument("-g", "--group") && parseThirdArgumentValue();
-        isProperty = isHelp && checkSecondArgument("-p", "--property") && parseThirdArgumentValue();
-        
-        if (isHelp && !(isVerboseHelpMessage || isGroup || isProperty)){
-            if (args.length == 2) {
-                parsedValue = args[1];
-            }
-        }
+    public ArgumentState(boolean isHelp, boolean isHelpDocument, boolean isInteractive, boolean isVerboseHelpMessage, String parsedValue) {
+        this.isHelp = isHelp;
+        this.isHelpDocument = isHelpDocument;
+        this.isInteractive = isInteractive;
+        this.isVerboseHelpMessage = isVerboseHelpMessage;
+        this.parsedValue = parsedValue;
     }
 
-    private boolean parseThirdArgumentValue() {
-        if (args.length == 3) {
-            parsedValue = args[2];
-            return true;
-        }
-        return false;
-    }
-    
-    private boolean checkFirstArgument(final String command, final String largeCommand) {
-        return checkArgument(command, largeCommand, 0);
-    }
 
-    private boolean checkSecondArgument(final String command, final String largeCommand) {
-        return checkArgument(command, largeCommand, 1);
-    }
-     
-    
-    private boolean checkArgument(final String command, final String largeCommand, int index) {
-        if (args.length > index) {
-            return (command.equals(args[index]) || largeCommand.equals(args[index]));
-        }
-
-        return false;
-    }
 
 }
