@@ -116,6 +116,7 @@ class NugetBomTool extends BomTool {
     @Override
     public boolean isBomToolApplicable() {
         if (OperatingSystemType.WINDOWS != detectInfo.getCurrentOs()) {
+            logger.debug("Nuget can not apply to this OS. It can only apply to windows.");
             return false;
         }
 

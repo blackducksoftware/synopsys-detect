@@ -23,28 +23,38 @@
  */
 package com.blackducksoftware.integration.hub.detect.help;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+
 public class DetectOption {
     final String key;
     final String fieldName;
-    final String description;
     final Class<?> valueType;
-    final String group;
     final String originalValue;
     final String defaultValue;
     final String resolvedValue;
-    public String interactiveValue = null;
+    final boolean strictAcceptableValues;
+    final boolean caseSensitiveAcceptableValues;
+    final List<String> acceptableValues;
+    String interactiveValue = null;
 
-    public DetectOption(final String key, final String fieldName, final String originalValue, final String resolvedValue, final String description, final Class<?> valueType, final String defaultValue, final String group) {
+    final DetectOptionHelp help;
+    
+    public DetectOption(final String key, final String fieldName, final String originalValue, final String resolvedValue, final Class<?> valueType, final String defaultValue, final boolean strictAcceptableValue, final boolean caseSensitiveAcceptableValues, final String[] acceptableValues, DetectOptionHelp help) {
         this.key = key;
-        this.description = description;
         this.valueType = valueType;
-        this.group = group;
         this.defaultValue = defaultValue;
+        this.acceptableValues = Arrays.stream(acceptableValues).collect(Collectors.toList());
         this.fieldName = fieldName;
         this.originalValue = originalValue;
         this.resolvedValue = resolvedValue;
+        this.strictAcceptableValues = strictAcceptableValue;
+        this.caseSensitiveAcceptableValues = caseSensitiveAcceptableValues;
+        this.help = help;
     }
-
+    
     public String getInteractiveValue() {
         return interactiveValue;
     }
@@ -61,16 +71,8 @@ public class DetectOption {
         return fieldName;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
     public Class<?> getValueType() {
         return valueType;
-    }
-
-    public String getGroup() {
-        return group;
     }
 
     public String getOriginalValue() {
@@ -85,4 +87,27 @@ public class DetectOption {
         return resolvedValue;
     }
 
+    public DetectOptionHelp getHelp() {
+        return help;
+    }
+    
+    public List<String> getAcceptableValues() {
+        return acceptableValues;
+    }
+    
+    public boolean getCaseSensistiveAcceptableValues() {
+        return caseSensitiveAcceptableValues;
+    }
+    
+    public boolean isAcceptableValue(String value) { 
+        return acceptableValues.stream()
+            .anyMatch(it -> { 
+                if (caseSensitiveAcceptableValues) { 
+                    return it.equals(value);
+                } else {
+                    return it.equalsIgnoreCase(value);
+                }
+            });
+    }
+    
 }
