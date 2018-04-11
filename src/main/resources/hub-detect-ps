@@ -44,7 +44,7 @@ $EnvHomeTempFolder = "$HOME\tmp"
 # heap size, you would set DETECT_JAVA_OPTS=-Xmx6G.
 #$DetectJavaOpts = Get-EnvironmentVariable -Key "DETECT_JAVA_OPTS" -DefaultValue "";
 
-$Version = "0.6.4"
+$Version = "0.6.5"
 
 $DetectReleaseBaseUrl = "https://test-repo.blackducksoftware.com/artifactory/bds-integrations-release/com/blackducksoftware/integration/hub-detect"
 $DetectSnapshotBaseUrl = "https://test-repo.blackducksoftware.com/artifactory/bds-integrations-snapshot/com/blackducksoftware/integration/hub-detect"
@@ -104,15 +104,14 @@ function Get-ProxyInfo () {
         $ProxyHost = ${Env:blackduck.hub.proxy.host};
         
         if ([string]::IsNullOrEmpty($ProxyHost)){
-			$ProxyHost = ${BLACKDUCK_HUB_PROXY_HOST};
+			$ProxyHost = ${Env:BLACKDUCK_HUB_PROXY_HOST};
 		}
         
         if ([string]::IsNullOrEmpty($ProxyHost)){
             Write-Host "Skipping proxy, no host found."
         }else{
             Write-Host "Found proxy host."
-            $ProxyUrlBuilder = New-Object System.UriBuilder
-            $ProxyUrlBuilder.Host = $ProxyHost
+            $ProxyUrlBuilder = New-Object System.UriBuilder -ArgumentList $ProxyHost
 
             $ProxyPort = ${Env:blackduck.hub.proxy.port};
 

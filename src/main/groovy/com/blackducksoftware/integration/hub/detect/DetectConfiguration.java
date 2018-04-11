@@ -312,6 +312,7 @@ public class DetectConfiguration {
         proxyInfoBuilder.setPort(hubProxyPort);
         proxyInfoBuilder.setUsername(hubProxyUsername);
         proxyInfoBuilder.setPassword(hubProxyPassword);
+        proxyInfoBuilder.setIgnoredProxyHosts(hubProxyIgnoredHosts);
         proxyInfoBuilder.setNtlmDomain(hubProxyNtlmDomain);
         proxyInfoBuilder.setNtlmWorkstation(hubProxyNtlmWorkstation);
         ProxyInfo proxyInfo = ProxyInfo.NO_PROXY_INFO;
@@ -473,10 +474,15 @@ public class DetectConfiguration {
     @HelpDescription("Proxy password")
     private String hubProxyPassword;
 
-    @Value("${blackduck.hub.proxy.password:}")
+    @Value("${blackduck.hub.proxy.ntlm.domain:}")
     @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = {PRINT_GROUP_HUB, PRINT_GROUP_PROXY})
     @HelpDescription("Ntlm Proxy domain")
     private String hubProxyNtlmDomain;
+    
+    @Value("${blackduck.hub.proxy.ignored.hosts:}")
+    @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = {PRINT_GROUP_HUB, PRINT_GROUP_PROXY})
+    @HelpDescription("Comma separated list of host patterns that should not use the proxy")
+    private String hubProxyIgnoredHosts;
 
     @Value("${blackduck.hub.proxy.ntlm.workstation:}")
     @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = {PRINT_GROUP_HUB, PRINT_GROUP_PROXY})
@@ -1032,6 +1038,10 @@ public class DetectConfiguration {
 
     public String getHubProxyPassword() {
         return hubProxyPassword;
+    }
+
+    public String getHubProxyIgnoredHosts() {
+        return hubProxyIgnoredHosts;
     }
 
     public String getHubProxyNtlmDomain() {
