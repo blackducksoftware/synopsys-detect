@@ -278,10 +278,8 @@ class MavenCodeLocationPackager {
     }
 
     private int indexOfEndOfSegments(String line, String... segments) {
-        int endOfSegments;
-        if (segments.length == 0) {
-            endOfSegments = -1;
-        } else {
+        int endOfSegments = -1;
+        if (segments.length > 0) {
             endOfSegments = 0;
         }
 
