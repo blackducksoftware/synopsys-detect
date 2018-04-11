@@ -29,12 +29,12 @@ import java.util.List;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 
-public class NestedBomToolResult {
+public class ApplicableDirectoryResult {
     private BomToolType bomToolType;
     private File applicableDirectory;
     private List<DetectCodeLocation> codeLocations;
 
-    public NestedBomToolResult(final BomToolType bomToolType, final File applicableDirectory, final List<DetectCodeLocation> codeLocations) {
+    public ApplicableDirectoryResult(final BomToolType bomToolType, final File applicableDirectory, final List<DetectCodeLocation> codeLocations) {
         this.bomToolType = bomToolType;
         this.applicableDirectory = applicableDirectory;
         this.codeLocations = codeLocations;

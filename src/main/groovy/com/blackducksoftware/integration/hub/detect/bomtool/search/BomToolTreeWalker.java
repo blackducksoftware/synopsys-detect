@@ -46,34 +46,34 @@ import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.util.ResourceUtil;
 
-public class BomToolTreeSearcher {
-    private final Logger logger = LoggerFactory.getLogger(BomToolTreeSearcher.class);
+public class BomToolTreeWalker {
+    private final Logger logger = LoggerFactory.getLogger(BomToolTreeWalker.class);
 
     private final List<String> excludedDirectoriesBomToolSearch;
     private final Boolean bomToolSearchExclusionDefaults;
     private final Boolean bomToolContinueSearch;
     private final int maximumDepth;
 
-    private List<NestedBomToolResult> results = new ArrayList<>();
+    private List<ApplicableDirectoryResult> results = new ArrayList<>();
 
-    public BomToolTreeSearcher(final List<String> excludedDirectoriesBomToolSearch, Boolean bomToolSearchExclusionDefaults, final Boolean bomToolContinueSearch, final int maximumDepth) {
+    public BomToolTreeWalker(final List<String> excludedDirectoriesBomToolSearch, Boolean bomToolSearchExclusionDefaults, final Boolean bomToolContinueSearch, final int maximumDepth) {
         this.excludedDirectoriesBomToolSearch = excludedDirectoriesBomToolSearch;
         this.bomToolSearchExclusionDefaults = bomToolSearchExclusionDefaults;
         this.bomToolContinueSearch = bomToolContinueSearch;
         this.maximumDepth = maximumDepth;
     }
 
-    public List<NestedBomToolResult> getResults() {
+    public List<ApplicableDirectoryResult> getResults() {
         return results;
     }
 
     public void startSearching(final Set<NestedBomTool> nestedBomTools, final File initialDirectory) throws BomToolException, DetectUserFriendlyException {
         List<String> excludedDirectories = determineDirectoriesToExclude(excludedDirectoriesBomToolSearch, bomToolSearchExclusionDefaults);
         List<File> subDirectories = getSubDirectories(initialDirectory, excludedDirectories);
-        searchDirectories(results, excludedDirectories, nestedBomTools, subDirectories, 1, maximumDepth);
+        searchDirectories(excludedDirectories, nestedBomTools, subDirectories, 1, maximumDepth);
     }
 
-    private void searchDirectories(final List<NestedBomToolResult> results, final List<String> directoriesToExclude, final Set<NestedBomTool> nestedBomTools, final List<File> directoriesToSearch, final int depth, final int maximumDepth)
+    private void searchDirectories(final List<String> directoriesToExclude, final Set<NestedBomTool> nestedBomTools, final List<File> directoriesToSearch, final int depth, final int maximumDepth)
             throws BomToolException, DetectUserFriendlyException {
         if (depth > maximumDepth) {
             return;
@@ -82,7 +82,6 @@ public class BomToolTreeSearcher {
         if (null == directoriesToSearch || directoriesToSearch.size() == 0) {
             return;
         }
-
         for (File directory : directoriesToSearch) {
             Set<NestedBomTool> remainingNestedBomTools = new HashSet<>(nestedBomTools);
             for (NestedBomTool nestedBomTool : nestedBomTools) {
@@ -90,7 +89,7 @@ public class BomToolTreeSearcher {
                 BomToolSearchResult searchResult = bomToolSearcher.getBomToolSearchResult(directory);
                 if (searchResult.isApplicable()) {
                     List<DetectCodeLocation> detectCodeLocations = nestedBomTool.extractDetectCodeLocations(searchResult);
-                    NestedBomToolResult result = new NestedBomToolResult(nestedBomTool.getBomToolType(), directory, detectCodeLocations);
+                    ApplicableDirectoryResult result = new ApplicableDirectoryResult(nestedBomTool.getBomToolType(), directory, detectCodeLocations);
                     results.add(result);
                     if (shouldStopSearchingIfApplicable(nestedBomTool)) {
                         remainingNestedBomTools.remove(nestedBomTool);
@@ -98,7 +97,7 @@ public class BomToolTreeSearcher {
                 }
             }
             if (!remainingNestedBomTools.isEmpty()) {
-                searchDirectories(results, directoriesToExclude, remainingNestedBomTools, getSubDirectories(directory, directoriesToExclude), depth + 1, maximumDepth);
+                searchDirectories(directoriesToExclude, remainingNestedBomTools, getSubDirectories(directory, directoriesToExclude), depth + 1, maximumDepth);
             }
         }
     }
@@ -141,7 +140,7 @@ public class BomToolTreeSearcher {
         List<String> directoriesToExclude = new ArrayList<>(excludedDirectoriesBomToolSearch);
         try {
             if (bomToolSearchExclusionDefaults) {
-                String fileContent = ResourceUtil.getResourceAsString(BomToolTreeSearcher.class, "/excludedDirectoriesBomToolSearch.txt", StandardCharsets.UTF_8);
+                String fileContent = ResourceUtil.getResourceAsString(BomToolTreeWalker.class, "/excludedDirectoriesBomToolSearch.txt", StandardCharsets.UTF_8);
                 directoriesToExclude.addAll(Arrays.asList(fileContent.split("\n")));
             }
         } catch (IOException e) {
