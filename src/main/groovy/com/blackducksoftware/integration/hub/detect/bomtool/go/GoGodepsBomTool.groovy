@@ -21,8 +21,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool
+package com.blackducksoftware.integration.hub.detect.bomtool.go
 
+import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,39 +33,43 @@ import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.CocoapodsPackager
+import com.blackducksoftware.integration.hub.detect.bomtool.go.godep.GoGodepsParser
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
+import com.google.gson.Gson
 
 import groovy.transform.TypeChecked
 
 @Component
 @TypeChecked
-class CocoapodsBomTool extends BomTool {
-    private final Logger logger = LoggerFactory.getLogger(CocoapodsBomTool.class)
+class GoGodepsBomTool extends BomTool {
+    private final Logger logger = LoggerFactory.getLogger(GoGodepsBomTool.class)
 
-    public static final String PODFILE_LOCK_FILENAME= 'Podfile.lock'
+    public static final String GODEPS_DIRECTORYNAME= 'Godeps'
 
     @Autowired
-    CocoapodsPackager cocoapodsPackager
+    Gson gson
 
     @Autowired
     ExternalIdFactory externalIdFactory
 
-
-    BomToolType getBomToolType() {
-        return BomToolType.COCOAPODS
+    @Override
+    public BomToolType getBomToolType() {
+        return BomToolType.GO_GODEP
     }
 
-    boolean isBomToolApplicable() {
-        detectFileManager.containsAllFiles(sourcePath, PODFILE_LOCK_FILENAME)
+    @Override
+    public boolean isBomToolApplicable() {
+        detectFileManager.containsAllFiles(sourcePath, GODEPS_DIRECTORYNAME)
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
-        final String podLockText = new File(sourcePath, PODFILE_LOCK_FILENAME).text
+        GoGodepsParser goDepParser = new GoGodepsParser(gson, externalIdFactory)
+        def goDepsDirectory = new File(sourcePath, GODEPS_DIRECTORYNAME)
+        def goDepsFile = new File(goDepsDirectory, "Godeps.json")
+        DependencyGraph dependencyGraph = goDepParser.extractProjectDependencies(goDepsFile.text)
 
-        DependencyGraph dependencyGraph = cocoapodsPackager.extractDependencyGraph(podLockText)
-        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.COCOAPODS, sourcePath)
+        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.GOLANG, sourcePath)
 
         def codeLocation = new DetectCodeLocation.Builder(getBomToolType(), sourcePath, externalId, dependencyGraph).build()
         [codeLocation]

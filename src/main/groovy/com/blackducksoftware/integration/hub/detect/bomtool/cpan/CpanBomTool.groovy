@@ -21,8 +21,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool
+package com.blackducksoftware.integration.hub.detect.bomtool.cpan
 
+import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,66 +33,60 @@ import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.bomtool.conda.CondaListParser
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
-import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput
 
 import groovy.transform.TypeChecked
 
 @Component
 @TypeChecked
-class CondaBomTool extends BomTool {
-    private final Logger logger = LoggerFactory.getLogger(CondaBomTool.class)
+class CpanBomTool extends BomTool {
+    private final Logger logger = LoggerFactory.getLogger(CpanBomTool.class)
 
     @Autowired
-    CondaListParser condaListParser
+    CpanPackager cpanPackager
 
     @Autowired
     ExternalIdFactory externalIdFactory
 
-    private String condaExecutablePath
+    private String cpanExecutablePath
+    private String cpanmExecutablePath
 
     @Override
     public BomToolType getBomToolType() {
-        BomToolType.CONDA
+        BomToolType.CPAN
     }
 
     @Override
     public boolean isBomToolApplicable() {
-        def containsFiles = detectFileManager.containsAllFiles(sourcePath, 'environment.yml')
+        def containsFiles = detectFileManager.containsAllFiles(sourcePath, 'Makefile.PL')
         if (containsFiles) {
-            condaExecutablePath = findExecutablePath(ExecutableType.CONDA, true, detectConfiguration.getCondaPath())
-            if (!condaExecutablePath) {
-                logger.warn("Could not find the ${executableManager.getExecutableName(ExecutableType.CONDA)} executable")
+            cpanExecutablePath = findExecutablePath(ExecutableType.CPAN, true, detectConfiguration.getCpanPath())
+            cpanmExecutablePath = findExecutablePath(ExecutableType.CPANM, true, detectConfiguration.getCpanmPath())
+            if (!cpanExecutablePath) {
+                logger.warn("Could not find the ${executableManager.getExecutableName(ExecutableType.CPAN)} executable")
+            }
+            if (!cpanmExecutablePath) {
+                logger.warn("Could not find the ${executableManager.getExecutableName(ExecutableType.CPANM)} executable")
             }
         }
 
-        containsFiles && condaExecutablePath
+        containsFiles && cpanExecutablePath && cpanmExecutablePath
     }
 
     @Override
     public List<DetectCodeLocation> extractDetectCodeLocations() {
-        List<String> condaListOptions = ['list']
-        if (detectConfiguration.getCondaEnvironmentName()) {
-            condaListOptions.addAll([
-                '-n',
-                detectConfiguration.getCondaEnvironmentName()
-            ])
-        }
-        condaListOptions.add('--json')
-        Executable condaListExecutable = new Executable(sourceDirectory, condaExecutablePath, condaListOptions)
-        ExecutableOutput condaListOutput = executableRunner.execute(condaListExecutable)
-        String listJsonText = condaListOutput.standardOutput
+        ExecutableOutput cpanListOutput = executableRunner.runExe(cpanExecutablePath, '-l')
+        List<String> listText = cpanListOutput.standardOutputAsList
 
-        ExecutableOutput condaInfoOutput = executableRunner.runExe(condaExecutablePath, 'info', '--json')
-        String infoJsonText = condaInfoOutput.standardOutput
+        ExecutableOutput showdepsOutput = executableRunner.runExe(cpanmExecutablePath, '--showdeps', '.')
+        List<String> showdeps = showdepsOutput.standardOutputAsList
 
-        DependencyGraph dependencyGraph = condaListParser.parse(listJsonText, infoJsonText)
-        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.ANACONDA, detectConfiguration.sourcePath)
-        def detectCodeLocation = new DetectCodeLocation.Builder(BomToolType.CONDA, detectConfiguration.sourcePath, externalId, dependencyGraph).build()
+        DependencyGraph dependencyGraph = cpanPackager.makeDependencyGraph(listText, showdeps)
+        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.CPAN, detectConfiguration.sourcePath)
+        def detectCodeLocation = new DetectCodeLocation.Builder(BomToolType.CPAN, detectConfiguration.sourcePath, externalId, dependencyGraph).build()
 
         [detectCodeLocation]
     }

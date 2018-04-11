@@ -21,13 +21,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool
+package com.blackducksoftware.integration.hub.detect.bomtool.cran
+
+import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -35,7 +35,7 @@ import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.bomtool.go.vndr.VndrParser
+import com.blackducksoftware.integration.hub.detect.bomtool.cran.PackratPackager
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 
@@ -43,34 +43,44 @@ import groovy.transform.TypeChecked
 
 @Component
 @TypeChecked
-class GoVndrBomTool extends BomTool {
-    private final Logger logger = LoggerFactory.getLogger(GoVndrBomTool.class)
-
-    public static final String VNDR_CONF_FILENAME= 'vendor.conf'
+class CranBomTool extends BomTool {
+    @Autowired
+    PackratPackager packratPackager
 
     @Autowired
     ExternalIdFactory externalIdFactory
 
-    @Override
-    public BomToolType getBomToolType() {
-        return BomToolType.GO_VNDR
+    BomToolType getBomToolType() {
+        return BomToolType.CRAN
     }
 
-    @Override
-    public boolean isBomToolApplicable() {
-        detectFileManager.containsAllFiles(sourcePath, VNDR_CONF_FILENAME)
+    boolean isBomToolApplicable() {
+        detectFileManager.containsAllFilesToDepth(sourcePath, detectConfiguration.getSearchDepth(), 'packrat.lock')
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
         File sourceDirectory = detectConfiguration.sourceDirectory
 
-        VndrParser vndrParser = new VndrParser(externalIdFactory)
-        def vendorConf = new File(sourcePath, VNDR_CONF_FILENAME)
-        List<String> venderConfContents = Files.readAllLines(vendorConf.toPath(), StandardCharsets.UTF_8)
-        DependencyGraph dependencyGraph = vndrParser.parseVendorConf(venderConfContents)
-        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.GOLANG, sourcePath)
+        def packratLockFile = detectFileManager.findFilesToDepth(sourceDirectory, 'packrat.lock', detectConfiguration.getSearchDepth())
+        String projectName = ''
+        String projectVersion = ''
+        if (detectFileManager.containsAllFiles(sourcePath,'DESCRIPTION')) {
+            def descriptionFile = new File(sourceDirectory, 'DESCRIPTION')
+            List<String> descriptionText = Files.readAllLines(descriptionFile.toPath(), StandardCharsets.UTF_8)
+            projectName = packratPackager.getProjectName(descriptionText)
+            projectVersion = packratPackager.getVersion(descriptionText)
+        }
 
-        def codeLocation = new DetectCodeLocation.Builder(getBomToolType(), sourcePath, externalId, dependencyGraph).build()
+        List<String> packratLockText = Files.readAllLines(packratLockFile[0].toPath(), StandardCharsets.UTF_8)
+        DependencyGraph dependencyGraph = packratPackager.extractProjectDependencies(packratLockText)
+        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.CRAN, sourcePath)
+
+        DetectCodeLocation.Builder builder =
+                new DetectCodeLocation.Builder(getBomToolType(), sourcePath, externalId, dependencyGraph)
+                .bomToolProjectName(projectName)
+                .bomToolProjectVersionName(projectVersion);
+
+        def codeLocation = builder.build()
         [codeLocation]
     }
 }

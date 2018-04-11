@@ -21,57 +21,58 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool
+package com.blackducksoftware.integration.hub.detect.bomtool.packagist
 
+import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
+
+import java.nio.charset.StandardCharsets
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-
-import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
-import com.blackducksoftware.integration.hub.bdio.model.Forge
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.bomtool.go.godep.GoGodepsParser
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
-import com.google.gson.Gson
 
 import groovy.transform.TypeChecked
 
 @Component
 @TypeChecked
-class GoGodepsBomTool extends BomTool {
-    private final Logger logger = LoggerFactory.getLogger(GoGodepsBomTool.class)
-
-    public static final String GODEPS_DIRECTORYNAME= 'Godeps'
+class PackagistBomTool extends BomTool {
+    private final Logger logger = LoggerFactory.getLogger(PackagistBomTool.class)
 
     @Autowired
-    Gson gson
+    PackagistParser packagistParser
 
     @Autowired
     ExternalIdFactory externalIdFactory
 
     @Override
     public BomToolType getBomToolType() {
-        return BomToolType.GO_GODEP
+        BomToolType.PACKAGIST
     }
 
     @Override
     public boolean isBomToolApplicable() {
-        detectFileManager.containsAllFiles(sourcePath, GODEPS_DIRECTORYNAME)
+        boolean containsComposerLock = detectFileManager.containsAllFiles(sourcePath, 'composer.lock')
+        boolean containsComposerJson = detectFileManager.containsAllFiles(sourcePath, 'composer.json')
+
+        if (containsComposerLock && !containsComposerJson) {
+            logger.warn("composer.lock was located in ${sourcePath}, but no composer.json. Please add a composer.json file and try again.")
+        } else if (!containsComposerLock && containsComposerJson) {
+            logger.warn("composer.json was located in ${sourcePath}, but no composer.lock. Please install dependencies and try again.")
+        }
+
+        containsComposerLock && containsComposerJson
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
-        GoGodepsParser goDepParser = new GoGodepsParser(gson, externalIdFactory)
-        def goDepsDirectory = new File(sourcePath, GODEPS_DIRECTORYNAME)
-        def goDepsFile = new File(goDepsDirectory, "Godeps.json")
-        DependencyGraph dependencyGraph = goDepParser.extractProjectDependencies(goDepsFile.text)
+        String composerJsonText = new File(sourcePath, 'composer.json').getText(StandardCharsets.UTF_8.toString())
+        String composerLockText = new File(sourcePath, 'composer.lock').getText(StandardCharsets.UTF_8.toString())
 
-        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.GOLANG, sourcePath)
+        def detectCodeLocation = packagistParser.getDependencyGraphFromProject(sourcePath, composerJsonText, composerLockText)
 
-        def codeLocation = new DetectCodeLocation.Builder(getBomToolType(), sourcePath, externalId, dependencyGraph).build()
-        [codeLocation]
+        [detectCodeLocation]
     }
 }

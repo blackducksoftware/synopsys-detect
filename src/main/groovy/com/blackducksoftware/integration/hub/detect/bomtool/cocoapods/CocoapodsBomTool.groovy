@@ -21,11 +21,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool
+package com.blackducksoftware.integration.hub.detect.bomtool.cocoapods
 
-import java.nio.charset.StandardCharsets
-import java.nio.file.Files
-
+import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -35,7 +33,6 @@ import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.bomtool.rubygems.RubygemsNodePackager
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 
@@ -43,33 +40,31 @@ import groovy.transform.TypeChecked
 
 @Component
 @TypeChecked
-class RubygemsBomTool extends BomTool {
-    private final Logger logger = LoggerFactory.getLogger(RubygemsBomTool.class)
+class CocoapodsBomTool extends BomTool {
+    private final Logger logger = LoggerFactory.getLogger(CocoapodsBomTool.class)
 
-    public static final String GEMFILE_LOCK_FILENAME= 'Gemfile.lock'
+    public static final String PODFILE_LOCK_FILENAME= 'Podfile.lock'
 
     @Autowired
-    RubygemsNodePackager rubygemsNodePackager
+    CocoapodsPackager cocoapodsPackager
 
     @Autowired
     ExternalIdFactory externalIdFactory
 
+
     BomToolType getBomToolType() {
-        return BomToolType.RUBYGEMS
+        return BomToolType.COCOAPODS
     }
 
     boolean isBomToolApplicable() {
-        detectFileManager.containsAllFiles(sourcePath, GEMFILE_LOCK_FILENAME)
+        detectFileManager.containsAllFiles(sourcePath, PODFILE_LOCK_FILENAME)
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
-        File sourceDirectory = detectConfiguration.sourceDirectory
+        final String podLockText = new File(sourcePath, PODFILE_LOCK_FILENAME).text
 
-        def gemlockFile = new File(sourceDirectory, GEMFILE_LOCK_FILENAME)
-        List<String> gemlockText = Files.readAllLines(gemlockFile.toPath(), StandardCharsets.UTF_8)
-
-        DependencyGraph dependencyGraph = rubygemsNodePackager.extractProjectDependencies(gemlockText)
-        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.RUBYGEMS, sourcePath)
+        DependencyGraph dependencyGraph = cocoapodsPackager.extractDependencyGraph(podLockText)
+        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.COCOAPODS, sourcePath)
 
         def codeLocation = new DetectCodeLocation.Builder(getBomToolType(), sourcePath, externalId, dependencyGraph).build()
         [codeLocation]

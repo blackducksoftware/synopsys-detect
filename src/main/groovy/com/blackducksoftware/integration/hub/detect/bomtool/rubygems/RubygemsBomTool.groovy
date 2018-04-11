@@ -21,16 +21,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool
+package com.blackducksoftware.integration.hub.detect.bomtool.rubygems
+
+import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 
 import java.nio.charset.StandardCharsets
+import java.nio.file.Files
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.Forge
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.bomtool.packagist.PackagistParser
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 
@@ -38,40 +44,35 @@ import groovy.transform.TypeChecked
 
 @Component
 @TypeChecked
-class PackagistBomTool extends BomTool {
-    private final Logger logger = LoggerFactory.getLogger(PackagistBomTool.class)
+class RubygemsBomTool extends BomTool {
+    private final Logger logger = LoggerFactory.getLogger(RubygemsBomTool.class)
+
+    public static final String GEMFILE_LOCK_FILENAME= 'Gemfile.lock'
 
     @Autowired
-    PackagistParser packagistParser
+    RubygemsNodePackager rubygemsNodePackager
 
     @Autowired
     ExternalIdFactory externalIdFactory
 
-    @Override
-    public BomToolType getBomToolType() {
-        BomToolType.PACKAGIST
+    BomToolType getBomToolType() {
+        return BomToolType.RUBYGEMS
     }
 
-    @Override
-    public boolean isBomToolApplicable() {
-        boolean containsComposerLock = detectFileManager.containsAllFiles(sourcePath, 'composer.lock')
-        boolean containsComposerJson = detectFileManager.containsAllFiles(sourcePath, 'composer.json')
-
-        if (containsComposerLock && !containsComposerJson) {
-            logger.warn("composer.lock was located in ${sourcePath}, but no composer.json. Please add a composer.json file and try again.")
-        } else if (!containsComposerLock && containsComposerJson) {
-            logger.warn("composer.json was located in ${sourcePath}, but no composer.lock. Please install dependencies and try again.")
-        }
-
-        containsComposerLock && containsComposerJson
+    boolean isBomToolApplicable() {
+        detectFileManager.containsAllFiles(sourcePath, GEMFILE_LOCK_FILENAME)
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
-        String composerJsonText = new File(sourcePath, 'composer.json').getText(StandardCharsets.UTF_8.toString())
-        String composerLockText = new File(sourcePath, 'composer.lock').getText(StandardCharsets.UTF_8.toString())
+        File sourceDirectory = detectConfiguration.sourceDirectory
 
-        def detectCodeLocation = packagistParser.getDependencyGraphFromProject(sourcePath, composerJsonText, composerLockText)
+        def gemlockFile = new File(sourceDirectory, GEMFILE_LOCK_FILENAME)
+        List<String> gemlockText = Files.readAllLines(gemlockFile.toPath(), StandardCharsets.UTF_8)
 
-        [detectCodeLocation]
+        DependencyGraph dependencyGraph = rubygemsNodePackager.extractProjectDependencies(gemlockText)
+        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.RUBYGEMS, sourcePath)
+
+        def codeLocation = new DetectCodeLocation.Builder(getBomToolType(), sourcePath, externalId, dependencyGraph).build()
+        [codeLocation]
     }
 }
