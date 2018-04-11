@@ -33,10 +33,6 @@ import groovy.transform.TypeChecked;
 @TypeChecked
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface ValueDescription {
-    String description() default "";
-
-    String defaultValue() default "";
-
-    String group() default "";
+public @interface HelpUseCases {
+    String value() default "";
 }
