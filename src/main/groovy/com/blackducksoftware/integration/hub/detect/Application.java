@@ -26,6 +26,7 @@ package com.blackducksoftware.integration.hub.detect;
 import java.io.Console;
 import java.io.File;
 import java.io.PrintStream;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,6 +52,7 @@ import com.blackducksoftware.integration.hub.bdio.BdioTransformer;
 import com.blackducksoftware.integration.hub.bdio.SimpleBdioFactory;
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolTreeWalker;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
@@ -175,11 +177,12 @@ public class Application implements ApplicationRunner {
                 infoPrinter.printInfo(System.out, detectInfo);
                 detectConfigurationPrinter.print(System.out, detectInfo, detectConfiguration, options);
             }
-            
+
             List<DetectOption> unacceptableDetectOtions = detectOptionManager.findUnacceptableValues();
             if (unacceptableDetectOtions.size() > 0) {
                 DetectOption firstUnacceptableDetectOption = unacceptableDetectOtions.get(0);
-                String msg = firstUnacceptableDetectOption.getKey() + ": Unkown value '" + firstUnacceptableDetectOption.getResolvedValue() + "', acceptable values are " + firstUnacceptableDetectOption.getAcceptableValues().stream().collect(Collectors.joining(","));
+                String msg = firstUnacceptableDetectOption.getKey() + ": Unknown value '" + firstUnacceptableDetectOption.getResolvedValue() + "', acceptable values are " + firstUnacceptableDetectOption.getAcceptableValues().stream()
+                                                                                                                                                                                     .collect(Collectors.joining(","));
                 throw new DetectUserFriendlyException(msg, ExitCodeType.FAILURE_GENERAL_ERROR);
             }
 
@@ -258,6 +261,12 @@ public class Application implements ApplicationRunner {
             exitCodeType = ExitCodeType.FAILURE_UNKNOWN_ERROR;
         }
         logger.error(e.getMessage());
+    }
+
+    @Bean
+    public BomToolTreeWalker bomToolTreeSearcher() {
+        return new BomToolTreeWalker(Arrays.asList(detectConfiguration.getBomToolSearchExclusion()), detectConfiguration.getBomToolSearchExclusionDefaults(), detectConfiguration.getBomToolContinueSearch(),
+                detectConfiguration.getBomToolSearchDepth());
     }
 
     @Bean

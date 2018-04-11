@@ -23,6 +23,13 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.conda;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph;
@@ -32,12 +39,6 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 public class CondaListParser {
@@ -64,7 +65,7 @@ public class CondaListParser {
 
     public Dependency condaListElementToDependency(final String platform, final CondaListElement element) {
         String name = element.getName();
-        String version = String.format("%s-%s-%s",element.getVersion(),element.getBuildString(),platform);
+        String version = String.format("%s-%s-%s", element.getVersion(), element.getBuildString(), platform);
         ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.ANACONDA, name, version);
 
         return new Dependency(name, version, externalId);

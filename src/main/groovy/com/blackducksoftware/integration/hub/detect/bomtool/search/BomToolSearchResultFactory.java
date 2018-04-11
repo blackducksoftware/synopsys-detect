@@ -21,18 +21,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.help.html;
+package com.blackducksoftware.integration.hub.detect.bomtool.search;
 
-import java.util.List;
+import java.io.File;
 
-public class HelpHtmlData {
-    public List<HelpHtmlGroup> groups;
-    
-    public HelpHtmlData(List<HelpHtmlGroup> groups) { 
-        this.groups = groups;
+public class BomToolSearchResultFactory {
+    public static BomToolSearchResult createApplies(final File searchedDirectory) {
+        return new BomToolSearchResult(true, searchedDirectory);
     }
-    
-    public List<HelpHtmlGroup> getGroups() {
-        return groups;
+
+    public static BomToolSearchResult createDoesNotApply() {
+        return new BomToolSearchResult(false, null);
     }
+
+    public static NpmBomToolSearchResult createNpmApplies(final File searchedDirectory, final String npmExePath, final File packageLockJson, final File shrinkwrapJson) {
+        return new NpmBomToolSearchResult(true, searchedDirectory, npmExePath, packageLockJson, shrinkwrapJson);
+    }
+
+    public static NpmBomToolSearchResult createNpmDoesNotApply() {
+        return new NpmBomToolSearchResult(false, null, null, null, null);
+    }
+
 }

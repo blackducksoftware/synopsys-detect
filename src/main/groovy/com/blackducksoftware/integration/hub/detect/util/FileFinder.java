@@ -45,8 +45,15 @@ public class FileFinder {
     private final Logger logger = LoggerFactory.getLogger(FileFinder.class);
 
     public boolean containsAllFiles(final String sourcePath, final String... filenamePatterns) {
+        if (StringUtils.isBlank(sourcePath)) {
+            return false;
+        }
         final File sourceDirectory = new File(sourcePath);
-        if (StringUtils.isBlank(sourcePath) || !sourceDirectory.isDirectory()) {
+        return containsAllFiles(sourceDirectory, filenamePatterns);
+    }
+
+    public boolean containsAllFiles(final File sourceDirectory, final String... filenamePatterns) {
+        if (!sourceDirectory.isDirectory()) {
             return false;
         }
 
@@ -55,7 +62,7 @@ public class FileFinder {
             final File foundFile = findFile(sourceDirectory, filenamePattern);
             if (foundFile == null) {
                 containsFiles = false;
-                logger.debug(String.format("No file detected: %s in %s", filenamePattern, sourcePath));
+                logger.debug(String.format("No file detected: %s in %s", filenamePattern, sourceDirectory.getAbsolutePath()));
                 break;
             }
         }

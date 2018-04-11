@@ -25,11 +25,14 @@ package com.blackducksoftware.integration.hub.detect;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -61,6 +64,7 @@ import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnection;
 import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnectionBuilder;
 import com.blackducksoftware.integration.log.Slf4jIntLogger;
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
+import com.blackducksoftware.integration.util.ResourceUtil;
 
 import groovy.transform.TypeChecked;
 
@@ -140,7 +144,7 @@ public class DetectConfiguration {
     private final List<String> excludedScanPaths = new ArrayList<>();
 
     private final FieldWarnings warnings = new FieldWarnings();
-    
+
     public void init() throws DetectUserFriendlyException, IOException, IllegalArgumentException, IllegalAccessException {
         final String systemUserHome = System.getProperty("user.home");
         if (resolveTildeInPaths) {
@@ -156,8 +160,8 @@ public class DetectConfiguration {
         if (!sourceDirectory.exists() || !sourceDirectory.isDirectory()) {
             throw new DetectUserFriendlyException("The source path ${sourcePath} either doesn't exist, isn't a directory, or doesn't have appropriate permissions.", ExitCodeType.FAILURE_GENERAL_ERROR);
         }
-        
-        boolean atLeastOnePolicySeverity = StringUtils.isNotBlank(policyCheckFailOnSeverities); 
+
+        boolean atLeastOnePolicySeverity = StringUtils.isNotBlank(policyCheckFailOnSeverities);
         if (atLeastOnePolicySeverity) {
             if (policyCheck) {
                 warnings.addDeprecation("policyCheck");
@@ -165,7 +169,7 @@ public class DetectConfiguration {
                 policyCheck = true;
             }
         }
-        
+
         // make sure the path is absolute
         sourcePath = sourceDirectory.getCanonicalPath();
 
@@ -246,12 +250,12 @@ public class DetectConfiguration {
         if (dockerBomTool.isBomToolApplicable() && bomToolFilter.shouldInclude(dockerBomTool.getBomToolType().toString())) {
             dockerInspectorVersion = dockerBomTool.getInspectorVersion();
         }
-        
-        
+
+
 
         configureForPhoneHome();
     }
-    
+
     public FieldWarnings getFieldWarnings() {
         return this.warnings;
     }
@@ -417,7 +421,7 @@ public class DetectConfiguration {
     private Boolean cleanupBdioFiles;
 
     @Value("${detect.test.connection:}")
-    @DefaultValue("true")
+    @DefaultValue("false")
     @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = {SEARCH_GROUP_HUB})
     @HelpDescription("Test the connection to the Hub with the current configuration")
     private Boolean testConnection;
@@ -478,7 +482,7 @@ public class DetectConfiguration {
     @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = {SEARCH_GROUP_HUB, SEARCH_GROUP_PROXY})
     @HelpDescription("Ntlm Proxy domain")
     private String hubProxyNtlmDomain;
-    
+
     @Value("${blackduck.hub.proxy.ignored.hosts:}")
     @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = {SEARCH_GROUP_HUB, SEARCH_GROUP_PROXY})
     @HelpDescription("Comma separated list of host patterns that should not use the proxy")
@@ -532,6 +536,29 @@ public class DetectConfiguration {
     @HelpGroup(primary = GROUP_PATHS)
     @HelpDescription("Depth from source paths to search for files.")
     private Integer searchDepth;
+
+    @Value("${detect.bom.tool.search.depth:}")
+    @DefaultValue("0")
+    @HelpGroup(primary = GROUP_PATHS)
+    @HelpDescription("Depth from source paths to search for files to determine if a bom tool applies.")
+    private Integer bomToolSearchDepth;
+
+    @Value("${detect.bom.tool.search.continue:}")
+    @DefaultValue("false")
+    @HelpGroup(primary = GROUP_PATHS)
+    @HelpDescription("If true, the bom tool search will continue to look for bom tools to the maximum search depth, even if they applied earlier in the path.")
+    private Boolean bomToolContinueSearch;
+
+    @Value("${detect.bom.tool.search.exclusion:}")
+    @HelpGroup(primary = GROUP_PATHS)
+    @HelpDescription("A comma-separated list of directory names to exclude from the bom tool search.")
+    private String[] bomToolSearchExclusion;
+
+    @Value("${detect.bom.tool.search.exclusion.defaults:}")
+    @DefaultValue("true")
+    @HelpGroup(primary = GROUP_PATHS)
+    @HelpDescription("If true, the bom tool search will exclude the default directory names.")
+    private Boolean bomToolSearchExclusionDefaults;
 
     @Value("${detect.excluded.bom.tool.types:}")
     @HelpGroup(primary = GROUP_BOMTOOL)
@@ -602,7 +629,7 @@ public class DetectConfiguration {
     @AcceptableValues(value = {"EXTERNAL","SAAS","INTERNAL","OPENSOURCE"}, caseSensitive = false, strict = false)
     private String projectVersionDistribution;
 
-    @ValueDeprecation(willRemoveInVersion="4.0.0", description = "To fail on any policy, set --detect.policy.check.fail.on.severities=ALL.") 
+    @ValueDeprecation(willRemoveInVersion="4.0.0", description = "To fail on any policy, set --detect.policy.check.fail.on.severities=ALL.")
     @Value("${detect.policy.check:}")
     @DefaultValue("false")
     @HelpGroup(primary = GROUP_POLICY_CHECK, additional = {SEARCH_GROUP_POLICY})
@@ -1084,6 +1111,22 @@ public class DetectConfiguration {
         return convertInt(searchDepth);
     }
 
+    public int getBomToolSearchDepth() {
+        return convertInt(bomToolSearchDepth);
+    }
+
+    public Boolean getBomToolContinueSearch() {
+        return BooleanUtils.toBoolean(bomToolContinueSearch);
+    }
+
+    public String[] getBomToolSearchExclusion() {
+        return bomToolSearchExclusion;
+    }
+
+    public Boolean getBomToolSearchExclusionDefaults() {
+        return BooleanUtils.toBoolean(bomToolSearchExclusionDefaults);
+    }
+
     public String getExcludedBomToolTypes() {
         return excludedBomToolTypes == null ? null : excludedBomToolTypes.toUpperCase();
     }
@@ -1306,11 +1349,11 @@ public class DetectConfiguration {
     }
 
     public boolean getHubSignatureScannerDryRun() {
-        return hubSignatureScannerDryRun;
+        return BooleanUtils.toBoolean(hubSignatureScannerDryRun);
     }
 
     public boolean getHubSignatureScannerSnippetMode() {
-        return hubSignatureScannerSnippetMode;
+        return BooleanUtils.toBoolean(hubSignatureScannerSnippetMode);
     }
 
     public String[] getHubSignatureScannerPaths() {

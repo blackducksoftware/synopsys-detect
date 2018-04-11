@@ -21,18 +21,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.help.html;
+package com.blackducksoftware.integration.hub.detect.bomtool;
 
 import java.util.List;
 
-public class HelpHtmlData {
-    public List<HelpHtmlGroup> groups;
-    
-    public HelpHtmlData(List<HelpHtmlGroup> groups) { 
-        this.groups = groups;
-    }
-    
-    public List<HelpHtmlGroup> getGroups() {
-        return groups;
-    }
+import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolSearchResult;
+import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolSearcher;
+import com.blackducksoftware.integration.hub.detect.model.BomToolType;
+import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
+
+public interface NestedBomTool<T extends BomToolSearchResult> {
+    List<DetectCodeLocation> extractDetectCodeLocations(T bomToolSearchResult);
+
+    BomToolSearcher<T> getBomToolSearcher();
+
+    BomToolType getBomToolType();
+
+    Boolean canSearchWithinApplicableDirectory();
+
 }

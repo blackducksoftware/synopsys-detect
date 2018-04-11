@@ -21,18 +21,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.help.html;
+package com.blackducksoftware.integration.hub.detect.exception;
 
-import java.util.List;
+import com.blackducksoftware.integration.exception.IntegrationException;
 
-public class HelpHtmlData {
-    public List<HelpHtmlGroup> groups;
-    
-    public HelpHtmlData(List<HelpHtmlGroup> groups) { 
-        this.groups = groups;
+public class BomToolException extends IntegrationException {
+    private static final long serialVersionUID = 1L;
+
+    public BomToolException(final String message) {
+        super(message);
     }
-    
-    public List<HelpHtmlGroup> getGroups() {
-        return groups;
+
+    public BomToolException(final String message, final Exception e) {
+        super(message, e);
     }
+
 }
