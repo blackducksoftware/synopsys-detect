@@ -151,7 +151,9 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
 
         // we have already searched the given source path for bom tools and now, if we have to, we will walk
         // the directory tree to find additional bom tools (npm might be nested beneath the source directory, for example)
-        if (detectConfiguration.getBomToolSearchDepth() > 0) {
+        if (applicableBomTools.size() < 1 && detectConfiguration.getBomToolSearchDepth() > 0) {
+            logger.warn(String.format("Will not search for nested bom tools because no bom tools applied to %s", detectConfiguration.getSourcePath()));
+        } else if (applicableBomTools.size() > 0 && detectConfiguration.getBomToolSearchDepth() > 0) {
             try {
                 File initialDirectory = detectConfiguration.getSourceDirectory();
                 bomToolTreeWalker.startSearching(nestedBomTools, initialDirectory);
