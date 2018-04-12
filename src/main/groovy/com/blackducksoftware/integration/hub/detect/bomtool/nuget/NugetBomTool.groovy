@@ -23,17 +23,16 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.nuget
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
-import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationName
-
 import org.apache.commons.io.FileUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphCombiner
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph
 import com.blackducksoftware.integration.hub.detect.DetectInfo
+import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
@@ -181,7 +180,7 @@ class NugetBomTool extends BomTool {
             logger.warn('Unable to extract any dependencies from nuget')
             return []
         }
-        
+
         Map<String, List<DetectCodeLocation>> codeLocationSourcePathMap = new HashMap<>();
         codeLocations.forEach { DetectCodeLocation codeLocation ->
             String sourcePath = codeLocation.getSourcePath();
@@ -190,7 +189,7 @@ class NugetBomTool extends BomTool {
             }
             codeLocationSourcePathMap.get(sourcePath).add(codeLocation);
         }
-        
+
         List<DetectCodeLocation> mergedCodeLocations = new ArrayList<>();
         DependencyGraphCombiner combiner = new DependencyGraphCombiner();
         for (def codeLocationList in codeLocationSourcePathMap.values()) {
@@ -200,10 +199,11 @@ class NugetBomTool extends BomTool {
                 logger.info("This most likely means the same project exists in multiple solutions.")
                 logger.info("The code location's dependencies will be combined, in the future they will exist seperately for each solution.")
                 codeLocationList.stream()
-                    .skip(1)
-                    .forEach{ 
-                        combiner.addGraphAsChildrenToRoot((MutableDependencyGraph) merger.getDependencyGraph(), it.getDependencyGraph()) 
-                    };
+                        .skip(1)
+                        .forEach{
+                            combiner.addGraphAsChildrenToRoot((MutableDependencyGraph) merger.getDependencyGraph(), it.getDependencyGraph())
+                        };
+                mergedCodeLocations.add(merger);
             }else if (codeLocationList.size() == 1) {
                 mergedCodeLocations.add(codeLocationList.first());
             }
