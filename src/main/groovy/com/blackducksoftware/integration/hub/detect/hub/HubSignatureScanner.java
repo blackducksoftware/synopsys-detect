@@ -263,7 +263,7 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
         hubScanConfigBuilder.setToolsDir(toolsDirectory);
         hubScanConfigBuilder.setWorkingDirectory(scannerDirectory);
         hubScanConfigBuilder.addScanTargetPath(canonicalPath);
-        hubScanConfigBuilder.setCleanupLogsOnSuccess(detectConfiguration.getCleanupBomToolFiles());
+        hubScanConfigBuilder.setCleanupLogsOnSuccess(detectConfiguration.getCleanupDetectFiles());
         hubScanConfigBuilder.setDryRun(detectConfiguration.getHubSignatureScannerDryRun());
         hubScanConfigBuilder.setSnippetModeEnabled(detectConfiguration.getHubSignatureScannerSnippetMode());
 

@@ -51,7 +51,7 @@ public class BdioUploader {
         for (final File file : createdBdioFiles) {
             logger.info(String.format("uploading %s to %s", file.getName(), detectConfiguration.getHubUrl()));
             codeLocationService.importBomFile(file);
-            if (detectConfiguration.getCleanupBdioFiles()) {
+            if (detectConfiguration.getCleanupDetectFiles()) {
                 file.delete();
             }
         }
