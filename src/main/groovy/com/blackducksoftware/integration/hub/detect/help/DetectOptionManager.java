@@ -26,7 +26,6 @@ package com.blackducksoftware.integration.hub.detect.help;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,13 +39,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
-import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
+import com.blackducksoftware.integration.hub.detect.help.DetectOption.FinalValueType;
 import com.blackducksoftware.integration.hub.detect.interactive.InteractiveOption;
 import com.blackducksoftware.integration.hub.detect.util.SpringValueUtils;
-import com.blackducksoftware.integration.log.IntLogger;
 
 @Component
 public class DetectOptionManager {
@@ -95,15 +92,63 @@ public class DetectOptionManager {
                 .collect(Collectors.toList());
     }
 
+    public void postInit() throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
+        for (final DetectOption option : detectOptions) {
+            final String fieldValue = getCurrentValue(detectConfiguration, option);
+            if (!option.getResolvedValue().equals(fieldValue)) {
+                if (option.getInteractiveValue() != null) {
+                    option.setFinalValue(fieldValue, FinalValueType.INTERACTIVE);
+                } else if (option.getResolvedValue().equals("latest")) {
+                    option.setFinalValue(fieldValue, FinalValueType.LATEST);
+                } else if (option.getResolvedValue().trim().length() == 0) {
+                    option.setFinalValue(fieldValue, FinalValueType.CALCULATED);
+                } else {
+                    option.setFinalValue(fieldValue, FinalValueType.OVERRIDE);
+                }
+            } else {
+                if (fieldValue.equals(option.getDefaultValue())) {
+                    option.setFinalValue(fieldValue, FinalValueType.DEFAULT);
+                }else {
+                    option.setFinalValue(fieldValue, FinalValueType.SUPPLIED);
+                    if (option.getHelp().isDeprecated) {
+                        option.warnings.requestDeprecation();
+                    }
+                }
+            }
+
+            if (option.warnings.isRequestedDeprecation()) {
+                option.warnings.add("As of version " + option.getHelp().deprecationVersion + " this property will be removed: " + option.getHelp().deprecation);
+            }
+        }
+
+
+    }
+
+    public String getCurrentValue(final DetectConfiguration detectConfiguration, final DetectOption detectOption) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
+        final Field field = detectConfiguration.getClass().getDeclaredField(detectOption.getFieldName());
+        field.setAccessible(true);
+        final Object rawFieldValue = field.get(detectConfiguration);
+        String fieldValue = "";
+        if (field.getType().isArray()) {
+            fieldValue = String.join(", ", (String[]) rawFieldValue);
+        } else {
+            if (rawFieldValue != null) {
+                fieldValue = rawFieldValue.toString();
+            }
+        }
+        field.setAccessible(false);
+        return fieldValue;
+    }
+
     private DetectOption processField(final Object obj, final Class<?> objClz, final Field field) throws IllegalArgumentException, IllegalAccessException {
         final String fieldName = field.getName();
         final Class<?> valueType = field.getType();
 
         final Value valueAnnotation = field.getAnnotation(Value.class);
-        String key = SpringValueUtils.springKeyFromValueAnnotation(valueAnnotation.value());
+        final String key = SpringValueUtils.springKeyFromValueAnnotation(valueAnnotation.value());
 
         String defaultValue = "";
-        DefaultValue defaultValueAnnotation = field.getAnnotation(DefaultValue.class);
+        final DefaultValue defaultValueAnnotation = field.getAnnotation(DefaultValue.class);
         if (defaultValueAnnotation != null) {
             defaultValue = defaultValueAnnotation.value();
         }
@@ -111,7 +156,7 @@ public class DetectOptionManager {
         String[] acceptableValues = new String[] {};
         boolean strictAcceptableValue = false;
         boolean caseSensitiveAcceptableValues = false;
-        AcceptableValues acceptableValueAnnotation = field.getAnnotation(AcceptableValues.class);
+        final AcceptableValues acceptableValueAnnotation = field.getAnnotation(AcceptableValues.class);
         if (acceptableValueAnnotation != null) {
             acceptableValues = acceptableValueAnnotation.value();
             strictAcceptableValue = acceptableValueAnnotation.strict();
@@ -122,7 +167,7 @@ public class DetectOptionManager {
         String resolvedValue = originalValue;
         field.setAccessible(true);
 
-        boolean hasValue = !isValueNull(field, obj);
+        final boolean hasValue = !isValueNull(field, obj);
         if (defaultValue != null && !defaultValue.trim().isEmpty() && !hasValue) {
             resolvedValue = defaultValue;
             setValue(field, obj, defaultValue);
@@ -130,20 +175,20 @@ public class DetectOptionManager {
             resolvedValue = field.get(obj).toString();
         }
 
-        DetectOptionHelp help = processFieldHelp(field);
+        final DetectOptionHelp help = processFieldHelp(field);
 
-        return new DetectOption(key, fieldName, originalValue, resolvedValue, valueType, defaultValue, strictAcceptableValue, caseSensitiveAcceptableValues, acceptableValues, help);
+        return new DetectOption(key, fieldName, originalValue, resolvedValue, valueType, defaultValue, strictAcceptableValue, caseSensitiveAcceptableValues, acceptableValues, help, new FieldWarnings());
     }
 
     private DetectOptionHelp processFieldHelp(final Field field) {
-        DetectOptionHelp help = new DetectOptionHelp();
+        final DetectOptionHelp help = new DetectOptionHelp();
 
         final HelpDescription descriptionAnnotation = field.getAnnotation(HelpDescription.class);
         help.description = descriptionAnnotation.value();
 
         final HelpGroup groupAnnotation = field.getAnnotation(HelpGroup.class);
-        String primaryGroup = groupAnnotation.primary();
-        String[] additionalGroups = groupAnnotation.additional();
+        final String primaryGroup = groupAnnotation.primary();
+        final String[] additionalGroups = groupAnnotation.additional();
         if (additionalGroups.length > 0) {
             help.groups.addAll(Arrays.stream(additionalGroups).collect(Collectors.toList()));
         } else {
@@ -173,8 +218,8 @@ public class DetectOptionManager {
     }
 
     public List<DetectOption> findUnacceptableValues() throws DetectUserFriendlyException {
-        List<DetectOption> unacceptableDetectOptions = new ArrayList<>();
-        for (DetectOption option : detectOptions) {
+        final List<DetectOption> unacceptableDetectOptions = new ArrayList<>();
+        for (final DetectOption option : detectOptions) {
             if (option.strictAcceptableValues) {
                 if (!option.isAcceptableValue(option.resolvedValue)) {
                     unacceptableDetectOptions.add(option);
@@ -245,7 +290,7 @@ public class DetectOptionManager {
             if (fieldValue == null) {
                 return true;
             }
-            String[] realValue = (String[]) fieldValue;
+            final String[] realValue = (String[]) fieldValue;
             return realValue.length <= 0;
         } else {
             return false;

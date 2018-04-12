@@ -48,12 +48,13 @@ import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleBomTool
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetBomTool;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
+import com.blackducksoftware.integration.hub.detect.help.AcceptableValues;
+import com.blackducksoftware.integration.hub.detect.help.DefaultValue;
+import com.blackducksoftware.integration.hub.detect.help.DetectOption;
+import com.blackducksoftware.integration.hub.detect.help.FieldWarnings;
 import com.blackducksoftware.integration.hub.detect.help.HelpDescription;
 import com.blackducksoftware.integration.hub.detect.help.HelpGroup;
 import com.blackducksoftware.integration.hub.detect.help.ValueDeprecation;
-import com.blackducksoftware.integration.hub.detect.help.DefaultValue;
-import com.blackducksoftware.integration.hub.detect.help.FieldWarnings;
-import com.blackducksoftware.integration.hub.detect.help.AcceptableValues;
 import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver;
 import com.blackducksoftware.integration.hub.proxy.ProxyInfo;
 import com.blackducksoftware.integration.hub.proxy.ProxyInfoBuilder;
@@ -110,7 +111,7 @@ public class DetectConfiguration {
     private static final String SEARCH_GROUP_DEBUG = "debug";
 
     public static final String PRINT_GROUP_DEFAULT = SEARCH_GROUP_HUB;
-    
+
     @Autowired
     private ConfigurableEnvironment configurableEnvironment;
 
@@ -129,6 +130,8 @@ public class DetectConfiguration {
     private File sourceDirectory;
     private File outputDirectory;
 
+    private List<DetectOption> detectOptions = new ArrayList<>();
+
     private final Set<String> allDetectPropertyKeys = new HashSet<>();
     private final Set<String> additionalDockerPropertyNames = new HashSet<>();
     private final Set<String> additionalPhoneHomePropertyNames = new HashSet<>();
@@ -141,7 +144,9 @@ public class DetectConfiguration {
 
     private final FieldWarnings warnings = new FieldWarnings();
 
-    public void init() throws DetectUserFriendlyException, IOException, IllegalArgumentException, IllegalAccessException {
+    public void init(final List<DetectOption> detectOptions) throws DetectUserFriendlyException, IOException, IllegalArgumentException, IllegalAccessException {
+        this.detectOptions = detectOptions;
+
         final String systemUserHome = System.getProperty("user.home");
         if (resolveTildeInPaths) {
             tildeInPathResolver.resolveTildeInAllPathFields(systemUserHome, this);
@@ -157,10 +162,10 @@ public class DetectConfiguration {
             throw new DetectUserFriendlyException("The source path ${sourcePath} either doesn't exist, isn't a directory, or doesn't have appropriate permissions.", ExitCodeType.FAILURE_GENERAL_ERROR);
         }
 
-        boolean atLeastOnePolicySeverity = StringUtils.isNotBlank(policyCheckFailOnSeverities);
+        final boolean atLeastOnePolicySeverity = StringUtils.isNotBlank(policyCheckFailOnSeverities);
         if (atLeastOnePolicySeverity) {
             if (policyCheck) {
-                warnings.addDeprecation("policyCheck");
+                requestDeprecation("policyCheck");
             }else {
                 policyCheck = true;
             }
@@ -220,8 +225,8 @@ public class DetectConfiguration {
         if (StringUtils.isNotBlank(hubSignatureScannerHostUrl)) {
             logger.info("A hub signature scanner url was provided, which requires hub offline mode. Setting hub offline mode to true.");
             if (hubOfflineMode == false) {
-                warnings.addWarning("hubSignatureScannerHostUrl", "A hub signature scanner host url was provided but hub offline mode was false. In the future set hub offline mode to true.");
-                warnings.addWarning("hubOfflineMode", "A signature scanner url was provided, so hub offline mode was forced to true.");
+                addFieldWarning("hubSignatureScannerHostUrl", "A hub signature scanner host url was provided but hub offline mode was false. In the future set hub offline mode to true.");
+                addFieldWarning("hubOfflineMode", "A signature scanner url was provided, so hub offline mode was forced to true.");
             }
             hubOfflineMode = true;
         }
@@ -229,8 +234,8 @@ public class DetectConfiguration {
         if (StringUtils.isNotBlank(hubSignatureScannerOfflineLocalPath)) {
             logger.info("A local hub signature scanner path was provided, which requires hub offline mode. Setting hub offline mode to true.");
             if (hubOfflineMode == false) {
-                warnings.addWarning("hubSignatureScannerOfflineLocalPath", "A local hub signature scanner was provided but hub offline mode was false. In the future set hub offline mode to true.");
-                warnings.addWarning("hubOfflineMode", "A signature scanner path was provided, so hub offline mode was forced to true.");
+                addFieldWarning("hubSignatureScannerOfflineLocalPath", "A local hub signature scanner was provided but hub offline mode was false. In the future set hub offline mode to true.");
+                addFieldWarning("hubOfflineMode", "A signature scanner path was provided, so hub offline mode was forced to true.");
             }
             hubOfflineMode = true;
         }
@@ -252,8 +257,20 @@ public class DetectConfiguration {
         configureForPhoneHome();
     }
 
-    public FieldWarnings getFieldWarnings() {
-        return this.warnings;
+    public void addFieldWarning(final String key, final String warning) {
+        detectOptions.stream().forEach(option -> {
+            if (option.getKey().equals(key) ) {
+                option.getWarnings().add(warning);
+            }
+        });
+    }
+
+    public void requestDeprecation(final String key) {
+        detectOptions.stream().forEach(option -> {
+            if (option.getKey().equals(key) ) {
+                option.getWarnings().requestDeprecation();
+            }
+        });
     }
 
     public File getSourceDirectory() {

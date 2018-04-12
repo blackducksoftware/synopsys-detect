@@ -138,7 +138,7 @@ public class Application implements ApplicationRunner {
     }
 
     @Override
-    public void run(ApplicationArguments applicationArguments) throws Exception {
+    public void run(final ApplicationArguments applicationArguments) throws Exception {
         final long start = System.currentTimeMillis();
 
         try {
@@ -166,7 +166,8 @@ public class Application implements ApplicationRunner {
                 interactiveManager.interact(interactiveReader, interactivePrintStream);
             }
 
-            detectConfiguration.init();
+            detectConfiguration.init(options);
+            detectOptionManager.postInit();
 
             logger.info("Configuration processed completely.");
 
@@ -178,11 +179,11 @@ public class Application implements ApplicationRunner {
                 detectConfigurationPrinter.print(System.out, detectInfo, detectConfiguration, options);
             }
 
-            List<DetectOption> unacceptableDetectOtions = detectOptionManager.findUnacceptableValues();
+            final List<DetectOption> unacceptableDetectOtions = detectOptionManager.findUnacceptableValues();
             if (unacceptableDetectOtions.size() > 0) {
-                DetectOption firstUnacceptableDetectOption = unacceptableDetectOtions.get(0);
-                String msg = firstUnacceptableDetectOption.getKey() + ": Unknown value '" + firstUnacceptableDetectOption.getResolvedValue() + "', acceptable values are " + firstUnacceptableDetectOption.getAcceptableValues().stream()
-                                                                                                                                                                                     .collect(Collectors.joining(","));
+                final DetectOption firstUnacceptableDetectOption = unacceptableDetectOtions.get(0);
+                final String msg = firstUnacceptableDetectOption.getKey() + ": Unknown value '" + firstUnacceptableDetectOption.getResolvedValue() + "', acceptable values are " + firstUnacceptableDetectOption.getAcceptableValues().stream()
+                        .collect(Collectors.joining(","));
                 throw new DetectUserFriendlyException(msg, ExitCodeType.FAILURE_GENERAL_ERROR);
             }
 

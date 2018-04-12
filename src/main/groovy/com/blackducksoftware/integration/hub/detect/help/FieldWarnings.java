@@ -28,38 +28,23 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class FieldWarnings {
+    public List<String> warnings = new ArrayList<>();
+    public boolean requestedDeprecation = false;
 
-    public List<FieldWarning> warnings = new ArrayList<>();
-    public List<String> requestedDeprecations = new ArrayList<>();
-    
-    public void addDeprecation(String fieldName) {
-        requestedDeprecations.add(fieldName);
+    public void requestDeprecation() {
+        requestedDeprecation = true;
     }
-    
-    public void addWarning(String fieldName, String description) {
-        warnings.add(new FieldWarning(fieldName, description));
+
+    public void add(final String description) {
+        warnings.add(description);
     }
-    
-    public List<FieldWarning> warningsForField(String fieldName) {
-        return warnings.stream().filter(it -> it.fieldName.equals(fieldName)).collect(Collectors.toList());
+
+    public List<String> getWarnings() {
+        return warnings.stream().collect(Collectors.toList());
     }
-    
-    public List<FieldWarning> getWarnings() {
-        return warnings.stream().sorted((o1, o2)->o1.fieldName.compareTo(o2.fieldName)).collect(Collectors.toList());
+
+    public boolean isRequestedDeprecation() {
+        return requestedDeprecation;
     }
-    
-    public boolean isRequestedDeprecation(String fieldName) {
-        return requestedDeprecations.contains(fieldName); 
-    }
-    
-    public class FieldWarning {       
-        public String fieldName;
-        public String description;
-        
-        public FieldWarning(String fieldName, String description) {
-            this.fieldName = fieldName;
-            this.description = description;
-        }
-    }
-    
+
 }

@@ -39,10 +39,21 @@ public class DetectOption {
     final boolean caseSensitiveAcceptableValues;
     final List<String> acceptableValues;
     String interactiveValue = null;
-
+    String finalValue = null;
+    FinalValueType finalValueType = FinalValueType.DEFAULT;
     final DetectOptionHelp help;
-    
-    public DetectOption(final String key, final String fieldName, final String originalValue, final String resolvedValue, final Class<?> valueType, final String defaultValue, final boolean strictAcceptableValue, final boolean caseSensitiveAcceptableValues, final String[] acceptableValues, DetectOptionHelp help) {
+    final FieldWarnings warnings;
+
+    public enum FinalValueType{
+        DEFAULT, //the final value is the value in the default attribute
+        INTERACTIVE, //the final value is from the interactive prompt
+        LATEST, //the final value was resolved from latest
+        CALCULATED, //the resolved value was not set and final value was set during init
+        SUPPLIED, //the final value most likely came from spring
+        OVERRIDE //the resolved value was set but during init a new value was set
+    }
+
+    public DetectOption(final String key, final String fieldName, final String originalValue, final String resolvedValue, final Class<?> valueType, final String defaultValue, final boolean strictAcceptableValue, final boolean caseSensitiveAcceptableValues, final String[] acceptableValues, final DetectOptionHelp help, final FieldWarnings warnings) {
         this.key = key;
         this.valueType = valueType;
         this.defaultValue = defaultValue;
@@ -53,8 +64,9 @@ public class DetectOption {
         this.strictAcceptableValues = strictAcceptableValue;
         this.caseSensitiveAcceptableValues = caseSensitiveAcceptableValues;
         this.help = help;
+        this.warnings = warnings;
     }
-    
+
     public String getInteractiveValue() {
         return interactiveValue;
     }
@@ -63,8 +75,33 @@ public class DetectOption {
         this.interactiveValue = interactiveValue;
     }
 
+    public String getFinalValue() {
+        return finalValue;
+    }
+
+    public void setFinalValue(final String finalValue) {
+        this.finalValue = finalValue;
+    }
+
+    public void setFinalValue(final String finalValue, final FinalValueType finalValueType) {
+        setFinalValue(finalValue);
+        setFinalValueType(finalValueType);
+    }
+
+    public FinalValueType getFinalValueType() {
+        return finalValueType;
+    }
+
+    public void setFinalValueType(final FinalValueType finalValueType) {
+        this.finalValueType = finalValueType;
+    }
+
     public String getKey() {
         return key;
+    }
+
+    public FieldWarnings getWarnings() {
+        return warnings;
     }
 
     public String getFieldName() {
@@ -90,24 +127,24 @@ public class DetectOption {
     public DetectOptionHelp getHelp() {
         return help;
     }
-    
+
     public List<String> getAcceptableValues() {
         return acceptableValues;
     }
-    
+
     public boolean getCaseSensistiveAcceptableValues() {
         return caseSensitiveAcceptableValues;
     }
-    
-    public boolean isAcceptableValue(String value) { 
+
+    public boolean isAcceptableValue(final String value) {
         return acceptableValues.stream()
-            .anyMatch(it -> { 
-                if (caseSensitiveAcceptableValues) { 
-                    return it.equals(value);
-                } else {
-                    return it.equalsIgnoreCase(value);
-                }
-            });
+                .anyMatch(it -> {
+                    if (caseSensitiveAcceptableValues) {
+                        return it.equals(value);
+                    } else {
+                        return it.equalsIgnoreCase(value);
+                    }
+                });
     }
-    
+
 }
