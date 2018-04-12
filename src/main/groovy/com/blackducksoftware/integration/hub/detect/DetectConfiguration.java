@@ -152,6 +152,19 @@ public class DetectConfiguration {
             sourcePath = System.getProperty("user.dir");
         }
 
+        if(!getCleanupBdioFiles()){
+            warnings.addDeprecation("cleanupBdioFiles");
+            cleanupDetectFiles = false;
+        }
+        if(!getCleanupBomToolFiles()){
+            warnings.addDeprecation("cleanupBomToolFiles");
+            cleanupDetectFiles = false;
+        }
+        if(!getGradleCleanupBuildBlackduckDirectory() ){
+            warnings.addDeprecation("gradleCleanupBuildBlackduckDirectory");
+            cleanupDetectFiles = false;
+        }
+
         sourceDirectory = new File(sourcePath);
         if (!sourceDirectory.exists() || !sourceDirectory.isDirectory()) {
             throw new DetectUserFriendlyException("The source path ${sourcePath} either doesn't exist, isn't a directory, or doesn't have appropriate permissions.", ExitCodeType.FAILURE_GENERAL_ERROR);
@@ -410,6 +423,13 @@ public class DetectConfiguration {
     @HelpDescription("If true, the default behavior of printing the Detect Results will be suppressed.")
     private Boolean suppressResultsOutput;
 
+    @Value("${detect.cleanup:}")
+    @DefaultValue("true")
+    @HelpGroup(primary = GROUP_CLEANUP)
+    @HelpDescription("If true the files created by Detect will be cleaned up.")
+    private Boolean cleanupDetectFiles;
+
+    @ValueDeprecation(willRemoveInVersion = "4.0.0", description = "To turn off file cleanup, set --detect.cleanup=false.")
     @Value("${detect.cleanup.bdio.files:}")
     @DefaultValue("true")
     @HelpGroup(primary = GROUP_CLEANUP)
@@ -669,6 +689,7 @@ public class DetectConfiguration {
     @HelpDescription("The names of the projects to include")
     private String gradleIncludedProjectNames;
 
+    @ValueDeprecation(willRemoveInVersion = "4.0.0", description = "To turn off file cleanup, set --detect.cleanup=false.")
     @Value("${detect.gradle.cleanup.build.blackduck.directory:}")
     @DefaultValue("true")
     @HelpGroup(primary = GROUP_GRADLE)
@@ -835,6 +856,7 @@ public class DetectConfiguration {
     @AcceptableValues(value = {"ALL", "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF"}, caseSensitive = false, strict = true)
     private String loggingLevel;
 
+    @ValueDeprecation(willRemoveInVersion = "4.0.0", description = "To turn off file cleanup, set --detect.cleanup=false.")
     @Value("${detect.cleanup.bom.tool.files:}")
     @DefaultValue("true")
     @HelpGroup(primary = GROUP_CLEANUP, additional = {GROUP_CLEANUP, SEARCH_GROUP_DEBUG})
@@ -1017,6 +1039,10 @@ public class DetectConfiguration {
 
     public boolean getCleanupBdioFiles() {
         return BooleanUtils.toBoolean(cleanupBdioFiles);
+    }
+
+    public Boolean getCleanupDetectFiles() {
+        return BooleanUtils.toBoolean(cleanupDetectFiles);
     }
 
     public boolean getTestConnection() {
