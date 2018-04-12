@@ -23,14 +23,16 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.nuget
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import org.apache.commons.io.FileUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphCombiner
+import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph
 import com.blackducksoftware.integration.hub.detect.DetectInfo
+import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
@@ -179,7 +181,22 @@ class NugetBomTool extends BomTool {
             return []
         }
 
-        codeLocations
+        Map<String, DetectCodeLocation> codeLocationsBySource = new HashMap<>();
+        DependencyGraphCombiner combiner = new DependencyGraphCombiner();
+
+        codeLocations.forEach { DetectCodeLocation codeLocation ->
+            if (codeLocationsBySource.containsKey(codeLocation.getSourcePath())) {
+                logger.info("Multiple project code locations were generated for: " + codeLocation.sourcePath);
+                logger.info("This most likely means the same project exists in multiple solutions.")
+                logger.info("The code location's dependencies will be combined, in the future they will exist seperately for each solution.")
+                DetectCodeLocation destination = codeLocationsBySource.get(codeLocation.getSourcePath());
+                combiner.addGraphAsChildrenToRoot((MutableDependencyGraph) destination.getDependencyGraph(), codeLocation.getDependencyGraph());
+            } else {
+                codeLocationsBySource.put(codeLocation.getSourcePath(), codeLocation);
+            }
+        }
+
+        codeLocationsBySource.values().toList()
     }
 
     String getInspectorVersion() {
