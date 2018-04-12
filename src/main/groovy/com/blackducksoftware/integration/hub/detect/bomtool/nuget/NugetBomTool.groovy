@@ -191,7 +191,7 @@ class NugetBomTool extends BomTool {
                 logger.info("The code location's dependencies will be combined, in the future they will exist seperately for each solution.")
                 DetectCodeLocation destination = codeLocationsBySource.get(codeLocation.getSourcePath());
                 combiner.addGraphAsChildrenToRoot((MutableDependencyGraph) destination.getDependencyGraph(), codeLocation.getDependencyGraph());
-            }else {
+            } else {
                 codeLocationsBySource.put(codeLocation.getSourcePath(), codeLocation);
             }
         }
