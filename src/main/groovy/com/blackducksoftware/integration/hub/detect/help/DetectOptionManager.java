@@ -122,7 +122,7 @@ public class DetectOptionManager {
             }
         }
         if (detectConfiguration.getFailOnConfigWarning()) {
-            boolean foundConfigWarning = detectOptions.stream().anyMatch(option -> null != option.warnings);
+            boolean foundConfigWarning = detectOptions.stream().anyMatch(option -> option.warnings.getWarnings().size() > 0);
             if (foundConfigWarning) {
                 throw new DetectUserFriendlyException("Failing because the configuration had warnings.", ExitCodeType.FAILURE_CONFIGURATION);
             }
