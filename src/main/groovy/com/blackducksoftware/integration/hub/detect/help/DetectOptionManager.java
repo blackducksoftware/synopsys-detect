@@ -41,6 +41,7 @@ import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
+import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption.FinalValueType;
 import com.blackducksoftware.integration.hub.detect.interactive.InteractiveOption;
 import com.blackducksoftware.integration.hub.detect.util.SpringValueUtils;
@@ -82,17 +83,17 @@ public class DetectOptionManager {
         }
 
         detectOptions = detectOptionsMap.values().stream()
-                .sorted((o1, o2) -> o1.getHelp().primaryGroup.compareTo(o2.getHelp().primaryGroup))
-                .collect(Collectors.toList());
+                                .sorted((o1, o2) -> o1.getHelp().primaryGroup.compareTo(o2.getHelp().primaryGroup))
+                                .collect(Collectors.toList());
 
         detectGroups = detectOptions.stream()
-                .map(it -> it.help.primaryGroup)
-                .distinct()
-                .sorted()
-                .collect(Collectors.toList());
+                               .map(it -> it.help.primaryGroup)
+                               .distinct()
+                               .sorted()
+                               .collect(Collectors.toList());
     }
 
-    public void postInit() throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
+    public void postInit() throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException, DetectUserFriendlyException {
         for (final DetectOption option : detectOptions) {
             final String fieldValue = getCurrentValue(detectConfiguration, option);
             if (!option.getResolvedValue().equals(fieldValue)) {
@@ -108,7 +109,7 @@ public class DetectOptionManager {
             } else {
                 if (fieldValue.equals(option.getDefaultValue())) {
                     option.setFinalValue(fieldValue, FinalValueType.DEFAULT);
-                }else {
+                } else {
                     option.setFinalValue(fieldValue, FinalValueType.SUPPLIED);
                     if (option.getHelp().isDeprecated) {
                         option.warnings.requestDeprecation();
@@ -120,8 +121,12 @@ public class DetectOptionManager {
                 option.warnings.add("As of version " + option.getHelp().deprecationVersion + " this property will be removed: " + option.getHelp().deprecation);
             }
         }
-
-
+        if (detectConfiguration.getFailOnConfigWarning()) {
+            boolean foundConfigWarning = detectOptions.stream().anyMatch(option -> null != option.warnings);
+            if (foundConfigWarning) {
+                throw new DetectUserFriendlyException("Failing because the configuration had warnings.", ExitCodeType.FAILURE_CONFIGURATION);
+            }
+        }
     }
 
     public String getCurrentValue(final DetectConfiguration detectConfiguration, final DetectOption detectOption) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
