@@ -23,6 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.help;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,7 +43,8 @@ public class DetectOption {
     String finalValue = null;
     FinalValueType finalValueType = FinalValueType.DEFAULT;
     final DetectOptionHelp help;
-    final FieldWarnings warnings;
+    public List<String> warnings = new ArrayList<>();
+    public boolean requestedDeprecation = false;
 
     public enum FinalValueType{
         DEFAULT, //the final value is the value in the default attribute
@@ -53,7 +55,7 @@ public class DetectOption {
         OVERRIDE //the resolved value was set but during init a new value was set
     }
 
-    public DetectOption(final String key, final String fieldName, final String originalValue, final String resolvedValue, final Class<?> valueType, final String defaultValue, final boolean strictAcceptableValue, final boolean caseSensitiveAcceptableValues, final String[] acceptableValues, final DetectOptionHelp help, final FieldWarnings warnings) {
+    public DetectOption(final String key, final String fieldName, final String originalValue, final String resolvedValue, final Class<?> valueType, final String defaultValue, final boolean strictAcceptableValue, final boolean caseSensitiveAcceptableValues, final String[] acceptableValues, final DetectOptionHelp help){
         this.key = key;
         this.valueType = valueType;
         this.defaultValue = defaultValue;
@@ -64,7 +66,22 @@ public class DetectOption {
         this.strictAcceptableValues = strictAcceptableValue;
         this.caseSensitiveAcceptableValues = caseSensitiveAcceptableValues;
         this.help = help;
-        this.warnings = warnings;
+    }
+
+    public void requestDeprecation() {
+        requestedDeprecation = true;
+    }
+
+    public void addWarning(final String description) {
+        warnings.add(description);
+    }
+
+    public List<String> getWarnings() {
+        return warnings.stream().collect(Collectors.toList());
+    }
+
+    public boolean isRequestedDeprecation() {
+        return requestedDeprecation;
     }
 
     public String getInteractiveValue() {
@@ -98,10 +115,6 @@ public class DetectOption {
 
     public String getKey() {
         return key;
-    }
-
-    public FieldWarnings getWarnings() {
-        return warnings;
     }
 
     public String getFieldName() {

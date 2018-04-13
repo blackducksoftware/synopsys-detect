@@ -51,7 +51,6 @@ import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.help.AcceptableValues;
 import com.blackducksoftware.integration.hub.detect.help.DefaultValue;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
-import com.blackducksoftware.integration.hub.detect.help.FieldWarnings;
 import com.blackducksoftware.integration.hub.detect.help.HelpDescription;
 import com.blackducksoftware.integration.hub.detect.help.HelpGroup;
 import com.blackducksoftware.integration.hub.detect.help.ValueDeprecation;
@@ -283,7 +282,7 @@ public class DetectConfiguration {
     public void requestDeprecation(final String key) {
         detectOptions.stream().forEach(option -> {
             if (option.getKey().equals(key) ) {
-                option.getWarnings().requestDeprecation();
+                option.requestDeprecation();
             }
         });
     }

@@ -82,14 +82,14 @@ public class DetectConfigurationPrinter {
                     }
                 }
 
-                if (option.getWarnings().getWarnings().size() > 0) {
+                if (option.getWarnings().size() > 0) {
                     deprecatedInUse.add(option);
                     text += "\t *** WARNING ***";
                 }
                 printStream.println(text);
             }
         }
-        final List<DetectOption> allWarnings = sortedOptions.stream().filter(it -> it.getWarnings().getWarnings().size() > 0).collect(Collectors.toList());
+        final List<DetectOption> allWarnings = sortedOptions.stream().filter(it -> it.getWarnings().size() > 0).collect(Collectors.toList());
         if (allWarnings.size() > 0) {
             printStream.println("");
             printStream.println(StringUtils.repeat("*", 60));
@@ -99,7 +99,7 @@ public class DetectConfigurationPrinter {
                 printStream.println("WARNINGS (" + allWarnings.size() + ")");
             }
             for (final DetectOption option : allWarnings) {
-                for (final String warning : option.getWarnings().getWarnings()) {
+                for (final String warning : option.getWarnings()) {
                     printStream.println(option.getKey() + ": " + warning);
                 }
             }

@@ -112,17 +112,17 @@ public class DetectOptionManager {
                 } else {
                     option.setFinalValue(fieldValue, FinalValueType.SUPPLIED);
                     if (option.getHelp().isDeprecated) {
-                        option.warnings.requestDeprecation();
+                        option.requestDeprecation();
                     }
                 }
             }
 
-            if (option.warnings.isRequestedDeprecation()) {
-                option.warnings.add("As of version " + option.getHelp().deprecationVersion + " this property will be removed: " + option.getHelp().deprecation);
+            if (option.isRequestedDeprecation()) {
+                option.addWarning("As of version " + option.getHelp().deprecationVersion + " this property will be removed: " + option.getHelp().deprecation);
             }
         }
         if (detectConfiguration.getFailOnConfigWarning()) {
-            boolean foundConfigWarning = detectOptions.stream().anyMatch(option -> option.warnings.getWarnings().size() > 0);
+            boolean foundConfigWarning = detectOptions.stream().anyMatch(option -> option.getWarnings().size() > 0);
             if (foundConfigWarning) {
                 throw new DetectUserFriendlyException("Failing because the configuration had warnings.", ExitCodeType.FAILURE_CONFIGURATION);
             }
@@ -182,7 +182,7 @@ public class DetectOptionManager {
 
         final DetectOptionHelp help = processFieldHelp(field);
 
-        return new DetectOption(key, fieldName, originalValue, resolvedValue, valueType, defaultValue, strictAcceptableValue, caseSensitiveAcceptableValues, acceptableValues, help, new FieldWarnings());
+        return new DetectOption(key, fieldName, originalValue, resolvedValue, valueType, defaultValue, strictAcceptableValue, caseSensitiveAcceptableValues, acceptableValues, help);
     }
 
     private DetectOptionHelp processFieldHelp(final Field field) {
