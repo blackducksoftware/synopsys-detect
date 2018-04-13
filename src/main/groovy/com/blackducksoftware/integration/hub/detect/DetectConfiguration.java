@@ -51,7 +51,6 @@ import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.help.AcceptableValues;
 import com.blackducksoftware.integration.hub.detect.help.DefaultValue;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
-import com.blackducksoftware.integration.hub.detect.help.FieldWarnings;
 import com.blackducksoftware.integration.hub.detect.help.HelpDescription;
 import com.blackducksoftware.integration.hub.detect.help.HelpGroup;
 import com.blackducksoftware.integration.hub.detect.help.ValueDeprecation;
@@ -142,8 +141,6 @@ public class DetectConfiguration {
     private ExcludedIncludedFilter bomToolFilter;
     private final List<String> excludedScanPaths = new ArrayList<>();
 
-    private final FieldWarnings warnings = new FieldWarnings();
-
     public void init(final List<DetectOption> detectOptions) throws DetectUserFriendlyException, IOException, IllegalArgumentException, IllegalAccessException {
         this.detectOptions = detectOptions;
 
@@ -158,15 +155,15 @@ public class DetectConfiguration {
         }
 
         if(!getCleanupBdioFiles()){
-            warnings.addDeprecation("cleanupBdioFiles");
+            requestDeprecation("cleanupBdioFiles");
             cleanupDetectFiles = false;
         }
         if(!getCleanupBomToolFiles()){
-            warnings.addDeprecation("cleanupBomToolFiles");
+            requestDeprecation("cleanupBomToolFiles");
             cleanupDetectFiles = false;
         }
         if(!getGradleCleanupBuildBlackduckDirectory() ){
-            warnings.addDeprecation("gradleCleanupBuildBlackduckDirectory");
+            requestDeprecation("gradleCleanupBuildBlackduckDirectory");
             cleanupDetectFiles = false;
         }
 
@@ -175,12 +172,11 @@ public class DetectConfiguration {
             throw new DetectUserFriendlyException("The source path ${sourcePath} either doesn't exist, isn't a directory, or doesn't have appropriate permissions.", ExitCodeType.FAILURE_GENERAL_ERROR);
         }
 
-        final boolean atLeastOnePolicySeverity = StringUtils.isNotBlank(policyCheckFailOnSeverities);
         if(getProjectCodeLocationDeleteOldNames()){
             requestDeprecation("projectCodeLocationDeleteOldNames");
         }
 
-        boolean atLeastOnePolicySeverity = StringUtils.isNotBlank(policyCheckFailOnSeverities);
+        final boolean atLeastOnePolicySeverity = StringUtils.isNotBlank(policyCheckFailOnSeverities);
         if (atLeastOnePolicySeverity) {
             if (policyCheck) {
                 requestDeprecation("policyCheck");
@@ -286,7 +282,7 @@ public class DetectConfiguration {
     public void requestDeprecation(final String key) {
         detectOptions.stream().forEach(option -> {
             if (option.getKey().equals(key) ) {
-                option.getWarnings().requestDeprecation();
+                option.requestDeprecation();
             }
         });
     }
@@ -426,6 +422,12 @@ public class DetectConfiguration {
     }
 
     // properties start
+
+    @Value("${detect.fail.config.warning:}")
+    @DefaultValue("true")
+    @HelpGroup(primary = GROUP_GENERAL)
+    @HelpDescription("If true, Detect will fail if there are any issues found in the configuration.")
+    private Boolean failOnConfigWarning;
 
     @Value("${detect.force.success:}")
     @DefaultValue("false")
@@ -1375,6 +1377,10 @@ public class DetectConfiguration {
 
     public String getLoggingLevel() {
         return loggingLevel;
+    }
+
+    public Boolean getFailOnConfigWarning() {
+        return BooleanUtils.toBoolean(failOnConfigWarning);
     }
 
     public boolean getCleanupBomToolFiles() {
