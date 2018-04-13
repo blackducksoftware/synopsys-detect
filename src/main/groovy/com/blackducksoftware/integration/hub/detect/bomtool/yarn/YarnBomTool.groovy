@@ -31,8 +31,6 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import com.blackducksoftware.integration.hub.detect.bomtool.NestedBomTool
 import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolSearchResult
 import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolSearcher
-import com.blackducksoftware.integration.hub.detect.bomtool.search.YarnBomToolSearcher
-import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnPackager
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import groovy.transform.TypeChecked
