@@ -28,7 +28,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 public class DetectOption {
     final String key;
     final String fieldName;
@@ -39,23 +38,15 @@ public class DetectOption {
     final boolean strictAcceptableValues;
     final boolean caseSensitiveAcceptableValues;
     final List<String> acceptableValues;
+    final DetectOptionHelp detectOptionHelp;
+    public List<String> warnings = new ArrayList<>();
+    public boolean requestedDeprecation = false;
     String interactiveValue = null;
     String finalValue = null;
     FinalValueType finalValueType = FinalValueType.DEFAULT;
-    final DetectOptionHelp help;
-    public List<String> warnings = new ArrayList<>();
-    public boolean requestedDeprecation = false;
 
-    public enum FinalValueType{
-        DEFAULT, //the final value is the value in the default attribute
-        INTERACTIVE, //the final value is from the interactive prompt
-        LATEST, //the final value was resolved from latest
-        CALCULATED, //the resolved value was not set and final value was set during init
-        SUPPLIED, //the final value most likely came from spring
-        OVERRIDE //the resolved value was set but during init a new value was set
-    }
-
-    public DetectOption(final String key, final String fieldName, final String originalValue, final String resolvedValue, final Class<?> valueType, final String defaultValue, final boolean strictAcceptableValue, final boolean caseSensitiveAcceptableValues, final String[] acceptableValues, final DetectOptionHelp help){
+    public DetectOption(final String key, final String fieldName, final String originalValue, final String resolvedValue, final Class<?> valueType, final String defaultValue, final boolean strictAcceptableValue,
+            final boolean caseSensitiveAcceptableValues, final String[] acceptableValues, final DetectOptionHelp detectOptionHelp) {
         this.key = key;
         this.valueType = valueType;
         this.defaultValue = defaultValue;
@@ -65,7 +56,7 @@ public class DetectOption {
         this.resolvedValue = resolvedValue;
         this.strictAcceptableValues = strictAcceptableValue;
         this.caseSensitiveAcceptableValues = caseSensitiveAcceptableValues;
-        this.help = help;
+        this.detectOptionHelp = detectOptionHelp;
     }
 
     public void requestDeprecation() {
@@ -138,7 +129,7 @@ public class DetectOption {
     }
 
     public DetectOptionHelp getHelp() {
-        return help;
+        return detectOptionHelp;
     }
 
     public List<String> getAcceptableValues() {
@@ -151,13 +142,22 @@ public class DetectOption {
 
     public boolean isAcceptableValue(final String value) {
         return acceptableValues.stream()
-                .anyMatch(it -> {
-                    if (caseSensitiveAcceptableValues) {
-                        return it.equals(value);
-                    } else {
-                        return it.equalsIgnoreCase(value);
-                    }
-                });
+                       .anyMatch(it -> {
+                           if (caseSensitiveAcceptableValues) {
+                               return it.equals(value);
+                           } else {
+                               return it.equalsIgnoreCase(value);
+                           }
+                       });
+    }
+
+    public enum FinalValueType {
+        DEFAULT, //the final value is the value in the default attribute
+        INTERACTIVE, //the final value is from the interactive prompt
+        LATEST, //the final value was resolved from latest
+        CALCULATED, //the resolved value was not set and final value was set during init
+        SUPPLIED, //the final value most likely came from spring
+        OVERRIDE //the resolved value was set but during init a new value was set
     }
 
 }
