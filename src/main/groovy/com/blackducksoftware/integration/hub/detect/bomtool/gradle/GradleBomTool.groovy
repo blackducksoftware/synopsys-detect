@@ -122,7 +122,7 @@ class GradleBomTool extends BomTool {
             logger.debug("Parsing dependency graph : ${file.getName()}")
             gradleReportParser.parseDependencies(detectProject, file.newInputStream())
         }
-        if (detectConfiguration.gradleCleanupBuildBlackduckDirectory) {
+        if (detectConfiguration.getCleanupDetectFiles()) {
             blackduckDirectory.deleteDir()
         }
         codeLocations

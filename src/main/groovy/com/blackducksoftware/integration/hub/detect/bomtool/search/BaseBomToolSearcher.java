@@ -36,16 +36,16 @@ import java.io.File;
 
 public abstract class BaseBomToolSearcher<T extends BomToolSearchResult> implements BomToolSearcher<T> {
     @Autowired
-    ExecutableManager executableManager;
+    private ExecutableManager executableManager;
 
     @Autowired
-    ExecutableRunner executableRunner;
+    private ExecutableRunner executableRunner;
 
     @Autowired
-    DetectFileManager detectFileManager;
+    private DetectFileManager detectFileManager;
 
     @Autowired
-    DetectConfiguration detectConfiguration;
+    private DetectConfiguration detectConfiguration;
 
     @Override
     public final T getBomToolSearchResult(final String directoryPathToSearch) throws BomToolException {
@@ -76,4 +76,19 @@ public abstract class BaseBomToolSearcher<T extends BomToolSearchResult> impleme
         return executableManager.getExecutablePath(executable, searchSystemPath, directoryToSearch.getAbsolutePath());
     }
 
+    public ExecutableManager getExecutableManager() {
+        return executableManager;
+    }
+
+    public ExecutableRunner getExecutableRunner() {
+        return executableRunner;
+    }
+
+    public DetectFileManager getDetectFileManager() {
+        return detectFileManager;
+    }
+
+    public DetectConfiguration getDetectConfiguration() {
+        return detectConfiguration;
+    }
 }

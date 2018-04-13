@@ -21,9 +21,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.search;
+package com.blackducksoftware.integration.hub.detect.bomtool.npm;
 
 import java.io.File;
+
+import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolSearchResult;
 
 public class NpmBomToolSearchResult extends BomToolSearchResult {
     private final String npmExePath;

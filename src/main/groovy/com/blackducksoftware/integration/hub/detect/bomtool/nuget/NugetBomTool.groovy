@@ -168,7 +168,7 @@ class NugetBomTool extends BomTool {
 
         def dependencyNodeFiles = detectFileManager.findFiles(outputDirectory, INSPECTOR_OUTPUT_PATTERN)
         List<DetectCodeLocation> codeLocations = dependencyNodeFiles?.collectMany { nugetInspectorPackager.createDetectCodeLocation(it) }
-        if (detectConfiguration.cleanupBomToolFiles) {
+        if (detectConfiguration.getCleanupDetectFiles()) {
             try {
                 FileUtils.deleteDirectory(outputDirectory)
             } catch (Exception e) {

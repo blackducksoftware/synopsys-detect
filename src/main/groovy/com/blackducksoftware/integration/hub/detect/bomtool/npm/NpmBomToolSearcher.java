@@ -21,14 +21,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.search;
+package com.blackducksoftware.integration.hub.detect.bomtool.npm;
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.bomtool.search.BaseBomToolSearcher;
+import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolSearchResultFactory;
+import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnBomToolSearcher;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -62,26 +61,26 @@ public class NpmBomToolSearcher extends BaseBomToolSearcher<NpmBomToolSearchResu
         }
 
         String npmExePath = null;
-        final File packageLockJson = detectFileManager.findFile(directoryToSearch, NpmBomToolSearcher.PACKAGE_LOCK_JSON);
-        final File shrinkwrapJson = detectFileManager.findFile(directoryToSearch, NpmBomToolSearcher.SHRINKWRAP_JSON);
+        final File packageLockJson = getDetectFileManager().findFile(directoryToSearch, NpmBomToolSearcher.PACKAGE_LOCK_JSON);
+        final File shrinkwrapJson = getDetectFileManager().findFile(directoryToSearch, NpmBomToolSearcher.SHRINKWRAP_JSON);
 
-        final boolean containsNodeModules = detectFileManager.containsAllFiles(directoryToSearch, NpmBomToolSearcher.NODE_MODULES);
-        final boolean containsPackageJson = detectFileManager.containsAllFiles(directoryToSearch, NpmBomToolSearcher.PACKAGE_JSON);
+        final boolean containsNodeModules = getDetectFileManager().containsAllFiles(directoryToSearch, NpmBomToolSearcher.NODE_MODULES);
+        final boolean containsPackageJson = getDetectFileManager().containsAllFiles(directoryToSearch, NpmBomToolSearcher.PACKAGE_JSON);
         final boolean containsPackageLockJson = packageLockJson != null && packageLockJson.exists();
         final boolean containsShrinkwrapJson = shrinkwrapJson != null && shrinkwrapJson.exists();
 
         if (containsPackageJson && !containsNodeModules) {
             logger.warn(String.format("package.json was located in %s, but the node_modules folder was NOT located. Please run 'npm install' in that location and try again.", directoryToSearch.getAbsolutePath()));
         } else if (containsPackageJson && containsNodeModules) {
-            npmExePath = findExecutablePath(ExecutableType.NPM, true, directoryToSearch, detectConfiguration.getNpmPath());
+            npmExePath = findExecutablePath(ExecutableType.NPM, true, directoryToSearch, getDetectConfiguration().getNpmPath());
             if (StringUtils.isBlank(npmExePath)) {
-                logger.warn(String.format("Could not find an %s executable", executableManager.getExecutableName(ExecutableType.NPM)));
+                logger.warn(String.format("Could not find an %s executable", getExecutableManager().getExecutableName(ExecutableType.NPM)));
             } else {
                 Executable npmVersionExe = null;
                 final List<String> arguments = new ArrayList<>();
                 arguments.add("-version");
 
-                String npmNodePath = detectConfiguration.getNpmNodePath();
+                String npmNodePath = getDetectConfiguration().getNpmNodePath();
                 if (StringUtils.isNotBlank(npmNodePath)) {
                     final int lastSlashIndex = npmNodePath.lastIndexOf("/");
                     if (lastSlashIndex >= 0) {
@@ -95,7 +94,7 @@ public class NpmBomToolSearcher extends BaseBomToolSearcher<NpmBomToolSearchResu
                     npmVersionExe = new Executable(directoryToSearch, npmExePath, arguments);
                 }
                 try {
-                    final String npmVersion = executableRunner.execute(npmVersionExe).getStandardOutput();
+                    final String npmVersion = getExecutableRunner().execute(npmVersionExe).getStandardOutput();
                     logger.debug(String.format("Npm version %s", npmVersion));
                 } catch (final ExecutableRunnerException e) {
                     logger.error(String.format("Could not run npm to get the version: %s", e.getMessage()));

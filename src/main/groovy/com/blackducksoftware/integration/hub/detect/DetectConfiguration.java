@@ -157,12 +157,30 @@ public class DetectConfiguration {
             sourcePath = System.getProperty("user.dir");
         }
 
+        if(!getCleanupBdioFiles()){
+            warnings.addDeprecation("cleanupBdioFiles");
+            cleanupDetectFiles = false;
+        }
+        if(!getCleanupBomToolFiles()){
+            warnings.addDeprecation("cleanupBomToolFiles");
+            cleanupDetectFiles = false;
+        }
+        if(!getGradleCleanupBuildBlackduckDirectory() ){
+            warnings.addDeprecation("gradleCleanupBuildBlackduckDirectory");
+            cleanupDetectFiles = false;
+        }
+
         sourceDirectory = new File(sourcePath);
         if (!sourceDirectory.exists() || !sourceDirectory.isDirectory()) {
             throw new DetectUserFriendlyException("The source path ${sourcePath} either doesn't exist, isn't a directory, or doesn't have appropriate permissions.", ExitCodeType.FAILURE_GENERAL_ERROR);
         }
 
         final boolean atLeastOnePolicySeverity = StringUtils.isNotBlank(policyCheckFailOnSeverities);
+        if(getProjectCodeLocationDeleteOldNames()){
+            requestDeprecation("projectCodeLocationDeleteOldNames");
+        }
+
+        boolean atLeastOnePolicySeverity = StringUtils.isNotBlank(policyCheckFailOnSeverities);
         if (atLeastOnePolicySeverity) {
             if (policyCheck) {
                 requestDeprecation("policyCheck");
@@ -427,6 +445,13 @@ public class DetectConfiguration {
     @HelpDescription("If true, the default behavior of printing the Detect Results will be suppressed.")
     private Boolean suppressResultsOutput;
 
+    @Value("${detect.cleanup:}")
+    @DefaultValue("true")
+    @HelpGroup(primary = GROUP_CLEANUP)
+    @HelpDescription("If true the files created by Detect will be cleaned up.")
+    private Boolean cleanupDetectFiles;
+
+    @ValueDeprecation(willRemoveInVersion = "4.0.0", description = "To turn off file cleanup, set --detect.cleanup=false.")
     @Value("${detect.cleanup.bdio.files:}")
     @DefaultValue("true")
     @HelpGroup(primary = GROUP_CLEANUP)
@@ -540,7 +565,7 @@ public class DetectConfiguration {
     private String bdioOutputDirectoryPath;
 
     @Value("${detect.scan.output.path:}")
-    @HelpGroup(primary = GROUP_PATHS)
+    @HelpGroup(primary = GROUP_PATHS, additional = {SEARCH_GROUP_SIGNATURE_SCANNER, SEARCH_GROUP_HUB})
     @HelpDescription("The output directory for all scan files. If not set, the scan files will be in a 'scan' subdirectory of the output path.")
     private String scanOutputDirectoryPath;
 
@@ -616,6 +641,7 @@ public class DetectConfiguration {
     @HelpDescription("A suffix to the name of the codelocations created by Detect.")
     private String projectCodeLocationSuffix;
 
+    @ValueDeprecation(description = "We will no longer be tracking the code locations created by previous versions of Detect in 4.0.0. New properties will be added to handle code location deletion and unmapping.", willRemoveInVersion = "4.0.0")
     @Value("${detect.project.codelocation.delete.old.names:}")
     @DefaultValue("false")
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = {SEARCH_GROUP_PROJECT})
@@ -686,6 +712,7 @@ public class DetectConfiguration {
     @HelpDescription("The names of the projects to include")
     private String gradleIncludedProjectNames;
 
+    @ValueDeprecation(willRemoveInVersion = "4.0.0", description = "To turn off file cleanup, set --detect.cleanup=false.")
     @Value("${detect.gradle.cleanup.build.blackduck.directory:}")
     @DefaultValue("true")
     @HelpGroup(primary = GROUP_GRADLE)
@@ -852,6 +879,7 @@ public class DetectConfiguration {
     @AcceptableValues(value = {"ALL", "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF"}, caseSensitive = false, strict = true)
     private String loggingLevel;
 
+    @ValueDeprecation(willRemoveInVersion = "4.0.0", description = "To turn off file cleanup, set --detect.cleanup=false.")
     @Value("${detect.cleanup.bom.tool.files:}")
     @DefaultValue("true")
     @HelpGroup(primary = GROUP_CLEANUP, additional = {GROUP_CLEANUP, SEARCH_GROUP_DEBUG})
@@ -860,56 +888,56 @@ public class DetectConfiguration {
 
     @Value("${detect.hub.signature.scanner.dry.run:}")
     @DefaultValue("false")
-    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = {SEARCH_GROUP_SIGNATURE_SCANNER})
+    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = {SEARCH_GROUP_SIGNATURE_SCANNER, SEARCH_GROUP_HUB})
     @HelpDescription("If set to true, the signature scanner results will not be uploaded to the Hub and the scanner results will be written to disk.")
     private Boolean hubSignatureScannerDryRun;
 
     @Value("${detect.hub.signature.scanner.snippet.mode:}")
     @DefaultValue("false")
-    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = {SEARCH_GROUP_SIGNATURE_SCANNER})
+    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = {SEARCH_GROUP_SIGNATURE_SCANNER, SEARCH_GROUP_HUB})
     @HelpDescription("If set to true, the signature scanner will, if supported by your Hub version, run in snippet scanning mode.")
     private Boolean hubSignatureScannerSnippetMode;
 
     @Value("${detect.hub.signature.scanner.exclusion.patterns:}")
-    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = {SEARCH_GROUP_SIGNATURE_SCANNER})
+    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = {SEARCH_GROUP_SIGNATURE_SCANNER, SEARCH_GROUP_HUB})
     @HelpDescription("Enables you to specify sub-directories to exclude from scans")
     private String[] hubSignatureScannerExclusionPatterns;
 
     @Value("${detect.hub.signature.scanner.paths:}")
-    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = {SEARCH_GROUP_SIGNATURE_SCANNER})
+    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = {SEARCH_GROUP_SIGNATURE_SCANNER, SEARCH_GROUP_HUB})
     @HelpDescription("These paths and only these paths will be scanned.")
     private String[] hubSignatureScannerPaths;
 
     @Value("${detect.hub.signature.scanner.relative.paths.to.exclude:}")
-    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = {SEARCH_GROUP_SIGNATURE_SCANNER})
+    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = {SEARCH_GROUP_SIGNATURE_SCANNER, SEARCH_GROUP_HUB})
     @HelpDescription("The relative paths of directories to be excluded from scan registration")
     private String[] hubSignatureScannerRelativePathsToExclude;
 
     @Value("${detect.hub.signature.scanner.memory:}")
     @DefaultValue("4096")
-    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = {SEARCH_GROUP_SIGNATURE_SCANNER})
+    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = {SEARCH_GROUP_SIGNATURE_SCANNER, SEARCH_GROUP_HUB})
     @HelpDescription("The memory for the scanner to use.")
     private Integer hubSignatureScannerMemory;
 
     @Value("${detect.hub.signature.scanner.disabled:}")
     @DefaultValue("false")
-    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = {SEARCH_GROUP_SIGNATURE_SCANNER, SEARCH_GROUP_DEBUG})
+    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = {SEARCH_GROUP_SIGNATURE_SCANNER, SEARCH_GROUP_DEBUG, SEARCH_GROUP_HUB})
     @HelpDescription("Set to true to disable the Hub Signature Scanner.")
     private Boolean hubSignatureScannerDisabled;
 
     @Value("${detect.hub.signature.scanner.offline.local.path:}")
-    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = {SEARCH_GROUP_SIGNATURE_SCANNER, SEARCH_GROUP_OFFLINE})
+    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = {SEARCH_GROUP_SIGNATURE_SCANNER, SEARCH_GROUP_OFFLINE, SEARCH_GROUP_HUB})
     @HelpDescription("To use a local signature scanner, set its location with this property. This will be the path where the signature scanner was unzipped. This will likely look similar to /some/path/scan.cli-x.y.z")
     private String hubSignatureScannerOfflineLocalPath;
 
     @Value("${detect.hub.signature.scanner.host.url:}")
-    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = {SEARCH_GROUP_SIGNATURE_SCANNER})
+    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = {SEARCH_GROUP_SIGNATURE_SCANNER, SEARCH_GROUP_HUB})
     @HelpDescription("If this url is set, an attempt will be made to use it to download the signature scanner. The server url provided must respect the Hub's urls for different operating systems.")
     private String hubSignatureScannerHostUrl;
 
     @Value("${detect.hub.signature.scanner.parallel.processors:}")
     @DefaultValue("1")
-    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = {SEARCH_GROUP_SIGNATURE_SCANNER})
+    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = {SEARCH_GROUP_SIGNATURE_SCANNER, SEARCH_GROUP_HUB})
     @HelpDescription("The number of scans to run in parallel, defaults to 1, but if you specify -1, the number of processors on the machine will be used.")
     private Integer hubSignatureScannerParallelProcessors;
 
@@ -1034,6 +1062,10 @@ public class DetectConfiguration {
 
     public boolean getCleanupBdioFiles() {
         return BooleanUtils.toBoolean(cleanupBdioFiles);
+    }
+
+    public Boolean getCleanupDetectFiles() {
+        return BooleanUtils.toBoolean(cleanupDetectFiles);
     }
 
     public boolean getTestConnection() {

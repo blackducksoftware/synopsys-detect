@@ -25,6 +25,8 @@ package com.blackducksoftware.integration.hub.detect.bomtool.search;
 
 import java.io.File;
 
+import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmBomToolSearchResult;
+
 public class BomToolSearchResultFactory {
     public static BomToolSearchResult createApplies(final File searchedDirectory) {
         return new BomToolSearchResult(true, searchedDirectory);

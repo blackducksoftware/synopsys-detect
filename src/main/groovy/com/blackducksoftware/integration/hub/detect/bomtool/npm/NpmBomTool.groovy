@@ -27,8 +27,6 @@ import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import com.blackducksoftware.integration.hub.detect.bomtool.NestedBomTool
 import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnBomTool
-import com.blackducksoftware.integration.hub.detect.bomtool.search.NpmBomToolSearchResult
-import com.blackducksoftware.integration.hub.detect.bomtool.search.NpmBomToolSearcher
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.hub.ScanPathSource
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
