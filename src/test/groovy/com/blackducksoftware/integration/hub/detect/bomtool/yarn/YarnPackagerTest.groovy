@@ -11,13 +11,9 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.yarn
 
-import static org.junit.Assert.*
-
-import org.junit.Before
-import org.junit.Test
-
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.nameversion.builder.LinkedNameVersionNodeBuilder
@@ -25,26 +21,40 @@ import com.blackducksoftware.integration.hub.detect.nameversion.metadata.LinkMet
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput
+import org.junit.Before
+import org.junit.Test
+
+import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertNull
 
 class YarnPackagerTest {
     private final YarnPackager yarnPackager = new YarnPackager()
     private final TestUtil testUtil = new TestUtil()
 
     @Before
-    public void init() {
+    void init() {
         yarnPackager.nameVersionNodeTransformer = new NameVersionNodeTransformer(new ExternalIdFactory())
     }
 
     @Test
-    public void parseTest() {
+    void parseYarnLockTest() {
         String yarnLockText = testUtil.getResourceAsUTF8String('/yarn/yarn.lock')
         def exeOutput = new ExecutableOutput(yarnLockText, '')
         DependencyGraph dependencyGraph = yarnPackager.parseYarnLock(exeOutput.getStandardOutputAsList())
-        DependencyGraphResourceTestUtil.assertGraph('/yarn/expected_graph.json', dependencyGraph);
+        DependencyGraphResourceTestUtil.assertGraph('/yarn/expected_graph.json', dependencyGraph)
     }
 
     @Test
-    public void getLineLevelTest() {
+    void parseYarnListTest() {
+        DetectCodeLocation actual = yarnPackager.parseYarnList();
+
+        assertEquals(actual.bomToolProjectName, "knockout-tournament")
+        assertEquals(actual.bomToolProjectVersionName, "1.0.0")
+        DependencyGraphResourceTestUtil.assertGraph('/npm/packageLockExpected_graph.json', actual.dependencyGraph)
+    }
+
+    @Test
+    void getLineLevelTest() {
         assertEquals(1, yarnPackager.getLineLevel('  '))
         assertEquals(1, yarnPackager.getLineLevel('  Test'))
         assertEquals(1, yarnPackager.getLineLevel('  Test  '))
@@ -53,15 +63,15 @@ class YarnPackagerTest {
     }
 
     @Test
-    public void cleanFuzzyNameTest() {
-        assertEquals('mime-types', yarnPackager.cleanFuzzyName('mime-types@^2.1.12'))
-        assertEquals('mime-types', yarnPackager.cleanFuzzyName('mime-types@2.1.12'))
-        assertEquals('@insert', yarnPackager.cleanFuzzyName('@insert@2.1.12'))
-        assertEquals('@insert', yarnPackager.cleanFuzzyName('"@insert@2.1.12"'))
+    void cleanFuzzyNameTest() {
+        assertEquals('mime-types', yarnPackager.getNameFromFuzzyName('mime-types@^2.1.12'))
+        assertEquals('mime-types', yarnPackager.getNameFromFuzzyName('mime-types@2.1.12'))
+        assertEquals('@insert', yarnPackager.getNameFromFuzzyName('@insert@2.1.12'))
+        assertEquals('@insert', yarnPackager.getNameFromFuzzyName('"@insert@2.1.12"'))
     }
 
     @Test
-    public void dependencyLineToNameVersionLinkNodeTest() {
+    void dependencyLineToNameVersionLinkNodeTest() {
         NameVersionNode nameVersionNode1 = yarnPackager.dependencyLineToNameVersionNode('    name version')
         assertEquals('name@version', nameVersionNode1.name)
         assertNull(nameVersionNode1.version)
@@ -80,7 +90,7 @@ class YarnPackagerTest {
     }
 
     @Test
-    public void lineToNameVersionLinkNodeSingleTest() {
+    void lineToNameVersionLinkNodeSingleTest() {
         final def root = new NameVersionNode(name: 'test')
         final def nameVersionLinkNodeBuilder = new LinkedNameVersionNodeBuilder(root)
         final String line = '"@types/node@^6.0.46":'
@@ -96,7 +106,7 @@ class YarnPackagerTest {
     }
 
     @Test
-    public void lineToNameVersionLinkNodeMultipleTest() {
+    void lineToNameVersionLinkNodeMultipleTest() {
         final def root = new NameVersionNode()
         final def nameVersionLinkNodeBuilder = new LinkedNameVersionNodeBuilder(root)
         final String line = 'acorn@^4.0.3, acorn@^4.0.4:'

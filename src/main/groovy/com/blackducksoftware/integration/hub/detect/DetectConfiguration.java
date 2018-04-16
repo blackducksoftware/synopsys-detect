@@ -1,9 +1,9 @@
 /**
  * hub-detect
- * <p>
+ *
  * Copyright (C) 2018 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
- * <p>
+ *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
  * distributed with this work for additional information
@@ -11,9 +11,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * <p>
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -784,8 +784,12 @@ public class DetectConfiguration {
     @Value("${detect.hex.rebar3.path:}")
     private String hexRebar3Path;
 
+    @ValueDescription(description = "The path of the Yarn executable", group = DetectConfiguration.GROUP_YARN)
+    @Value("${git :}")
+    private String yarnPath;
+
     @ValueDescription(description = "Set this to true to only scan production dependencies", defaultValue = "false", group = DetectConfiguration.GROUP_YARN)
-    @Value("{detect.yarn.prod.only:}")
+    @Value("${detect.yarn.prod.only:}")
     private String yarnProductionDependenciesOnly;
 
     public boolean getCleanupBdioFiles() {
@@ -1225,9 +1229,14 @@ public class DetectConfiguration {
         return hexRebar3Path;
     }
 
+    public String getYarnPath() {
+        return yarnPath;
+    }
+
     public Boolean getYarnProductionDependenciesOnly() {
         return BooleanUtils.toBoolean(yarnProductionDependenciesOnly);
     }
+
 
     // properties end
 

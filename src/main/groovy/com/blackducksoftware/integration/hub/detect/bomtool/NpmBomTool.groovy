@@ -23,11 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
-
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmCliDependencyFinder
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmLockfilePackager
@@ -37,8 +32,11 @@ import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
-
 import groovy.transform.TypeChecked
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Component
 
 @Component
 @TypeChecked
@@ -73,12 +71,12 @@ class NpmBomTool extends BomTool {
     private File shrinkwrapJson
 
     @Override
-    public BomToolType getBomToolType() {
+    BomToolType getBomToolType() {
         BomToolType.NPM
     }
 
     @Override
-    public boolean isBomToolApplicable() {
+    boolean isBomToolApplicable() {
         if (yarnBomTool.isBomToolApplicable()) {
             logger.debug("Not running npm bomtool because Yarn is applicable")
             return false
@@ -106,7 +104,7 @@ class NpmBomTool extends BomTool {
                     if (lastSlashIndex >= 0) {
                         npmNodePath = npmNodePath.substring(0, lastSlashIndex)
                     }
-                    Map<String, String> environmentVariables = ['PATH' : npmNodePath]
+                    Map<String, String> environmentVariables = ['PATH': npmNodePath]
                     npmLsExe = new Executable(new File(sourcePath), environmentVariables, npmExePath, ['-version'])
                 } else {
                     npmLsExe = new Executable(new File(sourcePath), npmExePath, ['-version'])
@@ -120,13 +118,13 @@ class NpmBomTool extends BomTool {
         }
 
         boolean lockFileIsApplicable = containsShrinkwrapJson || containsPackageLockJson
-        boolean isApplicable =  lockFileIsApplicable || (containsNodeModules && npmExePath)
+        boolean isApplicable = lockFileIsApplicable || (containsNodeModules && npmExePath)
 
         isApplicable
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
-        List<DetectCodeLocation> codeLocations= []
+        List<DetectCodeLocation> codeLocations = []
         if (npmExePath) {
             codeLocations.addAll(extractFromCommand())
         } else if (packageLockJson) {
@@ -150,8 +148,8 @@ class NpmBomTool extends BomTool {
     }
 
     private List<DetectCodeLocation> extractFromCommand() {
-        File npmLsOutputFile = detectFileManager.createFile(BomToolType.NPM, NpmBomTool.OUTPUT_FILE)
-        File npmLsErrorFile = detectFileManager.createFile(BomToolType.NPM, NpmBomTool.ERROR_FILE)
+        File npmLsOutputFile = detectFileManager.createFile(BomToolType.NPM, OUTPUT_FILE)
+        File npmLsErrorFile = detectFileManager.createFile(BomToolType.NPM, ERROR_FILE)
 
         boolean includeDevDeps = detectConfiguration.npmIncludeDevDependencies
         def exeArgs = ['ls', '-json']

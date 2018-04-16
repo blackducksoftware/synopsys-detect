@@ -43,15 +43,16 @@ public enum ExecutableType {
     PIP3,
     PYTHON,
     PYTHON3,
-    REBAR3;
+    REBAR3,
+    YARN;
 
     private String executableName;
 
-    private ExecutableType() {
+    ExecutableType() {
         this.executableName = this.name().toLowerCase();
     }
 
-    private ExecutableType(final String executableName) {
+    ExecutableType(final String executableName) {
         this.executableName = executableName;
     }
 

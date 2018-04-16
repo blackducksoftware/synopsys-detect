@@ -43,7 +43,7 @@ class YarnPackager {
     @Autowired
     NameVersionNodeTransformer nameVersionNodeTransformer
 
-    public DependencyGraph parseYarnLock(List<String> yarnLockText) {
+    DependencyGraph parseYarnLock(List<String> yarnLockText) {
         def rootNode = new NameVersionNode()
         rootNode.name = "detectRootNode - ${UUID.randomUUID()}"
         def nameVersionLinkNodeBuilder = new LinkedNameVersionNodeBuilder(rootNode)
@@ -80,7 +80,6 @@ class YarnPackager {
             if (level == 2 && dependenciesStarted) {
                 NameVersionNode dependency = dependencyLineToNameVersionNode(line)
                 nameVersionLinkNodeBuilder.addChildNodeToParent(dependency, currentNode)
-                continue
             }
         }
 
@@ -94,10 +93,10 @@ class YarnPackager {
         graph
     }
 
-    private int getLineLevel(String line) {
+    static int getLineLevel(String line) {
         int level = 0
         while (line.startsWith('  ')) {
-            line = line.replaceFirst('  ', '')
+            line = line.replaceFirst(' {2}', '')
             level++
         }
 
@@ -105,7 +104,7 @@ class YarnPackager {
     }
 
     // Example: "mime-types@^2.1.12" becomes "mime-types"
-    private String cleanFuzzyName(String fuzzyName) {
+    static String getNameFromFuzzyName(String fuzzyName) {
         String cleanName = fuzzyName.replace('"', '')
         String version = cleanName.split('@')[-1]
         String name = cleanName[0..cleanName.indexOf(version) - 2].trim()
@@ -113,14 +112,14 @@ class YarnPackager {
         name
     }
 
-    private NameVersionNode dependencyLineToNameVersionNode(String line) {
+    static NameVersionNode dependencyLineToNameVersionNode(String line) {
         final NameVersionNode nameVersionNode = new NameVersionNode()
         nameVersionNode.name = line.trim().replaceFirst(' ', '@').replace('"', '')
 
         nameVersionNode
     }
 
-    private NameVersionNode lineToNameVersionNode(NameVersionNodeBuilder nameVersionNodeBuilder, NameVersionNode root, String line) {
+    static NameVersionNode lineToNameVersionNode(NameVersionNodeBuilder nameVersionNodeBuilder, NameVersionNode root, String line) {
         String cleanLine = line.replace('"', '').replace(':', '')
         List<String> fuzzyNames = cleanLine.split(',').collect { String name -> name.trim() }
 
@@ -128,23 +127,16 @@ class YarnPackager {
             return null
         }
 
-        String name = cleanFuzzyName(fuzzyNames[0] as String)
-
         NameVersionNode linkedNameVersionNode = new NameVersionNode()
-        linkedNameVersionNode.name = cleanFuzzyName(fuzzyNames[0] as String)
+        linkedNameVersionNode.name = getNameFromFuzzyName(fuzzyNames[0] as String)
 
         fuzzyNames.each {
             def nameVersionLinkNode = new NameVersionNode()
             nameVersionLinkNode.name = it
             nameVersionLinkNode.metadata = new LinkMetadata(linkNode: linkedNameVersionNode)
-            nameVersionNodeBuilder.addChildNodeToParent(nameVersionLinkNode, root)
         }
 
         linkedNameVersionNode
     }
 
-    DependencyGraph parseYarnList() {
-        // TODO write tests to parse a 'yarn list --prod' call. Tests can be similar to NPM ones
-        null
-    }
 }
