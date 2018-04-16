@@ -87,7 +87,7 @@ public class DetectOptionManager {
                                 .collect(Collectors.toList());
 
         detectGroups = detectOptions.stream()
-                               .map(it -> it.help.primaryGroup)
+                               .map(it -> it.getHelp().primaryGroup)
                                .distinct()
                                .sorted()
                                .collect(Collectors.toList());
