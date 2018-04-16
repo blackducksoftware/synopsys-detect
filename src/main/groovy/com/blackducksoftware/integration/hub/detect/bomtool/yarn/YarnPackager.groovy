@@ -134,6 +134,7 @@ class YarnPackager {
             def nameVersionLinkNode = new NameVersionNode()
             nameVersionLinkNode.name = it
             nameVersionLinkNode.metadata = new LinkMetadata(linkNode: linkedNameVersionNode)
+            nameVersionNodeBuilder.addChildNodeToParent(nameVersionLinkNode, root)
         }
 
         linkedNameVersionNode

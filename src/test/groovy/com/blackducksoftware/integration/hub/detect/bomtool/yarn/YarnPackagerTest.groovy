@@ -13,7 +13,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.yarn
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.nameversion.builder.LinkedNameVersionNodeBuilder
@@ -42,15 +41,6 @@ class YarnPackagerTest {
         def exeOutput = new ExecutableOutput(yarnLockText, '')
         DependencyGraph dependencyGraph = yarnPackager.parseYarnLock(exeOutput.getStandardOutputAsList())
         DependencyGraphResourceTestUtil.assertGraph('/yarn/expected_graph.json', dependencyGraph)
-    }
-
-    @Test
-    void parseYarnListTest() {
-        DetectCodeLocation actual = yarnPackager.parseYarnList();
-
-        assertEquals(actual.bomToolProjectName, "knockout-tournament")
-        assertEquals(actual.bomToolProjectVersionName, "1.0.0")
-        DependencyGraphResourceTestUtil.assertGraph('/npm/packageLockExpected_graph.json', actual.dependencyGraph)
     }
 
     @Test
