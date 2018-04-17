@@ -41,7 +41,7 @@ public class HelpOptionPrinter {
             writer.println(notes);
             writer.println();
         }
-        
+
         String group = null;
         for (final DetectOption detectOption : options) {
             final String currentGroup = detectOption.getHelp().primaryGroup;
@@ -58,19 +58,19 @@ public class HelpOptionPrinter {
             writer.printColumns("--" + detectOption.getKey(), detectOption.getDefaultValue(), description);
         }
     }
-    
+
     public void printStandardFooter(HelpTextWriter writer, String groupText) {
         writer.println();
         writer.println("Usage : ");
         writer.println("\t--<property name>=<value>");
         writer.println();
-        writer.println("To see all properties, you may request verbose help log with '-h -v'");
+        writer.println("To see all properties, you may request verbose help log with '-hv'");
         writer.println();
-        writer.println("To get detailed help for a specific property, you may specify the property name with '-h [property]' or '-h -p [property]'");
+        writer.println("To get detailed help for a specific property, you may specify the property name with '-h [property]'");
         writer.println();
-        writer.println("To print only a subset of options, you may specify one of the following printable groups with '-h [group]' or '-h -g [group]': ");
+        writer.println("To print only a subset of options, you may specify one of the following printable groups with '-h [group]': ");
         writer.println("\t" + groupText);
-        writer.println();        
+        writer.println();
         writer.println("To search options, you may specify a search term with '-h [term]'");
         writer.println();
     }
