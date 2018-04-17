@@ -34,28 +34,32 @@ import com.blackducksoftware.integration.hub.detect.help.DetectOptionHelp;
 @Component
 public class HelpDetailedOptionPrinter {
 
-    public void printDetailedOption(HelpTextWriter writer, DetectOption detectOption) {
+    public void printDetailedOption(final HelpTextWriter writer, final DetectOption detectOption) {
         writer.println("");
         writer.println("Detailed information for " + detectOption.getKey());
         writer.println("");
+        if (detectOption.getHelp().isDeprecated) {
+            writer.println("Deprecated: will be removed in version " + detectOption.getHelp().deprecationVersion);
+            writer.println("");
+        }
         writer.println("Property description: " + detectOption.getHelp().description);
         writer.println("Property default value: " + detectOption.getDefaultValue());
         if (detectOption.getAcceptableValues().size() > 0) {
             writer.println("Property acceptable values: " + detectOption.getAcceptableValues().stream().collect(Collectors.joining(", ")));
         }
         writer.println("");
-        
-        DetectOptionHelp help = detectOption.getHelp();
+
+        final DetectOptionHelp help = detectOption.getHelp();
         if (StringUtils.isNotBlank(help.useCases)) {
             writer.println("Use cases: " + help.useCases);
             writer.println();
         }
-        
+
         if (StringUtils.isNotBlank(help.useCases)) {
             writer.println("Common issues: " + help.issues);
             writer.println();
         }
     }
-    
-    
+
+
 }

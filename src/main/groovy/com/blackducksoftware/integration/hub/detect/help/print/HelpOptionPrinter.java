@@ -33,7 +33,7 @@ import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 @Component
 public class HelpOptionPrinter {
 
-    public void printOptions(HelpTextWriter writer, List<DetectOption> options, String notes) {
+    public void printOptions(final HelpTextWriter writer, final List<DetectOption> options, final String notes) {
         writer.printColumns("Property Name", "Default", "Description");
         writer.printSeperator();
 
@@ -41,7 +41,7 @@ public class HelpOptionPrinter {
             writer.println(notes);
             writer.println();
         }
-        
+
         String group = null;
         for (final DetectOption detectOption : options) {
             final String currentGroup = detectOption.getHelp().primaryGroup;
@@ -52,14 +52,17 @@ public class HelpOptionPrinter {
                 group = currentGroup;
             }
             String description = detectOption.getHelp().description;
+            if (detectOption.getHelp().isDeprecated) {
+                description = "Will be removed in version " + detectOption.getHelp().deprecationVersion + ". " + description;
+            }
             if (detectOption.getAcceptableValues().size() > 0) {
                 description += " (" + detectOption.getAcceptableValues().stream().collect(Collectors.joining("|")) + ")";
             }
             writer.printColumns("--" + detectOption.getKey(), detectOption.getDefaultValue(), description);
         }
     }
-    
-    public void printStandardFooter(HelpTextWriter writer, String groupText) {
+
+    public void printStandardFooter(final HelpTextWriter writer, final String groupText) {
         writer.println();
         writer.println("Usage : ");
         writer.println("\t--<property name>=<value>");
@@ -70,7 +73,7 @@ public class HelpOptionPrinter {
         writer.println();
         writer.println("To print only a subset of options, you may specify one of the following printable groups with '-h [group]' or '-h -g [group]': ");
         writer.println("\t" + groupText);
-        writer.println();        
+        writer.println();
         writer.println("To search options, you may specify a search term with '-h [term]'");
         writer.println();
     }
