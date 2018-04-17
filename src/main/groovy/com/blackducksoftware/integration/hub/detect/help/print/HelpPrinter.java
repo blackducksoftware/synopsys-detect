@@ -48,25 +48,25 @@ public class HelpPrinter {
 
         final List<String> allPrintGroups = getPrintGroups(options);
 
-        if (state.isVerboseHelpMessage) {
+        if (state.isVerboseHelp) {
             final List<DetectOption> sorted = options.stream().sorted((o1, o2) -> {
                 if (o1.getHelp().primaryGroup.equals(o2.getHelp().primaryGroup)) {
                     return o1.getKey().compareTo(o2.getKey());
-                }else {
+                } else {
                     return o1.getHelp().primaryGroup.compareTo(o2.getHelp().primaryGroup);
                 }
             }).collect(Collectors.toList());
             optionPrinter.printOptions(writer, sorted, null);
-        }else {
+        } else {
             if (state.parsedValue != null) {
                 if (isProperty(options, state.parsedValue)) {
                     printDetailedHelp(writer, options, state.parsedValue);
-                } else if (isPrintGroup(allPrintGroups, state.parsedValue)){
+                } else if (isPrintGroup(allPrintGroups, state.parsedValue)) {
                     printHelpFilteredByPrintGroup(writer, options, state.parsedValue);
                 } else {
                     printHelpFilteredBySearchTerm(writer, options, state.parsedValue);
                 }
-            }else {
+            } else {
                 printDefaultHelp(writer, options);
             }
         }
@@ -78,8 +78,8 @@ public class HelpPrinter {
 
     private void printDetailedHelp(final HelpTextWriter writer, final List<DetectOption> options, final String optionName) {
         final DetectOption option = options.stream()
-                .filter(it -> it.getKey().equals(optionName))
-                .findFirst().orElse(null);
+                                            .filter(it -> it.getKey().equals(optionName))
+                                            .findFirst().orElse(null);
 
         if (option == null) {
             writer.println("Could not find option named: " + optionName);
@@ -96,9 +96,9 @@ public class HelpPrinter {
         final String notes = "Showing help only for: " + filterGroup;
 
         final List<DetectOption> filteredOptions = options.stream()
-                .filter(it -> it.getHelp().groups.stream().anyMatch(printGroup -> printGroup.equalsIgnoreCase(filterGroup)))
-                .sorted((o1, o2) -> o1.getKey().compareTo(o2.getKey()))
-                .collect(Collectors.toList());
+                                                           .filter(it -> it.getHelp().groups.stream().anyMatch(printGroup -> printGroup.equalsIgnoreCase(filterGroup)))
+                                                           .sorted((o1, o2) -> o1.getKey().compareTo(o2.getKey()))
+                                                           .collect(Collectors.toList());
 
         optionPrinter.printOptions(writer, filteredOptions, notes);
     }
@@ -107,28 +107,28 @@ public class HelpPrinter {
         final String notes = "Showing help only for fields that contain: " + searchTerm;
 
         final List<DetectOption> filteredOptions = options.stream()
-                .filter(it -> it.getKey().contains(searchTerm))
-                .collect(Collectors.toList());
+                                                           .filter(it -> it.getKey().contains(searchTerm))
+                                                           .collect(Collectors.toList());
 
         optionPrinter.printOptions(writer, filteredOptions, notes);
     }
 
-    private boolean isPrintGroup (final List<String> allPrintGroups, final String filterGroup) {
+    private boolean isPrintGroup(final List<String> allPrintGroups, final String filterGroup) {
         return allPrintGroups.contains(filterGroup);
     }
 
-    private boolean isProperty (final List<DetectOption> allOptions, final String filterTerm) {
+    private boolean isProperty(final List<DetectOption> allOptions, final String filterTerm) {
         return allOptions.stream()
-                .map(it -> it.getKey())
-                .anyMatch(it -> it.equals(filterTerm));
+                       .map(it -> it.getKey())
+                       .anyMatch(it -> it.equals(filterTerm));
     }
 
     private List<String> getPrintGroups(final List<DetectOption> options) {
         return options.stream()
-                .flatMap(it -> it.getHelp().groups.stream())
-                .distinct()
-                .sorted()
-                .collect(Collectors.toList());
+                       .flatMap(it -> it.getHelp().groups.stream())
+                       .distinct()
+                       .sorted()
+                       .collect(Collectors.toList());
     }
 
     private String getPrintGroupText(final List<String> printGroups) {
