@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.search;
+package com.blackducksoftware.integration.hub.detect.bomtool;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,74 +39,69 @@ import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.NestedBomTool;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
-import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.util.ResourceUtil;
 
-public class BomToolTreeWalker {
-    private final Logger logger = LoggerFactory.getLogger(BomToolTreeWalker.class);
+public class BomToolFinder {
+    private final Logger logger = LoggerFactory.getLogger(BomToolFinder.class);
 
     private final List<String> excludedDirectoriesBomToolSearch;
     private final Boolean bomToolSearchExclusionDefaults;
     private final Boolean bomToolContinueSearch;
     private final int maximumDepth;
 
-    private List<ApplicableDirectoryResult> results = new ArrayList<>();
-
-    public BomToolTreeWalker(final List<String> excludedDirectoriesBomToolSearch, Boolean bomToolSearchExclusionDefaults, final Boolean bomToolContinueSearch, final int maximumDepth) {
+    public BomToolFinder(final List<String> excludedDirectoriesBomToolSearch, final Boolean bomToolSearchExclusionDefaults, final Boolean bomToolContinueSearch, final int maximumDepth) {
         this.excludedDirectoriesBomToolSearch = excludedDirectoriesBomToolSearch;
         this.bomToolSearchExclusionDefaults = bomToolSearchExclusionDefaults;
         this.bomToolContinueSearch = bomToolContinueSearch;
         this.maximumDepth = maximumDepth;
     }
 
-    public List<ApplicableDirectoryResult> getResults() {
-        return results;
+    public List<BomToolApplicableResult> findApplicableBomTools(final Set<BomTool> bomTools, final File initialDirectory) throws BomToolException, DetectUserFriendlyException {
+        final List<String> excludedDirectories = determineDirectoriesToExclude(excludedDirectoriesBomToolSearch, bomToolSearchExclusionDefaults);
+        final List<File> subDirectories = getSubDirectories(initialDirectory, excludedDirectories);
+        return findApplicableBomTools(excludedDirectories, bomTools, subDirectories, 1, maximumDepth);
     }
 
-    public void startSearching(final Set<NestedBomTool> nestedBomTools, final File initialDirectory) throws BomToolException, DetectUserFriendlyException {
-        List<String> excludedDirectories = determineDirectoriesToExclude(excludedDirectoriesBomToolSearch, bomToolSearchExclusionDefaults);
-        List<File> subDirectories = getSubDirectories(initialDirectory, excludedDirectories);
-        searchDirectories(excludedDirectories, nestedBomTools, subDirectories, 1, maximumDepth);
-    }
-
-    private void searchDirectories(final List<String> directoriesToExclude, final Set<NestedBomTool> nestedBomTools, final List<File> directoriesToSearch, final int depth, final int maximumDepth)
+    private List<BomToolApplicableResult> findApplicableBomTools(final List<String> directoriesToExclude, final Set<BomTool> bomTools, final List<File> directoriesToSearch, final int depth, final int maximumDepth)
             throws BomToolException, DetectUserFriendlyException {
+
+        final List<BomToolApplicableResult> results = new ArrayList<>();
+
         if (depth > maximumDepth) {
-            return;
+            return results;
         }
 
         if (null == directoriesToSearch || directoriesToSearch.size() == 0) {
-            return;
+            return results;
         }
-        for (File directory : directoriesToSearch) {
-            Set<NestedBomTool> remainingNestedBomTools = new HashSet<>(nestedBomTools);
-            for (NestedBomTool nestedBomTool : nestedBomTools) {
-                BomToolSearcher bomToolSearcher = nestedBomTool.getBomToolSearcher();
-                BomToolSearchResult searchResult = bomToolSearcher.getBomToolSearchResult(directory);
+        for (final File directory : directoriesToSearch) {
+            final Set<BomTool> remainingBomTools = new HashSet<>(bomTools);
+            for (final BomTool bomTool : bomTools) {
+                final BomToolApplicableResult searchResult = bomTool.isBomToolApplicable(directory);
                 if (searchResult.isApplicable()) {
-                    List<DetectCodeLocation> detectCodeLocations = nestedBomTool.extractDetectCodeLocations(searchResult);
-                    ApplicableDirectoryResult result = new ApplicableDirectoryResult(nestedBomTool.getBomToolType(), directory, detectCodeLocations);
-                    results.add(result);
-                    if (shouldStopSearchingIfApplicable(nestedBomTool)) {
-                        remainingNestedBomTools.remove(nestedBomTool);
+                    results.add(searchResult);
+                    if (shouldStopSearchingIfApplicable(bomTool)) {
+                        remainingBomTools.remove(bomTool);
                     }
                 }
             }
-            if (!remainingNestedBomTools.isEmpty()) {
-                searchDirectories(directoriesToExclude, remainingNestedBomTools, getSubDirectories(directory, directoriesToExclude), depth + 1, maximumDepth);
+            if (!remainingBomTools.isEmpty()) {
+                final List<BomToolApplicableResult> recursiveResults = findApplicableBomTools(directoriesToExclude, remainingBomTools, getSubDirectories(directory, directoriesToExclude), depth + 1, maximumDepth);
+                results.addAll(recursiveResults);
             }
         }
+
+        return results;
     }
 
-    private boolean shouldStopSearchingIfApplicable(final NestedBomTool nestedBomTool) {
+    private boolean shouldStopSearchingIfApplicable(final BomTool bomTool) {
         if (bomToolContinueSearch) {
             return false;
         }
-        if (nestedBomTool.canSearchWithinApplicableDirectory()) {
+        if (bomTool.getSearchOptions().canSearchWithinApplicableDirectoryies()) {
             return false;
         }
         return true;
@@ -115,9 +110,9 @@ public class BomToolTreeWalker {
     private List<File> getSubDirectories(final File directory, final List<String> excludedDirectories) throws DetectUserFriendlyException {
         try {
             // only include directories that do not match the excluded directories
-            Predicate<File> excludeDirectoriesPredicate = file -> {
+            final Predicate<File> excludeDirectoriesPredicate = file -> {
                 boolean matchesExcludedDirectory = false;
-                for (String excludedDirectory : excludedDirectories) {
+                for (final String excludedDirectory : excludedDirectories) {
                     if (FilenameUtils.wildcardMatchOnSystem(file.getName(), excludedDirectory)) {
                         matchesExcludedDirectory = true;
                         break;
@@ -127,23 +122,23 @@ public class BomToolTreeWalker {
             };
 
             return Files.list(directory.toPath())
-                           .map(path -> path.toFile())
-                           .filter(file -> file.isDirectory())
-                           .filter(excludeDirectoriesPredicate)
-                           .collect(Collectors.toList());
-        } catch (IOException e) {
+                    .map(path -> path.toFile())
+                    .filter(file -> file.isDirectory())
+                    .filter(excludeDirectoriesPredicate)
+                    .collect(Collectors.toList());
+        } catch (final IOException e) {
             throw new DetectUserFriendlyException(String.format("Could not get the subdirectories for %s. %s", directory.getAbsolutePath(), e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
         }
     }
 
-    private List<String> determineDirectoriesToExclude(final List<String> excludedDirectoriesBomToolSearch, Boolean bomToolSearchExclusionDefaults) throws DetectUserFriendlyException {
-        List<String> directoriesToExclude = new ArrayList<>(excludedDirectoriesBomToolSearch);
+    private List<String> determineDirectoriesToExclude(final List<String> excludedDirectoriesBomToolSearch, final Boolean bomToolSearchExclusionDefaults) throws DetectUserFriendlyException {
+        final List<String> directoriesToExclude = new ArrayList<>(excludedDirectoriesBomToolSearch);
         try {
             if (bomToolSearchExclusionDefaults) {
-                String fileContent = ResourceUtil.getResourceAsString(BomToolTreeWalker.class, "/excludedDirectoriesBomToolSearch.txt", StandardCharsets.UTF_8);
+                final String fileContent = ResourceUtil.getResourceAsString(BomToolFinder.class, "/excludedDirectoriesBomToolSearch.txt", StandardCharsets.UTF_8);
                 directoriesToExclude.addAll(Arrays.asList(fileContent.split("\n")));
             }
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new DetectUserFriendlyException(String.format("Could not determine the directories to exclude from the bom tool search. %s", e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
         }
         logger.debug("Excluding these directories from the bom tool search");

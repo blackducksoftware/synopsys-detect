@@ -52,7 +52,7 @@ import com.blackducksoftware.integration.hub.bdio.BdioTransformer;
 import com.blackducksoftware.integration.hub.bdio.SimpleBdioFactory;
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
-import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolTreeWalker;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolFinder;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
@@ -267,8 +267,8 @@ public class Application implements ApplicationRunner {
     }
 
     @Bean
-    public BomToolTreeWalker bomToolTreeSearcher() {
-        return new BomToolTreeWalker(Arrays.asList(detectConfiguration.getBomToolSearchExclusion()), detectConfiguration.getBomToolSearchExclusionDefaults(), detectConfiguration.getBomToolContinueSearch(),
+    public BomToolFinder bomToolTreeSearcher() {
+        return new BomToolFinder(Arrays.asList(detectConfiguration.getBomToolSearchExclusion()), detectConfiguration.getBomToolSearchExclusionDefaults(), detectConfiguration.getBomToolContinueSearch(),
                 detectConfiguration.getBomToolSearchDepth());
     }
 

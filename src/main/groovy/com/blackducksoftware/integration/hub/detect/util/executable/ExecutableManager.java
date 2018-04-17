@@ -27,6 +27,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +61,18 @@ public class ExecutableManager {
         }
     }
 
+    public String getExecutablePathOrOverride(final ExecutableType executableType, final boolean searchSystemPath, final File path, final String override) {
+        return getExecutablePathOrOverride(executableType, searchSystemPath, path.toString(), override);
+    }
+
+    public String getExecutablePathOrOverride(final ExecutableType executableType, final boolean searchSystemPath, final String path, final String override) {
+        if (StringUtils.isNotBlank(override)) {
+            return override;
+        } else {
+            return getExecutablePath(executableType, searchSystemPath, path);
+        }
+    }
+
     public File getExecutable(final ExecutableType executableType, final boolean searchSystemPath, final String path) {
         final String executable = getExecutableName(executableType);
         final String searchPath = path.trim();
@@ -69,6 +82,14 @@ public class ExecutableManager {
         }
 
         return executableFile;
+    }
+
+    public String findExecutablePath(final String sourcePath, final ExecutableType executable, final boolean searchSystemPath, final String userPath) {
+        if (StringUtils.isBlank(userPath)) {
+            return getExecutablePath(executable, searchSystemPath, sourcePath);
+        }
+
+        return userPath;
     }
 
     private File findExecutableFileFromSystemPath(final String executable) {

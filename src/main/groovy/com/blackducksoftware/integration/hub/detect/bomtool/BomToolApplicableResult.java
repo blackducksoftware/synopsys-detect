@@ -21,27 +21,32 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.search;
+package com.blackducksoftware.integration.hub.detect.bomtool;
 
 import java.io.File;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmBomToolSearchResult;
+import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 
-public class BomToolSearchResultFactory {
-    public static BomToolSearchResult createApplies(final File searchedDirectory) {
-        return new BomToolSearchResult(true, searchedDirectory);
+public class BomToolApplicableResult {
+    private final File directory;
+
+    private final BomToolType bomToolType;
+
+    public BomToolApplicableResult(final File searchedDirectory, final BomToolType bomToolType) {
+        this.directory = searchedDirectory;
+        this.bomToolType = bomToolType;
     }
 
-    public static BomToolSearchResult createDoesNotApply() {
-        return new BomToolSearchResult(false, null);
+    public File getDirectory() {
+        return directory;
     }
 
-    public static NpmBomToolSearchResult createNpmApplies(final File searchedDirectory, final String npmExePath, final File packageLockJson, final File shrinkwrapJson) {
-        return new NpmBomToolSearchResult(true, searchedDirectory, npmExePath, packageLockJson, shrinkwrapJson);
+    public String getDirectoryString() {
+        return directory.toString();
     }
 
-    public static NpmBomToolSearchResult createNpmDoesNotApply() {
-        return new NpmBomToolSearchResult(false, null, null, null, null);
+    public BomToolType getBomToolType() {
+        return bomToolType;
     }
 
 }

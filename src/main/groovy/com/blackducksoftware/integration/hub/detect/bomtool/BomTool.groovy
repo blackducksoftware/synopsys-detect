@@ -28,10 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
-import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
-import com.blackducksoftware.integration.hub.detect.model.DetectProject
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
-import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
@@ -39,7 +35,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 import groovy.transform.TypeChecked
 
 @TypeChecked
-abstract class BomTool {
+abstract class BomTool<T extends BomToolApplicableResult> {
     @Autowired
     DetectConfiguration detectConfiguration
 
@@ -53,42 +49,19 @@ abstract class BomTool {
     DetectFileManager detectFileManager
 
     @Autowired
-    NameVersionNodeTransformer nameVersionNodeTransformer
-
-    @Autowired
     ExternalIdFactory externalIdFactory
 
+    @Autowired
+    BomToolExtractionResultsFactory bomToolExtractionResultsFactory;
+
     abstract BomToolType getBomToolType()
-    abstract boolean isBomToolApplicable()
 
-    /**
-     * A BomTool is responsible for doing its best to create at least one, but possibly many, DetectCodeLocations.
-     */
-    //    abstract List<DetectCodeLocation> extractDetectCodeLocations()
-    List<DetectCodeLocation> extractDetectCodeLocations() {
-        []
+    abstract T isBomToolApplicable(File directory)
+
+    abstract BomToolExtractionResult extractDetectCodeLocations(T applicableResult)
+
+    BomToolSearchOptions getSearchOptions() {
+        return BomToolSearchOptions.defaultOptions();
     }
 
-    /**
-     * BomTool's should override this method if they can determine the correct project name and version
-     */
-    List<DetectCodeLocation> extractDetectCodeLocations(DetectProject detectProject) {
-        extractDetectCodeLocations()
-    }
-
-    String getSourcePath() {
-        detectConfiguration.sourcePath
-    }
-
-    File getSourceDirectory() {
-        detectConfiguration.sourceDirectory
-    }
-
-    String findExecutablePath(ExecutableType executable, boolean searchSystemPath, String userPath) {
-        if (!userPath?.trim()) {
-            return executableManager.getExecutablePath(executable, searchSystemPath, sourcePath)
-        }
-
-        userPath
-    }
 }

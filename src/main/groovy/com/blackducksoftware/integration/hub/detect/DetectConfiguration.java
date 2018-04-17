@@ -315,8 +315,8 @@ public class DetectConfiguration {
         return usingDefaultOutputPath;
     }
 
-    public boolean shouldRun(final BomTool bomTool) {
-        return bomToolFilter.shouldInclude(bomTool.getBomToolType().toString()) && bomTool.isBomToolApplicable();
+    public boolean isBomToolIncluded(final BomTool bomTool) {
+        return bomToolFilter.shouldInclude(bomTool.getBomToolType().toString());
     }
 
     public String getDetectProperty(final String key) {
