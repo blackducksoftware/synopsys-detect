@@ -90,7 +90,7 @@ public class NpmBomToolSearcher extends BaseBomToolSearcher<NpmBomToolSearchResu
 
     private void logRelevantMessages(final File directoryToSearch, final boolean containsNodeModules, final boolean containsPackageJson, final boolean containsPackageLockJson, final boolean containsShrinkwrapJson, final String npmExePath,
             final String npmVersion) {
-        if (containsPackageJson && !containsNodeModules) {
+        if (containsPackageJson && !containsNodeModules && !containsPackageLockJson && !containsShrinkwrapJson) {
             logger.warn(String.format("package.json was located in %s, but the node_modules folder was NOT located. Please run 'npm install' in that location and try again.", directoryToSearch.getAbsolutePath()));
         } else if (containsPackageJson && containsNodeModules) {
             if (StringUtils.isBlank(npmExePath)) {
