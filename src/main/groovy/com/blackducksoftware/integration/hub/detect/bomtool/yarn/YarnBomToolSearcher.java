@@ -24,8 +24,8 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.yarn;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolApplicableResult;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.BaseBomToolSearcher;
-import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolSearchResult;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolSearchResultFactory;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
@@ -37,9 +37,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class YarnBomToolSearcher extends BaseBomToolSearcher<BomToolSearchResult> {
+public class YarnBomToolSearcher extends BaseBomToolSearcher<BomToolApplicableResult> {
     @Override
-    public BomToolSearchResult getSearchResult(final File directoryToSearch) {
+    public BomToolApplicableResult getSearchResult(final File directoryToSearch) {
         final boolean yarnApplies = getDetectFileManager().containsAllFiles(directoryToSearch, "yarn.lock");
         if (yarnApplies) {
             return BomToolSearchResultFactory.createApplies(directoryToSearch);

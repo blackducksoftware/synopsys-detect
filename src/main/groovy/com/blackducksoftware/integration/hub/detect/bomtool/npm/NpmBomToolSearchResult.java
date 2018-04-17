@@ -25,9 +25,9 @@ package com.blackducksoftware.integration.hub.detect.bomtool.npm;
 
 import java.io.File;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolSearchResult;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolApplicableResult;
 
-public class NpmBomToolSearchResult extends BomToolSearchResult {
+public class NpmBomToolSearchResult extends BomToolApplicableResult {
     private final String npmExePath;
     private final File packageLockJson;
     private final File shrinkwrapJson;

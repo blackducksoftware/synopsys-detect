@@ -87,13 +87,13 @@ class NpmBomTool extends BomTool implements NestedBomTool<NpmBomToolSearchResult
         if (searchResult.npmExePath) {
             codeLocations.addAll(extractFromCommand(searchResult))
         } else if (searchResult.packageLockJson) {
-            codeLocations.addAll(extractFromLockFile(searchResult.packageLockJson, searchResult.searchedDirectory))
+            codeLocations.addAll(extractFromLockFile(searchResult.packageLockJson, searchResult.directory))
         } else if (searchResult.shrinkwrapJson) {
-            codeLocations.addAll(extractFromLockFile(searchResult.shrinkwrapJson, searchResult.searchedDirectory))
+            codeLocations.addAll(extractFromLockFile(searchResult.shrinkwrapJson, searchResult.directory))
         }
 
         if (!codeLocations.empty) {
-            hubSignatureScanner.registerPathToScan(ScanPathSource.NPM_SOURCE, searchResult.searchedDirectory, NpmBomToolSearcher.NODE_MODULES)
+            hubSignatureScanner.registerPathToScan(ScanPathSource.NPM_SOURCE, searchResult.directory, NpmBomToolSearcher.NODE_MODULES)
         }
 
         codeLocations
@@ -128,7 +128,7 @@ class NpmBomTool extends BomTool implements NestedBomTool<NpmBomToolSearchResult
         if (!includeDevDeps) {
             exeArgs.add('-prod')
         }
-        Executable npmLsExe = new Executable(searchResult.searchedDirectory, searchResult.npmExePath, exeArgs)
+        Executable npmLsExe = new Executable(searchResult.directory, searchResult.npmExePath, exeArgs)
         executableRunner.executeToFile(npmLsExe, npmLsOutputFile, npmLsErrorFile)
 
         if (npmLsOutputFile.length() > 0) {
@@ -136,7 +136,7 @@ class NpmBomTool extends BomTool implements NestedBomTool<NpmBomToolSearchResult
                 logger.debug("Error when running npm ls -json command")
                 logger.debug(npmLsErrorFile.text)
             }
-            def detectCodeLocation = npmCliDependencyFinder.generateCodeLocation(searchResult.searchedDirectory.canonicalPath, npmLsOutputFile)
+            def detectCodeLocation = npmCliDependencyFinder.generateCodeLocation(searchResult.directory.canonicalPath, npmLsOutputFile)
 
             return [detectCodeLocation]
         } else if (npmLsErrorFile.length() > 0) {
