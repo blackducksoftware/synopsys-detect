@@ -68,13 +68,12 @@ class YarnBomTool extends BomTool {
 
     @Override
     boolean isBomToolApplicable() {
-        detectFileManager.containsAllFiles(getTheSourcePath(), 'yarn.lock')
+        detectFileManager.containsAllFiles(sourcePath, 'yarn.lock')
         yarnExePath = findExecutablePath(ExecutableType.YARN, true, detectConfiguration.getYarnPath())
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
         DependencyGraph dependencyGraph
-        ExternalId externalId
         def detectCodeLocation
         yarnExePath = findExecutablePath(ExecutableType.YARN, true, detectConfiguration.getYarnPath())
         if (detectConfiguration.yarnProductionDependenciesOnly) {
@@ -84,14 +83,10 @@ class YarnBomTool extends BomTool {
             List<String> yarnText = Files.readAllLines(yarnLockFile.toPath(), StandardCharsets.UTF_8)
             dependencyGraph = yarnPackager.parseYarnLock(yarnText)
         }
-        externalId = externalIdFactory.createPathExternalId(Forge.NPM, getTheSourcePath())
-        detectCodeLocation = new DetectCodeLocation.Builder(getBomToolType(), getTheSourcePath(), externalId, dependencyGraph).build()
+        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.NPM, sourcePath)
+        detectCodeLocation = new DetectCodeLocation.Builder(getBomToolType(), sourcePath, externalId, dependencyGraph).build()
 
         return [detectCodeLocation]
-    }
-
-    String getTheSourcePath() {
-        return sourcePath
     }
 
     DependencyGraph extractGraphFromYarnListCommand(String yarnExePath) {
@@ -100,7 +95,7 @@ class YarnBomTool extends BomTool {
 
         def exeArgs = ['list', '--prod']
 
-        Executable yarnListExe = new Executable(new File(getTheSourcePath()), yarnExePath, exeArgs)
+        Executable yarnListExe = new Executable(new File(sourcePath), yarnExePath, exeArgs)
         executableRunner.executeToFile(yarnListExe, yarnListOutputFile, yarnListErrorFile)
 
         if (!(yarnListOutputFile.length() > 0)) {
