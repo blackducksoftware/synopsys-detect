@@ -68,7 +68,7 @@ class YarnBomTool extends BomTool {
 
     @Override
     boolean isBomToolApplicable() {
-        detectFileManager.containsAllFiles(sourcePath, 'yarn.lock')
+        detectFileManager.containsAllFiles(getTheSourcePath(), 'yarn.lock')
         yarnExePath = findExecutablePath(ExecutableType.YARN, true, detectConfiguration.getYarnPath())
     }
 
@@ -79,17 +79,19 @@ class YarnBomTool extends BomTool {
         yarnExePath = findExecutablePath(ExecutableType.YARN, true, detectConfiguration.getYarnPath())
         if (detectConfiguration.yarnProductionDependenciesOnly) {
             dependencyGraph = extractGraphFromYarnListCommand(yarnExePath)
-            externalId = externalIdFactory.createPathExternalId(Forge.NPM, sourcePath)
-            detectCodeLocation = new DetectCodeLocation.Builder(getBomToolType(), sourcePath, externalId, dependencyGraph).build()
         } else {
             File yarnLockFile = detectFileManager.findFile(sourceDirectory, 'yarn.lock')
             List<String> yarnText = Files.readAllLines(yarnLockFile.toPath(), StandardCharsets.UTF_8)
             dependencyGraph = yarnPackager.parseYarnLock(yarnText)
-            externalId = externalIdFactory.createPathExternalId(Forge.NPM, sourcePath)
-            detectCodeLocation = new DetectCodeLocation.Builder(getBomToolType(), sourcePath, externalId, dependencyGraph).build()
         }
+        externalId = externalIdFactory.createPathExternalId(Forge.NPM, getTheSourcePath())
+        detectCodeLocation = new DetectCodeLocation.Builder(getBomToolType(), getTheSourcePath(), externalId, dependencyGraph).build()
 
         return [detectCodeLocation]
+    }
+
+    String getTheSourcePath() {
+        return sourcePath
     }
 
     DependencyGraph extractGraphFromYarnListCommand(String yarnExePath) {
@@ -98,7 +100,7 @@ class YarnBomTool extends BomTool {
 
         def exeArgs = ['list', '--prod']
 
-        Executable yarnListExe = new Executable(new File(sourcePath), yarnExePath, exeArgs)
+        Executable yarnListExe = new Executable(new File(getTheSourcePath()), yarnExePath, exeArgs)
         executableRunner.executeToFile(yarnListExe, yarnListOutputFile, yarnListErrorFile)
 
         if (!(yarnListOutputFile.length() > 0)) {
@@ -126,6 +128,11 @@ class YarnBomTool extends BomTool {
         Dependency currentDep, parentDep, grandParentDep
         String fuzzyName, name, version
         for (String line : yarnListAsList) {
+
+            if (line.toLowerCase().startsWith("yarn list") || line.toLowerCase().startsWith("done in")) {
+                continue
+            }
+
             line = line.replaceAll("├─", " ").replaceAll("│", " ").replaceAll("└─", " ")
             depth = getDepth(line)
 
@@ -163,10 +170,7 @@ class YarnBomTool extends BomTool {
         Matcher matcher = pattern.matcher(s)
         int count = matcher.getCount()
 
-        int depth = Math.floorDiv(count - 2, 3)
-
-        logger.debug("Current parsing depth : " + depth)
-        depth
+        Math.floorDiv(count - 2, 3)
     }
 
     String grabFuzzyName(String line) {
@@ -177,14 +181,14 @@ class YarnBomTool extends BomTool {
         // │  ├─ tr46@~0.0.3 >> tr46@~0.0.3
 
         // [a-zA-Z\d-]+@.+[\dx]$
-//        Pattern pattern = Pattern.compile("(a-zA-Z)+.+") //"(a-zA-Z)+@.+(\\dx)\$")
-//        Matcher matcher = pattern.matcher(line)
-//        logger.info(matcher.matches().toString())
-//        logger.info(matcher.groupCount().toString())
-        String result
-        result = line.split(" ")[-1]
-        logger.debug("Dependency found: '" + result + "'")
-
+        Pattern pattern = Pattern.compile("[ \\d\\.\\-a-zA-Z]+@.+")
+        Matcher matcher = pattern.matcher(line)
+        boolean found = matcher.find();
+        String result = matcher.group(0).trim()
+        if (found) {
+            logger.debug("Checking '" + line + "'...")
+            logger.debug("Dependency found: '" + result + "'")
+        }
         result
     }
 

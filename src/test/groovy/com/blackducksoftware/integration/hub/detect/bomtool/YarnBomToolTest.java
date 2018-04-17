@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class YarnBomToolTest {
     private YarnBomTool yarnBomTool;
@@ -18,6 +19,20 @@ public class YarnBomToolTest {
     @Before
     public void setup() {
         yarnBomTool = new YarnBomTool();
+    }
+
+    @Test
+    public void testThatYarnListLineAtBeginningIsIgnored() {
+        testLines = new ArrayList<>();
+        testLines.add("yarn list v1.5.1");
+        testLines.add("├─ abab@1.0.4");
+
+        dependencyGraph = yarnBomTool.extractGraphFromYarnListFile(testLines);
+
+        List<ExternalId> tempList = new ArrayList<>(dependencyGraph.getRootDependencyExternalIds());
+
+        assertNotNull(tempList.get(1));
+        assertEquals(2, tempList.size());
     }
 
     @Test
@@ -70,16 +85,22 @@ public class YarnBomToolTest {
     @Test
     public void testThatYarnListRegexParsesTheCorrectText() {
         String input = "│  │  ├─ engine.io-client@~1.8.4";
-        assertEquals(yarnBomTool.grabFuzzyName(input), "engine.io-client@~1.8.4");
+        assertEquals("engine.io-client@~1.8.4", yarnBomTool.grabFuzzyName(input));
 
         input = "│  ├─ test-fixture@PolymerElements/test-fixture";
-        assertEquals(yarnBomTool.grabFuzzyName(input), "test-fixture@PolymerElements/test-fixture");
+        assertEquals("test-fixture@PolymerElements/test-fixture", yarnBomTool.grabFuzzyName(input));
 
         input = "│  │  ├─ tough-cookie@>=0.12.0";
-        assertEquals(yarnBomTool.grabFuzzyName(input), "tough-cookie@>=0.12.0");
+        assertEquals("tough-cookie@>=0.12.0", yarnBomTool.grabFuzzyName(input));
 
         input = "│  │  ├─ cryptiles@2.x.x";
-        assertEquals(yarnBomTool.grabFuzzyName(input), "cryptiles@2.x.x");
+        assertEquals("cryptiles@2.x.x", yarnBomTool.grabFuzzyName(input));
+
+        input = "│  │  ├─ asn1@0.2.3";
+        assertEquals("asn1@0.2.3", yarnBomTool.grabFuzzyName(input));
+
+        input = "│  ├─ cssom@>= 0.3.2 < 0.4.0";
+        assertEquals("cssom@>= 0.3.2 < 0.4.0", yarnBomTool.grabFuzzyName(input));
 
     }
 }

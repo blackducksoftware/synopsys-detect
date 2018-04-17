@@ -23,8 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool
 
-import org.springframework.beans.factory.annotation.Autowired
-
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
@@ -35,8 +33,8 @@ import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
-
 import groovy.transform.TypeChecked
+import org.springframework.beans.factory.annotation.Autowired
 
 @TypeChecked
 abstract class BomTool {
@@ -59,6 +57,7 @@ abstract class BomTool {
     ExternalIdFactory externalIdFactory
 
     abstract BomToolType getBomToolType()
+
     abstract boolean isBomToolApplicable()
 
     /**
