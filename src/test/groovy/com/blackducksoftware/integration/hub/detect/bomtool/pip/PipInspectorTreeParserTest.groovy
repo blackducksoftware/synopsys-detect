@@ -72,7 +72,7 @@ class PipInspectorTreeParserTest {
         final String child1Text = 'apple' + PipInspectorTreeParser.SEPARATOR + '5.3.2'
         final String child2Text = 'orange' + PipInspectorTreeParser.SEPARATOR + '4.3.1'
         final String child3Text = 'pear' + PipInspectorTreeParser.SEPARATOR + '9.8.7'
-        final String validText = """
+        String validText = """
 ${PipInspectorTreeParser.UNKNOWN_REQUIREMENTS_PREFIX} reqs.txt
 ${PipInspectorTreeParser.UNKNOWN_PACKAGE_PREFIX} UnkownPackageName
 
