@@ -50,9 +50,9 @@ public class HelpPrinter {
         final List<DetectOption> deprecatedOptions = allOptions.stream().filter(it -> it.getHelp().isDeprecated).collect(Collectors.toList());
         final List<String> allPrintGroups = getPrintGroups(currentOptions);
 
-        if (state.isVerboseHelpMessage) {
+        if (state.isVerboseHelp) {
             printVerboseOptions(writer, currentOptions, null);
-        } else if (state.isDeprecatedHelpMessage) {
+        } else if (state.isDeprecatedHelp) {
             optionPrinter.printOptions(writer, deprecatedOptions, "Showing only deprecated properties.");
         } else {
             if (state.parsedValue != null) {
