@@ -33,7 +33,7 @@ import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 @Component
 public class HelpOptionPrinter {
 
-    public void printOptions(final HelpTextWriter writer, final List<DetectOption> options, final String notes) {
+    public void printOptions(HelpTextWriter writer, List<DetectOption> options, String notes) {
         writer.printColumns("Property Name", "Default", "Description");
         writer.printSeperator();
 
@@ -52,9 +52,6 @@ public class HelpOptionPrinter {
                 group = currentGroup;
             }
             String description = detectOption.getHelp().description;
-            if (detectOption.getHelp().isDeprecated) {
-                description = "Will be removed in version " + detectOption.getHelp().deprecationVersion + ". " + description;
-            }
             if (detectOption.getAcceptableValues().size() > 0) {
                 description += " (" + detectOption.getAcceptableValues().stream().collect(Collectors.joining("|")) + ")";
             }
@@ -62,16 +59,16 @@ public class HelpOptionPrinter {
         }
     }
 
-    public void printStandardFooter(final HelpTextWriter writer, final String groupText) {
+    public void printStandardFooter(HelpTextWriter writer, String groupText) {
         writer.println();
         writer.println("Usage : ");
         writer.println("\t--<property name>=<value>");
         writer.println();
-        writer.println("To see all properties, you may request verbose help log with '-h -v'");
+        writer.println("To see all properties, you may request verbose help log with '-hv'");
         writer.println();
-        writer.println("To get detailed help for a specific property, you may specify the property name with '-h [property]' or '-h -p [property]'");
+        writer.println("To get detailed help for a specific property, you may specify the property name with '-h [property]'");
         writer.println();
-        writer.println("To print only a subset of options, you may specify one of the following printable groups with '-h [group]' or '-h -g [group]': ");
+        writer.println("To print only a subset of options, you may specify one of the following printable groups with '-h [group]': ");
         writer.println("\t" + groupText);
         writer.println();
         writer.println("To search options, you may specify a search term with '-h [term]'");
