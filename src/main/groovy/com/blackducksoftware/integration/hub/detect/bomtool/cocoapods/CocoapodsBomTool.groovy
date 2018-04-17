@@ -23,7 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.cocoapods
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,7 +31,8 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolExtractionResult
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 
@@ -40,7 +40,7 @@ import groovy.transform.TypeChecked
 
 @Component
 @TypeChecked
-class CocoapodsBomTool extends BomTool {
+class CocoapodsBomTool extends BomTool<CocoapodsApplicableResult> {
     private final Logger logger = LoggerFactory.getLogger(CocoapodsBomTool.class)
 
     public static final String PODFILE_LOCK_FILENAME= 'Podfile.lock'
@@ -48,25 +48,27 @@ class CocoapodsBomTool extends BomTool {
     @Autowired
     CocoapodsPackager cocoapodsPackager
 
-    @Autowired
-    ExternalIdFactory externalIdFactory
-
-
     BomToolType getBomToolType() {
         return BomToolType.COCOAPODS
     }
 
-    boolean isBomToolApplicable() {
-        detectFileManager.containsAllFiles(sourcePath, PODFILE_LOCK_FILENAME)
+    CocoapodsApplicableResult isBomToolApplicable(File directory) {
+        File lockFile = new File(directory, PODFILE_LOCK_FILENAME);
+        if (lockFile.exists()) {
+            return new CocoapodsApplicableResult(directory, lockFile);
+        } else {
+            return null;
+        }
     }
 
-    List<DetectCodeLocation> extractDetectCodeLocations() {
-        final String podLockText = new File(sourcePath, PODFILE_LOCK_FILENAME).text
+    BomToolExtractionResult extractDetectCodeLocations(CocoapodsApplicableResult applicable) {
+        final String podLockText = applicable.lockFile.text
 
         DependencyGraph dependencyGraph = cocoapodsPackager.extractDependencyGraph(podLockText)
-        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.COCOAPODS, sourcePath)
+        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.COCOAPODS, applicable.getDirectoryString())
 
-        def codeLocation = new DetectCodeLocation.Builder(getBomToolType(), sourcePath, externalId, dependencyGraph).build()
-        [codeLocation]
+        def codeLocation = new DetectCodeLocation.Builder(getBomToolType(), applicable.getDirectoryString(), externalId, dependencyGraph).build()
+
+        bomToolExtractionResultsFactory.fromCodeLocations([codeLocation], getBomToolType(), applicable.getDirectoryString());
     }
 }

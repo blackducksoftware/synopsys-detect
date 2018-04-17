@@ -23,8 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.cran
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
-
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 
@@ -34,8 +32,8 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.bomtool.cran.PackratPackager
+import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolExtractionResult
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 
@@ -43,44 +41,46 @@ import groovy.transform.TypeChecked
 
 @Component
 @TypeChecked
-class CranBomTool extends BomTool {
+class CranBomTool extends BomTool<CranApplicableResult> {
     @Autowired
     PackratPackager packratPackager
-
-    @Autowired
-    ExternalIdFactory externalIdFactory
 
     BomToolType getBomToolType() {
         return BomToolType.CRAN
     }
 
-    boolean isBomToolApplicable() {
-        detectFileManager.containsAllFilesToDepth(sourcePath, detectConfiguration.getSearchDepth(), 'packrat.lock')
+    CranApplicableResult isBomToolApplicable(File directory) {
+        List<File> packratLockFiles = detectFileManager.findFilesToDepth(directory, 'packrat.lock', detectConfiguration.getSearchDepth());
+        if (packratLockFiles.size() > 0) {
+            return new CranApplicableResult(directory, packratLockFiles);
+        }
+        return null;
     }
 
-    List<DetectCodeLocation> extractDetectCodeLocations() {
+    BomToolExtractionResult extractDetectCodeLocations(CranApplicableResult applicableResult) {
         File sourceDirectory = detectConfiguration.sourceDirectory
 
-        def packratLockFile = detectFileManager.findFilesToDepth(sourceDirectory, 'packrat.lock', detectConfiguration.getSearchDepth())
         String projectName = ''
         String projectVersion = ''
-        if (detectFileManager.containsAllFiles(sourcePath,'DESCRIPTION')) {
-            def descriptionFile = new File(sourceDirectory, 'DESCRIPTION')
+        if (detectFileManager.containsAllFiles(applicableResult.directory,'DESCRIPTION')) {
+            def descriptionFile = new File(applicableResult.directory, 'DESCRIPTION')
             List<String> descriptionText = Files.readAllLines(descriptionFile.toPath(), StandardCharsets.UTF_8)
             projectName = packratPackager.getProjectName(descriptionText)
             projectVersion = packratPackager.getVersion(descriptionText)
         }
 
-        List<String> packratLockText = Files.readAllLines(packratLockFile[0].toPath(), StandardCharsets.UTF_8)
+        File packratLockFile = applicableResult.packratLockFiles.first();
+
+        List<String> packratLockText = Files.readAllLines(packratLockFile.toPath(), StandardCharsets.UTF_8)
         DependencyGraph dependencyGraph = packratPackager.extractProjectDependencies(packratLockText)
-        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.CRAN, sourcePath)
+        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.CRAN, applicableResult.directory.toString())
 
         DetectCodeLocation.Builder builder =
-                new DetectCodeLocation.Builder(getBomToolType(), sourcePath, externalId, dependencyGraph)
+                new DetectCodeLocation.Builder(getBomToolType(), applicableResult.directory.toString(), externalId, dependencyGraph)
                 .bomToolProjectName(projectName)
                 .bomToolProjectVersionName(projectVersion);
 
         def codeLocation = builder.build()
-        [codeLocation]
+        bomToolExtractionResultsFactory.fromCodeLocations([codeLocation], getBomToolType(), applicableResult.directory);
     }
 }

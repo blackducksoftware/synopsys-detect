@@ -23,7 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.cpan
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,7 +31,8 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolExtractionResult
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
@@ -42,17 +42,11 @@ import groovy.transform.TypeChecked
 
 @Component
 @TypeChecked
-class CpanBomTool extends BomTool {
+class CpanBomTool extends BomTool<CpanApplicableResult> {
     private final Logger logger = LoggerFactory.getLogger(CpanBomTool.class)
 
     @Autowired
     CpanPackager cpanPackager
-
-    @Autowired
-    ExternalIdFactory externalIdFactory
-
-    private String cpanExecutablePath
-    private String cpanmExecutablePath
 
     @Override
     public BomToolType getBomToolType() {
@@ -60,34 +54,35 @@ class CpanBomTool extends BomTool {
     }
 
     @Override
-    public boolean isBomToolApplicable() {
-        def containsFiles = detectFileManager.containsAllFiles(sourcePath, 'Makefile.PL')
-        if (containsFiles) {
-            cpanExecutablePath = findExecutablePath(ExecutableType.CPAN, true, detectConfiguration.getCpanPath())
-            cpanmExecutablePath = findExecutablePath(ExecutableType.CPANM, true, detectConfiguration.getCpanmPath())
-            if (!cpanExecutablePath) {
+    public CpanApplicableResult isBomToolApplicable(File directory) {
+        def makefile = detectFileManager.findFile(directory, 'Makefile.PL')
+        if (makefile != null && makefile.exists()) {
+            def cpanExecutablePath = executableManager.getExecutablePathOrOverride(ExecutableType.CPAN, true, directory, detectConfiguration.getCpanPath())
+            def cpanmExecutablePath = executableManager.getExecutablePathOrOverride(ExecutableType.CPANM, true, directory, detectConfiguration.getCpanmPath())
+            if (cpanExecutablePath && cpanmExecutablePath) {
+                return new CpanApplicableResult(directory, makefile, cpanExecutablePath, cpanmExecutablePath);
+            } else if (!cpanExecutablePath) {
                 logger.warn("Could not find the ${executableManager.getExecutableName(ExecutableType.CPAN)} executable")
-            }
-            if (!cpanmExecutablePath) {
+            } else if (!cpanmExecutablePath) {
                 logger.warn("Could not find the ${executableManager.getExecutableName(ExecutableType.CPANM)} executable")
             }
         }
 
-        containsFiles && cpanExecutablePath && cpanmExecutablePath
+        return null;
     }
 
     @Override
-    public List<DetectCodeLocation> extractDetectCodeLocations() {
-        ExecutableOutput cpanListOutput = executableRunner.runExe(cpanExecutablePath, '-l')
+    public BomToolExtractionResult extractDetectCodeLocations(CpanApplicableResult applicableResult) {
+        ExecutableOutput cpanListOutput = executableRunner.runExe(applicableResult.cpanExePath, '-l')
         List<String> listText = cpanListOutput.standardOutputAsList
 
-        ExecutableOutput showdepsOutput = executableRunner.runExe(cpanmExecutablePath, '--showdeps', '.')
+        ExecutableOutput showdepsOutput = executableRunner.runExe(applicableResult.cpanmExePath, '--showdeps', '.')
         List<String> showdeps = showdepsOutput.standardOutputAsList
 
         DependencyGraph dependencyGraph = cpanPackager.makeDependencyGraph(listText, showdeps)
         ExternalId externalId = externalIdFactory.createPathExternalId(Forge.CPAN, detectConfiguration.sourcePath)
         def detectCodeLocation = new DetectCodeLocation.Builder(BomToolType.CPAN, detectConfiguration.sourcePath, externalId, dependencyGraph).build()
 
-        [detectCodeLocation]
+        bomToolExtractionResultsFactory.fromCodeLocations([detectCodeLocation], getBomToolType(), applicableResult.directory)
     }
 }

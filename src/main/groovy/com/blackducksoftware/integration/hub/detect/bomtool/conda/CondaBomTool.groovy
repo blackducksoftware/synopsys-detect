@@ -23,7 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.conda
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,7 +31,8 @@ import org.springframework.stereotype.Component
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolExtractionResult
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
@@ -43,16 +43,11 @@ import groovy.transform.TypeChecked
 
 @Component
 @TypeChecked
-class CondaBomTool extends BomTool {
+class CondaBomTool extends BomTool<CondaApplicableResult> {
     private final Logger logger = LoggerFactory.getLogger(CondaBomTool.class)
 
     @Autowired
     CondaListParser condaListParser
-
-    @Autowired
-    ExternalIdFactory externalIdFactory
-
-    private String condaExecutablePath
 
     @Override
     public BomToolType getBomToolType() {
@@ -60,20 +55,22 @@ class CondaBomTool extends BomTool {
     }
 
     @Override
-    public boolean isBomToolApplicable() {
-        def containsFiles = detectFileManager.containsAllFiles(sourcePath, 'environment.yml')
-        if (containsFiles) {
-            condaExecutablePath = findExecutablePath(ExecutableType.CONDA, true, detectConfiguration.getCondaPath())
-            if (!condaExecutablePath) {
+    public CondaApplicableResult isBomToolApplicable(File directory) {
+        def environmentYml = detectFileManager.findFile(directory, 'environment.yml')
+        if (environmentYml != null && environmentYml.exists()) {
+            String condaExecutablePath = executableManager.getExecutablePathOrOverride(ExecutableType.CONDA, true, directory, detectConfiguration.getCondaPath())
+            if (condaExecutablePath) {
+                return new CondaApplicableResult(directory, environmentYml, condaExecutablePath)
+            } else {
                 logger.warn("Could not find the ${executableManager.getExecutableName(ExecutableType.CONDA)} executable")
             }
         }
 
-        containsFiles && condaExecutablePath
+        return null;
     }
 
     @Override
-    public List<DetectCodeLocation> extractDetectCodeLocations() {
+    public BomToolExtractionResult extractDetectCodeLocations(CondaApplicableResult applicableResult) {
         List<String> condaListOptions = ['list']
         if (detectConfiguration.getCondaEnvironmentName()) {
             condaListOptions.addAll([
@@ -82,17 +79,17 @@ class CondaBomTool extends BomTool {
             ])
         }
         condaListOptions.add('--json')
-        Executable condaListExecutable = new Executable(sourceDirectory, condaExecutablePath, condaListOptions)
+        Executable condaListExecutable = new Executable(applicableResult.directory, applicableResult.condaExePath, condaListOptions)
         ExecutableOutput condaListOutput = executableRunner.execute(condaListExecutable)
         String listJsonText = condaListOutput.standardOutput
 
-        ExecutableOutput condaInfoOutput = executableRunner.runExe(condaExecutablePath, 'info', '--json')
+        ExecutableOutput condaInfoOutput = executableRunner.runExe(applicableResult.condaExePath, 'info', '--json')
         String infoJsonText = condaInfoOutput.standardOutput
 
         DependencyGraph dependencyGraph = condaListParser.parse(listJsonText, infoJsonText)
         ExternalId externalId = externalIdFactory.createPathExternalId(Forge.ANACONDA, detectConfiguration.sourcePath)
         def detectCodeLocation = new DetectCodeLocation.Builder(BomToolType.CONDA, detectConfiguration.sourcePath, externalId, dependencyGraph).build()
 
-        [detectCodeLocation]
+        bomToolExtractionResultsFactory.fromCodeLocations([detectCodeLocation], getBomToolType(), applicableResult.directory)
     }
 }
