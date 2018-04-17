@@ -43,37 +43,45 @@ public class HelpPrinter {
     @Autowired
     private HelpDetailedOptionPrinter detailPrinter;
 
-    public void printAppropriateHelpMessage(final PrintStream printStream, final List<DetectOption> options, final ArgumentState state) {
+    public void printAppropriateHelpMessage(final PrintStream printStream, final List<DetectOption> allOptions, final ArgumentState state) {
         final HelpTextWriter writer = new HelpTextWriter();
 
-        final List<String> allPrintGroups = getPrintGroups(options);
+        final List<DetectOption> currentOptions = allOptions.stream().filter(it -> !it.getHelp().isDeprecated).collect(Collectors.toList());
+        final List<DetectOption> deprecatedOptions = allOptions.stream().filter(it -> it.getHelp().isDeprecated).collect(Collectors.toList());
+        final List<String> allPrintGroups = getPrintGroups(currentOptions);
 
-        if (state.isVerboseHelpMessage) {
-            final List<DetectOption> sorted = options.stream().sorted((o1, o2) -> {
-                if (o1.getHelp().primaryGroup.equals(o2.getHelp().primaryGroup)) {
-                    return o1.getKey().compareTo(o2.getKey());
-                }else {
-                    return o1.getHelp().primaryGroup.compareTo(o2.getHelp().primaryGroup);
-                }
-            }).collect(Collectors.toList());
-            optionPrinter.printOptions(writer, sorted, null);
-        }else {
+        if (state.isVerboseHelp) {
+            printVerboseOptions(writer, currentOptions, null);
+        } else if (state.isDeprecatedHelp) {
+            optionPrinter.printOptions(writer, deprecatedOptions, "Showing only deprecated properties.");
+        } else {
             if (state.parsedValue != null) {
-                if (isProperty(options, state.parsedValue)) {
-                    printDetailedHelp(writer, options, state.parsedValue);
+                if (isProperty(currentOptions, state.parsedValue)) {
+                    printDetailedHelp(writer, allOptions, state.parsedValue);
                 } else if (isPrintGroup(allPrintGroups, state.parsedValue)){
-                    printHelpFilteredByPrintGroup(writer, options, state.parsedValue);
+                    printHelpFilteredByPrintGroup(writer, currentOptions, state.parsedValue);
                 } else {
-                    printHelpFilteredBySearchTerm(writer, options, state.parsedValue);
+                    printHelpFilteredBySearchTerm(writer, currentOptions, state.parsedValue);
                 }
             }else {
-                printDefaultHelp(writer, options);
+                printDefaultHelp(writer, currentOptions);
             }
         }
 
         optionPrinter.printStandardFooter(writer, getPrintGroupText(allPrintGroups));
 
         writer.write(printStream);
+    }
+
+    private void printVerboseOptions(final HelpTextWriter writer, final List<DetectOption> options, final String notes) {
+        final List<DetectOption> sorted = options.stream().sorted((o1, o2) -> {
+            if (o1.getHelp().primaryGroup.equals(o2.getHelp().primaryGroup)) {
+                return o1.getKey().compareTo(o2.getKey());
+            }else {
+                return o1.getHelp().primaryGroup.compareTo(o2.getHelp().primaryGroup);
+            }
+        }).collect(Collectors.toList());
+        optionPrinter.printOptions(writer, sorted, notes);
     }
 
     private void printDetailedHelp(final HelpTextWriter writer, final List<DetectOption> options, final String optionName) {

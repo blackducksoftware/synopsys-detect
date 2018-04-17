@@ -41,7 +41,6 @@ import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
-import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption.FinalValueType;
 import com.blackducksoftware.integration.hub.detect.interactive.InteractiveOption;
 import com.blackducksoftware.integration.hub.detect.util.SpringValueUtils;
@@ -119,12 +118,6 @@ public class DetectOptionManager {
 
             if (option.isRequestedDeprecation()) {
                 option.addWarning("As of version " + option.getHelp().deprecationVersion + " this property will be removed: " + option.getHelp().deprecation);
-            }
-        }
-        if (detectConfiguration.getFailOnConfigWarning()) {
-            boolean foundConfigWarning = detectOptions.stream().anyMatch(option -> option.getWarnings().size() > 0);
-            if (foundConfigWarning) {
-                throw new DetectUserFriendlyException("Failing because the configuration had warnings.", ExitCodeType.FAILURE_CONFIGURATION);
             }
         }
     }

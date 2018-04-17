@@ -680,7 +680,7 @@ public class DetectConfiguration {
     @Value("${detect.policy.check.fail.on.severities:}")
     @HelpGroup(primary = GROUP_POLICY_CHECK, additional = {SEARCH_GROUP_POLICY})
     @HelpDescription("A comma-separated list of policy violation severities that will fail detect if checking policies is enabled. If no severity is provided, any policy violation will fail detect.")
-    @AcceptableValues(value = {"ALL", "LOW","MEDIUM","HIGH"}, caseSensitive = false, strict = false)
+    @AcceptableValues(value = {"ALL", "BLOCKER", "CRITICAL", "MAJOR", "MINOR", "TRIVIAL"}, caseSensitive = false, strict = false)
     private String policyCheckFailOnSeverities;
 
     @Value("${detect.gradle.inspector.version:}")

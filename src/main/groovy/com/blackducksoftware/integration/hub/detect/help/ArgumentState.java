@@ -27,18 +27,18 @@ public class ArgumentState {
     public final boolean isHelp;
     public final boolean isHelpDocument;
     public final boolean isInteractive;
-    
-    public final boolean isVerboseHelpMessage;
-    public final String parsedValue; 
-    
-    public ArgumentState(boolean isHelp, boolean isHelpDocument, boolean isInteractive, boolean isVerboseHelpMessage, String parsedValue) {
+
+    public final boolean isVerboseHelp;
+    public final boolean isDeprecatedHelp;
+    public final String parsedValue;
+
+    public ArgumentState(boolean isHelp, boolean isHelpDocument, boolean isInteractive, boolean isVerboseHelp, boolean isDeprecatedHelp, String parsedValue) {
         this.isHelp = isHelp;
         this.isHelpDocument = isHelpDocument;
         this.isInteractive = isInteractive;
-        this.isVerboseHelpMessage = isVerboseHelpMessage;
+        this.isVerboseHelp = isVerboseHelp;
+        this.isDeprecatedHelp = isDeprecatedHelp;
         this.parsedValue = parsedValue;
     }
-
-
 
 }
