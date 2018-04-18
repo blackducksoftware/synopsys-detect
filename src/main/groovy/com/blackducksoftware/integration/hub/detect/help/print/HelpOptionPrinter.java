@@ -52,6 +52,9 @@ public class HelpOptionPrinter {
                 group = currentGroup;
             }
             String description = detectOption.getHelp().description;
+            if (detectOption.getHelp().isDeprecated) {
+                description = "Will be removed in version " + detectOption.getHelp().deprecationVersion + ". " + description;
+            }
             if (detectOption.getAcceptableValues().size() > 0) {
                 description += " (" + detectOption.getAcceptableValues().stream().collect(Collectors.joining("|")) + ")";
             }
@@ -65,6 +68,7 @@ public class HelpOptionPrinter {
         writer.println("\t--<property name>=<value>");
         writer.println();
         writer.println("To see all properties, you may request verbose help log with '-hv'");
+        writer.println("To see the hidden deprecated properties, you may request them with '-hd'");
         writer.println();
         writer.println("To get detailed help for a specific property, you may specify the property name with '-h [property]'");
         writer.println();
