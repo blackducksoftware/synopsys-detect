@@ -278,7 +278,6 @@ public class Application implements ApplicationRunner {
     @Lazy
     @Bean
     public BomToolTreeWalker bomToolTreeWalker() {
-        logger.debug(String.format("Continue search %s, Depth %s, use defaults %s", detectConfiguration.getBomToolContinueSearch(), detectConfiguration.getBomToolSearchDepth(), detectConfiguration.getBomToolSearchExclusionDefaults()));
         return new BomToolTreeWalker(Arrays.asList(detectConfiguration.getBomToolSearchExclusion()), detectConfiguration.getBomToolSearchExclusionDefaults(), detectConfiguration.getBomToolContinueSearch(),
                 detectConfiguration.getBomToolSearchDepth());
     }
