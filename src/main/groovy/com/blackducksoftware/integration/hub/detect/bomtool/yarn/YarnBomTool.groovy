@@ -23,36 +23,27 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.yarn
 
-import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
-import com.blackducksoftware.integration.hub.bdio.model.Forge
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolApplicableResult
-import com.blackducksoftware.integration.hub.detect.bomtool.NestedBomTool
-import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolSearcher
-import com.blackducksoftware.integration.hub.detect.model.BomToolType
-import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
-import groovy.transform.TypeChecked
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
-
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Component
+
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.Forge
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolExtractionResult
+import com.blackducksoftware.integration.hub.detect.model.BomToolType
+import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
+
+import groovy.transform.TypeChecked
+
 @Component
 @TypeChecked
-class YarnBomTool extends BomTool implements NestedBomTool<BomToolApplicableResult> {
+class YarnBomTool extends BomTool<YarnApplicableResult> {
     @Autowired
     YarnPackager yarnPackager
-
-    @Autowired
-    ExternalIdFactory externalIdFactory
-
-    @Autowired
-    YarnBomToolSearcher yarnBomToolSearcher
-
-    private BomToolApplicableResult searchResult;
 
     @Override
     public BomToolType getBomToolType() {
@@ -60,36 +51,24 @@ class YarnBomTool extends BomTool implements NestedBomTool<BomToolApplicableResu
     }
 
     @Override
-    public boolean isBomToolApplicable() {
-        BomToolApplicableResult searchResult = bomToolSearcher.getBomToolSearchResult(sourcePath);
-        if (searchResult.isApplicable()) {
-            this.searchResult = searchResult;
-            return true;
+    public YarnApplicableResult isBomToolApplicable(File directory) {
+        final File yarnLockFile = detectFileManager.findFile(directory, 'yarn.lock')
+
+        if (yarnLockFile) {
+            return new YarnApplicableResult(directory, yarnLockFile);
         }
 
-        return false;
+        return null;
     }
 
-    public List<DetectCodeLocation> extractDetectCodeLocations(BomToolApplicableResult searchResult) {
-        final File yarnLockFile = detectFileManager.findFile(searchResult.directory, 'yarn.lock')
-        final List<String> yarnLockText = Files.readAllLines(yarnLockFile.toPath(), StandardCharsets.UTF_8)
+    public BomToolExtractionResult extractDetectCodeLocations(YarnApplicableResult applicable) {
+
+        final List<String> yarnLockText = Files.readAllLines(applicable.yarnLock.toPath(), StandardCharsets.UTF_8)
         final DependencyGraph dependencyGraph = yarnPackager.parse(yarnLockText)
-        final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.NPM, searchResult.directory.canonicalPath)
-        final def detectCodeLocation = new DetectCodeLocation.Builder(getBomToolType(), searchResult.directory.canonicalPath, externalId, dependencyGraph).build()
+        final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.NPM, applicable.directory.canonicalPath)
+        final def detectCodeLocation = new DetectCodeLocation.Builder(getBomToolType(), applicable.directory.canonicalPath, externalId, dependencyGraph).build()
 
-        return [detectCodeLocation]
-    }
-
-    public List<DetectCodeLocation> extractDetectCodeLocations() {
-        return extractDetectCodeLocations(searchResult)
-    }
-
-    public BomToolSearcher getBomToolSearcher() {
-        return yarnBomToolSearcher;
-    }
-
-    public Boolean canSearchWithinApplicableDirectory() {
-        return false;
+        bomToolExtractionResultsFactory.fromCodeLocations([detectCodeLocation], getBomToolType(), applicable.directory);
     }
 
 }
