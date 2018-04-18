@@ -23,28 +23,38 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.npm
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration
-import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
-import com.blackducksoftware.integration.hub.detect.bomtool.NestedBomTool
-import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnBomTool
-import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
-import com.blackducksoftware.integration.hub.detect.hub.ScanPathSource
-import com.blackducksoftware.integration.hub.detect.model.BomToolType
-import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
-import com.blackducksoftware.integration.hub.detect.util.executable.Executable
-import groovy.transform.TypeChecked
+import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
+import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolExtractionResult
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolSearchOptions
+import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnBomTool
+import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
+import com.blackducksoftware.integration.hub.detect.hub.ScanPathSource
+import com.blackducksoftware.integration.hub.detect.model.BomToolType
+import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
+import com.blackducksoftware.integration.hub.detect.type.ExecutableType
+import com.blackducksoftware.integration.hub.detect.util.executable.Executable
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException
+
+import groovy.transform.TypeChecked
+
 @Component
 @TypeChecked
-class NpmBomTool extends BomTool implements NestedBomTool<NpmBomToolSearchResult> {
+class NpmBomTool extends BomTool<NpmApplicableResult> {
     private final Logger logger = LoggerFactory.getLogger(NpmBomTool.class);
 
     public static final String OUTPUT_FILE = "detect_npm_proj_dependencies.json";
     public static final String ERROR_FILE = "detect_npm_error.json";
+
+    public static final String NODE_MODULES = "node_modules";
+    public static final String PACKAGE_JSON = "package.json";
+    public static final String PACKAGE_LOCK_JSON = "package-lock.json";
+    public static final String SHRINKWRAP_JSON = "npm-shrinkwrap.json";
 
     @Autowired
     private NpmCliDependencyFinder npmCliDependencyFinder;
@@ -58,58 +68,90 @@ class NpmBomTool extends BomTool implements NestedBomTool<NpmBomToolSearchResult
     @Autowired
     private HubSignatureScanner hubSignatureScanner;
 
-    @Autowired
-    private DetectConfiguration detectConfiguration;
-
-    @Autowired
-    private NpmBomToolSearcher npmBomToolSearcher;
-
-    private NpmBomToolSearchResult searchResult;
-
     @Override
     public BomToolType getBomToolType() {
         BomToolType.NPM
     }
 
-    @Override
-    public boolean isBomToolApplicable() {
-        NpmBomToolSearchResult searchResult = npmBomToolSearcher.getBomToolSearchResult(sourcePath);
-        if (searchResult.isApplicable()) {
-            this.searchResult = searchResult;
-            return true;
-        }
-
-        return false;
+    BomToolSearchOptions getSearchOptions() {
+        return new BomToolSearchOptions(false, Integer.MAX_VALUE);
     }
 
-    public List<DetectCodeLocation> extractDetectCodeLocations(NpmBomToolSearchResult searchResult) {
+    //TODO: Bom tool finder - npm does not apply if YARN does.
+    @Override
+    public NpmApplicableResult isBomToolApplicable(final File directory) {
+        String npmExePath = null;
+        final File packageLockJson = detectFileManager.findFile(directory, PACKAGE_LOCK_JSON);
+        final File shrinkwrapJson = detectFileManager.findFile(directory, SHRINKWRAP_JSON);
+
+        final boolean containsNodeModules = detectFileManager.containsAllFiles(directory, NODE_MODULES);
+        final boolean containsPackageJson = detectFileManager.containsAllFiles(directory, PACKAGE_JSON);
+        final boolean containsPackageLockJson = packageLockJson != null && packageLockJson.exists();
+        final boolean containsShrinkwrapJson = shrinkwrapJson != null && shrinkwrapJson.exists();
+
+        if (containsPackageJson && !containsNodeModules) {
+            logger.warn(String.format("package.json was located in %s, but the node_modules folder was NOT located. Please run 'npm install' in that location and try again.", directory.getAbsolutePath()));
+        } else if (containsPackageJson && containsNodeModules) {
+            npmExePath = executableManager.getExecutablePathOrOverride(ExecutableType.NPM, true, directory, detectConfiguration.getNpmPath());
+            if (StringUtils.isBlank(npmExePath)) {
+                logger.warn(String.format("Could not find an %s executable", executableManager.getExecutableName(ExecutableType.NPM)));
+            } else {
+                Executable npmVersionExe = null;
+                final List<String> arguments = new ArrayList<>();
+                arguments.add("-version");
+
+                String npmNodePath = detectConfiguration.getNpmNodePath();
+                if (StringUtils.isNotBlank(npmNodePath)) {
+                    final int lastSlashIndex = npmNodePath.lastIndexOf("/");
+                    if (lastSlashIndex >= 0) {
+                        npmNodePath = npmNodePath.substring(0, lastSlashIndex);
+                    }
+                    final Map<String, String> environmentVariables = new HashMap<>();
+                    environmentVariables.put("PATH", npmNodePath);
+
+                    npmVersionExe = new Executable(directory, environmentVariables, npmExePath, arguments);
+                } else {
+                    npmVersionExe = new Executable(directory, npmExePath, arguments);
+                }
+                try {
+                    final String npmVersion = executableRunner.execute(npmVersionExe).getStandardOutput();
+                    logger.debug(String.format("Npm version %s", npmVersion));
+                } catch (final ExecutableRunnerException e) {
+                    logger.error(String.format("Could not run npm to get the version: %s", e.getMessage()));
+                    return null;
+                }
+            }
+        } else if (containsPackageLockJson) {
+            logger.info(String.format("Using %s", PACKAGE_LOCK_JSON));
+        } else if (containsShrinkwrapJson) {
+            logger.info(String.format("Using %s", SHRINKWRAP_JSON));
+        }
+
+        final boolean lockFileIsApplicable = containsShrinkwrapJson || containsPackageLockJson;
+        final boolean isApplicable = lockFileIsApplicable || (containsNodeModules && StringUtils.isNotBlank(npmExePath));
+
+        if (isApplicable) {
+            return new NpmApplicableResult(directory, npmExePath, packageLockJson, shrinkwrapJson);
+        } else {
+            return null;
+        }
+    }
+
+    public BomToolExtractionResult extractDetectCodeLocations(NpmApplicableResult applicable) {
         List<DetectCodeLocation> codeLocations = []
-        if (searchResult.npmExePath) {
-            codeLocations.addAll(extractFromCommand(searchResult))
-        } else if (searchResult.packageLockJson) {
-            codeLocations.addAll(extractFromLockFile(searchResult.packageLockJson, searchResult.directory))
-        } else if (searchResult.shrinkwrapJson) {
-            codeLocations.addAll(extractFromLockFile(searchResult.shrinkwrapJson, searchResult.directory))
+        if (applicable.npmExePath) {
+            codeLocations.addAll(extractFromCommand(applicable))
+        } else if (applicable.packageLockJson) {
+            codeLocations.addAll(extractFromLockFile(applicable.packageLockJson, applicable.directory))
+        } else if (applicable.shrinkwrapJson) {
+            codeLocations.addAll(extractFromLockFile(applicable.shrinkwrapJson, applicable.directory))
         }
 
         if (!codeLocations.empty) {
-            hubSignatureScanner.registerPathToScan(ScanPathSource.NPM_SOURCE, searchResult.directory, NpmBomToolSearcher.NODE_MODULES)
+            hubSignatureScanner.registerPathToScan(ScanPathSource.NPM_SOURCE, applicable.directory, NODE_MODULES)
         }
 
-        codeLocations
-    }
-
-    public List<DetectCodeLocation> extractDetectCodeLocations() {
-        return extractDetectCodeLocations(searchResult)
-    }
-
-    public NpmBomToolSearcher getBomToolSearcher() {
-        return npmBomToolSearcher;
-    }
-
-
-    public Boolean canSearchWithinApplicableDirectory() {
-        return false;
+        bomToolExtractionResultsFactory.fromCodeLocations(codeLocations, getBomToolType(), applicable.directory)
     }
 
     private List<DetectCodeLocation> extractFromLockFile(File lockFile, File searchedDirectory) {
@@ -119,7 +161,7 @@ class NpmBomTool extends BomTool implements NestedBomTool<NpmBomToolSearchResult
         [detectCodeLocation]
     }
 
-    private List<DetectCodeLocation> extractFromCommand(NpmBomToolSearchResult searchResult) {
+    private List<DetectCodeLocation> extractFromCommand(NpmApplicableResult applicable) {
         File npmLsOutputFile = detectFileManager.createFile(BomToolType.NPM, NpmBomTool.OUTPUT_FILE)
         File npmLsErrorFile = detectFileManager.createFile(BomToolType.NPM, NpmBomTool.ERROR_FILE)
 
@@ -128,7 +170,7 @@ class NpmBomTool extends BomTool implements NestedBomTool<NpmBomToolSearchResult
         if (!includeDevDeps) {
             exeArgs.add('-prod')
         }
-        Executable npmLsExe = new Executable(searchResult.directory, searchResult.npmExePath, exeArgs)
+        Executable npmLsExe = new Executable(applicable.directory, applicable.npmExePath, exeArgs)
         executableRunner.executeToFile(npmLsExe, npmLsOutputFile, npmLsErrorFile)
 
         if (npmLsOutputFile.length() > 0) {
@@ -136,7 +178,7 @@ class NpmBomTool extends BomTool implements NestedBomTool<NpmBomToolSearchResult
                 logger.debug("Error when running npm ls -json command")
                 logger.debug(npmLsErrorFile.text)
             }
-            def detectCodeLocation = npmCliDependencyFinder.generateCodeLocation(searchResult.directory.canonicalPath, npmLsOutputFile)
+            def detectCodeLocation = npmCliDependencyFinder.generateCodeLocation(applicable.directory.canonicalPath, npmLsOutputFile)
 
             return [detectCodeLocation]
         } else if (npmLsErrorFile.length() > 0) {

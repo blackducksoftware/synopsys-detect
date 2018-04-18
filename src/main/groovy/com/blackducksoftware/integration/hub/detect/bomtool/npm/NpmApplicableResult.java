@@ -26,14 +26,15 @@ package com.blackducksoftware.integration.hub.detect.bomtool.npm;
 import java.io.File;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolApplicableResult;
+import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 
-public class NpmBomToolSearchResult extends BomToolApplicableResult {
+public class NpmApplicableResult extends BomToolApplicableResult {
     private final String npmExePath;
     private final File packageLockJson;
     private final File shrinkwrapJson;
 
-    public NpmBomToolSearchResult(final boolean applicable, final File searchedDirectory, final String npmExePath, final File packageLockJson, final File shrinkwrapJson) {
-        super(applicable, searchedDirectory);
+    public NpmApplicableResult(final File searchedDirectory, final String npmExePath, final File packageLockJson, final File shrinkwrapJson) {
+        super(searchedDirectory, BomToolType.NPM);
         this.npmExePath = npmExePath;
         this.packageLockJson = packageLockJson;
         this.shrinkwrapJson = shrinkwrapJson;
