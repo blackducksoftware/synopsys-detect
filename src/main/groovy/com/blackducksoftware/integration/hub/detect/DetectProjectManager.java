@@ -26,13 +26,11 @@ package com.blackducksoftware.integration.hub.detect;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -41,6 +39,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.exception.IntegrationException;
@@ -52,10 +51,9 @@ import com.blackducksoftware.integration.hub.bdio.model.SimpleBdioDocument;
 import com.blackducksoftware.integration.hub.bdio.model.ToolSpdxCreator;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolApplicableResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolExtractionResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolExtractionResultsFactory;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolFinder;
+import com.blackducksoftware.integration.hub.detect.bomtool.NestedBomTool;
+import com.blackducksoftware.integration.hub.detect.bomtool.search.ApplicableDirectoryResult;
+import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolTreeWalker;
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
@@ -76,8 +74,8 @@ import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
 @Component
 public class DetectProjectManager implements SummaryResultReporter, ExitCodeReporter {
     private final Logger logger = LoggerFactory.getLogger(DetectProjectManager.class);
-    private ExitCodeType bomToolSearchExitCodeType;
     private final Map<BomToolType, Result> bomToolSummaryResults = new HashMap<>();
+    private ExitCodeType bomToolSearchExitCodeType;
 
     @Autowired
     private DetectInfo detectInfo;
@@ -90,6 +88,9 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
 
     @Autowired
     private List<BomTool> bomTools;
+
+    @Autowired
+    private Set<NestedBomTool> nestedBomTools;
 
     @Autowired
     private HubSignatureScanner hubSignatureScanner;
@@ -109,96 +110,95 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     @Autowired
     private DetectPhoneHomeManager detectPhoneHomeManager;
 
+    //Has to be lazy because we need to use the final values from detectConfiguration to instantiate BomToolTreeWalker which are not ready immediately
+    @Lazy
+    @Autowired
+    private BomToolTreeWalker bomToolTreeWalker;
+
     private boolean foundAnyBomTools;
-
-    public List<BomToolExtractionResult> extractResults(final List<BomToolApplicableResult> applicables) {
-        final BomToolExtractionResultsFactory factory = new BomToolExtractionResultsFactory();
-        final List<BomToolExtractionResult> results = new ArrayList<>();
-        applicables.forEach(applicable -> {
-            try {
-                bomTools.forEach(bomTool -> {
-                    if (bomTool.getBomToolType().equals(applicable.getBomToolType())) {
-                        results.add(bomTool.extractDetectCodeLocations(applicable));
-                    }
-                });
-            } catch (final Exception e) {
-                results.add(factory.fromException(applicable.getBomToolType(), applicable.getDirectory().toString(), e));
-            }
-        });
-        return results;
-    }
-
-    public List<BomToolApplicableResult> findRootApplicable2(final File directory) {
-        //Extracts one result for each applicable bom tool for a directory. Stop gap for finding.
-        final List<BomToolApplicableResult> results = new ArrayList<>();
-        for (final BomTool bomTool : bomTools) {
-            final BomToolType bomToolType = bomTool.getBomToolType();
-            final String bomToolTypeString = bomToolType.toString();
-            if (!detectConfiguration.isBomToolIncluded(bomTool)) {
-                logger.debug(String.format("Skipping %s, not included.", bomToolTypeString));
-                continue;
-            }
-
-            final BomToolApplicableResult applicable = bomTool.isBomToolApplicable(directory);
-            if (applicable == null) {
-                logger.debug(String.format("Skipping %s, not applicable.", bomToolTypeString));
-                continue;
-            }
-
-            results.add(applicable);
-        }
-
-        return results;
-    }
-
-    private List<BomToolApplicableResult> findRootApplicable(final File directory) {
-        try {
-            final BomToolFinder bomToolTreeWalker = new BomToolFinder(Arrays.asList(detectConfiguration.getBomToolSearchExclusion()), detectConfiguration.getBomToolSearchExclusionDefaults(), detectConfiguration.getBomToolContinueSearch(), 1);
-            return bomToolTreeWalker.findApplicableBomTools(new HashSet<>(bomTools), directory);
-        } catch (final BomToolException e) {
-            bomToolSearchExitCodeType = ExitCodeType.FAILURE_BOM_TOOL;
-            logger.error(e.getMessage(), e);
-        } catch (final DetectUserFriendlyException e) {
-            bomToolSearchExitCodeType = e.getExitCodeType();
-            logger.error(e.getMessage(), e);
-        }
-        return new ArrayList<>();
-    }
-
-    private List<BomToolApplicableResult> findBomTools() {
-        try {
-            final File initialDirectory = detectConfiguration.getSourceDirectory();
-            final BomToolFinder bomToolTreeWalker = new BomToolFinder(Arrays.asList(detectConfiguration.getBomToolSearchExclusion()), detectConfiguration.getBomToolSearchExclusionDefaults(), detectConfiguration.getBomToolContinueSearch(),
-                    detectConfiguration.getBomToolSearchDepth());
-            return bomToolTreeWalker.findApplicableBomTools(new HashSet<>(bomTools), initialDirectory);
-        } catch (final BomToolException e) {
-            bomToolSearchExitCodeType = ExitCodeType.FAILURE_BOM_TOOL;
-            logger.error(e.getMessage(), e);
-        } catch (final DetectUserFriendlyException e) {
-            bomToolSearchExitCodeType = e.getExitCodeType();
-            logger.error(e.getMessage(), e);
-        }
-        return new ArrayList<>();
-    }
 
     public DetectProject createDetectProject() throws IntegrationException {
         final DetectProject detectProject = new DetectProject();
 
-        final List<BomToolApplicableResult> sourcePathResults = findRootApplicable(new File(detectConfiguration.getSourcePath()));
+        final EnumSet<BomToolType> applicableBomTools = EnumSet.noneOf(BomToolType.class);
+        for (final BomTool bomTool : bomTools) {
+            final BomToolType bomToolType = bomTool.getBomToolType();
+            final String bomToolTypeString = bomToolType.toString();
+            try {
+                if (!detectConfiguration.shouldRun(bomTool)) {
+                    logger.debug(String.format("Skipping %s.", bomToolTypeString));
+                    continue;
+                }
 
-        final List<BomToolExtractionResult> results = extractResults(sourcePathResults);
-        final Set<BomToolType> applicableBomTools = results.stream().map(it -> it.bomToolType).collect(Collectors.toSet());
+                logger.info(String.format("%s applies given the current configuration.", bomToolTypeString));
+                bomToolSummaryResults.put(bomTool.getBomToolType(), Result.FAILURE);
+                foundAnyBomTools = true;
+                final List<DetectCodeLocation> codeLocations = bomTool.extractDetectCodeLocations(detectProject);
+                if (null != codeLocations && codeLocations.size() > 0) {
+                    bomToolSummaryResults.put(bomTool.getBomToolType(), Result.SUCCESS);
+                    detectProject.addAllDetectCodeLocations(codeLocations);
+                    applicableBomTools.add(bomToolType);
+                } else {
+                    logger.error(String.format("Did not find any code locations from %s even though it applied to %s.", bomToolTypeString, detectConfiguration.getSourcePath()));
+                }
+            } catch (final Exception e) {
+                // any bom tool failure should not prevent other bom tools from running
+                logger.error(String.format("%s threw an Exception: %s", bomToolTypeString, e.getMessage()));
 
-        results.forEach(it -> {
-            if (it.extractedCodeLocations.size() > 0) {
-                detectProject.addAllDetectCodeLocations(it.extractedCodeLocations);
-            } else {
-                final String bomToolTypeString = it.bomToolType.toString();
-                logger.error(String.format("Did not find any code locations from %s even though it applied to %s.", bomToolTypeString, it.directory));
+                // log the stacktrace if and only if running at trace level
+                if (logger.isTraceEnabled()) {
+                    logger.error("Exception details: ", e);
+                }
             }
-        });
+        }
 
-        // we've gone through all applicable bom tools so we now have the complete metadata to phone home
+        // we have already searched the given source path for bom tools and now, if we have to, we will walk
+        // the directory tree to find additional bom tools (npm might be nested beneath the source directory, for example)
+        if (applicableBomTools.size() < 1 && detectConfiguration.getBomToolSearchDepth() > 0) {
+            logger.warn(String.format("Will not search for nested bom tools because no bom tools applied to %s", detectConfiguration.getSourcePath()));
+        } else if (applicableBomTools.size() > 0 && detectConfiguration.getBomToolSearchDepth() > 0) {
+            try {
+                File initialDirectory = detectConfiguration.getSourceDirectory();
+                bomToolTreeWalker.startSearching(nestedBomTools, initialDirectory);
+            } catch (BomToolException e) {
+                bomToolSearchExitCodeType = ExitCodeType.FAILURE_BOM_TOOL;
+                logger.error(e.getMessage(), e);
+            } catch (DetectUserFriendlyException e) {
+                bomToolSearchExitCodeType = e.getExitCodeType();
+                logger.error(e.getMessage(), e);
+            }
+            List<ApplicableDirectoryResult> results = bomToolTreeWalker.getResults();
+            if (null != results && results.size() > 0) {
+                foundAnyBomTools = true;
+                for (ApplicableDirectoryResult result : results) {
+                    bomToolSummaryResults.put(result.getBomToolType(), Result.FAILURE);
+                    final BomToolType bomToolType = result.getBomToolType();
+                    final String bomToolTypeString = bomToolType.toString();
+                    try {
+                        String applicablePath = result.getApplicableDirectory().getCanonicalPath();
+                        List<DetectCodeLocation> codeLocations = result.getCodeLocations();
+                        if (null == codeLocations || codeLocations.isEmpty()) {
+                            logger.error(String.format("Did not find any code locations from %s even though it applied to %s.", bomToolTypeString, applicablePath));
+                        } else {
+                            bomToolSummaryResults.put(result.getBomToolType(), Result.SUCCESS);
+                            detectProject.addAllDetectCodeLocations(codeLocations);
+                            applicableBomTools.add(result.getBomToolType());
+                        }
+                    } catch (final Exception e) {
+                        // any bom tool failure should not prevent other bom tools from running
+                        logger.error(String.format("%s threw an Exception: %s", bomToolTypeString, e.getMessage()));
+
+                        // log the stacktrace if and only if running at trace level
+                        if (logger.isTraceEnabled()) {
+                            logger.error("Exception details: ", e);
+                        }
+                    }
+                }
+            }
+        }
+
+        // we've gone through all applicable bom tools so we now have the
+        // complete metadata to phone home
         detectPhoneHomeManager.startPhoneHome(applicableBomTools);
 
         final String prefix = detectConfiguration.getProjectCodeLocationPrefix();

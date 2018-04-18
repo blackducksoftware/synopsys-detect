@@ -43,6 +43,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Lazy;
 
 import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.api.generated.view.ProjectVersionView;
@@ -52,7 +53,7 @@ import com.blackducksoftware.integration.hub.bdio.BdioTransformer;
 import com.blackducksoftware.integration.hub.bdio.SimpleBdioFactory;
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolFinder;
+import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolTreeWalker;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
@@ -236,7 +237,7 @@ public class Application implements ApplicationRunner {
         final long end = System.currentTimeMillis();
         logger.info(String.format("Hub-Detect run duration: %s", DurationFormatUtils.formatPeriod(start, end, "HH'h' mm'm' ss's' SSS'ms'")));
         if (detectConfiguration.getForceSuccess() && exitCodeType.getExitCode() != 0) {
-            logger.warn("Forcing success: Exiting with 0. Desired exit code was ${exitCodeType.getExitCode()}.");
+            logger.warn(String.format("Forcing success: Exiting with 0. Desired exit code was %s.", exitCodeType.getExitCode()));
             System.exit(0);
         } else if (exitCodeType.getExitCode() != 0) {
             logger.error(String.format("Exiting with code %s - %s", exitCodeType.getExitCode(), exitCodeType.toString()));
@@ -273,9 +274,11 @@ public class Application implements ApplicationRunner {
         logger.error(e.getMessage());
     }
 
+    //Has to be lazy because we need to use the final values from detectConfiguration which are not ready immediately
+    @Lazy
     @Bean
-    public BomToolFinder bomToolTreeSearcher() {
-        return new BomToolFinder(Arrays.asList(detectConfiguration.getBomToolSearchExclusion()), detectConfiguration.getBomToolSearchExclusionDefaults(), detectConfiguration.getBomToolContinueSearch(),
+    public BomToolTreeWalker bomToolTreeWalker() {
+        return new BomToolTreeWalker(Arrays.asList(detectConfiguration.getBomToolSearchExclusion()), detectConfiguration.getBomToolSearchExclusionDefaults(), detectConfiguration.getBomToolContinueSearch(),
                 detectConfiguration.getBomToolSearchDepth());
     }
 
