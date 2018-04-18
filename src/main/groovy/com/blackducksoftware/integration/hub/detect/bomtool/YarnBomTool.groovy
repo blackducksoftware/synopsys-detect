@@ -113,18 +113,20 @@ class YarnBomTool extends BomTool {
 
     DependencyGraph extractGraphFromYarnListFile(List yarnListAsList) {
         MutableDependencyGraph graph = new MutableMapDependencyGraph()
-        ExternalId extId
-
+        ExternalId extId = new ExternalId(Forge.NPM)
         UUID rndUUID = UUID.randomUUID()
-        Dependency root = new Dependency("detectRootNode - ${rndUUID}", extId)
+        String rootName = "detectRootNode - ${rndUUID}"
+        extId.name = rootName
+        Dependency root = new Dependency(rootName, extId)
         graph.addChildToRoot(root)
 
         int depth
-        Dependency currentDep, parentDep, grandParentDep
-        String fuzzyName, name, version
+        Dependency currentDep, parentDep
         for (String line : yarnListAsList) {
 
-            if (line.toLowerCase().startsWith("yarn list") || line.toLowerCase().startsWith("done in")) {
+            if (line.toLowerCase().startsWith("yarn list")
+                    || line.toLowerCase().startsWith("done in")
+                    || line.toLowerCase().startsWith("warning")) {
                 continue
             }
 

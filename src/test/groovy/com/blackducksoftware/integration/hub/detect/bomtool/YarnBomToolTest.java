@@ -8,8 +8,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class YarnBomToolTest {
     private YarnBomTool yarnBomTool;
@@ -45,10 +44,10 @@ public class YarnBomToolTest {
 
         List<ExternalId> tempList = new ArrayList<>(dependencyGraph.getRootDependencyExternalIds());
 
-        assertEquals(tempList.get(1).name, "esprima");
-        assertEquals(tempList.get(2).name, "extsprintf");
-
+        assertListContainsDependency("esprima", tempList);
+        assertListContainsDependency("extsprintf", tempList);
     }
+
 
     @Test
     public void testThatYarnListWithGrandchildIsParsedCorrectly() {
@@ -59,10 +58,14 @@ public class YarnBomToolTest {
         dependencyGraph = yarnBomTool.extractGraphFromYarnListFile(testLines);
 
         List<ExternalId> tempList = new ArrayList<>(dependencyGraph.getRootDependencyExternalIds());
-        List<ExternalId> kidsList = new ArrayList<>(dependencyGraph.getChildrenExternalIdsForParent(tempList.get(1)));
+        List<ExternalId> kidsList = new ArrayList<>();
+        for (int i = 0; i < tempList.size(); i++) {
+            if ("yargs-parser".equals(tempList.get(i).name))
+                kidsList = new ArrayList<>(dependencyGraph.getChildrenExternalIdsForParent(tempList.get(i)));
+        }
 
-        assertEquals(tempList.get(1).name, "yargs-parser");
-        assertEquals(kidsList.get(0).name, "camelcase");
+        assertListContainsDependency("yargs-parser", tempList);
+        assertListContainsDependency("camelcase", kidsList);
     }
 
     @Test
@@ -75,11 +78,26 @@ public class YarnBomToolTest {
         dependencyGraph = yarnBomTool.extractGraphFromYarnListFile(testLines);
 
         List<ExternalId> tempList = new ArrayList<>(dependencyGraph.getRootDependencyExternalIds());
-        List<ExternalId> kidsList = new ArrayList<>(dependencyGraph.getChildrenExternalIdsForParent(tempList.get(1)));
+        List<ExternalId> kidsList = new ArrayList<>();
+        for (int i = 0; i < tempList.size(); i++) {
+            if ("yargs-parser".equals(tempList.get(i).name))
+                kidsList = new ArrayList<>(dependencyGraph.getChildrenExternalIdsForParent(tempList.get(i)));
+        }
 
-        assertEquals(tempList.get(1).name, "yargs-parser");
-        assertEquals(kidsList.get(0).name, "camelcase");
-        assertEquals(kidsList.get(1).name, "ms");
+        assertListContainsDependency("yargs-parser", tempList);
+        assertListContainsDependency("camelcase", kidsList);
+        assertListContainsDependency("ms", kidsList);
+    }
+
+    private void assertListContainsDependency(String dep, List<ExternalId> list) {
+        System.out.println(dep);
+        for (int i = 0; i < list.size(); i++) {
+            if (dep.equals(list.get(i).name)) {
+                assertTrue(true);
+                return;
+            }
+        }
+        fail();
     }
 
     @Test
