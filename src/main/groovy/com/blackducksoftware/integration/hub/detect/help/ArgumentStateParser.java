@@ -23,44 +23,51 @@
  */
 package com.blackducksoftware.integration.hub.detect.help;
 
+import java.util.Arrays;
+
 import org.springframework.stereotype.Component;
 
 @Component
 public class ArgumentStateParser {
 
-    
     public ArgumentState parseArgs(String[] args) {
-        boolean isHelp = checkFirstArgument("-h", "--help", args);
-        boolean isHelpDocument = checkFirstArgument("-hdoc", "--helpdocument", args);
-        boolean isInteractive = checkFirstArgument("-i", "--interactive", args);
-        
-        boolean isVerboseHelpMessage = isHelp && checkSecondArgument("-v", "--verbose", args);
-        
+        boolean isHelp = checkArgumentPresent("-h", "--help", args);
+        boolean isHelpDocument = checkArgumentPresent("-hdoc", "--helpdocument", args);
+        boolean isInteractive = checkArgumentPresent("-i", "--interactive", args);
+
+        boolean isVerboseHelp = checkArgumentPresent("-hv", "--helpVerbose", args);
+        boolean isDeprecatedHelp = checkArgumentPresent("-hd", "--helpDeprecated", args);
+
         String parsedValue = null;
-        if (isHelp && !(isVerboseHelpMessage)){
-            if (args.length == 2) {
-                parsedValue = args[1];
+        if (isHelp) {
+            parsedValue = getParsedValueForCommand("-h", "--help", args);
+        }
+
+        return new ArgumentState(isHelp, isHelpDocument, isInteractive, isVerboseHelp, isDeprecatedHelp, parsedValue);
+    }
+
+    private boolean checkArgumentPresent(final String command, final String largeCommand, final String[] args) {
+        return Arrays.stream(args).anyMatch(arg -> arg.equals(command) || arg.equals(largeCommand));
+    }
+
+    private String getParsedValueForCommand(final String command, final String largeCommand, final String[] args) {
+        for (int i = 1; i < args.length; i++) {
+            final String previousArgument = args[i - 1];
+            final String possibleValue = args[i];
+            if (command.equals(previousArgument) || largeCommand.equals(previousArgument)) {
+                if (valueIsAcceptable(possibleValue)) {
+                    return possibleValue;
+                }
             }
         }
-        
-        return new ArgumentState(isHelp, isHelpDocument, isInteractive, isVerboseHelpMessage, parsedValue);
-    }
-    
-    private boolean checkFirstArgument(final String command, final String largeCommand, String[] args) {
-        return checkArgument(command, largeCommand, 0, args);
+        return null;
     }
 
-    private boolean checkSecondArgument(final String command, final String largeCommand, String[] args) {
-        return checkArgument(command, largeCommand, 1, args);
-    }
-     
-    
-    private boolean checkArgument(final String command, final String largeCommand, int index, String[] args) {
-        if (args.length > index) {
-            return (command.equals(args[index]) || largeCommand.equals(args[index]));
+    private boolean valueIsAcceptable(final String value) {
+        if (!value.startsWith("-")) {
+            return true;
         }
-
         return false;
     }
-    
+
 }

@@ -150,7 +150,7 @@ public class Application implements ApplicationRunner {
             final String[] applicationArgs = applicationArguments.getSourceArgs();
             final ArgumentState argumentState = argumentStateParser.parseArgs(applicationArgs);
 
-            if (argumentState.isHelp) {
+            if (argumentState.isHelp || argumentState.isDeprecatedHelp || argumentState.isVerboseHelp) {
                 helpPrinter.printAppropriateHelpMessage(System.out, options, argumentState);
                 return;
             }
@@ -179,11 +179,18 @@ public class Application implements ApplicationRunner {
                 detectConfigurationPrinter.print(System.out, detectInfo, detectConfiguration, options);
             }
 
+            if (detectConfiguration.getFailOnConfigWarning()) {
+                boolean foundConfigWarning = options.stream().anyMatch(option -> option.getWarnings().size() > 0);
+                if (foundConfigWarning) {
+                    throw new DetectUserFriendlyException("Failing because the configuration had warnings.", ExitCodeType.FAILURE_CONFIGURATION);
+                }
+            }
+
             final List<DetectOption> unacceptableDetectOtions = detectOptionManager.findUnacceptableValues();
             if (unacceptableDetectOtions.size() > 0) {
                 final DetectOption firstUnacceptableDetectOption = unacceptableDetectOtions.get(0);
-                final String msg = firstUnacceptableDetectOption.getKey() + ": Unknown value '" + firstUnacceptableDetectOption.getResolvedValue() + "', acceptable values are " + firstUnacceptableDetectOption.getAcceptableValues().stream()
-                        .collect(Collectors.joining(","));
+                final String msg = firstUnacceptableDetectOption.getKey() + ": Unknown value '" + firstUnacceptableDetectOption.getResolvedValue() + "', acceptable values are "
+                                           + firstUnacceptableDetectOption.getAcceptableValues().stream().collect(Collectors.joining(","));
                 throw new DetectUserFriendlyException(msg, ExitCodeType.FAILURE_GENERAL_ERROR);
             }
 
