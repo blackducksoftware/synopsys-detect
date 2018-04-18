@@ -36,7 +36,6 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
-import com.blackducksoftware.integration.hub.detect.model.DetectProject
 
 import groovy.transform.TypeChecked
 
@@ -56,7 +55,7 @@ class Rebar3TreeParser {
     @Autowired
     ExternalIdFactory externalIdFactory;
 
-    public DetectCodeLocation parseRebarTreeOutput(final List<String> dependencyTreeOutput, final DetectProject detectProject, final String sourcePath) {
+    public RebarParseResult parseRebarTreeOutput(final List<String> dependencyTreeOutput, final String sourcePath) {
         MutableDependencyGraph graph = new MutableMapDependencyGraph();
         String projectName = '';
         String projectVersionName = '';
@@ -102,12 +101,11 @@ class Rebar3TreeParser {
         } catch (final Exception e) {
             logger.error('Exception parsing rebar output: ' + e.getMessage());
         }
-        detectProject.setProjectNameIfNotSet(projectName);
-        detectProject.setProjectVersionNameIfNotSet(projectVersionName);
 
         final ExternalId id = externalIdFactory.createNameVersionExternalId(Forge.HEX, projectName, projectVersionName);
 
-        return new DetectCodeLocation.Builder(BomToolType.HEX, sourcePath,id, graph).bomToolProjectName(projectName).bomToolProjectVersionName(projectVersionName).build();
+        DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolType.HEX, sourcePath,id, graph).bomToolProjectName(projectName).bomToolProjectVersionName(projectVersionName).build();
+        RebarParseResult result = new RebarParseResult(projectName, projectVersionName, codeLocation);
     }
 
     private Dependency createDependencyFromLine(final String line) {

@@ -23,16 +23,15 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.hex
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration
+import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolExtractionResult
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
-import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 
@@ -40,19 +39,13 @@ import groovy.transform.TypeChecked
 
 @Component
 @TypeChecked
-class HexBomTool extends BomTool {
+class HexBomTool extends BomTool<HexApplicableResult> {
     private final Logger logger = LoggerFactory.getLogger(HexBomTool.class);
 
     public static final String REBAR_CONFIG = 'rebar.config';
 
     @Autowired
-    DetectConfiguration detectConfiguration;
-
-    @Autowired
     Rebar3TreeParser rebarTreeParser;
-
-    private String rebarExePath;
-    private boolean rebarApplies;
 
     @Override
     public BomToolType getBomToolType() {
@@ -60,33 +53,33 @@ class HexBomTool extends BomTool {
     }
 
     @Override
-    public boolean isBomToolApplicable() {
-        boolean hasRebarConfig = detectFileManager.containsAllFiles(sourcePath, REBAR_CONFIG);
+    public HexApplicableResult isBomToolApplicable(File directory) {
+        def rebarConfig = detectFileManager.findFile(directory, REBAR_CONFIG);
 
-        if (hasRebarConfig) {
+        if (rebarConfig.exists()) {
             logger.info('Rebar3 build tool applies for HEX given the current configuration.');
-            rebarExePath = findExecutablePath(ExecutableType.REBAR3, true, detectConfiguration.getHexRebar3Path());
-            if (!rebarExePath) {
+            def rebarExe = executableManager.findExecutablePath(directory.toString(), ExecutableType.REBAR3, true, detectConfiguration.getHexRebar3Path());
+            if (rebarExe) {
+                return new HexApplicableResult(directory, rebarConfig, rebarExe);
+            } else {
                 logger.warn('Could not find a rebar3 executable.');
             }
         }
 
-        rebarApplies = rebarExePath && hasRebarConfig;
-
-        return rebarApplies;
+        return null;
     }
 
-
+    //#TODO: Bom tool finder - setting project name and version
     @Override
-    public List<DetectCodeLocation> extractDetectCodeLocations(DetectProject detectProject) {
-        if (rebarApplies) {
-            Executable rebar3TreeExe = new Executable(new File(sourcePath), ['REBAR_COLOR': 'none'], rebarExePath, ['tree']);
-            List<String> output = executableRunner.execute(rebar3TreeExe).standardOutputAsList;
-            DetectCodeLocation projectCodeLocation = rebarTreeParser.parseRebarTreeOutput(output, detectProject, sourcePath);
+    public BomToolExtractionResult extractDetectCodeLocations(HexApplicableResult applicable) {
+        List<DetectCodeLocation> codeLocations = new ArrayList<>();
 
-            return [projectCodeLocation];
-        }
+        Executable rebar3TreeExe = new Executable(applicable.directory, ['REBAR_COLOR': 'none'], applicable.rebarExe, ['tree']);
+        List<String> output = executableRunner.execute(rebar3TreeExe).standardOutputAsList;
+        RebarParseResult parseResult = rebarTreeParser.parseRebarTreeOutput(output, applicable.directoryString);
 
-        return [];
+        codeLocations.add(parseResult.codeLocation);
+
+        return bomToolExtractionResultsFactory.fromCodeLocations(codeLocations, getBomToolType(), applicable.directory)
     }
 }
