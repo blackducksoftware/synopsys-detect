@@ -46,24 +46,28 @@ public class ArgumentStateParser {
         return new ArgumentState(isHelp, isHelpDocument, isInteractive, isVerboseHelp, isDeprecatedHelp, parsedValue);
     }
 
-    private boolean checkArgumentPresent(final String command, final String largeCommand, String[] args) {
+    private boolean checkArgumentPresent(final String command, final String largeCommand, final String[] args) {
         return Arrays.stream(args).anyMatch(arg -> arg.equals(command) || arg.equals(largeCommand));
     }
 
-    private String getParsedValueForCommand(final String command, final String largeCommand, String[] args) {
-        int index = -1;
-        for (int i = 0; i < args.length; i++) {
-            if (command.equals(args[i]) || largeCommand.equals(args[i])) {
-                index = i;
-            }
-        }
-        if (index > 0 && index < args.length - 1) {
-            String value = args[index + 1];
-            if (!value.startsWith("-")) {
-                return value;
+    private String getParsedValueForCommand(final String command, final String largeCommand, final String[] args) {
+        for (int i = 1; i < args.length; i++) {
+            final String previousArgument = args[i - 1];
+            final String possibleValue = args[i];
+            if (command.equals(previousArgument) || largeCommand.equals(previousArgument)) {
+                if (valueIsAcceptable(possibleValue)) {
+                    return possibleValue;
+                }
             }
         }
         return null;
+    }
+
+    private boolean valueIsAcceptable(final String value) {
+        if (!value.startsWith("-")) {
+            return true;
+        }
+        return false;
     }
 
 }

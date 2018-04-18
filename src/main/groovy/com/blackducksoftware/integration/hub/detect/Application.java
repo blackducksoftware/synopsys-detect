@@ -150,7 +150,7 @@ public class Application implements ApplicationRunner {
             final String[] applicationArgs = applicationArguments.getSourceArgs();
             final ArgumentState argumentState = argumentStateParser.parseArgs(applicationArgs);
 
-            if (argumentState.isHelp) {
+            if (argumentState.isHelp || argumentState.isDeprecatedHelp || argumentState.isVerboseHelp) {
                 helpPrinter.printAppropriateHelpMessage(System.out, options, argumentState);
                 return;
             }
