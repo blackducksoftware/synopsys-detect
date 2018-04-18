@@ -236,7 +236,7 @@ public class Application implements ApplicationRunner {
         final long end = System.currentTimeMillis();
         logger.info(String.format("Hub-Detect run duration: %s", DurationFormatUtils.formatPeriod(start, end, "HH'h' mm'm' ss's' SSS'ms'")));
         if (detectConfiguration.getForceSuccess() && exitCodeType.getExitCode() != 0) {
-            logger.warn("Forcing success: Exiting with 0. Desired exit code was ${exitCodeType.getExitCode()}.");
+            logger.warn(String.format("Forcing success: Exiting with 0. Desired exit code was %s.", exitCodeType.getExitCode()));
             System.exit(0);
         } else if (exitCodeType.getExitCode() != 0) {
             logger.error(String.format("Exiting with code %s - %s", exitCodeType.getExitCode(), exitCodeType.toString()));
