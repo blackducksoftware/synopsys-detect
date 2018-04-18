@@ -23,8 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.rubygems
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
-
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 
@@ -37,6 +35,8 @@ import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolExtractionResult
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 
@@ -44,7 +44,7 @@ import groovy.transform.TypeChecked
 
 @Component
 @TypeChecked
-class RubygemsBomTool extends BomTool {
+class RubygemsBomTool extends BomTool<RubygemsApplicableResult> {
     private final Logger logger = LoggerFactory.getLogger(RubygemsBomTool.class)
 
     public static final String GEMFILE_LOCK_FILENAME= 'Gemfile.lock'
@@ -59,20 +59,27 @@ class RubygemsBomTool extends BomTool {
         return BomToolType.RUBYGEMS
     }
 
-    boolean isBomToolApplicable() {
-        detectFileManager.containsAllFiles(sourcePath, GEMFILE_LOCK_FILENAME)
+    RubygemsApplicableResult isBomToolApplicable(File directory) {
+        File gemlock = detectFileManager.findFile(directory, GEMFILE_LOCK_FILENAME)
+
+        if (gemlock.exists()) {
+            return new RubygemsApplicableResult(directory, gemlock);
+        }
+
+        return null;
     }
 
-    List<DetectCodeLocation> extractDetectCodeLocations() {
+    BomToolExtractionResult extractDetectCodeLocations(RubygemsApplicableResult applicable) {
         File sourceDirectory = detectConfiguration.sourceDirectory
 
         def gemlockFile = new File(sourceDirectory, GEMFILE_LOCK_FILENAME)
         List<String> gemlockText = Files.readAllLines(gemlockFile.toPath(), StandardCharsets.UTF_8)
 
         DependencyGraph dependencyGraph = rubygemsNodePackager.extractProjectDependencies(gemlockText)
-        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.RUBYGEMS, sourcePath)
+        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.RUBYGEMS, applicable.directoryString)
 
-        def codeLocation = new DetectCodeLocation.Builder(getBomToolType(), sourcePath, externalId, dependencyGraph).build()
-        [codeLocation]
+        def codeLocation = new DetectCodeLocation.Builder(getBomToolType(), applicable.directoryString, externalId, dependencyGraph).build()
+
+        bomToolExtractionResultsFactory.fromCodeLocations([codeLocation], getBomToolType(), applicable.directory)
     }
 }
