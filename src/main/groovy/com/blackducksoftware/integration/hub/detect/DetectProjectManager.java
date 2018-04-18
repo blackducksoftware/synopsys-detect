@@ -39,6 +39,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.exception.IntegrationException;
@@ -109,6 +110,8 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     @Autowired
     private DetectPhoneHomeManager detectPhoneHomeManager;
 
+    //Has to be lazy because we need to use the final values from detectConfiguration to instantiate BomToolTreeWalker which are not ready immediately
+    @Lazy
     @Autowired
     private BomToolTreeWalker bomToolTreeWalker;
 

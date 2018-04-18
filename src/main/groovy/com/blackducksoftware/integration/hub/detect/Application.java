@@ -43,6 +43,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Lazy;
 
 import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.api.generated.view.ProjectVersionView;
@@ -273,8 +274,11 @@ public class Application implements ApplicationRunner {
         logger.error(e.getMessage());
     }
 
+    //Has to be lazy because we need to use the final values from detectConfiguration which are not ready immediately
+    @Lazy
     @Bean
-    public BomToolTreeWalker bomToolTreeSearcher() {
+    public BomToolTreeWalker bomToolTreeWalker() {
+        logger.debug(String.format("Continue search %s, Depth %s, use defaults %s", detectConfiguration.getBomToolContinueSearch(), detectConfiguration.getBomToolSearchDepth(), detectConfiguration.getBomToolSearchExclusionDefaults()));
         return new BomToolTreeWalker(Arrays.asList(detectConfiguration.getBomToolSearchExclusion()), detectConfiguration.getBomToolSearchExclusionDefaults(), detectConfiguration.getBomToolContinueSearch(),
                 detectConfiguration.getBomToolSearchDepth());
     }
