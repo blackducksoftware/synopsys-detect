@@ -23,14 +23,14 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.sbt
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.model.Forge
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolExtractionResult
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtDependencyModule
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtProject
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
@@ -42,7 +42,7 @@ import groovy.transform.TypeChecked
 
 @Component
 @TypeChecked
-class SbtBomTool extends BomTool {
+class SbtBomTool extends BomTool<SbtApplicableResult> {
     private final Logger logger = LoggerFactory.getLogger(SbtBomTool.class)
 
     static final String BUILD_SBT_FILENAME = 'build.sbt'
@@ -55,30 +55,27 @@ class SbtBomTool extends BomTool {
     @Autowired
     HubSignatureScanner hubSignatureScanner
 
-    @Autowired
-    ExternalIdFactory externalIdFactory
-
     BomToolType getBomToolType() {
         return BomToolType.SBT
     }
 
-    boolean isBomToolApplicable() {
-        String buildDotSbt = detectFileManager.findFile(sourcePath, BUILD_SBT_FILENAME)
+    SbtApplicableResult isBomToolApplicable(File directory) {
+        File buildDotSbt = detectFileManager.findFile(directory, BUILD_SBT_FILENAME)
 
         if (buildDotSbt) {
-            return true
+            return new SbtApplicableResult(directory, buildDotSbt);
         } else {
-            return false
+            return null
         }
     }
 
-    List<DetectCodeLocation> extractDetectCodeLocations() {
+    BomToolExtractionResult extractDetectCodeLocations(SbtApplicableResult applicable) {
         String included = detectConfiguration.getSbtIncludedConfigurationNames()
         String excluded = detectConfiguration.getSbtExcludedConfigurationNames()
 
         int depth = detectConfiguration.getSearchDepth()
 
-        SbtProject project = extractProject(depth, included, excluded)
+        SbtProject project = extractProject(applicable.directoryString, depth, included, excluded)
 
         List<DetectCodeLocation> codeLocations = new ArrayList<DetectCodeLocation>()
 
@@ -89,14 +86,13 @@ class SbtBomTool extends BomTool {
 
         if (!codeLocations) {
             logger.error("Unable to find any dependency information.")
-            return []
-        } else {
-            return codeLocations
         }
+
+        bomToolExtractionResultsFactory.fromCodeLocations(codeLocations, getBomToolType(), applicable.directory)
     }
 
-    SbtProject extractProject(int depth, String included, String excluded) {
-        def rawModules = extractModules(depth, included, excluded)
+    SbtProject extractProject(String path, int depth, String included, String excluded) {
+        def rawModules = extractModules(path, depth, included, excluded)
         def modules = rawModules.findAll { it.graph != null }
         def skipped = rawModules.size() - modules.size()
         if (skipped > 0) {
@@ -115,9 +111,9 @@ class SbtBomTool extends BomTool {
             result.projectExternalId = externalIdFactory.createMavenExternalId(modules[0].org, modules[0].name, modules[0].version)
         } else {
             logger.warn("Unable to find exactly one root module. Using source path for root project name.")
-            result.projectName = detectFileManager.extractFinalPieceFromPath(sourcePath)
+            result.projectName = detectFileManager.extractFinalPieceFromPath(path)
             result.projectVersion = findFirstModuleVersion(modules, result.projectName, "root")
-            result.projectExternalId = externalIdFactory.createPathExternalId(Forge.MAVEN, sourcePath)
+            result.projectExternalId = externalIdFactory.createPathExternalId(Forge.MAVEN, path)
 
             if (result.projectVersion == null && modules.size() > 1) {
                 logger.warn("Getting version from first project: " + modules[0].name)
@@ -139,9 +135,9 @@ class SbtBomTool extends BomTool {
         return version
     }
 
-    List<SbtDependencyModule> extractModules(int depth, String included, String excluded) {
-        List<File> sbtFiles = detectFileManager.findFilesToDepth(sourcePath, BUILD_SBT_FILENAME, depth) as List
-        List<File> resolutionCaches = detectFileManager.findDirectoriesContainingDirectoriesToDepth(sourcePath, REPORT_SEARCH_PATTERN, depth) as List
+    List<SbtDependencyModule> extractModules(String path, int depth, String included, String excluded) {
+        List<File> sbtFiles = detectFileManager.findFilesToDepth(path, BUILD_SBT_FILENAME, depth) as List
+        List<File> resolutionCaches = detectFileManager.findDirectoriesContainingDirectoriesToDepth(path, REPORT_SEARCH_PATTERN, depth) as List
 
         logger.info("Found ${sbtFiles.size()} build.sbt files.");
         logger.info("Found ${resolutionCaches.size()} resolution caches.");
@@ -154,22 +150,22 @@ class SbtBomTool extends BomTool {
             File sbtDirectory = sbtFile.getParentFile()
             File reportPath = new File(sbtDirectory, REPORT_FILE_DIRECTORY)
 
-            def foundModules = extractReportModules(reportPath, sbtDirectory, included, excluded, usedReports)
+            def foundModules = extractReportModules(path, reportPath, sbtDirectory, included, excluded, usedReports)
             modules.addAll(foundModules)
         }
 
         resolutionCaches.each { resCache ->
             logger.debug("Found resolution cache : ${resCache.getCanonicalPath()}")
             File reportPath = new File(resCache, REPORT_DIRECTORY)
-            def foundModules = extractReportModules(reportPath, resCache.getParentFile(), included, excluded, usedReports)
+            def foundModules = extractReportModules(path, reportPath, resCache.getParentFile(), included, excluded, usedReports)
             modules.addAll(foundModules)
         }
 
-        List<File> additionalTargets = detectFileManager.findFilesToDepth(sourcePath, 'target', depth) as List
+        List<File> additionalTargets = detectFileManager.findFilesToDepth(path, 'target', depth) as List
         List<File> scanned = new ArrayList<File>()
         if (additionalTargets) {
             additionalTargets.each { file ->
-                if (!isInProject(file, sourcePath) && isNotChildOfScanned(file, scanned)) {
+                if (!isInProject(file, path) && isNotChildOfScanned(file, scanned)) {
                     hubSignatureScanner.registerPathToScan(ScanPathSource.SBT_SOURCE, file)
                     scanned.add(file)
                 }
@@ -204,12 +200,12 @@ class SbtBomTool extends BomTool {
         return file.getCanonicalPath().startsWith(projectPath.getCanonicalPath())
     }
 
-    List<SbtDependencyModule> extractReportModules(File reportPath, File source, String included, String excluded, List<String> usedReports) {
+    List<SbtDependencyModule> extractReportModules(String path, File reportPath, File source, String included, String excluded, List<String> usedReports) {
         List<SbtDependencyModule> modules = new ArrayList<SbtDependencyModule>()
         String canonical = reportPath.getCanonicalPath()
         if (usedReports.contains(canonical)) {
             logger.debug("Skipping already processed report folder: " + canonical)
-        } else if (isInProject(reportPath, sourcePath)) {
+        } else if (isInProject(reportPath, path)) {
             logger.debug("Skipping reports in project folder: ${reportPath.getCanonicalPath()}")
         } else {
             usedReports.add(canonical)
