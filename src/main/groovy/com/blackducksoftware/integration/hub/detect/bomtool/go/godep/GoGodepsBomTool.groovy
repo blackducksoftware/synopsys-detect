@@ -21,9 +21,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.go
+package com.blackducksoftware.integration.hub.detect.bomtool.go.godep
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -33,7 +32,8 @@ import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.bomtool.go.godep.GoGodepsParser
+import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolExtractionResult
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.google.gson.Gson
@@ -42,7 +42,7 @@ import groovy.transform.TypeChecked
 
 @Component
 @TypeChecked
-class GoGodepsBomTool extends BomTool {
+class GoGodepsBomTool extends BomTool<GoDepsApplicableResult> {
     private final Logger logger = LoggerFactory.getLogger(GoGodepsBomTool.class)
 
     public static final String GODEPS_DIRECTORYNAME= 'Godeps'
@@ -59,19 +59,25 @@ class GoGodepsBomTool extends BomTool {
     }
 
     @Override
-    public boolean isBomToolApplicable() {
-        detectFileManager.containsAllFiles(sourcePath, GODEPS_DIRECTORYNAME)
+    public GoDepsApplicableResult isBomToolApplicable(File directory) {
+        def goDepDirectory = detectFileManager.findFile(directory, GODEPS_DIRECTORYNAME);
+
+        if (goDepDirectory) {
+            return new GoDepsApplicableResult(directory, goDepDirectory);
+        }
+
+        return null;
     }
 
-    List<DetectCodeLocation> extractDetectCodeLocations() {
+    BomToolExtractionResult extractDetectCodeLocations(GoDepsApplicableResult applicableResult) {
         GoGodepsParser goDepParser = new GoGodepsParser(gson, externalIdFactory)
-        def goDepsDirectory = new File(sourcePath, GODEPS_DIRECTORYNAME)
-        def goDepsFile = new File(goDepsDirectory, "Godeps.json")
+        def goDepsFile = new File(applicableResult.goDepsDirectory, "Godeps.json")
         DependencyGraph dependencyGraph = goDepParser.extractProjectDependencies(goDepsFile.text)
 
-        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.GOLANG, sourcePath)
+        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.GOLANG, applicableResult.directoryString)
 
-        def codeLocation = new DetectCodeLocation.Builder(getBomToolType(), sourcePath, externalId, dependencyGraph).build()
-        [codeLocation]
+        def codeLocation = new DetectCodeLocation.Builder(getBomToolType(), applicableResult.directoryString, externalId, dependencyGraph).build()
+
+        bomToolExtractionResultsFactory.fromCodeLocations([codeLocation], getBomToolType(), applicableResult.directory)
     }
 }

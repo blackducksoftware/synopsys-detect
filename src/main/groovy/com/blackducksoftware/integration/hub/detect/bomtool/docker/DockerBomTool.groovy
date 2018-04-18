@@ -23,7 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.docker
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import org.apache.commons.io.IOUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -36,7 +35,8 @@ import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.SimpleBdioDocument
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolExtractionResult
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.hub.ScanPathSource
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
@@ -49,7 +49,7 @@ import groovy.transform.TypeChecked
 
 @Component
 @TypeChecked
-class DockerBomTool extends BomTool {
+class DockerBomTool extends BomTool<DockerApplicableResult> {
     private final Logger logger = LoggerFactory.getLogger(DockerBomTool.class)
 
     final String tarFilenamePattern = '*.tar.gz'
@@ -63,9 +63,6 @@ class DockerBomTool extends BomTool {
 
     @Autowired
     HubSignatureScanner hubSignatureScanner
-
-    @Autowired
-    ExternalIdFactory externalIdFactory
 
     @Autowired
     BdioTransformer bdioTransformer
@@ -82,26 +79,28 @@ class DockerBomTool extends BomTool {
     }
 
     @Override
-    public boolean isBomToolApplicable() {
+    public DockerApplicableResult isBomToolApplicable(File directory) {
         boolean propertiesOk = detectConfiguration.dockerInspectorVersion && (detectConfiguration.dockerTar || detectConfiguration.dockerImage)
         if (!propertiesOk) {
             logger.debug('The docker properties are not sufficient to run')
         } else {
-            dockerExecutablePath = findExecutablePath(ExecutableType.DOCKER, true, detectConfiguration.dockerPath)
-            bashExecutablePath = findExecutablePath(ExecutableType.BASH, true, detectConfiguration.bashPath)
-            if (!dockerExecutablePath) {
+            dockerExecutablePath = executableManager.getExecutablePathOrOverride(ExecutableType.DOCKER, true, directory, detectConfiguration.dockerPath)
+            bashExecutablePath = executableManager.getExecutablePathOrOverride(ExecutableType.BASH, true, directory, detectConfiguration.bashPath)
+
+            if (dockerExecutablePath && bashExecutablePath) {
+                return new DockerApplicableResult(directory, dockerExecutablePath, bashExecutablePath);
+            } else if (!dockerExecutablePath) {
                 logger.warn("Could not find a ${executableManager.getExecutableName(ExecutableType.DOCKER)} executable")
-            }
-            if (!bashExecutablePath) {
+            } else if (!bashExecutablePath) {
                 logger.warn("Could not find a ${executableManager.getExecutableName(ExecutableType.BASH)} executable")
             }
         }
 
-        dockerExecutablePath && bashExecutablePath && propertiesOk
+        return null;
     }
 
     @Override
-    List<DetectCodeLocation> extractDetectCodeLocations() {
+    BomToolExtractionResult extractDetectCodeLocations(DockerApplicableResult applicableResult) {
         File dockerPropertiesFile = detectFileManager.createFile(getBomToolType(), 'application.properties')
         File dockerBomToolDirectory =  dockerPropertiesFile.getParentFile()
         dockerProperties.populatePropertiesFile(dockerPropertiesFile, dockerBomToolDirectory)
@@ -160,6 +159,7 @@ class DockerBomTool extends BomTool {
             }
         }
 
+        List<DetectCodeLocation> codeLocations = new ArrayList<>();
         File bdioFile = detectFileManager.findFile(dockerBomToolDirectory, dependenciesFilenamePattern)
         if (bdioFile) {
             SimpleBdioDocument simpleBdioDocument = null
@@ -181,13 +181,13 @@ class DockerBomTool extends BomTool {
             String externalIdPath = simpleBdioDocument.project.bdioExternalIdentifier.externalId
             ExternalId projectExternalId = externalIdFactory.createPathExternalId(dockerForge, externalIdPath)
 
-            DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(getBomToolType(), sourcePath, projectExternalId, dependencyGraph).bomToolProjectName(projectName).bomToolProjectVersionName(projectVersionName).dockerImage(imagePiece).build()
-            return [detectCodeLocation]
+            DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(getBomToolType(), applicableResult.directoryString, projectExternalId, dependencyGraph).bomToolProjectName(projectName).bomToolProjectVersionName(projectVersionName).dockerImage(imagePiece).build()
+            codeLocations.add(detectCodeLocation);
         } else {
             logMissingFile(dockerBomToolDirectory, dependenciesFilenamePattern)
         }
 
-        []
+        bomToolExtractionResultsFactory.fromCodeLocations(codeLocations, getBomToolType(), applicableResult.directory)
     }
 
     String getInspectorVersion() {

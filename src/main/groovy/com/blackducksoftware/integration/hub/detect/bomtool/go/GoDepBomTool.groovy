@@ -23,7 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.go
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -35,6 +34,10 @@ import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGrap
 import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolExtractionResult
+import com.blackducksoftware.integration.hub.detect.bomtool.go.godep.GoGodepsBomTool
+import com.blackducksoftware.integration.hub.detect.bomtool.go.vndr.GoVndrBomTool
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
@@ -44,7 +47,7 @@ import groovy.transform.TypeChecked
 
 @Component
 @TypeChecked
-class GoDepBomTool extends BomTool {
+class GoDepBomTool extends BomTool<GoDepApplicableResult> {
     private final Logger logger = LoggerFactory.getLogger(GoDepBomTool.class)
 
     public static final String GOPKG_LOCK_FILENAME= 'Gopkg.lock'
@@ -67,58 +70,49 @@ class GoDepBomTool extends BomTool {
         return BomToolType.GO_DEP
     }
 
+    //TODO: BOM-FINDER Fix GO to not apply if other GOs apply.
     @Override
-    public boolean isBomToolApplicable() {
-        boolean isTheBestGoBomTool = false
-        if (detectFileManager.containsAllFiles(sourcePath, GOPKG_LOCK_FILENAME)) {
-            isTheBestGoBomTool = true
-        } else  {
-            boolean otherGoBomToolsWouldBeBetter = goGodepsBomTool.isBomToolApplicable() || goVndrBomTool.isBomToolApplicable()
-            boolean foundGoFiles = detectFileManager.containsAllFilesToDepth(sourcePath, detectConfiguration.getSearchDepth(), GOFILE_FILENAME_PATTERN)
-            if (foundGoFiles && otherGoBomToolsWouldBeBetter) {
-                logger.debug("A different Go BomTool is applicable for source path $sourcePath")
-            }
-            if (!otherGoBomToolsWouldBeBetter && foundGoFiles) {
-                isTheBestGoBomTool = true
+    public GoDepApplicableResult isBomToolApplicable(File directory) {
+        def goPkg = detectFileManager.findFile(directory, GOPKG_LOCK_FILENAME);
+        if (goPkg) {
+            def goFiles = detectFileManager.findFilesToDepth(directory, GOFILE_FILENAME_PATTERN, detectConfiguration.getSearchDepth())
+            if (goFiles) {
+                def goExe = executableManager.getExecutablePath(ExecutableType.GO, true, directory.toString())
+                if (goExe) {
+                    return new GoDepApplicableResult(directory, goPkg, goFiles, goExe);
+                }
             }
         }
 
-        def goExecutablePath
-        if (isTheBestGoBomTool) {
-            goExecutablePath = executableManager.getExecutablePath(ExecutableType.GO, true, sourcePath)
-        }
-        if (isTheBestGoBomTool && !goExecutablePath) {
-            logger.warn("Could not find the ${executableManager.getExecutableName(ExecutableType.GO)} executable")
-        }
-
-        goExecutablePath && isTheBestGoBomTool
+        return null;
     }
 
-    List<DetectCodeLocation> extractDetectCodeLocations() {
-        String goDepExecutable = findGoDepExecutable()
+    @Override
+    BomToolExtractionResult extractDetectCodeLocations(GoDepApplicableResult applicableResult) {
+        String goDepExecutable = findGoDepExecutable(applicableResult.directoryString)
 
-        DependencyGraph graph = goPackager.makeDependencyGraph(sourcePath, goDepExecutable)
+        DependencyGraph graph = goPackager.makeDependencyGraph(applicableResult.directoryString, goDepExecutable)
         if(graph == null) {
             graph = new MutableMapDependencyGraph()
         }
-        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.GOLANG, sourcePath)
-        DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(getBomToolType(), sourcePath, externalId, graph).build()
+        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.GOLANG, applicableResult.directoryString)
+        DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(getBomToolType(), applicableResult.directoryString, externalId, graph).build()
 
-        [detectCodeLocation]
+        bomToolExtractionResultsFactory.fromCodeLocations([detectCodeLocation], getBomToolType(), applicableResult.directory)
     }
 
-    private String findGoDepExecutable() {
+    private String findGoDepExecutable(String directory) {
         String goDepPath = detectConfiguration.goDepPath
         if (StringUtils.isBlank(goDepPath)) {
             def goDep = getBuiltGoDep()
             if (goDep.exists()) {
                 goDepPath = goDep.getAbsolutePath()
             } else {
-                goDepPath = executableManager.getExecutablePath(ExecutableType.GO_DEP, true, sourcePath)
+                goDepPath = executableManager.getExecutablePath(ExecutableType.GO_DEP, true, directory)
             }
         }
         if (!goDepPath?.trim()) {
-            def goExecutable = executableManager.getExecutablePath(ExecutableType.GO, true, sourcePath)
+            def goExecutable = executableManager.getExecutablePath(ExecutableType.GO, true, directory)
             goDepPath = installGoDep(goExecutable)
         }
         goDepPath
