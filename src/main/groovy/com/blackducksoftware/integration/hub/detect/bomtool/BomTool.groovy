@@ -58,7 +58,7 @@ abstract class BomTool<T extends BomToolApplicableResult> {
 
     abstract T isBomToolApplicable(File directory)
 
-    abstract BomToolExtractionResult extractDetectCodeLocations(T applicableResult)
+    abstract BomToolExtractionResult extractDetectCodeLocations(T applicable)
 
     BomToolSearchOptions getSearchOptions() {
         return BomToolSearchOptions.defaultOptions();

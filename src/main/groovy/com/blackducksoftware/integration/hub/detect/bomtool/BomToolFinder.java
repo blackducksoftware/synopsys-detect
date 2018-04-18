@@ -52,6 +52,22 @@ public class BomToolFinder {
     private final Boolean bomToolContinueSearch;
     private final int maximumDepth;
 
+    // Think three stages:
+    // 1. Search for applicable (nuget applies).
+    //      Complications:
+    //          Docker: not the most straightforward applies - uses properties not necessarily files to indicate
+    //          GO uses other GO applicables to decide
+    //          NPM uses YARN applicables to decide
+    // 2. Check the environment (nuget exists, install inspector) just once (instead of every applicable).
+    //      Complications:
+    //          Some executable inside the source directory, gradle?
+    //          Right now some inspectors resolve during configuration init if the BomTool applies.
+    //          We will no longer know during init if the bom tool applies.
+    // 3. Execute applicable (nuget extracts)
+    //      This will have multiple stages. Might be complex due to cleanup.
+    //      I'd also like to let bom tools nominate project names
+    // 4. Transform results.
+
     public BomToolFinder(final List<String> excludedDirectoriesBomToolSearch, final Boolean bomToolSearchExclusionDefaults, final Boolean bomToolContinueSearch, final int maximumDepth) {
         this.excludedDirectoriesBomToolSearch = excludedDirectoriesBomToolSearch;
         this.bomToolSearchExclusionDefaults = bomToolSearchExclusionDefaults;
@@ -81,7 +97,7 @@ public class BomToolFinder {
             final Set<BomTool> remainingBomTools = new HashSet<>(bomTools);
             for (final BomTool bomTool : bomTools) {
                 final BomToolApplicableResult searchResult = bomTool.isBomToolApplicable(directory);
-                if (searchResult.isApplicable()) {
+                if (searchResult != null) {
                     results.add(searchResult);
                     if (shouldStopSearchingIfApplicable(bomTool)) {
                         remainingBomTools.remove(bomTool);

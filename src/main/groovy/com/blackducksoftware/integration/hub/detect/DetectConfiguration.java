@@ -220,10 +220,6 @@ public class DetectConfiguration {
 
         bomToolFilter = new ExcludedIncludedFilter(getExcludedBomToolTypes(), getIncludedBomToolTypes());
 
-        if (dockerBomTool.isBomToolApplicable() && bomToolFilter.shouldInclude(dockerBomTool.getBomToolType().toString())) {
-            configureForDocker();
-        }
-
         if (hubSignatureScannerRelativePathsToExclude != null && hubSignatureScannerRelativePathsToExclude.length > 0) {
             for (final String path : hubSignatureScannerRelativePathsToExclude) {
                 excludedScanPaths.add(new File(sourceDirectory, path).getCanonicalPath());
@@ -254,6 +250,12 @@ public class DetectConfiguration {
             hubOfflineMode = true;
         }
 
+        //TODO: Bom tool finder must resolve these more intelligently.
+        /*
+        if (dockerBomTool.isBomToolApplicable() && bomToolFilter.shouldInclude(dockerBomTool.getBomToolType().toString())) {
+            configureForDocker();
+        }
+
         if (gradleBomTool.isBomToolApplicable() && bomToolFilter.shouldInclude(gradleBomTool.getBomToolType().toString())) {
             gradleInspectorVersion = gradleBomTool.getInspectorVersion();
         }
@@ -266,7 +268,7 @@ public class DetectConfiguration {
             dockerInspectorVersion = dockerBomTool.getInspectorVersion();
         }
 
-
+         */
 
         configureForPhoneHome();
     }
