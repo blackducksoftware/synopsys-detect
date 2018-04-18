@@ -23,7 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.pear
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -31,7 +30,8 @@ import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.Forge
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolExtractionResult
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
@@ -41,18 +41,13 @@ import groovy.transform.TypeChecked
 import groovy.util.slurpersupport.GPathResult
 
 @Component
-class PearBomTool extends BomTool {
+class PearBomTool extends BomTool<PearApplicableResult> {
     private final Logger logger = LoggerFactory.getLogger(PearBomTool.class)
 
     static final String PACKAGE_XML_FILENAME = 'package.xml'
 
-    private String pearExePath
-
     @Autowired
     PearDependencyFinder pearDependencyFinder
-
-    @Autowired
-    ExternalIdFactory externalIdFactory
 
     @Override
     public BomToolType getBomToolType() {
@@ -61,33 +56,35 @@ class PearBomTool extends BomTool {
 
     @Override
     @TypeChecked
-    public boolean isBomToolApplicable() {
-        boolean containsPackageXml = detectFileManager.containsAllFiles(sourcePath, PACKAGE_XML_FILENAME)
+    public PearApplicableResult isBomToolApplicable(File directory) {
+        File packageXml = detectFileManager.findFile(directory, PACKAGE_XML_FILENAME)
 
-        if (containsPackageXml) {
-            pearExePath = findExecutablePath(ExecutableType.PEAR, true, detectConfiguration.getPearPath())
-            if (!pearExePath) {
+        if (packageXml.exists()) {
+            def pearExe = executableManager.getExecutablePathOrOverride(ExecutableType.PEAR, true, directory, detectConfiguration.getPearPath())
+            if (pearExe) {
+                return new PearApplicableResult(directory, packageXml, pearExe);
+            } else {
                 logger.warn("Could not find a ${executableManager.getExecutableName(ExecutableType.PEAR)} executable")
             }
         }
 
-        pearExePath && containsPackageXml
+        return null;
     }
 
     @Override
-    public List<DetectCodeLocation> extractDetectCodeLocations() {
-        ExecutableOutput pearListing = executableRunner.runExe(pearExePath, 'list')
-        ExecutableOutput pearDependencies = executableRunner.runExe(pearExePath, 'package-dependencies', PACKAGE_XML_FILENAME)
+    public BomToolExtractionResult extractDetectCodeLocations(PearApplicableResult applicable) {
+        ExecutableOutput pearListing = executableRunner.runExe(applicable.pearExe, 'list')
+        ExecutableOutput pearDependencies = executableRunner.runExe(applicable.pearExe, 'package-dependencies', PACKAGE_XML_FILENAME)
 
-        File packageFile = detectFileManager.findFile(sourcePath, PACKAGE_XML_FILENAME)
+        File packageFile = detectFileManager.findFile(applicable.directory, PACKAGE_XML_FILENAME)
         GPathResult packageXml = new XmlSlurper().parseText(packageFile.text)
         String rootName = packageXml.name
         String rootVersion = packageXml.version.release
 
         DependencyGraph dependencyGraph = pearDependencyFinder.parsePearDependencyList(pearListing, pearDependencies)
-        def detectCodeLocation = new DetectCodeLocation.Builder(getBomToolType(), sourcePath, externalIdFactory.createNameVersionExternalId(Forge.PEAR, rootName, rootVersion),
+        def detectCodeLocation = new DetectCodeLocation.Builder(getBomToolType(), applicable.directory, externalIdFactory.createNameVersionExternalId(Forge.PEAR, rootName, rootVersion),
                 dependencyGraph).bomToolProjectName(rootName).bomToolProjectVersionName(rootVersion).build()
 
-        [detectCodeLocation]
+        bomToolExtractionResultsFactory.fromCodeLocations([detectCodeLocation], getBomToolType(), applicable.directory)
     }
 }
