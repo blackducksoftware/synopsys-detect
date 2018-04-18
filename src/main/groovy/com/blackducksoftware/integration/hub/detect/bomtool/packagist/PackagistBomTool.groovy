@@ -23,23 +23,23 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.packagist
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
-
 import java.nio.charset.StandardCharsets
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolExtractionResult
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
-import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 
 import groovy.transform.TypeChecked
 
 @Component
 @TypeChecked
-class PackagistBomTool extends BomTool {
+class PackagistBomTool extends BomTool<PackagistApplicableResult> {
     private final Logger logger = LoggerFactory.getLogger(PackagistBomTool.class)
 
     @Autowired
@@ -54,25 +54,30 @@ class PackagistBomTool extends BomTool {
     }
 
     @Override
-    public boolean isBomToolApplicable() {
-        boolean containsComposerLock = detectFileManager.containsAllFiles(sourcePath, 'composer.lock')
-        boolean containsComposerJson = detectFileManager.containsAllFiles(sourcePath, 'composer.json')
+    public PackagistApplicableResult isBomToolApplicable(File directory) {
+        def composerLock = detectFileManager.findFile(directory, 'composer.lock')
+        def composerJson = detectFileManager.findFile(directory, 'composer.json')
 
-        if (containsComposerLock && !containsComposerJson) {
-            logger.warn("composer.lock was located in ${sourcePath}, but no composer.json. Please add a composer.json file and try again.")
+        def containsComposerLock = composerLock.exists();
+        def containsComposerJson = composerJson.exists();
+
+        if (containsComposerLock && containsComposerJson) {
+            return new PackagistApplicableResult(directory, composerLock, composerJson)
+        }else if (containsComposerLock && !containsComposerJson) {
+            logger.warn("composer.lock was located in ${directory}, but no composer.json. Please add a composer.json file and try again.")
         } else if (!containsComposerLock && containsComposerJson) {
-            logger.warn("composer.json was located in ${sourcePath}, but no composer.lock. Please install dependencies and try again.")
+            logger.warn("composer.json was located in ${directory}, but no composer.lock. Please install dependencies and try again.")
         }
 
-        containsComposerLock && containsComposerJson
+        return null;
     }
 
-    List<DetectCodeLocation> extractDetectCodeLocations() {
-        String composerJsonText = new File(sourcePath, 'composer.json').getText(StandardCharsets.UTF_8.toString())
-        String composerLockText = new File(sourcePath, 'composer.lock').getText(StandardCharsets.UTF_8.toString())
+    BomToolExtractionResult extractDetectCodeLocations(PackagistApplicableResult applicable) {
+        String composerJsonText = applicable.composerJson.getText(StandardCharsets.UTF_8.toString())
+        String composerLockText = applicable.composerLock.getText(StandardCharsets.UTF_8.toString())
 
-        def detectCodeLocation = packagistParser.getDependencyGraphFromProject(sourcePath, composerJsonText, composerLockText)
+        def detectCodeLocation = packagistParser.getDependencyGraphFromProject(applicable.directoryString, composerJsonText, composerLockText)
 
-        [detectCodeLocation]
+        bomToolExtractionResultsFactory.fromCodeLocations([detectCodeLocation], getBomToolType(), applicable.directory)
     }
 }
