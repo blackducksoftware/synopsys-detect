@@ -23,15 +23,15 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.pip
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
+import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolExtractionResult
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
-import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager
@@ -40,7 +40,7 @@ import groovy.transform.TypeChecked
 
 @Component
 @TypeChecked
-class PipBomTool extends BomTool {
+class PipBomTool extends BomTool<PipApplicableResult> {
     private final Logger logger = LoggerFactory.getLogger(PipBomTool.class)
 
     private final String SETUP_FILE_NAME = 'setup.py'
@@ -61,59 +61,55 @@ class PipBomTool extends BomTool {
         BomToolType.PIP
     }
 
-    boolean isBomToolApplicable() {
-        boolean hasSetupToolsFile = detectFileManager.containsAllFiles(sourcePath, SETUP_FILE_NAME)
-        boolean hasRequirementsFile = detectConfiguration.requirementsFilePath
+    PipApplicableResult isBomToolApplicable(File directory) {
+        File setupTools = detectFileManager.findFile(directory, SETUP_FILE_NAME)
+        File requirements = new File(detectConfiguration.requirementsFilePath)
 
         def hasExecutables
-        if (hasSetupToolsFile || hasRequirementsFile) {
-            boolean hasPython = getPythonPath()
+        if (setupTools || requirements) {
+            ExecutableType pythonType = detectConfiguration.pythonThreeOverride ? ExecutableType.PYTHON3 : ExecutableType.PYTHON;
+            ExecutableType pipType = detectConfiguration.pythonThreeOverride ? ExecutableType.PIP3 : ExecutableType.PIP;
+
             String pythonVersion = detectConfiguration.pythonThreeOverride ? "PYTHON3" : "PYTHON"
             String pipVersion = detectConfiguration.pythonThreeOverride ? "PIP3" : "PIP"
 
-            if (!hasPython) {
+            String pythonExe = executableManager.getExecutablePathOrOverride(ExecutableType.PYTHON3, true, directory, detectConfiguration.pythonPath)
+            String pipExe = executableManager.getExecutablePath(ExecutableType.PIP3, true, directory.toString())
+
+            if (pythonExe && pipExe) {
+                return new PipApplicableResult(directory, setupTools, requirements, pipExe, pythonExe);
+            }else if (!pythonExe) {
                 logger.warn("Could not find a ${pythonVersion} executable")
-            }
-
-            boolean hasPip
-            if (detectConfiguration.pythonThreeOverride) {
-                hasPip = executableManager.getExecutablePath(ExecutableType.PIP3, true, detectConfiguration.sourcePath)
-            } else {
-                hasPip = executableManager.getExecutablePath(ExecutableType.PIP, true, detectConfiguration.sourcePath)
-            }
-
-            if (!hasPip) {
+            } else if (!pipExe) {
                 logger.warn("Could not find a ${pipVersion} executable")
             }
-
-            hasExecutables = hasPython && hasPip
         }
 
-        hasExecutables && (hasSetupToolsFile || hasRequirementsFile)
+        return null;
     }
 
-    List<DetectCodeLocation> extractDetectCodeLocations() {
+    BomToolExtractionResult extractDetectCodeLocations(PipApplicableResult applicable) {
         File outputDirectory = detectFileManager.createDirectory(BomToolType.PIP)
-        File setupFile = detectFileManager.findFile(sourceDirectory, SETUP_FILE_NAME)
+        File setupFile = applicable.setupTools;
         File inspectorScript = pipInspectorManager.extractInspectorScript()
-        String inspectorOutput = pipInspectorManager.runInspector(sourceDirectory, pythonPath, inspectorScript, projectName, detectConfiguration.requirementsFilePath)
-        def codeLocation = pipInspectorTreeParser.parse(inspectorOutput, sourcePath)
+        def projectName = findProjectName(applicable);
+        String inspectorOutput = pipInspectorManager.runInspector(applicable.directory, applicable.pythonExe.toString(), inspectorScript, projectName, applicable.requirements.toString())
+        def codeLocation = pipInspectorTreeParser.parse(inspectorOutput, applicable.directoryString)
 
         def codeLocations = []
         if (codeLocation != null) {
             codeLocations.add(codeLocation)
         }
 
-        codeLocations
+        bomToolExtractionResultsFactory.fromCodeLocations(codeLocations, getBomToolType(), applicable.directory)
     }
 
-    String getProjectName() {
+    String findProjectName(PipApplicableResult applicable) {
         def projectName = detectConfiguration.pipProjectName
-        def setupFile = detectFileManager.findFile(sourceDirectory, SETUP_FILE_NAME)
-        if (setupFile) {
+        if (applicable.setupTools) {
             if (!projectName) {
-                def findProjectNameExecutable = new Executable(sourceDirectory, pythonPath, [
-                    setupFile.absolutePath,
+                def findProjectNameExecutable = new Executable(applicable.directory, applicable.pythonExe, [
+                    applicable.directory.absolutePath,
                     '--name'
                 ])
                 List<String> output = executableRunner.execute(findProjectNameExecutable).standardOutputAsList
@@ -122,17 +118,5 @@ class PipBomTool extends BomTool {
         }
 
         projectName
-    }
-
-    String getPythonPath() {
-        def pythonPath = detectConfiguration.pythonPath
-
-        if (detectConfiguration.pythonThreeOverride) {
-            pythonPath = executableManager.getExecutablePath(ExecutableType.PYTHON3, true, detectConfiguration.sourcePath)
-        } else if (!pythonPath?.trim()) {
-            pythonPath = executableManager.getExecutablePath(ExecutableType.PYTHON, true, detectConfiguration.sourcePath)
-        }
-
-        pythonPath
     }
 }
