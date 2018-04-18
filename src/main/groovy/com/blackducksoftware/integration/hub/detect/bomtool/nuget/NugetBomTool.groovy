@@ -33,6 +33,7 @@ import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphCombiner
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph
 import com.blackducksoftware.integration.hub.detect.DetectInfo
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolExtractionResult
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
@@ -44,7 +45,7 @@ import groovy.transform.TypeChecked
 
 @Component
 @TypeChecked
-class NugetBomTool extends BomTool {
+class NugetBomTool extends BomTool<NugetApplicableResult> {
     private final Logger logger = LoggerFactory.getLogger(NugetBomTool.class)
 
     static final String SOLUTION_PATTERN = '*.sln'
@@ -107,46 +108,48 @@ class NugetBomTool extends BomTool {
     @Autowired
     DetectInfo detectInfo
 
-    private String nugetExecutable
-    private File outputDirectory
-
     BomToolType getBomToolType() {
         return BomToolType.NUGET
     }
 
+    //TODO: Remove Groovy magic for List<File>
     @Override
-    public boolean isBomToolApplicable() {
+    public NugetApplicableResult isBomToolApplicable(File directory) {
         if (OperatingSystemType.WINDOWS != detectInfo.getCurrentOs()) {
             logger.debug("Nuget can not apply to this OS. It can only apply to windows.");
-            return false;
+            return null;
         }
 
-        def containsSolutionFile = detectFileManager.containsAllFiles(sourcePath, SOLUTION_PATTERN)
-        def containsProjectFile = SUPPORTED_PROJECT_PATTERNS.any { String pattern ->
-            detectFileManager.containsAllFiles(pattern)
-        }
+        List<File> solutionFiles = detectFileManager.findFiles(directory, SOLUTION_PATTERN);
+        List<File> projectFiles = SUPPORTED_PROJECT_PATTERNS.collect { String pattern ->
+            detectFileManager.findFiles(directory, pattern)
+        }.flatten() as List<File>;
 
-        if (containsSolutionFile || containsProjectFile) {
-            nugetExecutable = findExecutablePath(ExecutableType.NUGET, true, detectConfiguration.getNugetPath())
-            if (!nugetExecutable) {
+        if (solutionFiles.size() > 0 || projectFiles.size() > 0) {
+            def nugetExecutable = executableManager.getExecutablePathOrOverride(ExecutableType.NUGET, true, directory, detectConfiguration.getNugetPath())
+            if (nugetExecutable) {
+                return new NugetApplicableResult(directory, solutionFiles, projectFiles, nugetExecutable)
+            } else {
                 logger.warn("Could not find a ${executableManager.getExecutableName(ExecutableType.NUGET)} executable")
             }
-            outputDirectory = new File(detectConfiguration.outputDirectory, 'nuget')
         }
 
-        nugetExecutable && (containsSolutionFile || containsProjectFile)
+        return null;
     }
 
     @Override
-    List<DetectCodeLocation> extractDetectCodeLocations() {
-        nugetInspectorManager.installInspector(nugetExecutable, outputDirectory)
+    BomToolExtractionResult extractDetectCodeLocations(NugetApplicableResult applicable) {
+        def outputDirectory = new File(detectConfiguration.outputDirectory, 'nuget')
 
-        if (!nugetInspectorManager.getNugetInspectorExecutablePath()) {
+        nugetInspectorManager.installInspector(applicable.nugetExecutable, outputDirectory)
+
+        def inspectorPath = nugetInspectorManager.getNugetInspectorExecutablePath();
+        if (!inspectorPath) {
             throw new Exception("Failed to find a suitable nuget inspector to run.")
         }
 
         List<String> options = [
-            "--target_path=${sourcePath}" as String,
+            "--target_path=${applicable.directory}" as String,
             "--output_directory=${outputDirectory.getCanonicalPath()}" as String,
             "--ignore_failure=${detectConfiguration.getNugetInspectorIgnoreFailure()}" as String
         ]
@@ -163,7 +166,7 @@ class NugetBomTool extends BomTool {
             options.add('-v')
         }
 
-        def hubNugetInspectorExecutable = new Executable(sourceDirectory, nugetInspectorManager.getNugetInspectorExecutablePath(), options)
+        def hubNugetInspectorExecutable = new Executable(applicable.directory, inspectorPath, options)
         ExecutableOutput executableOutput = executableRunner.execute(hubNugetInspectorExecutable)
 
         def dependencyNodeFiles = detectFileManager.findFiles(outputDirectory, INSPECTOR_OUTPUT_PATTERN)
@@ -178,7 +181,6 @@ class NugetBomTool extends BomTool {
 
         if (!codeLocations) {
             logger.warn('Unable to extract any dependencies from nuget')
-            return []
         }
 
         Map<String, DetectCodeLocation> codeLocationsBySource = new HashMap<>();
@@ -196,10 +198,12 @@ class NugetBomTool extends BomTool {
             }
         }
 
-        codeLocationsBySource.values().toList()
+        List<DetectCodeLocation> uniqueCodeLocations = codeLocationsBySource.values().toList();
+        bomToolExtractionResultsFactory.fromCodeLocations(uniqueCodeLocations, getBomToolType(), applicable.directory);
     }
 
-    String getInspectorVersion() {
-        return nugetInspectorManager.getInspectorVersion(nugetExecutable)
-    }
+    //TODO: bom tool finder - replicate this:
+    //String getInspectorVersion() {
+    //    return nugetInspectorManager.getInspectorVersion(nugetExecutable)
+    //}
 }
