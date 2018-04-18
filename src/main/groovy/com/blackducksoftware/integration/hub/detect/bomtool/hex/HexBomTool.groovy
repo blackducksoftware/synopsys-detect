@@ -58,7 +58,7 @@ class HexBomTool extends BomTool<HexApplicableResult> {
 
         if (rebarConfig.exists()) {
             logger.info('Rebar3 build tool applies for HEX given the current configuration.');
-            def rebarExe = executableManager.findExecutablePath(directory.toString(), ExecutableType.REBAR3, true, detectConfiguration.getHexRebar3Path());
+            def rebarExe = executableManager.getExecutablePathOrOverride(ExecutableType.REBAR3, true, directory, detectConfiguration.getHexRebar3Path());
             if (rebarExe) {
                 return new HexApplicableResult(directory, rebarConfig, rebarExe);
             } else {
