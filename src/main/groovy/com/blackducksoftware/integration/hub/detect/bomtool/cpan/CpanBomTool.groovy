@@ -72,17 +72,17 @@ class CpanBomTool extends BomTool<CpanApplicableResult> {
     }
 
     @Override
-    public BomToolExtractionResult extractDetectCodeLocations(CpanApplicableResult applicableResult) {
-        ExecutableOutput cpanListOutput = executableRunner.runExe(applicableResult.cpanExePath, '-l')
+    public BomToolExtractionResult extractDetectCodeLocations(CpanApplicableResult applicable) {
+        ExecutableOutput cpanListOutput = executableRunner.runExe(applicable.cpanExePath, '-l')
         List<String> listText = cpanListOutput.standardOutputAsList
 
-        ExecutableOutput showdepsOutput = executableRunner.runExe(applicableResult.cpanmExePath, '--showdeps', '.')
+        ExecutableOutput showdepsOutput = executableRunner.runExe(applicable.cpanmExePath, '--showdeps', '.')
         List<String> showdeps = showdepsOutput.standardOutputAsList
 
         DependencyGraph dependencyGraph = cpanPackager.makeDependencyGraph(listText, showdeps)
         ExternalId externalId = externalIdFactory.createPathExternalId(Forge.CPAN, detectConfiguration.sourcePath)
         def detectCodeLocation = new DetectCodeLocation.Builder(BomToolType.CPAN, detectConfiguration.sourcePath, externalId, dependencyGraph).build()
 
-        bomToolExtractionResultsFactory.fromCodeLocations([detectCodeLocation], getBomToolType(), applicableResult.directory)
+        bomToolExtractionResultsFactory.fromCodeLocations([detectCodeLocation], getBomToolType(), applicable.directory)
     }
 }

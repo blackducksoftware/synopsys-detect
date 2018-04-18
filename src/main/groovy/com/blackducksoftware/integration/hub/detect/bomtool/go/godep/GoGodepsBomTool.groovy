@@ -69,15 +69,15 @@ class GoGodepsBomTool extends BomTool<GoDepsApplicableResult> {
         return null;
     }
 
-    BomToolExtractionResult extractDetectCodeLocations(GoDepsApplicableResult applicableResult) {
+    BomToolExtractionResult extractDetectCodeLocations(GoDepsApplicableResult applicable) {
         GoGodepsParser goDepParser = new GoGodepsParser(gson, externalIdFactory)
-        def goDepsFile = new File(applicableResult.goDepsDirectory, "Godeps.json")
+        def goDepsFile = new File(applicable.goDepsDirectory, "Godeps.json")
         DependencyGraph dependencyGraph = goDepParser.extractProjectDependencies(goDepsFile.text)
 
-        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.GOLANG, applicableResult.directoryString)
+        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.GOLANG, applicable.directoryString)
 
-        def codeLocation = new DetectCodeLocation.Builder(getBomToolType(), applicableResult.directoryString, externalId, dependencyGraph).build()
+        def codeLocation = new DetectCodeLocation.Builder(getBomToolType(), applicable.directoryString, externalId, dependencyGraph).build()
 
-        bomToolExtractionResultsFactory.fromCodeLocations([codeLocation], getBomToolType(), applicableResult.directory)
+        bomToolExtractionResultsFactory.fromCodeLocations([codeLocation], getBomToolType(), applicable.directory)
     }
 }

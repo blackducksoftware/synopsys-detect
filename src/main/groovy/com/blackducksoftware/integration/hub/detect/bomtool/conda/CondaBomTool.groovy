@@ -70,7 +70,7 @@ class CondaBomTool extends BomTool<CondaApplicableResult> {
     }
 
     @Override
-    public BomToolExtractionResult extractDetectCodeLocations(CondaApplicableResult applicableResult) {
+    public BomToolExtractionResult extractDetectCodeLocations(CondaApplicableResult applicable) {
         List<String> condaListOptions = ['list']
         if (detectConfiguration.getCondaEnvironmentName()) {
             condaListOptions.addAll([
@@ -79,17 +79,17 @@ class CondaBomTool extends BomTool<CondaApplicableResult> {
             ])
         }
         condaListOptions.add('--json')
-        Executable condaListExecutable = new Executable(applicableResult.directory, applicableResult.condaExePath, condaListOptions)
+        Executable condaListExecutable = new Executable(applicable.directory, applicable.condaExePath, condaListOptions)
         ExecutableOutput condaListOutput = executableRunner.execute(condaListExecutable)
         String listJsonText = condaListOutput.standardOutput
 
-        ExecutableOutput condaInfoOutput = executableRunner.runExe(applicableResult.condaExePath, 'info', '--json')
+        ExecutableOutput condaInfoOutput = executableRunner.runExe(applicable.condaExePath, 'info', '--json')
         String infoJsonText = condaInfoOutput.standardOutput
 
         DependencyGraph dependencyGraph = condaListParser.parse(listJsonText, infoJsonText)
         ExternalId externalId = externalIdFactory.createPathExternalId(Forge.ANACONDA, detectConfiguration.sourcePath)
         def detectCodeLocation = new DetectCodeLocation.Builder(BomToolType.CONDA, detectConfiguration.sourcePath, externalId, dependencyGraph).build()
 
-        bomToolExtractionResultsFactory.fromCodeLocations([detectCodeLocation], getBomToolType(), applicableResult.directory)
+        bomToolExtractionResultsFactory.fromCodeLocations([detectCodeLocation], getBomToolType(), applicable.directory)
     }
 }

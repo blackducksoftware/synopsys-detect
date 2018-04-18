@@ -77,8 +77,8 @@ class GradleBomTool extends BomTool<GradleApplicableResult> {
     }
 
     @Override
-    BomToolExtractionResult extractDetectCodeLocations(GradleApplicableResult applicableResult) {
-        List<DetectCodeLocation> codeLocations = extractCodeLocationsFromGradle(applicableResult)
+    BomToolExtractionResult extractDetectCodeLocations(GradleApplicableResult applicable) {
+        List<DetectCodeLocation> codeLocations = extractCodeLocationsFromGradle(applicable)
 
         File[] additionalTargets = detectFileManager.findFilesToDepth(detectConfiguration.sourceDirectory, 'build', detectConfiguration.searchDepth)
         if (additionalTargets) {
@@ -86,7 +86,7 @@ class GradleBomTool extends BomTool<GradleApplicableResult> {
                 hubSignatureScanner.registerPathToScan(ScanPathSource.GRADLE_SOURCE, file)
             }
         }
-        bomToolExtractionResultsFactory.fromCodeLocations(codeLocations, getBomToolType(), applicableResult.directory)
+        bomToolExtractionResultsFactory.fromCodeLocations(codeLocations, getBomToolType(), applicable.directory)
     }
 
     private String findGradleExecutable(String sourcePath) {
@@ -100,7 +100,7 @@ class GradleBomTool extends BomTool<GradleApplicableResult> {
     }
 
     //#TODO: Bom tool finder - setting project name and version
-    List<DetectCodeLocation> extractCodeLocationsFromGradle(GradleApplicableResult applicableResult) {
+    List<DetectCodeLocation> extractCodeLocationsFromGradle(GradleApplicableResult applicable) {
         String gradleCommand = detectConfiguration.gradleBuildCommand
         gradleCommand = gradleCommand?.replace('dependencies', '')?.trim()
 
@@ -112,10 +112,10 @@ class GradleBomTool extends BomTool<GradleApplicableResult> {
         arguments.add(String.format("--init-script=%s",gradleInspectorManager.getInitScriptPath()));
 
         logger.info("using ${gradleInspectorManager.getInitScriptPath()} as the path for the gradle init script")
-        Executable executable = new Executable(applicableResult.directory, applicableResult.gradleExe, arguments)
+        Executable executable = new Executable(applicable.directory, applicable.gradleExe, arguments)
         executableRunner.execute(executable)
 
-        File buildDirectory = new File(applicableResult.directory, 'build')
+        File buildDirectory = new File(applicable.directory, 'build')
         File blackduckDirectory = new File(buildDirectory, 'blackduck')
 
         File[] codeLocationFiles = detectFileManager.findFiles(blackduckDirectory, '*_dependencyGraph.txt')

@@ -88,17 +88,17 @@ class GoDepBomTool extends BomTool<GoDepApplicableResult> {
     }
 
     @Override
-    BomToolExtractionResult extractDetectCodeLocations(GoDepApplicableResult applicableResult) {
-        String goDepExecutable = findGoDepExecutable(applicableResult.directoryString)
+    BomToolExtractionResult extractDetectCodeLocations(GoDepApplicableResult applicable) {
+        String goDepExecutable = findGoDepExecutable(applicable.directoryString)
 
-        DependencyGraph graph = goPackager.makeDependencyGraph(applicableResult.directoryString, goDepExecutable)
+        DependencyGraph graph = goPackager.makeDependencyGraph(applicable.directoryString, goDepExecutable)
         if(graph == null) {
             graph = new MutableMapDependencyGraph()
         }
-        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.GOLANG, applicableResult.directoryString)
-        DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(getBomToolType(), applicableResult.directoryString, externalId, graph).build()
+        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.GOLANG, applicable.directoryString)
+        DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(getBomToolType(), applicable.directoryString, externalId, graph).build()
 
-        bomToolExtractionResultsFactory.fromCodeLocations([detectCodeLocation], getBomToolType(), applicableResult.directory)
+        bomToolExtractionResultsFactory.fromCodeLocations([detectCodeLocation], getBomToolType(), applicable.directory)
     }
 
     private String findGoDepExecutable(String directory) {

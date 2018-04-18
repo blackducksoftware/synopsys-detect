@@ -57,30 +57,30 @@ class CranBomTool extends BomTool<CranApplicableResult> {
         return null;
     }
 
-    BomToolExtractionResult extractDetectCodeLocations(CranApplicableResult applicableResult) {
+    BomToolExtractionResult extractDetectCodeLocations(CranApplicableResult applicable) {
         File sourceDirectory = detectConfiguration.sourceDirectory
 
         String projectName = ''
         String projectVersion = ''
-        if (detectFileManager.containsAllFiles(applicableResult.directory,'DESCRIPTION')) {
-            def descriptionFile = new File(applicableResult.directory, 'DESCRIPTION')
+        if (detectFileManager.containsAllFiles(applicable.directory,'DESCRIPTION')) {
+            def descriptionFile = new File(applicable.directory, 'DESCRIPTION')
             List<String> descriptionText = Files.readAllLines(descriptionFile.toPath(), StandardCharsets.UTF_8)
             projectName = packratPackager.getProjectName(descriptionText)
             projectVersion = packratPackager.getVersion(descriptionText)
         }
 
-        File packratLockFile = applicableResult.packratLockFiles.first();
+        File packratLockFile = applicable.packratLockFiles.first();
 
         List<String> packratLockText = Files.readAllLines(packratLockFile.toPath(), StandardCharsets.UTF_8)
         DependencyGraph dependencyGraph = packratPackager.extractProjectDependencies(packratLockText)
-        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.CRAN, applicableResult.directory.toString())
+        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.CRAN, applicable.directory.toString())
 
         DetectCodeLocation.Builder builder =
-                new DetectCodeLocation.Builder(getBomToolType(), applicableResult.directory.toString(), externalId, dependencyGraph)
+                new DetectCodeLocation.Builder(getBomToolType(), applicable.directory.toString(), externalId, dependencyGraph)
                 .bomToolProjectName(projectName)
                 .bomToolProjectVersionName(projectVersion);
 
         def codeLocation = builder.build()
-        bomToolExtractionResultsFactory.fromCodeLocations([codeLocation], getBomToolType(), applicableResult.directory);
+        bomToolExtractionResultsFactory.fromCodeLocations([codeLocation], getBomToolType(), applicable.directory);
     }
 }

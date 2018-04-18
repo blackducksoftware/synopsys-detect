@@ -154,9 +154,9 @@ class NpmBomTool extends BomTool<NpmApplicableResult> {
         bomToolExtractionResultsFactory.fromCodeLocations(codeLocations, getBomToolType(), applicable.directory)
     }
 
-    private List<DetectCodeLocation> extractFromLockFile(File lockFile, File searchedDirectory) {
+    private List<DetectCodeLocation> extractFromLockFile(File lockFile, File directory) {
         String lockFileText = lockFile.getText()
-        DetectCodeLocation detectCodeLocation = npmLockfilePackager.parse(searchedDirectory.canonicalPath, lockFileText, detectConfiguration.npmIncludeDevDependencies)
+        DetectCodeLocation detectCodeLocation = npmLockfilePackager.parse(directory.canonicalPath, lockFileText, detectConfiguration.npmIncludeDevDependencies)
 
         [detectCodeLocation]
     }

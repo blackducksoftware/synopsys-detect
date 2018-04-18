@@ -61,17 +61,17 @@ class GoVndrBomTool extends BomTool<GoVndrApplicableResult> {
         return null;
     }
 
-    BomToolExtractionResult extractDetectCodeLocations(GoVndrApplicableResult applicableResult) {
+    BomToolExtractionResult extractDetectCodeLocations(GoVndrApplicableResult applicable) {
         File sourceDirectory = detectConfiguration.sourceDirectory
 
         VndrParser vndrParser = new VndrParser(externalIdFactory)
 
-        List<String> venderConfContents = Files.readAllLines(applicableResult.vendorConf.toPath(), StandardCharsets.UTF_8)
+        List<String> venderConfContents = Files.readAllLines(applicable.vendorConf.toPath(), StandardCharsets.UTF_8)
         DependencyGraph dependencyGraph = vndrParser.parseVendorConf(venderConfContents)
-        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.GOLANG, applicableResult.directoryString)
+        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.GOLANG, applicable.directoryString)
 
-        def codeLocation = new DetectCodeLocation.Builder(getBomToolType(), applicableResult.directoryString, externalId, dependencyGraph).build()
+        def codeLocation = new DetectCodeLocation.Builder(getBomToolType(), applicable.directoryString, externalId, dependencyGraph).build()
 
-        bomToolExtractionResultsFactory.fromCodeLocations([codeLocation], getBomToolType(), applicableResult.directory);
+        bomToolExtractionResultsFactory.fromCodeLocations([codeLocation], getBomToolType(), applicable.directory);
     }
 }

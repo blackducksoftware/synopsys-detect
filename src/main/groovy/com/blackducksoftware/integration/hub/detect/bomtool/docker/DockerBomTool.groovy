@@ -100,7 +100,7 @@ class DockerBomTool extends BomTool<DockerApplicableResult> {
     }
 
     @Override
-    BomToolExtractionResult extractDetectCodeLocations(DockerApplicableResult applicableResult) {
+    BomToolExtractionResult extractDetectCodeLocations(DockerApplicableResult applicable) {
         File dockerPropertiesFile = detectFileManager.createFile(getBomToolType(), 'application.properties')
         File dockerBomToolDirectory =  dockerPropertiesFile.getParentFile()
         dockerProperties.populatePropertiesFile(dockerPropertiesFile, dockerBomToolDirectory)
@@ -181,13 +181,13 @@ class DockerBomTool extends BomTool<DockerApplicableResult> {
             String externalIdPath = simpleBdioDocument.project.bdioExternalIdentifier.externalId
             ExternalId projectExternalId = externalIdFactory.createPathExternalId(dockerForge, externalIdPath)
 
-            DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(getBomToolType(), applicableResult.directoryString, projectExternalId, dependencyGraph).bomToolProjectName(projectName).bomToolProjectVersionName(projectVersionName).dockerImage(imagePiece).build()
+            DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(getBomToolType(), applicable.directoryString, projectExternalId, dependencyGraph).bomToolProjectName(projectName).bomToolProjectVersionName(projectVersionName).dockerImage(imagePiece).build()
             codeLocations.add(detectCodeLocation);
         } else {
             logMissingFile(dockerBomToolDirectory, dependenciesFilenamePattern)
         }
 
-        bomToolExtractionResultsFactory.fromCodeLocations(codeLocations, getBomToolType(), applicableResult.directory)
+        bomToolExtractionResultsFactory.fromCodeLocations(codeLocations, getBomToolType(), applicable.directory)
     }
 
     String getInspectorVersion() {
