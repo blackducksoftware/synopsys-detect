@@ -10,8 +10,8 @@ public class MavenApplicableResult  extends BomToolApplicableResult {
     private final File pomWrapperPath;
     private final String mavenExe;
 
-    public MavenApplicableResult(final File searchedDirectory, final File pomXmlPath, final File pomWrapperPath, final String mavenExe) {
-        super(searchedDirectory, BomToolType.MAVEN);
+    public MavenApplicableResult(final File directory, final File pomXmlPath, final File pomWrapperPath, final String mavenExe) {
+        super(directory, BomToolType.MAVEN);
         this.pomXmlPath = pomXmlPath;
         this.pomWrapperPath = pomWrapperPath;
         this.mavenExe = mavenExe;

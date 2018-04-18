@@ -9,8 +9,8 @@ public class CondaApplicableResult extends BomToolApplicableResult {
     private final String condaExePath;
     private final File environmentYml;
 
-    public CondaApplicableResult(final File searchedDirectory, final File environmentYml, final String condaExePath) {
-        super(searchedDirectory, BomToolType.CONDA);
+    public CondaApplicableResult(final File directory, final File environmentYml, final String condaExePath) {
+        super(directory, BomToolType.CONDA);
         this.condaExePath = condaExePath;
         this.environmentYml = environmentYml;
     }

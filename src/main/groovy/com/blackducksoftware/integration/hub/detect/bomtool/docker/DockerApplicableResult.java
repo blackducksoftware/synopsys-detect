@@ -10,8 +10,8 @@ public class DockerApplicableResult extends BomToolApplicableResult {
     private final String dockerExe;
     private final String bashExe;
 
-    public DockerApplicableResult(final File searchedDirectory, final String dockerExe, final String bashExe) {
-        super(searchedDirectory, BomToolType.DOCKER);
+    public DockerApplicableResult(final File directory, final String dockerExe, final String bashExe) {
+        super(directory, BomToolType.DOCKER);
         this.dockerExe = dockerExe;
         this.bashExe = bashExe;
     }

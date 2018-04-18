@@ -9,8 +9,8 @@ public class HexApplicableResult extends BomToolApplicableResult {
     private final File rebarConfig;
     private final String rebarExe;
 
-    public HexApplicableResult(final File searchedDirectory, final File rebarConfig, final String rebarExe) {
-        super(searchedDirectory, BomToolType.HEX);
+    public HexApplicableResult(final File directory, final File rebarConfig, final String rebarExe) {
+        super(directory, BomToolType.HEX);
         this.rebarConfig = rebarConfig;
         this.rebarExe = rebarExe;
     }

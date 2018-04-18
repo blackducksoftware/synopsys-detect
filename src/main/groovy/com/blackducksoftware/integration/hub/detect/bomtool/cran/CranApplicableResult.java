@@ -9,8 +9,8 @@ import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 public class CranApplicableResult extends BomToolApplicableResult {
     private final List<File> packratLockFiles;
 
-    public CranApplicableResult(final File searchedDirectory, final List<File> packratLockFiles) {
-        super(searchedDirectory, BomToolType.CRAN);
+    public CranApplicableResult(final File directory, final List<File> packratLockFiles) {
+        super(directory, BomToolType.CRAN);
         this.packratLockFiles = packratLockFiles;
     }
 

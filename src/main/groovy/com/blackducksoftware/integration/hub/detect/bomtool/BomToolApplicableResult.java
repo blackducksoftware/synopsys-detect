@@ -32,8 +32,8 @@ public class BomToolApplicableResult {
 
     private final BomToolType bomToolType;
 
-    public BomToolApplicableResult(final File searchedDirectory, final BomToolType bomToolType) {
-        this.directory = searchedDirectory;
+    public BomToolApplicableResult(final File directory, final BomToolType bomToolType) {
+        this.directory = directory;
         this.bomToolType = bomToolType;
     }
 

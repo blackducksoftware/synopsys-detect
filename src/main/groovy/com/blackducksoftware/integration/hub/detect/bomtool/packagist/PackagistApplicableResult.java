@@ -9,8 +9,8 @@ public class PackagistApplicableResult extends BomToolApplicableResult {
     private final File composerLock;
     private final File composerJson;
 
-    public PackagistApplicableResult(final File searchedDirectory, final File composerLock, final File composerJson) {
-        super(searchedDirectory, BomToolType.PACKAGIST);
+    public PackagistApplicableResult(final File directory, final File composerLock, final File composerJson) {
+        super(directory, BomToolType.PACKAGIST);
         this.composerLock = composerLock;
         this.composerJson = composerJson;
     }

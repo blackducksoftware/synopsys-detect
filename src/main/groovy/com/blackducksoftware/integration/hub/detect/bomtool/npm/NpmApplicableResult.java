@@ -33,8 +33,8 @@ public class NpmApplicableResult extends BomToolApplicableResult {
     private final File packageLockJson;
     private final File shrinkwrapJson;
 
-    public NpmApplicableResult(final File searchedDirectory, final String npmExePath, final File packageLockJson, final File shrinkwrapJson) {
-        super(searchedDirectory, BomToolType.NPM);
+    public NpmApplicableResult(final File directory, final String npmExePath, final File packageLockJson, final File shrinkwrapJson) {
+        super(directory, BomToolType.NPM);
         this.npmExePath = npmExePath;
         this.packageLockJson = packageLockJson;
         this.shrinkwrapJson = shrinkwrapJson;

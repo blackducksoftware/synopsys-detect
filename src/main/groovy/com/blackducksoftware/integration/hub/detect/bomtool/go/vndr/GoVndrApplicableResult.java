@@ -8,8 +8,8 @@ import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 public class GoVndrApplicableResult extends BomToolApplicableResult {
     private final File vendorConf;
 
-    public GoVndrApplicableResult(final File searchedDirectory, final File vendorConf) {
-        super(searchedDirectory, BomToolType.GO_VNDR);
+    public GoVndrApplicableResult(final File directory, final File vendorConf) {
+        super(directory, BomToolType.GO_VNDR);
         this.vendorConf = vendorConf;
     }
 

@@ -10,8 +10,8 @@ public class CpanApplicableResult extends BomToolApplicableResult {
     private final String cpanmExePath;
     private final File makefile;
 
-    public CpanApplicableResult(final File searchedDirectory, final File makefile, final String cpanExePath, final String cpanmExePath) {
-        super(searchedDirectory, BomToolType.CPAN);
+    public CpanApplicableResult(final File directory, final File makefile, final String cpanExePath, final String cpanmExePath) {
+        super(directory, BomToolType.CPAN);
         this.cpanExePath = cpanExePath;
         this.cpanmExePath = cpanmExePath;
         this.makefile = makefile;

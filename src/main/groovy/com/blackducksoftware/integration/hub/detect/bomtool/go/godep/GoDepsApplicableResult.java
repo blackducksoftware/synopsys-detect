@@ -8,8 +8,8 @@ import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 public class GoDepsApplicableResult extends BomToolApplicableResult {
     private final File goDepsDirectory;
 
-    public GoDepsApplicableResult(final File searchedDirectory, final File goDepsDirectory) {
-        super(searchedDirectory, BomToolType.GO_GODEP);
+    public GoDepsApplicableResult(final File directory, final File goDepsDirectory) {
+        super(directory, BomToolType.GO_GODEP);
         this.goDepsDirectory = goDepsDirectory;
     }
 

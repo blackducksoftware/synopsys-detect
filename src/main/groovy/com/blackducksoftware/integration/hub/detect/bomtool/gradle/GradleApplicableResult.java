@@ -9,8 +9,8 @@ public class GradleApplicableResult extends BomToolApplicableResult {
     private final File buildGradle;
     private final String gradleExe;
 
-    public GradleApplicableResult(final File searchedDirectory, final File buildGradle, final String gradleExe) {
-        super(searchedDirectory, BomToolType.GRADLE);
+    public GradleApplicableResult(final File directory, final File buildGradle, final String gradleExe) {
+        super(directory, BomToolType.GRADLE);
         this.buildGradle = buildGradle;
         this.gradleExe = gradleExe;
     }

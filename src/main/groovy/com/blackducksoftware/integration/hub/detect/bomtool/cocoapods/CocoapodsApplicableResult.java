@@ -7,8 +7,8 @@ import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 
 public class CocoapodsApplicableResult extends BomToolApplicableResult {
 
-    public CocoapodsApplicableResult(final File searchedDirectory, final File lockFile) {
-        super(searchedDirectory, BomToolType.COCOAPODS);
+    public CocoapodsApplicableResult(final File directory, final File lockFile) {
+        super(directory, BomToolType.COCOAPODS);
         this.lockFile = lockFile;
     }
 
