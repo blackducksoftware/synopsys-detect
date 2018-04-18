@@ -43,7 +43,6 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
-import com.blackducksoftware.integration.hub.detect.model.DetectProject;
 
 @Component
 public class GradleReportParser {
@@ -65,7 +64,7 @@ public class GradleReportParser {
     @Autowired
     private ExternalIdFactory externalIdFactory;
 
-    public DetectCodeLocation parseDependencies(final DetectProject detectProject, final InputStream dependenciesInputStream) throws IOException {
+    public GradleParseResult parseDependencies(final InputStream dependenciesInputStream) throws IOException {
         clearState();
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(dependenciesInputStream, StandardCharsets.UTF_8));) {
@@ -116,12 +115,10 @@ public class GradleReportParser {
                 previousTreeLevel = lineTreeLevel;
             }
         }
-        detectProject.setProjectNameIfNotSet(rootProjectName);
-        detectProject.setProjectVersionNameIfNotSet(rootProjectVersionName);
 
         final ExternalId id = externalIdFactory.createMavenExternalId(projectGroup, projectName, projectVersionName);
         final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolType.GRADLE, projectSourcePath, id, graph).bomToolProjectName(projectName).bomToolProjectVersionName(projectVersionName).build();
-        return detectCodeLocation;
+        return new GradleParseResult(rootProjectName, rootProjectVersionName, detectCodeLocation);
     }
 
     private void clearState() {

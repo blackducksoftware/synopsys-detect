@@ -23,16 +23,17 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.gradle
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+
+import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolExtractionResult
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.hub.ScanPathSource
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
-import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 
@@ -40,7 +41,7 @@ import groovy.transform.TypeChecked
 
 @Component
 @TypeChecked
-class GradleBomTool extends BomTool {
+class GradleBomTool extends BomTool<GradleApplicableResult> {
     private final Logger logger = LoggerFactory.getLogger(GradleBomTool.class)
 
     static final String BUILD_GRADLE_FILENAME = 'build.gradle'
@@ -54,30 +55,30 @@ class GradleBomTool extends BomTool {
     @Autowired
     GradleInspectorManager gradleInspectorManager
 
-    private String gradleExecutable
-
     @Override
     BomToolType getBomToolType() {
         return BomToolType.GRADLE
     }
 
     @Override
-    boolean isBomToolApplicable() {
-        def buildGradle = detectFileManager.findFile(sourcePath, BUILD_GRADLE_FILENAME)
+    GradleApplicableResult isBomToolApplicable(File directory) {
+        File buildGradle = detectFileManager.findFile(directory, BUILD_GRADLE_FILENAME)
 
         if (buildGradle) {
-            gradleExecutable = findGradleExecutable(sourcePath)
-            if (!gradleExecutable) {
+            String gradleExe = findGradleExecutable(directory.toString())
+            if (gradleExe) {
+                return new GradleApplicableResult(directory, buildGradle, gradleExe);
+            } else {
                 logger.warn('Could not find a Gradle wrapper or executable')
             }
         }
 
-        buildGradle && gradleExecutable
+        return null;
     }
 
     @Override
-    List<DetectCodeLocation> extractDetectCodeLocations(DetectProject detectProject) {
-        List<DetectCodeLocation> codeLocations = extractCodeLocationsFromGradle(detectProject)
+    BomToolExtractionResult extractDetectCodeLocations(GradleApplicableResult applicableResult) {
+        List<DetectCodeLocation> codeLocations = extractCodeLocationsFromGradle(applicableResult)
 
         File[] additionalTargets = detectFileManager.findFilesToDepth(detectConfiguration.sourceDirectory, 'build', detectConfiguration.searchDepth)
         if (additionalTargets) {
@@ -85,11 +86,11 @@ class GradleBomTool extends BomTool {
                 hubSignatureScanner.registerPathToScan(ScanPathSource.GRADLE_SOURCE, file)
             }
         }
-        codeLocations
+        bomToolExtractionResultsFactory.fromCodeLocations(codeLocations, getBomToolType(), applicableResult.directory)
     }
 
     private String findGradleExecutable(String sourcePath) {
-        String gradlePath = findExecutablePath(ExecutableType.GRADLEW, false, detectConfiguration.getGradlePath())
+        String gradlePath = executableManager.findExecutablePath(sourcePath, ExecutableType.GRADLEW, false, detectConfiguration.getGradlePath())
 
         if (!gradlePath) {
             logger.debug('gradle wrapper not found - trying to find gradle on the PATH')
@@ -98,7 +99,8 @@ class GradleBomTool extends BomTool {
         gradlePath
     }
 
-    List<DetectCodeLocation> extractCodeLocationsFromGradle(DetectProject detectProject) {
+    //#TODO: Bom tool finder - setting project name and version
+    List<DetectCodeLocation> extractCodeLocationsFromGradle(GradleApplicableResult applicableResult) {
         String gradleCommand = detectConfiguration.gradleBuildCommand
         gradleCommand = gradleCommand?.replace('dependencies', '')?.trim()
 
@@ -110,17 +112,17 @@ class GradleBomTool extends BomTool {
         arguments.add(String.format("--init-script=%s",gradleInspectorManager.getInitScriptPath()));
 
         logger.info("using ${gradleInspectorManager.getInitScriptPath()} as the path for the gradle init script")
-        Executable executable = new Executable(sourceDirectory, gradleExecutable, arguments)
+        Executable executable = new Executable(applicableResult.directory, applicableResult.gradleExe, arguments)
         executableRunner.execute(executable)
 
-        File buildDirectory = new File(sourcePath, 'build')
+        File buildDirectory = new File(applicableResult.directory, 'build')
         File blackduckDirectory = new File(buildDirectory, 'blackduck')
 
         File[] codeLocationFiles = detectFileManager.findFiles(blackduckDirectory, '*_dependencyGraph.txt')
 
         List<DetectCodeLocation> codeLocations = codeLocationFiles.collect { File file ->
             logger.debug("Parsing dependency graph : ${file.getName()}")
-            gradleReportParser.parseDependencies(detectProject, file.newInputStream())
+            gradleReportParser.parseDependencies(file.newInputStream()).codeLocation
         }
         if (detectConfiguration.getCleanupDetectFiles()) {
             blackduckDirectory.deleteDir()
