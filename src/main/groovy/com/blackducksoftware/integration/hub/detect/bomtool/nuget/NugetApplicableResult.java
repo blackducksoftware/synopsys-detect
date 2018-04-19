@@ -12,7 +12,7 @@ public class NugetApplicableResult extends BomToolApplicableResult {
     private final String nugetExecutable;
 
     public NugetApplicableResult(final File directory, final List<File> solutionFiles, final List<File> projectFiles, final String nugetExecutable) {
-        super(directory, BomToolType.MAVEN);
+        super(directory, BomToolType.NUGET);
         this.solutionFiles = solutionFiles;
         this.projectFiles = projectFiles;
         this.nugetExecutable = nugetExecutable;

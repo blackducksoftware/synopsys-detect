@@ -59,7 +59,7 @@ class PearBomTool extends BomTool<PearApplicableResult> {
     public PearApplicableResult isBomToolApplicable(File directory) {
         File packageXml = detectFileManager.findFile(directory, PACKAGE_XML_FILENAME)
 
-        if (packageXml.exists()) {
+        if (packageXml) {
             def pearExe = executableManager.getExecutablePathOrOverride(ExecutableType.PEAR, true, directory, detectConfiguration.getPearPath())
             if (pearExe) {
                 return new PearApplicableResult(directory, packageXml, pearExe);

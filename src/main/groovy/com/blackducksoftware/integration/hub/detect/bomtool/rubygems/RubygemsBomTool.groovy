@@ -62,7 +62,7 @@ class RubygemsBomTool extends BomTool<RubygemsApplicableResult> {
     RubygemsApplicableResult isBomToolApplicable(File directory) {
         File gemlock = detectFileManager.findFile(directory, GEMFILE_LOCK_FILENAME)
 
-        if (gemlock.exists()) {
+        if (gemlock) {
             return new RubygemsApplicableResult(directory, gemlock);
         }
 

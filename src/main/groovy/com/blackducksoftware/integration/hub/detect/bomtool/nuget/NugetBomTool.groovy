@@ -121,9 +121,14 @@ class NugetBomTool extends BomTool<NugetApplicableResult> {
         }
 
         List<File> solutionFiles = detectFileManager.findFiles(directory, SOLUTION_PATTERN);
-        List<File> projectFiles = SUPPORTED_PROJECT_PATTERNS.collect { String pattern ->
-            detectFileManager.findFiles(directory, pattern)
-        }.flatten() as List<File>;
+        if (!solutionFiles) solutionFiles = new ArrayList<>();
+        List<File> projectFiles = new ArrayList<>();
+        SUPPORTED_PROJECT_PATTERNS.each { String pattern ->
+            def found = detectFileManager.findFiles(directory, pattern);
+            if (found) {
+                projectFiles.addAll(found);
+            }
+        }
 
         if (solutionFiles.size() > 0 || projectFiles.size() > 0) {
             def nugetExecutable = executableManager.getExecutablePathOrOverride(ExecutableType.NUGET, true, directory, detectConfiguration.getNugetPath())

@@ -58,14 +58,11 @@ class PackagistBomTool extends BomTool<PackagistApplicableResult> {
         def composerLock = detectFileManager.findFile(directory, 'composer.lock')
         def composerJson = detectFileManager.findFile(directory, 'composer.json')
 
-        def containsComposerLock = composerLock.exists();
-        def containsComposerJson = composerJson.exists();
-
-        if (containsComposerLock && containsComposerJson) {
+        if (composerLock && composerJson) {
             return new PackagistApplicableResult(directory, composerLock, composerJson)
-        }else if (containsComposerLock && !containsComposerJson) {
+        }else if (composerLock && !composerJson) {
             logger.warn("composer.lock was located in ${directory}, but no composer.json. Please add a composer.json file and try again.")
-        } else if (!containsComposerLock && containsComposerJson) {
+        } else if (!composerLock && composerJson) {
             logger.warn("composer.json was located in ${directory}, but no composer.lock. Please install dependencies and try again.")
         }
 

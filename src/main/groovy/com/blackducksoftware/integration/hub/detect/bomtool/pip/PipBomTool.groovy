@@ -63,9 +63,10 @@ class PipBomTool extends BomTool<PipApplicableResult> {
 
     PipApplicableResult isBomToolApplicable(File directory) {
         File setupTools = detectFileManager.findFile(directory, SETUP_FILE_NAME)
-        File requirements = new File(detectConfiguration.requirementsFilePath)
-
-        def hasExecutables
+        File requirements = null;
+        if (detectConfiguration.requirementsFilePath) {
+            requirements = new File(detectConfiguration.requirementsFilePath)
+        }
         if (setupTools || requirements) {
             ExecutableType pythonType = detectConfiguration.pythonThreeOverride ? ExecutableType.PYTHON3 : ExecutableType.PYTHON;
             ExecutableType pipType = detectConfiguration.pythonThreeOverride ? ExecutableType.PIP3 : ExecutableType.PIP;
