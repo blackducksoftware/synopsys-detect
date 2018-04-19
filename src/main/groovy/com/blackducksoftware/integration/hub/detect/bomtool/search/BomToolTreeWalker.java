@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -34,6 +35,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
@@ -53,7 +55,7 @@ public class BomToolTreeWalker {
     private final Boolean bomToolSearchExclusionDefaults;
     private final Boolean bomToolContinueSearch;
     private final int maximumDepth;
-
+    
     private List<ApplicableDirectoryResult> results = new ArrayList<>();
 
     public BomToolTreeWalker(final List<String> excludedDirectoriesBomToolSearch, Boolean bomToolSearchExclusionDefaults, final Boolean bomToolContinueSearch, final int maximumDepth) {
@@ -126,11 +128,15 @@ public class BomToolTreeWalker {
                 return !matchesExcludedDirectory;
             };
 
-            return Files.list(directory.toPath())
-                           .map(path -> path.toFile())
-                           .filter(file -> file.isDirectory())
-                           .filter(excludeDirectoriesPredicate)
-                           .collect(Collectors.toList());
+            List<File> subDirectories;
+            try (Stream<Path> stream = Files.list(directory.toPath())) {
+                subDirectories = stream.map(path -> path.toFile())
+                                         .filter(file -> file.isDirectory())
+                                         .filter(excludeDirectoriesPredicate)
+                                         .collect(Collectors.toList());
+            }
+
+            return subDirectories;
         } catch (IOException e) {
             throw new DetectUserFriendlyException(String.format("Could not get the subdirectories for %s. %s", directory.getAbsolutePath(), e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
         }
