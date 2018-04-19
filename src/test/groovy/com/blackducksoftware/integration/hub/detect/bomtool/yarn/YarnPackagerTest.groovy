@@ -115,4 +115,5 @@ class YarnPackagerTest {
         assertEquals(0, root.children[1].children.size())
         assertEquals(result, ((LinkMetadata) root.children[1].metadata).linkNode)
     }
+
 }

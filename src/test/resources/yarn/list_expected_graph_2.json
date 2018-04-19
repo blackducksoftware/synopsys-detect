@@ -1,0 +1,36 @@
+{
+  "externalDataIdRelationships": {
+    "http:npm/ajv/5_5_2": [
+      "http:npm/co/4_6_0",
+      "http:npm/hoek/4_2_1",
+      "http:npm/tr46/0_0_3",
+      "http:npm/cssstyle/0_2_37"
+    ]
+  },
+  "dependencySummaries": {
+    "http:npm/ajv/5_5_2": {
+      "name": "ajv",
+      "version": "5.5.2"
+    },
+    "http:npm/co/4_6_0": {
+      "name": "co",
+      "version": "4.6.0"
+    },
+    "http:npm/tr46/0_0_3": {
+      "name": "tr46",
+      "version": "0.0.3"
+    },
+    "http:npm/cssstyle/0_2_37": {
+      "name": "cssstyle",
+      "version": "0.2.37"
+    },
+    "http:npm/hoek/4_2_1": {
+      "name": "hoek",
+      "version": "4.2.1"
+    }
+  },
+  "rootExternalDataIds": [
+    "http:npm/ajv/5_5_2"
+  ]
+}
+
