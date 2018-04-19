@@ -84,10 +84,10 @@ class NpmBomTool extends BomTool implements NestedBomTool<NpmBomToolSearchResult
 
     public List<DetectCodeLocation> extractDetectCodeLocations(NpmBomToolSearchResult searchResult) {
         List<DetectCodeLocation> codeLocations = []
-        if (searchResult.npmExePath) {
-            codeLocations.addAll(extractFromCommand(searchResult))
-        } else if (searchResult.packageLockJson) {
+        if (searchResult.packageLockJson) {
             codeLocations.addAll(extractFromLockFile(searchResult.packageLockJson, searchResult.searchedDirectory))
+        } else if (searchResult.npmExePath) {
+            codeLocations.addAll(extractFromCommand(searchResult.searchedDirectory, searchResult.npmExePath))
         } else if (searchResult.shrinkwrapJson) {
             codeLocations.addAll(extractFromLockFile(searchResult.shrinkwrapJson, searchResult.searchedDirectory))
         }
@@ -119,7 +119,7 @@ class NpmBomTool extends BomTool implements NestedBomTool<NpmBomToolSearchResult
         [detectCodeLocation]
     }
 
-    private List<DetectCodeLocation> extractFromCommand(NpmBomToolSearchResult searchResult) {
+    private List<DetectCodeLocation> extractFromCommand(File directory, String npmExePath) {
         File npmLsOutputFile = detectFileManager.createFile(BomToolType.NPM, NpmBomTool.OUTPUT_FILE)
         File npmLsErrorFile = detectFileManager.createFile(BomToolType.NPM, NpmBomTool.ERROR_FILE)
 
@@ -128,7 +128,7 @@ class NpmBomTool extends BomTool implements NestedBomTool<NpmBomToolSearchResult
         if (!includeDevDeps) {
             exeArgs.add('-prod')
         }
-        Executable npmLsExe = new Executable(searchResult.searchedDirectory, searchResult.npmExePath, exeArgs)
+        Executable npmLsExe = new Executable(directory, npmExePath, exeArgs)
         executableRunner.executeToFile(npmLsExe, npmLsOutputFile, npmLsErrorFile)
 
         if (npmLsOutputFile.length() > 0) {
@@ -136,7 +136,7 @@ class NpmBomTool extends BomTool implements NestedBomTool<NpmBomToolSearchResult
                 logger.debug("Error when running npm ls -json command")
                 logger.debug(npmLsErrorFile.text)
             }
-            def detectCodeLocation = npmCliDependencyFinder.generateCodeLocation(searchResult.searchedDirectory.canonicalPath, npmLsOutputFile)
+            def detectCodeLocation = npmCliDependencyFinder.generateCodeLocation(directory.canonicalPath, npmLsOutputFile)
 
             return [detectCodeLocation]
         } else if (npmLsErrorFile.length() > 0) {

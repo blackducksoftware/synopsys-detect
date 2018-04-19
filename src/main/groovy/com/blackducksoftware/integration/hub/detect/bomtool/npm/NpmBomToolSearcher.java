@@ -23,33 +23,32 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.npm;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.search.BaseBomToolSearcher;
-import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolSearchResultFactory;
-import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnBomToolSearcher;
-import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
-import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.blackducksoftware.integration.hub.detect.bomtool.search.BaseBomToolSearcher;
+import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolSearchResultFactory;
+import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnBomToolSearcher;
+import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
+import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
+
 @Component
 public class NpmBomToolSearcher extends BaseBomToolSearcher<NpmBomToolSearchResult> {
-    private final Logger logger = LoggerFactory.getLogger(NpmBomToolSearcher.class);
-
     public static final String NODE_MODULES = "node_modules";
     public static final String PACKAGE_JSON = "package.json";
     public static final String PACKAGE_LOCK_JSON = "package-lock.json";
     public static final String SHRINKWRAP_JSON = "npm-shrinkwrap.json";
-
+    private final Logger logger = LoggerFactory.getLogger(NpmBomToolSearcher.class);
     @Autowired
     private YarnBomToolSearcher yarnBomToolSearcher;
 
@@ -60,7 +59,6 @@ public class NpmBomToolSearcher extends BaseBomToolSearcher<NpmBomToolSearchResu
             return BomToolSearchResultFactory.createNpmDoesNotApply();
         }
 
-        String npmExePath = null;
         final File packageLockJson = getDetectFileManager().findFile(directoryToSearch, NpmBomToolSearcher.PACKAGE_LOCK_JSON);
         final File shrinkwrapJson = getDetectFileManager().findFile(directoryToSearch, NpmBomToolSearcher.SHRINKWRAP_JSON);
 
@@ -69,43 +67,14 @@ public class NpmBomToolSearcher extends BaseBomToolSearcher<NpmBomToolSearchResu
         final boolean containsPackageLockJson = packageLockJson != null && packageLockJson.exists();
         final boolean containsShrinkwrapJson = shrinkwrapJson != null && shrinkwrapJson.exists();
 
-        if (containsPackageJson && !containsNodeModules) {
-            logger.warn(String.format("package.json was located in %s, but the node_modules folder was NOT located. Please run 'npm install' in that location and try again.", directoryToSearch.getAbsolutePath()));
-        } else if (containsPackageJson && containsNodeModules) {
-            npmExePath = findExecutablePath(ExecutableType.NPM, true, directoryToSearch, getDetectConfiguration().getNpmPath());
-            if (StringUtils.isBlank(npmExePath)) {
-                logger.warn(String.format("Could not find an %s executable", getExecutableManager().getExecutableName(ExecutableType.NPM)));
-            } else {
-                Executable npmVersionExe = null;
-                final List<String> arguments = new ArrayList<>();
-                arguments.add("-version");
-
-                String npmNodePath = getDetectConfiguration().getNpmNodePath();
-                if (StringUtils.isNotBlank(npmNodePath)) {
-                    final int lastSlashIndex = npmNodePath.lastIndexOf("/");
-                    if (lastSlashIndex >= 0) {
-                        npmNodePath = npmNodePath.substring(0, lastSlashIndex);
-                    }
-                    final Map<String, String> environmentVariables = new HashMap<>();
-                    environmentVariables.put("PATH", npmNodePath);
-
-                    npmVersionExe = new Executable(directoryToSearch, environmentVariables, npmExePath, arguments);
-                } else {
-                    npmVersionExe = new Executable(directoryToSearch, npmExePath, arguments);
-                }
-                try {
-                    final String npmVersion = getExecutableRunner().execute(npmVersionExe).getStandardOutput();
-                    logger.debug(String.format("Npm version %s", npmVersion));
-                } catch (final ExecutableRunnerException e) {
-                    logger.error(String.format("Could not run npm to get the version: %s", e.getMessage()));
-                    return BomToolSearchResultFactory.createNpmDoesNotApply();
-                }
+        String npmExePath = null;
+        if (containsPackageJson && containsNodeModules) {
+            String npmExePathToCheck = findExecutablePath(ExecutableType.NPM, true, directoryToSearch, getDetectConfiguration().getNpmPath());
+            if (validateNpm(directoryToSearch, npmExePathToCheck)) {
+                npmExePath = npmExePathToCheck;
             }
-        } else if (containsPackageLockJson) {
-            logger.info(String.format("Using %s", NpmBomToolSearcher.PACKAGE_LOCK_JSON));
-        } else if (containsShrinkwrapJson) {
-            logger.info(String.format("Using %s", NpmBomToolSearcher.SHRINKWRAP_JSON));
         }
+        logRelevantMessages(directoryToSearch, containsNodeModules, containsPackageJson, containsPackageLockJson, containsShrinkwrapJson, npmExePath);
 
         final boolean lockFileIsApplicable = containsShrinkwrapJson || containsPackageLockJson;
         final boolean isApplicable = lockFileIsApplicable || (containsNodeModules && StringUtils.isNotBlank(npmExePath));
@@ -115,6 +84,50 @@ public class NpmBomToolSearcher extends BaseBomToolSearcher<NpmBomToolSearchResu
         } else {
             return BomToolSearchResultFactory.createNpmDoesNotApply();
         }
+    }
+
+    private void logRelevantMessages(final File directoryToSearch, final boolean containsNodeModules, final boolean containsPackageJson, final boolean containsPackageLockJson, final boolean containsShrinkwrapJson, final String npmExePath) {
+        if (containsPackageLockJson) {
+            logger.info(String.format("Using %s", NpmBomToolSearcher.PACKAGE_LOCK_JSON));
+        } else if (containsPackageJson && !containsNodeModules && !containsShrinkwrapJson) {
+            logger.warn(String.format("package.json was located in %s, but the node_modules folder was NOT located. Please run 'npm install' in that location and try again.", directoryToSearch.getAbsolutePath()));
+        } else if (containsPackageJson && containsNodeModules) {
+            if (StringUtils.isBlank(npmExePath)) {
+                logger.warn(String.format("Could not find a valid %s executable", getExecutableManager().getExecutableName(ExecutableType.NPM)));
+            }
+        } else if (containsShrinkwrapJson) {
+            logger.info(String.format("Using %s", NpmBomToolSearcher.SHRINKWRAP_JSON));
+        }
+    }
+
+    private boolean validateNpm(final File directoryToSearch, final String npmExePath) {
+        if (StringUtils.isNotBlank(npmExePath)) {
+            Executable npmVersionExe = null;
+            final List<String> arguments = new ArrayList<>();
+            arguments.add("-version");
+
+            String npmNodePath = getDetectConfiguration().getNpmNodePath();
+            if (StringUtils.isNotBlank(npmNodePath)) {
+                final int lastSlashIndex = npmNodePath.lastIndexOf("/");
+                if (lastSlashIndex >= 0) {
+                    npmNodePath = npmNodePath.substring(0, lastSlashIndex);
+                }
+                final Map<String, String> environmentVariables = new HashMap<>();
+                environmentVariables.put("PATH", npmNodePath);
+
+                npmVersionExe = new Executable(directoryToSearch, environmentVariables, npmExePath, arguments);
+            } else {
+                npmVersionExe = new Executable(directoryToSearch, npmExePath, arguments);
+            }
+            try {
+                String npmVersion = getExecutableRunner().execute(npmVersionExe).getStandardOutput();
+                logger.debug(String.format("Npm version %s", npmVersion));
+                return true;
+            } catch (final ExecutableRunnerException e) {
+                logger.error(String.format("Could not run npm to get the version: %s", e.getMessage()));
+            }
+        }
+        return false;
     }
 
 }
