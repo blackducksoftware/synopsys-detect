@@ -30,7 +30,7 @@ class YarnDependencyData {
     static Map<String, String> getYarnDataAsMap(List<String> inputLines) {
         resolvedVersions = new HashMap<>()
 
-        String thisDependency = ""
+        List<String> thisDependency
         String thisVersion
 
         for (String line : inputLines) {
@@ -44,16 +44,29 @@ class YarnDependencyData {
 
             int level = YarnPackager.getLineLevel(line)
             if (level == 0) {
-                thisDependency = line.trim().replace("\"", "").replaceAll(":", "")
+                thisDependency = cleanAndSplit(line)
                 continue
             }
 
             if (level == 1 && line.trim().startsWith('version')) {
                 thisVersion = line.trim().split(' ')[1].replaceAll('"', '')
-                resolvedVersions.put(thisDependency, thisVersion)
-                resolvedVersions.put(thisDependency.split("@")[0] + "@" + thisVersion, thisVersion)
+                for (String dep : thisDependency) {
+                    resolvedVersions.put(dep, thisVersion)
+                }
+                resolvedVersions.put(thisDependency.get(0).split("@")[0] + "@" + thisVersion, thisVersion)
             }
         }
+    }
+
+    static List<String> cleanAndSplit(String s) {
+        List<String> lines = Arrays.asList(s.split(","))
+        List<String> result = new ArrayList<>()
+
+        for (String l : lines) {
+            result.add(l.trim().replaceAll("\"", "").replaceAll(":", ""))
+        }
+
+        result
     }
 
     static String getVersion(String key) {
