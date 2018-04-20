@@ -123,7 +123,7 @@ class NugetBomTool extends BomTool {
 
         def containsSolutionFile = detectFileManager.containsAllFiles(sourcePath, SOLUTION_PATTERN)
         def containsProjectFile = SUPPORTED_PROJECT_PATTERNS.any { String pattern ->
-            detectFileManager.containsAllFiles(pattern)
+            detectFileManager.containsAllFiles(sourcePath, pattern)
         }
 
         if (containsSolutionFile || containsProjectFile) {
