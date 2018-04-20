@@ -34,7 +34,6 @@ import com.blackducksoftware.integration.hub.detect.nameversion.builder.LinkedNa
 import com.blackducksoftware.integration.hub.detect.nameversion.builder.NameVersionNodeBuilder
 import com.blackducksoftware.integration.hub.detect.nameversion.metadata.LinkMetadata
 import groovy.transform.TypeChecked
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -43,8 +42,6 @@ import org.springframework.stereotype.Component
 class YarnPackager {
     @Autowired
     NameVersionNodeTransformer nameVersionNodeTransformer
-
-    private final org.slf4j.Logger logger = LoggerFactory.getLogger(YarnPackager.class)
 
     DependencyGraph parseYarnLock(List<String> yarnLockText) {
         def rootNode = new NameVersionNode()
