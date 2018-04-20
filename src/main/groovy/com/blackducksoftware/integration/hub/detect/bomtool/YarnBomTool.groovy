@@ -30,6 +30,7 @@ import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnDependencyData
 import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnPackager
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
@@ -88,7 +89,7 @@ class YarnBomTool extends BomTool {
         yarnExePath = findExecutablePath(ExecutableType.YARN, true, detectConfiguration.getYarnPath())
 
         if (detectConfiguration.yarnProductionDependenciesOnly) {
-            dependencyGraph = extractGraphFromYarnListCommand(yarnExePath)
+            dependencyGraph = parseYarnList(readYarnListAsLines(yarnExePath))
         } else {
             dependencyGraph = yarnPackager.parseYarnLock(yarnLockText)
         }
@@ -99,7 +100,7 @@ class YarnBomTool extends BomTool {
         return [detectCodeLocation]
     }
 
-    DependencyGraph extractGraphFromYarnListCommand(String yarnExePath) {
+    List<String> readYarnListAsLines(String yarnExePath) {
         File yarnListOutputFile = detectFileManager.createFile(BomToolType.YARN, OUTPUT_FILE)
         File yarnListErrorFile = detectFileManager.createFile(BomToolType.YARN, ERROR_FILE)
 
@@ -117,19 +118,19 @@ class YarnBomTool extends BomTool {
             }
         }
 
-        extractGraphFromYarnListFile(yarnListOutputFile.readLines())
+        yarnListOutputFile.readLines()
 
     }
 
-    DependencyGraph extractGraphFromYarnListFile(List yarnListAsList) {
+    DependencyGraph parseYarnList(List yarnListAsList) {
+        YarnDependencyData yarnData = new YarnDependencyData()
         MutableDependencyGraph graph = new MutableMapDependencyGraph()
         ExternalId extId = new ExternalId(Forge.NPM)
         UUID rndUUID = UUID.randomUUID()
         String rootName = "detectRootNode - ${rndUUID}"
         extId.name = rootName
-        Dependency root = new Dependency(rootName, extId)
 
-        Map<String, String> componentVersions = getYarnLockAsMap(yarnLockText)
+        yarnData.getYarnDataAsMap(yarnLockText)
 
         int depth
         Dependency currentDep, parentDep
@@ -145,13 +146,13 @@ class YarnBomTool extends BomTool {
             depth = getDepth(line)
 
             if (depth == 0) {
-                currentDep = getDependencyFromLine(line, componentVersions)
+                currentDep = getDependencyFromLine(line, yarnData)
                 graph.addChildToRoot(currentDep)
                 parentDep = currentDep
             }
 
             if (depth >= 1) {
-                currentDep = getDependencyFromLine(line, componentVersions)
+                currentDep = getDependencyFromLine(line, yarnData)
                 logger.debug(currentDep.name + "@" + currentDep.version + " is being added as a child of " + parentDep.name + "@" + parentDep.version)
                 graph.addChildWithParent(currentDep, parentDep)
             }
@@ -160,47 +161,10 @@ class YarnBomTool extends BomTool {
         graph
     }
 
-    static HashMap<String, String> getYarnLockAsMap(List<String> yarnLockText) {
-        Map<String, String> result = new HashMap<>()
-        String thisDependency = ""
-        String thisVersion
-
-        for (String line : yarnLockText) {
-            if (!line.trim()) {
-                continue
-            }
-
-            if (line.trim().startsWith('#')) {
-                continue
-            }
-
-            int level = YarnPackager.getLineLevel(line)
-            if (level == 0) {
-                thisDependency = line.trim().replace("\"", "").replaceAll(":", "")
-                continue
-            }
-
-            if (level == 1 && line.trim().startsWith('version')) {
-                thisVersion = line.trim().split(' ')[1].replaceAll('"', '')
-                result.put(thisDependency, thisVersion)
-                result.put(thisDependency.split("@")[0] + "@" + thisVersion, thisVersion)
-            }
-        }
-
-        result
-    }
-
-    private Dependency getDependencyFromLine(String line, Map<String, String> compVersions) {
+    private Dependency getDependencyFromLine(String line, YarnDependencyData data) {
         String fuzzyName = grabFuzzyName(line)
         String name = fuzzyName.split("@")[0]
-        String version
-
-        if (compVersions.containsKey(fuzzyName)) {
-            version = compVersions.get(fuzzyName)
-        } else {
-            version = fuzzyName.split("@")[1]
-            logger.debug("Couldn't find the resolved version of " + fuzzyName + "in yarn lock. Using " + version + ".")
-        }
+        String version = data.getVersion(fuzzyName)
 
         logger.debug("Found version " + version + " for " + fuzzyName)
 
@@ -221,7 +185,6 @@ class YarnBomTool extends BomTool {
     }
 
     static String grabFuzzyName(String line) {
-        // TODO TEST THIS!!
         // e.g.
         // ├─ whatwg-url@4.8.0 >> whatwg-url@4.8.0
         // OR
