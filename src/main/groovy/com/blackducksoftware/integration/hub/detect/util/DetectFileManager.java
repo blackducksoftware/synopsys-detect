@@ -82,7 +82,7 @@ public class DetectFileManager {
     public File createDirectory(final File directory, final String newDirectoryName, final boolean allowDelete) {
         final File newDirectory = new File(directory, newDirectoryName);
         newDirectory.mkdir();
-        if (detectConfiguration.getCleanupBomToolFiles() && allowDelete) {
+        if (detectConfiguration.getCleanupDetectFiles() && allowDelete) {
             directoriesToCleanup.add(newDirectory);
         }
 
@@ -91,7 +91,7 @@ public class DetectFileManager {
 
     public File createFile(final File directory, final String filename) {
         final File newFile = new File(directory, filename);
-        if (detectConfiguration.getCleanupBomToolFiles()) {
+        if (detectConfiguration.getCleanupDetectFiles()) {
             newFile.deleteOnExit();
         }
         return newFile;
@@ -133,6 +133,10 @@ public class DetectFileManager {
         final File sourceDirectory = new File(sourcePath);
         final File relativeDirectory = new File(sourceDirectory, relativePath);
         return relativeDirectory.isDirectory();
+    }
+
+    public boolean containsAllFiles(final File sourcePath, final String... filenamePatterns) {
+        return fileFinder.containsAllFiles(sourcePath, filenamePatterns);
     }
 
     public boolean containsAllFiles(final String sourcePath, final String... filenamePatterns) {

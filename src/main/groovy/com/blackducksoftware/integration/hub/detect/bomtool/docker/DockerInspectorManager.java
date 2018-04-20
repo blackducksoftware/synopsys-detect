@@ -62,7 +62,7 @@ public class DockerInspectorManager {
     private File dockerInspectorShellScript;
     private String inspectorVersion;
 
-    String getInspectorVersion(final String bashExecutablePath) throws IOException, ExecutableRunnerException, DetectUserFriendlyException {
+    public String getInspectorVersion(final String bashExecutablePath) throws IOException, ExecutableRunnerException, DetectUserFriendlyException {
         if (StringUtils.isBlank(this.inspectorVersion)) {
             if ("latest".equalsIgnoreCase(this.detectConfiguration.getDockerInspectorVersion())) {
                 final File dockerPropertiesFile = this.detectFileManager.createFile(BomToolType.DOCKER, "application.properties");
@@ -84,7 +84,7 @@ public class DockerInspectorManager {
         return this.inspectorVersion;
     }
 
-    private File getShellScript() throws DetectUserFriendlyException {
+    protected File getShellScript() throws DetectUserFriendlyException {
         if (null == this.dockerInspectorShellScript) {
             try {
                 final File shellScriptFile;

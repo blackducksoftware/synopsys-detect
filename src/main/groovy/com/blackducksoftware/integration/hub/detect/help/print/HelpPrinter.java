@@ -24,92 +24,108 @@
 package com.blackducksoftware.integration.hub.detect.help.print;
 
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.help.ArgumentState;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 
 @Component
 public class HelpPrinter {
 
-    public void printHelpMessage(final PrintStream printStream, final List<DetectOption> options) {
-        final List<String> helpMessagePieces = new ArrayList<>();
-        helpMessagePieces.add("");
+    @Autowired
+    private HelpOptionPrinter optionPrinter;
+    
+    @Autowired
+    private HelpDetailedOptionPrinter detailPrinter;
+    
+    public void printAppropriateHelpMessage(final PrintStream printStream, final List<DetectOption> options, ArgumentState state) {
+        final HelpTextWriter writer = new HelpTextWriter();
+        
+        List<String> allPrintGroups = getPrintGroups(options);
 
-        final List<String> headerColumns = Arrays.asList("Property Name", "Default", "Description");
-        final String headerText = formatColumns(headerColumns, 51, 30, 95);
-        helpMessagePieces.add(headerText);
-        helpMessagePieces.add(StringUtils.repeat('_', 175));
-
-        String group = null;
-
-        for (final DetectOption detectValue : options) {
-            final String currentGroup = detectValue.getGroup();
-            if (group == null) {
-                group = currentGroup;
-            } else if (!group.equals(currentGroup)) {
-                helpMessagePieces.add("");
-                group = currentGroup;
-            }
-
-            final List<String> bodyColumns = Arrays.asList("--" + detectValue.getKey(), detectValue.getDefaultValue(), detectValue.getDescription());
-            final String bodyText = formatColumns(bodyColumns, 51, 30, 95);
-            helpMessagePieces.add(bodyText);
-        }
-        helpMessagePieces.add("");
-        helpMessagePieces.add("Usage : ");
-        helpMessagePieces.add("\t--<property name>=<value>");
-        helpMessagePieces.add("");
-
-        printMessage(printStream, helpMessagePieces);
-    }
-
-    private void printMessage(final PrintStream printStream, final List<String> message) {
-        printStream.println(String.join(System.lineSeparator(), message));
-    }
-
-    private String formatColumns(final List<String> columns, final int... columnWidths) {
-        final StringBuilder createColumns = new StringBuilder();
-        final List<String> columnfirstRow = new ArrayList<>();
-        final List<String> columnRemainingRows = new ArrayList<>();
-        for (int i = 0; i < columns.size(); i++) {
-            if (columns.get(i).length() < columnWidths[i]) {
-                columnfirstRow.add(columns.get(i));
-                columnRemainingRows.add("");
-            } else {
-                final String firstRow = columns.get(i).substring(0, columnWidths[i]);
-                int endOfWordIndex = firstRow.lastIndexOf(' ');
-                if (endOfWordIndex == -1) {
-                    endOfWordIndex = columnWidths[i] - 1;
-                    columnfirstRow.add(firstRow.substring(0, endOfWordIndex) + " ");
+        if (state.isVerboseHelpMessage) {
+            optionPrinter.printOptions(writer, options, null);
+        }else {
+            if (state.parsedValue != null) {
+                if (isProperty(options, state.parsedValue)) {
+                    printDetailedHelp(writer, options, state.parsedValue);
+                } else if (isPrintGroup(allPrintGroups, state.parsedValue)){
+                    printHelpFilteredByPrintGroup(writer, options, state.parsedValue);
                 } else {
-                    columnfirstRow.add(firstRow.substring(0, endOfWordIndex));
+                    printHelpFilteredBySearchTerm(writer, options, state.parsedValue);
                 }
-
-                columnRemainingRows.add(columns.get(i).substring(endOfWordIndex).trim());
+            }else {
+                printDefaultHelp(writer, options);
             }
         }
-
-        for (int i = 0; i < columnfirstRow.size(); i++) {
-            createColumns.append(StringUtils.rightPad(columnfirstRow.get(i), columnWidths[i], " "));
+        
+        optionPrinter.printStandardFooter(writer, getPrintGroupText(allPrintGroups));
+        
+        writer.write(printStream);
+    }
+    
+    private void printDetailedHelp(final HelpTextWriter writer, final List<DetectOption> options, String optionName) {
+        DetectOption option = options.stream()
+                .filter(it -> it.getKey().equals(optionName))
+                .findFirst().orElse(null);
+        
+        if (option == null) {
+            writer.println("Could not find option named: " + optionName);
+        } else {
+            detailPrinter.printDetailedOption(writer, option);
         }
+    }
+    
+    private void printDefaultHelp(final HelpTextWriter writer, final List<DetectOption> options) {
+        printHelpFilteredByPrintGroup(writer, options, DetectConfiguration.PRINT_GROUP_DEFAULT);
+    }
+    
+    private void printHelpFilteredByPrintGroup(final HelpTextWriter writer, final List<DetectOption> options, String filterGroup) {
+        String notes = "Showing help only for: " + filterGroup;
+        
+        List<DetectOption> filteredOptions = options.stream()
+                .filter(it -> it.getHelp().groups.stream().anyMatch(printGroup -> printGroup.equalsIgnoreCase(filterGroup)))
+                .sorted((o1, o2) -> o1.getKey().compareTo(o2.getKey()))
+                .collect(Collectors.toList());
+        
+        optionPrinter.printOptions(writer, filteredOptions, notes);
+    }
+    
+    private void printHelpFilteredBySearchTerm(final HelpTextWriter writer, final List<DetectOption> options, String searchTerm) {
+        String notes = "Showing help only for fields that contain: " + searchTerm;
 
-        if (!allColumnsEmpty(columnRemainingRows)) {
-            createColumns.append(System.lineSeparator() + formatColumns(columnRemainingRows, columnWidths));
-        }
-        return createColumns.toString();
+        List<DetectOption> filteredOptions = options.stream()
+                .filter(it -> it.getKey().contains(searchTerm))
+                .collect(Collectors.toList());
+        
+        optionPrinter.printOptions(writer, filteredOptions, notes);
+    }
+    
+    private boolean isPrintGroup (List<String> allPrintGroups, String filterGroup) {
+        return allPrintGroups.contains(filterGroup);
+    }
+    
+    private boolean isProperty (List<DetectOption> allOptions, String filterTerm) {
+        return allOptions.stream()
+                .map(it -> it.getKey())
+                .anyMatch(it -> it.equals(filterTerm));
+    }
+    
+    private List<String> getPrintGroups(List<DetectOption> options) {
+        return options.stream()
+                .flatMap(it -> it.getHelp().groups.stream())
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
+    }
+    
+    private String getPrintGroupText(List<String> printGroups) {
+        return printGroups.stream().collect(Collectors.joining(","));
     }
 
-    private boolean allColumnsEmpty(final List<String> columns) {
-        for (final String column : columns) {
-            if (!column.isEmpty()) {
-                return false;
-            }
-        }
-        return true;
-    }
 }

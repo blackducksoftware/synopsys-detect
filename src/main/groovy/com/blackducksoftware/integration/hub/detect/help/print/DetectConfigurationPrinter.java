@@ -24,92 +24,98 @@
 package com.blackducksoftware.integration.hub.detect.help.print;
 
 import java.io.PrintStream;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.DetectInfo;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
+import com.blackducksoftware.integration.hub.detect.help.DetectOption.FinalValueType;
 
 public class DetectConfigurationPrinter {
 
     public void print(final PrintStream printStream, final DetectInfo detectInfo, final DetectConfiguration detectConfiguration, final List<DetectOption> detectOptions)
-            throws IllegalArgumentException, IllegalAccessException {
+            throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
         printStream.println("");
         printStream.println("Current property values:");
         printStream.println("--property = value [notes]");
         printStream.println(StringUtils.repeat("-", 60));
-        List<Field> annotatedProperties = new ArrayList<>();
-        final Field[] propertyFields = DetectConfiguration.class.getDeclaredFields();
-        for (final Field propertyField : propertyFields) {
-            final Optional<Annotation> foundField = Arrays.stream(propertyField.getAnnotations())
-                    .filter(annotation -> annotation.annotationType() == Value.class)
-                    .findFirst();
-            final int modifiers = propertyField.getModifiers();
-            if (foundField.isPresent() && !Modifier.isStatic(modifiers) && Modifier.isPrivate(modifiers)) {
-                annotatedProperties.add(propertyField);
-            }
-        }
-        annotatedProperties = annotatedProperties.stream()
-                .sorted(new Comparator<Field>() {
-                    @Override
-                    public int compare(final Field field1, final Field field2) {
-                        return field1.getName().compareTo(field2.getName());
-                    }
-                })
+
+        final List<DetectOption> sortedOptions = detectOptions.stream()
+                .sorted((o1, o2)->o1.getKey().compareTo(o2.getKey()))
                 .collect(Collectors.toList());
 
-        for (final Field field : annotatedProperties) {
-            field.setAccessible(true);
-            final String fieldName = field.getName();
-            Object rawFieldValue;
-            rawFieldValue = field.get(detectConfiguration);
-            String fieldValue = "";
-            if (field.getType().isArray()) {
-                fieldValue = String.join(", ", (String[]) rawFieldValue);
-            } else {
-                if (rawFieldValue != null) {
-                    fieldValue = rawFieldValue.toString();
-                }
-            }
+        final List<DetectOption> deprecatedInUse = new ArrayList<>();
+
+        for (final DetectOption option : sortedOptions) {
+            final String fieldName = option.getFieldName();
+            String fieldValue = option.getFinalValue();
+            final FinalValueType fieldType = option.getFinalValueType();
             if (!StringUtils.isEmpty(fieldName) && !StringUtils.isEmpty(fieldValue) && "metaClass" != fieldName) {
                 final boolean containsPassword = fieldName.toLowerCase().contains("password") || fieldName.toLowerCase().contains("apitoken");
                 if (containsPassword) {
                     fieldValue = StringUtils.repeat("*", fieldValue.length());
                 }
-                DetectOption option = null;
-                for (final DetectOption opt : detectOptions) {
-                    if (opt.getFieldName().equals(fieldName)) {
-                        option = opt;
+
+                String text = "";
+                final String displayName = option.getKey();
+                if (fieldType == FinalValueType.SUPPLIED || fieldType == FinalValueType.DEFAULT || containsPassword) {
+                    if (fieldValue.trim().length() > 0) {
+                        text = displayName + " = " + fieldValue;
+                    }
+                } else if (fieldType == FinalValueType.INTERACTIVE) {
+                    text = displayName + " = " + fieldValue + " [interactive]";
+                } else if (fieldType == FinalValueType.LATEST) {
+                    text = displayName + " = " + fieldValue + " [latest]";
+                } else if (fieldType == FinalValueType.CALCULATED) {
+                    text = displayName + " = " + fieldValue + " [calculated]";
+                } else if (fieldType == FinalValueType.OVERRIDE) {
+                    text = displayName + " = " + fieldValue + " [" + option.getResolvedValue() + "]";
+                }
+
+                if (option.getAcceptableValues().size() > 0) {
+                    if (!option.isAcceptableValue(fieldValue)) {
+                        text += " [unknown value]";
                     }
                 }
-                if (option != null && !option.getResolvedValue().equals(fieldValue) && !containsPassword) {
-                    if (option.interactiveValue != null) {
-                        printStream.println(fieldName + " = " + fieldValue + " [interactive]");
-                    } else if (option.getResolvedValue().equals("latest")) {
-                        printStream.println(fieldName + " = " + fieldValue + " [latest]");
-                    } else if (option.getResolvedValue().trim().length() == 0) {
-                        printStream.println(fieldName + " = " + fieldValue + " [calculated]");
-                    } else {
-                        printStream.println(fieldName + " = " + fieldValue + " + [" + option.getResolvedValue() + "]");
-                    }
-                } else {
-                    printStream.println(fieldName + " = " + fieldValue);
+
+                if (option.getWarnings().size() > 0) {
+                    deprecatedInUse.add(option);
+                    text += "\t *** WARNING ***";
+                }
+                printStream.println(text);
+            }
+        }
+        final List<DetectOption> allWarnings = sortedOptions.stream().filter(it -> it.getWarnings().size() > 0).collect(Collectors.toList());
+        if (allWarnings.size() > 0) {
+            printStream.println("");
+            printStream.println(StringUtils.repeat("*", 60));
+            if (allWarnings.size() == 1) {
+                printStream.println("WARNING (" + allWarnings.size() + ")");
+            } else {
+                printStream.println("WARNINGS (" + allWarnings.size() + ")");
+            }
+            for (final DetectOption option : allWarnings) {
+                for (final String warning : option.getWarnings()) {
+                    printStream.println(option.getKey() + ": " + warning);
                 }
             }
-            field.setAccessible(false);
+            printStream.println(StringUtils.repeat("*", 60));
+            printStream.println("");
+        }else {
+            printStream.println(StringUtils.repeat("-", 60));
+            printStream.println("");
         }
-        printStream.println(StringUtils.repeat("-", 60));
-        printStream.println("");
     }
+
+    public DetectOption optionForField(final String fieldName, final List<DetectOption> detectOptions) {
+        return detectOptions.stream()
+                .filter(it -> it.getFieldName().equals(fieldName))
+                .findFirst()
+                .orElse(null);
+    }
+
 }

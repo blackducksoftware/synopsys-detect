@@ -26,29 +26,54 @@ package com.blackducksoftware.integration.hub.detect;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
+import com.blackducksoftware.integration.hub.detect.hub.OfflinePhoneHomeService;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.service.PhoneHomeService;
 import com.blackducksoftware.integration.hub.service.model.PhoneHomeResponse;
+import com.blackducksoftware.integration.log.IntLogger;
+import com.blackducksoftware.integration.log.Slf4jIntLogger;
+import com.blackducksoftware.integration.phonehome.PhoneHomeClient;
 import com.blackducksoftware.integration.phonehome.PhoneHomeRequestBody;
-import com.blackducksoftware.integration.phonehome.PhoneHomeRequestBodyBuilder;
-import com.blackducksoftware.integration.phonehome.enums.ThirdPartyName;
+import com.blackducksoftware.integration.phonehome.google.analytics.GoogleAnalyticsConstants;
+import com.blackducksoftware.integration.util.CIEnvironmentVariables;
+import com.google.gson.Gson;
 
 @Component
 public class DetectPhoneHomeManager {
+    private final Logger logger = LoggerFactory.getLogger(DetectPhoneHomeManager.class);
+
     @Autowired
     private DetectInfo detectInfo;
 
     @Autowired
     private DetectConfiguration detectConfiguration;
 
+    @Autowired
+    private Gson gson;
+
     private PhoneHomeService phoneHomeService;
     private PhoneHomeResponse phoneHomeResponse;
 
     public void init(final PhoneHomeService phoneHomeService) {
         this.phoneHomeService = phoneHomeService;
+    }
+
+    public void initOffline() throws DetectUserFriendlyException {
+        CIEnvironmentVariables ciEnvironmentVariables = new CIEnvironmentVariables();
+        ciEnvironmentVariables.putAll(System.getenv());
+
+        IntLogger intLogger = new Slf4jIntLogger(logger);
+
+        PhoneHomeClient phoneHomeClient = new PhoneHomeClient(intLogger, GoogleAnalyticsConstants.PRODUCTION_INTEGRATIONS_TRACKING_ID, detectConfiguration.getHubTimeout(), detectConfiguration.getHubProxyInfo(),
+                detectConfiguration.getHubTrustCertificate(), gson);
+
+        this.phoneHomeService = new OfflinePhoneHomeService(intLogger, phoneHomeClient, ciEnvironmentVariables);
     }
 
     public void startPhoneHome() {
@@ -67,13 +92,12 @@ public class DetectPhoneHomeManager {
 
     private void performPhoneHome(final Set<BomToolType> applicableBomToolTypes) {
         endPhoneHome();
-        // TODO When we begin to phone home in offline mode, we should re-address this section
         if (null != phoneHomeService) {
-            final PhoneHomeRequestBodyBuilder phoneHomeRequestBodyBuilder = createBuilder();
+            final PhoneHomeRequestBody.Builder phoneHomeRequestBodyBuilder = createBuilder();
 
             if (applicableBomToolTypes != null) {
                 final String applicableBomToolsString = StringUtils.join(applicableBomToolTypes, ", ");
-                phoneHomeRequestBodyBuilder.addToMetaDataMap("bomToolTypes", applicableBomToolsString);
+                phoneHomeRequestBodyBuilder.addToMetaData("bomToolTypes", applicableBomToolsString);
             }
 
             final PhoneHomeRequestBody phoneHomeRequestBody = phoneHomeRequestBodyBuilder.build();
@@ -92,12 +116,12 @@ public class DetectPhoneHomeManager {
         return phoneHomeResponse;
     }
 
-    private PhoneHomeRequestBodyBuilder createBuilder() {
-        final PhoneHomeRequestBodyBuilder phoneHomeRequestBodyBuilder = phoneHomeService.createInitialPhoneHomeRequestBodyBuilder(ThirdPartyName.DETECT, detectInfo.getDetectVersion(), detectInfo.getDetectVersion());
+    private PhoneHomeRequestBody.Builder createBuilder() {
+        final PhoneHomeRequestBody.Builder phoneHomeRequestBodyBuilder = phoneHomeService.createInitialPhoneHomeRequestBodyBuilder("hub-detect", detectInfo.getDetectVersion());
         detectConfiguration.getAdditionalPhoneHomePropertyNames().stream().forEach(propertyName -> {
             final String actualKey = getKeyWithoutPrefix(propertyName, DetectConfiguration.PHONE_HOME_PROPERTY_PREFIX);
             final String value = detectConfiguration.getDetectProperty(propertyName);
-            phoneHomeRequestBodyBuilder.addToMetaDataMap(actualKey, value);
+            phoneHomeRequestBodyBuilder.addToMetaData(actualKey, value);
         });
 
         return phoneHomeRequestBodyBuilder;

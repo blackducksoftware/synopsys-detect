@@ -75,6 +75,7 @@ public class DockerProperties {
         environmentVariables.put("BLACKDUCK_HUB_PROXY_PORT", this.detectConfiguration.getHubProxyPort());
         environmentVariables.put("BLACKDUCK_HUB_PROXY_USERNAME", this.detectConfiguration.getHubProxyUsername());
         environmentVariables.put("BLACKDUCK_HUB_PROXY_PASSWORD", this.detectConfiguration.getHubProxyPassword());
+        environmentVariables.put("BLACKDUCK_HUB_PROXY_IGNORED_HOSTS", this.detectConfiguration.getHubProxyIgnoredHosts());
         environmentVariables.put("BLACKDUCK_HUB_PROXY_NTLM_DOMAIN", this.detectConfiguration.getHubProxyNtlmDomain());
         environmentVariables.put("BLACKDUCK_HUB_PROXY_NTLM_WORKSTATION", this.detectConfiguration.getHubProxyNtlmWorkstation());
 

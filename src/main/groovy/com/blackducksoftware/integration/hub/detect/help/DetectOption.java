@@ -23,26 +23,56 @@
  */
 package com.blackducksoftware.integration.hub.detect.help;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class DetectOption {
     final String key;
     final String fieldName;
-    final String description;
     final Class<?> valueType;
-    final String group;
     final String originalValue;
     final String defaultValue;
     final String resolvedValue;
-    public String interactiveValue = null;
+    final boolean strictAcceptableValues;
+    final boolean caseSensitiveAcceptableValues;
+    final List<String> acceptableValues;
+    final DetectOptionHelp detectOptionHelp;
+    public List<String> warnings = new ArrayList<>();
+    public boolean requestedDeprecation = false;
+    String interactiveValue = null;
+    String finalValue = null;
+    FinalValueType finalValueType = FinalValueType.DEFAULT;
 
-    public DetectOption(final String key, final String fieldName, final String originalValue, final String resolvedValue, final String description, final Class<?> valueType, final String defaultValue, final String group) {
+    public DetectOption(final String key, final String fieldName, final String originalValue, final String resolvedValue, final Class<?> valueType, final String defaultValue, final boolean strictAcceptableValue,
+            final boolean caseSensitiveAcceptableValues, final String[] acceptableValues, final DetectOptionHelp detectOptionHelp) {
         this.key = key;
-        this.description = description;
         this.valueType = valueType;
-        this.group = group;
         this.defaultValue = defaultValue;
+        this.acceptableValues = Arrays.stream(acceptableValues).collect(Collectors.toList());
         this.fieldName = fieldName;
         this.originalValue = originalValue;
         this.resolvedValue = resolvedValue;
+        this.strictAcceptableValues = strictAcceptableValue;
+        this.caseSensitiveAcceptableValues = caseSensitiveAcceptableValues;
+        this.detectOptionHelp = detectOptionHelp;
+    }
+
+    public void requestDeprecation() {
+        requestedDeprecation = true;
+    }
+
+    public void addWarning(final String description) {
+        warnings.add(description);
+    }
+
+    public List<String> getWarnings() {
+        return warnings.stream().collect(Collectors.toList());
+    }
+
+    public boolean isRequestedDeprecation() {
+        return requestedDeprecation;
     }
 
     public String getInteractiveValue() {
@@ -53,6 +83,27 @@ public class DetectOption {
         this.interactiveValue = interactiveValue;
     }
 
+    public String getFinalValue() {
+        return finalValue;
+    }
+
+    public void setFinalValue(final String finalValue) {
+        this.finalValue = finalValue;
+    }
+
+    public void setFinalValue(final String finalValue, final FinalValueType finalValueType) {
+        setFinalValue(finalValue);
+        setFinalValueType(finalValueType);
+    }
+
+    public FinalValueType getFinalValueType() {
+        return finalValueType;
+    }
+
+    public void setFinalValueType(final FinalValueType finalValueType) {
+        this.finalValueType = finalValueType;
+    }
+
     public String getKey() {
         return key;
     }
@@ -61,16 +112,8 @@ public class DetectOption {
         return fieldName;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
     public Class<?> getValueType() {
         return valueType;
-    }
-
-    public String getGroup() {
-        return group;
     }
 
     public String getOriginalValue() {
@@ -83,6 +126,38 @@ public class DetectOption {
 
     public String getResolvedValue() {
         return resolvedValue;
+    }
+
+    public DetectOptionHelp getHelp() {
+        return detectOptionHelp;
+    }
+
+    public List<String> getAcceptableValues() {
+        return acceptableValues;
+    }
+
+    public boolean getCaseSensistiveAcceptableValues() {
+        return caseSensitiveAcceptableValues;
+    }
+
+    public boolean isAcceptableValue(final String value) {
+        return acceptableValues.stream()
+                       .anyMatch(it -> {
+                           if (caseSensitiveAcceptableValues) {
+                               return it.equals(value);
+                           } else {
+                               return it.equalsIgnoreCase(value);
+                           }
+                       });
+    }
+
+    public enum FinalValueType {
+        DEFAULT, //the final value is the value in the default attribute
+        INTERACTIVE, //the final value is from the interactive prompt
+        LATEST, //the final value was resolved from latest
+        CALCULATED, //the resolved value was not set and final value was set during init
+        SUPPLIED, //the final value most likely came from spring
+        OVERRIDE //the resolved value was set but during init a new value was set
     }
 
 }

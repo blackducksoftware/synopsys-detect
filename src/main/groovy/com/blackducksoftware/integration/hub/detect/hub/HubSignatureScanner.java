@@ -135,9 +135,9 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
             scanPathCallables.add(scanPathCallable);
         }
 
-        final List<Future<ProjectVersionWrapper>> submittedScanPathCallables = new ArrayList<>();
         final ExecutorService pool = Executors.newFixedThreadPool(detectConfiguration.getHubSignatureScannerParallelProcessors());
         try {
+            final List<Future<ProjectVersionWrapper>> submittedScanPathCallables = new ArrayList<>();
             for (final ScanPathCallable scanPathCallable : scanPathCallables) {
                 submittedScanPathCallables.add(pool.submit(scanPathCallable));
             }
@@ -149,7 +149,6 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
             }
         } catch (ExecutionException e) {
             throw new DetectUserFriendlyException(String.format("Encountered a problem waiting for a scan to finish. %s", e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
-
         } finally {
             // get() was called on every java.util.concurrent.Future, no need to wait any longer
             pool.shutdownNow();
@@ -264,7 +263,7 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
         hubScanConfigBuilder.setToolsDir(toolsDirectory);
         hubScanConfigBuilder.setWorkingDirectory(scannerDirectory);
         hubScanConfigBuilder.addScanTargetPath(canonicalPath);
-        hubScanConfigBuilder.setCleanupLogsOnSuccess(detectConfiguration.getCleanupBomToolFiles());
+        hubScanConfigBuilder.setCleanupLogsOnSuccess(detectConfiguration.getCleanupDetectFiles());
         hubScanConfigBuilder.setDryRun(detectConfiguration.getHubSignatureScannerDryRun());
         hubScanConfigBuilder.setSnippetModeEnabled(detectConfiguration.getHubSignatureScannerSnippetMode());
 

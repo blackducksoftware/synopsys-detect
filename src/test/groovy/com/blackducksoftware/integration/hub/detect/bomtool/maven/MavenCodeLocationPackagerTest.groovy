@@ -1,12 +1,12 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.maven
 
-import static org.junit.Assert.*
-
-import org.junit.Test
-
+import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
+import org.junit.Test
+
+import static org.junit.Assert.*
 
 class MavenCodeLocationPackagerTest {
     private TestUtil testUtil = new TestUtil()
@@ -30,6 +30,12 @@ class MavenCodeLocationPackagerTest {
     }
 
     @Test
+    public void extractCodeLocationsTestTeamCityWithUnpackDependencies() {
+        final String mavenOutputText = testUtil.getResourceAsUTF8String('/maven/hubTeamcityOutputWithDependencyUnpack.txt')
+        createNewCodeLocationTest(mavenOutputText, '/maven/hubTeamCityCodeLocation.json', 5, "", "")
+    }
+
+    @Test
     public void extractCodeLocationsTestTeamCityIncludedModules() {
         final String mavenOutputText = testUtil.getResourceAsUTF8String('/maven/hubTeamcityOutput.txt')
         createNewCodeLocationTest(mavenOutputText, '/maven/hubTeamCityIncludedCodeLocation.json', 1, "", "hub-teamcity-agent")
@@ -47,13 +53,198 @@ class MavenCodeLocationPackagerTest {
         createNewCodeLocationTest(mavenOutputText, '/maven/sonarStashCorruptCodeLocation.json')
     }
 
+    @Test
+    public void testParseProject() {
+        MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(new ExternalIdFactory())
+
+        Dependency dependency = mavenCodeLocationPackager.textToProject("stuff:things:jar:0.0.1")
+        assertNotNull(dependency)
+
+        dependency = mavenCodeLocationPackager.textToProject("stuff:things:jar:classifier:0.0.1")
+        assertNotNull(dependency)
+
+        dependency = mavenCodeLocationPackager.textToProject("stuff:things:jar")
+        assertNull(dependency)
+
+        dependency = mavenCodeLocationPackager.textToProject("stuff:things:jar:classifier:0.0.1:monkey")
+        assertNull(dependency)
+    }
+
+    @Test
+    public void testParseDependency() {
+        MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(new ExternalIdFactory())
+
+        Dependency dependency = mavenCodeLocationPackager.textToDependency("stuff:things:jar:0.0.1:compile")
+        assertNotNull(dependency)
+
+        dependency = mavenCodeLocationPackager.textToDependency("stuff:things:jar:classifier:0.0.1:test")
+        assertNotNull(dependency)
+
+        dependency = mavenCodeLocationPackager.textToDependency("stuff:things:jar")
+        assertNull(dependency)
+
+        dependency = mavenCodeLocationPackager.textToDependency("stuff:things:jar:classifier:0.0.1")
+        assertNull(dependency)
+    }
+
+    @Test
+    public void testIsLineRelevant() {
+        MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(null)
+
+        assertTrue(mavenCodeLocationPackager.isLineRelevant("weird garbage 3525356 [thingsINFO 346534623465] stuff"))
+
+        assertTrue(mavenCodeLocationPackager.isLineRelevant("[thingsINFO 346534623465]stuff"))
+
+        assertTrue(mavenCodeLocationPackager.isLineRelevant("[thingsINFO]  stuff"))
+
+        assertFalse(mavenCodeLocationPackager.isLineRelevant(" [INFO]     "))
+
+        assertFalse(mavenCodeLocationPackager.isLineRelevant("weird garbage 3525356 [thingsINFO 346534623465]"))
+
+        assertFalse(mavenCodeLocationPackager.isLineRelevant("[thingsINFO 346534623465]"))
+
+        assertFalse(mavenCodeLocationPackager.isLineRelevant("[thingsINFO]"))
+
+        assertFalse(mavenCodeLocationPackager.isLineRelevant(" [INFO]"))
+
+        assertFalse(mavenCodeLocationPackager.isLineRelevant(" "))
+
+        assertFalse(mavenCodeLocationPackager.isLineRelevant("[INFO] Downloaded"))
+
+        assertFalse(mavenCodeLocationPackager.isLineRelevant("[INFO] stuff and thingsDownloaded stuff and things"))
+
+        assertFalse(mavenCodeLocationPackager.isLineRelevant("[INFO] Downloading"))
+
+        assertFalse(mavenCodeLocationPackager.isLineRelevant("[INFO] stuff and things Downloadingstuff and things"))
+    }
+
+    @Test
+    public void testTrimLogLevel() {
+        MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(null)
+
+        String actualLine = "";
+        String expectedValue = "thing"
+
+        actualLine = mavenCodeLocationPackager.trimLogLevel("weird garbage 3525356 [thingsINFO 346534623465]" + expectedValue)
+        assertEquals(expectedValue, actualLine);
+
+        actualLine = mavenCodeLocationPackager.trimLogLevel("[thingsINFO 346534623465]" + expectedValue)
+        assertEquals(expectedValue, actualLine);
+
+        actualLine = mavenCodeLocationPackager.trimLogLevel("[thingsINFO]" + expectedValue)
+        assertEquals(expectedValue, actualLine);
+
+        actualLine = mavenCodeLocationPackager.trimLogLevel(" [INFO] " + expectedValue)
+        assertEquals(expectedValue, actualLine);
+    }
+
+    @Test
+    public void testIsProjectSection() {
+        MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(null)
+
+        assertFalse(mavenCodeLocationPackager.isProjectSection(" "))
+
+        assertFalse(mavenCodeLocationPackager.isProjectSection("       "))
+
+        assertFalse(mavenCodeLocationPackager.isProjectSection("---maven-dependency-plugin:"))
+
+        assertFalse(mavenCodeLocationPackager.isProjectSection("---maven-dependency-plugin:other      stuff"))
+
+        assertFalse(mavenCodeLocationPackager.isProjectSection("maven-dependency-plugin:tree      stuff"))
+
+        assertTrue(mavenCodeLocationPackager.isProjectSection("---maven-dependency-plugin:tree      stuff"))
+
+        assertTrue(mavenCodeLocationPackager.isProjectSection("things --- stuff maven-dependency-plugin garbage:tree      stuff"))
+
+        assertTrue(mavenCodeLocationPackager.isProjectSection("things --- stuff maven-dependency-plugin:tree      stuff"))
+
+        assertTrue(mavenCodeLocationPackager.isProjectSection("---maven-dependency-plugin:tree"))
+    }
+
+    @Test
+    public void testIsGav() {
+        MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(null)
+
+        assertFalse(mavenCodeLocationPackager.isGav(" "))
+
+        assertFalse(mavenCodeLocationPackager.isGav("       "))
+
+        assertFalse(mavenCodeLocationPackager.isGav("::::"))
+
+        assertFalse(mavenCodeLocationPackager.isGav(" : : : : "))
+
+        assertFalse(mavenCodeLocationPackager.isGav("group"))
+
+        assertFalse(mavenCodeLocationPackager.isGav("group:artifact"))
+
+        assertFalse(mavenCodeLocationPackager.isGav("group:artifact:version"))
+
+        assertFalse(mavenCodeLocationPackager.isGav("group-artifact:type-classifier-version:scope-garbage"))
+
+        assertFalse(mavenCodeLocationPackager.isGav("group:artifact::classifier:version: :garbage"))
+
+        assertTrue(mavenCodeLocationPackager.isGav("group:artifact:type:version"))
+
+        assertTrue(mavenCodeLocationPackager.isGav("group:artifact:type:classifier:version"))
+
+        assertTrue(mavenCodeLocationPackager.isGav("group:artifact:type:classifier:version:scope"))
+
+        assertTrue(mavenCodeLocationPackager.isGav("group:artifact:type:classifier:version:scope:garbage"))
+
+    }
+
+    @Test
+    public void testIndexOfEndOfSegments() {
+        MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(null)
+
+        assertEquals(-1, mavenCodeLocationPackager.indexOfEndOfSegments(""))
+
+        assertEquals(-1, mavenCodeLocationPackager.indexOfEndOfSegments("stuff and things"))
+
+        assertEquals(-1, mavenCodeLocationPackager.indexOfEndOfSegments("stuff and things", "things", "and"))
+
+        assertEquals(-1, mavenCodeLocationPackager.indexOfEndOfSegments("stuff and things", "things", "and", "stuff"))
+
+        assertEquals(5, mavenCodeLocationPackager.indexOfEndOfSegments("stuff and things", "stuff"))
+
+        assertEquals(9, mavenCodeLocationPackager.indexOfEndOfSegments("stuff and things", "stuff", "and"))
+
+        assertEquals(16, mavenCodeLocationPackager.indexOfEndOfSegments("stuff and things", "stuff", "and", "things"))
+
+        assertEquals(9, mavenCodeLocationPackager.indexOfEndOfSegments("stuff and things", "and"))
+
+        assertEquals(16, mavenCodeLocationPackager.indexOfEndOfSegments("stuff and things", "things"))
+    }
+
+    @Test
+    public void testDoesLineContainSegmentsInOrder() {
+        MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(null)
+
+        assertFalse(mavenCodeLocationPackager.doesLineContainSegmentsInOrder(""))
+
+        assertFalse(mavenCodeLocationPackager.doesLineContainSegmentsInOrder("stuff and things"))
+
+        assertFalse(mavenCodeLocationPackager.doesLineContainSegmentsInOrder("stuff and things", "things", "and"))
+
+        assertFalse(mavenCodeLocationPackager.doesLineContainSegmentsInOrder("stuff and things", "things", "and", "stuff"))
+
+        assertTrue(mavenCodeLocationPackager.doesLineContainSegmentsInOrder("stuff and things", "stuff"))
+
+        assertTrue(mavenCodeLocationPackager.doesLineContainSegmentsInOrder("stuff and things", "stuff", "and"))
+
+        assertTrue(mavenCodeLocationPackager.doesLineContainSegmentsInOrder("stuff and things", "stuff", "and", "things"))
+
+        assertTrue(mavenCodeLocationPackager.doesLineContainSegmentsInOrder("stuff and things", "and"))
+
+        assertTrue(mavenCodeLocationPackager.doesLineContainSegmentsInOrder("stuff and things", "things"))
+    }
+
     private void createNewCodeLocationTest(String mavenOutputText, String expectedResourcePath) {
         createNewCodeLocationTest(mavenOutputText, expectedResourcePath, 1, "", "")
     }
 
     private void createNewCodeLocationTest(String mavenOutputText, String expectedResourcePath, int numberOfCodeLocations, String excludedModules, String includedModules) {
-        def mavenCodeLocationPackager = new MavenCodeLocationPackager()
-        mavenCodeLocationPackager.externalIdFactory = new ExternalIdFactory()
+        def mavenCodeLocationPackager = new MavenCodeLocationPackager(new ExternalIdFactory())
         List<DetectCodeLocation> codeLocations = mavenCodeLocationPackager.extractCodeLocations('/test/path', mavenOutputText, excludedModules, includedModules)
         assertEquals(numberOfCodeLocations, codeLocations.size())
         DetectCodeLocation codeLocation = codeLocations[0]
