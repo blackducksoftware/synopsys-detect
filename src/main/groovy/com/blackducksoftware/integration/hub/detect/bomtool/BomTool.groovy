@@ -25,6 +25,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool
 
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
+import com.blackducksoftware.integration.hub.detect.exception.BomToolException
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
@@ -61,17 +62,15 @@ abstract class BomTool {
     abstract boolean isBomToolApplicable()
 
     /**
-     * A BomTool is responsible for doing its best to create at least one, but possibly many, DetectCodeLocations.
-     */
+     * A BomTool is responsible for doing its best to create at least one, but possibly many, DetectCodeLocations.*/
     //    abstract List<DetectCodeLocation> extractDetectCodeLocations()
-    List<DetectCodeLocation> extractDetectCodeLocations() {
+    List<DetectCodeLocation> extractDetectCodeLocations() throws BomToolException {
         []
     }
 
     /**
-     * BomTool's should override this method if they can determine the correct project name and version
-     */
-    List<DetectCodeLocation> extractDetectCodeLocations(DetectProject detectProject) {
+     * BomTool's should override this method if they can determine the correct project name and version*/
+    List<DetectCodeLocation> extractDetectCodeLocations(DetectProject detectProject) throws BomToolException {
         extractDetectCodeLocations()
     }
 

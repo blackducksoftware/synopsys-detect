@@ -43,6 +43,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Lazy;
 
 import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.api.generated.view.ProjectVersionView;
@@ -150,7 +151,7 @@ public class Application implements ApplicationRunner {
             final String[] applicationArgs = applicationArguments.getSourceArgs();
             final ArgumentState argumentState = argumentStateParser.parseArgs(applicationArgs);
 
-            if (argumentState.isHelp) {
+            if (argumentState.isHelp || argumentState.isDeprecatedHelp || argumentState.isVerboseHelp) {
                 helpPrinter.printAppropriateHelpMessage(System.out, options, argumentState);
                 return;
             }
@@ -179,11 +180,18 @@ public class Application implements ApplicationRunner {
                 detectConfigurationPrinter.print(System.out, detectInfo, detectConfiguration, options);
             }
 
+            if (detectConfiguration.getFailOnConfigWarning()) {
+                boolean foundConfigWarning = options.stream().anyMatch(option -> option.getWarnings().size() > 0);
+                if (foundConfigWarning) {
+                    throw new DetectUserFriendlyException("Failing because the configuration had warnings.", ExitCodeType.FAILURE_CONFIGURATION);
+                }
+            }
+
             final List<DetectOption> unacceptableDetectOtions = detectOptionManager.findUnacceptableValues();
             if (unacceptableDetectOtions.size() > 0) {
                 final DetectOption firstUnacceptableDetectOption = unacceptableDetectOtions.get(0);
-                final String msg = firstUnacceptableDetectOption.getKey() + ": Unknown value '" + firstUnacceptableDetectOption.getResolvedValue() + "', acceptable values are " + firstUnacceptableDetectOption.getAcceptableValues().stream()
-                        .collect(Collectors.joining(","));
+                final String msg = firstUnacceptableDetectOption.getKey() + ": Unknown value '" + firstUnacceptableDetectOption.getResolvedValue() + "', acceptable values are "
+                                           + firstUnacceptableDetectOption.getAcceptableValues().stream().collect(Collectors.joining(","));
                 throw new DetectUserFriendlyException(msg, ExitCodeType.FAILURE_GENERAL_ERROR);
             }
 
@@ -229,7 +237,7 @@ public class Application implements ApplicationRunner {
         final long end = System.currentTimeMillis();
         logger.info(String.format("Hub-Detect run duration: %s", DurationFormatUtils.formatPeriod(start, end, "HH'h' mm'm' ss's' SSS'ms'")));
         if (detectConfiguration.getForceSuccess() && exitCodeType.getExitCode() != 0) {
-            logger.warn("Forcing success: Exiting with 0. Desired exit code was ${exitCodeType.getExitCode()}.");
+            logger.warn(String.format("Forcing success: Exiting with 0. Desired exit code was %s.", exitCodeType.getExitCode()));
             System.exit(0);
         } else if (exitCodeType.getExitCode() != 0) {
             logger.error(String.format("Exiting with code %s - %s", exitCodeType.getExitCode(), exitCodeType.toString()));
@@ -266,8 +274,10 @@ public class Application implements ApplicationRunner {
         logger.error(e.getMessage());
     }
 
+    //Has to be lazy because we need to use the final values from detectConfiguration which are not ready immediately
+    @Lazy
     @Bean
-    public BomToolTreeWalker bomToolTreeSearcher() {
+    public BomToolTreeWalker bomToolTreeWalker() {
         return new BomToolTreeWalker(Arrays.asList(detectConfiguration.getBomToolSearchExclusion()), detectConfiguration.getBomToolSearchExclusionDefaults(), detectConfiguration.getBomToolContinueSearch(),
                 detectConfiguration.getBomToolSearchDepth());
     }

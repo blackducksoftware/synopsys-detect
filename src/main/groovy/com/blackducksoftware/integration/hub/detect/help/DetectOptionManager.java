@@ -41,7 +41,6 @@ import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
-import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption.FinalValueType;
 import com.blackducksoftware.integration.hub.detect.interactive.InteractiveOption;
 import com.blackducksoftware.integration.hub.detect.util.SpringValueUtils;
@@ -121,18 +120,18 @@ public class DetectOptionManager {
                 option.addWarning("As of version " + option.getHelp().deprecationVersion + " this property will be removed: " + option.getHelp().deprecation);
             }
         }
-        if (detectConfiguration.getFailOnConfigWarning()) {
-            boolean foundConfigWarning = detectOptions.stream().anyMatch(option -> option.getWarnings().size() > 0);
-            if (foundConfigWarning) {
-                throw new DetectUserFriendlyException("Failing because the configuration had warnings.", ExitCodeType.FAILURE_CONFIGURATION);
-            }
-        }
     }
 
     public String getCurrentValue(final DetectConfiguration detectConfiguration, final DetectOption detectOption) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
         final Field field = detectConfiguration.getClass().getDeclaredField(detectOption.getFieldName());
         field.setAccessible(true);
-        final Object rawFieldValue = field.get(detectConfiguration);
+        String fieldValue = getStringValue(detectConfiguration, field);
+        field.setAccessible(false);
+        return fieldValue;
+    }
+
+    private String getStringValue(Object obj, Field field) throws IllegalAccessException {
+        final Object rawFieldValue = field.get(obj);
         String fieldValue = "";
         if (field.getType().isArray()) {
             fieldValue = String.join(", ", (String[]) rawFieldValue);
@@ -141,7 +140,6 @@ public class DetectOptionManager {
                 fieldValue = rawFieldValue.toString();
             }
         }
-        field.setAccessible(false);
         return fieldValue;
     }
 
@@ -177,7 +175,7 @@ public class DetectOptionManager {
             resolvedValue = defaultValue;
             setValue(field, obj, defaultValue);
         } else if (hasValue) {
-            resolvedValue = field.get(obj).toString();
+            resolvedValue = getStringValue(obj, field);
         }
 
         final DetectOptionHelp help = processFieldHelp(field);
