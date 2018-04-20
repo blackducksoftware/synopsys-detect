@@ -52,6 +52,10 @@ build {
     }
 }
 
+test {
+    exclude 'com/blackducksoftware/integration/hub/detect/bomtool/hex/RebarParserTest.class'
+}
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
@@ -72,7 +76,7 @@ repositories {
 }
 
 dependencies {
-    compile ('com.blackducksoftware.integration:hub-common:29.1.1') {
+    compile('com.blackducksoftware.integration:hub-common:29.1.1') {
         exclude group: 'com.blackducksoftware.integration', module: 'integration-bdio'
     }
     compile 'com.blackducksoftware.integration:integration-bdio:13.0.0'

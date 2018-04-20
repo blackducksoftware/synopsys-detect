@@ -1,4 +1,4 @@
-package com.blackducksoftware.integration.hub.detect.bomtool.yarn;
+package com.blackducksoftware.integration.hub.detect.bomtool;
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
@@ -201,6 +201,7 @@ public class YarnBomToolTest {
 
 
         Map<String, String> output = getYarnLockAsMap(lines);
+        System.out.println(output);
 
         assertEquals("1.16.2", output.get("http-proxy@^1.8.1"));
         assertEquals("0.9.0", output.get("http-server@^0.9.0"));

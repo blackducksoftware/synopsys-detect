@@ -152,7 +152,7 @@ class YarnBomTool extends BomTool {
 
             if (depth >= 1) {
                 currentDep = getDependencyFromLine(line, componentVersions)
-                logger.debug(currentDep.name + " is being added as a child of " + parentDep.name)
+                logger.debug(currentDep.name + "@" + currentDep.version + " is being added as a child of " + parentDep.name + "@" + parentDep.version)
                 graph.addChildWithParent(currentDep, parentDep)
             }
         }
@@ -183,6 +183,7 @@ class YarnBomTool extends BomTool {
             if (level == 1 && line.trim().startsWith('version')) {
                 thisVersion = line.trim().split(' ')[1].replaceAll('"', '')
                 result.put(thisDependency, thisVersion)
+                result.put(thisDependency.split("@")[0] + "@" + thisVersion, thisVersion)
             }
         }
 
@@ -194,7 +195,13 @@ class YarnBomTool extends BomTool {
         String name = fuzzyName.split("@")[0]
         String version
 
-        version = compVersions.get(fuzzyName)
+        if (compVersions.containsKey(fuzzyName)) {
+            version = compVersions.get(fuzzyName)
+        } else {
+            version = fuzzyName.split("@")[1]
+            logger.debug("Couldn't find the resolved version of " + fuzzyName + "in yarn lock. Using " + version + ".")
+        }
+
         logger.debug("Found version " + version + " for " + fuzzyName)
 
         ExternalId extId = new ExternalId(Forge.NPM)
@@ -213,7 +220,7 @@ class YarnBomTool extends BomTool {
         Math.floorDiv(count - 2, 3)
     }
 
-    String grabFuzzyName(String line) {
+    static String grabFuzzyName(String line) {
         // TODO TEST THIS!!
         // e.g.
         // ├─ whatwg-url@4.8.0 >> whatwg-url@4.8.0
@@ -223,12 +230,8 @@ class YarnBomTool extends BomTool {
         // [a-zA-Z\d-]+@.+[\dx]$
         Pattern pattern = Pattern.compile("[ \\d.\\-a-zA-Z]+@.+")
         Matcher matcher = pattern.matcher(line)
-        boolean found = matcher.find()
+        matcher.find()
         String result = matcher.group(0).trim()
-        if (found) {
-            logger.debug("Checking '" + line + "'...")
-            logger.debug("Dependency found: '" + result + "'")
-        }
         result
     }
 
