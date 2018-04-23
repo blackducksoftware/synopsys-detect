@@ -356,7 +356,7 @@ public class DetectConfiguration {
     }
 
     private String getInspectorAirGapPath(final String inspectorLocationProperty, final String inspectorName) {
-        if (StringUtils.isNotBlank(inspectorLocationProperty)) {
+        if (StringUtils.isBlank(inspectorLocationProperty)) {
             try {
                 final File detectJar = new File(guessDetectJarLocation()).getCanonicalFile();
                 final File inspectorsDirectory = new File(detectJar.getParentFile(), "packaged-inspectors");
