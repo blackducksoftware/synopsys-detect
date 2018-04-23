@@ -141,6 +141,7 @@ public class DetectOption {
     }
 
     public boolean isAcceptableValue(final String value) {
+        //FIXME this is not working when the value is a comma separated list
         return acceptableValues.stream()
                        .anyMatch(it -> {
                            if (caseSensitiveAcceptableValues) {
