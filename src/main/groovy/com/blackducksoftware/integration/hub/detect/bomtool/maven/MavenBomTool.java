@@ -67,8 +67,8 @@ class MavenBomTool extends BomTool<MavenApplicableResult> {
 
     @Override
     public MavenApplicableResult isBomToolApplicable(final File directory) {
-        final File pomXmlFile = getDetectFileManager().findFile(directory, POM_FILENAME);
-        final File pomWrapperFile = getDetectFileManager().findFile(directory, POM_WRAPPER_FILENAME);
+        final File pomXmlFile = detectFileManager.findFile(directory, POM_FILENAME);
+        final File pomWrapperFile = detectFileManager.findFile(directory, POM_WRAPPER_FILENAME);
 
         final boolean foundPomXml = null != pomXmlFile && pomXmlFile.exists();
         final boolean foundPomWrapper = null != pomWrapperFile && pomWrapperFile.exists();
@@ -87,7 +87,7 @@ class MavenBomTool extends BomTool<MavenApplicableResult> {
 
     @Override
     public BomToolExtractionResult extractDetectCodeLocations(final MavenApplicableResult applicable) {
-        String mavenCommand = getDetectConfiguration().getMavenBuildCommand();
+        String mavenCommand = detectConfiguration.getMavenBuildCommand();
         if (StringUtils.isNotBlank(mavenCommand)) {
             mavenCommand = mavenCommand.replace("dependency:tree", "");
             if (StringUtils.isNotBlank(mavenCommand)) {
@@ -99,21 +99,21 @@ class MavenBomTool extends BomTool<MavenApplicableResult> {
         if (StringUtils.isNotBlank(mavenCommand)) {
             arguments.addAll(Arrays.asList(mavenCommand.split(" ")));
         }
-        if (StringUtils.isNotBlank(getDetectConfiguration().getMavenScope())) {
-            arguments.add(String.format("-Dscope=%s", getDetectConfiguration().getMavenScope()));
+        if (StringUtils.isNotBlank(detectConfiguration.getMavenScope())) {
+            arguments.add(String.format("-Dscope=%s", detectConfiguration.getMavenScope()));
         }
         arguments.add("dependency:tree");
 
         List<DetectCodeLocation> codeLocations = null;
         try {
             final Executable mvnExecutable = new Executable(applicable.getDirectory(), applicable.getMavenExe(), arguments);
-            final ExecutableOutput mvnOutput = getExecutableRunner().execute(mvnExecutable);
+            final ExecutableOutput mvnOutput = executableRunner.execute(mvnExecutable);
 
-            final String excludedModules = getDetectConfiguration().getMavenExcludedModuleNames();
-            final String includedModules = getDetectConfiguration().getMavenIncludedModuleNames();
+            final String excludedModules = detectConfiguration.getMavenExcludedModuleNames();
+            final String includedModules = detectConfiguration.getMavenIncludedModuleNames();
             codeLocations = mavenCodeLocationPackager.extractCodeLocations(applicable.getDirectoryString(), mvnOutput.getStandardOutput(), excludedModules, includedModules);
 
-            final List<File> additionalTargets = getDetectFileManager().findFilesToDepth(applicable.getDirectory(), "target", getDetectConfiguration().getSearchDepth());
+            final List<File> additionalTargets = detectFileManager.findFilesToDepth(applicable.getDirectory(), "target", detectConfiguration.getSearchDepth());
             if (null != additionalTargets && !additionalTargets.isEmpty()) {
                 for (final File additionalTarget : additionalTargets) {
                     hubSignatureScanner.registerPathToScan(ScanPathSource.MAVEN_SOURCE, additionalTarget);
@@ -122,19 +122,19 @@ class MavenBomTool extends BomTool<MavenApplicableResult> {
         } catch (ExecutableRunnerException | IntegrationException e) {
             throw new RuntimeException(e.getMessage(), e);
         }
-        return getBomToolExtractionResultsFactory().fromCodeLocations(codeLocations, getBomToolType(), applicable.getDirectory());
+        return bomToolExtractionResultsFactory.fromCodeLocations(codeLocations, getBomToolType(), applicable.getDirectory());
     }
 
     private String findMavenExecutablePath(final String directory) {
-        if (StringUtils.isNotBlank(getDetectConfiguration().getMavenPath())) {
-            return getDetectConfiguration().getMavenPath();
+        if (StringUtils.isNotBlank(detectConfiguration.getMavenPath())) {
+            return detectConfiguration.getMavenPath();
         }
 
-        final String wrapperPath = getExecutableManager().getExecutablePath(ExecutableType.MVNW, false, directory);
+        final String wrapperPath = executableManager.getExecutablePath(ExecutableType.MVNW, false, directory);
         if (StringUtils.isNotBlank(wrapperPath)) {
             return wrapperPath;
         }
 
-        return getExecutableManager().getExecutablePath(ExecutableType.MVN, true, directory);
+        return executableManager.getExecutablePath(ExecutableType.MVN, true, directory);
     }
 }
