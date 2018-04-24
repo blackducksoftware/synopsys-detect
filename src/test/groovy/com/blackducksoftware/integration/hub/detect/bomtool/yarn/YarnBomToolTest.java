@@ -183,5 +183,8 @@ public class YarnBomToolTest {
         input = "│  ├─ cssom@>= 0.3.2 < 0.4.0";
         assertEquals("cssom@>= 0.3.2 < 0.4.0", YarnBomTool.grabFuzzyName(input));
 
+        input = "│  ├─ name_with_underscores@1.1.0";
+        assertEquals("name_with_underscores@1.1.0", YarnBomTool.grabFuzzyName(input));
+
     }
 }

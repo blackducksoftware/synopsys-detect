@@ -206,7 +206,7 @@ class YarnBomTool extends BomTool implements NestedBomTool<BomToolSearchResult> 
         // │  ├─ tr46@~0.0.3 >> tr46@~0.0.3
 
         // [a-zA-Z\d-]+@.+[\dx]$
-        Pattern pattern = Pattern.compile("[ \\d.\\-a-zA-Z]+@.+")
+        Pattern pattern = Pattern.compile("[ \\d.\\-_a-zA-Z]+@.+")
         Matcher matcher = pattern.matcher(line)
         matcher.find()
         String result = matcher.group(0).trim()
