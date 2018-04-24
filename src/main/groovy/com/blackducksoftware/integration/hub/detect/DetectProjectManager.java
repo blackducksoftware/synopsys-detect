@@ -26,7 +26,6 @@ package com.blackducksoftware.integration.hub.detect;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -56,6 +55,8 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolApplicableRes
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolExtractionResult;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolExtractionResultsFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolFinder;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolFinderOptions;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolInspectorManager;
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
@@ -92,6 +93,9 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     private List<BomTool> bomTools;
 
     @Autowired
+    private List<BomToolInspectorManager> bomToolInspectorManagers;
+
+    @Autowired
     private HubSignatureScanner hubSignatureScanner;
 
     @Autowired
@@ -110,6 +114,16 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     private DetectPhoneHomeManager detectPhoneHomeManager;
 
     private boolean foundAnyBomTools;
+
+
+    //phases
+    // 1. Search for Applicable BOM Tools
+    //Why or why not did directory apply or not apply to BOM Tool?
+    // 2. Install Applicable Inspectors
+    //Were we able to resolve all inspectors for all that applied?
+    // 3. Extract Applicable Code Locations
+    //Were we able to extract any code locations?
+    // 4.
 
     public List<BomToolExtractionResult> extractResults(final List<BomToolApplicableResult> applicables) {
         final BomToolExtractionResultsFactory factory = new BomToolExtractionResultsFactory();
@@ -188,13 +202,27 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         return new ArrayList<>();
     }
 
+    private void installInspectors(final Set<BomToolType> applicable) {
+        bomToolInspectorManagers.stream()
+        .filter(it -> applicable.contains(it.getBomToolType()))
+        .forEach(it -> {
+            try {
+                it.install();
+            } catch (final DetectUserFriendlyException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
     public DetectProject createDetectProject() throws IntegrationException {
         final DetectProject detectProject = new DetectProject();
 
         final List<BomToolApplicableResult> sourcePathResults = findRootApplicable(new File(detectConfiguration.getSourcePath()));
 
+        final Set<BomToolType> applicableBomTools = sourcePathResults.stream().map(it -> it.getBomToolType()).collect(Collectors.toSet());
+        installInspectors(applicableBomTools);
+
         final List<BomToolExtractionResult> results = extractResults(sourcePathResults);
-        final Set<BomToolType> applicableBomTools = results.stream().map(it -> it.bomToolType).collect(Collectors.toSet());
 
         results.forEach(it -> {
             if (it.extractedCodeLocations.size() > 0) {
