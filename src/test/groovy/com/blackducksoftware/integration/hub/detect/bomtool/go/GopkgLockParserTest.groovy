@@ -11,17 +11,16 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.go
 
-import java.nio.charset.StandardCharsets
-
-import org.apache.commons.io.IOUtils
-import org.junit.Assert
-import org.junit.Test
-
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import org.apache.commons.io.IOUtils
+import org.junit.Assert
+import org.junit.Test
+
+import java.nio.charset.StandardCharsets
 
 class GopkgLockParserTest {
     Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create()

@@ -1,4 +1,4 @@
-package com.blackducksoftware.integration.hub.detect.bomtool;
+package com.blackducksoftware.integration.hub.detect.bomtool.yarn;
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;

@@ -1,13 +1,12 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.packagist
 
-import org.junit.Assert
-import org.junit.Test
-
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
+import org.junit.Assert
+import org.junit.Test
 
 class PackagistTest {
     private TestUtil testUtil = new TestUtil()

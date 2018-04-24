@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool
+package com.blackducksoftware.integration.hub.detect.bomtool.yarn
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph
@@ -30,6 +30,11 @@ import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
+import com.blackducksoftware.integration.hub.detect.bomtool.NestedBomTool
+import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolSearchResult
+import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolSearcher
+import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnBomToolSearcher
 import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnDependencyData
 import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnPackager
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
@@ -80,21 +85,21 @@ class YarnBomTool extends BomTool implements NestedBomTool<BomToolSearchResult> 
     }
 
     @Override
-    public boolean isBomToolApplicable() {
-        BomToolSearchResult searchResult = bomToolSearcher.getBomToolSearchResult(sourcePath);
+    boolean isBomToolApplicable() {
+        BomToolSearchResult searchResult = bomToolSearcher.getBomToolSearchResult(sourcePath)
         if (searchResult.isApplicable()) {
-            this.searchResult = searchResult;
-            return true;
+            this.searchResult = searchResult
+            return true
         }
 
-        return false;
+        return false
     }
 
-    List<DetectCodeLocation> extractDetectCodeLocations() {
+    List<DetectCodeLocation> extractDetectCodeLocations(BomToolSearchResult searchResult) {
         DependencyGraph dependencyGraph
         def detectCodeLocation
 
-        File yarnLockFile = detectFileManager.findFile(sourceDirectory, 'yarn.lock')
+        File yarnLockFile = detectFileManager.findFile(searchResult.searchedDirectory.canonicalPath, 'yarn.lock')
         yarnLockText = Files.readAllLines(yarnLockFile.toPath(), StandardCharsets.UTF_8)
         yarnExePath = findExecutablePath(ExecutableType.YARN, true, detectConfiguration.getYarnPath())
 
@@ -209,16 +214,16 @@ class YarnBomTool extends BomTool implements NestedBomTool<BomToolSearchResult> 
         result
     }
 
-    public List<DetectCodeLocation> extractDetectCodeLocations() {
+    List<DetectCodeLocation> extractDetectCodeLocations() {
         return extractDetectCodeLocations(searchResult)
     }
 
-    public BomToolSearcher getBomToolSearcher() {
-        return yarnBomToolSearcher;
+    BomToolSearcher getBomToolSearcher() {
+        return yarnBomToolSearcher
     }
 
-    public Boolean canSearchWithinApplicableDirectory() {
-        return false;
+    Boolean canSearchWithinApplicableDirectory() {
+        return false
     }
 
 }

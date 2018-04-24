@@ -11,16 +11,16 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.cpan
 
-import static org.junit.Assert.*
-
-import org.junit.Before
-import org.junit.Test
-
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
+import org.junit.Before
+import org.junit.Test
+
+import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertTrue
 
 class CpanPackagerTest {
     private final TestUtil testUtil = new TestUtil()

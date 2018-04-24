@@ -1,9 +1,9 @@
 /**
  * hub-detect
- *
+ * <p>
  * Copyright (C) 2018 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
- *
+ * <p>
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
  * distributed with this work for additional information
@@ -11,9 +11,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -29,12 +29,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleBomTool
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetBomTool;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
-import com.blackducksoftware.integration.hub.detect.help.AcceptableValues;
-import com.blackducksoftware.integration.hub.detect.help.DefaultValue;
-import com.blackducksoftware.integration.hub.detect.help.DetectOption;
-import com.blackducksoftware.integration.hub.detect.help.HelpDescription;
-import com.blackducksoftware.integration.hub.detect.help.HelpGroup;
-import com.blackducksoftware.integration.hub.detect.help.ValueDeprecation;
+import com.blackducksoftware.integration.hub.detect.help.*;
 import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver;
 import com.blackducksoftware.integration.hub.proxy.ProxyInfo;
 import com.blackducksoftware.integration.hub.proxy.ProxyInfoBuilder;
@@ -153,15 +148,15 @@ public class DetectConfiguration {
             sourcePath = System.getProperty("user.dir");
         }
 
-        if(!getCleanupBdioFiles()){
+        if (!getCleanupBdioFiles()) {
             requestDeprecation("cleanupBdioFiles");
             cleanupDetectFiles = false;
         }
-        if(!getCleanupBomToolFiles()){
+        if (!getCleanupBomToolFiles()) {
             requestDeprecation("cleanupBomToolFiles");
             cleanupDetectFiles = false;
         }
-        if(!getGradleCleanupBuildBlackduckDirectory() ){
+        if (!getGradleCleanupBuildBlackduckDirectory()) {
             requestDeprecation("gradleCleanupBuildBlackduckDirectory");
             cleanupDetectFiles = false;
         }
@@ -171,7 +166,7 @@ public class DetectConfiguration {
             throw new DetectUserFriendlyException("The source path ${sourcePath} either doesn't exist, isn't a directory, or doesn't have appropriate permissions.", ExitCodeType.FAILURE_GENERAL_ERROR);
         }
 
-        if(getProjectCodeLocationDeleteOldNames()){
+        if (getProjectCodeLocationDeleteOldNames()) {
             requestDeprecation("projectCodeLocationDeleteOldNames");
         }
 
@@ -179,7 +174,7 @@ public class DetectConfiguration {
         if (atLeastOnePolicySeverity) {
             if (policyCheck) {
                 requestDeprecation("policyCheck");
-            }else {
+            } else {
                 policyCheck = true;
             }
         }
@@ -264,26 +259,21 @@ public class DetectConfiguration {
         if (dockerBomTool.isBomToolApplicable() && bomToolFilter.shouldInclude(dockerBomTool.getBomToolType().toString())) {
             dockerInspectorVersion = dockerBomTool.getInspectorVersion();
         }
-<<<<<<< HEAD
-=======
 
-
-
->>>>>>> master
         configureForPhoneHome();
     }
 
-    public void addFieldWarning(final String key, final String warning) {
+    private void addFieldWarning(final String key, final String warning) {
         detectOptions.stream().forEach(option -> {
-            if (option.getKey().equals(key) ) {
+            if (option.getKey().equals(key)) {
                 option.getWarnings().add(warning);
             }
         });
     }
 
-    public void requestDeprecation(final String key) {
+    private void requestDeprecation(final String key) {
         detectOptions.stream().forEach(option -> {
-            if (option.getKey().equals(key) ) {
+            if (option.getKey().equals(key)) {
                 option.requestDeprecation();
             }
         });
@@ -630,7 +620,7 @@ public class DetectConfiguration {
     @Value("${detect.project.tier:}")
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = {SEARCH_GROUP_PROJECT})
     @HelpDescription("If a hub project tier is specified, your project will be created with this tier.")
-    @AcceptableValues(value = {"1","2","3","4","5"}, caseSensitive = false, strict = false)
+    @AcceptableValues(value = {"1", "2", "3", "4", "5"}, caseSensitive = false, strict = false)
     private Integer projectTier;
 
     @Value("${detect.project.codelocation.prefix:}")
@@ -662,17 +652,17 @@ public class DetectConfiguration {
     @DefaultValue("Development")
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = {SEARCH_GROUP_PROJECT})
     @HelpDescription("An override for the Project Version phase.")
-    @AcceptableValues(value = {"PLANNING","DEVELOPMENT","RELEASED","DEPRECATED","ARCHIVED"}, caseSensitive = false, strict = false)
+    @AcceptableValues(value = {"PLANNING", "DEVELOPMENT", "RELEASED", "DEPRECATED", "ARCHIVED"}, caseSensitive = false, strict = false)
     private String projectVersionPhase;
 
     @Value("${detect.project.version.distribution:}")
     @DefaultValue("External")
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = {SEARCH_GROUP_PROJECT})
     @HelpDescription("An override for the Project Version distribution")
-    @AcceptableValues(value = {"EXTERNAL","SAAS","INTERNAL","OPENSOURCE"}, caseSensitive = false, strict = false)
+    @AcceptableValues(value = {"EXTERNAL", "SAAS", "INTERNAL", "OPENSOURCE"}, caseSensitive = false, strict = false)
     private String projectVersionDistribution;
 
-    @ValueDeprecation(willRemoveInVersion="4.0.0", description = "To fail on any policy, set --detect.policy.check.fail.on.severities=ALL.")
+    @ValueDeprecation(willRemoveInVersion = "4.0.0", description = "To fail on any policy, set --detect.policy.check.fail.on.severities=ALL.")
     @Value("${detect.policy.check:}")
     @DefaultValue("false")
     @HelpGroup(primary = GROUP_POLICY_CHECK, additional = {SEARCH_GROUP_POLICY})
@@ -1020,7 +1010,7 @@ public class DetectConfiguration {
     @Value("${detect.notices.report.path:}")
     @DefaultValue(".")
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = {SEARCH_GROUP_PROJECT})
-    @HelpDescription( "The output directory for notices report. Default is the source directory")
+    @HelpDescription("The output directory for notices report. Default is the source directory")
     private String noticesReportOutputDirectory;
 
     @Value("${detect.conda.path:}")
@@ -1064,12 +1054,15 @@ public class DetectConfiguration {
     @HelpDescription("The path of the rebar3 executable")
     private String hexRebar3Path;
 
-    @ValueDescription(description = "The path of the Yarn executable", group = DetectConfiguration.GROUP_YARN)
-    @Value("${git :}")
+    @Value("${detect.yarn.path:}")
+    @HelpDescription("The path of the Yarn executable")
+    @HelpGroup(primary = GROUP_YARN)
     private String yarnPath;
 
-    @ValueDescription(description = "Set this to true to only scan production dependencies", defaultValue = "false", group = DetectConfiguration.GROUP_YARN)
     @Value("${detect.yarn.prod.only:}")
+    @HelpDescription("Set this to true to only scan production dependencies")
+    @DefaultValue("false")
+    @HelpGroup(primary = GROUP_YARN)
     private String yarnProductionDependenciesOnly;
 
     public boolean getCleanupBdioFiles() {
