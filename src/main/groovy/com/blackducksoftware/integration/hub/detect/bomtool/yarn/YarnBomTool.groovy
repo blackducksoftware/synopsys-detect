@@ -119,7 +119,7 @@ class YarnBomTool extends BomTool implements NestedBomTool<BomToolSearchResult> 
         File yarnListOutputFile = detectFileManager.createFile(BomToolType.YARN, OUTPUT_FILE)
         File yarnListErrorFile = detectFileManager.createFile(BomToolType.YARN, ERROR_FILE)
 
-        def exeArgs = ['list', '-prod']
+        def exeArgs = ['list', '--prod']
 
         Executable yarnListExe = new Executable(new File(sourcePath), yarnExePath, exeArgs)
         executableRunner.executeToFile(yarnListExe, yarnListOutputFile, yarnListErrorFile)
