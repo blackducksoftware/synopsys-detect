@@ -127,7 +127,7 @@ class DockerBomTool extends BomTool<DockerApplicableResult> {
             '-c',
             "\"${dockerInspectorShellScript.getCanonicalPath()}\" --spring.config.location=\"file:${dockerPropertiesFile.getCanonicalPath()}\" ${imageArgument}" as String
         ]
-        def airGapHubDockerInspectorJar = new File("${detectConfiguration.getDockerInspectorAirGapPath()}", "hub-docker-inspector-${dockerInspectorManager.getInspectorVersion(bashExecutablePath)}.jar")
+        def airGapHubDockerInspectorJar = new File("${detectConfiguration.getDockerInspectorAirGapPath()}", "hub-docker-inspector-${dockerInspectorManager.getInspectorVersion()}.jar")
         if (airGapHubDockerInspectorJar.exists()) {
             try {
                 for (String os : ['ubuntu', 'alpine', 'centos']) {
@@ -188,10 +188,6 @@ class DockerBomTool extends BomTool<DockerApplicableResult> {
         }
 
         bomToolExtractionResultsFactory.fromCodeLocations(codeLocations, getBomToolType(), applicable.directory)
-    }
-
-    String getInspectorVersion() {
-        return dockerInspectorManager.getInspectorVersion(bashExecutablePath)
     }
 
     private void logMissingFile(File searchDirectory, String filenamePattern) {

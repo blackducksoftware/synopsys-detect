@@ -130,7 +130,4 @@ class GradleBomTool extends BomTool<GradleApplicableResult> {
         codeLocations
     }
 
-    String getInspectorVersion() {
-        return gradleInspectorManager.getInspectorVersion()
-    }
 }

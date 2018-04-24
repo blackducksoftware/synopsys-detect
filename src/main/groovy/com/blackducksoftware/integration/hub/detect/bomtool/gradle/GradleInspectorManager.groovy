@@ -34,10 +34,8 @@ import org.w3c.dom.Document
 import org.w3c.dom.Node
 import org.w3c.dom.NodeList
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolInspectorManager
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
 import com.blackducksoftware.integration.hub.request.Request
 import com.blackducksoftware.integration.hub.request.Response
 import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnection
@@ -48,7 +46,7 @@ import groovy.transform.TypeChecked
 
 @Component
 @TypeChecked
-class GradleInspectorManager {
+class GradleInspectorManager extends BomToolInspectorManager {
     private final Logger logger = LoggerFactory.getLogger(GradleInspectorManager.class)
 
     @Autowired
@@ -57,90 +55,95 @@ class GradleInspectorManager {
     @Autowired
     DocumentBuilder xmlDocumentBuilder
 
-    @Autowired
-    DetectConfiguration detectConfiguration
-
-    @Autowired
-    ExecutableRunner executableRunner
-
-    @Autowired
-    DetectFileManager detectFileManager
-
     private String inspectorVersion
     private String initScriptPath
 
-    String getInspectorVersion() {
-        if (!inspectorVersion) {
-            if ('latest'.equalsIgnoreCase(detectConfiguration.getGradleInspectorVersion())) {
-                try {
-                    Document xmlDocument = null
-                    File airGapMavenMetadataFile = new File(detectConfiguration.getGradleInspectorAirGapPath(), 'maven-metadata.xml')
-                    if (airGapMavenMetadataFile.exists()) {
-                        InputStream inputStream = new FileInputStream(airGapMavenMetadataFile)
-                        xmlDocument = xmlDocumentBuilder.parse(inputStream)
-                    } else {
-                        String mavenMetadataUrl = 'http://repo2.maven.org/maven2/com/blackducksoftware/integration/integration-gradle-inspector/maven-metadata.xml'
-                        UnauthenticatedRestConnection restConnection = detectConfiguration.createUnauthenticatedRestConnection(mavenMetadataUrl)
-                        Request request = new Request.Builder().uri(mavenMetadataUrl).build();
-                        Response response = null
-                        try {
-                            response = restConnection.executeRequest(request)
-                            InputStream inputStream = response.getContent()
-                            xmlDocument = xmlDocumentBuilder.parse(inputStream)
-                        } finally {
-                            if ( null != response) {
-                                response.close()
-                            }
-                        }
-                    }
-                    final NodeList latestVersionNodes = xmlDocument.getElementsByTagName('latest')
-                    final Node latestVersion = latestVersionNodes.item(0)
-                    inspectorVersion = latestVersion.getTextContent()
-                    logger.info("Resolved gradle inspector version from latest to: ${inspectorVersion}")
-                } catch (Exception e) {
-                    inspectorVersion = detectConfiguration.getGradleInspectorVersion()
-                    logger.debug('Exception encountered when resolving latest version of Gradle Inspector, skipping resolution.')
-                    logger.debug(e.getMessage())
-                }
-            } else {
-                inspectorVersion = detectConfiguration.getGradleInspectorVersion()
-            }
-        }
-        return inspectorVersion
+    public BomToolType getBomToolType() {
+        return BomToolType.GRADLE;
     }
 
-    String getInitScriptPath() {
-        if (!initScriptPath) {
-            File initScriptFile = detectFileManager.createFile(BomToolType.GRADLE, 'init-detect.gradle')
-            final Map<String, String> model = [
-                'gradleInspectorVersion' : detectConfiguration.getGradleInspectorVersion(),
-                'excludedProjectNames' : detectConfiguration.getGradleExcludedProjectNames(),
-                'includedProjectNames' : detectConfiguration.getGradleIncludedProjectNames(),
-                'excludedConfigurationNames' : detectConfiguration.getGradleExcludedConfigurationNames(),
-                'includedConfigurationNames' : detectConfiguration.getGradleIncludedConfigurationNames()
-            ]
+    public void install() {
+        inspectorVersion = resolveInspectorVersion();
+        initScriptPath = resolveInitScriptPath(inspectorVersion);
+    }
 
+    public String getInspectorVersion() {
+        return inspectorVersion;
+    }
+
+    public String getInitScriptPath() {
+        return initScriptPath;
+    }
+
+    String resolveInspectorVersion() {
+        if ('latest'.equalsIgnoreCase(detectConfiguration.getGradleInspectorVersion())) {
             try {
-                def gradleInspectorAirGapDirectory = new File(detectConfiguration.getGradleInspectorAirGapPath())
-                if (gradleInspectorAirGapDirectory.exists()) {
-                    model.put('airGapLibsPath', StringEscapeUtils.escapeJava(gradleInspectorAirGapDirectory.getCanonicalPath()))
+                Document xmlDocument = null
+                File airGapMavenMetadataFile = new File(detectConfiguration.getGradleInspectorAirGapPath(), 'maven-metadata.xml')
+                if (airGapMavenMetadataFile.exists()) {
+                    InputStream inputStream = new FileInputStream(airGapMavenMetadataFile)
+                    xmlDocument = xmlDocumentBuilder.parse(inputStream)
+                } else {
+                    String mavenMetadataUrl = 'http://repo2.maven.org/maven2/com/blackducksoftware/integration/integration-gradle-inspector/maven-metadata.xml'
+                    UnauthenticatedRestConnection restConnection = detectConfiguration.createUnauthenticatedRestConnection(mavenMetadataUrl)
+                    Request request = new Request.Builder().uri(mavenMetadataUrl).build();
+                    Response response = null
+                    try {
+                        response = restConnection.executeRequest(request)
+                        InputStream inputStream = response.getContent()
+                        xmlDocument = xmlDocumentBuilder.parse(inputStream)
+                    } finally {
+                        if ( null != response) {
+                            response.close()
+                        }
+                    }
                 }
+                final NodeList latestVersionNodes = xmlDocument.getElementsByTagName('latest')
+                final Node latestVersion = latestVersionNodes.item(0)
+                def inspectorVersion = latestVersion.getTextContent()
+                logger.info("Resolved gradle inspector version from latest to: ${inspectorVersion}")
+                return inspectorVersion;
             } catch (Exception e) {
-                logger.debug('Exception encountered when resolving air gap path for gradle, running in online mode instead')
+                def inspectorVersion = detectConfiguration.getGradleInspectorVersion()
+                logger.debug('Exception encountered when resolving latest version of Gradle Inspector, skipping resolution.')
                 logger.debug(e.getMessage())
+                return inspectorVersion;
             }
-
-            if (detectConfiguration.getGradleInspectorRepositoryUrl()) {
-                model.put('customRepositoryUrl', detectConfiguration.getGradleInspectorRepositoryUrl())
-            }
-
-            final Template initScriptTemplate = configuration.getTemplate('init-script-gradle.ftl')
-            initScriptFile.withWriter('UTF-8') {
-                initScriptTemplate.process(model, it)
-            }
-
-            initScriptPath = initScriptFile.getCanonicalPath()
+        } else {
+            return detectConfiguration.getGradleInspectorVersion()
         }
-        return initScriptPath
+    }
+
+    String resolveInitScriptPath(String inspectorVersion) {
+
+        File initScriptFile = detectFileManager.createFile(BomToolType.GRADLE, 'init-detect.gradle')
+        final Map<String, String> model = [
+            'gradleInspectorVersion' : inspectorVersion,
+            'excludedProjectNames' : detectConfiguration.getGradleExcludedProjectNames(),
+            'includedProjectNames' : detectConfiguration.getGradleIncludedProjectNames(),
+            'excludedConfigurationNames' : detectConfiguration.getGradleExcludedConfigurationNames(),
+            'includedConfigurationNames' : detectConfiguration.getGradleIncludedConfigurationNames()
+        ]
+
+        try {
+            def gradleInspectorAirGapDirectory = new File(detectConfiguration.getGradleInspectorAirGapPath())
+            if (gradleInspectorAirGapDirectory.exists()) {
+                model.put('airGapLibsPath', StringEscapeUtils.escapeJava(gradleInspectorAirGapDirectory.getCanonicalPath()))
+            }
+        } catch (Exception e) {
+            logger.debug('Exception encountered when resolving air gap path for gradle, running in online mode instead')
+            logger.debug(e.getMessage())
+        }
+
+        if (detectConfiguration.getGradleInspectorRepositoryUrl()) {
+            model.put('customRepositoryUrl', detectConfiguration.getGradleInspectorRepositoryUrl())
+        }
+
+        final Template initScriptTemplate = configuration.getTemplate('init-script-gradle.ftl')
+        initScriptFile.withWriter('UTF-8') {
+            initScriptTemplate.process(model, it)
+        }
+
+        return initScriptFile.getCanonicalPath()
     }
 }

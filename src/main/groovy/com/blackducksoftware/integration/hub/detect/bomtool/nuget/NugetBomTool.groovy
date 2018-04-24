@@ -146,8 +146,6 @@ class NugetBomTool extends BomTool<NugetApplicableResult> {
     BomToolExtractionResult extractDetectCodeLocations(NugetApplicableResult applicable) {
         def outputDirectory = new File(detectConfiguration.outputDirectory, 'nuget')
 
-        nugetInspectorManager.installInspector(applicable.nugetExecutable, outputDirectory)
-
         def inspectorPath = nugetInspectorManager.getNugetInspectorExecutablePath();
         if (!inspectorPath) {
             throw new Exception("Failed to find a suitable nuget inspector to run.")
