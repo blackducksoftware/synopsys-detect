@@ -25,7 +25,9 @@ package com.blackducksoftware.integration.hub.detect.util.executable;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -47,6 +49,8 @@ public class ExecutableManager {
 
     @Autowired
     private DetectInfo detectInfo;
+
+    private final Map<String, File> cachedSystemExecutables = new HashMap<>();
 
     public String getExecutableName(final ExecutableType executableType) {
         return executableType.getExecutable();
@@ -84,17 +88,13 @@ public class ExecutableManager {
         return executableFile;
     }
 
-    public String findExecutablePath(final String sourcePath, final ExecutableType executable, final boolean searchSystemPath, final String userPath) {
-        if (StringUtils.isBlank(userPath)) {
-            return getExecutablePath(executable, searchSystemPath, sourcePath);
-        }
-
-        return userPath;
-    }
-
     private File findExecutableFileFromSystemPath(final String executable) {
         final String systemPath = System.getenv("PATH");
-        return findExecutableFileFromPath(systemPath, executable);
+        if (!cachedSystemExecutables.containsKey(executable)) {
+            cachedSystemExecutables.put(executable, findExecutableFileFromPath(systemPath, executable));
+        }
+        return cachedSystemExecutables.get(executable);
+
     }
 
     private File findExecutableFileFromPath(final String path, final String executableName) {
