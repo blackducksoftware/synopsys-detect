@@ -23,6 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect;
 
+import com.blackducksoftware.integration.hub.api.enumeration.PolicySeverityType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleBomTool;
@@ -52,10 +53,8 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 @TypeChecked
@@ -172,6 +171,18 @@ public class DetectConfiguration {
 
         final boolean atLeastOnePolicySeverity = StringUtils.isNotBlank(policyCheckFailOnSeverities);
         if (atLeastOnePolicySeverity) {
+            boolean allSeverities = false;
+            String[] splitSeverities = policyCheckFailOnSeverities.split(",");
+            for (String severity : splitSeverities) {
+                if (severity.equalsIgnoreCase("ALL")) {
+                    allSeverities = true;
+                    break;
+                }
+            }
+            if (allSeverities) {
+                List<String> allPolicyTypes = Arrays.stream(PolicySeverityType.values()).filter(type -> type != PolicySeverityType.UNSPECIFIED).map(type -> type.toString()).collect(Collectors.toList());
+                policyCheckFailOnSeverities = StringUtils.join(allPolicyTypes, ",");
+            }
             if (policyCheck) {
                 requestDeprecation("policyCheck");
             } else {
@@ -348,7 +359,7 @@ public class DetectConfiguration {
     }
 
     private String getInspectorAirGapPath(final String inspectorLocationProperty, final String inspectorName) {
-        if (StringUtils.isNotBlank(inspectorLocationProperty)) {
+        if (StringUtils.isBlank(inspectorLocationProperty)) {
             try {
                 final File detectJar = new File(guessDetectJarLocation()).getCanonicalFile();
                 final File inspectorsDirectory = new File(detectJar.getParentFile(), "packaged-inspectors");
