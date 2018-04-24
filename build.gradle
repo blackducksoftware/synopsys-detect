@@ -52,10 +52,6 @@ build {
     }
 }
 
-test {
-    exclude 'com/blackducksoftware/integration/hub/detect/bomtool/hex/RebarParserTest.class'
-}
-
 publishing {
     publications {
         mavenJava(MavenPublication) {
