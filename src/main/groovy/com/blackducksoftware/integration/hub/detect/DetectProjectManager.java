@@ -152,9 +152,13 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     }
 
     private List<BomToolApplicableResult> findRootApplicable(final File directory) {
+        final List<String> excludedDirectories = detectConfiguration.getBomToolSearchDirectoryExclusions();
+        final Boolean forceNestedSearch = detectConfiguration.getBomToolContinueSearch();
+        final int maxDepth = 1;
+        final BomToolFinderOptions findOptions = new BomToolFinderOptions(excludedDirectories, forceNestedSearch, maxDepth);
         try {
-            final BomToolFinder bomToolTreeWalker = new BomToolFinder(Arrays.asList(detectConfiguration.getBomToolSearchExclusion()), detectConfiguration.getBomToolSearchExclusionDefaults(), detectConfiguration.getBomToolContinueSearch(), 1);
-            return bomToolTreeWalker.findApplicableBomTools(new HashSet<>(bomTools), directory);
+            final BomToolFinder bomToolTreeWalker = new BomToolFinder();
+            return bomToolTreeWalker.findApplicableBomTools(new HashSet<>(bomTools), directory, findOptions);
         } catch (final BomToolException e) {
             bomToolSearchExitCodeType = ExitCodeType.FAILURE_BOM_TOOL;
             logger.error(e.getMessage(), e);
@@ -166,11 +170,14 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     }
 
     private List<BomToolApplicableResult> findBomTools() {
+        final List<String> excludedDirectories = detectConfiguration.getBomToolSearchDirectoryExclusions();
+        final Boolean forceNestedSearch = detectConfiguration.getBomToolContinueSearch();
+        final int maxDepth = detectConfiguration.getBomToolSearchDepth();
+        final BomToolFinderOptions findOptions = new BomToolFinderOptions(excludedDirectories, forceNestedSearch, maxDepth);
         try {
             final File initialDirectory = detectConfiguration.getSourceDirectory();
-            final BomToolFinder bomToolTreeWalker = new BomToolFinder(Arrays.asList(detectConfiguration.getBomToolSearchExclusion()), detectConfiguration.getBomToolSearchExclusionDefaults(), detectConfiguration.getBomToolContinueSearch(),
-                    detectConfiguration.getBomToolSearchDepth());
-            return bomToolTreeWalker.findApplicableBomTools(new HashSet<>(bomTools), initialDirectory);
+            final BomToolFinder bomToolTreeWalker = new BomToolFinder();
+            return bomToolTreeWalker.findApplicableBomTools(new HashSet<>(bomTools), initialDirectory, findOptions);
         } catch (final BomToolException e) {
             bomToolSearchExitCodeType = ExitCodeType.FAILURE_BOM_TOOL;
             logger.error(e.getMessage(), e);

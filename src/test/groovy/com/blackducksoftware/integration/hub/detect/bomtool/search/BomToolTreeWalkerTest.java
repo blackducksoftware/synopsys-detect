@@ -3,10 +3,11 @@ package com.blackducksoftware.integration.hub.detect.bomtool.search;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -23,6 +24,7 @@ import com.blackducksoftware.integration.hub.detect.Application;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolApplicableResult;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolFinder;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolFinderOptions;
 import com.blackducksoftware.integration.util.ResourceUtil;
 
 @ContextConfiguration(classes = { Application.class })
@@ -71,85 +73,105 @@ public class BomToolTreeWalkerTest {
         Files.write(nodeModulesNpmPackageLock.toPath(), npmPackageLockContent.getBytes(StandardCharsets.UTF_8));
     }
 
+    private List<String> getDefaults(){
+        return getDefaults(null);
+    }
+
+    private List<String> getDefaults(List<String> existing) {
+        if (existing == null) {
+            existing = new ArrayList<>();
+        }
+        try {
+            final String fileContent = ResourceUtil.getResourceAsString(BomToolFinder.class, "/excludedDirectoriesBomToolSearch.txt", StandardCharsets.UTF_8);
+            existing.addAll(Arrays.asList(fileContent.split("\n")));
+        } catch (final IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return existing;
+    }
+
     @Test
     public void testSearchBomToolSearchYarnNoDepth() throws Exception {
-        final int maximumDepth = 0;
 
-        final BomToolFinder bomToolTreeWalker = new BomToolFinder(Collections.emptyList(), true, false, maximumDepth);
+        final BomToolFinderOptions options = new BomToolFinderOptions(getDefaults(), false, 0);
+        final BomToolFinder bomToolTreeWalker = new BomToolFinder();
 
-        final List<BomToolApplicableResult> results = bomToolTreeWalker.findApplicableBomTools(nestedBomTools, sourceDirectoryWithMultipleYarn);
+        final List<BomToolApplicableResult> results = bomToolTreeWalker.findApplicableBomTools(nestedBomTools, sourceDirectoryWithMultipleYarn, options);
 
         assertEquals(0, results.size());
     }
 
     @Test
     public void testSearchBomToolSearchYarnDepth1() throws Exception {
-        final int maximumDepth = 1;
 
-        final BomToolFinder bomToolTreeWalker = new BomToolFinder(Collections.emptyList(), true, false, maximumDepth);
+        final BomToolFinderOptions options = new BomToolFinderOptions(getDefaults(), false, 1);
+        final BomToolFinder bomToolTreeWalker = new BomToolFinder();
 
-        final List<BomToolApplicableResult> results = bomToolTreeWalker.findApplicableBomTools(nestedBomTools, sourceDirectoryWithMultipleYarn);
+        final List<BomToolApplicableResult> results = bomToolTreeWalker.findApplicableBomTools(nestedBomTools, sourceDirectoryWithMultipleYarn, options);
 
         assertEquals(1, results.size());
     }
 
     @Test
     public void testSearchBomToolSearchYarnDepth2() throws Exception {
-        final int maximumDepth = 2;
 
-        final BomToolFinder bomToolTreeWalker = new BomToolFinder(Collections.emptyList(), true, false, maximumDepth);
+        final BomToolFinderOptions options = new BomToolFinderOptions(getDefaults(), false, 2);
+        final BomToolFinder bomToolTreeWalker = new BomToolFinder();
 
-        final List<BomToolApplicableResult> results = bomToolTreeWalker.findApplicableBomTools(nestedBomTools, sourceDirectoryWithMultipleYarn);
+        final List<BomToolApplicableResult> results = bomToolTreeWalker.findApplicableBomTools(nestedBomTools, sourceDirectoryWithMultipleYarn, options);
         // Should have only found one because the yarn projects are nested
         assertEquals(1, results.size());
     }
 
     @Test
     public void testSearchBomToolSearchYarnDepth2Forced() throws Exception {
-        final int maximumDepth = 2;
 
-        final BomToolFinder bomToolTreeWalker = new BomToolFinder(Collections.emptyList(), true, true, maximumDepth);
+        final BomToolFinderOptions options = new BomToolFinderOptions(getDefaults(), false, 2);
+        final BomToolFinder bomToolTreeWalker = new BomToolFinder();
 
-        final List<BomToolApplicableResult> results = bomToolTreeWalker.findApplicableBomTools(nestedBomTools, sourceDirectoryWithMultipleYarn);
+        final List<BomToolApplicableResult> results = bomToolTreeWalker.findApplicableBomTools(nestedBomTools, sourceDirectoryWithMultipleYarn, options);
 
         assertEquals(2, results.size());
     }
 
     @Test
     public void testSearchBomToolSearchNpm() throws Exception {
-        int maximumDepth = 2;
 
-        BomToolFinder bomToolTreeWalker = new BomToolFinder(Collections.emptyList(), true, false, maximumDepth);
+        final BomToolFinderOptions options = new BomToolFinderOptions(getDefaults(), false, 2);
+        BomToolFinder bomToolTreeWalker = new BomToolFinder();
 
-        List<BomToolApplicableResult> results = bomToolTreeWalker.findApplicableBomTools(nestedBomTools, sourceDirectoryWithNestedNPM);
+        List<BomToolApplicableResult> results = bomToolTreeWalker.findApplicableBomTools(nestedBomTools, sourceDirectoryWithNestedNPM, options);
         // Should not have found anything because the Npm project is deeper than 2 directories down
         assertEquals(0, results.size());
 
-        maximumDepth = 3;
-        bomToolTreeWalker = new BomToolFinder(Collections.emptyList(), true, false, maximumDepth);
-        results = bomToolTreeWalker.findApplicableBomTools(nestedBomTools, sourceDirectoryWithNestedNPM);
+        final BomToolFinderOptions options3 = new BomToolFinderOptions(getDefaults(), false, 3);
+        bomToolTreeWalker = new BomToolFinder();
+        results = bomToolTreeWalker.findApplicableBomTools(nestedBomTools, sourceDirectoryWithNestedNPM, options3);
         assertEquals(1, results.size());
     }
 
     @Test
     public void testSearchBomToolSearchNpmWithinNodeModules() throws Exception {
-        final int maximumDepth = 2;
 
-        BomToolFinder bomToolTreeWalker = new BomToolFinder(Collections.emptyList(), true, false, maximumDepth);
+        BomToolFinder bomToolTreeWalker = new BomToolFinder();
+        final BomToolFinderOptions options = new BomToolFinderOptions(getDefaults(), false, 2);
 
-        List<BomToolApplicableResult> results = bomToolTreeWalker.findApplicableBomTools(nestedBomTools, sourceDirectoryWithNestedNPMInsideNodeModules);
+        List<BomToolApplicableResult> results = bomToolTreeWalker.findApplicableBomTools(nestedBomTools, sourceDirectoryWithNestedNPMInsideNodeModules, options);
         // Should not have found the Npm project because it is in a node_modules directory
         assertEquals(0, results.size());
 
-        bomToolTreeWalker = new BomToolFinder(Collections.emptyList(), false, true, maximumDepth);
+        bomToolTreeWalker = new BomToolFinder();
 
-        results = bomToolTreeWalker.findApplicableBomTools(nestedBomTools, sourceDirectoryWithNestedNPMInsideNodeModules);
+        results = bomToolTreeWalker.findApplicableBomTools(nestedBomTools, sourceDirectoryWithNestedNPMInsideNodeModules, options);
         // Should  have found the Npm project because we are continuing and we are not excluding any directories
         assertEquals(1, results.size());
 
-        bomToolTreeWalker = new BomToolFinder(Arrays.asList("node_modules"), false, true, maximumDepth);
+        final BomToolFinderOptions optionsExcl = new BomToolFinderOptions(Arrays.asList("node_modules"), false, 2);
+        bomToolTreeWalker = new BomToolFinder();
 
-        results = bomToolTreeWalker.findApplicableBomTools(nestedBomTools, sourceDirectoryWithNestedNPMInsideNodeModules);
+        results = bomToolTreeWalker.findApplicableBomTools(nestedBomTools, sourceDirectoryWithNestedNPMInsideNodeModules, optionsExcl);
         // Should  have found the Npm project because we are continuing and we are not excluding any directories
         assertEquals(0, results.size());
     }
