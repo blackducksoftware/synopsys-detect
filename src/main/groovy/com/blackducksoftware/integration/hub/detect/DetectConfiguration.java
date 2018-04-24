@@ -158,15 +158,15 @@ public class DetectConfiguration {
             sourcePath = System.getProperty("user.dir");
         }
 
-        if(!getCleanupBdioFiles()){
+        if (!getCleanupBdioFiles()) {
             requestDeprecation("cleanupBdioFiles");
             cleanupDetectFiles = false;
         }
-        if(!getCleanupBomToolFiles()){
+        if (!getCleanupBomToolFiles()) {
             requestDeprecation("cleanupBomToolFiles");
             cleanupDetectFiles = false;
         }
-        if(!getGradleCleanupBuildBlackduckDirectory() ){
+        if (!getGradleCleanupBuildBlackduckDirectory()) {
             requestDeprecation("gradleCleanupBuildBlackduckDirectory");
             cleanupDetectFiles = false;
         }
@@ -176,7 +176,7 @@ public class DetectConfiguration {
             throw new DetectUserFriendlyException("The source path ${sourcePath} either doesn't exist, isn't a directory, or doesn't have appropriate permissions.", ExitCodeType.FAILURE_GENERAL_ERROR);
         }
 
-        if(getProjectCodeLocationDeleteOldNames()){
+        if (getProjectCodeLocationDeleteOldNames()) {
             requestDeprecation("projectCodeLocationDeleteOldNames");
         }
 
@@ -192,7 +192,7 @@ public class DetectConfiguration {
             }
             if (allSeverities) {
                 List<String> allPolicyTypes = Arrays.stream(PolicySeverityType.values()).filter(type -> type != PolicySeverityType.UNSPECIFIED).map(type -> type.toString()).collect(Collectors.toList());
-                policyCheckFailOnSeverities = StringUtils.join(allPolicyTypes,",");
+                policyCheckFailOnSeverities = StringUtils.join(allPolicyTypes, ",");
             }
             if (policyCheck) {
                 requestDeprecation("policyCheck");
@@ -282,12 +282,10 @@ public class DetectConfiguration {
             dockerInspectorVersion = dockerBomTool.getInspectorVersion();
         }
 
-
-
         configureForPhoneHome();
     }
 
-    public void addFieldWarning(final String key, final String warning) {
+    private void addFieldWarning(final String key, final String warning) {
         detectOptions.stream().forEach(option -> {
             if (option.getKey().equals(key) ) {
                 option.getWarnings().add(warning);
@@ -295,7 +293,7 @@ public class DetectConfiguration {
         });
     }
 
-    public void requestDeprecation(final String key) {
+    private void requestDeprecation(final String key) {
         detectOptions.stream().forEach(option -> {
             if (option.getKey().equals(key) ) {
                 option.requestDeprecation();
@@ -644,7 +642,7 @@ public class DetectConfiguration {
     @Value("${detect.project.tier:}")
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = {SEARCH_GROUP_PROJECT})
     @HelpDescription("If a hub project tier is specified, your project will be created with this tier.")
-    @AcceptableValues(value = {"1","2","3","4","5"}, caseSensitive = false, strict = false)
+    @AcceptableValues(value = {"1", "2", "3", "4", "5"}, caseSensitive = false, strict = false)
     private Integer projectTier;
 
     @Value("${detect.project.codelocation.prefix:}")
@@ -676,14 +674,14 @@ public class DetectConfiguration {
     @DefaultValue("Development")
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = {SEARCH_GROUP_PROJECT})
     @HelpDescription("An override for the Project Version phase.")
-    @AcceptableValues(value = {"PLANNING","DEVELOPMENT","RELEASED","DEPRECATED","ARCHIVED"}, caseSensitive = false, strict = false)
+    @AcceptableValues(value = {"PLANNING", "DEVELOPMENT", "RELEASED", "DEPRECATED", "ARCHIVED"}, caseSensitive = false, strict = false)
     private String projectVersionPhase;
 
     @Value("${detect.project.version.distribution:}")
     @DefaultValue("External")
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = {SEARCH_GROUP_PROJECT})
     @HelpDescription("An override for the Project Version distribution")
-    @AcceptableValues(value = {"EXTERNAL","SAAS","INTERNAL","OPENSOURCE"}, caseSensitive = false, strict = false)
+    @AcceptableValues(value = {"EXTERNAL", "SAAS", "INTERNAL", "OPENSOURCE"}, caseSensitive = false, strict = false)
     private String projectVersionDistribution;
 
     @ValueDeprecation(willRemoveInVersion="4.0.0", description = "To fail on any policy, set --detect.policy.check.fail.on.severities=ALL.")
@@ -1034,7 +1032,7 @@ public class DetectConfiguration {
     @Value("${detect.notices.report.path:}")
     @DefaultValue(".")
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = {SEARCH_GROUP_PROJECT})
-    @HelpDescription( "The output directory for notices report. Default is the source directory")
+    @HelpDescription("The output directory for notices report. Default is the source directory")
     private String noticesReportOutputDirectory;
 
     @Value("${detect.conda.path:}")
