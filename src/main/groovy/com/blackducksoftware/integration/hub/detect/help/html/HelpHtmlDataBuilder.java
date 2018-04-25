@@ -60,6 +60,7 @@ public class HelpHtmlDataBuilder {
 
     public HelpHtmlData build() {
         final List<HelpHtmlGroup> sortedOptions = groupsByName.values().stream().sorted((o1, o2) -> o1.groupName.compareTo(o2.groupName)).collect(Collectors.toList());
+        sortedOptions.forEach(it -> it.getOptions().sort((o1, o2) -> o1.key.compareTo(o2.key)));
         return new HelpHtmlData(sortedOptions);
     }
 }
