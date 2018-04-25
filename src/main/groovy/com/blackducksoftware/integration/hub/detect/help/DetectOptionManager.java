@@ -125,7 +125,13 @@ public class DetectOptionManager {
     public String getCurrentValue(final DetectConfiguration detectConfiguration, final DetectOption detectOption) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
         final Field field = detectConfiguration.getClass().getDeclaredField(detectOption.getFieldName());
         field.setAccessible(true);
-        final Object rawFieldValue = field.get(detectConfiguration);
+        String fieldValue = getStringValue(detectConfiguration, field);
+        field.setAccessible(false);
+        return fieldValue;
+    }
+
+    private String getStringValue(Object obj, Field field) throws IllegalAccessException {
+        final Object rawFieldValue = field.get(obj);
         String fieldValue = "";
         if (field.getType().isArray()) {
             fieldValue = String.join(", ", (String[]) rawFieldValue);
@@ -134,7 +140,6 @@ public class DetectOptionManager {
                 fieldValue = rawFieldValue.toString();
             }
         }
-        field.setAccessible(false);
         return fieldValue;
     }
 
@@ -170,7 +175,7 @@ public class DetectOptionManager {
             resolvedValue = defaultValue;
             setValue(field, obj, defaultValue);
         } else if (hasValue) {
-            resolvedValue = field.get(obj).toString();
+            resolvedValue = getStringValue(obj, field);
         }
 
         final DetectOptionHelp help = processFieldHelp(field);

@@ -25,12 +25,13 @@ package com.blackducksoftware.integration.hub.detect;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -44,8 +45,8 @@ import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertySource;
 import org.springframework.stereotype.Component;
 
+import com.blackducksoftware.integration.hub.api.enumeration.PolicySeverityType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolFinder;
 import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetBomTool;
@@ -64,7 +65,6 @@ import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnection;
 import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnectionBuilder;
 import com.blackducksoftware.integration.log.Slf4jIntLogger;
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
-import com.blackducksoftware.integration.util.ResourceUtil;
 
 import groovy.transform.TypeChecked;
 
@@ -143,7 +143,6 @@ public class DetectConfiguration {
     private boolean usingDefaultOutputPath;
 
     private ExcludedIncludedFilter bomToolFilter;
-    private List<String> bomToolSearchDirectoryExclusions;
     private final List<String> excludedScanPaths = new ArrayList<>();
 
     public void init(final List<DetectOption> detectOptions) throws DetectUserFriendlyException, IOException, IllegalArgumentException, IllegalAccessException {
@@ -159,15 +158,15 @@ public class DetectConfiguration {
             sourcePath = System.getProperty("user.dir");
         }
 
-        if(!getCleanupBdioFiles()){
+        if (!getCleanupBdioFiles()) {
             requestDeprecation("cleanupBdioFiles");
             cleanupDetectFiles = false;
         }
-        if(!getCleanupBomToolFiles()){
+        if (!getCleanupBomToolFiles()) {
             requestDeprecation("cleanupBomToolFiles");
             cleanupDetectFiles = false;
         }
-        if(!getGradleCleanupBuildBlackduckDirectory() ){
+        if (!getGradleCleanupBuildBlackduckDirectory()) {
             requestDeprecation("gradleCleanupBuildBlackduckDirectory");
             cleanupDetectFiles = false;
         }
@@ -177,15 +176,27 @@ public class DetectConfiguration {
             throw new DetectUserFriendlyException("The source path ${sourcePath} either doesn't exist, isn't a directory, or doesn't have appropriate permissions.", ExitCodeType.FAILURE_GENERAL_ERROR);
         }
 
-        if(getProjectCodeLocationDeleteOldNames()){
+        if (getProjectCodeLocationDeleteOldNames()) {
             requestDeprecation("projectCodeLocationDeleteOldNames");
         }
 
         final boolean atLeastOnePolicySeverity = StringUtils.isNotBlank(policyCheckFailOnSeverities);
         if (atLeastOnePolicySeverity) {
+            boolean allSeverities = false;
+            String[] splitSeverities = policyCheckFailOnSeverities.split(",");
+            for (String severity : splitSeverities) {
+                if (severity.equalsIgnoreCase("ALL")) {
+                    allSeverities = true;
+                    break;
+                }
+            }
+            if (allSeverities) {
+                List<String> allPolicyTypes = Arrays.stream(PolicySeverityType.values()).filter(type -> type != PolicySeverityType.UNSPECIFIED).map(type -> type.toString()).collect(Collectors.toList());
+                policyCheckFailOnSeverities = StringUtils.join(allPolicyTypes, ",");
+            }
             if (policyCheck) {
                 requestDeprecation("policyCheck");
-            }else {
+            } else {
                 policyCheck = true;
             }
         }
@@ -225,6 +236,10 @@ public class DetectConfiguration {
 
         bomToolFilter = new ExcludedIncludedFilter(getExcludedBomToolTypes(), getIncludedBomToolTypes());
 
+        if (dockerBomTool.isBomToolApplicable() && bomToolFilter.shouldInclude(dockerBomTool.getBomToolType().toString())) {
+            configureForDocker();
+        }
+
         if (hubSignatureScannerRelativePathsToExclude != null && hubSignatureScannerRelativePathsToExclude.length > 0) {
             for (final String path : hubSignatureScannerRelativePathsToExclude) {
                 excludedScanPaths.add(new File(sourceDirectory, path).getCanonicalPath());
@@ -255,12 +270,6 @@ public class DetectConfiguration {
             hubOfflineMode = true;
         }
 
-        //TODO: Bom tool finder must resolve these more intelligently.
-        /*
-        if (dockerBomTool.isBomToolApplicable() && bomToolFilter.shouldInclude(dockerBomTool.getBomToolType().toString())) {
-            configureForDocker();
-        }
-
         if (gradleBomTool.isBomToolApplicable() && bomToolFilter.shouldInclude(gradleBomTool.getBomToolType().toString())) {
             gradleInspectorVersion = gradleBomTool.getInspectorVersion();
         }
@@ -273,23 +282,10 @@ public class DetectConfiguration {
             dockerInspectorVersion = dockerBomTool.getInspectorVersion();
         }
 
-         */
-
-        //TODO Final home for directories to exclude
-        bomToolSearchDirectoryExclusions = new ArrayList<>();
-        try {
-            if (bomToolSearchExclusionDefaults) {
-                final String fileContent = ResourceUtil.getResourceAsString(BomToolFinder.class, "/excludedDirectoriesBomToolSearch.txt", StandardCharsets.UTF_8);
-                bomToolSearchDirectoryExclusions.addAll(Arrays.asList(fileContent.split("\n")));
-            }
-        } catch (final IOException e) {
-            throw new DetectUserFriendlyException(String.format("Could not determine the directories to exclude from the bom tool search. %s", e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
-        }
-
         configureForPhoneHome();
     }
 
-    public void addFieldWarning(final String key, final String warning) {
+    private void addFieldWarning(final String key, final String warning) {
         detectOptions.stream().forEach(option -> {
             if (option.getKey().equals(key) ) {
                 option.getWarnings().add(warning);
@@ -297,16 +293,12 @@ public class DetectConfiguration {
         });
     }
 
-    public void requestDeprecation(final String key) {
+    private void requestDeprecation(final String key) {
         detectOptions.stream().forEach(option -> {
             if (option.getKey().equals(key) ) {
                 option.requestDeprecation();
             }
         });
-    }
-
-    public List<String> getBomToolSearchDirectoryExclusions() {
-        return bomToolSearchDirectoryExclusions;
     }
 
     public File getSourceDirectory() {
@@ -337,8 +329,8 @@ public class DetectConfiguration {
         return usingDefaultOutputPath;
     }
 
-    public boolean isBomToolIncluded(final BomTool bomTool) {
-        return bomToolFilter.shouldInclude(bomTool.getBomToolType().toString());
+    public boolean shouldRun(final BomTool bomTool) {
+        return bomToolFilter.shouldInclude(bomTool.getBomToolType().toString()) && bomTool.isBomToolApplicable();
     }
 
     public String getDetectProperty(final String key) {
@@ -378,7 +370,7 @@ public class DetectConfiguration {
     }
 
     private String getInspectorAirGapPath(final String inspectorLocationProperty, final String inspectorName) {
-        if (StringUtils.isNotBlank(inspectorLocationProperty)) {
+        if (StringUtils.isBlank(inspectorLocationProperty)) {
             try {
                 final File detectJar = new File(guessDetectJarLocation()).getCanonicalFile();
                 final File inspectorsDirectory = new File(detectJar.getParentFile(), "packaged-inspectors");
@@ -650,7 +642,7 @@ public class DetectConfiguration {
     @Value("${detect.project.tier:}")
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = {SEARCH_GROUP_PROJECT})
     @HelpDescription("If a hub project tier is specified, your project will be created with this tier.")
-    @AcceptableValues(value = {"1","2","3","4","5"}, caseSensitive = false, strict = false)
+    @AcceptableValues(value = {"1", "2", "3", "4", "5"}, caseSensitive = false, strict = false)
     private Integer projectTier;
 
     @Value("${detect.project.codelocation.prefix:}")
@@ -682,14 +674,14 @@ public class DetectConfiguration {
     @DefaultValue("Development")
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = {SEARCH_GROUP_PROJECT})
     @HelpDescription("An override for the Project Version phase.")
-    @AcceptableValues(value = {"PLANNING","DEVELOPMENT","RELEASED","DEPRECATED","ARCHIVED"}, caseSensitive = false, strict = false)
+    @AcceptableValues(value = {"PLANNING", "DEVELOPMENT", "RELEASED", "DEPRECATED", "ARCHIVED"}, caseSensitive = false, strict = false)
     private String projectVersionPhase;
 
     @Value("${detect.project.version.distribution:}")
     @DefaultValue("External")
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = {SEARCH_GROUP_PROJECT})
     @HelpDescription("An override for the Project Version distribution")
-    @AcceptableValues(value = {"EXTERNAL","SAAS","INTERNAL","OPENSOURCE"}, caseSensitive = false, strict = false)
+    @AcceptableValues(value = {"EXTERNAL", "SAAS", "INTERNAL", "OPENSOURCE"}, caseSensitive = false, strict = false)
     private String projectVersionDistribution;
 
     @ValueDeprecation(willRemoveInVersion="4.0.0", description = "To fail on any policy, set --detect.policy.check.fail.on.severities=ALL.")
@@ -1040,7 +1032,7 @@ public class DetectConfiguration {
     @Value("${detect.notices.report.path:}")
     @DefaultValue(".")
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = {SEARCH_GROUP_PROJECT})
-    @HelpDescription( "The output directory for notices report. Default is the source directory")
+    @HelpDescription("The output directory for notices report. Default is the source directory")
     private String noticesReportOutputDirectory;
 
     @Value("${detect.conda.path:}")
