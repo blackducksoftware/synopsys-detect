@@ -23,16 +23,17 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.search;
 
+import java.io.File;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.io.File;
 
 public abstract class BaseBomToolSearcher<T extends BomToolSearchResult> implements BomToolSearcher<T> {
     @Autowired
@@ -59,7 +60,7 @@ public abstract class BaseBomToolSearcher<T extends BomToolSearchResult> impleme
 
     @Override
     public final T getBomToolSearchResult(final File directoryToSearch) throws BomToolException {
-        if (directoryToSearch == null || !directoryToSearch.isDirectory()) {
+        if (!directoryToSearch.isDirectory()) {
             throw new BomToolException(String.format("The provided file %s is not a directory.", directoryToSearch.getAbsolutePath()));
         }
 
