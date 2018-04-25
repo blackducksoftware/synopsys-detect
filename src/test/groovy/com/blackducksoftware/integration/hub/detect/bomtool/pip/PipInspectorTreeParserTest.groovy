@@ -17,9 +17,7 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 
-import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
@@ -64,34 +62,6 @@ class PipInspectorTreeParserTest {
         Assert.assertNull(invalidNode)
     }
 
-    @Test
-    void validParseTest() {
-        final String name = 'name'
-        final String version = 'version'
-        final String space = PipInspectorTreeParser.INDENTATION
-        final String child1Text = 'apple' + PipInspectorTreeParser.SEPARATOR + '5.3.2'
-        final String child2Text = 'orange' + PipInspectorTreeParser.SEPARATOR + '4.3.1'
-        final String child3Text = 'pear' + PipInspectorTreeParser.SEPARATOR + '9.8.7'
-        String validText = """
-${PipInspectorTreeParser.UNKNOWN_REQUIREMENTS_PREFIX} reqs.txt
-${PipInspectorTreeParser.UNKNOWN_PACKAGE_PREFIX} UnkownPackageName
-
-${name + PipInspectorTreeParser.SEPARATOR + version}
-${space + child1Text}
-${space*2 + child3Text}
-${space + child2Text}
-${space + child3Text}
-"""
-
-        validText = validText.split("\r?\n").join(System.lineSeparator)
-
-        DetectCodeLocation root = parser.parse(validText, '')
-        ExternalId expectedExternalId = parser.externalIdFactory.createNameVersionExternalId(Forge.PYPI, 'name', 'version')
-        Assert.assertEquals('name', root.getBomToolProjectName())
-        Assert.assertEquals('version', root.getBomToolProjectVersionName())
-        testUtil.testJson(expectedExternalId.toString(), root.getBomToolProjectExternalId().toString())
-        Assert.assertEquals(3, root.getDependencyGraph().getRootDependencies().size())
-    }
 
     @Test
     void invalidParseTest() {

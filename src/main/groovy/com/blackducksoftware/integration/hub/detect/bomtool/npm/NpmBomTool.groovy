@@ -30,7 +30,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolApplicableBuilder
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolExtractionResult
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolRequirementBuilder
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolSearchOptions
 import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnBomTool
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
@@ -68,6 +70,9 @@ class NpmBomTool extends BomTool<NpmApplicableResult> {
     @Autowired
     private HubSignatureScanner hubSignatureScanner;
 
+    @Autowired
+    private BomToolApplicableBuilder bomToolApplicableBuilder;
+
     @Override
     public BomToolType getBomToolType() {
         BomToolType.NPM
@@ -75,6 +80,15 @@ class NpmBomTool extends BomTool<NpmApplicableResult> {
 
     BomToolSearchOptions getSearchOptions() {
         return new BomToolSearchOptions(false, Integer.MAX_VALUE);
+    }
+
+    public void doIt() {
+
+        BomToolRequirementBuilder builder = new BomToolRequirementBuilder();
+        builder.requireFile(NODE_MODULES);
+        builder.requireExecutable(ExecutableType.NPM);
+
+
     }
 
     //TODO: Bom tool finder - npm does not apply if YARN does.

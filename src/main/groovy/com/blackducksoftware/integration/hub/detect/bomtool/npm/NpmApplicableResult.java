@@ -29,7 +29,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolApplicableRes
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 
 public class NpmApplicableResult extends BomToolApplicableResult {
-    private final String npmExePath;
+    private String npmExePath;
     private final File packageLockJson;
     private final File shrinkwrapJson;
 
@@ -38,6 +38,10 @@ public class NpmApplicableResult extends BomToolApplicableResult {
         this.npmExePath = npmExePath;
         this.packageLockJson = packageLockJson;
         this.shrinkwrapJson = shrinkwrapJson;
+    }
+
+    public void setNpmExePath(final String exe) {
+        npmExePath = exe;
     }
 
     public String getNpmExePath() {
