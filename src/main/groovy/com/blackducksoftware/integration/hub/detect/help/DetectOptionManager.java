@@ -82,14 +82,14 @@ public class DetectOptionManager {
         }
 
         detectOptions = detectOptionsMap.values().stream()
-                                .sorted((o1, o2) -> o1.getHelp().primaryGroup.compareTo(o2.getHelp().primaryGroup))
-                                .collect(Collectors.toList());
+                .sorted((o1, o2) -> o1.getHelp().primaryGroup.compareTo(o2.getHelp().primaryGroup))
+                .collect(Collectors.toList());
 
         detectGroups = detectOptions.stream()
-                               .map(it -> it.getHelp().primaryGroup)
-                               .distinct()
-                               .sorted()
-                               .collect(Collectors.toList());
+                .map(it -> it.getHelp().primaryGroup)
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
     }
 
     public void postInit() throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException, DetectUserFriendlyException {
@@ -125,12 +125,12 @@ public class DetectOptionManager {
     public String getCurrentValue(final DetectConfiguration detectConfiguration, final DetectOption detectOption) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
         final Field field = detectConfiguration.getClass().getDeclaredField(detectOption.getFieldName());
         field.setAccessible(true);
-        String fieldValue = getStringValue(detectConfiguration, field);
+        final String fieldValue = getStringValue(detectConfiguration, field);
         field.setAccessible(false);
         return fieldValue;
     }
 
-    private String getStringValue(Object obj, Field field) throws IllegalAccessException {
+    private String getStringValue(final Object obj, final Field field) throws IllegalAccessException {
         final Object rawFieldValue = field.get(obj);
         String fieldValue = "";
         if (field.getType().isArray()) {
@@ -190,13 +190,13 @@ public class DetectOptionManager {
         help.description = descriptionAnnotation.value();
 
         final HelpGroup groupAnnotation = field.getAnnotation(HelpGroup.class);
-        final String primaryGroup = groupAnnotation.primary();
+        help.primaryGroup = groupAnnotation.primary();
         final String[] additionalGroups = groupAnnotation.additional();
         if (additionalGroups.length > 0) {
             help.groups.addAll(Arrays.stream(additionalGroups).collect(Collectors.toList()));
         } else {
-            if (StringUtils.isNotBlank(primaryGroup)) {
-                help.groups.add(primaryGroup);
+            if (StringUtils.isNotBlank(help.primaryGroup)) {
+                help.groups.add(help.primaryGroup);
             }
         }
 
