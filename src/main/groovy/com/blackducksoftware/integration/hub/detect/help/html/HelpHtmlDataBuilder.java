@@ -25,37 +25,41 @@ package com.blackducksoftware.integration.hub.detect.help.html;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.codehaus.plexus.util.StringUtils;
 
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 
 public class HelpHtmlDataBuilder {
 
-    private Map<String, HelpHtmlGroup> groupsByName = new HashMap<>();
-    
-    public HelpHtmlDataBuilder addDetectOption(DetectOption option) {
-        String groupName = option.getHelp().primaryGroup;
+    private final Map<String, HelpHtmlGroup> groupsByName = new HashMap<>();
+
+    public HelpHtmlDataBuilder addDetectOption(final DetectOption option) {
+        final String groupName = StringUtils.capitalise(option.getHelp().primaryGroup);
         if (!groupsByName.containsKey(groupName)) {
-            HelpHtmlGroup group = new HelpHtmlGroup();
+            final HelpHtmlGroup group = new HelpHtmlGroup();
             group.groupName = groupName;
             group.options = new ArrayList<>();
             groupsByName.put(groupName, group);
         }
-        
-        HelpHtmlGroup group = groupsByName.get(groupName);
-        
+
+        final HelpHtmlGroup group = groupsByName.get(groupName);
+
         String description = option.getHelp().description;
         if (option.getAcceptableValues().size() > 0) {
             description += " (" + option.getAcceptableValues().stream().collect(Collectors.joining("|")) + ")";
         }
-        HelpHtmlOption htmlOption = new HelpHtmlOption(option.getKey(), option.getDefaultValue(), description);
+        final HelpHtmlOption htmlOption = new HelpHtmlOption(option.getKey(), option.getDefaultValue(), description);
         group.options.add(htmlOption);
         return this;
     }
-    
-    
+
+
     public HelpHtmlData build() {
-        return new HelpHtmlData(new ArrayList<>(groupsByName.values()));
+        final List<HelpHtmlGroup> sortedOptions = groupsByName.values().stream().sorted((o1, o2) -> o1.groupName.compareTo(o2.groupName)).collect(Collectors.toList());
+        return new HelpHtmlData(sortedOptions);
     }
 }
