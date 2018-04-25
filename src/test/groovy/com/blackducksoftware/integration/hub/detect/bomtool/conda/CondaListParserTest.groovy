@@ -11,17 +11,16 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.conda
 
-import static org.junit.Assert.*
-
-import org.junit.Before
-import org.junit.Test
-
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 import com.google.gson.GsonBuilder
+import org.junit.Before
+import org.junit.Test
+
+import static org.junit.Assert.assertEquals
 
 class CondaListParserTest {
     private final CondaListParser condaListParser = new CondaListParser()

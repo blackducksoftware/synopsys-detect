@@ -11,18 +11,17 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.gradle
 
-import static com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphAssertions.*
-import static org.junit.Assert.*
-
-import org.junit.Test
-import org.springframework.test.util.ReflectionTestUtils
-
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 import com.google.gson.GsonBuilder
+import org.junit.Test
+import org.springframework.test.util.ReflectionTestUtils
+
+import static com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphAssertions.*
+import static org.junit.Assert.assertEquals
 
 class GradleReportParserTest {
     private TestUtil testUtil = new TestUtil()

@@ -1,9 +1,5 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.nuget
 
-import static org.junit.Assert.*
-
-import org.junit.Test
-
 import com.blackducksoftware.integration.hub.bdio.BdioNodeFactory
 import com.blackducksoftware.integration.hub.bdio.BdioPropertyHelper
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer
@@ -17,6 +13,9 @@ import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeT
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import org.junit.Test
+
+import static org.junit.Assert.assertEquals
 
 public class NugetInspectorPackagerTest {
     public Gson gson = new GsonBuilder().setPrettyPrinting().create()

@@ -1,13 +1,5 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.hex
 
-import static com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphAssertions.*
-import static com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil.*
-import static org.junit.Assert.*
-
-import org.junit.BeforeClass
-import org.junit.Test
-import org.springframework.test.util.ReflectionTestUtils
-
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.Forge
@@ -17,6 +9,12 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFac
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
+import org.junit.BeforeClass
+import org.junit.Test
+import org.springframework.test.util.ReflectionTestUtils
+
+import static com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil.assertGraph
+import static org.junit.Assert.*
 
 class RebarParserTest {
 

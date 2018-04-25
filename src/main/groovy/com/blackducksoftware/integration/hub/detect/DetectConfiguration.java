@@ -23,16 +23,22 @@
  */
 package com.blackducksoftware.integration.hub.detect;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
+import com.blackducksoftware.integration.hub.api.enumeration.PolicySeverityType;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
+import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerBomTool;
+import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleBomTool;
+import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetBomTool;
+import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
+import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
+import com.blackducksoftware.integration.hub.detect.help.*;
+import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver;
+import com.blackducksoftware.integration.hub.proxy.ProxyInfo;
+import com.blackducksoftware.integration.hub.proxy.ProxyInfoBuilder;
+import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnection;
+import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnectionBuilder;
+import com.blackducksoftware.integration.log.Slf4jIntLogger;
+import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
+import groovy.transform.TypeChecked;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -45,28 +51,10 @@ import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertySource;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.api.enumeration.PolicySeverityType;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerBomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleBomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetBomTool;
-import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
-import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
-import com.blackducksoftware.integration.hub.detect.help.AcceptableValues;
-import com.blackducksoftware.integration.hub.detect.help.DefaultValue;
-import com.blackducksoftware.integration.hub.detect.help.DetectOption;
-import com.blackducksoftware.integration.hub.detect.help.HelpDescription;
-import com.blackducksoftware.integration.hub.detect.help.HelpGroup;
-import com.blackducksoftware.integration.hub.detect.help.ValueDeprecation;
-import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver;
-import com.blackducksoftware.integration.hub.proxy.ProxyInfo;
-import com.blackducksoftware.integration.hub.proxy.ProxyInfoBuilder;
-import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnection;
-import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnectionBuilder;
-import com.blackducksoftware.integration.log.Slf4jIntLogger;
-import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
-
-import groovy.transform.TypeChecked;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 @TypeChecked
@@ -104,6 +92,7 @@ public class DetectConfiguration {
     private static final String GROUP_PYTHON = "python";
     private static final String GROUP_SBT = "sbt";
     private static final String GROUP_SIGNATURE_SCANNER = "signature scanner";
+    private static final String GROUP_YARN = "yarn";
 
     private static final String SEARCH_GROUP_SIGNATURE_SCANNER = "scanner";
     private static final String SEARCH_GROUP_POLICY = "policy";
@@ -287,7 +276,7 @@ public class DetectConfiguration {
 
     private void addFieldWarning(final String key, final String warning) {
         detectOptions.stream().forEach(option -> {
-            if (option.getKey().equals(key) ) {
+            if (option.getKey().equals(key)) {
                 option.getWarnings().add(warning);
             }
         });
@@ -295,7 +284,7 @@ public class DetectConfiguration {
 
     private void requestDeprecation(final String key) {
         detectOptions.stream().forEach(option -> {
-            if (option.getKey().equals(key) ) {
+            if (option.getKey().equals(key)) {
                 option.requestDeprecation();
             }
         });
@@ -684,7 +673,7 @@ public class DetectConfiguration {
     @AcceptableValues(value = {"EXTERNAL", "SAAS", "INTERNAL", "OPENSOURCE"}, caseSensitive = false, strict = false)
     private String projectVersionDistribution;
 
-    @ValueDeprecation(willRemoveInVersion="4.0.0", description = "To fail on any policy, set --detect.policy.check.fail.on.severities=ALL.")
+    @ValueDeprecation(willRemoveInVersion = "4.0.0", description = "To fail on any policy, set --detect.policy.check.fail.on.severities=ALL.")
     @Value("${detect.policy.check:}")
     @DefaultValue("false")
     @HelpGroup(primary = GROUP_POLICY_CHECK, additional = {SEARCH_GROUP_POLICY})
@@ -1075,6 +1064,17 @@ public class DetectConfiguration {
     @HelpGroup(primary = GROUP_HEX)
     @HelpDescription("The path of the rebar3 executable")
     private String hexRebar3Path;
+
+    @Value("${detect.yarn.path:}")
+    @HelpDescription("The path of the Yarn executable")
+    @HelpGroup(primary = GROUP_YARN)
+    private String yarnPath;
+
+    @Value("${detect.yarn.prod.only:}")
+    @HelpDescription("Set this to true to only scan production dependencies")
+    @DefaultValue("false")
+    @HelpGroup(primary = GROUP_YARN)
+    private String yarnProductionDependenciesOnly;
 
     public boolean getCleanupBdioFiles() {
         return BooleanUtils.toBoolean(cleanupBdioFiles);
@@ -1540,6 +1540,15 @@ public class DetectConfiguration {
     public String getHexRebar3Path() {
         return hexRebar3Path;
     }
+
+    public String getYarnPath() {
+        return yarnPath;
+    }
+
+    public Boolean getYarnProductionDependenciesOnly() {
+        return BooleanUtils.toBoolean(yarnProductionDependenciesOnly);
+    }
+
 
     // properties end
 
