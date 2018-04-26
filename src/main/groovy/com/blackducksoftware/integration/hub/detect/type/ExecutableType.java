@@ -48,11 +48,11 @@ public enum ExecutableType {
 
     private String executableName;
 
-    ExecutableType() {
+    private ExecutableType() {
         this.executableName = this.name().toLowerCase();
     }
 
-    ExecutableType(final String executableName) {
+    private ExecutableType(final String executableName) {
         this.executableName = executableName;
     }
 

@@ -1,21 +1,19 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.yarn;
 
+import static org.junit.Assert.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Test;
+
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil;
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
-import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.*;
-
-public class YarnBomToolTest {
-    private YarnBomTool yarnBomTool;
-    private DependencyGraph dependencyGraph;
-    private List<String> testLines;
+public class YarnListParserTest {
     private final TestUtil testUtil = new TestUtil();
 
     @Test
@@ -31,11 +29,10 @@ public class YarnBomToolTest {
         designedYarnLock.add("  version \"0.0.8\"");
         designedYarnLock.add("  resolved \"http://nexus/nexus3/repository/npm-all/minimist/-/minimist-0.0.8.tgz#857fcabfc3397d2625b8228262e86aa7a011b05d\"");
 
-
-        yarnBomTool = new YarnBomTool(designedYarnLock);
+        YarnListParser yarnListParser = new YarnListParser();
         String yarnListText = testUtil.getResourceAsUTF8String("/yarn/yarn.list.txt");
         ExecutableOutput exeOutput = new ExecutableOutput(yarnListText, "");
-        DependencyGraph dependencyGraph = yarnBomTool.parseYarnList(exeOutput.getStandardOutputAsList());
+        DependencyGraph dependencyGraph = yarnListParser.parseYarnList(designedYarnLock, exeOutput.getStandardOutputAsList());
         DependencyGraphResourceTestUtil.assertGraph("/yarn/list_expected_graph.json", dependencyGraph);
     }
 
@@ -69,22 +66,23 @@ public class YarnBomToolTest {
         designedYarnLock.add("  version \"4.2.1\"");
         designedYarnLock.add("  resolved \"http://nexus/nexus3/repository/npm-all/hoek/-/hoek-4.2.1.tgz#9634502aa12c445dd5a7c5734b572bb8738aacbb\"");
 
-
-        yarnBomTool = new YarnBomTool(designedYarnLock);
+        YarnListParser yarnListParser = new YarnListParser();
         String yarnListText = testUtil.getResourceAsUTF8String("/yarn/yarn.list.res.txt");
         ExecutableOutput exeOutput = new ExecutableOutput(yarnListText, "");
-        DependencyGraph dependencyGraph = yarnBomTool.parseYarnList(exeOutput.getStandardOutputAsList());
+        DependencyGraph dependencyGraph = yarnListParser.parseYarnList(designedYarnLock, exeOutput.getStandardOutputAsList());
         DependencyGraphResourceTestUtil.assertGraph("/yarn/list_expected_graph_2.json", dependencyGraph);
     }
 
     @Test
     public void testThatYarnListLineAtBeginningIsIgnored() {
-        testLines = new ArrayList<>();
+        List<String> designedYarnLock = getSmalleYarnLockLines();
+
+        List<String> testLines = new ArrayList<>();
         testLines.add("yarn list v1.5.1");
         testLines.add("├─ abab@1.0.4");
 
-        yarnBomTool = new YarnBomTool(testLines);
-        dependencyGraph = yarnBomTool.parseYarnList(testLines);
+        YarnListParser yarnListParser = new YarnListParser();
+        DependencyGraph dependencyGraph = yarnListParser.parseYarnList(designedYarnLock, testLines);
 
         List<ExternalId> tempList = new ArrayList<>(dependencyGraph.getRootDependencyExternalIds());
 
@@ -94,12 +92,14 @@ public class YarnBomToolTest {
 
     @Test
     public void testThatYarnListWithOnlyTopLevelDependenciesIsParsedCorrectly() {
-        testLines = new ArrayList<>();
+        List<String> designedYarnLock = getSmalleYarnLockLines();
+
+        List<String> testLines = new ArrayList<>();
         testLines.add("├─ esprima@3.1.3");
         testLines.add("└─ extsprintf@1.3.0");
 
-        yarnBomTool = new YarnBomTool(testLines);
-        dependencyGraph = yarnBomTool.parseYarnList(testLines);
+        YarnListParser yarnListParser = new YarnListParser();
+        DependencyGraph dependencyGraph = yarnListParser.parseYarnList(designedYarnLock, testLines);
 
         List<ExternalId> tempList = new ArrayList<>(dependencyGraph.getRootDependencyExternalIds());
 
@@ -107,15 +107,16 @@ public class YarnBomToolTest {
         assertListContainsDependency("extsprintf", tempList);
     }
 
-
     @Test
     public void testThatYarnListWithGrandchildIsParsedCorrectly() {
-        testLines = new ArrayList<>();
+        List<String> designedYarnLock = getSmalleYarnLockLines();
+
+        List<String> testLines = new ArrayList<>();
         testLines.add("├─ yargs-parser@4.2.1");
         testLines.add("│  └─ camelcase@^3.0.0");
 
-        yarnBomTool = new YarnBomTool(testLines);
-        dependencyGraph = yarnBomTool.parseYarnList(testLines);
+        YarnListParser yarnListParser = new YarnListParser();
+        DependencyGraph dependencyGraph = yarnListParser.parseYarnList(designedYarnLock, testLines);
 
         List<ExternalId> tempList = new ArrayList<>(dependencyGraph.getRootDependencyExternalIds());
         List<ExternalId> kidsList = new ArrayList<>();
@@ -130,13 +131,15 @@ public class YarnBomToolTest {
 
     @Test
     public void testThatYarnListWithGreatGrandchildrenIsParsedCorrectly() {
-        testLines = new ArrayList<>();
+        List<String> designedYarnLock = getSmalleYarnLockLines();
+
+        List<String> testLines = new ArrayList<>();
         testLines.add("├─ yargs-parser@4.2.1");
         testLines.add("│  └─ camelcase@^3.0.0");
         testLines.add("│  │  └─ ms@0.7.2");
 
-        yarnBomTool = new YarnBomTool(testLines);
-        dependencyGraph = yarnBomTool.parseYarnList(testLines);
+        YarnListParser yarnListParser = new YarnListParser();
+        DependencyGraph dependencyGraph = yarnListParser.parseYarnList(designedYarnLock, testLines);
 
         List<ExternalId> tempList = new ArrayList<>(dependencyGraph.getRootDependencyExternalIds());
         List<ExternalId> kidsList = new ArrayList<>();
@@ -165,26 +168,41 @@ public class YarnBomToolTest {
 
     @Test
     public void testThatYarnListRegexParsesTheCorrectText() {
+        YarnListParser yarnListParser = new YarnListParser();
+
         String input = "│  │  ├─ engine.io-client@~1.8.4";
-        assertEquals("engine.io-client@~1.8.4", YarnBomTool.grabFuzzyName(input));
+        assertEquals("engine.io-client@~1.8.4", yarnListParser.grabFuzzyName(input));
 
         input = "│  ├─ test-fixture@PolymerElements/test-fixture";
-        assertEquals("test-fixture@PolymerElements/test-fixture", YarnBomTool.grabFuzzyName(input));
+        assertEquals("test-fixture@PolymerElements/test-fixture", yarnListParser.grabFuzzyName(input));
 
         input = "│  │  ├─ tough-cookie@>=0.12.0";
-        assertEquals("tough-cookie@>=0.12.0", YarnBomTool.grabFuzzyName(input));
+        assertEquals("tough-cookie@>=0.12.0", yarnListParser.grabFuzzyName(input));
 
         input = "│  │  ├─ cryptiles@2.x.x";
-        assertEquals("cryptiles@2.x.x", YarnBomTool.grabFuzzyName(input));
+        assertEquals("cryptiles@2.x.x", yarnListParser.grabFuzzyName(input));
 
         input = "│  │  ├─ asn1@0.2.3";
-        assertEquals("asn1@0.2.3", YarnBomTool.grabFuzzyName(input));
+        assertEquals("asn1@0.2.3", yarnListParser.grabFuzzyName(input));
 
         input = "│  ├─ cssom@>= 0.3.2 < 0.4.0";
-        assertEquals("cssom@>= 0.3.2 < 0.4.0", YarnBomTool.grabFuzzyName(input));
+        assertEquals("cssom@>= 0.3.2 < 0.4.0", yarnListParser.grabFuzzyName(input));
 
         input = "│  ├─ name_with_underscores@1.1.0";
-        assertEquals("name_with_underscores@1.1.0", YarnBomTool.grabFuzzyName(input));
+        assertEquals("name_with_underscores@1.1.0", yarnListParser.grabFuzzyName(input));
 
+    }
+
+    private List<String> getSmalleYarnLockLines() {
+        List<String> designedYarnLock = new ArrayList<>();
+        designedYarnLock.add("ajv@5.5.2:");
+        designedYarnLock.add("  version \"5.5.2\"");
+        designedYarnLock.add("  resolved \"http://nexus/nexus3/repository/npm-all/ajv/-/ajv-4.11.8.tgz#82ffb02b29e662ae53bdc20af15947706739c536\"");
+        designedYarnLock.add("  dependencies:");
+        designedYarnLock.add("    co \"^4.6.0\"");
+        designedYarnLock.add("    tr46 \"~0.0.3\"");
+        designedYarnLock.add("    cssstyle \">= 0.2.37 < 0.3.0\"");
+        designedYarnLock.add("");
+        return designedYarnLock;
     }
 }

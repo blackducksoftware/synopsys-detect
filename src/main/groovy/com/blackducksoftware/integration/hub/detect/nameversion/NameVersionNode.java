@@ -30,7 +30,7 @@ import org.apache.commons.lang3.builder.RecursiveToStringStyle;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 public class NameVersionNode {
-    public String name;
+    private String name;
     private String version;
     private List<NameVersionNode> children = new ArrayList<>();
     private NodeMetadata metadata;

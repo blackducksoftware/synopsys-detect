@@ -1,14 +1,14 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.yarn;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Before;
+import org.junit.Test;
 
-public class YarnDependencyDataTest {
+public class YarnDependencyMapperTest {
 
     private List<String> lines;
 
@@ -31,10 +31,11 @@ public class YarnDependencyDataTest {
         lines.add("  version \"1.0.3\"");
         lines.add("  resolved \"http://nexus.fr.murex.com/nexus3/repository/npm-all/colors/-/colors-1.0.3.tgz#0433f44d809680fdeb60ed260f1b0c262e82a40b\"");
 
-        YarnDependencyData.getYarnDataAsMap(lines);
+        YarnDependencyMapper yarnDependencyMapper = new YarnDependencyMapper();
+        yarnDependencyMapper.getYarnDataAsMap(lines);
 
-        assertEquals("0.9.0", YarnDependencyData.getResolvedVersions().get("async@0.9.0"));
-        assertEquals("1.0.3", YarnDependencyData.getResolvedVersions().get("colors@1.0.3"));
+        assertEquals("0.9.0", yarnDependencyMapper.getResolvedVersions().get("async@0.9.0"));
+        assertEquals("1.0.3", yarnDependencyMapper.getResolvedVersions().get("colors@1.0.3"));
     }
 
     @Test
@@ -50,10 +51,11 @@ public class YarnDependencyDataTest {
         lines.add("  version \"0.9.0\"");
         lines.add("  resolved \"http://nexus.fr.murex.com/nexus3/repository/npm-all/http-server/-/http-server-0.9.0.tgz#8f1b06bdc733618d4dc42831c7ba1aff4e06001a\"");
 
-        YarnDependencyData.getYarnDataAsMap(lines);
+        YarnDependencyMapper yarnDependencyMapper = new YarnDependencyMapper();
+        yarnDependencyMapper.getYarnDataAsMap(lines);
 
-        assertEquals("1.16.2", YarnDependencyData.getVersion("http-proxy@^1.8.1"));
-        assertEquals("0.9.0", YarnDependencyData.getVersion("http-server@^0.9.0"));
+        assertEquals("1.16.2", yarnDependencyMapper.getVersion("http-proxy@^1.8.1"));
+        assertEquals("0.9.0", yarnDependencyMapper.getVersion("http-server@^0.9.0"));
     }
 
     @Test
@@ -65,14 +67,15 @@ public class YarnDependencyDataTest {
         lines.add("  dependencies:");
         lines.add("    ms \"2.0.0\"");
 
-        YarnDependencyData.getYarnDataAsMap(lines);
+        YarnDependencyMapper yarnDependencyMapper = new YarnDependencyMapper();
+        yarnDependencyMapper.getYarnDataAsMap(lines);
 
-        assertEquals("2.6.9", YarnDependencyData.getVersion("debug@2"));
-        assertEquals("2.6.9", YarnDependencyData.getVersion("debug@2.6.9"));
-        assertEquals("2.6.9", YarnDependencyData.getVersion("debug@^2.2.0"));
-        assertEquals("2.6.9", YarnDependencyData.getVersion("debug@^2.3.3"));
-        assertEquals("2.6.9", YarnDependencyData.getVersion("debug@~2.6.4"));
-        assertEquals("2.6.9", YarnDependencyData.getVersion("debug@~2.6.6"));
+        assertEquals("2.6.9", yarnDependencyMapper.getVersion("debug@2"));
+        assertEquals("2.6.9", yarnDependencyMapper.getVersion("debug@2.6.9"));
+        assertEquals("2.6.9", yarnDependencyMapper.getVersion("debug@^2.2.0"));
+        assertEquals("2.6.9", yarnDependencyMapper.getVersion("debug@^2.3.3"));
+        assertEquals("2.6.9", yarnDependencyMapper.getVersion("debug@~2.6.4"));
+        assertEquals("2.6.9", yarnDependencyMapper.getVersion("debug@~2.6.6"));
 
     }
 
@@ -85,9 +88,10 @@ public class YarnDependencyDataTest {
         lines.add("  dependencies:");
         lines.add("    cssom \"0.3.x\"");
 
-        YarnDependencyData.getYarnDataAsMap(lines);
+        YarnDependencyMapper yarnDependencyMapper = new YarnDependencyMapper();
+        yarnDependencyMapper.getYarnDataAsMap(lines);
 
-        assertEquals("0.2.37", YarnDependencyData.getVersion("cssstyle"));
+        assertEquals("0.2.37", yarnDependencyMapper.getVersion("cssstyle"));
     }
 
 }

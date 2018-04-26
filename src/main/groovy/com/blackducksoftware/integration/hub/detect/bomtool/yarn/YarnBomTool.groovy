@@ -24,19 +24,13 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.yarn
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
-import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph
-import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.Forge
-import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import com.blackducksoftware.integration.hub.detect.bomtool.NestedBomTool
 import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolSearchResult
 import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolSearcher
-import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnBomToolSearcher
-import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnDependencyData
-import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnPackager
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
@@ -49,8 +43,6 @@ import org.springframework.stereotype.Component
 
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
-import java.util.regex.Matcher
-import java.util.regex.Pattern
 
 @Component
 @TypeChecked
@@ -59,17 +51,11 @@ class YarnBomTool extends BomTool implements NestedBomTool<BomToolSearchResult> 
     public static final String OUTPUT_FILE = 'detect_yarn_proj_dependencies.txt'
     public static final String ERROR_FILE = 'detect_yarn_error.txt'
 
-    private List<String> yarnLockText
-    private String yarnExePath
-
-    YarnBomTool() {}
-
-    YarnBomTool(List<String> yarnLockText) {
-        this.yarnLockText = yarnLockText
-    }
+    @Autowired
+    YarnLockParser yarnLockParser
 
     @Autowired
-    YarnPackager yarnPackager
+    YarnListParser yarnListParser
 
     @Autowired
     ExternalIdFactory externalIdFactory
@@ -100,13 +86,14 @@ class YarnBomTool extends BomTool implements NestedBomTool<BomToolSearchResult> 
         def detectCodeLocation
 
         File yarnLockFile = detectFileManager.findFile(searchResult.searchedDirectory.canonicalPath, 'yarn.lock')
-        yarnLockText = Files.readAllLines(yarnLockFile.toPath(), StandardCharsets.UTF_8)
-        yarnExePath = findExecutablePath(ExecutableType.YARN, true, detectConfiguration.getYarnPath())
+        List<String> yarnLockText = Files.readAllLines(yarnLockFile.toPath(), StandardCharsets.UTF_8)
+        String yarnExePath = findExecutablePath(ExecutableType.YARN, true, detectConfiguration.getYarnPath())
 
         if (detectConfiguration.yarnProductionDependenciesOnly) {
-            dependencyGraph = parseYarnList(readYarnListAsLines(yarnExePath))
+            List<String> yarnListLines = executeYarList(yarnExePath)
+            dependencyGraph = yarnListParser.parseYarnList(yarnLockText, yarnListLines)
         } else {
-            dependencyGraph = yarnPackager.parseYarnLock(yarnLockText)
+            dependencyGraph = yarnLockParser.parseYarnLock(yarnLockText)
         }
 
         ExternalId externalId = externalIdFactory.createPathExternalId(Forge.NPM, searchResult.searchedDirectory.canonicalPath)
@@ -115,7 +102,7 @@ class YarnBomTool extends BomTool implements NestedBomTool<BomToolSearchResult> 
         return [detectCodeLocation]
     }
 
-    List<String> readYarnListAsLines(String yarnExePath) {
+    List<String> executeYarList(String yarnExePath) {
         File yarnListOutputFile = detectFileManager.createFile(BomToolType.YARN, OUTPUT_FILE)
         File yarnListErrorFile = detectFileManager.createFile(BomToolType.YARN, ERROR_FILE)
 
@@ -135,83 +122,6 @@ class YarnBomTool extends BomTool implements NestedBomTool<BomToolSearchResult> 
 
         yarnListOutputFile.readLines()
 
-    }
-
-    DependencyGraph parseYarnList(List yarnListAsList) {
-        YarnDependencyData yarnData = new YarnDependencyData()
-        MutableDependencyGraph graph = new MutableMapDependencyGraph()
-        ExternalId extId = new ExternalId(Forge.NPM)
-        UUID rndUUID = UUID.randomUUID()
-        String rootName = "detectRootNode - ${rndUUID}"
-        extId.name = rootName
-
-        yarnData.getYarnDataAsMap(yarnLockText)
-
-        int depth
-        Dependency currentDep, parentDep
-        for (String line : yarnListAsList) {
-
-            if (line.toLowerCase().startsWith("yarn list")
-                    || line.toLowerCase().startsWith("done in")
-                    || line.toLowerCase().startsWith("warning")) {
-                continue
-            }
-
-            line = line.replaceAll("├─", " ").replaceAll("│", " ").replaceAll("└─", " ")
-            depth = getDepth(line)
-
-            if (depth == 0) {
-                currentDep = getDependencyFromLine(line, yarnData)
-                graph.addChildToRoot(currentDep)
-                parentDep = currentDep
-            }
-
-            if (depth >= 1) {
-                currentDep = getDependencyFromLine(line, yarnData)
-                logger.debug(currentDep.name + "@" + currentDep.version + " is being added as a child of " + parentDep.name + "@" + parentDep.version)
-                graph.addChildWithParent(currentDep, parentDep)
-            }
-        }
-
-        graph
-    }
-
-    private Dependency getDependencyFromLine(String line, YarnDependencyData data) {
-        String fuzzyName = grabFuzzyName(line)
-        String name = fuzzyName.split("@")[0]
-        String version = data.getVersion(fuzzyName)
-
-        logger.debug("Found version " + version + " for " + fuzzyName)
-
-        ExternalId extId = new ExternalId(Forge.NPM)
-        extId.name = name
-        extId.version = version
-
-        new Dependency(name, version, extId)
-    }
-
-    static int getDepth(String s) {
-        // how many spaces (S) does it start with? then depth, in this case is, D = (S - 2)/3
-        Pattern pattern = Pattern.compile(" ")
-        Matcher matcher = pattern.matcher(s)
-        int count = matcher.getCount()
-
-        Math.floorDiv(count - 2, 3)
-    }
-
-    static String grabFuzzyName(String line) {
-        // e.g.
-        // ├─ whatwg-url@4.8.0 >> whatwg-url@4.8.0
-        // OR
-        // │  ├─ tr46@~0.0.3 >> tr46@~0.0.3
-
-        // [a-zA-Z\d-]+@.+[\dx]$
-        Pattern pattern = Pattern.compile("[ \\d.\\-_a-zA-Z]+@.+")
-        Matcher matcher = pattern.matcher(line)
-        matcher.find()
-        String result = matcher.group(0).trim()
-
-        result
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
