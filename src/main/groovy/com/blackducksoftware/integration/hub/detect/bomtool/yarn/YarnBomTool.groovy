@@ -83,14 +83,14 @@ class YarnBomTool extends BomTool implements NestedBomTool<BomToolSearchResult> 
 
     List<DetectCodeLocation> extractDetectCodeLocations(BomToolSearchResult searchResult) {
         DependencyGraph dependencyGraph
-        def detectCodeLocation
+        DetectCodeLocation detectCodeLocation
 
         File yarnLockFile = detectFileManager.findFile(searchResult.searchedDirectory.canonicalPath, 'yarn.lock')
         List<String> yarnLockText = Files.readAllLines(yarnLockFile.toPath(), StandardCharsets.UTF_8)
         String yarnExePath = findExecutablePath(ExecutableType.YARN, true, detectConfiguration.getYarnPath())
 
         if (detectConfiguration.yarnProductionDependenciesOnly) {
-            List<String> yarnListLines = executeYarList(yarnExePath)
+            List<String> yarnListLines = executeYarnList(yarnExePath)
             dependencyGraph = yarnListParser.parseYarnList(yarnLockText, yarnListLines)
         } else {
             dependencyGraph = yarnLockParser.parseYarnLock(yarnLockText)
@@ -102,7 +102,7 @@ class YarnBomTool extends BomTool implements NestedBomTool<BomToolSearchResult> 
         return [detectCodeLocation]
     }
 
-    List<String> executeYarList(String yarnExePath) {
+    List<String> executeYarnList(String yarnExePath) {
         File yarnListOutputFile = detectFileManager.createFile(BomToolType.YARN, OUTPUT_FILE)
         File yarnListErrorFile = detectFileManager.createFile(BomToolType.YARN, ERROR_FILE)
 
@@ -121,7 +121,6 @@ class YarnBomTool extends BomTool implements NestedBomTool<BomToolSearchResult> 
         }
 
         yarnListOutputFile.readLines()
-
     }
 
     List<DetectCodeLocation> extractDetectCodeLocations() {
