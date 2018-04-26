@@ -25,13 +25,12 @@ package com.blackducksoftware.integration.hub.detect;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -45,8 +44,8 @@ import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertySource;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.api.enumeration.PolicySeverityType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolFinder;
 import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetBomTool;
@@ -65,6 +64,7 @@ import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnection;
 import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnectionBuilder;
 import com.blackducksoftware.integration.log.Slf4jIntLogger;
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
+import com.blackducksoftware.integration.util.ResourceUtil;
 
 import groovy.transform.TypeChecked;
 
@@ -143,6 +143,7 @@ public class DetectConfiguration {
     private boolean usingDefaultOutputPath;
 
     private ExcludedIncludedFilter bomToolFilter;
+    private List<String> bomToolSearchDirectoryExclusions;
     private final List<String> excludedScanPaths = new ArrayList<>();
 
     public void init(final List<DetectOption> detectOptions) throws DetectUserFriendlyException, IOException, IllegalArgumentException, IllegalAccessException {
@@ -286,6 +287,17 @@ public class DetectConfiguration {
 
          */
 
+        //TODO Final home for directories to exclude
+        bomToolSearchDirectoryExclusions = new ArrayList<>();
+        try {
+            if (bomToolSearchExclusionDefaults) {
+                final String fileContent = ResourceUtil.getResourceAsString(BomToolFinder.class, "/excludedDirectoriesBomToolSearch.txt", StandardCharsets.UTF_8);
+                bomToolSearchDirectoryExclusions.addAll(Arrays.asList(fileContent.split("\n")));
+            }
+        } catch (final IOException e) {
+            throw new DetectUserFriendlyException(String.format("Could not determine the directories to exclude from the bom tool search. %s", e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
+        }
+
         configureForPhoneHome();
     }
 
@@ -303,6 +315,10 @@ public class DetectConfiguration {
                 option.requestDeprecation();
             }
         });
+    }
+
+    public List<String> getBomToolSearchDirectoryExclusions() {
+        return bomToolSearchDirectoryExclusions;
     }
 
     public File getSourceDirectory() {
