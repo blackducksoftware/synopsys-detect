@@ -56,7 +56,7 @@ public class YarnDependencyMapper extends BaseYarnParser {
             String name = key.split("@")[0];
             for (String fuzzy : resolvedVersions.keySet()) {
                 String fullResolvedName = name + "@" + resolvedVersions.get(fuzzy);
-                boolean versionHasAlreadyBeenResolvedByYarnList = fuzzy == fullResolvedName;
+                boolean versionHasAlreadyBeenResolvedByYarnList = fuzzy.equals(fullResolvedName);
                 if (versionHasAlreadyBeenResolvedByYarnList) {
                     String value = resolvedVersions.get(fuzzy);
                     if (StringUtils.isNotBlank(value)) {

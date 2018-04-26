@@ -82,8 +82,9 @@ public class YarnLockParser extends BaseYarnParser {
     // Example: "mime-types@^2.1.12" becomes "mime-types"
     private String getNameFromFuzzyName(final String fuzzyName) {
         String cleanName = fuzzyName.replace("\"", "");
-        String version = cleanName.split("@")[-1];
-        String name = cleanName.substring(0, cleanName.indexOf(version) - 2).trim();
+        String[] splitName = cleanName.split("@");
+        String version = splitName[splitName.length - 1];
+        String name = cleanName.substring(0, cleanName.indexOf(version) - 1).trim();
 
         return name;
     }

@@ -1,9 +1,11 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.yarn;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -34,8 +36,13 @@ public class YarnDependencyMapperTest {
         YarnDependencyMapper yarnDependencyMapper = new YarnDependencyMapper();
         yarnDependencyMapper.getYarnDataAsMap(lines);
 
-        assertEquals("0.9.0", yarnDependencyMapper.getResolvedVersions().get("async@0.9.0"));
-        assertEquals("1.0.3", yarnDependencyMapper.getResolvedVersions().get("colors@1.0.3"));
+        Optional<String> optionalVersion = yarnDependencyMapper.getVersion("async@0.9.0");
+        assertTrue(optionalVersion.isPresent());
+        assertEquals("0.9.0", optionalVersion.get());
+
+        optionalVersion = yarnDependencyMapper.getVersion("colors@1.0.3");
+        assertTrue(optionalVersion.isPresent());
+        assertEquals("1.0.3", optionalVersion.get());
     }
 
     @Test
@@ -54,8 +61,13 @@ public class YarnDependencyMapperTest {
         YarnDependencyMapper yarnDependencyMapper = new YarnDependencyMapper();
         yarnDependencyMapper.getYarnDataAsMap(lines);
 
-        assertEquals("1.16.2", yarnDependencyMapper.getVersion("http-proxy@^1.8.1"));
-        assertEquals("0.9.0", yarnDependencyMapper.getVersion("http-server@^0.9.0"));
+        Optional<String> optionalVersion = yarnDependencyMapper.getVersion("http-proxy@^1.8.1");
+        assertTrue(optionalVersion.isPresent());
+        assertEquals("1.16.2", optionalVersion.get());
+
+        optionalVersion = yarnDependencyMapper.getVersion("http-server@^0.9.0");
+        assertTrue(optionalVersion.isPresent());
+        assertEquals("0.9.0", optionalVersion.get());
     }
 
     @Test
@@ -70,13 +82,29 @@ public class YarnDependencyMapperTest {
         YarnDependencyMapper yarnDependencyMapper = new YarnDependencyMapper();
         yarnDependencyMapper.getYarnDataAsMap(lines);
 
-        assertEquals("2.6.9", yarnDependencyMapper.getVersion("debug@2"));
-        assertEquals("2.6.9", yarnDependencyMapper.getVersion("debug@2.6.9"));
-        assertEquals("2.6.9", yarnDependencyMapper.getVersion("debug@^2.2.0"));
-        assertEquals("2.6.9", yarnDependencyMapper.getVersion("debug@^2.3.3"));
-        assertEquals("2.6.9", yarnDependencyMapper.getVersion("debug@~2.6.4"));
-        assertEquals("2.6.9", yarnDependencyMapper.getVersion("debug@~2.6.6"));
+        Optional<String> optionalVersion = yarnDependencyMapper.getVersion("debug@2");
+        assertTrue(optionalVersion.isPresent());
+        assertEquals("2.6.9", optionalVersion.get());
 
+        optionalVersion = yarnDependencyMapper.getVersion("debug@2.6.9");
+        assertTrue(optionalVersion.isPresent());
+        assertEquals("2.6.9", optionalVersion.get());
+
+        optionalVersion = yarnDependencyMapper.getVersion("debug@^2.2.0");
+        assertTrue(optionalVersion.isPresent());
+        assertEquals("2.6.9", optionalVersion.get());
+
+        optionalVersion = yarnDependencyMapper.getVersion("debug@^2.3.3");
+        assertTrue(optionalVersion.isPresent());
+        assertEquals("2.6.9", optionalVersion.get());
+
+        optionalVersion = yarnDependencyMapper.getVersion("debug@~2.6.4");
+        assertTrue(optionalVersion.isPresent());
+        assertEquals("2.6.9", optionalVersion.get());
+
+        optionalVersion = yarnDependencyMapper.getVersion("debug@~2.6.6");
+        assertTrue(optionalVersion.isPresent());
+        assertEquals("2.6.9", optionalVersion.get());
     }
 
     @Test
@@ -91,7 +119,9 @@ public class YarnDependencyMapperTest {
         YarnDependencyMapper yarnDependencyMapper = new YarnDependencyMapper();
         yarnDependencyMapper.getYarnDataAsMap(lines);
 
-        assertEquals("0.2.37", yarnDependencyMapper.getVersion("cssstyle"));
+        Optional<String> optionalVersion = yarnDependencyMapper.getVersion("cssstyle");
+        assertTrue(optionalVersion.isPresent());
+        assertEquals("0.2.37", optionalVersion.get());
     }
 
 }

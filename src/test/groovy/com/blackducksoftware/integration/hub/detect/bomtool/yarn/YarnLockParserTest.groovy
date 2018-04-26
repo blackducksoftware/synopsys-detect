@@ -19,7 +19,6 @@ import com.blackducksoftware.integration.hub.detect.nameversion.builder.LinkedNa
 import com.blackducksoftware.integration.hub.detect.nameversion.metadata.LinkMetadata
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput
 import org.junit.Before
 import org.junit.Test
 
@@ -38,8 +37,7 @@ class YarnLockParserTest {
     @Test
     void parseYarnLockTest() {
         String yarnLockText = testUtil.getResourceAsUTF8String('/yarn/yarn.lock')
-        def exeOutput = new ExecutableOutput(yarnLockText, '')
-        DependencyGraph dependencyGraph = yarnLockParser.parseYarnLock(exeOutput.getStandardOutputAsList())
+        DependencyGraph dependencyGraph = yarnLockParser.parseYarnLock(Arrays.asList(yarnLockText.split(System.lineSeparator())))
         DependencyGraphResourceTestUtil.assertGraph('/yarn/expected_graph.json', dependencyGraph)
     }
 

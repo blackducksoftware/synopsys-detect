@@ -1,17 +1,12 @@
-package com.blackducksoftware.integration.hub.detect.bomtool.yarn;
+package com.blackducksoftware.integration.hub.detect.bomtool.yarn
 
-import static org.junit.Assert.*;
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
+import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
+import org.junit.Test
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.Test;
-
-import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
-import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil;
-import com.blackducksoftware.integration.hub.detect.testutils.TestUtil;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
+import static org.junit.Assert.*
 
 public class YarnListParserTest {
     private final TestUtil testUtil = new TestUtil();
@@ -31,8 +26,7 @@ public class YarnListParserTest {
 
         YarnListParser yarnListParser = new YarnListParser();
         String yarnListText = testUtil.getResourceAsUTF8String("/yarn/yarn.list.txt");
-        ExecutableOutput exeOutput = new ExecutableOutput(yarnListText, "");
-        DependencyGraph dependencyGraph = yarnListParser.parseYarnList(designedYarnLock, exeOutput.getStandardOutputAsList());
+        DependencyGraph dependencyGraph = yarnListParser.parseYarnList(designedYarnLock, Arrays.asList(yarnListText.split(System.lineSeparator())));
         DependencyGraphResourceTestUtil.assertGraph("/yarn/list_expected_graph.json", dependencyGraph);
     }
 
@@ -68,14 +62,35 @@ public class YarnListParserTest {
 
         YarnListParser yarnListParser = new YarnListParser();
         String yarnListText = testUtil.getResourceAsUTF8String("/yarn/yarn.list.res.txt");
-        ExecutableOutput exeOutput = new ExecutableOutput(yarnListText, "");
-        DependencyGraph dependencyGraph = yarnListParser.parseYarnList(designedYarnLock, exeOutput.getStandardOutputAsList());
+        DependencyGraph dependencyGraph = yarnListParser.parseYarnList(designedYarnLock, Arrays.asList(yarnListText.split(System.lineSeparator())));
         DependencyGraphResourceTestUtil.assertGraph("/yarn/list_expected_graph_2.json", dependencyGraph);
     }
 
     @Test
+    public void testDependencyInYarnListAndNotInLock() {
+        List<String> designedYarnLock = new ArrayList<>();
+        designedYarnLock.add("ajv@5.5.2:");
+        designedYarnLock.add("  version \"5.5.2\"");
+        designedYarnLock.add("");
+
+        List<String> testLines = new ArrayList<>();
+        testLines.add("yarn list v1.5.1");
+        testLines.add("├─ abab@1.0.4");
+
+        YarnListParser yarnListParser = new YarnListParser();
+        DependencyGraph dependencyGraph = yarnListParser.parseYarnList(designedYarnLock, testLines);
+
+        List<ExternalId> tempList = new ArrayList<>(dependencyGraph.getRootDependencyExternalIds());
+
+        assertEquals(0, tempList.size());
+    }
+
+    @Test
     public void testThatYarnListLineAtBeginningIsIgnored() {
-        List<String> designedYarnLock = getSmalleYarnLockLines();
+        List<String> designedYarnLock = new ArrayList<>();
+        designedYarnLock.add("abab@5.5.2:");
+        designedYarnLock.add("  version \"5.5.2\"");
+        designedYarnLock.add("");
 
         List<String> testLines = new ArrayList<>();
         testLines.add("yarn list v1.5.1");
@@ -92,7 +107,13 @@ public class YarnListParserTest {
 
     @Test
     public void testThatYarnListWithOnlyTopLevelDependenciesIsParsedCorrectly() {
-        List<String> designedYarnLock = getSmalleYarnLockLines();
+        List<String> designedYarnLock = new ArrayList<>();
+        designedYarnLock.add("esprima@5.5.2:");
+        designedYarnLock.add("  version \"5.5.2\"");
+        designedYarnLock.add("");
+        designedYarnLock.add("extsprintf@5.5.2:");
+        designedYarnLock.add("  version \"5.5.2\"");
+        designedYarnLock.add("");
 
         List<String> testLines = new ArrayList<>();
         testLines.add("├─ esprima@3.1.3");
@@ -109,7 +130,13 @@ public class YarnListParserTest {
 
     @Test
     public void testThatYarnListWithGrandchildIsParsedCorrectly() {
-        List<String> designedYarnLock = getSmalleYarnLockLines();
+        List<String> designedYarnLock = new ArrayList<>();
+        designedYarnLock.add("yargs-parser@5.5.2:");
+        designedYarnLock.add("  version \"5.5.2\"");
+        designedYarnLock.add("");
+        designedYarnLock.add("camelcase@5.5.2:");
+        designedYarnLock.add("  version \"5.5.2\"");
+        designedYarnLock.add("");
 
         List<String> testLines = new ArrayList<>();
         testLines.add("├─ yargs-parser@4.2.1");
@@ -121,8 +148,7 @@ public class YarnListParserTest {
         List<ExternalId> tempList = new ArrayList<>(dependencyGraph.getRootDependencyExternalIds());
         List<ExternalId> kidsList = new ArrayList<>();
         for (int i = 0; i < tempList.size(); i++) {
-            if ("yargs-parser".equals(tempList.get(i).name))
-                kidsList = new ArrayList<>(dependencyGraph.getChildrenExternalIdsForParent(tempList.get(i)));
+            if ("yargs-parser".equals(tempList.get(i).name)) kidsList = new ArrayList<>(dependencyGraph.getChildrenExternalIdsForParent(tempList.get(i)));
         }
 
         assertListContainsDependency("yargs-parser", tempList);
@@ -131,7 +157,16 @@ public class YarnListParserTest {
 
     @Test
     public void testThatYarnListWithGreatGrandchildrenIsParsedCorrectly() {
-        List<String> designedYarnLock = getSmalleYarnLockLines();
+        List<String> designedYarnLock = new ArrayList<>();
+        designedYarnLock.add("yargs-parser@5.5.2:");
+        designedYarnLock.add("  version \"5.5.2\"");
+        designedYarnLock.add("");
+        designedYarnLock.add("camelcase@5.5.2:");
+        designedYarnLock.add("  version \"5.5.2\"");
+        designedYarnLock.add("");
+        designedYarnLock.add("ms@5.5.2:");
+        designedYarnLock.add("  version \"5.5.2\"");
+        designedYarnLock.add("");
 
         List<String> testLines = new ArrayList<>();
         testLines.add("├─ yargs-parser@4.2.1");
@@ -144,8 +179,7 @@ public class YarnListParserTest {
         List<ExternalId> tempList = new ArrayList<>(dependencyGraph.getRootDependencyExternalIds());
         List<ExternalId> kidsList = new ArrayList<>();
         for (int i = 0; i < tempList.size(); i++) {
-            if ("yargs-parser".equals(tempList.get(i).name))
-                kidsList = new ArrayList<>(dependencyGraph.getChildrenExternalIdsForParent(tempList.get(i)));
+            if ("yargs-parser".equals(tempList.get(i).name)) kidsList = new ArrayList<>(dependencyGraph.getChildrenExternalIdsForParent(tempList.get(i)));
         }
         System.out.println(tempList);
         System.out.println(kidsList);
@@ -193,16 +227,4 @@ public class YarnListParserTest {
 
     }
 
-    private List<String> getSmalleYarnLockLines() {
-        List<String> designedYarnLock = new ArrayList<>();
-        designedYarnLock.add("ajv@5.5.2:");
-        designedYarnLock.add("  version \"5.5.2\"");
-        designedYarnLock.add("  resolved \"http://nexus/nexus3/repository/npm-all/ajv/-/ajv-4.11.8.tgz#82ffb02b29e662ae53bdc20af15947706739c536\"");
-        designedYarnLock.add("  dependencies:");
-        designedYarnLock.add("    co \"^4.6.0\"");
-        designedYarnLock.add("    tr46 \"~0.0.3\"");
-        designedYarnLock.add("    cssstyle \">= 0.2.37 < 0.3.0\"");
-        designedYarnLock.add("");
-        return designedYarnLock;
-    }
 }
