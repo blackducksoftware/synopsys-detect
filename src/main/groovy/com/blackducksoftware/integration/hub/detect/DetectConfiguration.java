@@ -236,10 +236,6 @@ public class DetectConfiguration {
 
         bomToolFilter = new ExcludedIncludedFilter(getExcludedBomToolTypes(), getIncludedBomToolTypes());
 
-        if (dockerBomTool.isBomToolApplicable() && bomToolFilter.shouldInclude(dockerBomTool.getBomToolType().toString())) {
-            configureForDocker();
-        }
-
         if (hubSignatureScannerRelativePathsToExclude != null && hubSignatureScannerRelativePathsToExclude.length > 0) {
             for (final String path : hubSignatureScannerRelativePathsToExclude) {
                 excludedScanPaths.add(new File(sourceDirectory, path).getCanonicalPath());
@@ -270,6 +266,12 @@ public class DetectConfiguration {
             hubOfflineMode = true;
         }
 
+        //TODO: Bom tool finder must resolve these more intelligently.
+        /*
+        if (dockerBomTool.isBomToolApplicable() && bomToolFilter.shouldInclude(dockerBomTool.getBomToolType().toString())) {
+            configureForDocker();
+        }
+
         if (gradleBomTool.isBomToolApplicable() && bomToolFilter.shouldInclude(gradleBomTool.getBomToolType().toString())) {
             gradleInspectorVersion = gradleBomTool.getInspectorVersion();
         }
@@ -282,10 +284,12 @@ public class DetectConfiguration {
             dockerInspectorVersion = dockerBomTool.getInspectorVersion();
         }
 
+         */
+
         configureForPhoneHome();
     }
 
-    private void addFieldWarning(final String key, final String warning) {
+    public void addFieldWarning(final String key, final String warning) {
         detectOptions.stream().forEach(option -> {
             if (option.getKey().equals(key) ) {
                 option.getWarnings().add(warning);
@@ -293,7 +297,7 @@ public class DetectConfiguration {
         });
     }
 
-    private void requestDeprecation(final String key) {
+    public void requestDeprecation(final String key) {
         detectOptions.stream().forEach(option -> {
             if (option.getKey().equals(key) ) {
                 option.requestDeprecation();
@@ -329,8 +333,8 @@ public class DetectConfiguration {
         return usingDefaultOutputPath;
     }
 
-    public boolean shouldRun(final BomTool bomTool) {
-        return bomToolFilter.shouldInclude(bomTool.getBomToolType().toString()) && bomTool.isBomToolApplicable();
+    public boolean isBomToolIncluded(final BomTool bomTool) {
+        return bomToolFilter.shouldInclude(bomTool.getBomToolType().toString());
     }
 
     public String getDetectProperty(final String key) {
