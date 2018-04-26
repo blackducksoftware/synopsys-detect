@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -44,6 +45,7 @@ import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertySource;
 import org.springframework.stereotype.Component;
 
+import com.blackducksoftware.integration.hub.api.enumeration.PolicySeverityType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolFinder;
 import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerBomTool;
@@ -184,15 +186,15 @@ public class DetectConfiguration {
         final boolean atLeastOnePolicySeverity = StringUtils.isNotBlank(policyCheckFailOnSeverities);
         if (atLeastOnePolicySeverity) {
             boolean allSeverities = false;
-            String[] splitSeverities = policyCheckFailOnSeverities.split(",");
-            for (String severity : splitSeverities) {
+            final String[] splitSeverities = policyCheckFailOnSeverities.split(",");
+            for (final String severity : splitSeverities) {
                 if (severity.equalsIgnoreCase("ALL")) {
                     allSeverities = true;
                     break;
                 }
             }
             if (allSeverities) {
-                List<String> allPolicyTypes = Arrays.stream(PolicySeverityType.values()).filter(type -> type != PolicySeverityType.UNSPECIFIED).map(type -> type.toString()).collect(Collectors.toList());
+                final List<String> allPolicyTypes = Arrays.stream(PolicySeverityType.values()).filter(type -> type != PolicySeverityType.UNSPECIFIED).map(type -> type.toString()).collect(Collectors.toList());
                 policyCheckFailOnSeverities = StringUtils.join(allPolicyTypes, ",");
             }
             if (policyCheck) {
