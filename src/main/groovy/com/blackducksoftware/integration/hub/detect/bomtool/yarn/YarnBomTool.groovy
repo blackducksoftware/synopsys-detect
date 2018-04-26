@@ -31,11 +31,13 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import com.blackducksoftware.integration.hub.detect.bomtool.NestedBomTool
 import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolSearchResult
 import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolSearcher
+import com.blackducksoftware.integration.hub.detect.exception.BomToolException
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import groovy.transform.TypeChecked
+import org.codehaus.plexus.util.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -89,6 +91,10 @@ class YarnBomTool extends BomTool implements NestedBomTool<BomToolSearchResult> 
         List<String> yarnLockText = Files.readAllLines(yarnLockFile.toPath(), StandardCharsets.UTF_8)
         String yarnExePath = findExecutablePath(ExecutableType.YARN, true, detectConfiguration.getYarnPath())
 
+
+        if (detectConfiguration.yarnProductionDependenciesOnly && StringUtils.isBlank(yarnExePath)) {
+            throw new BomToolException("Could not find the Yarn executable, can not get the production only dependencies.")
+        }
         if (detectConfiguration.yarnProductionDependenciesOnly) {
             List<String> yarnListLines = executeYarnList(yarnExePath)
             dependencyGraph = yarnListParser.parseYarnList(yarnLockText, yarnListLines)
