@@ -1,9 +1,31 @@
+/**
+ * hub-detect
+ *
+ * Copyright (C) 2018 Black Duck Software, Inc.
+ * http://www.blackducksoftware.com/
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package com.blackducksoftware.integration.hub.detect.bomtool.yarn;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +79,7 @@ public class YarnLockParser extends BaseYarnParser {
                 continue;
             }
 
-            if (level == 1 && trimmedLine == "dependencies:") {
+            if (level == 1 && trimmedLine.equals("dependencies:")) {
                 dependenciesStarted = true;
                 continue;
             }
@@ -71,10 +93,11 @@ public class YarnLockParser extends BaseYarnParser {
 
         final MutableDependencyGraph graph = new MutableMapDependencyGraph();
 
-        nameVersionLinkNodeBuilder.build().getChildren().stream().forEach(nameVersionNode -> {
-            Dependency root = nameVersionNodeTransformer.addNameVersionNodeToDependencyGraph(graph, Forge.NPM, nameVersionNode);
+        List<NameVersionNode> children = nameVersionLinkNodeBuilder.build().getChildren();
+        for (NameVersionNode child : children) {
+            Dependency root = nameVersionNodeTransformer.addNameVersionNodeToDependencyGraph(graph, Forge.NPM, child);
             graph.addChildToRoot(root);
-        });
+        }
 
         return graph;
     }
@@ -98,7 +121,11 @@ public class YarnLockParser extends BaseYarnParser {
 
     private NameVersionNode lineToNameVersionNode(final NameVersionNodeBuilder nameVersionNodeBuilder, final NameVersionNode root, final String line) {
         String cleanLine = line.replace("\"", "").replace(":", "");
-        List<String> fuzzyNames = Arrays.asList(cleanLine.split(",")).stream().map(name -> name.trim()).collect(Collectors.toList());
+        String[] splitLine = cleanLine.split(",");
+        List<String> fuzzyNames = new ArrayList<>();
+        for (String splitPart : splitLine) {
+            fuzzyNames.add(splitPart.trim());
+        }
 
         if (fuzzyNames.isEmpty()) {
             return null;
@@ -107,7 +134,7 @@ public class YarnLockParser extends BaseYarnParser {
         final NameVersionNode linkedNameVersionNode = new NameVersionNode();
         linkedNameVersionNode.setName(getNameFromFuzzyName(fuzzyNames.get(0)));
 
-        fuzzyNames.stream().forEach(fuzzyName -> {
+        for (String fuzzyName : fuzzyNames) {
             NameVersionNode nameVersionLinkNode = new NameVersionNode();
             nameVersionLinkNode.setName(fuzzyName);
 
@@ -115,7 +142,7 @@ public class YarnLockParser extends BaseYarnParser {
             linkMetadata.setLinkNode(linkedNameVersionNode);
             nameVersionLinkNode.setMetadata(linkMetadata);
             nameVersionNodeBuilder.addChildNodeToParent(nameVersionLinkNode, root);
-        });
+        }
 
         return linkedNameVersionNode;
     }
