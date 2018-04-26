@@ -1,6 +1,8 @@
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.npm;
 
-public class NpmCliContext {
+import com.blackducksoftware.integration.hub.detect.extraction.ExtractionContext;
+
+public class NpmCliContext extends ExtractionContext {
     public String npmExe;
     public String nodeModules;
     public String packageJson;

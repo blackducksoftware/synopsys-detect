@@ -1,10 +1,5 @@
-package com.blackducksoftware.integration.hub.detect.extraction.bucket;
+package com.blackducksoftware.integration.hub.detect.extraction.requirement;
 
-import com.blackducksoftware.integration.hub.detect.extraction.ExtractionContext;
-
-public class Requirement<C extends ExtractionContext, V> {
-
-    public RequirementAction<C, V> action;
-
+public class Requirement<V> {
 
 }

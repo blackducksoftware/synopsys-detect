@@ -36,7 +36,7 @@ public class BomToolApplicableBuilder<NpmCliApplicableResult> {
 
     public BomToolApplicableBuilder requireFile(final String file, final PropertySetter<NpmCliApplicableResult> setter) {
         //requiredFiles.put(file, setter);
-        setter.setProperty(file, new NpmCliApplicableResult());
+        //setter.setProperty(file, new NpmCliApplicableResult());
         return this;
     }
 

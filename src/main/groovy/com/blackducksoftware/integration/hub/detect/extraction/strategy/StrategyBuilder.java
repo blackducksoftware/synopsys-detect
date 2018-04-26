@@ -1,8 +1,10 @@
 package com.blackducksoftware.integration.hub.detect.extraction.strategy;
 
+import com.blackducksoftware.integration.hub.detect.extraction.ExtractionContext;
+import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 
-public class StrategyBuilder<C, E> {
+public class StrategyBuilder<C extends ExtractionContext, E extends Extractor<C>> {
 
     public StrategyBuilder(final Class<C> contextClass, final Class<E> extractorClass) {
 
@@ -12,11 +14,11 @@ public class StrategyBuilder<C, E> {
         void action(T value, C context);
     }
 
-    public ExecutableRequirementBuilder requireExecutable(final ExecutableType type) {
+    public ExecutableRequirementBuilder demandsExecutable(final ExecutableType type) {
         return new ExecutableRequirementBuilder(this, type);
     }
 
-    public FileRequirementBuilder requireFile(final String file) {
+    public FileRequirementBuilder requiresFile(final String file) {
         return new FileRequirementBuilder(this, file);
     }
 
@@ -43,6 +45,10 @@ public class StrategyBuilder<C, E> {
         public StrategyBuilder<C, E> then(final Then<String, C> action) {
             return parent;
         }
+    }
+
+    public Strategy<C,E> build() {
+        return new Strategy<>();
     }
 
 }

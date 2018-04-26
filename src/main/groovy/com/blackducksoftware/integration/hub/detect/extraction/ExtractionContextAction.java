@@ -1,8 +1,6 @@
-package com.blackducksoftware.integration.hub.detect.extraction.bucket;
+package com.blackducksoftware.integration.hub.detect.extraction;
 
-import com.blackducksoftware.integration.hub.detect.extraction.ExtractionContext;
-
-public interface RequirementAction<C extends ExtractionContext, V> {
+public interface ExtractionContextAction<C extends ExtractionContext, V> {
 
     void perform(C context, V value);
 

@@ -148,18 +148,18 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         for (final BomTool bomTool : bomTools) {
             final BomToolType bomToolType = bomTool.getBomToolType();
             final String bomToolTypeString = bomToolType.toString();
-            if (!detectConfiguration.isBomToolIncluded(bomTool)) {
-                logger.debug(String.format("Skipping %s, not included.", bomToolTypeString));
-                continue;
-            }
+            //if (!detectConfiguration.isBomToolIncluded(bomTool)) {
+            logger.debug(String.format("Skipping %s, not included.", bomToolTypeString));
+            continue;
+            //}
 
-            final BomToolApplicableResult applicable = bomTool.isBomToolApplicable(directory);
-            if (applicable == null) {
-                logger.debug(String.format("Skipping %s, not applicable.", bomToolTypeString));
-                continue;
-            }
+            //final BomToolApplicableResult applicable = bomTool.isBomToolApplicable(directory);
+            //if (applicable == null) {
+            //logger.debug(String.format("Skipping %s, not applicable.", bomToolTypeString));
+            //continue;
+            //}
 
-            results.add(applicable);
+            //results.add(applicable);
         }
 
         return results;

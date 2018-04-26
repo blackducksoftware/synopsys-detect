@@ -1,6 +1,6 @@
 package com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation;
 
-public class Evaluation<V> {
+public class RequirementEvaluation<V> {
 
     public EvaluationResult result;
 
