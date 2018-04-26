@@ -2,12 +2,17 @@ package com.blackducksoftware.integration.hub.detect.extraction.requirement.eval
 
 import java.io.File;
 
-import com.blackducksoftware.integration.hub.detect.extraction.bucket.Bucket;
-
 public class EvaluationContext {
 
-    public File directory;
-    public Bucket directoryBucket;
-    public Bucket systemBucket;
+    private final File directory;
+
+    public EvaluationContext(final File directory) {
+        this.directory = directory;
+    }
+
+    public File getDirectory() {
+        return directory;
+    }
+
 
 }

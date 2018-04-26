@@ -1,17 +1,14 @@
 package com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation;
 
-import com.blackducksoftware.integration.hub.detect.extraction.bucket.Bucket;
-
-public class Evaluation {
+public class Evaluation<V> {
 
     public EvaluationResult result;
-
-    public Bucket directoryBucket;
-    public Bucket systemBucket;
 
     public Exception error;
 
     public String description;
+
+    public V value;
 
     public enum EvaluationResult {
         Passed,
