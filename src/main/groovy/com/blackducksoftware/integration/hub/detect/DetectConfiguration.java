@@ -440,9 +440,9 @@ public class DetectConfiguration {
     // properties start
 
     @Value("${detect.fail.config.warning:}")
-    @DefaultValue("true")
+    @DefaultValue("false")
     @HelpGroup(primary = GROUP_GENERAL)
-    @HelpDescription("If true, Detect will fail if there are any issues found in the configuration.")
+    @HelpDescription("If true, Detect will fail if there are any issues found in the configuration. In 4.0.0 this will default to true.")
     private Boolean failOnConfigWarning;
 
     @Value("${detect.force.success:}")
