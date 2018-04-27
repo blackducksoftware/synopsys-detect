@@ -1,14 +1,8 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.search;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Set;
-
+import com.blackducksoftware.integration.hub.detect.Application;
+import com.blackducksoftware.integration.hub.detect.bomtool.NestedBomTool;
+import com.blackducksoftware.integration.util.ResourceUtil;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -18,9 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.blackducksoftware.integration.hub.detect.Application;
-import com.blackducksoftware.integration.hub.detect.bomtool.NestedBomTool;
-import com.blackducksoftware.integration.util.ResourceUtil;
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Set;
+
+import static org.junit.Assert.assertEquals;
 
 @ContextConfiguration(classes = { Application.class })
 @RunWith(SpringJUnit4ClassRunner.class)

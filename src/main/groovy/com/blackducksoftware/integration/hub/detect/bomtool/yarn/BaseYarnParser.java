@@ -21,42 +21,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.type;
+package com.blackducksoftware.integration.hub.detect.bomtool.yarn;
 
-public enum ExecutableType {
-    BASH,
-    CONDA,
-    CPAN,
-    CPANM,
-    DOCKER,
-    GO,
-    GO_DEP("dep"),
-    GRADLE,
-    GRADLEW,
-    MVN,
-    MVNW,
-    NPM,
-    NUGET,
-    PEAR,
-    PERL,
-    PIP,
-    PIP3,
-    PYTHON,
-    PYTHON3,
-    REBAR3,
-    YARN;
+public abstract class BaseYarnParser {
 
-    private String executableName;
+    protected int getLineLevel(String line) {
+        int level = 0;
+        String tmpLine = line;
+        while (tmpLine.startsWith("  ")) {
+            tmpLine = tmpLine.replaceFirst("  ", "");
+            level++;
+        }
 
-    private ExecutableType() {
-        this.executableName = this.name().toLowerCase();
-    }
-
-    private ExecutableType(final String executableName) {
-        this.executableName = executableName;
-    }
-
-    public String getExecutable() {
-        return executableName;
+        return level;
     }
 }

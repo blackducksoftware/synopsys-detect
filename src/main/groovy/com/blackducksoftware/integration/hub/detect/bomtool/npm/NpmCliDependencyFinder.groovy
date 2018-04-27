@@ -23,12 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.npm
 
-import java.util.Map.Entry
-
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-import org.springframework.stereotype.Component
-
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph
 import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.Forge
@@ -39,8 +33,12 @@ import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-
 import groovy.transform.TypeChecked
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Component
+
+import java.util.Map.Entry
 
 @Component
 @TypeChecked
@@ -52,11 +50,12 @@ class NpmCliDependencyFinder {
     private static final String JSON_DEPENDENCIES = 'dependencies'
 
     public ExternalIdFactory externalIdFactory;
-    public NpmCliDependencyFinder(ExternalIdFactory externalIdFactory) {
+
+    NpmCliDependencyFinder(ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public DetectCodeLocation generateCodeLocation(String sourcePath, File npmLsOutputFile) {
+    DetectCodeLocation generateCodeLocation(String sourcePath, File npmLsOutputFile) {
         if (npmLsOutputFile?.length() <= 0) {
             logger.error("Ran into an issue creating and writing to file")
             return null
@@ -68,7 +67,7 @@ class NpmCliDependencyFinder {
 
     private DetectCodeLocation convertNpmJsonFileToCodeLocation(String sourcePath, String npmLsOutput) {
         JsonObject npmJson = new JsonParser().parse(npmLsOutput) as JsonObject
-        MutableDependencyGraph graph = new MutableMapDependencyGraph();
+        MutableDependencyGraph graph = new MutableMapDependencyGraph()
 
         String projectName = npmJson.getAsJsonPrimitive(JSON_NAME)?.getAsString()
         String projectVersion = npmJson.getAsJsonPrimitive(JSON_VERSION)?.getAsString()

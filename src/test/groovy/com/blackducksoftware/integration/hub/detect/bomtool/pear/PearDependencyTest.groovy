@@ -11,15 +11,14 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.pear
 
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Test
-
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput
+import org.junit.Assert
+import org.junit.Before
+import org.junit.Test
 
 class PearDependencyTest {
     private PearDependencyFinder pearDependencyFinder

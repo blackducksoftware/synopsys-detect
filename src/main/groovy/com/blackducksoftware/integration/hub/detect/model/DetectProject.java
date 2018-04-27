@@ -23,22 +23,16 @@
  */
 package com.blackducksoftware.integration.hub.detect.model;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationName;
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.util.BdioFileNamer;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.service.model.ProjectRequestBuilder;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+
+import java.util.*;
 
 public class DetectProject {
     private final Map<String, DetectCodeLocation> codeLocationNameMap = new HashMap<>();

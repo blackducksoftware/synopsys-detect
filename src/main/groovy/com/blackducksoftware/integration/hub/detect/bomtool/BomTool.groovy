@@ -35,6 +35,7 @@ import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
 import groovy.transform.TypeChecked
+import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 
 @TypeChecked
@@ -83,7 +84,7 @@ abstract class BomTool {
     }
 
     String findExecutablePath(ExecutableType executable, boolean searchSystemPath, String userPath) {
-        if (!userPath?.trim()) {
+        if (StringUtils.isBlank(userPath)) {
             return executableManager.getExecutablePath(executable, searchSystemPath, sourcePath)
         }
 

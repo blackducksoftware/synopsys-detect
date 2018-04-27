@@ -31,9 +31,15 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import com.blackducksoftware.integration.hub.detect.bomtool.NestedBomTool
 import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolSearchResult
 import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolSearcher
+import com.blackducksoftware.integration.hub.detect.exception.BomToolException
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
+import com.blackducksoftware.integration.hub.detect.type.ExecutableType
+import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import groovy.transform.TypeChecked
+import org.codehaus.plexus.util.StringUtils
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -43,8 +49,15 @@ import java.nio.file.Files
 @Component
 @TypeChecked
 class YarnBomTool extends BomTool implements NestedBomTool<BomToolSearchResult> {
+    private final Logger logger = LoggerFactory.getLogger(YarnBomTool.class)
+    public static final String OUTPUT_FILE = 'detect_yarn_proj_dependencies.txt'
+    public static final String ERROR_FILE = 'detect_yarn_error.txt'
+
     @Autowired
-    YarnPackager yarnPackager
+    YarnLockParser yarnLockParser
+
+    @Autowired
+    YarnListParser yarnListParser
 
     @Autowired
     ExternalIdFactory externalIdFactory
@@ -55,41 +68,77 @@ class YarnBomTool extends BomTool implements NestedBomTool<BomToolSearchResult> 
     private BomToolSearchResult searchResult;
 
     @Override
-    public BomToolType getBomToolType() {
+    BomToolType getBomToolType() {
         BomToolType.YARN
     }
 
     @Override
-    public boolean isBomToolApplicable() {
-        BomToolSearchResult searchResult = bomToolSearcher.getBomToolSearchResult(sourcePath);
+    boolean isBomToolApplicable() {
+        BomToolSearchResult searchResult = bomToolSearcher.getBomToolSearchResult(sourcePath)
         if (searchResult.isApplicable()) {
-            this.searchResult = searchResult;
-            return true;
+            this.searchResult = searchResult
+            return true
         }
 
-        return false;
+        return false
     }
 
-    public List<DetectCodeLocation> extractDetectCodeLocations(BomToolSearchResult searchResult) {
-        final File yarnLockFile = detectFileManager.findFile(searchResult.searchedDirectory, 'yarn.lock')
-        final List<String> yarnLockText = Files.readAllLines(yarnLockFile.toPath(), StandardCharsets.UTF_8)
-        final DependencyGraph dependencyGraph = yarnPackager.parse(yarnLockText)
-        final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.NPM, searchResult.searchedDirectory.canonicalPath)
-        final def detectCodeLocation = new DetectCodeLocation.Builder(getBomToolType(), searchResult.searchedDirectory.canonicalPath, externalId, dependencyGraph).build()
+    List<DetectCodeLocation> extractDetectCodeLocations(BomToolSearchResult searchResult) {
+        DependencyGraph dependencyGraph
+        DetectCodeLocation detectCodeLocation
+
+        File yarnLockFile = detectFileManager.findFile(searchResult.searchedDirectory.canonicalPath, 'yarn.lock')
+        List<String> yarnLockText = Files.readAllLines(yarnLockFile.toPath(), StandardCharsets.UTF_8)
+        String yarnExePath = findExecutablePath(ExecutableType.YARN, true, detectConfiguration.getYarnPath())
+
+
+        if (detectConfiguration.yarnProductionDependenciesOnly && StringUtils.isBlank(yarnExePath)) {
+            throw new BomToolException("Could not find the Yarn executable, can not get the production only dependencies.")
+        }
+        if (detectConfiguration.yarnProductionDependenciesOnly) {
+            List<String> yarnListLines = executeYarnList(yarnExePath)
+            dependencyGraph = yarnListParser.parseYarnList(yarnLockText, yarnListLines)
+        } else {
+            dependencyGraph = yarnLockParser.parseYarnLock(yarnLockText)
+        }
+
+        ExternalId externalId = externalIdFactory.createPathExternalId(Forge.NPM, searchResult.searchedDirectory.canonicalPath)
+        detectCodeLocation = new DetectCodeLocation.Builder(getBomToolType(), searchResult.searchedDirectory.canonicalPath, externalId, dependencyGraph).build()
 
         return [detectCodeLocation]
     }
 
-    public List<DetectCodeLocation> extractDetectCodeLocations() {
+    List<String> executeYarnList(String yarnExePath) {
+        File yarnListOutputFile = detectFileManager.createFile(BomToolType.YARN, OUTPUT_FILE)
+        File yarnListErrorFile = detectFileManager.createFile(BomToolType.YARN, ERROR_FILE)
+
+        def exeArgs = ['list', '--prod']
+
+        Executable yarnListExe = new Executable(new File(sourcePath), yarnExePath, exeArgs)
+        executableRunner.executeToFile(yarnListExe, yarnListOutputFile, yarnListErrorFile)
+
+        if (!(yarnListOutputFile.length() > 0)) {
+            if (yarnListErrorFile.length() > 0) {
+                logger.error("Error when running yarn list --prod command")
+                logger.debug(yarnListErrorFile.text)
+            } else {
+                logger.warn("Nothing returned from yarn list --prod command")
+            }
+        }
+
+        yarnListOutputFile.readLines()
+    }
+
+    List<DetectCodeLocation> extractDetectCodeLocations() {
         return extractDetectCodeLocations(searchResult)
     }
 
-    public BomToolSearcher getBomToolSearcher() {
-        return yarnBomToolSearcher;
+    BomToolSearcher getBomToolSearcher() {
+        return yarnBomToolSearcher
     }
 
-    public Boolean canSearchWithinApplicableDirectory() {
-        return false;
+    Boolean canSearchWithinApplicableDirectory() {
+        return false
     }
 
 }
