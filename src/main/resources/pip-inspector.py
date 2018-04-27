@@ -26,6 +26,12 @@ import os
 import sys
 import getopt
 import pip
+if pip.__version__[:2] == '10':
+    from pip._internal.req import parse_requirements
+    from pip._internal.download import PipSession
+else:
+    from pip.req import parse_requirements
+    from pip.download import PipSession
 
 def main():
     try:
@@ -57,7 +63,7 @@ def main():
     if requirements_path is not None:
         try:
             assert os.path.exists(requirements_path), ("The requirements file %s does not exist." % requirements_path)
-            requirements = pip.req.parse_requirements(requirements_path, session=pip.download.PipSession())
+            requirements = parse_requirements(requirements_path, session=PipSession())
             for req in requirements:
                 try:
                     requirement = resolve_package_by_name(req.req.name, [])
