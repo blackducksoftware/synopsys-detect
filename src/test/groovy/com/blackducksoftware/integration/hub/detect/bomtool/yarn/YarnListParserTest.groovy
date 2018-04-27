@@ -200,31 +200,4 @@ public class YarnListParserTest {
         fail();
     }
 
-    @Test
-    public void testThatYarnListRegexParsesTheCorrectText() {
-        YarnListParser yarnListParser = new YarnListParser();
-
-        String input = "│  │  ├─ engine.io-client@~1.8.4";
-        assertEquals("engine.io-client@~1.8.4", yarnListParser.grabFuzzyName(input));
-
-        input = "│  ├─ test-fixture@PolymerElements/test-fixture";
-        assertEquals("test-fixture@PolymerElements/test-fixture", yarnListParser.grabFuzzyName(input));
-
-        input = "│  │  ├─ tough-cookie@>=0.12.0";
-        assertEquals("tough-cookie@>=0.12.0", yarnListParser.grabFuzzyName(input));
-
-        input = "│  │  ├─ cryptiles@2.x.x";
-        assertEquals("cryptiles@2.x.x", yarnListParser.grabFuzzyName(input));
-
-        input = "│  │  ├─ asn1@0.2.3";
-        assertEquals("asn1@0.2.3", yarnListParser.grabFuzzyName(input));
-
-        input = "│  ├─ cssom@>= 0.3.2 < 0.4.0";
-        assertEquals("cssom@>= 0.3.2 < 0.4.0", yarnListParser.grabFuzzyName(input));
-
-        input = "│  ├─ name_with_underscores@1.1.0";
-        assertEquals("name_with_underscores@1.1.0", yarnListParser.grabFuzzyName(input));
-
-    }
-
 }

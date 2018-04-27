@@ -26,8 +26,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.yarn;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +39,7 @@ import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 
 @Component
-public class YarnListParser {
+public class YarnListParser extends BaseYarnParser {
     private final Logger logger = LoggerFactory.getLogger(YarnBomTool.class);
 
     public DependencyGraph parseYarnList(List<String> yarnLockText, List<String> yarnListAsList) {
@@ -62,11 +60,11 @@ public class YarnListParser {
                 continue;
             }
 
-            line = line.replaceAll("├─", " ").replaceAll("│", " ").replaceAll("└─", " ");
-            depth = getDepth(line);
+            String cleanedLine = line.replaceAll("├─", "").replaceAll("│", "").replaceAll("└─", "");
+            depth = getLineLevel(cleanedLine);
 
             if (depth == 0) {
-                Optional<Dependency> optionalDependency = getDependencyFromLine(line, yarnDependencyMapper);
+                Optional<Dependency> optionalDependency = getDependencyFromLine(cleanedLine, yarnDependencyMapper);
                 if (optionalDependency.isPresent()) {
                     Dependency currentDep = optionalDependency.get();
                     graph.addChildToRoot(currentDep);
@@ -77,7 +75,7 @@ public class YarnListParser {
             }
 
             if (depth >= 1) {
-                Optional<Dependency> optionalDependency = getDependencyFromLine(line, yarnDependencyMapper);
+                Optional<Dependency> optionalDependency = getDependencyFromLine(cleanedLine, yarnDependencyMapper);
                 if (optionalDependency.isPresent()) {
                     Dependency currentDep = optionalDependency.get();
                     logger.debug(currentDep.name + "@" + currentDep.version + " is being added as a child of " + parentDep.name + "@" + parentDep.version);
@@ -91,35 +89,8 @@ public class YarnListParser {
         return graph;
     }
 
-    private int getDepth(String line) {
-        // how many spaces (S) does it start with? then depth, in this case is, D = (S - 2)/3
-        int count = 0;
-        String tmpLine = line;
-        while (tmpLine.startsWith(" ")) {
-            tmpLine = tmpLine.replaceFirst(" ", "");
-            count++;
-        }
-
-        return Math.floorDiv(count - 2, 3);
-    }
-
-    private String grabFuzzyName(String line) {
-        // e.g.
-        // ├─ whatwg-url@4.8.0 >> whatwg-url@4.8.0
-        // OR
-        // │  ├─ tr46@~0.0.3 >> tr46@~0.0.3
-
-        // [a-zA-Z\d-]+@.+[\dx]$
-        Pattern pattern = Pattern.compile("[ \\d.\\-_a-zA-Z]+@.+");
-        Matcher matcher = pattern.matcher(line);
-        matcher.find();
-        String result = matcher.group(0).trim();
-
-        return result;
-    }
-
-    private Optional<Dependency> getDependencyFromLine(String line, YarnDependencyMapper yarnDependencyMapper) {
-        String fuzzyName = grabFuzzyName(line);
+    private Optional<Dependency> getDependencyFromLine(String cleanedLine, YarnDependencyMapper yarnDependencyMapper) {
+        String fuzzyName = cleanedLine.trim();
         String name = fuzzyName.split("@")[0];
         Optional<String> optionalVersion = yarnDependencyMapper.getVersion(fuzzyName);
 
