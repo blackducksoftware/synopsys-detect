@@ -189,6 +189,37 @@ public class YarnListParserTest {
         assertListContainsDependency("ms", kidsList);
     }
 
+    @Test
+    public void testParseNameFromFuzzy() {
+        YarnListParser yarnListParser = new YarnListParser();
+
+        Optional<String> name = yarnListParser.parseNameFromFuzzy(null);
+        assertFalse(name.isPresent());
+
+        name = yarnListParser.parseNameFromFuzzy("");
+        assertFalse(name.isPresent());
+
+        name = yarnListParser.parseNameFromFuzzy("yargs-parser@5.5.2:");
+        assertTrue(name.isPresent());
+        assertEquals("yargs-parser", name.get());
+
+        name = yarnListParser.parseNameFromFuzzy("@angular-devkit/core@0.0.20");
+        assertTrue(name.isPresent());
+        assertEquals("@angular-devkit/core", name.get());
+
+        name = yarnListParser.parseNameFromFuzzy("@angular/common@5.2.5");
+        assertTrue(name.isPresent());
+        assertEquals("@angular/common", name.get());
+
+        name = yarnListParser.parseNameFromFuzzy("@angular/common@5.2.5 >> @angular/common@5.5.2");
+        assertTrue(name.isPresent());
+        assertEquals("@angular/common", name.get());
+
+        name = yarnListParser.parseNameFromFuzzy("tr46@~0.0.3 >> tr46@~0.0.3");
+        assertTrue(name.isPresent());
+        assertEquals("tr46", name.get());
+    }
+
     private void assertListContainsDependency(String dep, List<ExternalId> list) {
         System.out.println(dep);
         for (int i = 0; i < list.size(); i++) {
