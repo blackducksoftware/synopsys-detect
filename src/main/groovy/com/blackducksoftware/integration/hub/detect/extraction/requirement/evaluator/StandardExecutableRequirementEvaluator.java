@@ -54,6 +54,11 @@ public class StandardExecutableRequirementEvaluator extends RequirementEvaluator
             return new StandardExecutableInfo(ExecutableType.CPAN, detectConfiguration.getCpanPath());
         case CPANM:
             return new StandardExecutableInfo(ExecutableType.CPANM, detectConfiguration.getCpanmPath());
+        case DOCKER:
+            return new StandardExecutableInfo(ExecutableType.DOCKER, detectConfiguration.getDockerPath());
+        case BASH:
+            return new StandardExecutableInfo(ExecutableType.BASH, detectConfiguration.getBashPath());
+
         }
         return null;
     }

@@ -9,7 +9,9 @@ public class StandardExecutableRequirement extends Requirement<File> {
     public enum StandardExecutableType {
         CONDA,
         CPAN,
-        CPANM
+        CPANM,
+        DOCKER,
+        BASH
     }
 
 }

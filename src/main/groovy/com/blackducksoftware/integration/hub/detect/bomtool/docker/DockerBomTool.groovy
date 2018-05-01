@@ -108,7 +108,7 @@ class DockerBomTool extends BomTool<DockerApplicableResult> {
         File dockerInspectorShellScript = dockerInspectorManager.getShellScript()
 
         Map<String, String> environmentVariables = new HashMap<>()
-        dockerProperties.populateEnvironmentVariables(environmentVariables, dockerExecutablePath)
+        dockerProperties.populateEnvironmentVariables(environmentVariables, new File(dockerExecutablePath))
 
         boolean usingTarFile = false
         String imagePiece = ''
@@ -129,6 +129,7 @@ class DockerBomTool extends BomTool<DockerApplicableResult> {
         ]
         def airGapHubDockerInspectorJar = new File("${detectConfiguration.getDockerInspectorAirGapPath()}", "hub-docker-inspector-${dockerInspectorManager.getInspectorVersion()}.jar")
         if (airGapHubDockerInspectorJar.exists()) {
+            bashArguments[1] = "\"${dockerInspectorShellScript.getCanonicalPath()}\" --spring.config.location=\"file:${dockerPropertiesFile.getCanonicalPath()}\" --dry.run=true --no.prompt=true --jar.path=\"${airGapHubDockerInspectorJar.getCanonicalPath()}\" ${imageArgument}" as String
             try {
                 for (String os : ['ubuntu', 'alpine', 'centos']) {
                     def dockerImage = new File(airGapHubDockerInspectorJar.getParentFile(), "hub-docker-inspector-${os}.tar")
@@ -136,7 +137,6 @@ class DockerBomTool extends BomTool<DockerApplicableResult> {
                         '-c',
                         "docker load -i \"${dockerImage.getCanonicalPath()}\"" as String
                     ]
-                    bashArguments[1] = "\"${dockerInspectorShellScript.getCanonicalPath()}\" --spring.config.location=\"file:${dockerPropertiesFile.getCanonicalPath()}\" --dry.run=true --no.prompt=true --jar.path=\"${airGapHubDockerInspectorJar.getCanonicalPath()}\" ${imageArgument}" as String
                     Executable dockerImportImageExecutable = new Executable(dockerBomToolDirectory, environmentVariables, bashExecutablePath, dockerImportArguments)
                     executableRunner.execute(dockerImportImageExecutable)
                 }

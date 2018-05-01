@@ -3,6 +3,7 @@ package com.blackducksoftware.integration.hub.detect.extraction.requirement.eval
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.docker.DockerInspectorInfo;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.DockerInspectorRequirement;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.EvaluationContext;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation;
@@ -47,18 +49,17 @@ public class DockerInspectorRequirementEvaluator extends RequirementEvaluator<Do
     public ExecutableRunner executableRunner;
 
     private boolean hasResolvedInspector;
-    private File resolvedDockerInspectorShellScript;
-    private String resolvedInspectorVersion;
+    private DockerInspectorInfo resolvedInfo;
 
     @Override
-    public RequirementEvaluation<File> evaluate(final DockerInspectorRequirement requirement, final EvaluationContext context) {
+    public RequirementEvaluation<DockerInspectorInfo> evaluate(final DockerInspectorRequirement requirement, final EvaluationContext context) {
         try {
             if (!hasResolvedInspector) {
                 install();
             }
 
-            if (resolvedDockerInspectorShellScript != null) {
-                return new RequirementEvaluation<>(EvaluationResult.Passed, resolvedDockerInspectorShellScript);
+            if (resolvedInfo != null) {
+                return new RequirementEvaluation<>(EvaluationResult.Passed, resolvedInfo);
             } else {
                 return new RequirementEvaluation<>(EvaluationResult.Failed, null);
             }
@@ -73,11 +74,21 @@ public class DockerInspectorRequirementEvaluator extends RequirementEvaluator<Do
     }
 
     public void install() throws DetectUserFriendlyException, ExecutableRunnerException, IOException {
-        //Unlike the other inspectors, this inspector must install and then ask for version.
         hasResolvedInspector = true;
-        resolvedDockerInspectorShellScript = resolveShellScript();
+
+        final DockerInspectorInfo info = resolveShellScript();
         final String bashExecutablePath = executableManager.getExecutablePathOrOverride(ExecutableType.BASH, true, detectConfiguration.getSourceDirectory(), detectConfiguration.getBashPath());
-        resolvedInspectorVersion = resolveInspectorVersion(bashExecutablePath, resolvedDockerInspectorShellScript);
+        info.version = resolveInspectorVersion(bashExecutablePath, info.dockerInspectorScript);
+
+        if (info.isOffline) {
+            info.offlineDockerInspectorJar = new File(detectConfiguration.getDockerInspectorAirGapPath(), "hub-docker-inspector-" + info.version + ".jar");
+            for (final String os : Arrays.asList("ubuntu", "alpine", "centos")) {
+                final File osImage = new File(detectConfiguration.getDockerInspectorAirGapPath(), "hub-docker-inspector-" + os + ".tar");
+                info.offlineTars.add(osImage);
+            }
+        }
+
+        resolvedInfo = info;
     }
 
     private String resolveInspectorVersion(final String bashExecutablePath, final File dockerInspectorShellScript) throws DetectUserFriendlyException {
@@ -101,17 +112,19 @@ public class DockerInspectorRequirementEvaluator extends RequirementEvaluator<Do
         }
     }
 
-    private File resolveShellScript() throws DetectUserFriendlyException {
+    private DockerInspectorInfo resolveShellScript() throws DetectUserFriendlyException {
         try {
             final String suppliedDockerVersion = detectConfiguration.getDockerInspectorVersion();
             final File shellScriptFile;
             final File airGapHubDockerInspectorShellScript = new File(detectConfiguration.getDockerInspectorAirGapPath(), "hub-docker-inspector.sh");
+            boolean isOffline = false;
             logger.debug(String.format("Verifying air gap shell script present at %s", airGapHubDockerInspectorShellScript.getCanonicalPath()));
 
             if (StringUtils.isNotBlank(detectConfiguration.getDockerInspectorPath())) {
                 shellScriptFile = new File(detectConfiguration.getDockerInspectorPath());
             } else if (airGapHubDockerInspectorShellScript.exists()) {
                 shellScriptFile = airGapHubDockerInspectorShellScript;
+                isOffline = true;
             } else {
                 String hubDockerInspectorShellScriptUrl = LATEST_URL;
                 if (!"latest".equals(detectConfiguration.getDockerInspectorVersion())) {
@@ -135,7 +148,10 @@ public class DockerInspectorRequirementEvaluator extends RequirementEvaluator<Do
                 detectFileManager.writeToFile(shellScriptFile, shellScriptContents);
                 shellScriptFile.setExecutable(true);
             }
-            return shellScriptFile;
+            final DockerInspectorInfo info = new DockerInspectorInfo();
+            info.dockerInspectorScript = shellScriptFile;
+            info.isOffline = isOffline;
+            return info;
         } catch (final Exception e) {
             throw new DetectUserFriendlyException(String.format("There was a problem retrieving the docker inspector shell script: %s", e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
         }

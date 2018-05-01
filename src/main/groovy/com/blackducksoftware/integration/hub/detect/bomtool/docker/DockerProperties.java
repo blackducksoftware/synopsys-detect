@@ -23,11 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.docker;
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -35,18 +30,24 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+
 @Component
 public class DockerProperties {
     @Autowired
     DetectConfiguration detectConfiguration;
 
-    public void populatePropertiesFile(final File dockerPropertiesFile, final File bomToolOutputDirectory) throws IOException, FileNotFoundException {
+    public void populatePropertiesFile(final File dockerPropertiesFile, final File outputDirectory) throws IOException, FileNotFoundException {
         final Properties dockerProperties = new Properties();
 
         dockerProperties.setProperty("logging.level.com.blackducksoftware", this.detectConfiguration.getLoggingLevel());
         dockerProperties.setProperty("upload.bdio", "false");
         dockerProperties.setProperty("no.prompt", "true");
-        dockerProperties.setProperty("output.path", bomToolOutputDirectory.getAbsolutePath());
+        dockerProperties.setProperty("output.path", outputDirectory.getAbsolutePath());
         dockerProperties.setProperty("output.include.containerfilesystem", "true");
         dockerProperties.setProperty("logging.level.com.blackducksoftware", this.detectConfiguration.getLoggingLevel());
         dockerProperties.setProperty("phone.home", "false");
@@ -59,9 +60,8 @@ public class DockerProperties {
         dockerProperties.store(new FileOutputStream(dockerPropertiesFile), "");
     }
 
-    public void populateEnvironmentVariables(final Map<String, String> environmentVariables, final String dockerExecutablePath) throws IOException {
+    public void populateEnvironmentVariables(final Map<String, String> environmentVariables, final File dockerExecutableFile) throws IOException {
         String path = System.getenv("PATH");
-        final File dockerExecutableFile = new File(dockerExecutablePath);
         path += File.pathSeparator + dockerExecutableFile.getParentFile().getCanonicalPath();
         environmentVariables.put("PATH", path);
         environmentVariables.put("DOCKER_INSPECTOR_VERSION", this.detectConfiguration.getDockerInspectorVersion());

@@ -17,6 +17,7 @@ import com.blackducksoftware.integration.hub.detect.extraction.requirement.FileR
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.Requirement;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.StandardExecutableRequirement;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.StandardExecutableRequirement.StandardExecutableType;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.StringRequirement;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 
 public class StrategyBuilder<C extends ExtractionContext, E extends Extractor<C>> {
@@ -46,6 +47,11 @@ public class StrategyBuilder<C extends ExtractionContext, E extends Extractor<C>
     public FileNeedBuilder needsFile(final String file) {
         return new FileNeedBuilder(this, file);
     }
+
+    public StringNeedBuilder needsString(final String value) {
+        return new StringNeedBuilder(this, value);
+    }
+
 
     public FileListNeedBuilder needsFiles(final String[] filepattern) {
         return new FileListNeedBuilder(this, filepattern);
@@ -83,6 +89,22 @@ public class StrategyBuilder<C extends ExtractionContext, E extends Extractor<C>
             final StandardExecutableRequirement requirement = new StandardExecutableRequirement();
             requirement.executableType = this.type;
             parent.demands(requirement, action);
+            return parent;
+        }
+    }
+
+    public class StringNeedBuilder {
+        private final StrategyBuilder<C, E> parent;
+        public String value;
+        public StringNeedBuilder(final StrategyBuilder<C, E> parent, final String  value) {
+            this. value =  value;
+            this.parent = parent;
+
+        }
+        public StrategyBuilder<C, E> as(final ExtractionContextAction<C, String> action) {
+            final StringRequirement requirement = new StringRequirement();
+            requirement. value = this.value;
+            parent.needs(requirement, action);
             return parent;
         }
     }
