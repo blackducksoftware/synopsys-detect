@@ -46,7 +46,6 @@ import org.springframework.core.env.PropertySource;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.api.enumeration.PolicySeverityType;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolFinder;
 import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleBomTool;
@@ -59,6 +58,7 @@ import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 import com.blackducksoftware.integration.hub.detect.help.HelpDescription;
 import com.blackducksoftware.integration.hub.detect.help.HelpGroup;
 import com.blackducksoftware.integration.hub.detect.help.ValueDeprecation;
+import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver;
 import com.blackducksoftware.integration.hub.proxy.ProxyInfo;
 import com.blackducksoftware.integration.hub.proxy.ProxyInfoBuilder;
@@ -351,8 +351,8 @@ public class DetectConfiguration {
         return usingDefaultOutputPath;
     }
 
-    public boolean isBomToolIncluded(final BomTool bomTool) {
-        return bomToolFilter.shouldInclude(bomTool.getBomToolType().toString());
+    public boolean isBomToolIncluded(final BomToolType type) {
+        return bomToolFilter.shouldInclude(type.toString());
     }
 
     public String getDetectProperty(final String key) {

@@ -1,6 +1,5 @@
 package com.blackducksoftware.integration.hub.detect.extraction.strategy;
 
-import java.lang.reflect.Constructor;
 import java.util.Map;
 import java.util.Set;
 
@@ -12,49 +11,49 @@ import com.blackducksoftware.integration.hub.detect.extraction.requirement.Requi
 @SuppressWarnings("rawtypes")
 public class Strategy<C extends ExtractionContext, E extends Extractor<C>>  {
 
-    public Map<Requirement, ExtractionContextAction> requirementActionMap;
-    public Map<Requirement, ExtractionContextAction> demandActionMap;
+    private String name;
 
-    public Class<C> extractionContextClass;
-    public Class<E> extractorClass;
+    private final Map<Requirement, ExtractionContextAction> needActionMap;
+    private final Map<Requirement, ExtractionContextAction> demandActionMap;
 
-    public C newContext() {
-        return create(extractionContextClass);
+    private final Class<C> extractionContextClass;
+    private final Class<E> extractorClass;
+
+    private final Set<Strategy> yieldsToStrategies;
+
+    public Strategy(final Map<Requirement, ExtractionContextAction> needActionMap, final Map<Requirement, ExtractionContextAction> demandActionMap, final Class<C> extractionContextClass, final Class<E> extractorClass, final Set<Strategy> yieldsToStrategies) {
+        this.needActionMap = needActionMap;
+        this.demandActionMap = demandActionMap;
+        this.extractionContextClass = extractionContextClass;
+        this.extractorClass = extractorClass;
+        this.yieldsToStrategies = yieldsToStrategies;
     }
 
-    public E newExtractor() {
-        return create(extractorClass);
+    public Class<C> getExtractionContextClass() {
+        return extractionContextClass;
     }
 
-    public void require(final Requirement requirement, final ExtractionContextAction action) {
-        requirementActionMap.put(requirement, action);
+    public Class<E> getExtractorClass() {
+        return extractorClass;
     }
 
-    public Set<Requirement> getRequirements() {
-        return requirementActionMap.keySet();
+    public Set<Strategy> getYieldsToStrategies() {
+        return yieldsToStrategies;
     }
 
-    public ExtractionContextAction getAction(final Requirement requirement) {
-        return requirementActionMap.get(requirement);
+    public Set<Requirement> getNeeds() {
+        return needActionMap.keySet();
     }
 
-    public void demand() {
-
+    public Set<Requirement> getDemands() {
+        return demandActionMap.keySet();
     }
 
-    private <T> T create(final Class<T> clazz) {
-        Constructor<T> constructor;
-        try {
-            constructor = clazz.getConstructor();
-        } catch (final Exception e) {
-            throw new RuntimeException(e);
-        }
-        T instance;
-        try {
-            instance = constructor.newInstance();
-        } catch (final Exception e) {
-            throw new RuntimeException(e);
-        }
-        return instance;
+    public ExtractionContextAction getNeedAction(final Requirement requirement) {
+        return needActionMap.get(requirement);
+    }
+
+    public ExtractionContextAction getDemandAction(final Requirement requirement) {
+        return demandActionMap.get(requirement);
     }
 }

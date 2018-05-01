@@ -3,10 +3,14 @@ package com.blackducksoftware.integration.hub.detect.extraction.bomtool.npm;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.NpmExecutableRequirement;
 import com.blackducksoftware.integration.hub.detect.extraction.strategy.Strategy;
 import com.blackducksoftware.integration.hub.detect.extraction.strategy.StrategyProvider;
-import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
+import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 
+@Component
 public class NpmStrategyProvider extends StrategyProvider {
 
     public static final String NODE_MODULES = "node_modules";
@@ -18,14 +22,29 @@ public class NpmStrategyProvider extends StrategyProvider {
     @Override
     public List<Strategy> createStrategies() {
 
-        final Strategy cliStrategy = newStrategyBuilder(NpmCliContext.class, NpmCliExtractor.class)
-                .requiresFile(PACKAGE_JSON).then((file, context) -> context.packageJson = file)
-                .requiresFile(NODE_MODULES).then((file, context) -> context.nodeModules = file)
-                .demandsExecutable(ExecutableType.NPM).then((file, context) -> context.npmExe = file)
+        final Strategy packageLockStrategy = newStrategyBuilder(NpmLockfileContext.class, NpmLockfileExtractor.class)
+                .needsBomTool(BomToolType.NPM).noop()
+                .needsCurrentDirectory((context, file) -> context.directory = file)
+                .needsFile(PACKAGE_LOCK_JSON).as((context, file) -> context.lockfile = file)
                 .build();
 
+        final Strategy shrinkwrapStrategy = newStrategyBuilder(NpmLockfileContext.class, NpmLockfileExtractor.class)
+                .needsBomTool(BomToolType.NPM).noop()
+                .needsCurrentDirectory((context, file) -> context.directory = file)
+                .needsFile(SHRINKWRAP_JSON).as((context, file) -> context.lockfile = file)
+                .build();
 
-        return Arrays.asList(cliStrategy);
+        final Strategy cliStrategy = newStrategyBuilder(NpmCliContext.class, NpmCliExtractor.class)
+                .needsBomTool(BomToolType.NPM).noop()
+                .needsCurrentDirectory((context, file) -> context.directory = file)
+                .needsFile(PACKAGE_JSON).as((context, file) -> context.packageJson = file)
+                .needsFile(NODE_MODULES).as((context, file) -> context.nodeModules = file)
+                .demands(new NpmExecutableRequirement(), (context, file) -> context.npmExe = file)
+                .yieldsTo(shrinkwrapStrategy)
+                .yieldsTo(packageLockStrategy)
+                .build();
+
+        return Arrays.asList(cliStrategy, packageLockStrategy, shrinkwrapStrategy);
 
     }
 

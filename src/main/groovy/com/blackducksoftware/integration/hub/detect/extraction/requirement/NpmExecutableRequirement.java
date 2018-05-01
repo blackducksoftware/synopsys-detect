@@ -1,5 +1,5 @@
 package com.blackducksoftware.integration.hub.detect.extraction.requirement;
 
-public class FileListRequirementBuilder {
+public class NpmExecutableRequirement extends Requirement<String> {
 
 }

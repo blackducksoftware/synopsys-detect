@@ -48,9 +48,10 @@ import groovy.transform.TypeChecked
 class NugetBomTool extends BomTool<NugetApplicableResult> {
     private final Logger logger = LoggerFactory.getLogger(NugetBomTool.class)
 
-    static final String SOLUTION_PATTERN = '*.sln'
+
     static final String INSPECTOR_OUTPUT_PATTERN ='*_inspection.json'
 
+    static final String SOLUTION_PATTERN = '*.sln'
     //populated from "open project" in visual studio 2017
     static final String[] SUPPORTED_PROJECT_PATTERNS = [
         //C#

@@ -40,6 +40,14 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
+import com.blackducksoftware.integration.hub.detect.extraction.Extraction;
+import com.blackducksoftware.integration.hub.detect.extraction.Extraction.ExtractionResult;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.EvaluationContext;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation.EvaluationResult;
+import com.blackducksoftware.integration.hub.detect.extraction.strategy.Strategy;
+import com.blackducksoftware.integration.hub.detect.extraction.strategy.evaluation.StrategyEvaluation;
+import com.blackducksoftware.integration.hub.detect.extraction.strategy.evaluation.StrategyEvaluator;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 
 public class BomToolFinder {
@@ -61,13 +69,13 @@ public class BomToolFinder {
     //      I'd also like to let bom tools nominate project names
     // 4. Transform results.
 
-    public List<BomToolApplicableResult> findApplicableBomTools(final Set<BomTool> bomTools, final File initialDirectory, final BomToolFinderOptions options) throws BomToolException, DetectUserFriendlyException {
+    public List<BomToolApplicableResult> findApplicableBomTools(final Set<Strategy> strategies, final StrategyEvaluator strategyEvaluator, final File initialDirectory, final BomToolFinderOptions options) throws BomToolException, DetectUserFriendlyException {
         final List<File> subDirectories = new ArrayList<>();
         subDirectories.add(initialDirectory);
-        return findApplicableBomTools(bomTools, subDirectories, 1, options);
+        return findApplicableBomTools(strategies, strategyEvaluator, subDirectories, 1, options);
     }
 
-    private List<BomToolApplicableResult> findApplicableBomTools(final Set<BomTool> bomTools, final List<File> directoriesToSearch, final int depth, final BomToolFinderOptions options)
+    private List<BomToolApplicableResult> findApplicableBomTools(final Set<Strategy> strategies, final StrategyEvaluator strategyEvaluator, final List<File> directoriesToSearch, final int depth, final BomToolFinderOptions options)
             throws BomToolException, DetectUserFriendlyException {
 
         final List<BomToolApplicableResult> results = new ArrayList<>();
@@ -79,22 +87,64 @@ public class BomToolFinder {
         if (null == directoriesToSearch || directoriesToSearch.size() == 0) {
             return results;
         }
+
         for (final File directory : directoriesToSearch) {
+            final EvaluationContext evaluationContext = new EvaluationContext(directory);
+
             final Set<BomToolType> applicableTypes = new HashSet<>();
-            final Set<BomTool> remainingBomTools = new HashSet<>(bomTools);
-            for (final BomTool bomTool : bomTools) {
-                final BomToolApplicableResult searchResult = bomTool.isBomToolApplicable(directory);
-                if (searchResult != null) {
-                    results.add(searchResult);
-                    if (shouldStopSearchingIfApplicable(bomTool, options)) {
-                        remainingBomTools.remove(bomTool);
+            final Set<Strategy> remainingBomTools = new HashSet<>(strategies);
+
+            final List<Strategy> orderedStrategies = determineOrder(strategies);
+            final Set<Strategy> needsFulfilled = new HashSet<>();
+            final Set<Strategy> demandsMet = new HashSet<>();
+            for (final Strategy strategy : strategies) {
+                final StrategyEvaluation evaluation = new StrategyEvaluation();
+                strategyEvaluator.fulfillsRequirements(evaluation, strategy, evaluationContext);
+                if (containsAnyYield(strategy, needsFulfilled)) {
+                    logger.info("STRATEGY YIELDED");
+                } else {
+                    if (evaluation.areNeedsMet()) {
+                        needsFulfilled.add(strategy);
+                        //results.add(searchResult);
+                        //if (shouldStopSearchingIfApplicable(bomTool, options)) {
+                        //remainingBomTools.remove(bomTool);
+                        //}
+                        //applicableTypes.add(bomTool.getBomToolType());
+                        logger.info("REQUIREMENTS FULFLILLED");
+                        strategyEvaluator.meetsDemands(evaluation, strategy, evaluationContext);
+                        if (evaluation.areDemandsMet()) {
+                            logger.info("DEMANDS MET");
+                            final Extraction result = strategyEvaluator.execute(evaluation, strategy, evaluationContext);
+                            if (result.result.equals(ExtractionResult.Success)) {
+                                logger.debug("EXTRACTION SUCCESS");
+                                logger.debug("Found code locations: " + result.codeLocations.size());
+                            } else if (result.result.equals(ExtractionResult.Exception)) {
+                                logger.debug("EXTRACTION EXCEPTION");
+                                result.error.printStackTrace();
+                            } else {
+                                logger.debug("EXTRACTION FAILED");
+                            }
+                        }else {
+                            logger.info("DEMANDS NOT MET");
+                            for (final RequirementEvaluation eval : evaluation.demandEvaluationMap.values()) {
+                                if (eval.result.equals(EvaluationResult.Exception)) {
+                                    eval.error.printStackTrace();
+                                }
+                            }
+                        }
+                    }else {
+                        logger.info("REQUIREMENTS NOT FULFLILLED");
+                        for (final RequirementEvaluation eval : evaluation.needEvaluationMap.values()) {
+                            if (eval.result.equals(EvaluationResult.Exception)) {
+                                eval.error.printStackTrace();
+                            }
+                        }
                     }
-                    applicableTypes.add(bomTool.getBomToolType());
                 }
             }
             if (!remainingBomTools.isEmpty()) {
                 final List<File> subdirectories = getSubDirectories(directory, options.getExcludedDirectories());
-                final List<BomToolApplicableResult> recursiveResults = findApplicableBomTools(remainingBomTools, subdirectories, depth + 1, options);
+                final List<BomToolApplicableResult> recursiveResults = findApplicableBomTools(remainingBomTools, strategyEvaluator, subdirectories, depth + 1, options);
                 results.addAll(recursiveResults);
             }
             logger.debug(directory + ": " + applicableTypes.stream().map(it -> it.toString()).collect(Collectors.joining(", ")));
@@ -103,13 +153,65 @@ public class BomToolFinder {
         return results;
     }
 
-    private boolean shouldStopSearchingIfApplicable(final BomTool bomTool, final BomToolFinderOptions options) {
+    @SuppressWarnings({ "rawtypes" })
+    private List<Strategy> determineOrder(final Set<Strategy> allStrategies) throws DetectUserFriendlyException{
+        final Set<Strategy> remaining = new HashSet<>(allStrategies);
+        final List<Strategy> ordered = new ArrayList<>();
+
+        boolean stalled = false;
+
+        while (remaining.size() > 0 && !stalled) {
+            Strategy next = null;
+            for (final Strategy remainingStrategy : remaining) {
+                final boolean yieldSatisfied = containsAllYield(remainingStrategy, ordered);
+                if (yieldSatisfied) {
+                    next = remainingStrategy;
+                    break;
+                }
+            }
+
+            if (next != null) {
+                stalled = false;
+                remaining.remove(next);
+                ordered.add(next);
+            } else {
+                stalled = true;
+            }
+        }
+
+        if (ordered.size() != allStrategies.size()) {
+            throw new DetectUserFriendlyException("An error occured finding extraction strategy order.", ExitCodeType.FAILURE_CONFIGURATION);
+        }
+        return ordered;
+    }
+
+    private boolean containsAllYield(final Strategy target, final List<Strategy> existingStrategies) {
+        boolean containsAll = true;
+        final Set<Strategy> yieldsTo = target.getYieldsToStrategies();
+        for (final Strategy yieldToStrategy : yieldsTo) {
+            containsAll = containsAll && existingStrategies.contains(yieldToStrategy);
+        }
+        return containsAll;
+    }
+
+    private boolean containsAnyYield(final Strategy target, final Set<Strategy> existingStrategies) {
+        final Set<Strategy> yieldsTo = target.getYieldsToStrategies();
+        for (final Strategy yieldToStrategy : yieldsTo) {
+            if (existingStrategies.contains(yieldToStrategy)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean shouldStopSearchingIfApplicable(final Strategy strategy, final BomToolFinderOptions options) {
         if (options.getForceNestedSearch()) {
             return false;
         }
-        if (bomTool.getSearchOptions().canSearchWithinApplicableDirectories()) {
-            return false;
-        }
+        //TODO: Replicate
+        //if (strategy.getSearchOptions().canSearchWithinApplicableDirectories()) {
+        //    return false;
+        //}
         return true;
     }
 

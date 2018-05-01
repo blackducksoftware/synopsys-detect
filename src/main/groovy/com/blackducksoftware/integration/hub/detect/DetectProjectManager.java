@@ -62,6 +62,9 @@ import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
+import com.blackducksoftware.integration.hub.detect.extraction.strategy.Strategy;
+import com.blackducksoftware.integration.hub.detect.extraction.strategy.StrategyManager;
+import com.blackducksoftware.integration.hub.detect.extraction.strategy.evaluation.StrategyEvaluator;
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner;
 import com.blackducksoftware.integration.hub.detect.hub.ScanPathSource;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
@@ -112,6 +115,12 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
 
     @Autowired
     private DetectPhoneHomeManager detectPhoneHomeManager;
+
+    @Autowired
+    public StrategyManager strategyManager;
+
+    @Autowired
+    public StrategyEvaluator strategyEvaluator;
 
     private boolean foundAnyBomTools;
 
@@ -166,13 +175,14 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     }
 
     private List<BomToolApplicableResult> findRootApplicable(final File directory) {
+        final List<Strategy> allStrategies = strategyManager.getAllStrategies();
         final List<String> excludedDirectories = detectConfiguration.getBomToolSearchDirectoryExclusions();
         final Boolean forceNestedSearch = detectConfiguration.getBomToolContinueSearch();
         final int maxDepth = 1;
         final BomToolFinderOptions findOptions = new BomToolFinderOptions(excludedDirectories, forceNestedSearch, maxDepth);
         try {
             final BomToolFinder bomToolTreeWalker = new BomToolFinder();
-            return bomToolTreeWalker.findApplicableBomTools(new HashSet<>(bomTools), directory, findOptions);
+            return bomToolTreeWalker.findApplicableBomTools(new HashSet<>(allStrategies), strategyEvaluator, directory, findOptions);
         } catch (final BomToolException e) {
             bomToolSearchExitCodeType = ExitCodeType.FAILURE_BOM_TOOL;
             logger.error(e.getMessage(), e);
@@ -184,6 +194,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     }
 
     private List<BomToolApplicableResult> findBomTools() {
+        final List<Strategy> allStrategies = strategyManager.getAllStrategies();
         final List<String> excludedDirectories = detectConfiguration.getBomToolSearchDirectoryExclusions();
         final Boolean forceNestedSearch = detectConfiguration.getBomToolContinueSearch();
         final int maxDepth = detectConfiguration.getBomToolSearchDepth();
@@ -191,7 +202,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         try {
             final File initialDirectory = detectConfiguration.getSourceDirectory();
             final BomToolFinder bomToolTreeWalker = new BomToolFinder();
-            return bomToolTreeWalker.findApplicableBomTools(new HashSet<>(bomTools), initialDirectory, findOptions);
+            return bomToolTreeWalker.findApplicableBomTools(new HashSet<>(allStrategies), strategyEvaluator, initialDirectory, findOptions);
         } catch (final BomToolException e) {
             bomToolSearchExitCodeType = ExitCodeType.FAILURE_BOM_TOOL;
             logger.error(e.getMessage(), e);

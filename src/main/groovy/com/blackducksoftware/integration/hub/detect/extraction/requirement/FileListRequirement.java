@@ -1,8 +1,10 @@
 package com.blackducksoftware.integration.hub.detect.extraction.requirement;
 
-public class FileListRequirement {
+import java.io.File;
+import java.util.List;
 
-    public String filepattern;
-    public String bucketKey;
+public class FileListRequirement extends Requirement<List<File>> {
+
+    public String[] filepatterns;
 
 }

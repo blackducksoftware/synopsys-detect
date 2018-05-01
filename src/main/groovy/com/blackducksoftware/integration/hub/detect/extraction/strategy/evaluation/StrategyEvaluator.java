@@ -1,9 +1,13 @@
 package com.blackducksoftware.integration.hub.detect.extraction.strategy.evaluation;
 
+import java.lang.reflect.Constructor;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import com.blackducksoftware.integration.hub.detect.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.extraction.ExtractionContext;
 import com.blackducksoftware.integration.hub.detect.extraction.ExtractionContextAction;
 import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
@@ -13,43 +17,80 @@ import com.blackducksoftware.integration.hub.detect.extraction.requirement.evalu
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluator.RequirementEvaluatorManager;
 import com.blackducksoftware.integration.hub.detect.extraction.strategy.Strategy;
 
+@Component
 public class StrategyEvaluator {
 
     @Autowired
     public RequirementEvaluatorManager requirementEvaluatorManager;
 
+    @Autowired
+    public List<Extractor> autowiredExtractors;
+
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public void fulfillsRequirements(final StrategyEvaluation strategyEvaluation, final Strategy strategy, final EvaluationContext evaluationContext) {
-        final Set<Requirement> requirements = strategy.getRequirements();
+        final Set<Requirement> requirements = strategy.getNeeds();
         for (final Requirement requirement : requirements) {
             final RequirementEvaluation requirementEvaluation = requirementEvaluatorManager.evaluate(requirement, evaluationContext);
-            strategyEvaluation.addRequirementEvaluation(requirement, requirementEvaluation);
+            strategyEvaluation.addNeedEvaluation(requirement, requirementEvaluation);
         }
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public void fulfillsDemands(final StrategyEvaluation strategyEvaluation, final Strategy strategy, final EvaluationContext evaluationContext) {
-        final Set<Requirement> requirements = strategy.getRequirements();
+    public void meetsDemands(final StrategyEvaluation strategyEvaluation, final Strategy strategy, final EvaluationContext evaluationContext) {
+        final Set<Requirement> requirements = strategy.getDemands();
         for (final Requirement requirement : requirements) {
             final RequirementEvaluation requirementEvaluation = requirementEvaluatorManager.evaluate(requirement, evaluationContext);
-            strategyEvaluation.addRequirementEvaluation(requirement, requirementEvaluation);
+            strategyEvaluation.addDemandEvaluation(requirement, requirementEvaluation);
         }
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public void execute(final StrategyEvaluation strategyEvaluation, final Strategy strategy, final EvaluationContext evaluationContext) {
-        final ExtractionContext context = strategy.newContext();
+    public Extraction execute(final StrategyEvaluation strategyEvaluation, final Strategy strategy, final EvaluationContext evaluationContext) {
+        final ExtractionContext context = (ExtractionContext) create(strategy.getExtractionContextClass());
 
-        final Set<Requirement> requirements = strategy.getRequirements();
-        for (final Requirement requirement : requirements) {
-            final RequirementEvaluation requirementEvaluation = strategyEvaluation.getRequirementEvaluation(requirement);
-            final ExtractionContextAction action = strategy.getAction(requirement);
+        final Set<Requirement> needRequirements = strategy.getNeeds();
+        for (final Requirement requirement : needRequirements) {
+            final RequirementEvaluation requirementEvaluation = strategyEvaluation.getNeedEvaluation(requirement);
+            final ExtractionContextAction action = strategy.getNeedAction(requirement);
             action.perform(context, requirementEvaluation.value);
         }
 
-        final Extractor extractor = strategy.newExtractor();
-        extractor.extract(context);
+        final Set<Requirement> demandRequirements = strategy.getDemands();
+        for (final Requirement requirement : demandRequirements) {
+            final RequirementEvaluation requirementEvaluation = strategyEvaluation.getDemandEvaluation(requirement);
+            final ExtractionContextAction action = strategy.getDemandAction(requirement);
+            action.perform(context, requirementEvaluation.value);
+        }
 
+        Extractor extractor = null;
+        for (final Extractor possibleExtractor : autowiredExtractors) {
+            if (possibleExtractor.getClass().equals(strategy.getExtractorClass())) {
+                extractor = possibleExtractor;
+            }
+        }
+
+        if (extractor == null) {
+            extractor = (Extractor) create(strategy.getExtractorClass());;
+        }
+
+        return extractor.extract(context);
+
+    }
+
+    private <T> T create(final Class<T> clazz) {
+        Constructor<T> constructor;
+        try {
+            constructor = clazz.getConstructor();
+        } catch (final Exception e) {
+            throw new RuntimeException(e);
+        }
+        T instance;
+        try {
+            instance = constructor.newInstance();
+        } catch (final Exception e) {
+            throw new RuntimeException(e);
+        }
+        return instance;
     }
 
 }

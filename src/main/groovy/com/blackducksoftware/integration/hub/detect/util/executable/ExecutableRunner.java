@@ -91,4 +91,9 @@ public class ExecutableRunner {
         final Executable exe = new Executable(detectConfiguration.getSourceDirectory(), exePath, Arrays.asList(args));
         return execute(exe);
     }
+
+    public ExecutableOutput runExe(final File exePath, final String... args) throws ExecutableRunnerException {
+        final Executable exe = new Executable(detectConfiguration.getSourceDirectory(), exePath, Arrays.asList(args));
+        return execute(exe);
+    }
 }

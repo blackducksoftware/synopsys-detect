@@ -54,6 +54,7 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFac
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
+import com.blackducksoftware.integration.hub.detect.extraction.strategy.StrategyManager;
 import com.blackducksoftware.integration.hub.detect.help.ArgumentState;
 import com.blackducksoftware.integration.hub.detect.help.ArgumentStateParser;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
@@ -129,6 +130,9 @@ public class Application implements ApplicationRunner {
     @Autowired
     private ArgumentStateParser argumentStateParser;
 
+    @Autowired
+    private StrategyManager strategyManager;
+
     private ExitCodeType exitCodeType = ExitCodeType.SUCCESS;
 
     public static void main(final String[] args) {
@@ -202,6 +206,8 @@ public class Application implements ApplicationRunner {
             } else {
                 hubServiceWrapper.init();
             }
+
+            strategyManager.init();
 
             final DetectProject detectProject = detectProjectManager.createDetectProject();
             final List<File> createdBdioFiles = detectProjectManager.createBdioFiles(detectProject);

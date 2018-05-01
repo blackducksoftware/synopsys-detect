@@ -1,31 +1,14 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.search;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
 
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.blackducksoftware.integration.hub.detect.Application;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolApplicableResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolFinder;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolFinderOptions;
-import com.blackducksoftware.integration.util.ResourceUtil;
 
 @ContextConfiguration(classes = { Application.class })
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -38,7 +21,7 @@ public class BomToolTreeWalkerTest {
     private File sourceDirectoryWithNestedNPM;
 
     private File sourceDirectoryWithNestedNPMInsideNodeModules;
-
+    /*
     @Autowired
     private Set<BomTool> nestedBomTools;
 
@@ -175,5 +158,5 @@ public class BomToolTreeWalkerTest {
         // Should  have found the Npm project because we are continuing and we are not excluding any directories
         assertEquals(0, results.size());
     }
-
+     */
 }
