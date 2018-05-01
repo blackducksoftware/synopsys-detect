@@ -31,13 +31,13 @@ import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.google.gson.Gson
-
 import groovy.transform.TypeChecked
 
 @TypeChecked
 class GoGodepsParser {
     private final Gson gson
     public ExternalIdFactory externalIdFactory;
+
     public GoGodepsParser(Gson gson, ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
         this.gson = gson
@@ -51,11 +51,12 @@ class GoGodepsParser {
             if (dep.comment?.trim()) {
                 version = dep.comment.trim()
                 //TODO test with kubernetes
-                if (version.matches('.*-.*-.*')) {
-                    //v1.6-27-23859436879234678  should be changed to v1.6
-                    version = version.substring(0, version.lastIndexOf('-'))
-                    version = version.substring(0, version.lastIndexOf('-'))
+
+                if (shouldVersionBeTrimmed(version)) {
+                    // v1.0.0-10-gae3452 should be changed to v1.0.0
+                    version = version.replaceAll('-\\d+-g[0-9a-f]+$', '');
                 }
+
             } else {
                 version = dep.rev.trim()
             }
@@ -64,5 +65,14 @@ class GoGodepsParser {
             graph.addChildToRoot(dependency);
         }
         graph
+    }
+
+    private boolean shouldVersionBeTrimmed(String version) {
+        // https://github.com/blackducksoftware/hub-detect/issues/237
+        // updating according to 'git describe'
+        if (version.matches('.*-\\d+-g[0-9a-f]+$')) {
+            return true;
+        }
+        return false;
     }
 }

@@ -23,6 +23,9 @@ import org.junit.Test
 
 import java.nio.charset.StandardCharsets
 
+import static org.junit.Assert.assertFalse
+import static org.junit.Assert.assertTrue
+
 public class GoGodepsParserTest {
     Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create()
     ExternalIdFactory externalIdFactory = new ExternalIdFactory()
@@ -39,5 +42,35 @@ public class GoGodepsParserTest {
     private void fixVersion(final Dependency node, final String newVersion) {
         node.version = newVersion
         node.externalId = externalIdFactory.createNameVersionExternalId(GoDepBomTool.GOLANG, node.name, newVersion)
+    }
+
+    @Test
+    public void testShouldVersionBeTrimmed() throws IOException {
+        final GoGodepsParser goDepParser = new GoGodepsParser(null, null)
+
+        boolean shouldBeTrimmed = goDepParser.shouldVersionBeTrimmed("v1.5")
+        assertFalse(shouldBeTrimmed)
+
+        shouldBeTrimmed = goDepParser.shouldVersionBeTrimmed("test")
+        assertFalse(shouldBeTrimmed)
+
+        shouldBeTrimmed = goDepParser.shouldVersionBeTrimmed("stuff-things")
+        assertFalse(shouldBeTrimmed)
+
+        shouldBeTrimmed = goDepParser.shouldVersionBeTrimmed("stuff-things-other")
+        assertFalse(shouldBeTrimmed)
+
+        shouldBeTrimmed = goDepParser.shouldVersionBeTrimmed("stuff-things-gotcha")
+        assertFalse(shouldBeTrimmed)
+
+        shouldBeTrimmed = goDepParser.shouldVersionBeTrimmed("stuff-things-gotcha")
+        assertFalse(shouldBeTrimmed)
+
+        shouldBeTrimmed = goDepParser.shouldVersionBeTrimmed("v1.5-10-gae3452")
+        assertTrue(shouldBeTrimmed)
+
+        shouldBeTrimmed = goDepParser.shouldVersionBeTrimmed("v1.5-10-3452")
+        assertFalse(shouldBeTrimmed)
+
     }
 }
