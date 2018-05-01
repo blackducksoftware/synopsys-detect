@@ -52,9 +52,8 @@ class GoGodepsParser {
                 version = dep.comment.trim()
                 //TODO test with kubernetes
 
-                if (shouldVersionBeTrimmed(version)) {
-                    // v1.0.0-10-gae3452 should be changed to v1.0.0
-                    version = version.replaceAll('-\\d+-g[0-9a-f]+$', '');
+                if (shouldVersionBeCorrected(version)) {
+                    version = getCorrectedVersion(version);
                 }
 
             } else {
@@ -67,7 +66,12 @@ class GoGodepsParser {
         graph
     }
 
-    private boolean shouldVersionBeTrimmed(String version) {
+    private String getCorrectedVersion(String version) {
+        // v1.0.0-10-gae3452 should be changed to v1.0.0
+        return version.replaceAll('-\\d+-g[0-9a-f]+$', ''); ;
+    }
+
+    private boolean shouldVersionBeCorrected(String version) {
         // https://github.com/blackducksoftware/hub-detect/issues/237
         // updating according to 'git describe'
         if (version.matches('.*-\\d+-g[0-9a-f]+$')) {

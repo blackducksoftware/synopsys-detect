@@ -23,8 +23,7 @@ import org.junit.Test
 
 import java.nio.charset.StandardCharsets
 
-import static org.junit.Assert.assertFalse
-import static org.junit.Assert.assertTrue
+import static org.junit.Assert.*
 
 public class GoGodepsParserTest {
     Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create()
@@ -45,44 +44,55 @@ public class GoGodepsParserTest {
     }
 
     @Test
-    public void testShouldVersionBeTrimmed() throws IOException {
+    public void testShouldVersionBeCorrected() throws IOException {
         final GoGodepsParser goDepParser = new GoGodepsParser(null, null)
 
-        boolean shouldBeTrimmed = goDepParser.shouldVersionBeTrimmed("v1.5")
+        boolean shouldBeTrimmed = goDepParser.shouldVersionBeCorrected("v1.5")
         assertFalse(shouldBeTrimmed)
 
-        shouldBeTrimmed = goDepParser.shouldVersionBeTrimmed("test")
+        shouldBeTrimmed = goDepParser.shouldVersionBeCorrected("test")
         assertFalse(shouldBeTrimmed)
 
-        shouldBeTrimmed = goDepParser.shouldVersionBeTrimmed("stuff-things")
+        shouldBeTrimmed = goDepParser.shouldVersionBeCorrected("stuff-things")
         assertFalse(shouldBeTrimmed)
 
-        shouldBeTrimmed = goDepParser.shouldVersionBeTrimmed("stuff-things-other")
+        shouldBeTrimmed = goDepParser.shouldVersionBeCorrected("stuff-things-other")
         assertFalse(shouldBeTrimmed)
 
-        shouldBeTrimmed = goDepParser.shouldVersionBeTrimmed("stuff-things-gotcha")
+        shouldBeTrimmed = goDepParser.shouldVersionBeCorrected("stuff-things-gotcha")
         assertFalse(shouldBeTrimmed)
 
-        shouldBeTrimmed = goDepParser.shouldVersionBeTrimmed("stuff-things-gotcha")
+        shouldBeTrimmed = goDepParser.shouldVersionBeCorrected("stuff-things-gotcha")
         assertFalse(shouldBeTrimmed)
 
-        shouldBeTrimmed = goDepParser.shouldVersionBeTrimmed("v1.5-10-gae3452")
+        shouldBeTrimmed = goDepParser.shouldVersionBeCorrected("v1.5-10-gae3452")
         assertTrue(shouldBeTrimmed)
 
-        shouldBeTrimmed = goDepParser.shouldVersionBeTrimmed("v1.5-10-g23423")
+        shouldBeTrimmed = goDepParser.shouldVersionBeCorrected("v1.5-10-g23423")
         assertTrue(shouldBeTrimmed)
 
-        shouldBeTrimmed = goDepParser.shouldVersionBeTrimmed("v1.5-gae3452")
+        shouldBeTrimmed = goDepParser.shouldVersionBeCorrected("v1.5-gae3452")
         assertFalse(shouldBeTrimmed)
 
-        shouldBeTrimmed = goDepParser.shouldVersionBeTrimmed("v1.5-10-gamma5")
+        shouldBeTrimmed = goDepParser.shouldVersionBeCorrected("v1.5-10-gamma5")
         assertFalse(shouldBeTrimmed)
 
-        shouldBeTrimmed = goDepParser.shouldVersionBeTrimmed("v1.5-10-gamma")
+        shouldBeTrimmed = goDepParser.shouldVersionBeCorrected("v1.5-10-gamma")
         assertFalse(shouldBeTrimmed)
 
-        shouldBeTrimmed = goDepParser.shouldVersionBeTrimmed("v1.5-10-3452")
+        shouldBeTrimmed = goDepParser.shouldVersionBeCorrected("v1.5-10-3452")
         assertFalse(shouldBeTrimmed)
 
+    }
+
+    @Test
+    public void testGetCorrectedVersion() throws IOException {
+        final GoGodepsParser goDepParser = new GoGodepsParser(null, null)
+
+        String correctedVersion = goDepParser.getCorrectedVersion("v1.5-10-gae3452");
+        assertEquals("v1.5", correctedVersion)
+
+        correctedVersion = goDepParser.getCorrectedVersion("v1.5-10-g23423");
+        assertEquals("v1.5", correctedVersion)
     }
 }
