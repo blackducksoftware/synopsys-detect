@@ -122,9 +122,8 @@ public class YarnListParser extends BaseYarnParser {
         }
         String name = null;
         if (fuzzyName.startsWith("@")) {
-            String partToRemove = fuzzyName.substring(1);
-            partToRemove = partToRemove.substring(partToRemove.indexOf("@"));
-            name = fuzzyName.replaceFirst(partToRemove, "");
+            String fuzzyNameWithoutFirstAt = fuzzyName.substring(1);
+            name = fuzzyName.substring(0, fuzzyNameWithoutFirstAt.indexOf("@") + 1);
         } else {
             name = fuzzyName.substring(0, fuzzyName.indexOf("@"));
         }
