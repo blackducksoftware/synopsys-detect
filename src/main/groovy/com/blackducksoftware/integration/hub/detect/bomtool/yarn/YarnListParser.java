@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -91,10 +92,11 @@ public class YarnListParser extends BaseYarnParser {
 
     private Optional<Dependency> getDependencyFromLine(String cleanedLine, YarnDependencyMapper yarnDependencyMapper) {
         String fuzzyName = cleanedLine.trim();
-        String name = fuzzyName.split("@")[0];
+        Optional<String> optionalName = parseNameFromFuzzy(fuzzyName);
         Optional<String> optionalVersion = yarnDependencyMapper.getVersion(fuzzyName);
 
-        if (optionalVersion.isPresent()) {
+        if (optionalName.isPresent() && optionalVersion.isPresent()) {
+            String name = optionalName.get();
             String version = optionalVersion.get();
             logger.debug("Found version " + version + " for " + fuzzyName);
 
@@ -104,8 +106,27 @@ public class YarnListParser extends BaseYarnParser {
 
             return Optional.of(new Dependency(name, version, extId));
         } else {
-            logger.error(String.format("Could not determine a version for yarn dependency %s", name));
+            if (!optionalName.isPresent()) {
+                logger.error(String.format("Could not determine a name for yarn dependency %s", fuzzyName));
+            }
+            if (!optionalVersion.isPresent()) {
+                logger.error(String.format("Could not determine a version for yarn dependency %s", fuzzyName));
+            }
             return Optional.empty();
         }
+    }
+
+    private Optional<String> parseNameFromFuzzy(String fuzzyName) {
+        if (StringUtils.isBlank(fuzzyName)) {
+            return Optional.empty();
+        }
+        String name = null;
+        if (fuzzyName.startsWith("@")) {
+            String fuzzyNameWithoutFirstAt = fuzzyName.substring(1);
+            name = fuzzyName.substring(0, fuzzyNameWithoutFirstAt.indexOf("@") + 1);
+        } else {
+            name = fuzzyName.substring(0, fuzzyName.indexOf("@"));
+        }
+        return Optional.of(name);
     }
 }
