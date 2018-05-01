@@ -69,6 +69,18 @@ public class GoGodepsParserTest {
         shouldBeTrimmed = goDepParser.shouldVersionBeTrimmed("v1.5-10-gae3452")
         assertTrue(shouldBeTrimmed)
 
+        shouldBeTrimmed = goDepParser.shouldVersionBeTrimmed("v1.5-10-g23423")
+        assertTrue(shouldBeTrimmed)
+
+        shouldBeTrimmed = goDepParser.shouldVersionBeTrimmed("v1.5-gae3452")
+        assertFalse(shouldBeTrimmed)
+
+        shouldBeTrimmed = goDepParser.shouldVersionBeTrimmed("v1.5-10-gamma5")
+        assertFalse(shouldBeTrimmed)
+
+        shouldBeTrimmed = goDepParser.shouldVersionBeTrimmed("v1.5-10-gamma")
+        assertFalse(shouldBeTrimmed)
+
         shouldBeTrimmed = goDepParser.shouldVersionBeTrimmed("v1.5-10-3452")
         assertFalse(shouldBeTrimmed)
 
