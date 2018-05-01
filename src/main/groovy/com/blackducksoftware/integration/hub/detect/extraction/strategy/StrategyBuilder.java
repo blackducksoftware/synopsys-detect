@@ -53,6 +53,10 @@ public class StrategyBuilder<C extends ExtractionContext, E extends Extractor<C>
     }
 
 
+    public FileListNeedBuilder needsFiles(final String filepattern) {
+        return new FileListNeedBuilder(this, new String[] { filepattern });
+    }
+
     public FileListNeedBuilder needsFiles(final String[] filepattern) {
         return new FileListNeedBuilder(this, filepattern);
     }

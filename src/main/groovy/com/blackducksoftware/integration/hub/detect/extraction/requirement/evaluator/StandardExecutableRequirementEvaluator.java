@@ -58,6 +58,8 @@ public class StandardExecutableRequirementEvaluator extends RequirementEvaluator
             return new StandardExecutableInfo(ExecutableType.DOCKER, detectConfiguration.getDockerPath());
         case BASH:
             return new StandardExecutableInfo(ExecutableType.BASH, detectConfiguration.getBashPath());
+        case GO:
+            return new StandardExecutableInfo(ExecutableType.GO, detectConfiguration.getBashPath());
 
         }
         return null;
