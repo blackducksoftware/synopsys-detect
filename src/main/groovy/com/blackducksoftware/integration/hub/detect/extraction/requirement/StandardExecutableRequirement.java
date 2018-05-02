@@ -12,7 +12,8 @@ public class StandardExecutableRequirement extends Requirement<File> {
         CPANM,
         DOCKER,
         BASH,
-        GO
+        GO,
+        REBAR3
     }
 
 }

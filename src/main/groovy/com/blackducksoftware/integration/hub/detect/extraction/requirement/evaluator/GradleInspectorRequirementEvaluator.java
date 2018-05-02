@@ -16,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -26,7 +27,6 @@ import com.blackducksoftware.integration.hub.detect.extraction.requirement.evalu
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation.EvaluationResult;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
-import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
@@ -41,6 +41,7 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateNotFoundException;
 
+@Component
 public class GradleInspectorRequirementEvaluator extends RequirementEvaluator<GradleInspectorRequirement> {
     private final Logger logger = LoggerFactory.getLogger(GradleInspectorRequirementEvaluator.class);
 
@@ -62,25 +63,20 @@ public class GradleInspectorRequirementEvaluator extends RequirementEvaluator<Gr
     @Autowired
     DocumentBuilder xmlDocumentBuilder;
 
-    private String systemGradle = null;
-    private boolean hasLookedForSystemGradle = false;
+    private String resolvedInitScript = null;
+    private String resolvedVersion = null;
+    private boolean hasResolvedInspector = false;
 
     @Override
     public RequirementEvaluation<String> evaluate(final GradleInspectorRequirement requirement, final EvaluationContext context) {
         try {
-            String resolvedGradle = null;
-            final String gradlePath = executableManager.getExecutablePathOrOverride(ExecutableType.GRADLEW, false, context.getDirectory(), detectConfiguration.getGradlePath());
-            if (StringUtils.isNotBlank(gradlePath)) {
-                resolvedGradle = gradlePath;
-            }else {
-                if (!hasLookedForSystemGradle) {
-                    systemGradle = executableManager.getExecutablePathOrOverride(ExecutableType.GRADLE, true, context.getDirectory(), detectConfiguration.getGradlePath());
-                    hasLookedForSystemGradle = true;
-                }
-                resolvedGradle = systemGradle;
+            if (!hasResolvedInspector) {
+                hasResolvedInspector = true;
+                resolvedVersion = resolveInspectorVersion();
+                resolvedInitScript = resolveInitScriptPath(resolvedVersion);
             }
-            if (resolvedGradle != null) {
-                return new RequirementEvaluation<>(EvaluationResult.Passed, resolvedGradle);
+            if (resolvedInitScript != null) {
+                return new RequirementEvaluation<>(EvaluationResult.Passed, resolvedInitScript);
             }else {
                 return new RequirementEvaluation<>(EvaluationResult.Failed, null);
             }
@@ -132,10 +128,10 @@ public class GradleInspectorRequirementEvaluator extends RequirementEvaluator<Gr
         }
     }
 
-    String resolveInitScriptPath() throws TemplateNotFoundException, MalformedTemplateNameException, ParseException, IOException, TemplateException {
+    String resolveInitScriptPath(final String version) throws TemplateNotFoundException, MalformedTemplateNameException, ParseException, IOException, TemplateException {
         final File initScriptFile = detectFileManager.createFile(BomToolType.GRADLE, "init-detect.gradle");
         final Map<String, String> model = new HashMap<>();
-        model.put("gradleInspectorVersion", detectConfiguration.getGradleInspectorVersion());
+        model.put("gradleInspectorVersion", version);
         model.put("excludedProjectNames", detectConfiguration.getGradleExcludedProjectNames());
         model.put("includedProjectNames", detectConfiguration.getGradleIncludedProjectNames());
         model.put("excludedConfigurationNames", detectConfiguration.getGradleExcludedConfigurationNames());

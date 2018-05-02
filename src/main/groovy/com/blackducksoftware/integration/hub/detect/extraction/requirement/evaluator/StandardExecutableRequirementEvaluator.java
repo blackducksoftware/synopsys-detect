@@ -59,7 +59,9 @@ public class StandardExecutableRequirementEvaluator extends RequirementEvaluator
         case BASH:
             return new StandardExecutableInfo(ExecutableType.BASH, detectConfiguration.getBashPath());
         case GO:
-            return new StandardExecutableInfo(ExecutableType.GO, detectConfiguration.getBashPath());
+            return new StandardExecutableInfo(ExecutableType.GO, null);
+        case REBAR3:
+            return new StandardExecutableInfo(ExecutableType.REBAR3, detectConfiguration.getHexRebar3Path());
 
         }
         return null;
