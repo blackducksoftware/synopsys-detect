@@ -93,16 +93,20 @@ public class DetectPhoneHomeManager {
     private void performPhoneHome(final Set<BomToolType> applicableBomToolTypes) {
         endPhoneHome();
         if (null != phoneHomeService) {
-            final PhoneHomeRequestBody.Builder phoneHomeRequestBodyBuilder = createBuilder();
+            try {
+                final PhoneHomeRequestBody.Builder phoneHomeRequestBodyBuilder = createBuilder();
 
-            if (applicableBomToolTypes != null) {
-                final String applicableBomToolsString = StringUtils.join(applicableBomToolTypes, ", ");
-                phoneHomeRequestBodyBuilder.addToMetaData("bomToolTypes", applicableBomToolsString);
+                if (applicableBomToolTypes != null) {
+                    final String applicableBomToolsString = StringUtils.join(applicableBomToolTypes, ", ");
+                    phoneHomeRequestBodyBuilder.addToMetaData("bomToolTypes", applicableBomToolsString);
+                }
+
+                final PhoneHomeRequestBody phoneHomeRequestBody = phoneHomeRequestBodyBuilder.build();
+
+                phoneHomeResponse = phoneHomeService.startPhoneHome(phoneHomeRequestBody);
+            } catch (IllegalStateException e) {
+                logger.debug(e.getMessage(), e);
             }
-
-            final PhoneHomeRequestBody phoneHomeRequestBody = phoneHomeRequestBodyBuilder.build();
-
-            phoneHomeResponse = phoneHomeService.startPhoneHome(phoneHomeRequestBody);
         }
     }
 
