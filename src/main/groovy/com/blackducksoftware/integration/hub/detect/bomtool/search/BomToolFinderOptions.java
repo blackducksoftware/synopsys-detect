@@ -1,4 +1,4 @@
-package com.blackducksoftware.integration.hub.detect.bomtool;
+package com.blackducksoftware.integration.hub.detect.bomtool.search;
 
 import java.util.List;
 

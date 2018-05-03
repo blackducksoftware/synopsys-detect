@@ -46,10 +46,10 @@ import org.springframework.core.env.PropertySource;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.api.enumeration.PolicySeverityType;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolFinder;
 import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetBomTool;
+import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolFinder;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.help.AcceptableValues;

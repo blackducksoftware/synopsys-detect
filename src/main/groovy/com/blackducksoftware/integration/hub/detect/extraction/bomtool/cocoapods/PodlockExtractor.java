@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
@@ -17,6 +18,7 @@ import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 
+@Component
 public class PodlockExtractor extends Extractor<PodlockContext> {
 
     @Autowired

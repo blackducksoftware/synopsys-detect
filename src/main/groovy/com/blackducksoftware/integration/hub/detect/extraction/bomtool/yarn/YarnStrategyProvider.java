@@ -1,8 +1,5 @@
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.yarn;
 
-import java.util.Arrays;
-import java.util.List;
-
 import com.blackducksoftware.integration.hub.detect.extraction.strategy.Strategy;
 import com.blackducksoftware.integration.hub.detect.extraction.strategy.StrategyProvider;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
@@ -21,7 +18,7 @@ public class YarnStrategyProvider extends StrategyProvider {
                 .needsFile(YARN_LOCK_FILENAME).as((context, file) -> context.yarnlock = file)
                 .build();
 
-        return Arrays.asList(yarnlockStrategy);
+        add(yarnlockStrategy);
 
     }
 

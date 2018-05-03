@@ -1,6 +1,7 @@
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.go;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph;
@@ -14,6 +15,7 @@ import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 
+@Component
 public class GoDepExtractor extends Extractor<GoDepContext> {
 
     @Autowired

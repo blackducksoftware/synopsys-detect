@@ -1,9 +1,7 @@
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.docker;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.DockerInspectorRequirement;
@@ -12,6 +10,7 @@ import com.blackducksoftware.integration.hub.detect.extraction.strategy.Strategy
 import com.blackducksoftware.integration.hub.detect.extraction.strategy.StrategyProvider;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 
+@Component
 public class DockerStrategyProvider extends StrategyProvider {
 
     @Autowired
@@ -20,7 +19,7 @@ public class DockerStrategyProvider extends StrategyProvider {
 
     @SuppressWarnings("rawtypes")
     @Override
-    public List<Strategy> createStrategies() {
+    public void init() {
 
         final Strategy imageStrategy = newStrategyBuilder(DockerContext.class, DockerExtractor.class)
                 .needsBomTool(BomToolType.DOCKER).noop()
@@ -40,7 +39,7 @@ public class DockerStrategyProvider extends StrategyProvider {
                 .demands(new DockerInspectorRequirement(), (context, info) -> context.dockerInspectorInfo = info)
                 .build();
 
-        return Arrays.asList(imageStrategy, tarStrategy);
+        add(imageStrategy, tarStrategy);
 
     }
 

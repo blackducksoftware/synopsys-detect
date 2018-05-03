@@ -1,8 +1,5 @@
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.hex;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.StandardExecutableRequirement.StandardExecutableType;
@@ -17,7 +14,7 @@ public class HexStrategyProvider extends StrategyProvider {
 
     @SuppressWarnings("rawtypes")
     @Override
-    public List<Strategy> createStrategies() {
+    public void init() {
 
         final Strategy cpanCliStrategy = newStrategyBuilder(RebarContext.class, RebarExtractor.class)
                 .needsBomTool(BomToolType.HEX).noop()
@@ -26,7 +23,7 @@ public class HexStrategyProvider extends StrategyProvider {
                 .demandsStandardExecutable(StandardExecutableType.REBAR3).as((context, file) -> context.rebarExe = file)
                 .build();
 
-        return Arrays.asList(cpanCliStrategy);
+        add(cpanCliStrategy);
 
     }
 

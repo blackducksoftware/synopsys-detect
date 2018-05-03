@@ -41,9 +41,10 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOu
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
 
 import groovy.transform.TypeChecked
+import groovy.util.slurpersupport.GPathResult
 
 @Component
-@TypeChecked
+
 class PearDependencyFinder {
     private final Logger logger = LoggerFactory.getLogger(PearDependencyFinder.class)
 
@@ -60,6 +61,17 @@ class PearDependencyFinder {
     ExternalIdFactory externalIdFactory
 
 
+    public PearParseResult parse(File packageFile, ExecutableOutput pearListing, ExecutableOutput pearDependencies) {
+        PearParseResult result = new PearParseResult();
+        GPathResult packageXml = new XmlSlurper().parseText(packageFile.text);
+        result.name = packageXml.name;
+        String version = packageXml.version.release;
+        result.version = version;
+        result.dependencyGraph = parsePearDependencyList(pearListing, pearDependencies);
+        return result;
+    }
+
+    @TypeChecked
     public DependencyGraph parsePearDependencyList(ExecutableOutput pearListing, ExecutableOutput pearDependencies) {
         DependencyGraph graph = new MutableMapDependencyGraph()
 
@@ -75,6 +87,7 @@ class PearDependencyFinder {
         graph
     }
 
+    @TypeChecked
     private List<String> findDependencyNames(List<String> content) {
         def nameList = []
 
@@ -102,7 +115,7 @@ class PearDependencyFinder {
         nameList
     }
 
-
+    @TypeChecked
     private DependencyGraph createPearDependencyGraphFromList(List<String> dependencyList, List<String> dependencyNames) {
         MutableDependencyGraph graph = new MutableMapDependencyGraph()
 

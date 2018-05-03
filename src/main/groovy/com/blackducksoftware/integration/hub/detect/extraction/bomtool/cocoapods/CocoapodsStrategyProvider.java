@@ -1,8 +1,5 @@
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.cocoapods;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.extraction.strategy.Strategy;
@@ -16,7 +13,7 @@ public class CocoapodsStrategyProvider extends StrategyProvider {
 
     @SuppressWarnings("rawtypes")
     @Override
-    public List<Strategy> createStrategies() {
+    public void init() {
 
         final Strategy podlockStrategy = newStrategyBuilder(PodlockContext.class, PodlockExtractor.class)
                 .needsBomTool(BomToolType.COCOAPODS).noop()
@@ -25,7 +22,7 @@ public class CocoapodsStrategyProvider extends StrategyProvider {
                 .build();
 
 
-        return Arrays.asList(podlockStrategy);
+        add(podlockStrategy);
 
     }
 

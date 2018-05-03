@@ -1,8 +1,5 @@
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.gradle;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.GradleExecutableRequirement;
@@ -18,7 +15,7 @@ public class GradleStrategyProvider extends StrategyProvider {
 
     @SuppressWarnings("rawtypes")
     @Override
-    public List<Strategy> createStrategies() {
+    public void init() {
 
         final Strategy cpanCliStrategy = newStrategyBuilder(GradleInspectorContext.class, GradleInspectorExtractor.class)
                 .needsBomTool(BomToolType.GRADLE).noop()
@@ -28,7 +25,7 @@ public class GradleStrategyProvider extends StrategyProvider {
                 .demands(new GradleInspectorRequirement(), (context, file) -> context.gradleInspector = file)
                 .build();
 
-        return Arrays.asList(cpanCliStrategy);
+        add(cpanCliStrategy);
 
     }
 

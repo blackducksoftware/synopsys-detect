@@ -1,8 +1,5 @@
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.conda;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.StandardExecutableRequirement.StandardExecutableType;
@@ -17,7 +14,7 @@ public class CondaStrategyProvider extends StrategyProvider {
 
     @SuppressWarnings("rawtypes")
     @Override
-    public List<Strategy> createStrategies() {
+    public void init() {
 
         final Strategy cliStrategy = newStrategyBuilder(CondaCliContext.class, CondaCliExtractor.class)
                 .needsBomTool(BomToolType.CONDA).noop()
@@ -26,7 +23,7 @@ public class CondaStrategyProvider extends StrategyProvider {
                 .demandsStandardExecutable(StandardExecutableType.CONDA).as((context, file) -> context.condaExe = file)
                 .build();
 
-        return Arrays.asList(cliStrategy );
+        add(cliStrategy );
 
     }
 }

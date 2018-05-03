@@ -1,8 +1,5 @@
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.sbt;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.extraction.strategy.Strategy;
@@ -24,7 +21,7 @@ public class SbtStrategyProvider extends StrategyProvider {
                 .needsFile(BUILD_SBT_FILENAME).noop()
                 .build();
 
-        return Arrays.asList(gemlockStrategy);
+        add(gemlockStrategy);
 
     }
 

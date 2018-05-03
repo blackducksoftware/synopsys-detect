@@ -1,9 +1,7 @@
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.go;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.GoDepInspectorRequirement;
@@ -12,6 +10,7 @@ import com.blackducksoftware.integration.hub.detect.extraction.strategy.Strategy
 import com.blackducksoftware.integration.hub.detect.extraction.strategy.StrategyProvider;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 
+@Component
 public class GoStrategyProvider extends StrategyProvider {
 
     public static final String GOPKG_LOCK_FILENAME= "Gopkg.lock";
@@ -24,7 +23,7 @@ public class GoStrategyProvider extends StrategyProvider {
 
     @SuppressWarnings("rawtypes")
     @Override
-    public List<Strategy> createStrategies() {
+    public void init() {
 
         final Strategy goDepsStrategy = newStrategyBuilder(GoDepsContext.class, GoDepsExtractor.class)
                 .needsBomTool(BomToolType.GO_GODEP).noop()
@@ -59,7 +58,7 @@ public class GoStrategyProvider extends StrategyProvider {
 
 
 
-        return Arrays.asList(goDepsStrategy, goVndrStrategy, goLockStrategy, goFallbackStrategy);
+        add(goDepsStrategy, goVndrStrategy, goLockStrategy, goFallbackStrategy);
 
     }
 

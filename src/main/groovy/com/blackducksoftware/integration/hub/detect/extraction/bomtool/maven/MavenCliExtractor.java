@@ -58,7 +58,7 @@ public class MavenCliExtractor extends Extractor<MavenCliContext> {
             List<DetectCodeLocation> codeLocations = null;
 
 
-            final Executable mvnExecutable = new Executable(context.directory, context.rebarExe, arguments);
+            final Executable mvnExecutable = new Executable(context.directory, context.mavenExe, arguments);
             final ExecutableOutput mvnOutput = executableRunner.execute(mvnExecutable);
 
             final String excludedModules = detectConfiguration.getMavenExcludedModuleNames();

@@ -1,8 +1,5 @@
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.npm;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.NpmExecutableRequirement;
@@ -20,7 +17,7 @@ public class NpmStrategyProvider extends StrategyProvider {
 
     @SuppressWarnings("rawtypes")
     @Override
-    public List<Strategy> createStrategies() {
+    public void init() {
 
         final Strategy packageLockStrategy = newStrategyBuilder(NpmLockfileContext.class, NpmLockfileExtractor.class)
                 .needsBomTool(BomToolType.NPM).noop()
@@ -44,7 +41,7 @@ public class NpmStrategyProvider extends StrategyProvider {
                 .yieldsTo(packageLockStrategy)
                 .build();
 
-        return Arrays.asList(cliStrategy, packageLockStrategy, shrinkwrapStrategy);
+        add(cliStrategy, packageLockStrategy, shrinkwrapStrategy);
 
     }
 

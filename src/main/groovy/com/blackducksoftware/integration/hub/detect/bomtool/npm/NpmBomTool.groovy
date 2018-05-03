@@ -33,7 +33,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomTool
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolApplicableBuilder
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolExtractionResult
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolRequirementBuilder
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolSearchOptions
+import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolSearchOptions
 import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnBomTool
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
 import com.blackducksoftware.integration.hub.detect.hub.ScanPathSource

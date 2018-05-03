@@ -1,8 +1,5 @@
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.pear;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.StandardExecutableRequirement.StandardExecutableType;
@@ -26,7 +23,7 @@ public class PearStrategyProvider extends StrategyProvider {
                 .demandsStandardExecutable(StandardExecutableType.PEAR).as((context, file) -> context.pearExe = file)
                 .build();
 
-        return Arrays.asList(cliStrategy);
+        add(cliStrategy);
 
     }
 

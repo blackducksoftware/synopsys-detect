@@ -13,7 +13,8 @@ public class StandardExecutableRequirement extends Requirement<File> {
         DOCKER,
         BASH,
         GO,
-        REBAR3
+        REBAR3,
+        PEAR
     }
 
 }

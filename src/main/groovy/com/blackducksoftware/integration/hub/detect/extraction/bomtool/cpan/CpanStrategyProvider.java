@@ -1,20 +1,20 @@
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.cpan;
 
-import java.util.Arrays;
-import java.util.List;
+import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.StandardExecutableRequirement.StandardExecutableType;
 import com.blackducksoftware.integration.hub.detect.extraction.strategy.Strategy;
 import com.blackducksoftware.integration.hub.detect.extraction.strategy.StrategyProvider;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 
+@Component
 public class CpanStrategyProvider extends StrategyProvider {
 
     public static final String MAKEFILE = "Makefile.PL";
 
     @SuppressWarnings("rawtypes")
     @Override
-    public List<Strategy> createStrategies() {
+    public void init() {
 
         final Strategy cpanCliStrategy = newStrategyBuilder(CpanCliContext.class, CpanCliExtractor.class)
                 .needsBomTool(BomToolType.CPAN).noop()
@@ -24,7 +24,7 @@ public class CpanStrategyProvider extends StrategyProvider {
                 .demandsStandardExecutable(StandardExecutableType.CPANM).as((context, file) -> context.cpanmExe = file)
                 .build();
 
-        return Arrays.asList(cpanCliStrategy);
+        add(cpanCliStrategy);
 
     }
 

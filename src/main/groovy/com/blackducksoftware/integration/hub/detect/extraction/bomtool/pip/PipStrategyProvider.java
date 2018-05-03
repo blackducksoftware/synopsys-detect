@@ -1,9 +1,7 @@
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.pip;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.PipExecutableRequirement;
@@ -13,6 +11,7 @@ import com.blackducksoftware.integration.hub.detect.extraction.strategy.Strategy
 import com.blackducksoftware.integration.hub.detect.extraction.strategy.StrategyProvider;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 
+@Component
 public class PipStrategyProvider extends StrategyProvider {
 
     private final String SETUP_FILE_NAME = "setup.py";
@@ -22,7 +21,7 @@ public class PipStrategyProvider extends StrategyProvider {
 
     @SuppressWarnings("rawtypes")
     @Override
-    public List<Strategy> createStrategies() {
+    public void init() {
 
         final Strategy setupPiStrategy = newStrategyBuilder(PipInspectorContext.class, PipInspectorExtractor.class)
                 .needsBomTool(BomToolType.PIP).noop()
@@ -43,7 +42,7 @@ public class PipStrategyProvider extends StrategyProvider {
                 .demands(new PipInspectorRequirement()).as((context, file) -> context.pipInspector = file)
                 .build();
 
-        return Arrays.asList(setupPiStrategy);
+        add(setupPiStrategy);
 
     }
 

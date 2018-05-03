@@ -1,8 +1,5 @@
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.nuget;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.NugetInspectorRequirement;
@@ -65,7 +62,7 @@ public class NugetStrategyProvider extends StrategyProvider {
 
     @SuppressWarnings("rawtypes")
     @Override
-    public List<Strategy> createStrategies() {
+    public void init() {
 
         final Strategy solutionStrategy = newStrategyBuilder(NugetInspectorContext.class, NugetInspectorExtractor.class)
                 .needsBomTool(BomToolType.NUGET).noop()
@@ -82,7 +79,7 @@ public class NugetStrategyProvider extends StrategyProvider {
                 .yieldsTo(solutionStrategy)
                 .build();
 
-        return Arrays.asList(solutionStrategy, projectStrategy);
+        add(solutionStrategy, projectStrategy);
 
     }
 

@@ -66,6 +66,10 @@ public class StrategyBuilder<C extends ExtractionContext, E extends Extractor<C>
         return new StandardExecutableDemandBuilder(this, type);
     }
 
+    public <T> DemandBuilder<T> demands(final Requirement<T> requirement) {
+        return new DemandBuilder<>(this, requirement);
+    }
+
     public <V> StrategyBuilder<C, E> demands(final Requirement<V> requirement, final ExtractionContextAction<C, V> action) {
         demandActionMap.put(requirement, action);
         return this;
@@ -81,6 +85,23 @@ public class StrategyBuilder<C extends ExtractionContext, E extends Extractor<C>
         return this;
     }
 
+    public class DemandBuilder<T> {
+        private final StrategyBuilder<C, E> parent;
+        private final Requirement<T> requirement;
+        public DemandBuilder(final StrategyBuilder<C, E> parent, final Requirement<T> requirement) {
+            this.parent = parent;
+            this.requirement = requirement;
+        }
+
+        public StrategyBuilder<C, E> as(final ExtractionContextAction<C, T> action) {
+            parent.demands(requirement, action);
+            return parent;
+        }
+        public StrategyBuilder<C, E> noop() {
+            return as((noop1, noop2) -> {});
+        }
+    }
+
     public class StandardExecutableDemandBuilder {
         private final StrategyBuilder<C, E> parent;
         public StandardExecutableType type;
@@ -94,6 +115,9 @@ public class StrategyBuilder<C extends ExtractionContext, E extends Extractor<C>
             requirement.executableType = this.type;
             parent.demands(requirement, action);
             return parent;
+        }
+        public StrategyBuilder<C, E> noop() {
+            return as((noop1, noop2) -> {});
         }
     }
 

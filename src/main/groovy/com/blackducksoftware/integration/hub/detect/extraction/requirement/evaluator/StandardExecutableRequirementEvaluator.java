@@ -62,6 +62,8 @@ public class StandardExecutableRequirementEvaluator extends RequirementEvaluator
             return new StandardExecutableInfo(ExecutableType.GO, null);
         case REBAR3:
             return new StandardExecutableInfo(ExecutableType.REBAR3, detectConfiguration.getHexRebar3Path());
+        case PEAR:
+            return new StandardExecutableInfo(ExecutableType.PEAR, detectConfiguration.getPearPath());
 
         }
         return null;
