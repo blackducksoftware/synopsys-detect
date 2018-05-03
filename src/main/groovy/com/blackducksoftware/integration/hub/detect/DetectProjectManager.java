@@ -31,7 +31,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -55,6 +54,8 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolApplicableRes
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolExtractionResult;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolExtractionResultsFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolInspectorManager;
+import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolFindResult;
+import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolFindResult.FindType;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolFinder;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolFinderOptions;
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationNameService;
@@ -62,8 +63,14 @@ import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
+import com.blackducksoftware.integration.hub.detect.extraction.Extraction;
+import com.blackducksoftware.integration.hub.detect.extraction.Extraction.ExtractionResult;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.EvaluationContext;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation.EvaluationResult;
 import com.blackducksoftware.integration.hub.detect.extraction.strategy.Strategy;
 import com.blackducksoftware.integration.hub.detect.extraction.strategy.StrategyManager;
+import com.blackducksoftware.integration.hub.detect.extraction.strategy.evaluation.StrategyEvaluation;
 import com.blackducksoftware.integration.hub.detect.extraction.strategy.evaluation.StrategyEvaluator;
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner;
 import com.blackducksoftware.integration.hub.detect.hub.ScanPathSource;
@@ -174,7 +181,64 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         return results;
     }
 
-    private List<BomToolApplicableResult> findRootApplicable(final File directory) {
+    private List<DetectCodeLocation> extract(final List<BomToolFindResult> results) {
+        final List<DetectCodeLocation> codeLocations = new ArrayList<>();
+        for (final BomToolFindResult result : results) {
+            codeLocations.addAll(extract(result));
+        }
+        return codeLocations;
+    }
+
+    private List<DetectCodeLocation> extract(final BomToolFindResult result) {
+        final List<DetectCodeLocation> codeLocations = new ArrayList<>();
+        if (result.type == FindType.APPLIES) {
+            final StrategyEvaluation evaluation = result.evaluation;
+            final EvaluationContext context = result.context;
+            final Strategy strategy = result.strategy;
+            if (evaluation.areNeedsMet()) {
+                logger.info("REQUIREMENTS FULFLILLED");
+                strategyEvaluator.meetsDemands(evaluation, strategy, context);
+                if (evaluation.areDemandsMet()) {
+                    logger.info("DEMANDS MET");
+                    final Extraction extraction = strategyEvaluator.execute(evaluation, strategy, context);
+                    if (extraction.result.equals(ExtractionResult.Success)) {
+                        logger.debug("EXTRACTION SUCCESS");
+                        logger.debug("Found code locations: " + extraction.codeLocations.size());
+                        codeLocations.addAll(extraction.codeLocations);
+                    } else if (extraction.result.equals(ExtractionResult.Exception)) {
+                        logger.debug("EXTRACTION EXCEPTION");
+                        extraction.error.printStackTrace();
+                    } else {
+                        logger.debug("EXTRACTION FAILED");
+                    }
+                }else {
+                    logger.info("DEMANDS NOT MET");
+                    for (final RequirementEvaluation eval : evaluation.demandEvaluationMap.values()) {
+                        printReqEval(eval);
+                    }
+                }
+
+            }
+        } else if (result.type == FindType.NEEDS_NOT_MET) {
+            logger.info("REQUIREMENTS NOT FULFLILLED");
+            final StrategyEvaluation evaluation = result.evaluation;
+            for (final RequirementEvaluation eval : evaluation.needEvaluationMap.values()) {
+                printReqEval(eval);
+            }
+        }
+        return codeLocations;
+    }
+
+    private void printReqEval(final RequirementEvaluation eval) {
+        if (eval.result.equals(EvaluationResult.Exception)) {
+            eval.error.printStackTrace();
+        } else if (eval.result.equals(EvaluationResult.Failed)) {
+            logger.debug(eval.description);
+        }
+    }
+
+
+    private List<BomToolFindResult> findRootApplicable(final File directory) {
         final List<Strategy> allStrategies = strategyManager.getAllStrategies();
         final List<String> excludedDirectories = detectConfiguration.getBomToolSearchDirectoryExclusions();
         final Boolean forceNestedSearch = detectConfiguration.getBomToolContinueSearch();
@@ -193,7 +257,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         return new ArrayList<>();
     }
 
-    private List<BomToolApplicableResult> findBomTools() {
+    private List<BomToolFindResult> findBomTools() {
         final List<Strategy> allStrategies = strategyManager.getAllStrategies();
         final List<String> excludedDirectories = detectConfiguration.getBomToolSearchDirectoryExclusions();
         final Boolean forceNestedSearch = detectConfiguration.getBomToolContinueSearch();
@@ -228,24 +292,26 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     public DetectProject createDetectProject() throws IntegrationException {
         final DetectProject detectProject = new DetectProject();
 
-        final List<BomToolApplicableResult> sourcePathResults = findRootApplicable(new File(detectConfiguration.getSourcePath()));
+        final List<BomToolFindResult> sourcePathResults = findRootApplicable(new File(detectConfiguration.getSourcePath()));
 
-        final Set<BomToolType> applicableBomTools = sourcePathResults.stream().map(it -> it.getBomToolType()).collect(Collectors.toSet());
-        installInspectors(applicableBomTools);
 
-        final List<BomToolExtractionResult> results = extractResults(sourcePathResults);
+
+        //final Set<BomToolType> applicableBomTools = sourcePathResults.stream().map(it -> it.getBomToolType()).collect(Collectors.toSet());
+        //        installInspectors(applicableBomTools);
+
+        final List<DetectCodeLocation> results = extract(sourcePathResults);
 
         results.forEach(it -> {
-            if (it.extractedCodeLocations.size() > 0) {
-                detectProject.addAllDetectCodeLocations(it.extractedCodeLocations);
-            } else {
-                final String bomToolTypeString = it.bomToolType.toString();
-                logger.error(String.format("Did not find any code locations from %s even though it applied to %s.", bomToolTypeString, it.directory));
-            }
+            //            if (it.extractedCodeLocations.size() > 0) {
+            detectProject.addDetectCodeLocation(it);
+            //           } else {
+            //              final String bomToolTypeString = it.bomToolType.toString();
+            //               logger.error(String.format("Did not find any code locations from %s even though it applied to %s.", bomToolTypeString, it.directory));
+
         });
 
         // we've gone through all applicable bom tools so we now have the complete metadata to phone home
-        detectPhoneHomeManager.startPhoneHome(applicableBomTools);
+        //detectPhoneHomeManager.startPhoneHome(applicableBomTools);
 
         final String prefix = detectConfiguration.getProjectCodeLocationPrefix();
         final String suffix = detectConfiguration.getProjectCodeLocationSuffix();

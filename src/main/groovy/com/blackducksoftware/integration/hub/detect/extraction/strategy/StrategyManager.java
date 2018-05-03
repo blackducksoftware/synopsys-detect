@@ -18,7 +18,10 @@ public class StrategyManager {
     }
     public void init() {
         for (final StrategyProvider provider : strategyProviders) {
-            allStrategies.addAll(provider.createStrategies());
+            provider.init();
+        }
+        for (final StrategyProvider provider : strategyProviders) {
+            allStrategies.addAll(provider.getAllStrategies());
         }
     }
 }
