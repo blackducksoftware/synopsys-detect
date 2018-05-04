@@ -15,13 +15,13 @@ public class CranStrategyProvider  extends StrategyProvider {
     @Override
     public void init() {
 
-        final Strategy cpanCliStrategy = newStrategyBuilder(PackratLockContext.class, PackratLockExtractor.class)
-                .needsBomTool(BomToolType.CRAN).noop()
+        final Strategy packratStrategy = newStrategyBuilder(PackratLockContext.class, PackratLockExtractor.class)
+                .named("Packrat Lock", BomToolType.CRAN)
                 .needsCurrentDirectory((context, file) -> context.directory = file)
                 .needsFile(PACKRATLOCK).as((context, file) -> context.packratlock = file)
                 .build();
 
-        add(cpanCliStrategy);
+        add(packratStrategy);
 
     }
 

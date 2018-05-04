@@ -18,14 +18,14 @@ public class MavenStrategyProvider extends StrategyProvider {
     public void init() {
 
         final Strategy pomStrategy = newStrategyBuilder(MavenCliContext.class, MavenCliExtractor.class)
-                .needsBomTool(BomToolType.MAVEN).noop()
+                .named("Pom", BomToolType.MAVEN)
                 .needsFile(POM_FILENAME).noop()
                 .needsCurrentDirectory((context, file) -> context.directory = file)
                 .demands(new MavenExecutableRequirement(), (context, file) -> context.mavenExe = file)
                 .build();
 
         final Strategy pomWrapperStrategy = newStrategyBuilder(MavenCliContext.class, MavenCliExtractor.class)
-                .needsBomTool(BomToolType.MAVEN).noop()
+                .named("Pom Wrapper", BomToolType.MAVEN)
                 .needsFile(POM_WRAPPER_FILENAME).noop()
                 .needsCurrentDirectory((context, file) -> context.directory = file)
                 .build();

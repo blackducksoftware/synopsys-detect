@@ -7,11 +7,13 @@ import com.blackducksoftware.integration.hub.detect.extraction.ExtractionContext
 import com.blackducksoftware.integration.hub.detect.extraction.ExtractionContextAction;
 import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.Requirement;
+import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 
 @SuppressWarnings("rawtypes")
 public class Strategy<C extends ExtractionContext, E extends Extractor<C>>  {
 
-    private String name;
+    private final String name;
+    private final BomToolType bomToolType;
 
     private final Map<Requirement, ExtractionContextAction> needActionMap;
     private final Map<Requirement, ExtractionContextAction> demandActionMap;
@@ -21,7 +23,9 @@ public class Strategy<C extends ExtractionContext, E extends Extractor<C>>  {
 
     private final Set<Strategy> yieldsToStrategies;
 
-    public Strategy(final Map<Requirement, ExtractionContextAction> needActionMap, final Map<Requirement, ExtractionContextAction> demandActionMap, final Class<C> extractionContextClass, final Class<E> extractorClass, final Set<Strategy> yieldsToStrategies) {
+    public Strategy(final String name, final BomToolType bomToolType, final Map<Requirement, ExtractionContextAction> needActionMap, final Map<Requirement, ExtractionContextAction> demandActionMap, final Class<C> extractionContextClass, final Class<E> extractorClass, final Set<Strategy> yieldsToStrategies) {
+        this.name = name;
+        this.bomToolType = bomToolType;
         this.needActionMap = needActionMap;
         this.demandActionMap = demandActionMap;
         this.extractionContextClass = extractionContextClass;

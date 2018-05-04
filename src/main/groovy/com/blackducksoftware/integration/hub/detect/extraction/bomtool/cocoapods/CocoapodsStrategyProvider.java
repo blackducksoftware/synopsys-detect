@@ -16,7 +16,7 @@ public class CocoapodsStrategyProvider extends StrategyProvider {
     public void init() {
 
         final Strategy podlockStrategy = newStrategyBuilder(PodlockContext.class, PodlockExtractor.class)
-                .needsBomTool(BomToolType.COCOAPODS).noop()
+                .named("Podlock", BomToolType.COCOAPODS)
                 .needsCurrentDirectory((context, file) -> context.directory = file)
                 .needsFile(PODFILE_LOCK_FILENAME).as((context, file) -> context.podlock = file)
                 .build();

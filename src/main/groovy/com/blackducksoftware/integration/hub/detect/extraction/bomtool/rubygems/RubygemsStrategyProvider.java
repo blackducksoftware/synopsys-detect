@@ -16,7 +16,7 @@ public class RubygemsStrategyProvider extends StrategyProvider {
     public void init() {
 
         final Strategy gemlockStrategy = newStrategyBuilder(GemlockContext.class, GemlockExtractor.class)
-                .needsBomTool(BomToolType.RUBYGEMS).noop()
+                .named("Gemlock", BomToolType.RUBYGEMS)
                 .needsCurrentDirectory((context, file) -> context.directory = file)
                 .needsFile(GEMFILE_LOCK_FILENAME).as((context, file) -> context.gemlock = file)
                 .build();

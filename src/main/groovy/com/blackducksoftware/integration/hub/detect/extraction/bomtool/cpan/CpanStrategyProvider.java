@@ -17,7 +17,7 @@ public class CpanStrategyProvider extends StrategyProvider {
     public void init() {
 
         final Strategy cpanCliStrategy = newStrategyBuilder(CpanCliContext.class, CpanCliExtractor.class)
-                .needsBomTool(BomToolType.CPAN).noop()
+                .named("Cpan Cli", BomToolType.CPAN)
                 .needsCurrentDirectory((context, file) -> context.directory = file)
                 .needsFile(MAKEFILE).noop()
                 .demandsStandardExecutable(StandardExecutableType.CPAN).as((context, file) -> context.cpanExe = file)

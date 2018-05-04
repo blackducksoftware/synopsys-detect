@@ -15,13 +15,13 @@ public class SbtStrategyProvider extends StrategyProvider {
     @Override
     public void init() {
 
-        final Strategy gemlockStrategy = newStrategyBuilder(SbtResolutionCacheContext.class, SbtResolutionCacheExtractor.class)
-                .needsBomTool(BomToolType.RUBYGEMS).noop()
+        final Strategy buildSbtStrategy = newStrategyBuilder(SbtResolutionCacheContext.class, SbtResolutionCacheExtractor.class)
+                .named("Build SBT", BomToolType.SBT)
                 .needsCurrentDirectory((context, file) -> context.directory = file)
                 .needsFile(BUILD_SBT_FILENAME).noop()
                 .build();
 
-        add(gemlockStrategy);
+        add(buildSbtStrategy);
 
     }
 

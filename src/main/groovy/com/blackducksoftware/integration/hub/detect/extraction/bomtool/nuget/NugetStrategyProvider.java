@@ -65,14 +65,14 @@ public class NugetStrategyProvider extends StrategyProvider {
     public void init() {
 
         final Strategy solutionStrategy = newStrategyBuilder(NugetInspectorContext.class, NugetInspectorExtractor.class)
-                .needsBomTool(BomToolType.NUGET).noop()
+                .named("Solution", BomToolType.NUGET)
                 .needsCurrentDirectory((context, file) -> context.directory = file)
                 .needsFiles(SOLUTION_PATTERN).noop()
                 .demands(new NugetInspectorRequirement(), (context, file) -> context.inspectorExe = file)
                 .build();
 
         final Strategy projectStrategy = newStrategyBuilder(NugetInspectorContext.class, NugetInspectorExtractor.class)
-                .needsBomTool(BomToolType.NUGET).noop()
+                .named("Project", BomToolType.NUGET)
                 .needsCurrentDirectory((context, file) -> context.directory = file)
                 .needsFiles(SUPPORTED_PROJECT_PATTERNS).noop()
                 .demands(new NugetInspectorRequirement(), (context, file) -> context.inspectorExe = file)

@@ -20,19 +20,19 @@ public class NpmStrategyProvider extends StrategyProvider {
     public void init() {
 
         final Strategy packageLockStrategy = newStrategyBuilder(NpmLockfileContext.class, NpmLockfileExtractor.class)
-                .needsBomTool(BomToolType.NPM).noop()
+                .named("Package lock", BomToolType.NPM)
                 .needsCurrentDirectory((context, file) -> context.directory = file)
                 .needsFile(PACKAGE_LOCK_JSON).as((context, file) -> context.lockfile = file)
                 .build();
 
         final Strategy shrinkwrapStrategy = newStrategyBuilder(NpmLockfileContext.class, NpmLockfileExtractor.class)
-                .needsBomTool(BomToolType.NPM).noop()
+                .named("Shrinkwrap", BomToolType.NPM)
                 .needsCurrentDirectory((context, file) -> context.directory = file)
                 .needsFile(SHRINKWRAP_JSON).as((context, file) -> context.lockfile = file)
                 .build();
 
         final Strategy cliStrategy = newStrategyBuilder(NpmCliContext.class, NpmCliExtractor.class)
-                .needsBomTool(BomToolType.NPM).noop()
+                .named("Npm Cli", BomToolType.NPM)
                 .needsCurrentDirectory((context, file) -> context.directory = file)
                 .needsFile(PACKAGE_JSON).as((context, file) -> context.packageJson = file)
                 .needsFile(NODE_MODULES).as((context, file) -> context.nodeModules = file)

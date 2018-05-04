@@ -24,7 +24,7 @@ public class PipStrategyProvider extends StrategyProvider {
     public void init() {
 
         final Strategy setupPiStrategy = newStrategyBuilder(PipInspectorContext.class, PipInspectorExtractor.class)
-                .needsBomTool(BomToolType.PIP).noop()
+                .named("Setup Pi", BomToolType.PIP)
                 .needsCurrentDirectory((context, file) -> context.directory = file)
                 .needsFile(SETUP_FILE_NAME).as((context, file) -> context.setupFile = file)
                 .demands(new PythonExecutableRequirement()).as((context, file) -> context.pythonExe = file)
@@ -34,7 +34,7 @@ public class PipStrategyProvider extends StrategyProvider {
 
         //TODO: Max depth: 1 (can only apply at root), will apply if requirements file is provided
         final Strategy requirementStrategy = newStrategyBuilder(PipInspectorContext.class, PipInspectorExtractor.class)
-                .needsBomTool(BomToolType.PIP).noop()
+                .named("Requirements File", BomToolType.PIP)
                 .needsCurrentDirectory((context, file) -> context.directory = file)
                 .needsString(detectConfiguration.getRequirementsFilePath()).as((context, file) -> context.requirementFilePath = file)
                 .demands(new PythonExecutableRequirement()).as((context, file) -> context.pythonExe = file)

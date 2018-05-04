@@ -26,19 +26,19 @@ public class GoStrategyProvider extends StrategyProvider {
     public void init() {
 
         final Strategy goDepsStrategy = newStrategyBuilder(GoDepsContext.class, GoDepsExtractor.class)
-                .needsBomTool(BomToolType.GO_GODEP).noop()
+                .named("Go Deps", BomToolType.GO_GODEP)
                 .needsCurrentDirectory((context, file) -> context.directory = file)
                 .needsFile(GODEPS_DIRECTORYNAME).as((context, file) -> context.goDepsDirectory = file)
                 .build();
 
         final Strategy goVndrStrategy = newStrategyBuilder(GoVndrContext.class, GoVndrExtractor.class)
-                .needsBomTool(BomToolType.GO_VNDR).noop()
+                .named("Vendor Config", BomToolType.GO_VNDR)
                 .needsCurrentDirectory((context, file) -> context.directory = file)
                 .needsFile(VNDR_CONF_FILENAME).as((context, file) -> context.vndrConfig = file)
                 .build();
 
         final Strategy goLockStrategy = newStrategyBuilder(GoDepContext.class, GoDepExtractor.class)
-                .needsBomTool(BomToolType.GO_DEP).noop()
+                .named("Go Lock", BomToolType.GO_DEP)
                 .needsCurrentDirectory((context, file) -> context.directory = file)
                 .needsFile(GOPKG_LOCK_FILENAME).noop()
                 .demandsStandardExecutable(StandardExecutableType.GO).as((context, file) -> context.goExe = file)
@@ -46,7 +46,7 @@ public class GoStrategyProvider extends StrategyProvider {
                 .build();
 
         final Strategy goFallbackStrategy = newStrategyBuilder(GoDepContext.class, GoDepExtractor.class)
-                .needsBomTool(BomToolType.GO_DEP).noop()
+                .named("Go Cli", BomToolType.GO_DEP)
                 .needsCurrentDirectory((context, file) -> context.directory = file)
                 .needsFiles(GOFILE_FILENAME_PATTERN).noop()
                 .demandsStandardExecutable(StandardExecutableType.GO).as((context, file) -> context.goExe = file)

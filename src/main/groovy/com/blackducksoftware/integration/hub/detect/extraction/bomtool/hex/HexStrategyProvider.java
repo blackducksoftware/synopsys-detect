@@ -17,7 +17,7 @@ public class HexStrategyProvider extends StrategyProvider {
     public void init() {
 
         final Strategy cpanCliStrategy = newStrategyBuilder(RebarContext.class, RebarExtractor.class)
-                .needsBomTool(BomToolType.HEX).noop()
+                .named("Rebar Config", BomToolType.HEX)
                 .needsCurrentDirectory((context, file) -> context.directory = file)
                 .needsFile(REBAR_CONFIG).noop()
                 .demandsStandardExecutable(StandardExecutableType.REBAR3).as((context, file) -> context.rebarExe = file)

@@ -22,7 +22,7 @@ public class DockerStrategyProvider extends StrategyProvider {
     public void init() {
 
         final Strategy imageStrategy = newStrategyBuilder(DockerContext.class, DockerExtractor.class)
-                .needsBomTool(BomToolType.DOCKER).noop()
+                .named("Docker Image", BomToolType.DOCKER)
                 .needsCurrentDirectory((context, file) -> context.directory = file)
                 .needsString(detectConfiguration.getDockerImage()).as((context, value) -> context.image = value)
                 .demandsStandardExecutable(StandardExecutableType.BASH).as((context, file) -> context.bashExe = file)
@@ -31,7 +31,7 @@ public class DockerStrategyProvider extends StrategyProvider {
                 .build();
 
         final Strategy tarStrategy = newStrategyBuilder(DockerContext.class, DockerExtractor.class)
-                .needsBomTool(BomToolType.DOCKER).noop()
+                .named("Docker Tar", BomToolType.DOCKER)
                 .needsCurrentDirectory((context, file) -> context.directory = file)
                 .needsString(detectConfiguration.getDockerTar()).as((context, value) -> context.tar = value)
                 .demandsStandardExecutable(StandardExecutableType.BASH).as((context, file) -> context.bashExe = file)

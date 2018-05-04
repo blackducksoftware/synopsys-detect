@@ -22,6 +22,9 @@ import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 
 public class StrategyBuilder<C extends ExtractionContext, E extends Extractor<C>> {
 
+    private String name;
+    private BomToolType bomToolType;
+
     public Map<Requirement, ExtractionContextAction> requirementActionMap = new HashMap<>();
     public Map<Requirement, ExtractionContextAction> demandActionMap = new HashMap<>();
 
@@ -35,12 +38,18 @@ public class StrategyBuilder<C extends ExtractionContext, E extends Extractor<C>
         this.extractorClass = extractorClass;
     }
 
+    public StrategyBuilder<C, E> named(final String name, final BomToolType bomToolType){
+        this.name = name;
+        this.bomToolType = bomToolType;
+        return this.needsBomTool2(bomToolType).noop();
+    }
+
     public StrategyBuilder<C, E> needsCurrentDirectory(final ExtractionContextAction<C, File> action) {
         this.demands(new CurrentDirectoryRequirement(), action);
         return this;
     }
 
-    public BomToolNeedBuilder needsBomTool(final BomToolType type) {
+    public BomToolNeedBuilder needsBomTool2(final BomToolType type) {
         return new BomToolNeedBuilder(this, type);
     }
 
@@ -193,7 +202,7 @@ public class StrategyBuilder<C extends ExtractionContext, E extends Extractor<C>
 
 
     public Strategy<C,E> build() {
-        return new Strategy<>(requirementActionMap, demandActionMap, extractionContextClass, extractorClass, yieldsToStrategies);
+        return new Strategy<>(name, bomToolType, requirementActionMap, demandActionMap, extractionContextClass, extractorClass, yieldsToStrategies);
     }
 
 }

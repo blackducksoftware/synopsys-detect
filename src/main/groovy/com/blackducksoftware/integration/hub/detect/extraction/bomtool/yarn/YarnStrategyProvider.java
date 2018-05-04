@@ -13,7 +13,7 @@ public class YarnStrategyProvider extends StrategyProvider {
     public void init() {
 
         final Strategy yarnlockStrategy = newStrategyBuilder(YarnLockContext.class, YarnLockExtractor.class)
-                .needsBomTool(BomToolType.YARN).noop()
+                .named("Yarn Lock", BomToolType.YARN)
                 .needsCurrentDirectory((context, file) -> context.directory = file)
                 .needsFile(YARN_LOCK_FILENAME).as((context, file) -> context.yarnlock = file)
                 .build();

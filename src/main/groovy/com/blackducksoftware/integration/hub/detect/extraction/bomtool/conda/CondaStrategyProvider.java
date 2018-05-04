@@ -17,7 +17,7 @@ public class CondaStrategyProvider extends StrategyProvider {
     public void init() {
 
         final Strategy cliStrategy = newStrategyBuilder(CondaCliContext.class, CondaCliExtractor.class)
-                .needsBomTool(BomToolType.CONDA).noop()
+                .named("Conda Cli", BomToolType.CONDA)
                 .needsCurrentDirectory((context, file) -> context.directory = file)
                 .needsFile(ENVIRONEMNT_YML).noop()
                 .demandsStandardExecutable(StandardExecutableType.CONDA).as((context, file) -> context.condaExe = file)

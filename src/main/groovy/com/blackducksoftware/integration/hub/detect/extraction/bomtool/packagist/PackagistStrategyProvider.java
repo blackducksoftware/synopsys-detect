@@ -17,7 +17,7 @@ public class PackagistStrategyProvider extends StrategyProvider {
     public void init() {
 
         final Strategy pomStrategy = newStrategyBuilder(ComposerLockContext.class, ComposerLockExtractor.class)
-                .needsBomTool(BomToolType.MAVEN).noop()
+                .named("Composer Lock", BomToolType.PACKAGIST)
                 .needsCurrentDirectory((context, file) -> context.directory = file)
                 .needsFile(COMPOSER_JSON).as((context, file) -> context.composerJson = file)
                 .needsFile(COMPOSER_LOCK).as((context, file) -> context.composerLock = file)

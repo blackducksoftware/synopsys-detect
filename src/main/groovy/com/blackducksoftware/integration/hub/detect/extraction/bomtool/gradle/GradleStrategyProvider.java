@@ -17,15 +17,15 @@ public class GradleStrategyProvider extends StrategyProvider {
     @Override
     public void init() {
 
-        final Strategy cpanCliStrategy = newStrategyBuilder(GradleInspectorContext.class, GradleInspectorExtractor.class)
-                .needsBomTool(BomToolType.GRADLE).noop()
+        final Strategy gradleStrategy = newStrategyBuilder(GradleInspectorContext.class, GradleInspectorExtractor.class)
+                .named("Gradle Inspector", BomToolType.GRADLE)
                 .needsCurrentDirectory((context, file) -> context.directory = file)
                 .needsFile(BUILD_GRADLE_FILENAME).noop()
                 .demands(new GradleExecutableRequirement(), (context, file) -> context.gradleExe = file)
                 .demands(new GradleInspectorRequirement(), (context, file) -> context.gradleInspector = file)
                 .build();
 
-        add(cpanCliStrategy);
+        add(gradleStrategy);
 
     }
 
