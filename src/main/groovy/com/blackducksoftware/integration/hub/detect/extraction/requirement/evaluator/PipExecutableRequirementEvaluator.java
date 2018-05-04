@@ -7,7 +7,7 @@ import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.PipExecutableRequirement;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.EvaluationContext;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation.EvaluationResult;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluator;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
@@ -43,12 +43,12 @@ public class PipExecutableRequirementEvaluator extends RequirementEvaluator<PipE
                 resolvedPip = executableManager.getExecutablePathOrOverride(pipType, true, context.getDirectory(), null);
             }
             if (resolvedPip != null) {
-                return new RequirementEvaluation<>(EvaluationResult.Passed, resolvedPip);
+                return RequirementEvaluation.passed( resolvedPip);
             }else {
-                return new RequirementEvaluation<>(EvaluationResult.Failed, null);
+                return RequirementEvaluation.failed(null, "No Pip executable was found.");
             }
         }catch (final Exception e) {
-            return new RequirementEvaluation<>(EvaluationResult.Exception, null);
+            return RequirementEvaluation.error(null);
         }
     }
 

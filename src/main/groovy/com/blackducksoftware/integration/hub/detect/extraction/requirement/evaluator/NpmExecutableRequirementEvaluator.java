@@ -14,7 +14,7 @@ import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.NpmExecutableRequirement;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.EvaluationContext;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation.EvaluationResult;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluator;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
@@ -48,12 +48,12 @@ public class NpmExecutableRequirementEvaluator extends RequirementEvaluator<NpmE
                 hasLookedForNpm = true;
             }
             if (foundNpm != null) {
-                return new RequirementEvaluation<>(EvaluationResult.Passed, foundNpm);
+                return RequirementEvaluation.passed( foundNpm);
             }else {
-                return new RequirementEvaluation<>(EvaluationResult.Failed, null);
+                return RequirementEvaluation.failed(null, "Np Npm executable was found.");
             }
         }catch (final Exception e) {
-            return new RequirementEvaluation<>(EvaluationResult.Exception, null);
+            return RequirementEvaluation.error(null);
         }
     }
 

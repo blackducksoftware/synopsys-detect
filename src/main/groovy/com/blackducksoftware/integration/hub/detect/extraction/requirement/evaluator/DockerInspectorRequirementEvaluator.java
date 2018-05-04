@@ -19,7 +19,7 @@ import com.blackducksoftware.integration.hub.detect.extraction.bomtool.docker.Do
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.DockerInspectorRequirement;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.EvaluationContext;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation.EvaluationResult;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluator;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
@@ -59,12 +59,12 @@ public class DockerInspectorRequirementEvaluator extends RequirementEvaluator<Do
             }
 
             if (resolvedInfo != null) {
-                return new RequirementEvaluation<>(EvaluationResult.Passed, resolvedInfo);
+                return RequirementEvaluation.passed(resolvedInfo);
             } else {
-                return new RequirementEvaluation<>(EvaluationResult.Failed, null);
+                return RequirementEvaluation.failed(null, "Docker Inspector was not found.");
             }
         }catch (final Exception e) {
-            return new RequirementEvaluation<>(EvaluationResult.Exception, e);
+            return RequirementEvaluation.error(e);
         }
     }
 

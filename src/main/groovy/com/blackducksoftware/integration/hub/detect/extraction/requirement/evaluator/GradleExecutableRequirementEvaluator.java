@@ -8,7 +8,7 @@ import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.GradleExecutableRequirement;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.EvaluationContext;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation.EvaluationResult;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluator;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
@@ -47,12 +47,12 @@ public class GradleExecutableRequirementEvaluator extends RequirementEvaluator<G
                 resolvedGradle = systemGradle;
             }
             if (resolvedGradle != null) {
-                return new RequirementEvaluation<>(EvaluationResult.Passed, resolvedGradle);
+                return RequirementEvaluation.passed( resolvedGradle);
             }else {
-                return new RequirementEvaluation<>(EvaluationResult.Failed, null);
+                return RequirementEvaluation.failed(null, "No Gradle executable was found.");
             }
         }catch (final Exception e) {
-            return new RequirementEvaluation<>(EvaluationResult.Exception, null);
+            return RequirementEvaluation.error(null);
         }
     }
 

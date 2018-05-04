@@ -7,7 +7,7 @@ import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.PythonExecutableRequirement;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.EvaluationContext;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation.EvaluationResult;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluator;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
@@ -43,12 +43,12 @@ public class PythonExecutableRequirementEvaluator extends RequirementEvaluator<P
                 resolvedPython = executableManager.getExecutablePathOrOverride(pythonType, true, context.getDirectory(), null);
             }
             if (resolvedPython != null) {
-                return new RequirementEvaluation<>(EvaluationResult.Passed, resolvedPython);
+                return RequirementEvaluation.passed( resolvedPython);
             }else {
-                return new RequirementEvaluation<>(EvaluationResult.Failed, null);
+                return RequirementEvaluation.failed(null, "No Python executable was found.");
             }
         }catch (final Exception e) {
-            return new RequirementEvaluation<>(EvaluationResult.Exception, null);
+            return RequirementEvaluation.error(null);
         }
     }
 

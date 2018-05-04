@@ -133,14 +133,21 @@ public class StrategyBuilder<C extends ExtractionContext, E extends Extractor<C>
     public class StringNeedBuilder {
         private final StrategyBuilder<C, E> parent;
         public String value;
+        public String description = null;
         public StringNeedBuilder(final StrategyBuilder<C, E> parent, final String  value) {
-            this. value =  value;
+            this.value =  value;
             this.parent = parent;
-
         }
+
+        public StringNeedBuilder failWith(final String description) {
+            this.description = description;
+            return this;
+        }
+
         public StrategyBuilder<C, E> as(final ExtractionContextAction<C, String> action) {
             final StringRequirement requirement = new StringRequirement();
             requirement. value = this.value;
+            requirement.failedDescriptionOverride = description;
             parent.needs(requirement, action);
             return parent;
         }

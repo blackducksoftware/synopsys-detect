@@ -1,4 +1,4 @@
-package com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluator;
+package com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation;
 
 import java.util.List;
 
@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.Requirement;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.EvaluationContext;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation;
 
 @Component
 public class RequirementEvaluatorManager {

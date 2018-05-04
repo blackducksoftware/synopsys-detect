@@ -16,7 +16,7 @@ import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.NugetInspectorRequirement;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.EvaluationContext;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation.EvaluationResult;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluator;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
@@ -53,12 +53,12 @@ public class NugetInspectorRequirementEvaluator extends RequirementEvaluator<Nug
             }
 
             if (resolvedNugetInspectorExecutable != null) {
-                return new RequirementEvaluation<>(EvaluationResult.Passed, resolvedNugetInspectorExecutable);
+                return RequirementEvaluation.passed( resolvedNugetInspectorExecutable);
             } else {
-                return new RequirementEvaluation<>(EvaluationResult.Failed, null);
+                return RequirementEvaluation.failed(null, "No Nuget inspector was found.");
             }
         }catch (final Exception e) {
-            return new RequirementEvaluation<>(EvaluationResult.Exception, e);
+            return RequirementEvaluation.error(e);
         }
     }
 

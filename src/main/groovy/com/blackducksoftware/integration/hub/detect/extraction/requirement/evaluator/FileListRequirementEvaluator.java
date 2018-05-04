@@ -3,14 +3,16 @@ package com.blackducksoftware.integration.hub.detect.extraction.requirement.eval
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.assertj.core.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.FileListRequirement;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.EvaluationContext;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation.EvaluationResult;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluator;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 
 @Component
@@ -30,12 +32,13 @@ public class FileListRequirementEvaluator extends RequirementEvaluator<FileListR
                 }
             }
             if (files != null && files.size() > 0) {
-                return new RequirementEvaluation<>(EvaluationResult.Passed, files);
+                return RequirementEvaluation.passed(files);
             } else {
-                return new RequirementEvaluation<>(EvaluationResult.Failed, null);
+                final String filepatternPrint = Arrays.asList(requirement.filepatterns).stream().map(it -> it.toString()).collect(Collectors.joining(","));
+                return RequirementEvaluation.failed(null, "No files matched the patterns: " + filepatternPrint);
             }
         }catch (final Exception e) {
-            return new RequirementEvaluation<>(EvaluationResult.Exception, e);
+            return RequirementEvaluation.error(e);
         }
     }
 

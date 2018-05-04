@@ -8,7 +8,7 @@ import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.MavenExecutableRequirement;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.EvaluationContext;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation.EvaluationResult;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluator;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
@@ -47,12 +47,12 @@ public class MavenExecutableRequirementEvaluator extends RequirementEvaluator<Ma
                 resolvedMaven = systemMaven;
             }
             if (resolvedMaven != null) {
-                return new RequirementEvaluation<>(EvaluationResult.Passed, resolvedMaven);
+                return RequirementEvaluation.passed( resolvedMaven);
             }else {
-                return new RequirementEvaluation<>(EvaluationResult.Failed, null);
+                return RequirementEvaluation.failed(null, "No Maven executable was found.");
             }
         }catch (final Exception e) {
-            return new RequirementEvaluation<>(EvaluationResult.Exception, null);
+            return RequirementEvaluation.error(null);
         }
     }
 

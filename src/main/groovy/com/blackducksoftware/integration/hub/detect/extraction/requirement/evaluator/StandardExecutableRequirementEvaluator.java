@@ -10,7 +10,7 @@ import com.blackducksoftware.integration.hub.detect.extraction.requirement.Stand
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.StandardExecutableRequirement.StandardExecutableType;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.EvaluationContext;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation.EvaluationResult;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluator;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
@@ -32,17 +32,17 @@ public class StandardExecutableRequirementEvaluator extends RequirementEvaluator
         try {
             final StandardExecutableInfo info = createInfo(requirement.executableType);
             if (info == null) {
-                return new RequirementEvaluation<>(EvaluationResult.Failed, null);
+                return RequirementEvaluation.failed(null, "Unknown executable type: " + requirement.executableType.toString());
             }
 
             final File exe = executableManager.getExecutable(info.detectExecutableType, true, info.override);
             if (exe != null) {
-                return new RequirementEvaluation<>(EvaluationResult.Passed, exe);
+                return RequirementEvaluation.passed( exe);
             } else {
-                return new RequirementEvaluation<>(EvaluationResult.Failed, null);
+                return RequirementEvaluation.failed(null, "No " + executableManager.getExecutableName(info.detectExecutableType) + " executable was found.");
             }
         }catch (final Exception e) {
-            return new RequirementEvaluation<>(EvaluationResult.Exception, null);
+            return RequirementEvaluation.error(null);
         }
     }
 

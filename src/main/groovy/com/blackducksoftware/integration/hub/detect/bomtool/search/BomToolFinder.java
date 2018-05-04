@@ -37,7 +37,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolFindResult.FindType;
+import com.blackducksoftware.integration.hub.detect.bomtool.search.StrategyFindResult.FindType;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
@@ -66,17 +66,17 @@ public class BomToolFinder {
     //      I'd also like to let bom tools nominate project names
     // 4. Transform results.
 
-    public List<BomToolFindResult> findApplicableBomTools(final Set<Strategy> strategies, final StrategyEvaluator strategyEvaluator, final File initialDirectory, final BomToolFinderOptions options) throws BomToolException, DetectUserFriendlyException {
+    public List<StrategyFindResult> findApplicableBomTools(final Set<Strategy> strategies, final StrategyEvaluator strategyEvaluator, final File initialDirectory, final BomToolFinderOptions options) throws BomToolException, DetectUserFriendlyException {
         final List<File> subDirectories = new ArrayList<>();
         subDirectories.add(initialDirectory);
         final List<Strategy> orderedStrategies = determineOrder(strategies);
         return findApplicableBomTools(orderedStrategies, strategyEvaluator, subDirectories, 1, options);
     }
 
-    private List<BomToolFindResult> findApplicableBomTools(final List<Strategy> orderedStrategies, final StrategyEvaluator strategyEvaluator, final List<File> directoriesToSearch, final int depth, final BomToolFinderOptions options)
+    private List<StrategyFindResult> findApplicableBomTools(final List<Strategy> orderedStrategies, final StrategyEvaluator strategyEvaluator, final List<File> directoriesToSearch, final int depth, final BomToolFinderOptions options)
             throws BomToolException, DetectUserFriendlyException {
 
-        final List<BomToolFindResult> results = new ArrayList<>();
+        final List<StrategyFindResult> results = new ArrayList<>();
 
         if (depth > options.getMaximumDepth()) {
             return results;
@@ -93,18 +93,18 @@ public class BomToolFinder {
             final List<Strategy> remainingStrategies = new ArrayList<>();
             final Set<Strategy> alreadyApplied = new HashSet<>();
             for (final Strategy strategy : orderedStrategies) {
-                final BomToolFindResult result = processStrategy(strategy, strategyEvaluator, evaluationContext, alreadyApplied);
+                final StrategyFindResult result = processStrategy(strategy, strategyEvaluator, evaluationContext, alreadyApplied);
                 if (result.type == FindType.APPLIES) {
                     alreadyApplied.add(strategy);
-                    results.add(result);
                     remainingStrategies.add(strategy);
                 } else {
                     remainingStrategies.add(strategy);
                 }
+                results.add(result);
             }
             if (remainingStrategies.size() > 0) {
                 final List<File> subdirectories = getSubDirectories(directory, options.getExcludedDirectories());
-                final List<BomToolFindResult> recursiveResults = findApplicableBomTools(remainingStrategies, strategyEvaluator, subdirectories, depth + 1, options);
+                final List<StrategyFindResult> recursiveResults = findApplicableBomTools(remainingStrategies, strategyEvaluator, subdirectories, depth + 1, options);
                 results.addAll(recursiveResults);
             }
             logger.debug(directory + ": " + applicableTypes.stream().map(it -> it.toString()).collect(Collectors.joining(", ")));
@@ -113,16 +113,16 @@ public class BomToolFinder {
         return results;
     }
 
-    private BomToolFindResult processStrategy(final Strategy strategy, final StrategyEvaluator strategyEvaluator, final EvaluationContext context, final Set<Strategy> alreadyApplied) {
-        if (containsAnyYield(strategy, alreadyApplied)) {
-            return new BomToolFindResult(strategy, FindType.YIELDED, null, null);
+    private StrategyFindResult processStrategy(final Strategy strategy, final StrategyEvaluator strategyEvaluator, final EvaluationContext context, final Set<Strategy> alreadyApplied) {
+        final StrategyEvaluation evaluation = new StrategyEvaluation();
+        if (containsAnyYield(strategy, alreadyApplied, evaluation)) {
+            return new StrategyFindResult(strategy, FindType.YIELDED, evaluation, context);
         } else {
-            final StrategyEvaluation evaluation = new StrategyEvaluation();
             strategyEvaluator.fulfillsRequirements(evaluation, strategy, context);
             if (evaluation.areNeedsMet()) {
-                return new BomToolFindResult(strategy, FindType.APPLIES, evaluation, context);
+                return new StrategyFindResult(strategy, FindType.APPLIES, evaluation, context);
             }else {
-                return new BomToolFindResult(strategy, FindType.NEEDS_NOT_MET, evaluation, context);
+                return new StrategyFindResult(strategy, FindType.NEEDS_NOT_MET, evaluation, context);
             }
         }
     }
@@ -168,14 +168,16 @@ public class BomToolFinder {
         return containsAll;
     }
 
-    private boolean containsAnyYield(final Strategy target, final Set<Strategy> existingStrategies) {
+    private boolean containsAnyYield(final Strategy target, final Set<Strategy> existingStrategies, final StrategyEvaluation evaluation) {
         final Set<Strategy> yieldsTo = target.getYieldsToStrategies();
+        boolean yieldedTo = false;
         for (final Strategy yieldToStrategy : yieldsTo) {
             if (existingStrategies.contains(yieldToStrategy)) {
-                return true;
+                evaluation.addYieldedStrategy(yieldToStrategy);
+                yieldedTo = true;
             }
         }
-        return false;
+        return yieldedTo;
     }
 
     private boolean shouldStopSearchingIfApplicable(final Strategy strategy, final BomToolFinderOptions options) {

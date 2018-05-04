@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.CurrentDirectoryRequirement;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.EvaluationContext;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation.EvaluationResult;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluator;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 
 @Component
@@ -19,7 +19,7 @@ public class CurrentDirectoryRequirementEvaluator extends RequirementEvaluator<C
 
     @Override
     public RequirementEvaluation<File> evaluate(final CurrentDirectoryRequirement requirement, final EvaluationContext context) {
-        return new RequirementEvaluation<>(EvaluationResult.Passed, context.getDirectory());
+        return RequirementEvaluation.passed(context.getDirectory());
     }
 
     @Override

@@ -4,7 +4,7 @@ import com.blackducksoftware.integration.hub.detect.extraction.requirement.evalu
 import com.blackducksoftware.integration.hub.detect.extraction.strategy.Strategy;
 import com.blackducksoftware.integration.hub.detect.extraction.strategy.evaluation.StrategyEvaluation;
 
-public class BomToolFindResult {
+public class StrategyFindResult {
     public Strategy strategy;
     public FindType type;
     public StrategyEvaluation evaluation;
@@ -16,7 +16,7 @@ public class BomToolFindResult {
         APPLIES
     }
 
-    public BomToolFindResult(final Strategy strategy, final FindType type, final StrategyEvaluation evaluation, final EvaluationContext context) {
+    public StrategyFindResult(final Strategy strategy, final FindType type, final StrategyEvaluation evaluation, final EvaluationContext context) {
         this.strategy = strategy;
         this.type = type;
         this.evaluation = evaluation;

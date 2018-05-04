@@ -33,6 +33,14 @@ public class Strategy<C extends ExtractionContext, E extends Extractor<C>>  {
         this.yieldsToStrategies = yieldsToStrategies;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public BomToolType getBomToolType() {
+        return bomToolType;
+    }
+
     public Class<C> getExtractionContextClass() {
         return extractionContextClass;
     }

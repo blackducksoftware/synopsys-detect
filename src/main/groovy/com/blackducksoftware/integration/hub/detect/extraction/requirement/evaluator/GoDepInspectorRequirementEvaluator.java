@@ -15,7 +15,7 @@ import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendly
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.GoDepInspectorRequirement;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.EvaluationContext;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation.EvaluationResult;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluator;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
@@ -50,12 +50,12 @@ public class GoDepInspectorRequirementEvaluator extends RequirementEvaluator<GoD
             }
 
             if (resolvedGoDep != null) {
-                return new RequirementEvaluation<>(EvaluationResult.Passed, resolvedGoDep);
+                return RequirementEvaluation.passed( resolvedGoDep);
             } else {
-                return new RequirementEvaluation<>(EvaluationResult.Failed, null);
+                return RequirementEvaluation.failed(null, "No Go Dep executable was found.");
             }
         }catch (final Exception e) {
-            return new RequirementEvaluation<>(EvaluationResult.Exception, e);
+            return RequirementEvaluation.error(e);
         }
     }
 

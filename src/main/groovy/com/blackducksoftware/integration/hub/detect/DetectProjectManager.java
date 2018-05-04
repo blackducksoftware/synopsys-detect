@@ -54,10 +54,14 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolApplicableRes
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolExtractionResult;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolExtractionResultsFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolInspectorManager;
-import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolFindResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolFindResult.FindType;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolFinder;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolFinderOptions;
+import com.blackducksoftware.integration.hub.detect.bomtool.search.StrategyFindResult;
+import com.blackducksoftware.integration.hub.detect.bomtool.search.StrategyFindResult.FindType;
+import com.blackducksoftware.integration.hub.detect.bomtool.search.report.ExtractionReporter;
+import com.blackducksoftware.integration.hub.detect.bomtool.search.report.ExtractionSummaryReporter;
+import com.blackducksoftware.integration.hub.detect.bomtool.search.report.PreparationSummaryReporter;
+import com.blackducksoftware.integration.hub.detect.bomtool.search.report.SearchSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
@@ -65,6 +69,7 @@ import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.extraction.Extraction.ExtractionResult;
+import com.blackducksoftware.integration.hub.detect.extraction.ExtractionContext;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.EvaluationContext;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation.EvaluationResult;
@@ -181,52 +186,43 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         return results;
     }
 
-    private List<DetectCodeLocation> extract(final List<BomToolFindResult> results) {
-        final List<DetectCodeLocation> codeLocations = new ArrayList<>();
-        for (final BomToolFindResult result : results) {
-            codeLocations.addAll(extract(result));
+    private  void extract(final List<StrategyFindResult> results) {
+        for (final StrategyFindResult result : results) {
+            extract(result);
         }
-        return codeLocations;
     }
 
-    private List<DetectCodeLocation> extract(final BomToolFindResult result) {
-        final List<DetectCodeLocation> codeLocations = new ArrayList<>();
+    private void prepare(final List<StrategyFindResult> results) {
+        for (final StrategyFindResult result : results) {
+            prepare(result);
+        }
+    }
+
+    private void prepare(final StrategyFindResult result) {
         if (result.type == FindType.APPLIES) {
             final StrategyEvaluation evaluation = result.evaluation;
             final EvaluationContext context = result.context;
             final Strategy strategy = result.strategy;
             if (evaluation.areNeedsMet()) {
-                logger.info("REQUIREMENTS FULFLILLED");
                 strategyEvaluator.meetsDemands(evaluation, strategy, context);
-                if (evaluation.areDemandsMet()) {
-                    logger.info("DEMANDS MET");
-                    final Extraction extraction = strategyEvaluator.execute(evaluation, strategy, context);
-                    if (extraction.result.equals(ExtractionResult.Success)) {
-                        logger.debug("EXTRACTION SUCCESS");
-                        logger.debug("Found code locations: " + extraction.codeLocations.size());
-                        codeLocations.addAll(extraction.codeLocations);
-                    } else if (extraction.result.equals(ExtractionResult.Exception)) {
-                        logger.debug("EXTRACTION EXCEPTION");
-                        extraction.error.printStackTrace();
-                    } else {
-                        logger.debug("EXTRACTION FAILED");
-                    }
-                }else {
-                    logger.info("DEMANDS NOT MET");
-                    for (final RequirementEvaluation eval : evaluation.demandEvaluationMap.values()) {
-                        printReqEval(eval);
-                    }
-                }
-
-            }
-        } else if (result.type == FindType.NEEDS_NOT_MET) {
-            logger.info("REQUIREMENTS NOT FULFLILLED");
-            final StrategyEvaluation evaluation = result.evaluation;
-            for (final RequirementEvaluation eval : evaluation.needEvaluationMap.values()) {
-                printReqEval(eval);
             }
         }
-        return codeLocations;
+    }
+
+    private void extract(final StrategyFindResult result) {
+        if (result.type == FindType.APPLIES) {
+            final StrategyEvaluation evaluation = result.evaluation;
+            if (evaluation.areNeedsMet() && evaluation.areDemandsMet()) {
+                final EvaluationContext context = result.context;
+                final Strategy strategy = result.strategy;
+                final ExtractionContext extractionContext = strategyEvaluator.createContext(evaluation, strategy, context);
+                extractionReporter.startedExtraction(strategy, extractionContext);
+                final Extraction extraction = strategyEvaluator.execute(strategy, extractionContext);
+                evaluation.extraction = extraction;
+                extractionReporter.endedExtraction(extraction);
+            }
+
+        }
     }
 
     private void printReqEval(final RequirementEvaluation eval) {
@@ -238,7 +234,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     }
 
 
-    private List<BomToolFindResult> findRootApplicable(final File directory) {
+    private List<StrategyFindResult> findRootApplicable(final File directory) {
         final List<Strategy> allStrategies = strategyManager.getAllStrategies();
         final List<String> excludedDirectories = detectConfiguration.getBomToolSearchDirectoryExclusions();
         final Boolean forceNestedSearch = detectConfiguration.getBomToolContinueSearch();
@@ -257,7 +253,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         return new ArrayList<>();
     }
 
-    private List<BomToolFindResult> findBomTools() {
+    private List<StrategyFindResult> findBomTools() {
         final List<Strategy> allStrategies = strategyManager.getAllStrategies();
         final List<String> excludedDirectories = detectConfiguration.getBomToolSearchDirectoryExclusions();
         final Boolean forceNestedSearch = detectConfiguration.getBomToolContinueSearch();
@@ -289,21 +285,42 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         });
     }
 
+    @Autowired
+    SearchSummaryReporter searchSummaryReporter;
+
+    @Autowired
+    PreparationSummaryReporter preparationSummaryReporter;
+
+    @Autowired
+    ExtractionSummaryReporter extractionSummaryReporter;
+
+    @Autowired
+    ExtractionReporter extractionReporter;
+
+
     public DetectProject createDetectProject() throws IntegrationException {
         final DetectProject detectProject = new DetectProject();
 
-        final List<BomToolFindResult> sourcePathResults = findRootApplicable(new File(detectConfiguration.getSourcePath()));
+        final List<StrategyFindResult> sourcePathResults = findRootApplicable(new File(detectConfiguration.getSourcePath()));
 
+        searchSummaryReporter.print(sourcePathResults);
 
+        prepare(sourcePathResults);
 
+        preparationSummaryReporter.print(sourcePathResults);
         //final Set<BomToolType> applicableBomTools = sourcePathResults.stream().map(it -> it.getBomToolType()).collect(Collectors.toSet());
         //        installInspectors(applicableBomTools);
 
-        final List<DetectCodeLocation> results = extract(sourcePathResults);
+        extract(sourcePathResults);
 
-        results.forEach(it -> {
+        extractionSummaryReporter.print(sourcePathResults);
+
+        sourcePathResults.forEach(it -> {
+            if (it.type == FindType.APPLIES && it.evaluation.areDemandsMet() && it.evaluation.areNeedsMet() && it.evaluation.extraction.result == ExtractionResult.Success) {
+                detectProject.addAllDetectCodeLocations(it.evaluation.extraction.codeLocations);
+            }
             //            if (it.extractedCodeLocations.size() > 0) {
-            detectProject.addDetectCodeLocation(it);
+
             //           } else {
             //              final String bomToolTypeString = it.bomToolType.toString();
             //               logger.error(String.format("Did not find any code locations from %s even though it applied to %s.", bomToolTypeString, it.directory));

@@ -7,7 +7,7 @@ import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.BomToolRequirement;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.EvaluationContext;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation.EvaluationResult;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluator;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 
@@ -23,9 +23,9 @@ public class BomToolRequirementEvaluator extends RequirementEvaluator<BomToolReq
     @Override
     public RequirementEvaluation<BomToolType> evaluate(final BomToolRequirement requirement, final EvaluationContext context) {
         if (detectConfiguration.isBomToolIncluded(requirement.type)) {
-            return new RequirementEvaluation<>(EvaluationResult.Passed, requirement.type);
+            return RequirementEvaluation.passed(requirement.type);
         }else {
-            return new RequirementEvaluation<>(EvaluationResult.Failed, requirement.type);
+            return RequirementEvaluation.failed(requirement.type, "Bom tool type " + requirement.type.toString() + " was not included.");
         }
     }
 
