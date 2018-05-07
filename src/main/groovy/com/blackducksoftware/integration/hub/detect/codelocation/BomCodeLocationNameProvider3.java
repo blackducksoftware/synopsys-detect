@@ -31,7 +31,7 @@ import org.springframework.stereotype.Component;
 public class BomCodeLocationNameProvider3 extends CodeLocationNameProvider {
     @Override
     public String generateName(final CodeLocationName codeLocationName) {
-        final String finalSourcePathPiece = detectFileManager.extractFinalPieceFromPath(codeLocationName.getSourcePath());
+        final String finalSourcePathPiece = detectFileFinder.extractFinalPieceFromPath(codeLocationName.getSourcePath());
         final String projectName = codeLocationName.getProjectName();
         final String projectVersionName = codeLocationName.getProjectVersionName();
         final String prefix = codeLocationName.getPrefix();

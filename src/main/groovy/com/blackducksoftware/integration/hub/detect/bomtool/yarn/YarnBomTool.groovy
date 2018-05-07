@@ -52,7 +52,7 @@ class YarnBomTool extends BomTool<YarnApplicableResult> {
 
     @Override
     public YarnApplicableResult isBomToolApplicable(File directory) {
-        final File yarnLockFile = detectFileManager.findFile(directory, 'yarn.lock')
+        final File yarnLockFile = detectFileFinder.findFile(directory, 'yarn.lock')
 
         if (yarnLockFile) {
             return new YarnApplicableResult(directory, yarnLockFile);

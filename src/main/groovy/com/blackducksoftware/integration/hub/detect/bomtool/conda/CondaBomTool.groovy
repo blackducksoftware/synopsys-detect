@@ -56,7 +56,7 @@ class CondaBomTool extends BomTool<CondaApplicableResult> {
 
     @Override
     public CondaApplicableResult isBomToolApplicable(File directory) {
-        def environmentYml = detectFileManager.findFile(directory, 'environment.yml')
+        def environmentYml = detectFileFinder.findFile(directory, 'environment.yml')
         if (environmentYml != null && environmentYml.exists()) {
             String condaExecutablePath = executableManager.getExecutablePathOrOverride(ExecutableType.CONDA, true, directory, detectConfiguration.getCondaPath())
             if (condaExecutablePath) {

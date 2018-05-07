@@ -60,7 +60,7 @@ class GoGodepsBomTool extends BomTool<GoDepsApplicableResult> {
 
     @Override
     public GoDepsApplicableResult isBomToolApplicable(File directory) {
-        def goDepDirectory = detectFileManager.findFile(directory, GODEPS_DIRECTORYNAME);
+        def goDepDirectory = detectFileFinder.findFile(directory, GODEPS_DIRECTORYNAME);
 
         if (goDepDirectory) {
             return new GoDepsApplicableResult(directory, goDepDirectory);

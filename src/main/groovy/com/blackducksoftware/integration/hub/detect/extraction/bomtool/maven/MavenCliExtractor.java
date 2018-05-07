@@ -15,7 +15,7 @@ import com.blackducksoftware.integration.hub.detect.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.extraction.Extraction.ExtractionResult;
 import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
@@ -33,7 +33,7 @@ public class MavenCliExtractor extends Extractor<MavenCliContext> {
     protected ExecutableRunner executableRunner;
 
     @Autowired
-    protected DetectFileManager detectFileManager;
+    protected DetectFileFinder detectFileFinder;
 
     @Override
     public Extraction extract(final MavenCliContext context) {
@@ -65,7 +65,7 @@ public class MavenCliExtractor extends Extractor<MavenCliContext> {
             final String includedModules = detectConfiguration.getMavenIncludedModuleNames();
             codeLocations = mavenCodeLocationPackager.extractCodeLocations(context.directory.toString(), mvnOutput.getStandardOutput(), excludedModules, includedModules);
 
-            final List<File> additionalTargets = detectFileManager.findFilesToDepth(context.directory, "target", detectConfiguration.getSearchDepth());
+            final List<File> additionalTargets = detectFileFinder.findFilesToDepth(context.directory, "target", detectConfiguration.getSearchDepth());
             if (null != additionalTargets && !additionalTargets.isEmpty()) {
                 for (final File additionalTarget : additionalTargets) {
                     //hubSignatureScanner.registerPathToScan(ScanPathSource.MAVEN_SOURCE, additionalTarget);

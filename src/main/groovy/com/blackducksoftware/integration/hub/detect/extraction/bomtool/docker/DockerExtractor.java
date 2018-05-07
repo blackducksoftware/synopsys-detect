@@ -30,6 +30,7 @@ import com.blackducksoftware.integration.hub.detect.extraction.Extraction.Extrac
 import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableArgumentBuilder;
@@ -46,7 +47,10 @@ public class DockerExtractor extends Extractor<DockerContext> {
     DockerProperties dockerProperties;
 
     @Autowired
-    DetectFileManager detectFileManager;
+    protected DetectFileFinder detectFileFinder;
+
+    @Autowired
+    protected DetectFileManager detectFileManager;
 
     @Autowired
     ExecutableManager executableManager;
@@ -73,7 +77,7 @@ public class DockerExtractor extends Extractor<DockerContext> {
             if (context.tar != null) {
                 final File dockerTarFile = new File(context.tar);
                 imageArgument = String.format("--docker.tar=%s", dockerTarFile.getCanonicalPath());
-                imagePiece = detectFileManager.extractFinalPieceFromPath(dockerTarFile.getCanonicalPath());
+                imagePiece = detectFileFinder.extractFinalPieceFromPath(dockerTarFile.getCanonicalPath());
             }else if (context.image != null) {
                 imagePiece = context.image;
                 imageArgument = String.format("--docker.image=%s", context.image);
@@ -82,7 +86,7 @@ public class DockerExtractor extends Extractor<DockerContext> {
             if (imageArgument == null || imagePiece == null){
                 return new Extraction(ExtractionResult.Failure);
             }else {
-                final List<DetectCodeLocation> codeLocations = executeDocker(imageArgument, imagePiece, context.directory, context.dockerExe, context.bashExe, context.dockerInspectorInfo);
+                final List<DetectCodeLocation> codeLocations = executeDocker(context, imageArgument, imagePiece, context.directory, context.dockerExe, context.bashExe, context.dockerInspectorInfo);
                 return new Extraction(ExtractionResult.Success, codeLocations);
             }
         }catch (final Exception e) {
@@ -115,11 +119,11 @@ public class DockerExtractor extends Extractor<DockerContext> {
 
 
 
-    private  List<DetectCodeLocation> executeDocker(final String imageArgument, final String imagePiece, final File directory, final File dockerExe, final File bashExe, final DockerInspectorInfo dockerInspectorInfo) throws FileNotFoundException, IOException, ExecutableRunnerException {
+    private  List<DetectCodeLocation> executeDocker(final DockerContext context, final String imageArgument, final String imagePiece, final File directory, final File dockerExe, final File bashExe, final DockerInspectorInfo dockerInspectorInfo) throws FileNotFoundException, IOException, ExecutableRunnerException {
 
-        final File dockerPropertiesFile = detectFileManager.createFile(BomToolType.DOCKER, "application.properties");
-        final File dockerBomToolDirectory =  dockerPropertiesFile.getParentFile();
-        dockerProperties.populatePropertiesFile(dockerPropertiesFile, dockerBomToolDirectory);
+        final File outputDirectory = detectFileManager.getOutputDirectory(context);
+        final File dockerPropertiesFile = detectFileManager.getOutputFile(context, "application.properties");
+        dockerProperties.populatePropertiesFile(dockerPropertiesFile, outputDirectory);
 
         final Map<String, String> environmentVariables = createEnvironmentVariables(dockerExe);
 
@@ -133,18 +137,18 @@ public class DockerExtractor extends Extractor<DockerContext> {
             bashArguments.insertArgumentPair(2, "--dry.run", "true");
             bashArguments.insertArgumentPair(3, "--no.prompt", "true");
             bashArguments.insertArgumentPair(4, "--jar.path", dockerInspectorInfo.offlineDockerInspectorJar.getCanonicalPath(), true);
-            importTars(dockerInspectorInfo.offlineDockerInspectorJar, dockerInspectorInfo.offlineTars, dockerBomToolDirectory, environmentVariables, bashExe);
+            importTars(dockerInspectorInfo.offlineDockerInspectorJar, dockerInspectorInfo.offlineTars, outputDirectory, environmentVariables, bashExe);
         }
 
-        final Executable dockerExecutable = new Executable(dockerBomToolDirectory, environmentVariables, bashExe.toString(), bashArguments.build());
+        final Executable dockerExecutable = new Executable(outputDirectory, environmentVariables, bashExe.toString(), bashArguments.build());
         executableRunner.execute(dockerExecutable);
 
-        return findCodeLocations(dockerBomToolDirectory, directory, imagePiece);
+        return findCodeLocations(outputDirectory, directory, imagePiece);
     }
 
     private List<DetectCodeLocation> findCodeLocations(final File directoryToSearch, final File directory, final String imageName) {
         final List<DetectCodeLocation> codeLocations = new ArrayList<>();
-        final File bdioFile = detectFileManager.findFile(directoryToSearch, DEPENDENCIES_PATTERN);
+        final File bdioFile = detectFileFinder.findFile(directoryToSearch, DEPENDENCIES_PATTERN);
         if (bdioFile != null) {
             SimpleBdioDocument simpleBdioDocument = null;
             BdioReader bdioReader = null;

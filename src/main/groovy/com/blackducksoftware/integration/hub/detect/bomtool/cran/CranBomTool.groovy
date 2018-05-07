@@ -50,7 +50,7 @@ class CranBomTool extends BomTool<CranApplicableResult> {
     }
 
     CranApplicableResult isBomToolApplicable(File directory) {
-        List<File> packratLockFiles = detectFileManager.findFilesToDepth(directory, 'packrat.lock', detectConfiguration.getSearchDepth());
+        List<File> packratLockFiles = detectFileFinder.findFilesToDepth(directory, 'packrat.lock', detectConfiguration.getSearchDepth());
         if (packratLockFiles.size() > 0) {
             return new CranApplicableResult(directory, packratLockFiles);
         }
@@ -62,7 +62,7 @@ class CranBomTool extends BomTool<CranApplicableResult> {
 
         String projectName = ''
         String projectVersion = ''
-        if (detectFileManager.containsAllFiles(applicable.directory,'DESCRIPTION')) {
+        if (detectFileFinder.containsAllFiles(applicable.directory,'DESCRIPTION')) {
             def descriptionFile = new File(applicable.directory, 'DESCRIPTION')
             List<String> descriptionText = Files.readAllLines(descriptionFile.toPath(), StandardCharsets.UTF_8)
             projectName = packratPackager.getProjectName(descriptionText)

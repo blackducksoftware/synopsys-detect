@@ -62,7 +62,7 @@ class GradleBomTool extends BomTool<GradleApplicableResult> {
 
     @Override
     GradleApplicableResult isBomToolApplicable(File directory) {
-        File buildGradle = detectFileManager.findFile(directory, BUILD_GRADLE_FILENAME)
+        File buildGradle = detectFileFinder.findFile(directory, BUILD_GRADLE_FILENAME)
 
         if (buildGradle) {
             String gradleExe = findGradleExecutable(directory.toString())
@@ -80,7 +80,7 @@ class GradleBomTool extends BomTool<GradleApplicableResult> {
     BomToolExtractionResult extractDetectCodeLocations(GradleApplicableResult applicable) {
         List<DetectCodeLocation> codeLocations = extractCodeLocationsFromGradle(applicable)
 
-        File[] additionalTargets = detectFileManager.findFilesToDepth(detectConfiguration.sourceDirectory, 'build', detectConfiguration.searchDepth)
+        File[] additionalTargets = detectFileFinder.findFilesToDepth(detectConfiguration.sourceDirectory, 'build', detectConfiguration.searchDepth)
         if (additionalTargets) {
             additionalTargets.each { File file ->
                 hubSignatureScanner.registerPathToScan(ScanPathSource.GRADLE_SOURCE, file)
@@ -118,12 +118,13 @@ class GradleBomTool extends BomTool<GradleApplicableResult> {
         File buildDirectory = new File(applicable.directory, 'build')
         File blackduckDirectory = new File(buildDirectory, 'blackduck')
 
-        File[] codeLocationFiles = detectFileManager.findFiles(blackduckDirectory, '*_dependencyGraph.txt')
+        File[] codeLocationFiles = detectFileFinder.findFiles(blackduckDirectory, '*_dependencyGraph.txt')
 
         List<DetectCodeLocation> codeLocations = codeLocationFiles.collect { File file ->
             logger.debug("Parsing dependency graph : ${file.getName()}")
             gradleReportParser.parseDependencies(file.newInputStream()).codeLocation
         }
+
         if (detectConfiguration.getCleanupDetectFiles()) {
             blackduckDirectory.deleteDir()
         }

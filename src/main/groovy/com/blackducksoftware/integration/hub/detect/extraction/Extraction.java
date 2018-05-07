@@ -26,6 +26,11 @@ public class Extraction {
         this.result = result;
     }
 
+    public Extraction(final ExtractionResult result, final String description) {
+        this.result = result;
+        this.description = description;
+    }
+
     public Extraction(final ExtractionResult result, final Exception error) {
         this.result = result;
         this.error = error;

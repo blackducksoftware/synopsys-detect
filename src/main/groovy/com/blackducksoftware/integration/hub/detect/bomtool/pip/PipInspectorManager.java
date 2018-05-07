@@ -37,7 +37,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
@@ -54,18 +53,18 @@ public class PipInspectorManager {
     private DetectFileManager detectFileManager;
 
     public File extractInspectorScript() throws IOException {
-        InputStream insptectorFileStream = getClass().getResourceAsStream(String.format("/%s", INSPECTOR_NAME));
-        String inpsectorScriptContents = IOUtils.toString(insptectorFileStream, StandardCharsets.UTF_8);
-        File inspectorScript = detectFileManager.createFile(BomToolType.PIP, INSPECTOR_NAME);
+        final InputStream insptectorFileStream = getClass().getResourceAsStream(String.format("/%s", INSPECTOR_NAME));
+        final String inpsectorScriptContents = IOUtils.toString(insptectorFileStream, StandardCharsets.UTF_8);
+        final File inspectorScript = detectFileManager.createSharedFile("pip", INSPECTOR_NAME);
         return detectFileManager.writeToFile(inspectorScript, inpsectorScriptContents);
     }
 
     public String runInspector(final File sourceDirectory, final String pythonPath, final File inspectorScript, final String projectName, final String requirementsFilePath) throws ExecutableRunnerException {
-        List<String> inspectorArguments = new ArrayList<>();
+        final List<String> inspectorArguments = new ArrayList<>();
         inspectorArguments.add(inspectorScript.getAbsolutePath());
 
         if (StringUtils.isNotBlank(requirementsFilePath)) {
-            File requirementsFile = new File(requirementsFilePath);
+            final File requirementsFile = new File(requirementsFilePath);
             inspectorArguments.add(String.format("--requirements=%s", requirementsFile.getAbsolutePath()));
         }
 
@@ -73,7 +72,7 @@ public class PipInspectorManager {
             inspectorArguments.add(String.format("--projectname=%s", projectName));
         }
 
-        Executable pipInspector = new Executable(sourceDirectory, pythonPath, inspectorArguments);
+        final Executable pipInspector = new Executable(sourceDirectory, pythonPath, inspectorArguments);
         return executableRunner.execute(pipInspector).getStandardOutput();
     }
 

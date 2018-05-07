@@ -62,7 +62,7 @@ class PipBomTool extends BomTool<PipApplicableResult> {
     }
 
     PipApplicableResult isBomToolApplicable(File directory) {
-        File setupTools = detectFileManager.findFile(directory, SETUP_FILE_NAME)
+        File setupTools = detectFileFinder.findFile(directory, SETUP_FILE_NAME)
         File requirements = null;
         if (detectConfiguration.requirementsFilePath) {
             requirements = new File(detectConfiguration.requirementsFilePath)

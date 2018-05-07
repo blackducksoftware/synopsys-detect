@@ -38,6 +38,7 @@ import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType
 import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType
+import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput
 
@@ -109,6 +110,9 @@ class NugetBomTool extends BomTool<NugetApplicableResult> {
     @Autowired
     DetectInfo detectInfo
 
+    @Autowired
+    DetectFileFinder detectFileFinder
+
     BomToolType getBomToolType() {
         return BomToolType.NUGET
     }
@@ -121,11 +125,11 @@ class NugetBomTool extends BomTool<NugetApplicableResult> {
             return null;
         }
 
-        List<File> solutionFiles = detectFileManager.findFiles(directory, SOLUTION_PATTERN);
+        List<File> solutionFiles = detectFileFinder.findFiles(directory, SOLUTION_PATTERN);
         if (!solutionFiles) solutionFiles = new ArrayList<>();
         List<File> projectFiles = new ArrayList<>();
         SUPPORTED_PROJECT_PATTERNS.each { String pattern ->
-            def found = detectFileManager.findFiles(directory, pattern);
+            def found = detectFileFinder.findFiles(directory, pattern);
             if (found) {
                 projectFiles.addAll(found);
             }
@@ -173,7 +177,7 @@ class NugetBomTool extends BomTool<NugetApplicableResult> {
         def hubNugetInspectorExecutable = new Executable(applicable.directory, inspectorPath, options)
         ExecutableOutput executableOutput = executableRunner.execute(hubNugetInspectorExecutable)
 
-        def dependencyNodeFiles = detectFileManager.findFiles(outputDirectory, INSPECTOR_OUTPUT_PATTERN)
+        def dependencyNodeFiles = detectFileFinder.findFiles(outputDirectory, INSPECTOR_OUTPUT_PATTERN)
         List<DetectCodeLocation> codeLocations = dependencyNodeFiles?.collectMany { nugetInspectorPackager.createDetectCodeLocation(it) }
         if (detectConfiguration.getCleanupDetectFiles()) {
             try {

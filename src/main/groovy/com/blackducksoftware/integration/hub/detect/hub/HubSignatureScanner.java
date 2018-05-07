@@ -58,6 +58,7 @@ import com.blackducksoftware.integration.hub.detect.model.DetectProject;
 import com.blackducksoftware.integration.hub.detect.summary.Result;
 import com.blackducksoftware.integration.hub.detect.summary.ScanSummaryResult;
 import com.blackducksoftware.integration.hub.detect.summary.SummaryResultReporter;
+import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.service.SignatureScannerService;
 import com.blackducksoftware.integration.hub.service.model.ProjectRequestBuilder;
@@ -77,6 +78,8 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
     @Autowired
     private DetectFileManager detectFileManager;
     @Autowired
+    private DetectFileFinder detectFileFinder;
+    @Autowired
     private OfflineScanner offlineScanner;
     @Autowired
     private CodeLocationNameService codeLocationNameService;
@@ -91,7 +94,7 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
                 registeredPaths.add(file.getCanonicalPath());
                 if (null != fileNamesToExclude && fileNamesToExclude.length > 0) {
                     for (final String fileNameToExclude : fileNamesToExclude) {
-                        final File fileToExclude = detectFileManager.findFile(file, fileNameToExclude);
+                        final File fileToExclude = detectFileFinder.findFile(file, fileNameToExclude);
                         if (null != fileToExclude) {
                             String pattern = fileToExclude.getCanonicalPath().replace(file.getCanonicalPath(), "");
                             if (pattern.contains("\\\\")) {
@@ -147,7 +150,7 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
                     projectVersionView = projectVersionWrapperFromScan.getProjectVersionView();
                 }
             }
-        } catch (ExecutionException e) {
+        } catch (final ExecutionException e) {
             throw new DetectUserFriendlyException(String.format("Encountered a problem waiting for a scan to finish. %s", e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
         } finally {
             // get() was called on every java.util.concurrent.Future, no need to wait any longer
@@ -234,7 +237,7 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
             hubScanConfigBuilder.setDryRun(true);
 
             if (StringUtils.isBlank(detectConfiguration.getHubSignatureScannerOfflineLocalPath())) {
-                final File toolsDirectory = detectFileManager.createDirectory("tools", false);
+                final File toolsDirectory = detectFileManager.getPermanentDirectory();
                 hubScanConfigBuilder.setToolsDir(toolsDirectory);
             }
 
@@ -256,7 +259,7 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
 
     private HubScanConfigBuilder createScanConfigBuilder(final DetectProject detectProject, final String canonicalPath) {
         final File scannerDirectory = new File(detectConfiguration.getScanOutputDirectoryPath());
-        final File toolsDirectory = detectFileManager.createDirectory("tools", false);
+        final File toolsDirectory = detectFileManager.getPermanentDirectory();
 
         final HubScanConfigBuilder hubScanConfigBuilder = new HubScanConfigBuilder();
         hubScanConfigBuilder.setScanMemory(detectConfiguration.getHubSignatureScannerMemory());

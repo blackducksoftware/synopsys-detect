@@ -33,7 +33,7 @@ public class BomCodeLocationNameProvider2 extends CodeLocationNameProvider {
     public String generateName(final CodeLocationName codeLocationName) {
         final String projectName = codeLocationName.getProjectName();
         final String projectVersionName = codeLocationName.getProjectVersionName();
-        final String finalSourcePathPiece = detectFileManager.extractFinalPieceFromPath(codeLocationName.getSourcePath());
+        final String finalSourcePathPiece = detectFileFinder.extractFinalPieceFromPath(codeLocationName.getSourcePath());
         final String bomToolString = codeLocationName.getBomToolType() == null ? "" : codeLocationName.getBomToolType().toString();
         final String prefix = codeLocationName.getPrefix();
 

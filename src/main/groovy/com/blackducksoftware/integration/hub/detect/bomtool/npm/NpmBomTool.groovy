@@ -95,11 +95,11 @@ class NpmBomTool extends BomTool<NpmApplicableResult> {
     @Override
     public NpmApplicableResult isBomToolApplicable(final File directory) {
         String npmExePath = null;
-        final File packageLockJson = detectFileManager.findFile(directory, PACKAGE_LOCK_JSON);
-        final File shrinkwrapJson = detectFileManager.findFile(directory, SHRINKWRAP_JSON);
+        final File packageLockJson = detectFileFinder.findFile(directory, PACKAGE_LOCK_JSON);
+        final File shrinkwrapJson = detectFileFinder.findFile(directory, SHRINKWRAP_JSON);
 
-        final boolean containsNodeModules = detectFileManager.containsAllFiles(directory, NODE_MODULES);
-        final boolean containsPackageJson = detectFileManager.containsAllFiles(directory, PACKAGE_JSON);
+        final boolean containsNodeModules = detectFileFinder.containsAllFiles(directory, NODE_MODULES);
+        final boolean containsPackageJson = detectFileFinder.containsAllFiles(directory, PACKAGE_JSON);
         final boolean containsPackageLockJson = packageLockJson != null && packageLockJson.exists();
         final boolean containsShrinkwrapJson = shrinkwrapJson != null && shrinkwrapJson.exists();
 

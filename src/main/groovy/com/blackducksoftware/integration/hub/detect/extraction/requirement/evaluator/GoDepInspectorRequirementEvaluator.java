@@ -107,7 +107,7 @@ public class GoDepInspectorRequirementEvaluator extends RequirementEvaluator<GoD
     }
 
     private File getGoDepInstallLocation() {
-        final File goOutputDirectory = new File(detectConfiguration.getOutputDirectory(), "Go");
+        final File goOutputDirectory = detectFileManager.getSharedDirectory("go");
         return new File(goOutputDirectory, executableManager.getExecutableName(ExecutableType.GO_DEP));
     }
 

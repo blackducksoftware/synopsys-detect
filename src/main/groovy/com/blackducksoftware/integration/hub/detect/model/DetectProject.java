@@ -37,7 +37,7 @@ import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationName;
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.util.BdioFileNamer;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.service.model.ProjectRequestBuilder;
 
 public class DetectProject {
@@ -75,8 +75,8 @@ public class DetectProject {
 
     public void addAllDetectCodeLocations(final List<DetectCodeLocation> detectCodeLocations) {
         detectCodeLocations
-                .stream()
-                .forEach(it -> addDetectCodeLocation(it));
+        .stream()
+        .forEach(it -> addDetectCodeLocation(it));
     }
 
     public void addDetectCodeLocation(final DetectCodeLocation detectCodeLocation) {
@@ -103,7 +103,7 @@ public class DetectProject {
         return builder;
     }
 
-    public void processDetectCodeLocations(final Logger logger, final DetectFileManager detectFileManager, final BdioFileNamer bdioFileNamer, final CodeLocationNameService codeLocationNameService) {
+    public void processDetectCodeLocations(final Logger logger, final DetectFileFinder detectFileFinder, final BdioFileNamer bdioFileNamer, final CodeLocationNameService codeLocationNameService) {
         for (final DetectCodeLocation detectCodeLocation : getDetectCodeLocations()) {
             if (detectCodeLocation.getDependencyGraph() == null) {
                 logger.warn(String.format("Dependency graph is null for code location %s", detectCodeLocation.getSourcePath()));
@@ -128,7 +128,7 @@ public class DetectProject {
             final String codeLocationNameString = codeLocationEntry.getKey();
             final DetectCodeLocation detectCodeLocation = codeLocationEntry.getValue();
 
-            final String finalSourcePathPiece = detectFileManager.extractFinalPieceFromPath(detectCodeLocation.getSourcePath());
+            final String finalSourcePathPiece = detectFileFinder.extractFinalPieceFromPath(detectCodeLocation.getSourcePath());
             final String filename = bdioFileNamer.generateShortenedFilename(detectCodeLocation.getBomToolType(), finalSourcePathPiece, detectCodeLocation.getBomToolProjectExternalId());
 
             if (!bdioFileNames.add(filename)) {

@@ -18,7 +18,6 @@ import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmCliDependency
 import com.blackducksoftware.integration.hub.detect.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.extraction.Extraction.ExtractionResult;
 import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
-import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
@@ -46,8 +45,8 @@ public class NpmCliExtractor extends Extractor<NpmCliContext>  {
     @Override
     public Extraction extract(final NpmCliContext context) {
 
-        final File npmLsOutputFile = detectFileManager.createFile(BomToolType.NPM, NpmCliExtractor.OUTPUT_FILE);
-        final File npmLsErrorFile = detectFileManager.createFile(BomToolType.NPM, NpmCliExtractor.ERROR_FILE);
+        final File npmLsOutputFile = detectFileManager.getOutputFile(context, NpmCliExtractor.OUTPUT_FILE);
+        final File npmLsErrorFile = detectFileManager.getOutputFile(context, NpmCliExtractor.ERROR_FILE);
 
         final boolean includeDevDeps = detectConfiguration.getNpmIncludeDevDependencies();
         final List<String> exeArgs = Arrays.asList("ls", "-json");

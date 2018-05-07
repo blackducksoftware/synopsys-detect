@@ -18,7 +18,7 @@ import com.blackducksoftware.integration.hub.detect.extraction.Extraction.Extrac
 import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
 @Component
 public class PackratLockExtractor extends Extractor<PackratLockContext> {
@@ -30,14 +30,14 @@ public class PackratLockExtractor extends Extractor<PackratLockContext> {
     protected ExternalIdFactory externalIdFactory;
 
     @Autowired
-    protected DetectFileManager detectFileManager;
+    protected DetectFileFinder detectFileFinder;
 
     @Override
     public Extraction extract(final PackratLockContext context) {
         try {
             String projectName = "";
             String projectVersion = "";
-            if (detectFileManager.containsAllFiles(context.directory, "DESCRIPTION")) {
+            if (detectFileFinder.containsAllFiles(context.directory, "DESCRIPTION")) {
                 final File descriptionFile = new File(context.directory, "DESCRIPTION");
                 final List<String> descriptionText = Files.readAllLines(descriptionFile.toPath(), StandardCharsets.UTF_8);
                 projectName = packratPackager.getProjectName(descriptionText);

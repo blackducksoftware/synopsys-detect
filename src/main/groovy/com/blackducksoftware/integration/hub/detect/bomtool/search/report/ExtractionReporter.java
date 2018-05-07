@@ -31,7 +31,7 @@ public class ExtractionReporter {
         logger.info("Finished extraction: " + result.result.toString());
         logger.info("Code locations found: " + result.codeLocations.size());
         if (result.result == ExtractionResult.Exception) {
-            result.error.printStackTrace();
+            logger.info("Exception:", result.error);
         } else if (result.result == ExtractionResult.Failure) {
             logger.info(result.description);
         }

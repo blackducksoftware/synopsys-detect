@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +21,7 @@ import com.blackducksoftware.integration.hub.detect.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.extraction.Extraction.ExtractionResult;
 import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
@@ -40,7 +40,10 @@ public class NugetInspectorExtractor extends Extractor<NugetInspectorContext>  {
     private ExecutableRunner executableRunner;
 
     @Autowired
-    private DetectFileManager detectFileManager;
+    public DetectFileManager detectFileManager;
+
+    @Autowired
+    private DetectFileFinder detectFileFinder;
 
     @Autowired
     NugetInspectorPackager nugetInspectorPackager;
@@ -49,7 +52,7 @@ public class NugetInspectorExtractor extends Extractor<NugetInspectorContext>  {
     public Extraction extract(final NugetInspectorContext context) {
 
         try {
-            final File outputDirectory = new File(detectConfiguration.getOutputDirectory(), "nuget");
+            final File outputDirectory = detectFileManager.getOutputDirectory(context);
 
             final List<String> options = new ArrayList<>(Arrays.asList(
                     "--target_path=" + context.directory.toString(),
@@ -78,18 +81,10 @@ public class NugetInspectorExtractor extends Extractor<NugetInspectorContext>  {
                 return new Extraction(ExtractionResult.Failure);
             }
 
-            final List<File> dependencyNodeFiles = detectFileManager.findFiles(outputDirectory, INSPECTOR_OUTPUT_PATTERN);
+            final List<File> dependencyNodeFiles = detectFileFinder.findFiles(outputDirectory, INSPECTOR_OUTPUT_PATTERN);
             final List<DetectCodeLocation> codeLocations = dependencyNodeFiles.stream()
                     .flatMap(it -> nugetInspectorPackager.createDetectCodeLocation(it).stream())
                     .collect(Collectors.toList());
-
-            if (detectConfiguration.getCleanupDetectFiles()) {
-                try {
-                    FileUtils.deleteDirectory(outputDirectory);
-                } catch (final Exception e) {
-                    logger.warn("Unable to clean up nuget files: ${outputDirectory}");
-                }
-            }
 
             if (codeLocations.size() <= 0) {
                 logger.warn("Unable to extract any dependencies from nuget");

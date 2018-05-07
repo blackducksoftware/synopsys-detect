@@ -54,7 +54,7 @@ class HexBomTool extends BomTool<HexApplicableResult> {
 
     @Override
     public HexApplicableResult isBomToolApplicable(File directory) {
-        def rebarConfig = detectFileManager.findFile(directory, REBAR_CONFIG);
+        def rebarConfig = detectFileFinder.findFile(directory, REBAR_CONFIG);
 
         if (rebarConfig) {
             logger.info('Rebar3 build tool applies for HEX given the current configuration.');

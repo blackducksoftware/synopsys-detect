@@ -9,18 +9,18 @@ import com.blackducksoftware.integration.hub.detect.extraction.requirement.FileR
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.EvaluationContext;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluator;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
 @Component
 public class FileRequirementEvaluator extends RequirementEvaluator<FileRequirement> {
 
     @Autowired
-    public DetectFileManager detectFileManager;
+    public DetectFileFinder detectFileFinder;
 
     @Override
     public RequirementEvaluation<File> evaluate(final FileRequirement requirement, final EvaluationContext context) {
         try {
-            final File file = detectFileManager.findFile(context.getDirectory(), requirement.filename);
+            final File file = detectFileFinder.findFile(context.getDirectory(), requirement.filename);
             if (file != null) {
                 return RequirementEvaluation.passed( file);
             } else {

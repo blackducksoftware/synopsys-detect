@@ -26,7 +26,6 @@ import com.blackducksoftware.integration.hub.detect.extraction.requirement.Gradl
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.EvaluationContext;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluator;
-import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
@@ -129,7 +128,7 @@ public class GradleInspectorRequirementEvaluator extends RequirementEvaluator<Gr
     }
 
     String resolveInitScriptPath(final String version) throws TemplateNotFoundException, MalformedTemplateNameException, ParseException, IOException, TemplateException {
-        final File initScriptFile = detectFileManager.createFile(BomToolType.GRADLE, "init-detect.gradle");
+        final File initScriptFile = detectFileManager.createSharedFile("gradle", "init-detect.gradle");
         final Map<String, String> model = new HashMap<>();
         model.put("gradleInspectorVersion", version);
         model.put("excludedProjectNames", detectConfiguration.getGradleExcludedProjectNames());

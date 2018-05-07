@@ -13,20 +13,20 @@ import com.blackducksoftware.integration.hub.detect.extraction.requirement.FileL
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.EvaluationContext;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluator;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
 @Component
 public class FileListRequirementEvaluator extends RequirementEvaluator<FileListRequirement> {
 
     @Autowired
-    public DetectFileManager detectFileManager;
+    public DetectFileFinder detectFileFinder;
 
     @Override
     public RequirementEvaluation<List<File>> evaluate(final FileListRequirement requirement, final EvaluationContext context) {
         try {
             final List<File> files = new ArrayList<>();
             for (final String filepattern : requirement.filepatterns) {
-                final List<File> found = detectFileManager.findFiles(context.getDirectory(), filepattern);
+                final List<File> found = detectFileFinder.findFiles(context.getDirectory(), filepattern);
                 if (found != null) {
                     files.addAll(found);
                 }

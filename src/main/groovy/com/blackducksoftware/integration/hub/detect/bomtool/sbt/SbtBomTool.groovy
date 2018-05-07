@@ -57,7 +57,7 @@ class SbtBomTool extends BomTool<SbtApplicableResult> {
     }
 
     SbtApplicableResult isBomToolApplicable(File directory) {
-        File buildDotSbt = detectFileManager.findFile(directory, BUILD_SBT_FILENAME)
+        File buildDotSbt = detectFileFinder.findFile(directory, BUILD_SBT_FILENAME)
 
         if (buildDotSbt) {
             return new SbtApplicableResult(directory, buildDotSbt);
@@ -72,7 +72,7 @@ class SbtBomTool extends BomTool<SbtApplicableResult> {
 
         int depth = detectConfiguration.getSearchDepth()
 
-        SbtPackager packager = new SbtPackager(externalIdFactory, detectFileManager);
+        SbtPackager packager = new SbtPackager(externalIdFactory, detectFileFinder);
         SbtProject project = packager.extractProject(applicable.directoryString, depth, included, excluded)
 
         List<DetectCodeLocation> codeLocations = new ArrayList<DetectCodeLocation>()

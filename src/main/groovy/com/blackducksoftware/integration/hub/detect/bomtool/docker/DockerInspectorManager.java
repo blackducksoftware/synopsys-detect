@@ -87,7 +87,7 @@ public class DockerInspectorManager extends BomToolInspectorManager {
     private String resolveInspectorVersion(final String bashExecutablePath, final File dockerInspectorShellScript) throws DetectUserFriendlyException {
         try {
             if ("latest".equalsIgnoreCase(detectConfiguration.getDockerInspectorVersion())) {
-                final File dockerPropertiesFile = detectFileManager.createFile(BomToolType.DOCKER, "application.properties");
+                final File dockerPropertiesFile = detectFileManager.createSharedFile("docker", "application.properties");
                 final File dockerBomToolDirectory = dockerPropertiesFile.getParentFile();
                 final List<String> bashArguments = new ArrayList<>();
                 bashArguments.add("-c");
@@ -135,7 +135,7 @@ public class DockerInspectorManager extends BomToolInspectorManager {
                         response.close();
                     }
                 }
-                shellScriptFile = detectFileManager.createFile(BomToolType.DOCKER, String.format("hub-docker-inspector-%s.sh", suppliedDockerVersion));
+                shellScriptFile = detectFileManager.createSharedFile("docker", String.format("hub-docker-inspector-%s.sh", suppliedDockerVersion));
                 detectFileManager.writeToFile(shellScriptFile, shellScriptContents);
                 shellScriptFile.setExecutable(true);
             }

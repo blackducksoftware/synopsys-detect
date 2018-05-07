@@ -55,8 +55,8 @@ class PackagistBomTool extends BomTool<PackagistApplicableResult> {
 
     @Override
     public PackagistApplicableResult isBomToolApplicable(File directory) {
-        def composerLock = detectFileManager.findFile(directory, 'composer.lock')
-        def composerJson = detectFileManager.findFile(directory, 'composer.json')
+        def composerLock = detectFileFinder.findFile(directory, 'composer.lock')
+        def composerJson = detectFileFinder.findFile(directory, 'composer.json')
 
         if (composerLock && composerJson) {
             return new PackagistApplicableResult(directory, composerLock, composerJson)

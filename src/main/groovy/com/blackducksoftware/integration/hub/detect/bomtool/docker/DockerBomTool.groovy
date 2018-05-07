@@ -119,7 +119,7 @@ class DockerBomTool extends BomTool<DockerApplicableResult> {
         } else {
             File dockerTarFile = new File(detectConfiguration.dockerTar)
             imageArgument = String.format("--docker.tar=%s", dockerTarFile.getCanonicalPath())
-            imagePiece = detectFileManager.extractFinalPieceFromPath(dockerTarFile.getCanonicalPath())
+            imagePiece = detectFileFinder.extractFinalPieceFromPath(dockerTarFile.getCanonicalPath())
             usingTarFile = true
         }
 
@@ -151,7 +151,7 @@ class DockerBomTool extends BomTool<DockerApplicableResult> {
         if (usingTarFile) {
             hubSignatureScanner.registerPathToScan(ScanPathSource.DOCKER_SOURCE, new File(detectConfiguration.dockerTar))
         } else {
-            File producedTarFile = detectFileManager.findFile(dockerBomToolDirectory, tarFilenamePattern)
+            File producedTarFile = detectFileFinder.findFile(dockerBomToolDirectory, tarFilenamePattern)
             if (producedTarFile) {
                 hubSignatureScanner.registerPathToScan(ScanPathSource.DOCKER_SOURCE, producedTarFile)
             } else {
@@ -160,7 +160,7 @@ class DockerBomTool extends BomTool<DockerApplicableResult> {
         }
 
         List<DetectCodeLocation> codeLocations = new ArrayList<>();
-        File bdioFile = detectFileManager.findFile(dockerBomToolDirectory, dependenciesFilenamePattern)
+        File bdioFile = detectFileFinder.findFile(dockerBomToolDirectory, dependenciesFilenamePattern)
         if (bdioFile) {
             SimpleBdioDocument simpleBdioDocument = null
             BdioReader bdioReader = null

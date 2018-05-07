@@ -86,6 +86,7 @@ import com.blackducksoftware.integration.hub.detect.summary.BomToolSummaryResult
 import com.blackducksoftware.integration.hub.detect.summary.Result;
 import com.blackducksoftware.integration.hub.detect.summary.SummaryResultReporter;
 import com.blackducksoftware.integration.hub.detect.util.BdioFileNamer;
+import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
 
@@ -121,6 +122,9 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
 
     @Autowired
     private DetectFileManager detectFileManager;
+
+    @Autowired
+    private DetectFileFinder detectFileFinder;
 
     @Autowired
     private CodeLocationNameService codeLocationNameService;
@@ -238,7 +242,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         final List<Strategy> allStrategies = strategyManager.getAllStrategies();
         final List<String> excludedDirectories = detectConfiguration.getBomToolSearchDirectoryExclusions();
         final Boolean forceNestedSearch = detectConfiguration.getBomToolContinueSearch();
-        final int maxDepth = 1;
+        final int maxDepth = 2;
         final BomToolFinderOptions findOptions = new BomToolFinderOptions(excludedDirectories, forceNestedSearch, maxDepth);
         try {
             final BomToolFinder bomToolTreeWalker = new BomToolFinder();
@@ -345,7 +349,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         }
 
         if (StringUtils.isBlank(detectConfiguration.getAggregateBomName())) {
-            detectProject.processDetectCodeLocations(logger, detectFileManager, bdioFileNamer, codeLocationNameService);
+            detectProject.processDetectCodeLocations(logger, detectFileFinder, bdioFileNamer, codeLocationNameService);
 
             for (final BomToolType bomToolType : detectProject.getFailedBomTools()) {
                 bomToolSummaryResults.put(bomToolType, Result.FAILURE);
@@ -443,7 +447,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         if (StringUtils.isNotBlank(detectConfiguration.getProjectName())) {
             projectName = detectConfiguration.getProjectName();
         } else if (StringUtils.isBlank(projectName) && StringUtils.isNotBlank(detectConfiguration.getSourcePath())) {
-            final String finalSourcePathPiece = detectFileManager.extractFinalPieceFromPath(detectConfiguration.getSourcePath());
+            final String finalSourcePathPiece = detectFileFinder.extractFinalPieceFromPath(detectConfiguration.getSourcePath());
             projectName = finalSourcePathPiece;
         }
         return projectName;

@@ -57,7 +57,7 @@ class PearBomTool extends BomTool<PearApplicableResult> {
     @Override
     @TypeChecked
     public PearApplicableResult isBomToolApplicable(File directory) {
-        File packageXml = detectFileManager.findFile(directory, PACKAGE_XML_FILENAME)
+        File packageXml = detectFileFinder.findFile(directory, PACKAGE_XML_FILENAME)
 
         if (packageXml) {
             def pearExe = executableManager.getExecutablePathOrOverride(ExecutableType.PEAR, true, directory, detectConfiguration.getPearPath())

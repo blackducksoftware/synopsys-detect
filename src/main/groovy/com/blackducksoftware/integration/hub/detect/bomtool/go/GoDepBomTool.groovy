@@ -73,9 +73,9 @@ class GoDepBomTool extends BomTool<GoDepApplicableResult> {
     //TODO: BOM-FINDER Fix GO to not apply if other GOs apply.
     @Override
     public GoDepApplicableResult isBomToolApplicable(File directory) {
-        def goPkg = detectFileManager.findFile(directory, GOPKG_LOCK_FILENAME);
+        def goPkg = detectFileFinder.findFile(directory, GOPKG_LOCK_FILENAME);
         if (goPkg) {
-            def goFiles = detectFileManager.findFilesToDepth(directory, GOFILE_FILENAME_PATTERN, detectConfiguration.getSearchDepth())
+            def goFiles = detectFileFinder.findFilesToDepth(directory, GOFILE_FILENAME_PATTERN, detectConfiguration.getSearchDepth())
             if (goFiles) {
                 def goExe = executableManager.getExecutablePath(ExecutableType.GO, true, directory.toString())
                 if (goExe) {

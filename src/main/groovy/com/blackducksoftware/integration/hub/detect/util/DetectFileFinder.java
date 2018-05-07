@@ -41,8 +41,30 @@ import groovy.transform.TypeChecked;
 
 @Component
 @TypeChecked
-public class FileFinder {
-    private final Logger logger = LoggerFactory.getLogger(FileFinder.class);
+public class DetectFileFinder {
+    private final Logger logger = LoggerFactory.getLogger(DetectFileFinder.class);
+
+    public String extractFinalPieceFromPath(final String path) {
+        if (path == null || path.length() == 0) {
+            return "";
+        }
+        final String normalizedPath = FilenameUtils.normalizeNoEndSeparator(path, true);
+        return normalizedPath.substring(normalizedPath.lastIndexOf("/") + 1, normalizedPath.length());
+    }
+
+    public boolean directoryExists(final String sourcePath, final String relativePath) {
+        final File sourceDirectory = new File(sourcePath);
+        final File relativeDirectory = new File(sourceDirectory, relativePath);
+        return relativeDirectory.isDirectory();
+    }
+
+    public List<File> findFilesToDepth(final String sourceDirectory, final String filenamePattern, final int maxDepth) {
+        return findFilesToDepth(new File(sourceDirectory), filenamePattern, maxDepth);
+    }
+
+    public List<File> findDirectoriesContainingDirectoriesToDepth(final String sourceDirectory, final String filenamePattern, final int maxDepth) {
+        return findDirectoriesContainingDirectoriesToDepth(new File(sourceDirectory), filenamePattern, maxDepth);
+    }
 
     public boolean containsAllFiles(final String sourcePath, final String... filenamePatterns) {
         if (StringUtils.isBlank(sourcePath)) {

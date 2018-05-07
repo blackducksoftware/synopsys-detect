@@ -38,14 +38,14 @@ import org.springframework.stereotype.Component;
 import com.blackducksoftware.integration.hub.detect.DetectInfo;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
 @Component
 public class ExecutableManager {
     private final Logger logger = LoggerFactory.getLogger(ExecutableManager.class);
 
     @Autowired
-    private DetectFileManager detectFileManager;
+    private DetectFileFinder detectFileFinder;
 
     @Autowired
     private DetectInfo detectInfo;
@@ -108,7 +108,7 @@ public class ExecutableManager {
 
         for (final String pathPiece : path.split(File.pathSeparator)) {
             for (final String possibleExecutable : executables) {
-                final File foundFile = detectFileManager.findFile(pathPiece, possibleExecutable);
+                final File foundFile = detectFileFinder.findFile(pathPiece, possibleExecutable);
                 if (foundFile != null && foundFile.exists() && foundFile.canExecute()) {
                     return foundFile;
                 }

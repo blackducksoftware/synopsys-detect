@@ -14,7 +14,6 @@ import com.blackducksoftware.integration.hub.detect.extraction.requirement.PipIn
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.EvaluationContext;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluator;
-import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
@@ -58,7 +57,7 @@ public class PipInspectorRequirementEvaluator extends RequirementEvaluator<PipIn
     private File installInspector() throws IOException {
         final InputStream insptectorFileStream = getClass().getResourceAsStream(String.format("/%s", INSPECTOR_NAME));
         final String inpsectorScriptContents = IOUtils.toString(insptectorFileStream, StandardCharsets.UTF_8);
-        final File inspectorScript = detectFileManager.createFile(BomToolType.PIP, INSPECTOR_NAME);
+        final File inspectorScript = detectFileManager.createSharedFile("pip", INSPECTOR_NAME);
         return detectFileManager.writeToFile(inspectorScript, inpsectorScriptContents);
     }
 

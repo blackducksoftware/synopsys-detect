@@ -55,7 +55,7 @@ class CpanBomTool extends BomTool<CpanApplicableResult> {
 
     @Override
     public CpanApplicableResult isBomToolApplicable(File directory) {
-        def makefile = detectFileManager.findFile(directory, 'Makefile.PL')
+        def makefile = detectFileFinder.findFile(directory, 'Makefile.PL')
         if (makefile != null && makefile.exists()) {
             def cpanExecutablePath = executableManager.getExecutablePathOrOverride(ExecutableType.CPAN, true, directory, detectConfiguration.getCpanPath())
             def cpanmExecutablePath = executableManager.getExecutablePathOrOverride(ExecutableType.CPANM, true, directory, detectConfiguration.getCpanmPath())

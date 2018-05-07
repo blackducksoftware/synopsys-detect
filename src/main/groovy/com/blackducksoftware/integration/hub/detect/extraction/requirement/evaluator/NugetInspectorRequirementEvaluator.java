@@ -49,6 +49,7 @@ public class NugetInspectorRequirementEvaluator extends RequirementEvaluator<Nug
     public RequirementEvaluation<String> evaluate(final NugetInspectorRequirement requirement, final EvaluationContext context) {
         try {
             if (!hasResolvedInspector) {
+                hasResolvedInspector = true;
                 install();
             }
 
@@ -71,7 +72,7 @@ public class NugetInspectorRequirementEvaluator extends RequirementEvaluator<Nug
         final String nugetExecutable = executableManager.getExecutablePathOrOverride(ExecutableType.NUGET, true, detectConfiguration.getSourceDirectory(), detectConfiguration.getNugetPath());
         resolvedInspectorVersion = resolveInspectorVersion(nugetExecutable);
         if (resolvedInspectorVersion != null) {
-            resolvedNugetInspectorExecutable = installInspector(nugetExecutable, new File(detectConfiguration.getOutputDirectory(), "nuget"), resolvedInspectorVersion);
+            resolvedNugetInspectorExecutable = installInspector(nugetExecutable, detectFileManager.getSharedDirectory("nuget"), resolvedInspectorVersion);
             if (resolvedNugetInspectorExecutable == null) {
                 throw new DetectUserFriendlyException("Unable to install nuget inspector version from available nuget sources.", ExitCodeType.FAILURE_CONFIGURATION);
             }

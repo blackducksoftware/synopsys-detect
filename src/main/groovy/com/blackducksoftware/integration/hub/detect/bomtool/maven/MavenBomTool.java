@@ -67,8 +67,8 @@ class MavenBomTool extends BomTool<MavenApplicableResult> {
 
     @Override
     public MavenApplicableResult isBomToolApplicable(final File directory) {
-        final File pomXmlFile = detectFileManager.findFile(directory, POM_FILENAME);
-        final File pomWrapperFile = detectFileManager.findFile(directory, POM_WRAPPER_FILENAME);
+        final File pomXmlFile = detectFileFinder.findFile(directory, POM_FILENAME);
+        final File pomWrapperFile = detectFileFinder.findFile(directory, POM_WRAPPER_FILENAME);
 
         final boolean foundPomXml = null != pomXmlFile && pomXmlFile.exists();
         final boolean foundPomWrapper = null != pomWrapperFile && pomWrapperFile.exists();
@@ -113,7 +113,7 @@ class MavenBomTool extends BomTool<MavenApplicableResult> {
             final String includedModules = detectConfiguration.getMavenIncludedModuleNames();
             codeLocations = mavenCodeLocationPackager.extractCodeLocations(applicable.getDirectoryString(), mvnOutput.getStandardOutput(), excludedModules, includedModules);
 
-            final List<File> additionalTargets = detectFileManager.findFilesToDepth(applicable.getDirectory(), "target", detectConfiguration.getSearchDepth());
+            final List<File> additionalTargets = detectFileFinder.findFilesToDepth(applicable.getDirectory(), "target", detectConfiguration.getSearchDepth());
             if (null != additionalTargets && !additionalTargets.isEmpty()) {
                 for (final File additionalTarget : additionalTargets) {
                     hubSignatureScanner.registerPathToScan(ScanPathSource.MAVEN_SOURCE, additionalTarget);

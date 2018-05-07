@@ -20,7 +20,6 @@ import com.blackducksoftware.integration.hub.detect.extraction.requirement.Docke
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.EvaluationContext;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluator;
-import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
@@ -94,12 +93,11 @@ public class DockerInspectorRequirementEvaluator extends RequirementEvaluator<Do
     private String resolveInspectorVersion(final String bashExecutablePath, final File dockerInspectorShellScript) throws DetectUserFriendlyException {
         try {
             if ("latest".equalsIgnoreCase(detectConfiguration.getDockerInspectorVersion())) {
-                final File dockerPropertiesFile = detectFileManager.createFile(BomToolType.DOCKER, "application.properties");
-                final File dockerBomToolDirectory = dockerPropertiesFile.getParentFile();
+                final File inspectorDirectory = detectFileManager.getSharedDirectory("docker");
                 final List<String> bashArguments = new ArrayList<>();
                 bashArguments.add("-c");
                 bashArguments.add("\"" + dockerInspectorShellScript.getCanonicalPath() + "\" --version");
-                final Executable getDockerInspectorVersion = new Executable(dockerBomToolDirectory, bashExecutablePath, bashArguments);
+                final Executable getDockerInspectorVersion = new Executable(inspectorDirectory, bashExecutablePath, bashArguments);
 
                 final String inspectorVersion = executableRunner.execute(getDockerInspectorVersion).getStandardOutput().split(" ")[1];
                 logger.info(String.format("Resolved docker inspector version from latest to: %s", inspectorVersion));
@@ -144,7 +142,8 @@ public class DockerInspectorRequirementEvaluator extends RequirementEvaluator<Do
                         response.close();
                     }
                 }
-                shellScriptFile = detectFileManager.createFile(BomToolType.DOCKER, String.format("hub-docker-inspector-%s.sh", suppliedDockerVersion));
+                final File inspectorDirectory = detectFileManager.getSharedDirectory("docker");
+                shellScriptFile = new File(inspectorDirectory, String.format("hub-docker-inspector-%s.sh", suppliedDockerVersion));
                 detectFileManager.writeToFile(shellScriptFile, shellScriptContents);
                 shellScriptFile.setExecutable(true);
             }

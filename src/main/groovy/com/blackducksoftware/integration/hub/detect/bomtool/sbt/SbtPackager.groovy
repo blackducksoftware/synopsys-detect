@@ -32,7 +32,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtDepend
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtProject
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.reports.parse.SbtReportParser
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
+import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter
 
 import groovy.transform.TypeChecked
@@ -49,11 +49,11 @@ class SbtPackager {
     static final String PROJECT_FOLDER = 'project'
 
     ExternalIdFactory externalIdFactory;
-    DetectFileManager detectFileManager;
+    DetectFileFinder detectFileFinder;
 
-    SbtPackager(ExternalIdFactory externalIdFactory, DetectFileManager detectFileManager) {
+    SbtPackager(ExternalIdFactory externalIdFactory, DetectFileFinder detectFileFinder) {
         this.externalIdFactory = externalIdFactory;
-        this.detectFileManager = detectFileManager;
+        this.detectFileFinder = detectFileFinder;
     }
 
     List<SbtDependencyModule> makeModuleAggregate(List<File> reportFiles, String include, String exclude) {
@@ -105,7 +105,7 @@ class SbtPackager {
             result.projectExternalId = externalIdFactory.createMavenExternalId(modules[0].org, modules[0].name, modules[0].version)
         } else {
             logger.warn("Unable to find exactly one root module. Using source path for root project name.")
-            result.projectName = detectFileManager.extractFinalPieceFromPath(path)
+            result.projectName = detectFileFinder.extractFinalPieceFromPath(path)
             result.projectVersion = findFirstModuleVersion(modules, result.projectName, "root")
             result.projectExternalId = externalIdFactory.createPathExternalId(Forge.MAVEN, path)
 
@@ -130,8 +130,8 @@ class SbtPackager {
     }
 
     List<SbtDependencyModule> extractModules(String path, int depth, String included, String excluded) {
-        List<File> sbtFiles = detectFileManager.findFilesToDepth(path, BUILD_SBT_FILENAME, depth) as List
-        List<File> resolutionCaches = detectFileManager.findDirectoriesContainingDirectoriesToDepth(path, REPORT_SEARCH_PATTERN, depth) as List
+        List<File> sbtFiles = detectFileFinder.findFilesToDepth(path, BUILD_SBT_FILENAME, depth) as List
+        List<File> resolutionCaches = detectFileFinder.findDirectoriesContainingDirectoriesToDepth(path, REPORT_SEARCH_PATTERN, depth) as List
 
         logger.info("Found ${sbtFiles.size()} build.sbt files.");
         logger.info("Found ${resolutionCaches.size()} resolution caches.");
@@ -155,7 +155,7 @@ class SbtPackager {
             modules.addAll(foundModules)
         }
 
-        List<File> additionalTargets = detectFileManager.findFilesToDepth(path, 'target', depth) as List
+        List<File> additionalTargets = detectFileFinder.findFilesToDepth(path, 'target', depth) as List
         List<File> scanned = new ArrayList<File>()
         if (additionalTargets) {
             additionalTargets.each { file ->
@@ -203,7 +203,7 @@ class SbtPackager {
             logger.debug("Skipping reports in project folder: ${reportPath.getCanonicalPath()}")
         } else {
             usedReports.add(canonical)
-            List<File> reportFiles = detectFileManager.findFiles(reportPath, REPORT_FILE_PATTERN) as List
+            List<File> reportFiles = detectFileFinder.findFiles(reportPath, REPORT_FILE_PATTERN) as List
             if (reportFiles == null || reportFiles.size() <= 0) {
                 logger.debug("No reports were found in: ${reportPath}")
             } else {
