@@ -48,7 +48,7 @@ import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnectionB
 import com.blackducksoftware.integration.hub.rest.UriCombiner;
 import com.blackducksoftware.integration.log.IntLogger;
 import com.blackducksoftware.integration.log.Slf4jIntLogger;
-import com.blackducksoftware.integration.util.CIEnvironmentVariables;
+import com.blackducksoftware.integration.util.IntEnvironmentVariables;
 import com.google.gson.Gson;
 
 import groovy.transform.TypeChecked;
@@ -64,15 +64,16 @@ public class OfflineScanner {
     @Autowired
     private Gson gson;
 
-    boolean offlineScan(final DetectProject detectProject, final HubScanConfig hubScanConfig, final String hubSignatureScannerOfflineLocalPath) throws IllegalArgumentException, IntegrationException, DetectUserFriendlyException, InterruptedException {
+    boolean offlineScan(final DetectProject detectProject, final HubScanConfig hubScanConfig, final String hubSignatureScannerOfflineLocalPath)
+            throws IllegalArgumentException, IntegrationException, DetectUserFriendlyException, InterruptedException {
         final IntLogger intLogger = new Slf4jIntLogger(logger);
 
         final HubServerConfig hubServerConfig = new HubServerConfig(null, 0, (String) null, null, false, new UriCombiner());
 
-        final CIEnvironmentVariables ciEnvironmentVariables = new CIEnvironmentVariables();
-        ciEnvironmentVariables.putAll(System.getenv());
+        final IntEnvironmentVariables intEnvironmentVariables = new IntEnvironmentVariables();
+        intEnvironmentVariables.putAll(System.getenv());
 
-        final SimpleScanUtility simpleScanUtility = new SimpleScanUtility(intLogger, gson, hubServerConfig, ciEnvironmentVariables, hubScanConfig, detectProject.getProjectName(), detectProject.getProjectVersionName());
+        final SimpleScanUtility simpleScanUtility = new SimpleScanUtility(intLogger, gson, hubServerConfig, intEnvironmentVariables, hubScanConfig, detectProject.getProjectName(), detectProject.getProjectVersionName());
         CLILocation cliLocation = new CLILocation(intLogger, hubScanConfig.getToolsDir());
         if (StringUtils.isNotBlank(hubSignatureScannerOfflineLocalPath)) {
             cliLocation = new OfflineCLILocation(intLogger, new File(hubSignatureScannerOfflineLocalPath));
@@ -80,7 +81,7 @@ public class OfflineScanner {
 
         boolean cliInstalledOkay = checkCliInstall(cliLocation, intLogger);
         if (!cliInstalledOkay && StringUtils.isNotBlank(detectConfiguration.getHubSignatureScannerHostUrl())) {
-            installSignatureScannerFromUrl(intLogger, hubScanConfig, ciEnvironmentVariables);
+            installSignatureScannerFromUrl(intLogger, hubScanConfig, intEnvironmentVariables);
             cliInstalledOkay = checkCliInstall(cliLocation, intLogger);
         }
 
@@ -97,7 +98,7 @@ public class OfflineScanner {
         }
     }
 
-    private void installSignatureScannerFromUrl(final IntLogger intLogger, final HubScanConfig hubScanConfig, final CIEnvironmentVariables ciEnvironmentVariables) throws DetectUserFriendlyException {
+    private void installSignatureScannerFromUrl(final IntLogger intLogger, final HubScanConfig hubScanConfig, final IntEnvironmentVariables intEnvironmentVariables) throws DetectUserFriendlyException {
         try {
             OfflineScanner.logger.info(String.format("Attempting to download the signature scanner from %s", detectConfiguration.getHubSignatureScannerHostUrl()));
             final UnauthenticatedRestConnectionBuilder restConnectionBuilder = new UnauthenticatedRestConnectionBuilder();
@@ -107,7 +108,7 @@ public class OfflineScanner {
             restConnectionBuilder.setLogger(intLogger);
             final RestConnection restConnection = restConnectionBuilder.build();
             final CLIDownloadUtility cliDownloadUtility = new CLIDownloadUtility(intLogger, restConnection);
-            cliDownloadUtility.performInstallation(hubScanConfig.getToolsDir(), ciEnvironmentVariables, detectConfiguration.getHubSignatureScannerHostUrl(), "unknown", "hub-detect");
+            cliDownloadUtility.performInstallation(hubScanConfig.getToolsDir(), intEnvironmentVariables, detectConfiguration.getHubSignatureScannerHostUrl(), "unknown");
         } catch (final Exception e) {
             throw new DetectUserFriendlyException(String.format("There was a problem downloading the signature scanner from %s: %s", detectConfiguration.getHubSignatureScannerHostUrl(), e.getMessage()), e,
                     ExitCodeType.FAILURE_GENERAL_ERROR);

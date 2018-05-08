@@ -25,6 +25,9 @@ package com.blackducksoftware.integration.hub.detect;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -33,9 +36,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,7 +110,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     @Autowired
     private DetectPhoneHomeManager detectPhoneHomeManager;
 
-    //Has to be lazy because we need to use the final values from detectConfiguration to instantiate BomToolTreeWalker which are not ready immediately
+    // Has to be lazy because we need to use the final values from detectConfiguration to instantiate BomToolTreeWalker which are not ready immediately
     @Lazy
     @Autowired
     private BomToolTreeWalker bomToolTreeWalker;
@@ -158,25 +158,25 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
             logger.warn(String.format("Will not search for nested bom tools because no bom tools applied to %s", detectConfiguration.getSourcePath()));
         } else if (applicableBomTools.size() > 0 && detectConfiguration.getBomToolSearchDepth() > 0) {
             try {
-                File initialDirectory = detectConfiguration.getSourceDirectory();
+                final File initialDirectory = detectConfiguration.getSourceDirectory();
                 bomToolTreeWalker.startSearching(nestedBomTools, initialDirectory);
-            } catch (BomToolException e) {
+            } catch (final BomToolException e) {
                 bomToolSearchExitCodeType = ExitCodeType.FAILURE_BOM_TOOL;
                 logger.error(e.getMessage(), e);
-            } catch (DetectUserFriendlyException e) {
+            } catch (final DetectUserFriendlyException e) {
                 bomToolSearchExitCodeType = e.getExitCodeType();
                 logger.error(e.getMessage(), e);
             }
-            List<ApplicableDirectoryResult> results = bomToolTreeWalker.getResults();
+            final List<ApplicableDirectoryResult> results = bomToolTreeWalker.getResults();
             if (null != results && results.size() > 0) {
                 foundAnyBomTools = true;
-                for (ApplicableDirectoryResult result : results) {
+                for (final ApplicableDirectoryResult result : results) {
                     bomToolSummaryResults.put(result.getBomToolType(), Result.FAILURE);
                     final BomToolType bomToolType = result.getBomToolType();
                     final String bomToolTypeString = bomToolType.toString();
                     try {
-                        String applicablePath = result.getApplicableDirectory().getCanonicalPath();
-                        List<DetectCodeLocation> codeLocations = result.getCodeLocations();
+                        final String applicablePath = result.getApplicableDirectory().getCanonicalPath();
+                        final List<DetectCodeLocation> codeLocations = result.getCodeLocations();
                         if (null == codeLocations || codeLocations.isEmpty()) {
                             logger.error(String.format("Did not find any code locations from %s even though it applied to %s.", bomToolTypeString, applicablePath));
                         } else {
@@ -331,7 +331,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         } else if (StringUtils.isBlank(projectVersion)) {
             if ("timestamp".equals(detectConfiguration.getDefaultProjectVersionScheme())) {
                 final String timeformat = detectConfiguration.getDefaultProjectVersionTimeformat();
-                final String timeString = DateTimeFormat.forPattern(timeformat).withZoneUTC().print(DateTime.now().withZone(DateTimeZone.UTC));
+                final String timeString = DateTimeFormatter.ofPattern(timeformat).withZone(ZoneOffset.UTC).format(Instant.now().atZone(ZoneOffset.UTC));
                 projectVersion = timeString;
             } else {
                 projectVersion = detectConfiguration.getDefaultProjectVersionText();
