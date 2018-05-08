@@ -185,14 +185,15 @@ class NugetBomTool extends BomTool {
         DependencyGraphCombiner combiner = new DependencyGraphCombiner();
 
         codeLocations.forEach { DetectCodeLocation codeLocation ->
-            if (codeLocationsBySource.containsKey(codeLocation.getSourcePath())) {
+			String sourcePathKey = codeLocation.getSourcePath().toLowerCase();
+            if (codeLocationsBySource.containsKey(sourcePathKey)) {
                 logger.info("Multiple project code locations were generated for: " + codeLocation.sourcePath);
                 logger.info("This most likely means the same project exists in multiple solutions.")
                 logger.info("The code location's dependencies will be combined, in the future they will exist seperately for each solution.")
-                DetectCodeLocation destination = codeLocationsBySource.get(codeLocation.getSourcePath());
+                DetectCodeLocation destination = codeLocationsBySource.get(sourcePathKey);
                 combiner.addGraphAsChildrenToRoot((MutableDependencyGraph) destination.getDependencyGraph(), codeLocation.getDependencyGraph());
             } else {
-                codeLocationsBySource.put(codeLocation.getSourcePath(), codeLocation);
+                codeLocationsBySource.put(sourcePathKey, codeLocation);
             }
         }
 
