@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.yarn
+package com.blackducksoftware.integration.hub.detect.extraction.bomtool.yarn.parse
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component

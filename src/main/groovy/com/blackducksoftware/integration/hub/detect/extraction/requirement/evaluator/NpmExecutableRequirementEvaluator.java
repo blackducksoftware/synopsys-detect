@@ -50,7 +50,7 @@ public class NpmExecutableRequirementEvaluator extends RequirementEvaluator<NpmE
             if (foundNpm != null) {
                 return RequirementEvaluation.passed( foundNpm);
             }else {
-                return RequirementEvaluation.failed(null, "Np Npm executable was found.");
+                return RequirementEvaluation.failed(null, "No Npm executable was found.");
             }
         }catch (final Exception e) {
             return RequirementEvaluation.error(null);
