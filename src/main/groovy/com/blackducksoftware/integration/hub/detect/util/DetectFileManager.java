@@ -27,9 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -39,7 +37,6 @@ import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.ExtractionContext;
-import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 
 import groovy.transform.TypeChecked;
 
@@ -51,21 +48,18 @@ public class DetectFileManager {
     @Autowired
     private DetectConfiguration detectConfiguration;
 
-    private final String sharedUUID = "shared"; //UUID.randomUUID().toString();
+    private final String sharedUUID = "shared";
     private File sharedDirectory = null;
     private final Map<ExtractionContext, File> outputDirectories = new HashMap<>();
 
-    private Integer count = 0;
-    //New API
     public File getOutputDirectory(final ExtractionContext context) {
         if (outputDirectories.containsKey(context)) {
             return outputDirectories.get(context);
         }else {
-            final String directoryName = context.getClass().getSimpleName() + "-" + Integer.toString(context.hashCode()) + "-" + count.toString();
+            final String directoryName = context.getClass().getSimpleName() + "-" + Integer.toString(context.hashCode());
 
             final File newDirectory = new File(getExtractionFile(), directoryName);
             newDirectory.mkdir();
-            count++;
             outputDirectories.put(context, newDirectory);
             return newDirectory;
         }
@@ -123,48 +117,16 @@ public class DetectFileManager {
     }
 
     public void cleanupDirectories() {
-    }
-
-    //Old API
-    private final Set<File> directoriesToCleanup = new LinkedHashSet<>();
-
-    private File createDirectory(final BomToolType bomToolType) {
-        return createDirectory(bomToolType.toString().toLowerCase(), true);
-    }
-
-    private File createDirectory(final String directoryName) {
-        return createDirectory(detectConfiguration.getOutputDirectory(), directoryName, true);
-    }
-
-    private File createDirectory(final File directory, final String newDirectoryName) {
-        return createDirectory(directory, newDirectoryName, true);
-    }
-
-    private File createDirectory(final String directoryName, final boolean allowDelete) {
-        return createDirectory(detectConfiguration.getOutputDirectory(), directoryName, allowDelete);
-    }
-
-    private File createDirectory(final File directory, final String newDirectoryName, final boolean allowDelete) {
-        final File newDirectory = new File(directory, newDirectoryName);
-        newDirectory.mkdir();
-        if (detectConfiguration.getCleanupDetectFiles() && allowDelete) {
-            directoriesToCleanup.add(newDirectory);
-        }
-
-        return newDirectory;
-    }
-
-    private File createFile(final File directory, final String filename) {
-        final File newFile = new File(directory, filename);
         if (detectConfiguration.getCleanupDetectFiles()) {
-            newFile.deleteOnExit();
+            for (final File file : outputDirectories.values()) {
+                try {
+                    FileUtils.deleteDirectory(file);
+                } catch (final IOException e) {
+                    logger.error("Failed to cleanup: " + file.getPath());
+                    e.printStackTrace();
+                }
+            }
         }
-        return newFile;
-    }
-
-    private File createFile(final BomToolType bomToolType, final String filename) {
-        final File directory = createDirectory(bomToolType);
-        return createFile(directory, filename);
     }
 
 
