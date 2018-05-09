@@ -136,7 +136,7 @@ public class HubManager implements ExitCodeReporter {
                 }
             }
 
-            if (null != detectProject.getDetectCodeLocations() && !detectProject.getDetectCodeLocations().isEmpty() && !detectConfiguration.getHubSignatureScannerDisabled()) {
+            if ((null != detectProject.getDetectCodeLocations() && !detectProject.getDetectCodeLocations().isEmpty()) || !detectConfiguration.getHubSignatureScannerDisabled()) {
                 // only log BOM URL if we have updated it in some way
                 final ProjectService projectService = hubServiceWrapper.createProjectService();
                 final HubService hubService = hubServiceWrapper.createHubService();
