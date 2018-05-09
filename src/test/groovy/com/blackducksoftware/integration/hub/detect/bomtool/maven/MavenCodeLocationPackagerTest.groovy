@@ -164,22 +164,22 @@ class MavenCodeLocationPackagerTest {
     }
 
     @Test
-    public void testIsParseableDependencyLine() {
+    public void testIsDependencyTreeUpdates() {
         MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(null)
 
-        assertFalse(mavenCodeLocationPackager.isParseableDependencyLine("artifact com.google.guava:guava:jar:15.0:compile checking for updates from"))
+        assertTrue(mavenCodeLocationPackager.isDependencyTreeUpdates("artifact com.google.guava:guava:jar:15.0:compile checking for updates from"))
 
-        assertFalse(mavenCodeLocationPackager.isParseableDependencyLine("         artifact       com.google.guava:guava:         checking for updates"))
+        assertTrue(mavenCodeLocationPackager.isDependencyTreeUpdates("         artifact       com.google.guava:guava:         checking for updates"))
 
-        assertFalse(mavenCodeLocationPackager.isParseableDependencyLine("      checking for updates   artifact       com.google.guava:guava:      "))
+        assertTrue(mavenCodeLocationPackager.isDependencyTreeUpdates("      checking for updates   artifact       com.google.guava:guava:      "))
 
-        assertFalse(mavenCodeLocationPackager.isParseableDependencyLine("checking for updates"))
+        assertTrue(mavenCodeLocationPackager.isDependencyTreeUpdates("checking for updates"))
 
-        assertTrue(mavenCodeLocationPackager.isParseableDependencyLine("com.google.guava:guava:jar:15.0:compile"))
+        assertFalse(mavenCodeLocationPackager.isDependencyTreeUpdates("com.google.guava:guava:jar:15.0:compile"))
 
-        assertTrue(mavenCodeLocationPackager.isParseableDependencyLine("+- com.google.guava:guava:jar:15.0:compile"))
+        assertFalse(mavenCodeLocationPackager.isDependencyTreeUpdates("+- com.google.guava:guava:jar:15.0:compile"))
 
-        assertTrue(mavenCodeLocationPackager.isParseableDependencyLine("|  \\- com.google.guava:guava:jar:15.0:compile"))
+        assertFalse(mavenCodeLocationPackager.isDependencyTreeUpdates("|  \\- com.google.guava:guava:jar:15.0:compile"))
 
     }
 

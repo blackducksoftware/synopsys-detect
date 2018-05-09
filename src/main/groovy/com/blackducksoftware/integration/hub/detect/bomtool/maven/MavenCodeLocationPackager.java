@@ -86,7 +86,7 @@ class MavenCodeLocationPackager {
             if (!parsingProjectSection) {
                 continue;
             }
-            if (!isParseableDependencyLine(line)) {
+            if (isDependencyTreeUpdates(line)) {
                 continue;
             }
 
@@ -252,11 +252,11 @@ class MavenCodeLocationPackager {
         return doesLineContainSegmentsInOrder(line, "---", "maven-dependency-plugin", ":", "tree");
     }
 
-    private boolean isParseableDependencyLine(String line) {
+    private boolean isDependencyTreeUpdates(String line) {
         if (line.contains("checking for updates")) {
-            return false;
-        } else {
             return true;
+        } else {
+            return false;
         }
     }
 
