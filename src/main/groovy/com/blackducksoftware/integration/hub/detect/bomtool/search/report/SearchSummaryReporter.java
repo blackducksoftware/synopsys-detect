@@ -9,10 +9,12 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.search.StrategyFindResult;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.StrategyFindResult.FindType;
+import com.blackducksoftware.integration.hub.detect.diagnostic.DiagnosticsManager;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.Requirement;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation.EvaluationResult;
@@ -21,6 +23,9 @@ import com.blackducksoftware.integration.hub.detect.extraction.strategy.Strategy
 @Component
 public class SearchSummaryReporter {
     private final Logger logger = LoggerFactory.getLogger(SearchSummaryReporter.class);
+
+    @Autowired
+    public DiagnosticsManager diagnosticsManager;
 
     public void print(final List<StrategyFindResult> results) {
         final Map<File, List<StrategyFindResult>> byDirectory = new HashMap<>();
@@ -35,32 +40,72 @@ public class SearchSummaryReporter {
             byDirectory.get(directory).add(result);
         }
 
-        printDirectories(byDirectory);
+        printDirectoriesInfo(byDirectory);
+        printDirectoriesDebug(byDirectory);
 
     }
 
-    private void printDirectories(final Map<File, List<StrategyFindResult>> byDirectory) {
+    private void printDirectoriesInfo(final Map<File, List<StrategyFindResult>> byDirectory) {
+
+        logger.info("");
+        logger.info("");
+        logger.info(ReportConstants.HEADING);
+        logger.info("Search results");
+        logger.info(ReportConstants.HEADING);
         for (final File file : byDirectory.keySet()) {
             final List<StrategyFindResult> results = byDirectory.get(file);
 
-            printSeperator();
-            logger.info("Search results for directory");
-            logger.info(file.getAbsolutePath());
-            printSeperator();
-            final List<String> toPrint = new ArrayList<>();
+            final List<String> applied = new ArrayList<>();
+
             for (final StrategyFindResult result : results) {
                 final String strategyName = result.strategy.getBomToolType() + " - " + result.strategy.getName();
                 if (result.type == FindType.APPLIES) {
-                    toPrint.add("APPLIES: " + strategyName);
-                } else if (result.type == FindType.YIELDED) {
-                    toPrint.add("YIELDED: " + strategyName + " - " + summarizeYielded(result));
-                } else if (result.type == FindType.NEEDS_NOT_MET) {
-                    toPrint.add("SKIPPED: " + strategyName + " - " + summarizeFailed(result));
+                    applied.add(strategyName);
                 }
             }
-            toPrint.stream().sorted().forEach(it -> logger.info(it));
-            printSeperator();
+            if (applied.size() > 0) {
+
+                logger.info(file.getAbsolutePath());
+                logger.info("\tAPPLIES: " + applied.stream().sorted().collect(Collectors.joining(", ")));
+
+            }
         }
+        logger.info(ReportConstants.HEADING);
+        logger.info("");
+        logger.info("");
+    }
+
+    private void printDirectoriesDebug(final Map<File, List<StrategyFindResult>> byDirectory) {
+        for (final File file : byDirectory.keySet()) {
+            final List<StrategyFindResult> results = byDirectory.get(file);
+
+            final List<String> toPrint = new ArrayList<>();
+
+            for (final StrategyFindResult result : results) {
+                final String strategyName = result.strategy.getBomToolType() + " - " + result.strategy.getName();
+                if (result.type == FindType.APPLIES) {
+                    toPrint.add("      APPLIED: " + strategyName);
+                } else if (result.type == FindType.YIELDED) {
+                    toPrint.add("DID NOT APPLY: " + strategyName + " - " + summarizeYielded(result));
+                } else if (result.type == FindType.NEEDS_NOT_MET) {
+                    toPrint.add("DID NOT APPLY: " + strategyName + " - " + summarizeFailed(result));
+                }
+            }
+            if (toPrint.size() > 0) {
+
+                debug(ReportConstants.HEADING);
+                debug("Detailed search results for directory");
+                debug(file.getAbsolutePath());
+                debug(ReportConstants.HEADING);
+                toPrint.stream().sorted().forEach(it -> debug(it));
+                debug(ReportConstants.HEADING);
+            }
+        }
+    }
+
+    private void debug(final String line) {
+        logger.debug(line);
+        diagnosticsManager.printToSearchReport(line);
     }
 
     private String summarizeYielded(final StrategyFindResult result) {
@@ -84,9 +129,5 @@ public class SearchSummaryReporter {
             }
         }
         return "Unkown";
-    }
-
-    private void printSeperator() {
-        logger.info("------------------------------------------------------------------------------------------------------");
     }
 }

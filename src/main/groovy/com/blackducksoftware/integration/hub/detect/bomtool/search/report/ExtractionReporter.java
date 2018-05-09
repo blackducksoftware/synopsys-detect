@@ -16,18 +16,18 @@ public class ExtractionReporter {
     private final Logger logger = LoggerFactory.getLogger(ExtractionReporter.class);
 
     public void startedExtraction(final Strategy strategy, final ExtractionContext context) {
-        printSeperator();
-        printSeperator();
+        logger.info(ReportConstants.SEPERATOR);
         final String strategyName = strategy.getBomToolType() + " - " + strategy.getName();
         logger.info("Starting extraction: " + strategyName);
+        logger.info("Identifier: " + Integer.toString(context.hashCode()));
         logger.info("Extractor: " + strategy.getExtractorClass().getSimpleName());
         logger.info("Context: " + strategy.getExtractionContextClass().getSimpleName());
         printObject(context);
-        printSeperator();
+        logger.info(ReportConstants.SEPERATOR);
     }
 
     public void endedExtraction(final Extraction result) {
-        printSeperator();
+        logger.info(ReportConstants.SEPERATOR);
         logger.info("Finished extraction: " + result.result.toString());
         logger.info("Code locations found: " + result.codeLocations.size());
         if (result.result == ExtractionResult.Exception) {
@@ -35,11 +35,7 @@ public class ExtractionReporter {
         } else if (result.result == ExtractionResult.Failure) {
             logger.info(result.description);
         }
-        printSeperator();
-    }
-
-    private void printSeperator() {
-        logger.info("------------------------------------------------------------------------------------------------------");
+        logger.info(ReportConstants.SEPERATOR);
     }
 
     private void printObject(final Object guy) {

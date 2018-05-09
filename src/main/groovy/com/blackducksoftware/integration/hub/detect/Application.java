@@ -51,6 +51,7 @@ import com.blackducksoftware.integration.hub.bdio.BdioTransformer;
 import com.blackducksoftware.integration.hub.bdio.SimpleBdioFactory;
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import com.blackducksoftware.integration.hub.detect.diagnostic.DiagnosticsManager;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
@@ -133,6 +134,10 @@ public class Application implements ApplicationRunner {
     @Autowired
     private StrategyManager strategyManager;
 
+    @Autowired
+    private DiagnosticsManager diagnosticsManager;
+
+
     private ExitCodeType exitCodeType = ExitCodeType.SUCCESS;
 
     public static void main(final String[] args) {
@@ -172,6 +177,8 @@ public class Application implements ApplicationRunner {
             detectOptionManager.postInit();
 
             logger.info("Configuration processed completely.");
+
+            diagnosticsManager.init();
 
             if (!detectConfiguration.getSuppressConfigurationOutput()) {
                 final DetectInfoPrinter infoPrinter = new DetectInfoPrinter();
@@ -233,6 +240,8 @@ public class Application implements ApplicationRunner {
             if (!detectConfiguration.getSuppressResultsOutput()) {
                 detectSummary.logResults(new Slf4jIntLogger(logger), exitCodeType);
             }
+
+            diagnosticsManager.createDiagnosticZip();
 
             detectFileManager.cleanupDirectories();
         }

@@ -9,22 +9,24 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.search.StrategyFindResult;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.StrategyFindResult.FindType;
+import com.blackducksoftware.integration.hub.detect.diagnostic.DiagnosticsManager;
 import com.blackducksoftware.integration.hub.detect.extraction.Extraction.ExtractionResult;
 
 @Component
 public class ExtractionSummaryReporter {
     private final Logger logger = LoggerFactory.getLogger(PreparationSummaryReporter.class);
 
+    @Autowired
+    public DiagnosticsManager diagnosticsManager;
+
     public void print(final List<StrategyFindResult> results) {
         final Map<File, List<StrategyFindResult>> byDirectory = new HashMap<>();
         for (final StrategyFindResult result : results) {
-            if (result.context == null || result.context.getDirectory() == null) {
-                logger.info("WUT");
-            }
             final File directory = result.context.getDirectory();
             if (!byDirectory.containsKey(directory)) {
                 byDirectory.put(directory, new ArrayList<>());
@@ -90,36 +92,34 @@ public class ExtractionSummaryReporter {
             infos.add(info);
         }
         final List<Info> stream = infos.stream().sorted((o1, o2) -> o1.directory.compareTo(o2.directory)).collect(Collectors.toList());
-
-        logger.info("Extraction results:");
+        logger.info("");
+        logger.info("");
+        info(ReportConstants.HEADING);
+        info("Extraction results:");
+        info(ReportConstants.HEADING);
         stream.stream().sorted((o1, o2) -> o1.codeLocations.compareTo(o2.codeLocations)).forEach(it -> {
             if (it.extracted > 0) {
-                logger.info(it.directory);
-                logger.info(it.codeLocations);
+                info(it.directory);
+                info(it.codeLocations);
                 if (!it.success.equals("")) {
-                    logger.info("\t Success: " + it.success);
+                    info("\t   Success: " + it.success);
                 }
                 if (!it.failed.equals("")) {
-                    logger.info("\t Failure: " + it.failed);
+                    info("\t   Failure: " + it.failed);
                 }
                 if (!it.exception.equals("")) {
-                    logger.info("\t Exception: " + it.exception);
+                    info("\t Exception: " + it.exception);
                 }
             }
         });
+        info(ReportConstants.HEADING);
+        logger.info("");
+        logger.info("");
+    }
 
-        printSeperator();
-
-        logger.info("Not applicable:");
-
-        stream.stream().forEach(it -> {
-            if (it.applied == 0) {
-                logger.info("\t" + it.directory);
-            }
-        });
-
-        printSeperator();
-
+    private void info(final String line) {
+        logger.info(line);
+        diagnosticsManager.printToExtractionReport(line);
     }
 
     private class Info {
@@ -133,7 +133,4 @@ public class ExtractionSummaryReporter {
         public int extracted;
     }
 
-    private void printSeperator() {
-        logger.info("------------------------------------------------------------------------------------------------------");
-    }
 }
