@@ -200,12 +200,22 @@ public class Application implements ApplicationRunner {
                 return;
             }
 
-            if (!detectConfiguration.getHubOfflineMode()) {
-                hubServiceWrapper.init();
+            if (detectConfiguration.getHubOfflineForceSuccess()) {
+                try {
+                    logger.info("Testing Hub connection to see if Detect should run");
+                    hubServiceWrapper.assertHubConnection(new SilentLogger());
+                } catch (final IntegrationException e) {
+                    logger.info("Not able to initialize Hub conection: " + e.getMessage());
+                    logger.info("Detect will not run");
+                    logger.debug("Connection failure stack trace: ", e);
+                    return;
+                }
             }
 
             if (detectConfiguration.getHubOfflineMode()) {
                 detectPhoneHomeManager.initOffline();
+            } else {
+                hubServiceWrapper.init();
             }
 
             final DetectProject detectProject = detectProjectManager.createDetectProject();
