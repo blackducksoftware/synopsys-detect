@@ -282,7 +282,7 @@ public class DetectConfiguration {
         try {
             if (bomToolSearchExclusionDefaults) {
                 final String fileContent = ResourceUtil.getResourceAsString(BomToolFinder.class, "/excludedDirectoriesBomToolSearch.txt", StandardCharsets.UTF_8);
-                bomToolSearchDirectoryExclusions.addAll(Arrays.asList(fileContent.split("\n")));
+                bomToolSearchDirectoryExclusions.addAll(Arrays.asList(fileContent.split("\r?\n")));
             }
         } catch (final IOException e) {
             throw new DetectUserFriendlyException(String.format("Could not determine the directories to exclude from the bom tool search. %s", e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);

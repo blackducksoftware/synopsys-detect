@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.search.StrategyFindResult;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.StrategyFindResult.FindType;
+import com.blackducksoftware.integration.hub.detect.bomtool.search.StrategyFindResult.Reason;
 import com.blackducksoftware.integration.hub.detect.diagnostic.DiagnosticsManager;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.Requirement;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation;
@@ -85,10 +86,16 @@ public class SearchSummaryReporter {
                 final String strategyName = result.strategy.getBomToolType() + " - " + result.strategy.getName();
                 if (result.type == FindType.APPLIES) {
                     toPrint.add("      APPLIED: " + strategyName);
-                } else if (result.type == FindType.YIELDED) {
-                    toPrint.add("DID NOT APPLY: " + strategyName + " - " + summarizeYielded(result));
-                } else if (result.type == FindType.NEEDS_NOT_MET) {
-                    toPrint.add("DID NOT APPLY: " + strategyName + " - " + summarizeFailed(result));
+                } else {
+                    if (result.reason == Reason.YIELDED) {
+                        toPrint.add("DID NOT APPLY: " + strategyName + " - YIELDED - " + summarizeYielded(result));
+                    } else if (result.reason == Reason.NEEDS_NOT_MET) {
+                        toPrint.add("DID NOT APPLY: " + strategyName + " - NEEDS NOT MET - " + summarizeFailed(result));
+                    } else if (result.reason == Reason.MAX_DEPTH_EXCEEDED) {
+                        toPrint.add("DID NOT APPLY: " + strategyName + " - MAX DEPTH EXCEEDED - " + summarizeDepth(result));
+                    } else if (result.reason == Reason.NOT_NESTABLE) {
+                        toPrint.add("DID NOT APPLY: " + strategyName + " - CAN NOT NEST - " + summarizeNested(result));
+                    }
                 }
             }
             if (toPrint.size() > 0) {
@@ -106,6 +113,14 @@ public class SearchSummaryReporter {
     private void debug(final String line) {
         logger.debug(line);
         diagnosticsManager.printToSearchReport(line);
+    }
+
+    private String summarizeDepth(final StrategyFindResult result) {
+        return "At depth of " + result.depth + " but max depth is " + result.strategy.getSearchOptions().getMaxDepth();
+    }
+
+    private String summarizeNested(final StrategyFindResult result) {
+        return "and " + result.nested.stream().map(it -> it.getName()).collect(Collectors.joining(",")) + " already applied in a parent directory.";
     }
 
     private String summarizeYielded(final StrategyFindResult result) {

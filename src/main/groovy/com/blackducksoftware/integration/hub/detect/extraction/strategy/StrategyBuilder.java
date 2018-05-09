@@ -33,6 +33,9 @@ public class StrategyBuilder<C extends ExtractionContext, E extends Extractor<C>
 
     private final Set<Strategy> yieldsToStrategies = new HashSet<>();
 
+    private boolean nestable = false;
+    private int maxDepth = Integer.MAX_VALUE;
+
     public StrategyBuilder(final Class<C> extractionContextClass, final Class<E> extractorClass) {
         this.extractionContextClass = extractionContextClass;
         this.extractorClass = extractorClass;
@@ -91,6 +94,20 @@ public class StrategyBuilder<C extends ExtractionContext, E extends Extractor<C>
 
     public StrategyBuilder<C, E> yieldsTo(final Strategy strategy) {
         yieldsToStrategies.add(strategy);
+        return this;
+    }
+
+    public StrategyBuilder<C, E> nestable() {
+        return nestable(true);
+    }
+
+    public StrategyBuilder<C, E> nestable(final boolean nestable) {
+        this.nestable = nestable;
+        return this;
+    }
+
+    public StrategyBuilder<C, E> maxDepth(final int maxDepth) {
+        this.maxDepth = maxDepth;
         return this;
     }
 
@@ -209,7 +226,8 @@ public class StrategyBuilder<C extends ExtractionContext, E extends Extractor<C>
 
 
     public Strategy<C,E> build() {
-        return new Strategy<>(name, bomToolType, requirementActionMap, demandActionMap, extractionContextClass, extractorClass, yieldsToStrategies);
+        final StrategySearchOptions searchOptions = new StrategySearchOptions(maxDepth, nestable);
+        return new Strategy<>(name, bomToolType, requirementActionMap, demandActionMap, extractionContextClass, extractorClass, yieldsToStrategies, searchOptions);
     }
 
 }

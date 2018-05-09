@@ -38,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.search.StrategyFindResult.FindType;
+import com.blackducksoftware.integration.hub.detect.bomtool.search.StrategyFindResult.Reason;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
@@ -47,37 +48,19 @@ import com.blackducksoftware.integration.hub.detect.extraction.strategy.evaluati
 import com.blackducksoftware.integration.hub.detect.extraction.strategy.evaluation.StrategyEvaluator;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 
+@SuppressWarnings({ "rawtypes" })
 public class BomToolFinder {
     private final Logger logger = LoggerFactory.getLogger(BomToolFinder.class);
-    private final List<String> ignore = new ArrayList<>();
-    // Think three stages:
-    // 1. Search for applicable (nuget applies).
-    //      Complications:
-    //          Docker: not the most straightforward applies - uses properties not necessarily files to indicate
-    //          GO uses other GO applicables to decide
-    //          NPM uses YARN applicables to decide
-    // 2. Check the environment (nuget exists, install inspector) just once (instead of every applicable).
-    //      Complications:
-    //          Some executable inside the source directory, gradle?
-    //          Right now some inspectors resolve during configuration init if the BomTool applies.
-    //          We will no longer know during init if the bom tool applies.
-    // 3. Execute applicable (nuget extracts)
-    //      This will have multiple stages. Might be complex due to cleanup.
-    //      I'd also like to let bom tools nominate project names
-    // 4. Transform results.
 
     public List<StrategyFindResult> findApplicableBomTools(final Set<Strategy> strategies, final StrategyEvaluator strategyEvaluator, final File initialDirectory, final BomToolFinderOptions options) throws BomToolException, DetectUserFriendlyException {
-        ignore.add("node_modules");
-        ignore.add("bin");
-        ignore.add(".git");
 
         final List<File> subDirectories = new ArrayList<>();
         subDirectories.add(initialDirectory);
         final List<Strategy> orderedStrategies = determineOrder(strategies);
-        return findApplicableBomTools(orderedStrategies, strategyEvaluator, subDirectories, 1, options);
+        return findApplicableBomTools(orderedStrategies, strategyEvaluator, subDirectories, new HashSet<Strategy>(), 0, options);
     }
 
-    private List<StrategyFindResult> findApplicableBomTools(final List<Strategy> orderedStrategies, final StrategyEvaluator strategyEvaluator, final List<File> directoriesToSearch, final int depth, final BomToolFinderOptions options)
+    private List<StrategyFindResult> findApplicableBomTools(final List<Strategy> orderedStrategies, final StrategyEvaluator strategyEvaluator, final List<File> directoriesToSearch, final Set<Strategy> appliedBefore, final int depth, final BomToolFinderOptions options)
             throws BomToolException, DetectUserFriendlyException {
 
         final List<StrategyFindResult> results = new ArrayList<>();
@@ -91,7 +74,7 @@ public class BomToolFinder {
         }
 
         for (final File directory : directoriesToSearch) {
-            if (ignore.contains(directory.getName())){
+            if (options.getExcludedDirectories().contains(directory.getName())){
                 continue;
             }
 
@@ -103,18 +86,19 @@ public class BomToolFinder {
             final List<Strategy> remainingStrategies = new ArrayList<>();
             final Set<Strategy> alreadyApplied = new HashSet<>();
             for (final Strategy strategy : orderedStrategies) {
-                final StrategyFindResult result = processStrategy(strategy, strategyEvaluator, evaluationContext, alreadyApplied);
+                final StrategyFindResult result = processStrategy(strategy, strategyEvaluator, evaluationContext, alreadyApplied, appliedBefore, depth);
                 if (result.type == FindType.APPLIES) {
                     alreadyApplied.add(strategy);
-                    remainingStrategies.add(strategy);
-                } else {
-                    remainingStrategies.add(strategy);
                 }
+                remainingStrategies.add(strategy);
                 results.add(result);
             }
             if (remainingStrategies.size() > 0) {
+                final Set<Strategy> everApplied = new HashSet<>();
+                everApplied.addAll(alreadyApplied);
+                everApplied.addAll(appliedBefore);
                 final List<File> subdirectories = getSubDirectories(directory, options.getExcludedDirectories());
-                final List<StrategyFindResult> recursiveResults = findApplicableBomTools(remainingStrategies, strategyEvaluator, subdirectories, depth + 1, options);
+                final List<StrategyFindResult> recursiveResults = findApplicableBomTools(remainingStrategies, strategyEvaluator, subdirectories, everApplied, depth + 1, options);
                 results.addAll(recursiveResults);
             }
             logger.debug(directory + ": " + applicableTypes.stream().map(it -> it.toString()).collect(Collectors.joining(", ")));
@@ -123,21 +107,28 @@ public class BomToolFinder {
         return results;
     }
 
-    private StrategyFindResult processStrategy(final Strategy strategy, final StrategyEvaluator strategyEvaluator, final EvaluationContext context, final Set<Strategy> alreadyApplied) {
+    private StrategyFindResult processStrategy(final Strategy strategy, final StrategyEvaluator strategyEvaluator, final EvaluationContext context, final Set<Strategy> appliedCurrent, final Set<Strategy> appliedBefore, final int depth) {
         final StrategyEvaluation evaluation = new StrategyEvaluation();
-        if (containsAnyYield(strategy, alreadyApplied, evaluation)) {
-            return new StrategyFindResult(strategy, FindType.YIELDED, evaluation, context);
+        if (depth > strategy.getSearchOptions().getMaxDepth()) {
+            final StrategyFindResult result = new StrategyFindResult(strategy, FindType.DOES_NOT_APPLY, Reason.MAX_DEPTH_EXCEEDED, evaluation, context);
+            result.depth = depth;
+            return result;
+        } else if (!strategy.getSearchOptions().getNestable() && appliedBefore.size() > 0) {
+            final StrategyFindResult result = new StrategyFindResult(strategy, FindType.DOES_NOT_APPLY, Reason.NOT_NESTABLE, evaluation, context);
+            result.nested = appliedBefore;
+            return result;
+        } else if (containsAnyYield(strategy, appliedCurrent, evaluation)) {
+            return new StrategyFindResult(strategy, FindType.DOES_NOT_APPLY, Reason.YIELDED, evaluation, context);
         } else {
             strategyEvaluator.fulfillsRequirements(evaluation, strategy, context);
             if (evaluation.areNeedsMet()) {
-                return new StrategyFindResult(strategy, FindType.APPLIES, evaluation, context);
+                return new StrategyFindResult(strategy, FindType.APPLIES, Reason.NONE, evaluation, context);
             }else {
-                return new StrategyFindResult(strategy, FindType.NEEDS_NOT_MET, evaluation, context);
+                return new StrategyFindResult(strategy, FindType.DOES_NOT_APPLY, Reason.NEEDS_NOT_MET, evaluation, context);
             }
         }
     }
 
-    @SuppressWarnings({ "rawtypes" })
     private List<Strategy> determineOrder(final Set<Strategy> allStrategies) throws DetectUserFriendlyException{
         final Set<Strategy> remaining = new HashSet<>(allStrategies);
         final List<Strategy> ordered = new ArrayList<>();

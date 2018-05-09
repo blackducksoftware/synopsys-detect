@@ -11,6 +11,7 @@ public abstract class StrategyProvider {
     protected List<Strategy> allStrategies = new ArrayList<>();
 
     public abstract void init();
+    public void lateInit() {}
 
     public List<Strategy> getAllStrategies(){
         return allStrategies;
@@ -25,4 +26,5 @@ public abstract class StrategyProvider {
     public <C extends ExtractionContext, E extends Extractor<C>> StrategyBuilder<C, E> newStrategyBuilder(final Class<C> contextClass, final Class<E> extractorClass) {
         return new StrategyBuilder<>(contextClass, extractorClass);
     }
+
 }

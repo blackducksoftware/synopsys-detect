@@ -2,9 +2,11 @@ package com.blackducksoftware.integration.hub.detect.bomtool.search.report;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -40,9 +42,11 @@ public class ExtractionSummaryReporter {
 
     private void printDirectories(final Map<File, List<StrategyFindResult>> byDirectory) {
         final List<Info> infos = new ArrayList<>();
-        for (final File file : byDirectory.keySet()) {
+
+        byDirectory.keySet().stream().forEach(file -> {
             final List<StrategyFindResult> results = byDirectory.get(file);
             int codelocations = 0;
+            final List<String> codelocationnames = new ArrayList<>();
             int applied = 0;
             int demanded = 0;
             int extracted = 0;
@@ -62,6 +66,12 @@ public class ExtractionSummaryReporter {
                 }
                 if (result.type == FindType.APPLIES && result.evaluation.areNeedsMet() && result.evaluation.areDemandsMet()) {
                     codelocations += result.evaluation.extraction.codeLocations.size();
+
+                    result.evaluation.extraction.codeLocations.stream().forEach(it -> {
+                        final List<String> pieces = Arrays.asList(it.getBomToolProjectExternalId().getExternalIdPieces());
+                        final String name = pieces.stream().collect(Collectors.joining("\\"));
+                        codelocationnames.add(name);
+                    });
                     if (result.evaluation.extraction.result == ExtractionResult.Success) {
                         if (success.length() != 0) {
                             success += ", ";
@@ -83,6 +93,7 @@ public class ExtractionSummaryReporter {
             final Info info = new Info();
             info.directory = file.getAbsolutePath();
             info.codeLocations = "\t Code Locations: " + Integer.toString(codelocations);
+            info.codeLocationNames = codelocationnames;
             info.success = success;
             info.failed = failed;
             info.exception = exception;
@@ -90,25 +101,37 @@ public class ExtractionSummaryReporter {
             info.demanded = demanded;
             info.extracted = extracted;
             infos.add(info);
-        }
-        final List<Info> stream = infos.stream().sorted((o1, o2) -> o1.directory.compareTo(o2.directory)).collect(Collectors.toList());
+        });
+        final List<Info> stream = infos.stream().sorted((o1, o2) -> {
+            final String[] pieces1 = o1.directory.split(Pattern.quote(File.separator));
+            final String[] pieces2 = o2.directory.split(Pattern.quote(File.separator));
+            final int min = Math.min(pieces1.length, pieces2.length);
+            for (int i = 0; i < min; i++) {
+                final int compared = pieces1[i].compareTo(pieces2[i]);
+                if (compared != 0){
+                    return compared;
+                }
+            }
+            return Integer.compare(pieces1.length, pieces2.length);
+        }).collect(Collectors.toList());
         logger.info("");
         logger.info("");
         info(ReportConstants.HEADING);
         info("Extraction results:");
         info(ReportConstants.HEADING);
-        stream.stream().sorted((o1, o2) -> o1.codeLocations.compareTo(o2.codeLocations)).forEach(it -> {
+        stream.stream().forEach(it -> {
             if (it.extracted > 0) {
                 info(it.directory);
                 info(it.codeLocations);
+                it.codeLocationNames.stream().forEach(name -> info("\t\t" + name));
                 if (!it.success.equals("")) {
-                    info("\t   Success: " + it.success);
+                    info("\tSuccess: " + it.success);
                 }
                 if (!it.failed.equals("")) {
-                    info("\t   Failure: " + it.failed);
+                    info("\tFailure: " + it.failed);
                 }
                 if (!it.exception.equals("")) {
-                    info("\t Exception: " + it.exception);
+                    info("\tException: " + it.exception);
                 }
             }
         });
@@ -124,6 +147,7 @@ public class ExtractionSummaryReporter {
 
     private class Info {
         public String codeLocations;
+        public List<String> codeLocationNames;
         public String directory;
         public String success;
         public String failed;

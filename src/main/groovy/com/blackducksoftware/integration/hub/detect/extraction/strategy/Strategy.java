@@ -22,8 +22,9 @@ public class Strategy<C extends ExtractionContext, E extends Extractor<C>>  {
     private final Class<E> extractorClass;
 
     private final Set<Strategy> yieldsToStrategies;
+    private final StrategySearchOptions searchOptions;
 
-    public Strategy(final String name, final BomToolType bomToolType, final Map<Requirement, ExtractionContextAction> needActionMap, final Map<Requirement, ExtractionContextAction> demandActionMap, final Class<C> extractionContextClass, final Class<E> extractorClass, final Set<Strategy> yieldsToStrategies) {
+    public Strategy(final String name, final BomToolType bomToolType, final Map<Requirement, ExtractionContextAction> needActionMap, final Map<Requirement, ExtractionContextAction> demandActionMap, final Class<C> extractionContextClass, final Class<E> extractorClass, final Set<Strategy> yieldsToStrategies, final StrategySearchOptions searchOptions) {
         this.name = name;
         this.bomToolType = bomToolType;
         this.needActionMap = needActionMap;
@@ -31,7 +32,10 @@ public class Strategy<C extends ExtractionContext, E extends Extractor<C>>  {
         this.extractionContextClass = extractionContextClass;
         this.extractorClass = extractorClass;
         this.yieldsToStrategies = yieldsToStrategies;
+        this.searchOptions = searchOptions;
     }
+
+
 
     public String getName() {
         return name;
@@ -67,5 +71,11 @@ public class Strategy<C extends ExtractionContext, E extends Extractor<C>>  {
 
     public ExtractionContextAction getDemandAction(final Requirement requirement) {
         return demandActionMap.get(requirement);
+    }
+
+
+
+    public StrategySearchOptions getSearchOptions() {
+        return searchOptions;
     }
 }

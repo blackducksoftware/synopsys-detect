@@ -21,6 +21,9 @@ public class StrategyManager {
             provider.init();
         }
         for (final StrategyProvider provider : strategyProviders) {
+            provider.lateInit();
+        }
+        for (final StrategyProvider provider : strategyProviders) {
             allStrategies.addAll(provider.getAllStrategies());
         }
     }

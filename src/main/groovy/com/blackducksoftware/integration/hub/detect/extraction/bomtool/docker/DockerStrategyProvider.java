@@ -28,6 +28,7 @@ public class DockerStrategyProvider extends StrategyProvider {
                 .demandsStandardExecutable(StandardExecutableType.BASH).as((context, file) -> context.bashExe = file)
                 .demandsStandardExecutable(StandardExecutableType.DOCKER).as((context, file) -> context.dockerExe = file)
                 .demands(new DockerInspectorRequirement(), (context, info) -> context.dockerInspectorInfo = info)
+                .maxDepth(0)
                 .build();
 
         final Strategy tarStrategy = newStrategyBuilder(DockerContext.class, DockerExtractor.class)
@@ -37,6 +38,7 @@ public class DockerStrategyProvider extends StrategyProvider {
                 .demandsStandardExecutable(StandardExecutableType.BASH).as((context, file) -> context.bashExe = file)
                 .demandsStandardExecutable(StandardExecutableType.DOCKER).as((context, file) -> context.dockerExe = file)
                 .demands(new DockerInspectorRequirement(), (context, info) -> context.dockerInspectorInfo = info)
+                .maxDepth(0)
                 .build();
 
         add(imageStrategy, tarStrategy);

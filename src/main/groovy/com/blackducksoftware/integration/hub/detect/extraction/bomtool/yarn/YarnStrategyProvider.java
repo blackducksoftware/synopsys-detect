@@ -1,9 +1,12 @@
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.yarn;
 
+import org.springframework.stereotype.Component;
+
 import com.blackducksoftware.integration.hub.detect.extraction.strategy.Strategy;
 import com.blackducksoftware.integration.hub.detect.extraction.strategy.StrategyProvider;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 
+@Component
 public class YarnStrategyProvider extends StrategyProvider {
 
     public static final String YARN_LOCK_FILENAME= "yarn.lock";

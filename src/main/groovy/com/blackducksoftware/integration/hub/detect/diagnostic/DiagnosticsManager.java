@@ -47,7 +47,7 @@ public class DiagnosticsManager {
         reportDirectory = new File(detectConfiguration.getOutputDirectory(), "reports");
         reportDirectory.mkdir();
 
-        runId = DateTimeFormatter.ofPattern("yyyy-MM-dd\'T\'HH:mm:ss.SSS").withZone(ZoneOffset.UTC).format(Instant.now().atZone(ZoneOffset.UTC));
+        runId = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss.SSS").withZone(ZoneOffset.UTC).format(Instant.now().atZone(ZoneOffset.UTC));
 
         try {
             logFile = new File(reportDirectory, "log.txt");
