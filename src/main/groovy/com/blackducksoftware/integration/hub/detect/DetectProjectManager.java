@@ -31,6 +31,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -191,8 +192,19 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     }
 
     private  void extract(final List<StrategyFindResult> results) {
-        for (final StrategyFindResult result : results) {
-            extract(result);
+        final List<StrategyFindResult> extractable = results.stream().filter(result -> {
+            if (result.type == FindType.APPLIES) {
+                final StrategyEvaluation evaluation = result.evaluation;
+                if (evaluation.areNeedsMet() && evaluation.areDemandsMet()) {
+                    return true;
+                }
+            }
+            return false;
+        }).collect(Collectors.toList());
+
+        for (int i = 0; i < extractable.size(); i++) {
+            logger.info("Extracting " + Integer.toString(i) + " of " + Integer.toString(extractable.size()) + " (" + Integer.toString((int)Math.floor((i * 100.0f) / extractable.size())) + "%)");
+            extract(extractable.get(i));
         }
     }
 
@@ -242,7 +254,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         final List<Strategy> allStrategies = strategyManager.getAllStrategies();
         final List<String> excludedDirectories = detectConfiguration.getBomToolSearchDirectoryExclusions();
         final Boolean forceNestedSearch = detectConfiguration.getBomToolContinueSearch();
-        final int maxDepth = 2;
+        final int maxDepth = detectConfiguration.getBomToolSearchDepth();
         final BomToolFinderOptions findOptions = new BomToolFinderOptions(excludedDirectories, forceNestedSearch, maxDepth);
         try {
             final BomToolFinder bomToolTreeWalker = new BomToolFinder();

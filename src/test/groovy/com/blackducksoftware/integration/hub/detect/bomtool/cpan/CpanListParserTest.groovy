@@ -16,6 +16,7 @@ import static org.junit.Assert.*
 
 import org.junit.Test
 
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.cpan.parse.CpanListParser
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
 
 class CpanListParserTest {

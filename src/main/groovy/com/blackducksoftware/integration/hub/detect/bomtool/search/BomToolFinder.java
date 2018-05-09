@@ -49,7 +49,7 @@ import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 
 public class BomToolFinder {
     private final Logger logger = LoggerFactory.getLogger(BomToolFinder.class);
-
+    private final List<String> ignore = new ArrayList<>();
     // Think three stages:
     // 1. Search for applicable (nuget applies).
     //      Complications:
@@ -67,6 +67,10 @@ public class BomToolFinder {
     // 4. Transform results.
 
     public List<StrategyFindResult> findApplicableBomTools(final Set<Strategy> strategies, final StrategyEvaluator strategyEvaluator, final File initialDirectory, final BomToolFinderOptions options) throws BomToolException, DetectUserFriendlyException {
+        ignore.add("node_modules");
+        ignore.add("bin");
+        ignore.add(".git");
+
         final List<File> subDirectories = new ArrayList<>();
         subDirectories.add(initialDirectory);
         final List<Strategy> orderedStrategies = determineOrder(strategies);
@@ -87,6 +91,12 @@ public class BomToolFinder {
         }
 
         for (final File directory : directoriesToSearch) {
+            if (ignore.contains(directory.getName())){
+                continue;
+            }
+
+            logger.info("Searching directory: " + directory.getPath());
+
             final EvaluationContext evaluationContext = new EvaluationContext(directory);
 
             final Set<BomToolType> applicableTypes = new HashSet<>();
