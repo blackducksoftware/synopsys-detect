@@ -143,8 +143,6 @@ public class HubManager implements ExitCodeReporter {
                 final ProjectVersionWrapper projectVersionWrapper = projectService.getProjectVersion(detectProject.getProjectName(), detectProject.getProjectVersionName());
                 final String componentsLink = hubService.getFirstLinkSafely(projectVersionWrapper.getProjectVersionView(), ProjectVersionView.COMPONENTS_LINK);
                 logger.info(String.format("To see your results, follow the URL: %s", componentsLink));
-            } else {
-                logger.debug("Found no code locations and did not run a scan.");
             }
         } catch (final IllegalStateException e) {
             throw new DetectUserFriendlyException(String.format("Your Hub configuration is not valid: %s", e.getMessage()), e, ExitCodeType.FAILURE_HUB_CONNECTIVITY);
