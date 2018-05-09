@@ -181,7 +181,7 @@ public class Application implements ApplicationRunner {
             }
 
             if (detectConfiguration.getFailOnConfigWarning()) {
-                boolean foundConfigWarning = options.stream().anyMatch(option -> option.getWarnings().size() > 0);
+                final boolean foundConfigWarning = options.stream().anyMatch(option -> option.getWarnings().size() > 0);
                 if (foundConfigWarning) {
                     throw new DetectUserFriendlyException("Failing because the configuration had warnings.", ExitCodeType.FAILURE_CONFIGURATION);
                 }
@@ -191,7 +191,7 @@ public class Application implements ApplicationRunner {
             if (unacceptableDetectOtions.size() > 0) {
                 final DetectOption firstUnacceptableDetectOption = unacceptableDetectOtions.get(0);
                 final String msg = firstUnacceptableDetectOption.getKey() + ": Unknown value '" + firstUnacceptableDetectOption.getResolvedValue() + "', acceptable values are "
-                                           + firstUnacceptableDetectOption.getAcceptableValues().stream().collect(Collectors.joining(","));
+                        + firstUnacceptableDetectOption.getAcceptableValues().stream().collect(Collectors.joining(","));
                 throw new DetectUserFriendlyException(msg, ExitCodeType.FAILURE_GENERAL_ERROR);
             }
 
@@ -200,10 +200,12 @@ public class Application implements ApplicationRunner {
                 return;
             }
 
+            if (!detectConfiguration.getHubOfflineMode()) {
+                hubServiceWrapper.init();
+            }
+
             if (detectConfiguration.getHubOfflineMode()) {
                 detectPhoneHomeManager.initOffline();
-            } else {
-                hubServiceWrapper.init();
             }
 
             final DetectProject detectProject = detectProjectManager.createDetectProject();
@@ -274,7 +276,7 @@ public class Application implements ApplicationRunner {
         logger.error(e.getMessage());
     }
 
-    //Has to be lazy because we need to use the final values from detectConfiguration which are not ready immediately
+    // Has to be lazy because we need to use the final values from detectConfiguration which are not ready immediately
     @Lazy
     @Bean
     public BomToolTreeWalker bomToolTreeWalker() {
