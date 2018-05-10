@@ -559,11 +559,11 @@ public class DetectConfiguration {
     @HelpDescription("This can disable any Hub communication - if true, Detect will not upload BDIO files, it will not check policies, and it will not download and install the signature scanner.")
     private Boolean hubOfflineMode;
 
-    @Value("${blackduck.hub.offline.force.success:}")
+    @Value("${detect.disable.without.hub:}")
     @DefaultValue("false")
     @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = { SEARCH_GROUP_HUB })
     @HelpDescription("If true, during initialization Detect will check for Hub connectivity and exit with status code 0 if it cannot connect.")
-    private Boolean hubOfflineForceSuccess;
+    private Boolean disableWithoutHub;
 
     @Value("${detect.resolve.tilde.in.paths:}")
     @DefaultValue("true")
@@ -1161,8 +1161,8 @@ public class DetectConfiguration {
         return BooleanUtils.toBoolean(hubOfflineMode);
     }
 
-    public boolean getHubOfflineForceSuccess() {
-        return BooleanUtils.toBoolean(hubOfflineForceSuccess);
+    public boolean getDisableWithoutHub() {
+        return BooleanUtils.toBoolean(disableWithoutHub);
     }
 
     public boolean getHubTrustCertificate() {

@@ -200,7 +200,7 @@ public class Application implements ApplicationRunner {
                 return;
             }
 
-            if (detectConfiguration.getHubOfflineForceSuccess()) {
+            if (detectConfiguration.getDisableWithoutHub()) {
                 try {
                     logger.info("Testing Hub connection to see if Detect should run");
                     hubServiceWrapper.assertHubConnection(new SilentLogger());
