@@ -83,8 +83,10 @@ class MavenCodeLocationPackager {
                 parsingProjectSection = true;
                 continue;
             }
-
             if (!parsingProjectSection) {
+                continue;
+            }
+            if (isDependencyTreeUpdates(line)) {
                 continue;
             }
 
@@ -248,6 +250,14 @@ class MavenCodeLocationPackager {
     private boolean isProjectSection(String line) {
         // We only want to parse the dependency:tree output
         return doesLineContainSegmentsInOrder(line, "---", "maven-dependency-plugin", ":", "tree");
+    }
+
+    private boolean isDependencyTreeUpdates(String line) {
+        if (line.contains("checking for updates")) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private boolean isGav(final String componentText) {
