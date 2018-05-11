@@ -159,6 +159,28 @@ class MavenCodeLocationPackagerTest {
         assertTrue(mavenCodeLocationPackager.isProjectSection("things --- stuff maven-dependency-plugin:tree      stuff"))
 
         assertTrue(mavenCodeLocationPackager.isProjectSection("---maven-dependency-plugin:tree"))
+
+        assertTrue(mavenCodeLocationPackager.isProjectSection("      ---       maven-dependency-plugin      :       tree"))
+    }
+
+    @Test
+    public void testIsDependencyTreeUpdates() {
+        MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(null)
+
+        assertTrue(mavenCodeLocationPackager.isDependencyTreeUpdates("artifact com.google.guava:guava:jar:15.0:compile checking for updates from"))
+
+        assertTrue(mavenCodeLocationPackager.isDependencyTreeUpdates("         artifact       com.google.guava:guava:         checking for updates"))
+
+        assertTrue(mavenCodeLocationPackager.isDependencyTreeUpdates("      checking for updates   artifact       com.google.guava:guava:      "))
+
+        assertTrue(mavenCodeLocationPackager.isDependencyTreeUpdates("checking for updates"))
+
+        assertFalse(mavenCodeLocationPackager.isDependencyTreeUpdates("com.google.guava:guava:jar:15.0:compile"))
+
+        assertFalse(mavenCodeLocationPackager.isDependencyTreeUpdates("+- com.google.guava:guava:jar:15.0:compile"))
+
+        assertFalse(mavenCodeLocationPackager.isDependencyTreeUpdates("|  \\- com.google.guava:guava:jar:15.0:compile"))
+
     }
 
     @Test
