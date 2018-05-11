@@ -35,7 +35,7 @@ public class CondaCliStrategy extends Strategy<CondaCliContext, CondaCliExtracto
     public Applicable applicable(final EvaluationContext evaluation, final CondaCliContext context) {
         final File ymlFile = fileFinder.findFile(evaluation.getDirectory(), ENVIRONEMNT_YML);
         if (ymlFile == null) {
-            return Applicable.doesNotApply("No environement.yml file was found with pattern: " + ENVIRONEMNT_YML);
+            return Applicable.doesNotApply("No environment.yml file was found with pattern: " + ENVIRONEMNT_YML);
         }
 
         return Applicable.doesApply();

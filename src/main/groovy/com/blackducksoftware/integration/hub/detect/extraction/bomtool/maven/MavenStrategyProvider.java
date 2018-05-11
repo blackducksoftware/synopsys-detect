@@ -1,34 +1,21 @@
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.maven;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.MavenExecutableRequirement;
-import com.blackducksoftware.integration.hub.detect.extraction.strategy.Strategy;
 import com.blackducksoftware.integration.hub.detect.extraction.strategy.StrategyProvider;
-import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 
 @Component
 public class MavenStrategyProvider extends StrategyProvider {
 
-    public static final String POM_FILENAME = "pom.xml";
-    public static final String POM_WRAPPER_FILENAME = "pom.groovy";
+    @Autowired
+    public MavenPomStrategy pomStrategy;
 
-    @SuppressWarnings("rawtypes")
+    @Autowired
+    public MavenPomWrapperStrategy pomWrapperStrategy;
+
     @Override
     public void init() {
-
-        final Strategy pomStrategy = newStrategyBuilder(MavenCliContext.class, MavenCliExtractor.class)
-                .named("Pom", BomToolType.MAVEN)
-                .needsFile(POM_FILENAME).noop()
-                .needsCurrentDirectory((context, file) -> context.directory = file)
-                .demands(new MavenExecutableRequirement(), (context, file) -> context.mavenExe = file)
-                .build();
-
-        final Strategy pomWrapperStrategy = newStrategyBuilder(MavenCliContext.class, MavenCliExtractor.class)
-                .named("Pom Wrapper", BomToolType.MAVEN)
-                .needsFile(POM_WRAPPER_FILENAME).noop()
-                .needsCurrentDirectory((context, file) -> context.directory = file)
-                .build();
 
         add(pomStrategy, pomWrapperStrategy);
 

@@ -45,8 +45,13 @@ public class StandardExecutableFinder {
             throw new RuntimeException("Unknown executable type: " + executableType.toString());
         }
 
-        final File exe = executableManager.getExecutable(info.detectExecutableType, true, info.override);
-        return exe;
+        final String exe = executableManager.getExecutablePathOrOverride(info.detectExecutableType, true, detectConfiguration.getSourceDirectory(), info.override);
+        File exeFile = null;
+        if (exe != null) {
+            exeFile = new File(exe);
+        }
+        alreadyFound.put(executableType, exeFile);
+        return exeFile;
     }
 
     public StandardExecutableInfo createInfo(final StandardExecutableType type) {

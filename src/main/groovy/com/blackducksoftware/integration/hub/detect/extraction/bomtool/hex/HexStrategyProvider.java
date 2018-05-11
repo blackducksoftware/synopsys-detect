@@ -1,30 +1,19 @@
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.hex;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.StandardExecutableRequirement.StandardExecutableType;
-import com.blackducksoftware.integration.hub.detect.extraction.strategy.Strategy;
 import com.blackducksoftware.integration.hub.detect.extraction.strategy.StrategyProvider;
-import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 
 @Component
 public class HexStrategyProvider extends StrategyProvider {
 
-    static final String REBAR_CONFIG = "rebar.config";
+    @Autowired
+    public RebarStrategy rebarStrategy;
 
-    @SuppressWarnings("rawtypes")
     @Override
     public void init() {
-
-        final Strategy cpanCliStrategy = newStrategyBuilder(RebarContext.class, RebarExtractor.class)
-                .named("Rebar Config", BomToolType.HEX)
-                .needsCurrentDirectory((context, file) -> context.directory = file)
-                .needsFile(REBAR_CONFIG).noop()
-                .demandsStandardExecutable(StandardExecutableType.REBAR3).injectInContext((context, file) -> context.rebarExe = file)
-                .build();
-
-        add(cpanCliStrategy);
-
+        add(rebarStrategy);
     }
 
 }

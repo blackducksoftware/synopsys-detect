@@ -2,9 +2,9 @@ package com.blackducksoftware.integration.hub.detect.bomtool.search;
 
 import java.util.Set;
 
+import com.blackducksoftware.integration.hub.detect.extraction.StrategyEvaluation;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.EvaluationContext;
 import com.blackducksoftware.integration.hub.detect.extraction.strategy.Strategy;
-import com.blackducksoftware.integration.hub.detect.extraction.strategy.evaluation.StrategyEvaluation;
 
 public class StrategyFindResult {
     public Strategy strategy;

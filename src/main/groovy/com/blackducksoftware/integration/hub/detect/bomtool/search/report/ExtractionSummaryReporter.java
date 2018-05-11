@@ -17,6 +17,8 @@ import org.springframework.stereotype.Component;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.StrategyFindResult;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.StrategyFindResult.FindType;
 import com.blackducksoftware.integration.hub.detect.diagnostic.DiagnosticsManager;
+import com.blackducksoftware.integration.hub.detect.extraction.Applicable.ApplicableResult;
+import com.blackducksoftware.integration.hub.detect.extraction.Extractable.ExtractableResult;
 import com.blackducksoftware.integration.hub.detect.extraction.Extraction.ExtractionResult;
 
 @Component
@@ -58,13 +60,13 @@ public class ExtractionSummaryReporter {
                 if (result.type == FindType.APPLIES) {
                     applied++;
                 }
-                if (result.type == FindType.APPLIES && result.evaluation.areNeedsMet()) {
+                if (result.type == FindType.APPLIES && result.evaluation.applicable.result == ApplicableResult.APPLIES) {
                     demanded++;
                 }
-                if (result.type == FindType.APPLIES && result.evaluation.areNeedsMet() && result.evaluation.areDemandsMet()) {
+                if (result.type == FindType.APPLIES  && result.evaluation.applicable.result == ApplicableResult.APPLIES && result.evaluation.extractable.result == ExtractableResult.EXTRACTABLE) {
                     extracted++;
                 }
-                if (result.type == FindType.APPLIES && result.evaluation.areNeedsMet() && result.evaluation.areDemandsMet()) {
+                if (result.type == FindType.APPLIES  && result.evaluation.applicable.result == ApplicableResult.APPLIES && result.evaluation.extractable.result == ExtractableResult.EXTRACTABLE) {
                     codelocations += result.evaluation.extraction.codeLocations.size();
 
                     result.evaluation.extraction.codeLocations.stream().forEach(it -> {

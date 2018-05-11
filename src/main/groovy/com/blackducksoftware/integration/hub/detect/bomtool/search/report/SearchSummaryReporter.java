@@ -16,9 +16,6 @@ import com.blackducksoftware.integration.hub.detect.bomtool.search.StrategyFindR
 import com.blackducksoftware.integration.hub.detect.bomtool.search.StrategyFindResult.FindType;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.StrategyFindResult.Reason;
 import com.blackducksoftware.integration.hub.detect.diagnostic.DiagnosticsManager;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.Requirement;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation.EvaluationResult;
 import com.blackducksoftware.integration.hub.detect.extraction.strategy.Strategy;
 
 @Component
@@ -137,12 +134,6 @@ public class SearchSummaryReporter {
     }
 
     private String summarizeFailed(final StrategyFindResult result) {
-        for (final Requirement req : result.evaluation.needEvaluationMap.keySet()){
-            final RequirementEvaluation eval = result.evaluation.needEvaluationMap.get(req);
-            if (eval.result == EvaluationResult.Failed) {
-                return eval.description;
-            }
-        }
-        return "Unkown";
+        return result.evaluation.applicable.description;
     }
 }

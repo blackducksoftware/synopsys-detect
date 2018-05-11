@@ -62,16 +62,18 @@ import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
+import com.blackducksoftware.integration.hub.detect.extraction.Applicable.ApplicableResult;
+import com.blackducksoftware.integration.hub.detect.extraction.Extractable.ExtractableResult;
 import com.blackducksoftware.integration.hub.detect.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.extraction.Extraction.ExtractionResult;
 import com.blackducksoftware.integration.hub.detect.extraction.ExtractionContext;
+import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
+import com.blackducksoftware.integration.hub.detect.extraction.StrategyEvaluation;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.EvaluationContext;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation.EvaluationResult;
 import com.blackducksoftware.integration.hub.detect.extraction.strategy.Strategy;
 import com.blackducksoftware.integration.hub.detect.extraction.strategy.StrategyManager;
-import com.blackducksoftware.integration.hub.detect.extraction.strategy.evaluation.StrategyEvaluation;
-import com.blackducksoftware.integration.hub.detect.extraction.strategy.evaluation.StrategyEvaluator;
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner;
 import com.blackducksoftware.integration.hub.detect.hub.ScanPathSource;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
@@ -125,7 +127,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     public StrategyManager strategyManager;
 
     @Autowired
-    public StrategyEvaluator strategyEvaluator;
+    public List<Extractor> autowiredExtractors;
 
     private boolean foundAnyBomTools;
 
@@ -133,7 +135,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         final List<StrategyFindResult> extractable = results.stream().filter(result -> {
             if (result.type == FindType.APPLIES) {
                 final StrategyEvaluation evaluation = result.evaluation;
-                if (evaluation.areNeedsMet() && evaluation.areDemandsMet()) {
+                if (evaluation.applicable.result == ApplicableResult.APPLIES && evaluation.extractable.result == ExtractableResult.EXTRACTABLE) {
                     return true;
                 }
             }
@@ -157,8 +159,8 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
             final StrategyEvaluation evaluation = result.evaluation;
             final EvaluationContext context = result.context;
             final Strategy strategy = result.strategy;
-            if (evaluation.areNeedsMet()) {
-                strategyEvaluator.meetsDemands(evaluation, strategy, context);
+            if (evaluation.applicable.result == ApplicableResult.APPLIES) {
+                result.evaluation.extractable = strategy.extractable(result.context, evaluation.context);
             }
         }
     }
@@ -166,17 +168,33 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     private void extract(final StrategyFindResult result) {
         if (result.type == FindType.APPLIES) {
             final StrategyEvaluation evaluation = result.evaluation;
-            if (evaluation.areNeedsMet() && evaluation.areDemandsMet()) {
+            if (evaluation.applicable.result == ApplicableResult.APPLIES && evaluation.extractable.result == ExtractableResult.EXTRACTABLE) {
                 final EvaluationContext context = result.context;
                 final Strategy strategy = result.strategy;
-                final ExtractionContext extractionContext = strategyEvaluator.createContext(evaluation, strategy, context);
-                extractionReporter.startedExtraction(strategy, extractionContext);
-                final Extraction extraction = strategyEvaluator.execute(strategy, extractionContext);
+                extractionReporter.startedExtraction(strategy, evaluation.context);
+                final Extraction extraction = execute(strategy, evaluation.context);
                 evaluation.extraction = extraction;
                 extractionReporter.endedExtraction(extraction);
             }
 
         }
+    }
+
+    public Extraction execute(final Strategy strategy, final ExtractionContext context) {
+        Extractor extractor = null;
+        for (final Extractor possibleExtractor : autowiredExtractors) {
+            if (possibleExtractor.getClass().equals(strategy.getExtractorClass())) {
+                extractor = possibleExtractor;
+            }
+        }
+
+        Extraction result;
+        try {
+            result = extractor.extract(context);
+        } catch (final Exception e) {
+            result = new Extraction(ExtractionResult.Exception, e);
+        }
+        return result;
     }
 
     private void printReqEval(final RequirementEvaluation eval) {
@@ -196,7 +214,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         final BomToolFinderOptions findOptions = new BomToolFinderOptions(excludedDirectories, forceNestedSearch, maxDepth);
         try {
             final BomToolFinder bomToolTreeWalker = new BomToolFinder();
-            return bomToolTreeWalker.findApplicableBomTools(new HashSet<>(allStrategies), strategyEvaluator, directory, findOptions);
+            return bomToolTreeWalker.findApplicableBomTools(new HashSet<>(allStrategies), directory, findOptions);
         } catch (final BomToolException e) {
             bomToolSearchExitCodeType = ExitCodeType.FAILURE_BOM_TOOL;
             logger.error(e.getMessage(), e);
@@ -216,7 +234,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         try {
             final File initialDirectory = detectConfiguration.getSourceDirectory();
             final BomToolFinder bomToolTreeWalker = new BomToolFinder();
-            return bomToolTreeWalker.findApplicableBomTools(new HashSet<>(allStrategies), strategyEvaluator, initialDirectory, findOptions);
+            return bomToolTreeWalker.findApplicableBomTools(new HashSet<>(allStrategies), initialDirectory, findOptions);
         } catch (final BomToolException e) {
             bomToolSearchExitCodeType = ExitCodeType.FAILURE_BOM_TOOL;
             logger.error(e.getMessage(), e);
@@ -258,7 +276,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         extractionSummaryReporter.print(sourcePathResults);
 
         sourcePathResults.forEach(it -> {
-            if (it.type == FindType.APPLIES && it.evaluation.areDemandsMet() && it.evaluation.areNeedsMet() && it.evaluation.extraction.result == ExtractionResult.Success) {
+            if (it.type == FindType.APPLIES && it.evaluation.applicable.result == ApplicableResult.APPLIES && it.evaluation.extractable.result == ExtractableResult.EXTRACTABLE && it.evaluation.extraction.result == ExtractionResult.Success) {
                 detectProject.addAllDetectCodeLocations(it.evaluation.extraction.codeLocations);
             }
             //            if (it.extractedCodeLocations.size() > 0) {

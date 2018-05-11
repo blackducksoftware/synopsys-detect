@@ -5,11 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DockerInspectorInfo {
-    public String version;
+    public boolean found = false;
+    public Exception error = null;
+    public String reason = "";
 
+    public String version;
     public File dockerInspectorScript;
 
     public boolean isOffline = false;
-    public List<File> offlineTars = new ArrayList<File>();
+    public List<File> offlineTars = new ArrayList<>();
     public File offlineDockerInspectorJar;
 }

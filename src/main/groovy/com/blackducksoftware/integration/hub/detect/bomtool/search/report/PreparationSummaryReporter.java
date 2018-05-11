@@ -15,9 +15,8 @@ import org.springframework.stereotype.Component;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.StrategyFindResult;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.StrategyFindResult.FindType;
 import com.blackducksoftware.integration.hub.detect.diagnostic.DiagnosticsManager;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.Requirement;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.RequirementEvaluation.EvaluationResult;
+import com.blackducksoftware.integration.hub.detect.extraction.Applicable.ApplicableResult;
+import com.blackducksoftware.integration.hub.detect.extraction.Extractable.ExtractableResult;
 
 @Component
 public class PreparationSummaryReporter {
@@ -57,8 +56,8 @@ public class PreparationSummaryReporter {
 
             for (final StrategyFindResult result : results) {
                 final String strategyName = result.strategy.getBomToolType() + " - " + result.strategy.getName();
-                if (result.type == FindType.APPLIES && result.evaluation.areNeedsMet()) {
-                    if (result.evaluation.areDemandsMet()) {
+                if (result.type == FindType.APPLIES && result.evaluation.applicable.result == ApplicableResult.APPLIES) {
+                    if (result.evaluation.extractable.result == ExtractableResult.EXTRACTABLE) {
                         ready.add(strategyName);
                     } else {
                         failed.add("FAILED: " + strategyName + " - " + summarizeFailed(result));
@@ -88,13 +87,7 @@ public class PreparationSummaryReporter {
 
 
     private String summarizeFailed(final StrategyFindResult result) {
-        for (final Requirement req : result.evaluation.demandEvaluationMap.keySet()){
-            final RequirementEvaluation eval = result.evaluation.demandEvaluationMap.get(req);
-            if (eval.result == EvaluationResult.Failed) {
-                return eval.description;
-            }
-        }
-        return "Unkown";
+        return result.evaluation.extractable.description;
     }
 
 }
