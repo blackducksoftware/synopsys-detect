@@ -25,11 +25,11 @@ public class GradleInspectorStrategy extends Strategy<GradleInspectorContext, Gr
     @Autowired
     public GradleInspectorManager gradleInspectorManager;
 
-
     public GradleInspectorStrategy() {
         super("Gradle Inspector", BomToolType.GRADLE, GradleInspectorContext.class, GradleInspectorExtractor.class);
     }
 
+    @Override
     public Applicable applicable(final EvaluationContext evaluation, final GradleInspectorContext context) {
         final File buildGradle = fileFinder.findFile(evaluation.getDirectory(), BUILD_GRADLE_FILENAME);
         if (buildGradle == null) {
@@ -39,8 +39,8 @@ public class GradleInspectorStrategy extends Strategy<GradleInspectorContext, Gr
         return Applicable.doesApply();
     }
 
+    @Override
     public Extractable extractable(final EvaluationContext evaluation, final GradleInspectorContext context){
-
         context.gradleExe = gradleFinder.findGradle(evaluation);
         if (context.gradleExe == null) {
             return Extractable.canNotExtract("No gradle executable was found.");
