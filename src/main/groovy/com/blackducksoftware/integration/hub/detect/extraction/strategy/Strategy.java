@@ -9,6 +9,7 @@ import java.util.Set;
 import com.blackducksoftware.integration.hub.detect.extraction.ExtractionContext;
 import com.blackducksoftware.integration.hub.detect.extraction.ExtractionContextAction;
 import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
+import com.blackducksoftware.integration.hub.detect.extraction.StandardExecutableFinder.StandardExecutableType;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.FileRequirement;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.Requirement;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
@@ -40,6 +41,11 @@ public class Strategy<C extends ExtractionContext, E extends Extractor<C>>  {
     public void needsFile(final String filepattern, final ExtractionContextAction<C, File> action) {
 
     }
+
+    public void demandsStandardExecutable(final StandardExecutableType type, final ExtractionContextAction<C, File> action ) {
+
+    }
+
 
     public FileRequirement needsFile(final String filepattern)//, ExtractionContextAction<C,V> action)
     {
