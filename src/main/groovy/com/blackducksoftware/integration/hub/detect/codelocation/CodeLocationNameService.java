@@ -40,18 +40,15 @@ public class CodeLocationNameService {
     private DockerCodeLocationNameProvider dockerCodeLocationNameProvider;
 
     public String createBomToolName(final String sourcePath, final String projectName, final String projectVersionName, final BomToolType bomToolType, final String prefix, final String suffix) {
-        final CodeLocationName codeLocationName = new CodeLocationName(projectName, projectVersionName, null, bomToolType, sourcePath, null, prefix, suffix, CodeLocationType.BOM);
-        return bomCodeLocationNameProvider.generateName(codeLocationName);
+        return bomCodeLocationNameProvider.generateName(sourcePath, projectName, projectVersionName, bomToolType, prefix, suffix);
     }
 
     public String createScanName(final String sourcePath, final String scanTargetPath, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
-        final CodeLocationName codeLocationName = new CodeLocationName(projectName, projectVersionName, null, null, sourcePath, scanTargetPath, prefix, suffix, CodeLocationType.SCAN);
-        return scanCodeLocationNameProvider.generateName(codeLocationName);
+        return scanCodeLocationNameProvider.generateName(sourcePath, scanTargetPath, projectName, projectVersionName, prefix, suffix);
     }
 
     public String createDockerName(final String sourcePath, final String projectName, final String projectVersionName, final String dockerImage, final BomToolType bomToolType, final String prefix, final String suffix) {
-        final CodeLocationName codeLocationName = new CodeLocationName(projectName, projectVersionName, dockerImage, bomToolType, sourcePath, null, prefix, suffix, CodeLocationType.DOCKER);
-        return dockerCodeLocationNameProvider.generateName(codeLocationName);
+        return dockerCodeLocationNameProvider.generateName(sourcePath, projectName, projectVersionName, dockerImage, bomToolType, prefix, suffix);
     }
 
 }

@@ -27,16 +27,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 @Component
-// used in 2.0.0
 public class ScanCodeLocationNameProvider extends CodeLocationNameProvider {
-    @Override
-    public String generateName(final CodeLocationName codeLocationName) {
-        final String cleanedTargetPath = cleanScanTargetPath(codeLocationName);
-        final String projectName = codeLocationName.getProjectName();
-        final String projectVersionName = codeLocationName.getProjectVersionName();
-        final String prefix = codeLocationName.getPrefix();
-        final String suffix = codeLocationName.getSuffix();
-        final String codeLocationTypeString = codeLocationName.getCodeLocationType().toString().toLowerCase();
+    public String generateName(final String sourcePath, final String scanTargetPath, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
+        final String cleanedTargetPath = cleanScanTargetPath(scanTargetPath, sourcePath);
+        final String codeLocationTypeString = CodeLocationType.SCAN.toString().toLowerCase();
 
         final String codeLocationNameString = createCommonName(cleanedTargetPath, projectName, projectVersionName, prefix, suffix, codeLocationTypeString);
         if (codeLocationNameString.length() > 250) {
@@ -62,13 +56,23 @@ public class ScanCodeLocationNameProvider extends CodeLocationNameProvider {
     }
 
     private String shortenCodeLocationName(final String pathPiece, final String projectName, final String projectVersionName, final String prefix, final String suffix, final String codeLocationType) {
-        final String shortenedPathPiece = CodeLocationName.shortenPiece(pathPiece);
-        final String shortenedProjectName = CodeLocationName.shortenPiece(projectName);
-        final String shortenedProjectVersionName = CodeLocationName.shortenPiece(projectVersionName);
-        final String shortenedPrefix = CodeLocationName.shortenPiece(prefix);
-        final String shortenedSuffix = CodeLocationName.shortenPiece(suffix);
+        final String shortenedPathPiece = shortenPiece(pathPiece);
+        final String shortenedProjectName = shortenPiece(projectName);
+        final String shortenedProjectVersionName = shortenPiece(projectVersionName);
+        final String shortenedPrefix = shortenPiece(prefix);
+        final String shortenedSuffix = shortenPiece(suffix);
 
         return createCommonName(shortenedPathPiece, shortenedProjectName, shortenedProjectVersionName, shortenedPrefix, shortenedSuffix, codeLocationType);
+    }
+
+    private String cleanScanTargetPath(final String scanTargetPath, final String sourcePath) {
+        final String finalSourcePathPiece = detectFileManager.extractFinalPieceFromPath(sourcePath);
+        String cleanedTargetPath = "";
+        if (StringUtils.isNotBlank(scanTargetPath) && StringUtils.isNotBlank(finalSourcePathPiece)) {
+            cleanedTargetPath = scanTargetPath.replace(sourcePath, finalSourcePathPiece);
+        }
+
+        return cleanedTargetPath;
     }
 
 }

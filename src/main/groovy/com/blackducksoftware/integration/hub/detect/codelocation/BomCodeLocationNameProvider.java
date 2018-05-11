@@ -26,17 +26,14 @@ package com.blackducksoftware.integration.hub.detect.codelocation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
+import com.blackducksoftware.integration.hub.detect.model.BomToolType;
+
 @Component
 public class BomCodeLocationNameProvider extends CodeLocationNameProvider {
-    @Override
-    public String generateName(final CodeLocationName codeLocationName) {
-        final String finalSourcePathPiece = detectFileManager.extractFinalPieceFromPath(codeLocationName.getSourcePath());
-        final String projectName = codeLocationName.getProjectName();
-        final String projectVersionName = codeLocationName.getProjectVersionName();
-        final String prefix = codeLocationName.getPrefix();
-        final String suffix = codeLocationName.getSuffix();
-        final String codeLocationTypeString = codeLocationName.getCodeLocationType().toString().toLowerCase();
-        final String bomToolTypeString = codeLocationName.getBomToolType().toString().toLowerCase();
+    public String generateName(final String sourcePath, final String projectName, final String projectVersionName, final BomToolType bomToolType, final String prefix, final String suffix) {
+        final String finalSourcePathPiece = detectFileManager.extractFinalPieceFromPath(sourcePath);
+        final String codeLocationTypeString = CodeLocationType.BOM.toString().toLowerCase();
+        final String bomToolTypeString = bomToolType.toString().toLowerCase();
 
         final String codeLocationNameString = createCommonName(finalSourcePathPiece, projectName, projectVersionName, prefix, suffix, codeLocationTypeString, bomToolTypeString);
         if (codeLocationNameString.length() > 250) {
@@ -63,11 +60,11 @@ public class BomCodeLocationNameProvider extends CodeLocationNameProvider {
     }
 
     private String shortenCodeLocationName(final String pathPiece, final String projectName, final String projectVersionName, final String prefix, final String suffix, final String codeLocationType, final String bomToolType) {
-        final String shortenedPathPiece = CodeLocationName.shortenPiece(pathPiece);
-        final String shortenedProjectName = CodeLocationName.shortenPiece(projectName);
-        final String shortenedProjectVersionName = CodeLocationName.shortenPiece(projectVersionName);
-        final String shortenedPrefix = CodeLocationName.shortenPiece(prefix);
-        final String shortenedSuffix = CodeLocationName.shortenPiece(suffix);
+        final String shortenedPathPiece = shortenPiece(pathPiece);
+        final String shortenedProjectName = shortenPiece(projectName);
+        final String shortenedProjectVersionName = shortenPiece(projectVersionName);
+        final String shortenedPrefix = shortenPiece(prefix);
+        final String shortenedSuffix = shortenPiece(suffix);
 
         return createCommonName(shortenedPathPiece, shortenedProjectName, shortenedProjectVersionName, shortenedPrefix, shortenedSuffix, codeLocationType, bomToolType);
     }

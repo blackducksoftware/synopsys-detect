@@ -23,7 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.codelocation;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
@@ -32,18 +31,12 @@ public abstract class CodeLocationNameProvider {
     @Autowired
     protected DetectFileManager detectFileManager;
 
-    public abstract String generateName(CodeLocationName codeLocationName);
-
-    public String cleanScanTargetPath(final CodeLocationName codeLocationName) {
-        final String scanTargetPath = codeLocationName.getScanTargetPath();
-        final String sourcePath = codeLocationName.getSourcePath();
-        final String finalSourcePathPiece = detectFileManager.extractFinalPieceFromPath(sourcePath);
-        String cleanedTargetPath = "";
-        if (StringUtils.isNotBlank(scanTargetPath) && StringUtils.isNotBlank(finalSourcePathPiece)) {
-            cleanedTargetPath = scanTargetPath.replace(sourcePath, finalSourcePathPiece);
+    protected String shortenPiece(final String piece) {
+        if (piece.length() <= 40) {
+            return piece;
+        } else {
+            return piece.substring(0, 19) + "..." + piece.substring(piece.length() - 18);
         }
-
-        return cleanedTargetPath;
     }
 
 }
