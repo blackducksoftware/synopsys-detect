@@ -181,7 +181,7 @@ public class Application implements ApplicationRunner {
             }
 
             if (detectConfiguration.getFailOnConfigWarning()) {
-                boolean foundConfigWarning = options.stream().anyMatch(option -> option.getWarnings().size() > 0);
+                final boolean foundConfigWarning = options.stream().anyMatch(option -> option.getWarnings().size() > 0);
                 if (foundConfigWarning) {
                     throw new DetectUserFriendlyException("Failing because the configuration had warnings.", ExitCodeType.FAILURE_CONFIGURATION);
                 }
@@ -190,14 +190,28 @@ public class Application implements ApplicationRunner {
             final List<DetectOption> unacceptableDetectOtions = detectOptionManager.findUnacceptableValues();
             if (unacceptableDetectOtions.size() > 0) {
                 final DetectOption firstUnacceptableDetectOption = unacceptableDetectOtions.get(0);
-                final String msg = firstUnacceptableDetectOption.getKey() + ": Unknown value '" + firstUnacceptableDetectOption.getResolvedValue() + "', acceptable values are "
-                                           + firstUnacceptableDetectOption.getAcceptableValues().stream().collect(Collectors.joining(","));
+                final String msg = String.format("%s: Unknown value '%s', acceptable values are %s",
+                        firstUnacceptableDetectOption.getKey(),
+                        firstUnacceptableDetectOption.getResolvedValue(),
+                        firstUnacceptableDetectOption.getAcceptableValues().stream().collect(Collectors.joining(",")));
                 throw new DetectUserFriendlyException(msg, ExitCodeType.FAILURE_GENERAL_ERROR);
             }
 
             if (detectConfiguration.getTestConnection()) {
                 hubServiceWrapper.assertHubConnection(new SilentLogger());
                 return;
+            }
+
+            if (detectConfiguration.getDisableWithoutHub()) {
+                try {
+                    logger.info("Testing Hub connection to see if Detect should run");
+                    hubServiceWrapper.assertHubConnection(new SilentLogger());
+                } catch (final IntegrationException e) {
+                    logger.info("Not able to initialize Hub conection: " + e.getMessage());
+                    logger.debug("Stack trace: ", e);
+                    logger.info("Detect will not run");
+                    return;
+                }
             }
 
             if (detectConfiguration.getHubOfflineMode()) {
@@ -274,7 +288,7 @@ public class Application implements ApplicationRunner {
         logger.error(e.getMessage());
     }
 
-    //Has to be lazy because we need to use the final values from detectConfiguration which are not ready immediately
+    // Has to be lazy because we need to use the final values from detectConfiguration which are not ready immediately
     @Lazy
     @Bean
     public BomToolTreeWalker bomToolTreeWalker() {
