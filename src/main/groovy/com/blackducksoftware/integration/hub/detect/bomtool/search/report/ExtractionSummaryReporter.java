@@ -92,7 +92,7 @@ public class ExtractionSummaryReporter {
             }
             final Info info = new Info();
             info.directory = file.getAbsolutePath();
-            info.codeLocations = "\t Code Locations: " + Integer.toString(codelocations);
+            info.codeLocations = "\tCode Locations: " + Integer.toString(codelocations);
             info.codeLocationNames = codelocationnames;
             info.success = success;
             info.failed = failed;

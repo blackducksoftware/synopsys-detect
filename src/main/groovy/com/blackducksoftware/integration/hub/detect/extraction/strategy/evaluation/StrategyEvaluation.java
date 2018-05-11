@@ -28,6 +28,10 @@ public class StrategyEvaluation {
         return needEvaluationMap.get(requirement);
     }
 
+    public <V> V getValue(final Requirement<V> requirement) {
+        return (V) needEvaluationMap.get(requirement).value;
+    }
+
     public void addDemandEvaluation(final Requirement<?> requirement, final RequirementEvaluation<?> requirementEvaluation) {
         demandEvaluationMap.put(requirement, requirementEvaluation);
     }

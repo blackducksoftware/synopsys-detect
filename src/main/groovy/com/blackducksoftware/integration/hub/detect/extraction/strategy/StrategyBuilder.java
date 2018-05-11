@@ -136,14 +136,14 @@ public class StrategyBuilder<C extends ExtractionContext, E extends Extractor<C>
             this.parent = parent;
 
         }
-        public StrategyBuilder<C, E> as(final ExtractionContextAction<C, File> action) {
+        public StrategyBuilder<C, E> injectInContext(final ExtractionContextAction<C, File> action) {
             final StandardExecutableRequirement requirement = new StandardExecutableRequirement();
             requirement.executableType = this.type;
             parent.demands(requirement, action);
             return parent;
         }
-        public StrategyBuilder<C, E> noop() {
-            return as((noop1, noop2) -> {});
+        public StrategyBuilder<C, E> notRequiredInContext() {
+            return injectInContext((noop1, noop2) -> {});
         }
     }
 

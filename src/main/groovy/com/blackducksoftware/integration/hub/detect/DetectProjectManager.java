@@ -129,16 +129,6 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
 
     private boolean foundAnyBomTools;
 
-
-    //phases
-    // 1. Search for Applicable BOM Tools
-    //Why or why not did directory apply or not apply to BOM Tool?
-    // 2. Install Applicable Inspectors
-    //Were we able to resolve all inspectors for all that applied?
-    // 3. Extract Applicable Code Locations
-    //Were we able to extract any code locations?
-    // 4.
-
     private  void extract(final List<StrategyFindResult> results) {
         final List<StrategyFindResult> extractable = results.stream().filter(result -> {
             if (result.type == FindType.APPLIES) {
@@ -297,7 +287,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         }
 
         if (StringUtils.isBlank(detectConfiguration.getAggregateBomName())) {
-            detectProject.processDetectCodeLocations(logger, detectFileFinder, bdioFileNamer, codeLocationNameService);
+            detectProject.processDetectCodeLocations(logger,detectFileFinder,  detectConfiguration.getSourceDirectory(), bdioFileNamer, codeLocationNameService);
 
             for (final BomToolType bomToolType : detectProject.getFailedBomTools()) {
                 bomToolSummaryResults.put(bomToolType, Result.FAILURE);

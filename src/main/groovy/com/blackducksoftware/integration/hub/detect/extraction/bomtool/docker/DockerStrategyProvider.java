@@ -25,8 +25,8 @@ public class DockerStrategyProvider extends StrategyProvider {
                 .named("Docker Image", BomToolType.DOCKER)
                 .needsCurrentDirectory((context, file) -> context.directory = file)
                 .needsString(detectConfiguration.getDockerImage()).failWith("No Docker image was provided.").as((context, value) -> context.image = value)
-                .demandsStandardExecutable(StandardExecutableType.BASH).as((context, file) -> context.bashExe = file)
-                .demandsStandardExecutable(StandardExecutableType.DOCKER).as((context, file) -> context.dockerExe = file)
+                .demandsStandardExecutable(StandardExecutableType.BASH).injectInContext((context, file) -> context.bashExe = file)
+                .demandsStandardExecutable(StandardExecutableType.DOCKER).injectInContext((context, file) -> context.dockerExe = file)
                 .demands(new DockerInspectorRequirement(), (context, info) -> context.dockerInspectorInfo = info)
                 .maxDepth(0)
                 .build();
@@ -35,8 +35,8 @@ public class DockerStrategyProvider extends StrategyProvider {
                 .named("Docker Tar", BomToolType.DOCKER)
                 .needsCurrentDirectory((context, file) -> context.directory = file)
                 .needsString(detectConfiguration.getDockerTar()).failWith("No Docker tar was provided.").as((context, value) -> context.tar = value)
-                .demandsStandardExecutable(StandardExecutableType.BASH).as((context, file) -> context.bashExe = file)
-                .demandsStandardExecutable(StandardExecutableType.DOCKER).as((context, file) -> context.dockerExe = file)
+                .demandsStandardExecutable(StandardExecutableType.BASH).injectInContext((context, file) -> context.bashExe = file)
+                .demandsStandardExecutable(StandardExecutableType.DOCKER).injectInContext((context, file) -> context.dockerExe = file)
                 .demands(new DockerInspectorRequirement(), (context, info) -> context.dockerInspectorInfo = info)
                 .maxDepth(0)
                 .build();

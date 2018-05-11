@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.extraction.bomtool.pear
+package com.blackducksoftware.integration.hub.detect.extraction.bomtool.pear.parse
 
 import org.apache.commons.lang3.BooleanUtils
 import org.slf4j.Logger

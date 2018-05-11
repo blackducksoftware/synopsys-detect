@@ -20,7 +20,7 @@ public class HexStrategyProvider extends StrategyProvider {
                 .named("Rebar Config", BomToolType.HEX)
                 .needsCurrentDirectory((context, file) -> context.directory = file)
                 .needsFile(REBAR_CONFIG).noop()
-                .demandsStandardExecutable(StandardExecutableType.REBAR3).as((context, file) -> context.rebarExe = file)
+                .demandsStandardExecutable(StandardExecutableType.REBAR3).injectInContext((context, file) -> context.rebarExe = file)
                 .build();
 
         add(cpanCliStrategy);

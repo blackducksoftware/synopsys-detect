@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.extraction.bomtool.rubygems
+package com.blackducksoftware.integration.hub.detect.extraction.bomtool.rubygems.parse
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

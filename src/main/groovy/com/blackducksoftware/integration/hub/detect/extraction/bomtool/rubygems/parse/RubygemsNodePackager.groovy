@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.extraction.bomtool.rubygems
+package com.blackducksoftware.integration.hub.detect.extraction.bomtool.rubygems.parse
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component

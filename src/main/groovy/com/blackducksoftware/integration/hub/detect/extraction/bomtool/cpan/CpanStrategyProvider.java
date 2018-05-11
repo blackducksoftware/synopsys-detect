@@ -20,8 +20,8 @@ public class CpanStrategyProvider extends StrategyProvider {
                 .named("Cpan Cli", BomToolType.CPAN)
                 .needsCurrentDirectory((context, file) -> context.directory = file)
                 .needsFile(MAKEFILE).noop()
-                .demandsStandardExecutable(StandardExecutableType.CPAN).as((context, file) -> context.cpanExe = file)
-                .demandsStandardExecutable(StandardExecutableType.CPANM).as((context, file) -> context.cpanmExe = file)
+                .demandsStandardExecutable(StandardExecutableType.CPAN).injectInContext((context, file) -> context.cpanExe = file)
+                .demandsStandardExecutable(StandardExecutableType.CPANM).injectInContext((context, file) -> context.cpanmExe = file)
                 .build();
 
         add(cpanCliStrategy);

@@ -20,7 +20,7 @@ public class PearStrategyProvider extends StrategyProvider {
                 .named("Pear Cli", BomToolType.PEAR)
                 .needsCurrentDirectory((context, file) -> context.directory = file)
                 .needsFile(PACKAGE_XML_FILENAME).noop()
-                .demandsStandardExecutable(StandardExecutableType.PEAR).as((context, file) -> context.pearExe = file)
+                .demandsStandardExecutable(StandardExecutableType.PEAR).injectInContext((context, file) -> context.pearExe = file)
                 .build();
 
         add(cliStrategy);

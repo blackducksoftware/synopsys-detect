@@ -13,7 +13,8 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFac
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.extraction.Extraction.ExtractionResult;
-import com.blackducksoftware.integration.hub.detect.extraction.bomtool.pear.PearDependencyFinder;
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.pear.parse.PearDependencyFinder;
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.pip.parse.PipInspectorTreeParser;
 import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;

@@ -41,7 +41,7 @@ public class GoStrategyProvider extends StrategyProvider {
                 .named("Go Lock", BomToolType.GO_DEP)
                 .needsCurrentDirectory((context, file) -> context.directory = file)
                 .needsFile(GOPKG_LOCK_FILENAME).noop()
-                .demandsStandardExecutable(StandardExecutableType.GO).as((context, file) -> context.goExe = file)
+                .demandsStandardExecutable(StandardExecutableType.GO).injectInContext((context, file) -> context.goExe = file)
                 .demands(new GoDepInspectorRequirement(), (context, file) -> context.goDepInspector = file)
                 .build();
 
@@ -49,7 +49,7 @@ public class GoStrategyProvider extends StrategyProvider {
                 .named("Go Cli", BomToolType.GO_DEP)
                 .needsCurrentDirectory((context, file) -> context.directory = file)
                 .needsFiles(GOFILE_FILENAME_PATTERN).noop()
-                .demandsStandardExecutable(StandardExecutableType.GO).as((context, file) -> context.goExe = file)
+                .demandsStandardExecutable(StandardExecutableType.GO).injectInContext((context, file) -> context.goExe = file)
                 .demands(new GoDepInspectorRequirement(), (context, file) -> context.goDepInspector = file)
                 .yieldsTo(goDepsStrategy)
                 .yieldsTo(goVndrStrategy)
