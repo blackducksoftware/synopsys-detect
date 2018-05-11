@@ -190,8 +190,10 @@ public class Application implements ApplicationRunner {
             final List<DetectOption> unacceptableDetectOtions = detectOptionManager.findUnacceptableValues();
             if (unacceptableDetectOtions.size() > 0) {
                 final DetectOption firstUnacceptableDetectOption = unacceptableDetectOtions.get(0);
-                final String msg = firstUnacceptableDetectOption.getKey() + ": Unknown value '" + firstUnacceptableDetectOption.getResolvedValue() + "', acceptable values are "
-                        + firstUnacceptableDetectOption.getAcceptableValues().stream().collect(Collectors.joining(","));
+                final String msg = String.format("%s: Unknown value '%s', acceptable values are %s",
+                        firstUnacceptableDetectOption.getKey(),
+                        firstUnacceptableDetectOption.getResolvedValue(),
+                        firstUnacceptableDetectOption.getAcceptableValues().stream().collect(Collectors.joining(",")));
                 throw new DetectUserFriendlyException(msg, ExitCodeType.FAILURE_GENERAL_ERROR);
             }
 
@@ -206,8 +208,8 @@ public class Application implements ApplicationRunner {
                     hubServiceWrapper.assertHubConnection(new SilentLogger());
                 } catch (final IntegrationException e) {
                     logger.info("Not able to initialize Hub conection: " + e.getMessage());
+                    logger.debug("Stack trace: ", e);
                     logger.info("Detect will not run");
-                    logger.debug("Connection failure stack trace: ", e);
                     return;
                 }
             }
