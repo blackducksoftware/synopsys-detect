@@ -25,6 +25,7 @@ package com.blackducksoftware.integration.hub.detect.hub;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -44,7 +45,6 @@ import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendly
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.model.DetectProject;
-import com.blackducksoftware.integration.hub.exception.DoesNotExistException;
 import com.blackducksoftware.integration.hub.exception.HubTimeoutExceededException;
 import com.blackducksoftware.integration.hub.rest.exception.IntegrationRestException;
 import com.blackducksoftware.integration.hub.service.CodeLocationService;
@@ -187,31 +187,62 @@ public class HubManager implements ExitCodeReporter {
         return projectVersionWrapper.getProjectVersionView();
     }
 
-    public void manageExistingCodeLocations(final List<String> codeLocationNames) {
+    public void deleteOldCodeLocations(final ProjectVersionView projectVersionView, final List<CodeLocationView> newCodeLocationViews) {
         if (!detectConfiguration.getHubOfflineMode()) {
-            final CodeLocationService codeLocationService = hubServiceWrapper.createCodeLocationService();
-            for (final String codeLocationName : codeLocationNames) {
-                try {
-                    final CodeLocationView codeLocationView = codeLocationService.getCodeLocationByName(codeLocationName);
-                    if (detectConfiguration.getProjectCodeLocationDeleteOldNames()) {
-                        try {
-                            codeLocationService.deleteCodeLocation(codeLocationView);
-                            logger.info(String.format("Deleted code location '%s'", codeLocationName));
-                        } catch (final IntegrationException e) {
-                            logger.error(String.format("Not able to delete the code location '%s': %s", codeLocationName, e.getMessage()));
-                        }
-                    } else {
-                        logger.warn(String.format(
-                                "Found a code location with a naming pattern that is no longer supported: %s. This code location may need to be removed to avoid duplicate entries in the Bill of Materials. You can run with --detect.project.codelocation.delete.old.names=true which will automatically delete these code locations, but please USE CAUTION.",
-                                codeLocationName));
-                    }
-                } catch (final DoesNotExistException e) {
-                    logger.debug(String.format("Didn't find the code location %s - this is a good thing!", codeLocationName));
-                } catch (final IntegrationException e) {
-                    logger.error(String.format("Error finding the code location name %s: %s", codeLocationName, e.getMessage()));
-                }
+            try {
+                final HubService hubService = hubServiceWrapper.createHubService();
+                final List<CodeLocationView> allCodeLocationViews = hubService.getAllResponses(projectVersionView, ProjectVersionView.CODELOCATIONS_LINK_RESPONSE);
+                allCodeLocationViews
+                        .stream()
+                        .filter(codeLocation -> notInNewCodeLocationViews(newCodeLocationViews, codeLocation))
+                        .forEach(codeLocationView -> deleteCodeLocation(codeLocationView));
+            } catch (final IntegrationException e) {
+                logger.error("Failed to delete old Code Locations because none could be retrieved from Project Version", e);
             }
         }
+    }
+
+    public void unmapOldCodeLocations(final ProjectVersionView projectVersionView, final List<CodeLocationView> newCodeLocationViews) {
+        if (!detectConfiguration.getHubOfflineMode()) {
+            try {
+                final HubService hubService = hubServiceWrapper.createHubService();
+                final List<CodeLocationView> allCodeLocationViews = hubService.getAllResponses(projectVersionView, ProjectVersionView.CODELOCATIONS_LINK_RESPONSE);
+                allCodeLocationViews
+                        .stream()
+                        .filter(codeLocation -> notInNewCodeLocationViews(newCodeLocationViews, codeLocation))
+                        .forEach(codeLocationView -> unmapCodeLocation(codeLocationView));
+            } catch (final IntegrationException e) {
+                logger.error("Failed to unmap old Code Locations because none could be retrieved from Project Version", e);
+            }
+        }
+    }
+
+    private void deleteCodeLocation(final CodeLocationView codeLocationView) {
+        try {
+            final CodeLocationService codeLocationService = hubServiceWrapper.createCodeLocationService();
+            codeLocationService.deleteCodeLocation(codeLocationView);
+        } catch (final IntegrationException e) {
+            logger.error(String.format("Error deleting the code location %s: %s", codeLocationView.name, e.getMessage()));
+        }
+    }
+
+    private void unmapCodeLocation(final CodeLocationView codeLocationView) {
+        try {
+            final CodeLocationService codeLocationService = hubServiceWrapper.createCodeLocationService();
+            codeLocationService.unmapCodeLocation(codeLocationView);
+        } catch (final IntegrationException e) {
+            logger.error(String.format("Error unmapping the code location %s: %s", codeLocationView.name, e.getMessage()));
+        }
+    }
+
+    private boolean notInNewCodeLocationViews(final Collection<CodeLocationView> newCodeLocationViews, final CodeLocationView codeLocationView) {
+        for (final CodeLocationView newCodeLocationView : newCodeLocationViews) {
+            if (newCodeLocationView.url.equals(codeLocationView.url)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     @Override

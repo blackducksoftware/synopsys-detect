@@ -23,88 +23,35 @@
  */
 package com.blackducksoftware.integration.hub.detect.codelocation;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.hub.HubManager;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 
 @Component
-/**
- * Since consistency of code location names is extremely important, this class will maintain all current and all historic ways of creating code location names.
- */
 public class CodeLocationNameService {
     @Autowired
-    private HubManager hubManager;
+    private BomCodeLocationNameProvider bomCodeLocationNameProvider;
 
     @Autowired
-    private BomCodeLocationNameProvider1 bomCodeLocationNameProvider1;
+    private ScanCodeLocationNameProvider scanCodeLocationNameProvider;
 
     @Autowired
-    private ScanCodeLocationNameProvider1 scanCodeLocationNameProvider1;
+    private DockerCodeLocationNameProvider dockerCodeLocationNameProvider;
 
-    @Autowired
-    private BomCodeLocationNameProvider2 bomCodeLocationNameProvider2;
-
-    @Autowired
-    private ScanCodeLocationNameProvider2 scanCodeLocationNameProvider2;
-
-    @Autowired
-    private BomCodeLocationNameProvider3 bomCodeLocationNameProvider3;
-
-    @Autowired
-    private ScanCodeLocationNameProvider3 scanCodeLocationNameProvider3;
-
-    @Autowired
-    private DockerCodeLocationNameProvider1 dockerCodeLocationNameProvider1;
-
-    public CodeLocationName createBomToolName(final String sourcePath, final String projectName, final String projectVersionName, final BomToolType bomToolType, final String prefix, final String suffix) {
+    public String createBomToolName(final String sourcePath, final String projectName, final String projectVersionName, final BomToolType bomToolType, final String prefix, final String suffix) {
         final CodeLocationName codeLocationName = new CodeLocationName(projectName, projectVersionName, null, bomToolType, sourcePath, null, prefix, suffix, CodeLocationType.BOM);
-        return codeLocationName;
+        return bomCodeLocationNameProvider.generateName(codeLocationName);
     }
 
-    public CodeLocationName createScanName(final String sourcePath, final String scanTargetPath, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
+    public String createScanName(final String sourcePath, final String scanTargetPath, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
         final CodeLocationName codeLocationName = new CodeLocationName(projectName, projectVersionName, null, null, sourcePath, scanTargetPath, prefix, suffix, CodeLocationType.SCAN);
-        return codeLocationName;
+        return scanCodeLocationNameProvider.generateName(codeLocationName);
     }
 
-    public CodeLocationName createDockerName(final String sourcePath, final String projectName, final String projectVersionName, final String dockerImage, final BomToolType bomToolType, final String prefix, final String suffix) {
+    public String createDockerName(final String sourcePath, final String projectName, final String projectVersionName, final String dockerImage, final BomToolType bomToolType, final String prefix, final String suffix) {
         final CodeLocationName codeLocationName = new CodeLocationName(projectName, projectVersionName, dockerImage, bomToolType, sourcePath, null, prefix, suffix, CodeLocationType.DOCKER);
-        return codeLocationName;
-    }
-
-    public String generateBomToolCurrent(final CodeLocationName codeLocationName) {
-        // for any previously supported code location names, log if we find them
-        final List<String> possiblePreviousCodeLocations = new ArrayList<>();
-        possiblePreviousCodeLocations.add(bomCodeLocationNameProvider1.generateName(codeLocationName));
-        possiblePreviousCodeLocations.add(bomCodeLocationNameProvider2.generateName(codeLocationName));
-        hubManager.manageExistingCodeLocations(possiblePreviousCodeLocations);
-
-        return bomCodeLocationNameProvider3.generateName(codeLocationName);
-    }
-
-    public String generateScanCurrent(final CodeLocationName codeLocationName) {
-        // for any previously supported code location names, log if we find them
-        final List<String> possiblePreviousCodeLocations = new ArrayList<>();
-        possiblePreviousCodeLocations.add(scanCodeLocationNameProvider1.generateName(codeLocationName));
-        possiblePreviousCodeLocations.add(scanCodeLocationNameProvider2.generateName(codeLocationName));
-        hubManager.manageExistingCodeLocations(possiblePreviousCodeLocations);
-
-        return scanCodeLocationNameProvider3.generateName(codeLocationName);
-    }
-
-    public String generateDockerCurrent(final CodeLocationName codeLocationName) {
-        // for any previously supported code location names, log if we find them
-        final List<String> possiblePreviousCodeLocations = new ArrayList<>();
-        possiblePreviousCodeLocations.add(bomCodeLocationNameProvider1.generateName(codeLocationName));
-        possiblePreviousCodeLocations.add(bomCodeLocationNameProvider2.generateName(codeLocationName));
-        possiblePreviousCodeLocations.add(bomCodeLocationNameProvider3.generateName(codeLocationName));
-        hubManager.manageExistingCodeLocations(possiblePreviousCodeLocations);
-
-        return dockerCodeLocationNameProvider1.generateName(codeLocationName);
+        return dockerCodeLocationNameProvider.generateName(codeLocationName);
     }
 
 }

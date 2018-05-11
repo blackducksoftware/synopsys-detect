@@ -176,10 +176,6 @@ public class DetectConfiguration {
             throw new DetectUserFriendlyException("The source path ${sourcePath} either doesn't exist, isn't a directory, or doesn't have appropriate permissions.", ExitCodeType.FAILURE_GENERAL_ERROR);
         }
 
-        if (getProjectCodeLocationDeleteOldNames()) {
-            requestDeprecation("projectCodeLocationDeleteOldNames");
-        }
-
         final boolean atLeastOnePolicySeverity = StringUtils.isNotBlank(policyCheckFailOnSeverities);
         if (atLeastOnePolicySeverity) {
             boolean allSeverities = false;
@@ -663,12 +659,17 @@ public class DetectConfiguration {
     @HelpDescription("A suffix to the name of the codelocations created by Detect.")
     private String projectCodeLocationSuffix;
 
-    @ValueDeprecation(description = "We will no longer be tracking the code locations created by previous versions of Detect in 4.0.0. New properties will be added to handle code location deletion and unmapping.", willRemoveInVersion = "4.0.0")
-    @Value("${detect.project.codelocation.delete.old.names:}")
+    @Value("${detect.project.codelocation.delete:}")
     @DefaultValue("false")
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
-    @HelpDescription("If set to true, when an old code location format is found in the Hub, instead of logging a warning, the code location will be deleted. USE WITH CAUTION - THIS CAN DELETE CODE LOCATIONS IN THE HUB.")
-    private Boolean projectCodeLocationDeleteOldNames;
+    @HelpDescription("If set to true, deletes all other code locations mapped to the project version produced by the current run of Detect.")
+    private Boolean projectCodeLocationDelete;
+
+    @Value("${detect.project.codelocation.unmap:}")
+    @DefaultValue("false")
+    @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
+    @HelpDescription("If set to true, unmaps all other code locations mapped to the project version produced by the current run of Detect.")
+    private Boolean projectCodeLocationUnmap;
 
     @Value("${detect.project.level.adjustments:}")
     @DefaultValue("true")
@@ -1242,8 +1243,12 @@ public class DetectConfiguration {
         return projectCodeLocationSuffix == null ? null : projectCodeLocationSuffix.trim();
     }
 
-    public boolean getProjectCodeLocationDeleteOldNames() {
-        return BooleanUtils.toBoolean(projectCodeLocationDeleteOldNames);
+    public boolean getProjectCodeLocationDelete() {
+        return BooleanUtils.toBoolean(projectCodeLocationDelete);
+    }
+
+    public boolean getProjectCodeLocationUnmap() {
+        return BooleanUtils.toBoolean(projectCodeLocationUnmap);
     }
 
     public boolean getProjectLevelMatchAdjustments() {

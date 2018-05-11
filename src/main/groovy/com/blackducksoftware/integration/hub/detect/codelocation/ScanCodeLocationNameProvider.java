@@ -28,26 +28,25 @@ import org.springframework.stereotype.Component;
 
 @Component
 // used in 2.0.0
-public class BomCodeLocationNameProvider3 extends CodeLocationNameProvider {
+public class ScanCodeLocationNameProvider extends CodeLocationNameProvider {
     @Override
     public String generateName(final CodeLocationName codeLocationName) {
-        final String finalSourcePathPiece = detectFileManager.extractFinalPieceFromPath(codeLocationName.getSourcePath());
+        final String cleanedTargetPath = cleanScanTargetPath(codeLocationName);
         final String projectName = codeLocationName.getProjectName();
         final String projectVersionName = codeLocationName.getProjectVersionName();
         final String prefix = codeLocationName.getPrefix();
         final String suffix = codeLocationName.getSuffix();
         final String codeLocationTypeString = codeLocationName.getCodeLocationType().toString().toLowerCase();
-        final String bomToolTypeString = codeLocationName.getBomToolType().toString().toLowerCase();
 
-        final String codeLocationNameString = createCommonName(finalSourcePathPiece, projectName, projectVersionName, prefix, suffix, codeLocationTypeString, bomToolTypeString);
+        final String codeLocationNameString = createCommonName(cleanedTargetPath, projectName, projectVersionName, prefix, suffix, codeLocationTypeString);
         if (codeLocationNameString.length() > 250) {
-            return shortenCodeLocationName(finalSourcePathPiece, projectName, projectVersionName, prefix, suffix, codeLocationTypeString, bomToolTypeString);
+            return shortenCodeLocationName(cleanedTargetPath, projectName, projectVersionName, prefix, suffix, codeLocationTypeString);
         } else {
             return codeLocationNameString;
         }
     }
 
-    private String createCommonName(final String pathPiece, final String projectName, final String projectVersionName, final String prefix, final String suffix, final String codeLocationType, final String bomToolType) {
+    private String createCommonName(final String pathPiece, final String projectName, final String projectVersionName, final String prefix, final String suffix, final String codeLocationType) {
         String name = String.format("%s/%s/%s", pathPiece, projectName, projectVersionName);
         if (StringUtils.isNotBlank(prefix)) {
             name = String.format("%s/%s", prefix, name);
@@ -56,21 +55,20 @@ public class BomCodeLocationNameProvider3 extends CodeLocationNameProvider {
             name = String.format("%s/%s", name, suffix);
         }
 
-        String endPiece = codeLocationType;
-        endPiece = String.format("%s/%s", bomToolType, endPiece);
+        final String endPiece = codeLocationType;
 
         name = String.format("%s %s", name, endPiece);
         return name;
     }
 
-    private String shortenCodeLocationName(final String pathPiece, final String projectName, final String projectVersionName, final String prefix, final String suffix, final String codeLocationType, final String bomToolType) {
+    private String shortenCodeLocationName(final String pathPiece, final String projectName, final String projectVersionName, final String prefix, final String suffix, final String codeLocationType) {
         final String shortenedPathPiece = CodeLocationName.shortenPiece(pathPiece);
         final String shortenedProjectName = CodeLocationName.shortenPiece(projectName);
         final String shortenedProjectVersionName = CodeLocationName.shortenPiece(projectVersionName);
         final String shortenedPrefix = CodeLocationName.shortenPiece(prefix);
         final String shortenedSuffix = CodeLocationName.shortenPiece(suffix);
 
-        return createCommonName(shortenedPathPiece, shortenedProjectName, shortenedProjectVersionName, shortenedPrefix, shortenedSuffix, codeLocationType, bomToolType);
+        return createCommonName(shortenedPathPiece, shortenedProjectName, shortenedProjectVersionName, shortenedPrefix, shortenedSuffix, codeLocationType);
     }
 
 }

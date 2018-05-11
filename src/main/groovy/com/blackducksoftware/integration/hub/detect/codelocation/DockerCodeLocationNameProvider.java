@@ -27,27 +27,29 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 @Component
-// used in 2.0.0
-public class ScanCodeLocationNameProvider3 extends CodeLocationNameProvider {
+public class DockerCodeLocationNameProvider extends CodeLocationNameProvider {
     @Override
     public String generateName(final CodeLocationName codeLocationName) {
-        final String cleanedTargetPath = cleanScanTargetPath(codeLocationName);
+        final String finalSourcePathPiece = detectFileManager.extractFinalPieceFromPath(codeLocationName.getSourcePath());
         final String projectName = codeLocationName.getProjectName();
         final String projectVersionName = codeLocationName.getProjectVersionName();
+        final String dockerImage = codeLocationName.getDockerImage();
         final String prefix = codeLocationName.getPrefix();
         final String suffix = codeLocationName.getSuffix();
         final String codeLocationTypeString = codeLocationName.getCodeLocationType().toString().toLowerCase();
+        final String bomToolTypeString = codeLocationName.getBomToolType().toString().toLowerCase();
 
-        final String codeLocationNameString = createCommonName(cleanedTargetPath, projectName, projectVersionName, prefix, suffix, codeLocationTypeString);
+        final String codeLocationNameString = createCommonName(finalSourcePathPiece, projectName, projectVersionName, dockerImage, prefix, suffix, codeLocationTypeString, bomToolTypeString);
         if (codeLocationNameString.length() > 250) {
-            return shortenCodeLocationName(cleanedTargetPath, projectName, projectVersionName, prefix, suffix, codeLocationTypeString);
+            return shortenCodeLocationName(finalSourcePathPiece, projectName, projectVersionName, dockerImage, prefix, suffix, codeLocationTypeString, bomToolTypeString);
         } else {
             return codeLocationNameString;
         }
     }
 
-    private String createCommonName(final String pathPiece, final String projectName, final String projectVersionName, final String prefix, final String suffix, final String codeLocationType) {
-        String name = String.format("%s/%s/%s", pathPiece, projectName, projectVersionName);
+    private String createCommonName(final String pathPiece, final String projectName, final String projectVersionName, final String dockerImage, final String prefix, final String suffix, final String codeLocationType,
+            final String bomToolType) {
+        String name = String.format("%s/%s/%s/%s", pathPiece, projectName, projectVersionName, dockerImage);
         if (StringUtils.isNotBlank(prefix)) {
             name = String.format("%s/%s", prefix, name);
         }
@@ -55,20 +57,23 @@ public class ScanCodeLocationNameProvider3 extends CodeLocationNameProvider {
             name = String.format("%s/%s", name, suffix);
         }
 
-        final String endPiece = codeLocationType;
+        String endPiece = codeLocationType;
+        endPiece = String.format("%s/%s", bomToolType, endPiece);
 
         name = String.format("%s %s", name, endPiece);
         return name;
     }
 
-    private String shortenCodeLocationName(final String pathPiece, final String projectName, final String projectVersionName, final String prefix, final String suffix, final String codeLocationType) {
+    private String shortenCodeLocationName(final String pathPiece, final String projectName, final String projectVersionName, final String dockerImage, final String prefix, final String suffix, final String codeLocationType,
+            final String bomToolType) {
         final String shortenedPathPiece = CodeLocationName.shortenPiece(pathPiece);
         final String shortenedProjectName = CodeLocationName.shortenPiece(projectName);
         final String shortenedProjectVersionName = CodeLocationName.shortenPiece(projectVersionName);
+        final String shortenedDockerImage = CodeLocationName.shortenPiece(dockerImage);
         final String shortenedPrefix = CodeLocationName.shortenPiece(prefix);
         final String shortenedSuffix = CodeLocationName.shortenPiece(suffix);
 
-        return createCommonName(shortenedPathPiece, shortenedProjectName, shortenedProjectVersionName, shortenedPrefix, shortenedSuffix, codeLocationType);
+        return createCommonName(shortenedPathPiece, shortenedProjectName, shortenedProjectVersionName, shortenedDockerImage, shortenedPrefix, shortenedSuffix, codeLocationType, bomToolType);
     }
 
 }

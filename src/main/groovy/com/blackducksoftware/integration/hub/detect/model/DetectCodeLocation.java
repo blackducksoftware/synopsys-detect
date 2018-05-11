@@ -25,7 +25,6 @@ package com.blackducksoftware.integration.hub.detect.model;
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
-import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationName;
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationNameService;
 
 public class DetectCodeLocation {
@@ -83,19 +82,11 @@ public class DetectCodeLocation {
         this.dependencyGraph = builder.dependencyGraph;
     }
 
-    public CodeLocationName createCodeLocationName(final CodeLocationNameService codeLocationNameService, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
+    public String createCodeLocationName(final CodeLocationNameService codeLocationNameService, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
         if (BomToolType.DOCKER == getBomToolType()) {
             return codeLocationNameService.createDockerName(getSourcePath(), projectName, projectVersionName, dockerImage, getBomToolType(), prefix, suffix);
         } else {
             return codeLocationNameService.createBomToolName(getSourcePath(), projectName, projectVersionName, getBomToolType(), prefix, suffix);
-        }
-    }
-
-    public String getCodeLocationNameString(final CodeLocationNameService codeLocationNameService, final CodeLocationName codeLocationName) {
-        if (BomToolType.DOCKER == getBomToolType()) {
-            return codeLocationNameService.generateDockerCurrent(codeLocationName);
-        } else {
-            return codeLocationNameService.generateBomToolCurrent(codeLocationName);
         }
     }
 

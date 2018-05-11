@@ -17,13 +17,13 @@ import org.junit.Test
 
 import com.blackducksoftware.integration.hub.detect.codelocation.BomCodeLocationNameProvider1
 import com.blackducksoftware.integration.hub.detect.codelocation.BomCodeLocationNameProvider2
-import com.blackducksoftware.integration.hub.detect.codelocation.BomCodeLocationNameProvider3
+import com.blackducksoftware.integration.hub.detect.codelocation.BomCodeLocationNameProvider
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationName
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationNameProvider
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationNameService
 import com.blackducksoftware.integration.hub.detect.codelocation.ScanCodeLocationNameProvider1
 import com.blackducksoftware.integration.hub.detect.codelocation.ScanCodeLocationNameProvider2
-import com.blackducksoftware.integration.hub.detect.codelocation.ScanCodeLocationNameProvider3
+import com.blackducksoftware.integration.hub.detect.codelocation.ScanCodeLocationNameProvider
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 
@@ -75,7 +75,7 @@ class CodeLocationNameServiceTest {
         String expected = 'hub-common-rest/target/hub-common-rest/2.5.1-SNAPSHOT scan'
 
         DetectFileManager detectFileManager = [extractFinalPieceFromPath: { 'hub-common-rest' }] as DetectFileManager
-        CodeLocationNameProvider codeLocationNameProvider = new ScanCodeLocationNameProvider3()
+        CodeLocationNameProvider codeLocationNameProvider = new ScanCodeLocationNameProvider()
         codeLocationNameProvider.detectFileManager = detectFileManager
 
         String sourcePath = '/Users/ekerwin/Documents/source/integration/hub-common-rest'
@@ -133,7 +133,7 @@ class CodeLocationNameServiceTest {
         String expected = 'hub-common-rest/hub-common-rest/2.5.1-SNAPSHOT npm/bom'
 
         DetectFileManager detectFileManager = [extractFinalPieceFromPath: { 'hub-common-rest' }] as DetectFileManager
-        CodeLocationNameProvider codeLocationNameProvider = new BomCodeLocationNameProvider3()
+        CodeLocationNameProvider codeLocationNameProvider = new BomCodeLocationNameProvider()
         codeLocationNameProvider.detectFileManager = detectFileManager
 
         String sourcePath = '/Users/ekerwin/Documents/source/integration/hub-common-rest'
@@ -152,7 +152,7 @@ class CodeLocationNameServiceTest {
         String expected = 'hub-common-rest/hub-common-resthub-...esthub-common-rest/2.5.1-SNAPSHOT npm/bom'
 
         DetectFileManager detectFileManager = [extractFinalPieceFromPath: { 'hub-common-rest' }] as DetectFileManager
-        CodeLocationNameProvider codeLocationNameProvider = new BomCodeLocationNameProvider3()
+        CodeLocationNameProvider codeLocationNameProvider = new BomCodeLocationNameProvider()
         codeLocationNameProvider.detectFileManager = detectFileManager
 
         String sourcePath = '/Users/ekerwin/Documents/source/integration/hub-common-rest'

@@ -23,16 +23,21 @@
  */
 package com.blackducksoftware.integration.hub.detect.model;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationName;
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.util.BdioFileNamer;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.service.model.ProjectRequestBuilder;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-
-import java.util.*;
 
 public class DetectProject {
     private final Map<String, DetectCodeLocation> codeLocationNameMap = new HashMap<>();
@@ -107,14 +112,13 @@ public class DetectProject {
                 logger.warn(String.format("Could not find any dependencies for code location %s", detectCodeLocation.getSourcePath()));
             }
 
-            final CodeLocationName codeLocationName = detectCodeLocation.createCodeLocationName(codeLocationNameService, projectName, projectVersionName, getCodeLocationNamePrefix(), getCodeLocationNameSuffix());
-            final String codeLocationNameString = detectCodeLocation.getCodeLocationNameString(codeLocationNameService, codeLocationName);
+            final String codeLocationName = detectCodeLocation.createCodeLocationName(codeLocationNameService, projectName, projectVersionName, getCodeLocationNamePrefix(), getCodeLocationNameSuffix());
 
-            if (codeLocationNameMap.containsKey(codeLocationNameString)) {
+            if (codeLocationNameMap.containsKey(codeLocationName)) {
                 failedBomTools.add(detectCodeLocation.getBomToolType());
-                logger.error(String.format("Found duplicate Code Locations with the name: %s", codeLocationNameString));
+                logger.error(String.format("Found duplicate Code Locations with the name: %s", codeLocationName));
             } else {
-                codeLocationNameMap.put(codeLocationNameString, detectCodeLocation);
+                codeLocationNameMap.put(codeLocationName, detectCodeLocation);
             }
         }
         final Set<String> bdioFileNames = new HashSet<>();
