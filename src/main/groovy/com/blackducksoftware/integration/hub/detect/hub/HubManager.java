@@ -25,7 +25,6 @@ package com.blackducksoftware.integration.hub.detect.hub;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -45,6 +44,7 @@ import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendly
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.model.DetectProject;
+import com.blackducksoftware.integration.hub.exception.DoesNotExistException;
 import com.blackducksoftware.integration.hub.exception.HubTimeoutExceededException;
 import com.blackducksoftware.integration.hub.rest.exception.IntegrationRestException;
 import com.blackducksoftware.integration.hub.service.CodeLocationService;
@@ -87,6 +87,18 @@ public class HubManager implements ExitCodeReporter {
         if (null != createdBdioFiles && !createdBdioFiles.isEmpty()) {
             final HubServerConfig hubServerConfig = hubServiceWrapper.getHubServerConfig();
             final CodeLocationService codeLocationService = hubServiceWrapper.createCodeLocationService();
+            if (detectConfiguration.getProjectCodeLocationUnmap()) {
+                try {
+                    final HubService hubService = hubServiceWrapper.createHubService();
+                    final List<CodeLocationView> codeLocationViews = hubService.getAllResponses(projectVersionView, ProjectVersionView.CODELOCATIONS_LINK_RESPONSE);
+
+                    for (final CodeLocationView codeLocationView : codeLocationViews) {
+                        codeLocationService.unmapCodeLocation(codeLocationView);
+                    }
+                } catch (final IntegrationException e) {
+                    throw new DetectUserFriendlyException(String.format("There was a problem unmapping Code Locations: %s", e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
+                }
+            }
             bdioUploader.uploadBdioFiles(hubServerConfig, codeLocationService, detectProject, createdBdioFiles);
         } else {
             logger.debug("Did not create any bdio files.");
@@ -150,6 +162,9 @@ public class HubManager implements ExitCodeReporter {
             throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_HUB_CONNECTIVITY);
         } catch (final HubTimeoutExceededException e) {
             throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_TIMEOUT);
+        } catch (final DoesNotExistException e) {
+            throw new DetectUserFriendlyException(String.format("There was a problem unmapping/deleting old Code Locations: %s (this Code Location should have been created during this Detect run)", e.getMessage()), e,
+                    ExitCodeType.FAILURE_GENERAL_ERROR);
         } catch (final Exception e) {
             throw new DetectUserFriendlyException(String.format("There was a problem: %s", e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
         }
@@ -183,64 +198,6 @@ public class HubManager implements ExitCodeReporter {
 
         final ProjectVersionWrapper projectVersionWrapper = projectService.getProjectVersionAndCreateIfNeeded(projectRequest);
         return projectVersionWrapper.getProjectVersionView();
-    }
-
-    public void deleteOldCodeLocations(final ProjectVersionView projectVersionView, final List<CodeLocationView> newCodeLocationViews) {
-        if (!detectConfiguration.getHubOfflineMode()) {
-            try {
-                final HubService hubService = hubServiceWrapper.createHubService();
-                final List<CodeLocationView> allCodeLocationViews = hubService.getAllResponses(projectVersionView, ProjectVersionView.CODELOCATIONS_LINK_RESPONSE);
-                allCodeLocationViews
-                        .stream()
-                        .filter(codeLocation -> notInNewCodeLocationViews(newCodeLocationViews, codeLocation))
-                        .forEach(codeLocationView -> deleteCodeLocation(codeLocationView));
-            } catch (final IntegrationException e) {
-                logger.error("Failed to delete old Code Locations because none could be retrieved from Project Version", e);
-            }
-        }
-    }
-
-    public void unmapOldCodeLocations(final ProjectVersionView projectVersionView, final List<CodeLocationView> newCodeLocationViews) {
-        if (!detectConfiguration.getHubOfflineMode()) {
-            try {
-                final HubService hubService = hubServiceWrapper.createHubService();
-                final List<CodeLocationView> allCodeLocationViews = hubService.getAllResponses(projectVersionView, ProjectVersionView.CODELOCATIONS_LINK_RESPONSE);
-                allCodeLocationViews
-                        .stream()
-                        .filter(codeLocation -> notInNewCodeLocationViews(newCodeLocationViews, codeLocation))
-                        .forEach(codeLocationView -> unmapCodeLocation(codeLocationView));
-            } catch (final IntegrationException e) {
-                logger.error("Failed to unmap old Code Locations because none could be retrieved from Project Version", e);
-            }
-        }
-    }
-
-    private void deleteCodeLocation(final CodeLocationView codeLocationView) {
-        try {
-            final CodeLocationService codeLocationService = hubServiceWrapper.createCodeLocationService();
-            codeLocationService.deleteCodeLocation(codeLocationView);
-        } catch (final IntegrationException e) {
-            logger.error(String.format("Error deleting the code location %s: %s", codeLocationView.name, e.getMessage()));
-        }
-    }
-
-    private void unmapCodeLocation(final CodeLocationView codeLocationView) {
-        try {
-            final CodeLocationService codeLocationService = hubServiceWrapper.createCodeLocationService();
-            codeLocationService.unmapCodeLocation(codeLocationView);
-        } catch (final IntegrationException e) {
-            logger.error(String.format("Error unmapping the code location %s: %s", codeLocationView.name, e.getMessage()));
-        }
-    }
-
-    private boolean notInNewCodeLocationViews(final Collection<CodeLocationView> newCodeLocationViews, final CodeLocationView codeLocationView) {
-        for (final CodeLocationView newCodeLocationView : newCodeLocationViews) {
-            if (newCodeLocationView.url.equals(codeLocationView.url)) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     @Override

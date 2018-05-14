@@ -659,12 +659,6 @@ public class DetectConfiguration {
     @HelpDescription("A suffix to the name of the codelocations created by Detect.")
     private String projectCodeLocationSuffix;
 
-    @Value("${detect.project.codelocation.delete:}")
-    @DefaultValue("false")
-    @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
-    @HelpDescription("If set to true, deletes all other code locations mapped to the project version produced by the current run of Detect.")
-    private Boolean projectCodeLocationDelete;
-
     @Value("${detect.project.codelocation.unmap:}")
     @DefaultValue("false")
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
@@ -1241,10 +1235,6 @@ public class DetectConfiguration {
 
     public String getProjectCodeLocationSuffix() {
         return projectCodeLocationSuffix == null ? null : projectCodeLocationSuffix.trim();
-    }
-
-    public boolean getProjectCodeLocationDelete() {
-        return BooleanUtils.toBoolean(projectCodeLocationDelete);
     }
 
     public boolean getProjectCodeLocationUnmap() {
