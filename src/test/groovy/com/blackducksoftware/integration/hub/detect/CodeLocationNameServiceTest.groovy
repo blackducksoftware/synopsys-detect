@@ -16,7 +16,6 @@ import static org.junit.Assert.*
 import org.junit.Test
 
 import com.blackducksoftware.integration.hub.detect.codelocation.BomCodeLocationNameProvider
-import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationNameProvider
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationNameService
 import com.blackducksoftware.integration.hub.detect.codelocation.ScanCodeLocationNameProvider
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
@@ -30,7 +29,8 @@ class CodeLocationNameServiceTest {
         String expected = 'hub-common-rest/target/hub-common-rest/2.5.1-SNAPSHOT scan'
 
         DetectFileManager detectFileManager = [extractFinalPieceFromPath: { 'hub-common-rest' }] as DetectFileManager
-        CodeLocationNameProvider codeLocationNameProvider = new ScanCodeLocationNameProvider()
+        ScanCodeLocationNameProvider codeLocationNameProvider = new ScanCodeLocationNameProvider()
+        codeLocationNameService.scanCodeLocationNameProvider = codeLocationNameProvider;
         codeLocationNameProvider.detectFileManager = detectFileManager
 
         String sourcePath = '/Users/ekerwin/Documents/source/integration/hub-common-rest'
@@ -49,7 +49,8 @@ class CodeLocationNameServiceTest {
         String expected = 'hub-common-rest/hub-common-rest/2.5.1-SNAPSHOT npm/bom'
 
         DetectFileManager detectFileManager = [extractFinalPieceFromPath: { 'hub-common-rest' }] as DetectFileManager
-        CodeLocationNameProvider codeLocationNameProvider = new BomCodeLocationNameProvider()
+        BomCodeLocationNameProvider codeLocationNameProvider = new BomCodeLocationNameProvider()
+        codeLocationNameService.bomCodeLocationNameProvider = codeLocationNameProvider;
         codeLocationNameProvider.detectFileManager = detectFileManager
 
         String sourcePath = '/Users/ekerwin/Documents/source/integration/hub-common-rest'
@@ -67,7 +68,8 @@ class CodeLocationNameServiceTest {
         String expected = 'hub-common-rest/hub-common-resthub-...esthub-common-rest/2.5.1-SNAPSHOT npm/bom'
 
         DetectFileManager detectFileManager = [extractFinalPieceFromPath: { 'hub-common-rest' }] as DetectFileManager
-        CodeLocationNameProvider codeLocationNameProvider = new BomCodeLocationNameProvider()
+        BomCodeLocationNameProvider codeLocationNameProvider = new BomCodeLocationNameProvider()
+        codeLocationNameService.bomCodeLocationNameProvider = codeLocationNameProvider;
         codeLocationNameProvider.detectFileManager = detectFileManager
 
         String sourcePath = '/Users/ekerwin/Documents/source/integration/hub-common-rest'
