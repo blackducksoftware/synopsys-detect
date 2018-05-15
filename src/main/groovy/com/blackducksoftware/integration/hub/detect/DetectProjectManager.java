@@ -54,8 +54,8 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.NestedBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.ApplicableDirectoryResult;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolTreeWalker;
-import com.blackducksoftware.integration.hub.detect.codelocation.BomCodeLocationNameProvider;
-import com.blackducksoftware.integration.hub.detect.codelocation.DockerCodeLocationNameProvider;
+import com.blackducksoftware.integration.hub.detect.codelocation.BomCodeLocationNameFactory;
+import com.blackducksoftware.integration.hub.detect.codelocation.DockerCodeLocationNameFactory;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
@@ -106,10 +106,10 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     private DetectFileManager detectFileManager;
 
     @Autowired
-    private BomCodeLocationNameProvider bomCodeLocationNameProvider;
+    private BomCodeLocationNameFactory bomCodeLocationNameFactory;
 
     @Autowired
-    private DockerCodeLocationNameProvider dockerCodeLocationNameProvider;
+    private DockerCodeLocationNameFactory dockerCodeLocationNameFactory;
 
     @Autowired
     private DetectPhoneHomeManager detectPhoneHomeManager;
@@ -220,7 +220,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         }
 
         if (StringUtils.isBlank(detectConfiguration.getAggregateBomName())) {
-            detectProject.processDetectCodeLocations(bomCodeLocationNameProvider, dockerCodeLocationNameProvider, logger, detectFileManager, bdioFileNamer);
+            detectProject.processDetectCodeLocations(bomCodeLocationNameFactory, dockerCodeLocationNameFactory, logger, detectFileManager, bdioFileNamer);
 
             for (final BomToolType bomToolType : detectProject.getFailedBomTools()) {
                 bomToolSummaryResults.put(bomToolType, Result.FAILURE);

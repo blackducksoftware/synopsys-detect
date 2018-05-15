@@ -27,17 +27,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ScanCodeLocationNameProvider extends CodeLocationNameProvider {
-    public String generateName(final String sourcePath, final String scanTargetPath, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
+public class ScanCodeLocationNameFactory extends CodeLocationNameFactory {
+    public String createCodeLocationName(final String sourcePath, final String scanTargetPath, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
         final String cleanedTargetPath = cleanScanTargetPath(scanTargetPath, sourcePath);
         final String codeLocationTypeString = CodeLocationType.SCAN.toString().toLowerCase();
 
-        final String codeLocationNameString = createCommonName(cleanedTargetPath, projectName, projectVersionName, prefix, suffix, codeLocationTypeString);
-        if (codeLocationNameString.length() > 250) {
-            return shortenCodeLocationName(cleanedTargetPath, projectName, projectVersionName, prefix, suffix, codeLocationTypeString);
-        } else {
-            return codeLocationNameString;
+        String codeLocationName = createCommonName(cleanedTargetPath, projectName, projectVersionName, prefix, suffix, codeLocationTypeString);
+
+        if (codeLocationName.length() > 250) {
+            codeLocationName = shortenCodeLocationName(cleanedTargetPath, projectName, projectVersionName, prefix, suffix, codeLocationTypeString);
         }
+
+        return codeLocationName;
     }
 
     private String createCommonName(final String pathPiece, final String projectName, final String projectVersionName, final String prefix, final String suffix, final String codeLocationType) {

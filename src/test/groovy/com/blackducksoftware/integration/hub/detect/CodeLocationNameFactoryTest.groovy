@@ -15,19 +15,19 @@ import static org.junit.Assert.*
 
 import org.junit.Test
 
-import com.blackducksoftware.integration.hub.detect.codelocation.BomCodeLocationNameProvider
-import com.blackducksoftware.integration.hub.detect.codelocation.ScanCodeLocationNameProvider
+import com.blackducksoftware.integration.hub.detect.codelocation.BomCodeLocationNameFactory
+import com.blackducksoftware.integration.hub.detect.codelocation.ScanCodeLocationNameFactory
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 
-class CodeLocationNameProviderTest {
+class CodeLocationNameFactoryTest {
     @Test
-    public void testScanCodeLocationNameProvider() {
+    public void testScanCodeLocationNameFactory() {
         String expected = 'hub-common-rest/target/hub-common-rest/2.5.1-SNAPSHOT scan'
 
         DetectFileManager detectFileManager = [extractFinalPieceFromPath: { 'hub-common-rest' }] as DetectFileManager
-        ScanCodeLocationNameProvider scanCodeLocationNameProvider = new ScanCodeLocationNameProvider()
-        scanCodeLocationNameProvider.detectFileManager = detectFileManager
+        ScanCodeLocationNameFactory scanCodeLocationNameFactory = new ScanCodeLocationNameFactory()
+        scanCodeLocationNameFactory.detectFileManager = detectFileManager
 
         String sourcePath = '/Users/ekerwin/Documents/source/integration/hub-common-rest'
         String scanTargetPath = '/Users/ekerwin/Documents/source/integration/hub-common-rest/target'
@@ -35,25 +35,25 @@ class CodeLocationNameProviderTest {
         String projectVersionName = '2.5.1-SNAPSHOT'
         String prefix = ''
         String suffix = ''
-        String actual = scanCodeLocationNameProvider.generateName(sourcePath, scanTargetPath, projectName, projectVersionName, prefix, suffix)
+        String actual = scanCodeLocationNameFactory.createCodeLocationName(sourcePath, scanTargetPath, projectName, projectVersionName, prefix, suffix)
 
         assertEquals(expected, actual)
     }
 
     @Test
-    public void testBomCodeLocationNameProvider() {
+    public void testBomCodeLocationNameFactory() {
         String expected = 'hub-common-rest/hub-common-rest/2.5.1-SNAPSHOT npm/bom'
 
         DetectFileManager detectFileManager = [extractFinalPieceFromPath: { 'hub-common-rest' }] as DetectFileManager
-        BomCodeLocationNameProvider bomCodeLocationNameProvider = new BomCodeLocationNameProvider()
-        bomCodeLocationNameProvider.detectFileManager = detectFileManager
+        BomCodeLocationNameFactory bomCodeLocationNameFactory = new BomCodeLocationNameFactory()
+        bomCodeLocationNameFactory.detectFileManager = detectFileManager
 
         String sourcePath = '/Users/ekerwin/Documents/source/integration/hub-common-rest'
         String projectName = 'hub-common-rest'
         String projectVersionName = '2.5.1-SNAPSHOT'
         String prefix = ''
         String suffix = ''
-        String actual = bomCodeLocationNameProvider.generateName(sourcePath, projectName, projectVersionName, BomToolType.NPM, prefix, suffix)
+        String actual = bomCodeLocationNameFactory.createCodeLocationName(sourcePath, projectName, projectVersionName, BomToolType.NPM, prefix, suffix)
 
         assertEquals(expected, actual)
     }
@@ -63,15 +63,15 @@ class CodeLocationNameProviderTest {
         String expected = 'hub-common-rest/hub-common-resthub-...esthub-common-rest/2.5.1-SNAPSHOT npm/bom'
 
         DetectFileManager detectFileManager = [extractFinalPieceFromPath: { 'hub-common-rest' }] as DetectFileManager
-        BomCodeLocationNameProvider bomCodeLocationNameProvider = new BomCodeLocationNameProvider()
-        bomCodeLocationNameProvider.detectFileManager = detectFileManager
+        BomCodeLocationNameFactory bomCodeLocationNameFactory = new BomCodeLocationNameFactory()
+        bomCodeLocationNameFactory.detectFileManager = detectFileManager
 
         String sourcePath = '/Users/ekerwin/Documents/source/integration/hub-common-rest'
         String projectName = 'hub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-rest'
         String projectVersionName = '2.5.1-SNAPSHOT'
         String prefix = ''
         String suffix = ''
-        String actual = bomCodeLocationNameProvider.generateName(sourcePath, projectName, projectVersionName, BomToolType.NPM, prefix, suffix)
+        String actual = bomCodeLocationNameFactory.createCodeLocationName(sourcePath, projectName, projectVersionName, BomToolType.NPM, prefix, suffix)
 
         assertEquals(expected, actual)
     }

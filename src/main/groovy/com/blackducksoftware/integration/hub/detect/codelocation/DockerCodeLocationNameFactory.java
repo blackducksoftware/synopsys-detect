@@ -29,22 +29,24 @@ import org.springframework.stereotype.Component;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 
 @Component
-public class BomCodeLocationNameProvider extends CodeLocationNameProvider {
-    public String generateName(final String sourcePath, final String projectName, final String projectVersionName, final BomToolType bomToolType, final String prefix, final String suffix) {
+public class DockerCodeLocationNameFactory extends CodeLocationNameFactory {
+    public String createCodeLocationName(final String sourcePath, final String projectName, final String projectVersionName, final String dockerImage, final BomToolType bomToolType, final String prefix, final String suffix) {
         final String finalSourcePathPiece = detectFileManager.extractFinalPieceFromPath(sourcePath);
-        final String codeLocationTypeString = CodeLocationType.BOM.toString().toLowerCase();
+        final String codeLocationTypeString = CodeLocationType.DOCKER.toString().toLowerCase();
         final String bomToolTypeString = bomToolType.toString().toLowerCase();
 
-        final String codeLocationNameString = createCommonName(finalSourcePathPiece, projectName, projectVersionName, prefix, suffix, codeLocationTypeString, bomToolTypeString);
-        if (codeLocationNameString.length() > 250) {
-            return shortenCodeLocationName(finalSourcePathPiece, projectName, projectVersionName, prefix, suffix, codeLocationTypeString, bomToolTypeString);
-        } else {
-            return codeLocationNameString;
+        String codeLocationName = createCommonName(finalSourcePathPiece, projectName, projectVersionName, dockerImage, prefix, suffix, codeLocationTypeString, bomToolTypeString);
+
+        if (codeLocationName.length() > 250) {
+            codeLocationName = shortenCodeLocationName(finalSourcePathPiece, projectName, projectVersionName, dockerImage, prefix, suffix, codeLocationTypeString, bomToolTypeString);
         }
+
+        return codeLocationName;
     }
 
-    private String createCommonName(final String pathPiece, final String projectName, final String projectVersionName, final String prefix, final String suffix, final String codeLocationType, final String bomToolType) {
-        String name = String.format("%s/%s/%s", pathPiece, projectName, projectVersionName);
+    private String createCommonName(final String pathPiece, final String projectName, final String projectVersionName, final String dockerImage, final String prefix, final String suffix, final String codeLocationType,
+            final String bomToolType) {
+        String name = String.format("%s/%s/%s/%s", pathPiece, projectName, projectVersionName, dockerImage);
         if (StringUtils.isNotBlank(prefix)) {
             name = String.format("%s/%s", prefix, name);
         }
@@ -59,14 +61,16 @@ public class BomCodeLocationNameProvider extends CodeLocationNameProvider {
         return name;
     }
 
-    private String shortenCodeLocationName(final String pathPiece, final String projectName, final String projectVersionName, final String prefix, final String suffix, final String codeLocationType, final String bomToolType) {
+    private String shortenCodeLocationName(final String pathPiece, final String projectName, final String projectVersionName, final String dockerImage, final String prefix, final String suffix, final String codeLocationType,
+            final String bomToolType) {
         final String shortenedPathPiece = shortenPiece(pathPiece);
         final String shortenedProjectName = shortenPiece(projectName);
         final String shortenedProjectVersionName = shortenPiece(projectVersionName);
+        final String shortenedDockerImage = shortenPiece(dockerImage);
         final String shortenedPrefix = shortenPiece(prefix);
         final String shortenedSuffix = shortenPiece(suffix);
 
-        return createCommonName(shortenedPathPiece, shortenedProjectName, shortenedProjectVersionName, shortenedPrefix, shortenedSuffix, codeLocationType, bomToolType);
+        return createCommonName(shortenedPathPiece, shortenedProjectName, shortenedProjectVersionName, shortenedDockerImage, shortenedPrefix, shortenedSuffix, codeLocationType, bomToolType);
     }
 
 }
