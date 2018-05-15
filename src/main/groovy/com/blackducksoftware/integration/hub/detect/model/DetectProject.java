@@ -34,7 +34,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationNameService;
+import com.blackducksoftware.integration.hub.detect.codelocation.BomCodeLocationNameProvider;
+import com.blackducksoftware.integration.hub.detect.codelocation.DockerCodeLocationNameProvider;
 import com.blackducksoftware.integration.hub.detect.util.BdioFileNamer;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.service.model.ProjectRequestBuilder;
@@ -102,7 +103,8 @@ public class DetectProject {
         return builder;
     }
 
-    public void processDetectCodeLocations(final Logger logger, final DetectFileManager detectFileManager, final BdioFileNamer bdioFileNamer, final CodeLocationNameService codeLocationNameService) {
+    public void processDetectCodeLocations(final BomCodeLocationNameProvider bomCodeLocationNameProvider, final DockerCodeLocationNameProvider dockerCodeLocationNameProvider, final Logger logger, final DetectFileManager detectFileManager,
+            final BdioFileNamer bdioFileNamer) {
         for (final DetectCodeLocation detectCodeLocation : getDetectCodeLocations()) {
             if (detectCodeLocation.getDependencyGraph() == null) {
                 logger.warn(String.format("Dependency graph is null for code location %s", detectCodeLocation.getSourcePath()));
@@ -112,7 +114,7 @@ public class DetectProject {
                 logger.warn(String.format("Could not find any dependencies for code location %s", detectCodeLocation.getSourcePath()));
             }
 
-            final String codeLocationName = detectCodeLocation.createCodeLocationName(codeLocationNameService, projectName, projectVersionName, getCodeLocationNamePrefix(), getCodeLocationNameSuffix());
+            final String codeLocationName = detectCodeLocation.createCodeLocationName(bomCodeLocationNameProvider, dockerCodeLocationNameProvider, projectName, projectVersionName, getCodeLocationNamePrefix(), getCodeLocationNameSuffix());
 
             if (codeLocationNameMap.containsKey(codeLocationName)) {
                 failedBomTools.add(detectCodeLocation.getBomToolType());
