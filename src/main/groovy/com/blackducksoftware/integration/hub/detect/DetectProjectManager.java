@@ -54,7 +54,8 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.NestedBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.ApplicableDirectoryResult;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolTreeWalker;
-import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationNameService;
+import com.blackducksoftware.integration.hub.detect.codelocation.BomCodeLocationNameFactory;
+import com.blackducksoftware.integration.hub.detect.codelocation.DockerCodeLocationNameFactory;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
@@ -105,12 +106,15 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     private DetectFileManager detectFileManager;
 
     @Autowired
-    private CodeLocationNameService codeLocationNameService;
+    private BomCodeLocationNameFactory bomCodeLocationNameFactory;
+
+    @Autowired
+    private DockerCodeLocationNameFactory dockerCodeLocationNameFactory;
 
     @Autowired
     private DetectPhoneHomeManager detectPhoneHomeManager;
 
-    //Has to be lazy because we need to use the final values from detectConfiguration to instantiate BomToolTreeWalker which are not ready immediately
+    // Has to be lazy because we need to use the final values from detectConfiguration to instantiate BomToolTreeWalker which are not ready immediately
     @Lazy
     @Autowired
     private BomToolTreeWalker bomToolTreeWalker;
@@ -158,25 +162,25 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
             logger.warn(String.format("Will not search for nested bom tools because no bom tools applied to %s", detectConfiguration.getSourcePath()));
         } else if (applicableBomTools.size() > 0 && detectConfiguration.getBomToolSearchDepth() > 0) {
             try {
-                File initialDirectory = detectConfiguration.getSourceDirectory();
+                final File initialDirectory = detectConfiguration.getSourceDirectory();
                 bomToolTreeWalker.startSearching(nestedBomTools, initialDirectory);
-            } catch (BomToolException e) {
+            } catch (final BomToolException e) {
                 bomToolSearchExitCodeType = ExitCodeType.FAILURE_BOM_TOOL;
                 logger.error(e.getMessage(), e);
-            } catch (DetectUserFriendlyException e) {
+            } catch (final DetectUserFriendlyException e) {
                 bomToolSearchExitCodeType = e.getExitCodeType();
                 logger.error(e.getMessage(), e);
             }
-            List<ApplicableDirectoryResult> results = bomToolTreeWalker.getResults();
+            final List<ApplicableDirectoryResult> results = bomToolTreeWalker.getResults();
             if (null != results && results.size() > 0) {
                 foundAnyBomTools = true;
-                for (ApplicableDirectoryResult result : results) {
+                for (final ApplicableDirectoryResult result : results) {
                     bomToolSummaryResults.put(result.getBomToolType(), Result.FAILURE);
                     final BomToolType bomToolType = result.getBomToolType();
                     final String bomToolTypeString = bomToolType.toString();
                     try {
-                        String applicablePath = result.getApplicableDirectory().getCanonicalPath();
-                        List<DetectCodeLocation> codeLocations = result.getCodeLocations();
+                        final String applicablePath = result.getApplicableDirectory().getCanonicalPath();
+                        final List<DetectCodeLocation> codeLocations = result.getCodeLocations();
                         if (null == codeLocations || codeLocations.isEmpty()) {
                             logger.error(String.format("Did not find any code locations from %s even though it applied to %s.", bomToolTypeString, applicablePath));
                         } else {
@@ -216,7 +220,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         }
 
         if (StringUtils.isBlank(detectConfiguration.getAggregateBomName())) {
-            detectProject.processDetectCodeLocations(logger, detectFileManager, bdioFileNamer, codeLocationNameService);
+            detectProject.processDetectCodeLocations(bomCodeLocationNameFactory, dockerCodeLocationNameFactory, logger, detectFileManager, bdioFileNamer);
 
             for (final BomToolType bomToolType : detectProject.getFailedBomTools()) {
                 bomToolSummaryResults.put(bomToolType, Result.FAILURE);

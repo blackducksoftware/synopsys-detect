@@ -44,7 +44,6 @@ import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendly
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.model.DetectProject;
-import com.blackducksoftware.integration.hub.exception.DoesNotExistException;
 import com.blackducksoftware.integration.hub.exception.HubTimeoutExceededException;
 import com.blackducksoftware.integration.hub.rest.exception.IntegrationRestException;
 import com.blackducksoftware.integration.hub.service.CodeLocationService;
@@ -87,6 +86,18 @@ public class HubManager implements ExitCodeReporter {
         if (null != createdBdioFiles && !createdBdioFiles.isEmpty()) {
             final HubServerConfig hubServerConfig = hubServiceWrapper.getHubServerConfig();
             final CodeLocationService codeLocationService = hubServiceWrapper.createCodeLocationService();
+            if (detectConfiguration.getProjectCodeLocationUnmap()) {
+                try {
+                    final HubService hubService = hubServiceWrapper.createHubService();
+                    final List<CodeLocationView> codeLocationViews = hubService.getAllResponses(projectVersionView, ProjectVersionView.CODELOCATIONS_LINK_RESPONSE);
+
+                    for (final CodeLocationView codeLocationView : codeLocationViews) {
+                        codeLocationService.unmapCodeLocation(codeLocationView);
+                    }
+                } catch (final IntegrationException e) {
+                    throw new DetectUserFriendlyException(String.format("There was a problem unmapping Code Locations: %s", e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
+                }
+            }
             bdioUploader.uploadBdioFiles(hubServerConfig, codeLocationService, detectProject, createdBdioFiles);
         } else {
             logger.debug("Did not create any bdio files.");
@@ -183,33 +194,6 @@ public class HubManager implements ExitCodeReporter {
 
         final ProjectVersionWrapper projectVersionWrapper = projectService.getProjectVersionAndCreateIfNeeded(projectRequest);
         return projectVersionWrapper.getProjectVersionView();
-    }
-
-    public void manageExistingCodeLocations(final List<String> codeLocationNames) {
-        if (!detectConfiguration.getHubOfflineMode()) {
-            final CodeLocationService codeLocationService = hubServiceWrapper.createCodeLocationService();
-            for (final String codeLocationName : codeLocationNames) {
-                try {
-                    final CodeLocationView codeLocationView = codeLocationService.getCodeLocationByName(codeLocationName);
-                    if (detectConfiguration.getProjectCodeLocationDeleteOldNames()) {
-                        try {
-                            codeLocationService.deleteCodeLocation(codeLocationView);
-                            logger.info(String.format("Deleted code location '%s'", codeLocationName));
-                        } catch (final IntegrationException e) {
-                            logger.error(String.format("Not able to delete the code location '%s': %s", codeLocationName, e.getMessage()));
-                        }
-                    } else {
-                        logger.warn(String.format(
-                                "Found a code location with a naming pattern that is no longer supported: %s. This code location may need to be removed to avoid duplicate entries in the Bill of Materials. You can run with --detect.project.codelocation.delete.old.names=true which will automatically delete these code locations, but please USE CAUTION.",
-                                codeLocationName));
-                    }
-                } catch (final DoesNotExistException e) {
-                    logger.debug(String.format("Didn't find the code location %s - this is a good thing!", codeLocationName));
-                } catch (final IntegrationException e) {
-                    logger.error(String.format("Error finding the code location name %s: %s", codeLocationName, e.getMessage()));
-                }
-            }
-        }
     }
 
     @Override

@@ -23,25 +23,20 @@
  */
 package com.blackducksoftware.integration.hub.detect.codelocation;
 
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
 
-@Component
-// used in 1.2.0
-public class ScanCodeLocationNameProvider2 extends CodeLocationNameProvider {
-    @Override
-    public String generateName(final CodeLocationName codeLocationName) {
-        final String projectName = codeLocationName.getProjectName();
-        final String projectVersionName = codeLocationName.getProjectVersionName();
-        final String prefix = codeLocationName.getPrefix();
-        final String cleanedTargetPath = cleanScanTargetPath(codeLocationName);
+import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 
-        String name = String.format("%s/%s/%s %s", cleanedTargetPath, projectName, projectVersionName, CodeLocationType.SCAN.toString());
-        if (StringUtils.isNotBlank(prefix)) {
-            name = String.format("%s/%s", prefix, name);
+public abstract class CodeLocationNameFactory {
+    @Autowired
+    protected DetectFileManager detectFileManager;
+
+    protected String shortenPiece(final String piece) {
+        if (piece.length() <= 40) {
+            return piece;
+        } else {
+            return piece.substring(0, 19) + "..." + piece.substring(piece.length() - 18);
         }
-
-        return name;
     }
 
 }

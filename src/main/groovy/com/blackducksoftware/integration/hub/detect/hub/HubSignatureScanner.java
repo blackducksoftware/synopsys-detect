@@ -49,8 +49,7 @@ import com.blackducksoftware.integration.hub.configuration.HubScanConfig;
 import com.blackducksoftware.integration.hub.configuration.HubScanConfigBuilder;
 import com.blackducksoftware.integration.hub.configuration.HubServerConfig;
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationName;
-import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationNameService;
+import com.blackducksoftware.integration.hub.detect.codelocation.ScanCodeLocationNameFactory;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
@@ -72,14 +71,18 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
     private final Set<String> registeredPaths = new HashSet<>();
     private final Set<String> registeredPathsToExclude = new HashSet<>();
     private final Map<String, Result> scanSummaryResults = new HashMap<>();
+
     @Autowired
     private DetectConfiguration detectConfiguration;
+
     @Autowired
     private DetectFileManager detectFileManager;
+
     @Autowired
     private OfflineScanner offlineScanner;
+
     @Autowired
-    private CodeLocationNameService codeLocationNameService;
+    private ScanCodeLocationNameFactory scanCodeLocationNameFactory;
 
     public void registerPathToScan(final ScanPathSource scanPathSource, final File file, final String... fileNamesToExclude) throws IntegrationException {
         try {
@@ -147,7 +150,7 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
                     projectVersionView = projectVersionWrapperFromScan.getProjectVersionView();
                 }
             }
-        } catch (ExecutionException e) {
+        } catch (final ExecutionException e) {
             throw new DetectUserFriendlyException(String.format("Encountered a problem waiting for a scan to finish. %s", e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
         } finally {
             // get() was called on every java.util.concurrent.Future, no need to wait any longer
@@ -272,9 +275,8 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
         final String sourcePath = detectConfiguration.getSourcePath();
         final String prefix = detectConfiguration.getProjectCodeLocationPrefix();
         final String suffix = detectConfiguration.getProjectCodeLocationSuffix();
-        final CodeLocationName codeLocationName = codeLocationNameService.createScanName(sourcePath, canonicalPath, projectName, projectVersionName, prefix, suffix);
-        final String codeLocationNameString = codeLocationNameService.generateScanCurrent(codeLocationName);
-        hubScanConfigBuilder.setCodeLocationAlias(codeLocationNameString);
+        final String codeLocationName = scanCodeLocationNameFactory.createCodeLocationName(sourcePath, canonicalPath, projectName, projectVersionName, prefix, suffix);
+        hubScanConfigBuilder.setCodeLocationAlias(codeLocationName);
 
         if (null != detectConfiguration.getHubSignatureScannerExclusionPatterns() && detectConfiguration.getHubSignatureScannerExclusionPatterns().length > 0) {
             hubScanConfigBuilder.setExcludePatterns(detectConfiguration.getHubSignatureScannerExclusionPatterns());
