@@ -44,7 +44,6 @@ import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendly
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.model.DetectProject;
-import com.blackducksoftware.integration.hub.exception.DoesNotExistException;
 import com.blackducksoftware.integration.hub.exception.HubTimeoutExceededException;
 import com.blackducksoftware.integration.hub.rest.exception.IntegrationRestException;
 import com.blackducksoftware.integration.hub.service.CodeLocationService;
@@ -162,9 +161,6 @@ public class HubManager implements ExitCodeReporter {
             throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_HUB_CONNECTIVITY);
         } catch (final HubTimeoutExceededException e) {
             throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_TIMEOUT);
-        } catch (final DoesNotExistException e) {
-            throw new DetectUserFriendlyException(String.format("There was a problem unmapping/deleting old Code Locations: %s (this Code Location should have been created during this Detect run)", e.getMessage()), e,
-                    ExitCodeType.FAILURE_GENERAL_ERROR);
         } catch (final Exception e) {
             throw new DetectUserFriendlyException(String.format("There was a problem: %s", e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
         }
