@@ -25,6 +25,9 @@ package com.blackducksoftware.integration.hub.detect;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -33,9 +36,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -335,7 +335,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         } else if (StringUtils.isBlank(projectVersion)) {
             if ("timestamp".equals(detectConfiguration.getDefaultProjectVersionScheme())) {
                 final String timeformat = detectConfiguration.getDefaultProjectVersionTimeformat();
-                final String timeString = DateTimeFormat.forPattern(timeformat).withZoneUTC().print(DateTime.now().withZone(DateTimeZone.UTC));
+                final String timeString = DateTimeFormatter.ofPattern(timeformat).withZone(ZoneOffset.UTC).format(Instant.now().atZone(ZoneOffset.UTC));
                 projectVersion = timeString;
             } else {
                 projectVersion = detectConfiguration.getDefaultProjectVersionText();

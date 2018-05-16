@@ -41,7 +41,7 @@ import com.blackducksoftware.integration.log.Slf4jIntLogger;
 import com.blackducksoftware.integration.phonehome.PhoneHomeClient;
 import com.blackducksoftware.integration.phonehome.PhoneHomeRequestBody;
 import com.blackducksoftware.integration.phonehome.google.analytics.GoogleAnalyticsConstants;
-import com.blackducksoftware.integration.util.CIEnvironmentVariables;
+import com.blackducksoftware.integration.util.IntEnvironmentVariables;
 import com.google.gson.Gson;
 
 @Component
@@ -65,15 +65,12 @@ public class DetectPhoneHomeManager {
     }
 
     public void initOffline() throws DetectUserFriendlyException {
-        CIEnvironmentVariables ciEnvironmentVariables = new CIEnvironmentVariables();
-        ciEnvironmentVariables.putAll(System.getenv());
+        final IntEnvironmentVariables intEnvironmentVariables = new IntEnvironmentVariables();
 
-        IntLogger intLogger = new Slf4jIntLogger(logger);
+        final PhoneHomeClient phoneHomeClient = new PhoneHomeClient(GoogleAnalyticsConstants.PRODUCTION_INTEGRATIONS_TRACKING_ID, logger, gson);
 
-        PhoneHomeClient phoneHomeClient = new PhoneHomeClient(intLogger, GoogleAnalyticsConstants.PRODUCTION_INTEGRATIONS_TRACKING_ID, detectConfiguration.getHubTimeout(), detectConfiguration.getHubProxyInfo(),
-                detectConfiguration.getHubTrustCertificate(), gson);
-
-        this.phoneHomeService = new OfflinePhoneHomeService(intLogger, phoneHomeClient, ciEnvironmentVariables);
+        final IntLogger intLogger = new Slf4jIntLogger(logger);
+        this.phoneHomeService = new OfflinePhoneHomeService(intLogger, phoneHomeClient, intEnvironmentVariables);
     }
 
     public void startPhoneHome() {
@@ -104,7 +101,7 @@ public class DetectPhoneHomeManager {
                 final PhoneHomeRequestBody phoneHomeRequestBody = phoneHomeRequestBodyBuilder.build();
 
                 phoneHomeResponse = phoneHomeService.startPhoneHome(phoneHomeRequestBody);
-            } catch (IllegalStateException e) {
+            } catch (final IllegalStateException e) {
                 logger.debug(e.getMessage(), e);
             }
         }
