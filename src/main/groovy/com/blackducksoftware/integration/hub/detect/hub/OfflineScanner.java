@@ -43,11 +43,10 @@ import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.model.DetectProject;
-import com.blackducksoftware.integration.hub.rest.RestConnection;
-import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnectionBuilder;
-import com.blackducksoftware.integration.hub.rest.UriCombiner;
 import com.blackducksoftware.integration.log.IntLogger;
 import com.blackducksoftware.integration.log.Slf4jIntLogger;
+import com.blackducksoftware.integration.rest.connection.RestConnection;
+import com.blackducksoftware.integration.rest.connection.UnauthenticatedRestConnectionBuilder;
 import com.blackducksoftware.integration.util.IntEnvironmentVariables;
 import com.google.gson.Gson;
 
@@ -68,7 +67,7 @@ public class OfflineScanner {
             throws IllegalArgumentException, IntegrationException, DetectUserFriendlyException, InterruptedException {
         final IntLogger intLogger = new Slf4jIntLogger(logger);
 
-        final HubServerConfig hubServerConfig = new HubServerConfig(null, 0, (String) null, null, false, new UriCombiner());
+        final HubServerConfig hubServerConfig = new HubServerConfig(null, 0, (String) null, null, false);
 
         final IntEnvironmentVariables intEnvironmentVariables = new IntEnvironmentVariables();
         intEnvironmentVariables.putAll(System.getenv());

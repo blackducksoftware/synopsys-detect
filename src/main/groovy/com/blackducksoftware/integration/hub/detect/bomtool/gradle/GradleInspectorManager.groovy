@@ -38,9 +38,9 @@ import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
-import com.blackducksoftware.integration.hub.request.Request
-import com.blackducksoftware.integration.hub.request.Response
-import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnection
+import com.blackducksoftware.integration.rest.connection.UnauthenticatedRestConnection
+import com.blackducksoftware.integration.rest.request.Request
+import com.blackducksoftware.integration.rest.request.Response
 
 import freemarker.template.Configuration
 import freemarker.template.Template
