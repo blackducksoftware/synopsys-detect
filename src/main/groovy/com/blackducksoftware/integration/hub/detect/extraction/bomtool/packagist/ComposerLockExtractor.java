@@ -26,9 +26,9 @@ public class ComposerLockExtractor extends Extractor<ComposerLockContext> {
 
             final DetectCodeLocation detectCodeLocation = packagistParser.getDependencyGraphFromProject(context.directory.toString(), composerJsonText, composerLockText);
 
-            return new Extraction(ExtractionResult.Success, detectCodeLocation);
+            return new Extraction.Builder().success(detectCodeLocation).build();
         } catch (final Exception e) {
-            return new Extraction(ExtractionResult.Failure, e);
+            return new Extraction.Builder().exception(e).build();
         }
     }
 

@@ -33,21 +33,21 @@ public class PodlockExtractor extends Extractor<PodlockContext> {
         try {
             podLockText = FileUtils.readFileToString(context.podlock, StandardCharsets.UTF_8);
         } catch (final IOException e) {
-            return new Extraction(ExtractionResult.Failure, e);
+            return new Extraction.Builder().exception(e).build();
         }
 
         DependencyGraph dependencyGraph;
         try {
             dependencyGraph = cocoapodsPackager.extractDependencyGraph(podLockText);
         } catch (final IOException e) {
-            return new Extraction(ExtractionResult.Failure, e);
+            return new Extraction.Builder().exception(e).build();
         }
 
         final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.COCOAPODS, context.directory.toString());
 
         final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolType.COCOAPODS, context.directory.toString(), externalId, dependencyGraph).build();
 
-        return new Extraction(ExtractionResult.Success, codeLocation);
+        return new Extraction.Builder().success(codeLocation).build();
     }
 
 }

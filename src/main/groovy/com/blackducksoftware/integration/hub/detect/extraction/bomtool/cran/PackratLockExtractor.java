@@ -54,9 +54,9 @@ public class PackratLockExtractor extends Extractor<PackratLockContext> {
                     .bomToolProjectVersionName(projectVersion);
 
             final DetectCodeLocation codeLocation = builder.build();
-            return new Extraction(ExtractionResult.Success, codeLocation);
+            return new Extraction.Builder().success(codeLocation).build();
         } catch (final Exception e) {
-            return new Extraction(ExtractionResult.Failure, e);
+            return new Extraction.Builder().exception(e).build();
         }
     }
 

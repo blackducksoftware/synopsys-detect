@@ -17,9 +17,8 @@ import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphCombiner;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.Extraction;
-import com.blackducksoftware.integration.hub.detect.extraction.Extraction.ExtractionResult;
-import com.blackducksoftware.integration.hub.detect.extraction.bomtool.nuget.parse.NugetInspectorPackager;
 import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.nuget.parse.NugetInspectorPackager;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
@@ -78,7 +77,7 @@ public class NugetInspectorExtractor extends Extractor<NugetInspectorContext>  {
             final ExecutableOutput executableOutput = executableRunner.execute(hubNugetInspectorExecutable);
 
             if (executableOutput.getReturnCode() != 0) {
-                return new Extraction(ExtractionResult.Failure);
+                return new Extraction.Builder().failure("Executable returned nothing.").build();
             }
 
             final List<File> dependencyNodeFiles = detectFileFinder.findFiles(outputDirectory, INSPECTOR_OUTPUT_PATTERN);
@@ -107,9 +106,9 @@ public class NugetInspectorExtractor extends Extractor<NugetInspectorContext>  {
 
             final List<DetectCodeLocation> uniqueCodeLocations = codeLocationsBySource.values().stream().collect(Collectors.toList());
 
-            return new Extraction(ExtractionResult.Success, uniqueCodeLocations);
+            return new Extraction.Builder().success(uniqueCodeLocations).build();
         } catch (final Exception e) {
-            return new Extraction(ExtractionResult.Exception, e);
+            return new Extraction.Builder().exception(e).build();
         }
     }
 

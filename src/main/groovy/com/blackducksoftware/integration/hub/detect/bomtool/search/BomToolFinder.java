@@ -37,14 +37,12 @@ import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.search.StrategyFindResult.FindType;
-import com.blackducksoftware.integration.hub.detect.bomtool.search.StrategyFindResult.Reason;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
-import com.blackducksoftware.integration.hub.detect.extraction.Applicable.ApplicableResult;
+import com.blackducksoftware.integration.hub.detect.extraction.ExtractionContext;
 import com.blackducksoftware.integration.hub.detect.extraction.StrategyEvaluation;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.EvaluationContext;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyEnvironment;
 import com.blackducksoftware.integration.hub.detect.extraction.strategy.Strategy;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 
@@ -52,7 +50,7 @@ import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 public class BomToolFinder {
     private final Logger logger = LoggerFactory.getLogger(BomToolFinder.class);
 
-    public List<StrategyFindResult> findApplicableBomTools(final Set<Strategy> strategies, final File initialDirectory, final BomToolFinderOptions options) throws BomToolException, DetectUserFriendlyException {
+    public List<StrategyEvaluation> findApplicableBomTools(final Set<Strategy> strategies, final File initialDirectory, final BomToolFinderOptions options) throws BomToolException, DetectUserFriendlyException {
 
         final List<File> subDirectories = new ArrayList<>();
         subDirectories.add(initialDirectory);
@@ -60,10 +58,10 @@ public class BomToolFinder {
         return findApplicableBomTools(orderedStrategies, subDirectories, new HashSet<Strategy>(), 0, options);
     }
 
-    private List<StrategyFindResult> findApplicableBomTools(final List<Strategy> orderedStrategies, final List<File> directoriesToSearch, final Set<Strategy> appliedBefore, final int depth, final BomToolFinderOptions options)
+    private List<StrategyEvaluation> findApplicableBomTools(final List<Strategy> orderedStrategies, final List<File> directoriesToSearch, final Set<Strategy> appliedBefore, final int depth, final BomToolFinderOptions options)
             throws BomToolException, DetectUserFriendlyException {
 
-        final List<StrategyFindResult> results = new ArrayList<>();
+        final List<StrategyEvaluation> results = new ArrayList<>();
 
         if (depth > options.getMaximumDepth()) {
             return results;
@@ -80,14 +78,12 @@ public class BomToolFinder {
 
             logger.info("Searching directory: " + directory.getPath());
 
-            final EvaluationContext evaluationContext = new EvaluationContext(directory);
-
             final Set<BomToolType> applicableTypes = new HashSet<>();
             final List<Strategy> remainingStrategies = new ArrayList<>();
             final Set<Strategy> alreadyApplied = new HashSet<>();
             for (final Strategy strategy : orderedStrategies) {
-                final StrategyFindResult result = processStrategy(strategy, evaluationContext, alreadyApplied, appliedBefore, depth);
-                if (result.type == FindType.APPLIES) {
+                final StrategyEvaluation result = processStrategy(strategy, directory, alreadyApplied, appliedBefore, depth, options);
+                if (result.isApplicable()) {
                     alreadyApplied.add(strategy);
                 }
                 remainingStrategies.add(strategy);
@@ -98,7 +94,7 @@ public class BomToolFinder {
                 everApplied.addAll(alreadyApplied);
                 everApplied.addAll(appliedBefore);
                 final List<File> subdirectories = getSubDirectories(directory, options.getExcludedDirectories());
-                final List<StrategyFindResult> recursiveResults = findApplicableBomTools(remainingStrategies, subdirectories, everApplied, depth + 1, options);
+                final List<StrategyEvaluation> recursiveResults = findApplicableBomTools(remainingStrategies, subdirectories, everApplied, depth + 1, options);
                 results.addAll(recursiveResults);
             }
             logger.debug(directory + ": " + applicableTypes.stream().map(it -> it.toString()).collect(Collectors.joining(", ")));
@@ -107,27 +103,17 @@ public class BomToolFinder {
         return results;
     }
 
-    private StrategyFindResult processStrategy(final Strategy strategy, final EvaluationContext context, final Set<Strategy> appliedCurrent, final Set<Strategy> appliedBefore, final int depth) {
-        final StrategyEvaluation evaluation = new StrategyEvaluation();
-        if (depth > strategy.getSearchOptions().getMaxDepth()) {
-            final StrategyFindResult result = new StrategyFindResult(strategy, FindType.DOES_NOT_APPLY, Reason.MAX_DEPTH_EXCEEDED, evaluation, context);
-            result.depth = depth;
-            return result;
-        } else if (!strategy.getSearchOptions().getNestable() && appliedBefore.size() > 0) {
-            final StrategyFindResult result = new StrategyFindResult(strategy, FindType.DOES_NOT_APPLY, Reason.NOT_NESTABLE, evaluation, context);
-            result.nested = appliedBefore;
-            return result;
-        } else if (containsAnyYield(strategy, appliedCurrent, evaluation)) {
-            return new StrategyFindResult(strategy, FindType.DOES_NOT_APPLY, Reason.YIELDED, evaluation, context);
-        } else {
-            evaluation.context = strategy.createContext();
-            evaluation.applicable = strategy.applicable(context, evaluation.context);
-            if (evaluation.applicable.result == ApplicableResult.APPLIES) {
-                return new StrategyFindResult(strategy, FindType.APPLIES, Reason.NONE, evaluation, context);
-            }else {
-                return new StrategyFindResult(strategy, FindType.DOES_NOT_APPLY, Reason.NEEDS_NOT_MET, evaluation, context);
-            }
+    private StrategyEvaluation processStrategy(final Strategy strategy, final File directory, final Set<Strategy> appliedCurrent, final Set<Strategy> appliedBefore, final int depth, final BomToolFinderOptions options) {
+        final StrategyEnvironment environment = new StrategyEnvironment(directory, appliedCurrent, appliedBefore, depth, options.getBomToolFilter());
+        final ExtractionContext context = strategy.createContext(directory);
+        final StrategyEvaluation evaluation = new StrategyEvaluation(strategy, environment, context);
+
+        evaluation.searchable = strategy.searchable(environment, context);
+        if (evaluation.searchable.getPassed()) {
+            evaluation.applicable = strategy.applicable(environment, context);
         }
+
+        return evaluation;
     }
 
     private List<Strategy> determineOrder(final Set<Strategy> allStrategies) throws DetectUserFriendlyException{
@@ -168,18 +154,6 @@ public class BomToolFinder {
             containsAll = containsAll && existingStrategies.contains(yieldToStrategy);
         }
         return containsAll;
-    }
-
-    private boolean containsAnyYield(final Strategy target, final Set<Strategy> existingStrategies, final StrategyEvaluation evaluation) {
-        final Set<Strategy> yieldsTo = target.getYieldsToStrategies();
-        boolean yieldedTo = false;
-        for (final Strategy yieldToStrategy : yieldsTo) {
-            if (existingStrategies.contains(yieldToStrategy)) {
-                evaluation.addYieldedStrategy(yieldToStrategy);
-                yieldedTo = true;
-            }
-        }
-        return yieldedTo;
     }
 
     private boolean shouldStopSearchingIfApplicable(final Strategy strategy, final BomToolFinderOptions options) {

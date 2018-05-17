@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.EvaluationContext;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyEnvironment;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
@@ -34,7 +34,7 @@ public class PipInspectorManager {
     private File resolvedInspector = null;
     private boolean hasResolvedInspector = false;
 
-    public File findPipInspector(final EvaluationContext context) {
+    public File findPipInspector(final StrategyEnvironment environment) {
         try {
             if (!hasResolvedInspector) {
                 hasResolvedInspector = true;

@@ -2,7 +2,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.search.report;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,12 +13,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.search.StrategyFindResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.search.StrategyFindResult.FindType;
 import com.blackducksoftware.integration.hub.detect.diagnostic.DiagnosticsManager;
-import com.blackducksoftware.integration.hub.detect.extraction.Applicable.ApplicableResult;
-import com.blackducksoftware.integration.hub.detect.extraction.Extractable.ExtractableResult;
 import com.blackducksoftware.integration.hub.detect.extraction.Extraction.ExtractionResult;
+import com.blackducksoftware.integration.hub.detect.extraction.StrategyEvaluation;
+import com.blackducksoftware.integration.hub.detect.model.DetectProject;
 
 @Component
 public class ExtractionSummaryReporter {
@@ -28,25 +25,25 @@ public class ExtractionSummaryReporter {
     @Autowired
     public DiagnosticsManager diagnosticsManager;
 
-    public void print(final List<StrategyFindResult> results) {
-        final Map<File, List<StrategyFindResult>> byDirectory = new HashMap<>();
-        for (final StrategyFindResult result : results) {
-            final File directory = result.context.getDirectory();
+    public void print(final List<StrategyEvaluation> results, final DetectProject project) {
+        final Map<File, List<StrategyEvaluation>> byDirectory = new HashMap<>();
+        for (final StrategyEvaluation result : results) {
+            final File directory = result.environment.getDirectory();
             if (!byDirectory.containsKey(directory)) {
                 byDirectory.put(directory, new ArrayList<>());
             }
             byDirectory.get(directory).add(result);
         }
 
-        printDirectories(byDirectory);
+        printDirectories(byDirectory, project);
 
     }
 
-    private void printDirectories(final Map<File, List<StrategyFindResult>> byDirectory) {
+    private void printDirectories(final Map<File, List<StrategyEvaluation>> byDirectory, final DetectProject project) {
         final List<Info> infos = new ArrayList<>();
 
         byDirectory.keySet().stream().forEach(file -> {
-            final List<StrategyFindResult> results = byDirectory.get(file);
+            final List<StrategyEvaluation> results = byDirectory.get(file);
             int codelocations = 0;
             final List<String> codelocationnames = new ArrayList<>();
             int applied = 0;
@@ -55,36 +52,34 @@ public class ExtractionSummaryReporter {
             String success = "";
             String exception = "";
             String failed = "";
-            for (final StrategyFindResult result : results) {
+            for (final StrategyEvaluation result : results) {
                 final String strategyName = result.strategy.getBomToolType() + " - " + result.strategy.getName();
-                if (result.type == FindType.APPLIES) {
-                    applied++;
+                if (result.isSearchable()) {
+                    //applied++;
                 }
-                if (result.type == FindType.APPLIES && result.evaluation.applicable.result == ApplicableResult.APPLIES) {
+                if (result.isApplicable()) {
+                    applied++;
                     demanded++;
                 }
-                if (result.type == FindType.APPLIES  && result.evaluation.applicable.result == ApplicableResult.APPLIES && result.evaluation.extractable.result == ExtractableResult.EXTRACTABLE) {
+                if (result.isExtractable()) {
+                    codelocations += result.extraction.codeLocations.size();
                     extracted++;
-                }
-                if (result.type == FindType.APPLIES  && result.evaluation.applicable.result == ApplicableResult.APPLIES && result.evaluation.extractable.result == ExtractableResult.EXTRACTABLE) {
-                    codelocations += result.evaluation.extraction.codeLocations.size();
 
-                    result.evaluation.extraction.codeLocations.stream().forEach(it -> {
-                        final List<String> pieces = Arrays.asList(it.getBomToolProjectExternalId().getExternalIdPieces());
-                        final String name = pieces.stream().collect(Collectors.joining("\\"));
+                    result.extraction.codeLocations.stream().forEach(it -> {
+                        final String name = project.getCodeLocationName(it);
                         codelocationnames.add(name);
                     });
-                    if (result.evaluation.extraction.result == ExtractionResult.Success) {
+                    if (result.extraction.result == ExtractionResult.Success) {
                         if (success.length() != 0) {
                             success += ", ";
                         }
                         success += strategyName;
-                    } else if (result.evaluation.extraction.result == ExtractionResult.Failure) {
+                    } else if (result.extraction.result == ExtractionResult.Failure) {
                         if (failed.length() != 0) {
                             failed += ", ";
                         }
                         failed += strategyName;
-                    } else if (result.evaluation.extraction.result == ExtractionResult.Exception) {
+                    } else if (result.extraction.result == ExtractionResult.Exception) {
                         if (exception.length() != 0) {
                             exception += ", ";
                         }

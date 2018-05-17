@@ -34,7 +34,7 @@ public class GoDepExtractor extends Extractor<GoDepContext> {
         final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.GOLANG, context.directory.toString());
         final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolType.GO_DEP, context.directory.toString(), externalId, graph).build();
 
-        return new Extraction(ExtractionResult.Success, detectCodeLocation);
+        return new Extraction.Builder().success(detectCodeLocation).build();
 
     }
 

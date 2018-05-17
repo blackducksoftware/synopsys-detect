@@ -187,7 +187,7 @@ public class MavenCodeLocationPackager {
 
         final String scope = gavParts[gavParts.length - 1];
         if (!(scope.equalsIgnoreCase("compile") || scope.equalsIgnoreCase("provided") || scope.equalsIgnoreCase("runtime") || scope.equalsIgnoreCase("test") || scope.equalsIgnoreCase("system") || scope.equalsIgnoreCase("import"))) {
-            logger.debug("This dependency is invalid, if does not end in a Maven scope that we recognize");
+            logger.debug("This dependency is invalid, if does not end in a Maven scope that we recognize: " + scope);
             return null;
         }
         final String version = gavParts[gavParts.length - 2];

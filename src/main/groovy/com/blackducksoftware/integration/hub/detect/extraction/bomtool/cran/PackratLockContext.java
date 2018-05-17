@@ -6,6 +6,4 @@ import com.blackducksoftware.integration.hub.detect.extraction.ExtractionContext
 
 public class PackratLockContext extends ExtractionContext {
     public File packratlock;
-    public File directory;
-
 }

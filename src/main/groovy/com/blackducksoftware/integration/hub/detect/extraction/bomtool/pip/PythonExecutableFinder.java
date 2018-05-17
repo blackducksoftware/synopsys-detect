@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.EvaluationContext;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyEnvironment;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
@@ -27,7 +27,7 @@ public class PythonExecutableFinder {
     private String resolvedPython = null;
     private boolean hasLookedForPython = false;
 
-    public String findPython(final EvaluationContext context) {
+    public String findPython(final StrategyEnvironment environment) {
         try {
             if (!hasLookedForPython) {
                 hasLookedForPython = true;
@@ -35,7 +35,7 @@ public class PythonExecutableFinder {
                 if (detectConfiguration.getPythonThreeOverride()) {
                     pythonType = ExecutableType.PYTHON3;
                 }
-                resolvedPython = executableManager.getExecutablePathOrOverride(pythonType, true, context.getDirectory(), null);
+                resolvedPython = executableManager.getExecutablePathOrOverride(pythonType, true, environment.getDirectory(), null);
             }
             return resolvedPython;
         }catch (final Exception e) {

@@ -6,11 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.extraction.Applicable;
-import com.blackducksoftware.integration.hub.detect.extraction.Extractable;
 import com.blackducksoftware.integration.hub.detect.extraction.StandardExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.extraction.StandardExecutableFinder.StandardExecutableType;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.EvaluationContext;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyEnvironment;
+import com.blackducksoftware.integration.hub.detect.extraction.result.ExecutableNotFoundStrategyResult;
+import com.blackducksoftware.integration.hub.detect.extraction.result.FileNotFoundStrategyResult;
+import com.blackducksoftware.integration.hub.detect.extraction.result.PassedStrategyResult;
+import com.blackducksoftware.integration.hub.detect.extraction.result.StrategyResult;
 import com.blackducksoftware.integration.hub.detect.extraction.strategy.Strategy;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
@@ -32,25 +34,27 @@ public class CondaCliStrategy extends Strategy<CondaCliContext, CondaCliExtracto
         super("Conda Cli", BomToolType.COCOAPODS, CondaCliContext.class, CondaCliExtractor.class);
     }
 
-    public Applicable applicable(final EvaluationContext evaluation, final CondaCliContext context) {
-        final File ymlFile = fileFinder.findFile(evaluation.getDirectory(), ENVIRONEMNT_YML);
+    @Override
+    public StrategyResult applicable(final StrategyEnvironment environment, final CondaCliContext context) {
+        final File ymlFile = fileFinder.findFile(environment.getDirectory(), ENVIRONEMNT_YML);
         if (ymlFile == null) {
-            return Applicable.doesNotApply("No environment.yml file was found with pattern: " + ENVIRONEMNT_YML);
+            return new FileNotFoundStrategyResult(ENVIRONEMNT_YML);
         }
 
-        return Applicable.doesApply();
+        return new PassedStrategyResult();
     }
 
-    public Extractable extractable(final EvaluationContext evaluation, final CondaCliContext context){
+    @Override
+    public StrategyResult extractable(final StrategyEnvironment environment, final CondaCliContext context){
         final File conda = standardExecutableFinder.getExecutable(StandardExecutableType.CONDA);
 
         if (conda == null) {
-            return Extractable.canNotExtract("No Conda executable was found.");
+            return new ExecutableNotFoundStrategyResult("conda");
         }else {
             context.condaExe = conda;
         }
 
-        return Extractable.canExtract();
+        return new PassedStrategyResult();
     }
 
 

@@ -257,26 +257,6 @@ public class DetectConfiguration {
             hubOfflineMode = true;
         }
 
-        //TODO: Bom tool finder must resolve these more intelligently.
-        /*
-        if (dockerBomTool.isBomToolApplicable() && bomToolFilter.shouldInclude(dockerBomTool.getBomToolType().toString())) {
-            configureForDocker();
-        }
-
-        if (gradleBomTool.isBomToolApplicable() && bomToolFilter.shouldInclude(gradleBomTool.getBomToolType().toString())) {
-            gradleInspectorVersion = gradleBomTool.getInspectorVersion();
-        }
-
-        if (nugetBomTool.isBomToolApplicable() && bomToolFilter.shouldInclude(nugetBomTool.getBomToolType().toString())) {
-            nugetInspectorPackageVersion = nugetBomTool.getInspectorVersion();
-        }
-
-        if (dockerBomTool.isBomToolApplicable() && bomToolFilter.shouldInclude(dockerBomTool.getBomToolType().toString())) {
-            dockerInspectorVersion = dockerBomTool.getInspectorVersion();
-        }
-
-         */
-
         //TODO Final home for directories to exclude
         bomToolSearchDirectoryExclusions = new ArrayList<>();
         try {

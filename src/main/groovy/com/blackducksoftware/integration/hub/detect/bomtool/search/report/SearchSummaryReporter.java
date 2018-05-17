@@ -12,11 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.search.StrategyFindResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.search.StrategyFindResult.FindType;
-import com.blackducksoftware.integration.hub.detect.bomtool.search.StrategyFindResult.Reason;
 import com.blackducksoftware.integration.hub.detect.diagnostic.DiagnosticsManager;
-import com.blackducksoftware.integration.hub.detect.extraction.strategy.Strategy;
+import com.blackducksoftware.integration.hub.detect.extraction.StrategyEvaluation;
 
 @Component
 public class SearchSummaryReporter {
@@ -25,13 +22,13 @@ public class SearchSummaryReporter {
     @Autowired
     public DiagnosticsManager diagnosticsManager;
 
-    public void print(final List<StrategyFindResult> results) {
-        final Map<File, List<StrategyFindResult>> byDirectory = new HashMap<>();
-        for (final StrategyFindResult result : results) {
-            if (result.context == null || result.context.getDirectory() == null) {
+    public void print(final List<StrategyEvaluation> results) {
+        final Map<File, List<StrategyEvaluation>> byDirectory = new HashMap<>();
+        for (final StrategyEvaluation result : results) {
+            if (result.context == null || result.environment.getDirectory() == null) {
                 logger.info("WUT");
             }
-            final File directory = result.context.getDirectory();
+            final File directory = result.environment.getDirectory();
             if (!byDirectory.containsKey(directory)) {
                 byDirectory.put(directory, new ArrayList<>());
             }
@@ -43,7 +40,7 @@ public class SearchSummaryReporter {
 
     }
 
-    private void printDirectoriesInfo(final Map<File, List<StrategyFindResult>> byDirectory) {
+    private void printDirectoriesInfo(final Map<File, List<StrategyEvaluation>> byDirectory) {
 
         logger.info("");
         logger.info("");
@@ -51,13 +48,13 @@ public class SearchSummaryReporter {
         logger.info("Search results");
         logger.info(ReportConstants.HEADING);
         for (final File file : byDirectory.keySet()) {
-            final List<StrategyFindResult> results = byDirectory.get(file);
+            final List<StrategyEvaluation> results = byDirectory.get(file);
 
             final List<String> applied = new ArrayList<>();
 
-            for (final StrategyFindResult result : results) {
+            for (final StrategyEvaluation result : results) {
                 final String strategyName = result.strategy.getBomToolType() + " - " + result.strategy.getName();
-                if (result.type == FindType.APPLIES) {
+                if (result.isApplicable()) {
                     applied.add(strategyName);
                 }
             }
@@ -73,25 +70,23 @@ public class SearchSummaryReporter {
         logger.info("");
     }
 
-    private void printDirectoriesDebug(final Map<File, List<StrategyFindResult>> byDirectory) {
+    private void printDirectoriesDebug(final Map<File, List<StrategyEvaluation>> byDirectory) {
         for (final File file : byDirectory.keySet()) {
-            final List<StrategyFindResult> results = byDirectory.get(file);
+            final List<StrategyEvaluation> results = byDirectory.get(file);
 
             final List<String> toPrint = new ArrayList<>();
 
-            for (final StrategyFindResult result : results) {
-                final String strategyName = result.strategy.getBomToolType() + " - " + result.strategy.getName();
-                if (result.type == FindType.APPLIES) {
+            for (final StrategyEvaluation result : results) {
+                final String strategyName = result.strategy.getDescriptiveName();
+                if (result.isApplicable()) {
                     toPrint.add("      APPLIED: " + strategyName);
                 } else {
-                    if (result.reason == Reason.YIELDED) {
-                        toPrint.add("DID NOT APPLY: " + strategyName + " - YIELDED - " + summarizeYielded(result));
-                    } else if (result.reason == Reason.NEEDS_NOT_MET) {
-                        toPrint.add("DID NOT APPLY: " + strategyName + " - NEEDS NOT MET - " + summarizeFailed(result));
-                    } else if (result.reason == Reason.MAX_DEPTH_EXCEEDED) {
-                        toPrint.add("DID NOT APPLY: " + strategyName + " - MAX DEPTH EXCEEDED - " + summarizeDepth(result));
-                    } else if (result.reason == Reason.NOT_NESTABLE) {
-                        toPrint.add("DID NOT APPLY: " + strategyName + " - CAN NOT NEST - " + summarizeNested(result));
+                    if (result.applicable != null) {
+                        toPrint.add("DID NOT APPLY: " + strategyName + " - " + result.applicable.toDescription());
+                    } else if (result.searchable != null) {
+                        toPrint.add("DID NOT APPLY: " + strategyName + " - "  + result.searchable.toDescription());
+                    } else {
+                        toPrint.add("DID NOT APPLY: " + strategyName + " - Unknown");
                     }
                 }
             }
@@ -112,28 +107,4 @@ public class SearchSummaryReporter {
         diagnosticsManager.printToSearchReport(line);
     }
 
-    private String summarizeDepth(final StrategyFindResult result) {
-        return "At depth of " + result.depth + " but max depth is " + result.strategy.getSearchOptions().getMaxDepth();
-    }
-
-    private String summarizeNested(final StrategyFindResult result) {
-        return "and " + result.nested.stream().map(it -> it.getName()).collect(Collectors.joining(",")) + " already applied in a parent directory.";
-    }
-
-    private String summarizeYielded(final StrategyFindResult result) {
-
-        final List<Strategy> yieldedTo = result.evaluation.getYieldedTo();
-
-        if (yieldedTo.size() > 0) {
-            if (result.evaluation.getYieldedTo().size() > 0) {
-                final String yielded = yieldedTo.stream().map(it -> it.getName()).collect(Collectors.joining(","));
-                return "because " + yielded + " already applied.";
-            }
-        }
-        return "Unkown";
-    }
-
-    private String summarizeFailed(final StrategyFindResult result) {
-        return result.evaluation.applicable.description;
-    }
 }

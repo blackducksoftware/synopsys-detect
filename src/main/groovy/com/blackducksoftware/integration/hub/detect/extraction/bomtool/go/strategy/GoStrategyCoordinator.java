@@ -3,10 +3,10 @@ package com.blackducksoftware.integration.hub.detect.extraction.bomtool.go.strat
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.extraction.strategy.StrategyProvider;
+import com.blackducksoftware.integration.hub.detect.extraction.strategy.StrategyCoordinator;
 
 @Component
-public class GoStrategyProvider extends StrategyProvider {
+public class GoStrategyCoordinator extends StrategyCoordinator {
 
     @Autowired
     public GoCliStrategy goFallbackStrategy;
@@ -26,8 +26,6 @@ public class GoStrategyProvider extends StrategyProvider {
         goFallbackStrategy.yieldsTo(goDepsStrategy);
         goFallbackStrategy.yieldsTo(goVndrStrategy);
         goFallbackStrategy.yieldsTo(goLockStrategy);
-
-        add(goDepsStrategy, goVndrStrategy, goLockStrategy, goFallbackStrategy);
 
     }
 

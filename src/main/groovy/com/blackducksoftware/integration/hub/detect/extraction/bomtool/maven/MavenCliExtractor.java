@@ -72,9 +72,9 @@ public class MavenCliExtractor extends Extractor<MavenCliContext> {
                 }
             }
 
-            return new Extraction(ExtractionResult.Success, codeLocations);
+            return new Extraction.Builder().success(codeLocations).build();
         } catch (final Exception e) {
-            return new Extraction(ExtractionResult.Failure, e);
+            return new Extraction.Builder().exception(e).build();
         }
     }
 

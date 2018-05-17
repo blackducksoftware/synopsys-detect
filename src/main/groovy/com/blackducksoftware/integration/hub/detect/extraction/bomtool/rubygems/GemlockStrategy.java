@@ -3,9 +3,10 @@ package com.blackducksoftware.integration.hub.detect.extraction.bomtool.rubygems
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.extraction.Applicable;
-import com.blackducksoftware.integration.hub.detect.extraction.Extractable;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.EvaluationContext;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyEnvironment;
+import com.blackducksoftware.integration.hub.detect.extraction.result.FileNotFoundStrategyResult;
+import com.blackducksoftware.integration.hub.detect.extraction.result.PassedStrategyResult;
+import com.blackducksoftware.integration.hub.detect.extraction.result.StrategyResult;
 import com.blackducksoftware.integration.hub.detect.extraction.strategy.Strategy;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
@@ -21,17 +22,19 @@ public class GemlockStrategy extends Strategy<GemlockContext, GemlockExtractor> 
         super("Gemlock", BomToolType.RUBYGEMS, GemlockContext.class, GemlockExtractor.class);
     }
 
-    public Applicable applicable(final EvaluationContext evaluation, final GemlockContext context) {
-        context.gemlock = fileFinder.findFile(evaluation.getDirectory(), GEMFILE_LOCK_FILENAME);
+    @Override
+    public StrategyResult applicable(final StrategyEnvironment environment, final GemlockContext context) {
+        context.gemlock = fileFinder.findFile(environment.getDirectory(), GEMFILE_LOCK_FILENAME);
         if (context.gemlock == null) {
-            return Applicable.doesNotApply("No gemlock file was found with pattern: " + GEMFILE_LOCK_FILENAME);
+            return new FileNotFoundStrategyResult(GEMFILE_LOCK_FILENAME);
         }
 
-        return Applicable.doesApply();
+        return new PassedStrategyResult();
     }
 
-    public Extractable extractable(final EvaluationContext evaluation, final GemlockContext context){
-        return Extractable.canExtract();
+    @Override
+    public StrategyResult extractable(final StrategyEnvironment environment, final GemlockContext context){
+        return new PassedStrategyResult();
     }
 
 }

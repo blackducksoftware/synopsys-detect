@@ -29,7 +29,7 @@ public class NpmLockfileExtractor extends Extractor<NpmLockfileContext> {
         try {
             lockText = FileUtils.readFileToString(context.lockfile, StandardCharsets.UTF_8);
         } catch (final IOException e) {
-            return new Extraction(ExtractionResult.Failure, e);
+            return new Extraction.Builder().exception(e).build();
         }
 
         DetectCodeLocation detectCodeLocation;
@@ -37,9 +37,9 @@ public class NpmLockfileExtractor extends Extractor<NpmLockfileContext> {
             final boolean includeDev = detectConfiguration.getNpmIncludeDevDependencies();
             detectCodeLocation = npmLockfilePackager.parse(context.directory.getCanonicalPath(), lockText, includeDev);
         } catch (final IOException e) {
-            return new Extraction(ExtractionResult.Failure, e);
+            return new Extraction.Builder().exception(e).build();
         }
 
-        return new Extraction(ExtractionResult.Success, detectCodeLocation);
+        return new Extraction.Builder().success(detectCodeLocation).build();
     }
 }

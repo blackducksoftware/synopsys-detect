@@ -12,11 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.search.StrategyFindResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.search.StrategyFindResult.FindType;
 import com.blackducksoftware.integration.hub.detect.diagnostic.DiagnosticsManager;
-import com.blackducksoftware.integration.hub.detect.extraction.Applicable.ApplicableResult;
-import com.blackducksoftware.integration.hub.detect.extraction.Extractable.ExtractableResult;
+import com.blackducksoftware.integration.hub.detect.extraction.StrategyEvaluation;
 
 @Component
 public class PreparationSummaryReporter {
@@ -25,13 +22,13 @@ public class PreparationSummaryReporter {
     @Autowired
     public DiagnosticsManager diagnosticsManager;
 
-    public void print(final List<StrategyFindResult> results) {
-        final Map<File, List<StrategyFindResult>> byDirectory = new HashMap<>();
-        for (final StrategyFindResult result : results) {
-            if (result.context == null || result.context.getDirectory() == null) {
+    public void print(final List<StrategyEvaluation> results) {
+        final Map<File, List<StrategyEvaluation>> byDirectory = new HashMap<>();
+        for (final StrategyEvaluation result : results) {
+            if (result.context == null || result.environment.getDirectory() == null) {
                 info("WUT");
             }
-            final File directory = result.context.getDirectory();
+            final File directory = result.environment.getDirectory();
             if (!byDirectory.containsKey(directory)) {
                 byDirectory.put(directory, new ArrayList<>());
             }
@@ -42,25 +39,25 @@ public class PreparationSummaryReporter {
 
     }
 
-    private void printDirectories(final Map<File, List<StrategyFindResult>> byDirectory) {
+    private void printDirectories(final Map<File, List<StrategyEvaluation>> byDirectory) {
         logger.info("");
         logger.info("");
         info(ReportConstants.HEADING);
         info("Preparation for extraction");
         info(ReportConstants.HEADING);
         for (final File file : byDirectory.keySet()) {
-            final List<StrategyFindResult> results = byDirectory.get(file);
+            final List<StrategyEvaluation> results = byDirectory.get(file);
 
             final List<String> ready = new ArrayList<>();
             final List<String> failed = new ArrayList<>();
 
-            for (final StrategyFindResult result : results) {
+            for (final StrategyEvaluation result : results) {
                 final String strategyName = result.strategy.getBomToolType() + " - " + result.strategy.getName();
-                if (result.type == FindType.APPLIES && result.evaluation.applicable.result == ApplicableResult.APPLIES) {
-                    if (result.evaluation.extractable.result == ExtractableResult.EXTRACTABLE) {
+                if (result.isApplicable()) {
+                    if (result.extractable.getPassed()) {
                         ready.add(strategyName);
                     } else {
-                        failed.add("FAILED: " + strategyName + " - " + summarizeFailed(result));
+                        failed.add("FAILED: " + strategyName + " - " + result.extractable.toDescription());
                     }
                 }
             }
@@ -83,11 +80,6 @@ public class PreparationSummaryReporter {
     private void info(final String line) {
         logger.info(line);
         diagnosticsManager.printToPreparationReport(line);
-    }
-
-
-    private String summarizeFailed(final StrategyFindResult result) {
-        return result.evaluation.extractable.description;
     }
 
 }

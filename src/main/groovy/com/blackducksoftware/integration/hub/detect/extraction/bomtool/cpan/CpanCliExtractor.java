@@ -49,9 +49,9 @@ public class CpanCliExtractor extends Extractor<CpanCliContext>{
             final DependencyGraph dependencyGraph = cpanPackager.makeDependencyGraph(listText, showdeps);
             final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.CPAN, context.directory.toString());
             final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolType.CPAN, context.directory.toString(), externalId, dependencyGraph).build();
-            return new Extraction(ExtractionResult.Success, detectCodeLocation);
+            return new Extraction.Builder().success(detectCodeLocation).build();
         } catch (final Exception e) {
-            return new Extraction(ExtractionResult.Failure, e);
+            return new Extraction.Builder().exception(e).build();
         }
     }
 }

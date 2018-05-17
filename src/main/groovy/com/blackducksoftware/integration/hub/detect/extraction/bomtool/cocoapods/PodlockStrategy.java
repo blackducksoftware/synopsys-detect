@@ -3,9 +3,10 @@ package com.blackducksoftware.integration.hub.detect.extraction.bomtool.cocoapod
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.extraction.Applicable;
-import com.blackducksoftware.integration.hub.detect.extraction.Extractable;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.EvaluationContext;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyEnvironment;
+import com.blackducksoftware.integration.hub.detect.extraction.result.FileNotFoundStrategyResult;
+import com.blackducksoftware.integration.hub.detect.extraction.result.PassedStrategyResult;
+import com.blackducksoftware.integration.hub.detect.extraction.result.StrategyResult;
 import com.blackducksoftware.integration.hub.detect.extraction.strategy.Strategy;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
@@ -21,17 +22,19 @@ public class PodlockStrategy extends Strategy<PodlockContext, PodlockExtractor> 
         super("Podlock", BomToolType.COCOAPODS, PodlockContext.class, PodlockExtractor.class);
     }
 
-    public Applicable applicable(final EvaluationContext evaluation, final PodlockContext context) {
-        context.podlock = fileFinder.findFile(evaluation.getDirectory(), PODFILE_LOCK_FILENAME);
+    @Override
+    public StrategyResult applicable(final StrategyEnvironment environment, final PodlockContext context) {
+        context.podlock = fileFinder.findFile(environment.getDirectory(), PODFILE_LOCK_FILENAME);
         if (context.podlock == null) {
-            return Applicable.doesNotApply("No podlock file was found with pattern: " + PODFILE_LOCK_FILENAME);
+            return new FileNotFoundStrategyResult(PODFILE_LOCK_FILENAME);
         }
 
-        return Applicable.doesApply();
+        return new PassedStrategyResult();
     }
 
-    public Extractable extractable(final EvaluationContext evaluation, final PodlockContext context){
-        return Extractable.canExtract();
+    @Override
+    public StrategyResult extractable(final StrategyEnvironment environment, final PodlockContext context){
+        return new PassedStrategyResult();
     }
 
 

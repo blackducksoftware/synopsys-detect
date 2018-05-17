@@ -25,7 +25,6 @@ import com.blackducksoftware.integration.hub.bdio.model.SimpleBdioDocument;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.extraction.Extraction;
-import com.blackducksoftware.integration.hub.detect.extraction.Extraction.ExtractionResult;
 import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
@@ -83,13 +82,13 @@ public class DockerExtractor extends Extractor<DockerContext> {
             }
 
             if (imageArgument == null || imagePiece == null){
-                return new Extraction(ExtractionResult.Failure);
+                return new Extraction.Builder().failure("No docker image found.").build();
             }else {
                 final List<DetectCodeLocation> codeLocations = executeDocker(context, imageArgument, imagePiece, context.directory, context.dockerExe, context.bashExe, context.dockerInspectorInfo);
-                return new Extraction(ExtractionResult.Success, codeLocations);
+                return new Extraction.Builder().success(codeLocations).build();
             }
         }catch (final Exception e) {
-            return new Extraction(ExtractionResult.Failure, e);
+            return new Extraction.Builder().exception(e).build();
         }
     }
 

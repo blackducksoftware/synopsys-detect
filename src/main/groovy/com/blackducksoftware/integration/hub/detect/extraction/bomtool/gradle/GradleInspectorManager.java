@@ -22,7 +22,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.EvaluationContext;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyEnvironment;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
@@ -63,7 +63,7 @@ public class GradleInspectorManager {
     private String resolvedVersion = null;
     private boolean hasResolvedInspector = false;
 
-    public String getGradleInspector(final EvaluationContext context) {
+    public String getGradleInspector(final StrategyEnvironment environment) {
         if (!hasResolvedInspector) {
             hasResolvedInspector = true;
             resolvedVersion = resolveInspectorVersion();

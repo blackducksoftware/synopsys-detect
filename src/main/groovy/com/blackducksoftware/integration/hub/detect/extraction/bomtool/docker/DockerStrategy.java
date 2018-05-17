@@ -5,11 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.extraction.Applicable;
-import com.blackducksoftware.integration.hub.detect.extraction.Extractable;
 import com.blackducksoftware.integration.hub.detect.extraction.StandardExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.extraction.StandardExecutableFinder.StandardExecutableType;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.EvaluationContext;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyEnvironment;
+import com.blackducksoftware.integration.hub.detect.extraction.result.ExecutableNotFoundStrategyResult;
+import com.blackducksoftware.integration.hub.detect.extraction.result.InspectorNotFoundStrategyResult;
+import com.blackducksoftware.integration.hub.detect.extraction.result.PassedStrategyResult;
+import com.blackducksoftware.integration.hub.detect.extraction.result.PropertyInsufficientStrategyResult;
+import com.blackducksoftware.integration.hub.detect.extraction.result.StrategyResult;
 import com.blackducksoftware.integration.hub.detect.extraction.strategy.Strategy;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
@@ -32,34 +35,36 @@ public class DockerStrategy extends Strategy<DockerContext, DockerExtractor> {
         super("Docker", BomToolType.DOCKER, DockerContext.class, DockerExtractor.class);
     }
 
-    public Applicable applicable(final EvaluationContext evaluation, final DockerContext context) {
+    @Override
+    public StrategyResult applicable(final StrategyEnvironment environment, final DockerContext context) {
         context.image = detectConfiguration.getDockerImage();
         context.tar = detectConfiguration.getDockerTar();
 
         if (StringUtils.isBlank(context.image) && StringUtils.isBlank(context.tar)) {
-            return Applicable.doesNotApply("Docker properties were not sufficient to run.");
+            return new PropertyInsufficientStrategyResult();
         }
 
-        return Applicable.doesApply();
+        return new PassedStrategyResult();
     }
 
-    public Extractable extractable(final EvaluationContext evaluation, final DockerContext context){
+    @Override
+    public StrategyResult extractable(final StrategyEnvironment environment, final DockerContext context){
         context.bashExe = standardExecutableFinder.getExecutable(StandardExecutableType.BASH);
         if (context.bashExe == null) {
-            return Extractable.canNotExtract("No bash executable was found.");
+            return new ExecutableNotFoundStrategyResult("bash");
         }
 
         context.dockerExe = standardExecutableFinder.getExecutable(StandardExecutableType.DOCKER);
         if (context.dockerExe == null) {
-            return Extractable.canNotExtract("No docker executable was found.");
+            return new ExecutableNotFoundStrategyResult("docker");
         }
 
-        context.dockerInspectorInfo = dockerInspectorManager.getDockerInspector(evaluation);
+        context.dockerInspectorInfo = dockerInspectorManager.getDockerInspector(environment);
         if (context.dockerInspectorInfo == null) {
-            return Extractable.canNotExtract("No docker inspector was found.");
+            return new InspectorNotFoundStrategyResult("docker");
         }
 
-        return Extractable.canExtract();
+        return new PassedStrategyResult();
     }
 
 }

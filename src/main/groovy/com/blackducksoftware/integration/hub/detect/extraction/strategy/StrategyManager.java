@@ -1,6 +1,5 @@
 package com.blackducksoftware.integration.hub.detect.extraction.strategy;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,21 +9,18 @@ import org.springframework.stereotype.Component;
 public class StrategyManager {
 
     @Autowired
-    public List<StrategyProvider> strategyProviders;
+    public List<StrategyCoordinator> strategyCoordinators;
 
-    private final List<Strategy> allStrategies = new ArrayList<>();
+    @Autowired
+    public List<Strategy> strategies;
+
     public List<Strategy> getAllStrategies() {
-        return allStrategies;
+        return strategies;
     }
+
     public void init() {
-        for (final StrategyProvider provider : strategyProviders) {
-            provider.init();
-        }
-        for (final StrategyProvider provider : strategyProviders) {
-            provider.lateInit();
-        }
-        for (final StrategyProvider provider : strategyProviders) {
-            allStrategies.addAll(provider.getAllStrategies());
+        for (final StrategyCoordinator coordinator : strategyCoordinators) {
+            coordinator.init();
         }
     }
 }

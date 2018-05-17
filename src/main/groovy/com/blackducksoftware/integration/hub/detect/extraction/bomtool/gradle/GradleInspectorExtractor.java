@@ -13,10 +13,9 @@ import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.Extraction;
-import com.blackducksoftware.integration.hub.detect.extraction.Extraction.ExtractionResult;
+import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.gradle.parse.GradleParseResult;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.gradle.parse.GradleReportParser;
-import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
@@ -76,13 +75,13 @@ public class GradleInspectorExtractor extends Extractor<GradleInspectorContext> 
                     }
                 }
                 detectFileManager.addOutputFile(context, blackduckDirectory);
-                return new Extraction(ExtractionResult.Success, codeLocations);
+                return new Extraction.Builder().success(codeLocations).build();
             }else {
-                return new Extraction(ExtractionResult.Failure, "The gradle inspector returned a non-zero exit code: " + output.getReturnCode());
+                return new Extraction.Builder().failure("The gradle inspector returned a non-zero exit code: " + output.getReturnCode()).build();
             }
 
         } catch (final Exception e) {
-            return new Extraction(ExtractionResult.Exception, e);
+            return new Extraction.Builder().exception(e).build();
         }
     }
 

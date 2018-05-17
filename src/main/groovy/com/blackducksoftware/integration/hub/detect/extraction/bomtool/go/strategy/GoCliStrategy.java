@@ -6,14 +6,17 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.extraction.Applicable;
-import com.blackducksoftware.integration.hub.detect.extraction.Extractable;
 import com.blackducksoftware.integration.hub.detect.extraction.StandardExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.extraction.StandardExecutableFinder.StandardExecutableType;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.go.GoDepContext;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.go.GoDepExtractor;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.go.GoInspectorManager;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.EvaluationContext;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyEnvironment;
+import com.blackducksoftware.integration.hub.detect.extraction.result.ExecutableNotFoundStrategyResult;
+import com.blackducksoftware.integration.hub.detect.extraction.result.FileNotFoundStrategyResult;
+import com.blackducksoftware.integration.hub.detect.extraction.result.InspectorNotFoundStrategyResult;
+import com.blackducksoftware.integration.hub.detect.extraction.result.PassedStrategyResult;
+import com.blackducksoftware.integration.hub.detect.extraction.result.StrategyResult;
 import com.blackducksoftware.integration.hub.detect.extraction.strategy.Strategy;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
@@ -36,27 +39,29 @@ public class GoCliStrategy extends Strategy<GoDepContext, GoDepExtractor> {
         super("Go Cli", BomToolType.GO_DEP, GoDepContext.class, GoDepExtractor.class);
     }
 
-    public Applicable applicable(final EvaluationContext evaluation, final GoDepContext context) {
-        final List<File> found = fileFinder.findFiles(evaluation.getDirectory(), GOFILE_FILENAME_PATTERN);
+    @Override
+    public StrategyResult applicable(final StrategyEnvironment environment, final GoDepContext context) {
+        final List<File> found = fileFinder.findFiles(environment.getDirectory(), GOFILE_FILENAME_PATTERN);
         if (found == null || found.size() == 0) {
-            return Applicable.doesNotApply("No go files were found matching: " + GOFILE_FILENAME_PATTERN);
+            return new FileNotFoundStrategyResult(GOFILE_FILENAME_PATTERN);
         }
 
-        return Applicable.doesApply();
+        return new PassedStrategyResult();
     }
 
-    public Extractable extractable(final EvaluationContext evaluation, final GoDepContext context){
+    @Override
+    public StrategyResult extractable(final StrategyEnvironment environment, final GoDepContext context){
         context.goExe = standardExecutableFinder.getExecutable(StandardExecutableType.GO);
         if (context.goExe == null) {
-            return Extractable.canNotExtract("No Go executable was found.");
+            return new ExecutableNotFoundStrategyResult("go");
         }
 
-        context.goDepInspector = goInspectorManager.evaluate(evaluation);
+        context.goDepInspector = goInspectorManager.evaluate(environment);
         if (context.goDepInspector == null) {
-            return Extractable.canNotExtract("Go inspector was not found.");
+            return new InspectorNotFoundStrategyResult("go");
         }
 
-        return Extractable.canExtract();
+        return new PassedStrategyResult();
     }
 
 }

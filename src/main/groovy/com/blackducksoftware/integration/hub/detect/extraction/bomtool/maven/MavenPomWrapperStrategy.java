@@ -6,9 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.extraction.Applicable;
-import com.blackducksoftware.integration.hub.detect.extraction.Extractable;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.EvaluationContext;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyEnvironment;
+import com.blackducksoftware.integration.hub.detect.extraction.result.ExecutableNotFoundStrategyResult;
+import com.blackducksoftware.integration.hub.detect.extraction.result.FileNotFoundStrategyResult;
+import com.blackducksoftware.integration.hub.detect.extraction.result.PassedStrategyResult;
+import com.blackducksoftware.integration.hub.detect.extraction.result.StrategyResult;
 import com.blackducksoftware.integration.hub.detect.extraction.strategy.Strategy;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
@@ -30,23 +32,25 @@ public class MavenPomWrapperStrategy extends Strategy<MavenCliContext, MavenCliE
         super("Pom file", BomToolType.MAVEN, MavenCliContext.class, MavenCliExtractor.class);
     }
 
-    public Applicable applicable(final EvaluationContext evaluation, final MavenCliContext context) {
-        final File pom= fileFinder.findFile(evaluation.getDirectory(), POM_FILENAME);
+    @Override
+    public StrategyResult applicable(final StrategyEnvironment environment, final MavenCliContext context) {
+        final File pom= fileFinder.findFile(environment.getDirectory(), POM_FILENAME);
         if (pom == null) {
-            return Applicable.doesNotApply("No environment.yml file was found with pattern: " + POM_FILENAME);
+            return new FileNotFoundStrategyResult(POM_FILENAME);
         }
 
-        return Applicable.doesApply();
+        return new PassedStrategyResult();
     }
 
-    public Extractable extractable(final EvaluationContext evaluation, final MavenCliContext context){
-        context.mavenExe = mavenExecutableFinder.findMaven(evaluation);
+    @Override
+    public StrategyResult extractable(final StrategyEnvironment environment, final MavenCliContext context){
+        context.mavenExe = mavenExecutableFinder.findMaven(environment);
 
         if (context.mavenExe == null) {
-            return Extractable.canNotExtract("No MVN executable was found.");
+            return new ExecutableNotFoundStrategyResult("mvn");
         }
 
-        return Extractable.canExtract();
+        return new PassedStrategyResult();
     }
 
 

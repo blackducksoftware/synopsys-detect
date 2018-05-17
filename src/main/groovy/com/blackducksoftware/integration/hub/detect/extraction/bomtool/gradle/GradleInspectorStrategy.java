@@ -1,13 +1,18 @@
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.gradle;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.extraction.Applicable;
-import com.blackducksoftware.integration.hub.detect.extraction.Extractable;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.EvaluationContext;
+import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyEnvironment;
+import com.blackducksoftware.integration.hub.detect.extraction.result.ExecutableNotFoundStrategyResult;
+import com.blackducksoftware.integration.hub.detect.extraction.result.FileNotFoundStrategyResult;
+import com.blackducksoftware.integration.hub.detect.extraction.result.InspectorNotFoundStrategyResult;
+import com.blackducksoftware.integration.hub.detect.extraction.result.PassedStrategyResult;
+import com.blackducksoftware.integration.hub.detect.extraction.result.StrategyResult;
 import com.blackducksoftware.integration.hub.detect.extraction.strategy.Strategy;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
@@ -25,33 +30,40 @@ public class GradleInspectorStrategy extends Strategy<GradleInspectorContext, Gr
     @Autowired
     public GradleInspectorManager gradleInspectorManager;
 
+    @Autowired
+    public GradleInspectorExtractor gradleInspectorExtractor;
+
     public GradleInspectorStrategy() {
         super("Gradle Inspector", BomToolType.GRADLE, GradleInspectorContext.class, GradleInspectorExtractor.class);
     }
 
     @Override
-    public Applicable applicable(final EvaluationContext evaluation, final GradleInspectorContext context) {
-        final File buildGradle = fileFinder.findFile(evaluation.getDirectory(), BUILD_GRADLE_FILENAME);
+    public StrategyResult applicable(final StrategyEnvironment environment, final GradleInspectorContext context) {
+        final File buildGradle = fileFinder.findFile(environment.getDirectory(), BUILD_GRADLE_FILENAME);
         if (buildGradle == null) {
-            return Applicable.doesNotApply("No build gradle was found with pattern: " + BUILD_GRADLE_FILENAME);
+            return new FileNotFoundStrategyResult(BUILD_GRADLE_FILENAME);
         }
 
-        return Applicable.doesApply();
+        return new PassedStrategyResult();
     }
 
     @Override
-    public Extractable extractable(final EvaluationContext evaluation, final GradleInspectorContext context){
-        context.gradleExe = gradleFinder.findGradle(evaluation);
+    public StrategyResult extractable(final StrategyEnvironment environment, final GradleInspectorContext context) {
+        context.gradleExe = gradleFinder.findGradle(environment);
         if (context.gradleExe == null) {
-            return Extractable.canNotExtract("No gradle executable was found.");
+            return new ExecutableNotFoundStrategyResult("gradle");
         }
 
-        context.gradleInspector = gradleInspectorManager.getGradleInspector(evaluation);
+        context.gradleInspector = gradleInspectorManager.getGradleInspector(environment);
         if (context.gradleInspector == null) {
-            return Extractable.canNotExtract("No gradle inspector was found.");
+            return new InspectorNotFoundStrategyResult("gradle");
         }
 
-        return Extractable.canExtract();
+        return new PassedStrategyResult();
+    }
+
+    public Extractor<GradleInspectorContext> getExtractor() throws IOException  {
+        return gradleInspectorExtractor;
     }
 
 }

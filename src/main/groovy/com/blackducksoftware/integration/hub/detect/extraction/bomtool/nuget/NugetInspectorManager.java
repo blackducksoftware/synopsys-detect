@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.EvaluationContext;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyEnvironment;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
@@ -42,7 +42,7 @@ public class NugetInspectorManager {
     private String resolvedNugetInspectorExecutable;
     private String resolvedInspectorVersion;
 
-    public String findNugetInspector(final EvaluationContext context) {
+    public String findNugetInspector(final StrategyEnvironment environment) {
         try {
             if (!hasResolvedInspector) {
                 hasResolvedInspector = true;

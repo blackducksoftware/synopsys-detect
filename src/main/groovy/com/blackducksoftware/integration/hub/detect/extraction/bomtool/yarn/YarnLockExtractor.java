@@ -33,9 +33,9 @@ public class YarnLockExtractor extends Extractor<YarnLockContext> {
             final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.NPM, context.directory.getCanonicalPath());
             final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolType.YARN, context.directory.getCanonicalPath(), externalId, dependencyGraph).build();
 
-            return new Extraction(ExtractionResult.Success, detectCodeLocation);
+            return new Extraction.Builder().success(detectCodeLocation).build();
         } catch (final Exception e) {
-            return new Extraction(ExtractionResult.Failure, e);
+            return new Extraction.Builder().exception(e).build();
         }
     }
 

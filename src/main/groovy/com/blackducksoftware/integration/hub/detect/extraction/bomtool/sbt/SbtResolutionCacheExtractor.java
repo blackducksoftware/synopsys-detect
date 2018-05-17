@@ -11,10 +11,9 @@ import org.springframework.stereotype.Component;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.Extraction;
-import com.blackducksoftware.integration.hub.detect.extraction.Extraction.ExtractionResult;
+import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.sbt.models.SbtDependencyModule;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.sbt.models.SbtProject;
-import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
@@ -56,14 +55,14 @@ public class SbtResolutionCacheExtractor extends Extractor<SbtResolutionCacheCon
             }
 
             if (codeLocations.size() > 0) {
-                return new Extraction(ExtractionResult.Success, codeLocations);
+                return new Extraction.Builder().success(codeLocations).build();
             } else {
                 logger.error("Unable to find any dependency information.");
-                return new Extraction(ExtractionResult.Failure);
+                return new Extraction.Builder().failure("Unable to find any dependency information.").build();
             }
 
         } catch (final Exception e) {
-            return new Extraction(ExtractionResult.Failure, e);
+            return new Extraction.Builder().exception(e).build();
         }
     }
 

@@ -52,9 +52,9 @@ public class PipInspectorExtractor extends Extractor<PipInspectorContext> {
             final String inspectorOutput = runInspector(context.directory, context.pythonExe.toString(), context.pipInspector, projectName, context.requirementFilePath);
             final DetectCodeLocation codeLocation = pipInspectorTreeParser.parse(inspectorOutput, context.directory.toString());
 
-            return new Extraction(ExtractionResult.Success, codeLocation);
+            return new Extraction.Builder().success(codeLocation).build();
         } catch (final Exception e) {
-            return new Extraction(ExtractionResult.Failure, e);
+            return new Extraction.Builder().exception(e).build();
         }
     }
 

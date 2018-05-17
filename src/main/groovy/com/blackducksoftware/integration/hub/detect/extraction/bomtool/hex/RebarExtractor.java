@@ -51,9 +51,9 @@ public class RebarExtractor extends Extractor<RebarContext> {
 
             codeLocations.add(parseResult.codeLocation);
 
-            return new Extraction(ExtractionResult.Success, codeLocations);
+            return new Extraction.Builder().success(codeLocations).build();
         } catch (final Exception e) {
-            return new Extraction(ExtractionResult.Exception, e);
+            return new Extraction.Builder().exception(e).build();
         }
     }
 

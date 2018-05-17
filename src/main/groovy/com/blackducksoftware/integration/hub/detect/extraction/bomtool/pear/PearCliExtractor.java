@@ -50,9 +50,9 @@ public class PearCliExtractor extends Extractor<PearCliContext> {
                     .bomToolProjectName(result.name).bomToolProjectVersionName(result.version).build();
 
 
-            return new Extraction(ExtractionResult.Success, detectCodeLocation);
+            return new Extraction.Builder().success(detectCodeLocation).build();
         } catch (final Exception e) {
-            return new Extraction(ExtractionResult.Failure, e);
+            return new Extraction.Builder().exception(e).build();
         }
     }
 

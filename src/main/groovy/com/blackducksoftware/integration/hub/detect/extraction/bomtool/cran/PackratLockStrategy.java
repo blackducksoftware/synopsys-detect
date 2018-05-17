@@ -3,9 +3,10 @@ package com.blackducksoftware.integration.hub.detect.extraction.bomtool.cran;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.extraction.Applicable;
-import com.blackducksoftware.integration.hub.detect.extraction.Extractable;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.EvaluationContext;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyEnvironment;
+import com.blackducksoftware.integration.hub.detect.extraction.result.FileNotFoundStrategyResult;
+import com.blackducksoftware.integration.hub.detect.extraction.result.PassedStrategyResult;
+import com.blackducksoftware.integration.hub.detect.extraction.result.StrategyResult;
 import com.blackducksoftware.integration.hub.detect.extraction.strategy.Strategy;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
@@ -21,17 +22,19 @@ public class PackratLockStrategy extends Strategy<PackratLockContext, PackratLoc
         super("Packrat Lock", BomToolType.CRAN, PackratLockContext.class, PackratLockExtractor.class);
     }
 
-    public Applicable applicable(final EvaluationContext evaluation, final PackratLockContext context) {
-        context.packratlock = fileFinder.findFile(evaluation.getDirectory(), PACKRATLOCK);
+    @Override
+    public StrategyResult applicable(final StrategyEnvironment environment, final PackratLockContext context) {
+        context.packratlock = fileFinder.findFile(environment.getDirectory(), PACKRATLOCK);
         if (context.packratlock == null) {
-            return Applicable.doesNotApply("No packrat file was found with pattern: " + PACKRATLOCK);
+            return new FileNotFoundStrategyResult(PACKRATLOCK);
         }
 
-        return Applicable.doesApply();
+        return new PassedStrategyResult();
     }
 
-    public Extractable extractable(final EvaluationContext evaluation, final PackratLockContext context){
-        return Extractable.canExtract();
+    @Override
+    public StrategyResult extractable(final StrategyEnvironment environment, final PackratLockContext context){
+        return new PassedStrategyResult();
     }
 
 }

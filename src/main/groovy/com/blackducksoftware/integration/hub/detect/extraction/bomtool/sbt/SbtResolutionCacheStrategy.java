@@ -5,9 +5,10 @@ import java.io.File;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.extraction.Applicable;
-import com.blackducksoftware.integration.hub.detect.extraction.Extractable;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.EvaluationContext;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyEnvironment;
+import com.blackducksoftware.integration.hub.detect.extraction.result.FileNotFoundStrategyResult;
+import com.blackducksoftware.integration.hub.detect.extraction.result.PassedStrategyResult;
+import com.blackducksoftware.integration.hub.detect.extraction.result.StrategyResult;
 import com.blackducksoftware.integration.hub.detect.extraction.strategy.Strategy;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
@@ -23,17 +24,19 @@ public class SbtResolutionCacheStrategy extends Strategy<SbtResolutionCacheConte
         super("Build SBT", BomToolType.SBT, SbtResolutionCacheContext.class, SbtResolutionCacheExtractor.class);
     }
 
-    public Applicable applicable(final EvaluationContext evaluation, final SbtResolutionCacheContext context) {
-        final File build = fileFinder.findFile(evaluation.getDirectory(), BUILD_SBT_FILENAME);
+    @Override
+    public StrategyResult applicable(final StrategyEnvironment environment, final SbtResolutionCacheContext context) {
+        final File build = fileFinder.findFile(environment.getDirectory(), BUILD_SBT_FILENAME);
         if (build == null) {
-            return Applicable.doesNotApply("No build file was found with pattern: " + BUILD_SBT_FILENAME);
+            return new FileNotFoundStrategyResult(BUILD_SBT_FILENAME);
         }
 
-        return Applicable.doesApply();
+        return new PassedStrategyResult();
     }
 
-    public Extractable extractable(final EvaluationContext evaluation, final SbtResolutionCacheContext context){
-        return Extractable.canExtract();
+    @Override
+    public StrategyResult extractable(final StrategyEnvironment environment, final SbtResolutionCacheContext context){
+        return new PassedStrategyResult();
     }
 
 }
