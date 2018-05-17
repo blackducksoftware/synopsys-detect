@@ -23,24 +23,28 @@
  */
 package com.blackducksoftware.integration.hub.detect.model;
 
+import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.codelocation.BomCodeLocationNameFactory;
-import com.blackducksoftware.integration.hub.detect.codelocation.DockerCodeLocationNameFactory;
+import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.util.BdioFileNamer;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.service.model.ProjectRequestBuilder;
 
 public class DetectProject {
+    private final Map<DetectCodeLocation, String> nameCodeLocationMap = new HashMap<>();
     private final Map<String, DetectCodeLocation> codeLocationNameMap = new HashMap<>();
     private final Map<String, String> codeLocationNameToBdioName = new HashMap<>();
     private final List<DetectCodeLocation> detectCodeLocations = new ArrayList<>();
@@ -75,8 +79,8 @@ public class DetectProject {
 
     public void addAllDetectCodeLocations(final List<DetectCodeLocation> detectCodeLocations) {
         detectCodeLocations
-                .stream()
-                .forEach(it -> addDetectCodeLocation(it));
+        .stream()
+        .forEach(it -> addDetectCodeLocation(it));
     }
 
     public void addDetectCodeLocation(final DetectCodeLocation detectCodeLocation) {
@@ -103,8 +107,8 @@ public class DetectProject {
         return builder;
     }
 
-    public void processDetectCodeLocations(final BomCodeLocationNameFactory bomCodeLocationNameFactory, final DockerCodeLocationNameFactory dockerCodeLocationNameFactory, final Logger logger, final DetectFileManager detectFileManager,
-            final BdioFileNamer bdioFileNamer) {
+    public void processDetectCodeLocations(final Logger logger, final DetectFileFinder detectFileFinder, final File sourcePath, final BdioFileNamer bdioFileNamer, final CodeLocationNameService codeLocationNameService) {
+        final Set<String> bdioFileNames = new HashSet<>();
         for (final DetectCodeLocation detectCodeLocation : getDetectCodeLocations()) {
             if (detectCodeLocation.getDependencyGraph() == null) {
                 logger.warn(String.format("Dependency graph is null for code location %s", detectCodeLocation.getSourcePath()));
@@ -114,36 +118,72 @@ public class DetectProject {
                 logger.warn(String.format("Could not find any dependencies for code location %s", detectCodeLocation.getSourcePath()));
             }
 
-            final String codeLocationName = detectCodeLocation.createCodeLocationName(bomCodeLocationNameFactory, dockerCodeLocationNameFactory, projectName, projectVersionName, getCodeLocationNamePrefix(), getCodeLocationNameSuffix());
-
-            if (codeLocationNameMap.containsKey(codeLocationName)) {
-                failedBomTools.add(detectCodeLocation.getBomToolType());
-                logger.error(String.format("Found duplicate Code Locations with the name: %s", codeLocationName));
-            } else {
-                codeLocationNameMap.put(codeLocationName, detectCodeLocation);
+            final List<String> pieces = Arrays.asList(detectCodeLocation.getBomToolProjectExternalId().getExternalIdPieces());
+            final String name = pieces.stream().collect(Collectors.joining("/"));
+            // detectCodeLocation.getCodeLocationNameString(codeLocationNameService, codeLocationName);
+            //final CodeLocationName codeLocationName = detectCodeLocation.getBomToolProjectExternalId().getExternalIdPieces()
+            // detectCodeLocation.createCodeLocationName(codeLocationNameService, projectName, projectVersionName, getCodeLocationNamePrefix(), getCodeLocationNameSuffix());
+            final Path path = new File(detectCodeLocation.getSourcePath()).toPath();
+            final Path sourcePathPath = sourcePath.getParentFile().toPath();
+            final Path relativePath = sourcePathPath.relativize(path);
+            final List<String> relativePieces = new ArrayList<>();
+            for (int i = 0; i < relativePath.getNameCount(); i++) {
+                relativePieces.add(relativePath.getName(i).toFile().getName());
             }
-        }
-        final Set<String> bdioFileNames = new HashSet<>();
-        for (final Map.Entry<String, DetectCodeLocation> codeLocationEntry : codeLocationNameMap.entrySet()) {
-            final String codeLocationNameString = codeLocationEntry.getKey();
-            final DetectCodeLocation detectCodeLocation = codeLocationEntry.getValue();
+            final String relativePiece = relativePieces.stream().collect(Collectors.joining("/"));
+            final String codeLocationNameString = createCommonName(relativePiece, name, codeLocationNamePrefix, codeLocationNameSuffix, "bom", detectCodeLocation.getBomToolType().toString());
 
-            final String finalSourcePathPiece = detectFileManager.extractFinalPieceFromPath(detectCodeLocation.getSourcePath());
-            final String filename = bdioFileNamer.generateShortenedFilename(detectCodeLocation.getBomToolType(), finalSourcePathPiece, detectCodeLocation.getBomToolProjectExternalId());
-
-            if (!bdioFileNames.add(filename)) {
+            if (codeLocationNameMap.containsKey(codeLocationNameString)) {
                 failedBomTools.add(detectCodeLocation.getBomToolType());
-                logger.error(String.format("Found duplicate Bdio files with the name: %s", filename));
+                logger.error(String.format("Found duplicate Code Locations with the name: %s", codeLocationNameString));
             } else {
-                codeLocationNameToBdioName.put(codeLocationNameString, filename);
+                codeLocationNameMap.put(codeLocationNameString, detectCodeLocation);
+                nameCodeLocationMap.put(detectCodeLocation, codeLocationNameString);
+
+                final List<String> bdiopieces = new ArrayList<>();
+                bdiopieces.add(relativePiece);
+                bdiopieces.add(name);
+                bdiopieces.add(codeLocationNamePrefix);
+                bdiopieces.add(codeLocationNameSuffix);
+                bdiopieces.add("bom");
+                bdiopieces.add(detectCodeLocation.getBomToolType().toString());
+
+                final String filename = bdioFileNamer.generateShortenedFilename(detectCodeLocation.getBomToolType(), bdiopieces);
+
+                if (!bdioFileNames.add(filename)) {
+                    failedBomTools.add(detectCodeLocation.getBomToolType());
+                    logger.error(String.format("Found duplicate Bdio files with the name: %s", filename));
+                } else {
+                    codeLocationNameToBdioName.put(codeLocationNameString, filename);
+                }
             }
+
         }
+    }
+
+    private String createCommonName(final String pathPiece, final String externalIdString, final String prefix, final String suffix, final String codeLocationType, final String bomToolType) {
+        String name = String.format("%s/%s", pathPiece, externalIdString);
+        if (StringUtils.isNotBlank(prefix)) {
+            name = String.format("%s/%s", prefix, name);
+        }
+        if (StringUtils.isNotBlank(suffix)) {
+            name = String.format("%s/%s", name, suffix);
+        }
+
+        String endPiece = codeLocationType;
+        endPiece = String.format("%s/%s", bomToolType, endPiece);
+
+        name = String.format("%s %s", name, endPiece);
+        return name;
     }
 
     public Set<String> getCodeLocationNameStrings() {
         return codeLocationNameMap.keySet();
     }
 
+    public String getCodeLocationName(final DetectCodeLocation key) {
+        return nameCodeLocationMap.get(key);
+    }
     public DetectCodeLocation getDetectCodeLocation(final String codeLocationNameString) {
         return codeLocationNameMap.get(codeLocationNameString);
     }

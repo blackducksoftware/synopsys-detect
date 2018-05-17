@@ -25,6 +25,7 @@ package com.blackducksoftware.integration.hub.detect;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -45,10 +46,7 @@ import org.springframework.core.env.PropertySource;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.api.enumeration.PolicySeverityType;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerBomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleBomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetBomTool;
+import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolFinder;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.help.AcceptableValues;
@@ -57,6 +55,7 @@ import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 import com.blackducksoftware.integration.hub.detect.help.HelpDescription;
 import com.blackducksoftware.integration.hub.detect.help.HelpGroup;
 import com.blackducksoftware.integration.hub.detect.help.ValueDeprecation;
+import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver;
 import com.blackducksoftware.integration.hub.proxy.ProxyInfo;
 import com.blackducksoftware.integration.hub.proxy.ProxyInfoBuilder;
@@ -64,6 +63,7 @@ import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnection;
 import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnectionBuilder;
 import com.blackducksoftware.integration.log.Slf4jIntLogger;
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
+import com.blackducksoftware.integration.util.ResourceUtil;
 
 import groovy.transform.TypeChecked;
 
@@ -119,15 +119,6 @@ public class DetectConfiguration {
     private ConfigurableEnvironment configurableEnvironment;
 
     @Autowired
-    private DockerBomTool dockerBomTool;
-
-    @Autowired
-    private NugetBomTool nugetBomTool;
-
-    @Autowired
-    private GradleBomTool gradleBomTool;
-
-    @Autowired
     private TildeInPathResolver tildeInPathResolver;
 
     private File sourceDirectory;
@@ -143,6 +134,7 @@ public class DetectConfiguration {
     private boolean usingDefaultOutputPath;
 
     private ExcludedIncludedFilter bomToolFilter;
+    private List<String> bomToolSearchDirectoryExclusions;
     private final List<String> excludedScanPaths = new ArrayList<>();
 
     public void init(final List<DetectOption> detectOptions) throws DetectUserFriendlyException, IOException, IllegalArgumentException, IllegalAccessException {
@@ -232,10 +224,6 @@ public class DetectConfiguration {
 
         bomToolFilter = new ExcludedIncludedFilter(getExcludedBomToolTypes(), getIncludedBomToolTypes());
 
-        if (dockerBomTool.isBomToolApplicable() && bomToolFilter.shouldInclude(dockerBomTool.getBomToolType().toString())) {
-            configureForDocker();
-        }
-
         if (hubSignatureScannerRelativePathsToExclude != null && hubSignatureScannerRelativePathsToExclude.length > 0) {
             for (final String path : hubSignatureScannerRelativePathsToExclude) {
                 excludedScanPaths.add(new File(sourceDirectory, path).getCanonicalPath());
@@ -266,22 +254,21 @@ public class DetectConfiguration {
             hubOfflineMode = true;
         }
 
-        if (gradleBomTool.isBomToolApplicable() && bomToolFilter.shouldInclude(gradleBomTool.getBomToolType().toString())) {
-            gradleInspectorVersion = gradleBomTool.getInspectorVersion();
-        }
-
-        if (nugetBomTool.isBomToolApplicable() && bomToolFilter.shouldInclude(nugetBomTool.getBomToolType().toString())) {
-            nugetInspectorPackageVersion = nugetBomTool.getInspectorVersion();
-        }
-
-        if (dockerBomTool.isBomToolApplicable() && bomToolFilter.shouldInclude(dockerBomTool.getBomToolType().toString())) {
-            dockerInspectorVersion = dockerBomTool.getInspectorVersion();
+        //TODO Final home for directories to exclude
+        bomToolSearchDirectoryExclusions = new ArrayList<>();
+        try {
+            if (bomToolSearchExclusionDefaults) {
+                final String fileContent = ResourceUtil.getResourceAsString(BomToolFinder.class, "/excludedDirectoriesBomToolSearch.txt", StandardCharsets.UTF_8);
+                bomToolSearchDirectoryExclusions.addAll(Arrays.asList(fileContent.split("\r?\n")));
+            }
+        } catch (final IOException e) {
+            throw new DetectUserFriendlyException(String.format("Could not determine the directories to exclude from the bom tool search. %s", e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
         }
 
         configureForPhoneHome();
     }
 
-    private void addFieldWarning(final String key, final String warning) {
+    public void addFieldWarning(final String key, final String warning) {
         detectOptions.stream().forEach(option -> {
             if (option.getKey().equals(key)) {
                 option.getWarnings().add(warning);
@@ -289,12 +276,16 @@ public class DetectConfiguration {
         });
     }
 
-    private void requestDeprecation(final String key) {
+    public void requestDeprecation(final String key) {
         detectOptions.stream().forEach(option -> {
             if (option.getKey().equals(key)) {
                 option.requestDeprecation();
             }
         });
+    }
+
+    public List<String> getBomToolSearchDirectoryExclusions() {
+        return bomToolSearchDirectoryExclusions;
     }
 
     public File getSourceDirectory() {
@@ -325,8 +316,8 @@ public class DetectConfiguration {
         return usingDefaultOutputPath;
     }
 
-    public boolean shouldRun(final BomTool bomTool) {
-        return bomToolFilter.shouldInclude(bomTool.getBomToolType().toString()) && bomTool.isBomToolApplicable();
+    public boolean isBomToolIncluded(final BomToolType type) {
+        return bomToolFilter.shouldInclude(type.toString());
     }
 
     public String getDetectProperty(final String key) {

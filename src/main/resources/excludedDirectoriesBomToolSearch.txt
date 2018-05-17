@@ -3,3 +3,6 @@ target
 build
 out
 bin
+.git
+.gradle
+packages

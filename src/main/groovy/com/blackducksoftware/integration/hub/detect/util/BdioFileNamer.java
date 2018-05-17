@@ -23,18 +23,17 @@
  */
 package com.blackducksoftware.integration.hub.detect.util;
 
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
-import com.blackducksoftware.integration.hub.detect.model.BomToolType;
-import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import com.blackducksoftware.integration.hub.detect.model.BomToolType;
+import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
 
 @Component
 public class BdioFileNamer {
@@ -53,9 +52,8 @@ public class BdioFileNamer {
         return shortHashString;
     }
 
-    public String generateShortenedFilename(final BomToolType bomToolType, final String finalSourcePathPiece, final ExternalId externalId) {
-        final List<String> filenamePieces = new ArrayList<>(Arrays.asList(externalId.getExternalIdPieces()));
-        filenamePieces.add(finalSourcePathPiece);
+    public String generateShortenedFilename(final BomToolType bomToolType, final List<String> filenamePieces) {
+
         String filename = generateFilename(bomToolType, filenamePieces);
 
         if (filename.length() >= 255) {
