@@ -16,7 +16,7 @@ plugins {
     id 'maven-publish'
 }
 
-version = '3.2.2'
+version = '3.2.3-SNAPSHOT'
 
 apply plugin: 'com.blackducksoftware.integration.solution'
 apply plugin: 'org.springframework.boot'
