@@ -250,6 +250,28 @@ class MavenCodeLocationPackagerTest {
         assertEquals('org.eclipse.scout.sdk.deps:org.eclipse.core.jobs:3.8.0.v20160509-0411', dependency.externalId.createExternalId());
     }
 
+    @Test
+    public void testLineWithUnknownScope() {
+        MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(new ExternalIdFactory())
+
+        def line = '[INFO] |  |  |  \\- org.eclipse.scout.sdk.deps:org.eclipse.core.jobs:jar:3.8.0.v20160509-0411:pants (version selected from constraint [3.8.0,3.8.1))'
+        line = mavenCodeLocationPackager.trimLogLevel(line)
+        final String cleanedLine = mavenCodeLocationPackager.calculateCurrentLevelAndCleanLine(line);
+        final Dependency dependency = mavenCodeLocationPackager.textToDependency(cleanedLine);
+        assertEquals('org.eclipse.scout.sdk.deps:org.eclipse.core.jobs:3.8.0.v20160509-0411', dependency.externalId.createExternalId());
+    }
+
+    @Test
+    public void testLineWithBadColonPlacement() {
+        MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(new ExternalIdFactory())
+
+        def line = '[INFO] |  |  |  \\- org.eclipse.scout.sdk.deps:org.eclipse.core.jobs:jar:3.8.0.v20160509-0411:pants (version selected from: [3.8.0,3.8.1))'
+        line = mavenCodeLocationPackager.trimLogLevel(line)
+        final String cleanedLine = mavenCodeLocationPackager.calculateCurrentLevelAndCleanLine(line);
+        final Dependency dependency = mavenCodeLocationPackager.textToDependency(cleanedLine);
+        assertEquals('org.eclipse.scout.sdk.deps:org.eclipse.core.jobs:pants (version selected from', dependency.externalId.createExternalId());
+    }
+
     private void createNewCodeLocationTest(String mavenOutputText, String expectedResourcePath) {
         createNewCodeLocationTest(mavenOutputText, expectedResourcePath, 1, "", "")
     }
