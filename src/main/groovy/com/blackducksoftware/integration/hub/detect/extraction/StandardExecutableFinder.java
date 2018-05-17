@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyException;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
@@ -36,13 +37,13 @@ public class StandardExecutableFinder {
 
     private final Map<StandardExecutableType, File> alreadyFound = new HashMap<>();
 
-    public File getExecutable(final StandardExecutableType executableType) {
+    public File getExecutable(final StandardExecutableType executableType) throws StrategyException {
         if (alreadyFound.containsKey(executableType)) {
             return alreadyFound.get(executableType);
         }
         final StandardExecutableInfo info = createInfo(executableType);
         if (info == null) {
-            throw new RuntimeException("Unknown executable type: " + executableType.toString());
+            throw new StrategyException("Unknown executable type: " + executableType.toString());
         }
 
         final String exe = executableManager.getExecutablePathOrOverride(info.detectExecutableType, true, detectConfiguration.getSourceDirectory(), info.override);

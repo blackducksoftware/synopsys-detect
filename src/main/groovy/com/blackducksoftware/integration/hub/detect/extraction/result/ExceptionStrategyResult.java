@@ -11,5 +11,4 @@ public class ExceptionStrategyResult extends FailedStrategyResult {
     public String toDescription() {
         return "Exception occured: " + exception.getMessage();
     }
-
 }

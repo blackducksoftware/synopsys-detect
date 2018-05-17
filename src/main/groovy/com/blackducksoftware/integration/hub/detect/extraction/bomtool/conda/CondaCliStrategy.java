@@ -9,6 +9,7 @@ import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.StandardExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.extraction.StandardExecutableFinder.StandardExecutableType;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyEnvironment;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyException;
 import com.blackducksoftware.integration.hub.detect.extraction.result.ExecutableNotFoundStrategyResult;
 import com.blackducksoftware.integration.hub.detect.extraction.result.FileNotFoundStrategyResult;
 import com.blackducksoftware.integration.hub.detect.extraction.result.PassedStrategyResult;
@@ -45,7 +46,7 @@ public class CondaCliStrategy extends Strategy<CondaCliContext, CondaCliExtracto
     }
 
     @Override
-    public StrategyResult extractable(final StrategyEnvironment environment, final CondaCliContext context){
+    public StrategyResult extractable(final StrategyEnvironment environment, final CondaCliContext context) throws StrategyException {
         final File conda = standardExecutableFinder.getExecutable(StandardExecutableType.CONDA);
 
         if (conda == null) {

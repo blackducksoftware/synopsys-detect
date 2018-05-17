@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import com.blackducksoftware.integration.hub.detect.extraction.StandardExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.extraction.StandardExecutableFinder.StandardExecutableType;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyEnvironment;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyException;
 import com.blackducksoftware.integration.hub.detect.extraction.result.ExecutableNotFoundStrategyResult;
 import com.blackducksoftware.integration.hub.detect.extraction.result.FileNotFoundStrategyResult;
 import com.blackducksoftware.integration.hub.detect.extraction.result.PassedStrategyResult;
@@ -41,7 +42,7 @@ public class RebarStrategy extends Strategy<RebarContext, RebarExtractor> {
     }
 
     @Override
-    public StrategyResult extractable(final StrategyEnvironment environment, final RebarContext context){
+    public StrategyResult extractable(final StrategyEnvironment environment, final RebarContext context) throws StrategyException {
         context.rebarExe = standardExecutableFinder.getExecutable(StandardExecutableType.CONDA);
 
         if (context.rebarExe == null) {

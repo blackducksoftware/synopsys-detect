@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyEnvironment;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyException;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
@@ -34,7 +35,7 @@ public class PipInspectorManager {
     private File resolvedInspector = null;
     private boolean hasResolvedInspector = false;
 
-    public File findPipInspector(final StrategyEnvironment environment) {
+    public File findPipInspector(final StrategyEnvironment environment) throws StrategyException {
         try {
             if (!hasResolvedInspector) {
                 hasResolvedInspector = true;
@@ -42,7 +43,7 @@ public class PipInspectorManager {
             }
             return resolvedInspector;
         }catch (final Exception e) {
-            throw new RuntimeException(e);
+            throw new StrategyException(e);
         }
     }
 

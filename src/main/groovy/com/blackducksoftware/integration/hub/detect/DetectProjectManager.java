@@ -56,8 +56,6 @@ import com.blackducksoftware.integration.hub.detect.bomtool.search.report.Extrac
 import com.blackducksoftware.integration.hub.detect.bomtool.search.report.ExtractionSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.report.PreparationSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.report.SearchSummaryReporter;
-import com.blackducksoftware.integration.hub.detect.codelocation.BomCodeLocationNameFactory;
-import com.blackducksoftware.integration.hub.detect.codelocation.DockerCodeLocationNameFactory;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
@@ -80,7 +78,6 @@ import com.blackducksoftware.integration.hub.detect.summary.Result;
 import com.blackducksoftware.integration.hub.detect.summary.SummaryResultReporter;
 import com.blackducksoftware.integration.hub.detect.util.BdioFileNamer;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
 
@@ -109,13 +106,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     private BdioFileNamer bdioFileNamer;
 
     @Autowired
-    private DetectFileManager detectFileManager;
-
-    @Autowired
-    private BomCodeLocationNameFactory bomCodeLocationNameFactory;
-
-    @Autowired
-    private DockerCodeLocationNameFactory dockerCodeLocationNameFactory;
+    private DetectFileFinder detectFileFinder;
 
     @Autowired
     private DetectPhoneHomeManager detectPhoneHomeManager;
@@ -255,7 +246,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         }
 
         if (StringUtils.isBlank(detectConfiguration.getAggregateBomName())) {
-            detectProject.processDetectCodeLocations(logger,detectFileFinder,  detectConfiguration.getSourceDirectory(), bdioFileNamer, codeLocationNameService);
+            detectProject.processDetectCodeLocations(logger, detectFileFinder,  detectConfiguration.getSourceDirectory(), bdioFileNamer);
 
             for (final BomToolType bomToolType : detectProject.getFailedBomTools()) {
                 bomToolSummaryResults.put(bomToolType, Result.FAILURE);

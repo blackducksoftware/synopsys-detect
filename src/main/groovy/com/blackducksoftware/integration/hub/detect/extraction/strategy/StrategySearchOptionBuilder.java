@@ -1,7 +1,6 @@
 package com.blackducksoftware.integration.hub.detect.extraction.strategy;
 
 public class StrategySearchOptionBuilder {
-
     private int maxDepth = 0;
     private boolean nestable = false;
 
@@ -23,5 +22,4 @@ public class StrategySearchOptionBuilder {
     public StrategySearchOptions build() {
         return new StrategySearchOptions(maxDepth, nestable);
     }
-
 }

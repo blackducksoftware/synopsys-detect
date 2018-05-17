@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyEnvironment;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyException;
 import com.blackducksoftware.integration.hub.detect.extraction.result.ExecutableNotFoundStrategyResult;
 import com.blackducksoftware.integration.hub.detect.extraction.result.FileNotFoundStrategyResult;
 import com.blackducksoftware.integration.hub.detect.extraction.result.InspectorNotFoundStrategyResult;
@@ -55,7 +56,7 @@ public class PipInspectorStrategy extends Strategy<PipInspectorContext, PipInspe
     }
 
     @Override
-    public StrategyResult extractable(final StrategyEnvironment environment, final PipInspectorContext context){
+    public StrategyResult extractable(final StrategyEnvironment environment, final PipInspectorContext context) throws StrategyException {
         final String pipExe = pipExecutableFinder.findPip(environment);
         if (pipExe == null) {
             return new ExecutableNotFoundStrategyResult("pip");

@@ -16,8 +16,4 @@ public class StrategySearchOptions {
     public int getMaxDepth() {
         return maxDepth;
     }
-
-
-
-
 }

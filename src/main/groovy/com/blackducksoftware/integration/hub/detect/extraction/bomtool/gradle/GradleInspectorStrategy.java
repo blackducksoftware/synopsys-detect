@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyEnvironment;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyException;
 import com.blackducksoftware.integration.hub.detect.extraction.result.ExecutableNotFoundStrategyResult;
 import com.blackducksoftware.integration.hub.detect.extraction.result.FileNotFoundStrategyResult;
 import com.blackducksoftware.integration.hub.detect.extraction.result.InspectorNotFoundStrategyResult;
@@ -48,7 +49,7 @@ public class GradleInspectorStrategy extends Strategy<GradleInspectorContext, Gr
     }
 
     @Override
-    public StrategyResult extractable(final StrategyEnvironment environment, final GradleInspectorContext context) {
+    public StrategyResult extractable(final StrategyEnvironment environment, final GradleInspectorContext context) throws StrategyException {
         context.gradleExe = gradleFinder.findGradle(environment);
         if (context.gradleExe == null) {
             return new ExecutableNotFoundStrategyResult("gradle");

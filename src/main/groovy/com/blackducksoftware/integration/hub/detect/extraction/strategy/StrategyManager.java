@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class StrategyManager {
-
     @Autowired
     public List<StrategyCoordinator> strategyCoordinators;
 

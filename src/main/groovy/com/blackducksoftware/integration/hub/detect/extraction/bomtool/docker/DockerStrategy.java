@@ -8,6 +8,7 @@ import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.StandardExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.extraction.StandardExecutableFinder.StandardExecutableType;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyEnvironment;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyException;
 import com.blackducksoftware.integration.hub.detect.extraction.result.ExecutableNotFoundStrategyResult;
 import com.blackducksoftware.integration.hub.detect.extraction.result.InspectorNotFoundStrategyResult;
 import com.blackducksoftware.integration.hub.detect.extraction.result.PassedStrategyResult;
@@ -48,7 +49,7 @@ public class DockerStrategy extends Strategy<DockerContext, DockerExtractor> {
     }
 
     @Override
-    public StrategyResult extractable(final StrategyEnvironment environment, final DockerContext context){
+    public StrategyResult extractable(final StrategyEnvironment environment, final DockerContext context) throws StrategyException {
         context.bashExe = standardExecutableFinder.getExecutable(StandardExecutableType.BASH);
         if (context.bashExe == null) {
             return new ExecutableNotFoundStrategyResult("bash");

@@ -10,7 +10,7 @@ import com.blackducksoftware.integration.hub.detect.extraction.ExtractionContext
 import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyEnvironment;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyException;
-import com.blackducksoftware.integration.hub.detect.extraction.result.BomToolExcludedSearchResult;
+import com.blackducksoftware.integration.hub.detect.extraction.result.BomToolExcludedStrategyResult;
 import com.blackducksoftware.integration.hub.detect.extraction.result.MaxDepthExceededStrategyResult;
 import com.blackducksoftware.integration.hub.detect.extraction.result.NotNestableStrategyResult;
 import com.blackducksoftware.integration.hub.detect.extraction.result.PassedStrategyResult;
@@ -20,7 +20,6 @@ import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 
 @SuppressWarnings("rawtypes")
 public abstract class Strategy<C extends ExtractionContext, E extends Extractor<C>>  {
-
     private final String name;
     private final BomToolType bomToolType;
     private final Class<C> extractionContextClass;
@@ -42,7 +41,7 @@ public abstract class Strategy<C extends ExtractionContext, E extends Extractor<
 
     public StrategyResult searchable(final StrategyEnvironment environment, final C context) {
         if (!environment.getBomToolFilter().shouldInclude(bomToolType.toString())) {
-            return new BomToolExcludedSearchResult();
+            return new BomToolExcludedStrategyResult();
         }
 
         if (environment.getDepth() > searchOptions.getMaxDepth()) {

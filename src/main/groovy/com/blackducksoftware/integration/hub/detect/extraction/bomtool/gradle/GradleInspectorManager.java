@@ -23,6 +23,7 @@ import org.w3c.dom.NodeList;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyEnvironment;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyException;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
@@ -63,14 +64,14 @@ public class GradleInspectorManager {
     private String resolvedVersion = null;
     private boolean hasResolvedInspector = false;
 
-    public String getGradleInspector(final StrategyEnvironment environment) {
+    public String getGradleInspector(final StrategyEnvironment environment) throws StrategyException {
         if (!hasResolvedInspector) {
             hasResolvedInspector = true;
             resolvedVersion = resolveInspectorVersion();
             try {
                 resolvedInitScript = resolveInitScriptPath(resolvedVersion);
             } catch (final Exception e) {
-                throw new RuntimeException(e);
+                throw new StrategyException(e);
             }
         }
         return resolvedInitScript;

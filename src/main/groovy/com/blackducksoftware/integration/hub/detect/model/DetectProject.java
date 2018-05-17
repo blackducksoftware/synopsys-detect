@@ -38,7 +38,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.util.BdioFileNamer;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.service.model.ProjectRequestBuilder;
@@ -107,7 +106,7 @@ public class DetectProject {
         return builder;
     }
 
-    public void processDetectCodeLocations(final Logger logger, final DetectFileFinder detectFileFinder, final File sourcePath, final BdioFileNamer bdioFileNamer, final CodeLocationNameService codeLocationNameService) {
+    public void processDetectCodeLocations(final Logger logger, final DetectFileFinder detectFileFinder, final File sourcePath, final BdioFileNamer bdioFileNamer) {
         final Set<String> bdioFileNames = new HashSet<>();
         for (final DetectCodeLocation detectCodeLocation : getDetectCodeLocations()) {
             if (detectCodeLocation.getDependencyGraph() == null) {

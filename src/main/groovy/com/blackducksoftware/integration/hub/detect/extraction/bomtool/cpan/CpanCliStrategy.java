@@ -9,6 +9,7 @@ import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.StandardExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.extraction.StandardExecutableFinder.StandardExecutableType;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyEnvironment;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyException;
 import com.blackducksoftware.integration.hub.detect.extraction.result.ExecutableNotFoundStrategyResult;
 import com.blackducksoftware.integration.hub.detect.extraction.result.FileNotFoundStrategyResult;
 import com.blackducksoftware.integration.hub.detect.extraction.result.PassedStrategyResult;
@@ -45,7 +46,7 @@ public class CpanCliStrategy extends Strategy<CpanCliContext, CpanCliExtractor> 
     }
 
     @Override
-    public StrategyResult extractable(final StrategyEnvironment environment, final CpanCliContext context){
+    public StrategyResult extractable(final StrategyEnvironment environment, final CpanCliContext context) throws StrategyException {
         final File cpan = standardExecutableFinder.getExecutable(StandardExecutableType.CPAN);
 
         if (cpan == null) {

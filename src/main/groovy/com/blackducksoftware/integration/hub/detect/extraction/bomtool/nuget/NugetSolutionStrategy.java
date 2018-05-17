@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyEnvironment;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyException;
 import com.blackducksoftware.integration.hub.detect.extraction.result.FilesNotFoundStrategyResult;
 import com.blackducksoftware.integration.hub.detect.extraction.result.InspectorNotFoundStrategyResult;
 import com.blackducksoftware.integration.hub.detect.extraction.result.PassedStrategyResult;
@@ -41,7 +42,7 @@ public class NugetSolutionStrategy extends Strategy<NugetInspectorContext, Nuget
     }
 
     @Override
-    public StrategyResult extractable(final StrategyEnvironment environment, final NugetInspectorContext context){
+    public StrategyResult extractable(final StrategyEnvironment environment, final NugetInspectorContext context) throws StrategyException {
         context.inspectorExe = nugetInspectorManager.findNugetInspector(environment);
 
         if (context.inspectorExe == null) {

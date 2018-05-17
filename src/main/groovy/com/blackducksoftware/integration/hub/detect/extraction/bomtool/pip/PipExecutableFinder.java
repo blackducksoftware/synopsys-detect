@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyEnvironment;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyException;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
@@ -27,7 +28,7 @@ public class PipExecutableFinder {
     private String resolvedPip = null;
     private boolean hasLookedForPip = false;
 
-    public String findPip(final StrategyEnvironment environment) {
+    public String findPip(final StrategyEnvironment environment) throws StrategyException {
         try {
             if (!hasLookedForPip) {
                 hasLookedForPip = true;
@@ -39,7 +40,7 @@ public class PipExecutableFinder {
             }
             return resolvedPip;
         }catch (final Exception e) {
-            throw new RuntimeException(e);
+            throw new StrategyException(e);
         }
     }
 }

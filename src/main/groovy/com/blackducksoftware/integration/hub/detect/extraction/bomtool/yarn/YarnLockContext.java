@@ -6,4 +6,5 @@ import com.blackducksoftware.integration.hub.detect.extraction.ExtractionContext
 
 public class YarnLockContext extends ExtractionContext {
     public File yarnlock;
+    public String yarnExe;
 }

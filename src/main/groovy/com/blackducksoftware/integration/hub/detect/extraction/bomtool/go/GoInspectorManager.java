@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyEnvironment;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyException;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
@@ -39,7 +40,7 @@ public class GoInspectorManager {
     private boolean hasResolvedInspector;
     private String resolvedGoDep;
 
-    public String evaluate(final StrategyEnvironment environment) {
+    public String evaluate(final StrategyEnvironment environment) throws StrategyException {
         try {
             if (!hasResolvedInspector) {
                 resolvedGoDep = install();
@@ -47,7 +48,7 @@ public class GoInspectorManager {
 
             return resolvedGoDep;
         }catch (final Exception e) {
-            throw new RuntimeException(e);
+            throw new StrategyException(e);
         }
     }
 

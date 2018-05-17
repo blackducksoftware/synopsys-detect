@@ -14,6 +14,7 @@ import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyEnvironment;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyException;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
@@ -42,7 +43,7 @@ public class NugetInspectorManager {
     private String resolvedNugetInspectorExecutable;
     private String resolvedInspectorVersion;
 
-    public String findNugetInspector(final StrategyEnvironment environment) {
+    public String findNugetInspector(final StrategyEnvironment environment) throws StrategyException {
         try {
             if (!hasResolvedInspector) {
                 hasResolvedInspector = true;
@@ -51,7 +52,7 @@ public class NugetInspectorManager {
 
             return resolvedNugetInspectorExecutable;
         }catch (final Exception e) {
-            throw new RuntimeException(e);
+            throw new StrategyException(e);
         }
     }
     public void install() throws DetectUserFriendlyException, ExecutableRunnerException, IOException {

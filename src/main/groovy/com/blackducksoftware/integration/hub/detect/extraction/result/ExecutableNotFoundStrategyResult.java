@@ -2,7 +2,6 @@ package com.blackducksoftware.integration.hub.detect.extraction.result;
 
 
 public class ExecutableNotFoundStrategyResult extends FailedStrategyResult {
-
     private final String executableName;
 
     public ExecutableNotFoundStrategyResult(final String executableName) {

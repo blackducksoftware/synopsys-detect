@@ -11,6 +11,7 @@ import com.blackducksoftware.integration.hub.detect.extraction.bomtool.go.GoDepC
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.go.GoDepExtractor;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.go.GoInspectorManager;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyEnvironment;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyException;
 import com.blackducksoftware.integration.hub.detect.extraction.result.ExecutableNotFoundStrategyResult;
 import com.blackducksoftware.integration.hub.detect.extraction.result.FileNotFoundStrategyResult;
 import com.blackducksoftware.integration.hub.detect.extraction.result.InspectorNotFoundStrategyResult;
@@ -48,7 +49,7 @@ public class GoLockStrategy extends Strategy<GoDepContext, GoDepExtractor> {
     }
 
     @Override
-    public StrategyResult extractable(final StrategyEnvironment environment, final GoDepContext context){
+    public StrategyResult extractable(final StrategyEnvironment environment, final GoDepContext context) throws StrategyException {
         context.goExe = standardExecutableFinder.getExecutable(StandardExecutableType.GO);
         if (context.goExe == null) {
             return new ExecutableNotFoundStrategyResult("go");

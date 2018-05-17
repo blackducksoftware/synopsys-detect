@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyEnvironment;
+import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyException;
 import com.blackducksoftware.integration.hub.detect.extraction.result.ExecutableNotFoundStrategyResult;
 import com.blackducksoftware.integration.hub.detect.extraction.result.FileNotFoundStrategyResult;
 import com.blackducksoftware.integration.hub.detect.extraction.result.PassedStrategyResult;
@@ -43,7 +44,7 @@ public class NpmCliStrategy extends Strategy<NpmCliContext, NpmCliExtractor>{
     }
 
     @Override
-    public StrategyResult extractable(final StrategyEnvironment environment, final NpmCliContext context){
+    public StrategyResult extractable(final StrategyEnvironment environment, final NpmCliContext context) throws StrategyException {
         context.npmExe = npmExecutableFinder.findNpm(environment);
 
         if (context.npmExe == null) {
