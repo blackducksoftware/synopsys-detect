@@ -1,4 +1,4 @@
-package com.blackducksoftware.integration.hub.detect.extraction.strategy;
+package com.blackducksoftware.integration.hub.detect.strategy;
 
 public class StrategySearchOptions {
     private int maxDepth = 0;

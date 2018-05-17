@@ -1,4 +1,4 @@
-package com.blackducksoftware.integration.hub.detect.extraction.result;
+package com.blackducksoftware.integration.hub.detect.strategy.result;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;

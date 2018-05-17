@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.extraction.Extraction.ExtractionResult;
+import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
 import com.blackducksoftware.integration.hub.detect.extraction.ExtractionContext;
-import com.blackducksoftware.integration.hub.detect.extraction.strategy.Strategy;
 
 @Component
 public class ExtractionReporter {

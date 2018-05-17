@@ -3,7 +3,7 @@ package com.blackducksoftware.integration.hub.detect.extraction.bomtool.go.strat
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.extraction.strategy.StrategyCoordinator;
+import com.blackducksoftware.integration.hub.detect.strategy.StrategyCoordinator;
 
 @Component
 public class GoStrategyCoordinator extends StrategyCoordinator {

@@ -1,4 +1,4 @@
-package com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation;
+package com.blackducksoftware.integration.hub.detect.strategy.evaluation;
 
 public class StrategyException extends Exception {
     private static final long serialVersionUID = 3255014283653810035L;

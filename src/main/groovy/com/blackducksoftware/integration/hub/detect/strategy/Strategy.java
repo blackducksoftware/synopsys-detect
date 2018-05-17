@@ -1,4 +1,4 @@
-package com.blackducksoftware.integration.hub.detect.extraction.strategy;
+package com.blackducksoftware.integration.hub.detect.strategy;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
@@ -8,15 +8,15 @@ import java.util.stream.Collectors;
 
 import com.blackducksoftware.integration.hub.detect.extraction.ExtractionContext;
 import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyEnvironment;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyException;
-import com.blackducksoftware.integration.hub.detect.extraction.result.BomToolExcludedStrategyResult;
-import com.blackducksoftware.integration.hub.detect.extraction.result.MaxDepthExceededStrategyResult;
-import com.blackducksoftware.integration.hub.detect.extraction.result.NotNestableStrategyResult;
-import com.blackducksoftware.integration.hub.detect.extraction.result.PassedStrategyResult;
-import com.blackducksoftware.integration.hub.detect.extraction.result.StrategyResult;
-import com.blackducksoftware.integration.hub.detect.extraction.result.YieldedStrategyResult;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
+import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
+import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyException;
+import com.blackducksoftware.integration.hub.detect.strategy.result.BomToolExcludedStrategyResult;
+import com.blackducksoftware.integration.hub.detect.strategy.result.MaxDepthExceededStrategyResult;
+import com.blackducksoftware.integration.hub.detect.strategy.result.NotNestableStrategyResult;
+import com.blackducksoftware.integration.hub.detect.strategy.result.PassedStrategyResult;
+import com.blackducksoftware.integration.hub.detect.strategy.result.StrategyResult;
+import com.blackducksoftware.integration.hub.detect.strategy.result.YieldedStrategyResult;
 
 @SuppressWarnings("rawtypes")
 public abstract class Strategy<C extends ExtractionContext, E extends Extractor<C>>  {

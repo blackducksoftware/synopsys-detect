@@ -1,7 +1,6 @@
-package com.blackducksoftware.integration.hub.detect.extraction.result;
+package com.blackducksoftware.integration.hub.detect.strategy.result;
 
 public class InspectorNotFoundStrategyResult extends FailedStrategyResult {
-
     private final String inspectorName;
 
     public InspectorNotFoundStrategyResult(final String inspectorName) {

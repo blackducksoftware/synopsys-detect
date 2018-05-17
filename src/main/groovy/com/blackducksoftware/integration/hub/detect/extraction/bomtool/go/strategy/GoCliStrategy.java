@@ -11,15 +11,15 @@ import com.blackducksoftware.integration.hub.detect.extraction.StandardExecutabl
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.go.GoDepContext;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.go.GoDepExtractor;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.go.GoInspectorManager;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyEnvironment;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyException;
-import com.blackducksoftware.integration.hub.detect.extraction.result.ExecutableNotFoundStrategyResult;
-import com.blackducksoftware.integration.hub.detect.extraction.result.FileNotFoundStrategyResult;
-import com.blackducksoftware.integration.hub.detect.extraction.result.InspectorNotFoundStrategyResult;
-import com.blackducksoftware.integration.hub.detect.extraction.result.PassedStrategyResult;
-import com.blackducksoftware.integration.hub.detect.extraction.result.StrategyResult;
-import com.blackducksoftware.integration.hub.detect.extraction.strategy.Strategy;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
+import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
+import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
+import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyException;
+import com.blackducksoftware.integration.hub.detect.strategy.result.ExecutableNotFoundStrategyResult;
+import com.blackducksoftware.integration.hub.detect.strategy.result.FileNotFoundStrategyResult;
+import com.blackducksoftware.integration.hub.detect.strategy.result.InspectorNotFoundStrategyResult;
+import com.blackducksoftware.integration.hub.detect.strategy.result.PassedStrategyResult;
+import com.blackducksoftware.integration.hub.detect.strategy.result.StrategyResult;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
 @Component

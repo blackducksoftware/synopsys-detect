@@ -179,7 +179,7 @@ public class DockerExtractor extends Extractor<DockerContext> {
     }
 
     private void logMissingFile(final File searchDirectory, final String filenamePattern) {
-        logger.debug("No files found matching pattern [${filenamePattern}]. Expected docker-inspector to produce file in ${searchDirectory.getCanonicalPath()}");
+        logger.debug("No files found matching pattern [" + filenamePattern + "]. Expected docker-inspector to produce file in " + searchDirectory.toString());
     }
 
 

@@ -5,9 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.extraction.strategy.Strategy;
-import com.blackducksoftware.integration.hub.detect.extraction.strategy.StrategyCoordinator;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
+import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
+import com.blackducksoftware.integration.hub.detect.strategy.StrategyCoordinator;
 
 @Component
 public class NpmStrategyCoordinator extends StrategyCoordinator {

@@ -7,15 +7,15 @@ import org.springframework.stereotype.Component;
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.StandardExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.extraction.StandardExecutableFinder.StandardExecutableType;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyEnvironment;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyException;
-import com.blackducksoftware.integration.hub.detect.extraction.result.ExecutableNotFoundStrategyResult;
-import com.blackducksoftware.integration.hub.detect.extraction.result.InspectorNotFoundStrategyResult;
-import com.blackducksoftware.integration.hub.detect.extraction.result.PassedStrategyResult;
-import com.blackducksoftware.integration.hub.detect.extraction.result.PropertyInsufficientStrategyResult;
-import com.blackducksoftware.integration.hub.detect.extraction.result.StrategyResult;
-import com.blackducksoftware.integration.hub.detect.extraction.strategy.Strategy;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
+import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
+import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
+import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyException;
+import com.blackducksoftware.integration.hub.detect.strategy.result.ExecutableNotFoundStrategyResult;
+import com.blackducksoftware.integration.hub.detect.strategy.result.InspectorNotFoundStrategyResult;
+import com.blackducksoftware.integration.hub.detect.strategy.result.PassedStrategyResult;
+import com.blackducksoftware.integration.hub.detect.strategy.result.PropertyInsufficientStrategyResult;
+import com.blackducksoftware.integration.hub.detect.strategy.result.StrategyResult;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
 @Component

@@ -1,4 +1,4 @@
-package com.blackducksoftware.integration.hub.detect.extraction.result;
+package com.blackducksoftware.integration.hub.detect.strategy.result;
 
 public class PropertyInsufficientStrategyResult extends FailedStrategyResult {
     @Override

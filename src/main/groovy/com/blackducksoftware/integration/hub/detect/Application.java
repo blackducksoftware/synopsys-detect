@@ -55,7 +55,6 @@ import com.blackducksoftware.integration.hub.detect.diagnostic.DiagnosticsManage
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
-import com.blackducksoftware.integration.hub.detect.extraction.strategy.StrategyManager;
 import com.blackducksoftware.integration.hub.detect.help.ArgumentState;
 import com.blackducksoftware.integration.hub.detect.help.ArgumentStateParser;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
@@ -72,6 +71,7 @@ import com.blackducksoftware.integration.hub.detect.interactive.reader.ConsoleIn
 import com.blackducksoftware.integration.hub.detect.interactive.reader.InteractiveReader;
 import com.blackducksoftware.integration.hub.detect.interactive.reader.ScannerInteractiveReader;
 import com.blackducksoftware.integration.hub.detect.model.DetectProject;
+import com.blackducksoftware.integration.hub.detect.strategy.StrategyManager;
 import com.blackducksoftware.integration.hub.detect.summary.DetectSummary;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.log.SilentLogger;

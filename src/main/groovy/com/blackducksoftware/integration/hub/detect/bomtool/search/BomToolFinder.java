@@ -42,9 +42,9 @@ import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendly
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.extraction.ExtractionContext;
 import com.blackducksoftware.integration.hub.detect.extraction.StrategyEvaluation;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyEnvironment;
-import com.blackducksoftware.integration.hub.detect.extraction.strategy.Strategy;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
+import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
+import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
 
 @SuppressWarnings({ "rawtypes" })
 public class BomToolFinder {

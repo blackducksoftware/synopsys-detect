@@ -22,8 +22,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyEnvironment;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyException;
+import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
+import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyException;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;

@@ -1,9 +1,9 @@
 package com.blackducksoftware.integration.hub.detect.extraction;
 
 import com.blackducksoftware.integration.hub.detect.extraction.Extraction.ExtractionResult;
-import com.blackducksoftware.integration.hub.detect.extraction.requirement.evaluation.StrategyEnvironment;
-import com.blackducksoftware.integration.hub.detect.extraction.result.StrategyResult;
-import com.blackducksoftware.integration.hub.detect.extraction.strategy.Strategy;
+import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
+import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
+import com.blackducksoftware.integration.hub.detect.strategy.result.StrategyResult;
 
 public class StrategyEvaluation {
     public Strategy strategy;
