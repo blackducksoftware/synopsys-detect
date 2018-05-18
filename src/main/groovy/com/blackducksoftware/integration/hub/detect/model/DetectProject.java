@@ -83,9 +83,6 @@ public class DetectProject {
     }
 
     public void addDetectCodeLocation(final DetectCodeLocation detectCodeLocation) {
-        setProjectNameIfNotSet(detectCodeLocation.getBomToolProjectName());
-        setProjectVersionNameIfNotSet(detectCodeLocation.getBomToolProjectVersionName());
-
         detectCodeLocations.add(detectCodeLocation);
     }
 

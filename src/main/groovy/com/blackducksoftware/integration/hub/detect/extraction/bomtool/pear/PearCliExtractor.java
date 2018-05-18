@@ -9,10 +9,9 @@ import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.extraction.Extraction;
-import com.blackducksoftware.integration.hub.detect.extraction.Extraction.ExtractionResult;
+import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.pear.parse.PearDependencyFinder;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.pear.parse.PearParseResult;
-import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
@@ -46,11 +45,10 @@ public class PearCliExtractor extends Extractor<PearCliContext> {
 
             final PearParseResult result = pearDependencyFinder.parse(packageFile, pearListing, pearDependencies);
             final ExternalId id = externalIdFactory.createNameVersionExternalId(Forge.PEAR, result.name, result.version);
-            final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolType.PEAR, context.directory.toString(), id, result.dependencyGraph)
-                    .bomToolProjectName(result.name).bomToolProjectVersionName(result.version).build();
+            final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolType.PEAR, context.directory.toString(), id, result.dependencyGraph).build();
 
 
-            return new Extraction.Builder().success(detectCodeLocation).build();
+            return new Extraction.Builder().success(detectCodeLocation).projectName(result.name).projectVersion(result.version).build();
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
         }

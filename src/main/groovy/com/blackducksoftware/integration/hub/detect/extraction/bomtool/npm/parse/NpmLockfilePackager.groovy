@@ -52,7 +52,7 @@ class NpmLockfilePackager {
     @Autowired
     ExternalIdFactory externalIdFactory
 
-    public DetectCodeLocation parse(String sourcePath, String lockFileText, boolean includeDevDependencies) {
+    public NpmParseResult parse(String sourcePath, String lockFileText, boolean includeDevDependencies) {
         NpmProject npmProject = gson.fromJson(lockFileText, NpmProject.class)
 
         NameVersionNode root = new NameVersionNode([name: npmProject.name, version: npmProject.version])
@@ -72,6 +72,7 @@ class NpmLockfilePackager {
 
         ExternalId projectId = externalIdFactory.createNameVersionExternalId(Forge.NPM, npmProject.name, npmProject.version)
         DependencyGraph graph = nameVersionNodeTransformer.createDependencyGraph(Forge.NPM, builder.build(), false)
-        DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolType.NPM, sourcePath, projectId, graph).bomToolProjectName(npmProject.name).bomToolProjectVersionName(npmProject.version).build();
+        DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolType.NPM, sourcePath, projectId, graph).build();
+        return new NpmParseResult(npmProject.name, npmProject.version, codeLocation);
     }
 }

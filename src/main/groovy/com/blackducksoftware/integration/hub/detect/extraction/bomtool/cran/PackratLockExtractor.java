@@ -13,9 +13,8 @@ import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.extraction.Extraction;
-import com.blackducksoftware.integration.hub.detect.extraction.Extraction.ExtractionResult;
-import com.blackducksoftware.integration.hub.detect.extraction.bomtool.cran.parse.PackratPackager;
 import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.cran.parse.PackratPackager;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
@@ -43,18 +42,11 @@ public class PackratLockExtractor extends Extractor<PackratLockContext> {
                 projectName = packratPackager.getProjectName(descriptionText);
                 projectVersion = packratPackager.getVersion(descriptionText);
             }
-
             final List<String> packratLockText = Files.readAllLines(context.packratlock.toPath(), StandardCharsets.UTF_8);
             final DependencyGraph dependencyGraph = packratPackager.extractProjectDependencies(packratLockText);
             final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.CRAN, context.directory.toString());
-
-            final DetectCodeLocation.Builder builder =
-                    new DetectCodeLocation.Builder(BomToolType.CRAN, context.directory.toString(), externalId, dependencyGraph)
-                    .bomToolProjectName(projectName)
-                    .bomToolProjectVersionName(projectVersion);
-
-            final DetectCodeLocation codeLocation = builder.build();
-            return new Extraction.Builder().success(codeLocation).build();
+            final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolType.CRAN, context.directory.toString(), externalId, dependencyGraph).build();
+            return new Extraction.Builder().success(codeLocation).projectName(projectName).projectVersion(projectVersion).build();
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
         }

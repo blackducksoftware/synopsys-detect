@@ -53,7 +53,7 @@ class PipInspectorTreeParser {
     @Autowired
     ExternalIdFactory externalIdFactory
 
-    DetectCodeLocation parse(String treeText, String sourcePath) {
+    PipParseResult parse(String treeText, String sourcePath) {
         def lines = treeText.trim().split(System.lineSeparator()).toList()
 
         MutableMapDependencyGraph dependencyGraph = null
@@ -116,7 +116,8 @@ class PipInspectorTreeParser {
         }
 
         if (project && !(project.name.equals('') && project.version.equals('') && dependencyGraph && dependencyGraph.getRootDependencyExternalIds().empty)) {
-            new DetectCodeLocation.Builder(BomToolType.PIP, sourcePath, project.externalId, dependencyGraph).bomToolProjectName(project.name).bomToolProjectVersionName(project.version).build()
+            DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolType.PIP, sourcePath, project.externalId, dependencyGraph).build()
+            return new PipParseResult(project.name, project.version, codeLocation);
         } else {
             null
         }

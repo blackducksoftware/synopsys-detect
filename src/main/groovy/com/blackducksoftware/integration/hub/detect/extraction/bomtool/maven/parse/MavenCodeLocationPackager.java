@@ -50,8 +50,8 @@ public class MavenCodeLocationPackager {
     private static final Logger logger = LoggerFactory.getLogger(MavenCodeLocationPackager.class);
 
     private final ExternalIdFactory externalIdFactory;
-    private List<DetectCodeLocation> codeLocations = new ArrayList<>();
-    private DetectCodeLocation currentCodeLocation = null;
+    private List<MavenParseResult> codeLocations = new ArrayList<>();
+    private MavenParseResult currentMavenProject = null;
     private Stack<Dependency> dependencyParentStack = new Stack<>();
     private boolean parsingProjectSection;
     private int level;
@@ -61,10 +61,10 @@ public class MavenCodeLocationPackager {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public List<DetectCodeLocation> extractCodeLocations(final String sourcePath, final String mavenOutputText, final String excludedModules, final String includedModules) {
+    public List<MavenParseResult> extractCodeLocations(final String sourcePath, final String mavenOutputText, final String excludedModules, final String includedModules) {
         final ExcludedIncludedFilter filter = new ExcludedIncludedFilter(excludedModules, includedModules);
         codeLocations = new ArrayList<>();
-        currentCodeLocation = null;
+        currentMavenProject = null;
         dependencyParentStack = new Stack<>();
         parsingProjectSection = false;
         currentGraph = new MutableMapDependencyGraph();
@@ -90,15 +90,15 @@ public class MavenCodeLocationPackager {
                 continue;
             }
 
-            if (parsingProjectSection && currentCodeLocation == null) {
+            if (parsingProjectSection && currentMavenProject == null) {
                 //this is the first line of a new code location, the following lines will be the tree of dependencies for this code location
                 currentGraph = new MutableMapDependencyGraph();
-                final DetectCodeLocation detectCodeLocation = createNewCodeLocation(sourcePath, line, currentGraph);
-                if (null != detectCodeLocation && filter.shouldInclude(detectCodeLocation.getBomToolProjectName())) {
-                    this.currentCodeLocation = detectCodeLocation;
-                    codeLocations.add(detectCodeLocation);
+                final MavenParseResult mavenProject = createNewCodeLocation(sourcePath, line, currentGraph);
+                if (null != mavenProject && filter.shouldInclude(currentMavenProject.projectName)) {
+                    this.currentMavenProject = mavenProject;
+                    codeLocations.add(mavenProject);
                 } else {
-                    currentCodeLocation = null;
+                    currentMavenProject = null;
                     dependencyParentStack.clear();
                     parsingProjectSection = false;
                     level = 0;
@@ -108,7 +108,7 @@ public class MavenCodeLocationPackager {
 
             final boolean finished = line.contains("--------");
             if (finished) {
-                currentCodeLocation = null;
+                currentMavenProject = null;
                 dependencyParentStack.clear();
                 parsingProjectSection = false;
                 level = 0;
@@ -122,7 +122,7 @@ public class MavenCodeLocationPackager {
                 continue;
             }
 
-            if (currentCodeLocation != null) {
+            if (currentMavenProject != null) {
                 if (level == 1) {
                     //a direct dependency, clear the stack and add this as a potential parent for the next line
                     currentGraph.addChildToRoot(dependency);
@@ -154,14 +154,15 @@ public class MavenCodeLocationPackager {
         return codeLocations;
     }
 
-    private DetectCodeLocation createNewCodeLocation(final String sourcePath, final String line, final DependencyGraph graph) {
+    private MavenParseResult createNewCodeLocation(final String sourcePath, final String line, final DependencyGraph graph) {
         final Dependency dependency = textToProject(line);
         if (null != dependency) {
             String codeLocationSourcePath = sourcePath;
             if (!sourcePath.endsWith(dependency.name)) {
                 codeLocationSourcePath += "/" + dependency.name;
             }
-            return new DetectCodeLocation.Builder(BomToolType.MAVEN, codeLocationSourcePath, dependency.externalId, graph).bomToolProjectName(dependency.name).bomToolProjectVersionName(dependency.version).build();
+            final DetectCodeLocation codeLocation =  new DetectCodeLocation.Builder(BomToolType.MAVEN, codeLocationSourcePath, dependency.externalId, graph).build();
+            return new MavenParseResult(dependency.name, dependency.version, codeLocation);
         }
         return null;
     }
@@ -252,7 +253,7 @@ public class MavenCodeLocationPackager {
         return doesLineContainSegmentsInOrder(line, "---", "maven-dependency-plugin", ":", "tree");
     }
 
-    private boolean isDependencyTreeUpdates(String line) {
+    private boolean isDependencyTreeUpdates(final String line) {
         if (line.contains("checking for updates")) {
             return true;
         } else {

@@ -6,8 +6,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.nuget.parse.NugetInspectorPackager;
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.nuget.parse.NugetParseResult;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
@@ -81,8 +84,12 @@ public class NugetInspectorExtractor extends Extractor<NugetInspectorContext>  {
             }
 
             final List<File> dependencyNodeFiles = detectFileFinder.findFiles(outputDirectory, INSPECTOR_OUTPUT_PATTERN);
-            final List<DetectCodeLocation> codeLocations = dependencyNodeFiles.stream()
-                    .flatMap(it -> nugetInspectorPackager.createDetectCodeLocation(it).stream())
+            final List<NugetParseResult> parseResults = dependencyNodeFiles.stream()
+                    .map(it -> nugetInspectorPackager.createDetectCodeLocation(it))
+                    .collect(Collectors.toList());
+
+            final List<DetectCodeLocation> codeLocations = parseResults.stream()
+                    .flatMap(it -> it.codeLocations.stream())
                     .collect(Collectors.toList());
 
             if (codeLocations.size() <= 0) {
@@ -106,7 +113,13 @@ public class NugetInspectorExtractor extends Extractor<NugetInspectorContext>  {
 
             final List<DetectCodeLocation> uniqueCodeLocations = codeLocationsBySource.values().stream().collect(Collectors.toList());
 
-            return new Extraction.Builder().success(uniqueCodeLocations).build();
+            final Extraction.Builder builder = new Extraction.Builder().success(uniqueCodeLocations);
+            final Optional<NugetParseResult> project = parseResults.stream().filter(it -> StringUtils.isNotBlank(it.projectName)).findFirst();
+            if (project.isPresent()) {
+                builder.projectName(project.get().projectName);
+                builder.projectVersion(project.get().projectVersion);
+            }
+            return builder.build();
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
         }

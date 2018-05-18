@@ -10,10 +10,9 @@ import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.Extraction;
-import com.blackducksoftware.integration.hub.detect.extraction.Extraction.ExtractionResult;
+import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.hex.parse.Rebar3TreeParser;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.hex.parse.RebarParseResult;
-import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
@@ -51,7 +50,7 @@ public class RebarExtractor extends Extractor<RebarContext> {
 
             codeLocations.add(parseResult.codeLocation);
 
-            return new Extraction.Builder().success(codeLocations).build();
+            return new Extraction.Builder().success(codeLocations).projectName(parseResult.projectName).projectVersion(parseResult.projectVersion).build();
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
         }

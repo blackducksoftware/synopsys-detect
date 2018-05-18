@@ -66,11 +66,11 @@ public class NugetInspectorPackagerTest {
 
             DependencyGraphTransformer dependencyNodeTransformer = new DependencyGraphTransformer(bdioPropertyHelper, bdioNodeFactory)
 
-            def projectId = bdioPropertyHelper.createExternalIdentifier(codeLocation.bomToolProjectExternalId);
+            def projectId = bdioPropertyHelper.createExternalIdentifier(codeLocation.externalId);
             final BdioProject project = bdioNodeFactory.createProject(codeLocation.bomToolProjectName, codeLocation.bomToolProjectVersionName, Forge.NUGET.toString(), projectId)
 
             Map<ExternalId, BdioComponent> components = new HashMap<>();
-            components.put(codeLocation.bomToolProjectExternalId, project);
+            components.put(codeLocation.externalId, project);
 
             final List<BdioComponent> bdioComponents = dependencyNodeTransformer.transformDependencyGraph(codeLocation.dependencyGraph, project, codeLocation.dependencyGraph.getRootDependencies(), components)
 

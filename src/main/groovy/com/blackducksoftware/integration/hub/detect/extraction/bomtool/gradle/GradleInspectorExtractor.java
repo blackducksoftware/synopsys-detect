@@ -65,6 +65,8 @@ public class GradleInspectorExtractor extends Extractor<GradleInspectorContext> 
                 final List<File> codeLocationFiles = detectFileFinder.findFiles(blackduckDirectory, "*_dependencyGraph.txt");
 
                 final List<DetectCodeLocation> codeLocations = new ArrayList<>();
+                String projectName = null;
+                String projectVersion = null;
                 if (codeLocationFiles != null) {
                     for (final File file : codeLocationFiles) {
                         final InputStream stream = new FileInputStream(file);
@@ -72,10 +74,14 @@ public class GradleInspectorExtractor extends Extractor<GradleInspectorContext> 
                         stream.close();
                         final DetectCodeLocation codeLocation = result.codeLocation;
                         codeLocations.add(codeLocation);
+                        if (projectName == null) {
+                            projectName = result.projectName;
+                            projectVersion = result.projectVersion;
+                        }
                     }
                 }
                 detectFileManager.addOutputFile(context, blackduckDirectory);
-                return new Extraction.Builder().success(codeLocations).build();
+                return new Extraction.Builder().success(codeLocations).projectName(projectName).projectVersion(projectVersion).build();
             }else {
                 return new Extraction.Builder().failure("The gradle inspector returned a non-zero exit code: " + output.getReturnCode()).build();
             }

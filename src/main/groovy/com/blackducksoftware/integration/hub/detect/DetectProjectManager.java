@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -204,19 +205,35 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     ExtractionReporter extractionReporter;
 
 
-    public DetectProject createDetectProject() throws IntegrationException {
+    public DetectProject createDetectProject() throws IntegrationException, DetectUserFriendlyException {
         final DetectProject detectProject = new DetectProject();
 
         final List<StrategyEvaluation> sourcePathResults = findRootApplicable(new File(detectConfiguration.getSourcePath()));
 
         searchSummaryReporter.print(sourcePathResults);
 
-        // we've gone through all applicable bom tools so we now have the complete metadata to phone home
+        final float appliedNotInSourceDirectory = sourcePathResults.stream()
+                .filter(it -> it.isApplicable())
+                .filter(it -> it.environment.getDepth() > 0)
+                .count();
+
+        if (appliedNotInSourceDirectory > 1) {
+            if (StringUtils.isBlank(detectConfiguration.getProjectName())) {
+                throw new DetectUserFriendlyException("Multiple bom tool types applied but no project name was supplied. Detect is unable to reasonably guess the project name and version. Please provide a project name and version with --detect.project.name and --detect.project.version", ExitCodeType.FAILURE_CONFIGURATION);
+            } else if (StringUtils.isBlank(detectConfiguration.getProjectVersionName())) {
+                throw new DetectUserFriendlyException("Multiple bom tool types applied but no project version was supplied. Detect is unable to reasonably guess the project version. Please provide a project name with --detect.project.version", ExitCodeType.FAILURE_CONFIGURATION);
+            }else {
+                detectProject.setProjectNameIfNotSet(detectConfiguration.getProjectName());
+                detectProject.setProjectVersionNameIfNotSet(detectConfiguration.getProjectVersionName());
+            }
+        }
+
         final Set<BomToolType> applicableBomTools = sourcePathResults.stream()
                 .filter(it -> it.isApplicable())
                 .map(it -> it.strategy.getBomToolType())
                 .collect(Collectors.toSet());
 
+        // we've gone through all applicable bom tools so we now have the complete metadata to phone home
         detectPhoneHomeManager.startPhoneHome(applicableBomTools);
 
         prepare(sourcePathResults);
@@ -225,11 +242,24 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
 
         extract(sourcePathResults);
 
-        sourcePathResults.forEach(it -> {
-            if (it.isExtractionSuccess()) {
-                detectProject.addAllDetectCodeLocations(it.extraction.codeLocations);
+
+        final float appliedInSource = sourcePathResults.stream()
+                .filter(it -> it.isApplicable())
+                .filter(it -> it.environment.getDepth() == 0)
+                .count();
+
+        if (appliedInSource > 1) {
+            //take the first project alphabetically.
+            final Optional<StrategyEvaluation> projectNameDecider = sourcePathResults.stream()
+                    .filter(it -> it.isExtractionSuccess() && it.environment.getDepth() == 0 && it.extraction.projectName != null)
+                    .sorted((o1, o2) -> o1.extraction.projectName.compareTo(o2.extraction.projectName))
+                    .findFirst();
+
+            if (projectNameDecider.isPresent()) {
+                detectProject.setProjectNameIfNotSet(projectNameDecider.get().extraction.projectName);
+                detectProject.setProjectVersionNameIfNotSet(projectNameDecider.get().extraction.projectVersion);
             }
-        });
+        }
 
         final String prefix = detectConfiguration.getProjectCodeLocationPrefix();
         final String suffix = detectConfiguration.getProjectCodeLocationSuffix();

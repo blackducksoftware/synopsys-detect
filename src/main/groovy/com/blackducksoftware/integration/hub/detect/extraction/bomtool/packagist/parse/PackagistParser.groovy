@@ -54,7 +54,7 @@ class PackagistParser {
     @Autowired
     ExternalIdFactory externalIdFactory
 
-    public DetectCodeLocation getDependencyGraphFromProject(String sourcePath, String composerJsonText, String composerLockText) {
+    public PackagistParseResult getDependencyGraphFromProject(String sourcePath, String composerJsonText, String composerLockText) {
         MutableDependencyGraph graph = new MutableMapDependencyGraph();
 
         JsonObject composerJsonObject = new JsonParser().parse(composerJsonText) as JsonObject
@@ -96,7 +96,9 @@ class PackagistParser {
             projectExternalId = externalIdFactory.createNameVersionExternalId(Forge.PACKAGIST, projectName, projectVersion);
         }
 
-        new DetectCodeLocation.Builder(BomToolType.PACKAGIST, sourcePath, projectExternalId, graph).bomToolProjectName(projectName).bomToolProjectVersionName(projectVersion).build()
+        DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolType.PACKAGIST, sourcePath, projectExternalId, graph).build();
+
+        return new PackagistParseResult(projectName, projectVersion, codeLocation);
     }
 
     private void convertFromJsonToDependency(MutableDependencyGraph graph, Dependency parent, List<String> currentPackages, JsonArray jsonArray, Boolean root) {

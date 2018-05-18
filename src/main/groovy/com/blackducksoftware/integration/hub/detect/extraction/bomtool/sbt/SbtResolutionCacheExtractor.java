@@ -49,13 +49,19 @@ public class SbtResolutionCacheExtractor extends Extractor<SbtResolutionCacheCon
 
             final List<DetectCodeLocation> codeLocations = new ArrayList<>();
 
+            String projectName = null;
+            String projectVersion = null;
             for (final SbtDependencyModule module : project.modules) {
-                final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolType.SBT, module.name, project.projectExternalId, module.graph).bomToolProjectName(project.projectName).bomToolProjectVersionName(project.projectVersion).build();
+                final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolType.SBT, module.name, project.projectExternalId, module.graph).build();
+                if (projectName == null) {
+                    projectName = project.projectName;
+                    projectVersion = project.projectVersion;
+                }
                 codeLocations.add(codeLocation);
             }
 
             if (codeLocations.size() > 0) {
-                return new Extraction.Builder().success(codeLocations).build();
+                return new Extraction.Builder().success(codeLocations).projectName(projectName).projectVersion(projectVersion).build();
             } else {
                 logger.error("Unable to find any dependency information.");
                 return new Extraction.Builder().failure("Unable to find any dependency information.").build();

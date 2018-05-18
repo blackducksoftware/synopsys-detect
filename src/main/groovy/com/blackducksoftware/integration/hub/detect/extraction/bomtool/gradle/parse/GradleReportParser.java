@@ -117,8 +117,8 @@ public class GradleReportParser {
         }
 
         final ExternalId id = externalIdFactory.createMavenExternalId(projectGroup, projectName, projectVersionName);
-        final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolType.GRADLE, projectSourcePath, id, graph).bomToolProjectName(projectName).bomToolProjectVersionName(projectVersionName).build();
-        return new GradleParseResult(rootProjectName, rootProjectVersionName, detectCodeLocation);
+        final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolType.GRADLE, projectSourcePath, id, graph).build();
+        return new GradleParseResult(projectName, projectVersionName, detectCodeLocation);
     }
 
     private void clearState() {

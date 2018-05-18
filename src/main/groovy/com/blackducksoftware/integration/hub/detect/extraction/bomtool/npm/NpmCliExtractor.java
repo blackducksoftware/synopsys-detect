@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -17,7 +16,7 @@ import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.npm.parse.NpmCliDependencyFinder;
-import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.npm.parse.NpmParseResult;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
@@ -60,18 +59,15 @@ public class NpmCliExtractor extends Extractor<NpmCliContext>  {
             return new Extraction.Builder().exception(e).build();
         }
 
-        final List<DetectCodeLocation> codeLocations = new ArrayList<>();
         if (npmLsOutputFile.length() > 0) {
             if (npmLsErrorFile.length() > 0) {
                 logger.debug("Error when running npm ls -json command");
                 printError(npmLsErrorFile);
                 return new Extraction.Builder().failure("Npm returned no output after runnin npm ls.").build();
             }
-            DetectCodeLocation detectCodeLocation;
             try {
-                detectCodeLocation = npmCliDependencyFinder.generateCodeLocation(context.directory.getCanonicalPath(), npmLsOutputFile);
-                codeLocations.add(detectCodeLocation);
-                return new Extraction.Builder().success(codeLocations).build();
+                final NpmParseResult result = npmCliDependencyFinder.generateCodeLocation(context.directory.getCanonicalPath(), npmLsOutputFile);
+                return new Extraction.Builder().success(result.codeLocation).projectName(result.projectName).projectVersion(result.projectVersion).build();
             } catch (final IOException e) {
                 return new Extraction.Builder().exception(e).build();
             }

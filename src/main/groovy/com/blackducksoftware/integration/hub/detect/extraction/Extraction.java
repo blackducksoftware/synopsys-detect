@@ -34,6 +34,16 @@ public class Extraction {
         private String projectVersion;
         private String projectName;
 
+        public Builder projectName(final String projectName) {
+            this.projectName = projectName;
+            return this;
+        }
+
+        public Builder projectVersion(final String projectVersion) {
+            this.projectVersion = projectVersion;
+            return this;
+        }
+
         public Builder codeLocations(final DetectCodeLocation codeLocation) {
             codeLocations.add(codeLocation);
             return this;

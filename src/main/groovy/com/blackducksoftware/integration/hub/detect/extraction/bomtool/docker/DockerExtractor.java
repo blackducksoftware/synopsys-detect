@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -84,8 +83,7 @@ public class DockerExtractor extends Extractor<DockerContext> {
             if (imageArgument == null || imagePiece == null){
                 return new Extraction.Builder().failure("No docker image found.").build();
             }else {
-                final List<DetectCodeLocation> codeLocations = executeDocker(context, imageArgument, imagePiece, context.directory, context.dockerExe, context.bashExe, context.dockerInspectorInfo);
-                return new Extraction.Builder().success(codeLocations).build();
+                return executeDocker(context, imageArgument, imagePiece, context.directory, context.dockerExe, context.bashExe, context.dockerInspectorInfo);
             }
         }catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
@@ -117,7 +115,7 @@ public class DockerExtractor extends Extractor<DockerContext> {
 
 
 
-    private  List<DetectCodeLocation> executeDocker(final DockerContext context, final String imageArgument, final String imagePiece, final File directory, final File dockerExe, final File bashExe, final DockerInspectorInfo dockerInspectorInfo) throws FileNotFoundException, IOException, ExecutableRunnerException {
+    private Extraction executeDocker(final DockerContext context, final String imageArgument, final String imagePiece, final File directory, final File dockerExe, final File bashExe, final DockerInspectorInfo dockerInspectorInfo) throws FileNotFoundException, IOException, ExecutableRunnerException {
 
         final File outputDirectory = detectFileManager.getOutputDirectory(context);
         final File dockerPropertiesFile = detectFileManager.getOutputFile(context, "application.properties");
@@ -144,8 +142,7 @@ public class DockerExtractor extends Extractor<DockerContext> {
         return findCodeLocations(outputDirectory, directory, imagePiece);
     }
 
-    private List<DetectCodeLocation> findCodeLocations(final File directoryToSearch, final File directory, final String imageName) {
-        final List<DetectCodeLocation> codeLocations = new ArrayList<>();
+    private Extraction findCodeLocations(final File directoryToSearch, final File directory, final String imageName) {
         final File bdioFile = detectFileFinder.findFile(directoryToSearch, DEPENDENCIES_PATTERN);
         if (bdioFile != null) {
             SimpleBdioDocument simpleBdioDocument = null;
@@ -169,17 +166,12 @@ public class DockerExtractor extends Extractor<DockerContext> {
             final String externalIdPath = simpleBdioDocument.project.bdioExternalIdentifier.externalId;
             final ExternalId projectExternalId = externalIdFactory.createPathExternalId(dockerForge, externalIdPath);
 
-            final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolType.DOCKER, directory.toString(), projectExternalId, dependencyGraph).bomToolProjectName(projectName).bomToolProjectVersionName(projectVersionName).dockerImage(imageName).build();
-            codeLocations.add(detectCodeLocation);
+            final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolType.DOCKER, directory.toString(), projectExternalId, dependencyGraph).dockerImage(imageName).build();
+            return new Extraction.Builder().success(detectCodeLocation).projectName(projectName).projectVersion(projectVersionName).build();
+
         } else {
-            logMissingFile(directoryToSearch, DEPENDENCIES_PATTERN);
+            return new Extraction.Builder().failure("No files found matching pattern [" + DEPENDENCIES_PATTERN + "]. Expected docker-inspector to produce file in " + directory.toString()).build();
         }
-
-        return codeLocations;
-    }
-
-    private void logMissingFile(final File searchDirectory, final String filenamePattern) {
-        logger.debug("No files found matching pattern [" + filenamePattern + "]. Expected docker-inspector to produce file in " + searchDirectory.toString());
     }
 
 

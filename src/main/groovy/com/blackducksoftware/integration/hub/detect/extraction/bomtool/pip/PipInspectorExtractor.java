@@ -12,11 +12,10 @@ import org.springframework.stereotype.Component;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.Extraction;
-import com.blackducksoftware.integration.hub.detect.extraction.Extraction.ExtractionResult;
+import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.pear.parse.PearDependencyFinder;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.pip.parse.PipInspectorTreeParser;
-import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
-import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.pip.parse.PipParseResult;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
@@ -50,9 +49,9 @@ public class PipInspectorExtractor extends Extractor<PipInspectorContext> {
         try {
             final String projectName = getProjectName(context);
             final String inspectorOutput = runInspector(context.directory, context.pythonExe.toString(), context.pipInspector, projectName, context.requirementFilePath);
-            final DetectCodeLocation codeLocation = pipInspectorTreeParser.parse(inspectorOutput, context.directory.toString());
+            final PipParseResult result = pipInspectorTreeParser.parse(inspectorOutput, context.directory.toString());
 
-            return new Extraction.Builder().success(codeLocation).build();
+            return new Extraction.Builder().success(result.codeLocation).projectName(result.projectName).projectVersion(result.projectVersion).build();
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
         }

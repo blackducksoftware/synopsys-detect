@@ -73,17 +73,24 @@ class NugetInspectorPackager {
     @Autowired
     ExternalIdFactory externalIdFactory
 
-    public List<DetectCodeLocation> createDetectCodeLocation(File dependencyNodeFile) {
+    public NugetParseResult createDetectCodeLocation(File dependencyNodeFile) {
         String text = dependencyNodeFile.getText(StandardCharsets.UTF_8.toString())
         NugetInspection nugetInspection = gson.fromJson(text, NugetInspection.class)
 
         def codeLocations = new ArrayList<DetectCodeLocation>()
+        def projectName
+        def projectVersion
         nugetInspection.containers.each {
             registerScanPaths(it)
-            codeLocations.addAll(createDetectCodeLocationFromNugetContainer(it))
+            def result = createDetectCodeLocationFromNugetContainer(it)
+            if (result.projectName) {
+                projectName = result.projectName;
+                projectVersion = result.projectVersion;
+            }
+            codeLocations.addAll(result.codeLocations)
         }
 
-        codeLocations
+        new NugetParseResult(projectName, projectVersion, codeLocations)
     }
 
     private void registerScanPaths(NugetContainer nugetContainer) {
@@ -93,7 +100,7 @@ class NugetInspectorPackager {
         nugetContainer.children?.each { registerScanPaths(it) }
     }
 
-    private List<DetectCodeLocation> createDetectCodeLocationFromNugetContainer(NugetContainer nugetContainer) {
+    private NugetParseResult createDetectCodeLocationFromNugetContainer(NugetContainer nugetContainer) {
         String projectName = ''
         String projectVersionName = ''
         if (NugetContainerType.SOLUTION == nugetContainer.type) {
@@ -108,9 +115,9 @@ class NugetInspectorPackager {
                 if (!projectVersionName) {
                     projectVersionName = container.version
                 }
-                new DetectCodeLocation.Builder(BomToolType.NUGET, sourcePath, externalIdFactory.createNameVersionExternalId(Forge.NUGET, projectName, projectVersionName), children).bomToolProjectName(projectName).bomToolProjectVersionName(projectVersionName).build()
+                new DetectCodeLocation.Builder(BomToolType.NUGET, sourcePath, externalIdFactory.createNameVersionExternalId(Forge.NUGET, projectName, projectVersionName), children).build()
             }
-            return codeLocations
+            return new NugetParseResult(projectName, projectVersionName, codeLocations);
         } else if (NugetContainerType.PROJECT == nugetContainer.type) {
             projectName = nugetContainer.name
             projectVersionName = nugetContainer.version
@@ -119,9 +126,8 @@ class NugetInspectorPackager {
             builder.addPackageSets(nugetContainer.packages)
             def children = builder.createDependencyGraph(nugetContainer.dependencies)
 
-            return [
-                new DetectCodeLocation.Builder(BomToolType.NUGET, sourcePath, externalIdFactory.createNameVersionExternalId(Forge.NUGET, projectName, projectVersionName), children).bomToolProjectName(projectName).bomToolProjectVersionName(projectVersionName).build()
-            ]
+            DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolType.NUGET, sourcePath, externalIdFactory.createNameVersionExternalId(Forge.NUGET, projectName, projectVersionName), children).build();
+            return new NugetParseResult(projectName, projectVersionName, codeLocation);
         }
     }
 }

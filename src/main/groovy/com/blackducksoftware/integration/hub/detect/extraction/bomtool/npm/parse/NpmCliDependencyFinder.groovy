@@ -23,6 +23,12 @@
  */
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.npm.parse
 
+import java.util.Map.Entry
+
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Component
+
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph
 import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.Forge
@@ -33,12 +39,8 @@ import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import groovy.transform.TypeChecked
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-import org.springframework.stereotype.Component
 
-import java.util.Map.Entry
+import groovy.transform.TypeChecked
 
 @Component
 @TypeChecked
@@ -55,7 +57,7 @@ class NpmCliDependencyFinder {
         this.externalIdFactory = externalIdFactory;
     }
 
-    DetectCodeLocation generateCodeLocation(String sourcePath, File npmLsOutputFile) {
+    NpmParseResult generateCodeLocation(String sourcePath, File npmLsOutputFile) {
         if (npmLsOutputFile?.length() <= 0) {
             logger.error("Ran into an issue creating and writing to file")
             return null
@@ -65,7 +67,7 @@ class NpmCliDependencyFinder {
         return convertNpmJsonFileToCodeLocation(sourcePath, npmLsOutputFile.text)
     }
 
-    private DetectCodeLocation convertNpmJsonFileToCodeLocation(String sourcePath, String npmLsOutput) {
+    private NpmParseResult convertNpmJsonFileToCodeLocation(String sourcePath, String npmLsOutput) {
         JsonObject npmJson = new JsonParser().parse(npmLsOutput) as JsonObject
         MutableDependencyGraph graph = new MutableMapDependencyGraph()
 
@@ -76,7 +78,10 @@ class NpmCliDependencyFinder {
 
         def externalId = externalIdFactory.createNameVersionExternalId(Forge.NPM, projectName, projectVersion)
 
-        new DetectCodeLocation.Builder(BomToolType.NPM, sourcePath, externalId, graph).bomToolProjectName(projectName).bomToolProjectVersionName(projectVersion).build()
+        DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolType.NPM, sourcePath, externalId, graph).build()
+
+        return new NpmParseResult(projectName, projectVersion, codeLocation)
+
     }
 
     private void populateChildren(MutableDependencyGraph graph, Dependency parentDependency, JsonObject parentNodeChildren, Boolean root) {
