@@ -53,15 +53,16 @@ import com.blackducksoftware.integration.hub.detect.help.AcceptableValues;
 import com.blackducksoftware.integration.hub.detect.help.DefaultValue;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 import com.blackducksoftware.integration.hub.detect.help.HelpDescription;
+import com.blackducksoftware.integration.hub.detect.help.HelpDetailed;
 import com.blackducksoftware.integration.hub.detect.help.HelpGroup;
 import com.blackducksoftware.integration.hub.detect.help.ValueDeprecation;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver;
-import com.blackducksoftware.integration.hub.proxy.ProxyInfo;
-import com.blackducksoftware.integration.hub.proxy.ProxyInfoBuilder;
-import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnection;
-import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnectionBuilder;
 import com.blackducksoftware.integration.log.Slf4jIntLogger;
+import com.blackducksoftware.integration.rest.connection.UnauthenticatedRestConnection;
+import com.blackducksoftware.integration.rest.connection.UnauthenticatedRestConnectionBuilder;
+import com.blackducksoftware.integration.rest.proxy.ProxyInfo;
+import com.blackducksoftware.integration.rest.proxy.ProxyInfoBuilder;
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
 import com.blackducksoftware.integration.util.ResourceUtil;
 
@@ -681,6 +682,13 @@ public class DetectConfiguration {
     @AcceptableValues(value = { "EXTERNAL", "SAAS", "INTERNAL", "OPENSOURCE" }, caseSensitive = false, strict = false)
     private String projectVersionDistribution;
 
+    @Value("${detect.project.version.update:}")
+    @DefaultValue("false")
+    @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
+    @HelpDescription("If set to true, will update the Project Version with the configured properties. See detailed help for more information.")
+    @HelpDetailed("When set to true, the following properties will be updated on the Project. detect.project.tier, detect.project.level.adjustments.\r\n The following properties will also be updated on the Version. detect.project.version.notes, detect.project.version.phase, detect.project.version.distribution")
+    private Boolean projectVersionUpdate;
+
     @ValueDeprecation(willRemoveInVersion = "4.0.0", description = "To fail on any policy, set --detect.policy.check.fail.on.severities=ALL.")
     @Value("${detect.policy.check:}")
     @DefaultValue("false")
@@ -1251,6 +1259,10 @@ public class DetectConfiguration {
 
     public String getProjectVersionDistribution() {
         return projectVersionDistribution == null ? null : projectVersionDistribution.trim();
+    }
+
+    public boolean getProjectVersionUpdate() {
+        return BooleanUtils.toBoolean(projectVersionUpdate);
     }
 
     public boolean getPolicyCheck() {

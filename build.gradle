@@ -67,12 +67,13 @@ artifactory {
     }
 }
 
+//TODO remove this repositories section before release
 repositories {
     mavenLocal()
 }
 
 dependencies {
-    compile 'com.blackducksoftware.integration:hub-common:32.0.1'
+    compile 'com.blackducksoftware.integration:hub-common:33.0.0-SNAPSHOT'
     compile 'org.springframework.boot:spring-boot-starter'
     compile 'org.apache.maven.shared:maven-invoker:3.0.0'
     compile 'com.esotericsoftware.yamlbeans:yamlbeans:1.11'

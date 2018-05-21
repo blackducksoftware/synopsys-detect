@@ -38,7 +38,6 @@ import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.DetectPhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
-import com.blackducksoftware.integration.hub.rest.RestConnection;
 import com.blackducksoftware.integration.hub.service.CodeLocationService;
 import com.blackducksoftware.integration.hub.service.HubService;
 import com.blackducksoftware.integration.hub.service.HubServicesFactory;
@@ -49,6 +48,7 @@ import com.blackducksoftware.integration.hub.service.ScanStatusService;
 import com.blackducksoftware.integration.hub.service.SignatureScannerService;
 import com.blackducksoftware.integration.log.IntLogger;
 import com.blackducksoftware.integration.log.Slf4jIntLogger;
+import com.blackducksoftware.integration.rest.connection.RestConnection;
 
 import groovy.transform.TypeChecked;
 
