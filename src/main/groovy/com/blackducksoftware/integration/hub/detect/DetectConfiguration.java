@@ -686,7 +686,7 @@ public class DetectConfiguration {
     @DefaultValue("false")
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
     @HelpDescription("If set to true, will update the Project Version with the configured properties. See detailed help for more information.")
-    @HelpDetailed("When set to true, the following properties will be updated on the Project. detect.project.tier, detect.project.level.adjustments.\r\n The following properties will also be updated on the Version. detect.project.version.notes, detect.project.version.phase, detect.project.version.distribution")
+    @HelpDetailed("When set to true, the following properties will be updated on the Project. Project tier (detect.project.tier) and Project Level Adjustments (detect.project.level.adjustments).\r\n The following properties will also be updated on the Version. Version notes (detect.project.version.notes), phase (detect.project.version.phase), distribution (detect.project.version.distribution)")
     //TODO finalize the description and detailed help text
     private Boolean projectVersionUpdate;
 
