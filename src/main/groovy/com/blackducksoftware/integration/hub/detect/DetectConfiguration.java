@@ -631,7 +631,7 @@ public class DetectConfiguration {
     @HelpDescription("An override for the name to use for the Hub project. If not supplied, detect will attempt to use the tools to figure out a reasonable project name. If that fails, the final part of the directory path where the inspection is taking place will be used.")
     private String projectName;
 
-    @Value("${detect.project.description}")
+    @Value("${detect.project.description:}")
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
     @HelpDescription("If project description is specified, your project version will be created with this description.")
     private String projectDescription;
