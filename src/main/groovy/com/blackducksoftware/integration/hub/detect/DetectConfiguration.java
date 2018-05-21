@@ -254,7 +254,7 @@ public class DetectConfiguration {
             hubOfflineMode = true;
         }
 
-        //TODO Final home for directories to exclude
+        // TODO Final home for directories to exclude
         bomToolSearchDirectoryExclusions = new ArrayList<>();
         try {
             if (bomToolSearchExclusionDefaults) {
@@ -992,7 +992,7 @@ public class DetectConfiguration {
     private String defaultProjectVersionScheme;
 
     @Value("${detect.default.project.version.text:}")
-    @DefaultValue("Detect Unknown Version")
+    @DefaultValue("Default Detect Version")
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
     @HelpDescription("The text to use as the default project version")
     private String defaultProjectVersionText;
