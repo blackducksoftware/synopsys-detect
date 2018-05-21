@@ -57,6 +57,8 @@ import com.blackducksoftware.integration.hub.detect.bomtool.search.report.Extrac
 import com.blackducksoftware.integration.hub.detect.bomtool.search.report.ExtractionSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.report.PreparationSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.report.SearchSummaryReporter;
+import com.blackducksoftware.integration.hub.detect.codelocation.BomCodeLocationNameFactory;
+import com.blackducksoftware.integration.hub.detect.codelocation.DockerCodeLocationNameFactory;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
@@ -204,6 +206,12 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     @Autowired
     ExtractionReporter extractionReporter;
 
+    @Autowired
+    private BomCodeLocationNameFactory bomCodeLocationNameFactory;
+
+    @Autowired
+    private DockerCodeLocationNameFactory dockerCodeLocationNameFactory;
+
 
     public DetectProject createDetectProject() throws IntegrationException, DetectUserFriendlyException {
         final DetectProject detectProject = new DetectProject();
@@ -276,7 +284,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         }
 
         if (StringUtils.isBlank(detectConfiguration.getAggregateBomName())) {
-            detectProject.processDetectCodeLocations(logger, detectFileFinder,  detectConfiguration.getSourceDirectory(), bdioFileNamer);
+            detectProject.processDetectCodeLocations(bomCodeLocationNameFactory, dockerCodeLocationNameFactory, logger, detectFileFinder,  detectConfiguration.getSourceDirectory(), bdioFileNamer);
 
             for (final BomToolType bomToolType : detectProject.getFailedBomTools()) {
                 bomToolSummaryResults.put(bomToolType, Result.FAILURE);

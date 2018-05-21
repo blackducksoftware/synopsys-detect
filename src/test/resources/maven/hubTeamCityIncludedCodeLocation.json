@@ -1,9 +1,7 @@
 {
   "bomToolType": "MAVEN",
   "sourcePath": "/test/path/hub-teamcity-agent",
-  "bomToolProjectName": "hub-teamcity-agent",
-  "bomToolProjectVersionName": "3.2.0-SNAPSHOT",
-  "bomToolProjectExternalId": {
+  "externalId": {
     "forge": {
       "name": "maven",
       "separator": ":"
