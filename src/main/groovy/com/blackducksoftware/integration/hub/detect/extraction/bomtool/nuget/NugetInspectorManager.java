@@ -74,10 +74,11 @@ public class NugetInspectorManager {
             }
 
             return resolvedNugetInspectorExecutable;
-        }catch (final Exception e) {
+        } catch (final Exception e) {
             throw new StrategyException(e);
         }
     }
+
     public void install() throws DetectUserFriendlyException, ExecutableRunnerException, IOException {
         final String nugetExecutable = executableManager.getExecutablePathOrOverride(ExecutableType.NUGET, true, detectConfiguration.getSourceDirectory(), detectConfiguration.getNugetPath());
         resolvedInspectorVersion = resolveInspectorVersion(nugetExecutable);
@@ -125,7 +126,7 @@ public class NugetInspectorManager {
                 detectConfiguration.getNugetInspectorPackageName(),
                 "-Source",
                 source
-                );
+        );
 
         final Executable getInspectorVersionExecutable = new Executable(detectConfiguration.getSourceDirectory(), nugetExecutablePath, nugetOptions);
 
@@ -183,7 +184,7 @@ public class NugetInspectorManager {
                 source,
                 "-Version",
                 resolvedInspectorVersion
-                );
+        );
 
         final Executable installInspectorExecutable = new Executable(detectConfiguration.getSourceDirectory(), nugetExecutablePath, nugetOptions);
         final ExecutableOutput result = executableRunner.execute(installInspectorExecutable);

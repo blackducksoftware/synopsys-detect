@@ -135,11 +135,11 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
 
     private boolean foundAnyBomTools;
 
-    private  void extract(final List<StrategyEvaluation> results) {
+    private void extract(final List<StrategyEvaluation> results) {
         final List<StrategyEvaluation> extractable = results.stream().filter(result -> result.isExtractable()).collect(Collectors.toList());
 
         for (int i = 0; i < extractable.size(); i++) {
-            logger.info("Extracting " + Integer.toString(i) + " of " + Integer.toString(extractable.size()) + " (" + Integer.toString((int)Math.floor((i * 100.0f) / extractable.size())) + "%)");
+            logger.info("Extracting " + Integer.toString(i) + " of " + Integer.toString(extractable.size()) + " (" + Integer.toString((int) Math.floor((i * 100.0f) / extractable.size())) + "%)");
             extract(extractable.get(i));
         }
     }
@@ -219,25 +219,29 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         searchSummaryReporter.print(sourcePathResults);
 
         final float appliedNotInSourceDirectory = sourcePathResults.stream()
-                .filter(it -> it.isApplicable())
-                .filter(it -> it.environment.getDepth() > 0)
-                .count();
+                                                          .filter(it -> it.isApplicable())
+                                                          .filter(it -> it.environment.getDepth() > 0)
+                                                          .count();
 
         if (appliedNotInSourceDirectory > 1) {
             if (StringUtils.isBlank(detectConfiguration.getProjectName())) {
-                throw new DetectUserFriendlyException("Multiple bom tool types applied but no project name was supplied. Detect is unable to reasonably guess the project name and version. Please provide a project name and version with --detect.project.name and --detect.project.version", ExitCodeType.FAILURE_CONFIGURATION);
+                throw new DetectUserFriendlyException(
+                        "Multiple bom tool types applied but no project name was supplied. Detect is unable to reasonably guess the project name and version. Please provide a project name and version with --detect.project.name and --detect.project.version",
+                        ExitCodeType.FAILURE_CONFIGURATION);
             } else if (StringUtils.isBlank(detectConfiguration.getProjectVersionName())) {
-                throw new DetectUserFriendlyException("Multiple bom tool types applied but no project version was supplied. Detect is unable to reasonably guess the project version. Please provide a project name with --detect.project.version", ExitCodeType.FAILURE_CONFIGURATION);
-            }else {
+                throw new DetectUserFriendlyException(
+                        "Multiple bom tool types applied but no project version was supplied. Detect is unable to reasonably guess the project version. Please provide a project name with --detect.project.version",
+                        ExitCodeType.FAILURE_CONFIGURATION);
+            } else {
                 detectProject.setProjectNameIfNotSet(detectConfiguration.getProjectName());
                 detectProject.setProjectVersionNameIfNotSet(detectConfiguration.getProjectVersionName());
             }
         }
 
         final Set<BomToolType> applicableBomTools = sourcePathResults.stream()
-                .filter(it -> it.isApplicable())
-                .map(it -> it.strategy.getBomToolType())
-                .collect(Collectors.toSet());
+                                                            .filter(it -> it.isApplicable())
+                                                            .map(it -> it.strategy.getBomToolType())
+                                                            .collect(Collectors.toSet());
 
         // we've gone through all applicable bom tools so we now have the complete metadata to phone home
         detectPhoneHomeManager.startPhoneHome(applicableBomTools);
@@ -248,18 +252,17 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
 
         extract(sourcePathResults);
 
-
         final float appliedInSource = sourcePathResults.stream()
-                .filter(it -> it.isApplicable())
-                .filter(it -> it.environment.getDepth() == 0)
-                .count();
+                                              .filter(it -> it.isApplicable())
+                                              .filter(it -> it.environment.getDepth() == 0)
+                                              .count();
 
         if (appliedInSource > 1) {
             //take the first project alphabetically.
             final Optional<StrategyEvaluation> projectNameDecider = sourcePathResults.stream()
-                    .filter(it -> it.isExtractionSuccess() && it.environment.getDepth() == 0 && it.extraction.projectName != null)
-                    .sorted((o1, o2) -> o1.extraction.projectName.compareTo(o2.extraction.projectName))
-                    .findFirst();
+                                                                            .filter(it -> it.isExtractionSuccess() && it.environment.getDepth() == 0 && it.extraction.projectName != null)
+                                                                            .sorted((o1, o2) -> o1.extraction.projectName.compareTo(o2.extraction.projectName))
+                                                                            .findFirst();
 
             if (projectNameDecider.isPresent()) {
                 detectProject.setProjectNameIfNotSet(projectNameDecider.get().extraction.projectName);
@@ -281,9 +284,9 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         }
 
         final List<DetectCodeLocation> codeLocations = sourcePathResults.stream()
-                .filter(it -> it.isExtractionSuccess())
-                .flatMap(it -> it.extraction.codeLocations.stream())
-                .collect(Collectors.toList());
+                                                               .filter(it -> it.isExtractionSuccess())
+                                                               .flatMap(it -> it.extraction.codeLocations.stream())
+                                                               .collect(Collectors.toList());
 
         detectProject.addAllDetectCodeLocations(codeLocations);
 
@@ -302,7 +305,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         }
 
         if (StringUtils.isBlank(detectConfiguration.getAggregateBomName())) {
-            detectProject.processDetectCodeLocations(bomCodeLocationNameFactory, dockerCodeLocationNameFactory, detectConfiguration.getSourcePath(), logger, detectFileFinder,  detectConfiguration.getSourceDirectory());
+            detectProject.processDetectCodeLocations(bomCodeLocationNameFactory, dockerCodeLocationNameFactory, detectConfiguration.getSourcePath(), logger, detectFileFinder, detectConfiguration.getSourceDirectory());
 
             for (final BomToolType bomToolType : detectProject.getFailedBomTools()) {
                 bomToolSummaryResults.put(bomToolType, Result.FAILURE);
