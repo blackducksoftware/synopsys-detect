@@ -61,6 +61,7 @@ public class ExtractionSummaryReporter {
             final List<StrategyEvaluation> results = byDirectory.get(file);
 
             final ExtractionSummaryData data = new ExtractionSummaryData();
+            data.directory = file.toString();
             datas.add(data);
 
             for (final StrategyEvaluation result : results) {
@@ -120,7 +121,7 @@ public class ExtractionSummaryReporter {
         data.stream().forEach(it -> {
             if (it.applicable > 0) {
                 info(it.directory);
-                info("\tcode locations" + it.codeLocationsExtracted);
+                info("\tCode locations: " + it.codeLocationsExtracted);
                 it.codeLocationNames.stream().forEach(name -> info("\t\t" + name));
                 if (it.success.size() > 0) {
                     info("\tSuccess: " + it.success.stream().map(success -> success.strategy.getDescriptiveName()).collect(Collectors.joining(",")));
