@@ -79,7 +79,6 @@ import com.blackducksoftware.integration.hub.detect.strategy.result.ExceptionStr
 import com.blackducksoftware.integration.hub.detect.summary.BomToolSummaryResult;
 import com.blackducksoftware.integration.hub.detect.summary.Result;
 import com.blackducksoftware.integration.hub.detect.summary.SummaryResultReporter;
-import com.blackducksoftware.integration.hub.detect.util.BdioFileNamer;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
@@ -104,9 +103,6 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
 
     @Autowired
     private IntegrationEscapeUtil integrationEscapeUtil;
-
-    @Autowired
-    private BdioFileNamer bdioFileNamer;
 
     @Autowired
     private DetectFileFinder detectFileFinder;
@@ -303,7 +299,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         }
 
         if (StringUtils.isBlank(detectConfiguration.getAggregateBomName())) {
-            detectProject.processDetectCodeLocations(bomCodeLocationNameFactory, dockerCodeLocationNameFactory, logger, detectFileFinder,  detectConfiguration.getSourceDirectory(), bdioFileNamer);
+            detectProject.processDetectCodeLocations(bomCodeLocationNameFactory, dockerCodeLocationNameFactory, detectConfiguration.getSourcePath(), logger, detectFileFinder,  detectConfiguration.getSourceDirectory());
 
             for (final BomToolType bomToolType : detectProject.getFailedBomTools()) {
                 bomToolSummaryResults.put(bomToolType, Result.FAILURE);

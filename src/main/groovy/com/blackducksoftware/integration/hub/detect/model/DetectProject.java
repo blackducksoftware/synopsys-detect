@@ -37,9 +37,9 @@ import org.slf4j.Logger;
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.codelocation.BomCodeLocationNameFactory;
 import com.blackducksoftware.integration.hub.detect.codelocation.DockerCodeLocationNameFactory;
-import com.blackducksoftware.integration.hub.detect.util.BdioFileNamer;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.service.model.ProjectRequestBuilder;
+import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
 
 public class DetectProject {
     private final Map<DetectCodeLocation, String> nameCodeLocationMap = new HashMap<>();
@@ -102,7 +102,8 @@ public class DetectProject {
         return builder;
     }
 
-    public void processDetectCodeLocations(final BomCodeLocationNameFactory bomCodeLocationNameFactory, final DockerCodeLocationNameFactory dockerCodeLocationNameFactory, final Logger logger, final DetectFileFinder detectFileFinder, final File sourcePath, final BdioFileNamer bdioFileNamer) {
+    public void processDetectCodeLocations(final BomCodeLocationNameFactory bomCodeLocationNameFactory, final DockerCodeLocationNameFactory dockerCodeLocationNameFactory, final String detectSourcePath, final Logger logger, final DetectFileFinder detectFileFinder, final File sourcePath) {
+        final IntegrationEscapeUtil integrationEscapeUtil = new IntegrationEscapeUtil();
         for (final DetectCodeLocation detectCodeLocation : getDetectCodeLocations()) {
             if (detectCodeLocation.getDependencyGraph() == null) {
                 logger.warn(String.format("Dependency graph is null for code location %s", detectCodeLocation.getSourcePath()));
@@ -112,7 +113,7 @@ public class DetectProject {
                 logger.warn(String.format("Could not find any dependencies for code location %s", detectCodeLocation.getSourcePath()));
             }
 
-            final String codeLocationName = detectCodeLocation.createCodeLocationName(bomCodeLocationNameFactory, dockerCodeLocationNameFactory, projectName, projectVersionName, getCodeLocationNamePrefix(), getCodeLocationNameSuffix());
+            final String codeLocationName = detectCodeLocation.createCodeLocationName(bomCodeLocationNameFactory, dockerCodeLocationNameFactory, detectSourcePath, projectName, projectVersionName, getCodeLocationNamePrefix(), getCodeLocationNameSuffix());
 
             if (codeLocationNameMap.containsKey(codeLocationName)) {
                 failedBomTools.add(detectCodeLocation.getBomToolType());
@@ -127,8 +128,8 @@ public class DetectProject {
             final String codeLocationNameString = codeLocationEntry.getKey();
             final DetectCodeLocation detectCodeLocation = codeLocationEntry.getValue();
 
-            final String finalSourcePathPiece = detectFileFinder.extractFinalPieceFromPath(detectCodeLocation.getSourcePath());
-            final String filename = bdioFileNamer.generateShortenedFilename(detectCodeLocation.getBomToolType(), finalSourcePathPiece, detectCodeLocation.getBomToolProjectExternalId());
+            final String filenameRaw = StringUtils.replaceEach(codeLocationNameString, new String[] {"/", "\\", " "}, new String[] {"_", "_", "_"});
+            final String filename = integrationEscapeUtil.escapeForUri(filenameRaw);
 
             if (!bdioFileNames.add(filename)) {
                 failedBomTools.add(detectCodeLocation.getBomToolType());
