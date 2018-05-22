@@ -32,6 +32,7 @@ import com.blackducksoftware.integration.hub.detect.extraction.StandardExecutabl
 import com.blackducksoftware.integration.hub.detect.extraction.StandardExecutableFinder.StandardExecutableType;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
+import com.blackducksoftware.integration.hub.detect.strategy.StrategySearchOptions;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyException;
 import com.blackducksoftware.integration.hub.detect.strategy.result.ExecutableNotFoundStrategyResult;
@@ -51,7 +52,7 @@ public class RebarStrategy extends Strategy<RebarContext, RebarExtractor> {
     public StandardExecutableFinder standardExecutableFinder;
 
     public RebarStrategy() {
-        super("Rebar Config", BomToolType.HEX, RebarContext.class, RebarExtractor.class);
+        super("Rebar Config", BomToolType.HEX, RebarContext.class, RebarExtractor.class, StrategySearchOptions.defaultNotNested());
     }
 
     @Override

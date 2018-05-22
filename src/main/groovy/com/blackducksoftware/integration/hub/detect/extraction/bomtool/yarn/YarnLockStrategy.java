@@ -28,6 +28,7 @@ import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
+import com.blackducksoftware.integration.hub.detect.strategy.StrategySearchOptions;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
 import com.blackducksoftware.integration.hub.detect.strategy.result.FileNotFoundStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.PassedStrategyResult;
@@ -42,7 +43,7 @@ public class YarnLockStrategy extends Strategy<YarnLockContext, YarnLockExtracto
     public DetectFileFinder fileFinder;
 
     public YarnLockStrategy() {
-        super("Yarn Lock", BomToolType.YARN, YarnLockContext.class, YarnLockExtractor.class);
+        super("Yarn Lock", BomToolType.YARN, YarnLockContext.class, YarnLockExtractor.class, StrategySearchOptions.defaultNested());
     }
 
     @Override

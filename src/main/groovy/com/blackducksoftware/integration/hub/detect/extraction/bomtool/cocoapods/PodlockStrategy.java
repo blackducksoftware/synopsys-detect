@@ -28,6 +28,7 @@ import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
+import com.blackducksoftware.integration.hub.detect.strategy.StrategySearchOptions;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
 import com.blackducksoftware.integration.hub.detect.strategy.result.FileNotFoundStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.PassedStrategyResult;
@@ -42,7 +43,7 @@ public class PodlockStrategy extends Strategy<PodlockContext, PodlockExtractor> 
     public DetectFileFinder fileFinder;
 
     public PodlockStrategy() {
-        super("Podlock", BomToolType.COCOAPODS, PodlockContext.class, PodlockExtractor.class);
+        super("Podlock", BomToolType.COCOAPODS, PodlockContext.class, PodlockExtractor.class, StrategySearchOptions.defaultNotNested());
     }
 
     @Override

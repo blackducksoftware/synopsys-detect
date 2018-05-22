@@ -36,6 +36,7 @@ import com.blackducksoftware.integration.hub.detect.extraction.bomtool.go.GoDepE
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.go.GoInspectorManager;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
+import com.blackducksoftware.integration.hub.detect.strategy.StrategySearchOptions;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyException;
 import com.blackducksoftware.integration.hub.detect.strategy.result.ExecutableNotFoundStrategyResult;
@@ -60,7 +61,7 @@ public class GoCliStrategy extends Strategy<GoDepContext, GoDepExtractor> {
 
 
     public GoCliStrategy() {
-        super("Go Cli", BomToolType.GO_DEP, GoDepContext.class, GoDepExtractor.class);
+        super("Go Cli", BomToolType.GO_DEP, GoDepContext.class, GoDepExtractor.class, StrategySearchOptions.defaultNotNested());
     }
 
     @Override

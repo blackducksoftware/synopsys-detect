@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -45,6 +47,8 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 
 @Component
 public class NpmExecutableFinder {
+    private final Logger logger = LoggerFactory.getLogger(NpmExecutableFinder.class);
+
     @Autowired
     public DetectFileManager detectFileManager;
 
@@ -101,10 +105,10 @@ public class NpmExecutableFinder {
             }
             try {
                 final String npmVersion = executableRunner.execute(npmVersionExe).getStandardOutput();
-                //logger.debug(String.format("Npm version %s", npmVersion));
+                logger.debug("Npm version " + npmVersion);
                 return true;
             } catch (final ExecutableRunnerException e) {
-                //logger.error(String.format("Could not run npm to get the version: %s", e.getMessage()));
+                logger.error("Could not run npm to get the version: " + e.getMessage());
             }
         }
         return false;

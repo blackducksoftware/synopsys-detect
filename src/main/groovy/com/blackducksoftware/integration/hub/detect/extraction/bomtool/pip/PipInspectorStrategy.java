@@ -30,6 +30,7 @@ import org.springframework.stereotype.Component;
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
+import com.blackducksoftware.integration.hub.detect.strategy.StrategySearchOptions;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyException;
 import com.blackducksoftware.integration.hub.detect.strategy.result.ExecutableNotFoundStrategyResult;
@@ -60,7 +61,7 @@ public class PipInspectorStrategy extends Strategy<PipInspectorContext, PipInspe
     public DetectConfiguration detectConfiguration;
 
     public PipInspectorStrategy() {
-        super("Pip Inspector", BomToolType.PIP, PipInspectorContext.class, PipInspectorExtractor.class);
+        super("Pip Inspector", BomToolType.PIP, PipInspectorContext.class, PipInspectorExtractor.class, StrategySearchOptions.defaultNotNested());
     }
 
     @Override

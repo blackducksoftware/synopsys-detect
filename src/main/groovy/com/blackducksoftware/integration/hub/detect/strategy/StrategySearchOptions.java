@@ -32,6 +32,14 @@ public class StrategySearchOptions {
         this.nestable = nestable;
     }
 
+    public static StrategySearchOptions defaultNotNested() {
+        return new StrategySearchOptions(Integer.MAX_VALUE, false);
+    }
+
+    public static StrategySearchOptions defaultNested() {
+        return new StrategySearchOptions(Integer.MAX_VALUE, true);
+    }
+
     public boolean getNestable() {
         return nestable;
     }
