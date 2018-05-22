@@ -43,14 +43,11 @@ import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 @Component
 public class ExecutableManager {
     private final Logger logger = LoggerFactory.getLogger(ExecutableManager.class);
-
+    private final Map<String, File> cachedSystemExecutables = new HashMap<>();
     @Autowired
     private DetectFileFinder detectFileFinder;
-
     @Autowired
     private DetectInfo detectInfo;
-
-    private final Map<String, File> cachedSystemExecutables = new HashMap<>();
 
     public String getExecutableName(final ExecutableType executableType) {
         return executableType.getExecutable();
@@ -81,7 +78,7 @@ public class ExecutableManager {
         final String executable = getExecutableName(executableType);
         final String searchPath = path.trim();
         File executableFile = findExecutableFileFromPath(searchPath, executable);
-        if (searchSystemPath && (executableFile == null || !executableFile.exists())) {
+        if (searchSystemPath && (executableFile == null || !executableFile.isFile())) {
             executableFile = findExecutableFileFromSystemPath(executable);
         }
 
