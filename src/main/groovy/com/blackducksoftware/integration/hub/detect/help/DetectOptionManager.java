@@ -200,14 +200,9 @@ public class DetectOptionManager {
             }
         }
 
-        final HelpUseCases useCasesAnnotation = field.getAnnotation(HelpUseCases.class);
-        if (useCasesAnnotation != null) {
-            help.useCases = useCasesAnnotation.value();
-        }
-
-        final HelpIssues issuesAnnotation = field.getAnnotation(HelpIssues.class);
+        final HelpDetailed issuesAnnotation = field.getAnnotation(HelpDetailed.class);
         if (issuesAnnotation != null) {
-            help.issues = issuesAnnotation.value();
+            help.detailedHelp = issuesAnnotation.value();
         }
 
         final ValueDeprecation deprecationAnnotation = field.getAnnotation(ValueDeprecation.class);

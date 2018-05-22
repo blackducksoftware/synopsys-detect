@@ -50,16 +50,11 @@ public class HelpDetailedOptionPrinter {
         writer.println("");
 
         final DetectOptionHelp help = detectOption.getHelp();
-        if (StringUtils.isNotBlank(help.useCases)) {
-            writer.println("Use cases: " + help.useCases);
-            writer.println();
-        }
-
-        if (StringUtils.isNotBlank(help.useCases)) {
-            writer.println("Common issues: " + help.issues);
+        if (StringUtils.isNotBlank(help.detailedHelp)) {
+            writer.println("Detailed help:");
+            writer.println(help.detailedHelp);
             writer.println();
         }
     }
-
 
 }

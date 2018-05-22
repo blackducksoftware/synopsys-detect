@@ -56,6 +56,7 @@ import com.blackducksoftware.integration.hub.detect.help.AcceptableValues;
 import com.blackducksoftware.integration.hub.detect.help.DefaultValue;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 import com.blackducksoftware.integration.hub.detect.help.HelpDescription;
+import com.blackducksoftware.integration.hub.detect.help.HelpDetailed;
 import com.blackducksoftware.integration.hub.detect.help.HelpGroup;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver;
@@ -678,6 +679,13 @@ public class DetectConfiguration {
     @AcceptableValues(value = { "EXTERNAL", "SAAS", "INTERNAL", "OPENSOURCE" }, caseSensitive = false, strict = false)
     private String projectVersionDistribution;
 
+    @Value("${detect.project.version.update:}")
+    @DefaultValue("false")
+    @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
+    @HelpDescription("If set to true, will update the Project Version with the configured properties. See detailed help for more information.")
+    @HelpDetailed("When set to true, the following properties will be updated on the Project. Project tier (detect.project.tier) and Project Level Adjustments (detect.project.level.adjustments).\r\n The following properties will also be updated on the Version. Version notes (detect.project.version.notes), phase (detect.project.version.phase), distribution (detect.project.version.distribution)")
+    private Boolean projectVersionUpdate;
+
     @Value("${detect.policy.check.fail.on.severities:}")
     @HelpGroup(primary = GROUP_POLICY_CHECK, additional = { SEARCH_GROUP_POLICY })
     @HelpDescription("A comma-separated list of policy violation severities that will fail detect. If this is not set, detect will not fail due to policy violations.")
@@ -1223,6 +1231,10 @@ public class DetectConfiguration {
 
     public String getProjectVersionDistribution() {
         return projectVersionDistribution == null ? null : projectVersionDistribution.trim();
+    }
+
+    public boolean getProjectVersionUpdate() {
+        return BooleanUtils.toBoolean(projectVersionUpdate);
     }
 
     public String getPolicyCheckFailOnSeverities() {

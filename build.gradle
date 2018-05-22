@@ -67,6 +67,7 @@ artifactory {
     }
 }
 
+//TODO remove this repositories section before release
 repositories {
     mavenLocal()
 }
