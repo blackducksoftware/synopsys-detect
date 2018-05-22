@@ -82,7 +82,7 @@ public class SearchSummaryReporter {
             for (final StrategyEvaluation result : results) {
                 final String strategyName = result.strategy.getDescriptiveName();
                 if (result.isApplicable()) {
-                    toPrint.add("      APPLIED: " + strategyName);
+                    toPrint.add("      APPLIED: " + strategyName + " - Search: " + result.searchable.toDescription() + " Applicable: " + result.applicable.toDescription());
                 } else {
                     if (result.applicable != null) {
                         toPrint.add("DID NOT APPLY: " + strategyName + " - " + result.applicable.toDescription());

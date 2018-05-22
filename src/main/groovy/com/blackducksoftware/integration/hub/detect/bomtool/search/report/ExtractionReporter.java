@@ -31,8 +31,8 @@ import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.extraction.Extraction.ExtractionResult;
-import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
 import com.blackducksoftware.integration.hub.detect.extraction.ExtractionContext;
+import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
 
 @Component
 public class ExtractionReporter {
@@ -66,7 +66,12 @@ public class ExtractionReporter {
             final String name = field.getName();
             String value = "unknown";
             try {
-                value = field.get(guy).toString();
+                final Object obj = field.get(guy);
+                if (obj == null) {
+                    value = "null";
+                }else {
+                    value = obj.toString();
+                }
             } catch (final Exception e) {
 
             }
