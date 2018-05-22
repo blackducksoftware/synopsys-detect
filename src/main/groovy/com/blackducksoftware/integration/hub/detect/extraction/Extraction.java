@@ -90,7 +90,7 @@ public class Extraction {
             return this;
         }
         public Builder failure(final String description) {
-            this.result = ExtractionResult.Success;
+            this.result = ExtractionResult.Failure;
             this.description = description;
             return this;
         }
