@@ -116,13 +116,13 @@ public class HubManager implements ExitCodeReporter {
 
     public void performPostHubActions(final DetectProject detectProject, final ProjectVersionView projectVersionView) throws DetectUserFriendlyException {
         try {
-            if (detectConfiguration.getPolicyCheck() || detectConfiguration.getRiskReportPdf() || detectConfiguration.getNoticesReport()) {
+            if (StringUtils.isNotBlank(detectConfiguration.getPolicyCheckFailOnSeverities()) || detectConfiguration.getRiskReportPdf() || detectConfiguration.getNoticesReport()) {
                 final ProjectService projectService = hubServiceWrapper.createProjectService();
                 final ScanStatusService scanStatusService = hubServiceWrapper.createScanStatusService();
 
                 waitForBomUpdate(hubServiceWrapper.createHubService(), scanStatusService, projectVersionView);
 
-                if (detectConfiguration.getPolicyCheck()) {
+                if (StringUtils.isNotBlank(detectConfiguration.getPolicyCheckFailOnSeverities())) {
                     final PolicyStatusDescription policyStatusDescription = policyChecker.getPolicyStatus(projectService, projectVersionView);
                     logger.info(policyStatusDescription.getPolicyStatusMessage());
                     if (policyChecker.policyViolated(policyStatusDescription)) {
@@ -134,7 +134,7 @@ public class HubManager implements ExitCodeReporter {
                     final ReportService reportService = hubServiceWrapper.createReportService();
                     logger.info("Creating risk report pdf");
                     final File pdfFile = reportService.createReportPdfFile(new File(detectConfiguration.getRiskReportPdfOutputDirectory()), detectProject.getProjectName(), detectProject.getProjectVersionName());
-                    logger.info(String.format("Created risk report pdf : %s", pdfFile.getCanonicalPath()));
+                    logger.info(String.format("Created risk report pdf: %s", pdfFile.getCanonicalPath()));
                 }
 
                 if (detectConfiguration.getNoticesReport()) {
@@ -142,7 +142,7 @@ public class HubManager implements ExitCodeReporter {
                     logger.info("Creating notices report");
                     final File noticesFile = reportService.createNoticesReportFile(new File(detectConfiguration.getNoticesReportOutputDirectory()), detectProject.getProjectName(), detectProject.getProjectVersionName());
                     if (noticesFile != null) {
-                        logger.info(String.format("Created notices report : %s", noticesFile.getCanonicalPath()));
+                        logger.info(String.format("Created notices report: %s", noticesFile.getCanonicalPath()));
                     }
                 }
             }
@@ -185,6 +185,7 @@ public class HubManager implements ExitCodeReporter {
         final ProjectRequestBuilder builder = new ProjectRequestBuilder();
         builder.setProjectName(detectProject.getProjectName());
         builder.setVersionName(detectProject.getProjectVersionName());
+        builder.setDescription(detectConfiguration.getProjectDescription());
         builder.setProjectLevelAdjustments(detectConfiguration.getProjectLevelMatchAdjustments());
         builder.setPhase(detectConfiguration.getProjectVersionPhase());
         builder.setDistribution(detectConfiguration.getProjectVersionDistribution());

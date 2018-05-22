@@ -31,36 +31,22 @@ import com.blackducksoftware.integration.hub.detect.codelocation.DockerCodeLocat
 public class DetectCodeLocation {
     private final BomToolType bomToolType;
     private final String sourcePath;
-    private final String bomToolProjectName;
-    private final String bomToolProjectVersionName;
     private final String dockerImage;
-    private final ExternalId bomToolProjectExternalId;
+    private final ExternalId externalId;
     private final DependencyGraph dependencyGraph;
 
     public static class Builder {
         private final BomToolType bomToolType;
         private final String sourcePath;
-        private String bomToolProjectName;
-        private String bomToolProjectVersionName;
         private String dockerImage;
-        private final ExternalId bomToolProjectExternalId;
+        private final ExternalId externalId;
         private final DependencyGraph dependencyGraph;
 
-        public Builder(final BomToolType bomToolType, final String sourcePath, final ExternalId bomToolProjectExternalId, final DependencyGraph dependencyGraph) {
+        public Builder(final BomToolType bomToolType, final String sourcePath, final ExternalId externalId, final DependencyGraph dependencyGraph) {
             this.bomToolType = bomToolType;
             this.sourcePath = sourcePath;
-            this.bomToolProjectExternalId = bomToolProjectExternalId;
+            this.externalId = externalId;
             this.dependencyGraph = dependencyGraph;
-        }
-
-        public Builder bomToolProjectName(final String bomToolProjectName) {
-            this.bomToolProjectName = bomToolProjectName;
-            return this;
-        }
-
-        public Builder bomToolProjectVersionName(final String bomToolProjectVersionName) {
-            this.bomToolProjectVersionName = bomToolProjectVersionName;
-            return this;
         }
 
         public Builder dockerImage(final String dockerImage) {
@@ -76,20 +62,9 @@ public class DetectCodeLocation {
     private DetectCodeLocation(final Builder builder) {
         this.bomToolType = builder.bomToolType;
         this.sourcePath = builder.sourcePath;
-        this.bomToolProjectName = builder.bomToolProjectName;
-        this.bomToolProjectVersionName = builder.bomToolProjectVersionName;
         this.dockerImage = builder.dockerImage;
-        this.bomToolProjectExternalId = builder.bomToolProjectExternalId;
+        this.externalId = builder.externalId;
         this.dependencyGraph = builder.dependencyGraph;
-    }
-
-    public String createCodeLocationName(final BomCodeLocationNameFactory bomCodeLocationNameFactory, final DockerCodeLocationNameFactory dockerCodeLocationNameFactory, final String projectName, final String projectVersionName,
-            final String prefix, final String suffix) {
-        if (BomToolType.DOCKER == getBomToolType()) {
-            return dockerCodeLocationNameFactory.createCodeLocationName(getSourcePath(), projectName, projectVersionName, dockerImage, getBomToolType(), prefix, suffix);
-        } else {
-            return bomCodeLocationNameFactory.createCodeLocationName(getSourcePath(), projectName, projectVersionName, getBomToolType(), prefix, suffix);
-        }
     }
 
     public BomToolType getBomToolType() {
@@ -100,24 +75,25 @@ public class DetectCodeLocation {
         return sourcePath;
     }
 
-    public String getBomToolProjectName() {
-        return bomToolProjectName;
-    }
-
-    public String getBomToolProjectVersionName() {
-        return bomToolProjectVersionName;
-    }
-
     public String getDockerImage() {
         return dockerImage;
     }
 
     public ExternalId getBomToolProjectExternalId() {
-        return bomToolProjectExternalId;
+        return externalId;
     }
 
     public DependencyGraph getDependencyGraph() {
         return dependencyGraph;
+    }
+
+    public String createCodeLocationName(final BomCodeLocationNameFactory bomCodeLocationNameFactory, final DockerCodeLocationNameFactory dockerCodeLocationNameFactory, final String projectName, final String projectVersionName,
+            final String prefix, final String suffix) {
+        if (BomToolType.DOCKER == getBomToolType()) {
+            return dockerCodeLocationNameFactory.createCodeLocationName(getSourcePath(), projectName, projectVersionName, dockerImage, getBomToolType(), prefix, suffix);
+        } else {
+            return bomCodeLocationNameFactory.createCodeLocationName(getSourcePath(), projectName, projectVersionName, getBomToolType(), prefix, suffix);
+        }
     }
 
 }

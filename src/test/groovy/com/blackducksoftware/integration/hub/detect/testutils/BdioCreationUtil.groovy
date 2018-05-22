@@ -51,7 +51,7 @@ class BdioCreationUtil {
         final String codeLocationName = "${projectName}/${projectVersionName}"
 
         final BdioBillOfMaterials bdioBillOfMaterials = bdioNodeFactory.createBillOfMaterials(codeLocationName, projectName, projectVersionName)
-        final BdioExternalIdentifier projectExternalIdentifier = bdioPropertyHelper.createExternalIdentifier(detectCodeLocation.bomToolProjectExternalId)
+        final BdioExternalIdentifier projectExternalIdentifier = bdioPropertyHelper.createExternalIdentifier(detectCodeLocation.externalId)
         final BdioProject project = bdioNodeFactory.createProject(projectName, projectVersionName, String.format("uuid:%s", UUID.randomUUID()), projectExternalIdentifier)
 
         final List<BdioComponent> bdioComponents = dependencyGraphTransformer.transformDependencyGraph(project, detectCodeLocation.dependencyGraph)

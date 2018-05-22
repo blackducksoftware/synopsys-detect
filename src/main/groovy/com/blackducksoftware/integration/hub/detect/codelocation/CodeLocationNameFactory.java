@@ -25,11 +25,11 @@ package com.blackducksoftware.integration.hub.detect.codelocation;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
 public abstract class CodeLocationNameFactory {
     @Autowired
-    protected DetectFileManager detectFileManager;
+    protected DetectFileFinder detectFileFinder;
 
     protected String shortenPiece(final String piece) {
         if (piece.length() <= 40) {

@@ -1,5 +1,9 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.nuget
 
+import static org.junit.Assert.assertEquals
+
+import org.junit.Test
+
 import com.blackducksoftware.integration.hub.bdio.BdioNodeFactory
 import com.blackducksoftware.integration.hub.bdio.BdioPropertyHelper
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer
@@ -8,14 +12,13 @@ import com.blackducksoftware.integration.hub.bdio.model.BdioProject
 import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.nuget.parse.NugetInspectorPackager
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.nuget.parse.NugetParseResult
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import org.junit.Test
-
-import static org.junit.Assert.assertEquals
 
 public class NugetInspectorPackagerTest {
     public Gson gson = new GsonBuilder().setPrettyPrinting().create()
@@ -57,19 +60,19 @@ public class NugetInspectorPackagerTest {
         packager.gson = new Gson()
         packager.nameVersionNodeTransformer = nameVersionNodeTransformer
         packager.externalIdFactory = nameVersionNodeTransformer.externalIdFactory
-        List<DetectCodeLocation> codeLocations = packager.createDetectCodeLocation(dependencyNodeFile)
+        NugetParseResult result = packager.createDetectCodeLocation(dependencyNodeFile)
 
-        for (DetectCodeLocation codeLocation : codeLocations) {
+        for (DetectCodeLocation codeLocation : result.codeLocations) {
             BdioPropertyHelper bdioPropertyHelper = new BdioPropertyHelper()
             BdioNodeFactory bdioNodeFactory = new BdioNodeFactory(bdioPropertyHelper)
 
             DependencyGraphTransformer dependencyNodeTransformer = new DependencyGraphTransformer(bdioPropertyHelper, bdioNodeFactory)
 
-            def projectId = bdioPropertyHelper.createExternalIdentifier(codeLocation.bomToolProjectExternalId);
-            final BdioProject project = bdioNodeFactory.createProject(codeLocation.bomToolProjectName, codeLocation.bomToolProjectVersionName, Forge.NUGET.toString(), projectId)
+            def projectId = bdioPropertyHelper.createExternalIdentifier(codeLocation.externalId);
+            final BdioProject project = bdioNodeFactory.createProject(result.projectName, result.projectVersion, Forge.NUGET.toString(), projectId)
 
             Map<ExternalId, BdioComponent> components = new HashMap<>();
-            components.put(codeLocation.bomToolProjectExternalId, project);
+            components.put(codeLocation.externalId, project);
 
             final List<BdioComponent> bdioComponents = dependencyNodeTransformer.transformDependencyGraph(codeLocation.dependencyGraph, project, codeLocation.dependencyGraph.getRootDependencies(), components)
 
@@ -86,10 +89,10 @@ public class NugetInspectorPackagerTest {
         packager.nameVersionNodeTransformer = nameVersionNodeTransformer
         packager.externalIdFactory = nameVersionNodeTransformer.externalIdFactory
 
-        List<DetectCodeLocation> codeLocations = packager.createDetectCodeLocation(dependencyNodeFile)
+        NugetParseResult result = packager.createDetectCodeLocation(dependencyNodeFile)
 
         for (def i = 0; i < expectedOutputFiles.size(); i++) {
-            def codeLocation = codeLocations[i];
+            def codeLocation = result.codeLocations[i];
             def expectedOutputFile = expectedOutputFiles[i];
 
 

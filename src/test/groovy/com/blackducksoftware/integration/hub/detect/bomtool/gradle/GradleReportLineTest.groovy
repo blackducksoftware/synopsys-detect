@@ -1,8 +1,10 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.gradle
 
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import org.junit.Assert
 import org.junit.Test
+
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.gradle.parse.GradleReportLine
 
 class GradleReportLineTest {
     @Test

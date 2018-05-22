@@ -1,12 +1,15 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.maven
 
-import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
-import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
+import static org.junit.Assert.*
+
 import org.junit.Test
 
-import static org.junit.Assert.*
+import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.maven.parse.MavenCodeLocationPackager
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.maven.parse.MavenParseResult
+import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
+import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 
 class MavenCodeLocationPackagerTest {
     private TestUtil testUtil = new TestUtil()
@@ -267,9 +270,9 @@ class MavenCodeLocationPackagerTest {
 
     private void createNewCodeLocationTest(String mavenOutputText, String expectedResourcePath, int numberOfCodeLocations, String excludedModules, String includedModules) {
         def mavenCodeLocationPackager = new MavenCodeLocationPackager(new ExternalIdFactory())
-        List<DetectCodeLocation> codeLocations = mavenCodeLocationPackager.extractCodeLocations('/test/path', mavenOutputText, excludedModules, includedModules)
-        assertEquals(numberOfCodeLocations, codeLocations.size())
-        DetectCodeLocation codeLocation = codeLocations[0]
+        List<MavenParseResult> result = mavenCodeLocationPackager.extractCodeLocations('/test/path', mavenOutputText, excludedModules, includedModules)
+        assertEquals(numberOfCodeLocations, result.size())
+        DetectCodeLocation codeLocation = result[0].codeLocation
 
         testUtil.testJsonResource(expectedResourcePath, codeLocation)
     }

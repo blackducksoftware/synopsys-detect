@@ -67,7 +67,7 @@ public class ScanCodeLocationNameFactory extends CodeLocationNameFactory {
     }
 
     private String cleanScanTargetPath(final String scanTargetPath, final String sourcePath) {
-        final String finalSourcePathPiece = detectFileManager.extractFinalPieceFromPath(sourcePath);
+        final String finalSourcePathPiece = detectFileFinder.extractFinalPieceFromPath(sourcePath);
         String cleanedTargetPath = "";
         if (StringUtils.isNotBlank(scanTargetPath) && StringUtils.isNotBlank(finalSourcePathPiece)) {
             cleanedTargetPath = scanTargetPath.replace(sourcePath, finalSourcePathPiece);

@@ -26,7 +26,6 @@ package com.blackducksoftware.integration.hub.detect;
 import java.io.Console;
 import java.io.File;
 import java.io.PrintStream;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,7 +42,6 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Lazy;
 
 import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.api.generated.view.ProjectVersionView;
@@ -53,7 +51,6 @@ import com.blackducksoftware.integration.hub.bdio.BdioTransformer;
 import com.blackducksoftware.integration.hub.bdio.SimpleBdioFactory;
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
-import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolTreeWalker;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
@@ -73,6 +70,7 @@ import com.blackducksoftware.integration.hub.detect.interactive.reader.ConsoleIn
 import com.blackducksoftware.integration.hub.detect.interactive.reader.InteractiveReader;
 import com.blackducksoftware.integration.hub.detect.interactive.reader.ScannerInteractiveReader;
 import com.blackducksoftware.integration.hub.detect.model.DetectProject;
+import com.blackducksoftware.integration.hub.detect.strategy.StrategyManager;
 import com.blackducksoftware.integration.hub.detect.summary.DetectSummary;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.log.SilentLogger;
@@ -131,6 +129,9 @@ public class Application implements ApplicationRunner {
 
     @Autowired
     private ArgumentStateParser argumentStateParser;
+
+    @Autowired
+    private StrategyManager strategyManager;
 
     private ExitCodeType exitCodeType = ExitCodeType.SUCCESS;
 
@@ -220,6 +221,8 @@ public class Application implements ApplicationRunner {
                 hubServiceWrapper.init();
             }
 
+            strategyManager.init();
+
             final DetectProject detectProject = detectProjectManager.createDetectProject();
             final List<File> createdBdioFiles = detectProjectManager.createBdioFiles(detectProject);
             if (!detectConfiguration.getHubOfflineMode()) {
@@ -286,14 +289,6 @@ public class Application implements ApplicationRunner {
             exitCodeType = ExitCodeType.FAILURE_UNKNOWN_ERROR;
         }
         logger.error(e.getMessage());
-    }
-
-    // Has to be lazy because we need to use the final values from detectConfiguration which are not ready immediately
-    @Lazy
-    @Bean
-    public BomToolTreeWalker bomToolTreeWalker() {
-        return new BomToolTreeWalker(Arrays.asList(detectConfiguration.getBomToolSearchExclusion()), detectConfiguration.getBomToolSearchExclusionDefaults(), detectConfiguration.getBomToolContinueSearch(),
-                detectConfiguration.getBomToolSearchDepth());
     }
 
     @Bean

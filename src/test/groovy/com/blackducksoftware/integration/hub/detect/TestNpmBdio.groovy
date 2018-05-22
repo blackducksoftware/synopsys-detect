@@ -3,11 +3,11 @@ package com.blackducksoftware.integration.hub.detect
 import com.blackducksoftware.integration.hub.bdio.BdioNodeFactory
 import com.blackducksoftware.integration.hub.bdio.BdioPropertyHelper
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer
-import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmCliDependencyFinder
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.npm.parse.NpmCliDependencyFinder
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
-import com.blackducksoftware.integration.hub.detect.util.FileFinder
+import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil
 import com.google.gson.GsonBuilder
@@ -43,7 +43,7 @@ class TestNpmBdio {
         detectProject.addDetectCodeLocation(detectCodeLocation)
 
         DetectConfiguration detectConfiguration = [getAggregateBomName: '', getProjectCodeLocationPrefix: ''] as DetectConfiguration
-        FileFinder fileFinder = new FileFinder()
+        DetectFileFinder fileFinder = new DetectFileFinder()
         DetectFileManager detectFileManager = new DetectFileManager()
         detectFileManager.fileFinder = fileFinder
         detectFileManager.detectConfiguration = detectConfiguration

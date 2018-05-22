@@ -6,7 +6,7 @@ import org.junit.Test
 class DetectFileManagerTest {
     @Test
     public void extractFinalPieceFromPath() {
-        def detectFileManager = new DetectFileManager()
+        def detectFileManager = new DetectFileFinder()
         Assert.assertEquals('a', detectFileManager.extractFinalPieceFromPath('/a'))
         Assert.assertEquals('a', detectFileManager.extractFinalPieceFromPath('/a/'))
         Assert.assertEquals('c', detectFileManager.extractFinalPieceFromPath('/a/b/c'))

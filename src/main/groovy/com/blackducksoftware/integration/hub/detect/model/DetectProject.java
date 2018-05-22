@@ -23,6 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.model;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,10 +38,11 @@ import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.codelocation.BomCodeLocationNameFactory;
 import com.blackducksoftware.integration.hub.detect.codelocation.DockerCodeLocationNameFactory;
 import com.blackducksoftware.integration.hub.detect.util.BdioFileNamer;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.service.model.ProjectRequestBuilder;
 
 public class DetectProject {
+    private final Map<DetectCodeLocation, String> nameCodeLocationMap = new HashMap<>();
     private final Map<String, DetectCodeLocation> codeLocationNameMap = new HashMap<>();
     private final Map<String, String> codeLocationNameToBdioName = new HashMap<>();
     private final List<DetectCodeLocation> detectCodeLocations = new ArrayList<>();
@@ -75,14 +77,11 @@ public class DetectProject {
 
     public void addAllDetectCodeLocations(final List<DetectCodeLocation> detectCodeLocations) {
         detectCodeLocations
-                .stream()
-                .forEach(it -> addDetectCodeLocation(it));
+        .stream()
+        .forEach(it -> addDetectCodeLocation(it));
     }
 
     public void addDetectCodeLocation(final DetectCodeLocation detectCodeLocation) {
-        setProjectNameIfNotSet(detectCodeLocation.getBomToolProjectName());
-        setProjectVersionNameIfNotSet(detectCodeLocation.getBomToolProjectVersionName());
-
         detectCodeLocations.add(detectCodeLocation);
     }
 
@@ -103,8 +102,7 @@ public class DetectProject {
         return builder;
     }
 
-    public void processDetectCodeLocations(final BomCodeLocationNameFactory bomCodeLocationNameFactory, final DockerCodeLocationNameFactory dockerCodeLocationNameFactory, final Logger logger, final DetectFileManager detectFileManager,
-            final BdioFileNamer bdioFileNamer) {
+    public void processDetectCodeLocations(final BomCodeLocationNameFactory bomCodeLocationNameFactory, final DockerCodeLocationNameFactory dockerCodeLocationNameFactory, final Logger logger, final DetectFileFinder detectFileFinder, final File sourcePath, final BdioFileNamer bdioFileNamer) {
         for (final DetectCodeLocation detectCodeLocation : getDetectCodeLocations()) {
             if (detectCodeLocation.getDependencyGraph() == null) {
                 logger.warn(String.format("Dependency graph is null for code location %s", detectCodeLocation.getSourcePath()));
@@ -128,7 +126,7 @@ public class DetectProject {
             final String codeLocationNameString = codeLocationEntry.getKey();
             final DetectCodeLocation detectCodeLocation = codeLocationEntry.getValue();
 
-            final String finalSourcePathPiece = detectFileManager.extractFinalPieceFromPath(detectCodeLocation.getSourcePath());
+            final String finalSourcePathPiece = detectFileFinder.extractFinalPieceFromPath(detectCodeLocation.getSourcePath());
             final String filename = bdioFileNamer.generateShortenedFilename(detectCodeLocation.getBomToolType(), finalSourcePathPiece, detectCodeLocation.getBomToolProjectExternalId());
 
             if (!bdioFileNames.add(filename)) {
@@ -144,6 +142,9 @@ public class DetectProject {
         return codeLocationNameMap.keySet();
     }
 
+    public String getCodeLocationName(final DetectCodeLocation key) {
+        return nameCodeLocationMap.get(key);
+    }
     public DetectCodeLocation getDetectCodeLocation(final String codeLocationNameString) {
         return codeLocationNameMap.get(codeLocationNameString);
     }
