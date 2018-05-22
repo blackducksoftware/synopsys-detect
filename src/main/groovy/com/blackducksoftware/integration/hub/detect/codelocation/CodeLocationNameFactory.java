@@ -38,5 +38,4 @@ public abstract class CodeLocationNameFactory {
             return piece.substring(0, 19) + "..." + piece.substring(piece.length() - 18);
         }
     }
-
 }
