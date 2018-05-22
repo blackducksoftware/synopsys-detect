@@ -104,7 +104,7 @@ public class BomToolFinder {
     }
 
     private StrategyEvaluation processStrategy(final Strategy strategy, final File directory, final Set<Strategy> appliedCurrent, final Set<Strategy> appliedBefore, final int depth, final BomToolFinderOptions options) {
-        final StrategyEnvironment environment = new StrategyEnvironment(directory, appliedCurrent, appliedBefore, depth, options.getBomToolFilter());
+        final StrategyEnvironment environment = new StrategyEnvironment(directory, appliedCurrent, appliedBefore, depth, options.getBomToolFilter(), options.getForceNestedSearch());
         final ExtractionContext context = strategy.createContext(directory);
         final StrategyEvaluation evaluation = new StrategyEvaluation(strategy, environment, context);
 

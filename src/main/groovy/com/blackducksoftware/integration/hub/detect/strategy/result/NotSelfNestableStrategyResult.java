@@ -23,9 +23,9 @@
  */
 package com.blackducksoftware.integration.hub.detect.strategy.result;
 
-public class NotNestableStrategyResult extends FailedStrategyResult {
+public class NotSelfNestableStrategyResult extends FailedStrategyResult {
     @Override
     public String toDescription() {
-        return "Not nestable and a bom tool already applied in parent directory.";
+        return "Nestable but this bom tool already applied in a parent directory.";
     }
 }

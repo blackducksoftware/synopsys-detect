@@ -23,9 +23,14 @@
  */
 package com.blackducksoftware.integration.hub.detect.strategy.result;
 
-public class NotNestableStrategyResult extends FailedStrategyResult {
+public class ForcedNestedPassedStrategyResult extends StrategyResult {
+    @Override
+    public boolean getPassed() {
+        return true;
+    }
+
     @Override
     public String toDescription() {
-        return "Not nestable and a bom tool already applied in parent directory.";
+        return "Forced to pass because nested forced by user.";
     }
 }

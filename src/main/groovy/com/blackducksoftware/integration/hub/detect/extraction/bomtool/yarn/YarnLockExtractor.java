@@ -31,10 +31,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
@@ -52,6 +52,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
+@Component
 public class YarnLockExtractor extends Extractor<YarnLockContext> {
     private final Logger logger = LoggerFactory.getLogger(YarnLockExtractor.class);
     public static final String OUTPUT_FILE = "detect_yarn_proj_dependencies.txt";
@@ -79,10 +80,6 @@ public class YarnLockExtractor extends Extractor<YarnLockContext> {
     public Extraction extract(final YarnLockContext context) {
         try {
             final List<String> yarnLockText = Files.readAllLines(context.yarnlock.toPath(), StandardCharsets.UTF_8);
-
-            if (detectConfiguration.getYarnProductionDependenciesOnly() && StringUtils.isBlank(context.yarnExe)) {
-                return new Extraction.Builder().failure("Could not find the Yarn executable, can not get the production only dependencies.").build();
-            }
 
             DependencyGraph dependencyGraph;
             if (detectConfiguration.getYarnProductionDependenciesOnly()) {

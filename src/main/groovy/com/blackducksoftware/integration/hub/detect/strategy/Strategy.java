@@ -37,6 +37,7 @@ import com.blackducksoftware.integration.hub.detect.strategy.evaluation.Strategy
 import com.blackducksoftware.integration.hub.detect.strategy.result.BomToolExcludedStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.MaxDepthExceededStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.NotNestableStrategyResult;
+import com.blackducksoftware.integration.hub.detect.strategy.result.NotSelfNestableStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.PassedStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.StrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.YieldedStrategyResult;
@@ -77,7 +78,13 @@ public abstract class Strategy<C extends ExtractionContext, E extends Extractor<
             return new YieldedStrategyResult(yielded);
         }
 
-        if (!searchOptions.getNestable() && environment.getAppliedToParent().size() > 0) {
+        if (environment.getForceNestedSearch()) {
+
+        } if (searchOptions.getNestable()) {
+            if (environment.getAppliedToParent().contains(this)) {
+                return new NotSelfNestableStrategyResult();
+            }
+        } else if (!searchOptions.getNestable() && environment.getAppliedToParent().size() > 0) {
             return new NotNestableStrategyResult();
         }
 
