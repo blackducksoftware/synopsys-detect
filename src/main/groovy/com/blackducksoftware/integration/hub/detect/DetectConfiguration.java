@@ -139,7 +139,6 @@ public class DetectConfiguration {
 
     private ExcludedIncludedFilter bomToolFilter;
     private List<String> bomToolSearchDirectoryExclusions;
-    private final List<String> excludedScanPaths = new ArrayList<>();
 
     public void init(final List<DetectOption> detectOptions) throws DetectUserFriendlyException, IOException, IllegalArgumentException, IllegalAccessException {
         this.detectOptions = detectOptions;
@@ -216,12 +215,6 @@ public class DetectConfiguration {
         bomToolFilter = new ExcludedIncludedFilter(getExcludedBomToolTypes(), getIncludedBomToolTypes());
 
         configureForDocker();
-
-        if (hubSignatureScannerRelativePathsToExclude != null && hubSignatureScannerRelativePathsToExclude.length > 0) {
-            for (final String path : hubSignatureScannerRelativePathsToExclude) {
-                excludedScanPaths.add(new File(sourceDirectory, path).getCanonicalPath());
-            }
-        }
 
         if (StringUtils.isNotBlank(hubSignatureScannerHostUrl) && StringUtils.isNotBlank(hubSignatureScannerOfflineLocalPath)) {
             throw new DetectUserFriendlyException(
@@ -1415,10 +1408,6 @@ public class DetectConfiguration {
 
     public String[] getHubSignatureScannerExclusionPatterns() {
         return hubSignatureScannerExclusionPatterns;
-    }
-
-    public List<String> getHubSignatureScannerPathsToExclude() {
-        return excludedScanPaths;
     }
 
     public String getHubSignatureScannerOfflineLocalPath() {

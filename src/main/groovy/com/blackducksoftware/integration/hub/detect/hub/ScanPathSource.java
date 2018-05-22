@@ -28,11 +28,6 @@ import com.blackducksoftware.integration.util.Stringable;
 
 public class ScanPathSource extends Stringable {
     public static final ScanPathSource DOCKER_SOURCE = new ScanPathSource(BomToolType.DOCKER.toString());
-    public static final ScanPathSource NUGET_SOURCE = new ScanPathSource(BomToolType.NUGET.toString());
-    public static final ScanPathSource GRADLE_SOURCE = new ScanPathSource(BomToolType.GRADLE.toString());
-    public static final ScanPathSource MAVEN_SOURCE = new ScanPathSource(BomToolType.MAVEN.toString());
-    public static final ScanPathSource NPM_SOURCE = new ScanPathSource(BomToolType.NPM.toString());
-    public static final ScanPathSource SBT_SOURCE = new ScanPathSource(BomToolType.SBT.toString());
     public static final ScanPathSource DETECT_SOURCE = new ScanPathSource("DETECT");
     public static final ScanPathSource SNIPPET_SOURCE = new ScanPathSource("SNIPPET");
 

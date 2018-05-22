@@ -62,9 +62,6 @@ class NugetInspectorPackager {
     ExecutableRunner executableRunner
 
     @Autowired
-    HubSignatureScanner hubSignatureScanner
-
-    @Autowired
     Gson gson
 
     @Autowired
@@ -81,7 +78,6 @@ class NugetInspectorPackager {
         def projectName
         def projectVersion
         nugetInspection.containers.each {
-            registerScanPaths(it)
             def result = createDetectCodeLocationFromNugetContainer(it)
             if (result.projectName) {
                 projectName = result.projectName;
@@ -91,13 +87,6 @@ class NugetInspectorPackager {
         }
 
         new NugetParseResult(projectName, projectVersion, codeLocations)
-    }
-
-    private void registerScanPaths(NugetContainer nugetContainer) {
-        nugetContainer.outputPaths?.each {
-            hubSignatureScanner?.registerPathToScan(ScanPathSource.NUGET_SOURCE, new File(it))
-        }
-        nugetContainer.children?.each { registerScanPaths(it) }
     }
 
     private NugetParseResult createDetectCodeLocationFromNugetContainer(NugetContainer nugetContainer) {

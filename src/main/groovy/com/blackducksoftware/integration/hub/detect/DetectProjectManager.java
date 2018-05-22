@@ -290,12 +290,12 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         // ensure that the project name is set, use some reasonable defaults
         detectProject.setProjectDetails(getProjectName(detectProject.getProjectName()), getProjectVersionName(detectProject.getProjectVersionName()), prefix, suffix);
 
-        if (!foundAnyBomTools) {
-            logger.info(String.format("No package managers were detected - will register %s for signature scanning of %s/%s", detectConfiguration.getSourcePath(), detectProject.getProjectName(), detectProject.getProjectVersionName()));
-            hubSignatureScanner.registerPathToScan(ScanPathSource.DETECT_SOURCE, detectConfiguration.getSourceDirectory());
-        } else if (detectConfiguration.getHubSignatureScannerSnippetMode()) {
+        if (detectConfiguration.getHubSignatureScannerSnippetMode()) {
             logger.info(String.format("Snippet mode is enabled - will register %s for signature scanning of %s/%s", detectConfiguration.getSourcePath(), detectProject.getProjectName(), detectProject.getProjectVersionName()));
             hubSignatureScanner.registerPathToScan(ScanPathSource.SNIPPET_SOURCE, detectConfiguration.getSourceDirectory());
+        } else {
+            logger.info(String.format("Will register %s for signature scanning of %s/%s", detectConfiguration.getSourcePath(), detectProject.getProjectName(), detectProject.getProjectVersionName()));
+            hubSignatureScanner.registerPathToScan(ScanPathSource.DETECT_SOURCE, detectConfiguration.getSourceDirectory());
         }
 
         if (StringUtils.isBlank(detectConfiguration.getAggregateBomName())) {

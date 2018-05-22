@@ -207,18 +207,6 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
             return false;
         }
 
-        String matchingExcludedPath = null;
-        for (final String pathToExclude : detectConfiguration.getHubSignatureScannerPathsToExclude()) {
-            if (file.getCanonicalPath().startsWith(pathToExclude)) {
-                matchingExcludedPath = pathToExclude;
-            }
-        }
-
-        if (StringUtils.isNotBlank(matchingExcludedPath)) {
-            logger.info(String.format("Not scanning path %s, it is excluded.", file.getCanonicalPath()));
-            return false;
-        }
-
         if (!file.exists() || (!file.isFile() && !file.isDirectory())) {
             logger.warn(String.format("Not scanning path %s, it doesn't appear to exist or it isn't a file or directory.", file.getCanonicalPath()));
             return false;
