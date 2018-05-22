@@ -281,6 +281,13 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
             }
         }
 
+        final List<DetectCodeLocation> codeLocations = sourcePathResults.stream()
+                .filter(it -> it.isExtractionSuccess())
+                .flatMap(it -> it.extraction.codeLocations.stream())
+                .collect(Collectors.toList());
+
+        detectProject.addAllDetectCodeLocations(codeLocations);
+
         final String prefix = detectConfiguration.getProjectCodeLocationPrefix();
         final String suffix = detectConfiguration.getProjectCodeLocationSuffix();
 

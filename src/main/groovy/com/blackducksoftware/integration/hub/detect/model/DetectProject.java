@@ -118,6 +118,7 @@ public class DetectProject {
                 failedBomTools.add(detectCodeLocation.getBomToolType());
                 logger.error(String.format("Found duplicate Code Locations with the name: %s", codeLocationName));
             } else {
+                nameCodeLocationMap.put(detectCodeLocation, codeLocationName);
                 codeLocationNameMap.put(codeLocationName, detectCodeLocation);
             }
         }
