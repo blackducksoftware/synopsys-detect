@@ -57,7 +57,6 @@ import com.blackducksoftware.integration.hub.detect.model.DetectProject;
 import com.blackducksoftware.integration.hub.detect.summary.Result;
 import com.blackducksoftware.integration.hub.detect.summary.ScanSummaryResult;
 import com.blackducksoftware.integration.hub.detect.summary.SummaryResultReporter;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.service.SignatureScannerService;
 import com.blackducksoftware.integration.hub.service.model.ProjectRequestBuilder;
@@ -70,7 +69,6 @@ import groovy.transform.TypeChecked;
 public class HubSignatureScanner implements SummaryResultReporter, ExitCodeReporter {
     private final Logger logger = LoggerFactory.getLogger(HubSignatureScanner.class);
     private final Set<String> registeredPaths = new HashSet<>();
-    private final Set<String> registeredPathsToExclude = new HashSet<>();
     private final Map<String, Result> scanSummaryResults = new HashMap<>();
 
     @Autowired
@@ -80,14 +78,12 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
     private DetectFileManager detectFileManager;
 
     @Autowired
-    private DetectFileFinder detectFileFinder;
-    @Autowired
     private OfflineScanner offlineScanner;
 
     @Autowired
     private ScanCodeLocationNameFactory scanCodeLocationNameFactory;
 
-    public void registerPathToScan(final ScanPathSource scanPathSource, final File file, final String... fileNamesToExclude) throws IntegrationException {
+    public void registerPathToScan(final ScanPathSource scanPathSource, final File file) throws IntegrationException {
         try {
             final boolean shouldRegisterPath = shouldRegisterPathForScanning(file, scanPathSource);
 
@@ -95,22 +91,6 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
                 logger.info(String.format("Registering path %s to scan", file.getCanonicalPath()));
                 scanSummaryResults.put(file.getCanonicalPath(), Result.FAILURE);
                 registeredPaths.add(file.getCanonicalPath());
-                if (null != fileNamesToExclude && fileNamesToExclude.length > 0) {
-                    for (final String fileNameToExclude : fileNamesToExclude) {
-                        final File fileToExclude = detectFileFinder.findFile(file, fileNameToExclude);
-                        if (null != fileToExclude) {
-                            String pattern = fileToExclude.getCanonicalPath().replace(file.getCanonicalPath(), "");
-                            if (pattern.contains("\\\\")) {
-                                pattern = pattern.replace("\\\\", "/");
-                            }
-                            if (pattern.contains("\\")) {
-                                pattern = pattern.replace("\\", "/");
-                            }
-                            pattern = pattern + "/";
-                            registeredPathsToExclude.add(pattern);
-                        }
-                    }
-                }
             }
         } catch (final IOException e) {
             throw new IntegrationException(e.getMessage(), e);
@@ -271,8 +251,6 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
 
         if (null != detectConfiguration.getHubSignatureScannerExclusionPatterns() && detectConfiguration.getHubSignatureScannerExclusionPatterns().length > 0) {
             hubScanConfigBuilder.setExcludePatterns(detectConfiguration.getHubSignatureScannerExclusionPatterns());
-        } else if (null != registeredPathsToExclude && !registeredPathsToExclude.isEmpty()) {
-            hubScanConfigBuilder.setExcludePatterns(registeredPathsToExclude.toArray(new String[registeredPathsToExclude.size()]));
         }
 
         return hubScanConfigBuilder;
