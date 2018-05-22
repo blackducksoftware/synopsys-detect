@@ -1,0 +1,888 @@
+<html>
+
+<head>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+        
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 7px 10px;
+        }
+        
+        th.groupHeader {
+            font-weight: bold;
+            background-color: #ddd;
+            text-align: left;
+        }
+        
+        th {
+            font-weight: normal;
+            background-color: #eee;
+            text-align: left;
+        }
+        
+        tbody tr:hover:not(.noBorder) {
+            background-color: #f8f8f8;
+        }
+        
+        .propertyColumn {
+            width: 400px;
+        }
+        
+        .defaultColumn {
+            width: 300px;
+        }
+        
+        .noBorder {
+            border: 0px;
+        }
+    </style>
+</head>
+
+<body>
+    <table>
+        <colgroup>
+            <col class="propertyColumn" />
+            <col class="defaultColumn" />
+            <col />
+        </colgroup>
+                		<tr class="noBorder">
+            		<td colspan="3" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="3" class="groupHeader">Bomtool</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Description</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.excluded.bom.tool.types</td>
+		            <td></td>
+		            <td>By default, all tools will be included. If you want to exclude specific tools, specify the ones to exclude here. Exclusion rules always win.</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.included.bom.tool.types</td>
+		            <td></td>
+		            <td>By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.</td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="3" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="3" class="groupHeader">Cleanup</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Description</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.cleanup</td>
+		            <td>true</td>
+		            <td>If true the files created by Detect will be cleaned up.</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.cleanup.bdio.files</td>
+		            <td>true</td>
+		            <td>If true the bdio files will be deleted after upload</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.cleanup.bom.tool.files</td>
+		            <td>true</td>
+		            <td>Detect creates temporary files in the output directory. If set to true this will clean them up after execution</td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="3" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="3" class="groupHeader">Conda</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Description</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.conda.environment.name</td>
+		            <td></td>
+		            <td>The name of the anaconda environment used by your project</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.conda.path</td>
+		            <td></td>
+		            <td>The path of the conda executable</td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="3" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="3" class="groupHeader">Cpan</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Description</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.cpan.path</td>
+		            <td></td>
+		            <td>The path of the cpan executable</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.cpanm.path</td>
+		            <td></td>
+		            <td>The path of the cpanm executable</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.perl.path</td>
+		            <td></td>
+		            <td>The path of the perl executable</td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="3" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="3" class="groupHeader">Docker</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Description</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.docker.image</td>
+		            <td></td>
+		            <td>The docker image name to inspect. For detect to run docker either this property or detect.docker.tar must be set.</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.docker.inspector.air.gap.path</td>
+		            <td></td>
+		            <td>The path to the directory containing the docker inspector script, jar, and images</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.docker.inspector.path</td>
+		            <td></td>
+		            <td>This is used to override using the hosted script by github url. You can provide your own script at this path.</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.docker.inspector.version</td>
+		            <td>latest</td>
+		            <td>Version of the Hub Docker Inspector to use</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.docker.path</td>
+		            <td></td>
+		            <td>Path of the docker executable</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.docker.tar</td>
+		            <td></td>
+		            <td>A saved docker image - must be a .tar file. For detect to run docker either this property or detect.docker.image must be set.</td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="3" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="3" class="groupHeader">General</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Description</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.fail.config.warning</td>
+		            <td>false</td>
+		            <td>If true, Detect will fail if there are any issues found in the configuration. In 4.0.0 this will default to true.</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.force.success</td>
+		            <td>false</td>
+		            <td>If true, detect will always exit with code 0.</td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="3" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="3" class="groupHeader">Go</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Description</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.go.dep.path</td>
+		            <td></td>
+		            <td>Path of the Go Dep executable</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.go.run.dep.init</td>
+		            <td>false</td>
+		            <td>If set to true, we will attempt to run 'init' and 'ensure' which can modify your development environment.</td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="3" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="3" class="groupHeader">Gradle</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Description</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.gradle.build.command</td>
+		            <td></td>
+		            <td>Gradle build command</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.gradle.cleanup.build.blackduck.directory</td>
+		            <td>true</td>
+		            <td>Set this to false if you do not want the 'blackduck' directory in your build directory to be deleted.</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.gradle.excluded.configurations</td>
+		            <td></td>
+		            <td>The names of the dependency configurations to exclude</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.gradle.excluded.projects</td>
+		            <td></td>
+		            <td>The names of the projects to exclude</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.gradle.included.configurations</td>
+		            <td></td>
+		            <td>The names of the dependency configurations to include</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.gradle.included.projects</td>
+		            <td></td>
+		            <td>The names of the projects to include</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.gradle.inspector.air.gap.path</td>
+		            <td></td>
+		            <td>The path to the directory containing the air gap dependencies for the gradle inspector</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.gradle.inspector.repository.url</td>
+		            <td></td>
+		            <td>The respository gradle should use to look for the gradle inspector</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.gradle.inspector.version</td>
+		            <td>latest</td>
+		            <td>Version of the Gradle Inspector</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.gradle.path</td>
+		            <td></td>
+		            <td>Path of the Gradle executable</td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="3" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="3" class="groupHeader">Hex</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Description</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.hex.rebar3.path</td>
+		            <td></td>
+		            <td>The path of the rebar3 executable</td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="3" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="3" class="groupHeader">Hub configuration</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Description</th>
+	        </tr>
+		        <tr>
+		            <td>--blackduck.hub.api.token</td>
+		            <td></td>
+		            <td>Hub API Token</td>
+		        </tr>
+		        <tr>
+		            <td>--blackduck.hub.offline.mode</td>
+		            <td>false</td>
+		            <td>This can disable any Hub communication - if true, Detect will not upload BDIO files, it will not check policies, and it will not download and install the signature scanner.</td>
+		        </tr>
+		        <tr>
+		            <td>--blackduck.hub.password</td>
+		            <td></td>
+		            <td>Hub password</td>
+		        </tr>
+		        <tr>
+		            <td>--blackduck.hub.proxy.host</td>
+		            <td></td>
+		            <td>Proxy host</td>
+		        </tr>
+		        <tr>
+		            <td>--blackduck.hub.proxy.ignored.hosts</td>
+		            <td></td>
+		            <td>Comma separated list of host patterns that should not use the proxy</td>
+		        </tr>
+		        <tr>
+		            <td>--blackduck.hub.proxy.ntlm.domain</td>
+		            <td></td>
+		            <td>Ntlm Proxy domain</td>
+		        </tr>
+		        <tr>
+		            <td>--blackduck.hub.proxy.ntlm.workstation</td>
+		            <td></td>
+		            <td>Ntlm Proxy workstation</td>
+		        </tr>
+		        <tr>
+		            <td>--blackduck.hub.proxy.password</td>
+		            <td></td>
+		            <td>Proxy password</td>
+		        </tr>
+		        <tr>
+		            <td>--blackduck.hub.proxy.port</td>
+		            <td></td>
+		            <td>Proxy port</td>
+		        </tr>
+		        <tr>
+		            <td>--blackduck.hub.proxy.username</td>
+		            <td></td>
+		            <td>Proxy username</td>
+		        </tr>
+		        <tr>
+		            <td>--blackduck.hub.timeout</td>
+		            <td>120</td>
+		            <td>Time to wait for rest connections to complete</td>
+		        </tr>
+		        <tr>
+		            <td>--blackduck.hub.trust.cert</td>
+		            <td>false</td>
+		            <td>If true, automatically trust the certificate for the current run of Detect only</td>
+		        </tr>
+		        <tr>
+		            <td>--blackduck.hub.url</td>
+		            <td></td>
+		            <td>URL of the Hub server</td>
+		        </tr>
+		        <tr>
+		            <td>--blackduck.hub.username</td>
+		            <td></td>
+		            <td>Hub username</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.test.connection</td>
+		            <td>false</td>
+		            <td>Test the connection to the Hub with the current configuration</td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="3" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="3" class="groupHeader">Logging</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Description</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.suppress.configuration.output</td>
+		            <td>false</td>
+		            <td>If true, the default behavior of printing your configuration properties at startup will be suppressed.</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.suppress.results.output</td>
+		            <td>false</td>
+		            <td>If true, the default behavior of printing the Detect Results will be suppressed.</td>
+		        </tr>
+		        <tr>
+		            <td>--logging.level.com.blackducksoftware.integration</td>
+		            <td>INFO</td>
+		            <td>The logging level of Detect (ALL|TRACE|DEBUG|INFO|WARN|ERROR|FATAL|OFF)</td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="3" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="3" class="groupHeader">Maven</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Description</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.maven.build.command</td>
+		            <td></td>
+		            <td>Maven build command</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.maven.excluded.modules</td>
+		            <td></td>
+		            <td>The names of the module to exclude</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.maven.included.modules</td>
+		            <td></td>
+		            <td>The names of the module to include</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.maven.path</td>
+		            <td></td>
+		            <td>The path of the Maven executable</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.maven.scope</td>
+		            <td></td>
+		            <td>The name of the dependency scope to include</td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="3" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="3" class="groupHeader">Npm</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Description</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.npm.include.dev.dependencies</td>
+		            <td>true</td>
+		            <td>Set this value to false if you would like to exclude your dev dependencies when ran</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.npm.node.path</td>
+		            <td></td>
+		            <td>The path of the node executable that is used by Npm</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.npm.path</td>
+		            <td></td>
+		            <td>The path of the Npm executable</td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="3" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="3" class="groupHeader">Nuget</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Description</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.nuget.excluded.modules</td>
+		            <td></td>
+		            <td>The names of the projects in a solution to exclude</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.nuget.ignore.failure</td>
+		            <td>false</td>
+		            <td>If true errors will be logged and then ignored.</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.nuget.included.modules</td>
+		            <td></td>
+		            <td>The names of the projects in a solution to include (overrides exclude)</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.nuget.inspector.air.gap.path</td>
+		            <td></td>
+		            <td>The path to the directory containing the nuget inspector nupkg</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.nuget.inspector.name</td>
+		            <td>IntegrationNugetInspector</td>
+		            <td>Name of the Nuget Inspector</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.nuget.inspector.version</td>
+		            <td>latest</td>
+		            <td>Version of the Nuget Inspector</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.nuget.packages.repo.url</td>
+		            <td>https://www.nuget.org/api/v2/</td>
+		            <td>The source for nuget packages</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.nuget.path</td>
+		            <td></td>
+		            <td>The path of the Nuget executable</td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="3" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="3" class="groupHeader">Packagist</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Description</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.packagist.include.dev.dependencies</td>
+		            <td>true</td>
+		            <td>Set this value to false if you would like to exclude your dev requires dependencies when ran</td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="3" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="3" class="groupHeader">Paths</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Description</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.bash.path</td>
+		            <td></td>
+		            <td>Path of the bash executable</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.bdio.output.path</td>
+		            <td></td>
+		            <td>The output directory for all bdio files. If not set, the bdio files will be in a 'bdio' subdirectory of the output path.</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.bom.tool.search.continue</td>
+		            <td>false</td>
+		            <td>If true, the bom tool search will continue to look for bom tools to the maximum search depth, even if they applied earlier in the path.</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.bom.tool.search.depth</td>
+		            <td>0</td>
+		            <td>Depth from source paths to search for files to determine if a bom tool applies.</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.bom.tool.search.exclusion</td>
+		            <td></td>
+		            <td>A comma-separated list of directory names to exclude from the bom tool search.</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.bom.tool.search.exclusion.defaults</td>
+		            <td>true</td>
+		            <td>If true, the bom tool search will exclude the default directory names.</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.output.path</td>
+		            <td></td>
+		            <td>Output path</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.resolve.tilde.in.paths</td>
+		            <td>true</td>
+		            <td>If set to false we will not automatically resolve the '~/' prefix in a mac or linux path to the user's home directory.</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.scan.output.path</td>
+		            <td></td>
+		            <td>The output directory for all scan files. If not set, the scan files will be in a 'scan' subdirectory of the output path.</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.search.depth</td>
+		            <td>3</td>
+		            <td>Depth from source paths to search for files.</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.source.path</td>
+		            <td></td>
+		            <td>Source path to inspect</td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="3" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="3" class="groupHeader">Pear</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Description</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.pear.only.required.deps</td>
+		            <td>false</td>
+		            <td>Set to true if you would like to include only required packages</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.pear.path</td>
+		            <td></td>
+		            <td>The path of the pear executable</td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="3" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="3" class="groupHeader">Pip</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Description</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.pip.project.name</td>
+		            <td></td>
+		            <td>Override for pip inspector to find your project</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.pip.requirements.path</td>
+		            <td></td>
+		            <td>The path of the requirements.txt file</td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="3" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="3" class="groupHeader">Policy check</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Description</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.policy.check</td>
+		            <td>false</td>
+		            <td>Set to true if you would like a policy check from the hub for your project. False by default</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.policy.check.fail.on.severities</td>
+		            <td></td>
+		            <td>A comma-separated list of policy violation severities that will fail detect if checking policies is enabled. If no severity is provided, any policy violation will fail detect. (ALL|BLOCKER|CRITICAL|MAJOR|MINOR|TRIVIAL)</td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="3" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="3" class="groupHeader">Project info</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Description</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.api.timeout</td>
+		            <td>300000</td>
+		            <td>Timeout for response from the hub regarding your project (i.e. risk reports and policy check). When changing this value, keep in mind the checking of policies might have to wait for a new scan to process which can take some time.</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.bom.aggregate.name</td>
+		            <td></td>
+		            <td>If set, this will aggregate all the BOMs to create a single BDIO file with the name provided. For Co-Pilot use only</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.default.project.version.scheme</td>
+		            <td>text</td>
+		            <td>The scheme to use when the package managers can not determine a version, either 'text' or 'timestamp'</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.default.project.version.text</td>
+		            <td>Detect Unknown Version</td>
+		            <td>The text to use as the default project version</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.default.project.version.timeformat</td>
+		            <td>yyyy-MM-dd\'T\'HH:mm:ss.SSS</td>
+		            <td>The timestamp format to use as the default project version</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.notices.report</td>
+		            <td>false</td>
+		            <td>When set to true, a Black Duck notices report in text form will be created in your source directory</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.notices.report.path</td>
+		            <td>.</td>
+		            <td>The output directory for notices report. Default is the source directory</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.project.codelocation.delete.old.names</td>
+		            <td>false</td>
+		            <td>If set to true, when an old code location format is found in the Hub, instead of logging a warning, the code location will be deleted. USE WITH CAUTION - THIS CAN DELETE CODE LOCATIONS IN THE HUB.</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.project.codelocation.prefix</td>
+		            <td></td>
+		            <td>A prefix to the name of the codelocations created by Detect. Useful for running against the same projects on multiple machines.</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.project.codelocation.suffix</td>
+		            <td></td>
+		            <td>A suffix to the name of the codelocations created by Detect.</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.project.level.adjustments</td>
+		            <td>true</td>
+		            <td>An override for the Project level matches.</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.project.name</td>
+		            <td></td>
+		            <td>An override for the name to use for the Hub project. If not supplied, detect will attempt to use the tools to figure out a reasonable project name. If that fails, the final part of the directory path where the inspection is taking place will be used.</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.project.tier</td>
+		            <td></td>
+		            <td>If a hub project tier is specified, your project will be created with this tier. (1|2|3|4|5)</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.project.version.distribution</td>
+		            <td>External</td>
+		            <td>An override for the Project Version distribution (EXTERNAL|SAAS|INTERNAL|OPENSOURCE)</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.project.version.name</td>
+		            <td></td>
+		            <td>An override for the version to use for the Hub project. If not supplied, detect will attempt to use the tools to figure out a reasonable version name. If that fails, the current date will be used.</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.project.version.notes</td>
+		            <td></td>
+		            <td>If project version notes are specified, your project version will be created with these notes.</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.project.version.phase</td>
+		            <td>Development</td>
+		            <td>An override for the Project Version phase. (PLANNING|DEVELOPMENT|RELEASED|DEPRECATED|ARCHIVED)</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.risk.report.pdf</td>
+		            <td>false</td>
+		            <td>When set to true, a Black Duck risk report in PDF form will be created</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.risk.report.pdf.path</td>
+		            <td>.</td>
+		            <td>The output directory for risk report in PDF. Default is the source directory</td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="3" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="3" class="groupHeader">Python</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Description</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.python.path</td>
+		            <td></td>
+		            <td>The path of the Python executable</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.python.python3</td>
+		            <td>false</td>
+		            <td>If true will use Python 3 if available on class path</td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="3" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="3" class="groupHeader">Sbt</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Description</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.sbt.excluded.configurations</td>
+		            <td></td>
+		            <td>The names of the sbt configurations to exclude</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.sbt.included.configurations</td>
+		            <td></td>
+		            <td>The names of the sbt configurations to include</td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="3" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="3" class="groupHeader">Signature scanner</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Description</th>
+	        </tr>
+		        <tr>
+		            <td>--detect.hub.signature.scanner.disabled</td>
+		            <td>false</td>
+		            <td>Set to true to disable the Hub Signature Scanner.</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.hub.signature.scanner.dry.run</td>
+		            <td>false</td>
+		            <td>If set to true, the signature scanner results will not be uploaded to the Hub and the scanner results will be written to disk.</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.hub.signature.scanner.exclusion.patterns</td>
+		            <td></td>
+		            <td>Enables you to specify sub-directories to exclude from scans</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.hub.signature.scanner.host.url</td>
+		            <td></td>
+		            <td>If this url is set, an attempt will be made to use it to download the signature scanner. The server url provided must respect the Hub's urls for different operating systems.</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.hub.signature.scanner.memory</td>
+		            <td>4096</td>
+		            <td>The memory for the scanner to use.</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.hub.signature.scanner.offline.local.path</td>
+		            <td></td>
+		            <td>To use a local signature scanner, set its location with this property. This will be the path where the signature scanner was unzipped. This will likely look similar to /some/path/scan.cli-x.y.z</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.hub.signature.scanner.parallel.processors</td>
+		            <td>1</td>
+		            <td>The number of scans to run in parallel, defaults to 1, but if you specify -1, the number of processors on the machine will be used.</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.hub.signature.scanner.paths</td>
+		            <td></td>
+		            <td>These paths and only these paths will be scanned.</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.hub.signature.scanner.relative.paths.to.exclude</td>
+		            <td></td>
+		            <td>The relative paths of directories to be excluded from scan registration</td>
+		        </tr>
+		        <tr>
+		            <td>--detect.hub.signature.scanner.snippet.mode</td>
+		            <td>false</td>
+		            <td>If set to true, the signature scanner will, if supported by your Hub version, run in snippet scanning mode.</td>
+		        </tr>
+    </table>
+</body>
+
+</html>
