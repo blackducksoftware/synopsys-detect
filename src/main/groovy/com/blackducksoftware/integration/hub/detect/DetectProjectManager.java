@@ -74,7 +74,6 @@ import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.model.DetectProject;
 import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
 import com.blackducksoftware.integration.hub.detect.strategy.StrategyManager;
-import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyException;
 import com.blackducksoftware.integration.hub.detect.strategy.result.ExceptionStrategyResult;
 import com.blackducksoftware.integration.hub.detect.summary.BomToolSummaryResult;
 import com.blackducksoftware.integration.hub.detect.summary.Result;
@@ -155,7 +154,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         if (result.isApplicable()) {
             try {
                 result.extractable = result.strategy.extractable(result.environment, result.context);
-            } catch (final StrategyException e) {
+            } catch (final Exception e) {
                 result.extractable = new ExceptionStrategyResult(e);
             }
         }
@@ -176,6 +175,10 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
             if (possibleExtractor.getClass().equals(strategy.getExtractorClass())) {
                 extractor = possibleExtractor;
             }
+        }
+
+        if (extractor == null) {
+            return new Extraction.Builder().failure("No extractor was found.").build();
         }
 
         Extraction result;

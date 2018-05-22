@@ -23,13 +23,21 @@
  */
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.yarn;
 
+import java.io.File;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.extraction.StandardExecutableFinder;
+import com.blackducksoftware.integration.hub.detect.extraction.StandardExecutableFinder.StandardExecutableType;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
 import com.blackducksoftware.integration.hub.detect.strategy.StrategySearchOptions;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
+import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyException;
+import com.blackducksoftware.integration.hub.detect.strategy.result.ExecutableNotFoundStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.FileNotFoundStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.PassedStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.StrategyResult;
@@ -41,6 +49,12 @@ public class YarnLockStrategy extends Strategy<YarnLockContext, YarnLockExtracto
 
     @Autowired
     public DetectFileFinder fileFinder;
+
+    @Autowired
+    public DetectConfiguration detectConfiguration;
+
+    @Autowired
+    public StandardExecutableFinder standardExecutableFinder;
 
     public YarnLockStrategy() {
         super("Yarn Lock", BomToolType.YARN, YarnLockContext.class, YarnLockExtractor.class, StrategySearchOptions.defaultNested());
@@ -57,7 +71,16 @@ public class YarnLockStrategy extends Strategy<YarnLockContext, YarnLockExtracto
     }
 
     @Override
-    public StrategyResult extractable(final StrategyEnvironment environment, final YarnLockContext context){
+    public StrategyResult extractable(final StrategyEnvironment environment, final YarnLockContext context) throws StrategyException{
+        final File yarn = standardExecutableFinder.getExecutable(StandardExecutableType.YARN);
+        if (yarn != null) {
+            context.yarnExe = yarn.toString();
+        }
+
+        if (detectConfiguration.getYarnProductionDependenciesOnly() && StringUtils.isBlank(context.yarnExe)) {
+            return new ExecutableNotFoundStrategyResult("Could not find the Yarn executable, can not get the production only dependencies.");
+        }
+
         return new PassedStrategyResult();
     }
 
