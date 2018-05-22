@@ -30,6 +30,7 @@ import com.blackducksoftware.integration.hub.detect.extraction.bomtool.go.GoVndr
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.go.GoVndrExtractor;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
+import com.blackducksoftware.integration.hub.detect.strategy.StrategySearchOptions;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
 import com.blackducksoftware.integration.hub.detect.strategy.result.FileNotFoundStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.PassedStrategyResult;
@@ -44,7 +45,7 @@ public class GoVndrStrategy extends Strategy<GoVndrContext, GoVndrExtractor> {
     public DetectFileFinder fileFinder;
 
     public GoVndrStrategy() {
-        super("Vendor Config", BomToolType.GO_VNDR, GoVndrContext.class, GoVndrExtractor.class);
+        super("Vendor Config", BomToolType.GO_VNDR, GoVndrContext.class, GoVndrExtractor.class, StrategySearchOptions.defaultNotNested());
     }
 
     @Override

@@ -28,6 +28,7 @@ import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
+import com.blackducksoftware.integration.hub.detect.strategy.StrategySearchOptions;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
 import com.blackducksoftware.integration.hub.detect.strategy.result.FileNotFoundStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.PassedStrategyResult;
@@ -42,7 +43,7 @@ public class GemlockStrategy extends Strategy<GemlockContext, GemlockExtractor> 
     public DetectFileFinder fileFinder;
 
     public GemlockStrategy() {
-        super("Gemlock", BomToolType.RUBYGEMS, GemlockContext.class, GemlockExtractor.class);
+        super("Gemlock", BomToolType.RUBYGEMS, GemlockContext.class, GemlockExtractor.class, StrategySearchOptions.defaultNotNested());
     }
 
     @Override

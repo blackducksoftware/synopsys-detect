@@ -25,7 +25,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.search.report;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -44,80 +43,62 @@ public class ExtractionSummaryReporter {
     private final Logger logger = LoggerFactory.getLogger(PreparationSummaryReporter.class);
 
     public void print(final List<StrategyEvaluation> results, final DetectProject project) {
-        final Map<File, List<StrategyEvaluation>> byDirectory = new HashMap<>();
-        for (final StrategyEvaluation result : results) {
-            final File directory = result.environment.getDirectory();
-            if (!byDirectory.containsKey(directory)) {
-                byDirectory.put(directory, new ArrayList<>());
-            }
-            byDirectory.get(directory).add(result);
-        }
+        final Map<File, List<StrategyEvaluation>> byDirectory = results.stream()
+                .collect(Collectors.groupingBy(item -> item.environment.getDirectory()));
 
-        printDirectories(byDirectory, project);
+        final List<ExtractionSummaryData> data = createData(byDirectory, project);
+
+        final List<ExtractionSummaryData> sorted = sortByFilesystem(data);
+
+        printDirectories(sorted);
 
     }
 
-    private void printDirectories(final Map<File, List<StrategyEvaluation>> byDirectory, final DetectProject project) {
-        final List<Info> infos = new ArrayList<>();
+    private List<ExtractionSummaryData> createData(final Map<File, List<StrategyEvaluation>> byDirectory, final DetectProject project) {
+        final List<ExtractionSummaryData> datas = new ArrayList<>();
 
-        byDirectory.keySet().stream().forEach(file -> {
+        for (final File file : byDirectory.keySet()) {
             final List<StrategyEvaluation> results = byDirectory.get(file);
-            int codelocations = 0;
-            final List<String> codelocationnames = new ArrayList<>();
-            int applied = 0;
-            int demanded = 0;
-            int extracted = 0;
-            String success = "";
-            String exception = "";
-            String failed = "";
+
+            final ExtractionSummaryData data = new ExtractionSummaryData();
+            data.directory = file.toString();
+            datas.add(data);
+
             for (final StrategyEvaluation result : results) {
-                final String strategyName = result.strategy.getBomToolType() + " - " + result.strategy.getName();
                 if (result.isSearchable()) {
-                    //applied++;
+                    data.searchable++;
                 }
                 if (result.isApplicable()) {
-                    applied++;
-                    demanded++;
+                    data.applicable++;
                 }
                 if (result.isExtractable()) {
-                    codelocations += result.extraction.codeLocations.size();
-                    extracted++;
+                    data.extractable++;
 
-                    result.extraction.codeLocations.stream().forEach(it -> {
-                        final String name = project.getCodeLocationName(it);
-                        codelocationnames.add(name);
-                    });
-                    if (result.extraction.result == ExtractionResult.Success) {
-                        if (success.length() != 0) {
-                            success += ", ";
+                    if (result.extraction != null) {
+                        data.codeLocationsExtracted += result.extraction.codeLocations.size();
+                        result.extraction.codeLocations.stream().forEach(it -> {
+                            final String name = project.getCodeLocationName(it);
+                            data.codeLocationNames.add(name);
+                        });
+                        if (result.extraction.result == ExtractionResult.Success) {
+                            data.success.add(result);
+                        } else if (result.extraction.result == ExtractionResult.Failure) {
+                            data.failed.add(result);
+                        } else if (result.extraction.result == ExtractionResult.Exception) {
+                            data.exception.add(result);
                         }
-                        success += strategyName;
-                    } else if (result.extraction.result == ExtractionResult.Failure) {
-                        if (failed.length() != 0) {
-                            failed += ", ";
-                        }
-                        failed += strategyName;
-                    } else if (result.extraction.result == ExtractionResult.Exception) {
-                        if (exception.length() != 0) {
-                            exception += ", ";
-                        }
-                        exception += strategyName;
+                    } else {
+                        logger.warn("A strategy was searchable, applicable and extractable but produced no extraction.");
                     }
                 }
             }
-            final Info info = new Info();
-            info.directory = file.getAbsolutePath();
-            info.codeLocations = "\tCode Locations: " + Integer.toString(codelocations);
-            info.codeLocationNames = codelocationnames;
-            info.success = success;
-            info.failed = failed;
-            info.exception = exception;
-            info.applied = applied;
-            info.demanded = demanded;
-            info.extracted = extracted;
-            infos.add(info);
-        });
-        final List<Info> stream = infos.stream().sorted((o1, o2) -> {
+        }
+
+        return datas;
+    }
+
+    private List<ExtractionSummaryData> sortByFilesystem(final List<ExtractionSummaryData> raw){
+        return raw.stream().sorted((o1, o2) -> {
             final String[] pieces1 = o1.directory.split(Pattern.quote(File.separator));
             final String[] pieces2 = o2.directory.split(Pattern.quote(File.separator));
             final int min = Math.min(pieces1.length, pieces2.length);
@@ -129,24 +110,27 @@ public class ExtractionSummaryReporter {
             }
             return Integer.compare(pieces1.length, pieces2.length);
         }).collect(Collectors.toList());
+    }
+
+    private void printDirectories(final List<ExtractionSummaryData> data) {
         logger.info("");
         logger.info("");
         info(ReportConstants.HEADING);
         info("Extraction results:");
         info(ReportConstants.HEADING);
-        stream.stream().forEach(it -> {
-            if (it.extracted > 0) {
+        data.stream().forEach(it -> {
+            if (it.applicable > 0) {
                 info(it.directory);
-                info(it.codeLocations);
+                info("\tCode locations: " + it.codeLocationsExtracted);
                 it.codeLocationNames.stream().forEach(name -> info("\t\t" + name));
-                if (!it.success.equals("")) {
-                    info("\tSuccess: " + it.success);
+                if (it.success.size() > 0) {
+                    info("\tSuccess: " + it.success.stream().map(success -> success.strategy.getDescriptiveName()).collect(Collectors.joining(",")));
                 }
-                if (!it.failed.equals("")) {
-                    info("\tFailure: " + it.failed);
+                if (it.failed.size() > 0) {
+                    info("\tFailure: " + it.failed.stream().map(failed -> failed.strategy.getDescriptiveName()).collect(Collectors.joining(",")));
                 }
-                if (!it.exception.equals("")) {
-                    info("\tException: " + it.exception);
+                if (it.exception.size() > 0) {
+                    info("\tException: " + it.exception.stream().map(exception -> exception.strategy.getDescriptiveName()).collect(Collectors.joining(",")));
                 }
             }
         });
@@ -159,16 +143,5 @@ public class ExtractionSummaryReporter {
         logger.info(line);
     }
 
-    private class Info {
-        public String codeLocations;
-        public List<String> codeLocationNames;
-        public String directory;
-        public String success;
-        public String failed;
-        public String exception;
-        public int applied;
-        public int demanded;
-        public int extracted;
-    }
 
 }

@@ -23,6 +23,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.hub;
 
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -140,21 +142,10 @@ public class HubServiceWrapper {
 
     private HubServerConfig createHubServerConfig(final IntLogger slf4jIntLogger) {
         final HubServerConfigBuilder hubServerConfigBuilder = new HubServerConfigBuilder();
-        hubServerConfigBuilder.setHubUrl(detectConfiguration.getHubUrl());
-        hubServerConfigBuilder.setTimeout(detectConfiguration.getHubTimeout());
-        hubServerConfigBuilder.setUsername(detectConfiguration.getHubUsername());
-        hubServerConfigBuilder.setPassword(detectConfiguration.getHubPassword());
-        hubServerConfigBuilder.setApiToken(detectConfiguration.getHubApiToken());
-
-        hubServerConfigBuilder.setProxyHost(detectConfiguration.getHubProxyHost());
-        hubServerConfigBuilder.setProxyPort(detectConfiguration.getHubProxyPort());
-        hubServerConfigBuilder.setProxyUsername(detectConfiguration.getHubProxyUsername());
-        hubServerConfigBuilder.setProxyPassword(detectConfiguration.getHubProxyPassword());
-        hubServerConfigBuilder.setIgnoredProxyHosts(detectConfiguration.getHubProxyIgnoredHosts());
-        hubServerConfigBuilder.setProxyNtlmDomain(detectConfiguration.getHubProxyNtlmDomain());
-        hubServerConfigBuilder.setProxyNtlmWorkstation(detectConfiguration.getHubProxyNtlmWorkstation());
-        hubServerConfigBuilder.setAlwaysTrustServerCertificate(detectConfiguration.getHubTrustCertificate());
         hubServerConfigBuilder.setLogger(slf4jIntLogger);
+
+        final Map<String, String> blackduckHubProperties = detectConfiguration.getBlackduckHubProperties();
+        hubServerConfigBuilder.setFromProperties(blackduckHubProperties);
 
         return hubServerConfigBuilder.build();
     }

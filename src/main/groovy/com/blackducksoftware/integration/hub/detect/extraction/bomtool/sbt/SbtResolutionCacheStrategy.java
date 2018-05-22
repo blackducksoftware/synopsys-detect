@@ -30,6 +30,7 @@ import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
+import com.blackducksoftware.integration.hub.detect.strategy.StrategySearchOptions;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
 import com.blackducksoftware.integration.hub.detect.strategy.result.FileNotFoundStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.PassedStrategyResult;
@@ -44,7 +45,7 @@ public class SbtResolutionCacheStrategy extends Strategy<SbtResolutionCacheConte
     public DetectFileFinder fileFinder;
 
     public SbtResolutionCacheStrategy() {
-        super("Build SBT", BomToolType.SBT, SbtResolutionCacheContext.class, SbtResolutionCacheExtractor.class);
+        super("Build SBT", BomToolType.SBT, SbtResolutionCacheContext.class, SbtResolutionCacheExtractor.class, StrategySearchOptions.defaultNotNested());
     }
 
     @Override

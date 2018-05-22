@@ -49,13 +49,14 @@ public abstract class Strategy<C extends ExtractionContext, E extends Extractor<
     private final Class<E> extractorClass;
 
     private final Set<Strategy> yieldsToStrategies = new HashSet<>();
-    protected StrategySearchOptions searchOptions = new StrategySearchOptions(Integer.MAX_VALUE, false);
+    private final StrategySearchOptions searchOptions;
 
-    public Strategy(final String name, final BomToolType bomToolType, final Class<C> extractionContextClass, final Class<E> extractorClass) {
+    public Strategy(final String name, final BomToolType bomToolType, final Class<C> extractionContextClass, final Class<E> extractorClass, final StrategySearchOptions searchOptions) {
         this.name = name;
         this.bomToolType = bomToolType;
         this.extractionContextClass = extractionContextClass;
         this.extractorClass = extractorClass;
+        this.searchOptions = searchOptions;
     }
 
     public void yieldsTo(final Strategy strategy) {

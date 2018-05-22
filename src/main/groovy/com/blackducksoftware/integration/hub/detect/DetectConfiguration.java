@@ -28,8 +28,10 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -46,6 +48,7 @@ import org.springframework.core.env.PropertySource;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.api.enumeration.PolicySeverityType;
+import com.blackducksoftware.integration.hub.configuration.HubServerConfigBuilder;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolFinder;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
@@ -127,6 +130,7 @@ public class DetectConfiguration {
     private List<DetectOption> detectOptions = new ArrayList<>();
 
     private final Set<String> allDetectPropertyKeys = new HashSet<>();
+    private final Set<String> allBlackduckHubPropertyKeys = new HashSet<>();
     private final Set<String> additionalDockerPropertyNames = new HashSet<>();
     private final Set<String> additionalPhoneHomePropertyNames = new HashSet<>();
 
@@ -193,8 +197,13 @@ public class DetectConfiguration {
             if (propertySource instanceof EnumerablePropertySource) {
                 final EnumerablePropertySource<?> enumerablePropertySource = (EnumerablePropertySource<?>) propertySource;
                 for (final String propertyName : enumerablePropertySource.getPropertyNames()) {
-                    if (StringUtils.isNotBlank(propertyName) && propertyName.startsWith(DETECT_PROPERTY_PREFIX)) {
-                        allDetectPropertyKeys.add(propertyName);
+                    if (StringUtils.isNotBlank(propertyName)) {
+                        if (propertyName.startsWith(DETECT_PROPERTY_PREFIX)) {
+                            allDetectPropertyKeys.add(propertyName);
+                        }
+                        if (propertyName.startsWith(HubServerConfigBuilder.HUB_SERVER_CONFIG_ENVIRONMENT_VARIABLE_PREFIX) || propertyName.startsWith(HubServerConfigBuilder.HUB_SERVER_CONFIG_PROPERTY_KEY_PREFIX)) {
+                            allBlackduckHubPropertyKeys.add(propertyName);
+                        }
                     }
                 }
             }
@@ -404,6 +413,18 @@ public class DetectConfiguration {
         restConnectionBuilder.setAlwaysTrustServerCertificate(getHubTrustCertificate());
 
         return restConnectionBuilder.build();
+    }
+
+    public Map<String, String> getBlackduckHubProperties() {
+        final Map<String, String> allBlackduckHubProperties = new HashMap<>();
+        allBlackduckHubPropertyKeys.forEach(key -> {
+            final String value = configurableEnvironment.getProperty(key);
+            if (StringUtils.isNotBlank(value)) {
+                allBlackduckHubProperties.put(key, value);
+            }
+        });
+
+        return allBlackduckHubProperties;
     }
 
     // properties start
