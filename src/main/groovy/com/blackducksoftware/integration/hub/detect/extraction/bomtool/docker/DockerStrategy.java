@@ -81,7 +81,9 @@ public class DockerStrategy extends Strategy<DockerContext, DockerExtractor> {
 
         context.dockerExe = standardExecutableFinder.getExecutable(StandardExecutableType.DOCKER);
         if (context.dockerExe == null) {
-            return new ExecutableNotFoundStrategyResult("docker");
+            if (detectConfiguration.getDockerPathRequired()) {
+                return new ExecutableNotFoundStrategyResult("docker");
+            }
         }
 
         context.dockerInspectorInfo = dockerInspectorManager.getDockerInspector(environment);

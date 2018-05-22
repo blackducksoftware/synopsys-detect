@@ -62,7 +62,9 @@ public class DockerProperties {
 
     public void populateEnvironmentVariables(final Map<String, String> environmentVariables, final File dockerExecutableFile) throws IOException {
         String path = System.getenv("PATH");
-        path += File.pathSeparator + dockerExecutableFile.getParentFile().getCanonicalPath();
+        if (dockerExecutableFile != null && dockerExecutableFile.exists()) {
+            path += File.pathSeparator + dockerExecutableFile.getParentFile().getCanonicalPath();
+        }
         environmentVariables.put("PATH", path);
         environmentVariables.put("DOCKER_INSPECTOR_VERSION", this.detectConfiguration.getDockerInspectorVersion());
 
