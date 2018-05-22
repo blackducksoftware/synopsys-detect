@@ -53,25 +53,19 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOu
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 
 @Component
-public class NugetInspectorExtractor extends Extractor<NugetInspectorContext>  {
+public class NugetInspectorExtractor extends Extractor<NugetInspectorContext> {
+    static final String INSPECTOR_OUTPUT_PATTERN = "*_inspection.json";
     private final Logger logger = LoggerFactory.getLogger(NugetInspectorExtractor.class);
-
-    static final String INSPECTOR_OUTPUT_PATTERN ="*_inspection.json";
-
-    @Autowired
-    private DetectConfiguration detectConfiguration;
-
-    @Autowired
-    private ExecutableRunner executableRunner;
-
     @Autowired
     public DetectFileManager detectFileManager;
-
-    @Autowired
-    private DetectFileFinder detectFileFinder;
-
     @Autowired
     NugetInspectorPackager nugetInspectorPackager;
+    @Autowired
+    private DetectConfiguration detectConfiguration;
+    @Autowired
+    private ExecutableRunner executableRunner;
+    @Autowired
+    private DetectFileFinder detectFileFinder;
 
     @Override
     public Extraction extract(final NugetInspectorContext context) {
@@ -83,7 +77,7 @@ public class NugetInspectorExtractor extends Extractor<NugetInspectorContext>  {
                     "--target_path=" + context.directory.toString(),
                     "--output_directory=" + outputDirectory.getCanonicalPath(),
                     "--ignore_failure=" + detectConfiguration.getNugetInspectorIgnoreFailure()
-                    ));
+            ));
 
             if (detectConfiguration.getNugetInspectorExcludedModules() != null) {
                 options.add("--excluded_modules=" + detectConfiguration.getNugetInspectorExcludedModules());
@@ -108,12 +102,12 @@ public class NugetInspectorExtractor extends Extractor<NugetInspectorContext>  {
 
             final List<File> dependencyNodeFiles = detectFileFinder.findFiles(outputDirectory, INSPECTOR_OUTPUT_PATTERN);
             final List<NugetParseResult> parseResults = dependencyNodeFiles.stream()
-                    .map(it -> nugetInspectorPackager.createDetectCodeLocation(it))
-                    .collect(Collectors.toList());
+                                                                .map(it -> nugetInspectorPackager.createDetectCodeLocation(it))
+                                                                .collect(Collectors.toList());
 
             final List<DetectCodeLocation> codeLocations = parseResults.stream()
-                    .flatMap(it -> it.codeLocations.stream())
-                    .collect(Collectors.toList());
+                                                                   .flatMap(it -> it.codeLocations.stream())
+                                                                   .collect(Collectors.toList());
 
             if (codeLocations.size() <= 0) {
                 logger.warn("Unable to extract any dependencies from nuget");
@@ -122,15 +116,16 @@ public class NugetInspectorExtractor extends Extractor<NugetInspectorContext>  {
             final Map<String, DetectCodeLocation> codeLocationsBySource = new HashMap<>();
             final DependencyGraphCombiner combiner = new DependencyGraphCombiner();
 
-            codeLocations.stream().forEach ( codeLocation -> {
-                if (codeLocationsBySource.containsKey(codeLocation.getSourcePath())) {
+            codeLocations.stream().forEach(codeLocation -> {
+                String sourcePathKey = codeLocation.getSourcePath().toLowerCase();
+                if (codeLocationsBySource.containsKey(sourcePathKey)) {
                     logger.info("Multiple project code locations were generated for: " + context.directory.toString());
                     logger.info("This most likely means the same project exists in multiple solutions.");
                     logger.info("The code location's dependencies will be combined, in the future they will exist seperately for each solution.");
-                    final DetectCodeLocation destination = codeLocationsBySource.get(codeLocation.getSourcePath());
+                    final DetectCodeLocation destination = codeLocationsBySource.get(sourcePathKey);
                     combiner.addGraphAsChildrenToRoot((MutableDependencyGraph) destination.getDependencyGraph(), codeLocation.getDependencyGraph());
                 } else {
-                    codeLocationsBySource.put(codeLocation.getSourcePath(), codeLocation);
+                    codeLocationsBySource.put(sourcePathKey, codeLocation);
                 }
             });
 

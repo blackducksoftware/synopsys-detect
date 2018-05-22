@@ -1,15 +1,14 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.maven
 
-import static org.junit.Assert.*
-
-import org.junit.Test
-
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.maven.parse.MavenCodeLocationPackager
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.maven.parse.MavenParseResult
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
+import org.junit.Test
+
+import static org.junit.Assert.*
 
 class MavenCodeLocationPackagerTest {
     private TestUtil testUtil = new TestUtil()
@@ -87,7 +86,7 @@ class MavenCodeLocationPackagerTest {
         assertNull(dependency)
 
         dependency = mavenCodeLocationPackager.textToDependency("stuff:things:jar:classifier:0.0.1")
-        assertNull(dependency)
+        assertNotNull(dependency)
     }
 
     @Test
@@ -263,6 +262,40 @@ class MavenCodeLocationPackagerTest {
 
         assertTrue(mavenCodeLocationPackager.doesLineContainSegmentsInOrder("stuff and things", "things"))
     }
+
+    @Test
+    public void testLineWithExtraTextAfterScope() {
+        MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(new ExternalIdFactory())
+
+        def line = '[INFO] |  |  |  \\- org.eclipse.scout.sdk.deps:org.eclipse.core.jobs:jar:3.8.0.v20160509-0411:compile (version selected from constraint [3.8.0,3.8.1))'
+        line = mavenCodeLocationPackager.trimLogLevel(line)
+        final String cleanedLine = mavenCodeLocationPackager.calculateCurrentLevelAndCleanLine(line);
+        final Dependency dependency = mavenCodeLocationPackager.textToDependency(cleanedLine);
+        assertEquals('org.eclipse.scout.sdk.deps:org.eclipse.core.jobs:3.8.0.v20160509-0411', dependency.externalId.createExternalId());
+    }
+
+    @Test
+    public void testLineWithUnknownScope() {
+        MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(new ExternalIdFactory())
+
+        def line = '[INFO] |  |  |  \\- org.eclipse.scout.sdk.deps:org.eclipse.core.jobs:jar:3.8.0.v20160509-0411:pants (version selected from constraint [3.8.0,3.8.1))'
+        line = mavenCodeLocationPackager.trimLogLevel(line)
+        final String cleanedLine = mavenCodeLocationPackager.calculateCurrentLevelAndCleanLine(line);
+        final Dependency dependency = mavenCodeLocationPackager.textToDependency(cleanedLine);
+        assertEquals('org.eclipse.scout.sdk.deps:org.eclipse.core.jobs:3.8.0.v20160509-0411', dependency.externalId.createExternalId());
+    }
+
+    @Test
+    public void testLineWithBadColonPlacement() {
+        MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(new ExternalIdFactory())
+
+        def line = '[INFO] |  |  |  \\- org.eclipse.scout.sdk.deps:org.eclipse.core.jobs:jar:3.8.0.v20160509-0411:pants (version selected from: [3.8.0,3.8.1))'
+        line = mavenCodeLocationPackager.trimLogLevel(line)
+        final String cleanedLine = mavenCodeLocationPackager.calculateCurrentLevelAndCleanLine(line);
+        final Dependency dependency = mavenCodeLocationPackager.textToDependency(cleanedLine);
+        assertEquals('org.eclipse.scout.sdk.deps:org.eclipse.core.jobs:pants (version selected from', dependency.externalId.createExternalId());
+    }
+
 
     private void createNewCodeLocationTest(String mavenOutputText, String expectedResourcePath) {
         createNewCodeLocationTest(mavenOutputText, expectedResourcePath, 1, "", "")
