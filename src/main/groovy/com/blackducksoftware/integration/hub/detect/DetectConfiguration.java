@@ -205,6 +205,8 @@ public class DetectConfiguration {
 
         bomToolFilter = new ExcludedIncludedFilter(getExcludedBomToolTypes(), getIncludedBomToolTypes());
 
+        configureForDocker();
+
         if (hubSignatureScannerRelativePathsToExclude != null && hubSignatureScannerRelativePathsToExclude.length > 0) {
             for (final String path : hubSignatureScannerRelativePathsToExclude) {
                 excludedScanPaths.add(new File(sourceDirectory, path).getCanonicalPath());
