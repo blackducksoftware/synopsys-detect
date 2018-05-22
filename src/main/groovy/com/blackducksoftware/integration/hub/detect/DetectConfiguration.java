@@ -55,7 +55,6 @@ import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 import com.blackducksoftware.integration.hub.detect.help.HelpDescription;
 import com.blackducksoftware.integration.hub.detect.help.HelpDetailed;
 import com.blackducksoftware.integration.hub.detect.help.HelpGroup;
-import com.blackducksoftware.integration.hub.detect.help.ValueDeprecation;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver;
 import com.blackducksoftware.integration.log.Slf4jIntLogger;
@@ -151,19 +150,6 @@ public class DetectConfiguration {
             sourcePath = System.getProperty("user.dir");
         }
 
-        if (!getCleanupBdioFiles()) {
-            requestDeprecation("cleanupBdioFiles");
-            cleanupDetectFiles = false;
-        }
-        if (!getCleanupBomToolFiles()) {
-            requestDeprecation("cleanupBomToolFiles");
-            cleanupDetectFiles = false;
-        }
-        if (!getGradleCleanupBuildBlackduckDirectory()) {
-            requestDeprecation("gradleCleanupBuildBlackduckDirectory");
-            cleanupDetectFiles = false;
-        }
-
         sourceDirectory = new File(sourcePath);
         if (!sourceDirectory.exists() || !sourceDirectory.isDirectory()) {
             throw new DetectUserFriendlyException("The source path ${sourcePath} either doesn't exist, isn't a directory, or doesn't have appropriate permissions.", ExitCodeType.FAILURE_GENERAL_ERROR);
@@ -182,11 +168,6 @@ public class DetectConfiguration {
             if (allSeverities) {
                 final List<String> allPolicyTypes = Arrays.stream(PolicySeverityType.values()).filter(type -> type != PolicySeverityType.UNSPECIFIED).map(type -> type.toString()).collect(Collectors.toList());
                 policyCheckFailOnSeverities = StringUtils.join(allPolicyTypes, ",");
-            }
-            if (policyCheck) {
-                requestDeprecation("policyCheck");
-            } else {
-                policyCheck = true;
             }
         }
 
@@ -255,7 +236,7 @@ public class DetectConfiguration {
             hubOfflineMode = true;
         }
 
-        //TODO Final home for directories to exclude
+        // TODO Final home for directories to exclude
         bomToolSearchDirectoryExclusions = new ArrayList<>();
         try {
             if (bomToolSearchExclusionDefaults) {
@@ -454,13 +435,6 @@ public class DetectConfiguration {
     @HelpGroup(primary = GROUP_CLEANUP)
     @HelpDescription("If true the files created by Detect will be cleaned up.")
     private Boolean cleanupDetectFiles;
-
-    @ValueDeprecation(willRemoveInVersion = "4.0.0", description = "To turn off file cleanup, set --detect.cleanup=false.")
-    @Value("${detect.cleanup.bdio.files:}")
-    @DefaultValue("true")
-    @HelpGroup(primary = GROUP_CLEANUP)
-    @HelpDescription("If true the bdio files will be deleted after upload")
-    private Boolean cleanupBdioFiles;
 
     @Value("${detect.test.connection:}")
     @DefaultValue("false")
@@ -690,16 +664,9 @@ public class DetectConfiguration {
     //TODO finalize the description and detailed help text
     private Boolean projectVersionUpdate;
 
-    @ValueDeprecation(willRemoveInVersion = "4.0.0", description = "To fail on any policy, set --detect.policy.check.fail.on.severities=ALL.")
-    @Value("${detect.policy.check:}")
-    @DefaultValue("false")
-    @HelpGroup(primary = GROUP_POLICY_CHECK, additional = { SEARCH_GROUP_POLICY })
-    @HelpDescription("Set to true if you would like a policy check from the hub for your project. False by default")
-    private Boolean policyCheck;
-
     @Value("${detect.policy.check.fail.on.severities:}")
     @HelpGroup(primary = GROUP_POLICY_CHECK, additional = { SEARCH_GROUP_POLICY })
-    @HelpDescription("A comma-separated list of policy violation severities that will fail detect if checking policies is enabled. If no severity is provided, any policy violation will fail detect.")
+    @HelpDescription("A comma-separated list of policy violation severities that will fail detect. If this is not set, detect will not fail due to policy violations.")
     @AcceptableValues(value = { "ALL", "BLOCKER", "CRITICAL", "MAJOR", "MINOR", "TRIVIAL" }, caseSensitive = false, strict = false)
     private String policyCheckFailOnSeverities;
 
@@ -733,13 +700,6 @@ public class DetectConfiguration {
     @HelpGroup(primary = GROUP_GRADLE)
     @HelpDescription("The names of the projects to include")
     private String gradleIncludedProjectNames;
-
-    @ValueDeprecation(willRemoveInVersion = "4.0.0", description = "To turn off file cleanup, set --detect.cleanup=false.")
-    @Value("${detect.gradle.cleanup.build.blackduck.directory:}")
-    @DefaultValue("true")
-    @HelpGroup(primary = GROUP_GRADLE)
-    @HelpDescription("Set this to false if you do not want the 'blackduck' directory in your build directory to be deleted.")
-    private Boolean gradleCleanupBuildBlackduckDirectory;
 
     @Value("${detect.nuget.inspector.name:}")
     @DefaultValue("IntegrationNugetInspector")
@@ -901,13 +861,6 @@ public class DetectConfiguration {
     @AcceptableValues(value = { "ALL", "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF" }, caseSensitive = false, strict = true)
     private String loggingLevel;
 
-    @ValueDeprecation(willRemoveInVersion = "4.0.0", description = "To turn off file cleanup, set --detect.cleanup=false.")
-    @Value("${detect.cleanup.bom.tool.files:}")
-    @DefaultValue("true")
-    @HelpGroup(primary = GROUP_CLEANUP, additional = { GROUP_CLEANUP, SEARCH_GROUP_DEBUG })
-    @HelpDescription("Detect creates temporary files in the output directory. If set to true this will clean them up after execution")
-    private Boolean cleanupBomToolFiles;
-
     @Value("${detect.hub.signature.scanner.dry.run:}")
     @DefaultValue("false")
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_SIGNATURE_SCANNER, SEARCH_GROUP_HUB })
@@ -1001,7 +954,7 @@ public class DetectConfiguration {
     private String defaultProjectVersionScheme;
 
     @Value("${detect.default.project.version.text:}")
-    @DefaultValue("Detect Unknown Version")
+    @DefaultValue("Default Detect Version")
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
     @HelpDescription("The text to use as the default project version")
     private String defaultProjectVersionText;
@@ -1092,10 +1045,6 @@ public class DetectConfiguration {
     @DefaultValue("false")
     @HelpGroup(primary = GROUP_YARN)
     private String yarnProductionDependenciesOnly;
-
-    public boolean getCleanupBdioFiles() {
-        return BooleanUtils.toBoolean(cleanupBdioFiles);
-    }
 
     public Boolean getCleanupDetectFiles() {
         return BooleanUtils.toBoolean(cleanupDetectFiles);
@@ -1266,10 +1215,6 @@ public class DetectConfiguration {
         return BooleanUtils.toBoolean(projectVersionUpdate);
     }
 
-    public boolean getPolicyCheck() {
-        return BooleanUtils.toBoolean(policyCheck);
-    }
-
     public String getPolicyCheckFailOnSeverities() {
         return policyCheckFailOnSeverities;
     }
@@ -1296,10 +1241,6 @@ public class DetectConfiguration {
 
     public String getGradleIncludedProjectNames() {
         return gradleIncludedProjectNames;
-    }
-
-    public boolean getGradleCleanupBuildBlackduckDirectory() {
-        return BooleanUtils.toBoolean(gradleCleanupBuildBlackduckDirectory);
     }
 
     public String getNugetInspectorPackageName() {
@@ -1424,10 +1365,6 @@ public class DetectConfiguration {
 
     public Boolean getFailOnConfigWarning() {
         return BooleanUtils.toBoolean(failOnConfigWarning);
-    }
-
-    public boolean getCleanupBomToolFiles() {
-        return BooleanUtils.toBoolean(cleanupBomToolFiles);
     }
 
     public boolean getSuppressConfigurationOutput() {

@@ -116,13 +116,13 @@ public class HubManager implements ExitCodeReporter {
 
     public void performPostHubActions(final DetectProject detectProject, final ProjectVersionView projectVersionView) throws DetectUserFriendlyException {
         try {
-            if (detectConfiguration.getPolicyCheck() || detectConfiguration.getRiskReportPdf() || detectConfiguration.getNoticesReport()) {
+            if (StringUtils.isNotBlank(detectConfiguration.getPolicyCheckFailOnSeverities()) || detectConfiguration.getRiskReportPdf() || detectConfiguration.getNoticesReport()) {
                 final ProjectService projectService = hubServiceWrapper.createProjectService();
                 final ScanStatusService scanStatusService = hubServiceWrapper.createScanStatusService();
 
                 waitForBomUpdate(hubServiceWrapper.createHubService(), scanStatusService, projectVersionView);
 
-                if (detectConfiguration.getPolicyCheck()) {
+                if (StringUtils.isNotBlank(detectConfiguration.getPolicyCheckFailOnSeverities())) {
                     final PolicyStatusDescription policyStatusDescription = policyChecker.getPolicyStatus(projectService, projectVersionView);
                     logger.info(policyStatusDescription.getPolicyStatusMessage());
                     if (policyChecker.policyViolated(policyStatusDescription)) {
