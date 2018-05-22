@@ -31,7 +31,7 @@ import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 @Component
 public class BomCodeLocationNameFactory extends CodeLocationNameFactory {
     public String createCodeLocationName(final String sourcePath, final String projectName, final String projectVersionName, final BomToolType bomToolType, final String prefix, final String suffix) {
-        final String finalSourcePathPiece = detectFileManager.extractFinalPieceFromPath(sourcePath);
+        final String finalSourcePathPiece = detectFileFinder.extractFinalPieceFromPath(sourcePath);
         final String codeLocationTypeString = CodeLocationType.BOM.toString().toLowerCase();
         final String bomToolTypeString = bomToolType.toString().toLowerCase();
 

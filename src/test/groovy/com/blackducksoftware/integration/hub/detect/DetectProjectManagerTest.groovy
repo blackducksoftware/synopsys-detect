@@ -1,11 +1,13 @@
 package com.blackducksoftware.integration.hub.detect
 
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import org.joda.time.DateTime
-import org.joda.time.DateTimeZone
-import org.joda.time.format.DateTimeFormat
+import java.time.Instant
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
+
 import org.junit.Assert
 import org.junit.Test
+
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 
 public class DetectProjectManagerTest {
     private ExternalIdFactory externalIdFactory = new ExternalIdFactory();
@@ -21,7 +23,7 @@ public class DetectProjectManagerTest {
         def detectProjectManager = new DetectProjectManager()
         detectProjectManager.detectConfiguration = detectConfiguration
 
-        String timeString = DateTimeFormat.forPattern('yyyy-MM-dd\'T\'HH:mm:ss.SSS').withZoneUTC().print(DateTime.now().withZone(DateTimeZone.UTC))
+        String timeString = DateTimeFormatter.ofPattern('yyyy-MM-dd\'T\'HH:mm:ss.SSS').withZone(ZoneOffset.UTC).format(Instant.now().atZone(ZoneOffset.UTC))
         String defaultTimestampVersion = detectProjectManager.getProjectVersionName(null)
         Assert.assertTrue(defaultTimestampVersion.startsWith(timeString[0..10]))
 
@@ -33,5 +35,4 @@ public class DetectProjectManagerTest {
         String version = detectProjectManager.getProjectVersionName(detectConfiguration.defaultProjectVersionText)
         Assert.assertEquals('actual', version)
     }
-
 }

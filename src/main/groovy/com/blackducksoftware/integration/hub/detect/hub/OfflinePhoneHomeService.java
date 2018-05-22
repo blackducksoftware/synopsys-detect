@@ -28,13 +28,13 @@ import com.blackducksoftware.integration.log.IntLogger;
 import com.blackducksoftware.integration.phonehome.PhoneHomeClient;
 import com.blackducksoftware.integration.phonehome.PhoneHomeRequestBody;
 import com.blackducksoftware.integration.phonehome.enums.ProductIdEnum;
-import com.blackducksoftware.integration.util.CIEnvironmentVariables;
+import com.blackducksoftware.integration.util.IntEnvironmentVariables;
 
 public class OfflinePhoneHomeService extends PhoneHomeService {
 
     public OfflinePhoneHomeService(IntLogger logger, PhoneHomeClient phoneHomeClient,
-            CIEnvironmentVariables ciEnvironmentVariables) {
-        super(null, logger, phoneHomeClient, null, ciEnvironmentVariables);
+            IntEnvironmentVariables intEnvironmentVariables) {
+        super(null, logger, phoneHomeClient, null, intEnvironmentVariables);
     }
 
     @Override

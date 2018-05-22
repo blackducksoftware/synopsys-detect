@@ -25,8 +25,11 @@ package com.blackducksoftware.integration.hub.detect.util.executable;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,17 +38,19 @@ import org.springframework.stereotype.Component;
 import com.blackducksoftware.integration.hub.detect.DetectInfo;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
 @Component
 public class ExecutableManager {
     private final Logger logger = LoggerFactory.getLogger(ExecutableManager.class);
 
     @Autowired
-    private DetectFileManager detectFileManager;
+    private DetectFileFinder detectFileFinder;
 
     @Autowired
     private DetectInfo detectInfo;
+
+    private final Map<String, File> cachedSystemExecutables = new HashMap<>();
 
     public String getExecutableName(final ExecutableType executableType) {
         return executableType.getExecutable();
@@ -57,6 +62,18 @@ public class ExecutableManager {
             return executable.getAbsolutePath();
         } else {
             return null;
+        }
+    }
+
+    public String getExecutablePathOrOverride(final ExecutableType executableType, final boolean searchSystemPath, final File path, final String override) {
+        return getExecutablePathOrOverride(executableType, searchSystemPath, path.toString(), override);
+    }
+
+    public String getExecutablePathOrOverride(final ExecutableType executableType, final boolean searchSystemPath, final String path, final String override) {
+        if (StringUtils.isNotBlank(override)) {
+            return override;
+        } else {
+            return getExecutablePath(executableType, searchSystemPath, path);
         }
     }
 
@@ -73,7 +90,11 @@ public class ExecutableManager {
 
     private File findExecutableFileFromSystemPath(final String executable) {
         final String systemPath = System.getenv("PATH");
-        return findExecutableFileFromPath(systemPath, executable);
+        if (!cachedSystemExecutables.containsKey(executable)) {
+            cachedSystemExecutables.put(executable, findExecutableFileFromPath(systemPath, executable));
+        }
+        return cachedSystemExecutables.get(executable);
+
     }
 
     private File findExecutableFileFromPath(final String path, final String executableName) {
@@ -87,7 +108,7 @@ public class ExecutableManager {
 
         for (final String pathPiece : path.split(File.pathSeparator)) {
             for (final String possibleExecutable : executables) {
-                final File foundFile = detectFileManager.findFile(pathPiece, possibleExecutable);
+                final File foundFile = detectFileFinder.findFile(pathPiece, possibleExecutable);
                 if (foundFile != null && foundFile.exists() && foundFile.canExecute()) {
                     return foundFile;
                 }

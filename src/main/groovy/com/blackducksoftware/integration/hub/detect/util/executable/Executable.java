@@ -37,6 +37,11 @@ public class Executable {
     private final String executablePath;
     private final List<String> executableArguments = new ArrayList<>();
 
+    public Executable(final File workingDirectory, final File executable, final List<String> executableArguments) {
+        this(workingDirectory, executable.toString(), executableArguments);
+    }
+
+
     public Executable(final File workingDirectory, final String executablePath, final List<String> executableArguments) {
         this.workingDirectory = workingDirectory;
         this.executablePath = executablePath;

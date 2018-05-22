@@ -13,7 +13,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool.go
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.bomtool.go.vndr.VndrParser
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.go.parse.VndrParser
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 import com.google.gson.Gson

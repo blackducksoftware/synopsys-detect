@@ -11,11 +11,13 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.cpan
 
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
+
+import static org.junit.Assert.*
+
 import org.junit.Test
 
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertNotNull
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.cpan.parse.CpanListParser
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
 
 class CpanListParserTest {
     private CpanListParser cpanListParser = new CpanListParser()
