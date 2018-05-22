@@ -71,7 +71,6 @@ public class ExtractionSummaryReporter {
                     data.applicable++;
                 }
                 if (result.isExtractable()) {
-
                     data.extractable++;
 
                     if (result.extraction != null) {
