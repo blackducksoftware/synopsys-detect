@@ -1,9 +1,7 @@
 {
   "bomToolType": "MAVEN",
   "sourcePath": "/test/path/sonar-stash-plugin",
-  "bomToolProjectName": "sonar-stash-plugin",
-  "bomToolProjectVersionName": "1.3.0-SNAPSHOT",
-  "bomToolProjectExternalId": {
+  "externalId": {
     "forge": {
       "name": "maven",
       "separator": ":"

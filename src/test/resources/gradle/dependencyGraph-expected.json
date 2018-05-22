@@ -1,9 +1,7 @@
 {
   "bomToolType": "GRADLE",
   "sourcePath": "/Users/ekerwin/Documents/source/integration/hub-detect",
-  "bomToolProjectName": "hub-detect",
-  "bomToolProjectVersionName": "2.0.0-SNAPSHOT",
-  "bomToolProjectExternalId": {
+  "externalId": {
     "forge": {
       "name": "maven",
       "separator": ":"

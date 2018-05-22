@@ -1,13 +1,14 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.yarn
 
+import static org.junit.Assert.*
+
+import org.junit.Test
+
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.yarn.parse.YarnListParser
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
-import org.junit.Test
-
-import static org.junit.Assert.*
 
 public class YarnListParserTest {
     private final TestUtil testUtil = new TestUtil();

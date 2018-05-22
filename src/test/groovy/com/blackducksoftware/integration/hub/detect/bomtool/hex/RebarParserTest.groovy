@@ -1,5 +1,12 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.hex
 
+import static com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil.assertGraph
+import static org.junit.Assert.*
+
+import org.junit.BeforeClass
+import org.junit.Test
+import org.springframework.test.util.ReflectionTestUtils
+
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.Forge
@@ -7,15 +14,9 @@ import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.hex.parse.Rebar3TreeParser
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.hex.parse.RebarParseResult
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
-import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
-import org.junit.BeforeClass
-import org.junit.Test
-import org.springframework.test.util.ReflectionTestUtils
-
-import static com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil.assertGraph
-import static org.junit.Assert.*
 
 class RebarParserTest {
 
@@ -62,13 +63,12 @@ class RebarParserTest {
     }
 
     private DetectCodeLocation build(String resource) {
-        List<String> dependencyTreeOutput = testUtil.getResourceAsUTF8String(resource).split('\n')
-        DetectProject project = new DetectProject()
+        List<String> dependencyTreeOutput = testUtil.getResourceAsUTF8String(resource).split(System.lineSeparator)
         Rebar3TreeParser rebarTreeParser = new Rebar3TreeParser()
         ReflectionTestUtils.setField(rebarTreeParser, 'externalIdFactory', externalIdFactory)
-        DetectCodeLocation codeLocation = rebarTreeParser.parseRebarTreeOutput(dependencyTreeOutput, project, '')
+        RebarParseResult result = rebarTreeParser.parseRebarTreeOutput(dependencyTreeOutput, '')
 
-        return codeLocation
+        return result.codeLocation;
     }
 
     @Test

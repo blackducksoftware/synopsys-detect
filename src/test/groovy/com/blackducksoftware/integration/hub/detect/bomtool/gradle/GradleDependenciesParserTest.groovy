@@ -11,19 +11,20 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.gradle
 
-import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.extraction.bomtool.gradle.parse.GradleReportLine
-import com.blackducksoftware.integration.hub.detect.extraction.bomtool.gradle.parse.GradleReportParser
-import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
-import com.blackducksoftware.integration.hub.detect.model.DetectProject
-import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
-import com.google.gson.GsonBuilder
+import static com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphAssertions.*
+import static org.junit.Assert.assertEquals
+
 import org.junit.Test
 import org.springframework.test.util.ReflectionTestUtils
 
-import static com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphAssertions.*
-import static org.junit.Assert.assertEquals
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.gradle.parse.GradleParseResult
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.gradle.parse.GradleReportLine
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.gradle.parse.GradleReportParser
+import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
+import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
+import com.google.gson.GsonBuilder
 
 class GradleReportParserTest {
     private TestUtil testUtil = new TestUtil()
@@ -69,31 +70,28 @@ class GradleReportParserTest {
 
     private DetectCodeLocation build(String resource) {
         InputStream inputStream = getClass().getResourceAsStream(resource)
-        DetectProject project = new DetectProject()
         GradleReportParser gradleReportParser = new GradleReportParser()
         ReflectionTestUtils.setField(gradleReportParser, 'externalIdFactory', externalIdFactory)
-        DetectCodeLocation codeLocation = gradleReportParser.parseDependencies(project, inputStream)
-        return codeLocation;
+        GradleParseResult result = gradleReportParser.parseDependencies(inputStream)
+        return result.codeLocation;
     }
 
     @Test
     public void testSpringFrameworkAop() {
         InputStream inputStream = getClass().getResourceAsStream('/gradle/spring-framework/spring_aop_dependencyGraph.txt')
-        DetectProject project = new DetectProject()
         GradleReportParser gradleReportParser = new GradleReportParser()
         ReflectionTestUtils.setField(gradleReportParser, 'externalIdFactory', new ExternalIdFactory())
-        DetectCodeLocation codeLocation = gradleReportParser.parseDependencies(project, inputStream)
-        println(new GsonBuilder().setPrettyPrinting().create().toJson(codeLocation))
+        GradleParseResult result = gradleReportParser.parseDependencies(inputStream)
+        println(new GsonBuilder().setPrettyPrinting().create().toJson(result.codeLocation))
     }
 
     private void createNewCodeLocationTest(String gradleInspectorOutputResourcePath, String expectedResourcePath, String rootProjectName, String rootProjectVersionName) {
-        DetectProject project = new DetectProject()
         GradleReportParser gradleReportParser = new GradleReportParser()
         ReflectionTestUtils.setField(gradleReportParser, 'externalIdFactory', new ExternalIdFactory())
-        DetectCodeLocation codeLocation = gradleReportParser.parseDependencies(project, getClass().getResourceAsStream(gradleInspectorOutputResourcePath))
+        GradleParseResult result = gradleReportParser.parseDependencies(getClass().getResourceAsStream(gradleInspectorOutputResourcePath))
 
-        assertEquals(rootProjectName, project.getProjectName())
-        assertEquals(rootProjectVersionName, project.getProjectVersionName())
-        testUtil.testJsonResource(expectedResourcePath, codeLocation)
+        assertEquals(rootProjectName, result.projectName)
+        assertEquals(rootProjectVersionName, result.projectVersion)
+        testUtil.testJsonResource(expectedResourcePath, result.codeLocation)
     }
 }

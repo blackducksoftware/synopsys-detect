@@ -94,7 +94,7 @@ public class MavenCodeLocationPackager {
                 //this is the first line of a new code location, the following lines will be the tree of dependencies for this code location
                 currentGraph = new MutableMapDependencyGraph();
                 final MavenParseResult mavenProject = createNewCodeLocation(sourcePath, line, currentGraph);
-                if (null != mavenProject && filter.shouldInclude(currentMavenProject.projectName)) {
+                if (null != mavenProject && filter.shouldInclude(mavenProject.projectName)) {
                     this.currentMavenProject = mavenProject;
                     codeLocations.add(mavenProject);
                 } else {

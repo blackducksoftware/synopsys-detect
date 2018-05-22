@@ -2,6 +2,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool.search;
 
 import java.io.File;
 
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
@@ -9,7 +10,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.blackducksoftware.integration.hub.detect.Application;
-
+@Ignore
 @ContextConfiguration(classes = { Application.class })
 @RunWith(SpringJUnit4ClassRunner.class)
 public class BomToolTreeWalkerTest {
