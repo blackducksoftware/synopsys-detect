@@ -23,6 +23,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.hub;
 
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +40,6 @@ import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.DetectPhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
-import com.blackducksoftware.integration.hub.rest.RestConnection;
 import com.blackducksoftware.integration.hub.service.CodeLocationService;
 import com.blackducksoftware.integration.hub.service.HubService;
 import com.blackducksoftware.integration.hub.service.HubServicesFactory;
@@ -49,6 +50,7 @@ import com.blackducksoftware.integration.hub.service.ScanStatusService;
 import com.blackducksoftware.integration.hub.service.SignatureScannerService;
 import com.blackducksoftware.integration.log.IntLogger;
 import com.blackducksoftware.integration.log.Slf4jIntLogger;
+import com.blackducksoftware.integration.rest.connection.RestConnection;
 
 import groovy.transform.TypeChecked;
 
@@ -140,21 +142,10 @@ public class HubServiceWrapper {
 
     private HubServerConfig createHubServerConfig(final IntLogger slf4jIntLogger) {
         final HubServerConfigBuilder hubServerConfigBuilder = new HubServerConfigBuilder();
-        hubServerConfigBuilder.setHubUrl(detectConfiguration.getHubUrl());
-        hubServerConfigBuilder.setTimeout(detectConfiguration.getHubTimeout());
-        hubServerConfigBuilder.setUsername(detectConfiguration.getHubUsername());
-        hubServerConfigBuilder.setPassword(detectConfiguration.getHubPassword());
-        hubServerConfigBuilder.setApiToken(detectConfiguration.getHubApiToken());
-
-        hubServerConfigBuilder.setProxyHost(detectConfiguration.getHubProxyHost());
-        hubServerConfigBuilder.setProxyPort(detectConfiguration.getHubProxyPort());
-        hubServerConfigBuilder.setProxyUsername(detectConfiguration.getHubProxyUsername());
-        hubServerConfigBuilder.setProxyPassword(detectConfiguration.getHubProxyPassword());
-        hubServerConfigBuilder.setIgnoredProxyHosts(detectConfiguration.getHubProxyIgnoredHosts());
-        hubServerConfigBuilder.setProxyNtlmDomain(detectConfiguration.getHubProxyNtlmDomain());
-        hubServerConfigBuilder.setProxyNtlmWorkstation(detectConfiguration.getHubProxyNtlmWorkstation());
-        hubServerConfigBuilder.setAlwaysTrustServerCertificate(detectConfiguration.getHubTrustCertificate());
         hubServerConfigBuilder.setLogger(slf4jIntLogger);
+
+        final Map<String, String> blackduckHubProperties = detectConfiguration.getBlackduckHubProperties();
+        hubServerConfigBuilder.setFromProperties(blackduckHubProperties);
 
         return hubServerConfigBuilder.build();
     }

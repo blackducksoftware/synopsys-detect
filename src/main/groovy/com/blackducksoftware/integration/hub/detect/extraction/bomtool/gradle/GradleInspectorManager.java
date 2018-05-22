@@ -50,9 +50,9 @@ import com.blackducksoftware.integration.hub.detect.strategy.evaluation.Strategy
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
-import com.blackducksoftware.integration.hub.request.Request;
-import com.blackducksoftware.integration.hub.request.Response;
-import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnection;
+import com.blackducksoftware.integration.rest.connection.UnauthenticatedRestConnection;
+import com.blackducksoftware.integration.rest.request.Request;
+import com.blackducksoftware.integration.rest.request.Response;
 
 import freemarker.core.ParseException;
 import freemarker.template.Configuration;
@@ -100,7 +100,6 @@ public class GradleInspectorManager {
         return resolvedInitScript;
     }
 
-
     String resolveInspectorVersion() {
         if ("latest".equalsIgnoreCase(detectConfiguration.getGradleInspectorVersion())) {
             try {
@@ -119,7 +118,7 @@ public class GradleInspectorManager {
                         final InputStream inputStream = response.getContent();
                         xmlDocument = xmlDocumentBuilder.parse(inputStream);
                     } finally {
-                        if ( null != response) {
+                        if (null != response) {
                             response.close();
                         }
                     }

@@ -46,15 +46,14 @@ import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
-import com.blackducksoftware.integration.hub.request.Request;
-import com.blackducksoftware.integration.hub.request.Response;
-import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnection;
+import com.blackducksoftware.integration.rest.connection.UnauthenticatedRestConnection;
+import com.blackducksoftware.integration.rest.request.Request;
+import com.blackducksoftware.integration.rest.request.Response;
 
 @Component
 public class DockerInspectorManager {
-    private final Logger logger = LoggerFactory.getLogger(DockerInspectorManager.class);
     static final String LATEST_URL = "https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector.sh";
-
+    private final Logger logger = LoggerFactory.getLogger(DockerInspectorManager.class);
     @Autowired
     public DetectFileManager detectFileManager;
 
@@ -77,7 +76,7 @@ public class DockerInspectorManager {
             }
 
             return resolvedInfo;
-        }catch (final Exception e) {
+        } catch (final Exception e) {
             throw new StrategyException(e);
         }
     }
