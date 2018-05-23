@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,7 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
+import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
@@ -61,54 +63,49 @@ import com.google.gson.Gson;
 
 @Component
 public class DockerExtractor extends Extractor<DockerContext> {
+    public static final String TAR_FILENAME_PATTERN = "*.tar.gz";
+    public static final String DEPENDENCIES_PATTERN = "*bdio.jsonld";
     private final Logger logger = LoggerFactory.getLogger(DockerExtractor.class);
-
-    @Autowired
-    DockerProperties dockerProperties;
-
     @Autowired
     protected DetectFileFinder detectFileFinder;
 
     @Autowired
     protected DetectFileManager detectFileManager;
-
+    @Autowired
+    DockerProperties dockerProperties;
     @Autowired
     ExecutableManager executableManager;
-
     @Autowired
     ExecutableRunner executableRunner;
-
     @Autowired
     BdioTransformer bdioTransformer;
-
     @Autowired
     ExternalIdFactory externalIdFactory;
-
     @Autowired
     Gson gson;
-
-    static final String DEPENDENCIES_PATTERN = "*bdio.jsonld";
+    @Autowired
+    HubSignatureScanner hubSignatureScanner;
 
     @Override
     public Extraction extract(final DockerContext context) {
         try {
             String imageArgument = null;
             String imagePiece = null;
-            if (context.tar != null) {
+            if (StringUtils.isNotBlank(context.tar)) {
                 final File dockerTarFile = new File(context.tar);
                 imageArgument = String.format("--docker.tar=%s", dockerTarFile.getCanonicalPath());
                 imagePiece = detectFileFinder.extractFinalPieceFromPath(dockerTarFile.getCanonicalPath());
-            }else if (context.image != null) {
+            } else if (StringUtils.isNotBlank(context.image)) {
                 imagePiece = context.image;
                 imageArgument = String.format("--docker.image=%s", context.image);
             }
 
-            if (imageArgument == null || imagePiece == null){
+            if (imageArgument == null || imagePiece == null) {
                 return new Extraction.Builder().failure("No docker image found.").build();
-            }else {
-                return executeDocker(context, imageArgument, imagePiece, context.directory, context.dockerExe, context.bashExe, context.dockerInspectorInfo);
+            } else {
+                return executeDocker(context, imageArgument, imagePiece, context.tar, context.directory, context.dockerExe, context.bashExe, context.dockerInspectorInfo);
             }
-        }catch (final Exception e) {
+        } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
     }
@@ -125,7 +122,7 @@ public class DockerExtractor extends Extractor<DockerContext> {
                 final List<String> dockerImportArguments = Arrays.asList(
                         "-c",
                         "docker load -i \"" + imageToImport.getCanonicalPath() + "\""
-                        );
+                );
 
                 final Executable dockerImportImageExecutable = new Executable(directory, environmentVariables, bashExe.toString(), dockerImportArguments);
                 executableRunner.execute(dockerImportImageExecutable);
@@ -136,9 +133,9 @@ public class DockerExtractor extends Extractor<DockerContext> {
         }
     }
 
-
-
-    private Extraction executeDocker(final DockerContext context, final String imageArgument, final String imagePiece, final File directory, final File dockerExe, final File bashExe, final DockerInspectorInfo dockerInspectorInfo) throws FileNotFoundException, IOException, ExecutableRunnerException {
+    private Extraction executeDocker(final DockerContext context, final String imageArgument, final String imagePiece, final String dockerTarFilePath, final File directory, final File dockerExe, final File bashExe,
+            final DockerInspectorInfo dockerInspectorInfo)
+            throws FileNotFoundException, IOException, ExecutableRunnerException {
 
         final File outputDirectory = detectFileManager.getOutputDirectory(context);
         final File dockerPropertiesFile = detectFileManager.getOutputFile(context, "application.properties");
@@ -161,6 +158,20 @@ public class DockerExtractor extends Extractor<DockerContext> {
 
         final Executable dockerExecutable = new Executable(outputDirectory, environmentVariables, bashExe.toString(), bashArguments.build());
         executableRunner.execute(dockerExecutable);
+
+        if (StringUtils.isNotBlank(dockerTarFilePath)) {
+            File dockerTarFile = new File(dockerTarFilePath);
+            if (dockerTarFile.isFile()) {
+                hubSignatureScanner.setDockerTarFilePath(dockerTarFile.getCanonicalPath());
+            }
+        } else {
+            File producedTarFile = detectFileFinder.findFile(outputDirectory, TAR_FILENAME_PATTERN);
+            if (null != producedTarFile && producedTarFile.isFile()) {
+                hubSignatureScanner.setDockerTarFilePath(producedTarFile.getCanonicalPath());
+            } else {
+                logger.debug(String.format("No files found matching pattern [%s]. Expected docker-inspector to produce file in %s", TAR_FILENAME_PATTERN, outputDirectory.getCanonicalPath()));
+            }
+        }
 
         return findCodeLocations(outputDirectory, directory, imagePiece);
     }
@@ -196,6 +207,5 @@ public class DockerExtractor extends Extractor<DockerContext> {
             return new Extraction.Builder().failure("No files found matching pattern [" + DEPENDENCIES_PATTERN + "]. Expected docker-inspector to produce file in " + directory.toString()).build();
         }
     }
-
 
 }

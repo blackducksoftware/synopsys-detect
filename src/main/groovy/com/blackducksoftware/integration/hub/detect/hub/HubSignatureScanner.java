@@ -63,15 +63,13 @@ import com.blackducksoftware.integration.hub.service.SignatureScannerService;
 import com.blackducksoftware.integration.hub.service.model.ProjectRequestBuilder;
 import com.blackducksoftware.integration.hub.service.model.ProjectVersionWrapper;
 
-import groovy.transform.TypeChecked;
-
 @Component
-@TypeChecked
 public class HubSignatureScanner implements SummaryResultReporter, ExitCodeReporter {
     private final Logger logger = LoggerFactory.getLogger(HubSignatureScanner.class);
     private final Set<String> scanPaths = new HashSet<>();
     private final Map<String, Set<String>> scanPathExclusionPatterns = new HashMap<>();
     private final Map<String, Result> scanSummaryResults = new HashMap<>();
+    private String dockerTarFilePath;
 
     @Autowired
     private DetectConfiguration detectConfiguration;
@@ -158,6 +156,14 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
         return ExitCodeType.SUCCESS;
     }
 
+    public String getDockerTarFilePath() {
+        return dockerTarFilePath;
+    }
+
+    public void setDockerTarFilePath(String dockerTarFilePath) {
+        this.dockerTarFilePath = dockerTarFilePath;
+    }
+
     private void scanPathOffline(final String canonicalPath, final DetectProject detectProject) {
         try {
             final HubScanConfigBuilder hubScanConfigBuilder = createScanConfigBuilder(detectProject, canonicalPath, scanPathExclusionPatterns.get(canonicalPath));
@@ -181,13 +187,15 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
 
     private void determinePathsAndExclusions(final DetectProject detectProject) throws IntegrationException {
         boolean userProvidedScanTargets = null != detectConfiguration.getHubSignatureScannerPaths() && detectConfiguration.getHubSignatureScannerPaths().length > 0;
-        String[] userProvidedExclusionPatterns = detectConfiguration.getHubSignatureScannerExclusionPatterns();
+        String[] providedExclusionPatterns = detectConfiguration.getHubSignatureScannerExclusionPatterns();
         String[] hubSignatureScannerExclusionNamePatterns = detectConfiguration.getHubSignatureScannerExclusionNamePatterns();
         if (null != detectProject.getProjectName() && null != detectProject.getProjectVersionName() && userProvidedScanTargets) {
             for (final String path : detectConfiguration.getHubSignatureScannerPaths()) {
                 logger.info(String.format("Registering explicit scan path %s", path));
-                addScanTarget(path, hubSignatureScannerExclusionNamePatterns, userProvidedExclusionPatterns);
+                addScanTarget(path, hubSignatureScannerExclusionNamePatterns, providedExclusionPatterns);
             }
+        } else if (StringUtils.isNotBlank(dockerTarFilePath)) {
+            addScanTarget(dockerTarFilePath, hubSignatureScannerExclusionNamePatterns, providedExclusionPatterns);
         } else {
             String sourcePath = detectConfiguration.getSourcePath();
             if (userProvidedScanTargets) {
@@ -195,20 +203,20 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
             } else {
                 logger.info(String.format("No scan targets provided - registering the source path %s to scan", sourcePath));
             }
-            addScanTarget(sourcePath, hubSignatureScannerExclusionNamePatterns, userProvidedExclusionPatterns);
+            addScanTarget(sourcePath, hubSignatureScannerExclusionNamePatterns, providedExclusionPatterns);
         }
     }
 
-    private void addScanTarget(String path, String[] hubSignatureScannerExclusionNamePatterns, String[] userProvidedExclusionPatterns) throws IntegrationException {
+    private void addScanTarget(String path, String[] hubSignatureScannerExclusionNamePatterns, String[] providedExclusionPatterns) throws IntegrationException {
         try {
             File target = new File(path);
             String targetPath = target.getCanonicalPath();
             scanPaths.add(targetPath);
             ExclusionPatternDetector exclusionPatternDetector = new ExclusionPatternDetector(detectFileFinder, target);
             Set<String> scanExclusionPatterns = exclusionPatternDetector.determineExclusionPatterns(hubSignatureScannerExclusionNamePatterns);
-            if (null != userProvidedExclusionPatterns) {
-                for (String userProvidedExclusionPattern : userProvidedExclusionPatterns) {
-                    scanExclusionPatterns.add(userProvidedExclusionPattern);
+            if (null != providedExclusionPatterns) {
+                for (String providedExclusionPattern : providedExclusionPatterns) {
+                    scanExclusionPatterns.add(providedExclusionPattern);
                 }
             }
             scanPathExclusionPatterns.put(targetPath, scanExclusionPatterns);
