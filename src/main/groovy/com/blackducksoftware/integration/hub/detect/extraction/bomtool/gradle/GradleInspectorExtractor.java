@@ -27,7 +27,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -71,11 +70,16 @@ public class GradleInspectorExtractor extends Extractor<GradleInspectorContext> 
             gradleCommand = gradleCommand.replaceAll("dependencies", "").trim();
 
             final List<String> arguments = new ArrayList<>();
-            if (StringUtils.isBlank(gradleCommand)) {
-                arguments.addAll(Arrays.asList(gradleCommand.split(" ")));
+            if (StringUtils.isNotBlank(gradleCommand)) {
+                for (String arg : gradleCommand.split(" ")) {
+                    if (StringUtils.isNotBlank(arg)) {
+                        arguments.add(arg);
+                    }
+                }
             }
             arguments.add("dependencies");
             arguments.add(String.format("--init-script=%s", context.gradleInspector));
+            arguments.add("--stacktrace");
 
             //logger.info("using ${gradleInspectorManager.getInitScriptPath()} as the path for the gradle init script");
             final Executable executable = new Executable(context.directory, context.gradleExe, arguments);
@@ -105,7 +109,7 @@ public class GradleInspectorExtractor extends Extractor<GradleInspectorContext> 
                 }
                 detectFileManager.addOutputFile(context, blackduckDirectory);
                 return new Extraction.Builder().success(codeLocations).projectName(projectName).projectVersion(projectVersion).build();
-            }else {
+            } else {
                 return new Extraction.Builder().failure("The gradle inspector returned a non-zero exit code: " + output.getReturnCode()).build();
             }
 
