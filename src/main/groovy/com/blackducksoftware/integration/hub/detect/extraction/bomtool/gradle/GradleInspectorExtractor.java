@@ -79,7 +79,6 @@ public class GradleInspectorExtractor extends Extractor<GradleInspectorContext> 
             }
             arguments.add("dependencies");
             arguments.add(String.format("--init-script=%s", context.gradleInspector));
-            arguments.add("--stacktrace");
 
             //logger.info("using ${gradleInspectorManager.getInitScriptPath()} as the path for the gradle init script");
             final Executable executable = new Executable(context.directory, context.gradleExe, arguments);

@@ -80,7 +80,7 @@ public class OfflineScanner {
 
         boolean cliInstalledOkay = checkCliInstall(cliLocation, intLogger);
         if (!cliInstalledOkay && StringUtils.isNotBlank(detectConfiguration.getHubSignatureScannerHostUrl())) {
-            installSignatureScannerFromUrl(intLogger, hubScanConfig, intEnvironmentVariables);
+            installSignatureScannerFromUrl(intLogger, hubScanConfig);
             cliInstalledOkay = checkCliInstall(cliLocation, intLogger);
         }
 
@@ -97,7 +97,7 @@ public class OfflineScanner {
         }
     }
 
-    private void installSignatureScannerFromUrl(final IntLogger intLogger, final HubScanConfig hubScanConfig, final IntEnvironmentVariables intEnvironmentVariables) throws DetectUserFriendlyException {
+    private void installSignatureScannerFromUrl(final IntLogger intLogger, final HubScanConfig hubScanConfig) throws DetectUserFriendlyException {
         try {
             OfflineScanner.logger.info(String.format("Attempting to download the signature scanner from %s", detectConfiguration.getHubSignatureScannerHostUrl()));
             final UnauthenticatedRestConnectionBuilder restConnectionBuilder = new UnauthenticatedRestConnectionBuilder();
@@ -107,7 +107,7 @@ public class OfflineScanner {
             restConnectionBuilder.setLogger(intLogger);
             final RestConnection restConnection = restConnectionBuilder.build();
             final CLIDownloadUtility cliDownloadUtility = new CLIDownloadUtility(intLogger, restConnection);
-            cliDownloadUtility.performInstallation(hubScanConfig.getToolsDir(), intEnvironmentVariables, detectConfiguration.getHubSignatureScannerHostUrl(), "unknown");
+            cliDownloadUtility.performInstallation(hubScanConfig.getToolsDir(), detectConfiguration.getHubSignatureScannerHostUrl(), "unknown");
         } catch (final Exception e) {
             throw new DetectUserFriendlyException(String.format("There was a problem downloading the signature scanner from %s: %s", detectConfiguration.getHubSignatureScannerHostUrl(), e.getMessage()), e,
                     ExitCodeType.FAILURE_GENERAL_ERROR);
