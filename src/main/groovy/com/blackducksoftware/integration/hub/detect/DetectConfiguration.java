@@ -1418,12 +1418,12 @@ public class DetectConfiguration {
         return hubSignatureScannerPaths;
     }
 
-    public String[] getHubSignatureScannerExclusionNamePatterns() {
-        return hubSignatureScannerExclusionNamePatterns;
-    }
-
     public String[] getHubSignatureScannerExclusionPatterns() {
         return hubSignatureScannerExclusionPatterns;
+    }
+
+    public String[] getHubSignatureScannerExclusionNamePatterns() {
+        return hubSignatureScannerExclusionNamePatterns;
     }
 
     public String getHubSignatureScannerOfflineLocalPath() {
