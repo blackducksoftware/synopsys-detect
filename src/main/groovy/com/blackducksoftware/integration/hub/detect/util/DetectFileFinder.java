@@ -37,10 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import groovy.transform.TypeChecked;
-
 @Component
-@TypeChecked
 public class DetectFileFinder {
     private final Logger logger = LoggerFactory.getLogger(DetectFileFinder.class);
 
@@ -143,20 +140,27 @@ public class DetectFileFinder {
     }
 
     public List<File> findFilesToDepth(final File sourceDirectory, final String filenamePattern, final int maxDepth) {
-        return findFilesRecursive(sourceDirectory, filenamePattern, 0, maxDepth);
+        return findFilesRecursive(sourceDirectory, filenamePattern, 0, maxDepth, true);
     }
 
-    private List<File> findFilesRecursive(final File sourceDirectory, final String filenamePattern, final int currentDepth, final int maxDepth) {
+    public List<File> findAllFilesToMaxDepth(final File sourceDirectory, final String filenamePattern, Boolean recurseIntoDirectoryMatch) {
+        return findFilesRecursive(sourceDirectory, filenamePattern, 0, Integer.MAX_VALUE, false);
+    }
+
+    private List<File> findFilesRecursive(final File sourceDirectory, final String filenamePattern, final int currentDepth, final int maxDepth, Boolean recurseIntoDirectoryMatch) {
         final List<File> files = new ArrayList<>();
         if (currentDepth > maxDepth || !sourceDirectory.isDirectory()) {
             return files;
         }
-        for (final File file : sourceDirectory.listFiles()) {
-            if (FilenameUtils.wildcardMatchOnSystem(file.getName(), filenamePattern)) {
-                files.add(file);
-            }
-            if (file.isDirectory()) {
-                files.addAll(findFilesRecursive(file, filenamePattern, currentDepth + 1, maxDepth));
+        File[] children = sourceDirectory.listFiles();
+        if (null != children && children.length > 0) {
+            for (final File file : children) {
+                if (FilenameUtils.wildcardMatchOnSystem(file.getName(), filenamePattern)) {
+                    files.add(file);
+                }
+                if (file.isDirectory() && recurseIntoDirectoryMatch) {
+                    files.addAll(findFilesRecursive(file, filenamePattern, currentDepth + 1, maxDepth, recurseIntoDirectoryMatch));
+                }
             }
         }
         return files;

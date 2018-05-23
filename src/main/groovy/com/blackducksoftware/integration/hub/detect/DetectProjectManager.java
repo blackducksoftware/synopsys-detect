@@ -67,8 +67,6 @@ import com.blackducksoftware.integration.hub.detect.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.extraction.ExtractionContext;
 import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
 import com.blackducksoftware.integration.hub.detect.extraction.StrategyEvaluation;
-import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner;
-import com.blackducksoftware.integration.hub.detect.hub.ScanPathSource;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.model.DetectProject;
@@ -96,9 +94,6 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
 
     @Autowired
     private SimpleBdioFactory simpleBdioFactory;
-
-    @Autowired
-    private HubSignatureScanner hubSignatureScanner;
 
     @Autowired
     private IntegrationEscapeUtil integrationEscapeUtil;
@@ -295,14 +290,6 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
 
         // ensure that the project name is set, use some reasonable defaults
         detectProject.setProjectDetails(getProjectName(detectProject.getProjectName()), getProjectVersionName(detectProject.getProjectVersionName()), prefix, suffix);
-
-        if (detectConfiguration.getHubSignatureScannerSnippetMode()) {
-            logger.info(String.format("Snippet mode is enabled - will register %s for signature scanning of %s/%s", detectConfiguration.getSourcePath(), detectProject.getProjectName(), detectProject.getProjectVersionName()));
-            hubSignatureScanner.registerPathToScan(ScanPathSource.SNIPPET_SOURCE, detectConfiguration.getSourceDirectory());
-        } else {
-            logger.info(String.format("Will register %s for signature scanning of %s/%s", detectConfiguration.getSourcePath(), detectProject.getProjectName(), detectProject.getProjectVersionName()));
-            hubSignatureScanner.registerPathToScan(ScanPathSource.DETECT_SOURCE, detectConfiguration.getSourceDirectory());
-        }
 
         if (StringUtils.isBlank(detectConfiguration.getAggregateBomName())) {
             detectProject.processDetectCodeLocations(bomCodeLocationNameFactory, dockerCodeLocationNameFactory, detectConfiguration.getSourcePath(), logger, detectFileFinder, detectConfiguration.getSourceDirectory());

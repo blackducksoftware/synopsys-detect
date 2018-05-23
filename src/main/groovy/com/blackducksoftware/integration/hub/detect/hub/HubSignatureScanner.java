@@ -57,6 +57,7 @@ import com.blackducksoftware.integration.hub.detect.model.DetectProject;
 import com.blackducksoftware.integration.hub.detect.summary.Result;
 import com.blackducksoftware.integration.hub.detect.summary.ScanSummaryResult;
 import com.blackducksoftware.integration.hub.detect.summary.SummaryResultReporter;
+import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.service.SignatureScannerService;
 import com.blackducksoftware.integration.hub.service.model.ProjectRequestBuilder;
@@ -68,7 +69,8 @@ import groovy.transform.TypeChecked;
 @TypeChecked
 public class HubSignatureScanner implements SummaryResultReporter, ExitCodeReporter {
     private final Logger logger = LoggerFactory.getLogger(HubSignatureScanner.class);
-    private final Set<String> registeredPaths = new HashSet<>();
+    private final Set<String> scanPaths = new HashSet<>();
+    private final Map<String, Set<String>> scanPathExclusionPatterns = new HashMap<>();
     private final Map<String, Result> scanSummaryResults = new HashMap<>();
 
     @Autowired
@@ -78,20 +80,47 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
     private DetectFileManager detectFileManager;
 
     @Autowired
+    private DetectFileFinder detectFileFinder;
+
+    @Autowired
     private OfflineScanner offlineScanner;
 
     @Autowired
     private ScanCodeLocationNameFactory scanCodeLocationNameFactory;
 
-    public void registerPathToScan(final ScanPathSource scanPathSource, final File file) throws IntegrationException {
-        try {
-            final boolean shouldRegisterPath = shouldRegisterPathForScanning(file, scanPathSource);
-
-            if (shouldRegisterPath) {
-                logger.info(String.format("Registering path %s to scan", file.getCanonicalPath()));
-                scanSummaryResults.put(file.getCanonicalPath(), Result.FAILURE);
-                registeredPaths.add(file.getCanonicalPath());
+    private void determinePathsAndExclusions(final DetectProject detectProject) throws IntegrationException {
+        boolean userProvidedScanTargets = null != detectConfiguration.getHubSignatureScannerPaths() && detectConfiguration.getHubSignatureScannerPaths().length > 0;
+        String[] userProvidedExclusionPatterns = detectConfiguration.getHubSignatureScannerExclusionPatterns();
+        String[] exclusionFileNameGlobalPatterns = { "node_modules" };
+        if (null != detectProject.getProjectName() && null != detectProject.getProjectVersionName() && userProvidedScanTargets) {
+            for (final String path : detectConfiguration.getHubSignatureScannerPaths()) {
+                logger.info(String.format("Registering explicit scan path %s", path));
+                addScanTarget(path, exclusionFileNameGlobalPatterns, userProvidedExclusionPatterns);
             }
+        } else {
+            String sourcePath = detectConfiguration.getSourcePath();
+            if (userProvidedScanTargets) {
+                logger.warn(String.format("No Project name or version found. Skipping User provided scan targets - registering the source path %s to scan", sourcePath));
+            } else {
+                logger.info(String.format("No scan targets provided - registering the source path %s to scan", sourcePath));
+            }
+            addScanTarget(sourcePath, exclusionFileNameGlobalPatterns, userProvidedExclusionPatterns);
+        }
+    }
+
+    private void addScanTarget(String path, String[] exclusionFileNameGlobalPatterns, String[] userProvidedExclusionPatterns) throws IntegrationException {
+        try {
+            File target = new File(path);
+            String targetPath = target.getCanonicalPath();
+            scanPaths.add(targetPath);
+            ExclusionPatternDetector exclusionPatternDetector = new ExclusionPatternDetector(detectFileFinder, target);
+            Set<String> scanExclusionPatterns = exclusionPatternDetector.determineExclusionPatterns(exclusionFileNameGlobalPatterns);
+            if (null != userProvidedExclusionPatterns) {
+                for (String userProvidedExclusionPattern : userProvidedExclusionPatterns) {
+                    scanExclusionPatterns.add(userProvidedExclusionPattern);
+                }
+            }
+            scanPathExclusionPatterns.put(targetPath, scanExclusionPatterns);
         } catch (final IOException e) {
             throw new IntegrationException(e.getMessage(), e);
         }
@@ -101,23 +130,12 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
             throws IntegrationException, DetectUserFriendlyException, InterruptedException {
         ProjectVersionView projectVersionView = null;
         final ProjectRequest projectRequest = createProjectRequest(detectProject);
-        Set<String> canonicalPathsToScan = registeredPaths;
-        if (null != detectProject.getProjectName() && null != detectProject.getProjectVersionName() && null != detectConfiguration.getHubSignatureScannerPaths() && detectConfiguration.getHubSignatureScannerPaths().length > 0) {
-            canonicalPathsToScan = new HashSet<>();
-            for (final String path : detectConfiguration.getHubSignatureScannerPaths()) {
-                try {
-                    canonicalPathsToScan.add(new File(path).getCanonicalPath());
-                } catch (final IOException e) {
-                    throw new IntegrationException(e.getMessage(), e);
-                }
-            }
-        }
 
         final List<ScanPathCallable> scanPathCallables = new ArrayList<>();
-        for (final String canonicalPath : canonicalPathsToScan) {
-            final HubScanConfigBuilder hubScanConfigBuilder = createScanConfigBuilder(detectProject, canonicalPath);
+        for (final String scanPath : scanPaths) {
+            final HubScanConfigBuilder hubScanConfigBuilder = createScanConfigBuilder(detectProject, scanPath);
             final HubScanConfig hubScanConfig = hubScanConfigBuilder.build();
-            final ScanPathCallable scanPathCallable = new ScanPathCallable(signatureScannerService, hubServerConfig, hubScanConfig, projectRequest, canonicalPath, scanSummaryResults);
+            final ScanPathCallable scanPathCallable = new ScanPathCallable(signatureScannerService, hubServerConfig, hubScanConfig, projectRequest, scanPath, scanSummaryResults);
             scanPathCallables.add(scanPathCallable);
         }
 
@@ -149,9 +167,9 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
                 scanPathOffline(new File(path).getCanonicalPath(), detectProject);
             }
         } else {
-            for (final String path : registeredPaths) {
-                logger.info(String.format("Attempting to scan %s for %s/%s", path, detectProject.getProjectName(), detectProject.getProjectVersionName()));
-                scanPathOffline(path, detectProject);
+            for (final String scanPath : scanPaths) {
+                logger.info(String.format("Attempting to scan %s for %s/%s", scanPath, detectProject.getProjectName(), detectProject.getProjectVersionName()));
+                scanPathOffline(scanPath, detectProject);
             }
         }
     }
@@ -173,33 +191,6 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
             }
         }
         return ExitCodeType.SUCCESS;
-    }
-
-    private boolean shouldRegisterPathForScanning(final File file, final ScanPathSource scanPathSource) throws IOException {
-        if (detectConfiguration.getHubSignatureScannerDisabled()) {
-            logger.info(String.format("Not scanning path %s, the signature scanner is disabled.", file.getCanonicalPath()));
-            return false;
-        }
-
-        final boolean customPathOverride = null != detectConfiguration.getHubSignatureScannerPaths() && detectConfiguration.getHubSignatureScannerPaths().length > 0;
-        if (customPathOverride) {
-            logger.info(String.format("Not scanning path %s, explicit scan paths were provided.", file.getCanonicalPath()));
-            return false;
-        }
-
-        if (!file.exists() || (!file.isFile() && !file.isDirectory())) {
-            logger.warn(String.format("Not scanning path %s, it doesn't appear to exist or it isn't a file or directory.", file.getCanonicalPath()));
-            return false;
-        }
-
-        final boolean snippetModeEnabled = detectConfiguration.getHubSignatureScannerSnippetMode();
-        final String sourcePath = detectConfiguration.getSourcePath();
-        if (snippetModeEnabled && !(scanPathSource.equals(ScanPathSource.DOCKER_SOURCE) || scanPathSource.equals(ScanPathSource.DETECT_SOURCE) || scanPathSource.equals(ScanPathSource.SNIPPET_SOURCE))) {
-            logger.info(String.format("Not scanning path %s, snippet mode is enabled and %s paths should be scanned when %s is scanned.", file.getCanonicalPath(), scanPathSource.getSource(), sourcePath));
-            return false;
-        }
-
-        return true;
     }
 
     private void scanPathOffline(final String canonicalPath, final DetectProject detectProject) {
