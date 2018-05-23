@@ -70,6 +70,7 @@ import com.blackducksoftware.integration.hub.detect.extraction.StrategyEvaluatio
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.model.DetectProject;
+import com.blackducksoftware.integration.hub.detect.model.ProcessedDetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
 import com.blackducksoftware.integration.hub.detect.strategy.StrategyManager;
 import com.blackducksoftware.integration.hub.detect.strategy.result.ExceptionStrategyResult;
@@ -134,7 +135,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         final List<StrategyEvaluation> extractable = results.stream().filter(result -> result.isExtractable()).collect(Collectors.toList());
 
         for (int i = 0; i < extractable.size(); i++) {
-            logger.info("Extracting " + Integer.toString(i) + " of " + Integer.toString(extractable.size()) + " (" + Integer.toString((int) Math.floor((i * 100.0f) / extractable.size())) + "%)");
+            logger.info("Extracting " + Integer.toString(i + 1) + " of " + Integer.toString(extractable.size()) + " (" + Integer.toString((int)Math.floor((i * 100.0f) / extractable.size())) + "%)");
             extract(extractable.get(i));
         }
     }
@@ -194,6 +195,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         final BomToolFinderOptions findOptions = new BomToolFinderOptions(excludedDirectories, forceNestedSearch, maxDepth, bomToolFilter);
 
         try {
+            logger.info("Starting search for bom tools.");
             final BomToolFinder bomToolTreeWalker = new BomToolFinder();
             return bomToolTreeWalker.findApplicableBomTools(new HashSet<>(allStrategies), directory, findOptions);
         } catch (final BomToolException e) {
@@ -292,7 +294,11 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         detectProject.setProjectDetails(getProjectName(detectProject.getProjectName()), getProjectVersionName(detectProject.getProjectVersionName()), prefix, suffix);
 
         if (StringUtils.isBlank(detectConfiguration.getAggregateBomName())) {
+<<<<<<< HEAD
             detectProject.processDetectCodeLocations(bomCodeLocationNameFactory, dockerCodeLocationNameFactory, detectConfiguration.getSourcePath(), logger, detectFileFinder, detectConfiguration.getSourceDirectory());
+=======
+            detectProject.processDetectCodeLocations(bomCodeLocationNameFactory, dockerCodeLocationNameFactory, detectConfiguration.getSourcePath(), logger,  detectConfiguration.getSourceDirectory(), detectConfiguration.getCombineCodeLocations());
+>>>>>>> master
 
             for (final BomToolType bomToolType : detectProject.getFailedBomTools()) {
                 bomToolSummaryResults.put(bomToolType, Result.FAILURE);
@@ -309,12 +315,11 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         final MutableDependencyGraph aggregateDependencyGraph = simpleBdioFactory.createMutableDependencyGraph();
 
         if (StringUtils.isBlank(detectConfiguration.getAggregateBomName())) {
-            for (final String codeLocationNameString : detectProject.getCodeLocationNameStrings()) {
-                final DetectCodeLocation detectCodeLocation = detectProject.getDetectCodeLocation(codeLocationNameString);
-                final String bdioFileName = detectProject.getBdioFilename(codeLocationNameString);
-                final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(codeLocationNameString, detectProject.getProjectName(), detectProject.getProjectVersionName(), detectCodeLocation);
+            for (final ProcessedDetectCodeLocation processedDetectCodeLocation : detectProject.getProcessedCodeLocations()) {
 
-                final File outputFile = new File(detectConfiguration.getBdioOutputDirectoryPath(), bdioFileName);
+                final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(processedDetectCodeLocation.codeLocationName, detectProject.getProjectName(), detectProject.getProjectVersionName(), processedDetectCodeLocation.codeLocation);
+
+                final File outputFile = new File(detectConfiguration.getBdioOutputDirectoryPath(), processedDetectCodeLocation.bdioName);
                 if (outputFile.exists()) {
                     final boolean deleteSuccess = outputFile.delete();
                     logger.debug(String.format("%s deleted: %b", outputFile.getAbsolutePath(), deleteSuccess));
@@ -323,15 +328,8 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
                 bdioFiles.add(outputFile);
             }
         } else {
-            for (final DetectCodeLocation detectCodeLocation : detectProject.getDetectCodeLocations()) {
-                if (detectCodeLocation.getDependencyGraph() == null) {
-                    logger.warn(String.format("Dependency graph is null for code location %s", detectCodeLocation.getSourcePath()));
-                    continue;
-                }
-                if (detectCodeLocation.getDependencyGraph().getRootDependencies().size() <= 0) {
-                    logger.warn(String.format("Could not find any dependencies for code location %s", detectCodeLocation.getSourcePath()));
-                }
-                aggregateDependencyGraph.addGraphAsChildrenToRoot(detectCodeLocation.getDependencyGraph());
+            for (final ProcessedDetectCodeLocation processedDetectCodeLocation : detectProject.getProcessedCodeLocations()) {
+                aggregateDependencyGraph.addGraphAsChildrenToRoot(processedDetectCodeLocation.codeLocation.getDependencyGraph());
             }
             final SimpleBdioDocument aggregateBdioDocument = createAggregateSimpleBdioDocument(detectProject.getProjectName(), detectProject.getProjectVersionName(), aggregateDependencyGraph);
             final String filename = String.format("%s.jsonld", integrationEscapeUtil.escapeForUri(detectConfiguration.getAggregateBomName()));
@@ -420,7 +418,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     }
 
     private SimpleBdioDocument createSimpleBdioDocument(final String codeLocationName, final String projectName, final String projectVersionName, final DetectCodeLocation detectCodeLocation) {
-        final ExternalId projectExternalId = detectCodeLocation.getBomToolProjectExternalId();
+        final ExternalId projectExternalId = detectCodeLocation.getExternalId();
         final DependencyGraph dependencyGraph = detectCodeLocation.getDependencyGraph();
 
         return createSimpleBdioDocument(codeLocationName, projectName, projectVersionName, projectExternalId, dependencyGraph);

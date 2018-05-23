@@ -79,7 +79,7 @@ public class DetectCodeLocation {
         return dockerImage;
     }
 
-    public ExternalId getBomToolProjectExternalId() {
+    public ExternalId getExternalId() {
         return externalId;
     }
 

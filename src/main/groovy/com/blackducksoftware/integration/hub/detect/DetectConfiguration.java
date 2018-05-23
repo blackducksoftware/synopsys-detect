@@ -89,6 +89,7 @@ public class DetectConfiguration {
     private static final String GROUP_CLEANUP = "cleanup";
     private static final String GROUP_PATHS = "paths";
     private static final String GROUP_BOMTOOL = "bomtool";
+    private static final String GROUP_CODELOCATION = "codelocation";
     private static final String GROUP_CONDA = "conda";
     private static final String GROUP_CPAN = "cpan";
     private static final String GROUP_DOCKER = "docker";
@@ -685,6 +686,12 @@ public class DetectConfiguration {
     @AcceptableValues(value = { "ALL", "BLOCKER", "CRITICAL", "MAJOR", "MINOR", "TRIVIAL" }, caseSensitive = false, strict = false)
     private String policyCheckFailOnSeverities;
 
+    @Value("${detect.code.location.combine.same.names:}")
+    @HelpGroup(primary = GROUP_CODELOCATION)
+    @HelpDescription("If set to true, detect will automatically combine code locations with the same name. Otherwise, duplicate names will be appended with their index.")
+    @DefaultValue("false")
+    private Boolean combineCodeLocations;
+
     @Value("${detect.gradle.inspector.version:}")
     @DefaultValue("latest")
     @HelpGroup(primary = GROUP_GRADLE)
@@ -1240,6 +1247,10 @@ public class DetectConfiguration {
 
     public String getPolicyCheckFailOnSeverities() {
         return policyCheckFailOnSeverities;
+    }
+
+    public boolean getCombineCodeLocations() {
+        return combineCodeLocations;
     }
 
     public String getGradleInspectorVersion() {
