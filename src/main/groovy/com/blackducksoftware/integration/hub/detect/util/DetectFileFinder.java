@@ -143,6 +143,10 @@ public class DetectFileFinder {
         return findFilesRecursive(sourceDirectory, 0, maxDepth, true, filenamePattern);
     }
 
+    /**
+     * Will recursively look for files/directories matching these name patterns within the source directory.
+     * It will not look for matching files/directories within a directory that matched one of the patterns.
+     */
     public List<File> findAllFilesToMaxDepth(final File sourceDirectory, final String... filenamePatterns) {
         return findFilesRecursive(sourceDirectory, 0, Integer.MAX_VALUE, false, filenamePatterns);
     }
