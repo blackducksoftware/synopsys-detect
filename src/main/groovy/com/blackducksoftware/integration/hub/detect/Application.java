@@ -225,6 +225,8 @@ public class Application implements ApplicationRunner {
 
             final DetectProject detectProject = detectProjectManager.createDetectProject();
             final List<File> createdBdioFiles = detectProjectManager.createBdioFiles(detectProject);
+            logger.info("Project Name: " + detectProject.getProjectName());
+            logger.info("Project Version Name: " + detectProject.getProjectVersionName());
             if (!detectConfiguration.getHubOfflineMode()) {
                 final ProjectVersionView projectVersionView = hubManager.updateHubProjectVersion(detectProject, createdBdioFiles);
                 hubManager.performPostHubActions(detectProject, projectVersionView);
