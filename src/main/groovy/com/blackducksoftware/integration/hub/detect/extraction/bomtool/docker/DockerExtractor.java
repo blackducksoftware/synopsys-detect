@@ -100,7 +100,7 @@ public class DockerExtractor extends Extractor<DockerContext> {
                 imageArgument = String.format("--docker.image=%s", context.image);
             }
 
-            if (imageArgument == null || imagePiece == null) {
+            if (StringUtils.isBlank(imageArgument) || StringUtils.isBlank(imagePiece)) {
                 return new Extraction.Builder().failure("No docker image found.").build();
             } else {
                 return executeDocker(context, imageArgument, imagePiece, context.tar, context.directory, context.dockerExe, context.bashExe, context.dockerInspectorInfo);

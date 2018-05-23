@@ -216,9 +216,9 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         searchSummaryReporter.print(sourcePathResults);
 
         final float appliedNotInSourceDirectory = sourcePathResults.stream()
-                                                          .filter(it -> it.isApplicable())
-                                                          .filter(it -> it.environment.getDepth() > 0)
-                                                          .count();
+                .filter(it -> it.isApplicable())
+                .filter(it -> it.environment.getDepth() > 0)
+                .count();
 
         if (appliedNotInSourceDirectory > 1) {
             if (StringUtils.isBlank(detectConfiguration.getProjectName())) {
@@ -236,9 +236,9 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         }
 
         final Set<BomToolType> applicableBomTools = sourcePathResults.stream()
-                                                            .filter(it -> it.isApplicable())
-                                                            .map(it -> it.strategy.getBomToolType())
-                                                            .collect(Collectors.toSet());
+                .filter(it -> it.isApplicable())
+                .map(it -> it.strategy.getBomToolType())
+                .collect(Collectors.toSet());
 
         // we've gone through all applicable bom tools so we now have the complete metadata to phone home
         detectPhoneHomeManager.startPhoneHome(applicableBomTools);
@@ -250,16 +250,16 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         extract(sourcePathResults);
 
         final float appliedInSource = sourcePathResults.stream()
-                                              .filter(it -> it.isApplicable())
-                                              .filter(it -> it.environment.getDepth() == 0)
-                                              .count();
+                .filter(it -> it.isApplicable())
+                .filter(it -> it.environment.getDepth() == 0)
+                .count();
 
         if (appliedInSource > 1) {
             //take the first project alphabetically.
             final Optional<StrategyEvaluation> projectNameDecider = sourcePathResults.stream()
-                                                                            .filter(it -> it.isExtractionSuccess() && it.environment.getDepth() == 0 && it.extraction.projectName != null)
-                                                                            .sorted((o1, o2) -> o1.extraction.projectName.compareTo(o2.extraction.projectName))
-                                                                            .findFirst();
+                    .filter(it -> it.isExtractionSuccess() && it.environment.getDepth() == 0 && it.extraction.projectName != null)
+                    .sorted((o1, o2) -> o1.extraction.projectName.compareTo(o2.extraction.projectName))
+                    .findFirst();
 
             if (projectNameDecider.isPresent()) {
                 detectProject.setProjectNameIfNotSet(projectNameDecider.get().extraction.projectName);
@@ -281,9 +281,9 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         }
 
         final List<DetectCodeLocation> codeLocations = sourcePathResults.stream()
-                                                               .filter(it -> it.isExtractionSuccess())
-                                                               .flatMap(it -> it.extraction.codeLocations.stream())
-                                                               .collect(Collectors.toList());
+                .filter(it -> it.isExtractionSuccess())
+                .flatMap(it -> it.extraction.codeLocations.stream())
+                .collect(Collectors.toList());
 
         detectProject.addAllDetectCodeLocations(codeLocations);
 
