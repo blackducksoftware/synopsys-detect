@@ -53,7 +53,7 @@ public class ExclusionPatternDetector {
         Set<String> scanExclusionPatterns = new HashSet<>();
         try {
             String scanTargetPath = scanTarget.getCanonicalPath();
-            List<File> matchingFiles = detectFileFinder.findAllFilesToMaxDepth(scanTarget, false, exclusionFileNameGlobalPatterns);
+            List<File> matchingFiles = detectFileFinder.findAllFilesToMaxDepth(scanTarget, exclusionFileNameGlobalPatterns);
             for (File matchingFile : matchingFiles) {
                 String matchingFilePath = matchingFile.getCanonicalPath();
                 String scanExclusionPattern = createExclusionPatternFromPaths(scanTargetPath, matchingFilePath);

@@ -143,7 +143,7 @@ public class DetectFileFinder {
         return findFilesRecursive(sourceDirectory, 0, maxDepth, true, filenamePattern);
     }
 
-    public List<File> findAllFilesToMaxDepth(final File sourceDirectory, Boolean recurseIntoDirectoryMatch, final String... filenamePatterns) {
+    public List<File> findAllFilesToMaxDepth(final File sourceDirectory, final String... filenamePatterns) {
         return findFilesRecursive(sourceDirectory, 0, Integer.MAX_VALUE, false, filenamePatterns);
     }
 
