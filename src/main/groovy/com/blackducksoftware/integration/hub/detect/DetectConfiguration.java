@@ -909,7 +909,7 @@ public class DetectConfiguration {
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_SIGNATURE_SCANNER, SEARCH_GROUP_HUB })
     @HelpDescription("Comma separated list of file name patterns to exclude from the signature scan.")
     @HelpDetailed("Detect will recursively search within the scan targets for files/directories that match these file name patterns and will create the corresponding exclusion patterns for the signature scanner.\r\nThese patterns will be added to the patterns provided by detect.hub.signature.scanner.exclusion.patterns")
-    private String[] hubSignatureScannerRelativePathsToExclude;
+    private String[] hubSignatureScannerExclusionNamePatterns;
 
     @Value("${detect.hub.signature.scanner.memory:}")
     @DefaultValue("4096")
@@ -1418,8 +1418,8 @@ public class DetectConfiguration {
         return hubSignatureScannerPaths;
     }
 
-    public String[] getHubSignatureScannerRelativePathsToExclude() {
-        return hubSignatureScannerRelativePathsToExclude;
+    public String[] getHubSignatureScannerExclusionNamePatterns() {
+        return hubSignatureScannerExclusionNamePatterns;
     }
 
     public String[] getHubSignatureScannerExclusionPatterns() {
