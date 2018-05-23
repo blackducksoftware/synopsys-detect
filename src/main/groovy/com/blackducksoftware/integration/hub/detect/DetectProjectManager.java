@@ -294,11 +294,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         detectProject.setProjectDetails(getProjectName(detectProject.getProjectName()), getProjectVersionName(detectProject.getProjectVersionName()), prefix, suffix);
 
         if (StringUtils.isBlank(detectConfiguration.getAggregateBomName())) {
-<<<<<<< HEAD
-            detectProject.processDetectCodeLocations(bomCodeLocationNameFactory, dockerCodeLocationNameFactory, detectConfiguration.getSourcePath(), logger, detectFileFinder, detectConfiguration.getSourceDirectory());
-=======
             detectProject.processDetectCodeLocations(bomCodeLocationNameFactory, dockerCodeLocationNameFactory, detectConfiguration.getSourcePath(), logger,  detectConfiguration.getSourceDirectory(), detectConfiguration.getCombineCodeLocations());
->>>>>>> master
 
             for (final BomToolType bomToolType : detectProject.getFailedBomTools()) {
                 bomToolSummaryResults.put(bomToolType, Result.FAILURE);
