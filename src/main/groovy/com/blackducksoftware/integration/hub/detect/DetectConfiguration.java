@@ -843,6 +843,12 @@ public class DetectConfiguration {
     @HelpDescription("Path of the docker executable")
     private String dockerPath;
 
+    @Value("${detect.docker.path.required:}")
+    @DefaultValue("true")
+    @HelpGroup(primary = GROUP_DOCKER)
+    @HelpDescription("If set to false, detect will attempt to run docker even if it cannot find a docker path.")
+    private Boolean dockerPathRequired;
+
     @Value("${detect.docker.inspector.path:}")
     @HelpGroup(primary = GROUP_DOCKER)
     @HelpDescription("This is used to override using the hosted script by github url. You can provide your own script at this path.")
@@ -1352,6 +1358,10 @@ public class DetectConfiguration {
 
     public String getDockerPath() {
         return dockerPath;
+    }
+
+    public boolean getDockerPathRequired() {
+        return BooleanUtils.toBoolean(dockerPathRequired);
     }
 
     public String getDockerInspectorPath() {
