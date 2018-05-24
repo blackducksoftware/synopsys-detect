@@ -130,7 +130,7 @@ public class DetectProject {
     private String createBdioName(final String codeLocationName, final IntegrationEscapeUtil integrationEscapeUtil) {
         final String filenameRaw = StringUtils.replaceEach(codeLocationName, new String[] {"/", "\\", " "}, new String[] {"_", "_", "_"});
         final String filename = integrationEscapeUtil.escapeForUri(filenameRaw);
-        return filename;
+        return filename + ".jsonld";
     }
 
     public void processDetectCodeLocations(final BomCodeLocationNameFactory bomCodeLocationNameFactory, final DockerCodeLocationNameFactory dockerCodeLocationNameFactory, final String detectSourcePath, final Logger logger, final File sourcePath, final boolean combineCodeLocations) {
