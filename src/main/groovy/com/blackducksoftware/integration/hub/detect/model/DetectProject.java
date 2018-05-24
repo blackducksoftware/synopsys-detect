@@ -172,21 +172,8 @@ public class DetectProject {
             }
         }
 
-        //sanity check that bdio file names are unique (they should be)
-        Map<String, Long> result = processedDetectCodeLocations.stream().collect(Collectors.groupingBy(it -> it.bdioName, Collectors.counting()));
-        for (final String name : result.keySet()) {
-            if (result.get(name) > 1) {
-                logger.error("Multiple bdio names were generated with the name: " + name);
-
-                failedBomTools.addAll(processedDetectCodeLocations.stream()
-                        .filter(it -> it.bdioName.equals(name))
-                        .map(it -> it.codeLocation.getBomToolType())
-                        .collect(Collectors.toSet()));
-            }
-        }
-
         //Sanity check that code location names are unique (they should be)
-        result = processedDetectCodeLocations.stream().collect(Collectors.groupingBy(it -> it.codeLocationName, Collectors.counting()));
+        Map<String, Long> result = processedDetectCodeLocations.stream().collect(Collectors.groupingBy(it -> it.codeLocationName, Collectors.counting()));
         for (final String name : result.keySet()) {
             if (result.get(name) > 1) {
                 logger.error("Multiple code locations were generated with the name: " + name);
@@ -198,8 +185,18 @@ public class DetectProject {
             }
         }
 
+        //sanity check that bdio file names are unique (they should be)
+        result = processedDetectCodeLocations.stream().collect(Collectors.groupingBy(it -> it.bdioName, Collectors.counting()));
+        for (final String name : result.keySet()) {
+            if (result.get(name) > 1) {
+                logger.error("Multiple bdio names were generated with the name: " + name);
 
-
+                failedBomTools.addAll(processedDetectCodeLocations.stream()
+                        .filter(it -> it.bdioName.equals(name))
+                        .map(it -> it.codeLocation.getBomToolType())
+                        .collect(Collectors.toSet()));
+            }
+        }
     }
 
     private DetectCodeLocation copyCodeLocation(final DetectCodeLocation codeLocation, final DependencyGraph newGraph) {
