@@ -51,21 +51,26 @@
         </colgroup>
         <#list groups as group>
         		<tr class="noBorder">
-            		<td colspan="3" class="noBorder"></td>
+            		<td colspan="6" class="noBorder"></td>
 	        </tr>
 	        <tr>
-	            <th colspan="3" class="groupHeader">${group.groupName}</th>
+	            <th colspan="6" class="groupHeader">${group.groupName}</th>
 	        </tr>
 	        <tr>
 	            <th>Property Name</th>
 	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
 	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
 	        </tr>
 	        <#list group.options as option>
 		        <tr>
-		            <td>--${option.key}</td>
 		            <td>${option.defaultValue}</td>
+		            <td>${option.acceptableValues}</td>
 		            <td>${option.description}</td>
+		            <td>${option.detailedDescription}</td>
+		            <td><b>${option.deprecationNotice}<b/></td>
 		        </tr>
 	        </#list> 
         </#list> 

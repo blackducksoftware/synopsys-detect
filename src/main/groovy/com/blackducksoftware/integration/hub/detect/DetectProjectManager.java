@@ -256,7 +256,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
                 .filter(it -> it.environment.getDepth() == 0)
                 .count();
 
-        if (appliedInSource > 1) {
+        if (appliedInSource > 0) {
             //take the first project alphabetically.
             final Optional<StrategyEvaluation> projectNameDecider = sourcePathResults.stream()
                     .filter(it -> it.isExtractionSuccess() && it.environment.getDepth() == 0 && it.extraction.projectName != null)

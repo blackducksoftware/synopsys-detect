@@ -48,11 +48,16 @@ public class HelpHtmlDataBuilder {
 
         final HelpHtmlGroup group = groupsByName.get(groupName);
 
-        String description = option.getHelp().description;
+        final String description = option.getHelp().description;
+        String acceptableValues = "";
         if (option.getAcceptableValues().size() > 0) {
-            description += " (" + option.getAcceptableValues().stream().collect(Collectors.joining("|")) + ")";
+            acceptableValues = option.getAcceptableValues().stream().collect(Collectors.joining(", "));
         }
-        final HelpHtmlOption htmlOption = new HelpHtmlOption(option.getKey(), option.getDefaultValue(), description);
+        String deprecationNotice = "";
+        if (option.getHelp().isDeprecated) {
+            deprecationNotice = "Will be removed in version " + option.getHelp().deprecationVersion + ". " + option.getHelp().deprecation;
+        }
+        final HelpHtmlOption htmlOption = new HelpHtmlOption(option.getKey(), option.getDefaultValue(), description, acceptableValues, option.getHelp().detailedHelp, deprecationNotice);
         group.options.add(htmlOption);
         return this;
     }

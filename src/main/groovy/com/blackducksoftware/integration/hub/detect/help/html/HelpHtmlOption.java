@@ -27,13 +27,19 @@ public class HelpHtmlOption {
     public String key;
     public String defaultValue;
     public String description;
-    
-    public HelpHtmlOption(String key, String defaultValue, String description) {
+    public String acceptableValues;
+    public String detailedDescription;
+    public String deprecationNotice;
+
+    public HelpHtmlOption(final String key, final String defaultValue, final String description, final String acceptableValues, final String detailedDescription, final String deprecationNotice) {
         this.key = key;
         this.defaultValue = defaultValue;
         this.description = description;
+        this.acceptableValues = acceptableValues;
+        this.detailedDescription = detailedDescription;
+        this.deprecationNotice = deprecationNotice;
     }
-    
+
     public String getKey() {
         return key;
     }
@@ -42,7 +48,19 @@ public class HelpHtmlOption {
         return description;
     }
 
+    public String getDetailedDescription() {
+        return detailedDescription;
+    }
+
+    public String getDeprecationNotice() {
+        return deprecationNotice;
+    }
+
     public String getDefaultValue() {
         return defaultValue;
+    }
+
+    public String getAcceptableValues() {
+        return acceptableValues;
     }
 }
