@@ -129,8 +129,6 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     @Autowired
     private DockerCodeLocationNameFactory dockerCodeLocationNameFactory;
 
-    private boolean foundAnyBomTools;
-
     private void extract(final List<StrategyEvaluation> results) {
         final List<StrategyEvaluation> extractable = results.stream().filter(result -> result.isExtractable()).collect(Collectors.toList());
 
