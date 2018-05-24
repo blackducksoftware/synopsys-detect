@@ -23,9 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.sbt
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-
 import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.sbt.models.SbtDependencyModule
@@ -34,8 +31,9 @@ import com.blackducksoftware.integration.hub.detect.extraction.bomtool.sbt.repor
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter
-
 import groovy.transform.TypeChecked
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 @TypeChecked
 class SbtPackager {
@@ -62,7 +60,7 @@ class SbtPackager {
         def filter = new ExcludedIncludedFilter(exclude, include)
         def aggregator = new SbtModuleAggregator()
 
-        List<SbtDependencyModule> modules = reportFiles.collect { reportFile->
+        List<SbtDependencyModule> modules = reportFiles.collect { reportFile ->
             logger.debug("Parsing SBT report file : ${reportFile.getCanonicalPath()}")
             def xml = new XmlSlurper().parse(reportFile)
             def report = parser.parseReportFromXml(xml)
@@ -70,8 +68,7 @@ class SbtPackager {
             tree
         }
 
-        def includedModules = modules.findAll { module ->
-            filter.shouldInclude(module.configuration)
+        def includedModules = modules.findAll { module -> filter.shouldInclude(module.configuration)
         }
 
         if (modules.size() <= 0) {
@@ -153,17 +150,6 @@ class SbtPackager {
             File reportPath = new File(resCache, REPORT_DIRECTORY)
             def foundModules = extractReportModules(path, reportPath, resCache.getParentFile(), included, excluded, usedReports)
             modules.addAll(foundModules)
-        }
-
-        List<File> additionalTargets = detectFileFinder.findFilesToDepth(path, 'target', depth) as List
-        List<File> scanned = new ArrayList<File>()
-        if (additionalTargets) {
-            additionalTargets.each { file ->
-                if (!isInProject(file, path) && isNotChildOfScanned(file, scanned)) {
-                    //hubSignatureScanner.registerPathToScan(ScanPathSource.SBT_SOURCE, file)
-                    scanned.add(file)
-                }
-            }
         }
 
         if (modules.size() == 0) {
