@@ -140,7 +140,6 @@ public class DetectConfiguration {
 
     private ExcludedIncludedFilter bomToolFilter;
     private List<String> bomToolSearchDirectoryExclusions;
-    private final List<String> excludedScanPaths = new ArrayList<>();
 
     public void init(final List<DetectOption> detectOptions) throws DetectUserFriendlyException, IOException, IllegalArgumentException, IllegalAccessException {
         this.detectOptions = detectOptions;
@@ -157,7 +156,7 @@ public class DetectConfiguration {
 
         sourceDirectory = new File(sourcePath);
         if (!sourceDirectory.exists() || !sourceDirectory.isDirectory()) {
-            throw new DetectUserFriendlyException("The source path ${sourcePath} either doesn't exist, isn't a directory, or doesn't have appropriate permissions.", ExitCodeType.FAILURE_GENERAL_ERROR);
+            throw new DetectUserFriendlyException(String.format("The source path %s either doesn't exist, isn't a directory, or doesn't have appropriate permissions.", sourcePath), ExitCodeType.FAILURE_GENERAL_ERROR);
         }
 
         final boolean atLeastOnePolicySeverity = StringUtils.isNotBlank(policyCheckFailOnSeverities);
@@ -217,12 +216,6 @@ public class DetectConfiguration {
         bomToolFilter = new ExcludedIncludedFilter(getExcludedBomToolTypes(), getIncludedBomToolTypes());
 
         configureForDocker();
-
-        if (hubSignatureScannerRelativePathsToExclude != null && hubSignatureScannerRelativePathsToExclude.length > 0) {
-            for (final String path : hubSignatureScannerRelativePathsToExclude) {
-                excludedScanPaths.add(new File(sourceDirectory, path).getCanonicalPath());
-            }
-        }
 
         if (StringUtils.isNotBlank(hubSignatureScannerHostUrl) && StringUtils.isNotBlank(hubSignatureScannerOfflineLocalPath)) {
             throw new DetectUserFriendlyException(
@@ -401,7 +394,7 @@ public class DetectConfiguration {
         final File directory = new File(directoryPath);
         directory.mkdirs();
         if (!directory.exists() || !directory.isDirectory()) {
-            throw new DetectUserFriendlyException(String.format("The directory ${directoryPath} does not exist. %s", failureMessage), ExitCodeType.FAILURE_GENERAL_ERROR);
+            throw new DetectUserFriendlyException(String.format("The directory %s does not exist. %s", directoryPath,failureMessage), ExitCodeType.FAILURE_GENERAL_ERROR);
         }
     }
 
@@ -918,10 +911,12 @@ public class DetectConfiguration {
     @HelpDescription("These paths and only these paths will be scanned.")
     private String[] hubSignatureScannerPaths;
 
-    @Value("${detect.hub.signature.scanner.relative.paths.to.exclude:}")
+    @Value("${detect.hub.signature.scanner.exclusion.name.patterns:}")
+    @DefaultValue("node_modules")
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_SIGNATURE_SCANNER, SEARCH_GROUP_HUB })
-    @HelpDescription("The relative paths of directories to be excluded from scan registration")
-    private String[] hubSignatureScannerRelativePathsToExclude;
+    @HelpDescription("Comma separated list of file name patterns to exclude from the signature scan.")
+    @HelpDetailed("Detect will recursively search within the scan targets for files/directories that match these file name patterns and will create the corresponding exclusion patterns for the signature scanner.\r\nThese patterns will be added to the patterns provided by detect.hub.signature.scanner.exclusion.patterns")
+    private String[] hubSignatureScannerExclusionNamePatterns;
 
     @Value("${detect.hub.signature.scanner.memory:}")
     @DefaultValue("4096")
@@ -1438,8 +1433,8 @@ public class DetectConfiguration {
         return hubSignatureScannerExclusionPatterns;
     }
 
-    public List<String> getHubSignatureScannerPathsToExclude() {
-        return excludedScanPaths;
+    public String[] getHubSignatureScannerExclusionNamePatterns() {
+        return hubSignatureScannerExclusionNamePatterns;
     }
 
     public String getHubSignatureScannerOfflineLocalPath() {

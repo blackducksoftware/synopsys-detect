@@ -125,8 +125,9 @@ public class GradleInspectorManager {
                 }
                 final NodeList latestVersionNodes = xmlDocument.getElementsByTagName("latest");
                 final Node latestVersion = latestVersionNodes.item(0);
-                logger.info("Resolved gradle inspector version from latest to: ${inspectorVersion}");
-                return latestVersion.getTextContent();
+                String inspectorVersion = latestVersion.getTextContent();
+                logger.info(String.format("Resolved gradle inspector version from latest to: %s", inspectorVersion));
+                return inspectorVersion;
             } catch (final Exception e) {
                 logger.debug("Exception encountered when resolving latest version of Gradle Inspector, skipping resolution.");
                 logger.debug(e.getMessage());

@@ -23,29 +23,25 @@
  */
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.nuget.parse
 
-import java.nio.charset.StandardCharsets
-
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
-
 import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.nuget.model.NugetContainer
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.nuget.model.NugetContainerType
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.nuget.model.NugetInspection
-import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner
-import com.blackducksoftware.integration.hub.detect.hub.ScanPathSource
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
 import com.google.gson.Gson
-
 import groovy.transform.TypeChecked
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Component
+
+import java.nio.charset.StandardCharsets
 
 @Component
 @TypeChecked
@@ -60,9 +56,6 @@ class NugetInspectorPackager {
 
     @Autowired
     ExecutableRunner executableRunner
-
-    @Autowired
-    HubSignatureScanner hubSignatureScanner
 
     @Autowired
     Gson gson
@@ -81,7 +74,6 @@ class NugetInspectorPackager {
         def projectName
         def projectVersion
         nugetInspection.containers.each {
-            registerScanPaths(it)
             def result = createDetectCodeLocationFromNugetContainer(it)
             if (result.projectName) {
                 projectName = result.projectName;
@@ -91,13 +83,6 @@ class NugetInspectorPackager {
         }
 
         new NugetParseResult(projectName, projectVersion, codeLocations)
-    }
-
-    private void registerScanPaths(NugetContainer nugetContainer) {
-        nugetContainer.outputPaths?.each {
-            hubSignatureScanner?.registerPathToScan(ScanPathSource.NUGET_SOURCE, new File(it))
-        }
-        nugetContainer.children?.each { registerScanPaths(it) }
     }
 
     private NugetParseResult createDetectCodeLocationFromNugetContainer(NugetContainer nugetContainer) {

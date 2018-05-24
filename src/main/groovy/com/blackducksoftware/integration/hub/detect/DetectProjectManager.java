@@ -67,8 +67,6 @@ import com.blackducksoftware.integration.hub.detect.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.extraction.ExtractionContext;
 import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
 import com.blackducksoftware.integration.hub.detect.extraction.StrategyEvaluation;
-import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner;
-import com.blackducksoftware.integration.hub.detect.hub.ScanPathSource;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.model.DetectProject;
@@ -97,9 +95,6 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
 
     @Autowired
     private SimpleBdioFactory simpleBdioFactory;
-
-    @Autowired
-    private HubSignatureScanner hubSignatureScanner;
 
     @Autowired
     private IntegrationEscapeUtil integrationEscapeUtil;
@@ -136,7 +131,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
 
     private boolean foundAnyBomTools;
 
-    private  void extract(final List<StrategyEvaluation> results) {
+    private void extract(final List<StrategyEvaluation> results) {
         final List<StrategyEvaluation> extractable = results.stream().filter(result -> result.isExtractable()).collect(Collectors.toList());
 
         for (int i = 0; i < extractable.size(); i++) {
@@ -227,10 +222,14 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
 
         if (appliedNotInSourceDirectory > 1) {
             if (StringUtils.isBlank(detectConfiguration.getProjectName())) {
-                throw new DetectUserFriendlyException("Multiple bom tool types applied but no project name was supplied. Detect is unable to reasonably guess the project name and version. Please provide a project name and version with --detect.project.name and --detect.project.version", ExitCodeType.FAILURE_CONFIGURATION);
+                throw new DetectUserFriendlyException(
+                        "Multiple bom tool types applied but no project name was supplied. Detect is unable to reasonably guess the project name and version. Please provide a project name and version with --detect.project.name and --detect.project.version",
+                        ExitCodeType.FAILURE_CONFIGURATION);
             } else if (StringUtils.isBlank(detectConfiguration.getProjectVersionName())) {
-                throw new DetectUserFriendlyException("Multiple bom tool types applied but no project version was supplied. Detect is unable to reasonably guess the project version. Please provide a project name with --detect.project.version", ExitCodeType.FAILURE_CONFIGURATION);
-            }else {
+                throw new DetectUserFriendlyException(
+                        "Multiple bom tool types applied but no project version was supplied. Detect is unable to reasonably guess the project version. Please provide a project name with --detect.project.version",
+                        ExitCodeType.FAILURE_CONFIGURATION);
+            } else {
                 detectProject.setProjectNameIfNotSet(detectConfiguration.getProjectName());
                 detectProject.setProjectVersionNameIfNotSet(detectConfiguration.getProjectVersionName());
             }
@@ -249,7 +248,6 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         preparationSummaryReporter.print(sourcePathResults);
 
         extract(sourcePathResults);
-
 
         final float appliedInSource = sourcePathResults.stream()
                 .filter(it -> it.isApplicable())
@@ -294,14 +292,6 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
 
         // ensure that the project name is set, use some reasonable defaults
         detectProject.setProjectDetails(getProjectName(detectProject.getProjectName()), getProjectVersionName(detectProject.getProjectVersionName()), prefix, suffix);
-
-        if (!foundAnyBomTools) {
-            logger.info(String.format("No package managers were detected - will register %s for signature scanning of %s/%s", detectConfiguration.getSourcePath(), detectProject.getProjectName(), detectProject.getProjectVersionName()));
-            hubSignatureScanner.registerPathToScan(ScanPathSource.DETECT_SOURCE, detectConfiguration.getSourceDirectory());
-        } else if (detectConfiguration.getHubSignatureScannerSnippetMode()) {
-            logger.info(String.format("Snippet mode is enabled - will register %s for signature scanning of %s/%s", detectConfiguration.getSourcePath(), detectProject.getProjectName(), detectProject.getProjectVersionName()));
-            hubSignatureScanner.registerPathToScan(ScanPathSource.SNIPPET_SOURCE, detectConfiguration.getSourceDirectory());
-        }
 
         if (StringUtils.isBlank(detectConfiguration.getAggregateBomName())) {
             detectProject.processDetectCodeLocations(bomCodeLocationNameFactory, dockerCodeLocationNameFactory, detectConfiguration.getSourcePath(), logger,  detectConfiguration.getSourceDirectory(), detectConfiguration.getCombineCodeLocations());
