@@ -79,19 +79,25 @@ public class MavenCliExtractor extends Extractor<MavenCliContext> {
             final Executable mvnExecutable = new Executable(context.directory, context.mavenExe, arguments);
             final ExecutableOutput mvnOutput = executableRunner.execute(mvnExecutable);
 
-            final String excludedModules = detectConfiguration.getMavenExcludedModuleNames();
-            final String includedModules = detectConfiguration.getMavenIncludedModuleNames();
-            final List<MavenParseResult> mavenResults = mavenCodeLocationPackager.extractCodeLocations(context.directory.toString(), mvnOutput.getStandardOutput(), excludedModules, includedModules);
+            if (mvnOutput.getReturnCode() == 0) {
 
-            final List<DetectCodeLocation> codeLocations = mavenResults.stream().map(it -> it.codeLocation).collect(Collectors.toList());
+                final String excludedModules = detectConfiguration.getMavenExcludedModuleNames();
+                final String includedModules = detectConfiguration.getMavenIncludedModuleNames();
+                final List<MavenParseResult> mavenResults = mavenCodeLocationPackager.extractCodeLocations(context.directory.toString(), mvnOutput.getStandardOutput(), excludedModules, includedModules);
 
-            final Optional<MavenParseResult> firstWithName = mavenResults.stream().filter(it -> StringUtils.isNoneBlank(it.projectName)).findFirst();
-            final Extraction.Builder builder = new Extraction.Builder().success(codeLocations);
-            if (firstWithName.isPresent()) {
-                builder.projectName(firstWithName.get().projectName);
-                builder.projectVersion(firstWithName.get().projectVersion);
+                final List<DetectCodeLocation> codeLocations = mavenResults.stream().map(it -> it.codeLocation).collect(Collectors.toList());
+
+                final Optional<MavenParseResult> firstWithName = mavenResults.stream().filter(it -> StringUtils.isNoneBlank(it.projectName)).findFirst();
+                final Extraction.Builder builder = new Extraction.Builder().success(codeLocations);
+                if (firstWithName.isPresent()) {
+                    builder.projectName(firstWithName.get().projectName);
+                    builder.projectVersion(firstWithName.get().projectVersion);
+                }
+                return builder.build();
+            } else {
+                final Extraction.Builder builder = new Extraction.Builder().failure(String.format("Executing command '%s' returned a non-zero exit code %s", String.join(" ", arguments), mvnOutput.getReturnCode()));
+                return builder.build();
             }
-            return builder.build();
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
         }

@@ -97,7 +97,7 @@ public class NugetInspectorExtractor extends Extractor<NugetInspectorContext> {
             final ExecutableOutput executableOutput = executableRunner.execute(hubNugetInspectorExecutable);
 
             if (executableOutput.getReturnCode() != 0) {
-                return new Extraction.Builder().failure("Executable returned nothing.").build();
+                return new Extraction.Builder().failure(String.format("Executing command '%s' returned a non-zero exit code %s", String.join(" ", options), executableOutput.getReturnCode())).build();
             }
 
             final List<File> dependencyNodeFiles = detectFileFinder.findFiles(outputDirectory, INSPECTOR_OUTPUT_PATTERN);
