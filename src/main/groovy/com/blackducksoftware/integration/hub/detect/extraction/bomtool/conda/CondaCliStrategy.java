@@ -56,7 +56,7 @@ public class CondaCliStrategy extends Strategy<CondaCliContext, CondaCliExtracto
     public DetectConfiguration detectConfiguration;
 
     public CondaCliStrategy() {
-        super("Conda Cli", BomToolType.COCOAPODS, CondaCliContext.class, CondaCliExtractor.class, StrategySearchOptions.defaultNotNested());
+        super("Conda Cli", BomToolType.CONDA, CondaCliContext.class, CondaCliExtractor.class, StrategySearchOptions.defaultNotNested());
     }
 
     @Override
@@ -75,12 +75,11 @@ public class CondaCliStrategy extends Strategy<CondaCliContext, CondaCliExtracto
 
         if (conda == null) {
             return new ExecutableNotFoundStrategyResult("conda");
-        }else {
+        } else {
             context.condaExe = conda;
         }
 
         return new PassedStrategyResult();
     }
-
 
 }
