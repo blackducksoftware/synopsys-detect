@@ -149,7 +149,7 @@ public class DockerExtractor extends Extractor<DockerContext> {
         bashArguments.addArgumentPair("--spring.config.location", "file:" + dockerProperties.toString(), true);
         bashArguments.addArgument(imageArgument);
 
-        if (!dockerInspectorInfo.isOffline) {
+        if (dockerInspectorInfo.isOffline) {
             bashArguments.insertArgumentPair(2, "--dry.run", "true");
             bashArguments.insertArgumentPair(3, "--no.prompt", "true");
             bashArguments.insertArgumentPair(4, "--jar.path", dockerInspectorInfo.offlineDockerInspectorJar.getCanonicalPath(), true);
