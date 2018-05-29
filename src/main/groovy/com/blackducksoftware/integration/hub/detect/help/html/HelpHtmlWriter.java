@@ -38,6 +38,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.blackducksoftware.integration.hub.detect.help.DetectBaseOption;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
 
@@ -58,7 +59,7 @@ public class HelpHtmlWriter {
     public void writeHelpMessage(final String filename) {
         final HelpHtmlDataBuilder builder = new HelpHtmlDataBuilder();
         
-        for (DetectOption option : detectOptionManager.getDetectOptions()) {
+        for (DetectBaseOption option : detectOptionManager.getDetectOptions()) {
             builder.addDetectOption(option);
         }
         final HelpHtmlData templateData = builder.build();

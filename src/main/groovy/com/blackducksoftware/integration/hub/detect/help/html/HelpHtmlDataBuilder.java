@@ -31,14 +31,15 @@ import java.util.stream.Collectors;
 
 import org.codehaus.plexus.util.StringUtils;
 
+import com.blackducksoftware.integration.hub.detect.help.DetectBaseOption;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 
 public class HelpHtmlDataBuilder {
 
     private final Map<String, HelpHtmlGroup> groupsByName = new HashMap<>();
 
-    public HelpHtmlDataBuilder addDetectOption(final DetectOption option) {
-        final String groupName = StringUtils.capitalise(option.getHelp().primaryGroup);
+    public HelpHtmlDataBuilder addDetectOption(final DetectBaseOption option) {
+        final String groupName = StringUtils.capitalise(option.getDetectOptionHelp().primaryGroup);
         if (!groupsByName.containsKey(groupName)) {
             final HelpHtmlGroup group = new HelpHtmlGroup();
             group.groupName = groupName;
@@ -48,16 +49,16 @@ public class HelpHtmlDataBuilder {
 
         final HelpHtmlGroup group = groupsByName.get(groupName);
 
-        final String description = option.getHelp().description;
+        final String description = option.getDetectOptionHelp().description;
         String acceptableValues = "";
         if (option.getAcceptableValues().size() > 0) {
             acceptableValues = option.getAcceptableValues().stream().collect(Collectors.joining(", "));
         }
         String deprecationNotice = "";
-        if (option.getHelp().isDeprecated) {
-            deprecationNotice = "Will be removed in version " + option.getHelp().deprecationVersion + ". " + option.getHelp().deprecation;
+        if (option.getDetectOptionHelp().isDeprecated) {
+            deprecationNotice = "Will be removed in version " + option.getDetectOptionHelp().deprecationVersion + ". " + option.getDetectOptionHelp().deprecation;
         }
-        final HelpHtmlOption htmlOption = new HelpHtmlOption(option.getKey(), option.getDefaultValue(), description, acceptableValues, option.getHelp().detailedHelp, deprecationNotice);
+        final HelpHtmlOption htmlOption = new HelpHtmlOption(option.getKey(), option.getDefaultValue(), description, acceptableValues, option.getDetectOptionHelp().detailedHelp, deprecationNotice);
         group.options.add(htmlOption);
         return this;
     }

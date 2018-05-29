@@ -56,6 +56,7 @@ import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.help.ArgumentState;
 import com.blackducksoftware.integration.hub.detect.help.ArgumentStateParser;
+import com.blackducksoftware.integration.hub.detect.help.DetectBaseOption;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
 import com.blackducksoftware.integration.hub.detect.help.html.HelpHtmlWriter;
@@ -147,7 +148,7 @@ public class Application implements ApplicationRunner {
             detectInfo.init();
             detectOptionManager.init();
 
-            final List<DetectOption> options = detectOptionManager.getDetectOptions();
+            final List<DetectBaseOption> options = detectOptionManager.getDetectOptions();
 
             final String[] applicationArgs = applicationArguments.getSourceArgs();
             final ArgumentState argumentState = argumentStateParser.parseArgs(applicationArgs);
@@ -188,9 +189,9 @@ public class Application implements ApplicationRunner {
                 }
             }
 
-            final List<DetectOption> unacceptableDetectOtions = detectOptionManager.findUnacceptableValues();
+            final List<DetectBaseOption> unacceptableDetectOtions = detectOptionManager.findUnacceptableValues();
             if (unacceptableDetectOtions.size() > 0) {
-                final DetectOption firstUnacceptableDetectOption = unacceptableDetectOtions.get(0);
+                final DetectBaseOption firstUnacceptableDetectOption = unacceptableDetectOtions.get(0);
                 final String msg = String.format("%s: Unknown value '%s', acceptable values are %s",
                         firstUnacceptableDetectOption.getKey(),
                         firstUnacceptableDetectOption.getResolvedValue(),

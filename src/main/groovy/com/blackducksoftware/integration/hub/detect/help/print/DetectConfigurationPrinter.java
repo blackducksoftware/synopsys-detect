@@ -32,28 +32,28 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.DetectInfo;
+import com.blackducksoftware.integration.hub.detect.help.DetectBaseOption;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
-import com.blackducksoftware.integration.hub.detect.help.DetectOption.FinalValueType;
 
 public class DetectConfigurationPrinter {
 
-    public void print(final PrintStream printStream, final DetectInfo detectInfo, final DetectConfiguration detectConfiguration, final List<DetectOption> detectOptions)
+    public void print(final PrintStream printStream, final DetectInfo detectInfo, final DetectConfiguration detectConfiguration, final List<DetectBaseOption> detectOptions)
             throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
         printStream.println("");
         printStream.println("Current property values:");
         printStream.println("--property = value [notes]");
         printStream.println(StringUtils.repeat("-", 60));
 
-        final List<DetectOption> sortedOptions = detectOptions.stream()
-                .sorted((o1, o2)->o1.getKey().compareTo(o2.getKey()))
-                .collect(Collectors.toList());
+        final List<DetectBaseOption> sortedOptions = detectOptions.stream()
+                                                         .sorted((o1, o2) -> o1.getKey().compareTo(o2.getKey()))
+                                                         .collect(Collectors.toList());
 
-        final List<DetectOption> deprecatedInUse = new ArrayList<>();
+        final List<DetectBaseOption> deprecatedInUse = new ArrayList<>();
 
-        for (final DetectOption option : sortedOptions) {
+        for (final DetectBaseOption option : sortedOptions) {
             final String fieldName = option.getFieldName();
             String fieldValue = option.getFinalValue();
-            final FinalValueType fieldType = option.getFinalValueType();
+            final DetectBaseOption.FinalValueType fieldType = option.getFinalValueType();
             if (!StringUtils.isEmpty(fieldName) && !StringUtils.isEmpty(fieldValue) && "metaClass" != fieldName) {
                 final boolean containsPassword = fieldName.toLowerCase().contains("password") || fieldName.toLowerCase().contains("apitoken");
                 if (containsPassword) {
@@ -62,23 +62,24 @@ public class DetectConfigurationPrinter {
 
                 String text = "";
                 final String displayName = option.getKey();
-                if (fieldType == FinalValueType.SUPPLIED || fieldType == FinalValueType.DEFAULT || containsPassword) {
+                if (fieldType == DetectBaseOption.FinalValueType.SUPPLIED || fieldType == DetectBaseOption.FinalValueType.DEFAULT || containsPassword) {
                     if (fieldValue.trim().length() > 0) {
                         text = displayName + " = " + fieldValue;
                     }
-                } else if (fieldType == FinalValueType.INTERACTIVE) {
+                } else if (fieldType == DetectBaseOption.FinalValueType.INTERACTIVE) {
                     text = displayName + " = " + fieldValue + " [interactive]";
-                } else if (fieldType == FinalValueType.LATEST) {
+                } else if (fieldType == DetectBaseOption.FinalValueType.LATEST) {
                     text = displayName + " = " + fieldValue + " [latest]";
-                } else if (fieldType == FinalValueType.CALCULATED) {
+                } else if (fieldType == DetectBaseOption.FinalValueType.CALCULATED) {
                     text = displayName + " = " + fieldValue + " [calculated]";
-                } else if (fieldType == FinalValueType.OVERRIDE) {
+                } else if (fieldType == DetectBaseOption.FinalValueType.OVERRIDE) {
                     text = displayName + " = " + fieldValue + " [" + option.getResolvedValue() + "]";
                 }
 
                 if (option.getAcceptableValues().size() > 0) {
-                    if (!option.isAcceptableValue(fieldValue)) {
-                        text += " [unknown value]";
+                    DetectBaseOption.OptionValidationResult validationResult = option.isAcceptableValue(fieldValue);
+                    if (!validationResult.isValid()) {
+                        text += String.format(" [%s]", validationResult.getValidationMessage());
                     }
                 }
 
@@ -89,7 +90,7 @@ public class DetectConfigurationPrinter {
                 printStream.println(text);
             }
         }
-        final List<DetectOption> allWarnings = sortedOptions.stream().filter(it -> it.getWarnings().size() > 0).collect(Collectors.toList());
+        final List<DetectBaseOption> allWarnings = sortedOptions.stream().filter(it -> it.getWarnings().size() > 0).collect(Collectors.toList());
         if (allWarnings.size() > 0) {
             printStream.println("");
             printStream.println(StringUtils.repeat("*", 60));
@@ -98,14 +99,14 @@ public class DetectConfigurationPrinter {
             } else {
                 printStream.println("WARNINGS (" + allWarnings.size() + ")");
             }
-            for (final DetectOption option : allWarnings) {
+            for (final DetectBaseOption option : allWarnings) {
                 for (final String warning : option.getWarnings()) {
                     printStream.println(option.getKey() + ": " + warning);
                 }
             }
             printStream.println(StringUtils.repeat("*", 60));
             printStream.println("");
-        }else {
+        } else {
             printStream.println(StringUtils.repeat("-", 60));
             printStream.println("");
         }
@@ -113,9 +114,9 @@ public class DetectConfigurationPrinter {
 
     public DetectOption optionForField(final String fieldName, final List<DetectOption> detectOptions) {
         return detectOptions.stream()
-                .filter(it -> it.getFieldName().equals(fieldName))
-                .findFirst()
-                .orElse(null);
+                       .filter(it -> it.getFieldName().equals(fieldName))
+                       .findFirst()
+                       .orElse(null);
     }
 
 }

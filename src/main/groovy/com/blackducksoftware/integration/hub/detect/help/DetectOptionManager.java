@@ -41,7 +41,6 @@ import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
-import com.blackducksoftware.integration.hub.detect.help.DetectOption.FinalValueType;
 import com.blackducksoftware.integration.hub.detect.interactive.InteractiveOption;
 import com.blackducksoftware.integration.hub.detect.util.SpringValueUtils;
 
@@ -52,10 +51,10 @@ public class DetectOptionManager {
     @Autowired
     public DetectConfiguration detectConfiguration;
 
-    private List<DetectOption> detectOptions;
+    private List<DetectBaseOption> detectOptions;
     private List<String> detectGroups;
 
-    public List<DetectOption> getDetectOptions() {
+    public List<DetectBaseOption> getDetectOptions() {
         return detectOptions;
     }
 
@@ -64,15 +63,15 @@ public class DetectOptionManager {
     }
 
     public void init() {
-        final Map<String, DetectOption> detectOptionsMap = new HashMap<>();
+        final Map<String, DetectBaseOption> detectOptionsMap = new HashMap<>();
 
         for (final Field field : DetectConfiguration.class.getDeclaredFields()) {
             try {
                 if (field.isAnnotationPresent(Value.class)) {
-                    final DetectOption option = processField(detectConfiguration, DetectConfiguration.class, field);
+                    final DetectBaseOption option = processField(detectConfiguration, DetectConfiguration.class, field);
                     if (option != null) {
-                        if (!detectOptionsMap.containsKey(option.key)) {
-                            detectOptionsMap.put(option.key, option);
+                        if (!detectOptionsMap.containsKey(option.getKey())) {
+                            detectOptionsMap.put(option.getKey(), option);
                         }
                     }
                 }
@@ -82,47 +81,47 @@ public class DetectOptionManager {
         }
 
         detectOptions = detectOptionsMap.values().stream()
-                .sorted((o1, o2) -> o1.getHelp().primaryGroup.compareTo(o2.getHelp().primaryGroup))
-                .collect(Collectors.toList());
+                                .sorted((o1, o2) -> o1.getDetectOptionHelp().primaryGroup.compareTo(o2.getDetectOptionHelp().primaryGroup))
+                                .collect(Collectors.toList());
 
         detectGroups = detectOptions.stream()
-                .map(it -> it.getHelp().primaryGroup)
-                .distinct()
-                .sorted()
-                .collect(Collectors.toList());
+                               .map(it -> it.getDetectOptionHelp().primaryGroup)
+                               .distinct()
+                               .sorted()
+                               .collect(Collectors.toList());
     }
 
     public void postInit() throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException, DetectUserFriendlyException {
-        for (final DetectOption option : detectOptions) {
+        for (final DetectBaseOption option : detectOptions) {
             final String fieldValue = getCurrentValue(detectConfiguration, option);
             if (!option.getResolvedValue().equals(fieldValue)) {
                 if (option.getInteractiveValue() != null) {
-                    option.setFinalValue(fieldValue, FinalValueType.INTERACTIVE);
+                    option.setFinalValue(fieldValue, DetectBaseOption.FinalValueType.INTERACTIVE);
                 } else if (option.getResolvedValue().equals("latest")) {
-                    option.setFinalValue(fieldValue, FinalValueType.LATEST);
+                    option.setFinalValue(fieldValue, DetectBaseOption.FinalValueType.LATEST);
                 } else if (option.getResolvedValue().trim().length() == 0) {
-                    option.setFinalValue(fieldValue, FinalValueType.CALCULATED);
+                    option.setFinalValue(fieldValue, DetectBaseOption.FinalValueType.CALCULATED);
                 } else {
-                    option.setFinalValue(fieldValue, FinalValueType.OVERRIDE);
+                    option.setFinalValue(fieldValue, DetectBaseOption.FinalValueType.OVERRIDE);
                 }
             } else {
                 if (fieldValue.equals(option.getDefaultValue())) {
-                    option.setFinalValue(fieldValue, FinalValueType.DEFAULT);
+                    option.setFinalValue(fieldValue, DetectBaseOption.FinalValueType.DEFAULT);
                 } else {
-                    option.setFinalValue(fieldValue, FinalValueType.SUPPLIED);
-                    if (option.getHelp().isDeprecated) {
+                    option.setFinalValue(fieldValue, DetectBaseOption.FinalValueType.SUPPLIED);
+                    if (option.getDetectOptionHelp().isDeprecated) {
                         option.requestDeprecation();
                     }
                 }
             }
 
             if (option.isRequestedDeprecation()) {
-                option.addWarning("As of version " + option.getHelp().deprecationVersion + " this property will be removed: " + option.getHelp().deprecation);
+                option.addWarning("As of version " + option.getDetectOptionHelp().deprecationVersion + " this property will be removed: " + option.getDetectOptionHelp().deprecation);
             }
         }
     }
 
-    public String getCurrentValue(final DetectConfiguration detectConfiguration, final DetectOption detectOption) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
+    public String getCurrentValue(final DetectConfiguration detectConfiguration, final DetectBaseOption detectOption) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
         final Field field = detectConfiguration.getClass().getDeclaredField(detectOption.getFieldName());
         field.setAccessible(true);
         final String fieldValue = getStringValue(detectConfiguration, field);
@@ -143,7 +142,7 @@ public class DetectOptionManager {
         return fieldValue;
     }
 
-    private DetectOption processField(final Object obj, final Class<?> objClz, final Field field) throws IllegalArgumentException, IllegalAccessException {
+    private DetectBaseOption processField(final Object obj, final Class<?> objClz, final Field field) throws IllegalArgumentException, IllegalAccessException {
         final String fieldName = field.getName();
         final Class<?> valueType = field.getType();
 
@@ -156,14 +155,16 @@ public class DetectOptionManager {
             defaultValue = defaultValueAnnotation.value();
         }
 
-        String[] acceptableValues = new String[] {};
+        List<String> acceptableValues = new ArrayList<>();
+        boolean isCommaSeparatedList = false;
         boolean strictAcceptableValue = false;
         boolean caseSensitiveAcceptableValues = false;
         final AcceptableValues acceptableValueAnnotation = field.getAnnotation(AcceptableValues.class);
         if (acceptableValueAnnotation != null) {
-            acceptableValues = acceptableValueAnnotation.value();
+            acceptableValues = Arrays.asList(acceptableValueAnnotation.value());
             strictAcceptableValue = acceptableValueAnnotation.strict();
             caseSensitiveAcceptableValues = acceptableValueAnnotation.caseSensitive();
+            isCommaSeparatedList = acceptableValueAnnotation.isCommaSeparatedList();
         }
 
         final String originalValue = defaultValue;
@@ -180,7 +181,14 @@ public class DetectOptionManager {
 
         final DetectOptionHelp help = processFieldHelp(field);
 
-        return new DetectOption(key, fieldName, originalValue, resolvedValue, valueType, defaultValue, strictAcceptableValue, caseSensitiveAcceptableValues, acceptableValues, help);
+        DetectBaseOption detectOption;
+        if (isCommaSeparatedList) {
+            detectOption = new DetectMultipleOption(key, fieldName, valueType, strictAcceptableValue, caseSensitiveAcceptableValues, acceptableValues, help, originalValue, defaultValue, resolvedValue);
+        } else {
+            detectOption = new DetectOption(key, fieldName, valueType, strictAcceptableValue, caseSensitiveAcceptableValues, acceptableValues, help, originalValue, defaultValue, resolvedValue);
+        }
+
+        return detectOption;
     }
 
     private DetectOptionHelp processFieldHelp(final Field field) {
@@ -215,11 +223,12 @@ public class DetectOptionManager {
         return help;
     }
 
-    public List<DetectOption> findUnacceptableValues() throws DetectUserFriendlyException {
-        final List<DetectOption> unacceptableDetectOptions = new ArrayList<>();
-        for (final DetectOption option : detectOptions) {
-            if (option.strictAcceptableValues) {
-                if (!option.isAcceptableValue(option.resolvedValue)) {
+    public List<DetectBaseOption> findUnacceptableValues() throws DetectUserFriendlyException {
+        final List<DetectBaseOption> unacceptableDetectOptions = new ArrayList<>();
+        for (final DetectBaseOption option : detectOptions) {
+            if (option.isStrictAcceptableValues()) {
+                DetectBaseOption.OptionValidationResult validationResult = option.isAcceptableValue(option.getResolvedValue());
+                if (!validationResult.isValid()) {
                     unacceptableDetectOptions.add(option);
                 }
             }
@@ -229,9 +238,9 @@ public class DetectOptionManager {
 
     public void applyInteractiveOptions(final List<InteractiveOption> interactiveOptions) {
         for (final InteractiveOption interactiveOption : interactiveOptions) {
-            for (final DetectOption detectOption : detectOptions) {
+            for (final DetectBaseOption detectOption : detectOptions) {
                 if (detectOption.getFieldName().equals(interactiveOption.getFieldName())) {
-                    detectOption.interactiveValue = interactiveOption.getInteractiveValue();
+                    detectOption.setInteractiveValue(interactiveOption.getInteractiveValue());
                 }
             }
 

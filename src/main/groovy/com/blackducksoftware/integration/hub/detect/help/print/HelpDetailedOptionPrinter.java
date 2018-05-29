@@ -28,28 +28,29 @@ import java.util.stream.Collectors;
 import org.codehaus.plexus.util.StringUtils;
 import org.springframework.stereotype.Component;
 
+import com.blackducksoftware.integration.hub.detect.help.DetectBaseOption;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 import com.blackducksoftware.integration.hub.detect.help.DetectOptionHelp;
 
 @Component
 public class HelpDetailedOptionPrinter {
 
-    public void printDetailedOption(final HelpTextWriter writer, final DetectOption detectOption) {
+    public void printDetailedOption(final HelpTextWriter writer, final DetectBaseOption detectOption) {
         writer.println("");
         writer.println("Detailed information for " + detectOption.getKey());
         writer.println("");
-        if (detectOption.getHelp().isDeprecated) {
-            writer.println("Deprecated: will be removed in version " + detectOption.getHelp().deprecationVersion);
+        if (detectOption.getDetectOptionHelp().isDeprecated) {
+            writer.println("Deprecated: will be removed in version " + detectOption.getDetectOptionHelp().deprecationVersion);
             writer.println("");
         }
-        writer.println("Property description: " + detectOption.getHelp().description);
+        writer.println("Property description: " + detectOption.getDetectOptionHelp().description);
         writer.println("Property default value: " + detectOption.getDefaultValue());
         if (detectOption.getAcceptableValues().size() > 0) {
             writer.println("Property acceptable values: " + detectOption.getAcceptableValues().stream().collect(Collectors.joining(", ")));
         }
         writer.println("");
 
-        final DetectOptionHelp help = detectOption.getHelp();
+        final DetectOptionHelp help = detectOption.getDetectOptionHelp();
         if (StringUtils.isNotBlank(help.detailedHelp)) {
             writer.println("Detailed help:");
             writer.println(help.detailedHelp);

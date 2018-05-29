@@ -54,6 +54,7 @@ import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendly
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.help.AcceptableValues;
 import com.blackducksoftware.integration.hub.detect.help.DefaultValue;
+import com.blackducksoftware.integration.hub.detect.help.DetectBaseOption;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 import com.blackducksoftware.integration.hub.detect.help.HelpDescription;
 import com.blackducksoftware.integration.hub.detect.help.HelpDetailed;
@@ -128,7 +129,7 @@ public class DetectConfiguration {
     private File sourceDirectory;
     private File outputDirectory;
 
-    private List<DetectOption> detectOptions = new ArrayList<>();
+    private List<DetectBaseOption> detectOptions = new ArrayList<>();
 
     private final Set<String> allDetectPropertyKeys = new HashSet<>();
     private final Set<String> allBlackduckHubPropertyKeys = new HashSet<>();
@@ -141,7 +142,7 @@ public class DetectConfiguration {
     private ExcludedIncludedFilter bomToolFilter;
     private List<String> bomToolSearchDirectoryExclusions;
 
-    public void init(final List<DetectOption> detectOptions) throws DetectUserFriendlyException, IOException, IllegalArgumentException, IllegalAccessException {
+    public void init(final List<DetectBaseOption> detectOptions) throws DetectUserFriendlyException, IOException, IllegalArgumentException, IllegalAccessException {
         this.detectOptions = detectOptions;
 
         final String systemUserHome = System.getProperty("user.home");
@@ -683,7 +684,7 @@ public class DetectConfiguration {
     @Value("${detect.policy.check.fail.on.severities:}")
     @HelpGroup(primary = GROUP_POLICY_CHECK, additional = { SEARCH_GROUP_POLICY })
     @HelpDescription("A comma-separated list of policy violation severities that will fail detect. If this is not set, detect will not fail due to policy violations.")
-    @AcceptableValues(value = { "ALL", "BLOCKER", "CRITICAL", "MAJOR", "MINOR", "TRIVIAL" }, caseSensitive = false, strict = false)
+    @AcceptableValues(value = { "ALL", "BLOCKER", "CRITICAL", "MAJOR", "MINOR", "TRIVIAL" }, caseSensitive = false, strict = false, isCommaSeparatedList = true)
     private String policyCheckFailOnSeverities;
 
     @Value("${detect.code.location.combine.same.names:}")

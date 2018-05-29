@@ -28,12 +28,13 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
+import com.blackducksoftware.integration.hub.detect.help.DetectBaseOption;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 
 @Component
 public class HelpOptionPrinter {
 
-    public void printOptions(HelpTextWriter writer, List<DetectOption> options, String notes) {
+    public void printOptions(HelpTextWriter writer, List<DetectBaseOption> options, String notes) {
         writer.printColumns("Property Name", "Default", "Description");
         writer.printSeperator();
 
@@ -43,17 +44,17 @@ public class HelpOptionPrinter {
         }
 
         String group = null;
-        for (final DetectOption detectOption : options) {
-            final String currentGroup = detectOption.getHelp().primaryGroup;
+        for (final DetectBaseOption detectOption : options) {
+            final String currentGroup = detectOption.getDetectOptionHelp().primaryGroup;
             if (group == null) {
                 group = currentGroup;
             } else if (!group.equals(currentGroup)) {
                 writer.println();
                 group = currentGroup;
             }
-            String description = detectOption.getHelp().description;
-            if (detectOption.getHelp().isDeprecated) {
-                description = "Will be removed in version " + detectOption.getHelp().deprecationVersion + ". " + description;
+            String description = detectOption.getDetectOptionHelp().description;
+            if (detectOption.getDetectOptionHelp().isDeprecated) {
+                description = "Will be removed in version " + detectOption.getDetectOptionHelp().deprecationVersion + ". " + description;
             }
             if (detectOption.getAcceptableValues().size() > 0) {
                 description += " (" + detectOption.getAcceptableValues().stream().collect(Collectors.joining("|")) + ")";
