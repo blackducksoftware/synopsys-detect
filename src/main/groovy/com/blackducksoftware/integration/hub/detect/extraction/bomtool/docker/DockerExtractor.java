@@ -28,6 +28,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -119,6 +120,7 @@ public class DockerExtractor extends Extractor<DockerContext> {
     private void importTars(final File inspectorJar, final List<File> importTars, final File directory, final Map<String, String> environmentVariables, final File bashExe) {
         try {
             for (final File imageToImport : importTars) {
+                // The -c is a bash option, the following String is the command we want to run
                 final List<String> dockerImportArguments = Arrays.asList(
                         "-c",
                         "docker load -i \"" + imageToImport.getCanonicalPath() + "\""
@@ -143,8 +145,11 @@ public class DockerExtractor extends Extractor<DockerContext> {
 
         final Map<String, String> environmentVariables = createEnvironmentVariables(dockerExe);
 
+        final List<String> dockerArguments = new ArrayList<>();
+        // The -c is a bash option, the following String is the command we want to run
+        dockerArguments.add("-c");
+
         final ExecutableArgumentBuilder bashArguments = new ExecutableArgumentBuilder();
-        bashArguments.addArgument("-c");
         bashArguments.addArgument(dockerInspectorInfo.dockerInspectorScript.getCanonicalPath(), true);
         bashArguments.addArgumentPair("--spring.config.location", "file:" + dockerPropertiesFile.getCanonicalPath(), true);
         bashArguments.addArgument(imageArgument);
@@ -156,7 +161,10 @@ public class DockerExtractor extends Extractor<DockerContext> {
             importTars(dockerInspectorInfo.offlineDockerInspectorJar, dockerInspectorInfo.offlineTars, outputDirectory, environmentVariables, bashExe);
         }
 
-        final Executable dockerExecutable = new Executable(outputDirectory, environmentVariables, bashExe.toString(), bashArguments.build());
+        // All the arguments should be joined into a single String, as the command to run after the -c
+        dockerArguments.add(bashArguments.buildString());
+
+        final Executable dockerExecutable = new Executable(outputDirectory, environmentVariables, bashExe.toString(), dockerArguments);
         executableRunner.execute(dockerExecutable);
 
         if (StringUtils.isNotBlank(dockerTarFilePath)) {

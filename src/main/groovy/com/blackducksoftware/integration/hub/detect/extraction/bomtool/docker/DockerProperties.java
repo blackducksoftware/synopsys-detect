@@ -66,7 +66,11 @@ public class DockerProperties {
             path += File.pathSeparator + dockerExecutableFile.getParentFile().getCanonicalPath();
         }
         environmentVariables.put("PATH", path);
-        environmentVariables.put("DOCKER_INSPECTOR_VERSION", this.detectConfiguration.getDockerInspectorVersion());
+
+        String dockerInspectorVersion = this.detectConfiguration.getDockerInspectorVersion();
+        if (StringUtils.isNotBlank(dockerInspectorVersion) && !dockerInspectorVersion.equals("latest")) {
+            environmentVariables.put("DOCKER_INSPECTOR_VERSION", this.detectConfiguration.getDockerInspectorVersion());
+        }
 
         final String detectCurlOpts = System.getenv("DETECT_CURL_OPTS");
         if (StringUtils.isNotBlank(detectCurlOpts)) {
