@@ -60,13 +60,21 @@ public class DockerProperties {
         dockerProperties.store(new FileOutputStream(dockerPropertiesFile), "");
     }
 
-    public void populateEnvironmentVariables(final Map<String, String> environmentVariables, final File dockerExecutableFile) throws IOException {
+    public void populateEnvironmentVariables(DockerContext context, final Map<String, String> environmentVariables, final File dockerExecutableFile) throws IOException {
         String path = System.getenv("PATH");
         if (dockerExecutableFile != null && dockerExecutableFile.exists()) {
             path += File.pathSeparator + dockerExecutableFile.getParentFile().getCanonicalPath();
         }
         environmentVariables.put("PATH", path);
-        environmentVariables.put("DOCKER_INSPECTOR_VERSION", this.detectConfiguration.getDockerInspectorVersion());
+
+        String dockerInspectorVersion = "";
+        if (null != context && null != context.dockerInspectorInfo) {
+            // we want to get the resolved Docker inspector version, if Detect was able to determine a version
+            dockerInspectorVersion = context.dockerInspectorInfo.version;
+        }
+        if (StringUtils.isNotBlank(dockerInspectorVersion)) {
+            environmentVariables.put("DOCKER_INSPECTOR_VERSION", this.detectConfiguration.getDockerInspectorVersion());
+        }
 
         final String detectCurlOpts = System.getenv("DETECT_CURL_OPTS");
         if (StringUtils.isNotBlank(detectCurlOpts)) {

@@ -56,6 +56,12 @@ class MavenCodeLocationPackagerTest {
     }
 
     @Test
+    public void extractCodeLocationsTestWebgoat() {
+        final String mavenOutputText = testUtil.getResourceAsUTF8String('/maven/webgoat-container-pom-dependency-tree-output.txt')
+        createNewCodeLocationTest(mavenOutputText, '/maven/webgoatCodeLocation.json', 1, "", "")
+    }
+
+    @Test
     public void testParseProject() {
         MavenCodeLocationPackager mavenCodeLocationPackager = new MavenCodeLocationPackager(new ExternalIdFactory())
 
@@ -306,7 +312,7 @@ class MavenCodeLocationPackagerTest {
         List<MavenParseResult> result = mavenCodeLocationPackager.extractCodeLocations('/test/path', mavenOutputText, excludedModules, includedModules)
         assertEquals(numberOfCodeLocations, result.size())
         DetectCodeLocation codeLocation = result[0].codeLocation
-
+       
         testUtil.testJsonResource(expectedResourcePath, codeLocation)
     }
 }

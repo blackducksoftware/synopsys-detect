@@ -28,6 +28,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -110,15 +111,16 @@ public class DockerExtractor extends Extractor<DockerContext> {
         }
     }
 
-    private Map<String, String> createEnvironmentVariables(final File dockerExe) throws IOException {
+    private Map<String, String> createEnvironmentVariables(final DockerContext context, final File dockerExe) throws IOException {
         final Map<String, String> environmentVariables = new HashMap<>();
-        dockerProperties.populateEnvironmentVariables(environmentVariables, dockerExe);
+        dockerProperties.populateEnvironmentVariables(context, environmentVariables, dockerExe);
         return environmentVariables;
     }
 
     private void importTars(final File inspectorJar, final List<File> importTars, final File directory, final Map<String, String> environmentVariables, final File bashExe) {
         try {
             for (final File imageToImport : importTars) {
+                // The -c is a bash option, the following String is the command we want to run
                 final List<String> dockerImportArguments = Arrays.asList(
                         "-c",
                         "docker load -i \"" + imageToImport.getCanonicalPath() + "\""
@@ -141,10 +143,13 @@ public class DockerExtractor extends Extractor<DockerContext> {
         final File dockerPropertiesFile = detectFileManager.getOutputFile(context, "application.properties");
         dockerProperties.populatePropertiesFile(dockerPropertiesFile, outputDirectory);
 
-        final Map<String, String> environmentVariables = createEnvironmentVariables(dockerExe);
+        final Map<String, String> environmentVariables = createEnvironmentVariables(context, dockerExe);
+
+        final List<String> dockerArguments = new ArrayList<>();
+        // The -c is a bash option, the following String is the command we want to run
+        dockerArguments.add("-c");
 
         final ExecutableArgumentBuilder bashArguments = new ExecutableArgumentBuilder();
-        bashArguments.addArgument("-c");
         bashArguments.addArgument(dockerInspectorInfo.dockerInspectorScript.getCanonicalPath(), true);
         bashArguments.addArgumentPair("--spring.config.location", "file:" + dockerPropertiesFile.getCanonicalPath(), true);
         bashArguments.addArgument(imageArgument);
@@ -156,7 +161,10 @@ public class DockerExtractor extends Extractor<DockerContext> {
             importTars(dockerInspectorInfo.offlineDockerInspectorJar, dockerInspectorInfo.offlineTars, outputDirectory, environmentVariables, bashExe);
         }
 
-        final Executable dockerExecutable = new Executable(outputDirectory, environmentVariables, bashExe.toString(), bashArguments.build());
+        // All the arguments should be joined into a single String, as the command to run after the -c
+        dockerArguments.add(bashArguments.buildString());
+
+        final Executable dockerExecutable = new Executable(outputDirectory, environmentVariables, bashExe.toString(), dockerArguments);
         executableRunner.execute(dockerExecutable);
 
         if (StringUtils.isNotBlank(dockerTarFilePath)) {
