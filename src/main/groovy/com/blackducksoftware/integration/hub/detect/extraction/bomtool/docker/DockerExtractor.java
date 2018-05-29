@@ -111,9 +111,9 @@ public class DockerExtractor extends Extractor<DockerContext> {
         }
     }
 
-    private Map<String, String> createEnvironmentVariables(final File dockerExe) throws IOException {
+    private Map<String, String> createEnvironmentVariables(final DockerContext context, final File dockerExe) throws IOException {
         final Map<String, String> environmentVariables = new HashMap<>();
-        dockerProperties.populateEnvironmentVariables(environmentVariables, dockerExe);
+        dockerProperties.populateEnvironmentVariables(context, environmentVariables, dockerExe);
         return environmentVariables;
     }
 
@@ -143,7 +143,7 @@ public class DockerExtractor extends Extractor<DockerContext> {
         final File dockerPropertiesFile = detectFileManager.getOutputFile(context, "application.properties");
         dockerProperties.populatePropertiesFile(dockerPropertiesFile, outputDirectory);
 
-        final Map<String, String> environmentVariables = createEnvironmentVariables(dockerExe);
+        final Map<String, String> environmentVariables = createEnvironmentVariables(context, dockerExe);
 
         final List<String> dockerArguments = new ArrayList<>();
         // The -c is a bash option, the following String is the command we want to run
