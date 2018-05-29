@@ -73,7 +73,7 @@ public class DockerProperties {
             dockerInspectorVersion = context.dockerInspectorInfo.version;
         }
         if (StringUtils.isNotBlank(dockerInspectorVersion)) {
-            environmentVariables.put("DOCKER_INSPECTOR_VERSION", this.detectConfiguration.getDockerInspectorVersion());
+            environmentVariables.put("DOCKER_INSPECTOR_VERSION", dockerInspectorVersion);
         }
 
         final String detectCurlOpts = System.getenv("DETECT_CURL_OPTS");
