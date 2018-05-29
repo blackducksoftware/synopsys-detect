@@ -146,7 +146,7 @@ public class DockerExtractor extends Extractor<DockerContext> {
         final ExecutableArgumentBuilder bashArguments = new ExecutableArgumentBuilder();
         bashArguments.addArgument("-c");
         bashArguments.addArgument(dockerInspectorInfo.dockerInspectorScript.getCanonicalPath(), true);
-        bashArguments.addArgumentPair("--spring.config.location", "file:" + dockerProperties.toString(), true);
+        bashArguments.addArgumentPair("--spring.config.location", "file:" + dockerPropertiesFile.getCanonicalPath(), true);
         bashArguments.addArgument(imageArgument);
 
         if (dockerInspectorInfo.isOffline) {
