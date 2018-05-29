@@ -81,14 +81,14 @@ public class DetectOptionManager {
         }
 
         detectOptions = detectOptionsMap.values().stream()
-                                .sorted((o1, o2) -> o1.getDetectOptionHelp().primaryGroup.compareTo(o2.getDetectOptionHelp().primaryGroup))
-                                .collect(Collectors.toList());
+                .sorted((o1, o2) -> o1.getDetectOptionHelp().primaryGroup.compareTo(o2.getDetectOptionHelp().primaryGroup))
+                .collect(Collectors.toList());
 
         detectGroups = detectOptions.stream()
-                               .map(it -> it.getDetectOptionHelp().primaryGroup)
-                               .distinct()
-                               .sorted()
-                               .collect(Collectors.toList());
+                .map(it -> it.getDetectOptionHelp().primaryGroup)
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
     }
 
     public void postInit() throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException, DetectUserFriendlyException {

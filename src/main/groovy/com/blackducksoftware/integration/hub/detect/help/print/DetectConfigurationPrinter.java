@@ -45,8 +45,8 @@ public class DetectConfigurationPrinter {
         printStream.println(StringUtils.repeat("-", 60));
 
         final List<DetectBaseOption> sortedOptions = detectOptions.stream()
-                                                         .sorted((o1, o2) -> o1.getKey().compareTo(o2.getKey()))
-                                                         .collect(Collectors.toList());
+                .sorted((o1, o2) -> o1.getKey().compareTo(o2.getKey()))
+                .collect(Collectors.toList());
 
         final List<DetectBaseOption> deprecatedInUse = new ArrayList<>();
 
@@ -114,9 +114,9 @@ public class DetectConfigurationPrinter {
 
     public DetectOption optionForField(final String fieldName, final List<DetectOption> detectOptions) {
         return detectOptions.stream()
-                       .filter(it -> it.getFieldName().equals(fieldName))
-                       .findFirst()
-                       .orElse(null);
+                .filter(it -> it.getFieldName().equals(fieldName))
+                .findFirst()
+                .orElse(null);
     }
 
 }
