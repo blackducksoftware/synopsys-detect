@@ -212,6 +212,8 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
             File target = new File(path);
             String targetPath = target.getCanonicalPath();
             scanPaths.add(targetPath);
+            // Add the path as a FAILURE until it completes successfully
+            scanSummaryResults.put(targetPath, Result.FAILURE);
             ExclusionPatternDetector exclusionPatternDetector = new ExclusionPatternDetector(detectFileFinder, target);
             Set<String> scanExclusionPatterns = exclusionPatternDetector.determineExclusionPatterns(hubSignatureScannerExclusionNamePatterns);
             if (null != providedExclusionPatterns) {
