@@ -49,6 +49,7 @@ import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
@@ -83,8 +84,15 @@ public class YarnLockExtractor extends Extractor<YarnLockContext> {
 
             DependencyGraph dependencyGraph;
             if (detectConfiguration.getYarnProductionDependenciesOnly()) {
-                final List<String> yarnListLines = executeYarnList(context);
-                dependencyGraph = yarnListParser.parseYarnList(yarnLockText, yarnListLines);
+                final List<String> exeArgs = Arrays.asList("list", "--prod");
+
+                final Executable yarnListExe = new Executable(detectFileManager.getOutputDirectory(context), context.yarnExe, exeArgs);
+                ExecutableOutput executableOutput = executableRunner.execute(yarnListExe);
+                if(executableOutput.getReturnCode() != 0) {
+                    final Extraction.Builder builder = new Extraction.Builder().failure(String.format("Executing command '%s' returned a non-zero exit code %s", String.join(" ", exeArgs), executableOutput.getReturnCode()));
+                    return builder.build();
+                }
+                dependencyGraph = yarnListParser.parseYarnList(yarnLockText, executableOutput.getStandardOutputAsList());
             } else {
                 dependencyGraph = yarnLockParser.parseYarnLock(yarnLockText);
             }
@@ -97,27 +105,5 @@ public class YarnLockExtractor extends Extractor<YarnLockContext> {
             return new Extraction.Builder().exception(e).build();
         }
     }
-
-    List<String> executeYarnList(final YarnLockContext context) throws ExecutableRunnerException, IOException {
-        final File yarnListOutputFile = detectFileManager.getOutputFile(context, OUTPUT_FILE);
-        final File yarnListErrorFile = detectFileManager.getOutputFile(context, ERROR_FILE);
-
-        final List<String> exeArgs = Arrays.asList("list", "--prod");
-
-        final Executable yarnListExe = new Executable(detectFileManager.getOutputDirectory(context), context.yarnExe, exeArgs);
-        executableRunner.executeToFile(yarnListExe, yarnListOutputFile, yarnListErrorFile);
-
-        if (!(yarnListOutputFile.length() > 0)) {
-            if (yarnListErrorFile.length() > 0) {
-                logger.error("Error when running yarn list --prod command");
-                logger.debug(Files.readAllLines(yarnListErrorFile.toPath(), StandardCharsets.UTF_8).stream().collect(Collectors.joining(System.lineSeparator())));
-            } else {
-                logger.warn("Nothing returned from yarn list --prod command");
-            }
-        }
-
-        return Files.readAllLines(yarnListOutputFile.toPath(), StandardCharsets.UTF_8);
-    }
-
 
 }
