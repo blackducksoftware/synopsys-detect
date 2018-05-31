@@ -86,7 +86,7 @@ public class YarnLockExtractor extends Extractor<YarnLockContext> {
             if (detectConfiguration.getYarnProductionDependenciesOnly()) {
                 final List<String> exeArgs = Arrays.asList("list", "--prod");
 
-                final Executable yarnListExe = new Executable(detectFileManager.getOutputDirectory(context), context.yarnExe, exeArgs);
+                final Executable yarnListExe = new Executable(context.directory, context.yarnExe, exeArgs);
                 ExecutableOutput executableOutput = executableRunner.execute(yarnListExe);
                 if(executableOutput.getReturnCode() != 0) {
                     final Extraction.Builder builder = new Extraction.Builder().failure(String.format("Executing command '%s' returned a non-zero exit code %s", String.join(" ", exeArgs), executableOutput.getReturnCode()));
