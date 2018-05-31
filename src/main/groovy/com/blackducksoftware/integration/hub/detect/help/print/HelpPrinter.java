@@ -27,6 +27,7 @@ import java.io.PrintStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.codehaus.plexus.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -34,15 +35,11 @@ import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.help.ArgumentState;
 import com.blackducksoftware.integration.hub.detect.help.DetectBaseOption;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
+import com.blackducksoftware.integration.hub.detect.help.DetectOptionHelp;
 
 @Component
 public class HelpPrinter {
 
-    @Autowired
-    private HelpOptionPrinter optionPrinter;
-
-    @Autowired
-    private HelpDetailedOptionPrinter detailPrinter;
 
     public void printAppropriateHelpMessage(final PrintStream printStream, final List<DetectBaseOption> allOptions, final ArgumentState state) {
         final HelpTextWriter writer = new HelpTextWriter();
@@ -54,7 +51,7 @@ public class HelpPrinter {
         if (state.isVerboseHelp) {
             printVerboseOptions(writer, currentOptions, null);
         } else if (state.isDeprecatedHelp) {
-            optionPrinter.printOptions(writer, deprecatedOptions, "Showing only deprecated properties.");
+            printOptions(writer, deprecatedOptions, "Showing only deprecated properties.");
         } else {
             if (state.parsedValue != null) {
                 if (isProperty(currentOptions, state.parsedValue)) {
@@ -69,7 +66,7 @@ public class HelpPrinter {
             }
         }
 
-        optionPrinter.printStandardFooter(writer, getPrintGroupText(allPrintGroups));
+        printStandardFooter(writer, getPrintGroupText(allPrintGroups));
 
         writer.write(printStream);
     }
@@ -82,7 +79,7 @@ public class HelpPrinter {
                 return o1.getDetectOptionHelp().primaryGroup.compareTo(o2.getDetectOptionHelp().primaryGroup);
             }
         }).collect(Collectors.toList());
-        optionPrinter.printOptions(writer, sorted, notes);
+        printOptions(writer, sorted, notes);
     }
 
     private void printDetailedHelp(final HelpTextWriter writer, final List<DetectBaseOption> options, final String optionName) {
@@ -93,7 +90,7 @@ public class HelpPrinter {
         if (option == null) {
             writer.println("Could not find option named: " + optionName);
         } else {
-            detailPrinter.printDetailedOption(writer, option);
+            printDetailedOption(writer, option);
         }
     }
 
@@ -109,7 +106,7 @@ public class HelpPrinter {
                 .sorted((o1, o2) -> o1.getKey().compareTo(o2.getKey()))
                 .collect(Collectors.toList());
 
-        optionPrinter.printOptions(writer, filteredOptions, notes);
+        printOptions(writer, filteredOptions, notes);
     }
 
     private void printHelpFilteredBySearchTerm(final HelpTextWriter writer, final List<DetectBaseOption> options, final String searchTerm) {
@@ -119,7 +116,7 @@ public class HelpPrinter {
                 .filter(it -> it.getKey().contains(searchTerm))
                 .collect(Collectors.toList());
 
-        optionPrinter.printOptions(writer, filteredOptions, notes);
+        printOptions(writer, filteredOptions, notes);
     }
 
     private boolean isPrintGroup (final List<String> allPrintGroups, final String filterGroup) {
@@ -144,4 +141,47 @@ public class HelpPrinter {
         return printGroups.stream().collect(Collectors.joining(","));
     }
 
+
+    public void printDetailedOption(final HelpTextWriter writer, final DetectBaseOption detectOption) {
+       detectOption.printDetailedOption(writer);
+    }
+
+    public void printOptions(HelpTextWriter writer, List<DetectBaseOption> options, String notes) {
+        writer.printColumns("Property Name", "Default", "Description");
+        writer.printSeperator();
+
+        if (notes != null) {
+            writer.println(notes);
+            writer.println();
+        }
+
+        String group = null;
+        for (final DetectBaseOption detectOption : options) {
+            final String currentGroup = detectOption.getDetectOptionHelp().primaryGroup;
+            if (group == null) {
+                group = currentGroup;
+            } else if (!group.equals(currentGroup)) {
+                writer.println();
+                group = currentGroup;
+            }
+           detectOption.printOption(writer);
+        }
+    }
+
+    public void printStandardFooter(HelpTextWriter writer, String groupText) {
+        writer.println();
+        writer.println("Usage : ");
+        writer.println("\t--<property name>=<value>");
+        writer.println();
+        writer.println("To see all properties, you may request verbose help log with '-hv'");
+        writer.println("To see the hidden deprecated properties, you may request them with '-hd'");
+        writer.println();
+        writer.println("To get detailed help for a specific property, you may specify the property name with '-h [property]'");
+        writer.println();
+        writer.println("To print only a subset of options, you may specify one of the following printable groups with '-h [group]': ");
+        writer.println("\t" + groupText);
+        writer.println();
+        writer.println("To search options, you may specify a search term with '-h [term]'");
+        writer.println();
+    }
 }

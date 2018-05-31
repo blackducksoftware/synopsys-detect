@@ -27,6 +27,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.codehaus.plexus.util.StringUtils;
+
+import com.blackducksoftware.integration.hub.detect.help.print.HelpTextWriter;
+
 public abstract class DetectBaseOption {
     private final String key;
     private final String fieldName;
@@ -148,6 +152,40 @@ public abstract class DetectBaseOption {
     }
 
     public abstract OptionValidationResult isAcceptableValue(final String value);
+
+    public void printOption(final HelpTextWriter writer){
+        String description = getDetectOptionHelp().description;
+        if (getDetectOptionHelp().isDeprecated) {
+            description = "Will be removed in version " + getDetectOptionHelp().deprecationVersion + ". " + description;
+        }
+        if (getAcceptableValues().size() > 0) {
+            description += " (" + getAcceptableValues().stream().collect(Collectors.joining("|")) + ")";
+        }
+        writer.printColumns("--" + getKey(), getDefaultValue(), description);
+    }
+
+    public void printDetailedOption(final HelpTextWriter writer){
+        writer.println("");
+        writer.println("Detailed information for " + getKey());
+        writer.println("");
+        if (getDetectOptionHelp().isDeprecated) {
+            writer.println("Deprecated: will be removed in version " + getDetectOptionHelp().deprecationVersion);
+            writer.println("");
+        }
+        writer.println("Property description: " + getDetectOptionHelp().description);
+        writer.println("Property default value: " + getDefaultValue());
+        if (getAcceptableValues().size() > 0) {
+            writer.println("Property acceptable values: " + getAcceptableValues().stream().collect(Collectors.joining(", ")));
+        }
+        writer.println("");
+
+        final DetectOptionHelp help = getDetectOptionHelp();
+        if (StringUtils.isNotBlank(help.detailedHelp)) {
+            writer.println("Detailed help:");
+            writer.println(help.detailedHelp);
+            writer.println();
+        }
+    }
 
     public enum FinalValueType {
         DEFAULT, //the final value is the value in the default attribute
