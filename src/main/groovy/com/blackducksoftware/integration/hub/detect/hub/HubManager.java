@@ -187,6 +187,7 @@ public class HubManager implements ExitCodeReporter {
 
         final ProjectVersionWrapper projectVersionWrapper = projectService.getProjectVersionAndCreateIfNeeded(projectRequest);
         if (detectConfiguration.getProjectVersionUpdate()) {
+            logger.debug("Updating Project and Version information to " + projectRequest.toString());
             projectService.updateProjectAndVersion(projectVersionWrapper.getProjectView(), projectRequest);
         }
         return projectVersionWrapper.getProjectVersionView();
