@@ -333,6 +333,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
                 logger.debug(String.format("%s deleted: %b", aggregateBdioFile.getAbsolutePath(), deleteSuccess));
             }
             writeBdioFile(aggregateBdioFile, aggregateBdioDocument);
+            bdioFiles.add(aggregateBdioFile);
         }
 
         return bdioFiles;
