@@ -82,7 +82,7 @@ public class DetectConfiguration {
     public static final String NUGET = "nuget";
     public static final String GRADLE = "gradle";
     public static final String DOCKER = "docker";
-
+    
     private static final String GROUP_HUB_CONFIGURATION = "hub configuration";
     private static final String GROUP_GENERAL = "general";
     private static final String GROUP_LOGGING = "logging";
@@ -394,7 +394,7 @@ public class DetectConfiguration {
         final File directory = new File(directoryPath);
         directory.mkdirs();
         if (!directory.exists() || !directory.isDirectory()) {
-            throw new DetectUserFriendlyException(String.format("The directory %s does not exist. %s", directoryPath,failureMessage), ExitCodeType.FAILURE_GENERAL_ERROR);
+            throw new DetectUserFriendlyException(String.format("The directory %s does not exist. %s", directoryPath, failureMessage), ExitCodeType.FAILURE_GENERAL_ERROR);
         }
     }
 
