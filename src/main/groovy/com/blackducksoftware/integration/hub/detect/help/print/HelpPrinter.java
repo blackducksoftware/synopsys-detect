@@ -79,8 +79,8 @@ public class HelpPrinter {
 
     private void printDetailedHelp(final HelpTextWriter writer, final List<DetectOption> options, final String optionName) {
         final DetectOption option = options.stream()
-                                            .filter(it -> it.getKey().equals(optionName))
-                                            .findFirst().orElse(null);
+                .filter(it -> it.getKey().equals(optionName))
+                .findFirst().orElse(null);
 
         if (option == null) {
             writer.println("Could not find option named: " + optionName);
@@ -97,9 +97,9 @@ public class HelpPrinter {
         final String notes = "Showing help only for: " + filterGroup;
 
         final List<DetectOption> filteredOptions = options.stream()
-                                                           .filter(it -> it.getDetectOptionHelp().groups.stream().anyMatch(printGroup -> printGroup.equalsIgnoreCase(filterGroup)))
-                                                           .sorted((o1, o2) -> o1.getKey().compareTo(o2.getKey()))
-                                                           .collect(Collectors.toList());
+                .filter(it -> it.getDetectOptionHelp().groups.stream().anyMatch(printGroup -> printGroup.equalsIgnoreCase(filterGroup)))
+                .sorted((o1, o2) -> o1.getKey().compareTo(o2.getKey()))
+                .collect(Collectors.toList());
 
         printOptions(writer, filteredOptions, notes);
     }
@@ -108,8 +108,8 @@ public class HelpPrinter {
         final String notes = "Showing help only for fields that contain: " + searchTerm;
 
         final List<DetectOption> filteredOptions = options.stream()
-                                                           .filter(it -> it.getKey().contains(searchTerm))
-                                                           .collect(Collectors.toList());
+                .filter(it -> it.getKey().contains(searchTerm))
+                .collect(Collectors.toList());
 
         printOptions(writer, filteredOptions, notes);
     }
@@ -120,16 +120,16 @@ public class HelpPrinter {
 
     private boolean isProperty(final List<DetectOption> allOptions, final String filterTerm) {
         return allOptions.stream()
-                       .map(it -> it.getKey())
-                       .anyMatch(it -> it.equals(filterTerm));
+                .map(it -> it.getKey())
+                .anyMatch(it -> it.equals(filterTerm));
     }
 
     private List<String> getPrintGroups(final List<DetectOption> options) {
         return options.stream()
-                       .flatMap(it -> it.getDetectOptionHelp().groups.stream())
-                       .distinct()
-                       .sorted()
-                       .collect(Collectors.toList());
+                .flatMap(it -> it.getDetectOptionHelp().groups.stream())
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
     }
 
     private String getPrintGroupText(final List<String> printGroups) {

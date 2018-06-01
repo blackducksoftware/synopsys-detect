@@ -44,8 +44,8 @@ public class DetectConfigurationPrinter {
         printStream.println(StringUtils.repeat("-", 60));
 
         final List<DetectOption> sortedOptions = detectOptions.stream()
-                                                         .sorted((o1, o2) -> o1.getKey().compareTo(o2.getKey()))
-                                                         .collect(Collectors.toList());
+                .sorted((o1, o2) -> o1.getKey().compareTo(o2.getKey()))
+                .collect(Collectors.toList());
 
         final List<DetectOption> deprecatedInUse = new ArrayList<>();
 
