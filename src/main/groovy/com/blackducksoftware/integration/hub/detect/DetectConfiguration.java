@@ -723,6 +723,11 @@ public class DetectConfiguration {
     @HelpDescription("The names of the projects to include")
     private String gradleIncludedProjectNames;
 
+    @Value("${detect.nuget.config.path:}")
+    @HelpGroup(primary = GROUP_NUGET)
+    @HelpDescription("The path to the Nuget.Config file to supply to the nuget exe")
+    private String nugetConfigPath;
+
     @Value("${detect.nuget.inspector.name:}")
     @DefaultValue("IntegrationNugetInspector")
     @HelpGroup(primary = GROUP_NUGET)
@@ -1275,6 +1280,10 @@ public class DetectConfiguration {
 
     public String getGradleIncludedProjectNames() {
         return gradleIncludedProjectNames;
+    }
+
+    public String getNugetConfigPath() {
+        return nugetConfigPath;
     }
 
     public String getNugetInspectorPackageName() {
