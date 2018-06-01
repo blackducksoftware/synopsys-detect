@@ -998,7 +998,7 @@ public class DetectConfiguration {
 
     @Value("${detect.bom.aggregate.name:}")
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
-    @HelpDescription("If set, this will aggregate all the BOMs to create a single BDIO file with the name provided. For Co-Pilot use only")
+    @HelpDescription("If set, this will aggregate all the BOMs to create a single BDIO file with the name provided.")
     private String aggregateBomName;
 
     @Value("${detect.risk.report.pdf:}")

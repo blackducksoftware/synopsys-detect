@@ -78,9 +78,7 @@ public class DetectProject {
     }
 
     public void addAllDetectCodeLocations(final List<DetectCodeLocation> detectCodeLocations) {
-        detectCodeLocations
-        .stream()
-        .forEach(it -> addDetectCodeLocation(it));
+        detectCodeLocations.stream().forEach(it -> addDetectCodeLocation(it));
     }
 
     public void addDetectCodeLocation(final DetectCodeLocation detectCodeLocation) {
@@ -98,6 +96,7 @@ public class DetectProject {
         builder.setProjectLevelAdjustments(detectConfiguration.getProjectLevelMatchAdjustments());
         builder.setPhase(detectConfiguration.getProjectVersionPhase());
         builder.setDistribution(detectConfiguration.getProjectVersionDistribution());
+        builder.setDescription(detectConfiguration.getProjectDescription());
         builder.setProjectTier(detectConfiguration.getProjectTier());
         builder.setReleaseComments(detectConfiguration.getProjectVersionNotes());
 
@@ -115,7 +114,8 @@ public class DetectProject {
                 logger.warn(String.format("Could not find any dependencies for code location %s", detectCodeLocation.getSourcePath()));
             }
 
-            final String codeLocationName = detectCodeLocation.createCodeLocationName(bomCodeLocationNameFactory, dockerCodeLocationNameFactory, detectSourcePath, projectName, projectVersionName, getCodeLocationNamePrefix(), getCodeLocationNameSuffix());
+            final String codeLocationName = detectCodeLocation.createCodeLocationName(bomCodeLocationNameFactory, dockerCodeLocationNameFactory, detectSourcePath, projectName, projectVersionName, getCodeLocationNamePrefix(),
+                    getCodeLocationNameSuffix());
 
             if (!codeLocationNameMap.containsKey(codeLocationName)) {
                 codeLocationNameMap.put(codeLocationName, new ArrayList<DetectCodeLocation>());
@@ -128,7 +128,7 @@ public class DetectProject {
     }
 
     private String createBdioName(final String codeLocationName, final IntegrationEscapeUtil integrationEscapeUtil) {
-        final String filenameRaw = StringUtils.replaceEach(codeLocationName, new String[] {"/", "\\", " "}, new String[] {"_", "_", "_"});
+        final String filenameRaw = StringUtils.replaceEach(codeLocationName, new String[] { "/", "\\", " " }, new String[] { "_", "_", "_" });
         final String filename = integrationEscapeUtil.escapeForUri(filenameRaw);
         return filename + ".jsonld";
     }
@@ -143,7 +143,7 @@ public class DetectProject {
             final List<DetectCodeLocation> codeLocationsForName = codeLocationsByName.get(codeLocationName);
 
             if (codeLocationsForName.size() > 1) {
-                //we must either combine or create a unique name.
+                // we must either combine or create a unique name.
                 if (combineCodeLocations) {
                     logger.info("Combining duplicate code locations with name: " + codeLocationName);
                     final MutableDependencyGraph combinedGraph = new MutableMapDependencyGraph();
@@ -155,7 +155,7 @@ public class DetectProject {
                     }
                     final ProcessedDetectCodeLocation processedCodeLocation = new ProcessedDetectCodeLocation(copy, codeLocationName, createBdioName(codeLocationName, integrationEscapeUtil));
                     processedDetectCodeLocations.add(processedCodeLocation);
-                }else {
+                } else {
                     for (int i = 0; i < codeLocationsForName.size(); i++) {
                         final DetectCodeLocation codeLocation = codeLocationsForName.get(i);
                         final String suffix = " " + Integer.toString(i);
@@ -163,7 +163,7 @@ public class DetectProject {
                         processedDetectCodeLocations.add(processedCodeLocation);
                     }
                 }
-            } else if (codeLocationsForName.size() == 1){
+            } else if (codeLocationsForName.size() == 1) {
                 final DetectCodeLocation codeLocation = codeLocationsForName.get(0);
                 final ProcessedDetectCodeLocation processedCodeLocation = new ProcessedDetectCodeLocation(codeLocation, codeLocationName, createBdioName(codeLocationName, integrationEscapeUtil));
                 processedDetectCodeLocations.add(processedCodeLocation);
@@ -172,7 +172,7 @@ public class DetectProject {
             }
         }
 
-        //Sanity check that code location names are unique (they should be)
+        // Sanity check that code location names are unique (they should be)
         Map<String, Long> result = processedDetectCodeLocations.stream().collect(Collectors.groupingBy(it -> it.codeLocationName, Collectors.counting()));
         for (final String name : result.keySet()) {
             if (result.get(name) > 1) {
@@ -185,7 +185,7 @@ public class DetectProject {
             }
         }
 
-        //sanity check that bdio file names are unique (they should be)
+        // sanity check that bdio file names are unique (they should be)
         result = processedDetectCodeLocations.stream().collect(Collectors.groupingBy(it -> it.bdioName, Collectors.counting()));
         for (final String name : result.keySet()) {
             if (result.get(name) > 1) {
