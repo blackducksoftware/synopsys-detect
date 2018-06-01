@@ -24,39 +24,43 @@
 package com.blackducksoftware.integration.hub.detect.help;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class DetectOption {
-    final String key;
-    final String fieldName;
-    final Class<?> valueType;
-    final String originalValue;
-    final String defaultValue;
-    final String resolvedValue;
-    final boolean strictAcceptableValues;
-    final boolean caseSensitiveAcceptableValues;
-    final List<String> acceptableValues;
-    final DetectOptionHelp detectOptionHelp;
-    public List<String> warnings = new ArrayList<>();
-    public boolean requestedDeprecation = false;
-    String interactiveValue = null;
-    String finalValue = null;
-    FinalValueType finalValueType = FinalValueType.DEFAULT;
+import org.codehaus.plexus.util.StringUtils;
 
-    public DetectOption(final String key, final String fieldName, final String originalValue, final String resolvedValue, final Class<?> valueType, final String defaultValue, final boolean strictAcceptableValue,
-            final boolean caseSensitiveAcceptableValues, final String[] acceptableValues, final DetectOptionHelp detectOptionHelp) {
+import com.blackducksoftware.integration.hub.detect.help.html.HelpHtmlOption;
+import com.blackducksoftware.integration.hub.detect.help.print.HelpTextWriter;
+
+public abstract class DetectOption {
+    private final String key;
+    private final String fieldName;
+    private final Class<?> valueType;
+    private final boolean strictAcceptableValues;
+    private final boolean caseSensitiveAcceptableValues;
+    private final List<String> acceptableValues;
+    private final DetectOptionHelp detectOptionHelp;
+    private final String originalValue;
+    private final String defaultValue;
+    private final String resolvedValue;
+    private List<String> warnings = new ArrayList<>();
+    private boolean requestedDeprecation = false;
+    private String interactiveValue = null;
+    private String finalValue = null;
+    private FinalValueType finalValueType = FinalValueType.DEFAULT;
+
+    public DetectOption(String key, String fieldName, Class<?> valueType, boolean strictAcceptableValues, boolean caseSensitiveAcceptableValues, List<String> acceptableValues,
+            DetectOptionHelp detectOptionHelp, String originalValue, String defaultValue, String resolvedValue) {
         this.key = key;
-        this.valueType = valueType;
-        this.defaultValue = defaultValue;
-        this.acceptableValues = Arrays.stream(acceptableValues).collect(Collectors.toList());
         this.fieldName = fieldName;
-        this.originalValue = originalValue;
-        this.resolvedValue = resolvedValue;
-        this.strictAcceptableValues = strictAcceptableValue;
+        this.valueType = valueType;
+        this.strictAcceptableValues = strictAcceptableValues;
         this.caseSensitiveAcceptableValues = caseSensitiveAcceptableValues;
+        this.acceptableValues = acceptableValues;
         this.detectOptionHelp = detectOptionHelp;
+        this.originalValue = originalValue;
+        this.defaultValue = defaultValue;
+        this.resolvedValue = resolvedValue;
     }
 
     public void requestDeprecation() {
@@ -73,27 +77,6 @@ public class DetectOption {
 
     public boolean isRequestedDeprecation() {
         return requestedDeprecation;
-    }
-
-    public String getInteractiveValue() {
-        return interactiveValue;
-    }
-
-    public void setInteractiveValue(final String interactiveValue) {
-        this.interactiveValue = interactiveValue;
-    }
-
-    public String getFinalValue() {
-        return finalValue;
-    }
-
-    public void setFinalValue(final String finalValue) {
-        this.finalValue = finalValue;
-    }
-
-    public void setFinalValue(final String finalValue, final FinalValueType finalValueType) {
-        setFinalValue(finalValue);
-        setFinalValueType(finalValueType);
     }
 
     public FinalValueType getFinalValueType() {
@@ -116,6 +99,26 @@ public class DetectOption {
         return valueType;
     }
 
+    public DetectOptionHelp getDetectOptionHelp() {
+        return detectOptionHelp;
+    }
+
+    public boolean isStrictAcceptableValues() {
+        return strictAcceptableValues;
+    }
+
+    public boolean isCaseSensitiveAcceptableValues() {
+        return caseSensitiveAcceptableValues;
+    }
+
+    public List<String> getAcceptableValues() {
+        return acceptableValues;
+    }
+
+    public boolean getCaseSensistiveAcceptableValues() {
+        return caseSensitiveAcceptableValues;
+    }
+
     public String getOriginalValue() {
         return originalValue;
     }
@@ -128,28 +131,75 @@ public class DetectOption {
         return resolvedValue;
     }
 
-    public DetectOptionHelp getHelp() {
-        return detectOptionHelp;
+    public String getInteractiveValue() {
+        return interactiveValue;
     }
 
-    public List<String> getAcceptableValues() {
-        return acceptableValues;
+    public void setInteractiveValue(String interactiveValue) {
+        this.interactiveValue = interactiveValue;
     }
 
-    public boolean getCaseSensistiveAcceptableValues() {
-        return caseSensitiveAcceptableValues;
+    public String getFinalValue() {
+        return finalValue;
     }
 
-    public boolean isAcceptableValue(final String value) {
-        //FIXME this is not working when the value is a comma separated list
-        return acceptableValues.stream()
-                       .anyMatch(it -> {
-                           if (caseSensitiveAcceptableValues) {
-                               return it.equals(value);
-                           } else {
-                               return it.equalsIgnoreCase(value);
-                           }
-                       });
+    public void setFinalValue(String finalValue) {
+        this.finalValue = finalValue;
+    }
+
+    public void setFinalValue(String finalValue, FinalValueType finalValueType) {
+        setFinalValue(finalValue);
+        setFinalValueType(finalValueType);
+    }
+
+    public abstract OptionValidationResult isAcceptableValue(final String value);
+
+    public void printOption(final HelpTextWriter writer) {
+        String description = getDetectOptionHelp().description;
+        if (getDetectOptionHelp().isDeprecated) {
+            description = "Will be removed in version " + getDetectOptionHelp().deprecationVersion + ". " + description;
+        }
+        if (getAcceptableValues().size() > 0) {
+            description += " (" + getAcceptableValues().stream().collect(Collectors.joining("|")) + ")";
+        }
+        writer.printColumns("--" + getKey(), getDefaultValue(), description);
+    }
+
+    public void printDetailedOption(final HelpTextWriter writer) {
+        writer.println("");
+        writer.println("Detailed information for " + getKey());
+        writer.println("");
+        if (getDetectOptionHelp().isDeprecated) {
+            writer.println("Deprecated: will be removed in version " + getDetectOptionHelp().deprecationVersion);
+            writer.println("");
+        }
+        writer.println("Property description: " + getDetectOptionHelp().description);
+        writer.println("Property default value: " + getDefaultValue());
+        if (getAcceptableValues().size() > 0) {
+            writer.println("Property acceptable values: " + getAcceptableValues().stream().collect(Collectors.joining(", ")));
+        }
+        writer.println("");
+
+        final DetectOptionHelp help = getDetectOptionHelp();
+        if (StringUtils.isNotBlank(help.detailedHelp)) {
+            writer.println("Detailed help:");
+            writer.println(help.detailedHelp);
+            writer.println();
+        }
+    }
+
+    public HelpHtmlOption createHtmlOption() {
+        final String description = getDetectOptionHelp().description;
+        String acceptableValues = "";
+        if (getAcceptableValues().size() > 0) {
+            acceptableValues = getAcceptableValues().stream().collect(Collectors.joining(", "));
+        }
+        String deprecationNotice = "";
+        if (getDetectOptionHelp().isDeprecated) {
+            deprecationNotice = "Will be removed in version " + getDetectOptionHelp().deprecationVersion + ". " + getDetectOptionHelp().deprecation;
+        }
+        final HelpHtmlOption htmlOption = new HelpHtmlOption(getKey(), getDefaultValue(), description, acceptableValues, getDetectOptionHelp().detailedHelp, deprecationNotice);
+        return htmlOption;
     }
 
     public enum FinalValueType {
@@ -159,6 +209,24 @@ public class DetectOption {
         CALCULATED, //the resolved value was not set and final value was set during init
         SUPPLIED, //the final value most likely came from spring
         OVERRIDE //the resolved value was set but during init a new value was set
+    }
+
+    public class OptionValidationResult {
+        private final boolean isValid;
+        private final String validationMessage;
+
+        protected OptionValidationResult(boolean isValid, String validationMessage) {
+            this.isValid = isValid;
+            this.validationMessage = validationMessage;
+        }
+
+        public boolean isValid() {
+            return isValid;
+        }
+
+        public String getValidationMessage() {
+            return validationMessage;
+        }
     }
 
 }
