@@ -27,25 +27,20 @@ import java.io.PrintStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.codehaus.plexus.util.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.help.ArgumentState;
-import com.blackducksoftware.integration.hub.detect.help.DetectBaseOption;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
-import com.blackducksoftware.integration.hub.detect.help.DetectOptionHelp;
 
 @Component
 public class HelpPrinter {
 
-
-    public void printAppropriateHelpMessage(final PrintStream printStream, final List<DetectBaseOption> allOptions, final ArgumentState state) {
+    public void printAppropriateHelpMessage(final PrintStream printStream, final List<DetectOption> allOptions, final ArgumentState state) {
         final HelpTextWriter writer = new HelpTextWriter();
 
-        final List<DetectBaseOption> currentOptions = allOptions.stream().filter(it -> !it.getDetectOptionHelp().isDeprecated).collect(Collectors.toList());
-        final List<DetectBaseOption> deprecatedOptions = allOptions.stream().filter(it -> it.getDetectOptionHelp().isDeprecated).collect(Collectors.toList());
+        final List<DetectOption> currentOptions = allOptions.stream().filter(it -> !it.getDetectOptionHelp().isDeprecated).collect(Collectors.toList());
+        final List<DetectOption> deprecatedOptions = allOptions.stream().filter(it -> it.getDetectOptionHelp().isDeprecated).collect(Collectors.toList());
         final List<String> allPrintGroups = getPrintGroups(currentOptions);
 
         if (state.isVerboseHelp) {
@@ -56,12 +51,12 @@ public class HelpPrinter {
             if (state.parsedValue != null) {
                 if (isProperty(currentOptions, state.parsedValue)) {
                     printDetailedHelp(writer, allOptions, state.parsedValue);
-                } else if (isPrintGroup(allPrintGroups, state.parsedValue)){
+                } else if (isPrintGroup(allPrintGroups, state.parsedValue)) {
                     printHelpFilteredByPrintGroup(writer, currentOptions, state.parsedValue);
                 } else {
                     printHelpFilteredBySearchTerm(writer, currentOptions, state.parsedValue);
                 }
-            }else {
+            } else {
                 printDefaultHelp(writer, currentOptions);
             }
         }
@@ -71,21 +66,21 @@ public class HelpPrinter {
         writer.write(printStream);
     }
 
-    private void printVerboseOptions(final HelpTextWriter writer, final List<DetectBaseOption> options, final String notes) {
-        final List<DetectBaseOption> sorted = options.stream().sorted((o1, o2) -> {
+    private void printVerboseOptions(final HelpTextWriter writer, final List<DetectOption> options, final String notes) {
+        final List<DetectOption> sorted = options.stream().sorted((o1, o2) -> {
             if (o1.getDetectOptionHelp().primaryGroup.equals(o2.getDetectOptionHelp().primaryGroup)) {
                 return o1.getKey().compareTo(o2.getKey());
-            }else {
+            } else {
                 return o1.getDetectOptionHelp().primaryGroup.compareTo(o2.getDetectOptionHelp().primaryGroup);
             }
         }).collect(Collectors.toList());
         printOptions(writer, sorted, notes);
     }
 
-    private void printDetailedHelp(final HelpTextWriter writer, final List<DetectBaseOption> options, final String optionName) {
-        final DetectBaseOption option = options.stream()
-                .filter(it -> it.getKey().equals(optionName))
-                .findFirst().orElse(null);
+    private void printDetailedHelp(final HelpTextWriter writer, final List<DetectOption> options, final String optionName) {
+        final DetectOption option = options.stream()
+                                            .filter(it -> it.getKey().equals(optionName))
+                                            .findFirst().orElse(null);
 
         if (option == null) {
             writer.println("Could not find option named: " + optionName);
@@ -94,59 +89,58 @@ public class HelpPrinter {
         }
     }
 
-    private void printDefaultHelp(final HelpTextWriter writer, final List<DetectBaseOption> options) {
+    private void printDefaultHelp(final HelpTextWriter writer, final List<DetectOption> options) {
         printHelpFilteredByPrintGroup(writer, options, DetectConfiguration.PRINT_GROUP_DEFAULT);
     }
 
-    private void printHelpFilteredByPrintGroup(final HelpTextWriter writer, final List<DetectBaseOption> options, final String filterGroup) {
+    private void printHelpFilteredByPrintGroup(final HelpTextWriter writer, final List<DetectOption> options, final String filterGroup) {
         final String notes = "Showing help only for: " + filterGroup;
 
-        final List<DetectBaseOption> filteredOptions = options.stream()
-                .filter(it -> it.getDetectOptionHelp().groups.stream().anyMatch(printGroup -> printGroup.equalsIgnoreCase(filterGroup)))
-                .sorted((o1, o2) -> o1.getKey().compareTo(o2.getKey()))
-                .collect(Collectors.toList());
+        final List<DetectOption> filteredOptions = options.stream()
+                                                           .filter(it -> it.getDetectOptionHelp().groups.stream().anyMatch(printGroup -> printGroup.equalsIgnoreCase(filterGroup)))
+                                                           .sorted((o1, o2) -> o1.getKey().compareTo(o2.getKey()))
+                                                           .collect(Collectors.toList());
 
         printOptions(writer, filteredOptions, notes);
     }
 
-    private void printHelpFilteredBySearchTerm(final HelpTextWriter writer, final List<DetectBaseOption> options, final String searchTerm) {
+    private void printHelpFilteredBySearchTerm(final HelpTextWriter writer, final List<DetectOption> options, final String searchTerm) {
         final String notes = "Showing help only for fields that contain: " + searchTerm;
 
-        final List<DetectBaseOption> filteredOptions = options.stream()
-                .filter(it -> it.getKey().contains(searchTerm))
-                .collect(Collectors.toList());
+        final List<DetectOption> filteredOptions = options.stream()
+                                                           .filter(it -> it.getKey().contains(searchTerm))
+                                                           .collect(Collectors.toList());
 
         printOptions(writer, filteredOptions, notes);
     }
 
-    private boolean isPrintGroup (final List<String> allPrintGroups, final String filterGroup) {
+    private boolean isPrintGroup(final List<String> allPrintGroups, final String filterGroup) {
         return allPrintGroups.contains(filterGroup);
     }
 
-    private boolean isProperty (final List<DetectBaseOption> allOptions, final String filterTerm) {
+    private boolean isProperty(final List<DetectOption> allOptions, final String filterTerm) {
         return allOptions.stream()
-                .map(it -> it.getKey())
-                .anyMatch(it -> it.equals(filterTerm));
+                       .map(it -> it.getKey())
+                       .anyMatch(it -> it.equals(filterTerm));
     }
 
-    private List<String> getPrintGroups(final List<DetectBaseOption> options) {
+    private List<String> getPrintGroups(final List<DetectOption> options) {
         return options.stream()
-                .flatMap(it -> it.getDetectOptionHelp().groups.stream())
-                .distinct()
-                .sorted()
-                .collect(Collectors.toList());
+                       .flatMap(it -> it.getDetectOptionHelp().groups.stream())
+                       .distinct()
+                       .sorted()
+                       .collect(Collectors.toList());
     }
 
     private String getPrintGroupText(final List<String> printGroups) {
         return printGroups.stream().collect(Collectors.joining(","));
     }
 
-
-    public void printDetailedOption(final HelpTextWriter writer, final DetectBaseOption detectOption) {
-       detectOption.printDetailedOption(writer);
+    public void printDetailedOption(final HelpTextWriter writer, final DetectOption detectOption) {
+        detectOption.printDetailedOption(writer);
     }
 
-    public void printOptions(HelpTextWriter writer, List<DetectBaseOption> options, String notes) {
+    public void printOptions(HelpTextWriter writer, List<DetectOption> options, String notes) {
         writer.printColumns("Property Name", "Default", "Description");
         writer.printSeperator();
 
@@ -156,7 +150,7 @@ public class HelpPrinter {
         }
 
         String group = null;
-        for (final DetectBaseOption detectOption : options) {
+        for (final DetectOption detectOption : options) {
             final String currentGroup = detectOption.getDetectOptionHelp().primaryGroup;
             if (group == null) {
                 group = currentGroup;
@@ -164,7 +158,7 @@ public class HelpPrinter {
                 writer.println();
                 group = currentGroup;
             }
-           detectOption.printOption(writer);
+            detectOption.printOption(writer);
         }
     }
 

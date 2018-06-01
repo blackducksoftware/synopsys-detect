@@ -51,10 +51,10 @@ public class DetectOptionManager {
     @Autowired
     public DetectConfiguration detectConfiguration;
 
-    private List<DetectBaseOption> detectOptions;
+    private List<DetectOption> detectOptions;
     private List<String> detectGroups;
 
-    public List<DetectBaseOption> getDetectOptions() {
+    public List<DetectOption> getDetectOptions() {
         return detectOptions;
     }
 
@@ -63,12 +63,12 @@ public class DetectOptionManager {
     }
 
     public void init() {
-        final Map<String, DetectBaseOption> detectOptionsMap = new HashMap<>();
+        final Map<String, DetectOption> detectOptionsMap = new HashMap<>();
 
         for (final Field field : DetectConfiguration.class.getDeclaredFields()) {
             try {
                 if (field.isAnnotationPresent(Value.class)) {
-                    final DetectBaseOption option = processField(detectConfiguration, DetectConfiguration.class, field);
+                    final DetectOption option = processField(detectConfiguration, DetectConfiguration.class, field);
                     if (option != null) {
                         if (!detectOptionsMap.containsKey(option.getKey())) {
                             detectOptionsMap.put(option.getKey(), option);
@@ -81,34 +81,34 @@ public class DetectOptionManager {
         }
 
         detectOptions = detectOptionsMap.values().stream()
-                .sorted((o1, o2) -> o1.getDetectOptionHelp().primaryGroup.compareTo(o2.getDetectOptionHelp().primaryGroup))
-                .collect(Collectors.toList());
+                                .sorted((o1, o2) -> o1.getDetectOptionHelp().primaryGroup.compareTo(o2.getDetectOptionHelp().primaryGroup))
+                                .collect(Collectors.toList());
 
         detectGroups = detectOptions.stream()
-                .map(it -> it.getDetectOptionHelp().primaryGroup)
-                .distinct()
-                .sorted()
-                .collect(Collectors.toList());
+                               .map(it -> it.getDetectOptionHelp().primaryGroup)
+                               .distinct()
+                               .sorted()
+                               .collect(Collectors.toList());
     }
 
     public void postInit() throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException, DetectUserFriendlyException {
-        for (final DetectBaseOption option : detectOptions) {
+        for (final DetectOption option : detectOptions) {
             final String fieldValue = getCurrentValue(detectConfiguration, option);
             if (!option.getResolvedValue().equals(fieldValue)) {
                 if (option.getInteractiveValue() != null) {
-                    option.setFinalValue(fieldValue, DetectBaseOption.FinalValueType.INTERACTIVE);
+                    option.setFinalValue(fieldValue, DetectOption.FinalValueType.INTERACTIVE);
                 } else if (option.getResolvedValue().equals("latest")) {
-                    option.setFinalValue(fieldValue, DetectBaseOption.FinalValueType.LATEST);
+                    option.setFinalValue(fieldValue, DetectOption.FinalValueType.LATEST);
                 } else if (option.getResolvedValue().trim().length() == 0) {
-                    option.setFinalValue(fieldValue, DetectBaseOption.FinalValueType.CALCULATED);
+                    option.setFinalValue(fieldValue, DetectOption.FinalValueType.CALCULATED);
                 } else {
-                    option.setFinalValue(fieldValue, DetectBaseOption.FinalValueType.OVERRIDE);
+                    option.setFinalValue(fieldValue, DetectOption.FinalValueType.OVERRIDE);
                 }
             } else {
                 if (fieldValue.equals(option.getDefaultValue())) {
-                    option.setFinalValue(fieldValue, DetectBaseOption.FinalValueType.DEFAULT);
+                    option.setFinalValue(fieldValue, DetectOption.FinalValueType.DEFAULT);
                 } else {
-                    option.setFinalValue(fieldValue, DetectBaseOption.FinalValueType.SUPPLIED);
+                    option.setFinalValue(fieldValue, DetectOption.FinalValueType.SUPPLIED);
                     if (option.getDetectOptionHelp().isDeprecated) {
                         option.requestDeprecation();
                     }
@@ -121,7 +121,7 @@ public class DetectOptionManager {
         }
     }
 
-    public String getCurrentValue(final DetectConfiguration detectConfiguration, final DetectBaseOption detectOption) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
+    public String getCurrentValue(final DetectConfiguration detectConfiguration, final DetectOption detectOption) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
         final Field field = detectConfiguration.getClass().getDeclaredField(detectOption.getFieldName());
         field.setAccessible(true);
         final String fieldValue = getStringValue(detectConfiguration, field);
@@ -142,7 +142,7 @@ public class DetectOptionManager {
         return fieldValue;
     }
 
-    private DetectBaseOption processField(final Object obj, final Class<?> objClz, final Field field) throws IllegalArgumentException, IllegalAccessException {
+    private DetectOption processField(final Object obj, final Class<?> objClz, final Field field) throws IllegalArgumentException, IllegalAccessException {
         final String fieldName = field.getName();
         final Class<?> valueType = field.getType();
 
@@ -181,11 +181,11 @@ public class DetectOptionManager {
 
         final DetectOptionHelp help = processFieldHelp(field);
 
-        DetectBaseOption detectOption;
+        DetectOption detectOption;
         if (isCommaSeparatedList) {
-            detectOption = new DetectMultipleOption(key, fieldName, valueType, strictAcceptableValue, caseSensitiveAcceptableValues, acceptableValues, help, originalValue, defaultValue, resolvedValue);
+            detectOption = new DetectListOption(key, fieldName, valueType, strictAcceptableValue, caseSensitiveAcceptableValues, acceptableValues, help, originalValue, defaultValue, resolvedValue);
         } else {
-            detectOption = new DetectOption(key, fieldName, valueType, strictAcceptableValue, caseSensitiveAcceptableValues, acceptableValues, help, originalValue, defaultValue, resolvedValue);
+            detectOption = new DetectSingleOption(key, fieldName, valueType, strictAcceptableValue, caseSensitiveAcceptableValues, acceptableValues, help, originalValue, defaultValue, resolvedValue);
         }
 
         return detectOption;
@@ -223,11 +223,11 @@ public class DetectOptionManager {
         return help;
     }
 
-    public List<DetectBaseOption> findUnacceptableValues() throws DetectUserFriendlyException {
-        final List<DetectBaseOption> unacceptableDetectOptions = new ArrayList<>();
-        for (final DetectBaseOption option : detectOptions) {
+    public List<DetectOption> findUnacceptableValues() throws DetectUserFriendlyException {
+        final List<DetectOption> unacceptableDetectOptions = new ArrayList<>();
+        for (final DetectOption option : detectOptions) {
             if (option.isStrictAcceptableValues()) {
-                DetectBaseOption.OptionValidationResult validationResult = option.isAcceptableValue(option.getResolvedValue());
+                DetectOption.OptionValidationResult validationResult = option.isAcceptableValue(option.getResolvedValue());
                 if (!validationResult.isValid()) {
                     unacceptableDetectOptions.add(option);
                 }
@@ -238,7 +238,7 @@ public class DetectOptionManager {
 
     public void applyInteractiveOptions(final List<InteractiveOption> interactiveOptions) {
         for (final InteractiveOption interactiveOption : interactiveOptions) {
-            for (final DetectBaseOption detectOption : detectOptions) {
+            for (final DetectOption detectOption : detectOptions) {
                 if (detectOption.getFieldName().equals(interactiveOption.getFieldName())) {
                     detectOption.setInteractiveValue(interactiveOption.getInteractiveValue());
                 }

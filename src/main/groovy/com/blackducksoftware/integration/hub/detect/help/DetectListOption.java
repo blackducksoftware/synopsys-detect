@@ -28,9 +28,9 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class DetectMultipleOption extends DetectBaseOption {
+public class DetectListOption extends DetectOption {
 
-    public DetectMultipleOption(String key, String fieldName, Class<?> valueType, boolean strictAcceptableValues, boolean caseSensitiveAcceptableValues, List<String> acceptableValues,
+    public DetectListOption(String key, String fieldName, Class<?> valueType, boolean strictAcceptableValues, boolean caseSensitiveAcceptableValues, List<String> acceptableValues,
             DetectOptionHelp detectOptionHelp, String originalValue, String defaultValue, String resolvedValue) {
         super(key, fieldName, valueType, strictAcceptableValues, caseSensitiveAcceptableValues, acceptableValues, detectOptionHelp, originalValue, defaultValue, resolvedValue);
     }

@@ -26,19 +26,12 @@ package com.blackducksoftware.integration.hub.detect.help.html;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
-import org.codehaus.plexus.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.help.DetectBaseOption;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
 
@@ -58,8 +51,8 @@ public class HelpHtmlWriter {
 
     public void writeHelpMessage(final String filename) {
         final HelpHtmlDataBuilder builder = new HelpHtmlDataBuilder();
-        
-        for (DetectBaseOption option : detectOptionManager.getDetectOptions()) {
+
+        for (DetectOption option : detectOptionManager.getDetectOptions()) {
             builder.addDetectOption(option);
         }
         final HelpHtmlData templateData = builder.build();
