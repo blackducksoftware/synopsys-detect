@@ -77,7 +77,7 @@ public class NugetInspectorExtractor extends Extractor<NugetInspectorContext> {
                     "--target_path=" + context.directory.toString(),
                     "--output_directory=" + outputDirectory.getCanonicalPath(),
                     "--ignore_failure=" + detectConfiguration.getNugetInspectorIgnoreFailure()
-            ));
+                    ));
 
             if (detectConfiguration.getNugetInspectorExcludedModules() != null) {
                 options.add("--excluded_modules=" + detectConfiguration.getNugetInspectorExcludedModules());
@@ -88,6 +88,9 @@ public class NugetInspectorExtractor extends Extractor<NugetInspectorContext> {
             if (detectConfiguration.getNugetPackagesRepoUrl() != null) {
                 final String packagesRepos = Arrays.asList(detectConfiguration.getNugetPackagesRepoUrl()).stream().collect(Collectors.joining(","));
                 options.add("--packages_repo_url=" + packagesRepos);
+            }
+            if (StringUtils.isNotBlank(detectConfiguration.getNugetConfigPath())) {
+                options.add("--nuget_config_path=" + detectConfiguration.getNugetConfigPath());
             }
             if (logger.isTraceEnabled()) {
                 options.add("-v");
@@ -102,12 +105,12 @@ public class NugetInspectorExtractor extends Extractor<NugetInspectorContext> {
 
             final List<File> dependencyNodeFiles = detectFileFinder.findFiles(outputDirectory, INSPECTOR_OUTPUT_PATTERN);
             final List<NugetParseResult> parseResults = dependencyNodeFiles.stream()
-                                                                .map(it -> nugetInspectorPackager.createDetectCodeLocation(it))
-                                                                .collect(Collectors.toList());
+                    .map(it -> nugetInspectorPackager.createDetectCodeLocation(it))
+                    .collect(Collectors.toList());
 
             final List<DetectCodeLocation> codeLocations = parseResults.stream()
-                                                                   .flatMap(it -> it.codeLocations.stream())
-                                                                   .collect(Collectors.toList());
+                    .flatMap(it -> it.codeLocations.stream())
+                    .collect(Collectors.toList());
 
             if (codeLocations.size() <= 0) {
                 logger.warn("Unable to extract any dependencies from nuget");
@@ -117,7 +120,7 @@ public class NugetInspectorExtractor extends Extractor<NugetInspectorContext> {
             final DependencyGraphCombiner combiner = new DependencyGraphCombiner();
 
             codeLocations.stream().forEach(codeLocation -> {
-                String sourcePathKey = codeLocation.getSourcePath().toLowerCase();
+                final String sourcePathKey = codeLocation.getSourcePath().toLowerCase();
                 if (codeLocationsBySource.containsKey(sourcePathKey)) {
                     logger.info("Multiple project code locations were generated for: " + context.directory.toString());
                     logger.info("This most likely means the same project exists in multiple solutions.");

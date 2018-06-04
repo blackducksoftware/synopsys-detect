@@ -71,7 +71,7 @@ public class GradleInspectorExtractor extends Extractor<GradleInspectorContext> 
 
             final List<String> arguments = new ArrayList<>();
             if (StringUtils.isNotBlank(gradleCommand)) {
-                for (String arg : gradleCommand.split(" ")) {
+                for (final String arg : gradleCommand.split(" ")) {
                     if (StringUtils.isNotBlank(arg)) {
                         arguments.add(arg);
                     }
@@ -106,7 +106,7 @@ public class GradleInspectorExtractor extends Extractor<GradleInspectorContext> 
                         }
                     }
                 }
-                detectFileManager.addOutputFile(context, blackduckDirectory);
+                detectFileManager.cleanupOutputFile(context, blackduckDirectory);
                 return new Extraction.Builder().success(codeLocations).projectName(projectName).projectVersion(projectVersion).build();
             } else {
                 return new Extraction.Builder().failure("The gradle inspector returned a non-zero exit code: " + output.getReturnCode()).build();

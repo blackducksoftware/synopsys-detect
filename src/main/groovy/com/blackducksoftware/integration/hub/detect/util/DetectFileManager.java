@@ -51,6 +51,7 @@ public class DetectFileManager {
     private final String sharedUUID = "shared";
     private File sharedDirectory = null;
     private final Map<ExtractionContext, File> outputDirectories = new HashMap<>();
+    //private final Map<ExtractionContext, File> outputDirectories = new HashMap<>();
 
     public File getOutputDirectory(final ExtractionContext context) {
         if (outputDirectories.containsKey(context)) {
@@ -99,7 +100,8 @@ public class DetectFileManager {
         return new File(getSharedDirectory(directory), filename);
     }
 
-    public void addOutputFile(final ExtractionContext context, final File file) {
+    //This file will be immediately cleaned up and is associated to a specific context. The current implementation is to actually move it to the context's output and allow cleanup at the end of the detect run (in case of diagnostics).
+    public void cleanupOutputFile(final ExtractionContext context, final File file) {
         try {
             if (file.isFile()) {
                 final File out = getOutputDirectory(context);
@@ -110,7 +112,7 @@ public class DetectFileManager {
                 final File dest = new File(out, file.getName());
                 FileUtils.moveDirectory(file, dest);
             }
-        }catch (final Exception e) {
+        } catch (final Exception e) {
 
         }
 

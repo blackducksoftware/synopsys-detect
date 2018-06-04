@@ -52,7 +52,7 @@ public class NugetSolutionStrategy extends Strategy<NugetInspectorContext, Nuget
     public DetectConfiguration detectConfiguration;
 
     public NugetSolutionStrategy() {
-        super("Solution", BomToolType.NUGET, NugetInspectorContext.class, NugetInspectorExtractor.class, StrategySearchOptions.defaultNotNested());
+        super("Solution", BomToolType.NUGET, NugetInspectorContext.class, NugetInspectorExtractor.class, StrategySearchOptions.defaultNested());
     }
 
     @Override
