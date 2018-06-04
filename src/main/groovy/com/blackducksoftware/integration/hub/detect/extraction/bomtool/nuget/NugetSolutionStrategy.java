@@ -29,6 +29,7 @@ import org.springframework.stereotype.Component;
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
+import com.blackducksoftware.integration.hub.detect.strategy.StrategySearchOptions;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyException;
 import com.blackducksoftware.integration.hub.detect.strategy.result.FilesNotFoundStrategyResult;
@@ -51,7 +52,7 @@ public class NugetSolutionStrategy extends Strategy<NugetInspectorContext, Nuget
     public DetectConfiguration detectConfiguration;
 
     public NugetSolutionStrategy() {
-        super("Solution", BomToolType.NUGET, NugetInspectorContext.class, NugetInspectorExtractor.class);
+        super("Solution", BomToolType.NUGET, NugetInspectorContext.class, NugetInspectorExtractor.class, StrategySearchOptions.defaultNested());
     }
 
     @Override

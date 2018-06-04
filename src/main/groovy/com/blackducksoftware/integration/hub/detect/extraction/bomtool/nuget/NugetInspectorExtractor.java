@@ -53,25 +53,19 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOu
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 
 @Component
-public class NugetInspectorExtractor extends Extractor<NugetInspectorContext>  {
+public class NugetInspectorExtractor extends Extractor<NugetInspectorContext> {
+    static final String INSPECTOR_OUTPUT_PATTERN = "*_inspection.json";
     private final Logger logger = LoggerFactory.getLogger(NugetInspectorExtractor.class);
-
-    static final String INSPECTOR_OUTPUT_PATTERN ="*_inspection.json";
-
-    @Autowired
-    private DetectConfiguration detectConfiguration;
-
-    @Autowired
-    private ExecutableRunner executableRunner;
-
     @Autowired
     public DetectFileManager detectFileManager;
-
-    @Autowired
-    private DetectFileFinder detectFileFinder;
-
     @Autowired
     NugetInspectorPackager nugetInspectorPackager;
+    @Autowired
+    private DetectConfiguration detectConfiguration;
+    @Autowired
+    private ExecutableRunner executableRunner;
+    @Autowired
+    private DetectFileFinder detectFileFinder;
 
     @Override
     public Extraction extract(final NugetInspectorContext context) {
@@ -95,6 +89,9 @@ public class NugetInspectorExtractor extends Extractor<NugetInspectorContext>  {
                 final String packagesRepos = Arrays.asList(detectConfiguration.getNugetPackagesRepoUrl()).stream().collect(Collectors.joining(","));
                 options.add("--packages_repo_url=" + packagesRepos);
             }
+            if (StringUtils.isNotBlank(detectConfiguration.getNugetConfigPath())) {
+                options.add("--nuget_config_path=" + detectConfiguration.getNugetConfigPath());
+            }
             if (logger.isTraceEnabled()) {
                 options.add("-v");
             }
@@ -103,7 +100,7 @@ public class NugetInspectorExtractor extends Extractor<NugetInspectorContext>  {
             final ExecutableOutput executableOutput = executableRunner.execute(hubNugetInspectorExecutable);
 
             if (executableOutput.getReturnCode() != 0) {
-                return new Extraction.Builder().failure("Executable returned nothing.").build();
+                return new Extraction.Builder().failure(String.format("Executing command '%s' returned a non-zero exit code %s", String.join(" ", options), executableOutput.getReturnCode())).build();
             }
 
             final List<File> dependencyNodeFiles = detectFileFinder.findFiles(outputDirectory, INSPECTOR_OUTPUT_PATTERN);
@@ -122,15 +119,16 @@ public class NugetInspectorExtractor extends Extractor<NugetInspectorContext>  {
             final Map<String, DetectCodeLocation> codeLocationsBySource = new HashMap<>();
             final DependencyGraphCombiner combiner = new DependencyGraphCombiner();
 
-            codeLocations.stream().forEach ( codeLocation -> {
-                if (codeLocationsBySource.containsKey(codeLocation.getSourcePath())) {
+            codeLocations.stream().forEach(codeLocation -> {
+                final String sourcePathKey = codeLocation.getSourcePath().toLowerCase();
+                if (codeLocationsBySource.containsKey(sourcePathKey)) {
                     logger.info("Multiple project code locations were generated for: " + context.directory.toString());
                     logger.info("This most likely means the same project exists in multiple solutions.");
                     logger.info("The code location's dependencies will be combined, in the future they will exist seperately for each solution.");
-                    final DetectCodeLocation destination = codeLocationsBySource.get(codeLocation.getSourcePath());
+                    final DetectCodeLocation destination = codeLocationsBySource.get(sourcePathKey);
                     combiner.addGraphAsChildrenToRoot((MutableDependencyGraph) destination.getDependencyGraph(), codeLocation.getDependencyGraph());
                 } else {
-                    codeLocationsBySource.put(codeLocation.getSourcePath(), codeLocation);
+                    codeLocationsBySource.put(sourcePathKey, codeLocation);
                 }
             });
 

@@ -30,6 +30,7 @@ import com.blackducksoftware.integration.hub.detect.extraction.bomtool.go.GoDeps
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.go.GoDepsExtractor;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
+import com.blackducksoftware.integration.hub.detect.strategy.StrategySearchOptions;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
 import com.blackducksoftware.integration.hub.detect.strategy.result.FileNotFoundStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.PassedStrategyResult;
@@ -44,7 +45,7 @@ public class GoDepsStrategy extends Strategy<GoDepsContext, GoDepsExtractor> {
     public DetectFileFinder fileFinder;
 
     public GoDepsStrategy() {
-        super("Go Deps Lock File", BomToolType.GO_GODEP, GoDepsContext.class, GoDepsExtractor.class);
+        super("Go Deps Lock File", BomToolType.GO_GODEP, GoDepsContext.class, GoDepsExtractor.class, StrategySearchOptions.defaultNotNested());
     }
 
     @Override

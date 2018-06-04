@@ -21,30 +21,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.strategy;
+package com.blackducksoftware.integration.hub.detect.help;
 
-public class StrategySearchOptions {
-    private int maxDepth = 0;
-    private boolean nestable = false;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-    public StrategySearchOptions(final int maxDepth, final boolean nestable) {
-        this.maxDepth = maxDepth;
-        this.nestable = nestable;
-    }
+import groovy.transform.TypeChecked;
 
-    public static StrategySearchOptions defaultNotNested() {
-        return new StrategySearchOptions(Integer.MAX_VALUE, false);
-    }
-
-    public static StrategySearchOptions defaultNested() {
-        return new StrategySearchOptions(Integer.MAX_VALUE, true);
-    }
-
-    public boolean getNestable() {
-        return nestable;
-    }
-
-    public int getMaxDepth() {
-        return maxDepth;
-    }
+@TypeChecked
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+public @interface HelpDetailed {
+    String value() default "";
 }

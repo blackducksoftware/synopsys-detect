@@ -45,7 +45,6 @@ import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.model.DetectProject;
 import com.blackducksoftware.integration.hub.exception.HubTimeoutExceededException;
-import com.blackducksoftware.integration.hub.rest.exception.IntegrationRestException;
 import com.blackducksoftware.integration.hub.service.CodeLocationService;
 import com.blackducksoftware.integration.hub.service.HubService;
 import com.blackducksoftware.integration.hub.service.ProjectService;
@@ -55,6 +54,7 @@ import com.blackducksoftware.integration.hub.service.SignatureScannerService;
 import com.blackducksoftware.integration.hub.service.model.PolicyStatusDescription;
 import com.blackducksoftware.integration.hub.service.model.ProjectRequestBuilder;
 import com.blackducksoftware.integration.hub.service.model.ProjectVersionWrapper;
+import com.blackducksoftware.integration.rest.exception.IntegrationRestException;
 
 import groovy.transform.TypeChecked;
 
@@ -82,7 +82,7 @@ public class HubManager implements ExitCodeReporter {
 
     public ProjectVersionView updateHubProjectVersion(final DetectProject detectProject, final List<File> createdBdioFiles) throws IntegrationException, DetectUserFriendlyException, InterruptedException {
         final ProjectService projectService = hubServiceWrapper.createProjectService();
-        ProjectVersionView projectVersionView = ensureProjectVersionExists(detectProject, projectService);
+        ProjectVersionView projectVersionView = ensureProjectVersionExists(detectConfiguration, detectProject, projectService);
         if (null != createdBdioFiles && !createdBdioFiles.isEmpty()) {
             final HubServerConfig hubServerConfig = hubServiceWrapper.getHubServerConfig();
             final CodeLocationService codeLocationService = hubServiceWrapper.createCodeLocationService();
@@ -116,13 +116,13 @@ public class HubManager implements ExitCodeReporter {
 
     public void performPostHubActions(final DetectProject detectProject, final ProjectVersionView projectVersionView) throws DetectUserFriendlyException {
         try {
-            if (detectConfiguration.getPolicyCheck() || detectConfiguration.getRiskReportPdf() || detectConfiguration.getNoticesReport()) {
+            if (StringUtils.isNotBlank(detectConfiguration.getPolicyCheckFailOnSeverities()) || detectConfiguration.getRiskReportPdf() || detectConfiguration.getNoticesReport()) {
                 final ProjectService projectService = hubServiceWrapper.createProjectService();
                 final ScanStatusService scanStatusService = hubServiceWrapper.createScanStatusService();
 
                 waitForBomUpdate(hubServiceWrapper.createHubService(), scanStatusService, projectVersionView);
 
-                if (detectConfiguration.getPolicyCheck()) {
+                if (StringUtils.isNotBlank(detectConfiguration.getPolicyCheckFailOnSeverities())) {
                     final PolicyStatusDescription policyStatusDescription = policyChecker.getPolicyStatus(projectService, projectVersionView);
                     logger.info(policyStatusDescription.getPolicyStatusMessage());
                     if (policyChecker.policyViolated(policyStatusDescription)) {
@@ -181,19 +181,14 @@ public class HubManager implements ExitCodeReporter {
         logger.info("The BOM has been updated");
     }
 
-    public ProjectVersionView ensureProjectVersionExists(final DetectProject detectProject, final ProjectService projectService) throws IntegrationException {
-        final ProjectRequestBuilder builder = new ProjectRequestBuilder();
-        builder.setProjectName(detectProject.getProjectName());
-        builder.setVersionName(detectProject.getProjectVersionName());
-        builder.setDescription(detectConfiguration.getProjectDescription());
-        builder.setProjectLevelAdjustments(detectConfiguration.getProjectLevelMatchAdjustments());
-        builder.setPhase(detectConfiguration.getProjectVersionPhase());
-        builder.setDistribution(detectConfiguration.getProjectVersionDistribution());
-        builder.setProjectTier(detectConfiguration.getProjectTier());
-        builder.setReleaseComments(detectConfiguration.getProjectVersionNotes());
-        final ProjectRequest projectRequest = builder.build();
+    public ProjectVersionView ensureProjectVersionExists(DetectConfiguration detectConfiguration, final DetectProject detectProject, final ProjectService projectService) throws IntegrationException {
+        ProjectRequestBuilder projectRequestBuilder = detectProject.createDefaultProjectRequestBuilder(detectConfiguration);
+        final ProjectRequest projectRequest = projectRequestBuilder.build();
 
         final ProjectVersionWrapper projectVersionWrapper = projectService.getProjectVersionAndCreateIfNeeded(projectRequest);
+        if (detectConfiguration.getProjectVersionUpdate()) {
+            projectService.updateProjectAndVersion(projectVersionWrapper.getProjectView(), projectRequest);
+        }
         return projectVersionWrapper.getProjectVersionView();
     }
 

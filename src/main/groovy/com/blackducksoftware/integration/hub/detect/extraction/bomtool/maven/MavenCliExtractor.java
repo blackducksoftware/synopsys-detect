@@ -23,7 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.maven;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -49,16 +48,13 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 public class MavenCliExtractor extends Extractor<MavenCliContext> {
 
     @Autowired
-    private MavenCodeLocationPackager mavenCodeLocationPackager;
-
-    @Autowired
-    private DetectConfiguration detectConfiguration;
-
-    @Autowired
     protected ExecutableRunner executableRunner;
-
     @Autowired
     protected DetectFileFinder detectFileFinder;
+    @Autowired
+    private MavenCodeLocationPackager mavenCodeLocationPackager;
+    @Autowired
+    private DetectConfiguration detectConfiguration;
 
     @Override
     public Extraction extract(final MavenCliContext context) {
@@ -80,31 +76,28 @@ public class MavenCliExtractor extends Extractor<MavenCliContext> {
             }
             arguments.add("dependency:tree");
 
-
-
             final Executable mvnExecutable = new Executable(context.directory, context.mavenExe, arguments);
             final ExecutableOutput mvnOutput = executableRunner.execute(mvnExecutable);
 
-            final String excludedModules = detectConfiguration.getMavenExcludedModuleNames();
-            final String includedModules = detectConfiguration.getMavenIncludedModuleNames();
-            final List<MavenParseResult> mavenResults = mavenCodeLocationPackager.extractCodeLocations(context.directory.toString(), mvnOutput.getStandardOutput(), excludedModules, includedModules);
+            if (mvnOutput.getReturnCode() == 0) {
 
-            final List<File> additionalTargets = detectFileFinder.findFilesToDepth(context.directory, "target", detectConfiguration.getSearchDepth());
-            if (null != additionalTargets && !additionalTargets.isEmpty()) {
-                for (final File additionalTarget : additionalTargets) {
-                    //hubSignatureScanner.registerPathToScan(ScanPathSource.MAVEN_SOURCE, additionalTarget);
+                final String excludedModules = detectConfiguration.getMavenExcludedModuleNames();
+                final String includedModules = detectConfiguration.getMavenIncludedModuleNames();
+                final List<MavenParseResult> mavenResults = mavenCodeLocationPackager.extractCodeLocations(context.directory.toString(), mvnOutput.getStandardOutput(), excludedModules, includedModules);
+
+                final List<DetectCodeLocation> codeLocations = mavenResults.stream().map(it -> it.codeLocation).collect(Collectors.toList());
+
+                final Optional<MavenParseResult> firstWithName = mavenResults.stream().filter(it -> StringUtils.isNoneBlank(it.projectName)).findFirst();
+                final Extraction.Builder builder = new Extraction.Builder().success(codeLocations);
+                if (firstWithName.isPresent()) {
+                    builder.projectName(firstWithName.get().projectName);
+                    builder.projectVersion(firstWithName.get().projectVersion);
                 }
+                return builder.build();
+            } else {
+                final Extraction.Builder builder = new Extraction.Builder().failure(String.format("Executing command '%s' returned a non-zero exit code %s", String.join(" ", arguments), mvnOutput.getReturnCode()));
+                return builder.build();
             }
-
-            final List<DetectCodeLocation> codeLocations = mavenResults.stream().map(it -> it.codeLocation).collect(Collectors.toList());
-
-            final Optional<MavenParseResult> firstWithName = mavenResults.stream().filter(it -> StringUtils.isNoneBlank(it.projectName)).findFirst();
-            final Extraction.Builder builder = new Extraction.Builder().success(codeLocations);
-            if (firstWithName.isPresent()) {
-                builder.projectName(firstWithName.get().projectName);
-                builder.projectVersion(firstWithName.get().projectVersion);
-            }
-            return builder.build();
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
         }

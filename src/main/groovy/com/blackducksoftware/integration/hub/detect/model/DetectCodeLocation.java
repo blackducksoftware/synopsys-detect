@@ -79,7 +79,7 @@ public class DetectCodeLocation {
         return dockerImage;
     }
 
-    public ExternalId getBomToolProjectExternalId() {
+    public ExternalId getExternalId() {
         return externalId;
     }
 
@@ -87,12 +87,12 @@ public class DetectCodeLocation {
         return dependencyGraph;
     }
 
-    public String createCodeLocationName(final BomCodeLocationNameFactory bomCodeLocationNameFactory, final DockerCodeLocationNameFactory dockerCodeLocationNameFactory, final String projectName, final String projectVersionName,
+    public String createCodeLocationName(final BomCodeLocationNameFactory bomCodeLocationNameFactory, final DockerCodeLocationNameFactory dockerCodeLocationNameFactory, final String detectSourcePath, final String projectName, final String projectVersionName,
             final String prefix, final String suffix) {
         if (BomToolType.DOCKER == getBomToolType()) {
             return dockerCodeLocationNameFactory.createCodeLocationName(getSourcePath(), projectName, projectVersionName, dockerImage, getBomToolType(), prefix, suffix);
         } else {
-            return bomCodeLocationNameFactory.createCodeLocationName(getSourcePath(), projectName, projectVersionName, getBomToolType(), prefix, suffix);
+            return bomCodeLocationNameFactory.createCodeLocationName(detectSourcePath, getSourcePath(), externalId, getBomToolType(), prefix, suffix);
         }
     }
 

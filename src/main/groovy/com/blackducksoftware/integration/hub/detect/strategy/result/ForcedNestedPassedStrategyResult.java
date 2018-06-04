@@ -21,18 +21,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.help;
+package com.blackducksoftware.integration.hub.detect.strategy.result;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+public class ForcedNestedPassedStrategyResult extends StrategyResult {
+    @Override
+    public boolean getPassed() {
+        return true;
+    }
 
-import groovy.transform.TypeChecked;
-
-@TypeChecked
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
-public @interface HelpIssues {
-    String value() default "";
+    @Override
+    public String toDescription() {
+        return "Forced to pass because nested forced by user.";
+    }
 }

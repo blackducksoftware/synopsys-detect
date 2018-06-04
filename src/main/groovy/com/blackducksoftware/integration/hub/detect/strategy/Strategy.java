@@ -37,6 +37,7 @@ import com.blackducksoftware.integration.hub.detect.strategy.evaluation.Strategy
 import com.blackducksoftware.integration.hub.detect.strategy.result.BomToolExcludedStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.MaxDepthExceededStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.NotNestableStrategyResult;
+import com.blackducksoftware.integration.hub.detect.strategy.result.NotSelfNestableStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.PassedStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.StrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.YieldedStrategyResult;
@@ -49,13 +50,14 @@ public abstract class Strategy<C extends ExtractionContext, E extends Extractor<
     private final Class<E> extractorClass;
 
     private final Set<Strategy> yieldsToStrategies = new HashSet<>();
-    protected StrategySearchOptions searchOptions = new StrategySearchOptions(Integer.MAX_VALUE, false);
+    private final StrategySearchOptions searchOptions;
 
-    public Strategy(final String name, final BomToolType bomToolType, final Class<C> extractionContextClass, final Class<E> extractorClass) {
+    public Strategy(final String name, final BomToolType bomToolType, final Class<C> extractionContextClass, final Class<E> extractorClass, final StrategySearchOptions searchOptions) {
         this.name = name;
         this.bomToolType = bomToolType;
         this.extractionContextClass = extractionContextClass;
         this.extractorClass = extractorClass;
+        this.searchOptions = searchOptions;
     }
 
     public void yieldsTo(final Strategy strategy) {
@@ -76,7 +78,13 @@ public abstract class Strategy<C extends ExtractionContext, E extends Extractor<
             return new YieldedStrategyResult(yielded);
         }
 
-        if (!searchOptions.getNestable() && environment.getAppliedToParent().size() > 0) {
+        if (environment.getForceNestedSearch()) {
+
+        } if (searchOptions.getNestable()) {
+            if (environment.getAppliedToParent().contains(this)) {
+                return new NotSelfNestableStrategyResult();
+            }
+        } else if (!searchOptions.getNestable() && environment.getAppliedToParent().size() > 0) {
             return new NotNestableStrategyResult();
         }
 

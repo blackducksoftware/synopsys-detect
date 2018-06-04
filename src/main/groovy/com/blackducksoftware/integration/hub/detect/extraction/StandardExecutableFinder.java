@@ -46,7 +46,8 @@ public class StandardExecutableFinder {
         BASH,
         GO,
         REBAR3,
-        PEAR
+        PEAR,
+        YARN
     }
 
     @Autowired
@@ -96,7 +97,8 @@ public class StandardExecutableFinder {
             return new StandardExecutableInfo(ExecutableType.REBAR3, detectConfiguration.getHexRebar3Path());
         case PEAR:
             return new StandardExecutableInfo(ExecutableType.PEAR, detectConfiguration.getPearPath());
-
+        case YARN:
+            return new StandardExecutableInfo(ExecutableType.YARN, detectConfiguration.getYarnPath());
         }
         return null;
     }

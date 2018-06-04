@@ -26,9 +26,10 @@ package com.blackducksoftware.integration.hub.detect.util.executable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class ExecutableArgumentBuilder {
     private final List<Argument> arguments = new ArrayList<>();
-
 
     public void addArgumentPair(final String key, final String value, final boolean escape) {
         addArgument(new Pair(key, value, escape));
@@ -49,6 +50,7 @@ public class ExecutableArgumentBuilder {
     public void addArgument(final String value) {
         addArgument(value, false);
     }
+
     public void addArgument(final String value, final boolean escape) {
         addArgument(new StringArgument(value, escape));
     }
@@ -68,6 +70,14 @@ public class ExecutableArgumentBuilder {
             outList.add(argument.toArgumentString());
         }
         return outList;
+    }
+
+    public String buildString() {
+        final List<String> outList = new ArrayList<>();
+        for (final Argument argument : arguments) {
+            outList.add(argument.toArgumentString());
+        }
+        return StringUtils.join(outList, " ");
     }
 
     private interface Argument {

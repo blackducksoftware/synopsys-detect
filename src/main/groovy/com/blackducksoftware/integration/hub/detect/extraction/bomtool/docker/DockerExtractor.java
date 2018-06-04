@@ -28,12 +28,14 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +50,7 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
+import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
@@ -61,71 +64,67 @@ import com.google.gson.Gson;
 
 @Component
 public class DockerExtractor extends Extractor<DockerContext> {
+    public static final String TAR_FILENAME_PATTERN = "*.tar.gz";
+    public static final String DEPENDENCIES_PATTERN = "*bdio.jsonld";
     private final Logger logger = LoggerFactory.getLogger(DockerExtractor.class);
-
-    @Autowired
-    DockerProperties dockerProperties;
-
     @Autowired
     protected DetectFileFinder detectFileFinder;
 
     @Autowired
     protected DetectFileManager detectFileManager;
-
+    @Autowired
+    DockerProperties dockerProperties;
     @Autowired
     ExecutableManager executableManager;
-
     @Autowired
     ExecutableRunner executableRunner;
-
     @Autowired
     BdioTransformer bdioTransformer;
-
     @Autowired
     ExternalIdFactory externalIdFactory;
-
     @Autowired
     Gson gson;
-
-    static final String DEPENDENCIES_PATTERN = "*bdio.jsonld";
+    @Autowired
+    HubSignatureScanner hubSignatureScanner;
 
     @Override
     public Extraction extract(final DockerContext context) {
         try {
             String imageArgument = null;
             String imagePiece = null;
-            if (context.tar != null) {
+            if (StringUtils.isNotBlank(context.tar)) {
                 final File dockerTarFile = new File(context.tar);
                 imageArgument = String.format("--docker.tar=%s", dockerTarFile.getCanonicalPath());
                 imagePiece = detectFileFinder.extractFinalPieceFromPath(dockerTarFile.getCanonicalPath());
-            }else if (context.image != null) {
+            } else if (StringUtils.isNotBlank(context.image)) {
                 imagePiece = context.image;
                 imageArgument = String.format("--docker.image=%s", context.image);
             }
 
-            if (imageArgument == null || imagePiece == null){
+            if (StringUtils.isBlank(imageArgument) || StringUtils.isBlank(imagePiece)) {
                 return new Extraction.Builder().failure("No docker image found.").build();
-            }else {
-                return executeDocker(context, imageArgument, imagePiece, context.directory, context.dockerExe, context.bashExe, context.dockerInspectorInfo);
+            } else {
+                return executeDocker(context, imageArgument, imagePiece, context.tar, context.directory, context.dockerExe, context.bashExe, context.dockerInspectorInfo);
             }
-        }catch (final Exception e) {
+        } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
     }
 
-    private Map<String, String> createEnvironmentVariables(final File dockerExe) throws IOException {
+    private Map<String, String> createEnvironmentVariables(final DockerContext context, final File dockerExe) throws IOException {
         final Map<String, String> environmentVariables = new HashMap<>();
-        dockerProperties.populateEnvironmentVariables(environmentVariables, dockerExe);
+        dockerProperties.populateEnvironmentVariables(context, environmentVariables, dockerExe);
         return environmentVariables;
     }
 
     private void importTars(final File inspectorJar, final List<File> importTars, final File directory, final Map<String, String> environmentVariables, final File bashExe) {
         try {
             for (final File imageToImport : importTars) {
+                // The -c is a bash option, the following String is the command we want to run
                 final List<String> dockerImportArguments = Arrays.asList(
                         "-c",
                         "docker load -i \"" + imageToImport.getCanonicalPath() + "\""
-                        );
+                );
 
                 final Executable dockerImportImageExecutable = new Executable(directory, environmentVariables, bashExe.toString(), dockerImportArguments);
                 executableRunner.execute(dockerImportImageExecutable);
@@ -136,31 +135,51 @@ public class DockerExtractor extends Extractor<DockerContext> {
         }
     }
 
-
-
-    private Extraction executeDocker(final DockerContext context, final String imageArgument, final String imagePiece, final File directory, final File dockerExe, final File bashExe, final DockerInspectorInfo dockerInspectorInfo) throws FileNotFoundException, IOException, ExecutableRunnerException {
+    private Extraction executeDocker(final DockerContext context, final String imageArgument, final String imagePiece, final String dockerTarFilePath, final File directory, final File dockerExe, final File bashExe,
+            final DockerInspectorInfo dockerInspectorInfo)
+            throws FileNotFoundException, IOException, ExecutableRunnerException {
 
         final File outputDirectory = detectFileManager.getOutputDirectory(context);
         final File dockerPropertiesFile = detectFileManager.getOutputFile(context, "application.properties");
         dockerProperties.populatePropertiesFile(dockerPropertiesFile, outputDirectory);
 
-        final Map<String, String> environmentVariables = createEnvironmentVariables(dockerExe);
+        final Map<String, String> environmentVariables = createEnvironmentVariables(context, dockerExe);
+
+        final List<String> dockerArguments = new ArrayList<>();
+        // The -c is a bash option, the following String is the command we want to run
+        dockerArguments.add("-c");
 
         final ExecutableArgumentBuilder bashArguments = new ExecutableArgumentBuilder();
-        bashArguments.addArgument("-c");
         bashArguments.addArgument(dockerInspectorInfo.dockerInspectorScript.getCanonicalPath(), true);
-        bashArguments.addArgumentPair("--spring.config.location", "file:" + dockerProperties.toString(), true);
+        bashArguments.addArgumentPair("--spring.config.location", "file:" + dockerPropertiesFile.getCanonicalPath(), true);
         bashArguments.addArgument(imageArgument);
 
-        if (!dockerInspectorInfo.isOffline) {
+        if (dockerInspectorInfo.isOffline) {
             bashArguments.insertArgumentPair(2, "--dry.run", "true");
             bashArguments.insertArgumentPair(3, "--no.prompt", "true");
             bashArguments.insertArgumentPair(4, "--jar.path", dockerInspectorInfo.offlineDockerInspectorJar.getCanonicalPath(), true);
             importTars(dockerInspectorInfo.offlineDockerInspectorJar, dockerInspectorInfo.offlineTars, outputDirectory, environmentVariables, bashExe);
         }
 
-        final Executable dockerExecutable = new Executable(outputDirectory, environmentVariables, bashExe.toString(), bashArguments.build());
+        // All the arguments should be joined into a single String, as the command to run after the -c
+        dockerArguments.add(bashArguments.buildString());
+
+        final Executable dockerExecutable = new Executable(outputDirectory, environmentVariables, bashExe.toString(), dockerArguments);
         executableRunner.execute(dockerExecutable);
+
+        if (StringUtils.isNotBlank(dockerTarFilePath)) {
+            File dockerTarFile = new File(dockerTarFilePath);
+            if (dockerTarFile.isFile()) {
+                hubSignatureScanner.setDockerTarFilePath(dockerTarFile.getCanonicalPath());
+            }
+        } else {
+            File producedTarFile = detectFileFinder.findFile(outputDirectory, TAR_FILENAME_PATTERN);
+            if (null != producedTarFile && producedTarFile.isFile()) {
+                hubSignatureScanner.setDockerTarFilePath(producedTarFile.getCanonicalPath());
+            } else {
+                logger.debug(String.format("No files found matching pattern [%s]. Expected docker-inspector to produce file in %s", TAR_FILENAME_PATTERN, outputDirectory.getCanonicalPath()));
+            }
+        }
 
         return findCodeLocations(outputDirectory, directory, imagePiece);
     }
@@ -196,6 +215,5 @@ public class DockerExtractor extends Extractor<DockerContext> {
             return new Extraction.Builder().failure("No files found matching pattern [" + DEPENDENCIES_PATTERN + "]. Expected docker-inspector to produce file in " + directory.toString()).build();
         }
     }
-
 
 }

@@ -15,6 +15,8 @@ import static org.junit.Assert.*
 
 import org.junit.Test
 
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.codelocation.BomCodeLocationNameFactory
 import com.blackducksoftware.integration.hub.detect.codelocation.ScanCodeLocationNameFactory
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
@@ -42,36 +44,38 @@ class CodeLocationNameFactoryTest {
 
     @Test
     public void testBomCodeLocationNameFactory() {
-        String expected = 'hub-common-rest/hub-common-rest/2.5.1-SNAPSHOT npm/bom'
 
-        DetectFileFinder detectFileManager = [extractFinalPieceFromPath: { 'hub-common-rest' }] as DetectFileFinder
+        String expected = 'hub-common-rest/child/group/name/version npm/bom' //= path/externalId tool/type
+
+        ExternalIdFactory factory = new ExternalIdFactory();
+        ExternalId externalId = factory.createMavenExternalId("group", "name", "version");
         BomCodeLocationNameFactory bomCodeLocationNameFactory = new BomCodeLocationNameFactory()
-        bomCodeLocationNameFactory.detectFileFinder = detectFileManager
 
         String sourcePath = '/Users/ekerwin/Documents/source/integration/hub-common-rest'
-        String projectName = 'hub-common-rest'
-        String projectVersionName = '2.5.1-SNAPSHOT'
+        String codeLocationPath = '/Users/ekerwin/Documents/source/integration/hub-common-rest/child'
+
         String prefix = ''
         String suffix = ''
-        String actual = bomCodeLocationNameFactory.createCodeLocationName(sourcePath, projectName, projectVersionName, BomToolType.NPM, prefix, suffix)
+        String actual = bomCodeLocationNameFactory.createCodeLocationName(sourcePath, codeLocationPath, externalId, BomToolType.NPM, prefix, suffix)
 
         assertEquals(expected, actual)
     }
 
     @Test
     public void testLongCodeLocationNames() {
-        String expected = 'hub-common-rest/hub-common-resthub-...esthub-common-rest/2.5.1-SNAPSHOT npm/bom'
+        String expected = 'hub-common-rest/hub...esthub-common-rest/group/name/version npm/bom'
 
-        DetectFileFinder detectFileManager = [extractFinalPieceFromPath: { 'hub-common-rest' }] as DetectFileFinder
+
+        ExternalIdFactory factory = new ExternalIdFactory();
+        ExternalId externalId = factory.createMavenExternalId("group", "name", "version");
         BomCodeLocationNameFactory bomCodeLocationNameFactory = new BomCodeLocationNameFactory()
-        bomCodeLocationNameFactory.detectFileFinder = detectFileManager
 
         String sourcePath = '/Users/ekerwin/Documents/source/integration/hub-common-rest'
-        String projectName = 'hub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-rest'
-        String projectVersionName = '2.5.1-SNAPSHOT'
+        String codeLocationPath = '/Users/ekerwin/Documents/source/integration/hub-common-rest/hub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-rest'
         String prefix = ''
         String suffix = ''
-        String actual = bomCodeLocationNameFactory.createCodeLocationName(sourcePath, projectName, projectVersionName, BomToolType.NPM, prefix, suffix)
+        String actual = bomCodeLocationNameFactory.createCodeLocationName(sourcePath, codeLocationPath, externalId, BomToolType.NPM, prefix, suffix)
+
 
         assertEquals(expected, actual)
     }

@@ -47,6 +47,8 @@ import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
 @Component
 public class MavenCodeLocationPackager {
     public static final List<String> indentationStrings = Arrays.asList("+- ", "|  ", "\\- ", "   ");
+    public static final List<String> KNOWN_SCOPES = Arrays.asList("compile", "provided", "runtime", "test", "system", "import");
+
     private static final Logger logger = LoggerFactory.getLogger(MavenCodeLocationPackager.class);
 
     private final ExternalIdFactory externalIdFactory;
@@ -91,9 +93,9 @@ public class MavenCodeLocationPackager {
             }
 
             if (parsingProjectSection && currentMavenProject == null) {
-                //this is the first line of a new code location, the following lines will be the tree of dependencies for this code location
+                // this is the first line of a new code location, the following lines will be the tree of dependencies for this code location
                 currentGraph = new MutableMapDependencyGraph();
-                final MavenParseResult mavenProject = createNewCodeLocation(sourcePath, line, currentGraph);
+                final MavenParseResult mavenProject = createMavenParseResult(sourcePath, line, currentGraph);
                 if (null != mavenProject && filter.shouldInclude(mavenProject.projectName)) {
                     this.currentMavenProject = mavenProject;
                     codeLocations.add(mavenProject);
@@ -124,23 +126,23 @@ public class MavenCodeLocationPackager {
 
             if (currentMavenProject != null) {
                 if (level == 1) {
-                    //a direct dependency, clear the stack and add this as a potential parent for the next line
+                    // a direct dependency, clear the stack and add this as a potential parent for the next line
                     currentGraph.addChildToRoot(dependency);
                     dependencyParentStack.clear();
                     dependencyParentStack.push(dependency);
                 } else {
-                    //level should be greater than 1
+                    // level should be greater than 1
                     if (level == previousLevel) {
                         //a sibling of the previous dependency
                         dependencyParentStack.pop();
                         currentGraph.addParentWithChild(dependencyParentStack.peek(), dependency);
                         dependencyParentStack.push(dependency);
                     } else if (level > previousLevel) {
-                        //a child of the previous dependency
+                        // a child of the previous dependency
                         currentGraph.addParentWithChild(dependencyParentStack.peek(), dependency);
                         dependencyParentStack.push(dependency);
                     } else {
-                        //a child of a dependency further back than 1 line
+                        // a child of a dependency further back than 1 line
                         for (int i = previousLevel; i >= level; i--) {
                             dependencyParentStack.pop();
                         }
@@ -154,14 +156,14 @@ public class MavenCodeLocationPackager {
         return codeLocations;
     }
 
-    private MavenParseResult createNewCodeLocation(final String sourcePath, final String line, final DependencyGraph graph) {
+    private MavenParseResult createMavenParseResult(final String sourcePath, final String line, final DependencyGraph graph) {
         final Dependency dependency = textToProject(line);
         if (null != dependency) {
             String codeLocationSourcePath = sourcePath;
             if (!sourcePath.endsWith(dependency.name)) {
                 codeLocationSourcePath += "/" + dependency.name;
             }
-            final DetectCodeLocation codeLocation =  new DetectCodeLocation.Builder(BomToolType.MAVEN, codeLocationSourcePath, dependency.externalId, graph).build();
+            final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolType.MAVEN, codeLocationSourcePath, dependency.externalId, graph).build();
             return new MavenParseResult(dependency.name, dependency.version, codeLocation);
         }
         return null;
@@ -189,9 +191,10 @@ public class MavenCodeLocationPackager {
         final String artifact = gavParts[1];
 
         final String scope = gavParts[gavParts.length - 1];
-        if (!(scope.equalsIgnoreCase("compile") || scope.equalsIgnoreCase("provided") || scope.equalsIgnoreCase("runtime") || scope.equalsIgnoreCase("test") || scope.equalsIgnoreCase("system") || scope.equalsIgnoreCase("import"))) {
-            logger.debug("This dependency is invalid, if does not end in a Maven scope that we recognize: " + scope);
-            return null;
+        final boolean recognizedScope = KNOWN_SCOPES.stream().anyMatch(knownScope -> scope.startsWith(knownScope));
+
+        if (!recognizedScope) {
+            logger.warn("This line can not be parsed correctly due to an unknown dependency format - it is unlikely a match will be found for this dependency: " + componentText);
         }
         final String version = gavParts[gavParts.length - 2];
         final ExternalId externalId = externalIdFactory.createMavenExternalId(group, artifact, version);

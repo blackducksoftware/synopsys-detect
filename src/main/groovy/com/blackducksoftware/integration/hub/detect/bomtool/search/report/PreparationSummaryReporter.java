@@ -25,7 +25,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.search.report;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -46,17 +45,8 @@ public class PreparationSummaryReporter {
     public DiagnosticsManager diagnosticsManager;
 
     public void print(final List<StrategyEvaluation> results) {
-        final Map<File, List<StrategyEvaluation>> byDirectory = new HashMap<>();
-        for (final StrategyEvaluation result : results) {
-            if (result.context == null || result.environment.getDirectory() == null) {
-                info("WUT");
-            }
-            final File directory = result.environment.getDirectory();
-            if (!byDirectory.containsKey(directory)) {
-                byDirectory.put(directory, new ArrayList<>());
-            }
-            byDirectory.get(directory).add(result);
-        }
+        final Map<File, List<StrategyEvaluation>> byDirectory = results.stream()
+                .collect(Collectors.groupingBy(item -> item.environment.getDirectory()));
 
         printDirectories(byDirectory);
 

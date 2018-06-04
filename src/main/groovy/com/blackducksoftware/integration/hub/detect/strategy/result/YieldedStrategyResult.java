@@ -44,7 +44,7 @@ public class YieldedStrategyResult extends FailedStrategyResult {
 
     @Override
     public String toDescription() {
-        final String yielded = yieldedTo.stream().map(it -> it.toString()).collect(Collectors.joining(", "));
+        final String yielded = yieldedTo.stream().map(it -> it.getDescriptiveName()).collect(Collectors.joining(", "));
         return "Yielded to strategies: " + yielded;
     }
 }

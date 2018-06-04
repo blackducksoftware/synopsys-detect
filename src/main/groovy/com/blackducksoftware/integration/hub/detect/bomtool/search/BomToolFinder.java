@@ -46,7 +46,7 @@ import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
 
-@SuppressWarnings({ "rawtypes" })
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class BomToolFinder {
     private final Logger logger = LoggerFactory.getLogger(BomToolFinder.class);
 
@@ -104,7 +104,7 @@ public class BomToolFinder {
     }
 
     private StrategyEvaluation processStrategy(final Strategy strategy, final File directory, final Set<Strategy> appliedCurrent, final Set<Strategy> appliedBefore, final int depth, final BomToolFinderOptions options) {
-        final StrategyEnvironment environment = new StrategyEnvironment(directory, appliedCurrent, appliedBefore, depth, options.getBomToolFilter());
+        final StrategyEnvironment environment = new StrategyEnvironment(directory, appliedCurrent, appliedBefore, depth, options.getBomToolFilter(), options.getForceNestedSearch());
         final ExtractionContext context = strategy.createContext(directory);
         final StrategyEvaluation evaluation = new StrategyEvaluation(strategy, environment, context);
 
@@ -156,17 +156,6 @@ public class BomToolFinder {
         return containsAll;
     }
 
-    private boolean shouldStopSearchingIfApplicable(final Strategy strategy, final BomToolFinderOptions options) {
-        if (options.getForceNestedSearch()) {
-            return false;
-        }
-        //TODO: Replicate
-        //if (strategy.getSearchOptions().canSearchWithinApplicableDirectories()) {
-        //    return false;
-        //}
-        return true;
-    }
-
     private List<File> getSubDirectories(final File directory, final List<String> excludedDirectories) throws DetectUserFriendlyException {
         try {
             // only include directories that do not match the excluded directories
@@ -190,7 +179,4 @@ public class BomToolFinder {
             throw new DetectUserFriendlyException(String.format("Could not get the subdirectories for %s. %s", directory.getAbsolutePath(), e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
         }
     }
-
-
-
 }

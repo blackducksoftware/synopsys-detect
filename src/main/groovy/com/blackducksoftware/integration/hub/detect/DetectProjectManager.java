@@ -67,19 +67,16 @@ import com.blackducksoftware.integration.hub.detect.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.extraction.ExtractionContext;
 import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
 import com.blackducksoftware.integration.hub.detect.extraction.StrategyEvaluation;
-import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner;
-import com.blackducksoftware.integration.hub.detect.hub.ScanPathSource;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.model.DetectProject;
+import com.blackducksoftware.integration.hub.detect.model.ProcessedDetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
 import com.blackducksoftware.integration.hub.detect.strategy.StrategyManager;
-import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyException;
 import com.blackducksoftware.integration.hub.detect.strategy.result.ExceptionStrategyResult;
 import com.blackducksoftware.integration.hub.detect.summary.BomToolSummaryResult;
 import com.blackducksoftware.integration.hub.detect.summary.Result;
 import com.blackducksoftware.integration.hub.detect.summary.SummaryResultReporter;
-import com.blackducksoftware.integration.hub.detect.util.BdioFileNamer;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
@@ -100,13 +97,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     private SimpleBdioFactory simpleBdioFactory;
 
     @Autowired
-    private HubSignatureScanner hubSignatureScanner;
-
-    @Autowired
     private IntegrationEscapeUtil integrationEscapeUtil;
-
-    @Autowired
-    private BdioFileNamer bdioFileNamer;
 
     @Autowired
     private DetectFileFinder detectFileFinder;
@@ -115,18 +106,34 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     private DetectPhoneHomeManager detectPhoneHomeManager;
 
     @Autowired
-    public StrategyManager strategyManager;
+    private StrategyManager strategyManager;
 
     @Autowired
-    public List<Extractor> autowiredExtractors;
+    private List<Extractor> autowiredExtractors;
 
-    private boolean foundAnyBomTools;
+    @Autowired
+    private SearchSummaryReporter searchSummaryReporter;
 
-    private  void extract(final List<StrategyEvaluation> results) {
+    @Autowired
+    private PreparationSummaryReporter preparationSummaryReporter;
+
+    @Autowired
+    private ExtractionSummaryReporter extractionSummaryReporter;
+
+    @Autowired
+    private ExtractionReporter extractionReporter;
+
+    @Autowired
+    private BomCodeLocationNameFactory bomCodeLocationNameFactory;
+
+    @Autowired
+    private DockerCodeLocationNameFactory dockerCodeLocationNameFactory;
+
+    private void extract(final List<StrategyEvaluation> results) {
         final List<StrategyEvaluation> extractable = results.stream().filter(result -> result.isExtractable()).collect(Collectors.toList());
 
         for (int i = 0; i < extractable.size(); i++) {
-            logger.info("Extracting " + Integer.toString(i) + " of " + Integer.toString(extractable.size()) + " (" + Integer.toString((int)Math.floor((i * 100.0f) / extractable.size())) + "%)");
+            logger.info("Extracting " + Integer.toString(i + 1) + " of " + Integer.toString(extractable.size()) + " (" + Integer.toString((int)Math.floor((i * 100.0f) / extractable.size())) + "%)");
             extract(extractable.get(i));
         }
     }
@@ -141,7 +148,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         if (result.isApplicable()) {
             try {
                 result.extractable = result.strategy.extractable(result.environment, result.context);
-            } catch (final StrategyException e) {
+            } catch (final Exception e) {
                 result.extractable = new ExceptionStrategyResult(e);
             }
         }
@@ -164,6 +171,10 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
             }
         }
 
+        if (extractor == null) {
+            return new Extraction.Builder().failure("No extractor was found.").build();
+        }
+
         Extraction result;
         try {
             result = extractor.extract(context);
@@ -173,7 +184,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         return result;
     }
 
-    private List<StrategyEvaluation> findRootApplicable(final File directory) {
+    private List<StrategyEvaluation> findApplicableBomTools(final File directory) {
         final List<Strategy> allStrategies = strategyManager.getAllStrategies();
         final List<String> excludedDirectories = detectConfiguration.getBomToolSearchDirectoryExclusions();
         final Boolean forceNestedSearch = detectConfiguration.getBomToolContinueSearch();
@@ -182,6 +193,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         final BomToolFinderOptions findOptions = new BomToolFinderOptions(excludedDirectories, forceNestedSearch, maxDepth, bomToolFilter);
 
         try {
+            logger.info("Starting search for bom tools.");
             final BomToolFinder bomToolTreeWalker = new BomToolFinder();
             return bomToolTreeWalker.findApplicableBomTools(new HashSet<>(allStrategies), directory, findOptions);
         } catch (final BomToolException e) {
@@ -194,29 +206,10 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         return new ArrayList<>();
     }
 
-    @Autowired
-    SearchSummaryReporter searchSummaryReporter;
-
-    @Autowired
-    PreparationSummaryReporter preparationSummaryReporter;
-
-    @Autowired
-    ExtractionSummaryReporter extractionSummaryReporter;
-
-    @Autowired
-    ExtractionReporter extractionReporter;
-
-    @Autowired
-    private BomCodeLocationNameFactory bomCodeLocationNameFactory;
-
-    @Autowired
-    private DockerCodeLocationNameFactory dockerCodeLocationNameFactory;
-
-
     public DetectProject createDetectProject() throws IntegrationException, DetectUserFriendlyException {
         final DetectProject detectProject = new DetectProject();
 
-        final List<StrategyEvaluation> sourcePathResults = findRootApplicable(new File(detectConfiguration.getSourcePath()));
+        final List<StrategyEvaluation> sourcePathResults = findApplicableBomTools(new File(detectConfiguration.getSourcePath()));
 
         searchSummaryReporter.print(sourcePathResults);
 
@@ -227,10 +220,14 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
 
         if (appliedNotInSourceDirectory > 1) {
             if (StringUtils.isBlank(detectConfiguration.getProjectName())) {
-                throw new DetectUserFriendlyException("Multiple bom tool types applied but no project name was supplied. Detect is unable to reasonably guess the project name and version. Please provide a project name and version with --detect.project.name and --detect.project.version", ExitCodeType.FAILURE_CONFIGURATION);
+                throw new DetectUserFriendlyException(
+                        "Multiple bom tool types applied but no project name was supplied. Detect is unable to reasonably guess the project name and version. Please provide a project name and version with --detect.project.name and --detect.project.version",
+                        ExitCodeType.FAILURE_CONFIGURATION);
             } else if (StringUtils.isBlank(detectConfiguration.getProjectVersionName())) {
-                throw new DetectUserFriendlyException("Multiple bom tool types applied but no project version was supplied. Detect is unable to reasonably guess the project version. Please provide a project name with --detect.project.version", ExitCodeType.FAILURE_CONFIGURATION);
-            }else {
+                throw new DetectUserFriendlyException(
+                        "Multiple bom tool types applied but no project version was supplied. Detect is unable to reasonably guess the project version. Please provide a project name with --detect.project.version",
+                        ExitCodeType.FAILURE_CONFIGURATION);
+            } else {
                 detectProject.setProjectNameIfNotSet(detectConfiguration.getProjectName());
                 detectProject.setProjectVersionNameIfNotSet(detectConfiguration.getProjectVersionName());
             }
@@ -250,13 +247,12 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
 
         extract(sourcePathResults);
 
-
         final float appliedInSource = sourcePathResults.stream()
                 .filter(it -> it.isApplicable())
                 .filter(it -> it.environment.getDepth() == 0)
                 .count();
 
-        if (appliedInSource > 1) {
+        if (appliedInSource > 0) {
             //take the first project alphabetically.
             final Optional<StrategyEvaluation> projectNameDecider = sourcePathResults.stream()
                     .filter(it -> it.isExtractionSuccess() && it.environment.getDepth() == 0 && it.extraction.projectName != null)
@@ -269,22 +265,34 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
             }
         }
 
+        for (final StrategyEvaluation evaluation : sourcePathResults) {
+            final BomToolType type = evaluation.strategy.getBomToolType();
+            if (evaluation.isApplicable()) {
+                if (evaluation.isExtractable() && evaluation.isExtractionSuccess()) {
+                    if (!bomToolSummaryResults.containsKey(type)) {
+                        bomToolSummaryResults.put(type, Result.SUCCESS);
+                    }
+                } else {
+                    bomToolSummaryResults.put(type, Result.FAILURE);
+                }
+            }
+        }
+
+        final List<DetectCodeLocation> codeLocations = sourcePathResults.stream()
+                .filter(it -> it.isExtractionSuccess())
+                .flatMap(it -> it.extraction.codeLocations.stream())
+                .collect(Collectors.toList());
+
+        detectProject.addAllDetectCodeLocations(codeLocations);
+
         final String prefix = detectConfiguration.getProjectCodeLocationPrefix();
         final String suffix = detectConfiguration.getProjectCodeLocationSuffix();
 
         // ensure that the project name is set, use some reasonable defaults
         detectProject.setProjectDetails(getProjectName(detectProject.getProjectName()), getProjectVersionName(detectProject.getProjectVersionName()), prefix, suffix);
 
-        if (!foundAnyBomTools) {
-            logger.info(String.format("No package managers were detected - will register %s for signature scanning of %s/%s", detectConfiguration.getSourcePath(), detectProject.getProjectName(), detectProject.getProjectVersionName()));
-            hubSignatureScanner.registerPathToScan(ScanPathSource.DETECT_SOURCE, detectConfiguration.getSourceDirectory());
-        } else if (detectConfiguration.getHubSignatureScannerSnippetMode()) {
-            logger.info(String.format("Snippet mode is enabled - will register %s for signature scanning of %s/%s", detectConfiguration.getSourcePath(), detectProject.getProjectName(), detectProject.getProjectVersionName()));
-            hubSignatureScanner.registerPathToScan(ScanPathSource.SNIPPET_SOURCE, detectConfiguration.getSourceDirectory());
-        }
-
         if (StringUtils.isBlank(detectConfiguration.getAggregateBomName())) {
-            detectProject.processDetectCodeLocations(bomCodeLocationNameFactory, dockerCodeLocationNameFactory, logger, detectFileFinder,  detectConfiguration.getSourceDirectory(), bdioFileNamer);
+            detectProject.processDetectCodeLocations(bomCodeLocationNameFactory, dockerCodeLocationNameFactory, detectConfiguration.getSourcePath(), logger,  detectConfiguration.getSourceDirectory(), detectConfiguration.getCombineCodeLocations());
 
             for (final BomToolType bomToolType : detectProject.getFailedBomTools()) {
                 bomToolSummaryResults.put(bomToolType, Result.FAILURE);
@@ -301,12 +309,11 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         final MutableDependencyGraph aggregateDependencyGraph = simpleBdioFactory.createMutableDependencyGraph();
 
         if (StringUtils.isBlank(detectConfiguration.getAggregateBomName())) {
-            for (final String codeLocationNameString : detectProject.getCodeLocationNameStrings()) {
-                final DetectCodeLocation detectCodeLocation = detectProject.getDetectCodeLocation(codeLocationNameString);
-                final String bdioFileName = detectProject.getBdioFilename(codeLocationNameString);
-                final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(codeLocationNameString, detectProject.getProjectName(), detectProject.getProjectVersionName(), detectCodeLocation);
+            for (final ProcessedDetectCodeLocation processedDetectCodeLocation : detectProject.getProcessedCodeLocations()) {
 
-                final File outputFile = new File(detectConfiguration.getBdioOutputDirectoryPath(), bdioFileName);
+                final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(processedDetectCodeLocation.codeLocationName, detectProject.getProjectName(), detectProject.getProjectVersionName(), processedDetectCodeLocation.codeLocation);
+
+                final File outputFile = new File(detectConfiguration.getBdioOutputDirectoryPath(), processedDetectCodeLocation.bdioName);
                 if (outputFile.exists()) {
                     final boolean deleteSuccess = outputFile.delete();
                     logger.debug(String.format("%s deleted: %b", outputFile.getAbsolutePath(), deleteSuccess));
@@ -315,15 +322,8 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
                 bdioFiles.add(outputFile);
             }
         } else {
-            for (final DetectCodeLocation detectCodeLocation : detectProject.getDetectCodeLocations()) {
-                if (detectCodeLocation.getDependencyGraph() == null) {
-                    logger.warn(String.format("Dependency graph is null for code location %s", detectCodeLocation.getSourcePath()));
-                    continue;
-                }
-                if (detectCodeLocation.getDependencyGraph().getRootDependencies().size() <= 0) {
-                    logger.warn(String.format("Could not find any dependencies for code location %s", detectCodeLocation.getSourcePath()));
-                }
-                aggregateDependencyGraph.addGraphAsChildrenToRoot(detectCodeLocation.getDependencyGraph());
+            for (final ProcessedDetectCodeLocation processedDetectCodeLocation : detectProject.getProcessedCodeLocations()) {
+                aggregateDependencyGraph.addGraphAsChildrenToRoot(processedDetectCodeLocation.codeLocation.getDependencyGraph());
             }
             final SimpleBdioDocument aggregateBdioDocument = createAggregateSimpleBdioDocument(detectProject.getProjectName(), detectProject.getProjectVersionName(), aggregateDependencyGraph);
             final String filename = String.format("%s.jsonld", integrationEscapeUtil.escapeForUri(detectConfiguration.getAggregateBomName()));
@@ -333,6 +333,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
                 logger.debug(String.format("%s deleted: %b", aggregateBdioFile.getAbsolutePath(), deleteSuccess));
             }
             writeBdioFile(aggregateBdioFile, aggregateBdioDocument);
+            bdioFiles.add(aggregateBdioFile);
         }
 
         return bdioFiles;
@@ -412,7 +413,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     }
 
     private SimpleBdioDocument createSimpleBdioDocument(final String codeLocationName, final String projectName, final String projectVersionName, final DetectCodeLocation detectCodeLocation) {
-        final ExternalId projectExternalId = detectCodeLocation.getBomToolProjectExternalId();
+        final ExternalId projectExternalId = detectCodeLocation.getExternalId();
         final DependencyGraph dependencyGraph = detectCodeLocation.getDependencyGraph();
 
         return createSimpleBdioDocument(codeLocationName, projectName, projectVersionName, projectExternalId, dependencyGraph);

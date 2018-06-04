@@ -21,18 +21,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.help;
+package com.blackducksoftware.integration.hub.detect.strategy.result;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-import groovy.transform.TypeChecked;
-
-@TypeChecked
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
-public @interface HelpUseCases {
-    String value() default "";
+public class NotSelfNestableStrategyResult extends FailedStrategyResult {
+    @Override
+    public String toDescription() {
+        return "Nestable but this bom tool already applied in a parent directory.";
+    }
 }

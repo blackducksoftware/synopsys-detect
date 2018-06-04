@@ -11,6 +11,8 @@
 [WARNING] The artifact axis:axis-saaj:jar:1.4 has been relocated to org.apache.axis:axis-saaj:jar:1.4
 [WARNING] The artifact axis:axis-jaxrpc:jar:1.4 has been relocated to org.apache.axis:axis-jaxrpc:jar:1.4
 [WARNING] The artifact axis:axis-ant:jar:1.4 has been relocated to org.apache.axis:axis-ant:jar:1.4
+[INFO] artifact javax.activation:activation: checking for updates from thirdparty
+[INFO] artifact commons-io:commons-io: checking for updates from thirdparty
 [INFO] org.owasp.webgoat:webgoat-container:war:7.1-SNAPSHOT
 [INFO] +- javax.activation:activation:jar:1.1.1:compile
 [INFO] +- com.h2database:h2:jar:1.4.190:compile

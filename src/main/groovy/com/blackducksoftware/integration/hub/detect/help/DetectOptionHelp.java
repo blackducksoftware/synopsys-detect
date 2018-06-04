@@ -29,8 +29,7 @@ import java.util.List;
 public class DetectOptionHelp {
     
     public String description = "";
-    public String useCases = "";
-    public String issues = "";
+    public String detailedHelp = "";
 
     public List<String> groups = new ArrayList<String>();
     public String primaryGroup = "";

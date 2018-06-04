@@ -32,6 +32,7 @@ import com.blackducksoftware.integration.hub.detect.extraction.StandardExecutabl
 import com.blackducksoftware.integration.hub.detect.extraction.StandardExecutableFinder.StandardExecutableType;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
+import com.blackducksoftware.integration.hub.detect.strategy.StrategySearchOptions;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyException;
 import com.blackducksoftware.integration.hub.detect.strategy.result.ExecutableNotFoundStrategyResult;
@@ -56,7 +57,7 @@ public class DockerStrategy extends Strategy<DockerContext, DockerExtractor> {
     public StandardExecutableFinder standardExecutableFinder;
 
     public DockerStrategy() {
-        super("Docker", BomToolType.DOCKER, DockerContext.class, DockerExtractor.class);
+        super("Docker", BomToolType.DOCKER, DockerContext.class, DockerExtractor.class, StrategySearchOptions.defaultNotNested());
     }
 
     @Override
@@ -80,7 +81,9 @@ public class DockerStrategy extends Strategy<DockerContext, DockerExtractor> {
 
         context.dockerExe = standardExecutableFinder.getExecutable(StandardExecutableType.DOCKER);
         if (context.dockerExe == null) {
-            return new ExecutableNotFoundStrategyResult("docker");
+            if (detectConfiguration.getDockerPathRequired()) {
+                return new ExecutableNotFoundStrategyResult("docker");
+            }
         }
 
         context.dockerInspectorInfo = dockerInspectorManager.getDockerInspector(environment);

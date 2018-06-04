@@ -23,29 +23,61 @@
  */
 package com.blackducksoftware.integration.hub.detect.codelocation;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 
 @Component
 public class BomCodeLocationNameFactory extends CodeLocationNameFactory {
-    public String createCodeLocationName(final String sourcePath, final String projectName, final String projectVersionName, final BomToolType bomToolType, final String prefix, final String suffix) {
-        final String finalSourcePathPiece = detectFileFinder.extractFinalPieceFromPath(sourcePath);
+    private final Logger logger = LoggerFactory.getLogger(BomCodeLocationNameFactory.class);
+
+    public String createCodeLocationName(final String detectSourcePath, final String sourcePath, final ExternalId externalId, final BomToolType bomToolType, final String prefix, final String suffix) {
+        //path piece
+        String relativePiece = sourcePath;
+        try {
+            final Path actualSourcePath = new File(sourcePath).toPath();
+            final Path detectPath = new File(detectSourcePath).toPath();
+            final Path detectParentPath = detectPath.getParent();
+            final Path relativePath = detectParentPath.relativize(actualSourcePath);
+            final List<String> relativePieces = new ArrayList<>();
+            for (int i = 0; i < relativePath.getNameCount(); i++) {
+                relativePieces.add(relativePath.getName(i).toFile().getName());
+            }
+            relativePiece = relativePieces.stream().collect(Collectors.joining("/"));
+        } catch (final Exception e) {
+            logger.info("Unable to relativize path, full source path will be used: " + sourcePath);
+            logger.debug("The reason relativize failed: ", e);
+        }
+        //external id piece
+        final List<String> pieces = Arrays.asList(externalId.getExternalIdPieces());
+        final String externalIdPiece = pieces.stream().collect(Collectors.joining("/"));
+
+        //misc pieces
         final String codeLocationTypeString = CodeLocationType.BOM.toString().toLowerCase();
         final String bomToolTypeString = bomToolType.toString().toLowerCase();
 
-        String codeLocationName = createCommonName(finalSourcePathPiece, projectName, projectVersionName, prefix, suffix, codeLocationTypeString, bomToolTypeString);
+        String codeLocationName = createCommonName(relativePiece, externalIdPiece, prefix, suffix, codeLocationTypeString, bomToolTypeString);
 
         if (codeLocationName.length() > 250) {
-            codeLocationName = shortenCodeLocationName(finalSourcePathPiece, projectName, projectVersionName, prefix, suffix, codeLocationTypeString, bomToolTypeString);
+            codeLocationName = shortenCodeLocationName(relativePiece, externalIdPiece, prefix, suffix, codeLocationTypeString, bomToolTypeString);
         }
 
         return codeLocationName;
     }
 
-    private String createCommonName(final String pathPiece, final String projectName, final String projectVersionName, final String prefix, final String suffix, final String codeLocationType, final String bomToolType) {
-        String name = String.format("%s/%s/%s", pathPiece, projectName, projectVersionName);
+    private String createCommonName(final String pathPiece, final String externalIdPiece, final String prefix, final String suffix, final String codeLocationType, final String bomToolType) {
+        String name = String.format("%s/%s", pathPiece, externalIdPiece);
         if (StringUtils.isNotBlank(prefix)) {
             name = String.format("%s/%s", prefix, name);
         }
@@ -60,14 +92,13 @@ public class BomCodeLocationNameFactory extends CodeLocationNameFactory {
         return name;
     }
 
-    private String shortenCodeLocationName(final String pathPiece, final String projectName, final String projectVersionName, final String prefix, final String suffix, final String codeLocationType, final String bomToolType) {
+    private String shortenCodeLocationName(final String pathPiece, final String externalIdPiece, final String prefix, final String suffix, final String codeLocationType, final String bomToolType) {
         final String shortenedPathPiece = shortenPiece(pathPiece);
-        final String shortenedProjectName = shortenPiece(projectName);
-        final String shortenedProjectVersionName = shortenPiece(projectVersionName);
+        final String shortenedExternalIdPiece = shortenPiece(externalIdPiece);
         final String shortenedPrefix = shortenPiece(prefix);
         final String shortenedSuffix = shortenPiece(suffix);
 
-        return createCommonName(shortenedPathPiece, shortenedProjectName, shortenedProjectVersionName, shortenedPrefix, shortenedSuffix, codeLocationType, bomToolType);
+        return createCommonName(shortenedPathPiece, shortenedExternalIdPiece, shortenedPrefix, shortenedSuffix, codeLocationType, bomToolType);
     }
 
 }

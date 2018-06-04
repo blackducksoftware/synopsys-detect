@@ -32,6 +32,7 @@ import org.springframework.stereotype.Component;
 import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
+import com.blackducksoftware.integration.hub.detect.strategy.StrategySearchOptions;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyException;
 import com.blackducksoftware.integration.hub.detect.strategy.result.ExecutableNotFoundStrategyResult;
@@ -58,7 +59,7 @@ public class GradleInspectorStrategy extends Strategy<GradleInspectorContext, Gr
     public GradleInspectorExtractor gradleInspectorExtractor;
 
     public GradleInspectorStrategy() {
-        super("Gradle Inspector", BomToolType.GRADLE, GradleInspectorContext.class, GradleInspectorExtractor.class);
+        super("Gradle Inspector", BomToolType.GRADLE, GradleInspectorContext.class, GradleInspectorExtractor.class, StrategySearchOptions.defaultNotNested());
     }
 
     @Override

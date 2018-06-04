@@ -41,7 +41,6 @@ import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
-import com.blackducksoftware.integration.hub.detect.help.DetectOption.FinalValueType;
 import com.blackducksoftware.integration.hub.detect.interactive.InteractiveOption;
 import com.blackducksoftware.integration.hub.detect.util.SpringValueUtils;
 
@@ -71,8 +70,8 @@ public class DetectOptionManager {
                 if (field.isAnnotationPresent(Value.class)) {
                     final DetectOption option = processField(detectConfiguration, DetectConfiguration.class, field);
                     if (option != null) {
-                        if (!detectOptionsMap.containsKey(option.key)) {
-                            detectOptionsMap.put(option.key, option);
+                        if (!detectOptionsMap.containsKey(option.getKey())) {
+                            detectOptionsMap.put(option.getKey(), option);
                         }
                     }
                 }
@@ -82,11 +81,11 @@ public class DetectOptionManager {
         }
 
         detectOptions = detectOptionsMap.values().stream()
-                .sorted((o1, o2) -> o1.getHelp().primaryGroup.compareTo(o2.getHelp().primaryGroup))
+                .sorted((o1, o2) -> o1.getDetectOptionHelp().primaryGroup.compareTo(o2.getDetectOptionHelp().primaryGroup))
                 .collect(Collectors.toList());
 
         detectGroups = detectOptions.stream()
-                .map(it -> it.getHelp().primaryGroup)
+                .map(it -> it.getDetectOptionHelp().primaryGroup)
                 .distinct()
                 .sorted()
                 .collect(Collectors.toList());
@@ -97,27 +96,27 @@ public class DetectOptionManager {
             final String fieldValue = getCurrentValue(detectConfiguration, option);
             if (!option.getResolvedValue().equals(fieldValue)) {
                 if (option.getInteractiveValue() != null) {
-                    option.setFinalValue(fieldValue, FinalValueType.INTERACTIVE);
+                    option.setFinalValue(fieldValue, DetectOption.FinalValueType.INTERACTIVE);
                 } else if (option.getResolvedValue().equals("latest")) {
-                    option.setFinalValue(fieldValue, FinalValueType.LATEST);
+                    option.setFinalValue(fieldValue, DetectOption.FinalValueType.LATEST);
                 } else if (option.getResolvedValue().trim().length() == 0) {
-                    option.setFinalValue(fieldValue, FinalValueType.CALCULATED);
+                    option.setFinalValue(fieldValue, DetectOption.FinalValueType.CALCULATED);
                 } else {
-                    option.setFinalValue(fieldValue, FinalValueType.OVERRIDE);
+                    option.setFinalValue(fieldValue, DetectOption.FinalValueType.OVERRIDE);
                 }
             } else {
                 if (fieldValue.equals(option.getDefaultValue())) {
-                    option.setFinalValue(fieldValue, FinalValueType.DEFAULT);
+                    option.setFinalValue(fieldValue, DetectOption.FinalValueType.DEFAULT);
                 } else {
-                    option.setFinalValue(fieldValue, FinalValueType.SUPPLIED);
-                    if (option.getHelp().isDeprecated) {
+                    option.setFinalValue(fieldValue, DetectOption.FinalValueType.SUPPLIED);
+                    if (option.getDetectOptionHelp().isDeprecated) {
                         option.requestDeprecation();
                     }
                 }
             }
 
             if (option.isRequestedDeprecation()) {
-                option.addWarning("As of version " + option.getHelp().deprecationVersion + " this property will be removed: " + option.getHelp().deprecation);
+                option.addWarning("As of version " + option.getDetectOptionHelp().deprecationVersion + " this property will be removed: " + option.getDetectOptionHelp().deprecation);
             }
         }
     }
@@ -156,14 +155,16 @@ public class DetectOptionManager {
             defaultValue = defaultValueAnnotation.value();
         }
 
-        String[] acceptableValues = new String[] {};
+        List<String> acceptableValues = new ArrayList<>();
+        boolean isCommaSeparatedList = false;
         boolean strictAcceptableValue = false;
         boolean caseSensitiveAcceptableValues = false;
         final AcceptableValues acceptableValueAnnotation = field.getAnnotation(AcceptableValues.class);
         if (acceptableValueAnnotation != null) {
-            acceptableValues = acceptableValueAnnotation.value();
+            acceptableValues = Arrays.asList(acceptableValueAnnotation.value());
             strictAcceptableValue = acceptableValueAnnotation.strict();
             caseSensitiveAcceptableValues = acceptableValueAnnotation.caseSensitive();
+            isCommaSeparatedList = acceptableValueAnnotation.isCommaSeparatedList();
         }
 
         final String originalValue = defaultValue;
@@ -180,7 +181,14 @@ public class DetectOptionManager {
 
         final DetectOptionHelp help = processFieldHelp(field);
 
-        return new DetectOption(key, fieldName, originalValue, resolvedValue, valueType, defaultValue, strictAcceptableValue, caseSensitiveAcceptableValues, acceptableValues, help);
+        DetectOption detectOption;
+        if (isCommaSeparatedList) {
+            detectOption = new DetectListOption(key, fieldName, valueType, strictAcceptableValue, caseSensitiveAcceptableValues, acceptableValues, help, originalValue, defaultValue, resolvedValue);
+        } else {
+            detectOption = new DetectSingleOption(key, fieldName, valueType, strictAcceptableValue, caseSensitiveAcceptableValues, acceptableValues, help, originalValue, defaultValue, resolvedValue);
+        }
+
+        return detectOption;
     }
 
     private DetectOptionHelp processFieldHelp(final Field field) {
@@ -200,14 +208,9 @@ public class DetectOptionManager {
             }
         }
 
-        final HelpUseCases useCasesAnnotation = field.getAnnotation(HelpUseCases.class);
-        if (useCasesAnnotation != null) {
-            help.useCases = useCasesAnnotation.value();
-        }
-
-        final HelpIssues issuesAnnotation = field.getAnnotation(HelpIssues.class);
+        final HelpDetailed issuesAnnotation = field.getAnnotation(HelpDetailed.class);
         if (issuesAnnotation != null) {
-            help.issues = issuesAnnotation.value();
+            help.detailedHelp = issuesAnnotation.value();
         }
 
         final ValueDeprecation deprecationAnnotation = field.getAnnotation(ValueDeprecation.class);
@@ -223,8 +226,9 @@ public class DetectOptionManager {
     public List<DetectOption> findUnacceptableValues() throws DetectUserFriendlyException {
         final List<DetectOption> unacceptableDetectOptions = new ArrayList<>();
         for (final DetectOption option : detectOptions) {
-            if (option.strictAcceptableValues) {
-                if (!option.isAcceptableValue(option.resolvedValue)) {
+            if (option.isStrictAcceptableValues()) {
+                DetectOption.OptionValidationResult validationResult = option.isAcceptableValue(option.getResolvedValue());
+                if (!validationResult.isValid()) {
                     unacceptableDetectOptions.add(option);
                 }
             }
@@ -236,7 +240,7 @@ public class DetectOptionManager {
         for (final InteractiveOption interactiveOption : interactiveOptions) {
             for (final DetectOption detectOption : detectOptions) {
                 if (detectOption.getFieldName().equals(interactiveOption.getFieldName())) {
-                    detectOption.interactiveValue = interactiveOption.getInteractiveValue();
+                    detectOption.setInteractiveValue(interactiveOption.getInteractiveValue());
                 }
             }
 

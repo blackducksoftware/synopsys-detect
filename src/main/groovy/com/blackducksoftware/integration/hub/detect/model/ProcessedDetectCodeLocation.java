@@ -21,30 +21,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.strategy;
+package com.blackducksoftware.integration.hub.detect.model;
 
-public class StrategySearchOptions {
-    private int maxDepth = 0;
-    private boolean nestable = false;
+public class ProcessedDetectCodeLocation {
+    public String codeLocationName;
+    public String bdioName;
+    public DetectCodeLocation codeLocation;
 
-    public StrategySearchOptions(final int maxDepth, final boolean nestable) {
-        this.maxDepth = maxDepth;
-        this.nestable = nestable;
-    }
-
-    public static StrategySearchOptions defaultNotNested() {
-        return new StrategySearchOptions(Integer.MAX_VALUE, false);
-    }
-
-    public static StrategySearchOptions defaultNested() {
-        return new StrategySearchOptions(Integer.MAX_VALUE, true);
-    }
-
-    public boolean getNestable() {
-        return nestable;
-    }
-
-    public int getMaxDepth() {
-        return maxDepth;
+    public ProcessedDetectCodeLocation(final DetectCodeLocation codeLocation, final String codeLocationName, final String bdioName) {
+        this.codeLocation = codeLocation;
+        this.codeLocationName = codeLocationName;
+        this.bdioName = bdioName;
     }
 }

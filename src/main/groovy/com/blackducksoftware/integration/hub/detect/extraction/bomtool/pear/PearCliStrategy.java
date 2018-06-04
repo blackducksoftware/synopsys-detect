@@ -33,6 +33,7 @@ import com.blackducksoftware.integration.hub.detect.extraction.StandardExecutabl
 import com.blackducksoftware.integration.hub.detect.extraction.StandardExecutableFinder.StandardExecutableType;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
+import com.blackducksoftware.integration.hub.detect.strategy.StrategySearchOptions;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyException;
 import com.blackducksoftware.integration.hub.detect.strategy.result.ExecutableNotFoundStrategyResult;
@@ -55,7 +56,7 @@ public class PearCliStrategy extends Strategy<PearCliContext, PearCliExtractor> 
     public DetectConfiguration detectConfiguration;
 
     public PearCliStrategy() {
-        super("Pear Cli", BomToolType.PEAR, PearCliContext.class, PearCliExtractor.class);
+        super("Pear Cli", BomToolType.PEAR, PearCliContext.class, PearCliExtractor.class, StrategySearchOptions.defaultNotNested());
     }
 
     @Override

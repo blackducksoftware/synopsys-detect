@@ -28,8 +28,10 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -46,6 +48,7 @@ import org.springframework.core.env.PropertySource;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.api.enumeration.PolicySeverityType;
+import com.blackducksoftware.integration.hub.configuration.HubServerConfigBuilder;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolFinder;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
@@ -53,15 +56,15 @@ import com.blackducksoftware.integration.hub.detect.help.AcceptableValues;
 import com.blackducksoftware.integration.hub.detect.help.DefaultValue;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 import com.blackducksoftware.integration.hub.detect.help.HelpDescription;
+import com.blackducksoftware.integration.hub.detect.help.HelpDetailed;
 import com.blackducksoftware.integration.hub.detect.help.HelpGroup;
-import com.blackducksoftware.integration.hub.detect.help.ValueDeprecation;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver;
-import com.blackducksoftware.integration.hub.proxy.ProxyInfo;
-import com.blackducksoftware.integration.hub.proxy.ProxyInfoBuilder;
-import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnection;
-import com.blackducksoftware.integration.hub.rest.UnauthenticatedRestConnectionBuilder;
 import com.blackducksoftware.integration.log.Slf4jIntLogger;
+import com.blackducksoftware.integration.rest.connection.UnauthenticatedRestConnection;
+import com.blackducksoftware.integration.rest.connection.UnauthenticatedRestConnectionBuilder;
+import com.blackducksoftware.integration.rest.proxy.ProxyInfo;
+import com.blackducksoftware.integration.rest.proxy.ProxyInfoBuilder;
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
 import com.blackducksoftware.integration.util.ResourceUtil;
 
@@ -79,13 +82,14 @@ public class DetectConfiguration {
     public static final String NUGET = "nuget";
     public static final String GRADLE = "gradle";
     public static final String DOCKER = "docker";
-
+    
     private static final String GROUP_HUB_CONFIGURATION = "hub configuration";
     private static final String GROUP_GENERAL = "general";
     private static final String GROUP_LOGGING = "logging";
     private static final String GROUP_CLEANUP = "cleanup";
     private static final String GROUP_PATHS = "paths";
     private static final String GROUP_BOMTOOL = "bomtool";
+    private static final String GROUP_CODELOCATION = "codelocation";
     private static final String GROUP_CONDA = "conda";
     private static final String GROUP_CPAN = "cpan";
     private static final String GROUP_DOCKER = "docker";
@@ -127,6 +131,7 @@ public class DetectConfiguration {
     private List<DetectOption> detectOptions = new ArrayList<>();
 
     private final Set<String> allDetectPropertyKeys = new HashSet<>();
+    private final Set<String> allBlackduckHubPropertyKeys = new HashSet<>();
     private final Set<String> additionalDockerPropertyNames = new HashSet<>();
     private final Set<String> additionalPhoneHomePropertyNames = new HashSet<>();
 
@@ -135,7 +140,6 @@ public class DetectConfiguration {
 
     private ExcludedIncludedFilter bomToolFilter;
     private List<String> bomToolSearchDirectoryExclusions;
-    private final List<String> excludedScanPaths = new ArrayList<>();
 
     public void init(final List<DetectOption> detectOptions) throws DetectUserFriendlyException, IOException, IllegalArgumentException, IllegalAccessException {
         this.detectOptions = detectOptions;
@@ -150,22 +154,9 @@ public class DetectConfiguration {
             sourcePath = System.getProperty("user.dir");
         }
 
-        if (!getCleanupBdioFiles()) {
-            requestDeprecation("cleanupBdioFiles");
-            cleanupDetectFiles = false;
-        }
-        if (!getCleanupBomToolFiles()) {
-            requestDeprecation("cleanupBomToolFiles");
-            cleanupDetectFiles = false;
-        }
-        if (!getGradleCleanupBuildBlackduckDirectory()) {
-            requestDeprecation("gradleCleanupBuildBlackduckDirectory");
-            cleanupDetectFiles = false;
-        }
-
         sourceDirectory = new File(sourcePath);
         if (!sourceDirectory.exists() || !sourceDirectory.isDirectory()) {
-            throw new DetectUserFriendlyException("The source path ${sourcePath} either doesn't exist, isn't a directory, or doesn't have appropriate permissions.", ExitCodeType.FAILURE_GENERAL_ERROR);
+            throw new DetectUserFriendlyException(String.format("The source path %s either doesn't exist, isn't a directory, or doesn't have appropriate permissions.", sourcePath), ExitCodeType.FAILURE_GENERAL_ERROR);
         }
 
         final boolean atLeastOnePolicySeverity = StringUtils.isNotBlank(policyCheckFailOnSeverities);
@@ -181,11 +172,6 @@ public class DetectConfiguration {
             if (allSeverities) {
                 final List<String> allPolicyTypes = Arrays.stream(PolicySeverityType.values()).filter(type -> type != PolicySeverityType.UNSPECIFIED).map(type -> type.toString()).collect(Collectors.toList());
                 policyCheckFailOnSeverities = StringUtils.join(allPolicyTypes, ",");
-            }
-            if (policyCheck) {
-                requestDeprecation("policyCheck");
-            } else {
-                policyCheck = true;
             }
         }
 
@@ -211,8 +197,13 @@ public class DetectConfiguration {
             if (propertySource instanceof EnumerablePropertySource) {
                 final EnumerablePropertySource<?> enumerablePropertySource = (EnumerablePropertySource<?>) propertySource;
                 for (final String propertyName : enumerablePropertySource.getPropertyNames()) {
-                    if (StringUtils.isNotBlank(propertyName) && propertyName.startsWith(DETECT_PROPERTY_PREFIX)) {
-                        allDetectPropertyKeys.add(propertyName);
+                    if (StringUtils.isNotBlank(propertyName)) {
+                        if (propertyName.startsWith(DETECT_PROPERTY_PREFIX)) {
+                            allDetectPropertyKeys.add(propertyName);
+                        }
+                        if (propertyName.startsWith(HubServerConfigBuilder.HUB_SERVER_CONFIG_ENVIRONMENT_VARIABLE_PREFIX) || propertyName.startsWith(HubServerConfigBuilder.HUB_SERVER_CONFIG_PROPERTY_KEY_PREFIX)) {
+                            allBlackduckHubPropertyKeys.add(propertyName);
+                        }
                     }
                 }
             }
@@ -224,11 +215,7 @@ public class DetectConfiguration {
 
         bomToolFilter = new ExcludedIncludedFilter(getExcludedBomToolTypes(), getIncludedBomToolTypes());
 
-        if (hubSignatureScannerRelativePathsToExclude != null && hubSignatureScannerRelativePathsToExclude.length > 0) {
-            for (final String path : hubSignatureScannerRelativePathsToExclude) {
-                excludedScanPaths.add(new File(sourceDirectory, path).getCanonicalPath());
-            }
-        }
+        configureForDocker();
 
         if (StringUtils.isNotBlank(hubSignatureScannerHostUrl) && StringUtils.isNotBlank(hubSignatureScannerOfflineLocalPath)) {
             throw new DetectUserFriendlyException(
@@ -254,7 +241,7 @@ public class DetectConfiguration {
             hubOfflineMode = true;
         }
 
-        //TODO Final home for directories to exclude
+        // TODO Final home for directories to exclude
         bomToolSearchDirectoryExclusions = new ArrayList<>();
         try {
             if (bomToolSearchExclusionDefaults) {
@@ -407,7 +394,7 @@ public class DetectConfiguration {
         final File directory = new File(directoryPath);
         directory.mkdirs();
         if (!directory.exists() || !directory.isDirectory()) {
-            throw new DetectUserFriendlyException(String.format("The directory ${directoryPath} does not exist. %s", failureMessage), ExitCodeType.FAILURE_GENERAL_ERROR);
+            throw new DetectUserFriendlyException(String.format("The directory %s does not exist. %s", directoryPath, failureMessage), ExitCodeType.FAILURE_GENERAL_ERROR);
         }
     }
 
@@ -420,6 +407,18 @@ public class DetectConfiguration {
         restConnectionBuilder.setAlwaysTrustServerCertificate(getHubTrustCertificate());
 
         return restConnectionBuilder.build();
+    }
+
+    public Map<String, String> getBlackduckHubProperties() {
+        final Map<String, String> allBlackduckHubProperties = new HashMap<>();
+        allBlackduckHubPropertyKeys.forEach(key -> {
+            final String value = configurableEnvironment.getProperty(key);
+            if (StringUtils.isNotBlank(value)) {
+                allBlackduckHubProperties.put(key, value);
+            }
+        });
+
+        return allBlackduckHubProperties;
     }
 
     // properties start
@@ -453,13 +452,6 @@ public class DetectConfiguration {
     @HelpGroup(primary = GROUP_CLEANUP)
     @HelpDescription("If true the files created by Detect will be cleaned up.")
     private Boolean cleanupDetectFiles;
-
-    @ValueDeprecation(willRemoveInVersion = "4.0.0", description = "To turn off file cleanup, set --detect.cleanup=false.")
-    @Value("${detect.cleanup.bdio.files:}")
-    @DefaultValue("true")
-    @HelpGroup(primary = GROUP_CLEANUP)
-    @HelpDescription("If true the bdio files will be deleted after upload")
-    private Boolean cleanupBdioFiles;
 
     @Value("${detect.test.connection:}")
     @DefaultValue("false")
@@ -681,18 +673,24 @@ public class DetectConfiguration {
     @AcceptableValues(value = { "EXTERNAL", "SAAS", "INTERNAL", "OPENSOURCE" }, caseSensitive = false, strict = false)
     private String projectVersionDistribution;
 
-    @ValueDeprecation(willRemoveInVersion = "4.0.0", description = "To fail on any policy, set --detect.policy.check.fail.on.severities=ALL.")
-    @Value("${detect.policy.check:}")
+    @Value("${detect.project.version.update:}")
     @DefaultValue("false")
-    @HelpGroup(primary = GROUP_POLICY_CHECK, additional = { SEARCH_GROUP_POLICY })
-    @HelpDescription("Set to true if you would like a policy check from the hub for your project. False by default")
-    private Boolean policyCheck;
+    @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
+    @HelpDescription("If set to true, will update the Project Version with the configured properties. See detailed help for more information.")
+    @HelpDetailed("When set to true, the following properties will be updated on the Project. Project tier (detect.project.tier) and Project Level Adjustments (detect.project.level.adjustments).\r\n The following properties will also be updated on the Version. Version notes (detect.project.version.notes), phase (detect.project.version.phase), distribution (detect.project.version.distribution)")
+    private Boolean projectVersionUpdate;
 
     @Value("${detect.policy.check.fail.on.severities:}")
     @HelpGroup(primary = GROUP_POLICY_CHECK, additional = { SEARCH_GROUP_POLICY })
-    @HelpDescription("A comma-separated list of policy violation severities that will fail detect if checking policies is enabled. If no severity is provided, any policy violation will fail detect.")
+    @HelpDescription("A comma-separated list of policy violation severities that will fail detect. If this is not set, detect will not fail due to policy violations.")
     @AcceptableValues(value = { "ALL", "BLOCKER", "CRITICAL", "MAJOR", "MINOR", "TRIVIAL" }, caseSensitive = false, strict = false)
     private String policyCheckFailOnSeverities;
+
+    @Value("${detect.code.location.combine.same.names:}")
+    @HelpGroup(primary = GROUP_CODELOCATION)
+    @HelpDescription("If set to true, detect will automatically combine code locations with the same name. Otherwise, duplicate names will be appended with their index.")
+    @DefaultValue("false")
+    private Boolean combineCodeLocations;
 
     @Value("${detect.gradle.inspector.version:}")
     @DefaultValue("latest")
@@ -725,12 +723,10 @@ public class DetectConfiguration {
     @HelpDescription("The names of the projects to include")
     private String gradleIncludedProjectNames;
 
-    @ValueDeprecation(willRemoveInVersion = "4.0.0", description = "To turn off file cleanup, set --detect.cleanup=false.")
-    @Value("${detect.gradle.cleanup.build.blackduck.directory:}")
-    @DefaultValue("true")
-    @HelpGroup(primary = GROUP_GRADLE)
-    @HelpDescription("Set this to false if you do not want the 'blackduck' directory in your build directory to be deleted.")
-    private Boolean gradleCleanupBuildBlackduckDirectory;
+    @Value("${detect.nuget.config.path:}")
+    @HelpGroup(primary = GROUP_NUGET)
+    @HelpDescription("The path to the Nuget.Config file to supply to the nuget exe")
+    private String nugetConfigPath;
 
     @Value("${detect.nuget.inspector.name:}")
     @DefaultValue("IntegrationNugetInspector")
@@ -859,6 +855,12 @@ public class DetectConfiguration {
     @HelpDescription("Path of the docker executable")
     private String dockerPath;
 
+    @Value("${detect.docker.path.required:}")
+    @DefaultValue("true")
+    @HelpGroup(primary = GROUP_DOCKER)
+    @HelpDescription("If set to false, detect will attempt to run docker even if it cannot find a docker path.")
+    private Boolean dockerPathRequired;
+
     @Value("${detect.docker.inspector.path:}")
     @HelpGroup(primary = GROUP_DOCKER)
     @HelpDescription("This is used to override using the hosted script by github url. You can provide your own script at this path.")
@@ -892,13 +894,6 @@ public class DetectConfiguration {
     @AcceptableValues(value = { "ALL", "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF" }, caseSensitive = false, strict = true)
     private String loggingLevel;
 
-    @ValueDeprecation(willRemoveInVersion = "4.0.0", description = "To turn off file cleanup, set --detect.cleanup=false.")
-    @Value("${detect.cleanup.bom.tool.files:}")
-    @DefaultValue("true")
-    @HelpGroup(primary = GROUP_CLEANUP, additional = { GROUP_CLEANUP, SEARCH_GROUP_DEBUG })
-    @HelpDescription("Detect creates temporary files in the output directory. If set to true this will clean them up after execution")
-    private Boolean cleanupBomToolFiles;
-
     @Value("${detect.hub.signature.scanner.dry.run:}")
     @DefaultValue("false")
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_SIGNATURE_SCANNER, SEARCH_GROUP_HUB })
@@ -921,10 +916,12 @@ public class DetectConfiguration {
     @HelpDescription("These paths and only these paths will be scanned.")
     private String[] hubSignatureScannerPaths;
 
-    @Value("${detect.hub.signature.scanner.relative.paths.to.exclude:}")
+    @Value("${detect.hub.signature.scanner.exclusion.name.patterns:}")
+    @DefaultValue("node_modules")
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_SIGNATURE_SCANNER, SEARCH_GROUP_HUB })
-    @HelpDescription("The relative paths of directories to be excluded from scan registration")
-    private String[] hubSignatureScannerRelativePathsToExclude;
+    @HelpDescription("Comma separated list of file name patterns to exclude from the signature scan.")
+    @HelpDetailed("Detect will recursively search within the scan targets for files/directories that match these file name patterns and will create the corresponding exclusion patterns for the signature scanner.\r\nThese patterns will be added to the patterns provided by detect.hub.signature.scanner.exclusion.patterns")
+    private String[] hubSignatureScannerExclusionNamePatterns;
 
     @Value("${detect.hub.signature.scanner.memory:}")
     @DefaultValue("4096")
@@ -992,7 +989,7 @@ public class DetectConfiguration {
     private String defaultProjectVersionScheme;
 
     @Value("${detect.default.project.version.text:}")
-    @DefaultValue("Detect Unknown Version")
+    @DefaultValue("Default Detect Version")
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
     @HelpDescription("The text to use as the default project version")
     private String defaultProjectVersionText;
@@ -1005,7 +1002,7 @@ public class DetectConfiguration {
 
     @Value("${detect.bom.aggregate.name:}")
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
-    @HelpDescription("If set, this will aggregate all the BOMs to create a single BDIO file with the name provided. For Co-Pilot use only")
+    @HelpDescription("If set, this will aggregate all the BOMs to create a single BDIO file with the name provided.")
     private String aggregateBomName;
 
     @Value("${detect.risk.report.pdf:}")
@@ -1083,10 +1080,6 @@ public class DetectConfiguration {
     @DefaultValue("false")
     @HelpGroup(primary = GROUP_YARN)
     private String yarnProductionDependenciesOnly;
-
-    public boolean getCleanupBdioFiles() {
-        return BooleanUtils.toBoolean(cleanupBdioFiles);
-    }
 
     public Boolean getCleanupDetectFiles() {
         return BooleanUtils.toBoolean(cleanupDetectFiles);
@@ -1253,12 +1246,16 @@ public class DetectConfiguration {
         return projectVersionDistribution == null ? null : projectVersionDistribution.trim();
     }
 
-    public boolean getPolicyCheck() {
-        return BooleanUtils.toBoolean(policyCheck);
+    public boolean getProjectVersionUpdate() {
+        return BooleanUtils.toBoolean(projectVersionUpdate);
     }
 
     public String getPolicyCheckFailOnSeverities() {
         return policyCheckFailOnSeverities;
+    }
+
+    public boolean getCombineCodeLocations() {
+        return combineCodeLocations;
     }
 
     public String getGradleInspectorVersion() {
@@ -1285,8 +1282,8 @@ public class DetectConfiguration {
         return gradleIncludedProjectNames;
     }
 
-    public boolean getGradleCleanupBuildBlackduckDirectory() {
-        return BooleanUtils.toBoolean(gradleCleanupBuildBlackduckDirectory);
+    public String getNugetConfigPath() {
+        return nugetConfigPath;
     }
 
     public String getNugetInspectorPackageName() {
@@ -1385,6 +1382,10 @@ public class DetectConfiguration {
         return dockerPath;
     }
 
+    public boolean getDockerPathRequired() {
+        return BooleanUtils.toBoolean(dockerPathRequired);
+    }
+
     public String getDockerInspectorPath() {
         return dockerInspectorPath;
     }
@@ -1411,10 +1412,6 @@ public class DetectConfiguration {
 
     public Boolean getFailOnConfigWarning() {
         return BooleanUtils.toBoolean(failOnConfigWarning);
-    }
-
-    public boolean getCleanupBomToolFiles() {
-        return BooleanUtils.toBoolean(cleanupBomToolFiles);
     }
 
     public boolean getSuppressConfigurationOutput() {
@@ -1445,8 +1442,8 @@ public class DetectConfiguration {
         return hubSignatureScannerExclusionPatterns;
     }
 
-    public List<String> getHubSignatureScannerPathsToExclude() {
-        return excludedScanPaths;
+    public String[] getHubSignatureScannerExclusionNamePatterns() {
+        return hubSignatureScannerExclusionNamePatterns;
     }
 
     public String getHubSignatureScannerOfflineLocalPath() {
