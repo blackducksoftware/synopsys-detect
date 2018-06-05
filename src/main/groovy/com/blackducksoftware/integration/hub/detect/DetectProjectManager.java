@@ -322,8 +322,8 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
                 bdioFiles.add(outputFile);
             }
         } else {
-            for (final ProcessedDetectCodeLocation processedDetectCodeLocation : detectProject.getProcessedCodeLocations()) {
-                aggregateDependencyGraph.addGraphAsChildrenToRoot(processedDetectCodeLocation.codeLocation.getDependencyGraph());
+            for (final DetectCodeLocation detectCodeLocation : detectProject.getDetectCodeLocations()) {
+                aggregateDependencyGraph.addGraphAsChildrenToRoot(detectCodeLocation.getDependencyGraph());
             }
             final SimpleBdioDocument aggregateBdioDocument = createAggregateSimpleBdioDocument(detectProject.getProjectName(), detectProject.getProjectVersionName(), aggregateDependencyGraph);
             final String filename = String.format("%s.jsonld", integrationEscapeUtil.escapeForUri(detectConfiguration.getAggregateBomName()));
