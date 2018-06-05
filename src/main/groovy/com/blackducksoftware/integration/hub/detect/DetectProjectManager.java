@@ -59,6 +59,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.search.report.Prepar
 import com.blackducksoftware.integration.hub.detect.bomtool.search.report.SearchSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.codelocation.BomCodeLocationNameFactory;
 import com.blackducksoftware.integration.hub.detect.codelocation.DockerCodeLocationNameFactory;
+import com.blackducksoftware.integration.hub.detect.diagnostic.Profiler;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
@@ -129,13 +130,18 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     @Autowired
     private DockerCodeLocationNameFactory dockerCodeLocationNameFactory;
 
+    @Autowired
+    public Profiler profiler;
+
     private void extract(final List<StrategyEvaluation> results) {
         final List<StrategyEvaluation> extractable = results.stream().filter(result -> result.isExtractable()).collect(Collectors.toList());
 
+        extractionReporter.anyExtractionStarted();
         for (int i = 0; i < extractable.size(); i++) {
             logger.info("Extracting " + Integer.toString(i + 1) + " of " + Integer.toString(extractable.size()) + " (" + Integer.toString((int)Math.floor((i * 100.0f) / extractable.size())) + "%)");
             extract(extractable.get(i));
         }
+        extractionReporter.allExtractionFinished();
     }
 
     private void prepare(final List<StrategyEvaluation> results) {
@@ -157,10 +163,12 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     private void extract(final StrategyEvaluation result) {
         if (result.isExtractable()) {
             extractionReporter.startedExtraction(result.strategy, result.context);
+            profiler.startedExtraction(result.context);
             result.extraction = execute(result.strategy, result.context);
-            extractionReporter.endedExtraction(result.extraction);
+            profiler.endedExtraction(result.context);
+            extractionReporter.endedExtraction(result.strategy, result.context, result.extraction);
         }
-
+        profiler.reportToLog();
     }
 
     public Extraction execute(final Strategy strategy, final ExtractionContext context) {

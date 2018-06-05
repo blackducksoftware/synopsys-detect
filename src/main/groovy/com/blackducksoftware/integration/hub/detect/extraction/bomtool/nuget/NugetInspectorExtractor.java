@@ -54,8 +54,10 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 
 @Component
 public class NugetInspectorExtractor extends Extractor<NugetInspectorContext> {
-    static final String INSPECTOR_OUTPUT_PATTERN = "*_inspection.json";
     private final Logger logger = LoggerFactory.getLogger(NugetInspectorExtractor.class);
+
+    static final String INSPECTOR_OUTPUT_PATTERN = "*_inspection.json";
+
     @Autowired
     public DetectFileManager detectFileManager;
     @Autowired

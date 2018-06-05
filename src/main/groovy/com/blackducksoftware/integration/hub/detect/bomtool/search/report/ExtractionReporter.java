@@ -25,10 +25,13 @@ package com.blackducksoftware.integration.hub.detect.bomtool.search.report;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -41,6 +44,18 @@ import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
 @Component
 public class ExtractionReporter {
     private final Logger logger = LoggerFactory.getLogger(ExtractionReporter.class);
+    public Map<ExtractionContext, StopWatch> stopwatchMap = new HashMap<>();
+
+    private StopWatch totalStopwatch;
+    public void anyExtractionStarted() {
+        totalStopwatch = new StopWatch();
+        totalStopwatch.start();
+    }
+
+    public void allExtractionFinished() {
+        totalStopwatch.stop();
+        logger.info("All extractions finished, total time: " + totalStopwatch.getTime());
+    }
 
     public void startedExtraction(final Strategy strategy, final ExtractionContext context) {
         logger.info(ReportConstants.SEPERATOR);
@@ -51,11 +66,20 @@ public class ExtractionReporter {
         logger.info("Context: " + strategy.getExtractionContextClass().getSimpleName());
         printObject(null, context);
         logger.info(ReportConstants.SEPERATOR);
+
+        final StopWatch sw = new StopWatch();
+        sw.start();
+        stopwatchMap.put(context, sw);
     }
 
-    public void endedExtraction(final Extraction result) {
+    public void endedExtraction(final Strategy strategy, final ExtractionContext context, final Extraction result) {
         logger.info(ReportConstants.SEPERATOR);
+
+        final StopWatch sw = stopwatchMap.get(context);
+        sw.stop();
+
         logger.info("Finished extraction: " + result.result.toString());
+        logger.info("Extraction took: " + sw.getTime());
         logger.info("Code locations found: " + result.codeLocations.size());
         if (result.result == ExtractionResult.Exception) {
             logger.info("Exception:", result.error);
@@ -63,6 +87,8 @@ public class ExtractionReporter {
             logger.info(result.description);
         }
         logger.info(ReportConstants.SEPERATOR);
+
+
     }
 
     private void printObject(final String prefix, final Object guy) {
