@@ -34,19 +34,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.extraction.Extraction.ExtractionResult;
-import com.blackducksoftware.integration.hub.detect.extraction.StrategyEvaluation;
-import com.blackducksoftware.integration.hub.detect.model.DetectProject;
+import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction.ExtractionResultType;
+import com.blackducksoftware.integration.hub.detect.extraction.model.StrategyEvaluation;
+import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 
 @Component
 public class ExtractionSummaryReporter {
     private final Logger logger = LoggerFactory.getLogger(PreparationSummaryReporter.class);
 
-    public void print(final List<StrategyEvaluation> results, final DetectProject project) {
+    public void print(final List<StrategyEvaluation> results, final Map<DetectCodeLocation, String> codeLocationNameMap) {
         final Map<File, List<StrategyEvaluation>> byDirectory = results.stream()
                 .collect(Collectors.groupingBy(item -> item.environment.getDirectory()));
 
-        final List<ExtractionSummaryData> data = createData(byDirectory, project);
+        final List<ExtractionSummaryData> data = createData(byDirectory, codeLocationNameMap);
 
         final List<ExtractionSummaryData> sorted = sortByFilesystem(data);
 
@@ -54,7 +54,7 @@ public class ExtractionSummaryReporter {
 
     }
 
-    private List<ExtractionSummaryData> createData(final Map<File, List<StrategyEvaluation>> byDirectory, final DetectProject project) {
+    private List<ExtractionSummaryData> createData(final Map<File, List<StrategyEvaluation>> byDirectory, final Map<DetectCodeLocation, String> codeLocationNameMap) {
         final List<ExtractionSummaryData> datas = new ArrayList<>();
 
         for (final File file : byDirectory.keySet()) {
@@ -77,14 +77,14 @@ public class ExtractionSummaryReporter {
                     if (result.extraction != null) {
                         data.codeLocationsExtracted += result.extraction.codeLocations.size();
                         result.extraction.codeLocations.stream().forEach(it -> {
-                            final String name = project.getCodeLocationName(it);
+                            final String name = codeLocationNameMap.get(it);
                             data.codeLocationNames.add(name);
                         });
-                        if (result.extraction.result == ExtractionResult.Success) {
+                        if (result.extraction.result == ExtractionResultType.Success) {
                             data.success.add(result);
-                        } else if (result.extraction.result == ExtractionResult.Failure) {
+                        } else if (result.extraction.result == ExtractionResultType.Failure) {
                             data.failed.add(result);
-                        } else if (result.extraction.result == ExtractionResult.Exception) {
+                        } else if (result.extraction.result == ExtractionResultType.Exception) {
                             data.exception.add(result);
                         }
                     } else {

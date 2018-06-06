@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.extraction;
+package com.blackducksoftware.integration.hub.detect.extraction.model;
 
 import java.io.File;
 import java.util.HashMap;

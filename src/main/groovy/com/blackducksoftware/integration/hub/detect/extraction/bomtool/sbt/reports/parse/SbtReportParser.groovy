@@ -23,7 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.sbt.reports.parse
 
-
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.sbt.reports.model.SbtCaller
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.sbt.reports.model.SbtModule
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.sbt.reports.model.SbtReport

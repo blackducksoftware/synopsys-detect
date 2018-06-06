@@ -26,7 +26,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool.search.report;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.blackducksoftware.integration.hub.detect.extraction.StrategyEvaluation;
+import com.blackducksoftware.integration.hub.detect.extraction.model.StrategyEvaluation;
 
 public class ExtractionSummaryData {
     public String directory;

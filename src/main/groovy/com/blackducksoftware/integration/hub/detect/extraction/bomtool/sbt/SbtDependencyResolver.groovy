@@ -23,8 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.sbt
 
-
-
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph
 import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
