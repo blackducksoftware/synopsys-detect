@@ -33,7 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.extraction.StrategyEvaluation;
+import com.blackducksoftware.integration.hub.detect.extraction.model.StrategyEvaluation;
 
 @Component
 public class PreparationSummaryReporter {

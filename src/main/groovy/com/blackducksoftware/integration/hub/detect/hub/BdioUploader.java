@@ -48,7 +48,7 @@ public class BdioUploader {
     private DetectConfiguration detectConfiguration;
 
     public void uploadBdioFiles(final HubServerConfig hubServerConfig, final CodeLocationService codeLocationService, final DetectProject detectProject, final List<File> createdBdioFiles) throws IntegrationException {
-        for (final File file : createdBdioFiles) {
+        for (final File file : detectProject.getBdioFiles()) {
             logger.info(String.format("uploading %s to %s", file.getName(), detectConfiguration.getHubUrl()));
             codeLocationService.importBomFile(file);
             if (detectConfiguration.getCleanupDetectFiles()) {

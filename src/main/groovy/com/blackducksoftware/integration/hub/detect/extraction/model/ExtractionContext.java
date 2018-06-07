@@ -21,16 +21,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.model;
+package com.blackducksoftware.integration.hub.detect.extraction.model;
 
-public class ProcessedDetectCodeLocation {
-    public String codeLocationName;
-    public String bdioName;
-    public DetectCodeLocation codeLocation;
+import java.io.File;
 
-    public ProcessedDetectCodeLocation(final DetectCodeLocation codeLocation, final String codeLocationName, final String bdioName) {
-        this.codeLocation = codeLocation;
-        this.codeLocationName = codeLocationName;
-        this.bdioName = bdioName;
-    }
+public class ExtractionContext {
+    public File directory;
 }

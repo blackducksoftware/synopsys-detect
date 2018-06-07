@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.search;
+package com.blackducksoftware.integration.hub.detect.search;
 
 import java.util.List;
 

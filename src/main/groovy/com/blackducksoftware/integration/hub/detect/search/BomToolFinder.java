@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.search;
+package com.blackducksoftware.integration.hub.detect.search;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,8 +40,8 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
-import com.blackducksoftware.integration.hub.detect.extraction.ExtractionContext;
-import com.blackducksoftware.integration.hub.detect.extraction.StrategyEvaluation;
+import com.blackducksoftware.integration.hub.detect.extraction.model.ExtractionContext;
+import com.blackducksoftware.integration.hub.detect.extraction.model.StrategyEvaluation;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
