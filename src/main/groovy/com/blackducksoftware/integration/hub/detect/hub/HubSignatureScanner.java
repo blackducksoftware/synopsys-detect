@@ -244,6 +244,7 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
         hubScanConfigBuilder.setCleanupLogsOnSuccess(detectConfiguration.getCleanupDetectFiles());
         hubScanConfigBuilder.setDryRun(detectConfiguration.getHubSignatureScannerDryRun());
         hubScanConfigBuilder.setSnippetModeEnabled(detectConfiguration.getHubSignatureScannerSnippetMode());
+        hubScanConfigBuilder.setAdditionalScanParameters(detectConfiguration.getHubSignatureScannerArguments());
 
         final String projectName = detectProject.getProjectName();
         final String projectVersionName = detectProject.getProjectVersion();
