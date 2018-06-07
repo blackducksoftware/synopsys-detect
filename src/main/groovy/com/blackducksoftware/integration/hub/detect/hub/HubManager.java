@@ -80,10 +80,10 @@ public class HubManager implements ExitCodeReporter {
 
     private ExitCodeType exitCodeType = ExitCodeType.SUCCESS;
 
-    public ProjectVersionView updateHubProjectVersion(final DetectProject detectProject, final List<File> createdBdioFiles) throws IntegrationException, DetectUserFriendlyException, InterruptedException {
+    public ProjectVersionView updateHubProjectVersion(final DetectProject detectProject) throws IntegrationException, DetectUserFriendlyException, InterruptedException {
         final ProjectService projectService = hubServiceWrapper.createProjectService();
         ProjectVersionView projectVersionView = ensureProjectVersionExists(detectConfiguration, detectProject, projectService);
-        if (null != createdBdioFiles && !createdBdioFiles.isEmpty()) {
+        if (null != detectProject.getBdioFiles() && !detectProject.getBdioFiles().isEmpty()) {
             final HubServerConfig hubServerConfig = hubServiceWrapper.getHubServerConfig();
             final CodeLocationService codeLocationService = hubServiceWrapper.createCodeLocationService();
             if (detectConfiguration.getProjectCodeLocationUnmap()) {
@@ -98,7 +98,7 @@ public class HubManager implements ExitCodeReporter {
                     throw new DetectUserFriendlyException(String.format("There was a problem unmapping Code Locations: %s", e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
                 }
             }
-            bdioUploader.uploadBdioFiles(hubServerConfig, codeLocationService, detectProject, createdBdioFiles);
+            bdioUploader.uploadBdioFiles(hubServerConfig, codeLocationService, detectProject);
         } else {
             logger.debug("Did not create any bdio files.");
         }

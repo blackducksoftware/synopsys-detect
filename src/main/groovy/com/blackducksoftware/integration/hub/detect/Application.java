@@ -228,7 +228,7 @@ public class Application implements ApplicationRunner {
             logger.info("Project Name: " + detectProject.getProjectName());
             logger.info("Project Version Name: " + detectProject.getProjectVersion());
             if (!detectConfiguration.getHubOfflineMode()) {
-                final ProjectVersionView projectVersionView = hubManager.updateHubProjectVersion(detectProject, detectProject.getBdioFiles());
+                final ProjectVersionView projectVersionView = hubManager.updateHubProjectVersion(detectProject);
                 hubManager.performPostHubActions(detectProject, projectVersionView);
             } else if (!detectConfiguration.getHubSignatureScannerDisabled()) {
                 hubSignatureScanner.scanPathsOffline(detectProject);
