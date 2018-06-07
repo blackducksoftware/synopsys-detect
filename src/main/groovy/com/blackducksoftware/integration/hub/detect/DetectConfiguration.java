@@ -82,7 +82,7 @@ public class DetectConfiguration {
     public static final String NUGET = "nuget";
     public static final String GRADLE = "gradle";
     public static final String DOCKER = "docker";
-    
+
     private static final String GROUP_HUB_CONFIGURATION = "hub configuration";
     private static final String GROUP_GENERAL = "general";
     private static final String GROUP_LOGGING = "logging";
@@ -608,6 +608,11 @@ public class DetectConfiguration {
     @HelpGroup(primary = GROUP_BOMTOOL)
     @HelpDescription("By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.")
     private String includedBomToolTypes;
+
+    @Value("${detect.code.location.name:}")
+    @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
+    @HelpDescription("An override for the name detect will use for the code location it creates. If supplied and multiple code locations are found, detect will append an index to each code location name.")
+    private String codeLocationNameOverride;
 
     @Value("${detect.project.name:}")
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
@@ -1203,6 +1208,10 @@ public class DetectConfiguration {
 
     public String getProjectName() {
         return projectName == null ? null : projectName.trim();
+    }
+
+    public String getCodeLocationNameOverride() {
+        return codeLocationNameOverride == null ? null : codeLocationNameOverride.trim();
     }
 
     public String getProjectDescription() {
