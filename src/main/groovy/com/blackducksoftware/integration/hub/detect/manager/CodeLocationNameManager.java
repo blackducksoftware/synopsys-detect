@@ -36,11 +36,15 @@ public class CodeLocationNameManager {
         }
     }
 
-    public String getNextCodeLocationOverrideName() {
-        final String base = detectConfiguration.getCodeLocationNameOverride();
-        final String codeLocationName = base + " " + Integer.toString(givenCodeLocationOverrideCount);
+    public String getNextCodeLocationOverrideName() { //returns "override", then "override 2", then "override 3", etc
         givenCodeLocationOverrideCount++;
-        return codeLocationName;
+        if (givenCodeLocationOverrideCount == 1) {
+            return detectConfiguration.getCodeLocationNameOverride();
+        } else {
+            final String base = detectConfiguration.getCodeLocationNameOverride();
+            final String codeLocationName = base + " " + Integer.toString(givenCodeLocationOverrideCount);
+            return codeLocationName;
+        }
     }
 
     public String createAggregateCodeLocationName() {
