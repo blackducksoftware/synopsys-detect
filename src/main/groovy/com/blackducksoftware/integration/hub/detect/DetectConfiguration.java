@@ -956,6 +956,11 @@ public class DetectConfiguration {
     @HelpDescription("The number of scans to run in parallel, defaults to 1, but if you specify -1, the number of processors on the machine will be used.")
     private Integer hubSignatureScannerParallelProcessors;
 
+    @Value("${detect.hub.signature.scanner.arguments:}")
+    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_SIGNATURE_SCANNER, SEARCH_GROUP_HUB })
+    @HelpDescription("Additional arguments to use when running the Hub signature scanner.")
+    private String hubSignatureScannerArguments;
+
     @Value("${detect.packagist.include.dev.dependencies:}")
     @DefaultValue("true")
     @HelpGroup(primary = GROUP_PACKAGIST)
@@ -1477,6 +1482,10 @@ public class DetectConfiguration {
 
     public int getHubSignatureScannerParallelProcessors() {
         return convertInt(hubSignatureScannerParallelProcessors);
+    }
+
+    public String getHubSignatureScannerArguments() {
+        return hubSignatureScannerArguments == null ? null : hubSignatureScannerArguments.trim();
     }
 
     public String getPerlPath() {

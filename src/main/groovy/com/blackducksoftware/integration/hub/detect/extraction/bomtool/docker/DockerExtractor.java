@@ -167,17 +167,17 @@ public class DockerExtractor extends Extractor<DockerContext> {
         final Executable dockerExecutable = new Executable(outputDirectory, environmentVariables, bashExe.toString(), dockerArguments);
         executableRunner.execute(dockerExecutable);
 
-        if (StringUtils.isNotBlank(dockerTarFilePath)) {
-            File dockerTarFile = new File(dockerTarFilePath);
-            if (dockerTarFile.isFile()) {
-                hubSignatureScanner.setDockerTarFilePath(dockerTarFile.getCanonicalPath());
-            }
+        File producedTarFile = detectFileFinder.findFile(outputDirectory, TAR_FILENAME_PATTERN);
+        if (null != producedTarFile && producedTarFile.isFile()) {
+            hubSignatureScanner.setDockerTarFilePath(producedTarFile.getCanonicalPath());
         } else {
-            File producedTarFile = detectFileFinder.findFile(outputDirectory, TAR_FILENAME_PATTERN);
-            if (null != producedTarFile && producedTarFile.isFile()) {
-                hubSignatureScanner.setDockerTarFilePath(producedTarFile.getCanonicalPath());
-            } else {
-                logger.debug(String.format("No files found matching pattern [%s]. Expected docker-inspector to produce file in %s", TAR_FILENAME_PATTERN, outputDirectory.getCanonicalPath()));
+            logger.debug(String.format("No files found matching pattern [%s]. Expected docker-inspector to produce file in %s", TAR_FILENAME_PATTERN, outputDirectory.getCanonicalPath()));
+            if (StringUtils.isNotBlank(dockerTarFilePath)) {
+                File dockerTarFile = new File(dockerTarFilePath);
+                if (dockerTarFile.isFile()) {
+                    logger.debug(String.format("Will scan the provided Docker tar file %s", dockerTarFile.getCanonicalPath()));
+                    hubSignatureScanner.setDockerTarFilePath(dockerTarFile.getCanonicalPath());
+                }
             }
         }
 
