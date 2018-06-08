@@ -93,7 +93,7 @@ public class ExtractionManager {
         if (result.isExtractable()) {
             extractionReporter.startedExtraction(result.strategy, result.context);
             result.extraction = execute(result.strategy, result.context);
-            extractionReporter.endedExtraction(result.extraction);
+            extractionReporter.endedExtraction(result.strategy, result.context, result.extraction);
         }
 
     }

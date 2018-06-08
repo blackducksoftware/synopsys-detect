@@ -8,7 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.extraction.ExtractionContext;
+import com.blackducksoftware.integration.hub.detect.extraction.model.ExtractionContext;
+
 
 @Component
 public class Profiler {
