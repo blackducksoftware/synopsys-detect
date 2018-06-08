@@ -26,9 +26,7 @@ package com.blackducksoftware.integration.hub.detect.manager;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -119,8 +117,6 @@ public class DetectBdioManager {
     private SimpleBdioDocument createAggregateSimpleBdioDocument(final String projectName, final String projectVersionName, final DependencyGraph dependencyGraph) {
         final ExternalId projectExternalId = simpleBdioFactory.createNameVersionExternalId(new Forge("/", "/", ""), projectName, projectVersionName);
         String codeLocationName = "";
-        final List<String> pieces = Arrays.asList(projectExternalId.getExternalIdPieces());
-        codeLocationName = pieces.stream().collect(Collectors.joining("/"));
 
         return createSimpleBdioDocument(codeLocationName, projectName, projectVersionName, projectExternalId, dependencyGraph);
     }
