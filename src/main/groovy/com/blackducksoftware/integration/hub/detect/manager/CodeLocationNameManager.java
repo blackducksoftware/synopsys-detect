@@ -43,6 +43,14 @@ public class CodeLocationNameManager {
         return codeLocationName;
     }
 
+    public String createAggregateCodeLocationName() {
+        if (useCodeLocationOverride()) {
+            return getNextCodeLocationOverrideName();
+        } else {
+            return ""; //it is overridden in bdio creation later.
+        }
+    }
+
     public String createCodeLocationName(final DetectCodeLocation detectCodeLocation, final String detectSourcePath, final String projectName, final String projectVersionName,
             final String prefix, final String suffix) {
 
