@@ -49,7 +49,6 @@ import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.api.enumeration.PolicySeverityType;
 import com.blackducksoftware.integration.hub.configuration.HubServerConfigBuilder;
-import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolFinder;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.help.AcceptableValues;
@@ -59,6 +58,7 @@ import com.blackducksoftware.integration.hub.detect.help.HelpDescription;
 import com.blackducksoftware.integration.hub.detect.help.HelpDetailed;
 import com.blackducksoftware.integration.hub.detect.help.HelpGroup;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
+import com.blackducksoftware.integration.hub.detect.search.BomToolFinder;
 import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver;
 import com.blackducksoftware.integration.log.Slf4jIntLogger;
 import com.blackducksoftware.integration.rest.connection.UnauthenticatedRestConnection;
@@ -82,7 +82,7 @@ public class DetectConfiguration {
     public static final String NUGET = "nuget";
     public static final String GRADLE = "gradle";
     public static final String DOCKER = "docker";
-    
+
     private static final String GROUP_HUB_CONFIGURATION = "hub configuration";
     private static final String GROUP_GENERAL = "general";
     private static final String GROUP_LOGGING = "logging";
@@ -951,6 +951,11 @@ public class DetectConfiguration {
     @HelpDescription("The number of scans to run in parallel, defaults to 1, but if you specify -1, the number of processors on the machine will be used.")
     private Integer hubSignatureScannerParallelProcessors;
 
+    @Value("${detect.hub.signature.scanner.arguments:}")
+    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_SIGNATURE_SCANNER, SEARCH_GROUP_HUB })
+    @HelpDescription("Additional arguments to use when running the Hub signature scanner.")
+    private String hubSignatureScannerArguments;
+
     @Value("${detect.packagist.include.dev.dependencies:}")
     @DefaultValue("true")
     @HelpGroup(primary = GROUP_PACKAGIST)
@@ -1468,6 +1473,10 @@ public class DetectConfiguration {
 
     public int getHubSignatureScannerParallelProcessors() {
         return convertInt(hubSignatureScannerParallelProcessors);
+    }
+
+    public String getHubSignatureScannerArguments() {
+        return hubSignatureScannerArguments == null ? null : hubSignatureScannerArguments.trim();
     }
 
     public String getPerlPath() {

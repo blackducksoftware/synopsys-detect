@@ -25,7 +25,7 @@ package com.blackducksoftware.integration.hub.detect.extraction.bomtool.packagis
 
 import java.io.File;
 
-import com.blackducksoftware.integration.hub.detect.extraction.ExtractionContext;
+import com.blackducksoftware.integration.hub.detect.extraction.model.ExtractionContext;
 
 public class ComposerLockContext extends ExtractionContext {
     public File composerJson;

@@ -29,10 +29,10 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.extraction.Extraction;
-import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.packagist.parse.PackagistParseResult;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.packagist.parse.PackagistParser;
+import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
+import com.blackducksoftware.integration.hub.detect.extraction.model.Extractor;
 
 @Component
 public class ComposerLockExtractor extends Extractor<ComposerLockContext> {

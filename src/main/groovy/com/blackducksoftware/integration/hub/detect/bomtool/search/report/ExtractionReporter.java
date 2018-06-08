@@ -36,9 +36,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.extraction.Extraction;
-import com.blackducksoftware.integration.hub.detect.extraction.Extraction.ExtractionResult;
-import com.blackducksoftware.integration.hub.detect.extraction.ExtractionContext;
+import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
+import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction.ExtractionResultType;
+import com.blackducksoftware.integration.hub.detect.extraction.model.ExtractionContext;
 import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
 
 @Component
@@ -81,10 +81,10 @@ public class ExtractionReporter {
         logger.info("Finished extraction: " + result.result.toString());
         logger.info("Extraction took: " + sw.getTime());
         logger.info("Code locations found: " + result.codeLocations.size());
-        if (result.result == ExtractionResult.Exception) {
-            logger.info("Exception:", result.error);
-        } else if (result.result == ExtractionResult.Failure) {
-            logger.info(result.description);
+        if (result.result == ExtractionResultType.Exception) {
+            logger.error("Exception:", result.error);
+        } else if (result.result == ExtractionResultType.Failure) {
+            logger.error(result.description);
         }
         logger.info(ReportConstants.SEPERATOR);
 

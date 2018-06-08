@@ -48,8 +48,8 @@ import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.SimpleBdioDocument;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
-import com.blackducksoftware.integration.hub.detect.extraction.Extraction;
-import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
+import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
+import com.blackducksoftware.integration.hub.detect.extraction.model.Extractor;
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
@@ -167,17 +167,17 @@ public class DockerExtractor extends Extractor<DockerContext> {
         final Executable dockerExecutable = new Executable(outputDirectory, environmentVariables, bashExe.toString(), dockerArguments);
         executableRunner.execute(dockerExecutable);
 
-        if (StringUtils.isNotBlank(dockerTarFilePath)) {
-            File dockerTarFile = new File(dockerTarFilePath);
-            if (dockerTarFile.isFile()) {
-                hubSignatureScanner.setDockerTarFilePath(dockerTarFile.getCanonicalPath());
-            }
+        File producedTarFile = detectFileFinder.findFile(outputDirectory, TAR_FILENAME_PATTERN);
+        if (null != producedTarFile && producedTarFile.isFile()) {
+            hubSignatureScanner.setDockerTarFilePath(producedTarFile.getCanonicalPath());
         } else {
-            File producedTarFile = detectFileFinder.findFile(outputDirectory, TAR_FILENAME_PATTERN);
-            if (null != producedTarFile && producedTarFile.isFile()) {
-                hubSignatureScanner.setDockerTarFilePath(producedTarFile.getCanonicalPath());
-            } else {
-                logger.debug(String.format("No files found matching pattern [%s]. Expected docker-inspector to produce file in %s", TAR_FILENAME_PATTERN, outputDirectory.getCanonicalPath()));
+            logger.debug(String.format("No files found matching pattern [%s]. Expected docker-inspector to produce file in %s", TAR_FILENAME_PATTERN, outputDirectory.getCanonicalPath()));
+            if (StringUtils.isNotBlank(dockerTarFilePath)) {
+                File dockerTarFile = new File(dockerTarFilePath);
+                if (dockerTarFile.isFile()) {
+                    logger.debug(String.format("Will scan the provided Docker tar file %s", dockerTarFile.getCanonicalPath()));
+                    hubSignatureScanner.setDockerTarFilePath(dockerTarFile.getCanonicalPath());
+                }
             }
         }
 

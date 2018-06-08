@@ -21,10 +21,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.extraction;
+package com.blackducksoftware.integration.hub.detect.manager.result.search;
 
-import java.io.File;
+import java.util.List;
 
-public class ExtractionContext {
-    public File directory;
+import com.blackducksoftware.integration.hub.detect.extraction.model.StrategyEvaluation;
+
+public abstract class SearchResult {
+    public SearchResult() {
+    }
+
+    public abstract List<StrategyEvaluation> getStrategyEvaluations();
+
+    public abstract boolean getSuccess();
+
 }

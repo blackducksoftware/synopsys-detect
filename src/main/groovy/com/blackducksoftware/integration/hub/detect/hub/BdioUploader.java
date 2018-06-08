@@ -24,7 +24,6 @@
 package com.blackducksoftware.integration.hub.detect.hub;
 
 import java.io.File;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,8 +46,8 @@ public class BdioUploader {
     @Autowired
     private DetectConfiguration detectConfiguration;
 
-    public void uploadBdioFiles(final HubServerConfig hubServerConfig, final CodeLocationService codeLocationService, final DetectProject detectProject, final List<File> createdBdioFiles) throws IntegrationException {
-        for (final File file : createdBdioFiles) {
+    public void uploadBdioFiles(final HubServerConfig hubServerConfig, final CodeLocationService codeLocationService, final DetectProject detectProject) throws IntegrationException {
+        for (final File file : detectProject.getBdioFiles()) {
             logger.info(String.format("uploading %s to %s", file.getName(), detectConfiguration.getHubUrl()));
             codeLocationService.importBomFile(file);
             if (detectConfiguration.getCleanupDetectFiles()) {

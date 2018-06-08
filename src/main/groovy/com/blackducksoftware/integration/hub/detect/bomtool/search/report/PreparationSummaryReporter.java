@@ -31,18 +31,13 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.diagnostic.DiagnosticsManager;
-import com.blackducksoftware.integration.hub.detect.extraction.StrategyEvaluation;
+import com.blackducksoftware.integration.hub.detect.extraction.model.StrategyEvaluation;
 
 @Component
 public class PreparationSummaryReporter {
     private final Logger logger = LoggerFactory.getLogger(PreparationSummaryReporter.class);
-
-    @Autowired
-    public DiagnosticsManager diagnosticsManager;
 
     public void print(final List<StrategyEvaluation> results) {
         final Map<File, List<StrategyEvaluation>> byDirectory = results.stream()
@@ -92,7 +87,6 @@ public class PreparationSummaryReporter {
 
     private void info(final String line) {
         logger.info(line);
-        diagnosticsManager.printToPreparationReport(line);
     }
 
 }

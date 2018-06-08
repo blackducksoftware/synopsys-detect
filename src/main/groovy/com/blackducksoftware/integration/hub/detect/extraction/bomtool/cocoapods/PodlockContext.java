@@ -25,7 +25,7 @@ package com.blackducksoftware.integration.hub.detect.extraction.bomtool.cocoapod
 
 import java.io.File;
 
-import com.blackducksoftware.integration.hub.detect.extraction.ExtractionContext;
+import com.blackducksoftware.integration.hub.detect.extraction.model.ExtractionContext;
 
 public class PodlockContext extends ExtractionContext {
     public File podlock;

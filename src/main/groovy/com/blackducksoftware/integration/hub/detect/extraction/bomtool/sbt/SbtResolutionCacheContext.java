@@ -23,7 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.sbt;
 
-import com.blackducksoftware.integration.hub.detect.extraction.ExtractionContext;
+import com.blackducksoftware.integration.hub.detect.extraction.model.ExtractionContext;
 
 public class SbtResolutionCacheContext extends ExtractionContext {
 

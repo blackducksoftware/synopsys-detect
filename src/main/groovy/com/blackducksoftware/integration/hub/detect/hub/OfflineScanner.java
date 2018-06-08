@@ -72,7 +72,7 @@ public class OfflineScanner {
         final IntEnvironmentVariables intEnvironmentVariables = new IntEnvironmentVariables();
         intEnvironmentVariables.putAll(System.getenv());
 
-        final SimpleScanUtility simpleScanUtility = new SimpleScanUtility(intLogger, gson, hubServerConfig, intEnvironmentVariables, hubScanConfig, detectProject.getProjectName(), detectProject.getProjectVersionName());
+        final SimpleScanUtility simpleScanUtility = new SimpleScanUtility(intLogger, gson, hubServerConfig, intEnvironmentVariables, hubScanConfig, detectProject.getProjectName(), detectProject.getProjectVersion());
         CLILocation cliLocation = new CLILocation(intLogger, hubScanConfig.getToolsDir());
         if (StringUtils.isNotBlank(hubSignatureScannerOfflineLocalPath)) {
             cliLocation = new OfflineCLILocation(intLogger, new File(hubSignatureScannerOfflineLocalPath));

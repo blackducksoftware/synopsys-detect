@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.extraction;
+package com.blackducksoftware.integration.hub.detect.extraction.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 public class Extraction {
 
     public List<DetectCodeLocation> codeLocations;
-    public ExtractionResult result;
+    public ExtractionResultType result;
     public Exception error;
     public String description;
 
@@ -50,7 +50,7 @@ public class Extraction {
 
     public static class Builder {
         private final List<DetectCodeLocation> codeLocations = new ArrayList<>();
-        private ExtractionResult result;
+        private ExtractionResultType result;
         private Exception error;
         private String description;
 
@@ -86,16 +86,16 @@ public class Extraction {
             return this;
         }
         public Builder success() {
-            this.result = ExtractionResult.Success;
+            this.result = ExtractionResultType.Success;
             return this;
         }
         public Builder failure(final String description) {
-            this.result = ExtractionResult.Failure;
+            this.result = ExtractionResultType.Failure;
             this.description = description;
             return this;
         }
         public Builder exception(final Exception error) {
-            this.result = ExtractionResult.Exception;
+            this.result = ExtractionResultType.Exception;
             this.error = error;
             return this;
         }
@@ -105,7 +105,7 @@ public class Extraction {
 
     }
 
-    public enum ExtractionResult {
+    public enum ExtractionResultType {
         Success,
         Failure,
         Exception
