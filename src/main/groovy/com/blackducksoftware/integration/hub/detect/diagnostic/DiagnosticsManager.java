@@ -23,10 +23,9 @@
  */
 package com.blackducksoftware.integration.hub.detect.diagnostic;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -43,6 +42,12 @@ import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.FileAppender;
+
 @Component
 public class DiagnosticsManager {
     private final Logger logger = LoggerFactory.getLogger(DiagnosticsManager.class);
@@ -52,131 +57,140 @@ public class DiagnosticsManager {
     @Autowired
     private DetectConfiguration detectConfiguration;
 
-    private File logFile;
+    @Autowired
+    private Profiler profiler;
+
+    private File stdOutFile;
+    private FileOutputStream stdOutStream;
+
     //    private File runDirectory;
     private File reportDirectory;
-    private FileOutputStream logOut;
-    private final Map<ReportTypes, BufferedWriter> reportWriters = new HashMap<>();
+    private final Map<ReportTypes, DiagnosticReportWriter> reportWriters = new HashMap<>();
+
+    private static String logFilePath = "log.txt";
+    private static String stdOutFilePath = "out.txt";
 
     enum ReportTypes{
         search,
         extraction,
-        preparation
+        preparation,
+        extractionProfile,
+        codeLocations
     }
 
     public void init() {
 
+        createRunId();
+        setLevel(Level.ALL);
+
         //if (diagnosticMode)
-        reportDirectory = new File(detectConfiguration.getOutputDirectory(), "reports");
+        reportDirectory = new File(detectConfiguration.getOutputDirectory(), "reports-" + runId);
         reportDirectory.mkdir();
 
-        runId = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss.SSS").withZone(ZoneOffset.UTC).format(Instant.now().atZone(ZoneOffset.UTC));
-
         try {
-            logFile = new File(reportDirectory, "log.txt");
-            logOut = new FileOutputStream(logFile);
-            final TeeOutputStream myOut=new TeeOutputStream(System.out, logOut);
+            addAppender(new File(reportDirectory, logFilePath).getCanonicalPath());
+        } catch (final IOException e1) {
+            e1.printStackTrace();
+        }
+
+        captureStdOut();
+        createReports();
+    }
+
+    private void createReports() {
+        for (final ReportTypes reportType : ReportTypes.values()) {
+            createReportWriter(reportType);
+        }
+    }
+
+    private void createRunId() {
+        runId = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss-SSS").withZone(ZoneOffset.UTC).format(Instant.now().atZone(ZoneOffset.UTC));
+    }
+
+    private void captureStdOut() {
+        try {
+            stdOutFile = new File(reportDirectory, stdOutFilePath);
+            stdOutStream = new FileOutputStream(stdOutFile);
+            final TeeOutputStream myOut=new TeeOutputStream(System.out, stdOutStream);
             final PrintStream ps = new PrintStream(myOut, true); //true - auto-flush after println
             System.setOut(ps);
             System.out.println("Diagnostic mode on. Run id " + runId);
-            System.out.println("Writing to log file: " + logFile.getCanonicalPath());
+            System.out.println("Writing to log file: " + stdOutFile.getCanonicalPath());
 
         } catch (final Exception e) {
             e.printStackTrace();
         }
-
-        createReportWriter(ReportTypes.search);
-        createReportWriter(ReportTypes.extraction);
-        createReportWriter(ReportTypes.preparation);
     }
 
-    private void createReportWriter(final ReportTypes type) {
-        final File searchReport = new File(reportDirectory, type.toString() + ".txt");
+    public void setLevel(final Level targetLevel) {
+        logger.info("Attempting to set log level.");
+        final ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+        logger.trace("Is it success?");
+        root.setLevel(Level.ALL);
+        logger.trace("how bout nough?");
+    }
+
+    private void addAppender(final String file) {
+        final LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+        final PatternLayoutEncoder ple = new PatternLayoutEncoder();
+
+        ple.setPattern("%date %level [%thread] %logger{10} [%file:%line] %msg%n");
+        ple.setContext(lc);
+        ple.start();
+        final FileAppender<ILoggingEvent> fileAppender = new FileAppender<>();
+        fileAppender.setFile(file);
+        fileAppender.setEncoder(ple);
+        fileAppender.setContext(lc);
+        fileAppender.start();
+
+        final ch.qos.logback.classic.Logger logbackLogger =
+                (ch.qos.logback.classic.Logger)LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+
+        logbackLogger.addAppender(fileAppender);
+        logbackLogger.setLevel(Level.ALL);
+    }
+
+    private DiagnosticReportWriter createReportWriter(final ReportTypes type) {
         try {
-            final BufferedWriter writer = new BufferedWriter(new FileWriter(searchReport, true));
-            reportWriters.put(type, writer);
-            writer.append(runId);
-            writer.newLine();
-            writer.newLine();
+            final File reportFile = new File(reportDirectory, type.toString() + ".txt");
+            final DiagnosticReportWriter diagnosticReportWriter = new DiagnosticReportWriter(reportFile, type.toString(), runId);
+            reportWriters.put(type, diagnosticReportWriter);
+            return diagnosticReportWriter;
         } catch (final Exception e) {
             e.printStackTrace();
         }
+        return null;
     }
 
-    private void printToReport(final ReportTypes type, final String line) {
+    public DiagnosticReportWriter getReportWriter(final ReportTypes type) {
         if (reportWriters.containsKey(type)) {
-            try {
-                final BufferedWriter writer = reportWriters.get(type);
-                writer.append(line);
-                writer.newLine();
-            } catch (final Exception e) {
-                e.printStackTrace();
-            }
+            return reportWriters.get(type);
+        } else {
+            return createReportWriter(type);
         }
     }
 
-    public void printToSearchReport(final String line) {
-        printToReport(ReportTypes.search, line);
-    }
-
-    public void printToExtractionReport(final String line) {
-        printToReport(ReportTypes.extraction, line);
-    }
-
-    public void printToPreparationReport(final String line) {
-        printToReport(ReportTypes.preparation, line);
-    }
-
-    public void writeNeedReport() {
-
-    }
-
-    public void writeDemandReport() {
-
-    }
-
-    public void writeExtractionReport() {
-
-    }
-
-    public void writeCodeLocationReport() {
-
-    }
-
-    public void createDiagnosticZip() {
-        for (final BufferedWriter writer : reportWriters.values()) {
-            try {
-                writer.flush();
-                writer.close();
-            } catch (final Exception e) {
-                e.printStackTrace();
-            }
+    private void closeReportWriters() {
+        for (final DiagnosticReportWriter writer : reportWriters.values()) {
+            writer.finish();
         }
+    }
+
+    private void closeOut() {
         try {
-            logOut.flush();
-            logOut.close();
+            stdOutStream.flush();
+            stdOutStream.close();
 
-            final File dest = new File(reportDirectory, "log.txt");
+            final File dest = new File(reportDirectory, stdOutFilePath);
 
-            logFile.renameTo(dest);
+            stdOutFile.renameTo(dest);
 
         } catch (final Exception e) {
-            e.printStackTrace();
+            logger.debug("Failed to close out", e);
         }
+    }
 
-        logger.info("Run id: " + runId);
-        try {
-            final File zip = new File(detectConfiguration.getOutputDirectory(), "detect-run-" + runId + ".zip");
-            final ZipOutputStream outputStream = new ZipOutputStream(new FileOutputStream(zip));
-            final File extractions = new File(detectConfiguration.getOutputDirectory(), "extractions");
-            ZipCompress.compress(outputStream, detectConfiguration.getOutputDirectory().toPath(), extractions.toPath(), zip);
-            ZipCompress.compress(outputStream, detectConfiguration.getOutputDirectory().toPath(), reportDirectory.toPath(), zip);
-            logger.info("Diagnostics file created at: " + zip.getCanonicalPath());
-            outputStream.close();
-        } catch (final Exception e) {
-            e.printStackTrace();
-        }
-
+    private void cleanupReportFiles() {
         if (detectConfiguration.getCleanupDetectFiles()) {
             for (final File file : reportDirectory.listFiles()) {
                 try {
@@ -189,4 +203,27 @@ public class DiagnosticsManager {
         }
     }
 
+    public void finish() {
+        profiler.reportToLog();
+
+        closeReportWriters();
+        closeOut();
+        createDiagnosticZip();
+        cleanupReportFiles();
+    }
+
+    private void createDiagnosticZip() {
+        logger.info("Run id: " + runId);
+        try {
+            final File zip = new File(detectConfiguration.getOutputDirectory(), "detect-run-" + runId + ".zip");
+            final ZipOutputStream outputStream = new ZipOutputStream(new FileOutputStream(zip));
+            final File extractions = new File(detectConfiguration.getOutputDirectory(), "extractions");
+            ZipCompress.compress(outputStream, detectConfiguration.getOutputDirectory().toPath(), extractions.toPath(), zip);
+            ZipCompress.compress(outputStream, detectConfiguration.getOutputDirectory().toPath(), reportDirectory.toPath(), zip);
+            logger.info("Diagnostics file created at: " + zip.getCanonicalPath());
+            outputStream.close();
+        } catch (final Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

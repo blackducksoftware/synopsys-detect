@@ -142,7 +142,10 @@ public class Application implements ApplicationRunner {
     private ExitCodeType exitCodeType = ExitCodeType.SUCCESS;
 
     public static void main(final String[] args) {
-        new SpringApplicationBuilder(Application.class).logStartupInfo(false).run(args);
+        final SpringApplicationBuilder builder = new SpringApplicationBuilder(Application.class);
+        builder.logStartupInfo(false);
+        builder.application().setAdditionalProfiles("diagnostic");
+        builder.run(args);
     }
 
     @Override
@@ -257,7 +260,7 @@ public class Application implements ApplicationRunner {
                 detectSummary.logResults(new Slf4jIntLogger(logger), exitCodeType);
             }
 
-            diagnosticsManager.createDiagnosticZip();
+            diagnosticsManager.finish();
 
             detectFileManager.cleanupDirectories();
         }

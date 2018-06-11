@@ -37,6 +37,7 @@ import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.report.ExtractionReporter;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.report.ExtractionSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.report.PreparationSummaryReporter;
+import com.blackducksoftware.integration.hub.detect.diagnostic.Profiler;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.extraction.model.ExtractionContext;
@@ -63,6 +64,9 @@ public class ExtractionManager {
 
     @Autowired
     private ExtractionReporter extractionReporter;
+
+    @Autowired
+    private Profiler profiler;
 
     private void extract(final List<StrategyEvaluation> results) {
         final List<StrategyEvaluation> extractable = results.stream().filter(result -> result.isExtractable()).collect(Collectors.toList());
@@ -92,7 +96,9 @@ public class ExtractionManager {
     private void extract(final StrategyEvaluation result) {
         if (result.isExtractable()) {
             extractionReporter.startedExtraction(result.strategy, result.context);
+            profiler.startedExtraction(result.context);
             result.extraction = execute(result.strategy, result.context);
+            profiler.endedExtraction(result.context);
             extractionReporter.endedExtraction(result.strategy, result.context, result.extraction);
         }
 
