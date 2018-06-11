@@ -243,6 +243,9 @@ public class DetectConfiguration {
 
         // TODO Final home for directories to exclude
         bomToolSearchDirectoryExclusions = new ArrayList<>();
+        for (final String exclusion : bomToolSearchExclusion) {
+            bomToolSearchDirectoryExclusions.add(exclusion);
+        }
         try {
             if (bomToolSearchExclusionDefaults) {
                 final String fileContent = ResourceUtil.getResourceAsString(BomToolFinder.class, "/excludedDirectoriesBomToolSearch.txt", StandardCharsets.UTF_8);
