@@ -51,7 +51,6 @@ public class BomToolFinder {
     private final Logger logger = LoggerFactory.getLogger(BomToolFinder.class);
 
     public List<StrategyEvaluation> findApplicableBomTools(final Set<Strategy> strategies, final File initialDirectory, final BomToolFinderOptions options) throws BomToolException, DetectUserFriendlyException {
-
         final List<File> subDirectories = new ArrayList<>();
         subDirectories.add(initialDirectory);
         final List<Strategy> orderedStrategies = determineOrder(strategies);
