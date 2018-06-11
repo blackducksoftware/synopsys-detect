@@ -34,8 +34,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -58,7 +56,6 @@ import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
 @Component
 public class DetectProjectManager implements SummaryResultReporter, ExitCodeReporter {
-    private final Logger logger = LoggerFactory.getLogger(DetectProjectManager.class);
     private final Map<BomToolType, Result> bomToolSummaryResults = new HashMap<>();
     private ExitCodeType bomToolSearchExitCodeType;
 
@@ -185,7 +182,5 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
 
         return projectVersion;
     }
-
-
 
 }

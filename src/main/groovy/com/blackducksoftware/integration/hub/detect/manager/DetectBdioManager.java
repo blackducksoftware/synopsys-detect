@@ -46,7 +46,6 @@ import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendly
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.model.BdioCodeLocation;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
 
 @Component
@@ -74,7 +73,6 @@ public class DetectBdioManager {
     public List<File> createBdioFiles(final List<BdioCodeLocation> bdioCodeLocations, final String projectName, final String projectVersion) throws DetectUserFriendlyException {
         final List<File> bdioFiles = new ArrayList<>();
         for (final BdioCodeLocation bdioCodeLocation : bdioCodeLocations) {
-
             final SimpleBdioDocument simpleBdioDocument = createSimpleBdioDocument(bdioCodeLocation.codeLocationName, projectName, projectVersion, bdioCodeLocation.codeLocation);
 
             final File outputFile = new File(detectConfiguration.getBdioOutputDirectoryPath(), bdioCodeLocation.bdioName);
