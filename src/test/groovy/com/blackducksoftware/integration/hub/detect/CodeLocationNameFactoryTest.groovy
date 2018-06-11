@@ -17,8 +17,8 @@ import org.junit.Test
 
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.codelocation.BomCodeLocationNameFactory
-import com.blackducksoftware.integration.hub.detect.codelocation.ScanCodeLocationNameFactory
+import com.blackducksoftware.integration.hub.detect.codelocation.BomCodeLocationNameService
+import com.blackducksoftware.integration.hub.detect.codelocation.ScanCodeLocationNameService
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder
 
@@ -28,7 +28,7 @@ class CodeLocationNameFactoryTest {
         String expected = 'hub-common-rest/target/hub-common-rest/2.5.1-SNAPSHOT scan'
 
         DetectFileFinder detectFileManager = [extractFinalPieceFromPath: { 'hub-common-rest' }] as DetectFileFinder
-        ScanCodeLocationNameFactory scanCodeLocationNameFactory = new ScanCodeLocationNameFactory()
+        ScanCodeLocationNameService scanCodeLocationNameFactory = new ScanCodeLocationNameService()
         scanCodeLocationNameFactory.detectFileFinder = detectFileManager
 
         String sourcePath = '/Users/ekerwin/Documents/source/integration/hub-common-rest'
@@ -49,7 +49,7 @@ class CodeLocationNameFactoryTest {
 
         ExternalIdFactory factory = new ExternalIdFactory();
         ExternalId externalId = factory.createMavenExternalId("group", "name", "version");
-        BomCodeLocationNameFactory bomCodeLocationNameFactory = new BomCodeLocationNameFactory()
+        BomCodeLocationNameService bomCodeLocationNameFactory = new BomCodeLocationNameService()
 
         String sourcePath = '/Users/ekerwin/Documents/source/integration/hub-common-rest'
         String codeLocationPath = '/Users/ekerwin/Documents/source/integration/hub-common-rest/child'
@@ -68,7 +68,7 @@ class CodeLocationNameFactoryTest {
 
         ExternalIdFactory factory = new ExternalIdFactory();
         ExternalId externalId = factory.createMavenExternalId("group", "name", "version");
-        BomCodeLocationNameFactory bomCodeLocationNameFactory = new BomCodeLocationNameFactory()
+        BomCodeLocationNameService bomCodeLocationNameFactory = new BomCodeLocationNameService()
 
         String sourcePath = '/Users/ekerwin/Documents/source/integration/hub-common-rest'
         String codeLocationPath = '/Users/ekerwin/Documents/source/integration/hub-common-rest/hub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-rest'

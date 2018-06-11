@@ -64,6 +64,12 @@ public class DetectBdioManager {
     @Autowired
     private IntegrationEscapeUtil integrationEscapeUtil;
 
+    @Autowired
+    private DetectFileFinder detectFileFinder;
+
+    @Autowired
+    private CodeLocationNameManager codeLocationNameManager;
+
     public List<File> createBdioFiles(final List<BdioCodeLocation> bdioCodeLocations, final String projectName, final String projectVersion) throws DetectUserFriendlyException {
         final List<File> bdioFiles = new ArrayList<>();
         for (final BdioCodeLocation bdioCodeLocation : bdioCodeLocations) {
@@ -111,8 +117,7 @@ public class DetectBdioManager {
 
     private SimpleBdioDocument createAggregateSimpleBdioDocument(final String projectName, final String projectVersionName, final DependencyGraph dependencyGraph) {
         final ExternalId projectExternalId = simpleBdioFactory.createNameVersionExternalId(new Forge("/", "/", ""), projectName, projectVersionName);
-        final String codeLocationName = "";
-
+        final String codeLocationName = codeLocationNameManager.createAggregateCodeLocationName();
         return createSimpleBdioDocument(codeLocationName, projectName, projectVersionName, projectExternalId, dependencyGraph);
     }
 

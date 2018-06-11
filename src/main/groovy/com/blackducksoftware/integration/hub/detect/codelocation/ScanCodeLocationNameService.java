@@ -27,7 +27,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ScanCodeLocationNameFactory extends CodeLocationNameFactory {
+public class ScanCodeLocationNameService extends CodeLocationNameService {
     public String createCodeLocationName(final String sourcePath, final String scanTargetPath, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
         final String cleanedTargetPath = cleanScanTargetPath(scanTargetPath, sourcePath);
         final String codeLocationTypeString = CodeLocationType.SCAN.toString().toLowerCase();
