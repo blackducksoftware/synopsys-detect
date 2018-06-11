@@ -27,7 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
-public abstract class CodeLocationNameFactory {
+public abstract class CodeLocationNameService {
     @Autowired
     protected DetectFileFinder detectFileFinder;
 

@@ -49,10 +49,10 @@ import com.blackducksoftware.integration.hub.configuration.HubScanConfig;
 import com.blackducksoftware.integration.hub.configuration.HubScanConfigBuilder;
 import com.blackducksoftware.integration.hub.configuration.HubServerConfig;
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.codelocation.ScanCodeLocationNameFactory;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
+import com.blackducksoftware.integration.hub.detect.manager.CodeLocationNameManager;
 import com.blackducksoftware.integration.hub.detect.model.DetectProject;
 import com.blackducksoftware.integration.hub.detect.summary.Result;
 import com.blackducksoftware.integration.hub.detect.summary.ScanSummaryResult;
@@ -84,7 +84,7 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
     private OfflineScanner offlineScanner;
 
     @Autowired
-    private ScanCodeLocationNameFactory scanCodeLocationNameFactory;
+    public CodeLocationNameManager codeLocationNameManager;
 
     public ProjectVersionView scanPaths(final HubServerConfig hubServerConfig, final SignatureScannerService signatureScannerService, final DetectProject detectProject)
             throws IntegrationException, DetectUserFriendlyException, InterruptedException {
@@ -251,7 +251,7 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
         final String sourcePath = detectConfiguration.getSourcePath();
         final String prefix = detectConfiguration.getProjectCodeLocationPrefix();
         final String suffix = detectConfiguration.getProjectCodeLocationSuffix();
-        final String codeLocationName = scanCodeLocationNameFactory.createCodeLocationName(sourcePath, canonicalPath, projectName, projectVersionName, prefix, suffix);
+        final String codeLocationName = codeLocationNameManager.createScanCodeLocationName(sourcePath, canonicalPath, projectName, projectVersionName, prefix, suffix);
         hubScanConfigBuilder.setCodeLocationAlias(codeLocationName);
 
         if (null != exclusionPatterns && !exclusionPatterns.isEmpty()) {

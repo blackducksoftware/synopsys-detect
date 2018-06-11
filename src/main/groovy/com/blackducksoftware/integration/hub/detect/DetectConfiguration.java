@@ -609,6 +609,11 @@ public class DetectConfiguration {
     @HelpDescription("By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.")
     private String includedBomToolTypes;
 
+    @Value("${detect.code.location.name:}")
+    @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
+    @HelpDescription("An override for the name detect will use for the code location it creates. If supplied and multiple code locations are found, detect will append an index to each code location name.")
+    private String codeLocationNameOverride;
+
     @Value("${detect.project.name:}")
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
     @HelpDescription("An override for the name to use for the Hub project. If not supplied, detect will attempt to use the tools to figure out a reasonable project name. If that fails, the final part of the directory path where the inspection is taking place will be used.")
@@ -1208,6 +1213,10 @@ public class DetectConfiguration {
 
     public String getProjectName() {
         return projectName == null ? null : projectName.trim();
+    }
+
+    public String getCodeLocationNameOverride() {
+        return codeLocationNameOverride == null ? null : codeLocationNameOverride.trim();
     }
 
     public String getProjectDescription() {
