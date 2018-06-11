@@ -46,6 +46,7 @@ import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendly
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.model.BdioCodeLocation;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
 
 @Component
