@@ -5,8 +5,8 @@ import com.blackducksoftware.integration.util.NameVersion;
 
 public class BomToolProjectInfo {
     private final BomToolType bomToolType;
-    private final NameVersion nameVersion;
     private final int depth;
+    private final NameVersion nameVersion;
 
     public BomToolProjectInfo(final BomToolType bomToolType, final int depth, final NameVersion nameVersion) {
         this.bomToolType = bomToolType;
@@ -17,11 +17,11 @@ public class BomToolProjectInfo {
     public BomToolType getBomToolType() {
         return bomToolType;
     }
-    public NameVersion getNameVersion() {
-        return nameVersion;
-    }
     public int getDepth() {
         return depth;
+    }
+    public NameVersion getNameVersion() {
+        return nameVersion;
     }
 
 }
