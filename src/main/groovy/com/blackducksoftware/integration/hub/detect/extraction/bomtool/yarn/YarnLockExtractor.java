@@ -23,13 +23,10 @@
  */
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.yarn;
 
-import java.io.File;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +39,6 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.yarn.parse.YarnListParser;
-import com.blackducksoftware.integration.hub.detect.extraction.bomtool.yarn.parse.YarnLockParser;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extractor;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
@@ -51,7 +47,6 @@ import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
 @Component
 public class YarnLockExtractor extends Extractor<YarnLockContext> {
@@ -66,9 +61,6 @@ public class YarnLockExtractor extends Extractor<YarnLockContext> {
     DetectConfiguration detectConfiguration;
 
     @Autowired
-    YarnLockParser yarnLockParser;
-
-    @Autowired
     YarnListParser yarnListParser;
 
     @Autowired
@@ -81,21 +73,21 @@ public class YarnLockExtractor extends Extractor<YarnLockContext> {
     public Extraction extract(final YarnLockContext context) {
         try {
             final List<String> yarnLockText = Files.readAllLines(context.yarnlock.toPath(), StandardCharsets.UTF_8);
+            final List<String> exeArgs = Arrays.asList("list", "--emoji", "false");
 
-            DependencyGraph dependencyGraph;
             if (detectConfiguration.getYarnProductionDependenciesOnly()) {
-                final List<String> exeArgs = Arrays.asList("list", "--prod");
-
-                final Executable yarnListExe = new Executable(context.directory, context.yarnExe, exeArgs);
-                ExecutableOutput executableOutput = executableRunner.execute(yarnListExe);
-                if(executableOutput.getReturnCode() != 0) {
-                    final Extraction.Builder builder = new Extraction.Builder().failure(String.format("Executing command '%s' returned a non-zero exit code %s", String.join(" ", exeArgs), executableOutput.getReturnCode()));
-                    return builder.build();
-                }
-                dependencyGraph = yarnListParser.parseYarnList(yarnLockText, executableOutput.getStandardOutputAsList());
-            } else {
-                dependencyGraph = yarnLockParser.parseYarnLock(yarnLockText);
+                exeArgs.add("--prod");
             }
+
+            final Executable yarnListExe = new Executable(context.directory, context.yarnExe, exeArgs);
+            final ExecutableOutput executableOutput = executableRunner.execute(yarnListExe);
+
+            if (executableOutput.getReturnCode() != 0) {
+                final Extraction.Builder builder = new Extraction.Builder().failure(String.format("Executing command '%s' returned a non-zero exit code %s", String.join(" ", exeArgs), executableOutput.getReturnCode()));
+                return builder.build();
+            }
+
+            final DependencyGraph dependencyGraph = yarnListParser.parseYarnList(yarnLockText, executableOutput.getStandardOutputAsList());
 
             final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.NPM, context.directory.getCanonicalPath());
             final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolType.YARN, context.directory.getCanonicalPath(), externalId, dependencyGraph).build();
