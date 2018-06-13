@@ -581,7 +581,6 @@ public class DetectConfiguration {
     private Integer searchDepth;
 
     @Value("${detect.project.bom.tool:}")
-    @DefaultValue("")
     @HelpGroup(primary = GROUP_PATHS, additional = {GROUP_BOMTOOL, SEARCH_GROUP_SEARCH})
     @HelpDescription("The bom tool to choose when multiple bom tool types are found and one needs to be chosen for project name and version.")
     private String detectProjectBomTool;
