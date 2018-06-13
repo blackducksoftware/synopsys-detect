@@ -31,9 +31,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -43,6 +47,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.search.report.Extrac
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
+import com.blackducksoftware.integration.hub.detect.extraction.model.StrategyEvaluation;
 import com.blackducksoftware.integration.hub.detect.manager.result.codelocation.DetectCodeLocationResult;
 import com.blackducksoftware.integration.hub.detect.manager.result.extraction.ExtractionResult;
 import com.blackducksoftware.integration.hub.detect.manager.result.search.SearchResult;
@@ -53,9 +58,12 @@ import com.blackducksoftware.integration.hub.detect.summary.BomToolSummaryResult
 import com.blackducksoftware.integration.hub.detect.summary.Result;
 import com.blackducksoftware.integration.hub.detect.summary.SummaryResultReporter;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
+import com.blackducksoftware.integration.util.NameVersion;
 
 @Component
 public class DetectProjectManager implements SummaryResultReporter, ExitCodeReporter {
+    private final Logger logger = LoggerFactory.getLogger(DetectProjectManager.class);
+
     private final Map<BomToolType, Result> bomToolSummaryResults = new HashMap<>();
     private ExitCodeType bomToolSearchExitCodeType;
 
@@ -87,8 +95,9 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         final ExtractionResult extractionResult = extractionManager.performExtractions(searchResult.getStrategyEvaluations());
         applyBomToolStatus(extractionResult.getSuccessfulBomToolTypes(), extractionResult.getFailedBomToolTypes());
 
-        final String projectName = getProjectName(extractionResult.getRecommendedProjectName());
-        final String projectVersion = getProjectVersionName(extractionResult.getRecommendedProjectVersion());
+        final NameVersion nameVersion = findProjectNameAndVersion(searchResult.getStrategyEvaluations());
+        final String projectName = nameVersion.getName();
+        final String projectVersion = nameVersion.getVersion();
 
         final List<DetectCodeLocation> codeLocations = extractionResult.getDetectCodeLocations();
 
@@ -109,6 +118,52 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         final DetectProject project = new DetectProject(projectName, projectVersion, bdioFiles);
 
         return project;
+    }
+
+    NameVersion findProjectNameAndVersion(final List<StrategyEvaluation> strategyEvaluations) {
+        final NameVersion nameVersion;
+
+        if (StringUtils.isBlank(detectConfiguration.getProjectName())){
+            final Optional<NameVersion> bomToolProjectInfo = findBomToolProjectNameAndVersion(strategyEvaluations);
+            if (bomToolProjectInfo.isPresent()) {
+                nameVersion = bomToolProjectInfo.get();
+            } else {
+                logger.info("A project name could not be decided. Using the name of the source path.");
+                final String projectName = getProjectName(detectConfiguration.getSourceDirectory().getName());
+                final String projectVersion = getProjectVersionName(null);
+                nameVersion = new NameVersion(projectName, projectVersion);
+            }
+        } else {
+            nameVersion = new NameVersion(getProjectName(null), getProjectVersionName(null));
+        }
+
+        return nameVersion;
+    }
+
+    Optional<NameVersion> findBomToolProjectNameAndVersion(final List<StrategyEvaluation> strategyEvaluations) {
+        final String projectBomTool = detectConfiguration.getDetectProjectBomTool();
+        Optional<BomToolType> preferredBomToolType = Optional.empty();
+        try {
+            preferredBomToolType = Optional.of(BomToolType.valueOf(projectBomTool));
+        } catch (final Exception e) {
+            logger.info("No preferred bom tool type was provided, deciding project name automatically.");
+        }
+
+        final List<BomToolProjectInfo> allBomToolProjectInfo = createBomToolProjectInfo(strategyEvaluations);
+        final BomToolProjectInfoDecider decider = new BomToolProjectInfoDecider();
+        return decider.decideProjectName(allBomToolProjectInfo, preferredBomToolType);
+    }
+
+    private List<BomToolProjectInfo> createBomToolProjectInfo(final List<StrategyEvaluation> strategyEvaluations) {
+        return strategyEvaluations.stream()
+                .filter(it -> it.isExtractionSuccess())
+                .filter(it -> it.extraction.projectName != null)
+                .map(it -> {
+                    final NameVersion nameVersion = new NameVersion(it.extraction.projectName, it.extraction.projectVersion);
+                    final BomToolProjectInfo possibility = new BomToolProjectInfo(it.strategy.getBomToolType(), it.environment.getDepth(), nameVersion);
+                    return possibility;
+                })
+                .collect(Collectors.toList());
     }
 
     private void applyFailedBomToolStatus(final Set<BomToolType> failedBomToolTypes) {
