@@ -8,6 +8,9 @@ import com.blackducksoftware.integration.util.NameVersion;
 
 public abstract class ProjectInfoResult {
     public abstract Optional<NameVersion> getChosenNameVersion();
-    public abstract boolean didChoose();
     public abstract void printDescription(final Logger logger);
+
+    public boolean didChoose() {
+        return getChosenNameVersion().isPresent();
+    }
 }

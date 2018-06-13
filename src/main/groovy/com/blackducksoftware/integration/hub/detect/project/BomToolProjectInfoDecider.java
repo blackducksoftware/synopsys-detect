@@ -10,12 +10,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
-import com.blackducksoftware.integration.hub.detect.project.result.ArbitratyMultipleProjectInfoResult;
-import com.blackducksoftware.integration.hub.detect.project.result.NoUniqueProjectInfoResult;
-import com.blackducksoftware.integration.hub.detect.project.result.OneUniqueProjectInfoResult;
-import com.blackducksoftware.integration.hub.detect.project.result.PreferredMultipleProjectInfoResult;
-import com.blackducksoftware.integration.hub.detect.project.result.PreferredNotFoundProjectInfoResult;
-import com.blackducksoftware.integration.hub.detect.project.result.PreferredProjectInfoResult;
+import com.blackducksoftware.integration.hub.detect.project.result.ArbitrarilyChosenProjectInfoResult;
+import com.blackducksoftware.integration.hub.detect.project.result.NoUniqueUnchosenProjectInfoResult;
+import com.blackducksoftware.integration.hub.detect.project.result.OneUniqueChosenProjectInfoResult;
+import com.blackducksoftware.integration.hub.detect.project.result.PreferredMultipleUnchosenProjectInfoResult;
+import com.blackducksoftware.integration.hub.detect.project.result.PreferredNotFoundUnchosenProjectInfoResult;
+import com.blackducksoftware.integration.hub.detect.project.result.PreferredSingleChosenProjectInfoResult;
 import com.blackducksoftware.integration.hub.detect.project.result.ProjectInfoResult;
 import com.blackducksoftware.integration.util.NameVersion;
 
@@ -42,11 +42,11 @@ public class BomToolProjectInfoDecider {
             final List<BomToolProjectInfo> lowestDepthPossibilities = projectNamesAtLowestDepth(possiblePreferred);
 
             if (lowestDepthPossibilities.size() == 0) {
-                return new PreferredNotFoundProjectInfoResult(preferredBomToolType.get());
+                return new PreferredNotFoundUnchosenProjectInfoResult(preferredBomToolType.get());
             } else if (lowestDepthPossibilities.size() == 1) {
-                return new PreferredProjectInfoResult(lowestDepthPossibilities.get(0));
+                return new PreferredSingleChosenProjectInfoResult(lowestDepthPossibilities.get(0));
             } else {
-                return new PreferredMultipleProjectInfoResult(preferredBomToolType.get());
+                return new PreferredMultipleUnchosenProjectInfoResult(preferredBomToolType.get());
             }
         } else {
             final List<BomToolProjectInfo> lowestDepthPossibilities = projectNamesAtLowestDepth(projectNamePossibilities);
@@ -62,11 +62,11 @@ public class BomToolProjectInfoDecider {
             if (singleInstanceLowestDepthBomTools.size() == 1) {
                 final BomToolType type = singleInstanceLowestDepthBomTools.get(0);
                 final BomToolProjectInfo chosen = lowestDepthPossibilities.stream().filter(it -> it.getBomToolType() == type).findFirst().get();
-                return new OneUniqueProjectInfoResult(chosen);
+                return new OneUniqueChosenProjectInfoResult(chosen);
             } else if (singleInstanceLowestDepthBomTools.size() > 1) {
                 return arbitrarilyDecide(lowestDepthPossibilities, singleInstanceLowestDepthBomTools);
             } else {
-                return new NoUniqueProjectInfoResult();
+                return new NoUniqueUnchosenProjectInfoResult();
             }
         }
 
@@ -82,9 +82,9 @@ public class BomToolProjectInfoDecider {
                 .findFirst();
 
         if (chosen.isPresent()) {
-            return new ArbitratyMultipleProjectInfoResult(chosen.get(), arbitraryOptions);
+            return new ArbitrarilyChosenProjectInfoResult(chosen.get(), arbitraryOptions);
         } else {
-            return new NoUniqueProjectInfoResult();
+            return new NoUniqueUnchosenProjectInfoResult();
         }
     }
 

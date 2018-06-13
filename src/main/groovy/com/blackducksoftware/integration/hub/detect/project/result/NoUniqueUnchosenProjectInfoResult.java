@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 
 import com.blackducksoftware.integration.util.NameVersion;
 
-public class NoUniqueProjectInfoResult extends ProjectInfoResult {
+public class NoUniqueUnchosenProjectInfoResult extends ProjectInfoResult {
 
     @Override
     public Optional<NameVersion> getChosenNameVersion() {

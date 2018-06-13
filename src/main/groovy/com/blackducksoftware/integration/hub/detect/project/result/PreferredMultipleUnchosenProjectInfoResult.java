@@ -7,10 +7,10 @@ import org.slf4j.Logger;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.util.NameVersion;
 
-public class PreferredMultipleProjectInfoResult extends ProjectInfoResult {
+public class PreferredMultipleUnchosenProjectInfoResult extends ProjectInfoResult {
     private final BomToolType bomToolType;
 
-    public PreferredMultipleProjectInfoResult(final BomToolType bomToolType) {
+    public PreferredMultipleUnchosenProjectInfoResult(final BomToolType bomToolType) {
         this.bomToolType = bomToolType;
     }
 

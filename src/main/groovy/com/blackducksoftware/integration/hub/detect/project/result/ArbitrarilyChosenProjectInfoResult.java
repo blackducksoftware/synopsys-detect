@@ -8,12 +8,12 @@ import org.slf4j.Logger;
 import com.blackducksoftware.integration.hub.detect.project.BomToolProjectInfo;
 import com.blackducksoftware.integration.util.NameVersion;
 
-public class ArbitratyMultipleProjectInfoResult extends ProjectInfoResult {
+public class ArbitrarilyChosenProjectInfoResult extends ProjectInfoResult {
 
     private final BomToolProjectInfo chosenBomTool;
     private final List<BomToolProjectInfo> otherBomTools;
 
-    public ArbitratyMultipleProjectInfoResult(final BomToolProjectInfo chosenBomTool, final List<BomToolProjectInfo> otherBomTools) {
+    public ArbitrarilyChosenProjectInfoResult(final BomToolProjectInfo chosenBomTool, final List<BomToolProjectInfo> otherBomTools) {
         this.chosenBomTool = chosenBomTool;
         this.otherBomTools = otherBomTools;
     }

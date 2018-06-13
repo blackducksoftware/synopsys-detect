@@ -7,10 +7,10 @@ import org.slf4j.Logger;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.util.NameVersion;
 
-public class PreferredNotFoundProjectInfoResult extends ProjectInfoResult {
+public class PreferredNotFoundUnchosenProjectInfoResult extends ProjectInfoResult {
     private final BomToolType bomToolType;
 
-    public PreferredNotFoundProjectInfoResult(final BomToolType bomToolType) {
+    public PreferredNotFoundUnchosenProjectInfoResult(final BomToolType bomToolType) {
         this.bomToolType = bomToolType;
     }
 
