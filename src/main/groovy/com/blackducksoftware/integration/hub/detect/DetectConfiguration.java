@@ -116,6 +116,7 @@ public class DetectConfiguration {
     private static final String SEARCH_GROUP_OFFLINE = "offline";
     private static final String SEARCH_GROUP_PROJECT = "project";
     private static final String SEARCH_GROUP_DEBUG = "debug";
+    private static final String SEARCH_GROUP_SEARCH = "search";
 
     public static final String PRINT_GROUP_DEFAULT = SEARCH_GROUP_HUB;
 
@@ -243,6 +244,9 @@ public class DetectConfiguration {
 
         // TODO Final home for directories to exclude
         bomToolSearchDirectoryExclusions = new ArrayList<>();
+        for (final String exclusion : bomToolSearchExclusion) {
+            bomToolSearchDirectoryExclusions.add(exclusion);
+        }
         try {
             if (bomToolSearchExclusionDefaults) {
                 final String fileContent = ResourceUtil.getResourceAsString(BomToolFinder.class, "/excludedDirectoriesBomToolSearch.txt", StandardCharsets.UTF_8);
@@ -578,36 +582,41 @@ public class DetectConfiguration {
 
     @Value("${detect.bom.tool.search.depth:}")
     @DefaultValue("0")
-    @HelpGroup(primary = GROUP_PATHS)
+    @HelpGroup(primary = GROUP_PATHS, additional = {GROUP_BOMTOOL, SEARCH_GROUP_SEARCH})
     @HelpDescription("Depth from source paths to search for files to determine if a bom tool applies.")
     private Integer bomToolSearchDepth;
 
     @Value("${detect.bom.tool.search.continue:}")
     @DefaultValue("false")
-    @HelpGroup(primary = GROUP_PATHS)
+    @HelpGroup(primary = GROUP_PATHS, additional = {GROUP_BOMTOOL, SEARCH_GROUP_SEARCH})
     @HelpDescription("If true, the bom tool search will continue to look for bom tools to the maximum search depth, even if they applied earlier in the path.")
     private Boolean bomToolContinueSearch;
 
     @Value("${detect.bom.tool.search.exclusion:}")
-    @HelpGroup(primary = GROUP_PATHS)
+    @HelpGroup(primary = GROUP_PATHS, additional = {GROUP_BOMTOOL, SEARCH_GROUP_SEARCH})
     @HelpDescription("A comma-separated list of directory names to exclude from the bom tool search.")
     private String[] bomToolSearchExclusion;
 
     @Value("${detect.bom.tool.search.exclusion.defaults:}")
     @DefaultValue("true")
-    @HelpGroup(primary = GROUP_PATHS)
+    @HelpGroup(primary = GROUP_PATHS, additional = {GROUP_BOMTOOL, SEARCH_GROUP_SEARCH})
     @HelpDescription("If true, the bom tool search will exclude the default directory names.")
     private Boolean bomToolSearchExclusionDefaults;
 
     @Value("${detect.excluded.bom.tool.types:}")
-    @HelpGroup(primary = GROUP_BOMTOOL)
+    @HelpGroup(primary = GROUP_BOMTOOL, additional = {SEARCH_GROUP_SEARCH})
     @HelpDescription("By default, all tools will be included. If you want to exclude specific tools, specify the ones to exclude here. Exclusion rules always win.")
     private String excludedBomToolTypes;
 
     @Value("${detect.included.bom.tool.types:}")
-    @HelpGroup(primary = GROUP_BOMTOOL)
+    @HelpGroup(primary = GROUP_BOMTOOL, additional = {SEARCH_GROUP_SEARCH})
     @HelpDescription("By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.")
     private String includedBomToolTypes;
+
+    @Value("${detect.code.location.name:}")
+    @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
+    @HelpDescription("An override for the name detect will use for the code location it creates. If supplied and multiple code locations are found, detect will append an index to each code location name.")
+    private String codeLocationNameOverride;
 
     @Value("${detect.project.name:}")
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
@@ -1208,6 +1217,10 @@ public class DetectConfiguration {
 
     public String getProjectName() {
         return projectName == null ? null : projectName.trim();
+    }
+
+    public String getCodeLocationNameOverride() {
+        return codeLocationNameOverride == null ? null : codeLocationNameOverride.trim();
     }
 
     public String getProjectDescription() {

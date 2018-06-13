@@ -43,8 +43,6 @@ import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphCombiner;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph;
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.codelocation.BomCodeLocationNameFactory;
-import com.blackducksoftware.integration.hub.detect.codelocation.DockerCodeLocationNameFactory;
 import com.blackducksoftware.integration.hub.detect.manager.result.codelocation.DetectCodeLocationResult;
 import com.blackducksoftware.integration.hub.detect.model.BdioCodeLocation;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
@@ -59,10 +57,7 @@ public class DetectCodeLocationManager {
     public DetectConfiguration detectConfiguration;
 
     @Autowired
-    private BomCodeLocationNameFactory bomCodeLocationNameFactory;
-
-    @Autowired
-    private DockerCodeLocationNameFactory dockerCodeLocationNameFactory;
+    public CodeLocationNameManager codeLocationNameManager;
 
     public DetectCodeLocationResult process(final List<DetectCodeLocation> detectCodeLocations, final String projectName, final String projectVersion) {
         final Set<BomToolType> failedBomTools = new HashSet<>();
@@ -112,19 +107,10 @@ public class DetectCodeLocationManager {
         return bdioCodeLocations.stream().collect(Collectors.groupingBy(it -> it.codeLocationName, Collectors.toList()));
     }
 
-    public String createCodeLocationName(final DetectCodeLocation detectCodeLocation, final BomCodeLocationNameFactory bomCodeLocationNameFactory, final DockerCodeLocationNameFactory dockerCodeLocationNameFactory, final String detectSourcePath, final String projectName, final String projectVersionName,
-            final String prefix, final String suffix) {
-        if (BomToolType.DOCKER == detectCodeLocation.getBomToolType()) {
-            return dockerCodeLocationNameFactory.createCodeLocationName(detectCodeLocation.getSourcePath(), projectName, projectVersionName, detectCodeLocation.getDockerImage(), detectCodeLocation.getBomToolType(), prefix, suffix);
-        } else {
-            return bomCodeLocationNameFactory.createCodeLocationName(detectSourcePath, detectCodeLocation.getSourcePath(), detectCodeLocation.getExternalId(), detectCodeLocation.getBomToolType(), prefix, suffix);
-        }
-    }
-
     private Map<DetectCodeLocation, String> createCodeLocationNameMap(final List<DetectCodeLocation> codeLocations, final String detectSourcePath, final String projectName, final String projectVersion, final String prefix, final String suffix) {
         final Map<DetectCodeLocation, String> nameMap = new HashMap<>();
         for (final DetectCodeLocation detectCodeLocation : codeLocations) {
-            final String codeLocationName = createCodeLocationName(detectCodeLocation, bomCodeLocationNameFactory, dockerCodeLocationNameFactory, detectSourcePath, projectName, projectVersion, prefix, suffix);
+            final String codeLocationName = codeLocationNameManager.createCodeLocationName(detectCodeLocation, detectSourcePath, projectName, projectVersion, prefix, suffix);
             nameMap.put(detectCodeLocation, codeLocationName);
         }
         return nameMap;
@@ -188,7 +174,8 @@ public class DetectCodeLocationManager {
                     for (int i = 0; i < codeLocationsForName.size(); i++) {
                         final DetectCodeLocation codeLocation = codeLocationsForName.get(i);
                         final String suffix = " " + Integer.toString(i);
-                        final BdioCodeLocation bdioCodeLocation = new BdioCodeLocation(codeLocation, codeLocationName + suffix, createBdioName(codeLocationName, integrationEscapeUtil) + suffix);
+                        final String newCodeLocationName = codeLocationName + suffix;
+                        final BdioCodeLocation bdioCodeLocation = new BdioCodeLocation(codeLocation, newCodeLocationName, createBdioName(newCodeLocationName, integrationEscapeUtil));
                         bdioCodeLocations.add(bdioCodeLocation);
                     }
                 }

@@ -39,8 +39,8 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 
 @Component
-public class BomCodeLocationNameFactory extends CodeLocationNameFactory {
-    private final Logger logger = LoggerFactory.getLogger(BomCodeLocationNameFactory.class);
+public class BomCodeLocationNameService extends CodeLocationNameService {
+    private final Logger logger = LoggerFactory.getLogger(BomCodeLocationNameService.class);
 
     public String createCodeLocationName(final String detectSourcePath, final String sourcePath, final ExternalId externalId, final BomToolType bomToolType, final String prefix, final String suffix) {
         //path piece
