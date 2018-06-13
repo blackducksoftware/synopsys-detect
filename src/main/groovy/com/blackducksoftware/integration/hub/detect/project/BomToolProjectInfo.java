@@ -1,4 +1,4 @@
-package com.blackducksoftware.integration.hub.detect.manager;
+package com.blackducksoftware.integration.hub.detect.project;
 
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.util.NameVersion;

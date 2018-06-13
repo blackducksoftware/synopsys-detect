@@ -54,6 +54,8 @@ import com.blackducksoftware.integration.hub.detect.manager.result.search.Search
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.model.DetectProject;
+import com.blackducksoftware.integration.hub.detect.project.BomToolProjectInfo;
+import com.blackducksoftware.integration.hub.detect.project.BomToolProjectInfoDecider;
 import com.blackducksoftware.integration.hub.detect.summary.BomToolSummaryResult;
 import com.blackducksoftware.integration.hub.detect.summary.Result;
 import com.blackducksoftware.integration.hub.detect.summary.SummaryResultReporter;

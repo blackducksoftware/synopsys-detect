@@ -8,8 +8,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
-import com.blackducksoftware.integration.hub.detect.manager.BomToolProjectInfo;
-import com.blackducksoftware.integration.hub.detect.manager.BomToolProjectInfoDecider;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.util.NameVersion;
 
