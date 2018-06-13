@@ -151,7 +151,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
 
         final List<BomToolProjectInfo> allBomToolProjectInfo = createBomToolProjectInfo(strategyEvaluations);
         final BomToolProjectInfoDecider decider = new BomToolProjectInfoDecider();
-        return decider.decideProjectName(allBomToolProjectInfo, preferredBomToolType);
+        return decider.decideProjectInfo(allBomToolProjectInfo, preferredBomToolType);
     }
 
     private List<BomToolProjectInfo> createBomToolProjectInfo(final List<StrategyEvaluation> strategyEvaluations) {

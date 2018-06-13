@@ -15,7 +15,7 @@ import com.blackducksoftware.integration.util.NameVersion;
 public class BomToolProjectInfoDecider {
     private final Logger logger = LoggerFactory.getLogger(BomToolProjectInfoDecider.class);
 
-    public Optional<NameVersion> decideProjectName(final List<BomToolProjectInfo> projectNamePossibilities, final Optional<BomToolType> preferredBomToolType) {
+    public Optional<NameVersion> decideProjectInfo(final List<BomToolProjectInfo> projectNamePossibilities, final Optional<BomToolType> preferredBomToolType) {
         final Optional<BomToolProjectInfo> chosenBomToolProjectInfo = decideBomToolInfo(projectNamePossibilities, preferredBomToolType);
         if (chosenBomToolProjectInfo.isPresent()) {
             return Optional.of(chosenBomToolProjectInfo.get().getNameVersion());

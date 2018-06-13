@@ -114,7 +114,7 @@ public class ProjectNameDeciderTests {
 
     private void assertProject(final String projectName, final Optional<BomToolType> preferred, final List<BomToolProjectInfo> possibilities) throws DetectUserFriendlyException {
         final BomToolProjectInfoDecider decider = new BomToolProjectInfoDecider();
-        final Optional<NameVersion> chosen = decider.decideProjectName(possibilities, preferred);
+        final Optional<NameVersion> chosen = decider.decideProjectInfo(possibilities, preferred);
 
         Assert.assertTrue(chosen.isPresent());
         Assert.assertEquals(chosen.get().getName(), projectName);
@@ -122,7 +122,7 @@ public class ProjectNameDeciderTests {
 
     private void assertNoProject(final Optional<BomToolType> preferred, final List<BomToolProjectInfo> possibilities) throws DetectUserFriendlyException {
         final BomToolProjectInfoDecider decider = new BomToolProjectInfoDecider();
-        final Optional<NameVersion> chosen = decider.decideProjectName(possibilities, preferred);
+        final Optional<NameVersion> chosen = decider.decideProjectInfo(possibilities, preferred);
 
         Assert.assertFalse(chosen.isPresent());
     }
