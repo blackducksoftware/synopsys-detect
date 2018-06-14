@@ -26,12 +26,14 @@ package com.blackducksoftware.integration.hub.detect.search;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
@@ -71,7 +73,7 @@ public class BomToolFinder {
         }
 
         for (final File directory : directoriesToSearch) {
-            if (options.getExcludedDirectories().contains(directory.getName())){
+            if (options.getExcludedDirectories().contains(directory.getName())) {
                 continue;
             }
 
@@ -115,7 +117,7 @@ public class BomToolFinder {
         return evaluation;
     }
 
-    private List<Strategy> determineOrder(final Set<Strategy> allStrategies) throws DetectUserFriendlyException{
+    private List<Strategy> determineOrder(final Set<Strategy> allStrategies) throws DetectUserFriendlyException {
         final Set<Strategy> remaining = new HashSet<>(allStrategies);
         final List<Strategy> ordered = new ArrayList<>();
 
@@ -156,6 +158,7 @@ public class BomToolFinder {
     }
 
     private List<File> getSubDirectories(final File directory, final List<String> excludedDirectories) throws DetectUserFriendlyException {
+        Stream<Path> stream = null;
         try {
             // only include directories that do not match the excluded directories
             final Predicate<File> excludeDirectoriesPredicate = file -> {
@@ -169,13 +172,17 @@ public class BomToolFinder {
                 return !matchesExcludedDirectory;
             };
 
-            return Files.list(directory.toPath())
-                    .map(path -> path.toFile())
+            stream = Files.list(directory.toPath());
+            return stream.map(path -> path.toFile())
                     .filter(file -> file.isDirectory())
                     .filter(excludeDirectoriesPredicate)
                     .collect(Collectors.toList());
         } catch (final IOException e) {
             throw new DetectUserFriendlyException(String.format("Could not get the subdirectories for %s. %s", directory.getAbsolutePath(), e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
+        } finally {
+            if (stream != null) {
+                stream.close();
+            }
         }
     }
 }

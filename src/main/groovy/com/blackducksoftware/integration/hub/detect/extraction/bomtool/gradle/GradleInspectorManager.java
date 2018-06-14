@@ -34,8 +34,8 @@ import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +53,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 import com.blackducksoftware.integration.rest.connection.UnauthenticatedRestConnection;
 import com.blackducksoftware.integration.rest.request.Request;
 import com.blackducksoftware.integration.rest.request.Response;
+import com.blackducksoftware.integration.util.ResourceUtil;
 
 import freemarker.core.ParseException;
 import freemarker.template.Configuration;
@@ -100,7 +101,7 @@ public class GradleInspectorManager {
         return resolvedInitScript;
     }
 
-    String resolveInspectorVersion() {
+    private String resolveInspectorVersion() {
         if ("latest".equalsIgnoreCase(detectConfiguration.getGradleInspectorVersion())) {
             try {
                 Document xmlDocument = null;
@@ -110,22 +111,19 @@ public class GradleInspectorManager {
                     xmlDocument = xmlDocumentBuilder.parse(inputStream);
                 } else {
                     final String mavenMetadataUrl = "http://repo2.maven.org/maven2/com/blackducksoftware/integration/integration-gradle-inspector/maven-metadata.xml";
-                    final UnauthenticatedRestConnection restConnection = detectConfiguration.createUnauthenticatedRestConnection(mavenMetadataUrl);
                     final Request request = new Request.Builder().uri(mavenMetadataUrl).build();
                     Response response = null;
-                    try {
+                    try (UnauthenticatedRestConnection restConnection = detectConfiguration.createUnauthenticatedRestConnection(mavenMetadataUrl)) {
                         response = restConnection.executeRequest(request);
                         final InputStream inputStream = response.getContent();
                         xmlDocument = xmlDocumentBuilder.parse(inputStream);
                     } finally {
-                        if (null != response) {
-                            response.close();
-                        }
+                        ResourceUtil.closeQuietly(response);
                     }
                 }
                 final NodeList latestVersionNodes = xmlDocument.getElementsByTagName("latest");
                 final Node latestVersion = latestVersionNodes.item(0);
-                String inspectorVersion = latestVersion.getTextContent();
+                final String inspectorVersion = latestVersion.getTextContent();
                 logger.info(String.format("Resolved gradle inspector version from latest to: %s", inspectorVersion));
                 return inspectorVersion;
             } catch (final Exception e) {
@@ -138,7 +136,7 @@ public class GradleInspectorManager {
         }
     }
 
-    String resolveInitScriptPath(final String version) throws TemplateNotFoundException, MalformedTemplateNameException, ParseException, IOException, TemplateException {
+    private String resolveInitScriptPath(final String version) throws TemplateNotFoundException, MalformedTemplateNameException, ParseException, IOException, TemplateException {
         final File initScriptFile = detectFileManager.createSharedFile("gradle", "init-detect.gradle");
         final Map<String, String> model = new HashMap<>();
         model.put("gradleInspectorVersion", version);
