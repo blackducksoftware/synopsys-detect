@@ -16,4 +16,5 @@ public abstract class ProjectInfoResult {
     public boolean didChoose() {
         return getChosenNameVersion().isPresent();
     }
+
 }
