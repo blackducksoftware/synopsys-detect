@@ -49,6 +49,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 import com.blackducksoftware.integration.rest.connection.UnauthenticatedRestConnection;
 import com.blackducksoftware.integration.rest.request.Request;
 import com.blackducksoftware.integration.rest.request.Response;
+import com.blackducksoftware.integration.util.ResourceUtil;
 
 @Component
 public class DockerInspectorManager {
@@ -138,27 +139,28 @@ public class DockerInspectorManager {
                     hubDockerInspectorShellScriptUrl = String.format("https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector-%s.sh", detectConfiguration.getDockerInspectorVersion());
                 }
                 logger.info(String.format("Getting the Docker inspector shell script from %s", hubDockerInspectorShellScriptUrl));
-                final UnauthenticatedRestConnection restConnection = detectConfiguration.createUnauthenticatedRestConnection(hubDockerInspectorShellScriptUrl);
 
                 final Request request = new Request.Builder().uri(hubDockerInspectorShellScriptUrl).build();
                 String shellScriptContents = null;
                 Response response = null;
-                try {
+
+                try (UnauthenticatedRestConnection restConnection = detectConfiguration.createUnauthenticatedRestConnection(hubDockerInspectorShellScriptUrl)) {
                     response = restConnection.executeRequest(request);
                     shellScriptContents = response.getContentString();
                 } finally {
-                    if (response != null) {
-                        response.close();
-                    }
+                    ResourceUtil.closeQuietly(response);
                 }
+
                 final File inspectorDirectory = detectFileManager.getSharedDirectory("docker");
                 shellScriptFile = new File(inspectorDirectory, String.format("hub-docker-inspector-%s.sh", suppliedDockerVersion));
                 detectFileManager.writeToFile(shellScriptFile, shellScriptContents);
                 shellScriptFile.setExecutable(true);
             }
+
             final DockerInspectorInfo info = new DockerInspectorInfo();
             info.dockerInspectorScript = shellScriptFile;
             info.isOffline = isOffline;
+
             return info;
         } catch (final Exception e) {
             throw new DetectUserFriendlyException(String.format("There was a problem retrieving the docker inspector shell script: %s", e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
