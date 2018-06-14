@@ -51,13 +51,13 @@ import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.manager.CodeLocationNameManager;
 import com.blackducksoftware.integration.hub.detect.model.DetectProject;
-import com.blackducksoftware.integration.hub.detect.summary.Result;
 import com.blackducksoftware.integration.hub.detect.summary.ScanSummaryResult;
 import com.blackducksoftware.integration.hub.detect.summary.SummaryResultReporter;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.service.SignatureScannerService;
 import com.blackducksoftware.integration.hub.service.model.ProjectRequestBuilder;
+import com.blackducksoftware.integration.hub.summary.Result;
 
 @Component
 public class HubSignatureScanner implements SummaryResultReporter, ExitCodeReporter {
@@ -92,7 +92,7 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
         final HubScanConfigBuilder hubScanConfigBuilder = createScanConfigBuilder(detectProject, scanPaths);
         final HubScanConfig hubScanConfig = hubScanConfigBuilder.build();
 
-        final ScanServiceOutput scanServiceOutput = signatureScannerService.executeScans(hubServerConfig, hubScanConfig, projectRequest, detectConfiguration.getHubSignatureScannerParallelProcessors());
+        final ScanServiceOutput scanServiceOutput = signatureScannerService.executeScans(hubServerConfig, hubScanConfig, projectRequest);
         if (null != scanServiceOutput) {
             projectVersionView = scanServiceOutput.getProjectVersionWrapper().getProjectVersionView();
 
@@ -111,8 +111,8 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
             final HubScanConfigBuilder hubScanConfigBuilder = createScanConfigBuilder(detectProject, scanPaths);
             hubScanConfigBuilder.setDryRun(true);
 
-            if (StringUtils.isBlank(detectConfiguration.getHubSignatureScannerOfflineLocalPath())) {
-                final File toolsDirectory = detectFileManager.getPermanentDirectory();
+            if (StringUtils.isNotBlank(detectConfiguration.getHubSignatureScannerOfflineLocalPath())) {
+                final File toolsDirectory = new File(detectConfiguration.getHubSignatureScannerOfflineLocalPath());
                 hubScanConfigBuilder.setToolsDir(toolsDirectory);
             }
             final HubScanConfig hubScanConfig = hubScanConfigBuilder.build();
@@ -128,12 +128,14 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
     }
 
     private void handleScanTargetOutput(final ScanTargetOutput scanTargetOutput) {
-        final Result result = Result.resultFromScanResult(scanTargetOutput.getResult());
+        final Result result = scanTargetOutput.getResult();
         scanSummaryResults.put(scanTargetOutput.getScanTarget(), result);
         logger.info(String.format("%s was scanned by the BlackDuck CLI. Result: %s", scanTargetOutput.getScanTarget(), result.name()));
         if (Result.FAILURE == result) {
             logger.error(String.format("Scanning target %s failed: %s", scanTargetOutput.getScanTarget(), scanTargetOutput.getErrorMessage()));
-            logger.debug(scanTargetOutput.getErrorMessage(), scanTargetOutput.getException());
+            if (null != scanTargetOutput.getException()) {
+                logger.debug(scanTargetOutput.getErrorMessage(), scanTargetOutput.getException());
+            }
         } else {
             logger.info(String.format("%s was successfully scanned by the BlackDuck CLI.", scanTargetOutput.getScanTarget()));
         }

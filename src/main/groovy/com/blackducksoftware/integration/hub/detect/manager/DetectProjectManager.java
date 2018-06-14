@@ -50,9 +50,9 @@ import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.model.DetectProject;
 import com.blackducksoftware.integration.hub.detect.summary.BomToolSummaryResult;
-import com.blackducksoftware.integration.hub.detect.summary.Result;
 import com.blackducksoftware.integration.hub.detect.summary.SummaryResultReporter;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
+import com.blackducksoftware.integration.hub.summary.Result;
 
 @Component
 public class DetectProjectManager implements SummaryResultReporter, ExitCodeReporter {

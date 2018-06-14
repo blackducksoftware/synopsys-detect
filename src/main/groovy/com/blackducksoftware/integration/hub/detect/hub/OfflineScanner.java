@@ -27,6 +27,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -77,34 +79,39 @@ public class OfflineScanner {
         projectRequestBuilder.setProjectName(detectProject.getProjectName());
         projectRequestBuilder.setVersionName(detectProject.getProjectVersion());
 
-        final ParallelSimpleScanner parallelSimpleScanner = new ParallelSimpleScanner(intLogger, intEnvironmentVariables, gson);
-        CLILocation cliLocation = new CLILocation(intLogger, hubScanConfig.getToolsDir());
-        if (StringUtils.isNotBlank(hubSignatureScannerOfflineLocalPath)) {
-            cliLocation = new OfflineCLILocation(intLogger, new File(hubSignatureScannerOfflineLocalPath));
-        }
+        final ExecutorService executorService = Executors.newFixedThreadPool(detectConfiguration.getHubSignatureScannerParallelProcessors());
+        try {
+            final ParallelSimpleScanner parallelSimpleScanner = new ParallelSimpleScanner(intLogger, intEnvironmentVariables, gson, executorService);
+            CLILocation cliLocation = new CLILocation(intLogger, hubScanConfig.getCommonScanConfig().getToolsDir());
+            if (StringUtils.isNotBlank(hubSignatureScannerOfflineLocalPath)) {
+                cliLocation = new OfflineCLILocation(intLogger, new File(hubSignatureScannerOfflineLocalPath));
+            }
 
-        boolean cliInstalledOkay = checkCliInstall(cliLocation, intLogger);
-        if (!cliInstalledOkay && StringUtils.isNotBlank(detectConfiguration.getHubSignatureScannerHostUrl())) {
-            installSignatureScannerFromUrl(intLogger, hubScanConfig);
-            cliInstalledOkay = checkCliInstall(cliLocation, intLogger);
-        }
+            boolean cliInstalledOkay = checkCliInstall(cliLocation, intLogger);
+            if (!cliInstalledOkay && StringUtils.isNotBlank(detectConfiguration.getHubSignatureScannerHostUrl())) {
+                installSignatureScannerFromUrl(intLogger, hubScanConfig);
+                cliInstalledOkay = checkCliInstall(cliLocation, intLogger);
+            }
 
-        if (!cliInstalledOkay && StringUtils.isNotBlank(hubSignatureScannerOfflineLocalPath)) {
-            logger.warn(String.format("The signature scanner is not correctly installed at %s", hubSignatureScannerOfflineLocalPath));
-            return Collections.emptyList();
-        } else if (!cliInstalledOkay) {
-            logger.warn(String.format("The signature scanner is not correctly installed at %s", hubScanConfig.getToolsDir()));
-            return Collections.emptyList();
-        } else {
-            final List<ScanTargetOutput> scanTargetOutputs = parallelSimpleScanner.executeScans(hubServerConfig, hubScanConfig, projectRequestBuilder.build(), cliLocation, detectConfiguration.getHubSignatureScannerParallelProcessors());
-            if (null != scanTargetOutputs && !scanTargetOutputs.isEmpty()) {
-                for (final ScanTargetOutput scanTargetOutput : scanTargetOutputs) {
-                    if (null != scanTargetOutput && null != scanTargetOutput.getDryRunFile() && scanTargetOutput.getDryRunFile().isFile()) {
-                        logger.info(String.format("The dry run file for target '%s' can be found at : %s", scanTargetOutput.getScanTarget(), scanTargetOutput.getDryRunFile().getAbsolutePath()));
+            if (!cliInstalledOkay && StringUtils.isNotBlank(hubSignatureScannerOfflineLocalPath)) {
+                logger.warn(String.format("The signature scanner is not correctly installed at %s", hubSignatureScannerOfflineLocalPath));
+                return Collections.emptyList();
+            } else if (!cliInstalledOkay) {
+                logger.warn(String.format("The signature scanner is not correctly installed at %s", hubScanConfig.getCommonScanConfig().getToolsDir()));
+                return Collections.emptyList();
+            } else {
+                final List<ScanTargetOutput> scanTargetOutputs = parallelSimpleScanner.executeScans(hubServerConfig, hubScanConfig, projectRequestBuilder.build(), cliLocation);
+                if (null != scanTargetOutputs && !scanTargetOutputs.isEmpty()) {
+                    for (final ScanTargetOutput scanTargetOutput : scanTargetOutputs) {
+                        if (null != scanTargetOutput && null != scanTargetOutput.getDryRunFile() && scanTargetOutput.getDryRunFile().isFile()) {
+                            logger.info(String.format("The dry run file for target '%s' can be found at : %s", scanTargetOutput.getScanTarget(), scanTargetOutput.getDryRunFile().getAbsolutePath()));
+                        }
                     }
                 }
+                return scanTargetOutputs;
             }
-            return scanTargetOutputs;
+        } finally {
+            executorService.shutdownNow();
         }
     }
 
@@ -118,7 +125,7 @@ public class OfflineScanner {
             restConnectionBuilder.setLogger(intLogger);
             final RestConnection restConnection = restConnectionBuilder.build();
             final CLIDownloadUtility cliDownloadUtility = new CLIDownloadUtility(intLogger, restConnection);
-            cliDownloadUtility.performInstallation(hubScanConfig.getToolsDir(), detectConfiguration.getHubSignatureScannerHostUrl(), "unknown");
+            cliDownloadUtility.performInstallation(hubScanConfig.getCommonScanConfig().getToolsDir(), detectConfiguration.getHubSignatureScannerHostUrl(), "unknown");
         } catch (final Exception e) {
             throw new DetectUserFriendlyException(String.format("There was a problem downloading the signature scanner from %s: %s", detectConfiguration.getHubSignatureScannerHostUrl(), e.getMessage()), e,
                     ExitCodeType.FAILURE_GENERAL_ERROR);

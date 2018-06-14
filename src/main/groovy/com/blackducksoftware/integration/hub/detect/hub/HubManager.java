@@ -26,6 +26,8 @@ package com.blackducksoftware.integration.hub.detect.hub;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -105,10 +107,15 @@ public class HubManager implements ExitCodeReporter {
 
         if (!detectConfiguration.getHubSignatureScannerDisabled()) {
             final HubServerConfig hubServerConfig = hubServiceWrapper.getHubServerConfig();
-            final SignatureScannerService signatureScannerService = hubServiceWrapper.createSignatureScannerService();
-            final ProjectVersionView scanProject = hubSignatureScanner.scanPaths(hubServerConfig, signatureScannerService, detectProject);
-            if (null == projectVersionView) {
-                projectVersionView = scanProject;
+            final ExecutorService executorService = Executors.newFixedThreadPool(detectConfiguration.getHubSignatureScannerParallelProcessors());
+            try {
+                final SignatureScannerService signatureScannerService = hubServiceWrapper.createSignatureScannerService(executorService);
+                final ProjectVersionView scanProject = hubSignatureScanner.scanPaths(hubServerConfig, signatureScannerService, detectProject);
+                if (null == projectVersionView) {
+                    projectVersionView = scanProject;
+                }
+            } finally {
+                executorService.shutdownNow();
             }
         }
         return projectVersionView;
