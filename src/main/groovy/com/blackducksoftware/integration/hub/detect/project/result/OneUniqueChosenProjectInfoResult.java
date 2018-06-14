@@ -8,7 +8,6 @@ import com.blackducksoftware.integration.hub.detect.project.BomToolProjectInfo;
 import com.blackducksoftware.integration.util.NameVersion;
 
 public class OneUniqueChosenProjectInfoResult extends ProjectInfoResult {
-
     private final BomToolProjectInfo chosenBomToolProjectInfo;
 
     public OneUniqueChosenProjectInfoResult(final BomToolProjectInfo chosenBomToolProjectInfo) {
@@ -18,11 +17,6 @@ public class OneUniqueChosenProjectInfoResult extends ProjectInfoResult {
     @Override
     public Optional<NameVersion> getChosenNameVersion() {
         return Optional.of(chosenBomToolProjectInfo.getNameVersion());
-    }
-
-    @Override
-    public boolean didChoose() {
-        return true;
     }
 
     @Override
