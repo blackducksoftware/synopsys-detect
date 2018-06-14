@@ -131,7 +131,7 @@ public class HubServiceWrapper {
     }
 
     public SignatureScannerService createSignatureScannerService() {
-        return hubServicesFactory.createSignatureScannerService(120000L);
+        return hubServicesFactory.createSignatureScannerService();
     }
 
     private HubServicesFactory createHubServicesFactory(final IntLogger slf4jIntLogger, final HubServerConfig hubServerConfig) throws IntegrationException {

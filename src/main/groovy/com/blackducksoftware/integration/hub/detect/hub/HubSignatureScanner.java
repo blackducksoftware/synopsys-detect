@@ -31,10 +31,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -45,11 +41,12 @@ import org.springframework.stereotype.Component;
 import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.api.generated.component.ProjectRequest;
 import com.blackducksoftware.integration.hub.api.generated.view.ProjectVersionView;
+import com.blackducksoftware.integration.hub.cli.summary.ScanServiceOutput;
+import com.blackducksoftware.integration.hub.cli.summary.ScanTargetOutput;
 import com.blackducksoftware.integration.hub.configuration.HubScanConfig;
 import com.blackducksoftware.integration.hub.configuration.HubScanConfigBuilder;
 import com.blackducksoftware.integration.hub.configuration.HubServerConfig;
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.manager.CodeLocationNameManager;
@@ -61,7 +58,6 @@ import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.service.SignatureScannerService;
 import com.blackducksoftware.integration.hub.service.model.ProjectRequestBuilder;
-import com.blackducksoftware.integration.hub.service.model.ProjectVersionWrapper;
 
 @Component
 public class HubSignatureScanner implements SummaryResultReporter, ExitCodeReporter {
@@ -87,53 +83,59 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
     public CodeLocationNameManager codeLocationNameManager;
 
     public ProjectVersionView scanPaths(final HubServerConfig hubServerConfig, final SignatureScannerService signatureScannerService, final DetectProject detectProject)
-            throws IntegrationException, DetectUserFriendlyException, InterruptedException {
+            throws IntegrationException, InterruptedException {
         determinePathsAndExclusions(detectProject);
 
         ProjectVersionView projectVersionView = null;
         final ProjectRequest projectRequest = createProjectRequest(detectProject);
 
-        final List<ScanPathCallable> scanPathCallables = new ArrayList<>();
-        for (final String scanPath : scanPaths) {
-            final HubScanConfigBuilder hubScanConfigBuilder = createScanConfigBuilder(detectProject, scanPath, scanPathExclusionPatterns.get(scanPath));
-            final HubScanConfig hubScanConfig = hubScanConfigBuilder.build();
-            final ScanPathCallable scanPathCallable = new ScanPathCallable(signatureScannerService, hubServerConfig, hubScanConfig, projectRequest, scanPath, scanSummaryResults);
-            scanPathCallables.add(scanPathCallable);
-        }
+        final HubScanConfigBuilder hubScanConfigBuilder = createScanConfigBuilder(detectProject, scanPaths);
+        final HubScanConfig hubScanConfig = hubScanConfigBuilder.build();
 
-        final ExecutorService pool = Executors.newFixedThreadPool(detectConfiguration.getHubSignatureScannerParallelProcessors());
-        try {
-            final List<Future<ProjectVersionWrapper>> submittedScanPathCallables = new ArrayList<>();
-            for (final ScanPathCallable scanPathCallable : scanPathCallables) {
-                submittedScanPathCallables.add(pool.submit(scanPathCallable));
-            }
-            for (final Future<ProjectVersionWrapper> futureProjectVersionWrapper : submittedScanPathCallables) {
-                final ProjectVersionWrapper projectVersionWrapperFromScan = futureProjectVersionWrapper.get();
-                if (projectVersionWrapperFromScan != null) {
-                    projectVersionView = projectVersionWrapperFromScan.getProjectVersionView();
+        final ScanServiceOutput scanServiceOutput = signatureScannerService.executeScans(hubServerConfig, hubScanConfig, projectRequest, detectConfiguration.getHubSignatureScannerParallelProcessors());
+        if (null != scanServiceOutput) {
+            projectVersionView = scanServiceOutput.getProjectVersionWrapper().getProjectVersionView();
+
+            if (null != scanServiceOutput.getScanTargetOutputs() && !scanServiceOutput.getScanTargetOutputs().isEmpty()) {
+                for (final ScanTargetOutput scanTargetOutput : scanServiceOutput.getScanTargetOutputs()) {
+                    handleScanTargetOutput(scanTargetOutput);
                 }
             }
-        } catch (final ExecutionException e) {
-            throw new DetectUserFriendlyException(String.format("Encountered a problem waiting for a scan to finish. %s", e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
-        } finally {
-            // get() was called on every java.util.concurrent.Future, no need to wait any longer
-            pool.shutdownNow();
         }
-
         return projectVersionView;
     }
 
-    public void scanPathsOffline(final DetectProject detectProject) throws IOException, IntegrationException {
+    public void scanPathsOffline(final DetectProject detectProject) throws IntegrationException {
         determinePathsAndExclusions(detectProject);
-        if (null != detectProject.getProjectName() && null != detectProject.getProjectVersion() && null != detectConfiguration.getHubSignatureScannerPaths() && detectConfiguration.getHubSignatureScannerPaths().length > 0) {
-            for (final String path : detectConfiguration.getHubSignatureScannerPaths()) {
-                scanPathOffline(new File(path).getCanonicalPath(), detectProject);
+        try {
+            final HubScanConfigBuilder hubScanConfigBuilder = createScanConfigBuilder(detectProject, scanPaths);
+            hubScanConfigBuilder.setDryRun(true);
+
+            if (StringUtils.isBlank(detectConfiguration.getHubSignatureScannerOfflineLocalPath())) {
+                final File toolsDirectory = detectFileManager.getPermanentDirectory();
+                hubScanConfigBuilder.setToolsDir(toolsDirectory);
             }
+            final HubScanConfig hubScanConfig = hubScanConfigBuilder.build();
+            final List<ScanTargetOutput> scanTargetOutputs = offlineScanner.offlineScan(detectProject, hubScanConfig, detectConfiguration.getHubSignatureScannerOfflineLocalPath());
+            if (null != scanTargetOutputs && !scanTargetOutputs.isEmpty()) {
+                for (final ScanTargetOutput scanTargetOutput : scanTargetOutputs) {
+                    handleScanTargetOutput(scanTargetOutput);
+                }
+            }
+        } catch (final Exception e) {
+            logger.error(String.format("Scanning failed: %s", detectProject.getProjectName(), detectProject.getProjectVersion(), e.getMessage()));
+        }
+    }
+
+    private void handleScanTargetOutput(final ScanTargetOutput scanTargetOutput) {
+        final Result result = Result.resultFromScanResult(scanTargetOutput.getResult());
+        scanSummaryResults.put(scanTargetOutput.getScanTarget(), result);
+        logger.info(String.format("%s was scanned by the BlackDuck CLI. Result: %s", scanTargetOutput.getScanTarget(), result.name()));
+        if (Result.FAILURE == result) {
+            logger.error(String.format("Scanning target %s failed: %s", scanTargetOutput.getScanTarget(), scanTargetOutput.getErrorMessage()));
+            logger.debug(scanTargetOutput.getErrorMessage(), scanTargetOutput.getException());
         } else {
-            for (final String scanPath : scanPaths) {
-                logger.info(String.format("Attempting to scan %s for %s/%s", scanPath, detectProject.getProjectName(), detectProject.getProjectVersion()));
-                scanPathOffline(scanPath, detectProject);
-            }
+            logger.info(String.format("%s was successfully scanned by the BlackDuck CLI.", scanTargetOutput.getScanTarget()));
         }
     }
 
@@ -162,27 +164,6 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
 
     public void setDockerTarFilePath(final String dockerTarFilePath) {
         this.dockerTarFilePath = dockerTarFilePath;
-    }
-
-    private void scanPathOffline(final String canonicalPath, final DetectProject detectProject) {
-        try {
-            final HubScanConfigBuilder hubScanConfigBuilder = createScanConfigBuilder(detectProject, canonicalPath, scanPathExclusionPatterns.get(canonicalPath));
-            hubScanConfigBuilder.setDryRun(true);
-
-            if (StringUtils.isBlank(detectConfiguration.getHubSignatureScannerOfflineLocalPath())) {
-                final File toolsDirectory = detectFileManager.getPermanentDirectory();
-                hubScanConfigBuilder.setToolsDir(toolsDirectory);
-            }
-
-            final HubScanConfig hubScanConfig = hubScanConfigBuilder.build();
-            final boolean pathWasScanned = offlineScanner.offlineScan(detectProject, hubScanConfig, detectConfiguration.getHubSignatureScannerOfflineLocalPath());
-            if (pathWasScanned) {
-                scanSummaryResults.put(canonicalPath, Result.SUCCESS);
-                logger.info(String.format("%s was successfully scanned by the BlackDuck CLI.", canonicalPath));
-            }
-        } catch (final Exception e) {
-            logger.error(String.format("%s/%s - %s was not scanned by the BlackDuck CLI: %s", detectProject.getProjectName(), detectProject.getProjectVersion(), canonicalPath, e.getMessage()));
-        }
     }
 
     private void determinePathsAndExclusions(final DetectProject detectProject) throws IntegrationException {
@@ -232,7 +213,7 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
         return builder.build();
     }
 
-    private HubScanConfigBuilder createScanConfigBuilder(final DetectProject detectProject, final String canonicalPath, final Set<String> exclusionPatterns) {
+    private HubScanConfigBuilder createScanConfigBuilder(final DetectProject detectProject, final Set<String> scanPaths) {
         final File scannerDirectory = new File(detectConfiguration.getScanOutputDirectoryPath());
         final File toolsDirectory = detectFileManager.getPermanentDirectory();
 
@@ -240,22 +221,28 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
         hubScanConfigBuilder.setScanMemory(detectConfiguration.getHubSignatureScannerMemory());
         hubScanConfigBuilder.setToolsDir(toolsDirectory);
         hubScanConfigBuilder.setWorkingDirectory(scannerDirectory);
-        hubScanConfigBuilder.addScanTargetPath(canonicalPath);
+
         hubScanConfigBuilder.setCleanupLogsOnSuccess(detectConfiguration.getCleanupDetectFiles());
         hubScanConfigBuilder.setDryRun(detectConfiguration.getHubSignatureScannerDryRun());
         hubScanConfigBuilder.setSnippetModeEnabled(detectConfiguration.getHubSignatureScannerSnippetMode());
-        hubScanConfigBuilder.setAdditionalScanParameters(detectConfiguration.getHubSignatureScannerArguments());
+        hubScanConfigBuilder.setAdditionalScanArguments(detectConfiguration.getHubSignatureScannerArguments());
 
         final String projectName = detectProject.getProjectName();
         final String projectVersionName = detectProject.getProjectVersion();
         final String sourcePath = detectConfiguration.getSourcePath();
         final String prefix = detectConfiguration.getProjectCodeLocationPrefix();
         final String suffix = detectConfiguration.getProjectCodeLocationSuffix();
-        final String codeLocationName = codeLocationNameManager.createScanCodeLocationName(sourcePath, canonicalPath, projectName, projectVersionName, prefix, suffix);
-        hubScanConfigBuilder.setCodeLocationAlias(codeLocationName);
 
-        if (null != exclusionPatterns && !exclusionPatterns.isEmpty()) {
-            hubScanConfigBuilder.setExcludePatterns(exclusionPatterns.toArray(new String[exclusionPatterns.size()]));
+        for (final String scanTarget : scanPaths) {
+            hubScanConfigBuilder.addScanTargetPath(scanTarget);
+
+            final String codeLocationName = codeLocationNameManager.createScanCodeLocationName(sourcePath, scanTarget, projectName, projectVersionName, prefix, suffix);
+            hubScanConfigBuilder.addTargetToCodeLocationName(scanTarget, codeLocationName);
+
+            final Set<String> exclusionPatterns = scanPathExclusionPatterns.get(scanTarget);
+            if (null != exclusionPatterns && !exclusionPatterns.isEmpty()) {
+                hubScanConfigBuilder.addTargetToExclusionPatterns(scanTarget, exclusionPatterns);
+            }
         }
 
         return hubScanConfigBuilder;

@@ -27,4 +27,12 @@ public enum Result {
     SUCCESS,
     FAILURE;
 
+    public static Result resultFromScanResult(final com.blackducksoftware.integration.hub.cli.summary.Result result) {
+        if (result == com.blackducksoftware.integration.hub.cli.summary.Result.SUCCESS) {
+            return Result.SUCCESS;
+        } else {
+            return Result.FAILURE;
+        }
+    }
+
 }

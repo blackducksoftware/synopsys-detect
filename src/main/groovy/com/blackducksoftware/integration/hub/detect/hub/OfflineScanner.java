@@ -25,6 +25,8 @@ package com.blackducksoftware.integration.hub.detect.hub;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -36,13 +38,15 @@ import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.cli.CLIDownloadUtility;
 import com.blackducksoftware.integration.hub.cli.CLILocation;
 import com.blackducksoftware.integration.hub.cli.OfflineCLILocation;
-import com.blackducksoftware.integration.hub.cli.SimpleScanUtility;
+import com.blackducksoftware.integration.hub.cli.parallel.ParallelSimpleScanner;
+import com.blackducksoftware.integration.hub.cli.summary.ScanTargetOutput;
 import com.blackducksoftware.integration.hub.configuration.HubScanConfig;
 import com.blackducksoftware.integration.hub.configuration.HubServerConfig;
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.model.DetectProject;
+import com.blackducksoftware.integration.hub.service.model.ProjectRequestBuilder;
 import com.blackducksoftware.integration.log.IntLogger;
 import com.blackducksoftware.integration.log.Slf4jIntLogger;
 import com.blackducksoftware.integration.rest.connection.RestConnection;
@@ -51,7 +55,6 @@ import com.blackducksoftware.integration.util.IntEnvironmentVariables;
 import com.google.gson.Gson;
 
 @Component
-
 public class OfflineScanner {
     private final Logger logger = LoggerFactory.getLogger(OfflineScanner.class);
 
@@ -61,7 +64,7 @@ public class OfflineScanner {
     @Autowired
     private Gson gson;
 
-    boolean offlineScan(final DetectProject detectProject, final HubScanConfig hubScanConfig, final String hubSignatureScannerOfflineLocalPath)
+    public List<ScanTargetOutput> offlineScan(final DetectProject detectProject, final HubScanConfig hubScanConfig, final String hubSignatureScannerOfflineLocalPath)
             throws IllegalArgumentException, IntegrationException, DetectUserFriendlyException, InterruptedException {
         final IntLogger intLogger = new Slf4jIntLogger(logger);
 
@@ -70,7 +73,11 @@ public class OfflineScanner {
         final IntEnvironmentVariables intEnvironmentVariables = new IntEnvironmentVariables();
         intEnvironmentVariables.putAll(System.getenv());
 
-        final SimpleScanUtility simpleScanUtility = new SimpleScanUtility(intLogger, gson, hubServerConfig, intEnvironmentVariables, hubScanConfig, detectProject.getProjectName(), detectProject.getProjectVersion());
+        final ProjectRequestBuilder projectRequestBuilder = new ProjectRequestBuilder();
+        projectRequestBuilder.setProjectName(detectProject.getProjectName());
+        projectRequestBuilder.setVersionName(detectProject.getProjectVersion());
+
+        final ParallelSimpleScanner parallelSimpleScanner = new ParallelSimpleScanner(intLogger, intEnvironmentVariables, gson);
         CLILocation cliLocation = new CLILocation(intLogger, hubScanConfig.getToolsDir());
         if (StringUtils.isNotBlank(hubSignatureScannerOfflineLocalPath)) {
             cliLocation = new OfflineCLILocation(intLogger, new File(hubSignatureScannerOfflineLocalPath));
@@ -84,14 +91,20 @@ public class OfflineScanner {
 
         if (!cliInstalledOkay && StringUtils.isNotBlank(hubSignatureScannerOfflineLocalPath)) {
             logger.warn(String.format("The signature scanner is not correctly installed at %s", hubSignatureScannerOfflineLocalPath));
-            return false;
+            return Collections.emptyList();
         } else if (!cliInstalledOkay) {
             logger.warn(String.format("The signature scanner is not correctly installed at %s", hubScanConfig.getToolsDir()));
-            return false;
+            return Collections.emptyList();
         } else {
-            simpleScanUtility.setupAndExecuteScan(cliLocation);
-            logger.info(String.format("The scan dry run files can be found in : %s", simpleScanUtility.getDataDirectory()));
-            return true;
+            final List<ScanTargetOutput> scanTargetOutputs = parallelSimpleScanner.executeScans(hubServerConfig, hubScanConfig, projectRequestBuilder.build(), cliLocation, detectConfiguration.getHubSignatureScannerParallelProcessors());
+            if (null != scanTargetOutputs && !scanTargetOutputs.isEmpty()) {
+                for (final ScanTargetOutput scanTargetOutput : scanTargetOutputs) {
+                    if (null != scanTargetOutput && null != scanTargetOutput.getDryRunFile() && scanTargetOutput.getDryRunFile().isFile()) {
+                        logger.info(String.format("The dry run file for target '%s' can be found at : %s", scanTargetOutput.getScanTarget(), scanTargetOutput.getDryRunFile().getAbsolutePath()));
+                    }
+                }
+            }
+            return scanTargetOutputs;
         }
     }
 
