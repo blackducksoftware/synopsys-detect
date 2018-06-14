@@ -97,7 +97,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         final ExtractionResult extractionResult = extractionManager.performExtractions(searchResult.getStrategyEvaluations());
         applyBomToolStatus(extractionResult.getSuccessfulBomToolTypes(), extractionResult.getFailedBomToolTypes());
 
-        final NameVersion nameVersion = findProjectNameAndVersion(searchResult.getStrategyEvaluations());
+        final NameVersion nameVersion = getProjectNameVersion(searchResult.getStrategyEvaluations());
         final String projectName = nameVersion.getName();
         final String projectVersion = nameVersion.getVersion();
 
@@ -120,26 +120,6 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         final DetectProject project = new DetectProject(projectName, projectVersion, bdioFiles);
 
         return project;
-    }
-
-    NameVersion findProjectNameAndVersion(final List<StrategyEvaluation> strategyEvaluations) {
-        final NameVersion nameVersion;
-
-        if (StringUtils.isBlank(detectConfiguration.getProjectName())){
-            final Optional<NameVersion> bomToolProjectInfo = findBomToolProjectNameAndVersion(strategyEvaluations);
-            if (bomToolProjectInfo.isPresent()) {
-                nameVersion = bomToolProjectInfo.get();
-            } else {
-                logger.info("A project name could not be decided. Using the name of the source path.");
-                final String projectName = getProjectName(detectConfiguration.getSourceDirectory().getName());
-                final String projectVersion = getProjectVersionName(null);
-                nameVersion = new NameVersion(projectName, projectVersion);
-            }
-        } else {
-            nameVersion = new NameVersion(getProjectName(null), getProjectVersionName(null));
-        }
-
-        return nameVersion;
     }
 
     Optional<NameVersion> findBomToolProjectNameAndVersion(final List<StrategyEvaluation> strategyEvaluations) {
@@ -205,39 +185,37 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         return ExitCodeType.SUCCESS;
     }
 
-    private String getProjectName(final String defaultProjectName) {
-        String projectName = null;
-        if (null != defaultProjectName) {
-            projectName = defaultProjectName.trim();
-        }
-        if (StringUtils.isNotBlank(detectConfiguration.getProjectName())) {
-            projectName = detectConfiguration.getProjectName();
-        } else if (StringUtils.isBlank(projectName) && StringUtils.isNotBlank(detectConfiguration.getSourcePath())) {
-            final String finalSourcePathPiece = detectFileFinder.extractFinalPieceFromPath(detectConfiguration.getSourcePath());
-            projectName = finalSourcePathPiece;
-        }
-        return projectName;
-    }
+    private NameVersion getProjectNameVersion(final List<StrategyEvaluation> strategyEvaluations) {
+        final Optional<NameVersion> bomToolSuggestedNameVersion = findBomToolProjectNameAndVersion(strategyEvaluations);
 
-    private String getProjectVersionName(final String defaultVersionName) {
-        String projectVersion = null;
-        if (null != defaultVersionName) {
-            projectVersion = defaultVersionName.trim();
+        String projectName = detectConfiguration.getProjectName();
+        if (StringUtils.isBlank(projectName) && bomToolSuggestedNameVersion.isPresent()) {
+            projectName = bomToolSuggestedNameVersion.get().getName();
         }
 
-        if (StringUtils.isNotBlank(detectConfiguration.getProjectVersionName())) {
-            projectVersion = detectConfiguration.getProjectVersionName();
-        } else if (StringUtils.isBlank(projectVersion)) {
+        if (StringUtils.isBlank(projectName)) {
+            logger.info("A project name could not be decided. Using the name of the source path.");
+            projectName = detectConfiguration.getSourceDirectory().getName();
+        }
+
+        String projectVersionName = detectConfiguration.getProjectVersionName();
+        if (StringUtils.isBlank(projectVersionName) && bomToolSuggestedNameVersion.isPresent()) {
+            projectVersionName = bomToolSuggestedNameVersion.get().getVersion();
+        }
+
+        if (StringUtils.isBlank(projectVersionName)) {
             if ("timestamp".equals(detectConfiguration.getDefaultProjectVersionScheme())) {
+                logger.info("A project version name could not be decided. Using the current timestamp.");
                 final String timeformat = detectConfiguration.getDefaultProjectVersionTimeformat();
                 final String timeString = DateTimeFormatter.ofPattern(timeformat).withZone(ZoneOffset.UTC).format(Instant.now().atZone(ZoneOffset.UTC));
-                projectVersion = timeString;
+                projectVersionName = timeString;
             } else {
-                projectVersion = detectConfiguration.getDefaultProjectVersionText();
+                logger.info("A project version name could not be decided. Using the default version text.");
+                projectVersionName = detectConfiguration.getDefaultProjectVersionText();
             }
         }
 
-        return projectVersion;
+        return new NameVersion(projectName, projectVersionName);
     }
 
 }
