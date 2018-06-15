@@ -59,7 +59,6 @@ import com.blackducksoftware.integration.hub.detect.project.BomToolProjectInfoDe
 import com.blackducksoftware.integration.hub.detect.summary.BomToolSummaryResult;
 import com.blackducksoftware.integration.hub.detect.summary.Result;
 import com.blackducksoftware.integration.hub.detect.summary.SummaryResultReporter;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.util.NameVersion;
 
 @Component
@@ -71,9 +70,6 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
 
     @Autowired
     private DetectConfiguration detectConfiguration;
-
-    @Autowired
-    private DetectFileFinder detectFileFinder;
 
     @Autowired
     private SearchManager searchManager;
@@ -91,13 +87,12 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     private ExtractionSummaryReporter extractionSummaryReporter;
 
     public DetectProject createDetectProject() throws DetectUserFriendlyException, IntegrationException {
-
         final SearchResult searchResult = searchManager.performSearch();
 
         final ExtractionResult extractionResult = extractionManager.performExtractions(searchResult.getStrategyEvaluations());
         applyBomToolStatus(extractionResult.getSuccessfulBomToolTypes(), extractionResult.getFailedBomToolTypes());
 
-        final NameVersion nameVersion = findProjectNameAndVersion(searchResult.getStrategyEvaluations());
+        final NameVersion nameVersion = getProjectNameVersion(searchResult.getStrategyEvaluations());
         final String projectName = nameVersion.getName();
         final String projectVersion = nameVersion.getVersion();
 
@@ -122,67 +117,6 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         return project;
     }
 
-    NameVersion findProjectNameAndVersion(final List<StrategyEvaluation> strategyEvaluations) {
-        final NameVersion nameVersion;
-
-        if (StringUtils.isBlank(detectConfiguration.getProjectName())){
-            final Optional<NameVersion> bomToolProjectInfo = findBomToolProjectNameAndVersion(strategyEvaluations);
-            if (bomToolProjectInfo.isPresent()) {
-                nameVersion = bomToolProjectInfo.get();
-            } else {
-                logger.info("A project name could not be decided. Using the name of the source path.");
-                final String projectName = getProjectName(detectConfiguration.getSourceDirectory().getName());
-                final String projectVersion = getProjectVersionName(null);
-                nameVersion = new NameVersion(projectName, projectVersion);
-            }
-        } else {
-            nameVersion = new NameVersion(getProjectName(null), getProjectVersionName(null));
-        }
-
-        return nameVersion;
-    }
-
-    Optional<NameVersion> findBomToolProjectNameAndVersion(final List<StrategyEvaluation> strategyEvaluations) {
-        final String projectBomTool = detectConfiguration.getDetectProjectBomTool();
-        Optional<BomToolType> preferredBomToolType = Optional.empty();
-        try {
-            preferredBomToolType = Optional.of(BomToolType.valueOf(projectBomTool));
-        } catch (final Exception e) {
-            logger.info("No preferred bom tool type was provided, deciding project name automatically.");
-        }
-
-        final List<BomToolProjectInfo> allBomToolProjectInfo = createBomToolProjectInfo(strategyEvaluations);
-        final BomToolProjectInfoDecider decider = new BomToolProjectInfoDecider();
-        return decider.decideProjectInfo(allBomToolProjectInfo, preferredBomToolType);
-    }
-
-    private List<BomToolProjectInfo> createBomToolProjectInfo(final List<StrategyEvaluation> strategyEvaluations) {
-        return strategyEvaluations.stream()
-                .filter(it -> it.isExtractionSuccess())
-                .filter(it -> it.extraction.projectName != null)
-                .map(it -> {
-                    final NameVersion nameVersion = new NameVersion(it.extraction.projectName, it.extraction.projectVersion);
-                    final BomToolProjectInfo possibility = new BomToolProjectInfo(it.strategy.getBomToolType(), it.environment.getDepth(), nameVersion);
-                    return possibility;
-                })
-                .collect(Collectors.toList());
-    }
-
-    private void applyFailedBomToolStatus(final Set<BomToolType> failedBomToolTypes) {
-        for (final BomToolType type : failedBomToolTypes) {
-            bomToolSummaryResults.put(type, Result.FAILURE);
-        }
-    }
-
-    private void applyBomToolStatus(final Set<BomToolType> successBomToolTypes, final Set<BomToolType> failedBomToolTypes) {
-        applyFailedBomToolStatus(failedBomToolTypes);
-        for (final BomToolType type : successBomToolTypes) {
-            if (!bomToolSummaryResults.containsKey(type)) {
-                bomToolSummaryResults.put(type, Result.SUCCESS);
-            }
-        }
-    }
-
     @Override
     public List<BomToolSummaryResult> getDetectSummaryResults() {
         final List<BomToolSummaryResult> detectSummaryResults = new ArrayList<>();
@@ -205,39 +139,78 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         return ExitCodeType.SUCCESS;
     }
 
-    private String getProjectName(final String defaultProjectName) {
-        String projectName = null;
-        if (null != defaultProjectName) {
-            projectName = defaultProjectName.trim();
+    private void applyFailedBomToolStatus(final Set<BomToolType> failedBomToolTypes) {
+        for (final BomToolType type : failedBomToolTypes) {
+            bomToolSummaryResults.put(type, Result.FAILURE);
         }
-        if (StringUtils.isNotBlank(detectConfiguration.getProjectName())) {
-            projectName = detectConfiguration.getProjectName();
-        } else if (StringUtils.isBlank(projectName) && StringUtils.isNotBlank(detectConfiguration.getSourcePath())) {
-            final String finalSourcePathPiece = detectFileFinder.extractFinalPieceFromPath(detectConfiguration.getSourcePath());
-            projectName = finalSourcePathPiece;
-        }
-        return projectName;
     }
 
-    private String getProjectVersionName(final String defaultVersionName) {
-        String projectVersion = null;
-        if (null != defaultVersionName) {
-            projectVersion = defaultVersionName.trim();
+    private void applyBomToolStatus(final Set<BomToolType> successBomToolTypes, final Set<BomToolType> failedBomToolTypes) {
+        applyFailedBomToolStatus(failedBomToolTypes);
+        for (final BomToolType type : successBomToolTypes) {
+            if (!bomToolSummaryResults.containsKey(type)) {
+                bomToolSummaryResults.put(type, Result.SUCCESS);
+            }
+        }
+    }
+
+    private NameVersion getProjectNameVersion(final List<StrategyEvaluation> strategyEvaluations) {
+        final Optional<NameVersion> bomToolSuggestedNameVersion = findBomToolProjectNameAndVersion(strategyEvaluations);
+
+        String projectName = detectConfiguration.getProjectName();
+        if (StringUtils.isBlank(projectName) && bomToolSuggestedNameVersion.isPresent()) {
+            projectName = bomToolSuggestedNameVersion.get().getName();
         }
 
-        if (StringUtils.isNotBlank(detectConfiguration.getProjectVersionName())) {
-            projectVersion = detectConfiguration.getProjectVersionName();
-        } else if (StringUtils.isBlank(projectVersion)) {
+        if (StringUtils.isBlank(projectName)) {
+            logger.info("A project name could not be decided. Using the name of the source path.");
+            projectName = detectConfiguration.getSourceDirectory().getName();
+        }
+
+        String projectVersionName = detectConfiguration.getProjectVersionName();
+        if (StringUtils.isBlank(projectVersionName) && bomToolSuggestedNameVersion.isPresent()) {
+            projectVersionName = bomToolSuggestedNameVersion.get().getVersion();
+        }
+
+        if (StringUtils.isBlank(projectVersionName)) {
             if ("timestamp".equals(detectConfiguration.getDefaultProjectVersionScheme())) {
+                logger.info("A project version name could not be decided. Using the current timestamp.");
                 final String timeformat = detectConfiguration.getDefaultProjectVersionTimeformat();
                 final String timeString = DateTimeFormatter.ofPattern(timeformat).withZone(ZoneOffset.UTC).format(Instant.now().atZone(ZoneOffset.UTC));
-                projectVersion = timeString;
+                projectVersionName = timeString;
             } else {
-                projectVersion = detectConfiguration.getDefaultProjectVersionText();
+                logger.info("A project version name could not be decided. Using the default version text.");
+                projectVersionName = detectConfiguration.getDefaultProjectVersionText();
             }
         }
 
-        return projectVersion;
+        return new NameVersion(projectName, projectVersionName);
+    }
+
+    private Optional<NameVersion> findBomToolProjectNameAndVersion(final List<StrategyEvaluation> strategyEvaluations) {
+        final String projectBomTool = detectConfiguration.getDetectProjectBomTool();
+        Optional<BomToolType> preferredBomToolType = Optional.empty();
+        if (StringUtils.isBlank(projectBomTool) || !BomToolType.POSSIBLE_NAMES.contains(projectBomTool)) {
+            logger.info("A valid preferred bom tool type was not provided, deciding project name automatically.");
+        } else {
+            preferredBomToolType = Optional.of(BomToolType.valueOf(projectBomTool));
+        }
+
+        final List<BomToolProjectInfo> allBomToolProjectInfo = createBomToolProjectInfo(strategyEvaluations);
+        final BomToolProjectInfoDecider decider = new BomToolProjectInfoDecider();
+        return decider.decideProjectInfo(allBomToolProjectInfo, preferredBomToolType);
+    }
+
+    private List<BomToolProjectInfo> createBomToolProjectInfo(final List<StrategyEvaluation> strategyEvaluations) {
+        return strategyEvaluations.stream()
+                .filter(it -> it.isExtractionSuccess())
+                .filter(it -> it.extraction.projectName != null)
+                .map(it -> {
+                    final NameVersion nameVersion = new NameVersion(it.extraction.projectName, it.extraction.projectVersion);
+                    final BomToolProjectInfo possibility = new BomToolProjectInfo(it.strategy.getBomToolType(), it.environment.getDepth(), nameVersion);
+                    return possibility;
+                })
+                .collect(Collectors.toList());
     }
 
 }

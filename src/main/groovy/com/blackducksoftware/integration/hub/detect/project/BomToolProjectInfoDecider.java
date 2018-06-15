@@ -33,7 +33,6 @@ public class BomToolProjectInfoDecider {
     }
 
     private ProjectInfoResult decideBomToolInfo(final List<BomToolProjectInfo> projectNamePossibilities, final Optional<BomToolType> preferredBomToolType) {
-
         if (preferredBomToolType.isPresent()) {
             final List<BomToolProjectInfo> possiblePreferred = projectNamePossibilities.stream()
                     .filter(it -> it.getBomToolType() == preferredBomToolType.get())
@@ -69,10 +68,9 @@ public class BomToolProjectInfoDecider {
                 return new NoUniqueUnchosenProjectInfoResult();
             }
         }
-
     }
 
-    ProjectInfoResult arbitrarilyDecide(final List<BomToolProjectInfo> possibilities, final List<BomToolType> bomToolOptions) {
+    private ProjectInfoResult arbitrarilyDecide(final List<BomToolProjectInfo> possibilities, final List<BomToolType> bomToolOptions) {
         final List<BomToolProjectInfo> arbitraryOptions = possibilities.stream()
                 .filter(it -> bomToolOptions.contains(it.getBomToolType()))
                 .collect(Collectors.toList());
@@ -88,7 +86,7 @@ public class BomToolProjectInfoDecider {
         }
     }
 
-    List<BomToolProjectInfo> projectNamesAtLowestDepth(final List<BomToolProjectInfo> projectNamePossibilities){
+    private List<BomToolProjectInfo> projectNamesAtLowestDepth(final List<BomToolProjectInfo> projectNamePossibilities) {
         final Optional<Integer> lowestDepth = projectNamePossibilities.stream()
                 .map(it -> it.getDepth())
                 .min(Integer::compare);
@@ -101,6 +99,6 @@ public class BomToolProjectInfoDecider {
         } else {
             return new ArrayList<>();
         }
-
     }
+
 }

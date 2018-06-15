@@ -17,9 +17,11 @@ public class BomToolProjectInfo {
     public BomToolType getBomToolType() {
         return bomToolType;
     }
+
     public int getDepth() {
         return depth;
     }
+
     public NameVersion getNameVersion() {
         return nameVersion;
     }
