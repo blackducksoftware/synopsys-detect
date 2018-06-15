@@ -5,6 +5,7 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 import org.junit.Assert
+import org.junit.Ignore
 import org.junit.Test
 
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
