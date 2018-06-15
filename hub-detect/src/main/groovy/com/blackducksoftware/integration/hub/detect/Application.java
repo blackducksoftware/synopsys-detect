@@ -28,10 +28,6 @@ import java.io.PrintStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,16 +36,10 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 
 import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.api.generated.view.ProjectVersionView;
-import com.blackducksoftware.integration.hub.bdio.BdioNodeFactory;
-import com.blackducksoftware.integration.hub.bdio.BdioPropertyHelper;
-import com.blackducksoftware.integration.hub.bdio.BdioTransformer;
-import com.blackducksoftware.integration.hub.bdio.SimpleBdioFactory;
-import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer;
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
@@ -76,13 +66,9 @@ import com.blackducksoftware.integration.hub.detect.summary.DetectSummary;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.log.SilentLogger;
 import com.blackducksoftware.integration.log.Slf4jIntLogger;
-import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import freemarker.template.Configuration;
 
 @SpringBootApplication
+@Import({ BeanConfiguration.class })
 public class Application implements ApplicationRunner {
     private final Logger logger = LoggerFactory.getLogger(Application.class);
 
@@ -293,50 +279,6 @@ public class Application implements ApplicationRunner {
             exitCodeType = ExitCodeType.FAILURE_UNKNOWN_ERROR;
         }
         logger.error(e.getMessage());
-    }
-
-    @Bean
-    public Gson gson() {
-        return new GsonBuilder().setPrettyPrinting().create();
-    }
-
-    @Bean
-    public SimpleBdioFactory simpleBdioFactory() {
-        final BdioPropertyHelper bdioPropertyHelper = new BdioPropertyHelper();
-        final BdioNodeFactory bdioNodeFactory = new BdioNodeFactory(bdioPropertyHelper);
-        final DependencyGraphTransformer dependencyGraphTransformer = new DependencyGraphTransformer(bdioPropertyHelper, bdioNodeFactory);
-        return new SimpleBdioFactory(bdioPropertyHelper, bdioNodeFactory, dependencyGraphTransformer, externalIdFactory(), gson());
-    }
-
-    @Bean
-    public BdioTransformer bdioTransformer() {
-        return new BdioTransformer();
-    }
-
-    @Bean
-    public ExternalIdFactory externalIdFactory() {
-        return new ExternalIdFactory();
-    }
-
-    @Bean
-    public IntegrationEscapeUtil integrationEscapeUtil() {
-        return new IntegrationEscapeUtil();
-    }
-
-    @Bean
-    public Configuration configuration() {
-        final Configuration configuration = new Configuration(Configuration.VERSION_2_3_26);
-        configuration.setClassForTemplateLoading(Application.class, "/");
-        configuration.setDefaultEncoding("UTF-8");
-        configuration.setLogTemplateExceptions(true);
-
-        return configuration;
-    }
-
-    @Bean
-    public DocumentBuilder xmlDocumentBuilder() throws ParserConfigurationException {
-        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        return factory.newDocumentBuilder();
     }
 
 }

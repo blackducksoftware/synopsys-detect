@@ -63,7 +63,6 @@ import com.blackducksoftware.integration.rest.connection.UnauthenticatedRestConn
 import com.blackducksoftware.integration.rest.connection.UnauthenticatedRestConnectionBuilder;
 import com.blackducksoftware.integration.rest.proxy.ProxyInfo;
 import com.blackducksoftware.integration.rest.proxy.ProxyInfoBuilder;
-import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
 import com.blackducksoftware.integration.util.ResourceUtil;
 
 @Component
@@ -134,7 +133,6 @@ public class DetectConfiguration {
     private boolean usingDefaultSourcePath;
     private boolean usingDefaultOutputPath;
 
-    private ExcludedIncludedFilter bomToolFilter;
     private List<String> bomToolSearchDirectoryExclusions;
 
     public void init(final List<DetectOption> detectOptions) throws DetectUserFriendlyException, IOException, IllegalArgumentException, IllegalAccessException {
@@ -208,8 +206,6 @@ public class DetectConfiguration {
         if (hubSignatureScannerParallelProcessors == -1) {
             hubSignatureScannerParallelProcessors = Runtime.getRuntime().availableProcessors();
         }
-
-        bomToolFilter = new ExcludedIncludedFilter(getExcludedBomToolTypes(), getIncludedBomToolTypes());
 
         configureForDocker();
 
@@ -300,10 +296,6 @@ public class DetectConfiguration {
 
     public boolean isUsingDefaultOutputPath() {
         return usingDefaultOutputPath;
-    }
-
-    public boolean isBomToolIncluded(final String type) {
-        return bomToolFilter.shouldInclude(type);
     }
 
     public String getDetectProperty(final String key) {
