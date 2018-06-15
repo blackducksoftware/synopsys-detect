@@ -36,13 +36,15 @@ import com.blackducksoftware.integration.hub.detect.strategy.evaluation.Strategy
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyException;
 import com.blackducksoftware.integration.hub.detect.strategy.result.ExecutableNotFoundStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.FileNotFoundStrategyResult;
+import com.blackducksoftware.integration.hub.detect.strategy.result.NpmRunInstallStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.PassedStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.StrategyResult;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
 @Component
 public class NpmCliStrategy extends Strategy<NpmCliContext, NpmCliExtractor>{
-    public static final String NODE_MODULES= "node_modules";
+    public static final String NODE_MODULES = "node_modules";
+    public static final String PACKAGE_JSON = "package.json";
 
     @Autowired
     public DetectFileFinder fileFinder;
@@ -59,9 +61,9 @@ public class NpmCliStrategy extends Strategy<NpmCliContext, NpmCliExtractor>{
 
     @Override
     public StrategyResult applicable(final StrategyEnvironment environment, final NpmCliContext context) {
-        final File pom= fileFinder.findFile(environment.getDirectory(), NODE_MODULES);
-        if (pom == null) {
-            return new FileNotFoundStrategyResult(NODE_MODULES);
+        final File packageJson = fileFinder.findFile(environment.getDirectory(), PACKAGE_JSON);
+        if (packageJson == null) {
+            return new FileNotFoundStrategyResult(PACKAGE_JSON);
         }
 
         return new PassedStrategyResult();
@@ -69,8 +71,12 @@ public class NpmCliStrategy extends Strategy<NpmCliContext, NpmCliExtractor>{
 
     @Override
     public StrategyResult extractable(final StrategyEnvironment environment, final NpmCliContext context) throws StrategyException {
-        context.npmExe = npmExecutableFinder.findNpm(environment);
+        final File nodeModules = fileFinder.findFile(environment.getDirectory(), NODE_MODULES);
+        if (nodeModules == null) {
+            return new NpmRunInstallStrategyResult(environment.getDirectory().getAbsolutePath());
+        }
 
+        context.npmExe = npmExecutableFinder.findNpm(environment);
         if (context.npmExe == null) {
             return new ExecutableNotFoundStrategyResult("npm");
         }

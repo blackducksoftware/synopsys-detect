@@ -23,12 +23,12 @@
  */
 package com.blackducksoftware.integration.hub.detect.model;
 
-public class ProcessedDetectCodeLocation {
+public class BdioCodeLocation {
     public String codeLocationName;
     public String bdioName;
     public DetectCodeLocation codeLocation;
 
-    public ProcessedDetectCodeLocation(final DetectCodeLocation codeLocation, final String codeLocationName, final String bdioName) {
+    public BdioCodeLocation(final DetectCodeLocation codeLocation, final String codeLocationName, final String bdioName) {
         this.codeLocation = codeLocation;
         this.codeLocationName = codeLocationName;
         this.bdioName = bdioName;

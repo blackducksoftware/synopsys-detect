@@ -79,8 +79,13 @@ public class YarnListParser extends BaseYarnParser {
                 final Optional<Dependency> optionalDependency = getDependencyFromLine(cleanedLine, yarnDependencyMapper);
                 if (optionalDependency.isPresent()) {
                     final Dependency currentDep = optionalDependency.get();
-                    logger.debug(currentDep.name + "@" + currentDep.version + " is being added as a child of " + parentDep.name + "@" + parentDep.version);
-                    graph.addChildWithParent(currentDep, parentDep);
+                    if (parentDep != null) {
+                        logger.debug(currentDep.name + "@" + currentDep.version + " is being added as a child of " + parentDep.name + "@" + parentDep.version);
+                        graph.addChildWithParent(currentDep, parentDep);
+                    } else {
+                        logger.debug(String.format("Problem parsing dependency %s@%s: Depth is %s, but no parent could be found. Treating dependency as root level to avoid missing dependencies.", currentDep.name, currentDep.version, depth));
+                        graph.addChildToRoot(currentDep);
+                    }
                 } else {
                     continue;
                 }

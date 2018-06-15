@@ -21,21 +21,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.codelocation;
+package com.blackducksoftware.integration.hub.detect.manager.result.search;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
 
-import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
+import com.blackducksoftware.integration.hub.detect.extraction.model.StrategyEvaluation;
 
-public abstract class CodeLocationNameFactory {
-    @Autowired
-    protected DetectFileFinder detectFileFinder;
+public class SearchResultSuccess extends SearchResult {
+    List<StrategyEvaluation> strategyEvaluations;
 
-    protected String shortenPiece(final String piece) {
-        if (piece.length() <= 40) {
-            return piece;
-        } else {
-            return piece.substring(0, 19) + "..." + piece.substring(piece.length() - 18);
-        }
+    public SearchResultSuccess(final List<StrategyEvaluation> strategyEvaluations) {
+        this.strategyEvaluations = strategyEvaluations;
     }
+
+    @Override
+    public List<StrategyEvaluation> getStrategyEvaluations() {
+        return strategyEvaluations;
+    }
+
+    @Override
+    public boolean getSuccess() {
+        return true;
+    }
+
 }

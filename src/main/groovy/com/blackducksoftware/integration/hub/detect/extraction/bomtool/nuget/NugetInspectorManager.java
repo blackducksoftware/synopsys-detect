@@ -25,9 +25,11 @@ package com.blackducksoftware.integration.hub.detect.extraction.bomtool.nuget;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,12 +123,19 @@ public class NugetInspectorManager {
     private String resolveVersionFromSource(final String source, final String nugetExecutablePath) throws ExecutableRunnerException {
         String version = null;
 
-        final List<String> nugetOptions = Arrays.asList(
+        final List<String> nugetOptions = new ArrayList<>();
+
+        nugetOptions.addAll(Arrays.asList(
                 "list",
                 detectConfiguration.getNugetInspectorPackageName(),
                 "-Source",
                 source
-        );
+                ));
+
+        if (StringUtils.isNotBlank(detectConfiguration.getNugetConfigPath())) {
+            nugetOptions.add("-ConfigFile");
+            nugetOptions.add(detectConfiguration.getNugetConfigPath());
+        }
 
         final Executable getInspectorVersionExecutable = new Executable(detectConfiguration.getSourceDirectory(), nugetExecutablePath, nugetOptions);
 
@@ -175,7 +184,9 @@ public class NugetInspectorManager {
     }
 
     private boolean attemptInstallInspectorFromSource(final String source, final String nugetExecutablePath, final File outputDirectory) throws IOException, ExecutableRunnerException {
-        final List<String> nugetOptions = Arrays.asList(
+        final List<String> nugetOptions = new ArrayList<>();
+
+        nugetOptions.addAll(Arrays.asList(
                 "install",
                 detectConfiguration.getNugetInspectorPackageName(),
                 "-OutputDirectory",
@@ -184,7 +195,12 @@ public class NugetInspectorManager {
                 source,
                 "-Version",
                 resolvedInspectorVersion
-        );
+                ));
+
+        if (StringUtils.isNotBlank(detectConfiguration.getNugetConfigPath())) {
+            nugetOptions.add("-ConfigFile");
+            nugetOptions.add(detectConfiguration.getNugetConfigPath());
+        }
 
         final Executable installInspectorExecutable = new Executable(detectConfiguration.getSourceDirectory(), nugetExecutablePath, nugetOptions);
         final ExecutableOutput result = executableRunner.execute(installInspectorExecutable);

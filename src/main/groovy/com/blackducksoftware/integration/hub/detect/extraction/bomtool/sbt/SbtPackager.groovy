@@ -23,6 +23,9 @@
  */
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.sbt
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+
 import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.sbt.models.SbtDependencyModule
@@ -31,9 +34,8 @@ import com.blackducksoftware.integration.hub.detect.extraction.bomtool.sbt.repor
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter
+
 import groovy.transform.TypeChecked
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 
 @TypeChecked
 class SbtPackager {

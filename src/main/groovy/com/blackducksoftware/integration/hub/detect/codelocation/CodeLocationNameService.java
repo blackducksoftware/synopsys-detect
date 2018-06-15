@@ -21,10 +21,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.extraction;
+package com.blackducksoftware.integration.hub.detect.codelocation;
 
-public abstract class Extractor<C extends ExtractionContext> {
+import org.springframework.beans.factory.annotation.Autowired;
 
-    public abstract Extraction extract(C context);
+import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
+public abstract class CodeLocationNameService {
+    @Autowired
+    protected DetectFileFinder detectFileFinder;
+
+    protected String shortenPiece(final String piece) {
+        if (piece.length() <= 40) {
+            return piece;
+        } else {
+            return piece.substring(0, 19) + "..." + piece.substring(piece.length() - 18);
+        }
+    }
 }

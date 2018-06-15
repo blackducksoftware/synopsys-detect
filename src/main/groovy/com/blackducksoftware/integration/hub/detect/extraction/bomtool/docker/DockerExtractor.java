@@ -34,7 +34,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,8 +47,8 @@ import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.SimpleBdioDocument;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
-import com.blackducksoftware.integration.hub.detect.extraction.Extraction;
-import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
+import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
+import com.blackducksoftware.integration.hub.detect.extraction.model.Extractor;
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
@@ -60,30 +59,40 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableAr
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
+import com.blackducksoftware.integration.util.ResourceUtil;
 import com.google.gson.Gson;
 
 @Component
 public class DockerExtractor extends Extractor<DockerContext> {
     public static final String TAR_FILENAME_PATTERN = "*.tar.gz";
     public static final String DEPENDENCIES_PATTERN = "*bdio.jsonld";
+
     private final Logger logger = LoggerFactory.getLogger(DockerExtractor.class);
+
     @Autowired
     protected DetectFileFinder detectFileFinder;
 
     @Autowired
     protected DetectFileManager detectFileManager;
+
     @Autowired
     DockerProperties dockerProperties;
+
     @Autowired
     ExecutableManager executableManager;
+
     @Autowired
     ExecutableRunner executableRunner;
+
     @Autowired
     BdioTransformer bdioTransformer;
+
     @Autowired
     ExternalIdFactory externalIdFactory;
+
     @Autowired
     Gson gson;
+
     @Autowired
     HubSignatureScanner hubSignatureScanner;
 
@@ -123,8 +132,7 @@ public class DockerExtractor extends Extractor<DockerContext> {
                 // The -c is a bash option, the following String is the command we want to run
                 final List<String> dockerImportArguments = Arrays.asList(
                         "-c",
-                        "docker load -i \"" + imageToImport.getCanonicalPath() + "\""
-                );
+                        "docker load -i \"" + imageToImport.getCanonicalPath() + "\"");
 
                 final Executable dockerImportImageExecutable = new Executable(directory, environmentVariables, bashExe.toString(), dockerImportArguments);
                 executableRunner.execute(dockerImportImageExecutable);
@@ -167,17 +175,17 @@ public class DockerExtractor extends Extractor<DockerContext> {
         final Executable dockerExecutable = new Executable(outputDirectory, environmentVariables, bashExe.toString(), dockerArguments);
         executableRunner.execute(dockerExecutable);
 
-        if (StringUtils.isNotBlank(dockerTarFilePath)) {
-            File dockerTarFile = new File(dockerTarFilePath);
-            if (dockerTarFile.isFile()) {
-                hubSignatureScanner.setDockerTarFilePath(dockerTarFile.getCanonicalPath());
-            }
+        final File producedTarFile = detectFileFinder.findFile(outputDirectory, TAR_FILENAME_PATTERN);
+        if (null != producedTarFile && producedTarFile.isFile()) {
+            hubSignatureScanner.setDockerTarFilePath(producedTarFile.getCanonicalPath());
         } else {
-            File producedTarFile = detectFileFinder.findFile(outputDirectory, TAR_FILENAME_PATTERN);
-            if (null != producedTarFile && producedTarFile.isFile()) {
-                hubSignatureScanner.setDockerTarFilePath(producedTarFile.getCanonicalPath());
-            } else {
-                logger.debug(String.format("No files found matching pattern [%s]. Expected docker-inspector to produce file in %s", TAR_FILENAME_PATTERN, outputDirectory.getCanonicalPath()));
+            logger.debug(String.format("No files found matching pattern [%s]. Expected docker-inspector to produce file in %s", TAR_FILENAME_PATTERN, outputDirectory.getCanonicalPath()));
+            if (StringUtils.isNotBlank(dockerTarFilePath)) {
+                final File dockerTarFile = new File(dockerTarFilePath);
+                if (dockerTarFile.isFile()) {
+                    logger.debug(String.format("Will scan the provided Docker tar file %s", dockerTarFile.getCanonicalPath()));
+                    hubSignatureScanner.setDockerTarFilePath(dockerTarFile.getCanonicalPath());
+                }
             }
         }
 
@@ -189,31 +197,35 @@ public class DockerExtractor extends Extractor<DockerContext> {
         if (bdioFile != null) {
             SimpleBdioDocument simpleBdioDocument = null;
             BdioReader bdioReader = null;
+            InputStream dockerOutputInputStream = null;
+
             try {
-                final InputStream dockerOutputInputStream = new FileInputStream(bdioFile);
+                dockerOutputInputStream = new FileInputStream(bdioFile);
                 bdioReader = new BdioReader(gson, dockerOutputInputStream);
                 simpleBdioDocument = bdioReader.readSimpleBdioDocument();
             } catch (final Exception e) {
-
             } finally {
-                IOUtils.closeQuietly(bdioReader);
+                ResourceUtil.closeQuietly(bdioReader);
+                ResourceUtil.closeQuietly(dockerOutputInputStream);
             }
 
-            final DependencyGraph dependencyGraph = bdioTransformer.transformToDependencyGraph(simpleBdioDocument.project, simpleBdioDocument.components);
+            if (simpleBdioDocument != null) {
+                final DependencyGraph dependencyGraph = bdioTransformer.transformToDependencyGraph(simpleBdioDocument.project, simpleBdioDocument.components);
 
-            final String projectName = simpleBdioDocument.project.name;
-            final String projectVersionName = simpleBdioDocument.project.version;
+                final String projectName = simpleBdioDocument.project.name;
+                final String projectVersionName = simpleBdioDocument.project.version;
 
-            final Forge dockerForge = new Forge(ExternalId.BDIO_ID_SEPARATOR, ExternalId.BDIO_ID_SEPARATOR, simpleBdioDocument.project.bdioExternalIdentifier.forge);
-            final String externalIdPath = simpleBdioDocument.project.bdioExternalIdentifier.externalId;
-            final ExternalId projectExternalId = externalIdFactory.createPathExternalId(dockerForge, externalIdPath);
+                final Forge dockerForge = new Forge(ExternalId.BDIO_ID_SEPARATOR, ExternalId.BDIO_ID_SEPARATOR, simpleBdioDocument.project.bdioExternalIdentifier.forge);
+                final String externalIdPath = simpleBdioDocument.project.bdioExternalIdentifier.externalId;
+                final ExternalId projectExternalId = externalIdFactory.createPathExternalId(dockerForge, externalIdPath);
 
-            final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolType.DOCKER, directory.toString(), projectExternalId, dependencyGraph).dockerImage(imageName).build();
-            return new Extraction.Builder().success(detectCodeLocation).projectName(projectName).projectVersion(projectVersionName).build();
+                final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolType.DOCKER, directory.toString(), projectExternalId, dependencyGraph).dockerImage(imageName).build();
 
-        } else {
-            return new Extraction.Builder().failure("No files found matching pattern [" + DEPENDENCIES_PATTERN + "]. Expected docker-inspector to produce file in " + directory.toString()).build();
+                return new Extraction.Builder().success(detectCodeLocation).projectName(projectName).projectVersion(projectVersionName).build();
+            }
         }
+
+        return new Extraction.Builder().failure("No files found matching pattern [" + DEPENDENCIES_PATTERN + "]. Expected docker-inspector to produce file in " + directory.toString()).build();
     }
 
 }

@@ -61,5 +61,6 @@ public class NpmStrategyCoordinator extends StrategyCoordinator {
         cliStrategy.yieldsTo(shrinkwrapStrategy);
         cliStrategy.yieldsTo(packageLockStrategy);
 
+        shrinkwrapStrategy.yieldsTo(packageLockStrategy);
     }
 }

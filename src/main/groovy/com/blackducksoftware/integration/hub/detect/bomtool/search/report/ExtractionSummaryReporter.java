@@ -34,19 +34,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.extraction.Extraction.ExtractionResult;
-import com.blackducksoftware.integration.hub.detect.extraction.StrategyEvaluation;
-import com.blackducksoftware.integration.hub.detect.model.DetectProject;
+import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction.ExtractionResultType;
+import com.blackducksoftware.integration.hub.detect.extraction.model.StrategyEvaluation;
+import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 
 @Component
 public class ExtractionSummaryReporter {
-    private final Logger logger = LoggerFactory.getLogger(PreparationSummaryReporter.class);
+    private final Logger logger = LoggerFactory.getLogger(ExtractionSummaryReporter.class);
 
-    public void print(final List<StrategyEvaluation> results, final DetectProject project) {
+    public void print(final List<StrategyEvaluation> results, final Map<DetectCodeLocation, String> codeLocationNameMap) {
         final Map<File, List<StrategyEvaluation>> byDirectory = results.stream()
                 .collect(Collectors.groupingBy(item -> item.environment.getDirectory()));
 
-        final List<ExtractionSummaryData> data = createData(byDirectory, project);
+        final List<ExtractionSummaryData> data = createData(byDirectory, codeLocationNameMap);
 
         final List<ExtractionSummaryData> sorted = sortByFilesystem(data);
 
@@ -54,7 +54,7 @@ public class ExtractionSummaryReporter {
 
     }
 
-    private List<ExtractionSummaryData> createData(final Map<File, List<StrategyEvaluation>> byDirectory, final DetectProject project) {
+    private List<ExtractionSummaryData> createData(final Map<File, List<StrategyEvaluation>> byDirectory, final Map<DetectCodeLocation, String> codeLocationNameMap) {
         final List<ExtractionSummaryData> datas = new ArrayList<>();
 
         for (final File file : byDirectory.keySet()) {
@@ -77,14 +77,14 @@ public class ExtractionSummaryReporter {
                     if (result.extraction != null) {
                         data.codeLocationsExtracted += result.extraction.codeLocations.size();
                         result.extraction.codeLocations.stream().forEach(it -> {
-                            final String name = project.getCodeLocationName(it);
+                            final String name = codeLocationNameMap.get(it);
                             data.codeLocationNames.add(name);
                         });
-                        if (result.extraction.result == ExtractionResult.Success) {
+                        if (result.extraction.result == ExtractionResultType.Success) {
                             data.success.add(result);
-                        } else if (result.extraction.result == ExtractionResult.Failure) {
+                        } else if (result.extraction.result == ExtractionResultType.Failure) {
                             data.failed.add(result);
-                        } else if (result.extraction.result == ExtractionResult.Exception) {
+                        } else if (result.extraction.result == ExtractionResultType.Exception) {
                             data.exception.add(result);
                         }
                     } else {
@@ -97,14 +97,14 @@ public class ExtractionSummaryReporter {
         return datas;
     }
 
-    private List<ExtractionSummaryData> sortByFilesystem(final List<ExtractionSummaryData> raw){
+    private List<ExtractionSummaryData> sortByFilesystem(final List<ExtractionSummaryData> raw) {
         return raw.stream().sorted((o1, o2) -> {
             final String[] pieces1 = o1.directory.split(Pattern.quote(File.separator));
             final String[] pieces2 = o2.directory.split(Pattern.quote(File.separator));
             final int min = Math.min(pieces1.length, pieces2.length);
             for (int i = 0; i < min; i++) {
                 final int compared = pieces1[i].compareTo(pieces2[i]);
-                if (compared != 0){
+                if (compared != 0) {
                     return compared;
                 }
             }
@@ -115,33 +115,28 @@ public class ExtractionSummaryReporter {
     private void printDirectories(final List<ExtractionSummaryData> data) {
         logger.info("");
         logger.info("");
-        info(ReportConstants.HEADING);
-        info("Extraction results:");
-        info(ReportConstants.HEADING);
+        logger.info(ReportConstants.HEADING);
+        logger.info("Extraction results:");
+        logger.info(ReportConstants.HEADING);
         data.stream().forEach(it -> {
             if (it.applicable > 0) {
-                info(it.directory);
-                info("\tCode locations: " + it.codeLocationsExtracted);
-                it.codeLocationNames.stream().forEach(name -> info("\t\t" + name));
+                logger.info(it.directory);
+                logger.info("\tCode locations: " + it.codeLocationsExtracted);
+                it.codeLocationNames.stream().forEach(name -> logger.info("\t\t" + name));
                 if (it.success.size() > 0) {
-                    info("\tSuccess: " + it.success.stream().map(success -> success.strategy.getDescriptiveName()).collect(Collectors.joining(",")));
+                    logger.info("\tSuccess: " + it.success.stream().map(success -> success.strategy.getDescriptiveName()).collect(Collectors.joining(",")));
                 }
                 if (it.failed.size() > 0) {
-                    info("\tFailure: " + it.failed.stream().map(failed -> failed.strategy.getDescriptiveName()).collect(Collectors.joining(",")));
+                    logger.error("\tFailure: " + it.failed.stream().map(failed -> failed.strategy.getDescriptiveName()).collect(Collectors.joining(",")));
                 }
                 if (it.exception.size() > 0) {
-                    info("\tException: " + it.exception.stream().map(exception -> exception.strategy.getDescriptiveName()).collect(Collectors.joining(",")));
+                    logger.error("\tException: " + it.exception.stream().map(exception -> exception.strategy.getDescriptiveName()).collect(Collectors.joining(",")));
                 }
             }
         });
-        info(ReportConstants.HEADING);
+        logger.info(ReportConstants.HEADING);
         logger.info("");
         logger.info("");
     }
-
-    private void info(final String line) {
-        logger.info(line);
-    }
-
 
 }

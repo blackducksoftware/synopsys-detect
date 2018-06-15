@@ -36,10 +36,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.extraction.Extraction;
-import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.npm.parse.NpmCliDependencyFinder;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.npm.parse.NpmParseResult;
+import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
+import com.blackducksoftware.integration.hub.detect.extraction.model.Extractor;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
@@ -85,9 +85,11 @@ public class NpmCliExtractor extends Extractor<NpmCliContext>  {
         if (npmLsOutputFile.length() > 0) {
             if (npmLsErrorFile.length() > 0) {
                 logger.debug("Error when running npm ls -json command");
-                printError(npmLsErrorFile);
+                printFileToDebug(npmLsErrorFile);
                 return new Extraction.Builder().failure("Npm returned no output after runnin npm ls.").build();
             }
+            logger.debug("Parsing npm ls file.");
+            printFileToDebug(npmLsOutputFile);
             try {
                 final NpmParseResult result = npmCliDependencyFinder.generateCodeLocation(context.directory.getCanonicalPath(), npmLsOutputFile);
                 return new Extraction.Builder().success(result.codeLocation).projectName(result.projectName).projectVersion(result.projectVersion).build();
@@ -97,7 +99,7 @@ public class NpmCliExtractor extends Extractor<NpmCliContext>  {
 
         } else if (npmLsErrorFile.length() > 0) {
             logger.error("Error when running npm ls -json command");
-            printError(npmLsErrorFile);
+            printFileToDebug(npmLsErrorFile);
             return new Extraction.Builder().failure("Npm returned error after running npm ls.").build();
         } else {
             logger.warn("Nothing returned from npm ls -json command");
@@ -107,7 +109,7 @@ public class NpmCliExtractor extends Extractor<NpmCliContext>  {
 
     }
 
-    void printError(final File errorFile) {
+    void printFileToDebug(final File errorFile) {
         String text = "";
         try {
             for (final String line : Files.readAllLines(errorFile.toPath(), StandardCharsets.UTF_8)){

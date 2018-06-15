@@ -34,10 +34,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.extraction.Extraction;
-import com.blackducksoftware.integration.hub.detect.extraction.Extractor;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.gradle.parse.GradleParseResult;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.gradle.parse.GradleReportParser;
+import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
+import com.blackducksoftware.integration.hub.detect.extraction.model.Extractor;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
@@ -71,7 +71,7 @@ public class GradleInspectorExtractor extends Extractor<GradleInspectorContext> 
 
             final List<String> arguments = new ArrayList<>();
             if (StringUtils.isNotBlank(gradleCommand)) {
-                for (String arg : gradleCommand.split(" ")) {
+                for (final String arg : gradleCommand.split(" ")) {
                     if (StringUtils.isNotBlank(arg)) {
                         arguments.add(arg);
                     }
@@ -106,7 +106,7 @@ public class GradleInspectorExtractor extends Extractor<GradleInspectorContext> 
                         }
                     }
                 }
-                detectFileManager.addOutputFile(context, blackduckDirectory);
+                detectFileManager.cleanupOutputFile(context, blackduckDirectory);
                 return new Extraction.Builder().success(codeLocations).projectName(projectName).projectVersion(projectVersion).build();
             } else {
                 return new Extraction.Builder().failure("The gradle inspector returned a non-zero exit code: " + output.getReturnCode()).build();

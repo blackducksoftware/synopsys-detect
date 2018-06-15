@@ -25,7 +25,7 @@ package com.blackducksoftware.integration.hub.detect.extraction.bomtool.cran;
 
 import java.io.File;
 
-import com.blackducksoftware.integration.hub.detect.extraction.ExtractionContext;
+import com.blackducksoftware.integration.hub.detect.extraction.model.ExtractionContext;
 
 public class PackratLockContext extends ExtractionContext {
     public File packratlock;

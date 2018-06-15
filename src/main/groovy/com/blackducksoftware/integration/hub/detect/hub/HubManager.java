@@ -80,10 +80,10 @@ public class HubManager implements ExitCodeReporter {
 
     private ExitCodeType exitCodeType = ExitCodeType.SUCCESS;
 
-    public ProjectVersionView updateHubProjectVersion(final DetectProject detectProject, final List<File> createdBdioFiles) throws IntegrationException, DetectUserFriendlyException, InterruptedException {
+    public ProjectVersionView updateHubProjectVersion(final DetectProject detectProject) throws IntegrationException, DetectUserFriendlyException, InterruptedException {
         final ProjectService projectService = hubServiceWrapper.createProjectService();
         ProjectVersionView projectVersionView = ensureProjectVersionExists(detectConfiguration, detectProject, projectService);
-        if (null != createdBdioFiles && !createdBdioFiles.isEmpty()) {
+        if (null != detectProject.getBdioFiles() && !detectProject.getBdioFiles().isEmpty()) {
             final HubServerConfig hubServerConfig = hubServiceWrapper.getHubServerConfig();
             final CodeLocationService codeLocationService = hubServiceWrapper.createCodeLocationService();
             if (detectConfiguration.getProjectCodeLocationUnmap()) {
@@ -98,7 +98,7 @@ public class HubManager implements ExitCodeReporter {
                     throw new DetectUserFriendlyException(String.format("There was a problem unmapping Code Locations: %s", e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
                 }
             }
-            bdioUploader.uploadBdioFiles(hubServerConfig, codeLocationService, detectProject, createdBdioFiles);
+            bdioUploader.uploadBdioFiles(hubServerConfig, codeLocationService, detectProject);
         } else {
             logger.debug("Did not create any bdio files.");
         }
@@ -133,25 +133,25 @@ public class HubManager implements ExitCodeReporter {
                 if (detectConfiguration.getRiskReportPdf()) {
                     final ReportService reportService = hubServiceWrapper.createReportService();
                     logger.info("Creating risk report pdf");
-                    final File pdfFile = reportService.createReportPdfFile(new File(detectConfiguration.getRiskReportPdfOutputDirectory()), detectProject.getProjectName(), detectProject.getProjectVersionName());
+                    final File pdfFile = reportService.createReportPdfFile(new File(detectConfiguration.getRiskReportPdfOutputDirectory()), detectProject.getProjectName(), detectProject.getProjectVersion());
                     logger.info(String.format("Created risk report pdf: %s", pdfFile.getCanonicalPath()));
                 }
 
                 if (detectConfiguration.getNoticesReport()) {
                     final ReportService reportService = hubServiceWrapper.createReportService();
                     logger.info("Creating notices report");
-                    final File noticesFile = reportService.createNoticesReportFile(new File(detectConfiguration.getNoticesReportOutputDirectory()), detectProject.getProjectName(), detectProject.getProjectVersionName());
+                    final File noticesFile = reportService.createNoticesReportFile(new File(detectConfiguration.getNoticesReportOutputDirectory()), detectProject.getProjectName(), detectProject.getProjectVersion());
                     if (noticesFile != null) {
                         logger.info(String.format("Created notices report: %s", noticesFile.getCanonicalPath()));
                     }
                 }
             }
 
-            if ((null != detectProject.getDetectCodeLocations() && !detectProject.getDetectCodeLocations().isEmpty()) || !detectConfiguration.getHubSignatureScannerDisabled()) {
+            if ((null != detectProject.getBdioFiles() && !detectProject.getBdioFiles().isEmpty()) || !detectConfiguration.getHubSignatureScannerDisabled()) {
                 // only log BOM URL if we have updated it in some way
                 final ProjectService projectService = hubServiceWrapper.createProjectService();
                 final HubService hubService = hubServiceWrapper.createHubService();
-                final ProjectVersionWrapper projectVersionWrapper = projectService.getProjectVersion(detectProject.getProjectName(), detectProject.getProjectVersionName());
+                final ProjectVersionWrapper projectVersionWrapper = projectService.getProjectVersion(detectProject.getProjectName(), detectProject.getProjectVersion());
                 final String componentsLink = hubService.getFirstLinkSafely(projectVersionWrapper.getProjectVersionView(), ProjectVersionView.COMPONENTS_LINK);
                 logger.info(String.format("To see your results, follow the URL: %s", componentsLink));
             }
@@ -181,8 +181,8 @@ public class HubManager implements ExitCodeReporter {
         logger.info("The BOM has been updated");
     }
 
-    public ProjectVersionView ensureProjectVersionExists(DetectConfiguration detectConfiguration, final DetectProject detectProject, final ProjectService projectService) throws IntegrationException {
-        ProjectRequestBuilder projectRequestBuilder = detectProject.createDefaultProjectRequestBuilder(detectConfiguration);
+    public ProjectVersionView ensureProjectVersionExists(final DetectConfiguration detectConfiguration, final DetectProject detectProject, final ProjectService projectService) throws IntegrationException {
+        final ProjectRequestBuilder projectRequestBuilder = new DetectProjectRequestBuilder(detectConfiguration, detectProject);
         final ProjectRequest projectRequest = projectRequestBuilder.build();
 
         final ProjectVersionWrapper projectVersionWrapper = projectService.getProjectVersionAndCreateIfNeeded(projectRequest);

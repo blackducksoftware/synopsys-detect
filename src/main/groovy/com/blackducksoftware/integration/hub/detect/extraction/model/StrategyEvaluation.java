@@ -21,9 +21,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.extraction;
+package com.blackducksoftware.integration.hub.detect.extraction.model;
 
-import com.blackducksoftware.integration.hub.detect.extraction.Extraction.ExtractionResult;
+import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction.ExtractionResultType;
 import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
 import com.blackducksoftware.integration.hub.detect.strategy.result.StrategyResult;
@@ -74,7 +74,7 @@ public class StrategyEvaluation {
     public boolean isExtractionSuccess() {
         if (isExtractable()) {
             if (this.extraction != null) {
-                return this.extraction.result == ExtractionResult.Success;
+                return this.extraction.result == ExtractionResultType.Success;
             }
         }
         return false;

@@ -24,7 +24,6 @@
 package com.blackducksoftware.integration.hub.detect;
 
 import java.io.Console;
-import java.io.File;
 import java.io.PrintStream;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -69,6 +68,8 @@ import com.blackducksoftware.integration.hub.detect.interactive.InteractiveManag
 import com.blackducksoftware.integration.hub.detect.interactive.reader.ConsoleInteractiveReader;
 import com.blackducksoftware.integration.hub.detect.interactive.reader.InteractiveReader;
 import com.blackducksoftware.integration.hub.detect.interactive.reader.ScannerInteractiveReader;
+import com.blackducksoftware.integration.hub.detect.manager.DetectPhoneHomeManager;
+import com.blackducksoftware.integration.hub.detect.manager.DetectProjectManager;
 import com.blackducksoftware.integration.hub.detect.model.DetectProject;
 import com.blackducksoftware.integration.hub.detect.strategy.StrategyManager;
 import com.blackducksoftware.integration.hub.detect.summary.DetectSummary;
@@ -224,11 +225,10 @@ public class Application implements ApplicationRunner {
             strategyManager.init();
 
             final DetectProject detectProject = detectProjectManager.createDetectProject();
-            final List<File> createdBdioFiles = detectProjectManager.createBdioFiles(detectProject);
             logger.info("Project Name: " + detectProject.getProjectName());
-            logger.info("Project Version Name: " + detectProject.getProjectVersionName());
+            logger.info("Project Version Name: " + detectProject.getProjectVersion());
             if (!detectConfiguration.getHubOfflineMode()) {
-                final ProjectVersionView projectVersionView = hubManager.updateHubProjectVersion(detectProject, createdBdioFiles);
+                final ProjectVersionView projectVersionView = hubManager.updateHubProjectVersion(detectProject);
                 hubManager.performPostHubActions(detectProject, projectVersionView);
             } else if (!detectConfiguration.getHubSignatureScannerDisabled()) {
                 hubSignatureScanner.scanPathsOffline(detectProject);

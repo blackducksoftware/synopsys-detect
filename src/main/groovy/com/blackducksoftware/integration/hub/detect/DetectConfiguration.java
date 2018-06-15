@@ -49,7 +49,6 @@ import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.api.enumeration.PolicySeverityType;
 import com.blackducksoftware.integration.hub.configuration.HubServerConfigBuilder;
-import com.blackducksoftware.integration.hub.detect.bomtool.search.BomToolFinder;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.help.AcceptableValues;
@@ -59,6 +58,7 @@ import com.blackducksoftware.integration.hub.detect.help.HelpDescription;
 import com.blackducksoftware.integration.hub.detect.help.HelpDetailed;
 import com.blackducksoftware.integration.hub.detect.help.HelpGroup;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
+import com.blackducksoftware.integration.hub.detect.search.BomToolFinder;
 import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver;
 import com.blackducksoftware.integration.log.Slf4jIntLogger;
 import com.blackducksoftware.integration.rest.connection.UnauthenticatedRestConnection;
@@ -116,6 +116,7 @@ public class DetectConfiguration {
     private static final String SEARCH_GROUP_OFFLINE = "offline";
     private static final String SEARCH_GROUP_PROJECT = "project";
     private static final String SEARCH_GROUP_DEBUG = "debug";
+    private static final String SEARCH_GROUP_SEARCH = "search";
 
     public static final String PRINT_GROUP_DEFAULT = SEARCH_GROUP_HUB;
 
@@ -397,7 +398,7 @@ public class DetectConfiguration {
         final File directory = new File(directoryPath);
         directory.mkdirs();
         if (!directory.exists() || !directory.isDirectory()) {
-            throw new DetectUserFriendlyException(String.format("The directory %s does not exist. %s", directoryPath,failureMessage), ExitCodeType.FAILURE_GENERAL_ERROR);
+            throw new DetectUserFriendlyException(String.format("The directory %s does not exist. %s", directoryPath, failureMessage), ExitCodeType.FAILURE_GENERAL_ERROR);
         }
     }
 
@@ -579,38 +580,48 @@ public class DetectConfiguration {
     @HelpDescription("Depth from source paths to search for files.")
     private Integer searchDepth;
 
+    @Value("${detect.project.bom.tool:}")
+    @HelpGroup(primary = GROUP_PATHS, additional = {GROUP_BOMTOOL, SEARCH_GROUP_SEARCH})
+    @HelpDescription("The bom tool to choose when multiple bom tool types are found and one needs to be chosen for project name and version.")
+    private String detectProjectBomTool;
+
     @Value("${detect.bom.tool.search.depth:}")
     @DefaultValue("0")
-    @HelpGroup(primary = GROUP_PATHS)
+    @HelpGroup(primary = GROUP_PATHS, additional = {GROUP_BOMTOOL, SEARCH_GROUP_SEARCH})
     @HelpDescription("Depth from source paths to search for files to determine if a bom tool applies.")
     private Integer bomToolSearchDepth;
 
     @Value("${detect.bom.tool.search.continue:}")
     @DefaultValue("false")
-    @HelpGroup(primary = GROUP_PATHS)
+    @HelpGroup(primary = GROUP_PATHS, additional = {GROUP_BOMTOOL, SEARCH_GROUP_SEARCH})
     @HelpDescription("If true, the bom tool search will continue to look for bom tools to the maximum search depth, even if they applied earlier in the path.")
     private Boolean bomToolContinueSearch;
 
     @Value("${detect.bom.tool.search.exclusion:}")
-    @HelpGroup(primary = GROUP_PATHS)
+    @HelpGroup(primary = GROUP_PATHS, additional = {GROUP_BOMTOOL, SEARCH_GROUP_SEARCH})
     @HelpDescription("A comma-separated list of directory names to exclude from the bom tool search.")
     private String[] bomToolSearchExclusion;
 
     @Value("${detect.bom.tool.search.exclusion.defaults:}")
     @DefaultValue("true")
-    @HelpGroup(primary = GROUP_PATHS)
+    @HelpGroup(primary = GROUP_PATHS, additional = {GROUP_BOMTOOL, SEARCH_GROUP_SEARCH})
     @HelpDescription("If true, the bom tool search will exclude the default directory names.")
     private Boolean bomToolSearchExclusionDefaults;
 
     @Value("${detect.excluded.bom.tool.types:}")
-    @HelpGroup(primary = GROUP_BOMTOOL)
+    @HelpGroup(primary = GROUP_BOMTOOL, additional = {SEARCH_GROUP_SEARCH})
     @HelpDescription("By default, all tools will be included. If you want to exclude specific tools, specify the ones to exclude here. Exclusion rules always win.")
     private String excludedBomToolTypes;
 
     @Value("${detect.included.bom.tool.types:}")
-    @HelpGroup(primary = GROUP_BOMTOOL)
+    @HelpGroup(primary = GROUP_BOMTOOL, additional = {SEARCH_GROUP_SEARCH})
     @HelpDescription("By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.")
     private String includedBomToolTypes;
+
+    @Value("${detect.code.location.name:}")
+    @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
+    @HelpDescription("An override for the name detect will use for the code location it creates. If supplied and multiple code locations are found, detect will append an index to each code location name.")
+    private String codeLocationNameOverride;
 
     @Value("${detect.project.name:}")
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
@@ -725,6 +736,11 @@ public class DetectConfiguration {
     @HelpGroup(primary = GROUP_GRADLE)
     @HelpDescription("The names of the projects to include")
     private String gradleIncludedProjectNames;
+
+    @Value("${detect.nuget.config.path:}")
+    @HelpGroup(primary = GROUP_NUGET)
+    @HelpDescription("The path to the Nuget.Config file to supply to the nuget exe")
+    private String nugetConfigPath;
 
     @Value("${detect.nuget.inspector.name:}")
     @DefaultValue("IntegrationNugetInspector")
@@ -949,6 +965,11 @@ public class DetectConfiguration {
     @HelpDescription("The number of scans to run in parallel, defaults to 1, but if you specify -1, the number of processors on the machine will be used.")
     private Integer hubSignatureScannerParallelProcessors;
 
+    @Value("${detect.hub.signature.scanner.arguments:}")
+    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_SIGNATURE_SCANNER, SEARCH_GROUP_HUB })
+    @HelpDescription("Additional arguments to use when running the Hub signature scanner.")
+    private String hubSignatureScannerArguments;
+
     @Value("${detect.packagist.include.dev.dependencies:}")
     @DefaultValue("true")
     @HelpGroup(primary = GROUP_PACKAGIST)
@@ -1000,7 +1021,7 @@ public class DetectConfiguration {
 
     @Value("${detect.bom.aggregate.name:}")
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
-    @HelpDescription("If set, this will aggregate all the BOMs to create a single BDIO file with the name provided. For Co-Pilot use only")
+    @HelpDescription("If set, this will aggregate all the BOMs to create a single BDIO file with the name provided.")
     private String aggregateBomName;
 
     @Value("${detect.risk.report.pdf:}")
@@ -1179,6 +1200,10 @@ public class DetectConfiguration {
         return convertInt(bomToolSearchDepth);
     }
 
+    public String getDetectProjectBomTool() {
+        return detectProjectBomTool;
+    }
+
     public Boolean getBomToolContinueSearch() {
         return BooleanUtils.toBoolean(bomToolContinueSearch);
     }
@@ -1201,6 +1226,10 @@ public class DetectConfiguration {
 
     public String getProjectName() {
         return projectName == null ? null : projectName.trim();
+    }
+
+    public String getCodeLocationNameOverride() {
+        return codeLocationNameOverride == null ? null : codeLocationNameOverride.trim();
     }
 
     public String getProjectDescription() {
@@ -1278,6 +1307,10 @@ public class DetectConfiguration {
 
     public String getGradleIncludedProjectNames() {
         return gradleIncludedProjectNames;
+    }
+
+    public String getNugetConfigPath() {
+        return nugetConfigPath;
     }
 
     public String getNugetInspectorPackageName() {
@@ -1462,6 +1495,10 @@ public class DetectConfiguration {
 
     public int getHubSignatureScannerParallelProcessors() {
         return convertInt(hubSignatureScannerParallelProcessors);
+    }
+
+    public String getHubSignatureScannerArguments() {
+        return hubSignatureScannerArguments == null ? null : hubSignatureScannerArguments.trim();
     }
 
     public String getPerlPath() {

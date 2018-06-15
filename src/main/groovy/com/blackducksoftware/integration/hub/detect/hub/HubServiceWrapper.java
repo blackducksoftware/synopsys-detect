@@ -37,9 +37,9 @@ import com.blackducksoftware.integration.hub.api.generated.response.CurrentVersi
 import com.blackducksoftware.integration.hub.configuration.HubServerConfig;
 import com.blackducksoftware.integration.hub.configuration.HubServerConfigBuilder;
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.DetectPhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
+import com.blackducksoftware.integration.hub.detect.manager.DetectPhoneHomeManager;
 import com.blackducksoftware.integration.hub.service.CodeLocationService;
 import com.blackducksoftware.integration.hub.service.HubService;
 import com.blackducksoftware.integration.hub.service.HubServicesFactory;
@@ -51,6 +51,7 @@ import com.blackducksoftware.integration.hub.service.SignatureScannerService;
 import com.blackducksoftware.integration.log.IntLogger;
 import com.blackducksoftware.integration.log.Slf4jIntLogger;
 import com.blackducksoftware.integration.rest.connection.RestConnection;
+import com.blackducksoftware.integration.util.ResourceUtil;
 
 import groovy.transform.TypeChecked;
 
@@ -96,13 +97,17 @@ public class HubServiceWrapper {
 
     public void assertHubConnection(final IntLogger intLogger) throws IntegrationException {
         logger.info("Attempting connection to the Hub");
+        RestConnection connection = null;
+
         try {
             final HubServerConfig hubServerConfig = createHubServerConfig(intLogger);
-            final RestConnection connection = hubServerConfig.createRestConnection(intLogger);
+            connection = hubServerConfig.createRestConnection(intLogger);
             connection.connect();
             logger.info("Connection to the Hub was successful");
         } catch (final IllegalStateException e) {
             throw new IntegrationException(e.getMessage(), e);
+        } finally {
+            ResourceUtil.closeQuietly(connection);
         }
     }
 
