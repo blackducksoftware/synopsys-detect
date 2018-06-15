@@ -86,6 +86,9 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     @Autowired
     private ExtractionSummaryReporter extractionSummaryReporter;
 
+    @Autowired
+    private BomToolProjectInfoDecider bomToolProjectInfoDecider;
+
     public DetectProject createDetectProject() throws DetectUserFriendlyException, IntegrationException {
         final SearchResult searchResult = searchManager.performSearch();
 
@@ -197,8 +200,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         }
 
         final List<BomToolProjectInfo> allBomToolProjectInfo = createBomToolProjectInfo(strategyEvaluations);
-        final BomToolProjectInfoDecider decider = new BomToolProjectInfoDecider();
-        return decider.decideProjectInfo(allBomToolProjectInfo, preferredBomToolType);
+        return bomToolProjectInfoDecider.decideProjectInfo(allBomToolProjectInfo, preferredBomToolType);
     }
 
     private List<BomToolProjectInfo> createBomToolProjectInfo(final List<StrategyEvaluation> strategyEvaluations) {

@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.project.result.ArbitrarilyChosenProjectInfoResult;
@@ -19,6 +20,7 @@ import com.blackducksoftware.integration.hub.detect.project.result.PreferredSing
 import com.blackducksoftware.integration.hub.detect.project.result.ProjectInfoResult;
 import com.blackducksoftware.integration.util.NameVersion;
 
+@Component
 public class BomToolProjectInfoDecider {
     private final Logger logger = LoggerFactory.getLogger(BomToolProjectInfoDecider.class);
 
