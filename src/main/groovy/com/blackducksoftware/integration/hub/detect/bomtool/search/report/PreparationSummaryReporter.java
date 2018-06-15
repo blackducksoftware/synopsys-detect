@@ -50,9 +50,9 @@ public class PreparationSummaryReporter {
     private void printDirectories(final Map<File, List<StrategyEvaluation>> byDirectory) {
         logger.info("");
         logger.info("");
-        info(ReportConstants.HEADING);
-        info("Preparation for extraction");
-        info(ReportConstants.HEADING);
+        logger.info(ReportConstants.HEADING);
+        logger.info("Preparation for extraction");
+        logger.info(ReportConstants.HEADING);
         for (final File file : byDirectory.keySet()) {
             final List<StrategyEvaluation> results = byDirectory.get(file);
 
@@ -70,23 +70,19 @@ public class PreparationSummaryReporter {
                 }
             }
             if (ready.size() > 0 || failed.size() > 0) {
-                info(file.getAbsolutePath());
+                logger.info(file.getAbsolutePath());
                 if (ready.size() > 0) {
-                    info("\t READY: " + ready.stream().sorted().collect(Collectors.joining(", ")));
+                    logger.info("\t READY: " + ready.stream().sorted().collect(Collectors.joining(", ")));
                 }
                 if (failed.size() > 0) {
-                    failed.stream().sorted().forEach(it -> info("\t" + it));
+                    failed.stream().sorted().forEach(it -> logger.error("\t" + it));
                 }
 
             }
         }
-        info(ReportConstants.HEADING);
+        logger.info(ReportConstants.HEADING);
         logger.info("");
         logger.info("");
-    }
-
-    private void info(final String line) {
-        logger.info(line);
     }
 
 }
