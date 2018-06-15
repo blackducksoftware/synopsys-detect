@@ -25,7 +25,6 @@ package com.blackducksoftware.integration.hub.detect.manager;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -134,21 +133,6 @@ public class ExtractionManager {
 
         extract(strategyEvaluations);
 
-        String recommendedProjectName = null;
-        String recommendedProjectVersion = null;
-        if (appliedInSource > 0) {
-            //take the first project alphabetically.
-            final Optional<StrategyEvaluation> projectNameDecider = strategyEvaluations.stream()
-                    .filter(it -> it.isExtractionSuccess() && it.environment.getDepth() == 0 && it.extraction.projectName != null)
-                    .sorted((o1, o2) -> o1.extraction.projectName.compareTo(o2.extraction.projectName))
-                    .findFirst();
-
-            if (projectNameDecider.isPresent()) {
-                recommendedProjectName = projectNameDecider.get().extraction.projectName;
-                recommendedProjectVersion = projectNameDecider.get().extraction.projectVersion;
-            }
-        }
-
         final HashSet<BomToolType> succesfulBomTools = new HashSet<>();
         final HashSet<BomToolType> failedBomTools = new HashSet<>();
         for (final StrategyEvaluation evaluation : strategyEvaluations) {
@@ -167,7 +151,7 @@ public class ExtractionManager {
                 .flatMap(it -> it.extraction.codeLocations.stream())
                 .collect(Collectors.toList());
 
-        final ExtractionResult result = new ExtractionResult(codeLocations, recommendedProjectName, recommendedProjectVersion, succesfulBomTools, failedBomTools);
+        final ExtractionResult result = new ExtractionResult(codeLocations, succesfulBomTools, failedBomTools);
         return result;
     }
 

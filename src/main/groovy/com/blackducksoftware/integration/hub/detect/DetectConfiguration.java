@@ -580,6 +580,11 @@ public class DetectConfiguration {
     @HelpDescription("Depth from source paths to search for files.")
     private Integer searchDepth;
 
+    @Value("${detect.project.bom.tool:}")
+    @HelpGroup(primary = GROUP_PATHS, additional = {GROUP_BOMTOOL, SEARCH_GROUP_SEARCH})
+    @HelpDescription("The bom tool to choose when multiple bom tool types are found and one needs to be chosen for project name and version.")
+    private String detectProjectBomTool;
+
     @Value("${detect.bom.tool.search.depth:}")
     @DefaultValue("0")
     @HelpGroup(primary = GROUP_PATHS, additional = {GROUP_BOMTOOL, SEARCH_GROUP_SEARCH})
@@ -1193,6 +1198,10 @@ public class DetectConfiguration {
 
     public int getBomToolSearchDepth() {
         return convertInt(bomToolSearchDepth);
+    }
+
+    public String getDetectProjectBomTool() {
+        return detectProjectBomTool;
     }
 
     public Boolean getBomToolContinueSearch() {

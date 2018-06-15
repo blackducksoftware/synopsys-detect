@@ -23,6 +23,10 @@
  */
 package com.blackducksoftware.integration.hub.detect.model;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public enum BomToolType {
     CARTHAGE,
     COCOAPODS,
@@ -45,4 +49,5 @@ public enum BomToolType {
     SBT,
     YARN;
 
+    public static List<String> POSSIBLE_NAMES = Arrays.stream(BomToolType.values()).map(BomToolType::name).collect(Collectors.toList());
 }
