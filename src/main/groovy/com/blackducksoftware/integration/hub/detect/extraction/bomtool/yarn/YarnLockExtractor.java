@@ -25,8 +25,10 @@ package com.blackducksoftware.integration.hub.detect.extraction.bomtool.yarn;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,7 +75,7 @@ public class YarnLockExtractor extends Extractor<YarnLockContext> {
     public Extraction extract(final YarnLockContext context) {
         try {
             final List<String> yarnLockText = Files.readAllLines(context.yarnlock.toPath(), StandardCharsets.UTF_8);
-            final List<String> exeArgs = Arrays.asList("list", "--emoji", "false");
+            final List<String> exeArgs = Stream.of("list", "--emoji", "false").collect(Collectors.toCollection(ArrayList::new));
 
             if (detectConfiguration.getYarnProductionDependenciesOnly()) {
                 exeArgs.add("--prod");
