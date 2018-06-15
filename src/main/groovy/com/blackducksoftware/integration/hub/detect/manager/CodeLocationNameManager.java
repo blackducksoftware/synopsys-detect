@@ -61,10 +61,10 @@ public class CodeLocationNameManager {
 
     public String getNextCodeLocationOverrideName() { //returns "override", then "override 2", then "override 3", etc
         givenCodeLocationOverrideCount++;
+        final String base = detectConfiguration.getCodeLocationNameOverride();
         if (givenCodeLocationOverrideCount == 1) {
-            return detectConfiguration.getCodeLocationNameOverride();
+            return base;
         } else {
-            final String base = detectConfiguration.getCodeLocationNameOverride();
             final String codeLocationName = base + " " + Integer.toString(givenCodeLocationOverrideCount);
             return codeLocationName;
         }

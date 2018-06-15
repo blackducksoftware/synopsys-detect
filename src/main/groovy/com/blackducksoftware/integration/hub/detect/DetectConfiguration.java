@@ -700,12 +700,6 @@ public class DetectConfiguration {
     @AcceptableValues(value = { "ALL", "BLOCKER", "CRITICAL", "MAJOR", "MINOR", "TRIVIAL" }, caseSensitive = false, strict = false)
     private String policyCheckFailOnSeverities;
 
-    @Value("${detect.code.location.combine.same.names:}")
-    @HelpGroup(primary = GROUP_CODELOCATION)
-    @HelpDescription("If set to true, detect will automatically combine code locations with the same name. Otherwise, duplicate names will be appended with their index.")
-    @DefaultValue("false")
-    private Boolean combineCodeLocations;
-
     @Value("${detect.gradle.inspector.version:}")
     @DefaultValue("latest")
     @HelpGroup(primary = GROUP_GRADLE)
@@ -1282,7 +1276,7 @@ public class DetectConfiguration {
     }
 
     public boolean getCombineCodeLocations() {
-        return combineCodeLocations;
+        return false; //for now this is always false, in the future we could introduce a property.
     }
 
     public String getGradleInspectorVersion() {
