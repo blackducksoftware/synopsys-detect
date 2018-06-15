@@ -40,7 +40,7 @@ import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 
 @Component
 public class ExtractionSummaryReporter {
-    private final Logger logger = LoggerFactory.getLogger(PreparationSummaryReporter.class);
+    private final Logger logger = LoggerFactory.getLogger(ExtractionSummaryReporter.class);
 
     public void print(final List<StrategyEvaluation> results, final Map<DetectCodeLocation, String> codeLocationNameMap) {
         final Map<File, List<StrategyEvaluation>> byDirectory = results.stream()
