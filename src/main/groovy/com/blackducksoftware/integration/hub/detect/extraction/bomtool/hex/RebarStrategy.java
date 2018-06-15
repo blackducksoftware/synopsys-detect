@@ -67,7 +67,7 @@ public class RebarStrategy extends Strategy<RebarContext, RebarExtractor> {
 
     @Override
     public StrategyResult extractable(final StrategyEnvironment environment, final RebarContext context) throws StrategyException {
-        context.rebarExe = standardExecutableFinder.getExecutable(StandardExecutableType.CONDA);
+        context.rebarExe = standardExecutableFinder.getExecutable(StandardExecutableType.REBAR3);
 
         if (context.rebarExe == null) {
             return new ExecutableNotFoundStrategyResult("rebar");
