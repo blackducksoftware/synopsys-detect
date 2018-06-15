@@ -42,7 +42,7 @@ import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
 @Component
 public class PipInspectorStrategy extends Strategy<PipInspectorContext, PipInspectorExtractor> {
-    public static final String SETUP_FILE_NAME= "setup.py";
+    public static final String SETUP_FILE_NAME = "setup.py";
 
     @Autowired
     public DetectFileFinder fileFinder;
@@ -55,7 +55,6 @@ public class PipInspectorStrategy extends Strategy<PipInspectorContext, PipInspe
 
     @Autowired
     public PipInspectorManager pipInspectorManager;
-
 
     @Autowired
     public DetectConfiguration detectConfiguration;
@@ -98,6 +97,5 @@ public class PipInspectorStrategy extends Strategy<PipInspectorContext, PipInspe
 
         return new PassedStrategyResult();
     }
-
 
 }

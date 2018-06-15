@@ -32,4 +32,5 @@ public class PipInspectorContext extends ExtractionContext {
     public File pipInspector;
     public File setupFile;
     public String requirementFilePath;
+    public String pipenvExe;
 }
