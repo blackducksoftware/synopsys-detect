@@ -48,22 +48,28 @@ public class PythonExecutableFinder {
     @Autowired
     public ExecutableRunner executableRunner;
 
-    private String resolvedPython = null;
-    private boolean hasLookedForPython = false;
+    public String findExecutable(final StrategyEnvironment environment, final ExecutableType pythonAnyVersionExecutableType, final String overridePath) throws StrategyException {
+        return findExecutable(environment, pythonAnyVersionExecutableType, pythonAnyVersionExecutableType, overridePath);
+    }
 
-    public String findPython(final StrategyEnvironment environment) throws StrategyException {
+    public String findExecutable(final StrategyEnvironment environment, final ExecutableType python2ExecutableType, final ExecutableType python3ExecutableType) throws StrategyException {
+        return findExecutable(environment, python2ExecutableType, python3ExecutableType, null);
+    }
+
+    public String findExecutable(final StrategyEnvironment environment, final ExecutableType python2ExecutableType, final ExecutableType python3ExecutableType, final String overridePath) throws StrategyException {
         try {
-            if (!hasLookedForPython) {
-                hasLookedForPython = true;
-                ExecutableType pythonType = ExecutableType.PYTHON;
-                if (detectConfiguration.getPythonThreeOverride()) {
-                    pythonType = ExecutableType.PYTHON3;
-                }
-                resolvedPython = executableManager.getExecutablePathOrOverride(pythonType, true, environment.getDirectory(), null);
+            final ExecutableType executableType;
+
+            if (detectConfiguration.getPythonThreeOverride()) {
+                executableType = python3ExecutableType;
+            } else {
+                executableType = python2ExecutableType;
             }
-            return resolvedPython;
-        }catch (final Exception e) {
+
+            return executableManager.getExecutablePathOrOverride(executableType, true, environment.getDirectory(), overridePath);
+        } catch (final Exception e) {
             throw new StrategyException(e);
         }
     }
+
 }

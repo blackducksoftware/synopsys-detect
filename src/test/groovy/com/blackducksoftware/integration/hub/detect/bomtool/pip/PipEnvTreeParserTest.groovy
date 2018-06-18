@@ -7,25 +7,25 @@ import org.junit.Test
 
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.extraction.bomtool.pip.parse.PipEnvTreeParser
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.pip.parse.PipenvTreeParser
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 
 class PipEnvTreeParserTest {
-    private PipEnvTreeParser parser
+    private PipenvTreeParser parser
     private TestUtil testUtil = new TestUtil()
 
     private String name = 'urllib3'
     private String version = '1.22'
-    private String fullName = name + PipEnvTreeParser.TOP_LEVEL_SEPARATOR + version
+    private String fullName = name + PipenvTreeParser.TOP_LEVEL_SEPARATOR + version
     private String dependencyName = "- urllib3 [required: <1.23,==1.21.1, installed: 1.22]"
-    private String line1 = PipEnvTreeParser.DEPENDENCY_INDENTATION + dependencyName
-    private String line2 = PipEnvTreeParser.DEPENDENCY_INDENTATION.multiply(2) + line1
+    private String line1 = PipenvTreeParser.DEPENDENCY_INDENTATION + dependencyName
+    private String line2 = PipenvTreeParser.DEPENDENCY_INDENTATION.multiply(2) + line1
     private String line3 = 'invalid line'
 
     @Before
     void init() {
-        parser = new PipEnvTreeParser()
+        parser = new PipenvTreeParser()
         parser.externalIdFactory = new ExternalIdFactory()
     }
 

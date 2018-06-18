@@ -807,8 +807,13 @@ public class DetectConfiguration {
 
     @Value("${detect.pip.project.name:}")
     @HelpGroup(primary = GROUP_PIP)
-    @HelpDescription("Override for pip inspector to find your project")
+    @HelpDescription("The name of your pip project, to be used if your project's name cannot be correctly inferred from its setup.py file")
     private String pipProjectName;
+
+    @Value("${detect.pip.project.version.name:}")
+    @HelpGroup(primary = GROUP_PIP)
+    @HelpDescription("The version of your pip project, to be used if your project's version name cannot be correctly inferred from its setup.py file")
+    private String pipProjectVersionName;
 
     @Value("${detect.python.python3:}")
     @DefaultValue("false")
@@ -1388,6 +1393,10 @@ public class DetectConfiguration {
 
     public String getPipProjectName() {
         return pipProjectName;
+    }
+
+    public String getPipProjectVersionName() {
+        return pipProjectVersionName;
     }
 
     public boolean getPythonThreeOverride() {

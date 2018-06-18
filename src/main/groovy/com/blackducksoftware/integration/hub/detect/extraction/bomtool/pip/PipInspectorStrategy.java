@@ -38,17 +38,15 @@ import com.blackducksoftware.integration.hub.detect.strategy.result.FileNotFound
 import com.blackducksoftware.integration.hub.detect.strategy.result.InspectorNotFoundStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.PassedStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.StrategyResult;
+import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
 @Component
 public class PipInspectorStrategy extends Strategy<PipInspectorContext, PipInspectorExtractor> {
-    public static final String SETUP_FILE_NAME = "setup.py";
+    public static final String SETUPTOOLS_DEFAULT_FILE_NAME = "setup.py";
 
     @Autowired
     public DetectFileFinder fileFinder;
-
-    @Autowired
-    public PipExecutableFinder pipExecutableFinder;
 
     @Autowired
     public PythonExecutableFinder pythonExecutableFinder;
@@ -65,7 +63,7 @@ public class PipInspectorStrategy extends Strategy<PipInspectorContext, PipInspe
 
     @Override
     public StrategyResult applicable(final StrategyEnvironment environment, final PipInspectorContext context) {
-        context.setupFile = fileFinder.findFile(environment.getDirectory(), SETUP_FILE_NAME);
+        context.setupFile = fileFinder.findFile(environment.getDirectory(), SETUPTOOLS_DEFAULT_FILE_NAME);
         context.requirementFilePath = detectConfiguration.getRequirementsFilePath();
 
         final boolean hasSetups = context.setupFile != null;
@@ -73,26 +71,30 @@ public class PipInspectorStrategy extends Strategy<PipInspectorContext, PipInspe
         if (hasSetups || hasRequirements) {
             return new PassedStrategyResult();
         } else {
-            return new FileNotFoundStrategyResult(SETUP_FILE_NAME);
+            return new FileNotFoundStrategyResult(SETUPTOOLS_DEFAULT_FILE_NAME);
         }
 
     }
 
     @Override
     public StrategyResult extractable(final StrategyEnvironment environment, final PipInspectorContext context) throws StrategyException {
-        final String pipExe = pipExecutableFinder.findPip(environment);
-        if (pipExe == null) {
-            return new ExecutableNotFoundStrategyResult("pip");
-        }
-
-        context.pythonExe = pythonExecutableFinder.findPython(environment);
+        context.pythonExe = pythonExecutableFinder.findExecutable(environment, ExecutableType.PYTHON, ExecutableType.PYTHON3, detectConfiguration.getPythonPath());
         if (context.pythonExe == null) {
             return new ExecutableNotFoundStrategyResult("python");
         }
 
-        context.pipInspector = pipInspectorManager.findPipInspector(environment);
-        if (context.pipInspector == null) {
-            return new InspectorNotFoundStrategyResult("pip");
+        context.pipenvExe = pythonExecutableFinder.findExecutable(environment, ExecutableType.PIPENV, detectConfiguration.getPipenvPath());
+
+        if (context.pipenvExe == null) {
+            final String pipExe = pythonExecutableFinder.findExecutable(environment, ExecutableType.PIP, ExecutableType.PIP3);
+            if (pipExe == null) {
+                return new ExecutableNotFoundStrategyResult("pip");
+            }
+
+            context.pipInspector = pipInspectorManager.findPipInspector(environment);
+            if (context.pipInspector == null) {
+                return new InspectorNotFoundStrategyResult("pip");
+            }
         }
 
         return new PassedStrategyResult();

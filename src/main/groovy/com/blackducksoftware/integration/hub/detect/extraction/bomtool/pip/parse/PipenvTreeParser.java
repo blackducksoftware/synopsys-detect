@@ -43,8 +43,8 @@ import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 
 @Component
-public class PipEnvTreeParser {
-    final Logger logger = LoggerFactory.getLogger(PipEnvTreeParser.class);
+public class PipenvTreeParser {
+    final Logger logger = LoggerFactory.getLogger(PipenvTreeParser.class);
 
     public static final String TOP_LEVEL_SEPARATOR = "==";
     public static final String DEPENDENCY_INDENTATION = "  ";
