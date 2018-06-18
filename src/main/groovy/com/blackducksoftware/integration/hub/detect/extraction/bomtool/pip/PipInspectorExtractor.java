@@ -32,52 +32,45 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.extraction.bomtool.pear.parse.PearDependencyFinder;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.pip.parse.PipInspectorTreeParser;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.pip.parse.PipParseResult;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extractor;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
 @Component
 public class PipInspectorExtractor extends Extractor<PipInspectorContext> {
-
-    static final String PACKAGE_XML_FILENAME = "package.xml";
+    @Autowired
+    private DetectConfiguration detectConfiguration;
 
     @Autowired
-    public DetectConfiguration detectConfiguration;
+    private ExecutableRunner executableRunner;
 
     @Autowired
-    protected DetectFileManager detectFileManager;
-
-    @Autowired
-    protected ExternalIdFactory externalIdFactory;
-
-    @Autowired
-    PearDependencyFinder pearDependencyFinder;
-
-    @Autowired
-    protected ExecutableRunner executableRunner;
-
-    @Autowired
-    PipInspectorTreeParser pipInspectorTreeParser;
+    private PipInspectorTreeParser pipInspectorTreeParser;
 
     @Override
     public Extraction extract(final PipInspectorContext context) {
+        Extraction extractionResult;
+
         try {
             final String projectName = getProjectName(context);
             final String inspectorOutput = runInspector(context.directory, context.pythonExe.toString(), context.pipInspector, projectName, context.requirementFilePath);
             final PipParseResult result = pipInspectorTreeParser.parse(inspectorOutput, context.directory.toString());
 
-            return new Extraction.Builder().success(result.codeLocation).projectName(result.projectName).projectVersion(result.projectVersion).build();
+            if (result == null) {
+                extractionResult = new Extraction.Builder().failure("The Pip Inspector tree parser returned null").build();
+            } else {
+                extractionResult = new Extraction.Builder().success(result.codeLocation).projectName(result.projectName).projectVersion(result.projectVersion).build();
+            }
         } catch (final Exception e) {
-            return new Extraction.Builder().exception(e).build();
+            extractionResult = new Extraction.Builder().exception(e).build();
         }
+
+        return extractionResult;
     }
 
     private String runInspector(final File sourceDirectory, final String pythonPath, final File inspectorScript, final String projectName, final String requirementsFilePath) throws ExecutableRunnerException {
@@ -97,14 +90,13 @@ public class PipInspectorExtractor extends Extractor<PipInspectorContext> {
         return executableRunner.execute(pipInspector).getStandardOutput();
     }
 
-    String getProjectName(final PipInspectorContext context) throws ExecutableRunnerException {
+    private String getProjectName(final PipInspectorContext context) throws ExecutableRunnerException {
         String projectName = detectConfiguration.getPipProjectName();
         if (context.setupFile != null && context.setupFile.exists()) {
             if (StringUtils.isBlank(projectName)) {
                 final Executable findProjectNameExecutable = new Executable(context.directory, context.pythonExe, Arrays.asList(
                         context.setupFile.getAbsolutePath(),
-                        "--name"
-                        ));
+                        "--name"));
                 final List<String> output = executableRunner.execute(findProjectNameExecutable).getStandardOutputAsList();
                 projectName = output.get(output.size() - 1).replace('_', '-').trim();
             }
