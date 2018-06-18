@@ -56,11 +56,6 @@ public class GemlockStrategy extends Strategy {
 
     @Override
     public StrategyResult applicable(final StrategyEnvironment environment, final ExtractionContext context) {
-        if (!context.findFile(fileFinder, environment.getDirectory(), GEMFILE_KEY, GEMFILE_LOCK_FILENAME)) {
-            return new FileNotFoundStrategyResult(GEMFILE_LOCK_FILENAME);
-        }
-
-        //alt
         final File gemlock = fileFinder.findFile(environment.getDirectory(), GEMFILE_LOCK_FILENAME);
         if (gemlock != null) {
             context.addFileKey(GEMFILE_KEY, gemlock);
