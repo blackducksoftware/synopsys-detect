@@ -75,38 +75,36 @@ public class ExtractionReporter {
             } catch (final Exception e) {
 
             }
+            boolean shouldPrintObjectsFields = false;
             if (obj == null) {
                 value = "null";
             } else {
                 value = obj.toString();
+                shouldPrintObjectsFields = shouldRecursivelyPrintType(obj.getClass());
             }
-            if (StringUtils.isBlank(prefix)) {
-                logger.info(name + " : " + value);
-            }else {
-                logger.info(prefix + "." + name + " : " + value);
-            }
-            if (obj != null) {
-                if (shouldRecursivelyPrintType(obj.getClass())) {
-                    String nestedPrefix = name;
-                    if (StringUtils.isNotBlank(prefix)) {
-                        nestedPrefix = prefix + "." + nestedPrefix;
-                    }
-                    printObject(nestedPrefix, obj);
+            if (!shouldPrintObjectsFields) {
+                if (StringUtils.isBlank(prefix)) {
+                    logger.info(name + " : " + value);
+                } else {
+                    logger.info(prefix + "." + name + " : " + value);
                 }
+            } else {
+                String nestedPrefix = name;
+                if (StringUtils.isNotBlank(prefix)) {
+                    nestedPrefix = prefix + "." + nestedPrefix;
+                }
+                printObject(nestedPrefix, obj);
             }
         }
-
     }
 
-    public static boolean shouldRecursivelyPrintType(final Class<?> clazz)
-    {
+    public static boolean shouldRecursivelyPrintType(final Class<?> clazz) {
         return !NON_NESTED_TYPES.contains(clazz);
     }
 
     private static final Set<Class<?>> NON_NESTED_TYPES = getNonNestedTypes();
 
-    private static Set<Class<?>> getNonNestedTypes()
-    {
+    private static Set<Class<?>> getNonNestedTypes() {
         final Set<Class<?>> ret = new HashSet<>();
         ret.add(File.class);
         ret.add(String.class);
