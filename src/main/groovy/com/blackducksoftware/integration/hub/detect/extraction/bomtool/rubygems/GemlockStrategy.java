@@ -23,9 +23,13 @@
  */
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.rubygems;
 
+import java.io.File;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
+import com.blackducksoftware.integration.hub.detect.extraction.model.ExtractionContext;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
 import com.blackducksoftware.integration.hub.detect.strategy.StrategySearchOptions;
@@ -36,20 +40,31 @@ import com.blackducksoftware.integration.hub.detect.strategy.result.StrategyResu
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
 @Component
-public class GemlockStrategy extends Strategy<GemlockContext, GemlockExtractor> {
+public class GemlockStrategy extends Strategy {
     public static final String GEMFILE_LOCK_FILENAME = "Gemfile.lock";
+    public static final String GEMFILE_KEY = "gemfile";
 
     @Autowired
     public DetectFileFinder fileFinder;
 
+    @Autowired
+    public GemlockExtractor extractor;
+
     public GemlockStrategy() {
-        super("Gemlock", BomToolType.RUBYGEMS, GemlockContext.class, GemlockExtractor.class, StrategySearchOptions.defaultNotNested());
+        super("Gemlock", BomToolType.RUBYGEMS, StrategySearchOptions.defaultNotNested());
     }
 
     @Override
-    public StrategyResult applicable(final StrategyEnvironment environment, final GemlockContext context) {
-        context.gemlock = fileFinder.findFile(environment.getDirectory(), GEMFILE_LOCK_FILENAME);
-        if (context.gemlock == null) {
+    public StrategyResult applicable(final StrategyEnvironment environment, final ExtractionContext context) {
+        if (!context.findFile(fileFinder, environment.getDirectory(), GEMFILE_KEY, GEMFILE_LOCK_FILENAME)) {
+            return new FileNotFoundStrategyResult(GEMFILE_LOCK_FILENAME);
+        }
+
+        //alt
+        final File gemlock = fileFinder.findFile(environment.getDirectory(), GEMFILE_LOCK_FILENAME);
+        if (gemlock != null) {
+            context.addFileKey(GEMFILE_KEY, gemlock);
+        } else {
             return new FileNotFoundStrategyResult(GEMFILE_LOCK_FILENAME);
         }
 
@@ -57,8 +72,15 @@ public class GemlockStrategy extends Strategy<GemlockContext, GemlockExtractor> 
     }
 
     @Override
-    public StrategyResult extractable(final StrategyEnvironment environment, final GemlockContext context){
+    public StrategyResult extractable(final StrategyEnvironment environment, final ExtractionContext context){
         return new PassedStrategyResult();
+    }
+
+    @Override
+    public Extraction extract(final StrategyEnvironment environment, final ExtractionContext context) {
+        final File directory = context.getDirectory();
+        final File gemlock = context.getFileKey(GEMFILE_KEY);
+        return extractor.extract(directory, gemlock);
     }
 
 }
