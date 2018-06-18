@@ -74,6 +74,7 @@ public class BomToolFinder {
 
         for (final File directory : directoriesToSearch) {
             if (options.getExcludedDirectories().contains(directory.getName())) {
+                logger.info("Skipping excluded directory: " + directory.getPath());
                 continue;
             }
 
