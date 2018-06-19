@@ -193,10 +193,13 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     private Optional<NameVersion> findBomToolProjectNameAndVersion(final List<StrategyEvaluation> strategyEvaluations) {
         final String projectBomTool = detectConfiguration.getDetectProjectBomTool();
         Optional<BomToolType> preferredBomToolType = Optional.empty();
-        if (StringUtils.isBlank(projectBomTool) || !BomToolType.POSSIBLE_NAMES.contains(projectBomTool)) {
-            logger.info("A valid preferred bom tool type was not provided, deciding project name automatically.");
-        } else {
-            preferredBomToolType = Optional.of(BomToolType.valueOf(projectBomTool));
+        if (StringUtils.isNotBlank(projectBomTool)) {
+            final String projectBomToolFixed = projectBomTool.toUpperCase();
+            if (!BomToolType.POSSIBLE_NAMES.contains(projectBomToolFixed)) {
+                logger.info("A valid preferred bom tool type was not provided, deciding project name automatically.");
+            } else {
+                preferredBomToolType = Optional.of(BomToolType.valueOf(projectBomToolFixed));
+            }
         }
 
         final List<BomToolProjectInfo> allBomToolProjectInfo = createBomToolProjectInfo(strategyEvaluations);

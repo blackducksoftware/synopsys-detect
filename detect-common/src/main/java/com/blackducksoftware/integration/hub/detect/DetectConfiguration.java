@@ -684,14 +684,8 @@ public class DetectConfiguration {
     @Value("${detect.policy.check.fail.on.severities:}")
     @HelpGroup(primary = GROUP_POLICY_CHECK, additional = { SEARCH_GROUP_POLICY })
     @HelpDescription("A comma-separated list of policy violation severities that will fail detect. If this is not set, detect will not fail due to policy violations.")
-    @AcceptableValues(value = { "ALL", "BLOCKER", "CRITICAL", "MAJOR", "MINOR", "TRIVIAL" }, caseSensitive = false, strict = false)
+    @AcceptableValues(value = { "ALL", "BLOCKER", "CRITICAL", "MAJOR", "MINOR", "TRIVIAL" }, caseSensitive = false, strict = false, isCommaSeparatedList = true)
     private String policyCheckFailOnSeverities;
-
-    @Value("${detect.code.location.combine.same.names:}")
-    @HelpGroup(primary = GROUP_CODELOCATION)
-    @HelpDescription("If set to true, detect will automatically combine code locations with the same name. Otherwise, duplicate names will be appended with their index.")
-    @DefaultValue("false")
-    private Boolean combineCodeLocations;
 
     @Value("${detect.gradle.inspector.version:}")
     @DefaultValue("latest")
@@ -1269,7 +1263,7 @@ public class DetectConfiguration {
     }
 
     public boolean getCombineCodeLocations() {
-        return combineCodeLocations;
+        return false; //for now this is always false, in the future we could introduce a property.
     }
 
     public String getGradleInspectorVersion() {
