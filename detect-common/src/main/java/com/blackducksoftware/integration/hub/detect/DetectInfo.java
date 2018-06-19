@@ -38,10 +38,10 @@ import com.google.gson.Gson;
 
 @Component
 public class DetectInfo {
-    private final Logger logger = LoggerFactory.getLogger(DetectConfiguration.class);
+    private final Logger logger = LoggerFactory.getLogger(DetectInfo.class);
 
     @Autowired
-    Gson gson;
+    private Gson gson;
 
     private OperatingSystemType currentOs = null;
     private String detectVersion;

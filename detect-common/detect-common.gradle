@@ -1,7 +1,3 @@
-license {
-    header rootProject.file('LICENSE')
-}
-
 dependencies {
     compile 'org.freemarker:freemarker:2.3.26-incubating'
 

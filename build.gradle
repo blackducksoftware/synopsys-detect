@@ -11,7 +11,7 @@ buildscript {
     }
 }
 
-String sharedVersion = '4.0.0-SNAPSHOT'
+String sharedVersion = '4.1.0-SNAPSHOT'
 
 version = sharedVersion
 
@@ -23,6 +23,10 @@ configure(subprojects) { project ->
     apply plugin: 'groovy'
     apply plugin: 'maven-publish'
     apply plugin: 'io.spring.dependency-management'
+
+    license {
+        header rootProject.file('LICENSE')
+    }
 
     dependencies {
         compile 'com.blackducksoftware.integration:hub-common:33.2.0'
