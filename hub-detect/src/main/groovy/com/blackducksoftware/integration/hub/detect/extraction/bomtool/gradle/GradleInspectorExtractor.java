@@ -37,7 +37,7 @@ import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.gradle.parse.GradleParseResult;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.gradle.parse.GradleReportParser;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extractor;
+import com.blackducksoftware.integration.hub.detect.manager.result.search.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
@@ -46,7 +46,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOu
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 
 @Component
-public class GradleInspectorExtractor extends Extractor<GradleInspectorContext> {
+public class GradleInspectorExtractor {
 
     @Autowired
     public DetectConfiguration detectConfiguration;
@@ -63,8 +63,7 @@ public class GradleInspectorExtractor extends Extractor<GradleInspectorContext> 
     @Autowired
     GradleReportParser gradleReportParser;
 
-    @Override
-    public Extraction extract(final GradleInspectorContext context) {
+    public Extraction extract(final File directory, final String gradleExe, final String gradleInspector, final ExtractionId extractionId) {
         try {
             String gradleCommand = detectConfiguration.getGradleBuildCommand();
             gradleCommand = gradleCommand.replaceAll("dependencies", "").trim();
@@ -78,14 +77,14 @@ public class GradleInspectorExtractor extends Extractor<GradleInspectorContext> 
                 }
             }
             arguments.add("dependencies");
-            arguments.add(String.format("--init-script=%s", context.gradleInspector));
+            arguments.add(String.format("--init-script=%s", gradleInspector));
 
             //logger.info("using ${gradleInspectorManager.getInitScriptPath()} as the path for the gradle init script");
-            final Executable executable = new Executable(context.directory, context.gradleExe, arguments);
+            final Executable executable = new Executable(directory, gradleExe, arguments);
             final ExecutableOutput output = executableRunner.execute(executable);
 
             if (output.getReturnCode() == 0) {
-                final File buildDirectory = new File(context.directory, "build");
+                final File buildDirectory = new File(directory, "build");
                 final File blackduckDirectory = new File(buildDirectory, "blackduck");
 
                 final List<File> codeLocationFiles = detectFileFinder.findFiles(blackduckDirectory, "*_dependencyGraph.txt");
@@ -106,7 +105,7 @@ public class GradleInspectorExtractor extends Extractor<GradleInspectorContext> 
                         }
                     }
                 }
-                detectFileManager.cleanupOutputFile(context, blackduckDirectory);
+                detectFileManager.cleanupOutputFile(extractionId, blackduckDirectory);
                 return new Extraction.Builder().success(codeLocations).projectName(projectName).projectVersion(projectVersion).build();
             } else {
                 return new Extraction.Builder().failure("The gradle inspector returned a non-zero exit code: " + output.getReturnCode()).build();

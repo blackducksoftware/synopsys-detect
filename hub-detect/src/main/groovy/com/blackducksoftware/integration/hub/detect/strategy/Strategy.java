@@ -23,127 +23,35 @@
  */
 package com.blackducksoftware.integration.hub.detect.strategy;
 
-import java.io.File;
-import java.lang.reflect.Constructor;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import com.blackducksoftware.integration.hub.detect.extraction.model.ExtractionContext;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extractor;
+import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
+import com.blackducksoftware.integration.hub.detect.manager.result.search.ExtractionId;
+import com.blackducksoftware.integration.hub.detect.manager.result.search.StrategyType;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyException;
-import com.blackducksoftware.integration.hub.detect.strategy.result.BomToolExcludedStrategyResult;
-import com.blackducksoftware.integration.hub.detect.strategy.result.ForcedNestedPassedStrategyResult;
-import com.blackducksoftware.integration.hub.detect.strategy.result.MaxDepthExceededStrategyResult;
-import com.blackducksoftware.integration.hub.detect.strategy.result.NotNestableStrategyResult;
-import com.blackducksoftware.integration.hub.detect.strategy.result.NotSelfNestableStrategyResult;
-import com.blackducksoftware.integration.hub.detect.strategy.result.PassedStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.StrategyResult;
-import com.blackducksoftware.integration.hub.detect.strategy.result.YieldedStrategyResult;
 
-@SuppressWarnings("rawtypes")
-public abstract class Strategy<C extends ExtractionContext, E extends Extractor<C>>  {
-    private final String name;
-    private final BomToolType bomToolType;
-    private final Class<C> extractionContextClass;
-    private final Class<E> extractorClass;
+public abstract class Strategy {
+    protected StrategyEnvironment environment;
 
-    private final Set<Strategy> yieldsToStrategies = new HashSet<>();
-    private final StrategySearchOptions searchOptions;
-
-    public Strategy(final String name, final BomToolType bomToolType, final Class<C> extractionContextClass, final Class<E> extractorClass, final StrategySearchOptions searchOptions) {
-        this.name = name;
-        this.bomToolType = bomToolType;
-        this.extractionContextClass = extractionContextClass;
-        this.extractorClass = extractorClass;
-        this.searchOptions = searchOptions;
-    }
-
-    public void yieldsTo(final Strategy strategy) {
-        yieldsToStrategies.add(strategy);
-    }
-
-    public StrategyResult searchable(final StrategyEnvironment environment, final C context) {
-        if (!environment.getBomToolFilter().shouldInclude(bomToolType.toString())) {
-            return new BomToolExcludedStrategyResult();
-        }
-
-        if (environment.getDepth() > searchOptions.getMaxDepth()) {
-            return new MaxDepthExceededStrategyResult(environment.getDepth(), searchOptions.getMaxDepth());
-        }
-
-        final Set<Strategy> yielded = yieldsToStrategies.stream().filter(it -> environment.getAppliedToDirectory().contains(it)).collect(Collectors.toSet());
-        if (yielded.size() > 0) {
-            return new YieldedStrategyResult(yielded);
-        }
-
-        if (environment.getForceNestedSearch()) {
-            return new ForcedNestedPassedStrategyResult();
-        } else if (searchOptions.getNestable()) {
-            if (environment.getAppliedToParent().contains(this)) {
-                return new NotSelfNestableStrategyResult();
-            }
-        } else if (!searchOptions.getNestable() && environment.getAppliedToParent().size() > 0) {
-            return new NotNestableStrategyResult();
-        }
-
-        return new PassedStrategyResult();
+    public Strategy(final StrategyEnvironment environment) {
+        this.environment = environment;
     }
 
     //Applicable should be light-weight and should never throw an exception. Look for files, check properties, short and sweet.
-    public abstract StrategyResult applicable(final StrategyEnvironment environment, final C context);
-    //Extractable may be as heavy as needed, and may (and sometimes should) fail. Make web requests, install inspectors or run executables.
-    public abstract StrategyResult extractable(final StrategyEnvironment environment, final C context) throws StrategyException;
+    public abstract StrategyResult applicable();
 
-    public String getName() {
-        return name;
-    }
+    //Extractable may be as heavy as needed, and may (and sometimes should) fail. Make web requests, install inspectors or run executables.
+    public abstract StrategyResult extractable() throws StrategyException;
+
+    //Perform the extraction.
+    public abstract Extraction extract(ExtractionId extractionId);
+
+    public abstract String getName();
+    public abstract BomToolType getBomToolType();
+    public abstract StrategyType getStrategyType();
 
     public String getDescriptiveName() {
-        return bomToolType.toString() + " - " + name;
-    }
-
-    public BomToolType getBomToolType() {
-        return bomToolType;
-    }
-
-    public Class<C> getExtractionContextClass() {
-        return extractionContextClass;
-    }
-
-    public Class<E> getExtractorClass() {
-        return extractorClass;
-    }
-
-    public Set<Strategy> getYieldsToStrategies() {
-        return yieldsToStrategies;
-    }
-
-    public StrategySearchOptions getSearchOptions() {
-        return searchOptions;
-    }
-
-    public ExtractionContext createContext(final File directory) {
-        final ExtractionContext context = create(getExtractionContextClass());
-        context.directory = directory;
-        return context;
-    }
-
-    private <T> T create(final Class<T> clazz) {
-        Constructor<T> constructor;
-        try {
-            constructor = clazz.getConstructor();
-        } catch (final Exception e) {
-            throw new RuntimeException(e);
-        }
-        T instance;
-        try {
-            instance = constructor.newInstance();
-        } catch (final Exception e) {
-            throw new RuntimeException(e);
-        }
-        return instance;
+        return getBomToolType().toString() + " - " + getName();
     }
 }

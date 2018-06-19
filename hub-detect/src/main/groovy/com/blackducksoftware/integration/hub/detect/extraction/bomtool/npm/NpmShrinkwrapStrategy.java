@@ -23,12 +23,15 @@
  */
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.npm;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.io.File;
+
 import org.springframework.stereotype.Component;
 
+import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
+import com.blackducksoftware.integration.hub.detect.manager.result.search.ExtractionId;
+import com.blackducksoftware.integration.hub.detect.manager.result.search.StrategyType;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
-import com.blackducksoftware.integration.hub.detect.strategy.StrategySearchOptions;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
 import com.blackducksoftware.integration.hub.detect.strategy.result.FileNotFoundStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.PassedStrategyResult;
@@ -36,20 +39,23 @@ import com.blackducksoftware.integration.hub.detect.strategy.result.StrategyResu
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
 @Component
-public class NpmShrinkwrapStrategy extends Strategy<NpmLockfileContext, NpmLockfileExtractor> {
+public class NpmShrinkwrapStrategy extends Strategy {
     public static final String SHRINKWRAP_JSON = "npm-shrinkwrap.json";
 
-    @Autowired
-    public DetectFileFinder fileFinder;
+    private final DetectFileFinder fileFinder;
+    private final NpmLockfileExtractor npmLockfileExtractor;
+    private File lockfile;
 
-    public NpmShrinkwrapStrategy() {
-        super("Shrinkwrap", BomToolType.NPM, NpmLockfileContext.class, NpmLockfileExtractor.class, StrategySearchOptions.defaultNested());
+    public NpmShrinkwrapStrategy(final StrategyEnvironment environment, final DetectFileFinder fileFinder, final NpmLockfileExtractor npmLockfileExtractor) {
+        super(environment);
+        this.fileFinder = fileFinder;
+        this.npmLockfileExtractor = npmLockfileExtractor;
     }
 
     @Override
-    public StrategyResult applicable(final StrategyEnvironment environment, final NpmLockfileContext context) {
-        context.lockfile = fileFinder.findFile(environment.getDirectory(), SHRINKWRAP_JSON);
-        if (context.lockfile == null) {
+    public StrategyResult applicable() {
+        lockfile = fileFinder.findFile(environment.getDirectory(), SHRINKWRAP_JSON);
+        if (lockfile == null) {
             return new FileNotFoundStrategyResult(SHRINKWRAP_JSON);
         }
 
@@ -57,8 +63,29 @@ public class NpmShrinkwrapStrategy extends Strategy<NpmLockfileContext, NpmLockf
     }
 
     @Override
-    public StrategyResult extractable(final StrategyEnvironment environment, final NpmLockfileContext context){
+    public StrategyResult extractable(){
         return new PassedStrategyResult();
     }
+
+    @Override
+    public Extraction extract(final ExtractionId extractionId) {
+        return npmLockfileExtractor.extract(environment.getDirectory(), lockfile);
+    }
+
+    @Override
+    public String getName() {
+        return "Shrinkwrap";
+    }
+
+    @Override
+    public BomToolType getBomToolType() {
+        return BomToolType.NPM;
+    }
+
+    @Override
+    public StrategyType getStrategyType() {
+        return StrategyType.NPM_SHRINKWRAP;
+    }
+
 
 }

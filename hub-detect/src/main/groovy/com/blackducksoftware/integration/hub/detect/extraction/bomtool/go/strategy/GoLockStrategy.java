@@ -25,17 +25,17 @@ package com.blackducksoftware.integration.hub.detect.extraction.bomtool.go.strat
 
 import java.io.File;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.extraction.bomtool.go.GoDepContext;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.go.GoDepExtractor;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.go.GoInspectorManager;
+import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.extraction.model.StandardExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.extraction.model.StandardExecutableFinder.StandardExecutableType;
+import com.blackducksoftware.integration.hub.detect.manager.result.search.ExtractionId;
+import com.blackducksoftware.integration.hub.detect.manager.result.search.StrategyType;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
-import com.blackducksoftware.integration.hub.detect.strategy.StrategySearchOptions;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyException;
 import com.blackducksoftware.integration.hub.detect.strategy.result.ExecutableNotFoundStrategyResult;
@@ -46,24 +46,27 @@ import com.blackducksoftware.integration.hub.detect.strategy.result.StrategyResu
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
 @Component
-public class GoLockStrategy extends Strategy<GoDepContext, GoDepExtractor> {
+public class GoLockStrategy extends Strategy {
     public static final String GOPKG_LOCK_FILENAME = "Gopkg.lock";
 
-    @Autowired
-    public DetectFileFinder fileFinder;
+    private final DetectFileFinder fileFinder;
+    private final GoInspectorManager goInspectorManager;
+    private final StandardExecutableFinder standardExecutableFinder;
+    private final GoDepExtractor goDepExtractor;
 
-    @Autowired
-    public GoInspectorManager goInspectorManager;
+    private File goExe;
+    private String goDepInspector;
 
-    @Autowired
-    public StandardExecutableFinder standardExecutableFinder;
-
-    public GoLockStrategy() {
-        super("Go Lock", BomToolType.GO_DEP, GoDepContext.class, GoDepExtractor.class, StrategySearchOptions.defaultNotNested());
+    public GoLockStrategy(final StrategyEnvironment environment, final DetectFileFinder fileFinder, final StandardExecutableFinder standardExecutableFinder, final GoInspectorManager goInspectorManager, final GoDepExtractor goDepExtractor) {
+        super(environment);
+        this.fileFinder = fileFinder;
+        this.goInspectorManager = goInspectorManager;
+        this.standardExecutableFinder = standardExecutableFinder;
+        this.goDepExtractor = goDepExtractor;
     }
 
     @Override
-    public StrategyResult applicable(final StrategyEnvironment environment, final GoDepContext context) {
+    public StrategyResult applicable() {
         final File lock = fileFinder.findFile(environment.getDirectory(), GOPKG_LOCK_FILENAME);
         if (lock == null) {
             return new FileNotFoundStrategyResult(GOPKG_LOCK_FILENAME);
@@ -73,18 +76,38 @@ public class GoLockStrategy extends Strategy<GoDepContext, GoDepExtractor> {
     }
 
     @Override
-    public StrategyResult extractable(final StrategyEnvironment environment, final GoDepContext context) throws StrategyException {
-        context.goExe = standardExecutableFinder.getExecutable(StandardExecutableType.GO);
-        if (context.goExe == null) {
+    public StrategyResult extractable() throws StrategyException {
+        goExe = standardExecutableFinder.getExecutable(StandardExecutableType.GO);
+        if (goExe == null) {
             return new ExecutableNotFoundStrategyResult("go");
         }
 
-        context.goDepInspector = goInspectorManager.evaluate(environment);
-        if (context.goDepInspector == null) {
+        goDepInspector = goInspectorManager.evaluate(environment);
+        if (goDepInspector == null) {
             return new InspectorNotFoundStrategyResult("go");
         }
 
         return new PassedStrategyResult();
+    }
+
+    @Override
+    public Extraction extract(final ExtractionId extractionId) {
+        return goDepExtractor.extract(environment.getDirectory(), goExe, goDepInspector);
+    }
+
+    @Override
+    public String getName() {
+        return "Go Lock";
+    }
+
+    @Override
+    public BomToolType getBomToolType() {
+        return BomToolType.GO_DEP;
+    }
+
+    @Override
+    public StrategyType getStrategyType() {
+        return StrategyType.GO_LOCK;
     }
 
 }

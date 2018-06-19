@@ -23,12 +23,15 @@
  */
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.cocoapods;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.io.File;
+
 import org.springframework.stereotype.Component;
 
+import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
+import com.blackducksoftware.integration.hub.detect.manager.result.search.ExtractionId;
+import com.blackducksoftware.integration.hub.detect.manager.result.search.StrategyType;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
-import com.blackducksoftware.integration.hub.detect.strategy.StrategySearchOptions;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
 import com.blackducksoftware.integration.hub.detect.strategy.result.FileNotFoundStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.PassedStrategyResult;
@@ -36,20 +39,24 @@ import com.blackducksoftware.integration.hub.detect.strategy.result.StrategyResu
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
 @Component
-public class PodlockStrategy extends Strategy<PodlockContext, PodlockExtractor> {
-    public static final String PODFILE_LOCK_FILENAME = "Podfile.lock";
+public class PodlockStrategy extends Strategy {
 
-    @Autowired
-    public DetectFileFinder fileFinder;
+    private static final String PODFILE_LOCK_FILENAME = "Podfile.lock";
 
-    public PodlockStrategy() {
-        super("Podlock", BomToolType.COCOAPODS, PodlockContext.class, PodlockExtractor.class, StrategySearchOptions.defaultNotNested());
+    private File foundPodlock;
+    private final DetectFileFinder fileFinder;
+    private final PodlockExtractor podlockExtractor;
+
+    public PodlockStrategy(final StrategyEnvironment environment, final DetectFileFinder fileFinder, final PodlockExtractor podlockExtractor) {
+        super(environment);
+        this.fileFinder = fileFinder;
+        this.podlockExtractor = podlockExtractor;
     }
 
     @Override
-    public StrategyResult applicable(final StrategyEnvironment environment, final PodlockContext context) {
-        context.podlock = fileFinder.findFile(environment.getDirectory(), PODFILE_LOCK_FILENAME);
-        if (context.podlock == null) {
+    public StrategyResult applicable() {
+        foundPodlock = fileFinder.findFile(environment.getDirectory(), PODFILE_LOCK_FILENAME);
+        if (foundPodlock == null) {
             return new FileNotFoundStrategyResult(PODFILE_LOCK_FILENAME);
         }
 
@@ -57,8 +64,28 @@ public class PodlockStrategy extends Strategy<PodlockContext, PodlockExtractor> 
     }
 
     @Override
-    public StrategyResult extractable(final StrategyEnvironment environment, final PodlockContext context){
+    public StrategyResult extractable(){
         return new PassedStrategyResult();
+    }
+
+    @Override
+    public Extraction extract(final ExtractionId extractionId) {
+        return podlockExtractor.extract(environment.getDirectory(), foundPodlock);
+    }
+
+    @Override
+    public String getName() {
+        return "Podlock";
+    }
+
+    @Override
+    public BomToolType getBomToolType() {
+        return BomToolType.COCOAPODS;
+    }
+
+    @Override
+    public StrategyType getStrategyType() {
+        return StrategyType.PODLOCK;
     }
 
 

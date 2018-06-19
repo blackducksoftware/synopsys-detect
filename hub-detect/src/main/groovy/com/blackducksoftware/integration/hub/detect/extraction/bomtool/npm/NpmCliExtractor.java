@@ -39,13 +39,13 @@ import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.npm.parse.NpmCliDependencyFinder;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.npm.parse.NpmParseResult;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extractor;
+import com.blackducksoftware.integration.hub.detect.manager.result.search.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 
 @Component
-public class NpmCliExtractor extends Extractor<NpmCliContext>  {
+public class NpmCliExtractor  {
     private final Logger logger = LoggerFactory.getLogger(NpmCliExtractor.class);
 
     public static final String OUTPUT_FILE = "detect_npm_proj_dependencies.json";
@@ -63,11 +63,10 @@ public class NpmCliExtractor extends Extractor<NpmCliContext>  {
     @Autowired
     private NpmCliDependencyFinder npmCliDependencyFinder;
 
-    @Override
-    public Extraction extract(final NpmCliContext context) {
+    public Extraction extract(final File directory, final String npmExe, final ExtractionId extractionId) {
 
-        final File npmLsOutputFile = detectFileManager.getOutputFile(context, NpmCliExtractor.OUTPUT_FILE);
-        final File npmLsErrorFile = detectFileManager.getOutputFile(context, NpmCliExtractor.ERROR_FILE);
+        final File npmLsOutputFile = detectFileManager.getOutputFile(extractionId, NpmCliExtractor.OUTPUT_FILE);
+        final File npmLsErrorFile = detectFileManager.getOutputFile(extractionId, NpmCliExtractor.ERROR_FILE);
 
         final boolean includeDevDeps = detectConfiguration.getNpmIncludeDevDependencies();
         final List<String> exeArgs = Arrays.asList("ls", "-json");
@@ -75,7 +74,7 @@ public class NpmCliExtractor extends Extractor<NpmCliContext>  {
             exeArgs.add("-prod");
         }
 
-        final Executable npmLsExe = new Executable(context.directory, context.npmExe, exeArgs);
+        final Executable npmLsExe = new Executable(directory, npmExe, exeArgs);
         try {
             executableRunner.executeToFile(npmLsExe, npmLsOutputFile, npmLsErrorFile);
         } catch (final Exception e) {
@@ -91,7 +90,7 @@ public class NpmCliExtractor extends Extractor<NpmCliContext>  {
             logger.debug("Parsing npm ls file.");
             printFileToDebug(npmLsOutputFile);
             try {
-                final NpmParseResult result = npmCliDependencyFinder.generateCodeLocation(context.directory.getCanonicalPath(), npmLsOutputFile);
+                final NpmParseResult result = npmCliDependencyFinder.generateCodeLocation(directory.getCanonicalPath(), npmLsOutputFile);
                 return new Extraction.Builder().success(result.codeLocation).projectName(result.projectName).projectVersion(result.projectVersion).build();
             } catch (final IOException e) {
                 return new Extraction.Builder().exception(e).build();

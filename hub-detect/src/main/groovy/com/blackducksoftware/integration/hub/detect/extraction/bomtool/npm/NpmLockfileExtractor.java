@@ -23,6 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.npm;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
@@ -34,10 +35,9 @@ import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.npm.parse.NpmLockfilePackager;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.npm.parse.NpmParseResult;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extractor;
 
 @Component
-public class NpmLockfileExtractor extends Extractor<NpmLockfileContext> {
+public class NpmLockfileExtractor {
 
     @Autowired
     private NpmLockfilePackager npmLockfilePackager;
@@ -45,18 +45,17 @@ public class NpmLockfileExtractor extends Extractor<NpmLockfileContext> {
     @Autowired
     protected DetectConfiguration detectConfiguration;
 
-    @Override
-    public Extraction extract(final NpmLockfileContext context) {
+    public Extraction extract(final File directory, final File lockfile) {
         String lockText;
         try {
-            lockText = FileUtils.readFileToString(context.lockfile, StandardCharsets.UTF_8);
+            lockText = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
         } catch (final IOException e) {
             return new Extraction.Builder().exception(e).build();
         }
 
         try {
             final boolean includeDev = detectConfiguration.getNpmIncludeDevDependencies();
-            final NpmParseResult result = npmLockfilePackager.parse(context.directory.getCanonicalPath(), lockText, includeDev);
+            final NpmParseResult result = npmLockfilePackager.parse(directory.getCanonicalPath(), lockText, includeDev);
             return new Extraction.Builder().success(result.codeLocation).projectName(result.projectName).projectVersion(result.projectVersion).build();
         } catch (final IOException e) {
             return new Extraction.Builder().exception(e).build();

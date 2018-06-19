@@ -23,14 +23,16 @@
  */
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.go.strategy;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.io.File;
+
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.extraction.bomtool.go.GoDepsContext;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.go.GoDepsExtractor;
+import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
+import com.blackducksoftware.integration.hub.detect.manager.result.search.ExtractionId;
+import com.blackducksoftware.integration.hub.detect.manager.result.search.StrategyType;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
-import com.blackducksoftware.integration.hub.detect.strategy.StrategySearchOptions;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
 import com.blackducksoftware.integration.hub.detect.strategy.result.FileNotFoundStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.PassedStrategyResult;
@@ -38,20 +40,24 @@ import com.blackducksoftware.integration.hub.detect.strategy.result.StrategyResu
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
 @Component
-public class GoDepsStrategy extends Strategy<GoDepsContext, GoDepsExtractor> {
+public class GoDepsStrategy extends Strategy {
     public static final String GODEPS_DIRECTORYNAME = "Godeps";
 
-    @Autowired
-    public DetectFileFinder fileFinder;
+    private final DetectFileFinder fileFinder;
+    private final GoDepsExtractor goDepsExtractor;
 
-    public GoDepsStrategy() {
-        super("Go Deps Lock File", BomToolType.GO_GODEP, GoDepsContext.class, GoDepsExtractor.class, StrategySearchOptions.defaultNotNested());
+    private File goDepsDirectory;
+
+    public GoDepsStrategy(final StrategyEnvironment environment, final DetectFileFinder fileFinder, final GoDepsExtractor goDepsExtractor) {
+        super(environment);
+        this.fileFinder = fileFinder;
+        this.goDepsExtractor = goDepsExtractor;
     }
 
     @Override
-    public StrategyResult applicable(final StrategyEnvironment environment, final GoDepsContext context) {
-        context.goDepsDirectory = fileFinder.findFile(environment.getDirectory(), GODEPS_DIRECTORYNAME);
-        if (context.goDepsDirectory == null) {
+    public StrategyResult applicable() {
+        goDepsDirectory = fileFinder.findFile(environment.getDirectory(), GODEPS_DIRECTORYNAME);
+        if (goDepsDirectory == null) {
             return new FileNotFoundStrategyResult(GODEPS_DIRECTORYNAME);
         }
 
@@ -59,8 +65,28 @@ public class GoDepsStrategy extends Strategy<GoDepsContext, GoDepsExtractor> {
     }
 
     @Override
-    public StrategyResult extractable(final StrategyEnvironment environment, final GoDepsContext context){
+    public StrategyResult extractable(){
         return new PassedStrategyResult();
+    }
+
+    @Override
+    public Extraction extract(final ExtractionId extractionId) {
+        return goDepsExtractor.extract(environment.getDirectory(), goDepsDirectory);
+    }
+
+    @Override
+    public String getName() {
+        return "Go Deps Lock File";
+    }
+
+    @Override
+    public BomToolType getBomToolType() {
+        return BomToolType.GO_GODEP;
+    }
+
+    @Override
+    public StrategyType getStrategyType() {
+        return StrategyType.GO_DEPS;
     }
 
 }

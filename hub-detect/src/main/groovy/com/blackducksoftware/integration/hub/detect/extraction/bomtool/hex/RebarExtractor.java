@@ -23,6 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.hex;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,7 +43,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 
 @Component
-public class RebarExtractor extends Extractor<RebarContext> {
+public class RebarExtractor extends Extractor {
 
     @Autowired
     public DetectConfiguration detectConfiguration;
@@ -56,8 +57,7 @@ public class RebarExtractor extends Extractor<RebarContext> {
     @Autowired
     Rebar3TreeParser rebarTreeParser;
 
-    @Override
-    public Extraction extract(final RebarContext context) {
+    public Extraction extract(final File directory, final File rebarExe) {
         try {
             final List<DetectCodeLocation> codeLocations = new ArrayList<>();
 
@@ -67,9 +67,9 @@ public class RebarExtractor extends Extractor<RebarContext> {
             final List<String> arguments = new ArrayList<>();
             arguments.add("tree");
 
-            final Executable rebar3TreeExe = new Executable(context.directory, envVars, context.rebarExe.toString(), arguments);
+            final Executable rebar3TreeExe = new Executable(directory, envVars, rebarExe.toString(), arguments);
             final List<String> output = executableRunner.execute(rebar3TreeExe).getStandardOutputAsList();
-            final RebarParseResult parseResult = rebarTreeParser.parseRebarTreeOutput(output, context.directory.toString());
+            final RebarParseResult parseResult = rebarTreeParser.parseRebarTreeOutput(output, directory.toString());
 
             codeLocations.add(parseResult.codeLocation);
 

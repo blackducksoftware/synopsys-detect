@@ -36,14 +36,12 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.go.parse.GoGodepsParser;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extractor;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction.ExtractionResultType;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.google.gson.Gson;
 
 @Component
-public class GoDepsExtractor extends Extractor<GoDepsContext> {
+public class GoDepsExtractor {
 
     @Autowired
     Gson gson;
@@ -51,19 +49,18 @@ public class GoDepsExtractor extends Extractor<GoDepsContext> {
     @Autowired
     ExternalIdFactory externalIdFactory;
 
-    @Override
-    public Extraction extract(final GoDepsContext context) {
+    public Extraction extract(final File directory, final File goDepsDirectory) {
         try {
-            final File goDepsFile = new File(context.goDepsDirectory, "Godeps.json");
+            final File goDepsFile = new File(goDepsDirectory, "Godeps.json");
 
             final String text =FileUtils.readFileToString(goDepsFile, StandardCharsets.UTF_8);
 
             final GoGodepsParser goDepParser = new GoGodepsParser(gson, externalIdFactory);
             final DependencyGraph dependencyGraph = goDepParser.extractProjectDependencies(text);
 
-            final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.GOLANG, context.directory.toString());
+            final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.GOLANG, directory.toString());
 
-            final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolType.GO_GODEP, context.directory.toString(), externalId, dependencyGraph).build();
+            final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolType.GO_GODEP, directory.toString(), externalId, dependencyGraph).build();
             return new Extraction.Builder().success(codeLocation).build();
         }catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
