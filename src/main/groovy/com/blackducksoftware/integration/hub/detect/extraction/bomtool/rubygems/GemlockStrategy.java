@@ -56,9 +56,10 @@ public class GemlockStrategy extends Strategy {
 
     @Override
     public StrategyResult applicable(final StrategyEnvironment environment, final ExtractionContext context) {
+        final GemlockContext gemlockContext = new GemlockContext(context);
         final File gemlock = fileFinder.findFile(environment.getDirectory(), GEMFILE_LOCK_FILENAME);
         if (gemlock != null) {
-            context.addFileKey(GEMFILE_KEY, gemlock);
+            gemlockContext.setGemlock(gemlock);
         } else {
             return new FileNotFoundStrategyResult(GEMFILE_LOCK_FILENAME);
         }
@@ -73,8 +74,9 @@ public class GemlockStrategy extends Strategy {
 
     @Override
     public Extraction extract(final StrategyEnvironment environment, final ExtractionContext context) {
-        final File directory = context.getDirectory();
-        final File gemlock = context.getFileKey(GEMFILE_KEY);
+        final GemlockContext gemlockContext = new GemlockContext(context);
+        final File directory = environment.getDirectory();
+        final File gemlock = gemlockContext.getGemlock();
         return extractor.extract(directory, gemlock);
     }
 
