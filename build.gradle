@@ -11,76 +11,27 @@ buildscript {
     }
 }
 
-plugins {
-    id 'groovy'
-    id 'maven-publish'
-}
+String sharedVersion = '4.1.0-SNAPSHOT'
 
-version = '4.0.0-SNAPSHOT'
+version = sharedVersion
 
-apply plugin: 'com.blackducksoftware.integration.solution'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
+configure(subprojects) { project ->
 
-final def versionFile = new File("${projectDir}/src/main/resources/version.txt")
-versionFile.delete()
-versionFile << version
+    version = sharedVersion
 
-// the override.snapshot property should be set to true for a CI build so
-// that the version is omitted from a snapshot build artifact
-if (project.isSnapshot && "true" == project.findProperty('override.snapshot')) {
-    version = 'latest-SNAPSHOT'
-}
+    apply plugin: 'com.blackducksoftware.integration.solution'
+    apply plugin: 'groovy'
+    apply plugin: 'maven-publish'
+    apply plugin: 'io.spring.dependency-management'
 
-apply from: 'airgap.gradle'
+    license {
+        header rootProject.file('LICENSE')
+    }
 
-build {
-    doLast {
-        def shellScriptTemplateFile = new File("${projectDir}/src/main/resources/hub-detect-sh")
-        def shellScriptContents = shellScriptTemplateFile.getText('UTF-8')
-        def shellScriptFile = new File("${buildDir}/hub-detect.sh")
-        shellScriptFile.delete()
-        shellScriptFile << shellScriptContents
-        shellScriptFile.setExecutable(true)
-
-        def powershellScriptTemplateFile = new File("${projectDir}/src/main/resources/hub-detect-ps")
-        def powershellScriptContents = powershellScriptTemplateFile.getText('UTF-8')
-        def powershellScriptFile = new File("${buildDir}/hub-detect.ps1")
-        powershellScriptFile.delete()
-        powershellScriptFile << powershellScriptContents
-        powershellScriptFile.setExecutable(true)
+    dependencies {
+        compile 'com.blackducksoftware.integration:hub-common:33.2.0'
+        compile 'org.springframework:spring-core:5.0.4.RELEASE'
+        compile 'org.springframework:spring-context:5.0.4.RELEASE'
     }
 }
 
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            def artifactName = "${buildDir}/libs/${project.name}-${version}.jar"
-            artifact(artifactName)
-        }
-    }
-}
-
-artifactory {
-    publish {
-        defaults { publications('mavenJava') }
-    }
-}
-
-dependencies {
-    compile 'com.blackducksoftware.integration:hub-common:33.2.0'
-    compile 'org.springframework.boot:spring-boot-starter'
-    compile 'org.apache.maven.shared:maven-invoker:3.0.0'
-    compile 'com.esotericsoftware.yamlbeans:yamlbeans:1.11'
-    compile 'com.moandjiezana.toml:toml4j:0.7.1'
-    compile 'org.codehaus.groovy:groovy-all:2.4.12'
-    compile 'org.freemarker:freemarker:2.3.26-incubating'
-
-    compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.5'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.9.5'
-    compile 'com.fasterxml.jackson.core:jackson-annotations:2.9.5'
-
-    testCompile 'org.springframework.boot:spring-boot-starter-test'
-}
-
-springBoot { mainClassName = 'com.blackducksoftware.integration.hub.detect.Application' }
