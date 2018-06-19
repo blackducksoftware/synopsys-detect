@@ -1,5 +1,5 @@
 /**
- * hub-detect
+ * detect-configuration
  *
  * Copyright (C) 2018 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
@@ -57,21 +57,15 @@ import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 import com.blackducksoftware.integration.hub.detect.help.HelpDescription;
 import com.blackducksoftware.integration.hub.detect.help.HelpDetailed;
 import com.blackducksoftware.integration.hub.detect.help.HelpGroup;
-import com.blackducksoftware.integration.hub.detect.model.BomToolType;
-import com.blackducksoftware.integration.hub.detect.search.BomToolFinder;
 import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver;
 import com.blackducksoftware.integration.log.Slf4jIntLogger;
 import com.blackducksoftware.integration.rest.connection.UnauthenticatedRestConnection;
 import com.blackducksoftware.integration.rest.connection.UnauthenticatedRestConnectionBuilder;
 import com.blackducksoftware.integration.rest.proxy.ProxyInfo;
 import com.blackducksoftware.integration.rest.proxy.ProxyInfoBuilder;
-import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
 import com.blackducksoftware.integration.util.ResourceUtil;
 
-import groovy.transform.TypeChecked;
-
 @Component
-@TypeChecked
 public class DetectConfiguration {
     private final Logger logger = LoggerFactory.getLogger(DetectConfiguration.class);
 
@@ -139,7 +133,6 @@ public class DetectConfiguration {
     private boolean usingDefaultSourcePath;
     private boolean usingDefaultOutputPath;
 
-    private ExcludedIncludedFilter bomToolFilter;
     private List<String> bomToolSearchDirectoryExclusions;
 
     public void init(final List<DetectOption> detectOptions) throws DetectUserFriendlyException, IOException, IllegalArgumentException, IllegalAccessException {
@@ -214,8 +207,6 @@ public class DetectConfiguration {
             hubSignatureScannerParallelProcessors = Runtime.getRuntime().availableProcessors();
         }
 
-        bomToolFilter = new ExcludedIncludedFilter(getExcludedBomToolTypes(), getIncludedBomToolTypes());
-
         configureForDocker();
 
         if (StringUtils.isNotBlank(hubSignatureScannerHostUrl) && StringUtils.isNotBlank(hubSignatureScannerOfflineLocalPath)) {
@@ -249,7 +240,7 @@ public class DetectConfiguration {
         }
         try {
             if (bomToolSearchExclusionDefaults) {
-                final String fileContent = ResourceUtil.getResourceAsString(BomToolFinder.class, "/excludedDirectoriesBomToolSearch.txt", StandardCharsets.UTF_8);
+                final String fileContent = ResourceUtil.getResourceAsString(DetectConfiguration.class, "/excludedDirectoriesBomToolSearch.txt", StandardCharsets.UTF_8);
                 bomToolSearchDirectoryExclusions.addAll(Arrays.asList(fileContent.split("\r?\n")));
             }
         } catch (final IOException e) {
@@ -305,10 +296,6 @@ public class DetectConfiguration {
 
     public boolean isUsingDefaultOutputPath() {
         return usingDefaultOutputPath;
-    }
-
-    public boolean isBomToolIncluded(final BomToolType type) {
-        return bomToolFilter.shouldInclude(type.toString());
     }
 
     public String getDetectProperty(final String key) {
@@ -684,7 +671,7 @@ public class DetectConfiguration {
     @DefaultValue("External")
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
     @HelpDescription("An override for the Project Version distribution")
-    @AcceptableValues(value = { "EXTERNAL", "SAAS", "INTERNAL", "OPENSOURCE" }, caseSensitive = false, strict = false)
+    @AcceptableValues(value = { "EXTERNAL", "SAAS", "INTERNAL", "OPENSOURCE" }, caseSensitive = false, strict = false, isCommaSeparatedList = true)
     private String projectVersionDistribution;
 
     @Value("${detect.project.version.update:}")
@@ -699,12 +686,6 @@ public class DetectConfiguration {
     @HelpDescription("A comma-separated list of policy violation severities that will fail detect. If this is not set, detect will not fail due to policy violations.")
     @AcceptableValues(value = { "ALL", "BLOCKER", "CRITICAL", "MAJOR", "MINOR", "TRIVIAL" }, caseSensitive = false, strict = false)
     private String policyCheckFailOnSeverities;
-
-    @Value("${detect.code.location.combine.same.names:}")
-    @HelpGroup(primary = GROUP_CODELOCATION)
-    @HelpDescription("If set to true, detect will automatically combine code locations with the same name. Otherwise, duplicate names will be appended with their index.")
-    @DefaultValue("false")
-    private Boolean combineCodeLocations;
 
     @Value("${detect.gradle.inspector.version:}")
     @DefaultValue("latest")
@@ -1292,7 +1273,7 @@ public class DetectConfiguration {
     }
 
     public boolean getCombineCodeLocations() {
-        return combineCodeLocations;
+        return false; // for now this is always false, in the future we could introduce a property.
     }
 
     public String getGradleInspectorVersion() {
