@@ -1,5 +1,5 @@
 include "hub-detect"
-include "detect-common"
+include "detect-configuration"
 
 rootProject.name = 'detect'
 rootProject.children.each { project -> project.buildFileName = "${project.name}.gradle"
