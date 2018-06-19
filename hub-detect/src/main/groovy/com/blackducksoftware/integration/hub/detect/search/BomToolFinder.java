@@ -144,7 +144,7 @@ public class BomToolFinder {
         }
 
         if (ordered.size() != allStrategies.size()) {
-            throw new DetectUserFriendlyException("An error occured finding extraction strategy order.", ExitCodeType.FAILURE_CONFIGURATION);
+            throw new DetectUserFriendlyException("An error occurred finding extraction strategy order.", ExitCodeType.FAILURE_CONFIGURATION);
         }
         return ordered;
     }
