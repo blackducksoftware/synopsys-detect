@@ -23,7 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.extraction.model;
 
-public abstract class Extractor<C extends ExtractionContext> {
+public abstract class Extractor<C extends StrategyState> {
 
     public abstract Extraction extract(C context);
 

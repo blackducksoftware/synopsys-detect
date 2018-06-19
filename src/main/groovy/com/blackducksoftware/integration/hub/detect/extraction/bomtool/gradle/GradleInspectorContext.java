@@ -23,9 +23,9 @@
  */
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.gradle;
 
-import com.blackducksoftware.integration.hub.detect.extraction.model.ExtractionContext;
+import com.blackducksoftware.integration.hub.detect.extraction.model.StrategyState;
 
-public class GradleInspectorContext extends ExtractionContext  {
+public class GradleInspectorContext extends StrategyState  {
     public String gradleExe;
     public String gradleInspector;
 }

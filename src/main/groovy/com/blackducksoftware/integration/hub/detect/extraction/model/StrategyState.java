@@ -25,6 +25,6 @@ package com.blackducksoftware.integration.hub.detect.extraction.model;
 
 import java.io.File;
 
-public class ExtractionContext {
+public class StrategyState {
     public File directory;
 }

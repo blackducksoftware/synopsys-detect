@@ -35,14 +35,14 @@ import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction.ExtractionResultType;
-import com.blackducksoftware.integration.hub.detect.extraction.model.ExtractionContext;
+import com.blackducksoftware.integration.hub.detect.extraction.model.StrategyState;
 import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
 
 @Component
 public class ExtractionReporter {
     private final Logger logger = LoggerFactory.getLogger(ExtractionReporter.class);
 
-    public void startedExtraction(final Strategy strategy, final ExtractionContext context) {
+    public void startedExtraction(final Strategy strategy, final StrategyState context) {
         logger.info(ReportConstants.SEPERATOR);
         final String strategyName = strategy.getBomToolType() + " - " + strategy.getName();
         logger.info("Starting extraction: " + strategyName);

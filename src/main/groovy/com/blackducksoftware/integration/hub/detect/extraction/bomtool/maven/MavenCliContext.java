@@ -23,8 +23,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.maven;
 
-import com.blackducksoftware.integration.hub.detect.extraction.model.ExtractionContext;
+import com.blackducksoftware.integration.hub.detect.extraction.model.StrategyState;
 
-public class MavenCliContext extends ExtractionContext {
+public class MavenCliContext extends StrategyState {
     public String mavenExe;
 }

@@ -25,9 +25,9 @@ package com.blackducksoftware.integration.hub.detect.extraction.bomtool.docker;
 
 import java.io.File;
 
-import com.blackducksoftware.integration.hub.detect.extraction.model.ExtractionContext;
+import com.blackducksoftware.integration.hub.detect.extraction.model.StrategyState;
 
-public class DockerContext extends ExtractionContext {
+public class DockerContext extends StrategyState {
 
     public File bashExe;
     public File dockerExe;

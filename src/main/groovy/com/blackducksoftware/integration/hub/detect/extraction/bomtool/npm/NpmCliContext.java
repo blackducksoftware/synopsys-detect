@@ -23,8 +23,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.npm;
 
-import com.blackducksoftware.integration.hub.detect.extraction.model.ExtractionContext;
+import com.blackducksoftware.integration.hub.detect.extraction.model.StrategyState;
 
-public class NpmCliContext extends ExtractionContext {
+public class NpmCliContext extends StrategyState {
     public String npmExe;
 }

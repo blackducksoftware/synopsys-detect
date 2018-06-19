@@ -23,8 +23,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.nuget;
 
-import com.blackducksoftware.integration.hub.detect.extraction.model.ExtractionContext;
+import com.blackducksoftware.integration.hub.detect.extraction.model.StrategyState;
 
-public class NugetInspectorContext extends ExtractionContext {
+public class NugetInspectorContext extends StrategyState {
     public String inspectorExe;
 }

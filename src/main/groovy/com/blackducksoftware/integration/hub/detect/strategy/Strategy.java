@@ -23,14 +23,12 @@
  */
 package com.blackducksoftware.integration.hub.detect.strategy;
 
-import java.io.File;
-import java.lang.reflect.Constructor;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.blackducksoftware.integration.hub.detect.extraction.model.ExtractionContext;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extractor;
+import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
+import com.blackducksoftware.integration.hub.detect.extraction.model.StrategyState;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyException;
@@ -44,20 +42,16 @@ import com.blackducksoftware.integration.hub.detect.strategy.result.StrategyResu
 import com.blackducksoftware.integration.hub.detect.strategy.result.YieldedStrategyResult;
 
 @SuppressWarnings("rawtypes")
-public abstract class Strategy<C extends ExtractionContext, E extends Extractor<C>>  {
+public abstract class Strategy  {
     private final String name;
     private final BomToolType bomToolType;
-    private final Class<C> extractionContextClass;
-    private final Class<E> extractorClass;
 
     private final Set<Strategy> yieldsToStrategies = new HashSet<>();
     private final StrategySearchOptions searchOptions;
 
-    public Strategy(final String name, final BomToolType bomToolType, final Class<C> extractionContextClass, final Class<E> extractorClass, final StrategySearchOptions searchOptions) {
+    public Strategy(final String name, final BomToolType bomToolType, final StrategySearchOptions searchOptions) {
         this.name = name;
         this.bomToolType = bomToolType;
-        this.extractionContextClass = extractionContextClass;
-        this.extractorClass = extractorClass;
         this.searchOptions = searchOptions;
     }
 
@@ -65,7 +59,7 @@ public abstract class Strategy<C extends ExtractionContext, E extends Extractor<
         yieldsToStrategies.add(strategy);
     }
 
-    public StrategyResult searchable(final StrategyEnvironment environment, final C context) {
+    public StrategyResult searchable(final StrategyEnvironment environment, final StrategyState context) {
         if (!environment.getBomToolFilter().shouldInclude(bomToolType.toString())) {
             return new BomToolExcludedStrategyResult();
         }
@@ -93,9 +87,11 @@ public abstract class Strategy<C extends ExtractionContext, E extends Extractor<
     }
 
     //Applicable should be light-weight and should never throw an exception. Look for files, check properties, short and sweet.
-    public abstract StrategyResult applicable(final StrategyEnvironment environment, final C context);
+    public abstract StrategyResult applicable(final StrategyEnvironment environment, final StrategyState context);
     //Extractable may be as heavy as needed, and may (and sometimes should) fail. Make web requests, install inspectors or run executables.
-    public abstract StrategyResult extractable(final StrategyEnvironment environment, final C context) throws StrategyException;
+    public abstract StrategyResult extractable(final StrategyEnvironment environment, final StrategyState context) throws StrategyException;
+
+    public abstract Extraction extract(final StrategyEnvironment environment, final StrategyState context);
 
     public String getName() {
         return name;
@@ -109,14 +105,6 @@ public abstract class Strategy<C extends ExtractionContext, E extends Extractor<
         return bomToolType;
     }
 
-    public Class<C> getExtractionContextClass() {
-        return extractionContextClass;
-    }
-
-    public Class<E> getExtractorClass() {
-        return extractorClass;
-    }
-
     public Set<Strategy> getYieldsToStrategies() {
         return yieldsToStrategies;
     }
@@ -125,25 +113,8 @@ public abstract class Strategy<C extends ExtractionContext, E extends Extractor<
         return searchOptions;
     }
 
-    public ExtractionContext createContext(final File directory) {
-        final ExtractionContext context = create(getExtractionContextClass());
-        context.directory = directory;
-        return context;
-    }
-
-    private <T> T create(final Class<T> clazz) {
-        Constructor<T> constructor;
-        try {
-            constructor = clazz.getConstructor();
-        } catch (final Exception e) {
-            throw new RuntimeException(e);
-        }
-        T instance;
-        try {
-            instance = constructor.newInstance();
-        } catch (final Exception e) {
-            throw new RuntimeException(e);
-        }
-        return instance;
+    public StrategyState createNewState() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

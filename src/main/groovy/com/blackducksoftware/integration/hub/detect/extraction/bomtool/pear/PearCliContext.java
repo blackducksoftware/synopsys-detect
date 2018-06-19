@@ -25,8 +25,8 @@ package com.blackducksoftware.integration.hub.detect.extraction.bomtool.pear;
 
 import java.io.File;
 
-import com.blackducksoftware.integration.hub.detect.extraction.model.ExtractionContext;
+import com.blackducksoftware.integration.hub.detect.extraction.model.StrategyState;
 
-public class PearCliContext extends ExtractionContext {
+public class PearCliContext extends StrategyState {
     public File pearExe;
 }

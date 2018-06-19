@@ -25,9 +25,9 @@ package com.blackducksoftware.integration.hub.detect.extraction.bomtool.pip;
 
 import java.io.File;
 
-import com.blackducksoftware.integration.hub.detect.extraction.model.ExtractionContext;
+import com.blackducksoftware.integration.hub.detect.extraction.model.StrategyState;
 
-public class PipInspectorContext extends ExtractionContext {
+public class PipInspectorContext extends StrategyState {
     public String pythonExe;
     public File pipInspector;
     public File setupFile;

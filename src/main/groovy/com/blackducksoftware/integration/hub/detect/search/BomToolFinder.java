@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
-import com.blackducksoftware.integration.hub.detect.extraction.model.ExtractionContext;
+import com.blackducksoftware.integration.hub.detect.extraction.model.StrategyState;
 import com.blackducksoftware.integration.hub.detect.extraction.model.StrategyEvaluation;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
@@ -74,8 +74,12 @@ public class BomToolFinder {
 
         for (final File directory : directoriesToSearch) {
             if (options.getExcludedDirectories().contains(directory.getName())) {
-                logger.info("Skipping excluded directory: " + directory.getPath());
-                continue;
+                if (depth == 0) {
+                    logger.info("Not skipping directory because it is at depth 0: " + directory.getPath());
+                } else {
+                    logger.info("Skipping excluded directory: " + directory.getPath());
+                    continue;
+                }
             }
 
             logger.info("Searching directory: " + directory.getPath());
@@ -107,7 +111,7 @@ public class BomToolFinder {
 
     private StrategyEvaluation processStrategy(final Strategy strategy, final File directory, final Set<Strategy> appliedCurrent, final Set<Strategy> appliedBefore, final int depth, final BomToolFinderOptions options) {
         final StrategyEnvironment environment = new StrategyEnvironment(directory, appliedCurrent, appliedBefore, depth, options.getBomToolFilter(), options.getForceNestedSearch());
-        final ExtractionContext context = strategy.createContext(directory);
+        final StrategyState context = strategy.createContext(directory);
         final StrategyEvaluation evaluation = new StrategyEvaluation(strategy, environment, context);
 
         evaluation.searchable = strategy.searchable(environment, context);

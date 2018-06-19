@@ -23,8 +23,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.sbt;
 
-import com.blackducksoftware.integration.hub.detect.extraction.model.ExtractionContext;
+import com.blackducksoftware.integration.hub.detect.extraction.model.StrategyState;
 
-public class SbtResolutionCacheContext extends ExtractionContext {
+public class SbtResolutionCacheContext extends StrategyState {
 
 }

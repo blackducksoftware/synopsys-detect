@@ -31,7 +31,7 @@ import com.blackducksoftware.integration.hub.detect.strategy.result.StrategyResu
 public class StrategyEvaluation {
     public Strategy strategy;
     public StrategyEnvironment environment;
-    public ExtractionContext context;
+    public StrategyState context;
 
     public StrategyResult searchable;
     public StrategyResult applicable;
@@ -39,7 +39,7 @@ public class StrategyEvaluation {
 
     public Extraction extraction;
 
-    public StrategyEvaluation(final Strategy strategy, final StrategyEnvironment environment, final ExtractionContext context) {
+    public StrategyEvaluation(final Strategy strategy, final StrategyEnvironment environment, final StrategyState context) {
         this.strategy = strategy;
         this.environment = environment;
         this.context = context;

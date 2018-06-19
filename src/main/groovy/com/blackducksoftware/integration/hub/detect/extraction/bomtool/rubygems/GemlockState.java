@@ -25,8 +25,8 @@ package com.blackducksoftware.integration.hub.detect.extraction.bomtool.rubygems
 
 import java.io.File;
 
-import com.blackducksoftware.integration.hub.detect.extraction.model.ExtractionContext;
+import com.blackducksoftware.integration.hub.detect.extraction.model.StrategyState;
 
-public class GemlockContext extends ExtractionContext {
+public class GemlockState extends StrategyState {
     public File gemlock;
 }

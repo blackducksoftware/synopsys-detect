@@ -23,9 +23,13 @@
  */
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.rubygems;
 
+import java.io.File;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
+import com.blackducksoftware.integration.hub.detect.extraction.model.StrategyState;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
 import com.blackducksoftware.integration.hub.detect.strategy.StrategySearchOptions;
@@ -36,20 +40,29 @@ import com.blackducksoftware.integration.hub.detect.strategy.result.StrategyResu
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
 @Component
-public class GemlockStrategy extends Strategy<GemlockContext, GemlockExtractor> {
+public class GemlockStrategy extends Strategy {
     public static final String GEMFILE_LOCK_FILENAME = "Gemfile.lock";
 
     @Autowired
     public DetectFileFinder fileFinder;
 
+    @Autowired
+    public GemlockExtractor extractor;
+
     public GemlockStrategy() {
-        super("Gemlock", BomToolType.RUBYGEMS, GemlockContext.class, GemlockExtractor.class, StrategySearchOptions.defaultNotNested());
+        super("Gemlock", BomToolType.RUBYGEMS, StrategySearchOptions.defaultNotNested());
     }
 
     @Override
-    public StrategyResult applicable(final StrategyEnvironment environment, final GemlockContext context) {
-        context.gemlock = fileFinder.findFile(environment.getDirectory(), GEMFILE_LOCK_FILENAME);
-        if (context.gemlock == null) {
+    public StrategyState createNewState() {
+        return new GemlockState();
+    }
+
+    @Override
+    public StrategyResult applicable(final StrategyEnvironment environment, final StrategyState context) {
+        final GemlockState state = (GemlockState) context;
+        state.gemlock = fileFinder.findFile(environment.getDirectory(), GEMFILE_LOCK_FILENAME);
+        if (state.gemlock == null) {
             return new FileNotFoundStrategyResult(GEMFILE_LOCK_FILENAME);
         }
 
@@ -57,8 +70,15 @@ public class GemlockStrategy extends Strategy<GemlockContext, GemlockExtractor> 
     }
 
     @Override
-    public StrategyResult extractable(final StrategyEnvironment environment, final GemlockContext context){
+    public StrategyResult extractable(final StrategyEnvironment environment, final StrategyState context){
         return new PassedStrategyResult();
     }
 
+    @Override
+    public Extraction extract(final StrategyEnvironment environment, final StrategyState context) {
+        final GemlockState state = (GemlockState) context;
+        final File directory = state.directory;
+        final File gemlock = state.gemlock;
+        return extractor.extract(directory, gemlock);
+    }
 }
