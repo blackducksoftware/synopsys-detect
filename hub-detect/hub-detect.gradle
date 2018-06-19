@@ -1,9 +1,5 @@
 apply plugin: 'org.springframework.boot'
 
-final def versionFile = new File("${projectDir}/src/main/resources/version.txt")
-versionFile.delete()
-versionFile << version
-
 // the override.snapshot property should be set to true for a CI build so
 // that the version is omitted from a snapshot build artifact
 if (project.isSnapshot && "true" == project.findProperty('override.snapshot')) {

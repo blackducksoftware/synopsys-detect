@@ -1,3 +1,7 @@
+final def versionFile = new File("${projectDir}/src/main/resources/version.txt")
+versionFile.delete()
+versionFile << version
+
 dependencies {
     compile 'org.freemarker:freemarker:2.3.26-incubating'
 
