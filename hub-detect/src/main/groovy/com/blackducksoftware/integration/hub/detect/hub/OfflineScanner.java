@@ -51,12 +51,9 @@ import com.blackducksoftware.integration.rest.connection.UnauthenticatedRestConn
 import com.blackducksoftware.integration.util.IntEnvironmentVariables;
 import com.google.gson.Gson;
 
-import groovy.transform.TypeChecked;
-
 @Component
-@TypeChecked
 public class OfflineScanner {
-    private static final Logger logger = LoggerFactory.getLogger(OfflineScanner.class);
+    private final Logger logger = LoggerFactory.getLogger(OfflineScanner.class);
 
     @Autowired
     private DetectConfiguration detectConfiguration;
@@ -86,21 +83,21 @@ public class OfflineScanner {
         }
 
         if (!cliInstalledOkay && StringUtils.isNotBlank(hubSignatureScannerOfflineLocalPath)) {
-            OfflineScanner.logger.warn(String.format("The signature scanner is not correctly installed at %s", hubSignatureScannerOfflineLocalPath));
+            logger.warn(String.format("The signature scanner is not correctly installed at %s", hubSignatureScannerOfflineLocalPath));
             return false;
         } else if (!cliInstalledOkay) {
-            OfflineScanner.logger.warn(String.format("The signature scanner is not correctly installed at %s", hubScanConfig.getToolsDir()));
+            logger.warn(String.format("The signature scanner is not correctly installed at %s", hubScanConfig.getToolsDir()));
             return false;
         } else {
             simpleScanUtility.setupAndExecuteScan(cliLocation);
-            OfflineScanner.logger.info(String.format("The scan dry run files can be found in : %s", simpleScanUtility.getDataDirectory()));
+            logger.info(String.format("The scan dry run files can be found in : %s", simpleScanUtility.getDataDirectory()));
             return true;
         }
     }
 
     private void installSignatureScannerFromUrl(final IntLogger intLogger, final HubScanConfig hubScanConfig) throws DetectUserFriendlyException {
         try {
-            OfflineScanner.logger.info(String.format("Attempting to download the signature scanner from %s", detectConfiguration.getHubSignatureScannerHostUrl()));
+            logger.info(String.format("Attempting to download the signature scanner from %s", detectConfiguration.getHubSignatureScannerHostUrl()));
             final UnauthenticatedRestConnectionBuilder restConnectionBuilder = new UnauthenticatedRestConnectionBuilder();
             restConnectionBuilder.setBaseUrl(detectConfiguration.getHubSignatureScannerHostUrl());
             restConnectionBuilder.setTimeout(detectConfiguration.getHubTimeout());
@@ -120,7 +117,7 @@ public class OfflineScanner {
         try {
             cliInstalledOkay = cliLocation.getCLIExists(intLogger);
         } catch (final IOException e) {
-            OfflineScanner.logger.error(String.format("Couldn't check the signature scanner install: %s", e.getMessage()));
+            logger.error(String.format("Couldn't check the signature scanner install: %s", e.getMessage()));
         }
 
         return cliInstalledOkay;
