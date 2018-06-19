@@ -21,20 +21,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.strategy.result;
+package com.blackducksoftware.integration.hub.detect.extraction.bomtool.pip;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
+import java.io.File;
 
-public class FilesNotFoundStrategyResult extends FailedStrategyResult {
-    private final String[] patterns;
+import com.blackducksoftware.integration.hub.detect.extraction.model.ExtractionContext;
 
-    public FilesNotFoundStrategyResult(final String... patterns) {
-        this.patterns = patterns;
-    }
-
-    @Override
-    public String toDescription() {
-        return "No files were found with any of the patterns: " + Arrays.asList(patterns).stream().collect(Collectors.joining(","));
-    }
+public class PipenvContext extends ExtractionContext {
+    public String pythonExe;
+    public String pipenvExe;
+    public File pipfileDotLock;
+    public File pipfile;
+    public File setupFile;
 }

@@ -23,8 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.pip;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,16 +31,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.extraction.bomtool.pip.parse.PipInspectorTreeParser;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.pip.parse.PipParseResult;
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.pip.parse.PipenvGraphParser;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extractor;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
 @Component
-public class PipInspectorExtractor extends Extractor<PipInspectorContext> {
+public class PipenvExtractor extends Extractor<PipenvContext> {
+    public static final String PIP_SEPARATOR = "==";
+
     @Autowired
     private DetectConfiguration detectConfiguration;
 
@@ -50,44 +51,41 @@ public class PipInspectorExtractor extends Extractor<PipInspectorContext> {
     private ExecutableRunner executableRunner;
 
     @Autowired
-    private PipInspectorTreeParser pipInspectorTreeParser;
+    private PipenvGraphParser pipenvTreeParser;
 
     @Override
-    public Extraction extract(final PipInspectorContext context) {
+    public Extraction extract(final PipenvContext context) {
+        Extraction extraction;
+
         try {
             final String projectName = getProjectName(context);
+            final String projectVersionName = getProjectVersionName(context);
             final PipParseResult result;
 
-            final String inspectorOutput = runInspector(context.directory, context.pythonExe, context.pipInspector, projectName, context.requirementFilePath);
-            result = pipInspectorTreeParser.parse(inspectorOutput, context.directory.toString());
+            final Executable pipenvRunPipFreeze = new Executable(context.directory, context.pipenvExe, Arrays.asList("run", "pip", "freeze"));
+            final ExecutableOutput pipFreezeOutput = executableRunner.execute(pipenvRunPipFreeze);
 
-            return new Extraction.Builder().success(result.codeLocation).projectName(result.projectName).projectVersion(result.projectVersion).build();
+            final Executable pipenvGraph = new Executable(context.directory, context.pipenvExe, Arrays.asList("graph", "--bare"));
+            final ExecutableOutput graphOutput = executableRunner.execute(pipenvGraph);
+
+            result = pipenvTreeParser.parse(projectName, projectVersionName, pipFreezeOutput.getStandardOutputAsList(), graphOutput.getStandardOutputAsList(), context.directory.toString());
+
+            if (result != null) {
+                extraction = new Extraction.Builder().success(result.codeLocation).projectName(result.projectName).projectVersion(result.projectVersion).build();
+            } else {
+                extraction = new Extraction.Builder().failure("Pipenv graph could not successfully be parsed").build();
+            }
         } catch (final Exception e) {
-            return new Extraction.Builder().exception(e).build();
+            extraction = new Extraction.Builder().exception(e).build();
         }
+
+        return extraction;
     }
 
-    private String runInspector(final File sourceDirectory, final String pythonPath, final File inspectorScript, final String projectName, final String requirementsFilePath) throws ExecutableRunnerException {
-        final List<String> inspectorArguments = new ArrayList<>();
-        inspectorArguments.add(inspectorScript.getAbsolutePath());
-
-        if (StringUtils.isNotBlank(requirementsFilePath)) {
-            final File requirementsFile = new File(requirementsFilePath);
-            inspectorArguments.add(String.format("--requirements=%s", requirementsFile.getAbsolutePath()));
-        }
-
-        if (StringUtils.isNotBlank(projectName)) {
-            inspectorArguments.add(String.format("--projectname=%s", projectName));
-        }
-
-        final Executable pipInspector = new Executable(sourceDirectory, pythonPath, inspectorArguments);
-        return executableRunner.execute(pipInspector).getStandardOutput();
-    }
-
-    private String getProjectName(final PipInspectorContext context) throws ExecutableRunnerException {
+    private String getProjectName(final PipenvContext context) throws ExecutableRunnerException {
         String projectName = detectConfiguration.getPipProjectName();
 
-        if (context.setupFile != null && context.setupFile.exists() && StringUtils.isBlank(projectName)) {
+        if (StringUtils.isBlank(projectName) && context.setupFile != null && context.setupFile.exists()) {
             final Executable findProjectNameExecutable = new Executable(context.directory, context.pythonExe, Arrays.asList(
                     context.setupFile.getAbsolutePath(),
                     "--name"));
@@ -96,6 +94,20 @@ public class PipInspectorExtractor extends Extractor<PipInspectorContext> {
         }
 
         return projectName;
+    }
+
+    private String getProjectVersionName(final PipenvContext context) throws ExecutableRunnerException {
+        String projectVersionName = detectConfiguration.getPipProjectVersionName();
+
+        if (StringUtils.isBlank(projectVersionName) && context.setupFile != null && context.setupFile.exists()) {
+            final Executable findProjectNameExecutable = new Executable(context.directory, context.pythonExe, Arrays.asList(
+                    context.setupFile.getAbsolutePath(),
+                    "--version"));
+            final List<String> output = executableRunner.execute(findProjectNameExecutable).getStandardOutputAsList();
+            projectVersionName = output.get(output.size() - 1).trim();
+        }
+
+        return projectVersionName;
     }
 
 }

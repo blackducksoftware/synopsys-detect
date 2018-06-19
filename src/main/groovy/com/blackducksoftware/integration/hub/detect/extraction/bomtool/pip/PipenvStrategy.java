@@ -23,7 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.pip;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -34,67 +33,57 @@ import com.blackducksoftware.integration.hub.detect.strategy.StrategySearchOptio
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyException;
 import com.blackducksoftware.integration.hub.detect.strategy.result.ExecutableNotFoundStrategyResult;
-import com.blackducksoftware.integration.hub.detect.strategy.result.FileNotFoundStrategyResult;
-import com.blackducksoftware.integration.hub.detect.strategy.result.InspectorNotFoundStrategyResult;
+import com.blackducksoftware.integration.hub.detect.strategy.result.FilesNotFoundStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.PassedStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.StrategyResult;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
 @Component
-public class PipInspectorStrategy extends Strategy<PipInspectorContext, PipInspectorExtractor> {
+public class PipenvStrategy extends Strategy<PipenvContext, PipenvExtractor> {
     public static final String SETUPTOOLS_DEFAULT_FILE_NAME = "setup.py";
     public static final String PIPFILE_FILE_NAME = "Pipfile";
     public static final String PIPFILE_DOT_LOCK_FILE_NAME = "Pipfile.lock";
 
     @Autowired
-    public DetectFileFinder fileFinder;
+    private DetectFileFinder fileFinder;
 
     @Autowired
-    public PythonExecutableFinder pythonExecutableFinder;
+    private PythonExecutableFinder pythonExecutableFinder;
 
     @Autowired
-    public PipInspectorManager pipInspectorManager;
+    private DetectConfiguration detectConfiguration;
 
-    @Autowired
-    public DetectConfiguration detectConfiguration;
-
-    public PipInspectorStrategy() {
-        super("Pip Inspector", BomToolType.PIP, PipInspectorContext.class, PipInspectorExtractor.class, StrategySearchOptions.defaultNotNested());
+    public PipenvStrategy() {
+        super("Pipenv Graph", BomToolType.PIP, PipenvContext.class, PipenvExtractor.class, StrategySearchOptions.defaultNotNested());
     }
 
     @Override
-    public StrategyResult applicable(final StrategyEnvironment environment, final PipInspectorContext context) {
-        context.setupFile = fileFinder.findFile(environment.getDirectory(), SETUPTOOLS_DEFAULT_FILE_NAME);
+    public StrategyResult applicable(final StrategyEnvironment environment, final PipenvContext context) {
+        context.pipfile = fileFinder.findFile(environment.getDirectory(), PIPFILE_FILE_NAME);
+        context.pipfileDotLock = fileFinder.findFile(environment.getDirectory(), PIPFILE_DOT_LOCK_FILE_NAME);
 
-        context.requirementFilePath = detectConfiguration.getRequirementsFilePath();
-
-        final boolean hasSetups = context.setupFile != null;
-        final boolean hasRequirements = context.requirementFilePath != null && StringUtils.isNotBlank(context.requirementFilePath);
-        if (hasSetups || hasRequirements) {
+        if (context.pipfile != null || context.pipfileDotLock != null) {
             return new PassedStrategyResult();
         } else {
-            return new FileNotFoundStrategyResult(SETUPTOOLS_DEFAULT_FILE_NAME);
+            return new FilesNotFoundStrategyResult(PIPFILE_FILE_NAME, PIPFILE_DOT_LOCK_FILE_NAME);
         }
 
     }
 
     @Override
-    public StrategyResult extractable(final StrategyEnvironment environment, final PipInspectorContext context) throws StrategyException {
+    public StrategyResult extractable(final StrategyEnvironment environment, final PipenvContext context) throws StrategyException {
         context.pythonExe = pythonExecutableFinder.findExecutable(environment, ExecutableType.PYTHON, ExecutableType.PYTHON3, detectConfiguration.getPythonPath());
         if (context.pythonExe == null) {
             return new ExecutableNotFoundStrategyResult("python");
         }
 
-        final String pipExe = pythonExecutableFinder.findExecutable(environment, ExecutableType.PIP, ExecutableType.PIP3);
-        if (pipExe == null) {
-            return new ExecutableNotFoundStrategyResult("pip");
+        context.pipenvExe = pythonExecutableFinder.findExecutable(environment, ExecutableType.PIPENV, detectConfiguration.getPipenvPath());
+        if (context.pipenvExe == null) {
+            return new ExecutableNotFoundStrategyResult("pipenv");
         }
 
-        context.pipInspector = pipInspectorManager.findPipInspector(environment);
-        if (context.pipInspector == null) {
-            return new InspectorNotFoundStrategyResult("pip");
-        }
+        context.setupFile = fileFinder.findFile(environment.getDirectory(), SETUPTOOLS_DEFAULT_FILE_NAME);
 
         return new PassedStrategyResult();
     }

@@ -23,10 +23,11 @@
  */
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.pip.parse;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Stack;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -43,8 +44,8 @@ import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 
 @Component
-public class PipenvTreeParser {
-    final Logger logger = LoggerFactory.getLogger(PipenvTreeParser.class);
+public class PipenvGraphParser {
+    final Logger logger = LoggerFactory.getLogger(PipenvGraphParser.class);
 
     public static final String TOP_LEVEL_SEPARATOR = "==";
     public static final String DEPENDENCY_INDENTATION = "  ";
@@ -56,16 +57,19 @@ public class PipenvTreeParser {
     @Autowired
     ExternalIdFactory externalIdFactory;
 
-    public PipParseResult parse(final String projectName, final String projectVersionName, final String treeText, final String sourcePath) {
-        final List<String> lines = Arrays.asList(treeText.trim().split(System.lineSeparator()));
-
+    public PipParseResult parse(final String projectName, final String projectVersionName, final List<String> pipFreezeOutput, final List<String> pipenvGraphOutput, final String sourcePath) {
         final MutableMapDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
         final Stack<Dependency> dependencyStack = new Stack<>();
 
-        int lastLevel = 0;
-        for (final String line : lines) {
+        final Map<String, String[]> pipFreezeMap = pipFreezeOutput.stream()
+                .map(line -> line.split(TOP_LEVEL_SEPARATOR))
+                .filter(splitLine -> splitLine.length == 2)
+                .collect(Collectors.toMap(splitLine -> splitLine[0].trim().toLowerCase(), splitLine -> splitLine));
+
+        int lastLevel = -1;
+        for (final String line : pipenvGraphOutput) {
             final int currentLevel = getLevel(line);
-            final Optional<Dependency> parsedDependency = getDependencyFromLine(line);
+            final Optional<Dependency> parsedDependency = getDependencyFromLine(pipFreezeMap, line);
 
             if (!parsedDependency.isPresent()) {
                 continue;
@@ -112,7 +116,7 @@ public class PipenvTreeParser {
         return level;
     }
 
-    private Optional<Dependency> getDependencyFromLine(final String line) {
+    private Optional<Dependency> getDependencyFromLine(final Map<String, String[]> pipFreezeMap, final String line) {
         Dependency dependency = null;
         String name = null;
         String version = null;
@@ -128,6 +132,12 @@ public class PipenvTreeParser {
         }
 
         if (StringUtils.isNotBlank(name) && StringUtils.isNotBlank(version)) {
+            final String[] pipFreezeResult = pipFreezeMap.get(name.toLowerCase());
+            if (pipFreezeResult != null) {
+                name = pipFreezeResult[0].trim();
+                version = pipFreezeResult[1].trim();
+            }
+
             final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.PYPI, name, version);
             dependency = new Dependency(name, version, externalId);
         }
