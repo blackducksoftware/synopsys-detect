@@ -44,6 +44,7 @@ import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendly
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.model.DetectProject;
 import com.blackducksoftware.integration.log.IntLogger;
+import com.blackducksoftware.integration.log.SilentLogger;
 import com.blackducksoftware.integration.log.Slf4jIntLogger;
 import com.blackducksoftware.integration.rest.connection.RestConnection;
 import com.blackducksoftware.integration.rest.connection.UnauthenticatedRestConnectionBuilder;
@@ -78,7 +79,7 @@ public class OfflineScanner {
             cliLocation = new OfflineCLILocation(intLogger, new File(hubSignatureScannerOfflineLocalPath));
         }
 
-        boolean cliInstalledOkay = checkCliInstall(cliLocation, intLogger);
+        boolean cliInstalledOkay = checkCliInstall(cliLocation, new SilentLogger());
         if (!cliInstalledOkay && StringUtils.isNotBlank(detectConfiguration.getHubSignatureScannerHostUrl())) {
             installSignatureScannerFromUrl(intLogger, hubScanConfig);
             cliInstalledOkay = checkCliInstall(cliLocation, intLogger);
