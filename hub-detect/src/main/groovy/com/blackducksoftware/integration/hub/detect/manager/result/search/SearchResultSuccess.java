@@ -25,18 +25,18 @@ package com.blackducksoftware.integration.hub.detect.manager.result.search;
 
 import java.util.List;
 
-import com.blackducksoftware.integration.hub.detect.extraction.model.StrategyEvaluation;
+import com.blackducksoftware.integration.hub.detect.extraction.model.BomToolEvaluation;
 
 public class SearchResultSuccess extends SearchResult {
-    List<StrategyEvaluation> strategyEvaluations;
+    List<BomToolEvaluation> bomToolEvaluations;
 
-    public SearchResultSuccess(final List<StrategyEvaluation> strategyEvaluations) {
-        this.strategyEvaluations = strategyEvaluations;
+    public SearchResultSuccess(final List<BomToolEvaluation> bomToolEvaluations) {
+        this.bomToolEvaluations = bomToolEvaluations;
     }
 
     @Override
-    public List<StrategyEvaluation> getStrategyEvaluations() {
-        return strategyEvaluations;
+    public List<BomToolEvaluation> getBomToolEvaluations() {
+        return bomToolEvaluations;
     }
 
     @Override

@@ -25,12 +25,12 @@ package com.blackducksoftware.integration.hub.detect.project.result;
 
 import org.slf4j.Logger;
 
-import com.blackducksoftware.integration.hub.detect.model.BomToolType;
+import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
 
 public class PreferredNotFoundUnchosenProjectInfoResult extends ProjectInfoResult {
-    private final BomToolType bomToolType;
+    private final BomToolGroupType bomToolType;
 
-    public PreferredNotFoundUnchosenProjectInfoResult(final BomToolType bomToolType) {
+    public PreferredNotFoundUnchosenProjectInfoResult(final BomToolGroupType bomToolType) {
         this.bomToolType = bomToolType;
     }
 
