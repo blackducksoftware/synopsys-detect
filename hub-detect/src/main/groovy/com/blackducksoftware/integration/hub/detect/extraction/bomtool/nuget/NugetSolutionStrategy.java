@@ -38,7 +38,6 @@ import com.blackducksoftware.integration.hub.detect.strategy.result.PassedStrate
 import com.blackducksoftware.integration.hub.detect.strategy.result.StrategyResult;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
-@Component
 public class NugetSolutionStrategy extends Strategy {
     static final String[] SUPPORTED_SOLUTION_PATTERNS = new String[] { "*.sln" };
 

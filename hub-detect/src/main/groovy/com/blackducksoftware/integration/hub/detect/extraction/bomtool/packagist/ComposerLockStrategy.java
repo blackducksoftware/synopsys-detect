@@ -38,7 +38,6 @@ import com.blackducksoftware.integration.hub.detect.strategy.result.PassedStrate
 import com.blackducksoftware.integration.hub.detect.strategy.result.StrategyResult;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
-@Component
 public class ComposerLockStrategy extends Strategy {
     public static final String COMPOSER_LOCK = "composer.lock";
     public static final String COMPOSER_JSON = "composer.json";

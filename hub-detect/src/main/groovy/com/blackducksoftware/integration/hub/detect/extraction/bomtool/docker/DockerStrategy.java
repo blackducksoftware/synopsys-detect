@@ -43,7 +43,6 @@ import com.blackducksoftware.integration.hub.detect.strategy.result.PassedStrate
 import com.blackducksoftware.integration.hub.detect.strategy.result.PropertyInsufficientStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.StrategyResult;
 
-@Component
 public class DockerStrategy extends Strategy {
     private final DockerInspectorManager dockerInspectorManager;
     private final StandardExecutableFinder standardExecutableFinder;

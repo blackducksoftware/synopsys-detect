@@ -42,7 +42,6 @@ import com.blackducksoftware.integration.hub.detect.strategy.result.PassedStrate
 import com.blackducksoftware.integration.hub.detect.strategy.result.StrategyResult;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
-@Component
 public class RebarStrategy extends Strategy {
     public static final String REBAR_CONFIG = "rebar.config";
 

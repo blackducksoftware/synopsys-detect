@@ -38,7 +38,6 @@ import com.blackducksoftware.integration.hub.detect.strategy.result.PassedStrate
 import com.blackducksoftware.integration.hub.detect.strategy.result.StrategyResult;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
-@Component
 public class PodlockStrategy extends Strategy {
 
     private static final String PODFILE_LOCK_FILENAME = "Podfile.lock";

@@ -41,7 +41,6 @@ import com.blackducksoftware.integration.hub.detect.strategy.result.PassedStrate
 import com.blackducksoftware.integration.hub.detect.strategy.result.StrategyResult;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
-@Component
 public class NpmCliStrategy extends Strategy{
     public static final String NODE_MODULES = "node_modules";
     public static final String PACKAGE_JSON = "package.json";

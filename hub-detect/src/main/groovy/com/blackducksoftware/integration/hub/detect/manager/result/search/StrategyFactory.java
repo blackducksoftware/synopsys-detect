@@ -1,6 +1,7 @@
 package com.blackducksoftware.integration.hub.detect.manager.result.search;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.cocoapods.PodlockExtractor;
@@ -59,10 +60,10 @@ import com.blackducksoftware.integration.hub.detect.extraction.bomtool.sbt.SbtRe
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.yarn.YarnLockExtractor;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.yarn.YarnLockStrategy;
 import com.blackducksoftware.integration.hub.detect.extraction.model.StandardExecutableFinder;
-import com.blackducksoftware.integration.hub.detect.strategy.StrategySearchOptions;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
+@Component
 public class StrategyFactory {
     @Autowired
     PodlockExtractor podlockExtractor;
@@ -163,61 +164,61 @@ public class StrategyFactory {
     @Autowired
     DetectConfiguration detectConfiguration;
 
-    public StrategySet createStrategies(final StrategyEnvironment environment) {
-        final StrategySet strategySet = new StrategySet();
+    public StrategySearchRuleSet createStrategies(final StrategyEnvironment environment) {
+        final StrategySearchRulesSetBuilder strategySet = new StrategySearchRulesSetBuilder(environment);
 
-        strategySet.addStrategy(createCocoapodsStrategy(environment), StrategySearchOptions.defaultNotNested());
-        strategySet.addStrategy(createCondaStrategy(environment), StrategySearchOptions.defaultNotNested());
-        strategySet.addStrategy(createCpanCliStrategy(environment), StrategySearchOptions.defaultNotNested());
-        strategySet.addStrategy(createPackratLockStrategy(environment), StrategySearchOptions.defaultNotNested());
-        strategySet.addStrategy(createDockerStrategy(environment), new StrategySearchOptions(0, false));
+        strategySet.addStrategy(createCocoapodsStrategy(environment)).defaultNotNested();
+        strategySet.addStrategy(createCondaStrategy(environment)).defaultNotNested();
+        strategySet.addStrategy(createCpanCliStrategy(environment)).defaultNotNested();
+        strategySet.addStrategy(createPackratLockStrategy(environment)).defaultNotNested();
+        strategySet.addStrategy(createDockerStrategy(environment)).nestable(false).maxDepth(0);
 
-        strategySet.addStrategy(createGoCliStrategy(environment), StrategySearchOptions.defaultNotNested());
-        strategySet.addStrategy(createGoDepsStrategy(environment), StrategySearchOptions.defaultNotNested());
-        strategySet.addStrategy(createGoLockStrategy(environment), StrategySearchOptions.defaultNotNested());
-        strategySet.addStrategy(createGoVndrStrategy(environment), StrategySearchOptions.defaultNotNested());
+        strategySet.addStrategy(createGoCliStrategy(environment)).defaultNotNested();
+        strategySet.addStrategy(createGoDepsStrategy(environment)).defaultNotNested();
+        strategySet.addStrategy(createGoLockStrategy(environment)).defaultNotNested();
+        strategySet.addStrategy(createGoVndrStrategy(environment)).defaultNotNested();
 
-        strategySet.yield(StrategyType.GO_CLI, StrategyType.GO_DEPS);
-        strategySet.yield(StrategyType.GO_CLI, StrategyType.GO_LOCK);
-        strategySet.yield(StrategyType.GO_CLI, StrategyType.GO_VNDR);
+        strategySet.yield(StrategyType.GO_CLI).to(StrategyType.GO_DEPS);
+        strategySet.yield(StrategyType.GO_CLI).to(StrategyType.GO_LOCK);
+        strategySet.yield(StrategyType.GO_CLI).to(StrategyType.GO_VNDR);
 
-        strategySet.addStrategy(createGradleInspectorStrategy(environment), StrategySearchOptions.defaultNotNested());
-        strategySet.addStrategy(createRebarStrategy(environment), StrategySearchOptions.defaultNotNested());
+        strategySet.addStrategy(createGradleInspectorStrategy(environment)).defaultNotNested();
+        strategySet.addStrategy(createRebarStrategy(environment)).defaultNotNested();
 
-        strategySet.addStrategy(createMavenPomStrategy(environment), StrategySearchOptions.defaultNotNested());
-        strategySet.addStrategy(createMavenPomWrapperStrategy(environment), StrategySearchOptions.defaultNotNested());
+        strategySet.addStrategy(createMavenPomStrategy(environment)).defaultNotNested();
+        strategySet.addStrategy(createMavenPomWrapperStrategy(environment)).defaultNotNested();
 
-        strategySet.addStrategy(createYarnLockStrategy(environment), StrategySearchOptions.defaultNested());
+        strategySet.addStrategy(createYarnLockStrategy(environment)).defaultNested();
 
-        strategySet.addStrategy(createNpmPackageLockStrategy(environment), StrategySearchOptions.defaultNested());
-        strategySet.addStrategy(createNpmShrinkwrapStrategy(environment), StrategySearchOptions.defaultNested());
-        strategySet.addStrategy(createNpmCliStrategy(environment), StrategySearchOptions.defaultNested());
+        strategySet.addStrategy(createNpmPackageLockStrategy(environment)).defaultNested();
+        strategySet.addStrategy(createNpmShrinkwrapStrategy(environment)).defaultNested();
+        strategySet.addStrategy(createNpmCliStrategy(environment)).defaultNested();
 
-        strategySet.yield(StrategyType.NPM_SHRINKWRAP, StrategyType.NPM_PACKAGELOCK);
-        strategySet.yield(StrategyType.NPM_CLI, StrategyType.NPM_PACKAGELOCK);
-        strategySet.yield(StrategyType.NPM_CLI, StrategyType.NPM_SHRINKWRAP);
+        strategySet.yield(StrategyType.NPM_SHRINKWRAP).to(StrategyType.NPM_PACKAGELOCK);
+        strategySet.yield(StrategyType.NPM_CLI).to(StrategyType.NPM_PACKAGELOCK);
+        strategySet.yield(StrategyType.NPM_CLI).to(StrategyType.NPM_SHRINKWRAP);
 
-        strategySet.yield(StrategyType.NPM_CLI, StrategyType.YARN_LOCK);
-        strategySet.yield(StrategyType.NPM_PACKAGELOCK, StrategyType.YARN_LOCK);
-        strategySet.yield(StrategyType.NPM_SHRINKWRAP, StrategyType.YARN_LOCK);
+        strategySet.yield(StrategyType.NPM_CLI).to(StrategyType.YARN_LOCK);
+        strategySet.yield(StrategyType.NPM_PACKAGELOCK).to(StrategyType.YARN_LOCK);
+        strategySet.yield(StrategyType.NPM_SHRINKWRAP).to(StrategyType.YARN_LOCK);
 
-        strategySet.addStrategy(createNugetSolutionStrategy(environment), StrategySearchOptions.defaultNested());
-        strategySet.addStrategy(createNugetProjectStrategy(environment), StrategySearchOptions.defaultNotNested());
+        strategySet.addStrategy(createNugetSolutionStrategy(environment)).defaultNested();
+        strategySet.addStrategy(createNugetProjectStrategy(environment)).defaultNotNested();
 
-        strategySet.yield(StrategyType.NUGET_PROJECT_INSPECTOR, StrategyType.NUGET_SOLUTION_INSPECTOR);
+        strategySet.yield(StrategyType.NUGET_PROJECT_INSPECTOR).to(StrategyType.NUGET_SOLUTION_INSPECTOR);
 
-        strategySet.addStrategy(createComposerLockStrategy(environment), StrategySearchOptions.defaultNotNested());
+        strategySet.addStrategy(createComposerLockStrategy(environment)).defaultNotNested();
 
-        strategySet.addStrategy(createPipenvStrategy(environment), StrategySearchOptions.defaultNotNested());
-        strategySet.addStrategy(createPipInspectorStrategy(environment), StrategySearchOptions.defaultNotNested());
+        strategySet.addStrategy(createPipenvStrategy(environment)).defaultNotNested();
+        strategySet.addStrategy(createPipInspectorStrategy(environment)).defaultNotNested();
 
-        strategySet.yield(StrategyType.PIP_INSPECTOR, StrategyType.PIP_ENV);
+        strategySet.yield(StrategyType.PIP_INSPECTOR).to(StrategyType.PIP_ENV);
 
-        strategySet.addStrategy(createGemlockStrategy(environment), StrategySearchOptions.defaultNotNested());
-        strategySet.addStrategy(createSbtResolutionCacheStrategy(environment), StrategySearchOptions.defaultNotNested());
-        strategySet.addStrategy(createPearCliStrategy(environment), StrategySearchOptions.defaultNotNested());
+        strategySet.addStrategy(createGemlockStrategy(environment)).defaultNotNested();
+        strategySet.addStrategy(createSbtResolutionCacheStrategy(environment)).defaultNotNested();
+        strategySet.addStrategy(createPearCliStrategy(environment)).defaultNotNested();
 
-        return strategySet;
+        return strategySet.build();
     }
 
     private PodlockStrategy createCocoapodsStrategy(final StrategyEnvironment environment) {
