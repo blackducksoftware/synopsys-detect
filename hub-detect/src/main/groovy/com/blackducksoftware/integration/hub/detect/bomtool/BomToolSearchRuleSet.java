@@ -45,8 +45,8 @@ public class BomToolSearchRuleSet {
     }
 
     public BomToolResult searchable(final BomToolSearchRule searchRules, final List<BomTool> appliedSoFar) {
-        final BomToolGroupType bomToolType = searchRules.getBomTool().getBomToolGroupType();
-        if (!environment.getBomToolFilter().shouldInclude(bomToolType.toString())) {
+        final BomToolGroupType bomToolGroupType = searchRules.getBomTool().getBomToolGroupType();
+        if (!environment.getBomToolFilter().shouldInclude(bomToolGroupType.toString())) {
             return new BomToolExcludedBomToolResult();
         }
 
