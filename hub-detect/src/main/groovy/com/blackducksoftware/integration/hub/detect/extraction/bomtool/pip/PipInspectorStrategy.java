@@ -44,20 +44,18 @@ import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 @Component
 public class PipInspectorStrategy extends Strategy<PipInspectorContext, PipInspectorExtractor> {
     public static final String SETUPTOOLS_DEFAULT_FILE_NAME = "setup.py";
-    public static final String PIPFILE_FILE_NAME = "Pipfile";
-    public static final String PIPFILE_DOT_LOCK_FILE_NAME = "Pipfile.lock";
 
     @Autowired
-    public DetectFileFinder fileFinder;
+    private DetectFileFinder fileFinder;
 
     @Autowired
-    public PythonExecutableFinder pythonExecutableFinder;
+    private PythonExecutableFinder pythonExecutableFinder;
 
     @Autowired
-    public PipInspectorManager pipInspectorManager;
+    private PipInspectorManager pipInspectorManager;
 
     @Autowired
-    public DetectConfiguration detectConfiguration;
+    private DetectConfiguration detectConfiguration;
 
     public PipInspectorStrategy() {
         super("Pip Inspector", BomToolType.PIP, PipInspectorContext.class, PipInspectorExtractor.class, StrategySearchOptions.defaultNotNested());
