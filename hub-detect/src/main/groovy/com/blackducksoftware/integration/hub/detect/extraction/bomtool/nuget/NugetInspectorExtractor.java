@@ -44,7 +44,7 @@ import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.nuget.parse.NugetInspectorPackager;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.nuget.parse.NugetParseResult;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extractor;
+import com.blackducksoftware.integration.hub.detect.manager.result.search.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
@@ -53,7 +53,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOu
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 
 @Component
-public class NugetInspectorExtractor extends Extractor<NugetInspectorContext> {
+public class NugetInspectorExtractor {
     static final String INSPECTOR_OUTPUT_PATTERN = "*_inspection.json";
     private final Logger logger = LoggerFactory.getLogger(NugetInspectorExtractor.class);
     @Autowired
@@ -67,14 +67,13 @@ public class NugetInspectorExtractor extends Extractor<NugetInspectorContext> {
     @Autowired
     private DetectFileFinder detectFileFinder;
 
-    @Override
-    public Extraction extract(final NugetInspectorContext context) {
+    public Extraction extract(final File directory, final String inspectorExe, final ExtractionId extractionId) {
 
         try {
-            final File outputDirectory = detectFileManager.getOutputDirectory(context);
+            final File outputDirectory = detectFileManager.getOutputDirectory(extractionId);
 
             final List<String> options = new ArrayList<>(Arrays.asList(
-                    "--target_path=" + context.directory.toString(),
+                    "--target_path=" + directory.toString(),
                     "--output_directory=" + outputDirectory.getCanonicalPath(),
                     "--ignore_failure=" + detectConfiguration.getNugetInspectorIgnoreFailure()
                     ));
@@ -96,7 +95,7 @@ public class NugetInspectorExtractor extends Extractor<NugetInspectorContext> {
                 options.add("-v");
             }
 
-            final Executable hubNugetInspectorExecutable = new Executable(context.directory, context.inspectorExe, options);
+            final Executable hubNugetInspectorExecutable = new Executable(directory, inspectorExe, options);
             final ExecutableOutput executableOutput = executableRunner.execute(hubNugetInspectorExecutable);
 
             if (executableOutput.getReturnCode() != 0) {
@@ -122,7 +121,7 @@ public class NugetInspectorExtractor extends Extractor<NugetInspectorContext> {
             codeLocations.stream().forEach(codeLocation -> {
                 final String sourcePathKey = codeLocation.getSourcePath().toLowerCase();
                 if (codeLocationsBySource.containsKey(sourcePathKey)) {
-                    logger.info("Multiple project code locations were generated for: " + context.directory.toString());
+                    logger.info("Multiple project code locations were generated for: " + directory.toString());
                     logger.info("This most likely means the same project exists in multiple solutions.");
                     logger.info("The code location's dependencies will be combined, in the future they will exist seperately for each solution.");
                     final DetectCodeLocation destination = codeLocationsBySource.get(sourcePathKey);

@@ -34,7 +34,6 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFac
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.pear.parse.PearDependencyFinder;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.pear.parse.PearParseResult;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extractor;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
@@ -42,7 +41,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOu
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 
 @Component
-public class PearCliExtractor extends Extractor<PearCliContext> {
+public class PearCliExtractor {
 
     static final String PACKAGE_XML_FILENAME = "package.xml";
 
@@ -58,18 +57,16 @@ public class PearCliExtractor extends Extractor<PearCliContext> {
     @Autowired
     protected ExecutableRunner executableRunner;
 
-    @Override
-    public Extraction extract(final PearCliContext context) {
+    public Extraction extract(final File directory, final File pearExe) {
         try {
-            final ExecutableOutput pearListing = executableRunner.runExe(context.pearExe, "list");
-            final ExecutableOutput pearDependencies = executableRunner.runExe(context.pearExe, "package-dependencies", PACKAGE_XML_FILENAME);
+            final ExecutableOutput pearListing = executableRunner.runExe(pearExe, "list");
+            final ExecutableOutput pearDependencies = executableRunner.runExe(pearExe, "package-dependencies", PACKAGE_XML_FILENAME);
 
-            final File packageFile = detectFileFinder.findFile(context.directory, PACKAGE_XML_FILENAME);
+            final File packageFile = detectFileFinder.findFile(directory, PACKAGE_XML_FILENAME);
 
             final PearParseResult result = pearDependencyFinder.parse(packageFile, pearListing, pearDependencies);
             final ExternalId id = externalIdFactory.createNameVersionExternalId(Forge.PEAR, result.name, result.version);
-            final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolType.PEAR, context.directory.toString(), id, result.dependencyGraph).build();
-
+            final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolType.PEAR, directory.toString(), id, result.dependencyGraph).build();
 
             return new Extraction.Builder().success(detectCodeLocation).projectName(result.name).projectVersion(result.version).build();
         } catch (final Exception e) {

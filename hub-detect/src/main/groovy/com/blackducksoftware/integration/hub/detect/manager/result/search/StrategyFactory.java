@@ -38,6 +38,14 @@ import com.blackducksoftware.integration.hub.detect.extraction.bomtool.npm.NpmEx
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.npm.NpmLockfileExtractor;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.npm.NpmPackageLockStrategy;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.npm.NpmShrinkwrapStrategy;
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.nuget.NugetInspectorExtractor;
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.nuget.NugetInspectorManager;
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.nuget.NugetProjectStrategy;
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.nuget.NugetSolutionStrategy;
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.packagist.ComposerLockExtractor;
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.packagist.ComposerLockStrategy;
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.pear.PearCliExtractor;
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.pear.PearCliStrategy;
 import com.blackducksoftware.integration.hub.detect.extraction.model.StandardExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.strategy.StrategySearchOptions;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
@@ -84,6 +92,15 @@ public class StrategyFactory {
     NpmLockfileExtractor npmLockfileExtractor;
 
     @Autowired
+    NugetInspectorExtractor nugetInspectorExtractor;
+
+    @Autowired
+    ComposerLockExtractor composerLockExtractor;
+
+    @Autowired
+    PearCliExtractor pearCliExtractor;
+
+    @Autowired
     DetectFileFinder detectFileFinder;
 
     @Autowired
@@ -94,6 +111,9 @@ public class StrategyFactory {
 
     @Autowired
     GoInspectorManager goInspectorManager;
+
+    @Autowired
+    NugetInspectorManager nugetInspectorManager;
 
     @Autowired
     GradleExecutableFinder gradleFinder;
@@ -146,6 +166,12 @@ public class StrategyFactory {
         strategySet.yield(StrategyType.NPM_PACKAGELOCK, StrategyType.YARN);
         strategySet.yield(StrategyType.NPM_SHRINKWRAP, StrategyType.YARN);
 
+        strategySet.addStrategy(createNugetSolutionStrategy(environment), StrategySearchOptions.defaultNested());
+        strategySet.addStrategy(createNugetProjectStrategy(environment), StrategySearchOptions.defaultNotNested());
+
+        strategySet.yield(StrategyType.NUGET_PROJECT_INSPECTOR, StrategyType.NUGET_SOLUTION_INSPECTOR);
+
+        strategySet.addStrategy(createComposerLockStrategy(environment), StrategySearchOptions.defaultNotNested());
 
         return strategySet;
     }
@@ -231,6 +257,26 @@ public class StrategyFactory {
 
     private NpmShrinkwrapStrategy createNpmShrinkwrapStrategy(final StrategyEnvironment environment) {
         final NpmShrinkwrapStrategy strategy = new NpmShrinkwrapStrategy(environment, detectFileFinder, npmLockfileExtractor);
+        return strategy;
+    }
+
+    private NugetSolutionStrategy createNugetSolutionStrategy(final StrategyEnvironment environment) {
+        final NugetSolutionStrategy strategy = new NugetSolutionStrategy(environment, detectFileFinder, nugetInspectorManager, nugetInspectorExtractor);
+        return strategy;
+    }
+
+    private NugetProjectStrategy createNugetProjectStrategy(final StrategyEnvironment environment) {
+        final NugetProjectStrategy strategy = new NugetProjectStrategy(environment, detectFileFinder, nugetInspectorManager, nugetInspectorExtractor);
+        return strategy;
+    }
+
+    private ComposerLockStrategy createComposerLockStrategy(final StrategyEnvironment environment) {
+        final ComposerLockStrategy strategy = new ComposerLockStrategy(environment, detectFileFinder, composerLockExtractor);
+        return strategy;
+    }
+
+    private PearCliStrategy createPearCliStrategy(final StrategyEnvironment environment) {
+        final PearCliStrategy strategy = new PearCliStrategy(environment, detectFileFinder, standardExecutableFinder, pearCliExtractor);
         return strategy;
     }
 }
