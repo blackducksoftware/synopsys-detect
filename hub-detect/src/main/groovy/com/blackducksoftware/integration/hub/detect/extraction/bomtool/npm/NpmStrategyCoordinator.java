@@ -34,7 +34,6 @@ import com.blackducksoftware.integration.hub.detect.strategy.StrategyCoordinator
 
 @Component
 public class NpmStrategyCoordinator extends StrategyCoordinator {
-
     @Autowired
     public NpmCliStrategy cliStrategy;
 
@@ -49,7 +48,6 @@ public class NpmStrategyCoordinator extends StrategyCoordinator {
 
     @Override
     public void init() {
-
         for (final Strategy strategy : strategies) {
             if (strategy.getBomToolType() == BomToolType.YARN) {
                 packageLockStrategy.yieldsTo(strategy);
