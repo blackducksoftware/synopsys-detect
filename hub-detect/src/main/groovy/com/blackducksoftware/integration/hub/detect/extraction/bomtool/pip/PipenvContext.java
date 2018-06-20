@@ -1,5 +1,5 @@
 /**
- * detect-configuration
+ * hub-detect
  *
  * Copyright (C) 2018 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
@@ -21,43 +21,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.type;
+package com.blackducksoftware.integration.hub.detect.extraction.bomtool.pip;
 
-public enum ExecutableType {
-    BASH,
-    CONDA,
-    CPAN,
-    CPANM,
-    DOCKER,
-    GO,
-    GO_DEP("dep"),
-    GRADLE,
-    GRADLEW,
-    MVN,
-    MVNW,
-    NPM,
-    NUGET,
-    PEAR,
-    PERL,
-    PIP,
-    PIP3,
-    PIPENV,
-    PYTHON,
-    PYTHON3,
-    REBAR3,
-    YARN;
+import java.io.File;
 
-    private String executableName;
+import com.blackducksoftware.integration.hub.detect.extraction.model.ExtractionContext;
 
-    private ExecutableType() {
-        this.executableName = this.name().toLowerCase();
-    }
-
-    private ExecutableType(final String executableName) {
-        this.executableName = executableName;
-    }
-
-    public String getExecutable() {
-        return executableName;
-    }
+public class PipenvContext extends ExtractionContext {
+    public String pythonExe;
+    public String pipenvExe;
+    public File pipfileDotLock;
+    public File pipfile;
+    public File setupFile;
 }

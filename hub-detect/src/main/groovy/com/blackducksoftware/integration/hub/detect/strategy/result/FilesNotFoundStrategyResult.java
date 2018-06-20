@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 public class FilesNotFoundStrategyResult extends FailedStrategyResult {
     private final String[] patterns;
 
-    public FilesNotFoundStrategyResult(final String[] patterns) {
+    public FilesNotFoundStrategyResult(final String... patterns) {
         this.patterns = patterns;
     }
 

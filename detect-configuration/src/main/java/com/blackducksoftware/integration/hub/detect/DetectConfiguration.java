@@ -57,6 +57,7 @@ import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 import com.blackducksoftware.integration.hub.detect.help.HelpDescription;
 import com.blackducksoftware.integration.hub.detect.help.HelpDetailed;
 import com.blackducksoftware.integration.hub.detect.help.HelpGroup;
+import com.blackducksoftware.integration.hub.detect.help.ValueDeprecation;
 import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver;
 import com.blackducksoftware.integration.log.Slf4jIntLogger;
 import com.blackducksoftware.integration.rest.connection.UnauthenticatedRestConnection;
@@ -788,8 +789,15 @@ public class DetectConfiguration {
 
     @Value("${detect.pip.project.name:}")
     @HelpGroup(primary = GROUP_PIP)
-    @HelpDescription("Override for pip inspector to find your project")
+    @ValueDeprecation(description = "detect.project.name will be used for this in the future", willRemoveInVersion = "5.0.0")
+    @HelpDescription("The name of your pip project, to be used if your project's name cannot be correctly inferred from its setup.py file")
     private String pipProjectName;
+
+    @Value("${detect.pip.project.version.name:}")
+    @HelpGroup(primary = GROUP_PIP)
+    @ValueDeprecation(description = "detect.project.version.name will be used for this in the future", willRemoveInVersion = "5.0.0")
+    @HelpDescription("The version of your pip project, to be used if your project's version name cannot be correctly inferred from its setup.py file")
+    private String pipProjectVersionName;
 
     @Value("${detect.python.python3:}")
     @DefaultValue("false")
@@ -801,6 +809,11 @@ public class DetectConfiguration {
     @HelpGroup(primary = GROUP_PYTHON)
     @HelpDescription("The path of the Python executable")
     private String pythonPath;
+
+    @Value("${detect.pipenv.path:}")
+    @HelpGroup(primary = GROUP_PIP)
+    @HelpDescription("The path of the Pipenv executable")
+    private String pipEnvPath;
 
     @Value("${detect.npm.path:}")
     @HelpGroup(primary = GROUP_NPM)
@@ -1263,7 +1276,7 @@ public class DetectConfiguration {
     }
 
     public boolean getCombineCodeLocations() {
-        return false; //for now this is always false, in the future we could introduce a property.
+        return false; // for now this is always false, in the future we could introduce a property.
     }
 
     public String getGradleInspectorVersion() {
@@ -1362,8 +1375,14 @@ public class DetectConfiguration {
         return BooleanUtils.toBoolean(pearOnlyRequiredDependencies);
     }
 
+    @Deprecated
     public String getPipProjectName() {
         return pipProjectName;
+    }
+
+    @Deprecated
+    public String getPipProjectVersionName() {
+        return pipProjectVersionName;
     }
 
     public boolean getPythonThreeOverride() {
@@ -1372,6 +1391,10 @@ public class DetectConfiguration {
 
     public String getPythonPath() {
         return pythonPath;
+    }
+
+    public String getPipenvPath() {
+        return pipEnvPath;
     }
 
     public String getRequirementsFilePath() {
