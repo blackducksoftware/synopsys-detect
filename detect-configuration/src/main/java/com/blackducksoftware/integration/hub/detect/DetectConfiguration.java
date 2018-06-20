@@ -57,6 +57,7 @@ import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 import com.blackducksoftware.integration.hub.detect.help.HelpDescription;
 import com.blackducksoftware.integration.hub.detect.help.HelpDetailed;
 import com.blackducksoftware.integration.hub.detect.help.HelpGroup;
+import com.blackducksoftware.integration.hub.detect.help.ValueDeprecation;
 import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver;
 import com.blackducksoftware.integration.log.Slf4jIntLogger;
 import com.blackducksoftware.integration.rest.connection.UnauthenticatedRestConnection;
@@ -788,11 +789,13 @@ public class DetectConfiguration {
 
     @Value("${detect.pip.project.name:}")
     @HelpGroup(primary = GROUP_PIP)
+    @ValueDeprecation(description = "detect.project.name will be used for this in the future", willRemoveInVersion = "5.0.0")
     @HelpDescription("The name of your pip project, to be used if your project's name cannot be correctly inferred from its setup.py file")
     private String pipProjectName;
 
     @Value("${detect.pip.project.version.name:}")
     @HelpGroup(primary = GROUP_PIP)
+    @ValueDeprecation(description = "detect.project.version.name will be used for this in the future", willRemoveInVersion = "5.0.0")
     @HelpDescription("The version of your pip project, to be used if your project's version name cannot be correctly inferred from its setup.py file")
     private String pipProjectVersionName;
 
@@ -1372,10 +1375,12 @@ public class DetectConfiguration {
         return BooleanUtils.toBoolean(pearOnlyRequiredDependencies);
     }
 
+    @Deprecated
     public String getPipProjectName() {
         return pipProjectName;
     }
 
+    @Deprecated
     public String getPipProjectVersionName() {
         return pipProjectVersionName;
     }
