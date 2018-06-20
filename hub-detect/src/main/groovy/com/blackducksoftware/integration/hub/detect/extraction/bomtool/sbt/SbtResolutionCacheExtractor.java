@@ -23,6 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.sbt;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,15 +36,15 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFac
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.sbt.models.SbtDependencyModule;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.sbt.models.SbtProject;
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.sbt.parse.SbtPackager;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extractor;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 
 @Component
-public class SbtResolutionCacheExtractor extends Extractor<SbtResolutionCacheContext> {
+public class SbtResolutionCacheExtractor {
     private final Logger logger = LoggerFactory.getLogger(SbtResolutionCacheExtractor.class);
 
     @Autowired
@@ -55,12 +56,10 @@ public class SbtResolutionCacheExtractor extends Extractor<SbtResolutionCacheCon
     @Autowired
     protected DetectFileFinder detectFileFinder;
 
-
     @Autowired
     ExternalIdFactory externalIdFactory;
 
-    @Override
-    public Extraction extract(final SbtResolutionCacheContext context) {
+    public Extraction extract(final File directory) {
         try {
             final String included = detectConfiguration.getSbtIncludedConfigurationNames();
             final String excluded = detectConfiguration.getSbtExcludedConfigurationNames();
@@ -68,7 +67,7 @@ public class SbtResolutionCacheExtractor extends Extractor<SbtResolutionCacheCon
             final int depth = detectConfiguration.getSearchDepth();
 
             final SbtPackager packager = new SbtPackager(externalIdFactory, detectFileFinder);
-            final SbtProject project = packager.extractProject(context.directory.toString(), depth, included, excluded);
+            final SbtProject project = packager.extractProject(directory.toString(), depth, included, excluded);
 
             final List<DetectCodeLocation> codeLocations = new ArrayList<>();
 

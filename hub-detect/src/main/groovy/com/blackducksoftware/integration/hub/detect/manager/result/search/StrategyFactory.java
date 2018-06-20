@@ -46,6 +46,18 @@ import com.blackducksoftware.integration.hub.detect.extraction.bomtool.packagist
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.packagist.ComposerLockStrategy;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.pear.PearCliExtractor;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.pear.PearCliStrategy;
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.pip.PipInspectorExtractor;
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.pip.PipInspectorManager;
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.pip.PipInspectorStrategy;
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.pip.PipenvExtractor;
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.pip.PipenvStrategy;
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.pip.PythonExecutableFinder;
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.rubygems.GemlockExtractor;
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.rubygems.GemlockStrategy;
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.sbt.SbtResolutionCacheExtractor;
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.sbt.SbtResolutionCacheStrategy;
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.yarn.YarnLockExtractor;
+import com.blackducksoftware.integration.hub.detect.extraction.bomtool.yarn.YarnLockStrategy;
 import com.blackducksoftware.integration.hub.detect.extraction.model.StandardExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.strategy.StrategySearchOptions;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
@@ -101,6 +113,21 @@ public class StrategyFactory {
     PearCliExtractor pearCliExtractor;
 
     @Autowired
+    PipenvExtractor pipenvExtractor;
+
+    @Autowired
+    PipInspectorExtractor pipInspectorExtractor;
+
+    @Autowired
+    GemlockExtractor gemlockExtractor;
+
+    @Autowired
+    SbtResolutionCacheExtractor sbtResolutionCacheExtractor;
+
+    @Autowired
+    YarnLockExtractor yarnLockExtractor;
+
+    @Autowired
     DetectFileFinder detectFileFinder;
 
     @Autowired
@@ -110,10 +137,16 @@ public class StrategyFactory {
     DockerInspectorManager dockerInspectorManager;
 
     @Autowired
+    PipInspectorManager pipInspectorManager;
+
+    @Autowired
     GoInspectorManager goInspectorManager;
 
     @Autowired
     NugetInspectorManager nugetInspectorManager;
+
+    @Autowired
+    PythonExecutableFinder pythonExecutableFinder;
 
     @Autowired
     GradleExecutableFinder gradleFinder;
@@ -154,6 +187,8 @@ public class StrategyFactory {
         strategySet.addStrategy(createMavenPomStrategy(environment), StrategySearchOptions.defaultNotNested());
         strategySet.addStrategy(createMavenPomWrapperStrategy(environment), StrategySearchOptions.defaultNotNested());
 
+        strategySet.addStrategy(createYarnLockStrategy(environment), StrategySearchOptions.defaultNested());
+
         strategySet.addStrategy(createNpmPackageLockStrategy(environment), StrategySearchOptions.defaultNested());
         strategySet.addStrategy(createNpmShrinkwrapStrategy(environment), StrategySearchOptions.defaultNested());
         strategySet.addStrategy(createNpmCliStrategy(environment), StrategySearchOptions.defaultNested());
@@ -162,9 +197,9 @@ public class StrategyFactory {
         strategySet.yield(StrategyType.NPM_CLI, StrategyType.NPM_PACKAGELOCK);
         strategySet.yield(StrategyType.NPM_CLI, StrategyType.NPM_SHRINKWRAP);
 
-        strategySet.yield(StrategyType.NPM_CLI, StrategyType.YARN);
-        strategySet.yield(StrategyType.NPM_PACKAGELOCK, StrategyType.YARN);
-        strategySet.yield(StrategyType.NPM_SHRINKWRAP, StrategyType.YARN);
+        strategySet.yield(StrategyType.NPM_CLI, StrategyType.YARN_LOCK);
+        strategySet.yield(StrategyType.NPM_PACKAGELOCK, StrategyType.YARN_LOCK);
+        strategySet.yield(StrategyType.NPM_SHRINKWRAP, StrategyType.YARN_LOCK);
 
         strategySet.addStrategy(createNugetSolutionStrategy(environment), StrategySearchOptions.defaultNested());
         strategySet.addStrategy(createNugetProjectStrategy(environment), StrategySearchOptions.defaultNotNested());
@@ -172,6 +207,15 @@ public class StrategyFactory {
         strategySet.yield(StrategyType.NUGET_PROJECT_INSPECTOR, StrategyType.NUGET_SOLUTION_INSPECTOR);
 
         strategySet.addStrategy(createComposerLockStrategy(environment), StrategySearchOptions.defaultNotNested());
+
+        strategySet.addStrategy(createPipenvStrategy(environment), StrategySearchOptions.defaultNotNested());
+        strategySet.addStrategy(createPipInspectorStrategy(environment), StrategySearchOptions.defaultNotNested());
+
+        strategySet.yield(StrategyType.PIP_INSPECTOR, StrategyType.PIP_ENV);
+
+        strategySet.addStrategy(createGemlockStrategy(environment), StrategySearchOptions.defaultNotNested());
+        strategySet.addStrategy(createSbtResolutionCacheStrategy(environment), StrategySearchOptions.defaultNotNested());
+        strategySet.addStrategy(createPearCliStrategy(environment), StrategySearchOptions.defaultNotNested());
 
         return strategySet;
     }
@@ -277,6 +321,33 @@ public class StrategyFactory {
 
     private PearCliStrategy createPearCliStrategy(final StrategyEnvironment environment) {
         final PearCliStrategy strategy = new PearCliStrategy(environment, detectFileFinder, standardExecutableFinder, pearCliExtractor);
+        return strategy;
+    }
+
+    private PipenvStrategy createPipenvStrategy(final StrategyEnvironment environment) {
+        final PipenvStrategy strategy = new PipenvStrategy(environment, detectFileFinder, pythonExecutableFinder, pipenvExtractor);
+        return strategy;
+    }
+
+    private PipInspectorStrategy createPipInspectorStrategy(final StrategyEnvironment environment) {
+        final String requirementsFile = detectConfiguration.getRequirementsFilePath();
+        final PipInspectorStrategy strategy = new PipInspectorStrategy(environment, requirementsFile, detectFileFinder, pythonExecutableFinder, pipInspectorManager, pipInspectorExtractor);
+        return strategy;
+    }
+
+    private GemlockStrategy createGemlockStrategy(final StrategyEnvironment environment) {
+        final GemlockStrategy strategy = new GemlockStrategy(environment, detectFileFinder, gemlockExtractor);
+        return strategy;
+    }
+
+    private SbtResolutionCacheStrategy createSbtResolutionCacheStrategy(final StrategyEnvironment environment) {
+        final SbtResolutionCacheStrategy strategy = new SbtResolutionCacheStrategy(environment, detectFileFinder, sbtResolutionCacheExtractor);
+        return strategy;
+    }
+
+    private YarnLockStrategy createYarnLockStrategy(final StrategyEnvironment environment) {
+        final boolean productionDependenciesOnly = detectConfiguration.getYarnProductionDependenciesOnly();
+        final YarnLockStrategy strategy = new YarnLockStrategy(environment, productionDependenciesOnly, detectFileFinder, standardExecutableFinder, yarnLockExtractor);
         return strategy;
     }
 }

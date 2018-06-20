@@ -23,6 +23,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.pip;
 
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -48,15 +50,27 @@ public class PythonExecutableFinder {
     @Autowired
     public ExecutableRunner executableRunner;
 
-    public String findExecutable(final StrategyEnvironment environment, final ExecutableType pythonAnyVersionExecutableType, final String overridePath) throws StrategyException {
+    public String findPip(final StrategyEnvironment environment) throws StrategyException {
+        return findExecutable(environment, ExecutableType.PIP, ExecutableType.PIP3);
+    }
+
+    public String findPipenv(final StrategyEnvironment environment) throws StrategyException {
+        return findExecutable(environment, ExecutableType.PIPENV, detectConfiguration.getPipenvPath());
+    }
+
+    public String findPython(final StrategyEnvironment environment) throws StrategyException {
+        return findExecutable(environment, ExecutableType.PYTHON, ExecutableType.PYTHON3, detectConfiguration.getPythonPath());
+    }
+
+    private String findExecutable(final StrategyEnvironment environment, final ExecutableType pythonAnyVersionExecutableType, final String overridePath) throws StrategyException {
         return findExecutable(environment, pythonAnyVersionExecutableType, pythonAnyVersionExecutableType, overridePath);
     }
 
-    public String findExecutable(final StrategyEnvironment environment, final ExecutableType python2ExecutableType, final ExecutableType python3ExecutableType) throws StrategyException {
+    private String findExecutable(final StrategyEnvironment environment, final ExecutableType python2ExecutableType, final ExecutableType python3ExecutableType) throws StrategyException {
         return findExecutable(environment, python2ExecutableType, python3ExecutableType, null);
     }
 
-    public String findExecutable(final StrategyEnvironment environment, final ExecutableType python2ExecutableType, final ExecutableType python3ExecutableType, final String overridePath) throws StrategyException {
+    private String findExecutable(final StrategyEnvironment environment, final ExecutableType python2ExecutableType, final ExecutableType python3ExecutableType, final String overridePath) throws StrategyException {
         try {
             final ExecutableType executableType;
 

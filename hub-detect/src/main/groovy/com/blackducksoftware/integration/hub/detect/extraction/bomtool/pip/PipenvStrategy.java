@@ -23,47 +23,52 @@
  */
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.pip;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.io.File;
+
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
+import com.blackducksoftware.integration.hub.detect.manager.result.search.ExtractionId;
+import com.blackducksoftware.integration.hub.detect.manager.result.search.StrategyType;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
-import com.blackducksoftware.integration.hub.detect.strategy.StrategySearchOptions;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyException;
 import com.blackducksoftware.integration.hub.detect.strategy.result.ExecutableNotFoundStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.FilesNotFoundStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.PassedStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.StrategyResult;
-import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
 @Component
-public class PipenvStrategy extends Strategy<PipenvContext, PipenvExtractor> {
+public class PipenvStrategy extends Strategy {
     public static final String SETUPTOOLS_DEFAULT_FILE_NAME = "setup.py";
     public static final String PIPFILE_FILE_NAME = "Pipfile";
     public static final String PIPFILE_DOT_LOCK_FILE_NAME = "Pipfile.lock";
 
-    @Autowired
-    private DetectFileFinder fileFinder;
+    private final DetectFileFinder fileFinder;
+    private final PythonExecutableFinder pythonExecutableFinder;
+    private final PipenvExtractor pipenvExtractor;
 
-    @Autowired
-    private PythonExecutableFinder pythonExecutableFinder;
+    String pythonExe;
+    String pipenvExe;
+    File pipfileDotLock;
+    File pipfile;
+    File setupFile;
 
-    @Autowired
-    private DetectConfiguration detectConfiguration;
-
-    public PipenvStrategy() {
-        super("Pipenv Graph", BomToolType.PIP, PipenvContext.class, PipenvExtractor.class, StrategySearchOptions.defaultNotNested());
+    public PipenvStrategy(final StrategyEnvironment environment, final DetectFileFinder fileFinder, final PythonExecutableFinder pythonExecutableFinder, final PipenvExtractor pipenvExtractor) {
+        super(environment);
+        this.fileFinder = fileFinder;
+        this.pipenvExtractor = pipenvExtractor;
+        this.pythonExecutableFinder = pythonExecutableFinder;
     }
 
     @Override
-    public StrategyResult applicable(final StrategyEnvironment environment, final PipenvContext context) {
-        context.pipfile = fileFinder.findFile(environment.getDirectory(), PIPFILE_FILE_NAME);
-        context.pipfileDotLock = fileFinder.findFile(environment.getDirectory(), PIPFILE_DOT_LOCK_FILE_NAME);
+    public StrategyResult applicable() {
+        pipfile = fileFinder.findFile(environment.getDirectory(), PIPFILE_FILE_NAME);
+        pipfileDotLock = fileFinder.findFile(environment.getDirectory(), PIPFILE_DOT_LOCK_FILE_NAME);
 
-        if (context.pipfile != null || context.pipfileDotLock != null) {
+        if (pipfile != null || pipfileDotLock != null) {
             return new PassedStrategyResult();
         } else {
             return new FilesNotFoundStrategyResult(PIPFILE_FILE_NAME, PIPFILE_DOT_LOCK_FILE_NAME);
@@ -72,20 +77,40 @@ public class PipenvStrategy extends Strategy<PipenvContext, PipenvExtractor> {
     }
 
     @Override
-    public StrategyResult extractable(final StrategyEnvironment environment, final PipenvContext context) throws StrategyException {
-        context.pythonExe = pythonExecutableFinder.findExecutable(environment, ExecutableType.PYTHON, ExecutableType.PYTHON3, detectConfiguration.getPythonPath());
-        if (context.pythonExe == null) {
+    public StrategyResult extractable() throws StrategyException {
+        pythonExe = pythonExecutableFinder.findPython(environment);
+        if (pythonExe == null) {
             return new ExecutableNotFoundStrategyResult("python");
         }
 
-        context.pipenvExe = pythonExecutableFinder.findExecutable(environment, ExecutableType.PIPENV, detectConfiguration.getPipenvPath());
-        if (context.pipenvExe == null) {
+        pipenvExe = pythonExecutableFinder.findPipenv(environment);
+        if (pipenvExe == null) {
             return new ExecutableNotFoundStrategyResult("pipenv");
         }
 
-        context.setupFile = fileFinder.findFile(environment.getDirectory(), SETUPTOOLS_DEFAULT_FILE_NAME);
+        setupFile = fileFinder.findFile(environment.getDirectory(), SETUPTOOLS_DEFAULT_FILE_NAME);
 
         return new PassedStrategyResult();
+    }
+
+    @Override
+    public Extraction extract(final ExtractionId extractionId) {
+        return pipenvExtractor.extract(environment.getDirectory(), pythonExe, pipenvExe, pipfileDotLock, pipfile, setupFile);
+    }
+
+    @Override
+    public String getName() {
+        return "Pipenv Graph";
+    }
+
+    @Override
+    public BomToolType getBomToolType() {
+        return BomToolType.PIP;
+    }
+
+    @Override
+    public StrategyType getStrategyType() {
+        return StrategyType.PIP_ENV;
     }
 
 }

@@ -94,5 +94,4 @@ public class MavenPomStrategy extends Strategy {
         return StrategyType.MAVEN_POM_CLI;
     }
 
-
 }

@@ -26,15 +26,15 @@ package com.blackducksoftware.integration.hub.detect.extraction.bomtool.yarn;
 import java.io.File;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.extraction.model.StandardExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.extraction.model.StandardExecutableFinder.StandardExecutableType;
+import com.blackducksoftware.integration.hub.detect.manager.result.search.ExtractionId;
+import com.blackducksoftware.integration.hub.detect.manager.result.search.StrategyType;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
-import com.blackducksoftware.integration.hub.detect.strategy.StrategySearchOptions;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyException;
 import com.blackducksoftware.integration.hub.detect.strategy.result.ExecutableNotFoundStrategyResult;
@@ -44,26 +44,30 @@ import com.blackducksoftware.integration.hub.detect.strategy.result.StrategyResu
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
 @Component
-public class YarnLockStrategy extends Strategy<YarnLockContext, YarnLockExtractor> {
+public class YarnLockStrategy extends Strategy {
     public static final String YARN_LOCK_FILENAME = "yarn.lock";
 
-    @Autowired
-    public DetectFileFinder fileFinder;
+    private final DetectFileFinder fileFinder;
+    private final StandardExecutableFinder standardExecutableFinder;
+    private final YarnLockExtractor yarnLockExtractor;
+    private final boolean productionDependenciesOnly;
 
-    @Autowired
-    public DetectConfiguration detectConfiguration;
+    File yarnlock;
+    String yarnExe;
 
-    @Autowired
-    public StandardExecutableFinder standardExecutableFinder;
-
-    public YarnLockStrategy() {
-        super("Yarn Lock", BomToolType.YARN, YarnLockContext.class, YarnLockExtractor.class, StrategySearchOptions.defaultNested());
+    public YarnLockStrategy(final StrategyEnvironment environment, final boolean productionDependenciesOnly, final DetectFileFinder fileFinder, final StandardExecutableFinder standardExecutableFinder, final YarnLockExtractor yarnLockExtractor) {
+        super(environment);
+        this.fileFinder = fileFinder;
+        this.yarnLockExtractor = yarnLockExtractor;
+        this.standardExecutableFinder = standardExecutableFinder;
+        this.productionDependenciesOnly = productionDependenciesOnly;
     }
 
+
     @Override
-    public StrategyResult applicable(final StrategyEnvironment environment, final YarnLockContext context) {
-        context.yarnlock = fileFinder.findFile(environment.getDirectory(), YARN_LOCK_FILENAME);
-        if (context.yarnlock == null) {
+    public StrategyResult applicable() {
+        yarnlock = fileFinder.findFile(environment.getDirectory(), YARN_LOCK_FILENAME);
+        if (yarnlock == null) {
             return new FileNotFoundStrategyResult(YARN_LOCK_FILENAME);
         }
 
@@ -71,17 +75,40 @@ public class YarnLockStrategy extends Strategy<YarnLockContext, YarnLockExtracto
     }
 
     @Override
-    public StrategyResult extractable(final StrategyEnvironment environment, final YarnLockContext context) throws StrategyException{
+    public StrategyResult extractable() throws StrategyException{
         final File yarn = standardExecutableFinder.getExecutable(StandardExecutableType.YARN);
         if (yarn != null) {
-            context.yarnExe = yarn.toString();
+            yarnExe = yarn.toString();
         }
 
-        if (detectConfiguration.getYarnProductionDependenciesOnly() && StringUtils.isBlank(context.yarnExe)) {
+        if (productionDependenciesOnly && StringUtils.isBlank(yarnExe)) {
             return new ExecutableNotFoundStrategyResult("Could not find the Yarn executable, can not get the production only dependencies.");
         }
 
         return new PassedStrategyResult();
+    }
+
+    @Override
+    public Extraction extract(final ExtractionId extractionId) {
+        return yarnLockExtractor.extract(environment.getDirectory(), yarnlock, yarnExe);
+    }
+
+
+    @Override
+    public String getName() {
+        return "Yarn Lock";
+    }
+
+
+    @Override
+    public BomToolType getBomToolType() {
+        return BomToolType.YARN;
+    }
+
+
+    @Override
+    public StrategyType getStrategyType() {
+        return StrategyType.YARN_LOCK;
     }
 
 }

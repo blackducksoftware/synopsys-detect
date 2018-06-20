@@ -21,9 +21,9 @@ public enum StrategyType {
     NUGET_SOLUTION_INSPECTOR,
     COMPOSER_LOCK,
     PEAR_CLI,
+    PIP_ENV,
     PIP_INSPECTOR,
     GEMLOCK,
     SBT_RESOLUTION_CACHE,
-
-    YARN
+    YARN_LOCK
 }

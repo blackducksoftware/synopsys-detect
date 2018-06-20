@@ -36,13 +36,12 @@ import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.pip.parse.PipInspectorTreeParser;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.pip.parse.PipParseResult;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extractor;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
 @Component
-public class PipInspectorExtractor extends Extractor<PipInspectorContext> {
+public class PipInspectorExtractor {
     @Autowired
     private DetectConfiguration detectConfiguration;
 
@@ -52,14 +51,13 @@ public class PipInspectorExtractor extends Extractor<PipInspectorContext> {
     @Autowired
     private PipInspectorTreeParser pipInspectorTreeParser;
 
-    @Override
-    public Extraction extract(final PipInspectorContext context) {
+    public Extraction extract(final File directory, final String pythonExe, final File pipInspector, final File setupFile, final String requirementFilePath) {
         try {
-            final String projectName = getProjectName(context);
+            final String projectName = getProjectName(directory, pythonExe, pipInspector, setupFile, requirementFilePath);
             final PipParseResult result;
 
-            final String inspectorOutput = runInspector(context.directory, context.pythonExe, context.pipInspector, projectName, context.requirementFilePath);
-            result = pipInspectorTreeParser.parse(inspectorOutput, context.directory.toString());
+            final String inspectorOutput = runInspector(directory, pythonExe, pipInspector, projectName, requirementFilePath);
+            result = pipInspectorTreeParser.parse(inspectorOutput, directory.toString());
 
             return new Extraction.Builder().success(result.codeLocation).projectName(result.projectName).projectVersion(result.projectVersion).build();
         } catch (final Exception e) {
@@ -84,12 +82,12 @@ public class PipInspectorExtractor extends Extractor<PipInspectorContext> {
         return executableRunner.execute(pipInspector).getStandardOutput();
     }
 
-    private String getProjectName(final PipInspectorContext context) throws ExecutableRunnerException {
+    private String getProjectName(final File directory, final String pythonExe, final File pipInspector, final File setupFile, final String requirementFilePath) throws ExecutableRunnerException {
         String projectName = detectConfiguration.getPipProjectName();
 
-        if (context.setupFile != null && context.setupFile.exists() && StringUtils.isBlank(projectName)) {
-            final Executable findProjectNameExecutable = new Executable(context.directory, context.pythonExe, Arrays.asList(
-                    context.setupFile.getAbsolutePath(),
+        if (setupFile != null && setupFile.exists() && StringUtils.isBlank(projectName)) {
+            final Executable findProjectNameExecutable = new Executable(directory, pythonExe, Arrays.asList(
+                    setupFile.getAbsolutePath(),
                     "--name"));
             final List<String> output = executableRunner.execute(findProjectNameExecutable).getStandardOutputAsList();
             projectName = output.get(output.size() - 1).replace('_', '-').trim();

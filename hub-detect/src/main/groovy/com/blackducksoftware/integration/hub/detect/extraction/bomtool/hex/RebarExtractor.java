@@ -36,14 +36,13 @@ import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.hex.parse.Rebar3TreeParser;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.hex.parse.RebarParseResult;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extractor;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 
 @Component
-public class RebarExtractor extends Extractor {
+public class RebarExtractor {
 
     @Autowired
     public DetectConfiguration detectConfiguration;
