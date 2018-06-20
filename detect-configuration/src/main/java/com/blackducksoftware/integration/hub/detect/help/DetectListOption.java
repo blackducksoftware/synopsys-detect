@@ -31,8 +31,8 @@ import org.apache.commons.lang3.StringUtils;
 public class DetectListOption extends DetectOption {
 
     public DetectListOption(String key, String fieldName, Class<?> valueType, boolean strictAcceptableValues, boolean caseSensitiveAcceptableValues, List<String> acceptableValues,
-            DetectOptionHelp detectOptionHelp, String originalValue, String defaultValue, String resolvedValue) {
-        super(key, fieldName, valueType, strictAcceptableValues, caseSensitiveAcceptableValues, acceptableValues, detectOptionHelp, originalValue, defaultValue, resolvedValue);
+            DetectOptionHelp detectOptionHelp, String defaultValue, String resolvedValue) {
+        super(key, fieldName, valueType, strictAcceptableValues, caseSensitiveAcceptableValues, acceptableValues, detectOptionHelp, defaultValue, resolvedValue);
     }
 
     public OptionValidationResult isAcceptableValue(final String value) {
@@ -42,13 +42,13 @@ public class DetectListOption extends DetectOption {
             List<String> badValues = new ArrayList<>();
             for (String splitValue : splitValues) {
                 Boolean isValueAcceptable = getAcceptableValues().stream()
-                                                    .anyMatch(it -> {
-                                                        if (getCaseSensistiveAcceptableValues()) {
-                                                            return it.equals(splitValue);
-                                                        } else {
-                                                            return it.equalsIgnoreCase(splitValue);
-                                                        }
-                                                    });
+                        .anyMatch(it -> {
+                            if (getCaseSensistiveAcceptableValues()) {
+                                return it.equals(splitValue);
+                            } else {
+                                return it.equalsIgnoreCase(splitValue);
+                            }
+                        });
                 if (!isValueAcceptable) {
                     badValues.add(splitValue);
                 }

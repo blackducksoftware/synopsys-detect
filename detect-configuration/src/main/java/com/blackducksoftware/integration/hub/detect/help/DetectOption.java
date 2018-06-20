@@ -40,9 +40,9 @@ public abstract class DetectOption {
     private final boolean caseSensitiveAcceptableValues;
     private final List<String> acceptableValues;
     private final DetectOptionHelp detectOptionHelp;
-    private final String originalValue;
     private final String defaultValue;
     private final String resolvedValue;
+    private String postInitValue;
     private List<String> warnings = new ArrayList<>();
     private boolean requestedDeprecation = false;
     private String interactiveValue = null;
@@ -50,7 +50,7 @@ public abstract class DetectOption {
     private FinalValueType finalValueType = FinalValueType.DEFAULT;
 
     public DetectOption(final String key, final String fieldName, final Class<?> valueType, final boolean strictAcceptableValues, final boolean caseSensitiveAcceptableValues, final List<String> acceptableValues,
-            final DetectOptionHelp detectOptionHelp, final String originalValue, final String defaultValue, final String resolvedValue) {
+            final DetectOptionHelp detectOptionHelp, final String defaultValue, final String resolvedValue) {
         this.key = key;
         this.fieldName = fieldName;
         this.valueType = valueType;
@@ -58,7 +58,6 @@ public abstract class DetectOption {
         this.caseSensitiveAcceptableValues = caseSensitiveAcceptableValues;
         this.acceptableValues = acceptableValues;
         this.detectOptionHelp = detectOptionHelp;
-        this.originalValue = originalValue;
         this.defaultValue = defaultValue;
         this.resolvedValue = resolvedValue;
     }
@@ -119,10 +118,6 @@ public abstract class DetectOption {
         return caseSensitiveAcceptableValues;
     }
 
-    public String getOriginalValue() {
-        return originalValue;
-    }
-
     public String getDefaultValue() {
         return defaultValue;
     }
@@ -137,6 +132,14 @@ public abstract class DetectOption {
 
     public void setInteractiveValue(final String interactiveValue) {
         this.interactiveValue = interactiveValue;
+    }
+
+    public String getPostInitValue() {
+        return postInitValue;
+    }
+
+    public void setPostInitValue(final String postInitValue) {
+        this.postInitValue = postInitValue;
     }
 
     public String getFinalValue() {

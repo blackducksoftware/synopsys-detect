@@ -93,7 +93,10 @@ public class DetectOptionManager {
 
     public void postInit() throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException, DetectUserFriendlyException {
         for (final DetectOption option : detectOptions) {
-            final String fieldValue = getCurrentValue(detectConfiguration, option);
+            String fieldValue = option.getPostInitValue();
+            if (StringUtils.isBlank(fieldValue)) {
+                fieldValue = getCurrentValue(detectConfiguration, option);
+            }
             if (!option.getResolvedValue().equals(fieldValue)) {
                 if (option.getInteractiveValue() != null) {
                     option.setFinalValue(fieldValue, DetectOption.FinalValueType.INTERACTIVE);
@@ -167,8 +170,7 @@ public class DetectOptionManager {
             isCommaSeparatedList = acceptableValueAnnotation.isCommaSeparatedList();
         }
 
-        final String originalValue = defaultValue;
-        String resolvedValue = originalValue;
+        String resolvedValue = defaultValue;
         field.setAccessible(true);
 
         final boolean hasValue = !isValueNull(field, obj);
@@ -183,9 +185,9 @@ public class DetectOptionManager {
 
         DetectOption detectOption;
         if (isCommaSeparatedList) {
-            detectOption = new DetectListOption(key, fieldName, valueType, strictAcceptableValue, caseSensitiveAcceptableValues, acceptableValues, help, originalValue, defaultValue, resolvedValue);
+            detectOption = new DetectListOption(key, fieldName, valueType, strictAcceptableValue, caseSensitiveAcceptableValues, acceptableValues, help, defaultValue, resolvedValue);
         } else {
-            detectOption = new DetectSingleOption(key, fieldName, valueType, strictAcceptableValue, caseSensitiveAcceptableValues, acceptableValues, help, originalValue, defaultValue, resolvedValue);
+            detectOption = new DetectSingleOption(key, fieldName, valueType, strictAcceptableValue, caseSensitiveAcceptableValues, acceptableValues, help, defaultValue, resolvedValue);
         }
 
         return detectOption;

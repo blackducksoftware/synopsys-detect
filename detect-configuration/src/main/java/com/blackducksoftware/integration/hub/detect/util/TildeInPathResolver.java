@@ -31,8 +31,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.DetectInfo;
+import com.blackducksoftware.integration.hub.detect.configuration.ValueContainer;
 import com.blackducksoftware.integration.hub.detect.help.HelpGroup;
 import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType;
 
@@ -56,18 +56,18 @@ public class TildeInPathResolver {
     @Autowired
     private DetectInfo detectInfo;
 
-    public void resolveTildeInAllPathFields(final String systemUserHome, final DetectConfiguration detectConfiguration) throws IllegalArgumentException, IllegalAccessException {
+    public void resolveTildeInAllPathFields(final String systemUserHome, final ValueContainer valueContainer) throws IllegalArgumentException, IllegalAccessException {
         final OperatingSystemType currentOs = detectInfo.getCurrentOs();
-        final Field[] fields = DetectConfiguration.class.getDeclaredFields();
+        final Field[] fields = valueContainer.getClass().getDeclaredFields();
         for (final Field field : fields) {
             if (field.isAnnotationPresent(HelpGroup.class) && field.getType() == String.class) {
                 final boolean wasAccessible = field.isAccessible();
                 field.setAccessible(true);
-                final String providedPath = (String) field.get(detectConfiguration);
+                final String providedPath = (String) field.get(valueContainer);
                 if (StringUtils.isNotBlank(providedPath)) {
                     final String resolvedPath = resolveTildeInPath(currentOs, systemUserHome, providedPath);
                     if (!resolvedPath.equals(providedPath)) {
-                        field.set(detectConfiguration, resolvedPath);
+                        field.set(valueContainer, resolvedPath);
                         logger.warn(String.format("We have resolved %s to %s. If this is not expected, please revise the path provided, or specify --detect.resolve.tilde.in.paths=false.", providedPath, resolvedPath));
                     }
                     field.setAccessible(wasAccessible);

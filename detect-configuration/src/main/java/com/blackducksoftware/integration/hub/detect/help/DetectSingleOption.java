@@ -28,19 +28,19 @@ import java.util.List;
 public class DetectSingleOption extends DetectOption {
 
     public DetectSingleOption(String key, String fieldName, Class<?> valueType, boolean strictAcceptableValues, boolean caseSensitiveAcceptableValues, List<String> acceptableValues,
-            DetectOptionHelp detectOptionHelp, String originalValue, String defaultValue, String resolvedValue) {
-        super(key, fieldName, valueType, strictAcceptableValues, caseSensitiveAcceptableValues, acceptableValues, detectOptionHelp, originalValue, defaultValue, resolvedValue);
+            DetectOptionHelp detectOptionHelp, String defaultValue, String resolvedValue) {
+        super(key, fieldName, valueType, strictAcceptableValues, caseSensitiveAcceptableValues, acceptableValues, detectOptionHelp, defaultValue, resolvedValue);
     }
 
     public OptionValidationResult isAcceptableValue(final String value) {
         Boolean isValueAcceptable = getAcceptableValues().stream()
-                                            .anyMatch(it -> {
-                                                if (getCaseSensistiveAcceptableValues()) {
-                                                    return it.equals(value);
-                                                } else {
-                                                    return it.equalsIgnoreCase(value);
-                                                }
-                                            });
+                .anyMatch(it -> {
+                    if (getCaseSensistiveAcceptableValues()) {
+                        return it.equals(value);
+                    } else {
+                        return it.equalsIgnoreCase(value);
+                    }
+                });
         OptionValidationResult result;
         if (isValueAcceptable) {
             result = new OptionValidationResult(true, "");
