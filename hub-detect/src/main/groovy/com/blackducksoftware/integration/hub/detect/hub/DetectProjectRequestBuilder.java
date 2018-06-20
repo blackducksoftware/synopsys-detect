@@ -36,6 +36,7 @@ public class DetectProjectRequestBuilder extends ProjectRequestBuilder {
         setPhase(detectConfiguration.getProjectVersionPhase());
         setDistribution(detectConfiguration.getProjectVersionDistribution());
         setProjectTier(detectConfiguration.getProjectTier());
+        setDescription(detectConfiguration.getProjectDescription());
         setReleaseComments(detectConfiguration.getProjectVersionNotes());
     }
 }
