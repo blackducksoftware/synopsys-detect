@@ -1,3 +1,26 @@
+/**
+ * detect-configuration
+ *
+ * Copyright (C) 2018 Black Duck Software, Inc.
+ * http://www.blackducksoftware.com/
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package com.blackducksoftware.integration.hub.detect.configuration;
 
 import java.io.File;
@@ -5,18 +28,29 @@ import java.io.File;
 import org.apache.commons.lang3.BooleanUtils;
 
 public class DetectConfig extends BaseConfig {
-
-    private boolean usingDefaultSourcePath;
-    private boolean usingDefaultOutputPath;
-
     private File sourceDirectory;
     private File outputDirectory;
 
-    public void initialize(final ValueContainer valueContainer, final boolean usingDefaultSourcePath, final boolean usingDefaultOutputPath, final File sourceDirectory, final File outputDirectory) {
-        this.usingDefaultSourcePath = usingDefaultSourcePath;
-        this.usingDefaultOutputPath = usingDefaultOutputPath;
+    public void initialize(final ValueContainer valueContainer, final File sourceDirectory, final File outputDirectory) {
         this.sourceDirectory = sourceDirectory;
         this.outputDirectory = outputDirectory;
+
+        this.failOnConfigWarning = valueContainer.getFailOnConfigWarning();
+        this.forceSuccess = valueContainer.getForceSuccess();
+        this.suppressConfigurationOutput = valueContainer.getSuppressConfigurationOutput();
+        this.suppressResultsOutput = valueContainer.getSuppressResultsOutput();
+        this.cleanupDetectFiles = valueContainer.getCleanupDetectFiles();
+        this.resolveTildeInPaths = valueContainer.getResolveTildeInPaths();
+        this.sourcePath = valueContainer.getSourcePath();
+        this.outputDirectoryPath = valueContainer.getOutputDirectoryPath();
+        this.bdioOutputDirectoryPath = valueContainer.getBdioOutputDirectoryPath();
+        this.scanOutputDirectoryPath = valueContainer.getScanOutputDirectoryPath();
+        this.searchDepth = valueContainer.getSearchDepth();
+        this.loggingLevel = valueContainer.getLoggingLevel();
+        this.defaultProjectVersionScheme = valueContainer.getDefaultProjectVersionScheme();
+        this.defaultProjectVersionText = valueContainer.getDefaultProjectVersionText();
+        this.defaultProjectVersionTimeformat = valueContainer.getDefaultProjectVersionTimeformat();
+        this.aggregateBomName = valueContainer.getAggregateBomName();
     }
 
     public File getSourceDirectory() {

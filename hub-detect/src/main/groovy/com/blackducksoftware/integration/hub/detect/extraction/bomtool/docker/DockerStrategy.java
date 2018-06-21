@@ -27,7 +27,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.model.StandardExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.extraction.model.StandardExecutableFinder.StandardExecutableType;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
@@ -44,9 +43,6 @@ import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
 @Component
 public class DockerStrategy extends Strategy<DockerContext, DockerExtractor> {
-    @Autowired
-    public DetectConfiguration detectConfiguration;
-
     @Autowired
     public DetectFileFinder fileFinder;
 

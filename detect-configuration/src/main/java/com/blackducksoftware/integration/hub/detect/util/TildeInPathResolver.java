@@ -28,8 +28,6 @@ import java.lang.reflect.Field;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectInfo;
 import com.blackducksoftware.integration.hub.detect.configuration.ValueContainer;
@@ -49,12 +47,14 @@ import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType;
  * --detect.resolve.tilde.in.paths=false to turn it off.
  * // @formatter:on
  */
-@Component
 public class TildeInPathResolver {
     private final Logger logger = LoggerFactory.getLogger(TildeInPathResolver.class);
 
-    @Autowired
-    private DetectInfo detectInfo;
+    private final DetectInfo detectInfo;
+
+    public TildeInPathResolver(final DetectInfo detectInfo) {
+        this.detectInfo = detectInfo;
+    }
 
     public void resolveTildeInAllPathFields(final String systemUserHome, final ValueContainer valueContainer) throws IllegalArgumentException, IllegalAccessException {
         final OperatingSystemType currentOs = detectInfo.getCurrentOs();

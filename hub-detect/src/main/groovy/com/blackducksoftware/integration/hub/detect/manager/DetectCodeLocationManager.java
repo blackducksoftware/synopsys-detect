@@ -42,7 +42,8 @@ import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphCombiner;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph;
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfig;
+import com.blackducksoftware.integration.hub.detect.configuration.HubConfig;
 import com.blackducksoftware.integration.hub.detect.manager.result.codelocation.DetectCodeLocationResult;
 import com.blackducksoftware.integration.hub.detect.model.BdioCodeLocation;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
@@ -53,23 +54,28 @@ import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
 public class DetectCodeLocationManager {
     private final Logger logger = LoggerFactory.getLogger(DetectCodeLocationManager.class);
 
-    @Autowired
-    public DetectConfiguration detectConfiguration;
+    private final CodeLocationNameManager codeLocationNameManager;
+    private final DetectConfig detectConfig;
+    private final HubConfig hubConfig;
 
     @Autowired
-    public CodeLocationNameManager codeLocationNameManager;
+    public DetectCodeLocationManager(final CodeLocationNameManager codeLocationNameManager, final DetectConfig detectConfig, final HubConfig hubConfig) {
+        this.codeLocationNameManager = codeLocationNameManager;
+        this.detectConfig = detectConfig;
+        this.hubConfig = hubConfig;
+    }
 
     public DetectCodeLocationResult process(final List<DetectCodeLocation> detectCodeLocations, final String projectName, final String projectVersion) {
         final Set<BomToolType> failedBomTools = new HashSet<>();
 
-        final String prefix = detectConfiguration.getProjectCodeLocationPrefix();
-        final String suffix = detectConfiguration.getProjectCodeLocationSuffix();
+        final String prefix = hubConfig.getProjectCodeLocationPrefix();
+        final String suffix = hubConfig.getProjectCodeLocationSuffix();
 
         final List<DetectCodeLocation> validDetectCodeLocations = findValidCodeLocations(detectCodeLocations);
-        final Map<DetectCodeLocation, String> codeLocationsAndNames = createCodeLocationNameMap(validDetectCodeLocations, detectConfiguration.getSourcePath(), projectName, projectVersion, prefix, suffix);
+        final Map<DetectCodeLocation, String> codeLocationsAndNames = createCodeLocationNameMap(validDetectCodeLocations, detectConfig.getSourcePath(), projectName, projectVersion, prefix, suffix);
         final Map<String, List<DetectCodeLocation>> codeLocationsByName = seperateCodeLocationsByName(codeLocationsAndNames);
 
-        final List<BdioCodeLocation> bdioCodeLocations = createBdioCodeLocations(codeLocationsByName, detectConfiguration.getSourceDirectory(), detectConfiguration.getCombineCodeLocations());
+        final List<BdioCodeLocation> bdioCodeLocations = createBdioCodeLocations(codeLocationsByName, detectConfig.getSourceDirectory(), detectConfig.getCombineCodeLocations());
 
         // Sanity check that code location names are unique (they should be)
         final Map<String, List<BdioCodeLocation>> bdioByCodeLocationName = groupByCodeLocationNames(bdioCodeLocations);
@@ -107,7 +113,8 @@ public class DetectCodeLocationManager {
         return bdioCodeLocations.stream().collect(Collectors.groupingBy(it -> it.codeLocationName, Collectors.toList()));
     }
 
-    private Map<DetectCodeLocation, String> createCodeLocationNameMap(final List<DetectCodeLocation> codeLocations, final String detectSourcePath, final String projectName, final String projectVersion, final String prefix, final String suffix) {
+    private Map<DetectCodeLocation, String> createCodeLocationNameMap(final List<DetectCodeLocation> codeLocations, final String detectSourcePath, final String projectName, final String projectVersion, final String prefix,
+            final String suffix) {
         final Map<DetectCodeLocation, String> nameMap = new HashMap<>();
         for (final DetectCodeLocation detectCodeLocation : codeLocations) {
             final String codeLocationName = codeLocationNameManager.createCodeLocationName(detectCodeLocation, detectSourcePath, projectName, projectVersion, prefix, suffix);

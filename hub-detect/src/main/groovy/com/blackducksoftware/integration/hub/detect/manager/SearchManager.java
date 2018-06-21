@@ -35,8 +35,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.report.SearchSummaryReporter;
+import com.blackducksoftware.integration.hub.detect.configuration.BomToolConfig;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfig;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.extraction.model.StrategyEvaluation;
@@ -54,24 +55,27 @@ import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
 public class SearchManager {
     private final Logger logger = LoggerFactory.getLogger(SearchManager.class);
 
-    @Autowired
-    private SearchSummaryReporter searchSummaryReporter;
+    private final SearchSummaryReporter searchSummaryReporter;
+    private final StrategyManager strategyManager;
+    private final DetectConfig detectConfig;
+    private final BomToolConfig bomToolConfig;
+    private final DetectPhoneHomeManager detectPhoneHomeManager;
 
     @Autowired
-    private StrategyManager strategyManager;
-
-    @Autowired
-    private DetectConfiguration detectConfiguration;
-
-    @Autowired
-    private DetectPhoneHomeManager detectPhoneHomeManager;
+    public SearchManager(final SearchSummaryReporter searchSummaryReporter, final StrategyManager strategyManager, final DetectConfig detectConfig, final BomToolConfig bomToolConfig, final DetectPhoneHomeManager detectPhoneHomeManager) {
+        this.searchSummaryReporter = searchSummaryReporter;
+        this.strategyManager = strategyManager;
+        this.detectConfig = detectConfig;
+        this.bomToolConfig = bomToolConfig;
+        this.detectPhoneHomeManager = detectPhoneHomeManager;
+    }
 
     private List<StrategyEvaluation> findApplicableBomTools(final File directory) throws BomToolException, DetectUserFriendlyException {
         final List<Strategy> allStrategies = strategyManager.getAllStrategies();
-        final List<String> excludedDirectories = detectConfiguration.getBomToolSearchDirectoryExclusions();
-        final Boolean forceNestedSearch = detectConfiguration.getBomToolContinueSearch();
-        final int maxDepth = detectConfiguration.getBomToolSearchDepth();
-        final ExcludedIncludedFilter bomToolFilter = new ExcludedIncludedFilter(detectConfiguration.getExcludedBomToolTypes(), detectConfiguration.getIncludedBomToolTypes());
+        final List<String> excludedDirectories = bomToolConfig.getBomToolSearchDirectoryExclusions();
+        final Boolean forceNestedSearch = bomToolConfig.getBomToolContinueSearch();
+        final int maxDepth = bomToolConfig.getBomToolSearchDepth();
+        final ExcludedIncludedFilter bomToolFilter = new ExcludedIncludedFilter(bomToolConfig.getExcludedBomToolTypes(), bomToolConfig.getIncludedBomToolTypes());
         final BomToolFinderOptions findOptions = new BomToolFinderOptions(excludedDirectories, forceNestedSearch, maxDepth, bomToolFilter);
 
         logger.info("Starting search for bom tools.");
@@ -82,7 +86,7 @@ public class SearchManager {
     public SearchResult performSearch() throws DetectUserFriendlyException {
         List<StrategyEvaluation> sourcePathResults = new ArrayList<>();
         try {
-            sourcePathResults = findApplicableBomTools(new File(detectConfiguration.getSourcePath()));
+            sourcePathResults = findApplicableBomTools(new File(detectConfig.getSourcePath()));
         } catch (final BomToolException e) {
             return new SearchResultBomToolFailed(e);
         }

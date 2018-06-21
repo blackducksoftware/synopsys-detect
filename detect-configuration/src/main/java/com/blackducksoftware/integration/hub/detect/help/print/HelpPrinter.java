@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.configuration.ValueContainer;
 import com.blackducksoftware.integration.hub.detect.help.ArgumentState;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 
@@ -90,7 +90,7 @@ public class HelpPrinter {
     }
 
     private void printDefaultHelp(final HelpTextWriter writer, final List<DetectOption> options) {
-        printHelpFilteredByPrintGroup(writer, options, DetectConfiguration.PRINT_GROUP_DEFAULT);
+        printHelpFilteredByPrintGroup(writer, options, ValueContainer.PRINT_GROUP_DEFAULT);
     }
 
     private void printHelpFilteredByPrintGroup(final HelpTextWriter writer, final List<DetectOption> options, final String filterGroup) {

@@ -28,6 +28,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.env.ConfigurableEnvironment;
 
 import com.blackducksoftware.integration.hub.bdio.BdioNodeFactory;
 import com.blackducksoftware.integration.hub.bdio.BdioPropertyHelper;
@@ -35,6 +36,15 @@ import com.blackducksoftware.integration.hub.bdio.BdioTransformer;
 import com.blackducksoftware.integration.hub.bdio.SimpleBdioFactory;
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import com.blackducksoftware.integration.hub.detect.configuration.AdditionalPropertyConfig;
+import com.blackducksoftware.integration.hub.detect.configuration.BomToolConfig;
+import com.blackducksoftware.integration.hub.detect.configuration.ConfigurationManager;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfig;
+import com.blackducksoftware.integration.hub.detect.configuration.HubConfig;
+import com.blackducksoftware.integration.hub.detect.configuration.ValueContainer;
+import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
+import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper;
+import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver;
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -86,6 +96,56 @@ public class BeanConfiguration {
     public DocumentBuilder xmlDocumentBuilder() throws ParserConfigurationException {
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         return factory.newDocumentBuilder();
+    }
+
+    @Bean
+    public DetectInfo detectInfo() {
+        return new DetectInfo(gson());
+    }
+
+    @Bean
+    public TildeInPathResolver tildeInPathResolver() {
+        return new TildeInPathResolver(detectInfo());
+    }
+
+    @Bean
+    public ValueContainer valueContainer() {
+        return new ValueContainer();
+    }
+
+    @Bean
+    public ConfigurationManager configurationManager() {
+        return new ConfigurationManager(tildeInPathResolver(), valueContainer());
+    }
+
+    @Bean
+    public BomToolConfig bomToolConfig() {
+        return new BomToolConfig();
+    }
+
+    @Bean
+    public HubConfig hubConfig() {
+        return new HubConfig();
+    }
+
+    @Bean
+    public DetectConfig detectConfig() {
+        return new DetectConfig();
+    }
+
+    @Bean
+    public DetectOptionManager detectOptionManager() {
+        return new DetectOptionManager(valueContainer());
+    }
+
+    @Bean
+    public AdditionalPropertyConfig additionalPropertyConfig(ConfigurableEnvironment configurableEnvironment) {
+        return new AdditionalPropertyConfig(configurableEnvironment);
+    }
+
+    @Bean
+    public HubServiceWrapper hubServiceWrapper(AdditionalPropertyConfig additionalPropertyConfig) {
+        return new HubServiceWrapper(hubConfig(), additionalPropertyConfig);
     }
 
 }

@@ -35,24 +35,24 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.configuration.ValueContainer;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.interactive.InteractiveOption;
 import com.blackducksoftware.integration.hub.detect.util.SpringValueUtils;
 
-@Component
 public class DetectOptionManager {
     private final Logger logger = LoggerFactory.getLogger(DetectOptionManager.class);
 
-    @Autowired
-    public DetectConfiguration detectConfiguration;
+    public final ValueContainer valueContainer;
 
     private List<DetectOption> detectOptions;
     private List<String> detectGroups;
+
+    public DetectOptionManager(final ValueContainer valueContainer) {
+        this.valueContainer = valueContainer;
+    }
 
     public List<DetectOption> getDetectOptions() {
         return detectOptions;
@@ -65,10 +65,10 @@ public class DetectOptionManager {
     public void init() {
         final Map<String, DetectOption> detectOptionsMap = new HashMap<>();
 
-        for (final Field field : DetectConfiguration.class.getDeclaredFields()) {
+        for (final Field field : valueContainer.getClass().getDeclaredFields()) {
             try {
                 if (field.isAnnotationPresent(Value.class)) {
-                    final DetectOption option = processField(detectConfiguration, DetectConfiguration.class, field);
+                    final DetectOption option = processField(valueContainer, valueContainer.getClass(), field);
                     if (option != null) {
                         if (!detectOptionsMap.containsKey(option.getKey())) {
                             detectOptionsMap.put(option.getKey(), option);
@@ -91,11 +91,11 @@ public class DetectOptionManager {
                 .collect(Collectors.toList());
     }
 
-    public void postInit() throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException, DetectUserFriendlyException {
+    public void postInit() throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
         for (final DetectOption option : detectOptions) {
             String fieldValue = option.getPostInitValue();
             if (StringUtils.isBlank(fieldValue)) {
-                fieldValue = getCurrentValue(detectConfiguration, option);
+                fieldValue = getCurrentValue(valueContainer, option);
             }
             if (!option.getResolvedValue().equals(fieldValue)) {
                 if (option.getInteractiveValue() != null) {
@@ -124,10 +124,10 @@ public class DetectOptionManager {
         }
     }
 
-    public String getCurrentValue(final DetectConfiguration detectConfiguration, final DetectOption detectOption) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
-        final Field field = detectConfiguration.getClass().getDeclaredField(detectOption.getFieldName());
+    public String getCurrentValue(final ValueContainer valueContainer, final DetectOption detectOption) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
+        final Field field = valueContainer.getClass().getDeclaredField(detectOption.getFieldName());
         field.setAccessible(true);
-        final String fieldValue = getStringValue(detectConfiguration, field);
+        final String fieldValue = getStringValue(valueContainer, field);
         field.setAccessible(false);
         return fieldValue;
     }
@@ -248,12 +248,12 @@ public class DetectOptionManager {
 
             final Field field;
             try {
-                field = detectConfiguration.getClass().getDeclaredField(interactiveOption.getFieldName());
+                field = valueContainer.getClass().getDeclaredField(interactiveOption.getFieldName());
             } catch (NoSuchFieldException | SecurityException e) {
                 throw new RuntimeException(e);
             }
             field.setAccessible(true);
-            setValue(field, detectConfiguration, interactiveOption.getInteractiveValue());
+            setValue(field, valueContainer, interactiveOption.getInteractiveValue());
         }
     }
 

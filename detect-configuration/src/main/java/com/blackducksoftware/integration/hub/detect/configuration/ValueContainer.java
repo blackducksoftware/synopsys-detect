@@ -1,3 +1,26 @@
+/**
+ * detect-configuration
+ *
+ * Copyright (C) 2018 Black Duck Software, Inc.
+ * http://www.blackducksoftware.com/
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package com.blackducksoftware.integration.hub.detect.configuration;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -9,10 +32,6 @@ import com.blackducksoftware.integration.hub.detect.help.HelpDetailed;
 import com.blackducksoftware.integration.hub.detect.help.HelpGroup;
 
 public class ValueContainer {
-    private static final String NUGET = "nuget";
-    private static final String GRADLE = "gradle";
-    private static final String DOCKER = "docker";
-
     private static final String GROUP_HUB_CONFIGURATION = "hub configuration";
     private static final String GROUP_GENERAL = "general";
     private static final String GROUP_LOGGING = "logging";
@@ -48,7 +67,7 @@ public class ValueContainer {
     private static final String SEARCH_GROUP_DEBUG = "debug";
     private static final String SEARCH_GROUP_SEARCH = "search";
 
-    private static final String PRINT_GROUP_DEFAULT = SEARCH_GROUP_HUB;
+    public static final String PRINT_GROUP_DEFAULT = SEARCH_GROUP_HUB;
 
     // properties start
 

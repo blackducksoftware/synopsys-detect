@@ -34,31 +34,28 @@ import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.cpan.parse.CpanPackager;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extractor;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction.ExtractionResultType;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 
 @Component
-public class CpanCliExtractor extends Extractor<CpanCliContext>{
+public class CpanCliExtractor extends Extractor<CpanCliContext> {
     private final Logger logger = LoggerFactory.getLogger(CpanCliExtractor.class);
 
-    @Autowired
-    CpanPackager cpanPackager;
+    private final CpanPackager cpanPackager;
+    private final ExternalIdFactory externalIdFactory;
+    private final ExecutableRunner executableRunner;
 
     @Autowired
-    protected ExternalIdFactory externalIdFactory;
-
-    @Autowired
-    protected ExecutableRunner executableRunner;
-
-    @Autowired
-    protected DetectConfiguration detectConfiguration;
+    public CpanCliExtractor(final CpanPackager cpanPackager, final ExternalIdFactory externalIdFactory, final ExecutableRunner executableRunner) {
+        this.cpanPackager = cpanPackager;
+        this.externalIdFactory = externalIdFactory;
+        this.executableRunner = executableRunner;
+    }
 
     @Override
     public Extraction extract(final CpanCliContext context) {

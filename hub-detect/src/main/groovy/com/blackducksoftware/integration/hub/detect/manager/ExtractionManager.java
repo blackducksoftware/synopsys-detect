@@ -51,23 +51,25 @@ import com.blackducksoftware.integration.hub.detect.strategy.result.ExceptionStr
 public class ExtractionManager {
     private final Logger logger = LoggerFactory.getLogger(DetectProjectManager.class);
 
-    @Autowired
-    private List<Extractor> autowiredExtractors;
+    private final List<Extractor> autowiredExtractors;
+    private final PreparationSummaryReporter preparationSummaryReporter;
+    private final ExtractionSummaryReporter extractionSummaryReporter;
+    private final ExtractionReporter extractionReporter;
 
     @Autowired
-    private PreparationSummaryReporter preparationSummaryReporter;
-
-    @Autowired
-    private ExtractionSummaryReporter extractionSummaryReporter;
-
-    @Autowired
-    private ExtractionReporter extractionReporter;
+    public ExtractionManager(final List<Extractor> autowiredExtractors, final PreparationSummaryReporter preparationSummaryReporter, final ExtractionSummaryReporter extractionSummaryReporter,
+            final ExtractionReporter extractionReporter) {
+        this.autowiredExtractors = autowiredExtractors;
+        this.preparationSummaryReporter = preparationSummaryReporter;
+        this.extractionSummaryReporter = extractionSummaryReporter;
+        this.extractionReporter = extractionReporter;
+    }
 
     private void extract(final List<StrategyEvaluation> results) {
         final List<StrategyEvaluation> extractable = results.stream().filter(result -> result.isExtractable()).collect(Collectors.toList());
 
         for (int i = 0; i < extractable.size(); i++) {
-            logger.info("Extracting " + Integer.toString(i + 1) + " of " + Integer.toString(extractable.size()) + " (" + Integer.toString((int)Math.floor((i * 100.0f) / extractable.size())) + "%)");
+            logger.info("Extracting " + Integer.toString(i + 1) + " of " + Integer.toString(extractable.size()) + " (" + Integer.toString((int) Math.floor((i * 100.0f) / extractable.size())) + "%)");
             extract(extractable.get(i));
         }
     }
@@ -117,8 +119,6 @@ public class ExtractionManager {
         }
         return result;
     }
-
-
 
     public ExtractionResult performExtractions(final List<StrategyEvaluation> strategyEvaluations) throws IntegrationException, DetectUserFriendlyException {
 

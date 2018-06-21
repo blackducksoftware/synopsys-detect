@@ -30,14 +30,12 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.DetectInfo;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 
 public class DetectConfigurationPrinter {
 
-    public void print(final PrintStream printStream, final DetectInfo detectInfo, final DetectConfiguration detectConfiguration, final List<DetectOption> detectOptions)
-            throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
+    public void print(final PrintStream printStream, final List<DetectOption> detectOptions)
+            throws IllegalArgumentException, SecurityException {
         printStream.println("");
         printStream.println("Current property values:");
         printStream.println("--property = value [notes]");

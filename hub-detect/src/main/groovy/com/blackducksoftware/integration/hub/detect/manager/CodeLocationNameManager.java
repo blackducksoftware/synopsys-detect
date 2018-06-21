@@ -27,33 +27,34 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.codelocation.BomCodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationType;
 import com.blackducksoftware.integration.hub.detect.codelocation.DockerCodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.codelocation.ScanCodeLocationNameService;
+import com.blackducksoftware.integration.hub.detect.configuration.HubConfig;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 
 @Component
 public class CodeLocationNameManager {
-
-    @Autowired
-    public DetectConfiguration detectConfiguration;
-
-    @Autowired
-    private BomCodeLocationNameService bomCodeLocationNameService;
-
-    @Autowired
-    private DockerCodeLocationNameService dockerCodeLocationNameService;
-
-    @Autowired
-    private ScanCodeLocationNameService scanCodeLocationNameService;
+    private final BomCodeLocationNameService bomCodeLocationNameService;
+    private final DockerCodeLocationNameService dockerCodeLocationNameService;
+    private final ScanCodeLocationNameService scanCodeLocationNameService;
+    private final HubConfig hubConfig;
 
     private int givenCodeLocationOverrideCount = 0;
 
+    @Autowired
+    public CodeLocationNameManager(final BomCodeLocationNameService bomCodeLocationNameService, final DockerCodeLocationNameService dockerCodeLocationNameService,
+            final ScanCodeLocationNameService scanCodeLocationNameService, final HubConfig hubConfig) {
+        this.bomCodeLocationNameService = bomCodeLocationNameService;
+        this.dockerCodeLocationNameService = dockerCodeLocationNameService;
+        this.scanCodeLocationNameService = scanCodeLocationNameService;
+        this.hubConfig = hubConfig;
+    }
+
     private boolean useCodeLocationOverride() {
-        if (StringUtils.isNotBlank(detectConfiguration.getCodeLocationNameOverride())) {
+        if (StringUtils.isNotBlank(hubConfig.getCodeLocationNameOverride())) {
             return true;
         } else {
             return false;
@@ -62,7 +63,7 @@ public class CodeLocationNameManager {
 
     private String getNextCodeLocationOverrideName(CodeLocationType codeLocationType) { //returns "override", then "override 2", then "override 3", etc
         givenCodeLocationOverrideCount++;
-        final String base = detectConfiguration.getCodeLocationNameOverride() + " " + codeLocationType.name();
+        final String base = hubConfig.getCodeLocationNameOverride() + " " + codeLocationType.name();
         if (givenCodeLocationOverrideCount == 1) {
             return base;
         } else {

@@ -1,14 +1,33 @@
+/**
+ * detect-configuration
+ *
+ * Copyright (C) 2018 Black Duck Software, Inc.
+ * http://www.blackducksoftware.com/
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package com.blackducksoftware.integration.hub.detect.configuration;
 
 import java.util.List;
 
 import org.apache.commons.lang3.BooleanUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class BomToolConfig extends BaseConfig {
-    private final Logger logger = LoggerFactory.getLogger(BomToolConfig.class);
-
     private String dockerInspectorAirGapPath;
     private String gradleInspectorAirGapPath;
     private String nugetInspectorAirGapPath;
@@ -19,6 +38,75 @@ public class BomToolConfig extends BaseConfig {
         this.gradleInspectorAirGapPath = gradleInspectorAirGapPath;
         this.nugetInspectorAirGapPath = nugetInspectorAirGapPath;
         this.bomToolSearchDirectoryExclusions = bomToolSearchDirectoryExclusions;
+
+        this.detectProjectBomTool = valueContainer.getDetectProjectBomTool();
+        this.bomToolSearchDepth = valueContainer.getBomToolSearchDepth();
+        this.bomToolContinueSearch = valueContainer.getBomToolContinueSearch();
+        this.bomToolSearchExclusion = valueContainer.getBomToolSearchExclusion();
+        this.bomToolSearchExclusionDefaults = valueContainer.getBomToolSearchExclusionDefaults();
+        this.excludedBomToolTypes = valueContainer.getExcludedBomToolTypes();
+        this.includedBomToolTypes = valueContainer.getIncludedBomToolTypes();
+        this.gradleInspectorVersion = valueContainer.getGradleInspectorVersion();
+        this.gradleBuildCommand = valueContainer.getGradleBuildCommand();
+        this.gradleExcludedConfigurationNames = valueContainer.getGradleExcludedConfigurationNames();
+        this.gradleIncludedConfigurationNames = valueContainer.getGradleIncludedConfigurationNames();
+        this.gradleExcludedProjectNames = valueContainer.getGradleExcludedProjectNames();
+        this.gradleIncludedProjectNames = valueContainer.getGradleIncludedProjectNames();
+        this.nugetConfigPath = valueContainer.getNugetConfigPath();
+        this.nugetInspectorPackageName = valueContainer.getNugetInspectorPackageName();
+        this.nugetInspectorPackageVersion = valueContainer.getNugetInspectorPackageVersion();
+        this.nugetInspectorExcludedModules = valueContainer.getNugetInspectorExcludedModules();
+        this.nugetInspectorIncludedModules = valueContainer.getNugetInspectorIncludedModules();
+        this.nugetInspectorIgnoreFailure = valueContainer.getNugetInspectorIgnoreFailure();
+        this.mavenScope = valueContainer.getMavenScope();
+        this.mavenBuildCommand = valueContainer.getMavenBuildCommand();
+        this.gradlePath = valueContainer.getGradlePath();
+        this.mavenPath = valueContainer.getMavenPath();
+        this.mavenExcludedModuleNames = valueContainer.getMavenExcludedModuleNames();
+        this.mavenIncludedModuleNames = valueContainer.getMavenIncludedModuleNames();
+        this.nugetPath = valueContainer.getNugetPath();
+        this.pipProjectName = valueContainer.getPipProjectName();
+        this.pythonThreeOverride = valueContainer.getPythonThreeOverride();
+        this.pythonPath = valueContainer.getPythonPath();
+        this.npmPath = valueContainer.getNpmPath();
+        this.npmIncludeDevDependencies = valueContainer.getNpmIncludeDevDependencies();
+        this.npmNodePath = valueContainer.getNpmNodePath();
+        this.pearPath = valueContainer.getPearPath();
+        this.pearOnlyRequiredDependencies = valueContainer.getPearOnlyRequiredDependencies();
+        this.requirementsFilePath = valueContainer.getRequirementsFilePath();
+        this.goDepPath = valueContainer.getGoDepPath();
+        this.goRunDepInit = valueContainer.getGoRunDepInit();
+        this.dockerPath = valueContainer.getDockerPath();
+        this.dockerPathRequired = valueContainer.getDockerPathRequired();
+        this.dockerInspectorPath = valueContainer.getDockerInspectorPath();
+        this.dockerInspectorVersion = valueContainer.getDockerInspectorVersion();
+        this.dockerTar = valueContainer.getDockerTar();
+        this.dockerImage = valueContainer.getDockerImage();
+        this.bashPath = valueContainer.getBashPath();
+        this.hubSignatureScannerDryRun = valueContainer.getHubSignatureScannerDryRun();
+        this.hubSignatureScannerSnippetMode = valueContainer.getHubSignatureScannerSnippetMode();
+        this.hubSignatureScannerExclusionPatterns = valueContainer.getHubSignatureScannerExclusionPatterns();
+        this.hubSignatureScannerPaths = valueContainer.getHubSignatureScannerPaths();
+        this.hubSignatureScannerExclusionNamePatterns = valueContainer.getHubSignatureScannerExclusionNamePatterns();
+        this.hubSignatureScannerMemory = valueContainer.getHubSignatureScannerMemory();
+        this.hubSignatureScannerDisabled = valueContainer.getHubSignatureScannerDisabled();
+        this.hubSignatureScannerOfflineLocalPath = valueContainer.getHubSignatureScannerOfflineLocalPath();
+        this.hubSignatureScannerHostUrl = valueContainer.getHubSignatureScannerHostUrl();
+        this.hubSignatureScannerParallelProcessors = valueContainer.getHubSignatureScannerParallelProcessors();
+        this.hubSignatureScannerArguments = valueContainer.getHubSignatureScannerArguments();
+        this.packagistIncludeDevDependencies = valueContainer.getPackagistIncludeDevDependencies();
+        this.perlPath = valueContainer.getPerlPath();
+        this.cpanPath = valueContainer.getCpanPath();
+        this.cpanmPath = valueContainer.getCpanmPath();
+        this.sbtExcludedConfigurationNames = valueContainer.getSbtExcludedConfigurationNames();
+        this.sbtIncludedConfigurationNames = valueContainer.getSbtIncludedConfigurationNames();
+        this.condaPath = valueContainer.getCondaPath();
+        this.condaEnvironmentName = valueContainer.getCondaEnvironmentName();
+        this.nugetPackagesRepoUrl = valueContainer.getNugetPackagesRepoUrl();
+        this.gradleInspectorRepositoryUrl = valueContainer.getGradleInspectorRepositoryUrl();
+        this.hexRebar3Path = valueContainer.getHexRebar3Path();
+        this.yarnPath = valueContainer.getYarnPath();
+        this.yarnProductionDependenciesOnly = valueContainer.getYarnProductionDependenciesOnly();
     }
 
     public List<String> getBomToolSearchDirectoryExclusions() {

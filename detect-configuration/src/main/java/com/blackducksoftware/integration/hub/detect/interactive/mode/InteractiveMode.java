@@ -39,7 +39,7 @@ import java.util.Properties;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.configuration.ValueContainer;
 import com.blackducksoftware.integration.hub.detect.interactive.InteractiveOption;
 import com.blackducksoftware.integration.hub.detect.interactive.reader.InteractiveReader;
 import com.blackducksoftware.integration.hub.detect.util.SpringValueUtils;
@@ -118,7 +118,7 @@ public abstract class InteractiveMode {
 
     private String springKeyFromFieldName(final String fieldName) {
         try {
-            final Field field = DetectConfiguration.class.getDeclaredField(fieldName);
+            final Field field = ValueContainer.class.getDeclaredField(fieldName);
 
             final Value valueAnnotation = field.getAnnotation(Value.class);
             final String key = SpringValueUtils.springKeyFromValueAnnotation(valueAnnotation.value());

@@ -1,3 +1,26 @@
+/**
+ * detect-configuration
+ *
+ * Copyright (C) 2018 Black Duck Software, Inc.
+ * http://www.blackducksoftware.com/
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package com.blackducksoftware.integration.hub.detect.configuration;
 
 import java.io.File;
@@ -32,6 +55,7 @@ public class ConfigurationManager {
     private File sourceDirectory;
     private File outputDirectory;
     private List<String> bomToolSearchDirectoryExclusions;
+
     // properties to be updated
     private String sourcePath;
     private String outputDirectoryPath;
@@ -50,12 +74,13 @@ public class ConfigurationManager {
         this.valueContainer = valueContainer;
     }
 
-    private void init(List<DetectOption> detectOptions) throws DetectUserFriendlyException {
+    public void initialize(List<DetectOption> detectOptions) throws DetectUserFriendlyException {
         resolveTildeInPaths();
         resolveTargetAndOutputDirectories();
         resolvePolicyProperties();
         resolveSignatureScannerProperties(detectOptions);
         resolveBomToolSearchProperties();
+        resolveAirGapPaths();
 
         updateDetectOptions(detectOptions);
     }
@@ -169,6 +194,9 @@ public class ConfigurationManager {
         updateOptionValue(detectOptions, "policyCheckFailOnSeverities", policyCheckFailOnSeverities);
         updateOptionValue(detectOptions, "hubSignatureScannerParallelProcessors", String.valueOf(hubSignatureScannerParallelProcessors));
         updateOptionValue(detectOptions, "hubOfflineMode", String.valueOf(hubOfflineMode));
+        updateOptionValue(detectOptions, "dockerInspectorAirGapPath", dockerInspectorAirGapPath);
+        updateOptionValue(detectOptions, "gradleInspectorAirGapPath", gradleInspectorAirGapPath);
+        updateOptionValue(detectOptions, "nugetInspectorAirGapPath", nugetInspectorAirGapPath);
     }
 
     private void updateOptionValue(List<DetectOption> detectOptions, final String key, final String value) {
@@ -211,7 +239,7 @@ public class ConfigurationManager {
         }
     }
 
-    public String guessDetectJarLocation() {
+    private String guessDetectJarLocation() {
         final String containsDetectJarRegex = ".*hub-detect-[^\\\\/]+\\.jar.*";
         final String javaClasspath = System.getProperty("java.class.path");
         if (javaClasspath != null && javaClasspath.matches(containsDetectJarRegex)) {
@@ -240,4 +268,55 @@ public class ConfigurationManager {
         return inspectorLocationProperty;
     }
 
+    public File getSourceDirectory() {
+        return sourceDirectory;
+    }
+
+    public File getOutputDirectory() {
+        return outputDirectory;
+    }
+
+    public List<String> getBomToolSearchDirectoryExclusions() {
+        return bomToolSearchDirectoryExclusions;
+    }
+
+    public String getSourcePath() {
+        return sourcePath;
+    }
+
+    public String getOutputDirectoryPath() {
+        return outputDirectoryPath;
+    }
+
+    public String getBdioOutputDirectoryPath() {
+        return bdioOutputDirectoryPath;
+    }
+
+    public String getScanOutputDirectoryPath() {
+        return scanOutputDirectoryPath;
+    }
+
+    public String getPolicyCheckFailOnSeverities() {
+        return policyCheckFailOnSeverities;
+    }
+
+    public int getHubSignatureScannerParallelProcessors() {
+        return hubSignatureScannerParallelProcessors;
+    }
+
+    public boolean isHubOfflineMode() {
+        return hubOfflineMode;
+    }
+
+    public String getDockerInspectorAirGapPath() {
+        return dockerInspectorAirGapPath;
+    }
+
+    public String getGradleInspectorAirGapPath() {
+        return gradleInspectorAirGapPath;
+    }
+
+    public String getNugetInspectorAirGapPath() {
+        return nugetInspectorAirGapPath;
+    }
 }
