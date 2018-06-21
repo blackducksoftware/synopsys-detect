@@ -66,7 +66,6 @@ import com.blackducksoftware.integration.hub.detect.interactive.reader.ScannerIn
 import com.blackducksoftware.integration.hub.detect.manager.DetectPhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.manager.DetectProjectManager;
 import com.blackducksoftware.integration.hub.detect.model.DetectProject;
-import com.blackducksoftware.integration.hub.detect.strategy.StrategyManager;
 import com.blackducksoftware.integration.hub.detect.summary.DetectSummary;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.log.SilentLogger;
@@ -96,7 +95,6 @@ public class Application implements ApplicationRunner {
     private final List<ExitCodeReporter> exitCodeReporters;
     private final DetectPhoneHomeManager detectPhoneHomeManager;
     private final ArgumentStateParser argumentStateParser;
-    private final StrategyManager strategyManager;
 
     private ExitCodeType exitCodeType = ExitCodeType.SUCCESS;
 
@@ -104,7 +102,7 @@ public class Application implements ApplicationRunner {
     public Application(final DetectOptionManager detectOptionManager, final DetectInfo detectInfo, final ValueContainer valueContainer, final ConfigurationManager configurationManager, final HubConfig hubConfig,
             final BomToolConfig bomToolConfig, final DetectConfig detectConfig, final DetectProjectManager detectProjectManager, final HelpPrinter helpPrinter, final HelpHtmlWriter helpHtmlWriter, final HubManager hubManager,
             final HubServiceWrapper hubServiceWrapper, final HubSignatureScanner hubSignatureScanner, final DetectSummary detectSummary, final InteractiveManager interactiveManager, final DetectFileManager detectFileManager,
-            final List<ExitCodeReporter> exitCodeReporters, final DetectPhoneHomeManager detectPhoneHomeManager, final ArgumentStateParser argumentStateParser, final StrategyManager strategyManager) {
+            final List<ExitCodeReporter> exitCodeReporters, final DetectPhoneHomeManager detectPhoneHomeManager, final ArgumentStateParser argumentStateParser) {
         this.detectOptionManager = detectOptionManager;
         this.detectInfo = detectInfo;
         this.valueContainer = valueContainer;
@@ -124,7 +122,6 @@ public class Application implements ApplicationRunner {
         this.exitCodeReporters = exitCodeReporters;
         this.detectPhoneHomeManager = detectPhoneHomeManager;
         this.argumentStateParser = argumentStateParser;
-        this.strategyManager = strategyManager;
     }
 
     public static void main(final String[] args) {
@@ -220,8 +217,6 @@ public class Application implements ApplicationRunner {
                 detectPhoneHomeManager.init(hubServiceWrapper.createPhoneHomeService());
                 detectPhoneHomeManager.startPhoneHome();
             }
-
-            strategyManager.init();
 
             final DetectProject detectProject = detectProjectManager.createDetectProject();
             logger.info("Project Name: " + detectProject.getProjectName());

@@ -66,7 +66,9 @@ public class BomToolConfig extends BaseConfig {
         this.mavenIncludedModuleNames = valueContainer.getMavenIncludedModuleNames();
         this.nugetPath = valueContainer.getNugetPath();
         this.pipProjectName = valueContainer.getPipProjectName();
+        this.pipProjectVersionName = valueContainer.getPipProjectVersionName();
         this.pythonThreeOverride = valueContainer.getPythonThreeOverride();
+        this.pipEnvPath = valueContainer.getPipenvPath();
         this.pythonPath = valueContainer.getPythonPath();
         this.npmPath = valueContainer.getNpmPath();
         this.npmIncludeDevDependencies = valueContainer.getNpmIncludeDevDependencies();
@@ -168,7 +170,11 @@ public class BomToolConfig extends BaseConfig {
 
     private String pipProjectName;
 
+    private String pipProjectVersionName;
+
     private Boolean pythonThreeOverride;
+
+    private String pipEnvPath;
 
     private String pythonPath;
 
@@ -374,12 +380,22 @@ public class BomToolConfig extends BaseConfig {
         return BooleanUtils.toBoolean(pearOnlyRequiredDependencies);
     }
 
+    @Deprecated
     public String getPipProjectName() {
         return pipProjectName;
     }
 
+    @Deprecated
+    public String getPipProjectVersionName() {
+        return pipProjectVersionName;
+    }
+
     public boolean getPythonThreeOverride() {
         return BooleanUtils.toBoolean(pythonThreeOverride);
+    }
+
+    public String getPipEnvPath() {
+        return pipEnvPath;
     }
 
     public String getPythonPath() {

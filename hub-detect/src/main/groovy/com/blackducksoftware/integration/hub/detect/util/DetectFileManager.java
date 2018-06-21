@@ -35,8 +35,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfig;
-import com.blackducksoftware.integration.hub.detect.extraction.model.ExtractionContext;
 
 @Component
 public class DetectFileManager {
@@ -46,7 +46,7 @@ public class DetectFileManager {
 
     private final String sharedUUID = "shared";
     private File sharedDirectory = null;
-    private final Map<ExtractionContext, File> outputDirectories = new HashMap<>();
+    private final Map<ExtractionId, File> outputDirectories = new HashMap<>();
     //private final Map<ExtractionContext, File> outputDirectories = new HashMap<>();
 
     @Autowired
@@ -54,15 +54,15 @@ public class DetectFileManager {
         this.detectConfig = detectConfig;
     }
 
-    public File getOutputDirectory(final ExtractionContext context) {
-        if (outputDirectories.containsKey(context)) {
-            return outputDirectories.get(context);
+    public File getOutputDirectory(final ExtractionId extractionId) {
+        if (outputDirectories.containsKey(extractionId)) {
+            return outputDirectories.get(extractionId);
         } else {
-            final String directoryName = context.getClass().getSimpleName() + "-" + Integer.toString(context.hashCode());
+            final String directoryName = extractionId.getClass().getSimpleName() + "-" + extractionId.toUniqueString();
 
             final File newDirectory = new File(getExtractionFile(), directoryName);
             newDirectory.mkdir();
-            outputDirectories.put(context, newDirectory);
+            outputDirectories.put(extractionId, newDirectory);
             return newDirectory;
         }
     }
@@ -73,8 +73,8 @@ public class DetectFileManager {
         return newDirectory;
     }
 
-    public File getOutputFile(final ExtractionContext context, final String name) {
-        final File directory = getOutputDirectory(context);
+    public File getOutputFile(final ExtractionId extractionId, final String name) {
+        final File directory = getOutputDirectory(extractionId);
         return new File(directory, name);
     }
 
@@ -101,14 +101,15 @@ public class DetectFileManager {
     }
 
     //This file will be immediately cleaned up and is associated to a specific context. The current implementation is to actually move it to the context's output and allow cleanup at the end of the detect run (in case of diagnostics).
-    public void cleanupOutputFile(final ExtractionContext context, final File file) {
+    public void cleanupOutputFile(final ExtractionId extractionId, final File file) {
         try {
             if (file.isFile()) {
-                final File out = getOutputDirectory(context);
+                final File out = getOutputDirectory(extractionId);
                 final File dest = new File(out, file.getName());
                 FileUtils.moveFile(file, dest);
+
             } else if (file.isDirectory()) {
-                final File out = getOutputDirectory(context);
+                final File out = getOutputDirectory(extractionId);
                 final File dest = new File(out, file.getName());
                 FileUtils.moveDirectory(file, dest);
             }

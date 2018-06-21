@@ -27,20 +27,20 @@ import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 
 public class DetectCodeLocation {
-    private final BomToolType bomToolType;
+    private final BomToolGroupType bomToolType;
     private final String sourcePath;
     private final String dockerImage;
     private final ExternalId externalId;
     private final DependencyGraph dependencyGraph;
 
     public static class Builder {
-        private final BomToolType bomToolType;
+        private final BomToolGroupType bomToolType;
         private final String sourcePath;
         private String dockerImage;
         private final ExternalId externalId;
         private final DependencyGraph dependencyGraph;
 
-        public Builder(final BomToolType bomToolType, final String sourcePath, final ExternalId externalId, final DependencyGraph dependencyGraph) {
+        public Builder(final BomToolGroupType bomToolType, final String sourcePath, final ExternalId externalId, final DependencyGraph dependencyGraph) {
             this.bomToolType = bomToolType;
             this.sourcePath = sourcePath;
             this.externalId = externalId;
@@ -65,7 +65,7 @@ public class DetectCodeLocation {
         this.dependencyGraph = builder.dependencyGraph;
     }
 
-    public BomToolType getBomToolType() {
+    public BomToolGroupType getBomToolType() {
         return bomToolType;
     }
 

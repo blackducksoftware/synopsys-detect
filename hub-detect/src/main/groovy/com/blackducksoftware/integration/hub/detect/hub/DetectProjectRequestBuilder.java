@@ -32,10 +32,12 @@ public class DetectProjectRequestBuilder extends ProjectRequestBuilder {
     public DetectProjectRequestBuilder(final HubConfig hubConfig, final DetectProject detectProject) {
         setProjectName(detectProject.getProjectName());
         setVersionName(detectProject.getProjectVersion());
+
         setProjectLevelAdjustments(hubConfig.getProjectLevelMatchAdjustments());
         setPhase(hubConfig.getProjectVersionPhase());
         setDistribution(hubConfig.getProjectVersionDistribution());
         setProjectTier(hubConfig.getProjectTier());
+        setDescription(hubConfig.getProjectDescription());
         setReleaseComments(hubConfig.getProjectVersionNotes());
     }
 }

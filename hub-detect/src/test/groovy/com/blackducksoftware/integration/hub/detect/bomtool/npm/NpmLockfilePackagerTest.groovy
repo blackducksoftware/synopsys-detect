@@ -5,8 +5,8 @@ import org.junit.Before
 import org.junit.Test
 
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.extraction.bomtool.npm.parse.NpmLockfilePackager
-import com.blackducksoftware.integration.hub.detect.extraction.bomtool.npm.parse.NpmParseResult
+import com.blackducksoftware.integration.hub.detect.bomtool.npm.parse.NpmLockfilePackager
+import com.blackducksoftware.integration.hub.detect.bomtool.npm.parse.NpmParseResult
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil

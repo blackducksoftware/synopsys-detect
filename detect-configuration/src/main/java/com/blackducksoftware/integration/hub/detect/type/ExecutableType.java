@@ -41,6 +41,7 @@ public enum ExecutableType {
     PERL,
     PIP,
     PIP3,
+    PIPENV,
     PYTHON,
     PYTHON3,
     REBAR3,

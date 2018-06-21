@@ -30,6 +30,7 @@ import com.blackducksoftware.integration.hub.detect.help.DefaultValue;
 import com.blackducksoftware.integration.hub.detect.help.HelpDescription;
 import com.blackducksoftware.integration.hub.detect.help.HelpDetailed;
 import com.blackducksoftware.integration.hub.detect.help.HelpGroup;
+import com.blackducksoftware.integration.hub.detect.help.ValueDeprecation;
 
 public class ValueContainer {
     private static final String GROUP_HUB_CONFIGURATION = "hub configuration";
@@ -445,8 +446,15 @@ public class ValueContainer {
 
     @Value("${detect.pip.project.name:}")
     @HelpGroup(primary = GROUP_PIP)
-    @HelpDescription("Override for pip inspector to find your project")
+    @ValueDeprecation(description = "detect.project.name will be used for this in the future", willRemoveInVersion = "5.0.0")
+    @HelpDescription("The name of your pip project, to be used if your project's name cannot be correctly inferred from its setup.py file")
     private String pipProjectName;
+
+    @Value("${detect.pip.project.version.name:}")
+    @HelpGroup(primary = GROUP_PIP)
+    @ValueDeprecation(description = "detect.project.version.name will be used for this in the future", willRemoveInVersion = "5.0.0")
+    @HelpDescription("The version of your pip project, to be used if your project's version name cannot be correctly inferred from its setup.py file")
+    private String pipProjectVersionName;
 
     @Value("${detect.python.python3:}")
     @DefaultValue("false")
@@ -458,6 +466,11 @@ public class ValueContainer {
     @HelpGroup(primary = GROUP_PYTHON)
     @HelpDescription("The path of the Python executable")
     private String pythonPath;
+
+    @Value("${detect.pipenv.path:}")
+    @HelpGroup(primary = GROUP_PIP)
+    @HelpDescription("The path of the Pipenv executable")
+    private String pipEnvPath;
 
     @Value("${detect.npm.path:}")
     @HelpGroup(primary = GROUP_NPM)
@@ -1010,8 +1023,14 @@ public class ValueContainer {
         return nugetPath;
     }
 
+    @Deprecated
     public String getPipProjectName() {
         return pipProjectName;
+    }
+
+    @Deprecated
+    public String getPipProjectVersionName() {
+        return pipProjectVersionName;
     }
 
     public Boolean getPythonThreeOverride() {
@@ -1040,6 +1059,10 @@ public class ValueContainer {
 
     public Boolean getPearOnlyRequiredDependencies() {
         return pearOnlyRequiredDependencies;
+    }
+
+    public String getPipenvPath() {
+        return pipEnvPath;
     }
 
     public String getRequirementsFilePath() {

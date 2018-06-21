@@ -26,14 +26,14 @@ package com.blackducksoftware.integration.hub.detect.bomtool.search.report;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.blackducksoftware.integration.hub.detect.extraction.model.StrategyEvaluation;
+import com.blackducksoftware.integration.hub.detect.extraction.model.BomToolEvaluation;
 
 public class ExtractionSummaryData {
     public String directory;
 
-    public List<StrategyEvaluation> success = new ArrayList<>();
-    public List<StrategyEvaluation> failed = new ArrayList<>();
-    public List<StrategyEvaluation> exception = new ArrayList<>();
+    public List<BomToolEvaluation> success = new ArrayList<>();
+    public List<BomToolEvaluation> failed = new ArrayList<>();
+    public List<BomToolEvaluation> exception = new ArrayList<>();
 
     public int searchable;
     public int applicable;

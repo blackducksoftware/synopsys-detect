@@ -46,7 +46,7 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectConfig;
 import com.blackducksoftware.integration.hub.detect.configuration.HubConfig;
 import com.blackducksoftware.integration.hub.detect.manager.result.codelocation.DetectCodeLocationResult;
 import com.blackducksoftware.integration.hub.detect.model.BdioCodeLocation;
-import com.blackducksoftware.integration.hub.detect.model.BomToolType;
+import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
 
@@ -66,7 +66,7 @@ public class DetectCodeLocationManager {
     }
 
     public DetectCodeLocationResult process(final List<DetectCodeLocation> detectCodeLocations, final String projectName, final String projectVersion) {
-        final Set<BomToolType> failedBomTools = new HashSet<>();
+        final Set<BomToolGroupType> failedBomTools = new HashSet<>();
 
         final String prefix = hubConfig.getProjectCodeLocationPrefix();
         final String suffix = hubConfig.getProjectCodeLocationSuffix();
@@ -99,7 +99,7 @@ public class DetectCodeLocationManager {
         return result;
     }
 
-    private Set<BomToolType> getBomToolTypes(final List<BdioCodeLocation> bdioCodeLocations) {
+    private Set<BomToolGroupType> getBomToolTypes(final List<BdioCodeLocation> bdioCodeLocations) {
         return bdioCodeLocations.stream()
                 .map(it -> it.codeLocation.getBomToolType())
                 .collect(Collectors.toSet());

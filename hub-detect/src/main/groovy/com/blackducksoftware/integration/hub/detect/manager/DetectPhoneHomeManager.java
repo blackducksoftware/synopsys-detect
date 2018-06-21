@@ -35,7 +35,7 @@ import com.blackducksoftware.integration.hub.detect.DetectInfo;
 import com.blackducksoftware.integration.hub.detect.configuration.AdditionalPropertyConfig;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.hub.OfflinePhoneHomeService;
-import com.blackducksoftware.integration.hub.detect.model.BomToolType;
+import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
 import com.blackducksoftware.integration.hub.service.PhoneHomeService;
 import com.blackducksoftware.integration.hub.service.model.PhoneHomeResponse;
 import com.blackducksoftware.integration.log.IntLogger;
@@ -87,11 +87,11 @@ public class DetectPhoneHomeManager {
         performPhoneHome(null);
     }
 
-    public void startPhoneHome(final Set<BomToolType> applicableBomToolTypes) {
+    public void startPhoneHome(final Set<BomToolGroupType> applicableBomToolTypes) {
         performPhoneHome(applicableBomToolTypes);
     }
 
-    private void performPhoneHome(final Set<BomToolType> applicableBomToolTypes) {
+    private void performPhoneHome(final Set<BomToolGroupType> applicableBomToolTypes) {
         endPhoneHome();
         if (null != phoneHomeService) {
             try {

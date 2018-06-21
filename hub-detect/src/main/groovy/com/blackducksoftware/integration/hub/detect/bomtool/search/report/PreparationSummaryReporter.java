@@ -33,39 +33,39 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.extraction.model.StrategyEvaluation;
+import com.blackducksoftware.integration.hub.detect.extraction.model.BomToolEvaluation;
 
 @Component
 public class PreparationSummaryReporter {
     private final Logger logger = LoggerFactory.getLogger(PreparationSummaryReporter.class);
 
-    public void print(final List<StrategyEvaluation> results) {
-        final Map<File, List<StrategyEvaluation>> byDirectory = results.stream()
+    public void print(final List<BomToolEvaluation> results) {
+        final Map<File, List<BomToolEvaluation>> byDirectory = results.stream()
                 .collect(Collectors.groupingBy(item -> item.environment.getDirectory()));
 
         printDirectories(byDirectory);
 
     }
 
-    private void printDirectories(final Map<File, List<StrategyEvaluation>> byDirectory) {
+    private void printDirectories(final Map<File, List<BomToolEvaluation>> byDirectory) {
         logger.info("");
         logger.info("");
         logger.info(ReportConstants.HEADING);
         logger.info("Preparation for extraction");
         logger.info(ReportConstants.HEADING);
         for (final File file : byDirectory.keySet()) {
-            final List<StrategyEvaluation> results = byDirectory.get(file);
+            final List<BomToolEvaluation> results = byDirectory.get(file);
 
             final List<String> ready = new ArrayList<>();
             final List<String> failed = new ArrayList<>();
 
-            for (final StrategyEvaluation result : results) {
-                final String strategyName = result.strategy.getBomToolType() + " - " + result.strategy.getName();
+            for (final BomToolEvaluation result : results) {
+                final String bomToolName = result.bomTool.getBomToolGroupType() + " - " + result.bomTool.getName();
                 if (result.isApplicable()) {
                     if (result.extractable.getPassed()) {
-                        ready.add(strategyName);
+                        ready.add(bomToolName);
                     } else {
-                        failed.add("FAILED: " + strategyName + " - " + result.extractable.toDescription());
+                        failed.add("FAILED: " + bomToolName + " - " + result.extractable.toDescription());
                     }
                 }
             }

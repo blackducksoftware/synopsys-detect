@@ -33,23 +33,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
+import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction.ExtractionResultType;
-import com.blackducksoftware.integration.hub.detect.extraction.model.ExtractionContext;
-import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
 
 @Component
 public class ExtractionReporter {
     private final Logger logger = LoggerFactory.getLogger(ExtractionReporter.class);
 
-    public void startedExtraction(final Strategy strategy, final ExtractionContext context) {
+    public void startedExtraction(final BomTool bomTool, final ExtractionId extractionId) {
         logger.info(ReportConstants.SEPERATOR);
-        final String strategyName = strategy.getBomToolType() + " - " + strategy.getName();
-        logger.info("Starting extraction: " + strategyName);
-        logger.info("Identifier: " + Integer.toString(context.hashCode()));
-        logger.info("Extractor: " + strategy.getExtractorClass().getSimpleName());
-        logger.info("Context: " + strategy.getExtractionContextClass().getSimpleName());
-        printObject(null, context);
+        final String bomToolName = bomTool.getBomToolGroupType() + " - " + bomTool.getName();
+        logger.info("Starting extraction: " + bomToolName);
+        logger.info("Identifier: " + extractionId.toUniqueString());
+        //TODO: Replicate SUPER AWESOME printing from before... probably can't as nicely.
+        //logger.info("Extractor: " + bomTool.getExtractorClass().getSimpleName());
+        //logger.info("Context: " + bomTool.getExtractionContextClass().getSimpleName());
+        //printObject(null, context);
         logger.info(ReportConstants.SEPERATOR);
     }
 

@@ -35,15 +35,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction.ExtractionResultType;
-import com.blackducksoftware.integration.hub.detect.extraction.model.StrategyEvaluation;
+import com.blackducksoftware.integration.hub.detect.extraction.model.BomToolEvaluation;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 
 @Component
 public class ExtractionSummaryReporter {
     private final Logger logger = LoggerFactory.getLogger(ExtractionSummaryReporter.class);
 
-    public void print(final List<StrategyEvaluation> results, final Map<DetectCodeLocation, String> codeLocationNameMap) {
-        final Map<File, List<StrategyEvaluation>> byDirectory = results.stream()
+    public void print(final List<BomToolEvaluation> results, final Map<DetectCodeLocation, String> codeLocationNameMap) {
+        final Map<File, List<BomToolEvaluation>> byDirectory = results.stream()
                 .collect(Collectors.groupingBy(item -> item.environment.getDirectory()));
 
         final List<ExtractionSummaryData> data = createData(byDirectory, codeLocationNameMap);
@@ -54,17 +54,17 @@ public class ExtractionSummaryReporter {
 
     }
 
-    private List<ExtractionSummaryData> createData(final Map<File, List<StrategyEvaluation>> byDirectory, final Map<DetectCodeLocation, String> codeLocationNameMap) {
+    private List<ExtractionSummaryData> createData(final Map<File, List<BomToolEvaluation>> byDirectory, final Map<DetectCodeLocation, String> codeLocationNameMap) {
         final List<ExtractionSummaryData> datas = new ArrayList<>();
 
         for (final File file : byDirectory.keySet()) {
-            final List<StrategyEvaluation> results = byDirectory.get(file);
+            final List<BomToolEvaluation> results = byDirectory.get(file);
 
             final ExtractionSummaryData data = new ExtractionSummaryData();
             data.directory = file.toString();
             datas.add(data);
 
-            for (final StrategyEvaluation result : results) {
+            for (final BomToolEvaluation result : results) {
                 if (result.isSearchable()) {
                     data.searchable++;
                 }
@@ -88,7 +88,7 @@ public class ExtractionSummaryReporter {
                             data.exception.add(result);
                         }
                     } else {
-                        logger.warn("A strategy was searchable, applicable and extractable but produced no extraction.");
+                        logger.warn("A bomTool was searchable, applicable and extractable but produced no extraction.");
                     }
                 }
             }
@@ -124,13 +124,13 @@ public class ExtractionSummaryReporter {
                 logger.info("\tCode locations: " + it.codeLocationsExtracted);
                 it.codeLocationNames.stream().forEach(name -> logger.info("\t\t" + name));
                 if (it.success.size() > 0) {
-                    logger.info("\tSuccess: " + it.success.stream().map(success -> success.strategy.getDescriptiveName()).collect(Collectors.joining(",")));
+                    logger.info("\tSuccess: " + it.success.stream().map(success -> success.bomTool.getDescriptiveName()).collect(Collectors.joining(", ")));
                 }
                 if (it.failed.size() > 0) {
-                    logger.error("\tFailure: " + it.failed.stream().map(failed -> failed.strategy.getDescriptiveName()).collect(Collectors.joining(",")));
+                    logger.error("\tFailure: " + it.failed.stream().map(failed -> failed.bomTool.getDescriptiveName()).collect(Collectors.joining(", ")));
                 }
                 if (it.exception.size() > 0) {
-                    logger.error("\tException: " + it.exception.stream().map(exception -> exception.strategy.getDescriptiveName()).collect(Collectors.joining(",")));
+                    logger.error("\tException: " + it.exception.stream().map(exception -> exception.bomTool.getDescriptiveName()).collect(Collectors.joining(", ")));
                 }
             }
         });
