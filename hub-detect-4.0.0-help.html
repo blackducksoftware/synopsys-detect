@@ -1,0 +1,1247 @@
+<html>
+
+<head>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+        
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 7px 10px;
+        }
+        
+        th.groupHeader {
+            font-weight: bold;
+            background-color: #ddd;
+            text-align: left;
+        }
+        
+        th {
+            font-weight: normal;
+            background-color: #eee;
+            text-align: left;
+        }
+        
+        tbody tr:hover:not(.noBorder) {
+            background-color: #f8f8f8;
+        }
+        
+        .propertyColumn {
+            width: 400px;
+        }
+        
+        .defaultColumn {
+            width: 300px;
+        }
+        
+        .noBorder {
+            border: 0px;
+        }
+    </style>
+</head>
+
+<body>
+    <table>
+        <colgroup>
+            <col class="propertyColumn" />
+            <col class="defaultColumn" />
+            <col />
+        </colgroup>
+                		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Bomtool</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>By default, all tools will be included. If you want to exclude specific tools, specify the ones to exclude here. Exclusion rules always win.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Cleanup</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td>true</td>
+		            <td></td>
+		            <td>If true the files created by Detect will be cleaned up.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Conda</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>The name of the anaconda environment used by your project</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>The path of the conda executable</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Cpan</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>The path of the cpan executable</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>The path of the cpanm executable</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>The path of the perl executable</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Docker</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>The docker image name to inspect. For detect to run docker either this property or detect.docker.tar must be set.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>The path to the directory containing the docker inspector script, jar, and images</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>This is used to override using the hosted script by github url. You can provide your own script at this path.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>latest</td>
+		            <td></td>
+		            <td>Version of the Hub Docker Inspector to use</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>Path of the docker executable</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>true</td>
+		            <td></td>
+		            <td>If set to false, detect will attempt to run docker even if it cannot find a docker path.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>A saved docker image - must be a .tar file. For detect to run docker either this property or detect.docker.image must be set.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">General</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td>true</td>
+		            <td></td>
+		            <td>If true, Detect will fail if there are any issues found in the configuration.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>false</td>
+		            <td></td>
+		            <td>If true, detect will always exit with code 0.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Go</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>Path of the Go Dep executable</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>false</td>
+		            <td></td>
+		            <td>If set to true, we will attempt to run 'init' and 'ensure' which can modify your development environment.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Gradle</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>Gradle build command</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>The names of the dependency configurations to exclude</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>The names of the projects to exclude</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>The names of the dependency configurations to include</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>The names of the projects to include</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>The path to the directory containing the air gap dependencies for the gradle inspector</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>The respository gradle should use to look for the gradle inspector</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>latest</td>
+		            <td></td>
+		            <td>Version of the Gradle Inspector</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>Path of the Gradle executable</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Hex</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>The path of the rebar3 executable</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Hub configuration</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>Hub API Token</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>false</td>
+		            <td></td>
+		            <td>This can disable any Hub communication - if true, Detect will not upload BDIO files, it will not check policies, and it will not download and install the signature scanner.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>Hub password</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>Proxy host</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>Comma separated list of host patterns that should not use the proxy</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>Ntlm Proxy domain</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>Ntlm Proxy workstation</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>Proxy password</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>Proxy port</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>Proxy username</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>120</td>
+		            <td></td>
+		            <td>Time to wait for rest connections to complete</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>false</td>
+		            <td></td>
+		            <td>If true, automatically trust the certificate for the current run of Detect only</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>URL of the Hub server</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>Hub username</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>false</td>
+		            <td></td>
+		            <td>If true, during initialization Detect will check for Hub connectivity and exit with status code 0 if it cannot connect.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>false</td>
+		            <td></td>
+		            <td>Test the connection to the Hub with the current configuration</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Logging</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td>false</td>
+		            <td></td>
+		            <td>If true, the default behavior of printing your configuration properties at startup will be suppressed.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>false</td>
+		            <td></td>
+		            <td>If true, the default behavior of printing the Detect Results will be suppressed.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>INFO</td>
+		            <td>ALL, TRACE, DEBUG, INFO, WARN, ERROR, FATAL, OFF</td>
+		            <td>The logging level of Detect</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Maven</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>Maven build command</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>The names of the module to exclude</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>The names of the module to include</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>The path of the Maven executable</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>The name of the dependency scope to include</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Npm</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td>true</td>
+		            <td></td>
+		            <td>Set this value to false if you would like to exclude your dev dependencies when ran</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>The path of the node executable that is used by Npm</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>The path of the Npm executable</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Nuget</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>The path to the Nuget.Config file to supply to the nuget exe</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>The names of the projects in a solution to exclude</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>false</td>
+		            <td></td>
+		            <td>If true errors will be logged and then ignored.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>The names of the projects in a solution to include (overrides exclude)</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>The path to the directory containing the nuget inspector nupkg</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>IntegrationNugetInspector</td>
+		            <td></td>
+		            <td>Name of the Nuget Inspector</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>latest</td>
+		            <td></td>
+		            <td>Version of the Nuget Inspector</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>https://www.nuget.org/api/v2/</td>
+		            <td></td>
+		            <td>The source for nuget packages</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>The path of the Nuget executable</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Packagist</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td>true</td>
+		            <td></td>
+		            <td>Set this value to false if you would like to exclude your dev requires dependencies when ran</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Paths</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>Path of the bash executable</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>The output directory for all bdio files. If not set, the bdio files will be in a 'bdio' subdirectory of the output path.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>false</td>
+		            <td></td>
+		            <td>If true, the bom tool search will continue to look for bom tools to the maximum search depth, even if they applied earlier in the path.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>0</td>
+		            <td></td>
+		            <td>Depth from source paths to search for files to determine if a bom tool applies.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>A comma-separated list of directory names to exclude from the bom tool search.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>true</td>
+		            <td></td>
+		            <td>If true, the bom tool search will exclude the default directory names.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>Output path</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>The bom tool to choose when multiple bom tool types are found and one needs to be chosen for project name and version.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>true</td>
+		            <td></td>
+		            <td>If set to false we will not automatically resolve the '~/' prefix in a mac or linux path to the user's home directory.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>The output directory for all scan files. If not set, the scan files will be in a 'scan' subdirectory of the output path.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>3</td>
+		            <td></td>
+		            <td>Depth from source paths to search for files.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>Source path to inspect</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Pear</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td>false</td>
+		            <td></td>
+		            <td>Set to true if you would like to include only required packages</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>The path of the pear executable</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Pip</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>Override for pip inspector to find your project</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>The path of the requirements.txt file</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Policy check</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td></td>
+		            <td>ALL, BLOCKER, CRITICAL, MAJOR, MINOR, TRIVIAL</td>
+		            <td>A comma-separated list of policy violation severities that will fail detect. If this is not set, detect will not fail due to policy violations.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Project info</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td>300000</td>
+		            <td></td>
+		            <td>Timeout for response from the hub regarding your project (i.e. risk reports and policy check). When changing this value, keep in mind the checking of policies might have to wait for a new scan to process which can take some time.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>If set, this will aggregate all the BOMs to create a single BDIO file with the name provided.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>An override for the name detect will use for the code location it creates. If supplied and multiple code locations are found, detect will append an index to each code location name.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>text</td>
+		            <td></td>
+		            <td>The scheme to use when the package managers can not determine a version, either 'text' or 'timestamp'</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>Default Detect Version</td>
+		            <td></td>
+		            <td>The text to use as the default project version</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>yyyy-MM-dd\'T\'HH:mm:ss.SSS</td>
+		            <td></td>
+		            <td>The timestamp format to use as the default project version</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>false</td>
+		            <td></td>
+		            <td>When set to true, a Black Duck notices report in text form will be created in your source directory</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>.</td>
+		            <td></td>
+		            <td>The output directory for notices report. Default is the source directory</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>A prefix to the name of the codelocations created by Detect. Useful for running against the same projects on multiple machines.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>A suffix to the name of the codelocations created by Detect.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>false</td>
+		            <td></td>
+		            <td>If set to true, unmaps all other code locations mapped to the project version produced by the current run of Detect.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>If project description is specified, your project version will be created with this description.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>true</td>
+		            <td></td>
+		            <td>An override for the Project level matches.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>An override for the name to use for the Hub project. If not supplied, detect will attempt to use the tools to figure out a reasonable project name. If that fails, the final part of the directory path where the inspection is taking place will be used.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td>1, 2, 3, 4, 5</td>
+		            <td>If a hub project tier is specified, your project will be created with this tier.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>External</td>
+		            <td>EXTERNAL, SAAS, INTERNAL, OPENSOURCE</td>
+		            <td>An override for the Project Version distribution</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>An override for the version to use for the Hub project. If not supplied, detect will attempt to use the tools to figure out a reasonable version name. If that fails, the current date will be used.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>If project version notes are specified, your project version will be created with these notes.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>Development</td>
+		            <td>PLANNING, DEVELOPMENT, RELEASED, DEPRECATED, ARCHIVED</td>
+		            <td>An override for the Project Version phase.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>false</td>
+		            <td></td>
+		            <td>If set to true, will update the Project Version with the configured properties. See detailed help for more information.</td>
+		            <td>When set to true, the following properties will be updated on the Project. Project tier (detect.project.tier) and Project Level Adjustments (detect.project.level.adjustments).
+ The following properties will also be updated on the Version. Version notes (detect.project.version.notes), phase (detect.project.version.phase), distribution (detect.project.version.distribution)</td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>false</td>
+		            <td></td>
+		            <td>When set to true, a Black Duck risk report in PDF form will be created</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>.</td>
+		            <td></td>
+		            <td>The output directory for risk report in PDF. Default is the source directory</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Python</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>The path of the Python executable</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>false</td>
+		            <td></td>
+		            <td>If true will use Python 3 if available on class path</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Sbt</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>The names of the sbt configurations to exclude</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>The names of the sbt configurations to include</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Signature scanner</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>Additional arguments to use when running the Hub signature scanner.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>false</td>
+		            <td></td>
+		            <td>Set to true to disable the Hub Signature Scanner.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>false</td>
+		            <td></td>
+		            <td>If set to true, the signature scanner results will not be uploaded to the Hub and the scanner results will be written to disk.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>node_modules</td>
+		            <td></td>
+		            <td>Comma separated list of file name patterns to exclude from the signature scan.</td>
+		            <td>Detect will recursively search within the scan targets for files/directories that match these file name patterns and will create the corresponding exclusion patterns for the signature scanner.
+These patterns will be added to the patterns provided by detect.hub.signature.scanner.exclusion.patterns</td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>Enables you to specify sub-directories to exclude from scans</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>If this url is set, an attempt will be made to use it to download the signature scanner. The server url provided must respect the Hub's urls for different operating systems.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>4096</td>
+		            <td></td>
+		            <td>The memory for the scanner to use.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>To use a local signature scanner, set its location with this property. This will be the path where the signature scanner was unzipped. This will likely look similar to /some/path/scan.cli-x.y.z</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>1</td>
+		            <td></td>
+		            <td>The number of scans to run in parallel, defaults to 1, but if you specify -1, the number of processors on the machine will be used.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>These paths and only these paths will be scanned.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>false</td>
+		            <td></td>
+		            <td>If set to true, the signature scanner will, if supported by your Hub version, run in snippet scanning mode.</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+        		<tr class="noBorder">
+            		<td colspan="6" class="noBorder"></td>
+	        </tr>
+	        <tr>
+	            <th colspan="6" class="groupHeader">Yarn</th>
+	        </tr>
+	        <tr>
+	            <th>Property Name</th>
+	            <th>Default</th>
+	            <th>Acceptable Values</th>	            
+	            <th>Description</th>
+	            <th>Detailed Description</th>
+	            <th>Deprecation</th>
+	        </tr>
+		        <tr>
+		            <td></td>
+		            <td></td>
+		            <td>The path of the Yarn executable</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+		        <tr>
+		            <td>false</td>
+		            <td></td>
+		            <td>Set this to true to only scan production dependencies</td>
+		            <td></td>
+		            <td><b><b/></td>
+		        </tr>
+    </table>
+</body>
+
+</html>
