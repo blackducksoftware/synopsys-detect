@@ -25,8 +25,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.pear;
 
 import java.io.File;
 
-import org.springframework.stereotype.Component;
-
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
@@ -43,7 +41,7 @@ import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
 public class PearCliBomTool extends BomTool {
-    public static final String PACKAGE_XML_FILENAME= "package.xml";
+    public static final String PACKAGE_XML_FILENAME = "package.xml";
 
     private final DetectFileFinder fileFinder;
     private final StandardExecutableFinder standardExecutableFinder;
@@ -52,7 +50,7 @@ public class PearCliBomTool extends BomTool {
     private File pearExe;
 
     public PearCliBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final StandardExecutableFinder standardExecutableFinder, final PearCliExtractor pearCliExtractor) {
-        super(environment);
+        super(environment, "Pear Cli", BomToolGroupType.PEAR, BomToolType.PEAR_CLI);
         this.fileFinder = fileFinder;
         this.standardExecutableFinder = standardExecutableFinder;
         this.pearCliExtractor = pearCliExtractor;
@@ -60,7 +58,7 @@ public class PearCliBomTool extends BomTool {
 
     @Override
     public BomToolResult applicable() {
-        final File PEAR= fileFinder.findFile(environment.getDirectory(), PACKAGE_XML_FILENAME);
+        final File PEAR = fileFinder.findFile(environment.getDirectory(), PACKAGE_XML_FILENAME);
         if (PEAR == null) {
             return new FileNotFoundBomToolResult(PACKAGE_XML_FILENAME);
         }
@@ -83,21 +81,5 @@ public class PearCliBomTool extends BomTool {
     public Extraction extract(final ExtractionId extractionId) {
         return pearCliExtractor.extract(environment.getDirectory(), pearExe);
     }
-
-    @Override
-    public String getName() {
-        return "Pear Cli";
-    }
-
-    @Override
-    public BomToolGroupType getBomToolGroupType() {
-        return BomToolGroupType.PEAR;
-    }
-
-    @Override
-    public BomToolType getBomToolType() {
-        return BomToolType.PEAR_CLI;
-    }
-
 
 }

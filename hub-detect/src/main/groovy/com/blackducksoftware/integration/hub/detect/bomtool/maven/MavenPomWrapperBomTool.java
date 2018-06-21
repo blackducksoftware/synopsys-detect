@@ -25,8 +25,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.maven;
 
 import java.io.File;
 
-import org.springframework.stereotype.Component;
-
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
@@ -49,7 +47,7 @@ public class MavenPomWrapperBomTool extends BomTool {
     private String mavenExe;
 
     public MavenPomWrapperBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final MavenExecutableFinder mavenExecutableFinder, final MavenCliExtractor mavenCliExtractor) {
-        super(environment);
+        super(environment, "Pom wrapper file", BomToolGroupType.MAVEN, BomToolType.MAVEN_POM_WRAPPER_CLI);
         this.fileFinder = fileFinder;
         this.mavenExecutableFinder = mavenExecutableFinder;
         this.mavenCliExtractor = mavenCliExtractor;
@@ -66,7 +64,7 @@ public class MavenPomWrapperBomTool extends BomTool {
     }
 
     @Override
-    public BomToolResult extractable(){
+    public BomToolResult extractable() {
         mavenExe = mavenExecutableFinder.findMaven(environment);
 
         if (mavenExe == null) {
@@ -80,21 +78,5 @@ public class MavenPomWrapperBomTool extends BomTool {
     public Extraction extract(final ExtractionId extractionId) {
         return mavenCliExtractor.extract(environment.getDirectory(), mavenExe);
     }
-
-    @Override
-    public String getName() {
-        return "Pom wrapper file";
-    }
-
-    @Override
-    public BomToolGroupType getBomToolGroupType() {
-        return BomToolGroupType.MAVEN;
-    }
-
-    @Override
-    public BomToolType getBomToolType() {
-        return BomToolType.MAVEN_POM_WRAPPER_CLI;
-    }
-
 
 }

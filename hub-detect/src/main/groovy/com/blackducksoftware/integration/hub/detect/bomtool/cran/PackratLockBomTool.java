@@ -25,8 +25,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.cran;
 
 import java.io.File;
 
-import org.springframework.stereotype.Component;
-
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
@@ -47,7 +45,7 @@ public class PackratLockBomTool extends BomTool {
     File packratlock;
 
     public PackratLockBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final PackratLockExtractor packratLockExtractor) {
-        super(environment);
+        super(environment, "Packrat Lock", BomToolGroupType.CRAN, BomToolType.PACKRAT_LOCK);
         this.fileFinder = fileFinder;
         this.packratLockExtractor = packratLockExtractor;
     }
@@ -63,28 +61,13 @@ public class PackratLockBomTool extends BomTool {
     }
 
     @Override
-    public BomToolResult extractable(){
+    public BomToolResult extractable() {
         return new PassedBomToolResult();
     }
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
         return packratLockExtractor.extract(environment.getDirectory(), packratlock);
-    }
-
-    @Override
-    public String getName() {
-        return "Packrat Lock";
-    }
-
-    @Override
-    public BomToolGroupType getBomToolGroupType() {
-        return BomToolGroupType.CRAN;
-    }
-
-    @Override
-    public BomToolType getBomToolType() {
-        return BomToolType.PACKRAT_LOCK;
     }
 
 }

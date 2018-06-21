@@ -25,8 +25,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.npm;
 
 import java.io.File;
 
-import org.springframework.stereotype.Component;
-
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
@@ -43,10 +41,11 @@ public class NpmPackageLockBomTool extends BomTool {
 
     private final DetectFileFinder fileFinder;
     private final NpmLockfileExtractor npmLockfileExtractor;
+
     private File lockfile;
 
     public NpmPackageLockBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final NpmLockfileExtractor npmLockfileExtractor) {
-        super(environment);
+        super(environment, "Package Lock", BomToolGroupType.NPM, BomToolType.NPM_PACKAGELOCK);
         this.fileFinder = fileFinder;
         this.npmLockfileExtractor = npmLockfileExtractor;
     }
@@ -62,28 +61,13 @@ public class NpmPackageLockBomTool extends BomTool {
     }
 
     @Override
-    public BomToolResult extractable(){
+    public BomToolResult extractable() {
         return new PassedBomToolResult();
     }
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
         return npmLockfileExtractor.extract(environment.getDirectory(), lockfile);
-    }
-
-    @Override
-    public String getName() {
-        return "Package Lock";
-    }
-
-    @Override
-    public BomToolGroupType getBomToolGroupType() {
-        return BomToolGroupType.NPM;
-    }
-
-    @Override
-    public BomToolType getBomToolType() {
-        return BomToolType.NPM_PACKAGELOCK;
     }
 
 }

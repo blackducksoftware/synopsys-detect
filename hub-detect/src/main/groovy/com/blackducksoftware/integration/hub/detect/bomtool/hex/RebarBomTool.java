@@ -50,7 +50,7 @@ public class RebarBomTool extends BomTool {
     private File rebarExe;
 
     public RebarBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final StandardExecutableFinder standardExecutableFinder, final RebarExtractor rebarExtractor) {
-        super(environment);
+        super(environment, "Rebar Config", BomToolGroupType.HEX, BomToolType.REBAR);
         this.fileFinder = fileFinder;
         this.rebarExtractor = rebarExtractor;
         this.standardExecutableFinder = standardExecutableFinder;
@@ -80,21 +80,6 @@ public class RebarBomTool extends BomTool {
     @Override
     public Extraction extract(final ExtractionId extractionId) {
         return rebarExtractor.extract(environment.getDirectory(), rebarExe);
-    }
-
-    @Override
-    public String getName() {
-        return "Rebar Config";
-    }
-
-    @Override
-    public BomToolGroupType getBomToolGroupType() {
-        return BomToolGroupType.HEX;
-    }
-
-    @Override
-    public BomToolType getBomToolType() {
-        return BomToolType.REBAR;
     }
 
 }

@@ -56,7 +56,7 @@ public class GoCliBomTool extends BomTool {
     private String goDepInspector;
 
     public GoCliBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final StandardExecutableFinder standardExecutableFinder, final GoInspectorManager goInspectorManager, final GoDepExtractor goDepExtractor) {
-        super(environment);
+        super(environment, "Go Cli", BomToolGroupType.GO_DEP, BomToolType.GO_CLI);
         this.fileFinder = fileFinder;
         this.standardExecutableFinder = standardExecutableFinder;
         this.goInspectorManager = goInspectorManager;
@@ -92,20 +92,4 @@ public class GoCliBomTool extends BomTool {
     public Extraction extract(final ExtractionId extractionId) {
         return goDepExtractor.extract(environment.getDirectory(), goExe, goDepInspector);
     }
-
-    @Override
-    public String getName() {
-        return "Go Cli";
-    }
-
-    @Override
-    public BomToolGroupType getBomToolGroupType() {
-        return BomToolGroupType.GO_DEP;
-    }
-
-    @Override
-    public BomToolType getBomToolType() {
-        return BomToolType.GO_CLI;
-    }
-
 }

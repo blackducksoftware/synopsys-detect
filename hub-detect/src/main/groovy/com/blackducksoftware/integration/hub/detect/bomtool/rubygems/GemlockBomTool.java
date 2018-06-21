@@ -25,8 +25,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.rubygems;
 
 import java.io.File;
 
-import org.springframework.stereotype.Component;
-
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
@@ -47,7 +45,7 @@ public class GemlockBomTool extends BomTool {
     File gemlock;
 
     public GemlockBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final GemlockExtractor gemlockExtractor) {
-        super(environment);
+        super(environment, "Gemlock", BomToolGroupType.RUBYGEMS, BomToolType.GEMLOCK);
         this.fileFinder = fileFinder;
         this.gemlockExtractor = gemlockExtractor;
     }
@@ -63,28 +61,13 @@ public class GemlockBomTool extends BomTool {
     }
 
     @Override
-    public BomToolResult extractable(){
+    public BomToolResult extractable() {
         return new PassedBomToolResult();
     }
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
         return gemlockExtractor.extract(environment.getDirectory(), gemlock);
-    }
-
-    @Override
-    public String getName() {
-        return "Gemlock";
-    }
-
-    @Override
-    public BomToolGroupType getBomToolGroupType() {
-        return BomToolGroupType.RUBYGEMS;
-    }
-
-    @Override
-    public BomToolType getBomToolType() {
-        return BomToolType.GEMLOCK;
     }
 
 }

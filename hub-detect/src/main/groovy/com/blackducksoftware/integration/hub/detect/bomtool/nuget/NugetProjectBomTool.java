@@ -38,49 +38,49 @@ import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
 public class NugetProjectBomTool extends BomTool {
     static final String[] SUPPORTED_PROJECT_PATTERNS = new String[] {
-            //C#
+            // C#
             "*.csproj",
-            //F#
+            // F#
             "*.fsproj",
-            //VB
+            // VB
             "*.vbproj",
-            //Azure Stream Analytics
+            // Azure Stream Analytics
             "*.asaproj",
-            //Docker Compose
+            // Docker Compose
             "*.dcproj",
-            //Shared Projects
+            // Shared Projects
             "*.shproj",
-            //Cloud Computing
+            // Cloud Computing
             "*.ccproj",
-            //Fabric Application
+            // Fabric Application
             "*.sfproj",
-            //Node.js
+            // Node.js
             "*.njsproj",
-            //VC++
+            // VC++
             "*.vcxproj",
-            //VC++
+            // VC++
             "*.vcproj",
-            //.NET Core
+            // .NET Core
             "*.xproj",
-            //Python
+            // Python
             "*.pyproj",
-            //Hive
+            // Hive
             "*.hiveproj",
-            //Pig
+            // Pig
             "*.pigproj",
-            //JavaScript
+            // JavaScript
             "*.jsproj",
-            //U-SQL
+            // U-SQL
             "*.usqlproj",
-            //Deployment
+            // Deployment
             "*.deployproj",
-            //Common Project System Files
+            // Common Project System Files
             "*.msbuildproj",
-            //SQL
+            // SQL
             "*.sqlproj",
-            //SQL Project Files
+            // SQL Project Files
             "*.dbproj",
-            //RStudio
+            // RStudio
             "*.rproj"
     };
 
@@ -91,7 +91,7 @@ public class NugetProjectBomTool extends BomTool {
     private String inspectorExe;
 
     public NugetProjectBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final NugetInspectorManager nugetInspectorManager, final NugetInspectorExtractor nugetInspectorExtractor) {
-        super(environment);
+        super(environment, "Project", BomToolGroupType.NUGET, BomToolType.NUGET_PROJECT_INSPECTOR);
         this.fileFinder = fileFinder;
         this.nugetInspectorExtractor = nugetInspectorExtractor;
         this.nugetInspectorManager = nugetInspectorManager;
@@ -123,18 +123,4 @@ public class NugetProjectBomTool extends BomTool {
         return nugetInspectorExtractor.extract(environment.getDirectory(), inspectorExe, extractionId);
     }
 
-    @Override
-    public String getName() {
-        return "Project";
-    }
-
-    @Override
-    public BomToolGroupType getBomToolGroupType() {
-        return BomToolGroupType.NUGET;
-    }
-
-    @Override
-    public BomToolType getBomToolType() {
-        return BomToolType.NUGET_PROJECT_INSPECTOR;
-    }
 }

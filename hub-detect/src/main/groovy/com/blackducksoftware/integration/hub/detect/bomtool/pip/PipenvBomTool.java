@@ -25,8 +25,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.pip;
 
 import java.io.File;
 
-import org.springframework.stereotype.Component;
-
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
@@ -56,7 +54,7 @@ public class PipenvBomTool extends BomTool {
     File setupFile;
 
     public PipenvBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final PythonExecutableFinder pythonExecutableFinder, final PipenvExtractor pipenvExtractor) {
-        super(environment);
+        super(environment, "Pipenv Graph", BomToolGroupType.PIP, BomToolType.PIP_ENV);
         this.fileFinder = fileFinder;
         this.pipenvExtractor = pipenvExtractor;
         this.pythonExecutableFinder = pythonExecutableFinder;
@@ -95,21 +93,6 @@ public class PipenvBomTool extends BomTool {
     @Override
     public Extraction extract(final ExtractionId extractionId) {
         return pipenvExtractor.extract(environment.getDirectory(), pythonExe, pipenvExe, pipfileDotLock, pipfile, setupFile);
-    }
-
-    @Override
-    public String getName() {
-        return "Pipenv Graph";
-    }
-
-    @Override
-    public BomToolGroupType getBomToolGroupType() {
-        return BomToolGroupType.PIP;
-    }
-
-    @Override
-    public BomToolType getBomToolType() {
-        return BomToolType.PIP_ENV;
     }
 
 }

@@ -25,8 +25,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.go;
 
 import java.io.File;
 
-import org.springframework.stereotype.Component;
-
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
@@ -48,7 +46,7 @@ public class GoDepsBomTool extends BomTool {
     private File goDepsDirectory;
 
     public GoDepsBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final GoDepsExtractor goDepsExtractor) {
-        super(environment);
+        super(environment, "Go Deps Lock File", BomToolGroupType.GO_GODEP, BomToolType.GO_DEPS);
         this.fileFinder = fileFinder;
         this.goDepsExtractor = goDepsExtractor;
     }
@@ -64,28 +62,13 @@ public class GoDepsBomTool extends BomTool {
     }
 
     @Override
-    public BomToolResult extractable(){
+    public BomToolResult extractable() {
         return new PassedBomToolResult();
     }
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
         return goDepsExtractor.extract(environment.getDirectory(), goDepsDirectory);
-    }
-
-    @Override
-    public String getName() {
-        return "Go Deps Lock File";
-    }
-
-    @Override
-    public BomToolGroupType getBomToolGroupType() {
-        return BomToolGroupType.GO_GODEP;
-    }
-
-    @Override
-    public BomToolType getBomToolType() {
-        return BomToolType.GO_DEPS;
     }
 
 }

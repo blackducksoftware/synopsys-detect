@@ -26,7 +26,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.yarn;
 import java.io.File;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
@@ -54,14 +53,14 @@ public class YarnLockBomTool extends BomTool {
     File yarnlock;
     String yarnExe;
 
-    public YarnLockBomTool(final BomToolEnvironment environment, final boolean productionDependenciesOnly, final DetectFileFinder fileFinder, final StandardExecutableFinder standardExecutableFinder, final YarnLockExtractor yarnLockExtractor) {
-        super(environment);
+    public YarnLockBomTool(final BomToolEnvironment environment, final boolean productionDependenciesOnly, final DetectFileFinder fileFinder, final StandardExecutableFinder standardExecutableFinder,
+            final YarnLockExtractor yarnLockExtractor) {
+        super(environment, "Yarn Lock", BomToolGroupType.YARN, BomToolType.YARN_LOCK);
         this.fileFinder = fileFinder;
         this.yarnLockExtractor = yarnLockExtractor;
         this.standardExecutableFinder = standardExecutableFinder;
         this.productionDependenciesOnly = productionDependenciesOnly;
     }
-
 
     @Override
     public BomToolResult applicable() {
@@ -74,7 +73,7 @@ public class YarnLockBomTool extends BomTool {
     }
 
     @Override
-    public BomToolResult extractable() throws BomToolException{
+    public BomToolResult extractable() throws BomToolException {
         final File yarn = standardExecutableFinder.getExecutable(StandardExecutableType.YARN);
         if (yarn != null) {
             yarnExe = yarn.toString();
@@ -90,24 +89,6 @@ public class YarnLockBomTool extends BomTool {
     @Override
     public Extraction extract(final ExtractionId extractionId) {
         return yarnLockExtractor.extract(environment.getDirectory(), yarnlock, yarnExe);
-    }
-
-
-    @Override
-    public String getName() {
-        return "Yarn Lock";
-    }
-
-
-    @Override
-    public BomToolGroupType getBomToolGroupType() {
-        return BomToolGroupType.YARN;
-    }
-
-
-    @Override
-    public BomToolType getBomToolType() {
-        return BomToolType.YARN_LOCK;
     }
 
 }

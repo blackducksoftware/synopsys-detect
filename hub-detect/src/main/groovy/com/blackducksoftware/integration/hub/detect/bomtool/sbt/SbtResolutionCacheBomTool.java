@@ -25,8 +25,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.sbt;
 
 import java.io.File;
 
-import org.springframework.stereotype.Component;
-
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
@@ -45,7 +43,7 @@ public class SbtResolutionCacheBomTool extends BomTool {
     private final SbtResolutionCacheExtractor sbtResolutionCacheExtractor;
 
     public SbtResolutionCacheBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final SbtResolutionCacheExtractor sbtResolutionCacheExtractor) {
-        super(environment);
+        super(environment, "Build SBT", BomToolGroupType.SBT, BomToolType.SBT_RESOLUTION_CACHE);
         this.fileFinder = fileFinder;
         this.sbtResolutionCacheExtractor = sbtResolutionCacheExtractor;
     }
@@ -61,28 +59,13 @@ public class SbtResolutionCacheBomTool extends BomTool {
     }
 
     @Override
-    public BomToolResult extractable(){
+    public BomToolResult extractable() {
         return new PassedBomToolResult();
     }
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
         return sbtResolutionCacheExtractor.extract(environment.getDirectory());
-    }
-
-    @Override
-    public String getName() {
-        return "Build SBT";
-    }
-
-    @Override
-    public BomToolGroupType getBomToolGroupType() {
-        return BomToolGroupType.SBT;
-    }
-
-    @Override
-    public BomToolType getBomToolType() {
-        return BomToolType.SBT_RESOLUTION_CACHE;
     }
 
 }

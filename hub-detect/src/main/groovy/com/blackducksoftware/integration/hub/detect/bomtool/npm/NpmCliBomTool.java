@@ -50,7 +50,7 @@ public class NpmCliBomTool extends BomTool {
     private String npmExe;
 
     public NpmCliBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final NpmExecutableFinder npmExecutableFinder, final NpmCliExtractor npmCliExtractor) {
-        super(environment);
+        super(environment, "Npm Cli", BomToolGroupType.NPM, BomToolType.NPM_CLI);
         this.fileFinder = fileFinder;
         this.npmExecutableFinder = npmExecutableFinder;
         this.npmCliExtractor = npmCliExtractor;
@@ -84,21 +84,6 @@ public class NpmCliBomTool extends BomTool {
     @Override
     public Extraction extract(final ExtractionId extractionId) {
         return npmCliExtractor.extract(environment.getDirectory(), npmExe, extractionId);
-    }
-
-    @Override
-    public String getName() {
-        return "Npm Cli";
-    }
-
-    @Override
-    public BomToolGroupType getBomToolGroupType() {
-        return BomToolGroupType.NPM;
-    }
-
-    @Override
-    public BomToolType getBomToolType() {
-        return BomToolType.NPM_CLI;
     }
 
 }

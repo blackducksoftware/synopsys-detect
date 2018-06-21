@@ -25,8 +25,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.conda;
 
 import java.io.File;
 
-import org.springframework.stereotype.Component;
-
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
@@ -52,7 +50,7 @@ public class CondaCliBomTool extends BomTool {
     private File condaExe;
 
     public CondaCliBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final StandardExecutableFinder standardExecutableFinder, final CondaCliExtractor condaExtractor) {
-        super(environment);
+        super(environment, "Conda Cli", BomToolGroupType.CONDA, BomToolType.CONDA_CLI);
         this.fileFinder = fileFinder;
         this.condaExtractor = condaExtractor;
     }
@@ -81,21 +79,6 @@ public class CondaCliBomTool extends BomTool {
     @Override
     public Extraction extract(final ExtractionId extractionId) {
         return condaExtractor.extract(environment.getDirectory(), condaExe);
-    }
-
-    @Override
-    public String getName() {
-        return "Conda Cli";
-    }
-
-    @Override
-    public BomToolGroupType getBomToolGroupType() {
-        return BomToolGroupType.CONDA;
-    }
-
-    @Override
-    public BomToolType getBomToolType() {
-        return BomToolType.CONDA_CLI;
     }
 
 }

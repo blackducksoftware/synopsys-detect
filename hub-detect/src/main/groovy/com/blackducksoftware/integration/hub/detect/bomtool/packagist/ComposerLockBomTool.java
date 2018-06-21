@@ -25,8 +25,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.packagist;
 
 import java.io.File;
 
-import org.springframework.stereotype.Component;
-
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
@@ -49,7 +47,7 @@ public class ComposerLockBomTool extends BomTool {
     File composerJson;
 
     public ComposerLockBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final ComposerLockExtractor composerLockExtractor) {
-        super(environment);
+        super(environment, "Composer Lock", BomToolGroupType.PACKAGIST, BomToolType.COMPOSER_LOCK);
         this.fileFinder = fileFinder;
         this.composerLockExtractor = composerLockExtractor;
     }
@@ -70,28 +68,13 @@ public class ComposerLockBomTool extends BomTool {
     }
 
     @Override
-    public BomToolResult extractable(){
+    public BomToolResult extractable() {
         return new PassedBomToolResult();
     }
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
         return composerLockExtractor.extract(environment.getDirectory(), composerJson, composerLock);
-    }
-
-    @Override
-    public String getName() {
-        return "Composer Lock";
-    }
-
-    @Override
-    public BomToolGroupType getBomToolGroupType() {
-        return BomToolGroupType.PACKAGIST;
-    }
-
-    @Override
-    public BomToolType getBomToolType() {
-        return BomToolType.COMPOSER_LOCK;
     }
 
 }

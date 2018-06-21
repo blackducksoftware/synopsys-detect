@@ -26,7 +26,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.pip;
 import java.io.File;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
@@ -55,9 +54,9 @@ public class PipInspectorBomTool extends BomTool {
     File pipInspector;
     File setupFile;
 
-
-    public PipInspectorBomTool(final BomToolEnvironment environment, final String requirementFilePath, final DetectFileFinder fileFinder, final PythonExecutableFinder pythonExecutableFinder, final PipInspectorManager pipInspectorManager, final PipInspectorExtractor pipInspectorExtractor) {
-        super(environment);
+    public PipInspectorBomTool(final BomToolEnvironment environment, final String requirementFilePath, final DetectFileFinder fileFinder, final PythonExecutableFinder pythonExecutableFinder, final PipInspectorManager pipInspectorManager,
+            final PipInspectorExtractor pipInspectorExtractor) {
+        super(environment, "Pip Inspector", BomToolGroupType.PIP, BomToolType.PIP_INSPECTOR);
         this.fileFinder = fileFinder;
         this.pipInspectorExtractor = pipInspectorExtractor;
         this.pythonExecutableFinder = pythonExecutableFinder;
@@ -98,28 +97,9 @@ public class PipInspectorBomTool extends BomTool {
         return new PassedBomToolResult();
     }
 
-
     @Override
     public Extraction extract(final ExtractionId extractionId) {
         return pipInspectorExtractor.extract(environment.getDirectory(), pythonExe, pipInspector, setupFile, requirementFilePath);
-    }
-
-
-    @Override
-    public String getName() {
-        return "Pip Inspector";
-    }
-
-
-    @Override
-    public BomToolGroupType getBomToolGroupType() {
-        return BomToolGroupType.PIP;
-    }
-
-
-    @Override
-    public BomToolType getBomToolType() {
-        return BomToolType.PIP_INSPECTOR;
     }
 
 }

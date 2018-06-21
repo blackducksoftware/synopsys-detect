@@ -31,25 +31,46 @@ import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
 
 public abstract class BomTool {
     protected BomToolEnvironment environment;
+    private final String name;
+    private final BomToolGroupType bomToolGroupType;
+    private final BomToolType bomToolType;
 
-    public BomTool(final BomToolEnvironment environment) {
+    public BomTool(final BomToolEnvironment environment, final String name, final BomToolGroupType bomToolGroupType, final BomToolType bomToolType) {
         this.environment = environment;
+        this.name = name;
+        this.bomToolGroupType = bomToolGroupType;
+        this.bomToolType = bomToolType;
     }
 
-    //Applicable should be light-weight and should never throw an exception. Look for files, check properties, short and sweet.
+    /*
+     * Applicable should be light-weight and should never throw an exception. Look for files, check properties, short and sweet.
+     */
     public abstract BomToolResult applicable();
 
-    //Extractable may be as heavy as needed, and may (and sometimes should) fail. Make web requests, install inspectors or run executables.
+    /*
+     * Extractable may be as heavy as needed, and may (and sometimes should) fail. Make web requests, install inspectors or run executables.
+     */
     public abstract BomToolResult extractable() throws BomToolException;
 
-    //Perform the extraction.
+    /*
+     * Perform the extraction and try not to throw an exception. Instead return an extraction built with an exception.
+     */
     public abstract Extraction extract(ExtractionId extractionId);
 
-    public abstract String getName();
-    public abstract BomToolGroupType getBomToolGroupType();
-    public abstract BomToolType getBomToolType();
+    public String getName() {
+        return name;
+    }
+
+    public BomToolGroupType getBomToolGroupType() {
+        return bomToolGroupType;
+    }
+
+    public BomToolType getBomToolType() {
+        return bomToolType;
+    }
 
     public String getDescriptiveName() {
         return getBomToolGroupType().toString() + " - " + getName();
     }
+
 }

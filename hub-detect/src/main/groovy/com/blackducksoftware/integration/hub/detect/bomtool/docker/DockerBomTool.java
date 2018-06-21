@@ -58,7 +58,7 @@ public class DockerBomTool extends BomTool {
 
     public DockerBomTool(final BomToolEnvironment environment, final DockerInspectorManager dockerInspectorManager, final StandardExecutableFinder standardExecutableFinder, final boolean dockerPathRequired, final String suppliedDockerImage,
             final String suppliedDockerTar, final DockerExtractor dockerExtractor) {
-        super(environment);
+        super(environment, "Docker", BomToolGroupType.DOCKER, BomToolType.DOCKER);
         this.standardExecutableFinder = standardExecutableFinder;
         this.dockerExtractor = dockerExtractor;
         this.dockerPathRequired = dockerPathRequired;
@@ -105,20 +105,5 @@ public class DockerBomTool extends BomTool {
     public Extraction extract(final ExtractionId extractionId) {
         return dockerExtractor.extract(environment.getDirectory(), extractionId, bashExe, dockerExe, image, tar, dockerInspectorInfo);
     }
-
-    @Override
-    public String getName() {
-        return "Docker";
-    }
-
-    @Override
-    public BomToolGroupType getBomToolGroupType() {
-        return BomToolGroupType.DOCKER;
-    }
-
-    @Override
-    public BomToolType getBomToolType() {
-        return BomToolType.DOCKER;
-    }
-
+    
 }

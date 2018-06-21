@@ -25,8 +25,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.go;
 
 import java.io.File;
 
-import org.springframework.stereotype.Component;
-
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
@@ -48,7 +46,7 @@ public class GoVndrBomTool extends BomTool {
     private File vndrConfig;
 
     public GoVndrBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final GoVndrExtractor goVndrExtractor) {
-        super(environment);
+        super(environment, "Vendor Config", BomToolGroupType.GO_VNDR, BomToolType.GO_VNDR);
         this.fileFinder = fileFinder;
         this.goVndrExtractor = goVndrExtractor;
     }
@@ -64,7 +62,7 @@ public class GoVndrBomTool extends BomTool {
     }
 
     @Override
-    public BomToolResult extractable(){
+    public BomToolResult extractable() {
         return new PassedBomToolResult();
     }
 
@@ -73,18 +71,4 @@ public class GoVndrBomTool extends BomTool {
         return goVndrExtractor.extract(environment.getDirectory(), vndrConfig);
     }
 
-    @Override
-    public String getName() {
-        return "Vendor Config";
-    }
-
-    @Override
-    public BomToolGroupType getBomToolGroupType() {
-        return BomToolGroupType.GO_VNDR;
-    }
-
-    @Override
-    public BomToolType getBomToolType() {
-        return BomToolType.GO_VNDR;
-    }
 }
