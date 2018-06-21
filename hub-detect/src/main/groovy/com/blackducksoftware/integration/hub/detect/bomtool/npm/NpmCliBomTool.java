@@ -25,8 +25,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.npm;
 
 import java.io.File;
 
-import org.springframework.stereotype.Component;
-
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
@@ -41,7 +39,7 @@ import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
-public class NpmCliBomTool extends BomTool{
+public class NpmCliBomTool extends BomTool {
     public static final String NODE_MODULES = "node_modules";
     public static final String PACKAGE_JSON = "package.json";
 
@@ -52,11 +50,10 @@ public class NpmCliBomTool extends BomTool{
     private String npmExe;
 
     public NpmCliBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final NpmCliExtractor npmCliExtractor) {
-        super(environment);
+        super(environment, "Npm Cli", BomToolGroupType.NPM, BomToolType.NPM_CLI);
         this.fileFinder = fileFinder;
         this.npmCliExtractor = npmCliExtractor;
     }
-
 
     @Override
     public BomToolResult applicable() {
@@ -86,21 +83,6 @@ public class NpmCliBomTool extends BomTool{
     @Override
     public Extraction extract(final ExtractionId extractionId) {
         return npmCliExtractor.extract(environment.getDirectory(), npmExe, extractionId);
-    }
-
-    @Override
-    public String getName() {
-        return "Npm Cli";
-    }
-
-    @Override
-    public BomToolGroupType getBomToolGroupType() {
-        return BomToolGroupType.NPM;
-    }
-
-    @Override
-    public BomToolType getBomToolType() {
-        return BomToolType.NPM_CLI;
     }
 
 }

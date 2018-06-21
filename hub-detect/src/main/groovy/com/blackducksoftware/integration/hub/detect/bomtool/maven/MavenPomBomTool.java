@@ -38,7 +38,7 @@ import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
 public class MavenPomBomTool extends BomTool {
-    public static final String POM_WRAPPER_FILENAME= "pom.groovy";
+    public static final String POM_WRAPPER_FILENAME = "pom.groovy";
 
     private final DetectFileFinder fileFinder;
     private final MavenExecutableFinder mavenExecutableFinder;
@@ -47,7 +47,7 @@ public class MavenPomBomTool extends BomTool {
     private String mavenExe;
 
     public MavenPomBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final MavenExecutableFinder mavenExecutableFinder, final MavenCliExtractor mavenCliExtractor) {
-        super(environment);
+        super(environment, "Pom file", BomToolGroupType.MAVEN, BomToolType.MAVEN_POM_CLI);
         this.fileFinder = fileFinder;
         this.mavenExecutableFinder = mavenExecutableFinder;
         this.mavenCliExtractor = mavenCliExtractor;
@@ -64,7 +64,7 @@ public class MavenPomBomTool extends BomTool {
     }
 
     @Override
-    public BomToolResult extractable(){
+    public BomToolResult extractable() {
         mavenExe = mavenExecutableFinder.findMaven(environment);
 
         if (mavenExe == null) {
@@ -77,21 +77,6 @@ public class MavenPomBomTool extends BomTool {
     @Override
     public Extraction extract(final ExtractionId extractionId) {
         return mavenCliExtractor.extract(environment.getDirectory(), mavenExe);
-    }
-
-    @Override
-    public String getName() {
-        return "Pom file";
-    }
-
-    @Override
-    public BomToolGroupType getBomToolGroupType() {
-        return BomToolGroupType.MAVEN;
-    }
-
-    @Override
-    public BomToolType getBomToolType() {
-        return BomToolType.MAVEN_POM_CLI;
     }
 
 }

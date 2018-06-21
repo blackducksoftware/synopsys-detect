@@ -26,7 +26,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.docker;
 import java.io.File;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
@@ -57,8 +56,9 @@ public class DockerBomTool extends BomTool {
     private String tar;
     private DockerInspectorInfo dockerInspectorInfo;
 
-    public DockerBomTool(final BomToolEnvironment environment, final DockerInspectorManager dockerInspectorManager, final StandardExecutableFinder standardExecutableFinder, final boolean dockerPathRequired, final String suppliedDockerImage, final String suppliedDockerTar, final DockerExtractor dockerExtractor) {
-        super(environment);
+    public DockerBomTool(final BomToolEnvironment environment, final DockerInspectorManager dockerInspectorManager, final StandardExecutableFinder standardExecutableFinder, final boolean dockerPathRequired, final String suppliedDockerImage,
+            final String suppliedDockerTar, final DockerExtractor dockerExtractor) {
+        super(environment, "Docker", BomToolGroupType.DOCKER, BomToolType.DOCKER);
         this.standardExecutableFinder = standardExecutableFinder;
         this.dockerExtractor = dockerExtractor;
         this.dockerPathRequired = dockerPathRequired;
@@ -104,21 +104,6 @@ public class DockerBomTool extends BomTool {
     @Override
     public Extraction extract(final ExtractionId extractionId) {
         return dockerExtractor.extract(environment.getDirectory(), extractionId, bashExe, dockerExe, image, tar, dockerInspectorInfo);
-    }
-
-    @Override
-    public String getName() {
-        return "Docker";
-    }
-
-    @Override
-    public BomToolGroupType getBomToolGroupType() {
-        return BomToolGroupType.DOCKER;
-    }
-
-    @Override
-    public BomToolType getBomToolType() {
-        return BomToolType.DOCKER;
     }
 
 }

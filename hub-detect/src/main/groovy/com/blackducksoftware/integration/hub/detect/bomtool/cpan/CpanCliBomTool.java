@@ -25,8 +25,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.cpan;
 
 import java.io.File;
 
-import org.springframework.stereotype.Component;
-
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
@@ -53,7 +51,7 @@ public class CpanCliBomTool extends BomTool {
     private File cpanmExe;
 
     public CpanCliBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final StandardExecutableFinder standardExecutableFinder, final CpanCliExtractor cpanCliExtractor) {
-        super(environment);
+        super(environment, "Cpan Cli", BomToolGroupType.CPAN, BomToolType.CPAN_CLI);
         this.fileFinder = fileFinder;
         this.cpanCliExtractor = cpanCliExtractor;
         this.standardExecutableFinder = standardExecutableFinder;
@@ -75,7 +73,7 @@ public class CpanCliBomTool extends BomTool {
 
         if (cpan == null) {
             return new ExecutableNotFoundBomToolResult("cpan");
-        }else {
+        } else {
             cpanExe = cpan;
         }
 
@@ -83,7 +81,7 @@ public class CpanCliBomTool extends BomTool {
 
         if (cpanm == null) {
             return new ExecutableNotFoundBomToolResult("cpanm");
-        }else {
+        } else {
             cpanmExe = cpanm;
         }
 
@@ -94,21 +92,5 @@ public class CpanCliBomTool extends BomTool {
     public Extraction extract(final ExtractionId extractionId) {
         return cpanCliExtractor.extract(environment.getDirectory(), cpanExe, cpanmExe);
     }
-
-    @Override
-    public String getName() {
-        return "Cpan Cli";
-    }
-
-    @Override
-    public BomToolGroupType getBomToolGroupType() {
-        return BomToolGroupType.CPAN;
-    }
-
-    @Override
-    public BomToolType getBomToolType() {
-        return BomToolType.CPAN_CLI;
-    }
-
 
 }

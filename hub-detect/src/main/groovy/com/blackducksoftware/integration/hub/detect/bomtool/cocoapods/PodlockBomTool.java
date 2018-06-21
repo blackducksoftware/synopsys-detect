@@ -25,8 +25,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.cocoapods;
 
 import java.io.File;
 
-import org.springframework.stereotype.Component;
-
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
@@ -39,15 +37,15 @@ import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
 public class PodlockBomTool extends BomTool {
-
     private static final String PODFILE_LOCK_FILENAME = "Podfile.lock";
 
-    private File foundPodlock;
     private final DetectFileFinder fileFinder;
     private final PodlockExtractor podlockExtractor;
 
+    private File foundPodlock;
+
     public PodlockBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final PodlockExtractor podlockExtractor) {
-        super(environment);
+        super(environment, "Podlock", BomToolGroupType.COCOAPODS, BomToolType.PODLOCK);
         this.fileFinder = fileFinder;
         this.podlockExtractor = podlockExtractor;
     }
@@ -63,7 +61,7 @@ public class PodlockBomTool extends BomTool {
     }
 
     @Override
-    public BomToolResult extractable(){
+    public BomToolResult extractable() {
         return new PassedBomToolResult();
     }
 
@@ -71,21 +69,5 @@ public class PodlockBomTool extends BomTool {
     public Extraction extract(final ExtractionId extractionId) {
         return podlockExtractor.extract(environment.getDirectory(), foundPodlock);
     }
-
-    @Override
-    public String getName() {
-        return "Podlock";
-    }
-
-    @Override
-    public BomToolGroupType getBomToolGroupType() {
-        return BomToolGroupType.COCOAPODS;
-    }
-
-    @Override
-    public BomToolType getBomToolType() {
-        return BomToolType.PODLOCK;
-    }
-
 
 }

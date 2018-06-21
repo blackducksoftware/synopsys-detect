@@ -23,8 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.nuget;
 
-import org.springframework.stereotype.Component;
-
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
@@ -46,8 +44,9 @@ public class NugetSolutionBomTool extends BomTool {
     private final NugetInspectorExtractor nugetInspectorExtractor;
 
     private String inspectorExe;
+
     public NugetSolutionBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final NugetInspectorManager nugetInspectorManager, final NugetInspectorExtractor nugetInspectorExtractor) {
-        super(environment);
+        super(environment, "Solution", BomToolGroupType.NUGET, BomToolType.NUGET_SOLUTION_INSPECTOR);
         this.fileFinder = fileFinder;
         this.nugetInspectorExtractor = nugetInspectorExtractor;
         this.nugetInspectorManager = nugetInspectorManager;
@@ -78,21 +77,5 @@ public class NugetSolutionBomTool extends BomTool {
     public Extraction extract(final ExtractionId extractionId) {
         return nugetInspectorExtractor.extract(environment.getDirectory(), inspectorExe, extractionId);
     }
-
-    @Override
-    public String getName() {
-        return "Solution";
-    }
-
-    @Override
-    public BomToolGroupType getBomToolGroupType() {
-        return BomToolGroupType.NUGET;
-    }
-
-    @Override
-    public BomToolType getBomToolType() {
-        return BomToolType.NUGET_SOLUTION_INSPECTOR;
-    }
-
 
 }

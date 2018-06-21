@@ -25,8 +25,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.gradle;
 
 import java.io.File;
 
-import org.springframework.stereotype.Component;
-
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
@@ -44,16 +42,17 @@ import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 public class GradleInspectorBomTool extends BomTool {
     public static final String BUILD_GRADLE_FILENAME = "build.gradle";
 
-    DetectFileFinder fileFinder;
-    GradleExecutableFinder gradleFinder;
-    GradleInspectorManager gradleInspectorManager;
-    GradleInspectorExtractor gradleInspectorExtractor;
+    private final DetectFileFinder fileFinder;
+    private final GradleExecutableFinder gradleFinder;
+    private final GradleInspectorManager gradleInspectorManager;
+    private final GradleInspectorExtractor gradleInspectorExtractor;
 
     private String gradleExe;
     private String gradleInspector;
 
-    public GradleInspectorBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final GradleExecutableFinder gradleFinder, final GradleInspectorManager gradleInspectorManager, final GradleInspectorExtractor gradleInspectorExtractor) {
-        super(environment);
+    public GradleInspectorBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final GradleExecutableFinder gradleFinder, final GradleInspectorManager gradleInspectorManager,
+            final GradleInspectorExtractor gradleInspectorExtractor) {
+        super(environment, "Gradle Inspector", BomToolGroupType.GRADLE, BomToolType.GRADLE_INSPECTOR);
         this.fileFinder = fileFinder;
         this.gradleFinder = gradleFinder;
         this.gradleInspectorManager = gradleInspectorManager;
@@ -89,21 +88,5 @@ public class GradleInspectorBomTool extends BomTool {
     public Extraction extract(final ExtractionId extractionId) {
         return gradleInspectorExtractor.extract(environment.getDirectory(), gradleExe, gradleInspector, extractionId);
     }
-
-    @Override
-    public String getName() {
-        return "Gradle Inspector";
-    }
-
-    @Override
-    public BomToolGroupType getBomToolGroupType() {
-        return BomToolGroupType.GRADLE;
-    }
-
-    @Override
-    public BomToolType getBomToolType() {
-        return BomToolType.GRADLE_INSPECTOR;
-    }
-
 
 }

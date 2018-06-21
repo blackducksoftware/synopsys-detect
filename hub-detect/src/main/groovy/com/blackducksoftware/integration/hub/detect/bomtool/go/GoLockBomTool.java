@@ -25,8 +25,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.go;
 
 import java.io.File;
 
-import org.springframework.stereotype.Component;
-
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
@@ -57,7 +55,7 @@ public class GoLockBomTool extends BomTool {
     private String goDepInspector;
 
     public GoLockBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final StandardExecutableFinder standardExecutableFinder, final GoInspectorManager goInspectorManager, final GoDepExtractor goDepExtractor) {
-        super(environment);
+        super(environment, "Go Lock", BomToolGroupType.GO_DEP, BomToolType.GO_LOCK);
         this.fileFinder = fileFinder;
         this.goInspectorManager = goInspectorManager;
         this.standardExecutableFinder = standardExecutableFinder;
@@ -92,21 +90,6 @@ public class GoLockBomTool extends BomTool {
     @Override
     public Extraction extract(final ExtractionId extractionId) {
         return goDepExtractor.extract(environment.getDirectory(), goExe, goDepInspector);
-    }
-
-    @Override
-    public String getName() {
-        return "Go Lock";
-    }
-
-    @Override
-    public BomToolGroupType getBomToolGroupType() {
-        return BomToolGroupType.GO_DEP;
-    }
-
-    @Override
-    public BomToolType getBomToolType() {
-        return BomToolType.GO_LOCK;
     }
 
 }
