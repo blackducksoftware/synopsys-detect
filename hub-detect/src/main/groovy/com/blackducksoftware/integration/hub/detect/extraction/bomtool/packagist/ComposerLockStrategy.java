@@ -23,39 +23,46 @@
  */
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.packagist;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.io.File;
+
 import org.springframework.stereotype.Component;
 
+import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
+import com.blackducksoftware.integration.hub.detect.manager.result.search.ExtractionId;
+import com.blackducksoftware.integration.hub.detect.manager.result.search.StrategyType;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
-import com.blackducksoftware.integration.hub.detect.strategy.StrategySearchOptions;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
 import com.blackducksoftware.integration.hub.detect.strategy.result.FileNotFoundStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.PassedStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.StrategyResult;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
-@Component
-public class ComposerLockStrategy extends Strategy<ComposerLockContext, ComposerLockExtractor> {
+public class ComposerLockStrategy extends Strategy {
     public static final String COMPOSER_LOCK = "composer.lock";
     public static final String COMPOSER_JSON = "composer.json";
 
-    @Autowired
-    public DetectFileFinder fileFinder;
+    private final DetectFileFinder fileFinder;
+    private final ComposerLockExtractor composerLockExtractor;
 
-    public ComposerLockStrategy() {
-        super("Composer Lock", BomToolType.PACKAGIST, ComposerLockContext.class, ComposerLockExtractor.class, StrategySearchOptions.defaultNotNested());
+    File composerLock;
+    File composerJson;
+
+    public ComposerLockStrategy(final StrategyEnvironment environment, final DetectFileFinder fileFinder, final ComposerLockExtractor composerLockExtractor) {
+        super(environment);
+        this.fileFinder = fileFinder;
+        this.composerLockExtractor = composerLockExtractor;
     }
 
     @Override
-    public StrategyResult applicable(final StrategyEnvironment environment, final ComposerLockContext context) {
-        context.composerLock = fileFinder.findFile(environment.getDirectory(), COMPOSER_LOCK);
-        if (context.composerLock == null) {
+    public StrategyResult applicable() {
+        composerLock = fileFinder.findFile(environment.getDirectory(), COMPOSER_LOCK);
+        if (composerLock == null) {
             return new FileNotFoundStrategyResult(COMPOSER_LOCK);
         }
 
-        context.composerJson = fileFinder.findFile(environment.getDirectory(), COMPOSER_JSON);
-        if (context.composerJson == null) {
+        composerJson = fileFinder.findFile(environment.getDirectory(), COMPOSER_JSON);
+        if (composerJson == null) {
             return new FileNotFoundStrategyResult(COMPOSER_JSON);
         }
 
@@ -63,8 +70,28 @@ public class ComposerLockStrategy extends Strategy<ComposerLockContext, Composer
     }
 
     @Override
-    public StrategyResult extractable(final StrategyEnvironment environment, final ComposerLockContext context){
+    public StrategyResult extractable(){
         return new PassedStrategyResult();
+    }
+
+    @Override
+    public Extraction extract(final ExtractionId extractionId) {
+        return composerLockExtractor.extract(environment.getDirectory(), composerJson, composerLock);
+    }
+
+    @Override
+    public String getName() {
+        return "Composer Lock";
+    }
+
+    @Override
+    public BomToolType getBomToolType() {
+        return BomToolType.PACKAGIST;
+    }
+
+    @Override
+    public StrategyType getStrategyType() {
+        return StrategyType.COMPOSER_LOCK;
     }
 
 }

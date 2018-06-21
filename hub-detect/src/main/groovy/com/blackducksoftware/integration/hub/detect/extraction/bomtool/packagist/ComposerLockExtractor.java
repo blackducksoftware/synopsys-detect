@@ -23,6 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.packagist;
 
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.FileUtils;
@@ -32,21 +33,19 @@ import org.springframework.stereotype.Component;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.packagist.parse.PackagistParseResult;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.packagist.parse.PackagistParser;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extractor;
 
 @Component
-public class ComposerLockExtractor extends Extractor<ComposerLockContext> {
+public class ComposerLockExtractor {
 
     @Autowired
     PackagistParser packagistParser;
 
-    @Override
-    public Extraction extract(final ComposerLockContext context) {
+    public Extraction extract(final File directory, final File composerJson, final File composerLock) {
         try {
-            final String composerJsonText = FileUtils.readFileToString(context.composerJson, StandardCharsets.UTF_8);
-            final String composerLockText = FileUtils.readFileToString(context.composerLock, StandardCharsets.UTF_8);
+            final String composerJsonText = FileUtils.readFileToString(composerJson, StandardCharsets.UTF_8);
+            final String composerLockText = FileUtils.readFileToString(composerLock, StandardCharsets.UTF_8);
 
-            final PackagistParseResult result = packagistParser.getDependencyGraphFromProject(context.directory.toString(), composerJsonText, composerLockText);
+            final PackagistParseResult result = packagistParser.getDependencyGraphFromProject(directory.toString(), composerJsonText, composerLockText);
 
             return new Extraction.Builder().success(result.codeLocation).projectName(result.projectName).projectVersion(result.projectVersion).build();
         } catch (final Exception e) {

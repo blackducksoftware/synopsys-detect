@@ -25,31 +25,33 @@ package com.blackducksoftware.integration.hub.detect.extraction.bomtool.sbt;
 
 import java.io.File;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
+import com.blackducksoftware.integration.hub.detect.manager.result.search.ExtractionId;
+import com.blackducksoftware.integration.hub.detect.manager.result.search.StrategyType;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
-import com.blackducksoftware.integration.hub.detect.strategy.StrategySearchOptions;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
 import com.blackducksoftware.integration.hub.detect.strategy.result.FileNotFoundStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.PassedStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.StrategyResult;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
-@Component
-public class SbtResolutionCacheStrategy extends Strategy<SbtResolutionCacheContext, SbtResolutionCacheExtractor> {
+public class SbtResolutionCacheStrategy extends Strategy {
     public static final String BUILD_SBT_FILENAME = "build.sbt";
 
-    @Autowired
-    public DetectFileFinder fileFinder;
+    private final DetectFileFinder fileFinder;
+    private final SbtResolutionCacheExtractor sbtResolutionCacheExtractor;
 
-    public SbtResolutionCacheStrategy() {
-        super("Build SBT", BomToolType.SBT, SbtResolutionCacheContext.class, SbtResolutionCacheExtractor.class, StrategySearchOptions.defaultNotNested());
+    public SbtResolutionCacheStrategy(final StrategyEnvironment environment, final DetectFileFinder fileFinder, final SbtResolutionCacheExtractor sbtResolutionCacheExtractor) {
+        super(environment);
+        this.fileFinder = fileFinder;
+        this.sbtResolutionCacheExtractor = sbtResolutionCacheExtractor;
     }
 
     @Override
-    public StrategyResult applicable(final StrategyEnvironment environment, final SbtResolutionCacheContext context) {
+    public StrategyResult applicable() {
         final File build = fileFinder.findFile(environment.getDirectory(), BUILD_SBT_FILENAME);
         if (build == null) {
             return new FileNotFoundStrategyResult(BUILD_SBT_FILENAME);
@@ -59,8 +61,28 @@ public class SbtResolutionCacheStrategy extends Strategy<SbtResolutionCacheConte
     }
 
     @Override
-    public StrategyResult extractable(final StrategyEnvironment environment, final SbtResolutionCacheContext context){
+    public StrategyResult extractable(){
         return new PassedStrategyResult();
+    }
+
+    @Override
+    public Extraction extract(final ExtractionId extractionId) {
+        return sbtResolutionCacheExtractor.extract(environment.getDirectory());
+    }
+
+    @Override
+    public String getName() {
+        return "Build SBT";
+    }
+
+    @Override
+    public BomToolType getBomToolType() {
+        return BomToolType.SBT;
+    }
+
+    @Override
+    public StrategyType getStrategyType() {
+        return StrategyType.SBT_RESOLUTION_CACHE;
     }
 
 }

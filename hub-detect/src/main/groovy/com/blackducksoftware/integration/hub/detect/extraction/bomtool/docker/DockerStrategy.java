@@ -23,16 +23,18 @@
  */
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.docker;
 
+import java.io.File;
+
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.extraction.model.StandardExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.extraction.model.StandardExecutableFinder.StandardExecutableType;
+import com.blackducksoftware.integration.hub.detect.manager.result.search.ExtractionId;
+import com.blackducksoftware.integration.hub.detect.manager.result.search.StrategyType;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
-import com.blackducksoftware.integration.hub.detect.strategy.StrategySearchOptions;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyException;
 import com.blackducksoftware.integration.hub.detect.strategy.result.ExecutableNotFoundStrategyResult;
@@ -40,32 +42,37 @@ import com.blackducksoftware.integration.hub.detect.strategy.result.InspectorNot
 import com.blackducksoftware.integration.hub.detect.strategy.result.PassedStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.PropertyInsufficientStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.StrategyResult;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
-@Component
-public class DockerStrategy extends Strategy<DockerContext, DockerExtractor> {
-    @Autowired
-    public DetectConfiguration detectConfiguration;
+public class DockerStrategy extends Strategy {
+    private final DockerInspectorManager dockerInspectorManager;
+    private final StandardExecutableFinder standardExecutableFinder;
+    private final DockerExtractor dockerExtractor;
+    private final boolean dockerPathRequired;
+    private final String suppliedDockerImage;
+    private final String suppliedDockerTar;
 
-    @Autowired
-    public DetectFileFinder fileFinder;
+    private File bashExe;
+    private File dockerExe;
+    private String image;
+    private String tar;
+    private DockerInspectorInfo dockerInspectorInfo;
 
-    @Autowired
-    public DockerInspectorManager dockerInspectorManager;
-
-    @Autowired
-    public StandardExecutableFinder standardExecutableFinder;
-
-    public DockerStrategy() {
-        super("Docker", BomToolType.DOCKER, DockerContext.class, DockerExtractor.class, StrategySearchOptions.defaultNotNested());
+    public DockerStrategy(final StrategyEnvironment environment, final DockerInspectorManager dockerInspectorManager, final StandardExecutableFinder standardExecutableFinder, final boolean dockerPathRequired, final String suppliedDockerImage, final String suppliedDockerTar, final DockerExtractor dockerExtractor) {
+        super(environment);
+        this.standardExecutableFinder = standardExecutableFinder;
+        this.dockerExtractor = dockerExtractor;
+        this.dockerPathRequired = dockerPathRequired;
+        this.dockerInspectorManager = dockerInspectorManager;
+        this.suppliedDockerImage = suppliedDockerImage;
+        this.suppliedDockerTar = suppliedDockerTar;
     }
 
     @Override
-    public StrategyResult applicable(final StrategyEnvironment environment, final DockerContext context) {
-        context.image = detectConfiguration.getDockerImage();
-        context.tar = detectConfiguration.getDockerTar();
+    public StrategyResult applicable() {
+        image = suppliedDockerImage;
+        tar = suppliedDockerTar;
 
-        if (StringUtils.isBlank(context.image) && StringUtils.isBlank(context.tar)) {
+        if (StringUtils.isBlank(image) && StringUtils.isBlank(tar)) {
             return new PropertyInsufficientStrategyResult();
         }
 
@@ -73,25 +80,45 @@ public class DockerStrategy extends Strategy<DockerContext, DockerExtractor> {
     }
 
     @Override
-    public StrategyResult extractable(final StrategyEnvironment environment, final DockerContext context) throws StrategyException {
-        context.bashExe = standardExecutableFinder.getExecutable(StandardExecutableType.BASH);
-        if (context.bashExe == null) {
+    public StrategyResult extractable() throws StrategyException {
+        bashExe = standardExecutableFinder.getExecutable(StandardExecutableType.BASH);
+        if (bashExe == null) {
             return new ExecutableNotFoundStrategyResult("bash");
         }
 
-        context.dockerExe = standardExecutableFinder.getExecutable(StandardExecutableType.DOCKER);
-        if (context.dockerExe == null) {
-            if (detectConfiguration.getDockerPathRequired()) {
+        dockerExe = standardExecutableFinder.getExecutable(StandardExecutableType.DOCKER);
+        if (dockerExe == null) {
+            if (dockerPathRequired) {
                 return new ExecutableNotFoundStrategyResult("docker");
             }
         }
 
-        context.dockerInspectorInfo = dockerInspectorManager.getDockerInspector(environment);
-        if (context.dockerInspectorInfo == null) {
+        dockerInspectorInfo = dockerInspectorManager.getDockerInspector(environment);
+        if (dockerInspectorInfo == null) {
             return new InspectorNotFoundStrategyResult("docker");
         }
 
         return new PassedStrategyResult();
+    }
+
+    @Override
+    public Extraction extract(final ExtractionId extractionId) {
+        return dockerExtractor.extract(environment.getDirectory(), extractionId, bashExe, dockerExe, image, tar, dockerInspectorInfo);
+    }
+
+    @Override
+    public String getName() {
+        return "Docker";
+    }
+
+    @Override
+    public BomToolType getBomToolType() {
+        return BomToolType.DOCKER;
+    }
+
+    @Override
+    public StrategyType getStrategyType() {
+        return StrategyType.DOCKER;
     }
 
 }

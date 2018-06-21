@@ -25,14 +25,15 @@ package com.blackducksoftware.integration.hub.detect.extraction.bomtool.hex;
 
 import java.io.File;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.extraction.model.StandardExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.extraction.model.StandardExecutableFinder.StandardExecutableType;
+import com.blackducksoftware.integration.hub.detect.manager.result.search.ExtractionId;
+import com.blackducksoftware.integration.hub.detect.manager.result.search.StrategyType;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
-import com.blackducksoftware.integration.hub.detect.strategy.StrategySearchOptions;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyException;
 import com.blackducksoftware.integration.hub.detect.strategy.result.ExecutableNotFoundStrategyResult;
@@ -41,22 +42,24 @@ import com.blackducksoftware.integration.hub.detect.strategy.result.PassedStrate
 import com.blackducksoftware.integration.hub.detect.strategy.result.StrategyResult;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
-@Component
-public class RebarStrategy extends Strategy<RebarContext, RebarExtractor> {
+public class RebarStrategy extends Strategy {
     public static final String REBAR_CONFIG = "rebar.config";
 
-    @Autowired
-    public DetectFileFinder fileFinder;
+    private final DetectFileFinder fileFinder;
+    private final StandardExecutableFinder standardExecutableFinder;
+    private final RebarExtractor rebarExtractor;
 
-    @Autowired
-    public StandardExecutableFinder standardExecutableFinder;
+    private File rebarExe;
 
-    public RebarStrategy() {
-        super("Rebar Config", BomToolType.HEX, RebarContext.class, RebarExtractor.class, StrategySearchOptions.defaultNotNested());
+    public RebarStrategy(final StrategyEnvironment environment, final DetectFileFinder fileFinder, final StandardExecutableFinder standardExecutableFinder, final RebarExtractor rebarExtractor) {
+        super(environment);
+        this.fileFinder = fileFinder;
+        this.rebarExtractor = rebarExtractor;
+        this.standardExecutableFinder = standardExecutableFinder;
     }
 
     @Override
-    public StrategyResult applicable(final StrategyEnvironment environment, final RebarContext context) {
+    public StrategyResult applicable() {
         final File rebar = fileFinder.findFile(environment.getDirectory(), REBAR_CONFIG);
         if (rebar == null) {
             return new FileNotFoundStrategyResult(REBAR_CONFIG);
@@ -66,14 +69,34 @@ public class RebarStrategy extends Strategy<RebarContext, RebarExtractor> {
     }
 
     @Override
-    public StrategyResult extractable(final StrategyEnvironment environment, final RebarContext context) throws StrategyException {
-        context.rebarExe = standardExecutableFinder.getExecutable(StandardExecutableType.REBAR3);
+    public StrategyResult extractable() throws StrategyException {
+        rebarExe = standardExecutableFinder.getExecutable(StandardExecutableType.REBAR3);
 
-        if (context.rebarExe == null) {
+        if (rebarExe == null) {
             return new ExecutableNotFoundStrategyResult("rebar");
         }
 
         return new PassedStrategyResult();
+    }
+
+    @Override
+    public Extraction extract(final ExtractionId extractionId) {
+        return rebarExtractor.extract(environment.getDirectory(), rebarExe);
+    }
+
+    @Override
+    public String getName() {
+        return "Rebar Config";
+    }
+
+    @Override
+    public BomToolType getBomToolType() {
+        return BomToolType.HEX;
+    }
+
+    @Override
+    public StrategyType getStrategyType() {
+        return StrategyType.REBAR;
     }
 
 }

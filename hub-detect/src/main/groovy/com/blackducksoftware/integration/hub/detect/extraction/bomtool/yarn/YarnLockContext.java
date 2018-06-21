@@ -28,6 +28,6 @@ import java.io.File;
 import com.blackducksoftware.integration.hub.detect.extraction.model.ExtractionContext;
 
 public class YarnLockContext extends ExtractionContext {
-    public File yarnlock;
-    public String yarnExe;
+    File yarnlock;
+    String yarnExe;
 }

@@ -23,6 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.conda;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,8 +40,6 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFac
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.conda.parse.CondaListParser;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extractor;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction.ExtractionResultType;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
@@ -48,7 +47,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOu
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 
 @Component
-public class CondaCliExtractor extends Extractor<CondaCliContext>{
+public class CondaCliExtractor {
     private final Logger logger = LoggerFactory.getLogger(CondaCliExtractor.class);
 
     @Autowired
@@ -63,8 +62,7 @@ public class CondaCliExtractor extends Extractor<CondaCliContext>{
     @Autowired
     protected DetectConfiguration detectConfiguration;
 
-    @Override
-    public Extraction extract(final CondaCliContext context) {
+    public Extraction extract(final File directory, final File condaExe) {
         try {
             final List<String> condaListOptions = new ArrayList<>();
             condaListOptions.add("list");
@@ -73,17 +71,17 @@ public class CondaCliExtractor extends Extractor<CondaCliContext>{
                 condaListOptions.add(detectConfiguration.getCondaEnvironmentName());
             }
             condaListOptions.add("--json");
-            final Executable condaListExecutable = new Executable(context.directory, context.condaExe, condaListOptions);
+            final Executable condaListExecutable = new Executable(directory, condaExe, condaListOptions);
             final ExecutableOutput condaListOutput = executableRunner.execute(condaListExecutable);
 
             final String listJsonText = condaListOutput.getStandardOutput();
 
-            final ExecutableOutput condaInfoOutput = executableRunner.runExe(context.condaExe, "info", "--json");
+            final ExecutableOutput condaInfoOutput = executableRunner.runExe(condaExe, "info", "--json");
             final String infoJsonText = condaInfoOutput.getStandardOutput();
 
             final DependencyGraph dependencyGraph = condaListParser.parse(listJsonText, infoJsonText);
-            final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.ANACONDA, context.directory.toString());
-            final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolType.CONDA, context.directory.toString(), externalId, dependencyGraph).build();
+            final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.ANACONDA, directory.toString());
+            final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolType.CONDA, directory.toString(), externalId, dependencyGraph).build();
 
             return new Extraction.Builder().success(detectCodeLocation).build();
         } catch (final Exception e) {

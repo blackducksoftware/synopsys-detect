@@ -37,14 +37,12 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.go.parse.VndrParser;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extractor;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction.ExtractionResultType;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.google.gson.Gson;
 
 @Component
-public class GoVndrExtractor  extends Extractor<GoVndrContext> {
+public class GoVndrExtractor {
 
     @Autowired
     Gson gson;
@@ -52,17 +50,14 @@ public class GoVndrExtractor  extends Extractor<GoVndrContext> {
     @Autowired
     ExternalIdFactory externalIdFactory;
 
-    @Override
-    public Extraction extract(final GoVndrContext context) {
+    public Extraction extract(final File directory, final File vndrConfig) {
         try {
-            final File sourceDirectory = context.directory;
-
             final VndrParser vndrParser = new VndrParser(externalIdFactory);
-            final List<String> venderConfContents = Files.readAllLines(context.vndrConfig.toPath(), StandardCharsets.UTF_8);
+            final List<String> venderConfContents = Files.readAllLines(vndrConfig.toPath(), StandardCharsets.UTF_8);
             final DependencyGraph dependencyGraph = vndrParser.parseVendorConf(venderConfContents);
-            final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.GOLANG, context.directory.toString());
+            final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.GOLANG, directory.toString());
 
-            final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolType.GO_VNDR, sourceDirectory.toString(), externalId, dependencyGraph).build();
+            final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolType.GO_VNDR, directory.toString(), externalId, dependencyGraph).build();
             return new Extraction.Builder().success(codeLocation).build();
         }catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();

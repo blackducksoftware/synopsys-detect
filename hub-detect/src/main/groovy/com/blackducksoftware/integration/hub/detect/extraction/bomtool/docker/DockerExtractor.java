@@ -48,8 +48,8 @@ import com.blackducksoftware.integration.hub.bdio.model.SimpleBdioDocument;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extractor;
 import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner;
+import com.blackducksoftware.integration.hub.detect.manager.result.search.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
@@ -63,7 +63,7 @@ import com.blackducksoftware.integration.util.ResourceUtil;
 import com.google.gson.Gson;
 
 @Component
-public class DockerExtractor extends Extractor<DockerContext> {
+public class DockerExtractor {
     public static final String TAR_FILENAME_PATTERN = "*.tar.gz";
     public static final String DEPENDENCIES_PATTERN = "*bdio.jsonld";
 
@@ -96,33 +96,32 @@ public class DockerExtractor extends Extractor<DockerContext> {
     @Autowired
     HubSignatureScanner hubSignatureScanner;
 
-    @Override
-    public Extraction extract(final DockerContext context) {
+    public Extraction extract(final File directory, final ExtractionId extractionId, final File bashExe, final File dockerExe, final String image, final String tar, final DockerInspectorInfo dockerInspectorInfo) {
         try {
             String imageArgument = null;
             String imagePiece = null;
-            if (StringUtils.isNotBlank(context.tar)) {
-                final File dockerTarFile = new File(context.tar);
+            if (StringUtils.isNotBlank(tar)) {
+                final File dockerTarFile = new File(tar);
                 imageArgument = String.format("--docker.tar=%s", dockerTarFile.getCanonicalPath());
                 imagePiece = detectFileFinder.extractFinalPieceFromPath(dockerTarFile.getCanonicalPath());
-            } else if (StringUtils.isNotBlank(context.image)) {
-                imagePiece = context.image;
-                imageArgument = String.format("--docker.image=%s", context.image);
+            } else if (StringUtils.isNotBlank(image)) {
+                imagePiece = image;
+                imageArgument = String.format("--docker.image=%s", image);
             }
 
             if (StringUtils.isBlank(imageArgument) || StringUtils.isBlank(imagePiece)) {
                 return new Extraction.Builder().failure("No docker image found.").build();
             } else {
-                return executeDocker(context, imageArgument, imagePiece, context.tar, context.directory, context.dockerExe, context.bashExe, context.dockerInspectorInfo);
+                return executeDocker(extractionId, imageArgument, imagePiece, tar, directory, dockerExe, bashExe, dockerInspectorInfo);
             }
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
     }
 
-    private Map<String, String> createEnvironmentVariables(final DockerContext context, final File dockerExe) throws IOException {
+    private Map<String, String> createEnvironmentVariables(final String dockerInspectorVersion, final File dockerExe) throws IOException {
         final Map<String, String> environmentVariables = new HashMap<>();
-        dockerProperties.populateEnvironmentVariables(context, environmentVariables, dockerExe);
+        dockerProperties.populateEnvironmentVariables(dockerInspectorVersion, environmentVariables, dockerExe);
         return environmentVariables;
     }
 
@@ -143,15 +142,20 @@ public class DockerExtractor extends Extractor<DockerContext> {
         }
     }
 
-    private Extraction executeDocker(final DockerContext context, final String imageArgument, final String imagePiece, final String dockerTarFilePath, final File directory, final File dockerExe, final File bashExe,
+    private Extraction executeDocker(final ExtractionId extractionId, final String imageArgument, final String imagePiece, final String dockerTarFilePath, final File directory, final File dockerExe, final File bashExe,
             final DockerInspectorInfo dockerInspectorInfo)
-            throws FileNotFoundException, IOException, ExecutableRunnerException {
+                    throws FileNotFoundException, IOException, ExecutableRunnerException {
 
-        final File outputDirectory = detectFileManager.getOutputDirectory(context);
-        final File dockerPropertiesFile = detectFileManager.getOutputFile(context, "application.properties");
+        final File outputDirectory = detectFileManager.getOutputDirectory(extractionId);
+        final File dockerPropertiesFile = detectFileManager.getOutputFile(extractionId, "application.properties");
         dockerProperties.populatePropertiesFile(dockerPropertiesFile, outputDirectory);
 
-        final Map<String, String> environmentVariables = createEnvironmentVariables(context, dockerExe);
+        String dockerInspectorVersion = "";
+        if (null != dockerInspectorInfo) {
+            // we want to get the resolved Docker inspector version, if Detect was able to determine a version
+            dockerInspectorVersion = dockerInspectorInfo.version;
+        }
+        final Map<String, String> environmentVariables = createEnvironmentVariables(dockerInspectorVersion, dockerExe);
 
         final List<String> dockerArguments = new ArrayList<>();
         // The -c is a bash option, the following String is the command we want to run

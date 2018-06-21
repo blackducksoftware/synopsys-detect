@@ -23,35 +23,40 @@
  */
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.go.strategy;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.io.File;
+
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.extraction.bomtool.go.GoVndrContext;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.go.GoVndrExtractor;
+import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
+import com.blackducksoftware.integration.hub.detect.manager.result.search.ExtractionId;
+import com.blackducksoftware.integration.hub.detect.manager.result.search.StrategyType;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
-import com.blackducksoftware.integration.hub.detect.strategy.StrategySearchOptions;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
 import com.blackducksoftware.integration.hub.detect.strategy.result.FileNotFoundStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.PassedStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.StrategyResult;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
-@Component
-public class GoVndrStrategy extends Strategy<GoVndrContext, GoVndrExtractor> {
+public class GoVndrStrategy extends Strategy {
     public static final String VNDR_CONF_FILENAME = "vendor.conf";
 
-    @Autowired
-    public DetectFileFinder fileFinder;
+    private final DetectFileFinder fileFinder;
+    private final GoVndrExtractor goVndrExtractor;
 
-    public GoVndrStrategy() {
-        super("Vendor Config", BomToolType.GO_VNDR, GoVndrContext.class, GoVndrExtractor.class, StrategySearchOptions.defaultNotNested());
+    private File vndrConfig;
+
+    public GoVndrStrategy(final StrategyEnvironment environment, final DetectFileFinder fileFinder, final GoVndrExtractor goVndrExtractor) {
+        super(environment);
+        this.fileFinder = fileFinder;
+        this.goVndrExtractor = goVndrExtractor;
     }
 
     @Override
-    public StrategyResult applicable(final StrategyEnvironment environment, final GoVndrContext context) {
-        context.vndrConfig = fileFinder.findFile(environment.getDirectory(), VNDR_CONF_FILENAME);
-        if (context.vndrConfig == null) {
+    public StrategyResult applicable() {
+        vndrConfig = fileFinder.findFile(environment.getDirectory(), VNDR_CONF_FILENAME);
+        if (vndrConfig == null) {
             return new FileNotFoundStrategyResult(VNDR_CONF_FILENAME);
         }
 
@@ -59,8 +64,27 @@ public class GoVndrStrategy extends Strategy<GoVndrContext, GoVndrExtractor> {
     }
 
     @Override
-    public StrategyResult extractable(final StrategyEnvironment environment, final GoVndrContext context){
+    public StrategyResult extractable(){
         return new PassedStrategyResult();
     }
 
+    @Override
+    public Extraction extract(final ExtractionId extractionId) {
+        return goVndrExtractor.extract(environment.getDirectory(), vndrConfig);
+    }
+
+    @Override
+    public String getName() {
+        return "Vendor Config";
+    }
+
+    @Override
+    public BomToolType getBomToolType() {
+        return BomToolType.GO_VNDR;
+    }
+
+    @Override
+    public StrategyType getStrategyType() {
+        return StrategyType.GO_VNDR;
+    }
 }

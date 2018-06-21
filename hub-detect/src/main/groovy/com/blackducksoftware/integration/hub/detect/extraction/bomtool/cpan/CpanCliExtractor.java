@@ -23,6 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.cpan;
 
+import java.io.File;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -37,15 +38,13 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFac
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.cpan.parse.CpanPackager;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extractor;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction.ExtractionResultType;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 
 @Component
-public class CpanCliExtractor extends Extractor<CpanCliContext>{
+public class CpanCliExtractor {
     private final Logger logger = LoggerFactory.getLogger(CpanCliExtractor.class);
 
     @Autowired
@@ -60,18 +59,17 @@ public class CpanCliExtractor extends Extractor<CpanCliContext>{
     @Autowired
     protected DetectConfiguration detectConfiguration;
 
-    @Override
-    public Extraction extract(final CpanCliContext context) {
+    public Extraction extract(final File directory, final File cpanExe, final File cpanmExe) {
         try {
-            final ExecutableOutput cpanListOutput = executableRunner.runExe(context.cpanExe, "-l");
+            final ExecutableOutput cpanListOutput = executableRunner.runExe(cpanExe, "-l");
             final List<String> listText = cpanListOutput.getStandardOutputAsList();
 
-            final ExecutableOutput showdepsOutput = executableRunner.runExe(context.cpanmExe, "--showdeps", ".");
+            final ExecutableOutput showdepsOutput = executableRunner.runExe(cpanmExe, "--showdeps", ".");
             final List<String> showdeps = showdepsOutput.getStandardOutputAsList();
 
             final DependencyGraph dependencyGraph = cpanPackager.makeDependencyGraph(listText, showdeps);
-            final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.CPAN, context.directory.toString());
-            final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolType.CPAN, context.directory.toString(), externalId, dependencyGraph).build();
+            final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.CPAN, directory.toString());
+            final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolType.CPAN, directory.toString(), externalId, dependencyGraph).build();
             return new Extraction.Builder().success(detectCodeLocation).build();
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();

@@ -25,15 +25,15 @@ package com.blackducksoftware.integration.hub.detect.extraction.bomtool.conda;
 
 import java.io.File;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.extraction.model.StandardExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.extraction.model.StandardExecutableFinder.StandardExecutableType;
+import com.blackducksoftware.integration.hub.detect.manager.result.search.ExtractionId;
+import com.blackducksoftware.integration.hub.detect.manager.result.search.StrategyType;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
-import com.blackducksoftware.integration.hub.detect.strategy.StrategySearchOptions;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyException;
 import com.blackducksoftware.integration.hub.detect.strategy.result.ExecutableNotFoundStrategyResult;
@@ -42,25 +42,23 @@ import com.blackducksoftware.integration.hub.detect.strategy.result.PassedStrate
 import com.blackducksoftware.integration.hub.detect.strategy.result.StrategyResult;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
-@Component
-public class CondaCliStrategy extends Strategy<CondaCliContext, CondaCliExtractor> {
+public class CondaCliStrategy extends Strategy {
     public static final String ENVIRONEMNT_YML = "environment.yml";
 
-    @Autowired
-    public DetectFileFinder fileFinder;
+    private final DetectFileFinder fileFinder;
+    private StandardExecutableFinder standardExecutableFinder;
+    private final CondaCliExtractor condaExtractor;
 
-    @Autowired
-    public StandardExecutableFinder standardExecutableFinder;
+    private File condaExe;
 
-    @Autowired
-    public DetectConfiguration detectConfiguration;
-
-    public CondaCliStrategy() {
-        super("Conda Cli", BomToolType.CONDA, CondaCliContext.class, CondaCliExtractor.class, StrategySearchOptions.defaultNotNested());
+    public CondaCliStrategy(final StrategyEnvironment environment, final DetectFileFinder fileFinder, final StandardExecutableFinder standardExecutableFinder, final CondaCliExtractor condaExtractor) {
+        super(environment);
+        this.fileFinder = fileFinder;
+        this.condaExtractor = condaExtractor;
     }
 
     @Override
-    public StrategyResult applicable(final StrategyEnvironment environment, final CondaCliContext context) {
+    public StrategyResult applicable() {
         final File ymlFile = fileFinder.findFile(environment.getDirectory(), ENVIRONEMNT_YML);
         if (ymlFile == null) {
             return new FileNotFoundStrategyResult(ENVIRONEMNT_YML);
@@ -70,16 +68,34 @@ public class CondaCliStrategy extends Strategy<CondaCliContext, CondaCliExtracto
     }
 
     @Override
-    public StrategyResult extractable(final StrategyEnvironment environment, final CondaCliContext context) throws StrategyException {
-        final File conda = standardExecutableFinder.getExecutable(StandardExecutableType.CONDA);
+    public StrategyResult extractable() throws StrategyException {
+        condaExe = standardExecutableFinder.getExecutable(StandardExecutableType.CONDA);
 
-        if (conda == null) {
+        if (condaExe == null) {
             return new ExecutableNotFoundStrategyResult("conda");
-        } else {
-            context.condaExe = conda;
         }
 
         return new PassedStrategyResult();
+    }
+
+    @Override
+    public Extraction extract(final ExtractionId extractionId) {
+        return condaExtractor.extract(environment.getDirectory(), condaExe);
+    }
+
+    @Override
+    public String getName() {
+        return "Conda Cli";
+    }
+
+    @Override
+    public BomToolType getBomToolType() {
+        return BomToolType.CONDA;
+    }
+
+    @Override
+    public StrategyType getStrategyType() {
+        return StrategyType.CONDA_CLI;
     }
 
 }

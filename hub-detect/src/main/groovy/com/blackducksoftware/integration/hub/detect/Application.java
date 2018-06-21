@@ -61,7 +61,6 @@ import com.blackducksoftware.integration.hub.detect.interactive.reader.ScannerIn
 import com.blackducksoftware.integration.hub.detect.manager.DetectPhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.manager.DetectProjectManager;
 import com.blackducksoftware.integration.hub.detect.model.DetectProject;
-import com.blackducksoftware.integration.hub.detect.strategy.StrategyManager;
 import com.blackducksoftware.integration.hub.detect.summary.DetectSummary;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.log.SilentLogger;
@@ -116,9 +115,6 @@ public class Application implements ApplicationRunner {
 
     @Autowired
     private ArgumentStateParser argumentStateParser;
-
-    @Autowired
-    private StrategyManager strategyManager;
 
     private ExitCodeType exitCodeType = ExitCodeType.SUCCESS;
 
@@ -209,8 +205,6 @@ public class Application implements ApplicationRunner {
                 detectPhoneHomeManager.init(hubServiceWrapper.createPhoneHomeService());
                 detectPhoneHomeManager.startPhoneHome();
             }
-
-            strategyManager.init();
 
             final DetectProject detectProject = detectProjectManager.createDetectProject();
             logger.info("Project Name: " + detectProject.getProjectName());

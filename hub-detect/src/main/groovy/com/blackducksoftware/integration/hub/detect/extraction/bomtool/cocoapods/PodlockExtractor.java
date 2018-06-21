@@ -23,6 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.cocoapods;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
@@ -36,13 +37,11 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.cocoapods.parse.CocoapodsPackager;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extractor;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction.ExtractionResultType;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 
 @Component
-public class PodlockExtractor extends Extractor<PodlockContext> {
+public class PodlockExtractor {
 
     @Autowired
     CocoapodsPackager cocoapodsPackager;
@@ -50,11 +49,10 @@ public class PodlockExtractor extends Extractor<PodlockContext> {
     @Autowired
     protected ExternalIdFactory externalIdFactory;
 
-    @Override
-    public Extraction extract(final PodlockContext context) {
+    public Extraction extract(final File directory, final File podlock) {
         String podLockText;
         try {
-            podLockText = FileUtils.readFileToString(context.podlock, StandardCharsets.UTF_8);
+            podLockText = FileUtils.readFileToString(podlock, StandardCharsets.UTF_8);
         } catch (final IOException e) {
             return new Extraction.Builder().exception(e).build();
         }
@@ -66,9 +64,9 @@ public class PodlockExtractor extends Extractor<PodlockContext> {
             return new Extraction.Builder().exception(e).build();
         }
 
-        final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.COCOAPODS, context.directory.toString());
+        final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.COCOAPODS, directory.toString());
 
-        final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolType.COCOAPODS, context.directory.toString(), externalId, dependencyGraph).build();
+        final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolType.COCOAPODS, directory.toString(), externalId, dependencyGraph).build();
 
         return new Extraction.Builder().success(codeLocation).build();
     }

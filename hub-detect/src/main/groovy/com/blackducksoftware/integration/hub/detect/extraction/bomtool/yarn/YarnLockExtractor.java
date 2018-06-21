@@ -23,6 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.yarn;
 
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -42,7 +43,6 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFac
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.yarn.parse.YarnListParser;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extractor;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
@@ -51,7 +51,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOu
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 
 @Component
-public class YarnLockExtractor extends Extractor<YarnLockContext> {
+public class YarnLockExtractor {
     private final Logger logger = LoggerFactory.getLogger(YarnLockExtractor.class);
     public static final String OUTPUT_FILE = "detect_yarn_proj_dependencies.txt";
     public static final String ERROR_FILE = "detect_yarn_error.txt";
@@ -71,17 +71,16 @@ public class YarnLockExtractor extends Extractor<YarnLockContext> {
     @Autowired
     ExecutableRunner executableRunner;
 
-    @Override
-    public Extraction extract(final YarnLockContext context) {
+    public Extraction extract(final File directory, final File yarnlock, final String yarnExe) {
         try {
-            final List<String> yarnLockText = Files.readAllLines(context.yarnlock.toPath(), StandardCharsets.UTF_8);
+            final List<String> yarnLockText = Files.readAllLines(yarnlock.toPath(), StandardCharsets.UTF_8);
             final List<String> exeArgs = Stream.of("list", "--emoji", "false").collect(Collectors.toCollection(ArrayList::new));
 
             if (detectConfiguration.getYarnProductionDependenciesOnly()) {
                 exeArgs.add("--prod");
             }
 
-            final Executable yarnListExe = new Executable(context.directory, context.yarnExe, exeArgs);
+            final Executable yarnListExe = new Executable(directory, yarnExe, exeArgs);
             final ExecutableOutput executableOutput = executableRunner.execute(yarnListExe);
 
             if (executableOutput.getReturnCode() != 0) {
@@ -91,8 +90,8 @@ public class YarnLockExtractor extends Extractor<YarnLockContext> {
 
             final DependencyGraph dependencyGraph = yarnListParser.parseYarnList(yarnLockText, executableOutput.getStandardOutputAsList());
 
-            final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.NPM, context.directory.getCanonicalPath());
-            final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolType.YARN, context.directory.getCanonicalPath(), externalId, dependencyGraph).build();
+            final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.NPM, directory.getCanonicalPath());
+            final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolType.YARN, directory.getCanonicalPath(), externalId, dependencyGraph).build();
 
             return new Extraction.Builder().success(detectCodeLocation).build();
         } catch (final Exception e) {

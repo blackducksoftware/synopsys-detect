@@ -124,13 +124,13 @@ public class ExtractionSummaryReporter {
                 logger.info("\tCode locations: " + it.codeLocationsExtracted);
                 it.codeLocationNames.stream().forEach(name -> logger.info("\t\t" + name));
                 if (it.success.size() > 0) {
-                    logger.info("\tSuccess: " + it.success.stream().map(success -> success.strategy.getDescriptiveName()).collect(Collectors.joining(",")));
+                    logger.info("\tSuccess: " + it.success.stream().map(success -> success.strategy.getDescriptiveName()).collect(Collectors.joining(", ")));
                 }
                 if (it.failed.size() > 0) {
-                    logger.error("\tFailure: " + it.failed.stream().map(failed -> failed.strategy.getDescriptiveName()).collect(Collectors.joining(",")));
+                    logger.error("\tFailure: " + it.failed.stream().map(failed -> failed.strategy.getDescriptiveName()).collect(Collectors.joining(", ")));
                 }
                 if (it.exception.size() > 0) {
-                    logger.error("\tException: " + it.exception.stream().map(exception -> exception.strategy.getDescriptiveName()).collect(Collectors.joining(",")));
+                    logger.error("\tException: " + it.exception.stream().map(exception -> exception.strategy.getDescriptiveName()).collect(Collectors.joining(", ")));
                 }
             }
         });

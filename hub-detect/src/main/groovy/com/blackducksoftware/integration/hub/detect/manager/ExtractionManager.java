@@ -37,22 +37,16 @@ import com.blackducksoftware.integration.hub.detect.bomtool.search.report.Extrac
 import com.blackducksoftware.integration.hub.detect.bomtool.search.report.ExtractionSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.report.PreparationSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
-import com.blackducksoftware.integration.hub.detect.extraction.model.ExtractionContext;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extractor;
 import com.blackducksoftware.integration.hub.detect.extraction.model.StrategyEvaluation;
 import com.blackducksoftware.integration.hub.detect.manager.result.extraction.ExtractionResult;
+import com.blackducksoftware.integration.hub.detect.manager.result.search.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
-import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
 import com.blackducksoftware.integration.hub.detect.strategy.result.ExceptionStrategyResult;
 
 @Component
 public class ExtractionManager {
     private final Logger logger = LoggerFactory.getLogger(DetectProjectManager.class);
-
-    @Autowired
-    private List<Extractor> autowiredExtractors;
 
     @Autowired
     private PreparationSummaryReporter preparationSummaryReporter;
@@ -62,6 +56,8 @@ public class ExtractionManager {
 
     @Autowired
     private ExtractionReporter extractionReporter;
+
+    private int extractions = 0;
 
     private void extract(final List<StrategyEvaluation> results) {
         final List<StrategyEvaluation> extractable = results.stream().filter(result -> result.isExtractable()).collect(Collectors.toList());
@@ -81,7 +77,7 @@ public class ExtractionManager {
     private void prepare(final StrategyEvaluation result) {
         if (result.isApplicable()) {
             try {
-                result.extractable = result.strategy.extractable(result.environment, result.context);
+                result.extractable = result.strategy.extractable();
             } catch (final Exception e) {
                 result.extractable = new ExceptionStrategyResult(e);
             }
@@ -90,42 +86,16 @@ public class ExtractionManager {
 
     private void extract(final StrategyEvaluation result) {
         if (result.isExtractable()) {
-            extractionReporter.startedExtraction(result.strategy, result.context);
-            result.extraction = execute(result.strategy, result.context);
+            extractions++;
+            final ExtractionId extractionId = new ExtractionId(Integer.toString(extractions));
+            extractionReporter.startedExtraction(result.strategy, extractionId);
+            result.extraction = result.strategy.extract(extractionId);
             extractionReporter.endedExtraction(result.extraction);
         }
 
     }
 
-    private Extraction execute(final Strategy strategy, final ExtractionContext context) {
-        Extractor extractor = null;
-        for (final Extractor possibleExtractor : autowiredExtractors) {
-            if (possibleExtractor.getClass().equals(strategy.getExtractorClass())) {
-                extractor = possibleExtractor;
-            }
-        }
-
-        if (extractor == null) {
-            return new Extraction.Builder().failure("No extractor was found.").build();
-        }
-
-        Extraction result;
-        try {
-            result = extractor.extract(context);
-        } catch (final Exception e) {
-            result = new Extraction.Builder().exception(e).build();
-        }
-        return result;
-    }
-
-
-
     public ExtractionResult performExtractions(final List<StrategyEvaluation> strategyEvaluations) throws IntegrationException, DetectUserFriendlyException {
-
-        final float appliedInSource = strategyEvaluations.stream()
-                .filter(it -> it.isApplicable())
-                .filter(it -> it.environment.getDepth() == 0)
-                .count();
 
         prepare(strategyEvaluations);
 

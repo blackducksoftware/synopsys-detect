@@ -23,33 +23,39 @@
  */
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.cran;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.io.File;
+
 import org.springframework.stereotype.Component;
 
+import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
+import com.blackducksoftware.integration.hub.detect.manager.result.search.ExtractionId;
+import com.blackducksoftware.integration.hub.detect.manager.result.search.StrategyType;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
-import com.blackducksoftware.integration.hub.detect.strategy.StrategySearchOptions;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
 import com.blackducksoftware.integration.hub.detect.strategy.result.FileNotFoundStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.PassedStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.StrategyResult;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
-@Component
-public class PackratLockStrategy extends Strategy<PackratLockContext, PackratLockExtractor> {
+public class PackratLockStrategy extends Strategy {
     public static final String PACKRATLOCK = "packrat.lock";
 
-    @Autowired
-    public DetectFileFinder fileFinder;
+    private final DetectFileFinder fileFinder;
+    private final PackratLockExtractor packratLockExtractor;
 
-    public PackratLockStrategy() {
-        super("Packrat Lock", BomToolType.CRAN, PackratLockContext.class, PackratLockExtractor.class, StrategySearchOptions.defaultNotNested());
+    File packratlock;
+
+    public PackratLockStrategy(final StrategyEnvironment environment, final DetectFileFinder fileFinder, final PackratLockExtractor packratLockExtractor) {
+        super(environment);
+        this.fileFinder = fileFinder;
+        this.packratLockExtractor = packratLockExtractor;
     }
 
     @Override
-    public StrategyResult applicable(final StrategyEnvironment environment, final PackratLockContext context) {
-        context.packratlock = fileFinder.findFile(environment.getDirectory(), PACKRATLOCK);
-        if (context.packratlock == null) {
+    public StrategyResult applicable() {
+        packratlock = fileFinder.findFile(environment.getDirectory(), PACKRATLOCK);
+        if (packratlock == null) {
             return new FileNotFoundStrategyResult(PACKRATLOCK);
         }
 
@@ -57,8 +63,28 @@ public class PackratLockStrategy extends Strategy<PackratLockContext, PackratLoc
     }
 
     @Override
-    public StrategyResult extractable(final StrategyEnvironment environment, final PackratLockContext context){
+    public StrategyResult extractable(){
         return new PassedStrategyResult();
+    }
+
+    @Override
+    public Extraction extract(final ExtractionId extractionId) {
+        return packratLockExtractor.extract(environment.getDirectory(), packratlock);
+    }
+
+    @Override
+    public String getName() {
+        return "Packrat Lock";
+    }
+
+    @Override
+    public BomToolType getBomToolType() {
+        return BomToolType.CRAN;
+    }
+
+    @Override
+    public StrategyType getStrategyType() {
+        return StrategyType.PACKRAT_LOCK;
     }
 
 }

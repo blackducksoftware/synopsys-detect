@@ -25,15 +25,15 @@ package com.blackducksoftware.integration.hub.detect.extraction.bomtool.pear;
 
 import java.io.File;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.extraction.model.StandardExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.extraction.model.StandardExecutableFinder.StandardExecutableType;
+import com.blackducksoftware.integration.hub.detect.manager.result.search.ExtractionId;
+import com.blackducksoftware.integration.hub.detect.manager.result.search.StrategyType;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
-import com.blackducksoftware.integration.hub.detect.strategy.StrategySearchOptions;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyException;
 import com.blackducksoftware.integration.hub.detect.strategy.result.ExecutableNotFoundStrategyResult;
@@ -42,25 +42,24 @@ import com.blackducksoftware.integration.hub.detect.strategy.result.PassedStrate
 import com.blackducksoftware.integration.hub.detect.strategy.result.StrategyResult;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
-@Component
-public class PearCliStrategy extends Strategy<PearCliContext, PearCliExtractor> {
+public class PearCliStrategy extends Strategy {
     public static final String PACKAGE_XML_FILENAME= "package.xml";
 
-    @Autowired
-    public DetectFileFinder fileFinder;
+    private final DetectFileFinder fileFinder;
+    private final StandardExecutableFinder standardExecutableFinder;
+    private final PearCliExtractor pearCliExtractor;
 
-    @Autowired
-    public StandardExecutableFinder standardExecutableFinder;
+    private File pearExe;
 
-    @Autowired
-    public DetectConfiguration detectConfiguration;
-
-    public PearCliStrategy() {
-        super("Pear Cli", BomToolType.PEAR, PearCliContext.class, PearCliExtractor.class, StrategySearchOptions.defaultNotNested());
+    public PearCliStrategy(final StrategyEnvironment environment, final DetectFileFinder fileFinder, final StandardExecutableFinder standardExecutableFinder, final PearCliExtractor pearCliExtractor) {
+        super(environment);
+        this.fileFinder = fileFinder;
+        this.standardExecutableFinder = standardExecutableFinder;
+        this.pearCliExtractor = pearCliExtractor;
     }
 
     @Override
-    public StrategyResult applicable(final StrategyEnvironment environment, final PearCliContext context) {
+    public StrategyResult applicable() {
         final File PEAR= fileFinder.findFile(environment.getDirectory(), PACKAGE_XML_FILENAME);
         if (PEAR == null) {
             return new FileNotFoundStrategyResult(PACKAGE_XML_FILENAME);
@@ -70,14 +69,34 @@ public class PearCliStrategy extends Strategy<PearCliContext, PearCliExtractor> 
     }
 
     @Override
-    public StrategyResult extractable(final StrategyEnvironment environment, final PearCliContext context) throws StrategyException {
-        context.pearExe = standardExecutableFinder.getExecutable(StandardExecutableType.PEAR);
+    public StrategyResult extractable() throws StrategyException {
+        pearExe = standardExecutableFinder.getExecutable(StandardExecutableType.PEAR);
 
-        if (context.pearExe == null) {
+        if (pearExe == null) {
             return new ExecutableNotFoundStrategyResult("pear");
         }
 
         return new PassedStrategyResult();
+    }
+
+    @Override
+    public Extraction extract(final ExtractionId extractionId) {
+        return pearCliExtractor.extract(environment.getDirectory(), pearExe);
+    }
+
+    @Override
+    public String getName() {
+        return "Pear Cli";
+    }
+
+    @Override
+    public BomToolType getBomToolType() {
+        return BomToolType.PEAR;
+    }
+
+    @Override
+    public StrategyType getStrategyType() {
+        return StrategyType.PEAR_CLI;
     }
 
 

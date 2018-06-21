@@ -23,6 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.pip;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,14 +35,13 @@ import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.pip.parse.PipParseResult;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.pip.parse.PipenvGraphParser;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extractor;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
 @Component
-public class PipenvExtractor extends Extractor<PipenvContext> {
+public class PipenvExtractor {
     public static final String PIP_SEPARATOR = "==";
 
     @Autowired
@@ -53,22 +53,21 @@ public class PipenvExtractor extends Extractor<PipenvContext> {
     @Autowired
     private PipenvGraphParser pipenvTreeParser;
 
-    @Override
-    public Extraction extract(final PipenvContext context) {
+    public Extraction extract(final File directory, final String pythonExe, final String pipenvExe, final File pipfileDotLock, final File pipfile, final File setupFile) {
         Extraction extraction;
 
         try {
-            final String projectName = getProjectName(context);
-            final String projectVersionName = getProjectVersionName(context);
+            final String projectName = getProjectName(directory, pythonExe, pipenvExe, pipfileDotLock, pipfile, setupFile);
+            final String projectVersionName = getProjectVersionName(directory, pythonExe, pipenvExe, pipfileDotLock, pipfile, setupFile);
             final PipParseResult result;
 
-            final Executable pipenvRunPipFreeze = new Executable(context.directory, context.pipenvExe, Arrays.asList("run", "pip", "freeze"));
+            final Executable pipenvRunPipFreeze = new Executable(directory, pipenvExe, Arrays.asList("run", "pip", "freeze"));
             final ExecutableOutput pipFreezeOutput = executableRunner.execute(pipenvRunPipFreeze);
 
-            final Executable pipenvGraph = new Executable(context.directory, context.pipenvExe, Arrays.asList("graph", "--bare"));
+            final Executable pipenvGraph = new Executable(directory, pipenvExe, Arrays.asList("graph", "--bare"));
             final ExecutableOutput graphOutput = executableRunner.execute(pipenvGraph);
 
-            result = pipenvTreeParser.parse(projectName, projectVersionName, pipFreezeOutput.getStandardOutputAsList(), graphOutput.getStandardOutputAsList(), context.directory.toString());
+            result = pipenvTreeParser.parse(projectName, projectVersionName, pipFreezeOutput.getStandardOutputAsList(), graphOutput.getStandardOutputAsList(), directory.toString());
 
             if (result != null) {
                 extraction = new Extraction.Builder().success(result.codeLocation).projectName(result.projectName).projectVersion(result.projectVersion).build();
@@ -82,12 +81,12 @@ public class PipenvExtractor extends Extractor<PipenvContext> {
         return extraction;
     }
 
-    private String getProjectName(final PipenvContext context) throws ExecutableRunnerException {
+    private String getProjectName(final File directory, final String pythonExe, final String pipenvExe, final File pipfileDotLock, final File pipfile, final File setupFile) throws ExecutableRunnerException {
         String projectName = detectConfiguration.getPipProjectName();
 
-        if (StringUtils.isBlank(projectName) && context.setupFile != null && context.setupFile.exists()) {
-            final Executable findProjectNameExecutable = new Executable(context.directory, context.pythonExe, Arrays.asList(
-                    context.setupFile.getAbsolutePath(),
+        if (StringUtils.isBlank(projectName) && setupFile != null && setupFile.exists()) {
+            final Executable findProjectNameExecutable = new Executable(directory, pythonExe, Arrays.asList(
+                    setupFile.getAbsolutePath(),
                     "--name"));
             final List<String> output = executableRunner.execute(findProjectNameExecutable).getStandardOutputAsList();
             projectName = output.get(output.size() - 1).replace('_', '-').trim();
@@ -96,12 +95,12 @@ public class PipenvExtractor extends Extractor<PipenvContext> {
         return projectName;
     }
 
-    private String getProjectVersionName(final PipenvContext context) throws ExecutableRunnerException {
+    private String getProjectVersionName(final File directory, final String pythonExe, final String pipenvExe, final File pipfileDotLock, final File pipfile, final File setupFile) throws ExecutableRunnerException {
         String projectVersionName = detectConfiguration.getPipProjectVersionName();
 
-        if (StringUtils.isBlank(projectVersionName) && context.setupFile != null && context.setupFile.exists()) {
-            final Executable findProjectNameExecutable = new Executable(context.directory, context.pythonExe, Arrays.asList(
-                    context.setupFile.getAbsolutePath(),
+        if (StringUtils.isBlank(projectVersionName) && setupFile != null && setupFile.exists()) {
+            final Executable findProjectNameExecutable = new Executable(directory, pythonExe, Arrays.asList(
+                    setupFile.getAbsolutePath(),
                     "--version"));
             final List<String> output = executableRunner.execute(findProjectNameExecutable).getStandardOutputAsList();
             projectVersionName = output.get(output.size() - 1).trim();

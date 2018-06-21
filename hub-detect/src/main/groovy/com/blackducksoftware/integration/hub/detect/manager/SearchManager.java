@@ -25,7 +25,6 @@ package com.blackducksoftware.integration.hub.detect.manager;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -43,11 +42,10 @@ import com.blackducksoftware.integration.hub.detect.extraction.model.StrategyEva
 import com.blackducksoftware.integration.hub.detect.manager.result.search.SearchResult;
 import com.blackducksoftware.integration.hub.detect.manager.result.search.SearchResultBomToolFailed;
 import com.blackducksoftware.integration.hub.detect.manager.result.search.SearchResultSuccess;
+import com.blackducksoftware.integration.hub.detect.manager.result.search.StrategyFactory;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.search.BomToolFinder;
 import com.blackducksoftware.integration.hub.detect.search.BomToolFinderOptions;
-import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
-import com.blackducksoftware.integration.hub.detect.strategy.StrategyManager;
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
 
 @Component
@@ -58,7 +56,7 @@ public class SearchManager {
     private SearchSummaryReporter searchSummaryReporter;
 
     @Autowired
-    private StrategyManager strategyManager;
+    private StrategyFactory strategyFactory;
 
     @Autowired
     private DetectConfiguration detectConfiguration;
@@ -67,7 +65,6 @@ public class SearchManager {
     private DetectPhoneHomeManager detectPhoneHomeManager;
 
     private List<StrategyEvaluation> findApplicableBomTools(final File directory) throws BomToolException, DetectUserFriendlyException {
-        final List<Strategy> allStrategies = strategyManager.getAllStrategies();
         final List<String> excludedDirectories = detectConfiguration.getBomToolSearchDirectoryExclusions();
         final Boolean forceNestedSearch = detectConfiguration.getBomToolContinueSearch();
         final int maxDepth = detectConfiguration.getBomToolSearchDepth();
@@ -76,7 +73,7 @@ public class SearchManager {
 
         logger.info("Starting search for bom tools.");
         final BomToolFinder bomToolTreeWalker = new BomToolFinder();
-        return bomToolTreeWalker.findApplicableBomTools(new HashSet<>(allStrategies), directory, findOptions);
+        return bomToolTreeWalker.findApplicableBomTools(strategyFactory, directory, findOptions);
     }
 
     public SearchResult performSearch() throws DetectUserFriendlyException {

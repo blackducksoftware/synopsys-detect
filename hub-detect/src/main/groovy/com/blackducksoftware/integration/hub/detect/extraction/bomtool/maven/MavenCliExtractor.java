@@ -23,6 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.maven;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -37,7 +38,6 @@ import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.maven.parse.MavenCodeLocationPackager;
 import com.blackducksoftware.integration.hub.detect.extraction.bomtool.maven.parse.MavenParseResult;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extractor;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
@@ -45,7 +45,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOu
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 
 @Component
-public class MavenCliExtractor extends Extractor<MavenCliContext> {
+public class MavenCliExtractor {
 
     @Autowired
     protected ExecutableRunner executableRunner;
@@ -56,8 +56,7 @@ public class MavenCliExtractor extends Extractor<MavenCliContext> {
     @Autowired
     private DetectConfiguration detectConfiguration;
 
-    @Override
-    public Extraction extract(final MavenCliContext context) {
+    public Extraction extract(final File directory, final String mavenExe) {
         try {
             String mavenCommand = detectConfiguration.getMavenBuildCommand();
             if (StringUtils.isNotBlank(mavenCommand)) {
@@ -76,18 +75,23 @@ public class MavenCliExtractor extends Extractor<MavenCliContext> {
             }
             arguments.add("dependency:tree");
 
-            final Executable mvnExecutable = new Executable(context.directory, context.mavenExe, arguments);
+            final Executable mvnExecutable = new Executable(directory, mavenExe, arguments);
             final ExecutableOutput mvnOutput = executableRunner.execute(mvnExecutable);
 
             if (mvnOutput.getReturnCode() == 0) {
 
                 final String excludedModules = detectConfiguration.getMavenExcludedModuleNames();
                 final String includedModules = detectConfiguration.getMavenIncludedModuleNames();
-                final List<MavenParseResult> mavenResults = mavenCodeLocationPackager.extractCodeLocations(context.directory.toString(), mvnOutput.getStandardOutput(), excludedModules, includedModules);
+                final List<MavenParseResult> mavenResults = mavenCodeLocationPackager.extractCodeLocations(directory.toString(), mvnOutput.getStandardOutput(), excludedModules, includedModules);
 
-                final List<DetectCodeLocation> codeLocations = mavenResults.stream().map(it -> it.codeLocation).collect(Collectors.toList());
+                final List<DetectCodeLocation> codeLocations = mavenResults.stream()
+                        .map(it -> it.codeLocation)
+                        .collect(Collectors.toList());
 
-                final Optional<MavenParseResult> firstWithName = mavenResults.stream().filter(it -> StringUtils.isNoneBlank(it.projectName)).findFirst();
+                final Optional<MavenParseResult> firstWithName = mavenResults.stream()
+                        .filter(it -> StringUtils.isNoneBlank(it.projectName))
+                        .findFirst();
+
                 final Extraction.Builder builder = new Extraction.Builder().success(codeLocations);
                 if (firstWithName.isPresent()) {
                     builder.projectName(firstWithName.get().projectName);

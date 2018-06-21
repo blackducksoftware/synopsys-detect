@@ -25,13 +25,11 @@ package com.blackducksoftware.integration.hub.detect.extraction.bomtool.maven;
 
 import java.io.File;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
+import com.blackducksoftware.integration.hub.detect.manager.result.search.ExtractionId;
+import com.blackducksoftware.integration.hub.detect.manager.result.search.StrategyType;
 import com.blackducksoftware.integration.hub.detect.model.BomToolType;
 import com.blackducksoftware.integration.hub.detect.strategy.Strategy;
-import com.blackducksoftware.integration.hub.detect.strategy.StrategySearchOptions;
 import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
 import com.blackducksoftware.integration.hub.detect.strategy.result.ExecutableNotFoundStrategyResult;
 import com.blackducksoftware.integration.hub.detect.strategy.result.FileNotFoundStrategyResult;
@@ -39,26 +37,25 @@ import com.blackducksoftware.integration.hub.detect.strategy.result.PassedStrate
 import com.blackducksoftware.integration.hub.detect.strategy.result.StrategyResult;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
-@Component
-public class MavenPomStrategy extends Strategy<MavenCliContext, MavenCliExtractor> {
+public class MavenPomStrategy extends Strategy {
     public static final String POM_WRAPPER_FILENAME= "pom.groovy";
 
-    @Autowired
-    public DetectFileFinder fileFinder;
+    private final DetectFileFinder fileFinder;
+    private final MavenExecutableFinder mavenExecutableFinder;
+    private final MavenCliExtractor mavenCliExtractor;
 
-    @Autowired
-    public DetectConfiguration detectConfiguration;
+    private String mavenExe;
 
-    @Autowired
-    public MavenExecutableFinder mavenExecutableFinder;
-
-    public MavenPomStrategy() {
-        super("Pom file", BomToolType.MAVEN, MavenCliContext.class, MavenCliExtractor.class, StrategySearchOptions.defaultNotNested());
+    public MavenPomStrategy(final StrategyEnvironment environment, final DetectFileFinder fileFinder, final MavenExecutableFinder mavenExecutableFinder, final MavenCliExtractor mavenCliExtractor) {
+        super(environment);
+        this.fileFinder = fileFinder;
+        this.mavenExecutableFinder = mavenExecutableFinder;
+        this.mavenCliExtractor = mavenCliExtractor;
     }
 
     @Override
-    public StrategyResult applicable(final StrategyEnvironment environment, final MavenCliContext context) {
-        final File pom= fileFinder.findFile(environment.getDirectory(), POM_WRAPPER_FILENAME);
+    public StrategyResult applicable() {
+        final File pom = fileFinder.findFile(environment.getDirectory(), POM_WRAPPER_FILENAME);
         if (pom == null) {
             return new FileNotFoundStrategyResult(POM_WRAPPER_FILENAME);
         }
@@ -67,15 +64,34 @@ public class MavenPomStrategy extends Strategy<MavenCliContext, MavenCliExtracto
     }
 
     @Override
-    public StrategyResult extractable(final StrategyEnvironment environment, final MavenCliContext context){
-        context.mavenExe = mavenExecutableFinder.findMaven(environment);
+    public StrategyResult extractable(){
+        mavenExe = mavenExecutableFinder.findMaven(environment);
 
-        if (context.mavenExe == null) {
+        if (mavenExe == null) {
             return new ExecutableNotFoundStrategyResult("mvn");
         }
 
         return new PassedStrategyResult();
     }
 
+    @Override
+    public Extraction extract(final ExtractionId extractionId) {
+        return mavenCliExtractor.extract(environment.getDirectory(), mavenExe);
+    }
+
+    @Override
+    public String getName() {
+        return "Pom file";
+    }
+
+    @Override
+    public BomToolType getBomToolType() {
+        return BomToolType.MAVEN;
+    }
+
+    @Override
+    public StrategyType getStrategyType() {
+        return StrategyType.MAVEN_POM_CLI;
+    }
 
 }
