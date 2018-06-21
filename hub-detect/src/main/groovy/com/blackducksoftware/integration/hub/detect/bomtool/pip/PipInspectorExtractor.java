@@ -52,6 +52,7 @@ public class PipInspectorExtractor {
     private PipInspectorTreeParser pipInspectorTreeParser;
 
     public Extraction extract(final File directory, final String pythonExe, final File pipInspector, final File setupFile, final String requirementFilePath) {
+        Extraction extractionResult;
         try {
             final String projectName = getProjectName(directory, pythonExe, pipInspector, setupFile, requirementFilePath);
             final PipParseResult result;
@@ -59,10 +60,16 @@ public class PipInspectorExtractor {
             final String inspectorOutput = runInspector(directory, pythonExe, pipInspector, projectName, requirementFilePath);
             result = pipInspectorTreeParser.parse(inspectorOutput, directory.toString());
 
-            return new Extraction.Builder().success(result.codeLocation).projectName(result.projectName).projectVersion(result.projectVersion).build();
+            if (result == null) {
+                extractionResult = new Extraction.Builder().failure("The Pip Inspector tree parser returned null").build();
+            } else {
+                extractionResult = new Extraction.Builder().success(result.codeLocation).projectName(result.projectName).projectVersion(result.projectVersion).build();
+            }
         } catch (final Exception e) {
-            return new Extraction.Builder().exception(e).build();
+            extractionResult = new Extraction.Builder().exception(e).build();
         }
+
+        return extractionResult;
     }
 
     private String runInspector(final File sourceDirectory, final String pythonPath, final File inspectorScript, final String projectName, final String requirementsFilePath) throws ExecutableRunnerException {
@@ -84,13 +91,14 @@ public class PipInspectorExtractor {
 
     private String getProjectName(final File directory, final String pythonExe, final File pipInspector, final File setupFile, final String requirementFilePath) throws ExecutableRunnerException {
         String projectName = detectConfiguration.getPipProjectName();
-
-        if (setupFile != null && setupFile.exists() && StringUtils.isBlank(projectName)) {
-            final Executable findProjectNameExecutable = new Executable(directory, pythonExe, Arrays.asList(
-                    setupFile.getAbsolutePath(),
-                    "--name"));
-            final List<String> output = executableRunner.execute(findProjectNameExecutable).getStandardOutputAsList();
-            projectName = output.get(output.size() - 1).replace('_', '-').trim();
+        if (setupFile != null && setupFile.exists()) {
+            if (StringUtils.isBlank(projectName)) {
+                final Executable findProjectNameExecutable = new Executable(directory, pythonExe, Arrays.asList(
+                        setupFile.getAbsolutePath(),
+                        "--name"));
+                final List<String> output = executableRunner.execute(findProjectNameExecutable).getStandardOutputAsList();
+                projectName = output.get(output.size() - 1).replace('_', '-').trim();
+            }
         }
 
         return projectName;
