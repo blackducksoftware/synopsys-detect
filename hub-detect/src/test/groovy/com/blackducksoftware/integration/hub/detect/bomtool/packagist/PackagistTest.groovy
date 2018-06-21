@@ -5,8 +5,8 @@ import org.junit.Test
 
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
-import com.blackducksoftware.integration.hub.detect.extraction.bomtool.packagist.parse.PackagistParseResult
-import com.blackducksoftware.integration.hub.detect.extraction.bomtool.packagist.parse.PackagistParser
+import com.blackducksoftware.integration.hub.detect.bomtool.packagist.parse.PackagistParseResult
+import com.blackducksoftware.integration.hub.detect.bomtool.packagist.parse.PackagistParser
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 

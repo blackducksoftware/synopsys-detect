@@ -23,21 +23,21 @@
  */
 package com.blackducksoftware.integration.hub.detect.project;
 
-import com.blackducksoftware.integration.hub.detect.model.BomToolType;
+import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
 import com.blackducksoftware.integration.util.NameVersion;
 
 public class BomToolProjectInfo {
-    private final BomToolType bomToolType;
+    private final BomToolGroupType bomToolType;
     private final int depth;
     private final NameVersion nameVersion;
 
-    public BomToolProjectInfo(final BomToolType bomToolType, final int depth, final NameVersion nameVersion) {
+    public BomToolProjectInfo(final BomToolGroupType bomToolType, final int depth, final NameVersion nameVersion) {
         this.bomToolType = bomToolType;
         this.nameVersion = nameVersion;
         this.depth = depth;
     }
 
-    public BomToolType getBomToolType() {
+    public BomToolGroupType getBomToolType() {
         return bomToolType;
     }
 

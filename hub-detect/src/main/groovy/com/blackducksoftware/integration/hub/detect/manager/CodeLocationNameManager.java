@@ -32,7 +32,7 @@ import com.blackducksoftware.integration.hub.detect.codelocation.BomCodeLocation
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationType;
 import com.blackducksoftware.integration.hub.detect.codelocation.DockerCodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.codelocation.ScanCodeLocationNameService;
-import com.blackducksoftware.integration.hub.detect.model.BomToolType;
+import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 
 @Component
@@ -84,12 +84,12 @@ public class CodeLocationNameManager {
             final String prefix, final String suffix) {
 
         if (useCodeLocationOverride()) {
-            if (BomToolType.DOCKER == detectCodeLocation.getBomToolType()) {
+            if (BomToolGroupType.DOCKER == detectCodeLocation.getBomToolType()) {
                 return getNextCodeLocationOverrideName(CodeLocationType.DOCKER);
             } else {
                 return getNextCodeLocationOverrideName(CodeLocationType.BOM);
             }
-        } else if (BomToolType.DOCKER == detectCodeLocation.getBomToolType()) {
+        } else if (BomToolGroupType.DOCKER == detectCodeLocation.getBomToolType()) {
             return dockerCodeLocationNameService.createCodeLocationName(detectCodeLocation.getSourcePath(), projectName, projectVersionName, detectCodeLocation.getDockerImage(), detectCodeLocation.getBomToolType(), prefix, suffix);
         } else {
             return bomCodeLocationNameService.createCodeLocationName(detectSourcePath, detectCodeLocation.getSourcePath(), detectCodeLocation.getExternalId(), detectCodeLocation.getBomToolType(), prefix, suffix);

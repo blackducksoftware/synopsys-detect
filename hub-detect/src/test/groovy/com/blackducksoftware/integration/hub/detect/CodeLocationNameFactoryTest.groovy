@@ -19,7 +19,7 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.codelocation.BomCodeLocationNameService
 import com.blackducksoftware.integration.hub.detect.codelocation.ScanCodeLocationNameService
-import com.blackducksoftware.integration.hub.detect.model.BomToolType
+import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder
 
 class CodeLocationNameFactoryTest {
@@ -56,7 +56,7 @@ class CodeLocationNameFactoryTest {
 
         String prefix = ''
         String suffix = ''
-        String actual = bomCodeLocationNameFactory.createCodeLocationName(sourcePath, codeLocationPath, externalId, BomToolType.NPM, prefix, suffix)
+        String actual = bomCodeLocationNameFactory.createCodeLocationName(sourcePath, codeLocationPath, externalId, BomToolGroupType.NPM, prefix, suffix)
 
         assertEquals(expected, actual)
     }
@@ -74,7 +74,7 @@ class CodeLocationNameFactoryTest {
         String codeLocationPath = '/Users/ekerwin/Documents/source/integration/hub-common-rest/hub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-resthub-common-rest'
         String prefix = ''
         String suffix = ''
-        String actual = bomCodeLocationNameFactory.createCodeLocationName(sourcePath, codeLocationPath, externalId, BomToolType.NPM, prefix, suffix)
+        String actual = bomCodeLocationNameFactory.createCodeLocationName(sourcePath, codeLocationPath, externalId, BomToolGroupType.NPM, prefix, suffix)
 
 
         assertEquals(expected, actual)

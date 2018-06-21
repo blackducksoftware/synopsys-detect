@@ -33,7 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.model.BomToolType;
+import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.project.result.ArbitrarilyChosenProjectInfoResult;
 import com.blackducksoftware.integration.hub.detect.project.result.NoUniqueUnchosenProjectInfoResult;
 import com.blackducksoftware.integration.hub.detect.project.result.OneUniqueChosenProjectInfoResult;
@@ -47,7 +47,7 @@ import com.blackducksoftware.integration.util.NameVersion;
 public class BomToolProjectInfoDecider {
     private final Logger logger = LoggerFactory.getLogger(BomToolProjectInfoDecider.class);
 
-    public Optional<NameVersion> decideProjectInfo(final List<BomToolProjectInfo> projectNamePossibilities, final Optional<BomToolType> preferredBomToolType) {
+    public Optional<NameVersion> decideProjectInfo(final List<BomToolProjectInfo> projectNamePossibilities, final Optional<BomToolGroupType> preferredBomToolType) {
         final ProjectInfoResult chosenBomToolProjectInfo = decideBomToolInfo(projectNamePossibilities, preferredBomToolType);
         chosenBomToolProjectInfo.printDescription(logger);
         if (chosenBomToolProjectInfo.getChosenNameVersion().isPresent()) {
@@ -57,7 +57,7 @@ public class BomToolProjectInfoDecider {
         }
     }
 
-    private ProjectInfoResult decideBomToolInfo(final List<BomToolProjectInfo> projectNamePossibilities, final Optional<BomToolType> preferredBomToolType) {
+    private ProjectInfoResult decideBomToolInfo(final List<BomToolProjectInfo> projectNamePossibilities, final Optional<BomToolGroupType> preferredBomToolType) {
         if (preferredBomToolType.isPresent()) {
             final List<BomToolProjectInfo> possiblePreferred = projectNamePossibilities.stream()
                     .filter(it -> it.getBomToolType() == preferredBomToolType.get())
@@ -75,16 +75,16 @@ public class BomToolProjectInfoDecider {
         } else {
             final List<BomToolProjectInfo> lowestDepthPossibilities = projectNamesAtLowestDepth(projectNamePossibilities);
 
-            final Map<BomToolType, Long> lowestDepthTypeCounts = lowestDepthPossibilities.stream()
+            final Map<BomToolGroupType, Long> lowestDepthTypeCounts = lowestDepthPossibilities.stream()
                     .collect(Collectors.groupingBy(it -> it.getBomToolType(), Collectors.counting()));
 
-            final List<BomToolType> singleInstanceLowestDepthBomTools = lowestDepthTypeCounts.entrySet().stream()
+            final List<BomToolGroupType> singleInstanceLowestDepthBomTools = lowestDepthTypeCounts.entrySet().stream()
                     .filter(it -> it.getValue() == 1)
                     .map(it -> it.getKey())
                     .collect(Collectors.toList());
 
             if (singleInstanceLowestDepthBomTools.size() == 1) {
-                final BomToolType type = singleInstanceLowestDepthBomTools.get(0);
+                final BomToolGroupType type = singleInstanceLowestDepthBomTools.get(0);
                 final BomToolProjectInfo chosen = lowestDepthPossibilities.stream().filter(it -> it.getBomToolType() == type).findFirst().get();
                 return new OneUniqueChosenProjectInfoResult(chosen);
             } else if (singleInstanceLowestDepthBomTools.size() > 1) {
@@ -95,7 +95,7 @@ public class BomToolProjectInfoDecider {
         }
     }
 
-    private ProjectInfoResult arbitrarilyDecide(final List<BomToolProjectInfo> possibilities, final List<BomToolType> bomToolOptions) {
+    private ProjectInfoResult arbitrarilyDecide(final List<BomToolProjectInfo> possibilities, final List<BomToolGroupType> bomToolOptions) {
         final List<BomToolProjectInfo> arbitraryOptions = possibilities.stream()
                 .filter(it -> bomToolOptions.contains(it.getBomToolType()))
                 .collect(Collectors.toList());

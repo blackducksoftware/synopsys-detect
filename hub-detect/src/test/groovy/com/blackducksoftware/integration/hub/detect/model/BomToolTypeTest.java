@@ -8,12 +8,12 @@ import org.junit.Test;
 public class BomToolTypeTest {
     @Test
     public void testFoundName() {
-        assertTrue(BomToolType.POSSIBLE_NAMES.contains(BomToolType.CARTHAGE.name()));
+        assertTrue(BomToolGroupType.POSSIBLE_NAMES.contains(BomToolGroupType.CARTHAGE.name()));
     }
 
     @Test
     public void testNotFoundName() {
-        assertFalse(BomToolType.POSSIBLE_NAMES.contains("quoth the raven - NEVERMORE!"));
+        assertFalse(BomToolGroupType.POSSIBLE_NAMES.contains("quoth the raven - NEVERMORE!"));
     }
 
 }

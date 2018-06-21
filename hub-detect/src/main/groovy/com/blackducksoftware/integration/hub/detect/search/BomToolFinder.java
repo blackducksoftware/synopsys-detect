@@ -39,29 +39,29 @@ import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolFactory;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolSearchRuleSet;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
+import com.blackducksoftware.integration.hub.detect.evaluation.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
-import com.blackducksoftware.integration.hub.detect.extraction.model.StrategyEvaluation;
-import com.blackducksoftware.integration.hub.detect.manager.result.search.StrategyFactory;
-import com.blackducksoftware.integration.hub.detect.manager.result.search.StrategySearchRuleSet;
-import com.blackducksoftware.integration.hub.detect.manager.result.search.StrategyType;
-import com.blackducksoftware.integration.hub.detect.model.BomToolType;
-import com.blackducksoftware.integration.hub.detect.strategy.evaluation.StrategyEnvironment;
+import com.blackducksoftware.integration.hub.detect.extraction.model.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
 
 public class BomToolFinder {
     private final Logger logger = LoggerFactory.getLogger(BomToolFinder.class);
 
-    public List<StrategyEvaluation> findApplicableBomTools(final StrategyFactory strategyFactory, final File initialDirectory, final BomToolFinderOptions options) throws BomToolException, DetectUserFriendlyException {
+    public List<BomToolEvaluation> findApplicableBomTools(final BomToolFactory bomToolFactory, final File initialDirectory, final BomToolFinderOptions options) throws BomToolException, DetectUserFriendlyException {
         final List<File> subDirectories = new ArrayList<>();
         subDirectories.add(initialDirectory);
-        return findApplicableBomTools(strategyFactory, subDirectories, new HashSet<StrategyType>(), 0, options);
+        return findApplicableBomTools(bomToolFactory, subDirectories, new HashSet<BomToolType>(), 0, options);
     }
 
-    private List<StrategyEvaluation> findApplicableBomTools(final StrategyFactory strategyFactory, final List<File> directoriesToSearch, final Set<StrategyType> appliedBefore, final int depth, final BomToolFinderOptions options)
+    private List<BomToolEvaluation> findApplicableBomTools(final BomToolFactory bomToolFactory, final List<File> directoriesToSearch, final Set<BomToolType> appliedBefore, final int depth, final BomToolFinderOptions options)
             throws BomToolException, DetectUserFriendlyException {
 
-        final List<StrategyEvaluation> results = new ArrayList<>();
+        final List<BomToolEvaluation> results = new ArrayList<>();
 
         if (depth > options.getMaximumDepth()) {
             return results;
@@ -79,18 +79,18 @@ public class BomToolFinder {
 
             logger.info("Searching directory: " + directory.getPath());
 
-            final Set<BomToolType> applicableTypes = new HashSet<>();
-            final Set<StrategyType> applied = new HashSet<>();
-            final List<StrategyEvaluation> evaluations = processDirectory(strategyFactory, directory, appliedBefore, depth, options);
+            final Set<BomToolGroupType> applicableTypes = new HashSet<>();
+            final Set<BomToolType> applied = new HashSet<>();
+            final List<BomToolEvaluation> evaluations = processDirectory(bomToolFactory, directory, appliedBefore, depth, options);
             results.addAll(evaluations);
-            applied.addAll(evaluations.stream().map(it -> it.strategy.getStrategyType()).collect(Collectors.toList()));
+            applied.addAll(evaluations.stream().map(it -> it.bomTool.getBomToolType()).collect(Collectors.toList()));
 
             //TODO: Used to have a remaining strategies and would bail early here, not sure how to go about that?
-            final Set<StrategyType> everApplied = new HashSet<>();
+            final Set<BomToolType> everApplied = new HashSet<>();
             everApplied.addAll(applied);
             everApplied.addAll(appliedBefore);
             final List<File> subdirectories = getSubDirectories(directory, options.getExcludedDirectories());
-            final List<StrategyEvaluation> recursiveResults = findApplicableBomTools(strategyFactory, subdirectories, everApplied, depth + 1, options);
+            final List<BomToolEvaluation> recursiveResults = findApplicableBomTools(bomToolFactory, subdirectories, everApplied, depth + 1, options);
             results.addAll(recursiveResults);
 
             logger.debug(directory + ": " + applicableTypes.stream().map(it -> it.toString()).collect(Collectors.joining(", ")));
@@ -99,10 +99,10 @@ public class BomToolFinder {
         return results;
     }
 
-    private List<StrategyEvaluation> processDirectory(final StrategyFactory strategyFactory, final File directory, final Set<StrategyType> appliedBefore, final int depth, final BomToolFinderOptions options) {
-        final StrategyEnvironment environment = new StrategyEnvironment(directory, appliedBefore, depth, options.getBomToolFilter(), options.getForceNestedSearch());
-        final StrategySearchRuleSet strategySet = strategyFactory.createStrategies(environment);
-        final List<StrategyEvaluation> evaluations = strategySet.evaluate();
+    private List<BomToolEvaluation> processDirectory(final BomToolFactory bomToolFactory, final File directory, final Set<BomToolType> appliedBefore, final int depth, final BomToolFinderOptions options) {
+        final BomToolEnvironment environment = new BomToolEnvironment(directory, appliedBefore, depth, options.getBomToolFilter(), options.getForceNestedSearch());
+        final BomToolSearchRuleSet bomToolSet = bomToolFactory.createStrategies(environment);
+        final List<BomToolEvaluation> evaluations = bomToolSet.evaluate();
         return evaluations;
     }
 
@@ -126,6 +126,7 @@ public class BomToolFinder {
                     .filter(file -> file.isDirectory())
                     .filter(excludeDirectoriesPredicate)
                     .collect(Collectors.toList());
+
         } catch (final IOException e) {
             throw new DetectUserFriendlyException(String.format("Could not get the subdirectories for %s. %s", directory.getAbsolutePath(), e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
         } finally {

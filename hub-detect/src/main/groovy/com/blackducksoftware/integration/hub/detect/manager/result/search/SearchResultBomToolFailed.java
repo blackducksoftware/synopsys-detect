@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
-import com.blackducksoftware.integration.hub.detect.extraction.model.StrategyEvaluation;
+import com.blackducksoftware.integration.hub.detect.extraction.model.BomToolEvaluation;
 
 public class SearchResultBomToolFailed extends SearchResult {
     private final BomToolException exception;
@@ -41,7 +41,7 @@ public class SearchResultBomToolFailed extends SearchResult {
     }
 
     @Override
-    public List<StrategyEvaluation> getStrategyEvaluations() {
+    public List<BomToolEvaluation> getBomToolEvaluations() {
         return new ArrayList<>();
     }
 
