@@ -19,9 +19,9 @@ import org.springframework.test.util.ReflectionTestUtils
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.extraction.bomtool.gradle.parse.GradleParseResult
-import com.blackducksoftware.integration.hub.detect.extraction.bomtool.gradle.parse.GradleReportLine
-import com.blackducksoftware.integration.hub.detect.extraction.bomtool.gradle.parse.GradleReportParser
+import com.blackducksoftware.integration.hub.detect.bomtool.gradle.parse.GradleParseResult
+import com.blackducksoftware.integration.hub.detect.bomtool.gradle.parse.GradleReportLine
+import com.blackducksoftware.integration.hub.detect.bomtool.gradle.parse.GradleReportParser
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 import com.google.gson.GsonBuilder

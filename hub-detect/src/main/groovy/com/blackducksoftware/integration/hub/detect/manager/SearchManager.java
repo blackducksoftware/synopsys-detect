@@ -35,15 +35,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.report.SearchSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
-import com.blackducksoftware.integration.hub.detect.extraction.model.StrategyEvaluation;
+import com.blackducksoftware.integration.hub.detect.extraction.model.BomToolEvaluation;
 import com.blackducksoftware.integration.hub.detect.manager.result.search.SearchResult;
 import com.blackducksoftware.integration.hub.detect.manager.result.search.SearchResultBomToolFailed;
 import com.blackducksoftware.integration.hub.detect.manager.result.search.SearchResultSuccess;
-import com.blackducksoftware.integration.hub.detect.manager.result.search.StrategyFactory;
-import com.blackducksoftware.integration.hub.detect.model.BomToolType;
+import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.search.BomToolFinder;
 import com.blackducksoftware.integration.hub.detect.search.BomToolFinderOptions;
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
@@ -56,7 +56,7 @@ public class SearchManager {
     private SearchSummaryReporter searchSummaryReporter;
 
     @Autowired
-    private StrategyFactory strategyFactory;
+    private BomToolFactory bomToolFactory;
 
     @Autowired
     private DetectConfiguration detectConfiguration;
@@ -64,7 +64,7 @@ public class SearchManager {
     @Autowired
     private DetectPhoneHomeManager detectPhoneHomeManager;
 
-    private List<StrategyEvaluation> findApplicableBomTools(final File directory) throws BomToolException, DetectUserFriendlyException {
+    private List<BomToolEvaluation> findApplicableBomTools(final File directory) throws BomToolException, DetectUserFriendlyException {
         final List<String> excludedDirectories = detectConfiguration.getBomToolSearchDirectoryExclusions();
         final Boolean forceNestedSearch = detectConfiguration.getBomToolContinueSearch();
         final int maxDepth = detectConfiguration.getBomToolSearchDepth();
@@ -73,11 +73,11 @@ public class SearchManager {
 
         logger.info("Starting search for bom tools.");
         final BomToolFinder bomToolTreeWalker = new BomToolFinder();
-        return bomToolTreeWalker.findApplicableBomTools(strategyFactory, directory, findOptions);
+        return bomToolTreeWalker.findApplicableBomTools(bomToolFactory, directory, findOptions);
     }
 
     public SearchResult performSearch() throws DetectUserFriendlyException {
-        List<StrategyEvaluation> sourcePathResults = new ArrayList<>();
+        List<BomToolEvaluation> sourcePathResults = new ArrayList<>();
         try {
             sourcePathResults = findApplicableBomTools(new File(detectConfiguration.getSourcePath()));
         } catch (final BomToolException e) {
@@ -86,9 +86,9 @@ public class SearchManager {
 
         searchSummaryReporter.print(sourcePathResults);
 
-        final Set<BomToolType> applicableBomTools = sourcePathResults.stream()
+        final Set<BomToolGroupType> applicableBomTools = sourcePathResults.stream()
                 .filter(it -> it.isApplicable())
-                .map(it -> it.strategy.getBomToolType())
+                .map(it -> it.bomTool.getBomToolGroupType())
                 .collect(Collectors.toSet());
 
         // we've gone through all applicable bom tools so we now have the complete metadata to phone home

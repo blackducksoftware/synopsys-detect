@@ -33,15 +33,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.extraction.model.StrategyEvaluation;
+import com.blackducksoftware.integration.hub.detect.extraction.model.BomToolEvaluation;
 
 @Component
 public class SearchSummaryReporter {
     private final Logger logger = LoggerFactory.getLogger(SearchSummaryReporter.class);
 
-    public void print(final List<StrategyEvaluation> results) {
+    public void print(final List<BomToolEvaluation> results) {
 
-        final Map<File, List<StrategyEvaluation>> byDirectory = results.stream()
+        final Map<File, List<BomToolEvaluation>> byDirectory = results.stream()
                 .collect(Collectors.groupingBy(item -> item.environment.getDirectory()));
 
         printDirectoriesInfo(byDirectory);
@@ -49,7 +49,7 @@ public class SearchSummaryReporter {
 
     }
 
-    private void printDirectoriesInfo(final Map<File, List<StrategyEvaluation>> byDirectory) {
+    private void printDirectoriesInfo(final Map<File, List<BomToolEvaluation>> byDirectory) {
 
         logger.info("");
         logger.info("");
@@ -57,11 +57,11 @@ public class SearchSummaryReporter {
         logger.info("Search results");
         logger.info(ReportConstants.HEADING);
         for (final File file : byDirectory.keySet()) {
-            final List<StrategyEvaluation> results = byDirectory.get(file);
+            final List<BomToolEvaluation> results = byDirectory.get(file);
 
             final List<String> applied = results.stream()
                     .filter(it -> it.isApplicable())
-                    .map(it -> it.strategy.getDescriptiveName())
+                    .map(it -> it.bomTool.getDescriptiveName())
                     .collect(Collectors.toList());
 
             if (applied.size() > 0) {
@@ -74,22 +74,22 @@ public class SearchSummaryReporter {
         logger.info("");
     }
 
-    private void printDirectoriesDebug(final Map<File, List<StrategyEvaluation>> byDirectory) {
+    private void printDirectoriesDebug(final Map<File, List<BomToolEvaluation>> byDirectory) {
         for (final File file : byDirectory.keySet()) {
-            final List<StrategyEvaluation> results = byDirectory.get(file);
+            final List<BomToolEvaluation> results = byDirectory.get(file);
             final List<String> toPrint = new ArrayList<>();
 
-            for (final StrategyEvaluation result : results) {
-                final String strategyName = result.strategy.getDescriptiveName();
+            for (final BomToolEvaluation result : results) {
+                final String bomToolName = result.bomTool.getDescriptiveName();
                 if (result.isApplicable()) {
-                    toPrint.add("      APPLIED: " + strategyName + " - Search: " + result.searchable.toDescription() + " Applicable: " + result.applicable.toDescription());
+                    toPrint.add("      APPLIED: " + bomToolName + " - Search: " + result.searchable.toDescription() + " Applicable: " + result.applicable.toDescription());
                 } else {
                     if (result.applicable != null) {
-                        toPrint.add("DID NOT APPLY: " + strategyName + " - " + result.applicable.toDescription());
+                        toPrint.add("DID NOT APPLY: " + bomToolName + " - " + result.applicable.toDescription());
                     } else if (result.searchable != null) {
-                        toPrint.add("DID NOT APPLY: " + strategyName + " - "  + result.searchable.toDescription());
+                        toPrint.add("DID NOT APPLY: " + bomToolName + " - "  + result.searchable.toDescription());
                     } else {
-                        toPrint.add("DID NOT APPLY: " + strategyName + " - Unknown");
+                        toPrint.add("DID NOT APPLY: " + bomToolName + " - Unknown");
                     }
                 }
             }

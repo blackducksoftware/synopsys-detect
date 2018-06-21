@@ -11,19 +11,20 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.go
 
-import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
-import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.extraction.bomtool.go.parse.GoGodepsParser
-import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import org.apache.commons.io.IOUtils
-import org.junit.Test
+import static org.junit.Assert.*
 
 import java.nio.charset.StandardCharsets
 
-import static org.junit.Assert.*
+import org.apache.commons.io.IOUtils
+import org.junit.Test
+
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.detect.bomtool.go.parse.GoGodepsParser
+import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 
 public class GoGodepsParserTest {
     Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create()
