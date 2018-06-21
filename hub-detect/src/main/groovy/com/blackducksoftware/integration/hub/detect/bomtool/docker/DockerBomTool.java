@@ -26,7 +26,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.docker;
 import java.io.File;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
@@ -57,7 +56,8 @@ public class DockerBomTool extends BomTool {
     private String tar;
     private DockerInspectorInfo dockerInspectorInfo;
 
-    public DockerBomTool(final BomToolEnvironment environment, final DockerInspectorManager dockerInspectorManager, final StandardExecutableFinder standardExecutableFinder, final boolean dockerPathRequired, final String suppliedDockerImage, final String suppliedDockerTar, final DockerExtractor dockerExtractor) {
+    public DockerBomTool(final BomToolEnvironment environment, final DockerInspectorManager dockerInspectorManager, final StandardExecutableFinder standardExecutableFinder, final boolean dockerPathRequired, final String suppliedDockerImage,
+            final String suppliedDockerTar, final DockerExtractor dockerExtractor) {
         super(environment);
         this.standardExecutableFinder = standardExecutableFinder;
         this.dockerExtractor = dockerExtractor;
@@ -93,7 +93,7 @@ public class DockerBomTool extends BomTool {
             }
         }
 
-        dockerInspectorInfo = dockerInspectorManager.getDockerInspector(environment);
+        dockerInspectorInfo = dockerInspectorManager.getDockerInspector();
         if (dockerInspectorInfo == null) {
             return new InspectorNotFoundBomToolResult("docker");
         }

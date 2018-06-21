@@ -23,38 +23,37 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.go.parse
 
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.detect.configuration.BomToolConfig
+import com.blackducksoftware.integration.hub.detect.util.executable.Executable
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException
+import com.google.gson.Gson
+import groovy.transform.TypeChecked
 import org.apache.commons.io.FileUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration
-import com.blackducksoftware.integration.hub.detect.util.executable.Executable
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException
-import com.google.gson.Gson
-
-import groovy.transform.TypeChecked
-
 @Component
 @TypeChecked
 class DepPackager {
     private final Logger logger = LoggerFactory.getLogger(DepPackager.class)
 
-    @Autowired
-    ExecutableRunner executableRunner
+    private final ExecutableRunner executableRunner
+    private final Gson gson
+    private final ExternalIdFactory externalIdFactory
+    private final BomToolConfig bomToolConfig
 
     @Autowired
-    Gson gson
-
-    @Autowired
-    DetectConfiguration detectConfiguration
-
-    @Autowired
-    ExternalIdFactory externalIdFactory
+    DepPackager(final ExecutableRunner executableRunner, final Gson gson, final ExternalIdFactory externalIdFactory, final BomToolConfig bomToolConfig) {
+        this.executableRunner = executableRunner
+        this.gson = gson
+        this.externalIdFactory = externalIdFactory
+        this.bomToolConfig = bomToolConfig
+    }
 
     public DependencyGraph makeDependencyGraph(final String sourcePath, String goDepExecutable) {
         GopkgLockParser gopkgLockParser = new GopkgLockParser(externalIdFactory)
@@ -72,7 +71,7 @@ class DepPackager {
         }
 
         //by default, we won't run 'init' and 'ensure' anymore so just return an empty string
-        if (!detectConfiguration.goRunDepInit) {
+        if (!bomToolConfig.goRunDepInit) {
             logger.info("Skipping Dep commands 'init' and 'ensure'")
             return ''
         }

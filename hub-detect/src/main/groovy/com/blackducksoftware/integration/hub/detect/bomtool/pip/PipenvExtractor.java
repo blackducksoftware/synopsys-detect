@@ -31,9 +31,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.parse.PipParseResult;
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.parse.PipenvGraphParser;
+import com.blackducksoftware.integration.hub.detect.configuration.BomToolConfig;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
@@ -44,14 +44,16 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 public class PipenvExtractor {
     public static final String PIP_SEPARATOR = "==";
 
-    @Autowired
-    private DetectConfiguration detectConfiguration;
+    private final ExecutableRunner executableRunner;
+    private final PipenvGraphParser pipenvTreeParser;
+    private final BomToolConfig bomToolConfig;
 
     @Autowired
-    private ExecutableRunner executableRunner;
-
-    @Autowired
-    private PipenvGraphParser pipenvTreeParser;
+    public PipenvExtractor(final ExecutableRunner executableRunner, final PipenvGraphParser pipenvTreeParser, final BomToolConfig bomToolConfig) {
+        this.executableRunner = executableRunner;
+        this.pipenvTreeParser = pipenvTreeParser;
+        this.bomToolConfig = bomToolConfig;
+    }
 
     public Extraction extract(final File directory, final String pythonExe, final String pipenvExe, final File pipfileDotLock, final File pipfile, final File setupFile) {
         Extraction extraction;
@@ -82,7 +84,7 @@ public class PipenvExtractor {
     }
 
     private String getProjectName(final File directory, final String pythonExe, final String pipenvExe, final File pipfileDotLock, final File pipfile, final File setupFile) throws ExecutableRunnerException {
-        String projectName = detectConfiguration.getPipProjectName();
+        String projectName = bomToolConfig.getPipProjectName();
 
         if (StringUtils.isBlank(projectName) && setupFile != null && setupFile.exists()) {
             final Executable findProjectNameExecutable = new Executable(directory, pythonExe, Arrays.asList(
@@ -96,7 +98,7 @@ public class PipenvExtractor {
     }
 
     private String getProjectVersionName(final File directory, final String pythonExe, final String pipenvExe, final File pipfileDotLock, final File pipfile, final File setupFile) throws ExecutableRunnerException {
-        String projectVersionName = detectConfiguration.getPipProjectVersionName();
+        String projectVersionName = bomToolConfig.getPipProjectVersionName();
 
         if (StringUtils.isBlank(projectVersionName) && setupFile != null && setupFile.exists()) {
             final Executable findProjectNameExecutable = new Executable(directory, pythonExe, Arrays.asList(

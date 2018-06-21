@@ -32,7 +32,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.bomtool.hex.parse.Rebar3TreeParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.hex.parse.RebarParseResult;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
@@ -43,18 +42,16 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 
 @Component
 public class RebarExtractor {
+    private final ExecutableRunner executableRunner;
+    private final DetectFileManager detectFileManager;
+    private final Rebar3TreeParser rebarTreeParser;
 
     @Autowired
-    public DetectConfiguration detectConfiguration;
-
-    @Autowired
-    public ExecutableRunner executableRunner;
-
-    @Autowired
-    public DetectFileManager detectFileManager;
-
-    @Autowired
-    Rebar3TreeParser rebarTreeParser;
+    public RebarExtractor(final ExecutableRunner executableRunner, final DetectFileManager detectFileManager, final Rebar3TreeParser rebarTreeParser) {
+        this.executableRunner = executableRunner;
+        this.detectFileManager = detectFileManager;
+        this.rebarTreeParser = rebarTreeParser;
+    }
 
     public Extraction extract(final File directory, final File rebarExe) {
         try {

@@ -23,43 +23,36 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.pip;
 
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.configuration.BomToolConfig;
 import com.blackducksoftware.integration.hub.detect.evaluation.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.evaluation.BomToolException;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 
 @Component
 public class PythonExecutableFinder {
-    @Autowired
-    public DetectFileManager detectFileManager;
+    private final ExecutableManager executableManager;
+    private final BomToolConfig bomToolConfig;
 
     @Autowired
-    public DetectConfiguration detectConfiguration;
-
-    @Autowired
-    public ExecutableManager executableManager;
-
-    @Autowired
-    public ExecutableRunner executableRunner;
+    public PythonExecutableFinder(final ExecutableManager executableManager, final BomToolConfig bomToolConfig) {
+        this.executableManager = executableManager;
+        this.bomToolConfig = bomToolConfig;
+    }
 
     public String findPip(final BomToolEnvironment environment) throws BomToolException {
         return findExecutable(environment, ExecutableType.PIP, ExecutableType.PIP3);
     }
 
     public String findPipenv(final BomToolEnvironment environment) throws BomToolException {
-        return findExecutable(environment, ExecutableType.PIPENV, detectConfiguration.getPipenvPath());
+        return findExecutable(environment, ExecutableType.PIPENV, bomToolConfig.getPipEnvPath());
     }
 
     public String findPython(final BomToolEnvironment environment) throws BomToolException {
-        return findExecutable(environment, ExecutableType.PYTHON, ExecutableType.PYTHON3, detectConfiguration.getPythonPath());
+        return findExecutable(environment, ExecutableType.PYTHON, ExecutableType.PYTHON3, bomToolConfig.getPythonPath());
     }
 
     private String findExecutable(final BomToolEnvironment environment, final ExecutableType pythonAnyVersionExecutableType, final String overridePath) throws BomToolException {
@@ -74,7 +67,7 @@ public class PythonExecutableFinder {
         try {
             final ExecutableType executableType;
 
-            if (detectConfiguration.getPythonThreeOverride()) {
+            if (bomToolConfig.getPythonThreeOverride()) {
                 executableType = python3ExecutableType;
             } else {
                 executableType = python2ExecutableType;

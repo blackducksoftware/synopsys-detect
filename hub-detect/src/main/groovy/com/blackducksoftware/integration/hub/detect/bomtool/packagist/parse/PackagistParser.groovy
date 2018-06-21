@@ -23,36 +23,37 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.packagist.parse
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
-
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph
 import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration
+import com.blackducksoftware.integration.hub.detect.configuration.BomToolConfig
 import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-
 import groovy.transform.TypeChecked
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Component
 
 @Component
 @TypeChecked
 class PackagistParser {
     private final Logger logger = LoggerFactory.getLogger(PackagistParser.class)
 
-    @Autowired
-    DetectConfiguration detectConfiguration
+    private final ExternalIdFactory externalIdFactory
+    private final BomToolConfig bomToolConfig
 
     @Autowired
-    ExternalIdFactory externalIdFactory
+    PackagistParser(final ExternalIdFactory externalIdFactory, final BomToolConfig bomToolConfig) {
+        this.externalIdFactory = externalIdFactory
+        this.bomToolConfig = bomToolConfig
+    }
 
     public PackagistParseResult getDependencyGraphFromProject(String sourcePath, String composerJsonText, String composerLockText) {
         MutableDependencyGraph graph = new MutableMapDependencyGraph();
@@ -65,7 +66,7 @@ class PackagistParser {
         JsonArray packagistPackages = composerLockObject.get('packages')?.getAsJsonArray()
         List<String> startingPackages = getStartingPackages(composerJsonObject, false)
 
-        if (detectConfiguration.getPackagistIncludeDevDependencies()) {
+        if (bomToolConfig.getPackagistIncludeDevDependencies()) {
             JsonArray packagistDevPackages = composerLockObject.get('packages-dev')?.getAsJsonArray()
             packagistPackages.addAll(packagistDevPackages)
             List<String> startingDevPackages = getStartingPackages(composerJsonObject, true)
@@ -82,7 +83,7 @@ class PackagistParser {
             }
         }
 
-        List<String> allPackageNames =  packagistPackages.collect { it.getAt('name').toString().replace('"', '')}
+        List<String> allPackageNames = packagistPackages.collect { it.getAt('name').toString().replace('"', '') }
         startingPackages.each {
             if (!allPackageNames.contains(it)) {
                 logger.warn("A discrepency exists between the composer.json and the composer.lock - the package '${it}' was in the json but not the lock.");

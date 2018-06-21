@@ -41,9 +41,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.report.ExtractionSummaryReporter;
-import com.blackducksoftware.integration.hub.detect.configuration.BomToolConfig;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfig;
 import com.blackducksoftware.integration.hub.detect.configuration.HubConfig;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
@@ -77,12 +75,10 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     private final BomToolProjectInfoDecider bomToolProjectInfoDecider;
     private final HubConfig hubConfig;
     private final DetectConfig detectConfig;
-    private final BomToolConfig bomToolConfig;
 
     @Autowired
     public DetectProjectManager(final SearchManager searchManager, final ExtractionManager extractionManager, final DetectCodeLocationManager codeLocationManager, final DetectBdioManager bdioManager,
-            final ExtractionSummaryReporter extractionSummaryReporter, final BomToolProjectInfoDecider bomToolProjectInfoDecider, final HubConfig hubConfig, final DetectConfig detectConfig,
-            final BomToolConfig bomToolConfig) {
+            final ExtractionSummaryReporter extractionSummaryReporter, final BomToolProjectInfoDecider bomToolProjectInfoDecider, final HubConfig hubConfig, final DetectConfig detectConfig) {
         this.searchManager = searchManager;
         this.extractionManager = extractionManager;
         this.codeLocationManager = codeLocationManager;
@@ -91,10 +87,9 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         this.bomToolProjectInfoDecider = bomToolProjectInfoDecider;
         this.hubConfig = hubConfig;
         this.detectConfig = detectConfig;
-        this.bomToolConfig = bomToolConfig;
     }
 
-    public DetectProject createDetectProject() throws DetectUserFriendlyException, IntegrationException {
+    public DetectProject createDetectProject() throws DetectUserFriendlyException {
         final SearchResult searchResult = searchManager.performSearch();
 
         final ExtractionResult extractionResult = extractionManager.performExtractions(searchResult.getBomToolEvaluations());
@@ -193,7 +188,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     }
 
     private Optional<NameVersion> findBomToolProjectNameAndVersion(final List<BomToolEvaluation> bomToolEvaluations) {
-        final String projectBomTool = bomToolConfig.getDetectProjectBomTool();
+        final String projectBomTool = detectConfig.getDetectProjectBomTool();
         Optional<BomToolGroupType> preferredBomToolType = Optional.empty();
         if (StringUtils.isNotBlank(projectBomTool)) {
             final String projectBomToolFixed = projectBomTool.toUpperCase();

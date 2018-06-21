@@ -40,8 +40,8 @@ import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.bomtool.yarn.parse.YarnListParser;
+import com.blackducksoftware.integration.hub.detect.configuration.BomToolConfig;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
@@ -56,27 +56,28 @@ public class YarnLockExtractor {
     public static final String OUTPUT_FILE = "detect_yarn_proj_dependencies.txt";
     public static final String ERROR_FILE = "detect_yarn_error.txt";
 
-    @Autowired
-    ExternalIdFactory externalIdFactory;
+    private final ExternalIdFactory externalIdFactory;
+    private final YarnListParser yarnListParser;
+    private final DetectFileManager detectFileManager;
+    private final ExecutableRunner executableRunner;
+    private final BomToolConfig bomToolConfig;
 
     @Autowired
-    DetectConfiguration detectConfiguration;
-
-    @Autowired
-    YarnListParser yarnListParser;
-
-    @Autowired
-    DetectFileManager detectFileManager;
-
-    @Autowired
-    ExecutableRunner executableRunner;
+    public YarnLockExtractor(final ExternalIdFactory externalIdFactory, final YarnListParser yarnListParser, final DetectFileManager detectFileManager, final ExecutableRunner executableRunner,
+            final BomToolConfig bomToolConfig) {
+        this.externalIdFactory = externalIdFactory;
+        this.yarnListParser = yarnListParser;
+        this.detectFileManager = detectFileManager;
+        this.executableRunner = executableRunner;
+        this.bomToolConfig = bomToolConfig;
+    }
 
     public Extraction extract(final File directory, final File yarnlock, final String yarnExe) {
         try {
             final List<String> yarnLockText = Files.readAllLines(yarnlock.toPath(), StandardCharsets.UTF_8);
             final List<String> exeArgs = Stream.of("list", "--emoji", "false").collect(Collectors.toCollection(ArrayList::new));
 
-            if (detectConfiguration.getYarnProductionDependenciesOnly()) {
+            if (bomToolConfig.getYarnProductionDependenciesOnly()) {
                 exeArgs.add("--prod");
             }
 

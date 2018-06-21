@@ -39,13 +39,6 @@ public class BomToolConfig extends BaseConfig {
         this.nugetInspectorAirGapPath = nugetInspectorAirGapPath;
         this.bomToolSearchDirectoryExclusions = bomToolSearchDirectoryExclusions;
 
-        this.detectProjectBomTool = valueContainer.getDetectProjectBomTool();
-        this.bomToolSearchDepth = valueContainer.getBomToolSearchDepth();
-        this.bomToolContinueSearch = valueContainer.getBomToolContinueSearch();
-        this.bomToolSearchExclusion = valueContainer.getBomToolSearchExclusion();
-        this.bomToolSearchExclusionDefaults = valueContainer.getBomToolSearchExclusionDefaults();
-        this.excludedBomToolTypes = valueContainer.getExcludedBomToolTypes();
-        this.includedBomToolTypes = valueContainer.getIncludedBomToolTypes();
         this.gradleInspectorVersion = valueContainer.getGradleInspectorVersion();
         this.gradleBuildCommand = valueContainer.getGradleBuildCommand();
         this.gradleExcludedConfigurationNames = valueContainer.getGradleExcludedConfigurationNames();
@@ -116,20 +109,6 @@ public class BomToolConfig extends BaseConfig {
     }
 
     // properties start
-    private String detectProjectBomTool;
-
-    private Integer bomToolSearchDepth;
-
-    private Boolean bomToolContinueSearch;
-
-    private String[] bomToolSearchExclusion;
-
-    private Boolean bomToolSearchExclusionDefaults;
-
-    private String excludedBomToolTypes;
-
-    private String includedBomToolTypes;
-
     private String gradleInspectorVersion;
 
     private String gradleBuildCommand;
@@ -255,34 +234,6 @@ public class BomToolConfig extends BaseConfig {
     private String yarnPath;
 
     private String yarnProductionDependenciesOnly;
-
-    public int getBomToolSearchDepth() {
-        return convertInt(bomToolSearchDepth);
-    }
-
-    public String getDetectProjectBomTool() {
-        return detectProjectBomTool;
-    }
-
-    public Boolean getBomToolContinueSearch() {
-        return BooleanUtils.toBoolean(bomToolContinueSearch);
-    }
-
-    public String[] getBomToolSearchExclusion() {
-        return bomToolSearchExclusion;
-    }
-
-    public Boolean getBomToolSearchExclusionDefaults() {
-        return BooleanUtils.toBoolean(bomToolSearchExclusionDefaults);
-    }
-
-    public String getExcludedBomToolTypes() {
-        return excludedBomToolTypes == null ? null : excludedBomToolTypes.toUpperCase();
-    }
-
-    public String getIncludedBomToolTypes() {
-        return includedBomToolTypes == null ? null : includedBomToolTypes.toUpperCase();
-    }
 
     public String getGradleInspectorVersion() {
         return gradleInspectorVersion;

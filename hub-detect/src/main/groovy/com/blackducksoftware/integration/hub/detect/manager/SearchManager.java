@@ -70,9 +70,9 @@ public class SearchManager {
 
     private List<BomToolEvaluation> findApplicableBomTools(final File directory) throws BomToolException, DetectUserFriendlyException {
         final List<String> excludedDirectories = bomToolConfig.getBomToolSearchDirectoryExclusions();
-        final Boolean forceNestedSearch = bomToolConfig.getBomToolContinueSearch();
-        final int maxDepth = bomToolConfig.getBomToolSearchDepth();
-        final ExcludedIncludedFilter bomToolFilter = new ExcludedIncludedFilter(bomToolConfig.getExcludedBomToolTypes(), bomToolConfig.getIncludedBomToolTypes());
+        final Boolean forceNestedSearch = detectConfig.getBomToolContinueSearch();
+        final int maxDepth = detectConfig.getBomToolSearchDepth();
+        final ExcludedIncludedFilter bomToolFilter = new ExcludedIncludedFilter(detectConfig.getExcludedBomToolTypes(), detectConfig.getIncludedBomToolTypes());
 
         final BomToolFinderOptions findOptions = new BomToolFinderOptions(excludedDirectories, forceNestedSearch, maxDepth, bomToolFilter);
 

@@ -78,12 +78,14 @@ public class DetectFileManager {
         return new File(directory, name);
     }
 
-    public File getSharedDirectory() { //shared across this invocation of detect.
+    public File getSharedDirectory(String name) { //shared across this invocation of detect.
         if (sharedDirectory == null) {
             sharedDirectory = new File(detectConfig.getOutputDirectory(), sharedUUID);
             sharedDirectory.mkdir();
         }
-        return sharedDirectory;
+        File newSharedFile = new File(sharedDirectory, name);
+        newSharedFile.mkdir();
+        return newSharedFile;
     }
 
     public File getPermanentDirectory() { //shared across all invocations of detect
@@ -97,7 +99,7 @@ public class DetectFileManager {
     }
 
     public File createSharedFile(final String directory, final String filename) {
-        return new File(getSharedDirectory(), filename);
+        return new File(getSharedDirectory(directory), filename);
     }
 
     //This file will be immediately cleaned up and is associated to a specific context. The current implementation is to actually move it to the context's output and allow cleanup at the end of the detect run (in case of diagnostics).

@@ -35,8 +35,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.evaluation.BomToolEnvironment;
+import com.blackducksoftware.integration.hub.detect.configuration.BomToolConfig;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfig;
 import com.blackducksoftware.integration.hub.detect.evaluation.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
@@ -52,23 +52,27 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 public class NugetInspectorManager {
     private final Logger logger = LoggerFactory.getLogger(NugetInspectorManager.class);
 
-    @Autowired
-    public DetectFileManager detectFileManager;
-
-    @Autowired
-    public DetectConfiguration detectConfiguration;
-
-    @Autowired
-    public ExecutableManager executableManager;
-
-    @Autowired
-    public ExecutableRunner executableRunner;
+    private final DetectFileManager detectFileManager;
+    private final ExecutableManager executableManager;
+    private final ExecutableRunner executableRunner;
+    private final BomToolConfig bomToolConfig;
+    private final DetectConfig detectConfig;
 
     private boolean hasResolvedInspector;
     private String resolvedNugetInspectorExecutable;
     private String resolvedInspectorVersion;
 
-    public String findNugetInspector(final BomToolEnvironment environment) throws BomToolException {
+    @Autowired
+    public NugetInspectorManager(final DetectFileManager detectFileManager, final ExecutableManager executableManager, final ExecutableRunner executableRunner, final BomToolConfig bomToolConfig,
+            final DetectConfig detectConfig) {
+        this.detectFileManager = detectFileManager;
+        this.executableManager = executableManager;
+        this.executableRunner = executableRunner;
+        this.bomToolConfig = bomToolConfig;
+        this.detectConfig = detectConfig;
+    }
+
+    public String findNugetInspector() throws BomToolException {
         try {
             if (!hasResolvedInspector) {
                 hasResolvedInspector = true;
@@ -82,7 +86,7 @@ public class NugetInspectorManager {
     }
 
     public void install() throws DetectUserFriendlyException, ExecutableRunnerException, IOException {
-        final String nugetExecutable = executableManager.getExecutablePathOrOverride(ExecutableType.NUGET, true, detectConfiguration.getSourceDirectory(), detectConfiguration.getNugetPath());
+        final String nugetExecutable = executableManager.getExecutablePathOrOverride(ExecutableType.NUGET, true, detectConfig.getSourceDirectory(), bomToolConfig.getNugetPath());
         resolvedInspectorVersion = resolveInspectorVersion(nugetExecutable);
         if (resolvedInspectorVersion != null) {
             resolvedNugetInspectorExecutable = installInspector(nugetExecutable, detectFileManager.getSharedDirectory("nuget"), resolvedInspectorVersion);
@@ -95,13 +99,13 @@ public class NugetInspectorManager {
     }
 
     private String resolveInspectorVersion(final String nugetExecutablePath) throws ExecutableRunnerException {
-        if ("latest".equalsIgnoreCase(detectConfiguration.getNugetInspectorPackageVersion())) {
+        if ("latest".equalsIgnoreCase(bomToolConfig.getNugetInspectorPackageVersion())) {
             if (shouldUseAirGap()) {
                 logger.debug("Running in airgap mode. Resolving version from local path");
-                return resolveVersionFromSource(detectConfiguration.getNugetInspectorAirGapPath(), nugetExecutablePath);
+                return resolveVersionFromSource(bomToolConfig.getNugetInspectorAirGapPath(), nugetExecutablePath);
             } else {
                 logger.debug("Running online. Resolving version through nuget");
-                for (final String source : detectConfiguration.getNugetPackagesRepoUrl()) {
+                for (final String source : bomToolConfig.getNugetPackagesRepoUrl()) {
                     logger.debug("Attempting source: " + source);
                     final String inspectorVersion = resolveVersionFromSource(source, nugetExecutablePath);
                     if (inspectorVersion != null) {
@@ -110,13 +114,13 @@ public class NugetInspectorManager {
                 }
             }
         } else {
-            return detectConfiguration.getNugetInspectorPackageVersion();
+            return bomToolConfig.getNugetInspectorPackageVersion();
         }
         return null;
     }
 
     private boolean shouldUseAirGap() {
-        final File airGapNugetInspectorDirectory = new File(detectConfiguration.getNugetInspectorAirGapPath());
+        final File airGapNugetInspectorDirectory = new File(bomToolConfig.getNugetInspectorAirGapPath());
         return airGapNugetInspectorDirectory.exists();
     }
 
@@ -127,22 +131,22 @@ public class NugetInspectorManager {
 
         nugetOptions.addAll(Arrays.asList(
                 "list",
-                detectConfiguration.getNugetInspectorPackageName(),
+                bomToolConfig.getNugetInspectorPackageName(),
                 "-Source",
                 source
-                ));
+        ));
 
-        if (StringUtils.isNotBlank(detectConfiguration.getNugetConfigPath())) {
+        if (StringUtils.isNotBlank(bomToolConfig.getNugetConfigPath())) {
             nugetOptions.add("-ConfigFile");
-            nugetOptions.add(detectConfiguration.getNugetConfigPath());
+            nugetOptions.add(bomToolConfig.getNugetConfigPath());
         }
 
-        final Executable getInspectorVersionExecutable = new Executable(detectConfiguration.getSourceDirectory(), nugetExecutablePath, nugetOptions);
+        final Executable getInspectorVersionExecutable = new Executable(detectConfig.getSourceDirectory(), nugetExecutablePath, nugetOptions);
 
         final List<String> output = executableRunner.execute(getInspectorVersionExecutable).getStandardOutputAsList();
         for (final String line : output) {
             final String[] lineChunks = line.split(" ");
-            if (detectConfiguration.getNugetInspectorPackageName().equalsIgnoreCase(lineChunks[0])) {
+            if (bomToolConfig.getNugetInspectorPackageName().equalsIgnoreCase(lineChunks[0])) {
                 version = lineChunks[1];
             }
         }
@@ -154,29 +158,29 @@ public class NugetInspectorManager {
     private String installInspector(final String nugetExecutablePath, final File outputDirectory, final String inspectorVersion) throws IOException, ExecutableRunnerException {
         final File toolsDirectory;
 
-        final File airGapNugetInspectorDirectory = new File(detectConfiguration.getNugetInspectorAirGapPath());
+        final File airGapNugetInspectorDirectory = new File(bomToolConfig.getNugetInspectorAirGapPath());
         if (airGapNugetInspectorDirectory.exists()) {
             logger.debug("Running in airgap mode. Resolving from local path");
             toolsDirectory = new File(airGapNugetInspectorDirectory, "tools");
         } else {
             logger.debug("Running online. Resolving through nuget");
 
-            for (final String source : detectConfiguration.getNugetPackagesRepoUrl()) {
+            for (final String source : bomToolConfig.getNugetPackagesRepoUrl()) {
                 logger.debug("Attempting source: " + source);
                 final boolean success = attemptInstallInspectorFromSource(source, nugetExecutablePath, outputDirectory);
                 if (success) {
                     break;
                 }
             }
-            final String inspectorDirectoryName = detectConfiguration.getNugetInspectorPackageName() + "." + inspectorVersion;
+            final String inspectorDirectoryName = bomToolConfig.getNugetInspectorPackageName() + "." + inspectorVersion;
             final File inspectorVersionDirectory = new File(outputDirectory, inspectorDirectoryName);
             toolsDirectory = new File(inspectorVersionDirectory, "tools");
         }
-        final String exeName = detectConfiguration.getNugetInspectorPackageName() + ".exe";
+        final String exeName = bomToolConfig.getNugetInspectorPackageName() + ".exe";
         final File inspectorExe = new File(toolsDirectory, exeName);
 
         if (!inspectorExe.exists()) {
-            logger.warn(String.format("Could not find the %s version: %s even after an install attempt.",detectConfiguration.getNugetInspectorPackageName(), inspectorVersion));
+            logger.warn(String.format("Could not find the %s version: %s even after an install attempt.", bomToolConfig.getNugetInspectorPackageName(), inspectorVersion));
             return null;
         }
 
@@ -188,21 +192,21 @@ public class NugetInspectorManager {
 
         nugetOptions.addAll(Arrays.asList(
                 "install",
-                detectConfiguration.getNugetInspectorPackageName(),
+                bomToolConfig.getNugetInspectorPackageName(),
                 "-OutputDirectory",
                 outputDirectory.getCanonicalPath(),
                 "-Source",
                 source,
                 "-Version",
                 resolvedInspectorVersion
-                ));
+        ));
 
-        if (StringUtils.isNotBlank(detectConfiguration.getNugetConfigPath())) {
+        if (StringUtils.isNotBlank(bomToolConfig.getNugetConfigPath())) {
             nugetOptions.add("-ConfigFile");
-            nugetOptions.add(detectConfiguration.getNugetConfigPath());
+            nugetOptions.add(bomToolConfig.getNugetConfigPath());
         }
 
-        final Executable installInspectorExecutable = new Executable(detectConfiguration.getSourceDirectory(), nugetExecutablePath, nugetOptions);
+        final Executable installInspectorExecutable = new Executable(detectConfig.getSourceDirectory(), nugetExecutablePath, nugetOptions);
         final ExecutableOutput result = executableRunner.execute(installInspectorExecutable);
 
         if (result.getReturnCode() == 0 && result.getErrorOutputAsList().size() == 0) {

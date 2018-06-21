@@ -25,8 +25,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.go;
 
 import java.io.File;
 
-import org.springframework.stereotype.Component;
-
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
@@ -81,7 +79,7 @@ public class GoLockBomTool extends BomTool {
             return new ExecutableNotFoundBomToolResult("go");
         }
 
-        goDepInspector = goInspectorManager.evaluate(environment);
+        goDepInspector = goInspectorManager.evaluate();
         if (goDepInspector == null) {
             return new InspectorNotFoundBomToolResult("go");
         }

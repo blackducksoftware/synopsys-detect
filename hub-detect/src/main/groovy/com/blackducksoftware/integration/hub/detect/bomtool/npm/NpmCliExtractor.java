@@ -35,40 +35,41 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.parse.NpmCliDependencyFinder;
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.parse.NpmParseResult;
+import com.blackducksoftware.integration.hub.detect.configuration.BomToolConfig;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 
 @Component
-public class NpmCliExtractor  {
+public class NpmCliExtractor {
     private final Logger logger = LoggerFactory.getLogger(NpmCliExtractor.class);
 
     public static final String OUTPUT_FILE = "detect_npm_proj_dependencies.json";
     public static final String ERROR_FILE = "detect_npm_error.json";
 
-    @Autowired
-    private DetectConfiguration detectConfiguration;
+    private final ExecutableRunner executableRunner;
+    private final DetectFileManager detectFileManager;
+    private final NpmCliDependencyFinder npmCliDependencyFinder;
+    private final BomToolConfig bomToolConfig;
 
     @Autowired
-    private ExecutableRunner executableRunner;
-
-    @Autowired
-    private DetectFileManager detectFileManager;
-
-    @Autowired
-    private NpmCliDependencyFinder npmCliDependencyFinder;
+    public NpmCliExtractor(final ExecutableRunner executableRunner, final DetectFileManager detectFileManager, final NpmCliDependencyFinder npmCliDependencyFinder, final BomToolConfig bomToolConfig) {
+        this.executableRunner = executableRunner;
+        this.detectFileManager = detectFileManager;
+        this.npmCliDependencyFinder = npmCliDependencyFinder;
+        this.bomToolConfig = bomToolConfig;
+    }
 
     public Extraction extract(final File directory, final String npmExe, final ExtractionId extractionId) {
 
         final File npmLsOutputFile = detectFileManager.getOutputFile(extractionId, NpmCliExtractor.OUTPUT_FILE);
         final File npmLsErrorFile = detectFileManager.getOutputFile(extractionId, NpmCliExtractor.ERROR_FILE);
 
-        final boolean includeDevDeps = detectConfiguration.getNpmIncludeDevDependencies();
+        final boolean includeDevDeps = bomToolConfig.getNpmIncludeDevDependencies();
         final List<String> exeArgs = Arrays.asList("ls", "-json");
         if (!includeDevDeps) {
             exeArgs.add("-prod");
@@ -105,13 +106,12 @@ public class NpmCliExtractor  {
             return new Extraction.Builder().failure("Npm returned nothing after running npm ls").build();
         }
 
-
     }
 
     void printFileToDebug(final File errorFile) {
         String text = "";
         try {
-            for (final String line : Files.readAllLines(errorFile.toPath(), StandardCharsets.UTF_8)){
+            for (final String line : Files.readAllLines(errorFile.toPath(), StandardCharsets.UTF_8)) {
                 text += line + System.lineSeparator();
             }
         } catch (final IOException e) {

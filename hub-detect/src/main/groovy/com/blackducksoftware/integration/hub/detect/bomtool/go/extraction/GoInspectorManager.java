@@ -24,7 +24,6 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.go.extraction;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 
 import org.apache.commons.lang3.StringUtils;
@@ -33,10 +32,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.evaluation.BomToolEnvironment;
+import com.blackducksoftware.integration.hub.detect.configuration.BomToolConfig;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfig;
 import com.blackducksoftware.integration.hub.detect.evaluation.BomToolException;
-import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
@@ -48,45 +46,49 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 public class GoInspectorManager {
     private final Logger logger = LoggerFactory.getLogger(GoInspectorManager.class);
 
-    @Autowired
-    public DetectFileManager detectFileManager;
-
-    @Autowired
-    public DetectConfiguration detectConfiguration;
-
-    @Autowired
-    public ExecutableManager executableManager;
-
-    @Autowired
-    public ExecutableRunner executableRunner;
+    private final DetectFileManager detectFileManager;
+    private final ExecutableManager executableManager;
+    private final ExecutableRunner executableRunner;
+    private final BomToolConfig bomToolConfig;
+    private final DetectConfig detectConfig;
 
     private boolean hasResolvedInspector;
     private String resolvedGoDep;
 
-    public String evaluate(final BomToolEnvironment environment) throws BomToolException {
+    @Autowired
+    public GoInspectorManager(final DetectFileManager detectFileManager, final ExecutableManager executableManager, final ExecutableRunner executableRunner, final BomToolConfig bomToolConfig,
+            final DetectConfig detectConfig) {
+        this.detectFileManager = detectFileManager;
+        this.executableManager = executableManager;
+        this.executableRunner = executableRunner;
+        this.bomToolConfig = bomToolConfig;
+        this.detectConfig = detectConfig;
+    }
+
+    public String evaluate() throws BomToolException {
         try {
             if (!hasResolvedInspector) {
                 resolvedGoDep = install();
             }
 
             return resolvedGoDep;
-        }catch (final Exception e) {
+        } catch (final Exception e) {
             throw new BomToolException(e);
         }
     }
 
-    public String install() throws DetectUserFriendlyException, ExecutableRunnerException, IOException {
-        String goDepPath = detectConfiguration.getGoDepPath();
+    public String install() throws ExecutableRunnerException {
+        String goDepPath = bomToolConfig.getGoDepPath();
         if (StringUtils.isBlank(goDepPath)) {
             final File goDep = getGoDepInstallLocation();
             if (goDep.exists()) {
                 goDepPath = goDep.getAbsolutePath();
             } else {
-                goDepPath = executableManager.getExecutablePath(ExecutableType.GO_DEP, true, detectConfiguration.getSourcePath());
+                goDepPath = executableManager.getExecutablePath(ExecutableType.GO_DEP, true, detectConfig.getSourcePath());
             }
         }
         if (StringUtils.isBlank(goDepPath)) {
-            final String goExecutable = executableManager.getExecutablePath(ExecutableType.GO, true, detectConfiguration.getSourcePath());
+            final String goExecutable = executableManager.getExecutablePath(ExecutableType.GO, true, detectConfig.getSourcePath());
             goDepPath = installGoDep(goExecutable);
         }
         return goDepPath;
@@ -104,14 +106,14 @@ public class GoInspectorManager {
                 "-v",
                 "-d",
                 "github.com/golang/dep/cmd/dep"
-                ));
+        ));
         executableRunner.execute(getGoDep);
 
         logger.debug("Building the Go Dep tool in ${goOutputDirectory}");
         final Executable buildGoDep = new Executable(installDirectory, goExecutable, Arrays.asList(
                 "build",
                 "github.com/golang/dep/cmd/dep"
-                ));
+        ));
         executableRunner.execute(buildGoDep);
 
         return goDep.getAbsolutePath();

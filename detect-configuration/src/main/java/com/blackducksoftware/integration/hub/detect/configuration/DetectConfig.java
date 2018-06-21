@@ -35,6 +35,13 @@ public class DetectConfig extends BaseConfig {
         this.sourceDirectory = sourceDirectory;
         this.outputDirectory = outputDirectory;
 
+        this.detectProjectBomTool = valueContainer.getDetectProjectBomTool();
+        this.bomToolSearchDepth = valueContainer.getBomToolSearchDepth();
+        this.bomToolContinueSearch = valueContainer.getBomToolContinueSearch();
+        this.bomToolSearchExclusion = valueContainer.getBomToolSearchExclusion();
+        this.bomToolSearchExclusionDefaults = valueContainer.getBomToolSearchExclusionDefaults();
+        this.excludedBomToolTypes = valueContainer.getExcludedBomToolTypes();
+        this.includedBomToolTypes = valueContainer.getIncludedBomToolTypes();
         this.failOnConfigWarning = valueContainer.getFailOnConfigWarning();
         this.forceSuccess = valueContainer.getForceSuccess();
         this.suppressConfigurationOutput = valueContainer.getSuppressConfigurationOutput();
@@ -62,6 +69,19 @@ public class DetectConfig extends BaseConfig {
     }
 
     // properties start
+    private String detectProjectBomTool;
+
+    private Integer bomToolSearchDepth;
+
+    private Boolean bomToolContinueSearch;
+
+    private String[] bomToolSearchExclusion;
+
+    private Boolean bomToolSearchExclusionDefaults;
+
+    private String excludedBomToolTypes;
+
+    private String includedBomToolTypes;
 
     private Boolean failOnConfigWarning;
 
@@ -94,6 +114,34 @@ public class DetectConfig extends BaseConfig {
     private String defaultProjectVersionTimeformat;
 
     private String aggregateBomName;
+
+    public int getBomToolSearchDepth() {
+        return convertInt(bomToolSearchDepth);
+    }
+
+    public String getDetectProjectBomTool() {
+        return detectProjectBomTool;
+    }
+
+    public Boolean getBomToolContinueSearch() {
+        return BooleanUtils.toBoolean(bomToolContinueSearch);
+    }
+
+    public String[] getBomToolSearchExclusion() {
+        return bomToolSearchExclusion;
+    }
+
+    public Boolean getBomToolSearchExclusionDefaults() {
+        return BooleanUtils.toBoolean(bomToolSearchExclusionDefaults);
+    }
+
+    public String getExcludedBomToolTypes() {
+        return excludedBomToolTypes == null ? null : excludedBomToolTypes.toUpperCase();
+    }
+
+    public String getIncludedBomToolTypes() {
+        return includedBomToolTypes == null ? null : includedBomToolTypes.toUpperCase();
+    }
 
     public boolean getCombineCodeLocations() {
         return false; //for now this is always false, in the future we could introduce a property.

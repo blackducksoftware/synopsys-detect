@@ -32,9 +32,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.parse.PipInspectorTreeParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.parse.PipParseResult;
+import com.blackducksoftware.integration.hub.detect.configuration.BomToolConfig;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
@@ -42,14 +42,16 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 
 @Component
 public class PipInspectorExtractor {
-    @Autowired
-    private DetectConfiguration detectConfiguration;
+    private final ExecutableRunner executableRunner;
+    private final PipInspectorTreeParser pipInspectorTreeParser;
+    private final BomToolConfig bomToolConfig;
 
     @Autowired
-    private ExecutableRunner executableRunner;
-
-    @Autowired
-    private PipInspectorTreeParser pipInspectorTreeParser;
+    public PipInspectorExtractor(final ExecutableRunner executableRunner, final PipInspectorTreeParser pipInspectorTreeParser, final BomToolConfig bomToolConfig) {
+        this.executableRunner = executableRunner;
+        this.pipInspectorTreeParser = pipInspectorTreeParser;
+        this.bomToolConfig = bomToolConfig;
+    }
 
     public Extraction extract(final File directory, final String pythonExe, final File pipInspector, final File setupFile, final String requirementFilePath) {
         try {
@@ -83,7 +85,7 @@ public class PipInspectorExtractor {
     }
 
     private String getProjectName(final File directory, final String pythonExe, final File pipInspector, final File setupFile, final String requirementFilePath) throws ExecutableRunnerException {
-        String projectName = detectConfiguration.getPipProjectName();
+        String projectName = bomToolConfig.getPipProjectName();
 
         if (setupFile != null && setupFile.exists() && StringUtils.isBlank(projectName)) {
             final Executable findProjectNameExecutable = new Executable(directory, pythonExe, Arrays.asList(

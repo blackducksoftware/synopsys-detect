@@ -38,7 +38,6 @@ import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency;
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode;
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer;
 import com.blackducksoftware.integration.hub.detect.nameversion.NodeMetadata;
@@ -51,11 +50,12 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 public class CocoapodsPackager {
     final List<String> fuzzyVersionIdentifiers = new ArrayList<>(Arrays.asList(">", "<", "~>", "="));
 
-    @Autowired
-    private NameVersionNodeTransformer nameVersionNodeTransformer;
+    private final NameVersionNodeTransformer nameVersionNodeTransformer;
 
     @Autowired
-    private DetectConfiguration detectConfiguration;
+    public CocoapodsPackager(final NameVersionNodeTransformer nameVersionNodeTransformer) {
+        this.nameVersionNodeTransformer = nameVersionNodeTransformer;
+    }
 
     public DependencyGraph extractDependencyGraph(final String podLockText) throws IOException {
         YAMLMapper mapper = new YAMLMapper();

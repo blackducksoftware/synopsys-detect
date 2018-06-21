@@ -23,43 +23,34 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.pear.parse
 
-import org.apache.commons.lang3.BooleanUtils
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
-
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph
 import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
+import com.blackducksoftware.integration.hub.detect.configuration.BomToolConfig
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
-
 import groovy.transform.TypeChecked
 import groovy.util.slurpersupport.GPathResult
+import org.apache.commons.lang3.BooleanUtils
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Component
 
 @Component
-
 class PearDependencyFinder {
     private final Logger logger = LoggerFactory.getLogger(PearDependencyFinder.class)
 
-    @Autowired
-    DetectFileManager detectFileManager
+    private final ExternalIdFactory externalIdFactory
+    private final BomToolConfig bomToolConfig
 
     @Autowired
-    ExecutableRunner executableRunner
-
-    @Autowired
-    DetectConfiguration detectConfiguration
-
-    @Autowired
-    ExternalIdFactory externalIdFactory
-
+    PearDependencyFinder(final ExternalIdFactory externalIdFactory, final BomToolConfig bomToolConfig) {
+        this.externalIdFactory = externalIdFactory
+        this.bomToolConfig = bomToolConfig
+    }
 
     public PearParseResult parse(File packageFile, ExecutableOutput pearListing, ExecutableOutput pearDependencies) {
         PearParseResult result = new PearParseResult();
@@ -101,7 +92,7 @@ class PearDependencyFinder {
                 String dependencyRequired = dependencyInfo[0].trim()
 
                 if (dependencyName) {
-                    if (!detectConfiguration.getPearOnlyRequiredDependencies()) {
+                    if (!bomToolConfig.getPearOnlyRequiredDependencies()) {
                         nameList.add(dependencyName.split('/')[-1])
                     } else {
                         if (BooleanUtils.toBoolean(dependencyRequired)) {

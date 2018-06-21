@@ -40,10 +40,10 @@ import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphCombiner;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.parse.NugetInspectorPackager;
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.parse.NugetParseResult;
+import com.blackducksoftware.integration.hub.detect.configuration.BomToolConfig;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
@@ -54,18 +54,23 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 
 @Component
 public class NugetInspectorExtractor {
-    static final String INSPECTOR_OUTPUT_PATTERN = "*_inspection.json";
+    private static final String INSPECTOR_OUTPUT_PATTERN = "*_inspection.json";
     private final Logger logger = LoggerFactory.getLogger(NugetInspectorExtractor.class);
+    private final DetectFileManager detectFileManager;
+    private final NugetInspectorPackager nugetInspectorPackager;
+    private final ExecutableRunner executableRunner;
+    private final DetectFileFinder detectFileFinder;
+    private final BomToolConfig bomToolConfig;
+
     @Autowired
-    public DetectFileManager detectFileManager;
-    @Autowired
-    NugetInspectorPackager nugetInspectorPackager;
-    @Autowired
-    private DetectConfiguration detectConfiguration;
-    @Autowired
-    private ExecutableRunner executableRunner;
-    @Autowired
-    private DetectFileFinder detectFileFinder;
+    public NugetInspectorExtractor(final DetectFileManager detectFileManager, final NugetInspectorPackager nugetInspectorPackager, final ExecutableRunner executableRunner, final DetectFileFinder detectFileFinder,
+            final BomToolConfig bomToolConfig) {
+        this.detectFileManager = detectFileManager;
+        this.nugetInspectorPackager = nugetInspectorPackager;
+        this.executableRunner = executableRunner;
+        this.detectFileFinder = detectFileFinder;
+        this.bomToolConfig = bomToolConfig;
+    }
 
     public Extraction extract(final File directory, final String inspectorExe, final ExtractionId extractionId) {
 
@@ -75,21 +80,21 @@ public class NugetInspectorExtractor {
             final List<String> options = new ArrayList<>(Arrays.asList(
                     "--target_path=" + directory.toString(),
                     "--output_directory=" + outputDirectory.getCanonicalPath(),
-                    "--ignore_failure=" + detectConfiguration.getNugetInspectorIgnoreFailure()
-                    ));
+                    "--ignore_failure=" + bomToolConfig.getNugetInspectorIgnoreFailure()
+            ));
 
-            if (detectConfiguration.getNugetInspectorExcludedModules() != null) {
-                options.add("--excluded_modules=" + detectConfiguration.getNugetInspectorExcludedModules());
+            if (bomToolConfig.getNugetInspectorExcludedModules() != null) {
+                options.add("--excluded_modules=" + bomToolConfig.getNugetInspectorExcludedModules());
             }
-            if (detectConfiguration.getNugetInspectorIncludedModules() != null) {
-                options.add("--included_modules=" + detectConfiguration.getNugetInspectorIncludedModules());
+            if (bomToolConfig.getNugetInspectorIncludedModules() != null) {
+                options.add("--included_modules=" + bomToolConfig.getNugetInspectorIncludedModules());
             }
-            if (detectConfiguration.getNugetPackagesRepoUrl() != null) {
-                final String packagesRepos = Arrays.asList(detectConfiguration.getNugetPackagesRepoUrl()).stream().collect(Collectors.joining(","));
+            if (bomToolConfig.getNugetPackagesRepoUrl() != null) {
+                final String packagesRepos = Arrays.asList(bomToolConfig.getNugetPackagesRepoUrl()).stream().collect(Collectors.joining(","));
                 options.add("--packages_repo_url=" + packagesRepos);
             }
-            if (StringUtils.isNotBlank(detectConfiguration.getNugetConfigPath())) {
-                options.add("--nuget_config_path=" + detectConfiguration.getNugetConfigPath());
+            if (StringUtils.isNotBlank(bomToolConfig.getNugetConfigPath())) {
+                options.add("--nuget_config_path=" + bomToolConfig.getNugetConfigPath());
             }
             if (logger.isTraceEnabled()) {
                 options.add("-v");

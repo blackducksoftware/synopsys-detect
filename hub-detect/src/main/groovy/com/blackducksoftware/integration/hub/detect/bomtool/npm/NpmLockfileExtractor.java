@@ -31,19 +31,21 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.parse.NpmLockfilePackager;
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.parse.NpmParseResult;
+import com.blackducksoftware.integration.hub.detect.configuration.BomToolConfig;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 
 @Component
 public class NpmLockfileExtractor {
+    private final NpmLockfilePackager npmLockfilePackager;
+    private final BomToolConfig bomToolConfig;
 
     @Autowired
-    private NpmLockfilePackager npmLockfilePackager;
-
-    @Autowired
-    protected DetectConfiguration detectConfiguration;
+    public NpmLockfileExtractor(final NpmLockfilePackager npmLockfilePackager, final BomToolConfig bomToolConfig) {
+        this.npmLockfilePackager = npmLockfilePackager;
+        this.bomToolConfig = bomToolConfig;
+    }
 
     public Extraction extract(final File directory, final File lockfile) {
         String lockText;
@@ -54,7 +56,7 @@ public class NpmLockfileExtractor {
         }
 
         try {
-            final boolean includeDev = detectConfiguration.getNpmIncludeDevDependencies();
+            final boolean includeDev = bomToolConfig.getNpmIncludeDevDependencies();
             final NpmParseResult result = npmLockfilePackager.parse(directory.getCanonicalPath(), lockText, includeDev);
             return new Extraction.Builder().success(result.codeLocation).projectName(result.projectName).projectVersion(result.projectVersion).build();
         } catch (final IOException e) {

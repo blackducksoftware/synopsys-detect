@@ -25,8 +25,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.npm;
 
 import java.io.File;
 
-import org.springframework.stereotype.Component;
-
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
@@ -41,22 +39,22 @@ import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
-public class NpmCliBomTool extends BomTool{
+public class NpmCliBomTool extends BomTool {
     public static final String NODE_MODULES = "node_modules";
     public static final String PACKAGE_JSON = "package.json";
 
     private final DetectFileFinder fileFinder;
-    private NpmExecutableFinder npmExecutableFinder;
+    private final NpmExecutableFinder npmExecutableFinder;
     private final NpmCliExtractor npmCliExtractor;
 
     private String npmExe;
 
-    public NpmCliBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final NpmCliExtractor npmCliExtractor) {
+    public NpmCliBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final NpmExecutableFinder npmExecutableFinder, final NpmCliExtractor npmCliExtractor) {
         super(environment);
         this.fileFinder = fileFinder;
+        this.npmExecutableFinder = npmExecutableFinder;
         this.npmCliExtractor = npmCliExtractor;
     }
-
 
     @Override
     public BomToolResult applicable() {

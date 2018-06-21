@@ -30,7 +30,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.configuration.BomToolConfig;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfig;
 import com.blackducksoftware.integration.hub.detect.evaluation.BomToolException;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
@@ -50,16 +51,20 @@ public class StandardExecutableFinder {
         YARN
     }
 
-    @Autowired
-    public DetectFileManager detectFileManager;
-
-    @Autowired
-    public ExecutableManager executableManager;
-
-    @Autowired
-    protected DetectConfiguration detectConfiguration;
+    private final DetectFileManager detectFileManager;
+    private final ExecutableManager executableManager;
+    private final DetectConfig detectConfig;
+    private final BomToolConfig bomToolConfig;
 
     private final Map<StandardExecutableType, File> alreadyFound = new HashMap<>();
+
+    @Autowired
+    public StandardExecutableFinder(final DetectFileManager detectFileManager, final ExecutableManager executableManager, final DetectConfig detectConfig, final BomToolConfig bomToolConfig) {
+        this.detectFileManager = detectFileManager;
+        this.executableManager = executableManager;
+        this.detectConfig = detectConfig;
+        this.bomToolConfig = bomToolConfig;
+    }
 
     public File getExecutable(final StandardExecutableType executableType) throws BomToolException {
         if (alreadyFound.containsKey(executableType)) {
@@ -70,7 +75,7 @@ public class StandardExecutableFinder {
             throw new BomToolException("Unknown executable type: " + executableType.toString());
         }
 
-        final String exe = executableManager.getExecutablePathOrOverride(info.detectExecutableType, true, detectConfiguration.getSourceDirectory(), info.override);
+        final String exe = executableManager.getExecutablePathOrOverride(info.detectExecutableType, true, detectConfig.getSourceDirectory(), info.override);
         File exeFile = null;
         if (exe != null) {
             exeFile = new File(exe);
@@ -82,23 +87,23 @@ public class StandardExecutableFinder {
     public StandardExecutableInfo createInfo(final StandardExecutableType type) {
         switch (type) {
         case CONDA:
-            return new StandardExecutableInfo(ExecutableType.CONDA, detectConfiguration.getCondaPath());
+            return new StandardExecutableInfo(ExecutableType.CONDA, bomToolConfig.getCondaPath());
         case CPAN:
-            return new StandardExecutableInfo(ExecutableType.CPAN, detectConfiguration.getCpanPath());
+            return new StandardExecutableInfo(ExecutableType.CPAN, bomToolConfig.getCpanPath());
         case CPANM:
-            return new StandardExecutableInfo(ExecutableType.CPANM, detectConfiguration.getCpanmPath());
+            return new StandardExecutableInfo(ExecutableType.CPANM, bomToolConfig.getCpanmPath());
         case DOCKER:
-            return new StandardExecutableInfo(ExecutableType.DOCKER, detectConfiguration.getDockerPath());
+            return new StandardExecutableInfo(ExecutableType.DOCKER, bomToolConfig.getDockerPath());
         case BASH:
-            return new StandardExecutableInfo(ExecutableType.BASH, detectConfiguration.getBashPath());
+            return new StandardExecutableInfo(ExecutableType.BASH, bomToolConfig.getBashPath());
         case GO:
             return new StandardExecutableInfo(ExecutableType.GO, null);
         case REBAR3:
-            return new StandardExecutableInfo(ExecutableType.REBAR3, detectConfiguration.getHexRebar3Path());
+            return new StandardExecutableInfo(ExecutableType.REBAR3, bomToolConfig.getHexRebar3Path());
         case PEAR:
-            return new StandardExecutableInfo(ExecutableType.PEAR, detectConfiguration.getPearPath());
+            return new StandardExecutableInfo(ExecutableType.PEAR, bomToolConfig.getPearPath());
         case YARN:
-            return new StandardExecutableInfo(ExecutableType.YARN, detectConfiguration.getYarnPath());
+            return new StandardExecutableInfo(ExecutableType.YARN, bomToolConfig.getYarnPath());
         }
         return null;
     }
