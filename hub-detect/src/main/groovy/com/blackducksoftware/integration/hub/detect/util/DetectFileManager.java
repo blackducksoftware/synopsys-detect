@@ -36,13 +36,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfig;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 
 @Component
 public class DetectFileManager {
     private final Logger logger = LoggerFactory.getLogger(DetectFileManager.class);
 
-    private final DetectConfig detectConfig;
+    private final DetectConfigWrapper detectConfigWrapper;
 
     private final String sharedUUID = "shared";
     private File sharedDirectory = null;
@@ -50,8 +51,8 @@ public class DetectFileManager {
     //private final Map<ExtractionContext, File> outputDirectories = new HashMap<>();
 
     @Autowired
-    public DetectFileManager(final DetectConfig detectConfig) {
-        this.detectConfig = detectConfig;
+    public DetectFileManager(final DetectConfigWrapper detectConfigWrapper) {
+        this.detectConfigWrapper = detectConfigWrapper;
     }
 
     public File getOutputDirectory(final ExtractionId extractionId) {
@@ -68,7 +69,7 @@ public class DetectFileManager {
     }
 
     private File getExtractionFile() {
-        final File newDirectory = new File(detectConfig.getOutputDirectory(), "extractions");
+        final File newDirectory = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_OUTPUT_PATH), "extractions");
         newDirectory.mkdir();
         return newDirectory;
     }
@@ -80,7 +81,7 @@ public class DetectFileManager {
 
     public File getSharedDirectory(String name) { //shared across this invocation of detect.
         if (sharedDirectory == null) {
-            sharedDirectory = new File(detectConfig.getOutputDirectory(), sharedUUID);
+            sharedDirectory = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_OUTPUT_PATH), sharedUUID);
             sharedDirectory.mkdir();
         }
         File newSharedFile = new File(sharedDirectory, name);
@@ -89,7 +90,7 @@ public class DetectFileManager {
     }
 
     public File getPermanentDirectory() { //shared across all invocations of detect
-        final File newDirectory = new File(detectConfig.getOutputDirectory(), "tools");
+        final File newDirectory = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_OUTPUT_PATH), "tools");
         newDirectory.mkdir();
         return newDirectory;
     }
@@ -122,7 +123,7 @@ public class DetectFileManager {
     }
 
     public void cleanupDirectories() {
-        if (detectConfig.getCleanupDetectFiles()) {
+        if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_CLEANUP)) {
             for (final File file : outputDirectories.values()) {
                 try {
                     FileUtils.deleteDirectory(file);

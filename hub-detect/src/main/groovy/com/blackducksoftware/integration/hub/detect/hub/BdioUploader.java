@@ -31,8 +31,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.exception.IntegrationException;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfig;
-import com.blackducksoftware.integration.hub.detect.configuration.HubConfig;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.model.DetectProject;
 import com.blackducksoftware.integration.hub.service.CodeLocationService;
 
@@ -40,20 +40,18 @@ import com.blackducksoftware.integration.hub.service.CodeLocationService;
 public class BdioUploader {
     private final Logger logger = LoggerFactory.getLogger(BdioUploader.class);
 
-    private final DetectConfig detectConfig;
-    private final HubConfig hubConfig;
+    private final DetectConfigWrapper detectConfigWrapper;
 
     @Autowired
-    public BdioUploader(final DetectConfig detectConfig, final HubConfig hubConfig) {
-        this.detectConfig = detectConfig;
-        this.hubConfig = hubConfig;
+    public BdioUploader(final DetectConfigWrapper detectConfigWrapper) {
+        this.detectConfigWrapper = detectConfigWrapper;
     }
 
     public void uploadBdioFiles(final CodeLocationService codeLocationService, final DetectProject detectProject) throws IntegrationException {
         for (final File file : detectProject.getBdioFiles()) {
-            logger.info(String.format("uploading %s to %s", file.getName(), hubConfig.getHubUrl()));
+            logger.info(String.format("uploading %s to %s", file.getName(), detectConfigWrapper.getProperty(DetectProperty.BLACKDUCK_HUB_URL)));
             codeLocationService.importBomFile(file);
-            if (detectConfig.getCleanupDetectFiles()) {
+            if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_CLEANUP)) {
                 file.delete();
             }
         }

@@ -39,8 +39,8 @@ import com.blackducksoftware.integration.hub.api.generated.view.CodeLocationView
 import com.blackducksoftware.integration.hub.api.generated.view.ProjectVersionView;
 import com.blackducksoftware.integration.hub.api.view.ScanSummaryView;
 import com.blackducksoftware.integration.hub.configuration.HubServerConfig;
-import com.blackducksoftware.integration.hub.detect.configuration.BomToolConfig;
-import com.blackducksoftware.integration.hub.detect.configuration.HubConfig;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
@@ -65,20 +65,18 @@ public class HubManager implements ExitCodeReporter {
     private final HubSignatureScanner hubSignatureScanner;
     private final PolicyChecker policyChecker;
     private final HubServiceWrapper hubServiceWrapper;
-    private final HubConfig hubConfig;
-    private final BomToolConfig bomToolConfig;
+    private final DetectConfigWrapper detectConfigWrapper;
 
     private ExitCodeType exitCodeType = ExitCodeType.SUCCESS;
 
     @Autowired
-    public HubManager(final BdioUploader bdioUploader, final HubSignatureScanner hubSignatureScanner, final PolicyChecker policyChecker, final HubServiceWrapper hubServiceWrapper, final HubConfig hubConfig,
-            final BomToolConfig bomToolConfig) {
+    public HubManager(final BdioUploader bdioUploader, final HubSignatureScanner hubSignatureScanner, final PolicyChecker policyChecker, final HubServiceWrapper hubServiceWrapper,
+            final DetectConfigWrapper detectConfigWrapper) {
         this.bdioUploader = bdioUploader;
         this.hubSignatureScanner = hubSignatureScanner;
         this.policyChecker = policyChecker;
         this.hubServiceWrapper = hubServiceWrapper;
-        this.hubConfig = hubConfig;
-        this.bomToolConfig = bomToolConfig;
+        this.detectConfigWrapper = detectConfigWrapper;
     }
 
     public ProjectVersionView updateHubProjectVersion(final DetectProject detectProject) throws IntegrationException, DetectUserFriendlyException, InterruptedException {
@@ -86,7 +84,7 @@ public class HubManager implements ExitCodeReporter {
         ProjectVersionView projectVersionView = ensureProjectVersionExists(detectProject, projectService);
         if (null != detectProject.getBdioFiles() && !detectProject.getBdioFiles().isEmpty()) {
             final CodeLocationService codeLocationService = hubServiceWrapper.createCodeLocationService();
-            if (hubConfig.getProjectCodeLocationUnmap()) {
+            if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_UNMAP)) {
                 try {
                     final HubService hubService = hubServiceWrapper.createHubService();
                     final List<CodeLocationView> codeLocationViews = hubService.getAllResponses(projectVersionView, ProjectVersionView.CODELOCATIONS_LINK_RESPONSE);
@@ -116,13 +114,14 @@ public class HubManager implements ExitCodeReporter {
 
     public void performPostHubActions(final DetectProject detectProject, final ProjectVersionView projectVersionView) throws DetectUserFriendlyException {
         try {
-            if (StringUtils.isNotBlank(hubConfig.getPolicyCheckFailOnSeverities()) || hubConfig.getRiskReportPdf() || hubConfig.getNoticesReport()) {
+            if (StringUtils.isNotBlank(detectConfigWrapper.getProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES)) || detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_RISK_REPORT_PDF) || detectConfigWrapper
+                    .getBooleanProperty(DetectProperty.DETECT_NOTICES_REPORT)) {
                 final ProjectService projectService = hubServiceWrapper.createProjectService();
                 final ScanStatusService scanStatusService = hubServiceWrapper.createScanStatusService();
 
                 waitForBomUpdate(hubServiceWrapper.createHubService(), scanStatusService, projectVersionView);
 
-                if (StringUtils.isNotBlank(hubConfig.getPolicyCheckFailOnSeverities())) {
+                if (StringUtils.isNotBlank(detectConfigWrapper.getProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES))) {
                     final PolicyStatusDescription policyStatusDescription = policyChecker.getPolicyStatus(projectService, projectVersionView);
                     logger.info(policyStatusDescription.getPolicyStatusMessage());
                     if (policyChecker.policyViolated(policyStatusDescription)) {
@@ -130,17 +129,17 @@ public class HubManager implements ExitCodeReporter {
                     }
                 }
 
-                if (hubConfig.getRiskReportPdf()) {
+                if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_RISK_REPORT_PDF)) {
                     final ReportService reportService = hubServiceWrapper.createReportService();
                     logger.info("Creating risk report pdf");
-                    final File pdfFile = reportService.createReportPdfFile(new File(hubConfig.getRiskReportPdfOutputDirectory()), detectProject.getProjectName(), detectProject.getProjectVersion());
+                    final File pdfFile = reportService.createReportPdfFile(new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_RISK_REPORT_PDF_PATH)), detectProject.getProjectName(), detectProject.getProjectVersion());
                     logger.info(String.format("Created risk report pdf: %s", pdfFile.getCanonicalPath()));
                 }
 
-                if (hubConfig.getNoticesReport()) {
+                if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_NOTICES_REPORT)) {
                     final ReportService reportService = hubServiceWrapper.createReportService();
                     logger.info("Creating notices report");
-                    final File noticesFile = reportService.createNoticesReportFile(new File(hubConfig.getNoticesReportOutputDirectory()), detectProject.getProjectName(), detectProject.getProjectVersion());
+                    final File noticesFile = reportService.createNoticesReportFile(new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_NOTICES_REPORT_PATH)), detectProject.getProjectName(), detectProject.getProjectVersion());
                     if (noticesFile != null) {
                         logger.info(String.format("Created notices report: %s", noticesFile.getCanonicalPath()));
                     }
@@ -182,11 +181,11 @@ public class HubManager implements ExitCodeReporter {
     }
 
     public ProjectVersionView ensureProjectVersionExists(final DetectProject detectProject, final ProjectService projectService) throws IntegrationException {
-        final ProjectRequestBuilder projectRequestBuilder = new DetectProjectRequestBuilder(hubConfig, detectProject);
+        final ProjectRequestBuilder projectRequestBuilder = new DetectProjectRequestBuilder(detectConfigWrapper, detectProject);
         final ProjectRequest projectRequest = projectRequestBuilder.build();
 
         final ProjectVersionWrapper projectVersionWrapper = projectService.getProjectVersionAndCreateIfNeeded(projectRequest);
-        if (hubConfig.getProjectVersionUpdate()) {
+        if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_PROJECT_VERSION_UPDATE)) {
             logger.debug("Updating Project and Version information to " + projectRequest.toString());
             projectService.updateProjectAndVersion(projectVersionWrapper.getProjectView(), projectRequest);
         }

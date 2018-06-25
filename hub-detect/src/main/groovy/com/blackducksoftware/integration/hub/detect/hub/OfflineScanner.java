@@ -39,8 +39,8 @@ import com.blackducksoftware.integration.hub.cli.OfflineCLILocation;
 import com.blackducksoftware.integration.hub.cli.SimpleScanUtility;
 import com.blackducksoftware.integration.hub.configuration.HubScanConfig;
 import com.blackducksoftware.integration.hub.configuration.HubServerConfig;
-import com.blackducksoftware.integration.hub.detect.configuration.BomToolConfig;
-import com.blackducksoftware.integration.hub.detect.configuration.HubConfig;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.model.DetectProject;
@@ -57,14 +57,12 @@ public class OfflineScanner {
     private final Logger logger = LoggerFactory.getLogger(OfflineScanner.class);
 
     private final Gson gson;
-    private final BomToolConfig bomToolConfig;
-    private final HubConfig hubConfig;
+    private final DetectConfigWrapper detectConfigWrapper;
 
     @Autowired
-    public OfflineScanner(final Gson gson, final BomToolConfig bomToolConfig, final HubConfig hubConfig) {
+    public OfflineScanner(final Gson gson, final DetectConfigWrapper detectConfigWrapper) {
         this.gson = gson;
-        this.bomToolConfig = bomToolConfig;
-        this.hubConfig = hubConfig;
+        this.detectConfigWrapper = detectConfigWrapper;
     }
 
     boolean offlineScan(final DetectProject detectProject, final HubScanConfig hubScanConfig, final String hubSignatureScannerOfflineLocalPath)
@@ -83,7 +81,7 @@ public class OfflineScanner {
         }
 
         boolean cliInstalledOkay = checkCliInstall(cliLocation, new SilentLogger());
-        if (!cliInstalledOkay && StringUtils.isNotBlank(bomToolConfig.getHubSignatureScannerHostUrl())) {
+        if (!cliInstalledOkay && StringUtils.isNotBlank(detectConfigWrapper.getProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_HOST_URL))) {
             installSignatureScannerFromUrl(intLogger, hubScanConfig);
             cliInstalledOkay = checkCliInstall(cliLocation, intLogger);
         }
@@ -103,17 +101,17 @@ public class OfflineScanner {
 
     private void installSignatureScannerFromUrl(final IntLogger intLogger, final HubScanConfig hubScanConfig) throws DetectUserFriendlyException {
         try {
-            logger.info(String.format("Attempting to download the signature scanner from %s", bomToolConfig.getHubSignatureScannerHostUrl()));
+            logger.info(String.format("Attempting to download the signature scanner from %s", detectConfigWrapper.getProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_HOST_URL)));
             final UnauthenticatedRestConnectionBuilder restConnectionBuilder = new UnauthenticatedRestConnectionBuilder();
-            restConnectionBuilder.setBaseUrl(bomToolConfig.getHubSignatureScannerHostUrl());
-            restConnectionBuilder.setTimeout(hubConfig.getHubTimeout());
-            restConnectionBuilder.applyProxyInfo(hubConfig.getHubProxyInfo());
+            restConnectionBuilder.setBaseUrl(detectConfigWrapper.getProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_HOST_URL));
+            restConnectionBuilder.setTimeout(detectConfigWrapper.getIntegerProperty(DetectProperty.BLACKDUCK_HUB_TIMEOUT));
+            restConnectionBuilder.applyProxyInfo(detectConfigWrapper.getHubProxyInfo());
             restConnectionBuilder.setLogger(intLogger);
             final RestConnection restConnection = restConnectionBuilder.build();
             final CLIDownloadUtility cliDownloadUtility = new CLIDownloadUtility(intLogger, restConnection);
-            cliDownloadUtility.performInstallation(hubScanConfig.getToolsDir(), bomToolConfig.getHubSignatureScannerHostUrl(), "unknown");
+            cliDownloadUtility.performInstallation(hubScanConfig.getToolsDir(), detectConfigWrapper.getProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_HOST_URL), "unknown");
         } catch (final Exception e) {
-            throw new DetectUserFriendlyException(String.format("There was a problem downloading the signature scanner from %s: %s", bomToolConfig.getHubSignatureScannerHostUrl(), e.getMessage()), e,
+            throw new DetectUserFriendlyException(String.format("There was a problem downloading the signature scanner from %s: %s", detectConfigWrapper.getProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_HOST_URL), e.getMessage()), e,
                     ExitCodeType.FAILURE_GENERAL_ERROR);
         }
     }

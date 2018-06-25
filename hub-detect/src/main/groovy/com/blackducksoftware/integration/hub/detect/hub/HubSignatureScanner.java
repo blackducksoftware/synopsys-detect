@@ -127,9 +127,10 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
 
     public void scanPathsOffline(final DetectProject detectProject) throws IOException, IntegrationException {
         determinePathsAndExclusions(detectProject);
-        
-        if (null != detectProject.getProjectName() && null != detectProject.getProjectVersion() && null != bomToolConfig.getHubSignatureScannerPaths() && bomToolConfig.getHubSignatureScannerPaths().length > 0) {
-            for (final String path : bomToolConfig.getHubSignatureScannerPaths()) {
+        String[] signatureScanPaths = detectConfigWrapper.getStringArrayProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_PATHS);
+
+        if (null != detectProject.getProjectName() && null != detectProject.getProjectVersion() && null != signatureScanPaths && signatureScanPaths.length > 0) {
+            for (final String path : signatureScanPaths) {
                 scanPathOffline(new File(path).getCanonicalPath(), detectProject);
             }
         } else {
@@ -171,14 +172,14 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
         try {
             final HubScanConfigBuilder hubScanConfigBuilder = createScanConfigBuilder(detectProject, canonicalPath, scanPathExclusionPatterns.get(canonicalPath));
             hubScanConfigBuilder.setDryRun(true);
-
-            if (StringUtils.isBlank(bomToolConfig.getHubSignatureScannerOfflineLocalPath())) {
+            String offlineLocalPath = detectConfigWrapper.getProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH);
+            if (StringUtils.isBlank(offlineLocalPath)) {
                 final File toolsDirectory = detectFileManager.getPermanentDirectory();
                 hubScanConfigBuilder.setToolsDir(toolsDirectory);
             }
 
             final HubScanConfig hubScanConfig = hubScanConfigBuilder.build();
-            final boolean pathWasScanned = offlineScanner.offlineScan(detectProject, hubScanConfig, bomToolConfig.getHubSignatureScannerOfflineLocalPath());
+            final boolean pathWasScanned = offlineScanner.offlineScan(detectProject, hubScanConfig, offlineLocalPath);
             if (pathWasScanned) {
                 scanSummaryResults.put(canonicalPath, Result.SUCCESS);
                 logger.info(String.format("%s was successfully scanned by the BlackDuck CLI.", canonicalPath));
@@ -189,11 +190,12 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
     }
 
     private void determinePathsAndExclusions(final DetectProject detectProject) throws IntegrationException {
-        final boolean userProvidedScanTargets = null != bomToolConfig.getHubSignatureScannerPaths() && bomToolConfig.getHubSignatureScannerPaths().length > 0;
-        final String[] providedExclusionPatterns = bomToolConfig.getHubSignatureScannerExclusionPatterns();
-        final String[] hubSignatureScannerExclusionNamePatterns = bomToolConfig.getHubSignatureScannerExclusionNamePatterns();
+        String[] signatureScanPaths = detectConfigWrapper.getStringArrayProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_PATHS);
+        final boolean userProvidedScanTargets = null != signatureScanPaths && signatureScanPaths.length > 0;
+        final String[] providedExclusionPatterns = detectConfigWrapper.getStringArrayProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_EXCLUSION_PATTERNS);
+        final String[] hubSignatureScannerExclusionNamePatterns = detectConfigWrapper.getStringArrayProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS);
         if (null != detectProject.getProjectName() && null != detectProject.getProjectVersion() && userProvidedScanTargets) {
-            for (final String path : bomToolConfig.getHubSignatureScannerPaths()) {
+            for (final String path : signatureScanPaths) {
                 logger.info(String.format("Registering explicit scan path %s", path));
                 addScanTarget(path, hubSignatureScannerExclusionNamePatterns, providedExclusionPatterns);
             }
@@ -231,23 +233,23 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
     }
 
     private ProjectRequest createProjectRequest(final DetectProject detectProject) {
-        final ProjectRequestBuilder builder = new DetectProjectRequestBuilder(hubConfig, detectProject);
+        final ProjectRequestBuilder builder = new DetectProjectRequestBuilder(detectConfigWrapper, detectProject);
         return builder.build();
     }
 
     private HubScanConfigBuilder createScanConfigBuilder(final DetectProject detectProject, final String canonicalPath, final Set<String> exclusionPatterns) {
-        final File scannerDirectory = new File(detectConfig.getScanOutputDirectoryPath());
+        final File scannerDirectory = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SCAN_OUTPUT_PATH));
         final File toolsDirectory = detectFileManager.getPermanentDirectory();
 
         final HubScanConfigBuilder hubScanConfigBuilder = new HubScanConfigBuilder();
-        hubScanConfigBuilder.setScanMemory(bomToolConfig.getHubSignatureScannerMemory());
+        hubScanConfigBuilder.setScanMemory(detectConfigWrapper.getIntegerProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_MEMORY));
         hubScanConfigBuilder.setToolsDir(toolsDirectory);
         hubScanConfigBuilder.setWorkingDirectory(scannerDirectory);
         hubScanConfigBuilder.addScanTargetPath(canonicalPath);
-        hubScanConfigBuilder.setCleanupLogsOnSuccess(detectConfig.getCleanupDetectFiles());
-        hubScanConfigBuilder.setDryRun(bomToolConfig.getHubSignatureScannerDryRun());
-        hubScanConfigBuilder.setSnippetModeEnabled(bomToolConfig.getHubSignatureScannerSnippetMode());
-        hubScanConfigBuilder.setAdditionalScanParameters(bomToolConfig.getHubSignatureScannerArguments());
+        hubScanConfigBuilder.setCleanupLogsOnSuccess(detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_CLEANUP));
+        hubScanConfigBuilder.setDryRun(detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_DRY_RUN));
+        hubScanConfigBuilder.setSnippetModeEnabled(detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_SNIPPET_MODE));
+        hubScanConfigBuilder.setAdditionalScanParameters(detectConfigWrapper.getProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_ARGUMENTS));
 
         final String projectName = detectProject.getProjectName();
         final String projectVersionName = detectProject.getProjectVersion();

@@ -29,10 +29,20 @@ import java.util.Map;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.env.ConfigurableEnvironment;
 
-public class DetectConfigWrapper {
+import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
+import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
+import com.blackducksoftware.integration.log.Slf4jIntLogger;
+import com.blackducksoftware.integration.rest.connection.UnauthenticatedRestConnection;
+import com.blackducksoftware.integration.rest.connection.UnauthenticatedRestConnectionBuilder;
+import com.blackducksoftware.integration.rest.proxy.ProxyInfo;
+import com.blackducksoftware.integration.rest.proxy.ProxyInfoBuilder;
 
+public class DetectConfigWrapper {
+    private final Logger logger = LoggerFactory.getLogger(DetectConfigWrapper.class);
     private final ConfigurableEnvironment configurableEnvironment;
 
     private final Map<DetectProperty, Object> propertyMap = new HashMap<>();
@@ -46,6 +56,35 @@ public class DetectConfigWrapper {
             final String stringValue = configurableEnvironment.getProperty(detectProperty.getPropertyName(), detectProperty.getDefaultValue());
             updatePropertyMap(propertyMap, detectProperty, stringValue);
         });
+    }
+
+    public ProxyInfo getHubProxyInfo() throws DetectUserFriendlyException {
+        final ProxyInfoBuilder proxyInfoBuilder = new ProxyInfoBuilder();
+        proxyInfoBuilder.setHost(getProperty(DetectProperty.BLACKDUCK_HUB_PROXY_HOST));
+        proxyInfoBuilder.setPort(getProperty(DetectProperty.BLACKDUCK_HUB_PROXY_PORT));
+        proxyInfoBuilder.setUsername(getProperty(DetectProperty.BLACKDUCK_HUB_PROXY_USERNAME));
+        proxyInfoBuilder.setPassword(getProperty(DetectProperty.BLACKDUCK_HUB_PROXY_PASSWORD));
+        proxyInfoBuilder.setIgnoredProxyHosts(getProperty(DetectProperty.BLACKDUCK_HUB_PROXY_IGNORED_HOSTS));
+        proxyInfoBuilder.setNtlmDomain(getProperty(DetectProperty.BLACKDUCK_HUB_PROXY_NTLM_DOMAIN));
+        proxyInfoBuilder.setNtlmWorkstation(getProperty(DetectProperty.BLACKDUCK_HUB_PROXY_NTLM_WORKSTATION));
+        ProxyInfo proxyInfo = ProxyInfo.NO_PROXY_INFO;
+        try {
+            proxyInfo = proxyInfoBuilder.build();
+        } catch (final IllegalStateException e) {
+            throw new DetectUserFriendlyException(String.format("Your proxy configuration is not valid: %s", e.getMessage()), e, ExitCodeType.FAILURE_PROXY_CONNECTIVITY);
+        }
+        return proxyInfo;
+    }
+
+    public UnauthenticatedRestConnection createUnauthenticatedRestConnection(final String url) throws DetectUserFriendlyException {
+        final UnauthenticatedRestConnectionBuilder restConnectionBuilder = new UnauthenticatedRestConnectionBuilder();
+        restConnectionBuilder.setBaseUrl(url);
+        restConnectionBuilder.setTimeout(getIntegerProperty(DetectProperty.BLACKDUCK_HUB_TIMEOUT));
+        restConnectionBuilder.applyProxyInfo(getHubProxyInfo());
+        restConnectionBuilder.setLogger(new Slf4jIntLogger(logger));
+        restConnectionBuilder.setAlwaysTrustServerCertificate(getBooleanProperty(DetectProperty.BLACKDUCK_HUB_TRUST_CERT));
+
+        return restConnectionBuilder.build();
     }
 
     public boolean getBooleanProperty(final DetectProperty detectProperty) {

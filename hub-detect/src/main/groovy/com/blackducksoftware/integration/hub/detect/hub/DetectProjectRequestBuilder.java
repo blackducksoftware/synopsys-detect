@@ -23,21 +23,22 @@
  */
 package com.blackducksoftware.integration.hub.detect.hub;
 
-import com.blackducksoftware.integration.hub.detect.configuration.HubConfig;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.model.DetectProject;
 import com.blackducksoftware.integration.hub.service.model.ProjectRequestBuilder;
 
 public class DetectProjectRequestBuilder extends ProjectRequestBuilder {
 
-    public DetectProjectRequestBuilder(final HubConfig hubConfig, final DetectProject detectProject) {
+    public DetectProjectRequestBuilder(final DetectConfigWrapper detectConfigWrapper, final DetectProject detectProject) {
         setProjectName(detectProject.getProjectName());
         setVersionName(detectProject.getProjectVersion());
 
-        setProjectLevelAdjustments(hubConfig.getProjectLevelMatchAdjustments());
-        setPhase(hubConfig.getProjectVersionPhase());
-        setDistribution(hubConfig.getProjectVersionDistribution());
-        setProjectTier(hubConfig.getProjectTier());
-        setDescription(hubConfig.getProjectDescription());
-        setReleaseComments(hubConfig.getProjectVersionNotes());
+        setProjectLevelAdjustments(detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_PROJECT_LEVEL_ADJUSTMENTS));
+        setPhase(detectConfigWrapper.getProperty(DetectProperty.DETECT_PROJECT_VERSION_PHASE));
+        setDistribution(detectConfigWrapper.getProperty(DetectProperty.DETECT_PROJECT_VERSION_DISTRIBUTION));
+        setProjectTier(detectConfigWrapper.getIntegerProperty(DetectProperty.DETECT_PROJECT_TIER));
+        setDescription(detectConfigWrapper.getProperty(DetectProperty.DETECT_PROJECT_DESCRIPTION));
+        setReleaseComments(detectConfigWrapper.getProperty(DetectProperty.DETECT_PROJECT_VERSION_NOTES));
     }
 }
