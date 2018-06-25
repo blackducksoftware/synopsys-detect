@@ -70,6 +70,7 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
     private final Map<String, Set<String>> scanPathExclusionPatterns = new HashMap<>();
     private final Map<String, Result> scanSummaryResults = new HashMap<>();
     private String dockerTarFilePath;
+    private String dockerTarFileName;
 
     @Autowired
     private DetectConfiguration detectConfiguration;
@@ -95,7 +96,7 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
 
         final List<ScanPathCallable> scanPathCallables = new ArrayList<>();
         for (final String scanPath : scanPaths) {
-            final HubScanConfigBuilder hubScanConfigBuilder = createScanConfigBuilder(detectProject, scanPath, scanPathExclusionPatterns.get(scanPath));
+            final HubScanConfigBuilder hubScanConfigBuilder = createScanConfigBuilder(detectProject, scanPath, scanPathExclusionPatterns.get(scanPath), dockerTarFileName);
             final HubScanConfig hubScanConfig = hubScanConfigBuilder.build();
             final ScanPathCallable scanPathCallable = new ScanPathCallable(signatureScannerService, hubServerConfig, hubScanConfig, projectRequest, scanPath, scanSummaryResults);
             scanPathCallables.add(scanPathCallable);
@@ -160,13 +161,18 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
         return dockerTarFilePath;
     }
 
-    public void setDockerTarFilePath(final String dockerTarFilePath) {
-        this.dockerTarFilePath = dockerTarFilePath;
+    public void setDockerTarFile(final File dockerTarFile) throws IOException {
+        this.dockerTarFilePath = dockerTarFile.getCanonicalPath();
+        this.dockerTarFileName = dockerTarFile.getName();
+    }
+
+    public String getDockerTarFileName() {
+        return dockerTarFileName;
     }
 
     private void scanPathOffline(final String canonicalPath, final DetectProject detectProject) {
         try {
-            final HubScanConfigBuilder hubScanConfigBuilder = createScanConfigBuilder(detectProject, canonicalPath, scanPathExclusionPatterns.get(canonicalPath));
+            final HubScanConfigBuilder hubScanConfigBuilder = createScanConfigBuilder(detectProject, canonicalPath, scanPathExclusionPatterns.get(canonicalPath), dockerTarFileName);
             hubScanConfigBuilder.setDryRun(true);
 
             if (StringUtils.isBlank(detectConfiguration.getHubSignatureScannerOfflineLocalPath())) {
@@ -232,7 +238,7 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
         return builder.build();
     }
 
-    private HubScanConfigBuilder createScanConfigBuilder(final DetectProject detectProject, final String canonicalPath, final Set<String> exclusionPatterns) {
+    private HubScanConfigBuilder createScanConfigBuilder(final DetectProject detectProject, final String canonicalPath, final Set<String> exclusionPatterns, String dockerTarFileName) {
         final File scannerDirectory = new File(detectConfiguration.getScanOutputDirectoryPath());
         final File toolsDirectory = detectFileManager.getPermanentDirectory();
 
@@ -251,7 +257,7 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
         final String sourcePath = detectConfiguration.getSourcePath();
         final String prefix = detectConfiguration.getProjectCodeLocationPrefix();
         final String suffix = detectConfiguration.getProjectCodeLocationSuffix();
-        final String codeLocationName = codeLocationNameManager.createScanCodeLocationName(sourcePath, canonicalPath, projectName, projectVersionName, prefix, suffix);
+        final String codeLocationName = codeLocationNameManager.createScanCodeLocationName(sourcePath, canonicalPath, dockerTarFileName, projectName, projectVersionName, prefix, suffix);
         hubScanConfigBuilder.setCodeLocationAlias(codeLocationName);
 
         if (null != exclusionPatterns && !exclusionPatterns.isEmpty()) {

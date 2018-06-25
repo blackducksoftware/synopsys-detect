@@ -28,14 +28,19 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ScanCodeLocationNameService extends CodeLocationNameService {
-    public String createCodeLocationName(final String sourcePath, final String scanTargetPath, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
-        final String cleanedTargetPath = cleanScanTargetPath(scanTargetPath, sourcePath);
+    public String createCodeLocationName(final String sourcePath, final String scanTargetPath, String dockerTarFileName, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
+        String pathPiece;
+        if (StringUtils.isNotBlank(dockerTarFileName)) {
+            pathPiece = dockerTarFileName;
+        } else {
+            pathPiece = cleanScanTargetPath(scanTargetPath, sourcePath);
+        }
         final String codeLocationTypeString = CodeLocationType.SCAN.toString().toLowerCase();
 
-        String codeLocationName = createCommonName(cleanedTargetPath, projectName, projectVersionName, prefix, suffix, codeLocationTypeString);
+        String codeLocationName = createCommonName(pathPiece, projectName, projectVersionName, prefix, suffix, codeLocationTypeString);
 
         if (codeLocationName.length() > 250) {
-            codeLocationName = shortenCodeLocationName(cleanedTargetPath, projectName, projectVersionName, prefix, suffix, codeLocationTypeString);
+            codeLocationName = shortenCodeLocationName(pathPiece, projectName, projectVersionName, prefix, suffix, codeLocationTypeString);
         }
 
         return codeLocationName;
