@@ -9,6 +9,7 @@ import com.blackducksoftware.integration.hub.bdio.BdioPropertyHelper
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer
 import com.blackducksoftware.integration.hub.bdio.model.BdioComponent
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.parse.NugetInspectorPackager
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.parse.NugetParseResult
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
@@ -30,7 +31,7 @@ public class NugetInspectorPackagerPerfTest {
         packager.nameVersionNodeTransformer = new NameVersionNodeTransformer(new ExternalIdFactory())
         packager.externalIdFactory = new ExternalIdFactory()
 
-        NugetParseResult result = packager.createDetectCodeLocation(dependencyGraphFile)
+        NugetParseResult result = packager.createDetectCodeLocation(BomToolType.NUGET_SOLUTION_INSPECTOR, dependencyGraphFile)
         DetectCodeLocation codeLocation = result.codeLocations[0]
 
         final BdioPropertyHelper bdioPropertyHelper = new BdioPropertyHelper()

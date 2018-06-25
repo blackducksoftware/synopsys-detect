@@ -37,6 +37,7 @@ import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
+@Deprecated
 public class GoDepsBomTool extends BomTool {
     public static final String GODEPS_DIRECTORYNAME = "Godeps";
 

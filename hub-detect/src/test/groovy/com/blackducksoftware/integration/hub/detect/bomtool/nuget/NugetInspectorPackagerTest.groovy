@@ -12,6 +12,7 @@ import com.blackducksoftware.integration.hub.bdio.model.BdioProject
 import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.parse.NugetInspectorPackager
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.parse.NugetParseResult
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
@@ -60,7 +61,7 @@ public class NugetInspectorPackagerTest {
         packager.gson = new Gson()
         packager.nameVersionNodeTransformer = nameVersionNodeTransformer
         packager.externalIdFactory = nameVersionNodeTransformer.externalIdFactory
-        NugetParseResult result = packager.createDetectCodeLocation(dependencyNodeFile)
+        NugetParseResult result = packager.createDetectCodeLocation(BomToolType.NUGET_SOLUTION_INSPECTOR, dependencyNodeFile)
 
         for (DetectCodeLocation codeLocation : result.codeLocations) {
             BdioPropertyHelper bdioPropertyHelper = new BdioPropertyHelper()
@@ -89,7 +90,7 @@ public class NugetInspectorPackagerTest {
         packager.nameVersionNodeTransformer = nameVersionNodeTransformer
         packager.externalIdFactory = nameVersionNodeTransformer.externalIdFactory
 
-        NugetParseResult result = packager.createDetectCodeLocation(dependencyNodeFile)
+        NugetParseResult result = packager.createDetectCodeLocation(BomToolType.NUGET_SOLUTION_INSPECTOR, dependencyNodeFile)
 
         for (def i = 0; i < expectedOutputFiles.size(); i++) {
             def codeLocation = result.codeLocations[i];

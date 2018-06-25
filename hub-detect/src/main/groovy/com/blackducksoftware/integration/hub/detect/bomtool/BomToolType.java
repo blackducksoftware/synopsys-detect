@@ -69,4 +69,9 @@ public enum BomToolType {
     public static class Constants {
         public static final Boolean DEPRECATED = true;
     }
+
+    @Override
+    public String toString() {
+        return isDeprecated ? super.toString() : super.toString() + " [DEPRECATED]";
+    }
 }

@@ -31,56 +31,31 @@ import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.codelocation.BomCodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationType;
 import com.blackducksoftware.integration.hub.detect.codelocation.DockerCodeLocationNameService;
+import com.blackducksoftware.integration.hub.detect.codelocation.DockerScanCodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.codelocation.ScanCodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 
 @Component
 public class CodeLocationNameManager {
-    @Autowired
-    public DetectConfiguration detectConfiguration;
 
-    @Autowired
-    private BomCodeLocationNameService bomCodeLocationNameService;
-
-    @Autowired
-    private DockerCodeLocationNameService dockerCodeLocationNameService;
-
-    @Autowired
-    private ScanCodeLocationNameService scanCodeLocationNameService;
+    public final DetectConfiguration detectConfiguration;
+    private final BomCodeLocationNameService bomCodeLocationNameService;
+    private final DockerCodeLocationNameService dockerCodeLocationNameService;
+    private final ScanCodeLocationNameService scanCodeLocationNameService;
+    private final DockerScanCodeLocationNameService dockerScanCodeLocationNameService;
 
     private int givenCodeLocationOverrideCount = 0;
 
-    public String createAggregateCodeLocationName() {
-        if (useCodeLocationOverride()) {
-            // The aggregate is exclusively used for the bdio and not the scans
-            return getNextCodeLocationOverrideName(CodeLocationType.BOM);
-        } else {
-            return ""; // it is overridden in bdio creation later.
-        }
-    }
-
-    public String createCodeLocationName(final DetectCodeLocation detectCodeLocation, final String detectSourcePath, final String projectName, final String projectVersionName,
-            final String prefix, final String suffix) {
-        if (useCodeLocationOverride()) {
-            if (BomToolGroupType.DOCKER == detectCodeLocation.getBomToolGroupType()) {
-                return getNextCodeLocationOverrideName(CodeLocationType.DOCKER);
-            } else {
-                return getNextCodeLocationOverrideName(CodeLocationType.BOM);
-            }
-        } else if (BomToolGroupType.DOCKER == detectCodeLocation.getBomToolGroupType()) {
-            return dockerCodeLocationNameService.createCodeLocationName(detectCodeLocation.getSourcePath(), projectName, projectVersionName, detectCodeLocation.getDockerImage(), detectCodeLocation.getBomToolGroupType(), prefix, suffix);
-        } else {
-            return bomCodeLocationNameService.createCodeLocationName(detectSourcePath, detectCodeLocation.getSourcePath(), detectCodeLocation.getExternalId(), detectCodeLocation.getBomToolGroupType(), prefix, suffix);
-        }
-    }
-
-    public String createScanCodeLocationName(final String sourcePath, final String scanTargetPath, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
-        if (useCodeLocationOverride()) {
-            return getNextCodeLocationOverrideName(CodeLocationType.SCAN);
-        } else {
-            return scanCodeLocationNameService.createCodeLocationName(sourcePath, scanTargetPath, projectName, projectVersionName, prefix, suffix);
-        }
+    @Autowired
+    public CodeLocationNameManager(final DetectConfiguration detectConfiguration, final BomCodeLocationNameService bomCodeLocationNameService,
+            final DockerCodeLocationNameService dockerCodeLocationNameService, final ScanCodeLocationNameService scanCodeLocationNameService,
+            final DockerScanCodeLocationNameService dockerScanCodeLocationNameService) {
+        this.detectConfiguration = detectConfiguration;
+        this.bomCodeLocationNameService = bomCodeLocationNameService;
+        this.dockerCodeLocationNameService = dockerCodeLocationNameService;
+        this.scanCodeLocationNameService = scanCodeLocationNameService;
+        this.dockerScanCodeLocationNameService = dockerScanCodeLocationNameService;
     }
 
     private boolean useCodeLocationOverride() {
@@ -99,6 +74,43 @@ public class CodeLocationNameManager {
         } else {
             final String codeLocationName = base + " " + Integer.toString(givenCodeLocationOverrideCount);
             return codeLocationName;
+        }
+    }
+
+    public String createAggregateCodeLocationName() {
+        if (useCodeLocationOverride()) {
+            // The aggregate is exclusively used for the bdio and not the scans
+            return getNextCodeLocationOverrideName(CodeLocationType.BOM);
+        } else {
+            return ""; // it is overridden in bdio creation later.
+        }
+    }
+
+    public String createCodeLocationName(final DetectCodeLocation detectCodeLocation, final String detectSourcePath, final String projectName, final String projectVersionName,
+            final String prefix, final String suffix) {
+
+        if (useCodeLocationOverride()) {
+            if (BomToolGroupType.DOCKER == detectCodeLocation.getBomToolGroupType()) {
+                return getNextCodeLocationOverrideName(CodeLocationType.DOCKER);
+            } else {
+                return getNextCodeLocationOverrideName(CodeLocationType.BOM);
+            }
+        } else if (BomToolGroupType.DOCKER == detectCodeLocation.getBomToolGroupType()) {
+            return dockerCodeLocationNameService.createCodeLocationName(detectCodeLocation.getSourcePath(), projectName, projectVersionName, detectCodeLocation.getDockerImage(), detectCodeLocation.getBomToolGroupType(), prefix, suffix);
+        } else {
+            return bomCodeLocationNameService.createCodeLocationName(detectSourcePath, detectCodeLocation.getSourcePath(), detectCodeLocation.getExternalId(), detectCodeLocation.getBomToolGroupType(), prefix, suffix);
+        }
+    }
+
+    public String createScanCodeLocationName(final String sourcePath, final String scanTargetPath, final String dockerTarFilename, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
+        if (useCodeLocationOverride()) {
+            return getNextCodeLocationOverrideName(CodeLocationType.SCAN);
+        } else {
+            if (StringUtils.isNotBlank(dockerTarFilename)) {
+                return dockerScanCodeLocationNameService.createCodeLocationName(dockerTarFilename, projectName, projectVersionName, prefix, suffix);
+            } else {
+                return scanCodeLocationNameService.createCodeLocationName(sourcePath, scanTargetPath, projectName, projectVersionName, prefix, suffix);
+            }
         }
     }
 

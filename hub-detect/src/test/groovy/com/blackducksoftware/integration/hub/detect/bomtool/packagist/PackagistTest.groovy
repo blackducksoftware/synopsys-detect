@@ -5,6 +5,7 @@ import org.junit.Test
 
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType
 import com.blackducksoftware.integration.hub.detect.bomtool.packagist.parse.PackagistParseResult
 import com.blackducksoftware.integration.hub.detect.bomtool.packagist.parse.PackagistParser
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
@@ -24,7 +25,7 @@ class PackagistTest {
 
         final String composerLockText = testUtil.getResourceAsUTF8String('/packagist/composer.lock')
         final String composerJsonText = testUtil.getResourceAsUTF8String('/packagist/composer.json')
-        PackagistParseResult result = packagistParser.getDependencyGraphFromProject("source", composerJsonText, composerLockText)
+        PackagistParseResult result = packagistParser.getDependencyGraphFromProject(BomToolType.COMPOSER_LOCK, "source", composerJsonText, composerLockText)
 
         Assert.assertEquals(result.projectName, "clue/graph-composer");
         Assert.assertEquals(result.projectVersion, "1.0.0");

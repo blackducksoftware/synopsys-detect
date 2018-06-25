@@ -34,8 +34,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction.ExtractionResultType;
 import com.blackducksoftware.integration.hub.detect.extraction.model.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction.ExtractionResultType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 
 @Component
@@ -51,7 +51,6 @@ public class ExtractionSummaryReporter {
         final List<ExtractionSummaryData> sorted = sortByFilesystem(data);
 
         printDirectories(sorted);
-
     }
 
     private List<ExtractionSummaryData> createData(final Map<File, List<BomToolEvaluation>> byDirectory, final Map<DetectCodeLocation, String> codeLocationNameMap) {

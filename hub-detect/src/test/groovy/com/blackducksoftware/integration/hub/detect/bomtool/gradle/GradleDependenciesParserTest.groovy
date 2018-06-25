@@ -19,6 +19,7 @@ import org.springframework.test.util.ReflectionTestUtils
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.parse.GradleParseResult
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.parse.GradleReportLine
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.parse.GradleReportParser
@@ -72,7 +73,7 @@ class GradleReportParserTest {
         InputStream inputStream = getClass().getResourceAsStream(resource)
         GradleReportParser gradleReportParser = new GradleReportParser()
         ReflectionTestUtils.setField(gradleReportParser, 'externalIdFactory', externalIdFactory)
-        GradleParseResult result = gradleReportParser.parseDependencies(inputStream)
+        GradleParseResult result = gradleReportParser.parseDependencies(BomToolType.GRADLE_INSPECTOR, inputStream)
         return result.codeLocation;
     }
 
@@ -81,14 +82,14 @@ class GradleReportParserTest {
         InputStream inputStream = getClass().getResourceAsStream('/gradle/spring-framework/spring_aop_dependencyGraph.txt')
         GradleReportParser gradleReportParser = new GradleReportParser()
         ReflectionTestUtils.setField(gradleReportParser, 'externalIdFactory', new ExternalIdFactory())
-        GradleParseResult result = gradleReportParser.parseDependencies(inputStream)
+        GradleParseResult result = gradleReportParser.parseDependencies(BomToolType.GRADLE_INSPECTOR, inputStream)
         println(new GsonBuilder().setPrettyPrinting().create().toJson(result.codeLocation))
     }
 
     private void createNewCodeLocationTest(String gradleInspectorOutputResourcePath, String expectedResourcePath, String rootProjectName, String rootProjectVersionName) {
         GradleReportParser gradleReportParser = new GradleReportParser()
         ReflectionTestUtils.setField(gradleReportParser, 'externalIdFactory', new ExternalIdFactory())
-        GradleParseResult result = gradleReportParser.parseDependencies(getClass().getResourceAsStream(gradleInspectorOutputResourcePath))
+        GradleParseResult result = gradleReportParser.parseDependencies(BomToolType.GRADLE_INSPECTOR, getClass().getResourceAsStream(gradleInspectorOutputResourcePath))
 
         assertEquals(rootProjectName, result.projectName)
         assertEquals(rootProjectVersionName, result.projectVersion)

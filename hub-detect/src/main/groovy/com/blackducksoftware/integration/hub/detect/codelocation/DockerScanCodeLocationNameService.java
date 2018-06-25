@@ -21,17 +21,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.strategy.result;
+package com.blackducksoftware.integration.hub.detect.codelocation;
 
-public class NpmRunInstallStrategyResult extends FailedStrategyResult {
-    private final String directoryPath;
+import org.springframework.stereotype.Component;
 
-    public NpmRunInstallStrategyResult(final String directoryPath) {
-        this.directoryPath = directoryPath;
+@Component
+public class DockerScanCodeLocationNameService extends FileCodeLocationNameService {
+    public String createCodeLocationName(String dockerTarFilename, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
+        String pathPiece = dockerTarFilename;
+
+        final String codeLocationTypeString = CodeLocationType.SCAN.toString().toLowerCase();
+
+        String codeLocationName = shortenIfNeeded(pathPiece, projectName, projectVersionName, prefix, suffix, codeLocationTypeString);
+
+        return codeLocationName;
     }
 
-    @Override
-    public String toDescription() {
-        return String.format("A package.json was located in %s, but the node_modules folder was NOT located. Please run 'npm install' in that location and try again.", directoryPath);
-    }
 }
