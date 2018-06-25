@@ -29,14 +29,10 @@ import org.springframework.stereotype.Component;
 public class ScanCodeLocationNameService extends FileCodeLocationNameService {
     public String createCodeLocationName(final String sourcePath, final String scanTargetPath, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
         String pathPiece = cleanScanTargetPath(scanTargetPath, sourcePath);
-        
+
         final String codeLocationTypeString = CodeLocationType.SCAN.toString().toLowerCase();
 
-        String codeLocationName = createCommonName(pathPiece, projectName, projectVersionName, prefix, suffix, codeLocationTypeString);
-
-        if (codeLocationName.length() > 250) {
-            codeLocationName = shortenCodeLocationName(pathPiece, projectName, projectVersionName, prefix, suffix, codeLocationTypeString);
-        }
+        String codeLocationName = shortenIfNeeded(pathPiece, projectName, projectVersionName, prefix, suffix, codeLocationTypeString);
 
         return codeLocationName;
     }

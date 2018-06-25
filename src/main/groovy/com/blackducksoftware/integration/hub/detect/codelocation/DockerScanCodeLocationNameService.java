@@ -32,11 +32,7 @@ public class DockerScanCodeLocationNameService extends FileCodeLocationNameServi
 
         final String codeLocationTypeString = CodeLocationType.SCAN.toString().toLowerCase();
 
-        String codeLocationName = createCommonName(pathPiece, projectName, projectVersionName, prefix, suffix, codeLocationTypeString);
-
-        if (codeLocationName.length() > 250) {
-            codeLocationName = shortenCodeLocationName(pathPiece, projectName, projectVersionName, prefix, suffix, codeLocationTypeString);
-        }
+        String codeLocationName = shortenIfNeeded(pathPiece, projectName, projectVersionName, prefix, suffix, codeLocationTypeString);
 
         return codeLocationName;
     }

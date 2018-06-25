@@ -26,7 +26,16 @@ package com.blackducksoftware.integration.hub.detect.codelocation;
 import org.apache.commons.lang3.StringUtils;
 
 public abstract class FileCodeLocationNameService extends CodeLocationNameService {
-    protected String createCommonName(final String pathPiece, final String projectName, final String projectVersionName, final String prefix, final String suffix, final String codeLocationType) {
+    protected String shortenIfNeeded(final String pathPiece, final String projectName, final String projectVersionName, final String prefix, final String suffix, final String codeLocationType) {
+        String codeLocationName = createCommonName(pathPiece, projectName, projectVersionName, prefix, suffix, codeLocationType);
+
+        if (codeLocationName.length() > 250) {
+            codeLocationName = shortenCodeLocationName(pathPiece, projectName, projectVersionName, prefix, suffix, codeLocationType);
+        }
+        return codeLocationName;
+    }
+
+    private String createCommonName(final String pathPiece, final String projectName, final String projectVersionName, final String prefix, final String suffix, final String codeLocationType) {
         String name = String.format("%s/%s/%s", pathPiece, projectName, projectVersionName);
         if (StringUtils.isNotBlank(prefix)) {
             name = String.format("%s/%s", prefix, name);
@@ -41,7 +50,7 @@ public abstract class FileCodeLocationNameService extends CodeLocationNameServic
         return name;
     }
 
-    protected String shortenCodeLocationName(final String pathPiece, final String projectName, final String projectVersionName, final String prefix, final String suffix, final String codeLocationType) {
+    private String shortenCodeLocationName(final String pathPiece, final String projectName, final String projectVersionName, final String prefix, final String suffix, final String codeLocationType) {
         final String shortenedPathPiece = shortenPiece(pathPiece);
         final String shortenedProjectName = shortenPiece(projectName);
         final String shortenedProjectVersionName = shortenPiece(projectVersionName);
