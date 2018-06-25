@@ -1,0 +1,62 @@
+apply plugin: 'org.springframework.boot'
+
+// the override.snapshot property should be set to true for a CI build so
+// that the version is omitted from a snapshot build artifact
+if (project.isSnapshot && "true" == project.findProperty('override.snapshot')) {
+    version = 'latest-SNAPSHOT'
+}
+
+apply from: 'airgap.gradle'
+
+build {
+    doLast {
+        def shellScriptTemplateFile = new File("${projectDir}/src/main/resources/hub-detect-sh")
+        def shellScriptContents = shellScriptTemplateFile.getText('UTF-8')
+        def shellScriptFile = new File("${buildDir}/hub-detect.sh")
+        shellScriptFile.delete()
+        shellScriptFile << shellScriptContents
+        shellScriptFile.setExecutable(true)
+
+        def powershellScriptTemplateFile = new File("${projectDir}/src/main/resources/hub-detect-ps")
+        def powershellScriptContents = powershellScriptTemplateFile.getText('UTF-8')
+        def powershellScriptFile = new File("${buildDir}/hub-detect.ps1")
+        powershellScriptFile.delete()
+        powershellScriptFile << powershellScriptContents
+        powershellScriptFile.setExecutable(true)
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            def artifactName = "${buildDir}/libs/${project.name}-${version}.jar"
+            artifact(artifactName)
+        }
+    }
+}
+
+artifactory {
+    publish {
+        defaults { publications('mavenJava') }
+    }
+}
+
+dependencies {
+    compile project(":detect-configuration")
+
+    compile 'org.apache.maven.shared:maven-invoker:3.0.0'
+    compile 'com.esotericsoftware.yamlbeans:yamlbeans:1.11'
+    compile 'com.moandjiezana.toml:toml4j:0.7.1'
+    compile 'org.codehaus.groovy:groovy-all:2.4.12'
+    compile 'org.freemarker:freemarker:2.3.26-incubating'
+    compile 'org.springframework.boot:spring-boot-starter'
+
+
+    compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.5'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.9.5'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.9.5'
+
+    testCompile 'org.springframework.boot:spring-boot-starter-test'
+}
+
+springBoot { mainClassName = 'com.blackducksoftware.integration.hub.detect.Application' }
