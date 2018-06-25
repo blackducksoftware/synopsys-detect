@@ -26,10 +26,10 @@ package com.blackducksoftware.integration.hub.detect.codelocation;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ScanCodeLocationNameService extends FileCodeLocationNameService {
-    public String createCodeLocationName(final String sourcePath, final String scanTargetPath, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
-        String pathPiece = cleanScanTargetPath(scanTargetPath, sourcePath);
-        
+public class DockerScanCodeLocationNameService extends FileCodeLocationNameService {
+    public String createCodeLocationName(String dockerTarFilename, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
+        String pathPiece = dockerTarFilename;
+
         final String codeLocationTypeString = CodeLocationType.SCAN.toString().toLowerCase();
 
         String codeLocationName = createCommonName(pathPiece, projectName, projectVersionName, prefix, suffix, codeLocationTypeString);
