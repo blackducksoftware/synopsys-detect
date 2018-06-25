@@ -50,10 +50,8 @@ public class GoDepsExtractor {
     @Autowired
     ExternalIdFactory externalIdFactory;
 
-    public Extraction extract(final BomToolType bomToolType, final File directory, final File goDepsDirectory) {
+    public Extraction extract(final BomToolType bomToolType, final File directory, final File goDepsFile) {
         try {
-            final File goDepsFile = new File(goDepsDirectory, "Godeps.json");
-
             final String text = FileUtils.readFileToString(goDepsFile, StandardCharsets.UTF_8);
 
             final GoGodepsParser goDepParser = new GoGodepsParser(gson, externalIdFactory);

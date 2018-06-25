@@ -72,6 +72,6 @@ public enum BomToolType {
 
     @Override
     public String toString() {
-        return isDeprecated ? super.toString() : super.toString() + " [DEPRECATED]";
+        return isDeprecated ? super.toString() + " [DEPRECATED]" : super.toString();
     }
 }

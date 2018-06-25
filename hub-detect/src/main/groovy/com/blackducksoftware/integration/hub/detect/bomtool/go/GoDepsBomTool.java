@@ -40,11 +40,12 @@ import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 @Deprecated
 public class GoDepsBomTool extends BomTool {
     public static final String GODEPS_DIRECTORYNAME = "Godeps";
+    public static final String GODEPS_JSON_NAME = "Godeps.json";
 
     private final DetectFileFinder fileFinder;
     private final GoDepsExtractor goDepsExtractor;
 
-    private File goDepsDirectory;
+    private File goDepsFile;
 
     public GoDepsBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final GoDepsExtractor goDepsExtractor) {
         super(environment, "Go Deps Lock File", BomToolGroupType.GO_GODEP, BomToolType.GO_DEPS);
@@ -54,9 +55,14 @@ public class GoDepsBomTool extends BomTool {
 
     @Override
     public BomToolResult applicable() {
-        goDepsDirectory = fileFinder.findFile(environment.getDirectory(), GODEPS_DIRECTORYNAME);
+        final File goDepsDirectory = fileFinder.findFile(environment.getDirectory(), GODEPS_DIRECTORYNAME);
         if (goDepsDirectory == null) {
             return new FileNotFoundBomToolResult(GODEPS_DIRECTORYNAME);
+        }
+
+        goDepsFile = fileFinder.findFile(goDepsDirectory, GODEPS_JSON_NAME);
+        if (goDepsFile == null) {
+            return new FileNotFoundBomToolResult(GODEPS_JSON_NAME);
         }
 
         return new PassedBomToolResult();
@@ -69,7 +75,7 @@ public class GoDepsBomTool extends BomTool {
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
-        return goDepsExtractor.extract(this.getBomToolType(), environment.getDirectory(), goDepsDirectory);
+        return goDepsExtractor.extract(this.getBomToolType(), environment.getDirectory(), goDepsFile);
     }
 
 }
