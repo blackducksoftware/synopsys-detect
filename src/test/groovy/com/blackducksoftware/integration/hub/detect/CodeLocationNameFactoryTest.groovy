@@ -14,6 +14,7 @@ package com.blackducksoftware.integration.hub.detect
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.codelocation.BomCodeLocationNameService
+import com.blackducksoftware.integration.hub.detect.codelocation.DockerScanCodeLocationNameService
 import com.blackducksoftware.integration.hub.detect.codelocation.ScanCodeLocationNameService
 import com.blackducksoftware.integration.hub.detect.model.BomToolType
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder
@@ -32,20 +33,29 @@ class CodeLocationNameFactoryTest {
 
         String sourcePath = '/Users/ekerwin/Documents/source/integration/hub-common-rest'
         String scanTargetPath = '/Users/ekerwin/Documents/source/integration/hub-common-rest/target'
-        String dockerTarFileName = ''
         String projectName = 'hub-common-rest'
         String projectVersionName = '2.5.1-SNAPSHOT'
         String prefix = ''
         String suffix = ''
-        String actual = scanCodeLocationNameFactory.createCodeLocationName(sourcePath, scanTargetPath, dockerTarFileName, projectName, projectVersionName, prefix, suffix)
+        String actual = scanCodeLocationNameFactory.createCodeLocationName(sourcePath, scanTargetPath, projectName, projectVersionName, prefix, suffix)
 
         assertEquals(expected, actual)
+    }
 
-        expected = 'dockerTar.tar.gz/hub-common-rest/2.5.1-SNAPSHOT scan'
+    @Test
+    public void testDockerScanCodeLocationNameFactory() {
+        String expected = 'dockerTar.tar.gz/hub-common-rest/2.5.1-SNAPSHOT scan'
 
-        dockerTarFileName = 'dockerTar.tar.gz'
+        DetectFileFinder detectFileManager = [extractFinalPieceFromPath: { 'hub-common-rest' }] as DetectFileFinder
+        DockerScanCodeLocationNameService dockerScanCodeLocationNameService = new DockerScanCodeLocationNameService()
+        dockerScanCodeLocationNameService.detectFileFinder = detectFileManager
 
-        actual = scanCodeLocationNameFactory.createCodeLocationName(sourcePath, scanTargetPath, dockerTarFileName, projectName, projectVersionName, prefix, suffix)
+        String dockerTarFileName = 'dockerTar.tar.gz'
+        String projectName = 'hub-common-rest'
+        String projectVersionName = '2.5.1-SNAPSHOT'
+        String prefix = ''
+        String suffix = ''
+        String actual = dockerScanCodeLocationNameService.createCodeLocationName(dockerTarFileName, projectName, projectVersionName, prefix, suffix)
 
         assertEquals(expected, actual)
     }
