@@ -35,6 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.maven.parse.MavenCodeLocationPackager;
 import com.blackducksoftware.integration.hub.detect.bomtool.maven.parse.MavenParseResult;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
@@ -46,7 +47,6 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 
 @Component
 public class MavenCliExtractor {
-
     @Autowired
     protected ExecutableRunner executableRunner;
     @Autowired
@@ -56,7 +56,7 @@ public class MavenCliExtractor {
     @Autowired
     private DetectConfiguration detectConfiguration;
 
-    public Extraction extract(final File directory, final String mavenExe) {
+    public Extraction extract(final BomToolType bomToolType, final File directory, final String mavenExe) {
         try {
             String mavenCommand = detectConfiguration.getMavenBuildCommand();
             if (StringUtils.isNotBlank(mavenCommand)) {
@@ -82,7 +82,7 @@ public class MavenCliExtractor {
 
                 final String excludedModules = detectConfiguration.getMavenExcludedModuleNames();
                 final String includedModules = detectConfiguration.getMavenIncludedModuleNames();
-                final List<MavenParseResult> mavenResults = mavenCodeLocationPackager.extractCodeLocations(directory.toString(), mvnOutput.getStandardOutput(), excludedModules, includedModules);
+                final List<MavenParseResult> mavenResults = mavenCodeLocationPackager.extractCodeLocations(bomToolType, directory.toString(), mvnOutput.getStandardOutput(), excludedModules, includedModules);
 
                 final List<DetectCodeLocation> codeLocations = mavenResults.stream()
                         .map(it -> it.codeLocation)

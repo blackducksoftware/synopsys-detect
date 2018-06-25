@@ -23,6 +23,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool;
 
+import static com.blackducksoftware.integration.hub.detect.bomtool.BomToolType.Constants.DEPRECATED;
+
 public enum BomToolType {
     PODLOCK,
     CONDA_CLI,
@@ -31,7 +33,7 @@ public enum BomToolType {
     DOCKER,
     GO_CLI,
     GO_LOCK,
-    GO_DEPS,
+    GO_DEPS(DEPRECATED),
     GO_VNDR,
     GRADLE_INSPECTOR,
     REBAR,
@@ -48,5 +50,23 @@ public enum BomToolType {
     PIP_INSPECTOR,
     GEMLOCK,
     SBT_RESOLUTION_CACHE,
-    YARN_LOCK
+    YARN_LOCK;
+
+    private Boolean isDeprecated;
+
+    private BomToolType() {
+        isDeprecated = false;
+    }
+
+    private BomToolType(final Boolean deprecated) {
+        isDeprecated = deprecated;
+    }
+
+    public boolean isDeprecated() {
+        return isDeprecated;
+    }
+
+    public static class Constants {
+        public static final Boolean DEPRECATED = true;
+    }
 }

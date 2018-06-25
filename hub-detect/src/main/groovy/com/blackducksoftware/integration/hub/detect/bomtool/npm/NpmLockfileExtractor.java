@@ -32,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.parse.NpmLockfilePackager;
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.parse.NpmParseResult;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
@@ -45,7 +46,7 @@ public class NpmLockfileExtractor {
     @Autowired
     protected DetectConfiguration detectConfiguration;
 
-    public Extraction extract(final File directory, final File lockfile) {
+    public Extraction extract(final BomToolType bomToolType, final File directory, final File lockfile) {
         String lockText;
         try {
             lockText = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
@@ -55,7 +56,7 @@ public class NpmLockfileExtractor {
 
         try {
             final boolean includeDev = detectConfiguration.getNpmIncludeDevDependencies();
-            final NpmParseResult result = npmLockfilePackager.parse(directory.getCanonicalPath(), lockText, includeDev);
+            final NpmParseResult result = npmLockfilePackager.parse(bomToolType, directory.getCanonicalPath(), lockText, includeDev);
             return new Extraction.Builder().success(result.codeLocation).projectName(result.projectName).projectVersion(result.projectVersion).build();
         } catch (final IOException e) {
             return new Extraction.Builder().exception(e).build();

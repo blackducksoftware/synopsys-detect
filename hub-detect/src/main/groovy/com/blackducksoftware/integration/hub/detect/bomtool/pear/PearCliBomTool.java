@@ -79,7 +79,7 @@ public class PearCliBomTool extends BomTool {
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
-        return pearCliExtractor.extract(environment.getDirectory(), pearExe);
+        return pearCliExtractor.extract(this.getBomToolType(), environment.getDirectory(), pearExe);
     }
 
 }

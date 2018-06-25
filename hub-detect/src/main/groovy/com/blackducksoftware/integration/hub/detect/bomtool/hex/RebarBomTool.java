@@ -79,7 +79,7 @@ public class RebarBomTool extends BomTool {
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
-        return rebarExtractor.extract(environment.getDirectory(), rebarExe);
+        return rebarExtractor.extract(this.getBomToolType(), environment.getDirectory(), rebarExe);
     }
 
 }

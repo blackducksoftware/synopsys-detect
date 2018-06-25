@@ -31,8 +31,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -41,6 +39,7 @@ import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.yarn.parse.YarnListParser;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
@@ -52,7 +51,6 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 
 @Component
 public class YarnLockExtractor {
-    private final Logger logger = LoggerFactory.getLogger(YarnLockExtractor.class);
     public static final String OUTPUT_FILE = "detect_yarn_proj_dependencies.txt";
     public static final String ERROR_FILE = "detect_yarn_error.txt";
 
@@ -71,7 +69,7 @@ public class YarnLockExtractor {
     @Autowired
     ExecutableRunner executableRunner;
 
-    public Extraction extract(final File directory, final File yarnlock, final String yarnExe) {
+    public Extraction extract(final BomToolType bomToolType, final File directory, final File yarnlock, final String yarnExe) {
         try {
             final List<String> yarnLockText = Files.readAllLines(yarnlock.toPath(), StandardCharsets.UTF_8);
             final List<String> exeArgs = Stream.of("list", "--emoji", "false").collect(Collectors.toCollection(ArrayList::new));
@@ -91,7 +89,7 @@ public class YarnLockExtractor {
             final DependencyGraph dependencyGraph = yarnListParser.parseYarnList(yarnLockText, executableOutput.getStandardOutputAsList());
 
             final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.NPM, directory.getCanonicalPath());
-            final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolGroupType.YARN, directory.getCanonicalPath(), externalId, dependencyGraph).build();
+            final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolGroupType.YARN, bomToolType, directory.getCanonicalPath(), externalId, dependencyGraph).build();
 
             return new Extraction.Builder().success(detectCodeLocation).build();
         } catch (final Exception e) {

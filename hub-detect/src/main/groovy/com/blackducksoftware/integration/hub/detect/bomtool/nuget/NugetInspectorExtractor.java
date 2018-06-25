@@ -41,6 +41,7 @@ import org.springframework.stereotype.Component;
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphCombiner;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.parse.NugetInspectorPackager;
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.parse.NugetParseResult;
@@ -54,29 +55,33 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 
 @Component
 public class NugetInspectorExtractor {
-    static final String INSPECTOR_OUTPUT_PATTERN = "*_inspection.json";
+    public static final String INSPECTOR_OUTPUT_PATTERN = "*_inspection.json";
+
     private final Logger logger = LoggerFactory.getLogger(NugetInspectorExtractor.class);
+
     @Autowired
-    public DetectFileManager detectFileManager;
+    private DetectFileManager detectFileManager;
+
     @Autowired
-    NugetInspectorPackager nugetInspectorPackager;
+    private NugetInspectorPackager nugetInspectorPackager;
+
     @Autowired
     private DetectConfiguration detectConfiguration;
+
     @Autowired
     private ExecutableRunner executableRunner;
+
     @Autowired
     private DetectFileFinder detectFileFinder;
 
-    public Extraction extract(final File directory, final String inspectorExe, final ExtractionId extractionId) {
-
+    public Extraction extract(final BomToolType bomToolType, final File directory, final String inspectorExe, final ExtractionId extractionId) {
         try {
             final File outputDirectory = detectFileManager.getOutputDirectory(extractionId);
 
             final List<String> options = new ArrayList<>(Arrays.asList(
                     "--target_path=" + directory.toString(),
                     "--output_directory=" + outputDirectory.getCanonicalPath(),
-                    "--ignore_failure=" + detectConfiguration.getNugetInspectorIgnoreFailure()
-                    ));
+                    "--ignore_failure=" + detectConfiguration.getNugetInspectorIgnoreFailure()));
 
             if (detectConfiguration.getNugetInspectorExcludedModules() != null) {
                 options.add("--excluded_modules=" + detectConfiguration.getNugetInspectorExcludedModules());
@@ -104,7 +109,7 @@ public class NugetInspectorExtractor {
 
             final List<File> dependencyNodeFiles = detectFileFinder.findFiles(outputDirectory, INSPECTOR_OUTPUT_PATTERN);
             final List<NugetParseResult> parseResults = dependencyNodeFiles.stream()
-                    .map(it -> nugetInspectorPackager.createDetectCodeLocation(it))
+                    .map(it -> nugetInspectorPackager.createDetectCodeLocation(bomToolType, it))
                     .collect(Collectors.toList());
 
             final List<DetectCodeLocation> codeLocations = parseResults.stream()

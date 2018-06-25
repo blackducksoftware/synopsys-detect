@@ -90,7 +90,7 @@ public class GoCliBomTool extends BomTool {
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
-        return goDepExtractor.extract(environment.getDirectory(), goExe, goDepInspector);
+        return goDepExtractor.extract(this.getBomToolType(), environment.getDirectory(), goExe, goDepInspector);
     }
 
 }

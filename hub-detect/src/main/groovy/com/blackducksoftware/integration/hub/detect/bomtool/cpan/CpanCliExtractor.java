@@ -26,8 +26,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.cpan;
 import java.io.File;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -35,7 +33,7 @@ import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.cpan.parse.CpanPackager;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
@@ -45,21 +43,16 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 
 @Component
 public class CpanCliExtractor {
-    private final Logger logger = LoggerFactory.getLogger(CpanCliExtractor.class);
+    @Autowired
+    private CpanPackager cpanPackager;
 
     @Autowired
-    CpanPackager cpanPackager;
+    private ExternalIdFactory externalIdFactory;
 
     @Autowired
-    protected ExternalIdFactory externalIdFactory;
+    private ExecutableRunner executableRunner;
 
-    @Autowired
-    protected ExecutableRunner executableRunner;
-
-    @Autowired
-    protected DetectConfiguration detectConfiguration;
-
-    public Extraction extract(final File directory, final File cpanExe, final File cpanmExe) {
+    public Extraction extract(final BomToolType bomToolType, final File directory, final File cpanExe, final File cpanmExe) {
         try {
             final ExecutableOutput cpanListOutput = executableRunner.runExe(cpanExe, "-l");
             final List<String> listText = cpanListOutput.getStandardOutputAsList();
@@ -69,7 +62,7 @@ public class CpanCliExtractor {
 
             final DependencyGraph dependencyGraph = cpanPackager.makeDependencyGraph(listText, showdeps);
             final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.CPAN, directory.toString());
-            final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolGroupType.CPAN, directory.toString(), externalId, dependencyGraph).build();
+            final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolGroupType.CPAN, bomToolType, directory.toString(), externalId, dependencyGraph).build();
             return new Extraction.Builder().success(detectCodeLocation).build();
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();

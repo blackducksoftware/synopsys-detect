@@ -40,6 +40,7 @@ import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 
@@ -57,7 +58,7 @@ public class PipenvGraphParser {
     @Autowired
     ExternalIdFactory externalIdFactory;
 
-    public PipParseResult parse(final String projectName, final String projectVersionName, final List<String> pipFreezeOutput, final List<String> pipenvGraphOutput, final String sourcePath) {
+    public PipParseResult parse(final BomToolType bomToolType, final String projectName, final String projectVersionName, final List<String> pipFreezeOutput, final List<String> pipenvGraphOutput, final String sourcePath) {
         final MutableMapDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
         final Stack<Dependency> dependencyStack = new Stack<>();
 
@@ -97,7 +98,7 @@ public class PipenvGraphParser {
 
         if (!dependencyGraph.getRootDependencyExternalIds().isEmpty()) {
             final ExternalId projectExternalId = externalIdFactory.createNameVersionExternalId(Forge.PYPI, projectName, projectVersionName);
-            final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolGroupType.PIP, sourcePath, projectExternalId, dependencyGraph).build();
+            final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolGroupType.PIP, bomToolType, sourcePath, projectExternalId, dependencyGraph).build();
             return new PipParseResult(projectName, projectVersionName, codeLocation);
         } else {
             return null;

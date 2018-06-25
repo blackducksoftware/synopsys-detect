@@ -86,7 +86,7 @@ public class GradleInspectorBomTool extends BomTool {
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
-        return gradleInspectorExtractor.extract(environment.getDirectory(), gradleExe, gradleInspector, extractionId);
+        return gradleInspectorExtractor.extract(this.getBomToolType(), environment.getDirectory(), gradleExe, gradleInspector, extractionId);
     }
 
 }

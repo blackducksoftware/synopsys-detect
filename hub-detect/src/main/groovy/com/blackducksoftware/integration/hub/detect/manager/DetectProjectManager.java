@@ -43,6 +43,7 @@ import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.report.ExtractionSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
@@ -65,7 +66,7 @@ import com.blackducksoftware.integration.util.NameVersion;
 public class DetectProjectManager implements SummaryResultReporter, ExitCodeReporter {
     private final Logger logger = LoggerFactory.getLogger(DetectProjectManager.class);
 
-    private final Map<BomToolGroupType, Result> bomToolSummaryResults = new HashMap<>();
+    private final Map<BomToolType, Result> bomToolSummaryResults = new HashMap<>();
     private ExitCodeType bomToolSearchExitCodeType;
 
     @Autowired
@@ -123,7 +124,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     @Override
     public List<BomToolSummaryResult> getDetectSummaryResults() {
         final List<BomToolSummaryResult> detectSummaryResults = new ArrayList<>();
-        for (final Map.Entry<BomToolGroupType, Result> entry : bomToolSummaryResults.entrySet()) {
+        for (final Map.Entry<BomToolType, Result> entry : bomToolSummaryResults.entrySet()) {
             detectSummaryResults.add(new BomToolSummaryResult(entry.getKey(), entry.getValue()));
         }
         return detectSummaryResults;
@@ -131,7 +132,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
 
     @Override
     public ExitCodeType getExitCodeType() {
-        for (final Map.Entry<BomToolGroupType, Result> entry : bomToolSummaryResults.entrySet()) {
+        for (final Map.Entry<BomToolType, Result> entry : bomToolSummaryResults.entrySet()) {
             if (Result.FAILURE == entry.getValue()) {
                 return ExitCodeType.FAILURE_BOM_TOOL;
             }
@@ -142,15 +143,15 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         return ExitCodeType.SUCCESS;
     }
 
-    private void applyFailedBomToolStatus(final Set<BomToolGroupType> failedBomToolTypes) {
-        for (final BomToolGroupType type : failedBomToolTypes) {
+    private void applyFailedBomToolStatus(final Set<BomToolType> failedBomToolTypes) {
+        for (final BomToolType type : failedBomToolTypes) {
             bomToolSummaryResults.put(type, Result.FAILURE);
         }
     }
 
-    private void applyBomToolStatus(final Set<BomToolGroupType> successBomToolTypes, final Set<BomToolGroupType> failedBomToolTypes) {
+    private void applyBomToolStatus(final Set<BomToolType> successBomToolTypes, final Set<BomToolType> failedBomToolTypes) {
         applyFailedBomToolStatus(failedBomToolTypes);
-        for (final BomToolGroupType type : successBomToolTypes) {
+        for (final BomToolType type : successBomToolTypes) {
             if (!bomToolSummaryResults.containsKey(type)) {
                 bomToolSummaryResults.put(type, Result.SUCCESS);
             }

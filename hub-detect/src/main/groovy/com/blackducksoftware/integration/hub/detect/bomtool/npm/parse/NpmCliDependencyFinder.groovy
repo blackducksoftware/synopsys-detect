@@ -34,6 +34,7 @@ import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGrap
 import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.google.gson.JsonElement
@@ -57,17 +58,17 @@ class NpmCliDependencyFinder {
         this.externalIdFactory = externalIdFactory;
     }
 
-    NpmParseResult generateCodeLocation(String sourcePath, File npmLsOutputFile) {
+    NpmParseResult generateCodeLocation(BomToolType bomToolType, String sourcePath, File npmLsOutputFile) {
         if (npmLsOutputFile?.length() <= 0) {
             logger.error("Ran into an issue creating and writing to file")
             return null
         }
 
         logger.info("Generating results from npm ls -json")
-        return convertNpmJsonFileToCodeLocation(sourcePath, npmLsOutputFile.text)
+        return convertNpmJsonFileToCodeLocation(bomToolType, sourcePath, npmLsOutputFile.text)
     }
 
-    private NpmParseResult convertNpmJsonFileToCodeLocation(String sourcePath, String npmLsOutput) {
+    private NpmParseResult convertNpmJsonFileToCodeLocation(BomToolType bomToolType, String sourcePath, String npmLsOutput) {
         JsonObject npmJson = new JsonParser().parse(npmLsOutput) as JsonObject
         MutableDependencyGraph graph = new MutableMapDependencyGraph()
 
@@ -78,10 +79,9 @@ class NpmCliDependencyFinder {
 
         def externalId = externalIdFactory.createNameVersionExternalId(Forge.NPM, projectName, projectVersion)
 
-        DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolGroupType.NPM, sourcePath, externalId, graph).build()
+        DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolGroupType.NPM, bomToolType, sourcePath, externalId, graph).build()
 
         return new NpmParseResult(projectName, projectVersion, codeLocation)
-
     }
 
     private void populateChildren(MutableDependencyGraph graph, Dependency parentDependency, JsonObject parentNodeChildren, Boolean root) {

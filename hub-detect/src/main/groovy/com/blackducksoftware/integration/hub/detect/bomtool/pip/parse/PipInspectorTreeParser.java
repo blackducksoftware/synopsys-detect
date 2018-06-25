@@ -38,12 +38,13 @@ import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 
 @Component
 public class PipInspectorTreeParser {
-    final Logger logger = LoggerFactory.getLogger(PipInspectorTreeParser.class);
+    private final Logger logger = LoggerFactory.getLogger(PipInspectorTreeParser.class);
 
     public static final String SEPARATOR = "==";
     public static final String UNKNOWN_PROJECT_NAME = "n?";
@@ -54,9 +55,9 @@ public class PipInspectorTreeParser {
     public static final String INDENTATION = "    ";
 
     @Autowired
-    ExternalIdFactory externalIdFactory;
+    private ExternalIdFactory externalIdFactory;
 
-    public PipParseResult parse(final String treeText, final String sourcePath) {
+    public PipParseResult parse(final BomToolType bomToolType, final String treeText, final String sourcePath) {
         final List<String> lines = Arrays.asList(treeText.trim().split(System.lineSeparator()));
 
         MutableMapDependencyGraph dependencyGraph = null;
@@ -119,7 +120,7 @@ public class PipInspectorTreeParser {
         }
 
         if (project != null && !(project.name.equals("") && project.version.equals("") && dependencyGraph != null && dependencyGraph.getRootDependencyExternalIds().isEmpty())) {
-            final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolGroupType.PIP, sourcePath, project.externalId, dependencyGraph).build();
+            final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolGroupType.PIP, bomToolType, sourcePath, project.externalId, dependencyGraph).build();
             return new PipParseResult(project.name, project.version, codeLocation);
         } else {
             return null;

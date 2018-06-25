@@ -65,7 +65,7 @@ public class SbtResolutionCacheBomTool extends BomTool {
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
-        return sbtResolutionCacheExtractor.extract(environment.getDirectory());
+        return sbtResolutionCacheExtractor.extract(this.getBomToolType(), environment.getDirectory());
     }
 
 }

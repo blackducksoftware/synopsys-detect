@@ -74,7 +74,7 @@ public class ComposerLockBomTool extends BomTool {
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
-        return composerLockExtractor.extract(environment.getDirectory(), composerJson, composerLock);
+        return composerLockExtractor.extract(this.getBomToolType(), environment.getDirectory(), composerJson, composerLock);
     }
 
 }

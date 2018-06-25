@@ -36,6 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.parse.NpmCliDependencyFinder;
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.parse.NpmParseResult;
@@ -45,7 +46,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 
 @Component
-public class NpmCliExtractor  {
+public class NpmCliExtractor {
     private final Logger logger = LoggerFactory.getLogger(NpmCliExtractor.class);
 
     public static final String OUTPUT_FILE = "detect_npm_proj_dependencies.json";
@@ -63,7 +64,7 @@ public class NpmCliExtractor  {
     @Autowired
     private NpmCliDependencyFinder npmCliDependencyFinder;
 
-    public Extraction extract(final File directory, final String npmExe, final ExtractionId extractionId) {
+    public Extraction extract(final BomToolType bomToolType, final File directory, final String npmExe, final ExtractionId extractionId) {
 
         final File npmLsOutputFile = detectFileManager.getOutputFile(extractionId, NpmCliExtractor.OUTPUT_FILE);
         final File npmLsErrorFile = detectFileManager.getOutputFile(extractionId, NpmCliExtractor.ERROR_FILE);
@@ -90,7 +91,7 @@ public class NpmCliExtractor  {
             logger.debug("Parsing npm ls file.");
             printFileToDebug(npmLsOutputFile);
             try {
-                final NpmParseResult result = npmCliDependencyFinder.generateCodeLocation(directory.getCanonicalPath(), npmLsOutputFile);
+                final NpmParseResult result = npmCliDependencyFinder.generateCodeLocation(bomToolType, directory.getCanonicalPath(), npmLsOutputFile);
                 return new Extraction.Builder().success(result.codeLocation).projectName(result.projectName).projectVersion(result.projectVersion).build();
             } catch (final IOException e) {
                 return new Extraction.Builder().exception(e).build();
@@ -105,13 +106,12 @@ public class NpmCliExtractor  {
             return new Extraction.Builder().failure("Npm returned nothing after running npm ls").build();
         }
 
-
     }
 
     void printFileToDebug(final File errorFile) {
         String text = "";
         try {
-            for (final String line : Files.readAllLines(errorFile.toPath(), StandardCharsets.UTF_8)){
+            for (final String line : Files.readAllLines(errorFile.toPath(), StandardCharsets.UTF_8)) {
                 text += line + System.lineSeparator();
             }
         } catch (final IOException e) {

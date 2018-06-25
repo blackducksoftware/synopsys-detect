@@ -33,6 +33,7 @@ import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGrap
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.go.parse.DepPackager;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
@@ -40,24 +41,27 @@ import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 
 @Component
 public class GoDepExtractor {
-
     @Autowired
     DepPackager goPackager;
 
     @Autowired
     ExternalIdFactory externalIdFactory;
 
-    public Extraction extract(final File directory, final File goExe, final String goDepInspector) {
+    public Extraction extract(final BomToolType bomToolType, final File directory, final File goExe, final String goDepInspector) {
+        try {
+            DependencyGraph graph = goPackager.makeDependencyGraph(directory.toString(), goDepInspector);
 
-        DependencyGraph graph = goPackager.makeDependencyGraph(directory.toString(), goDepInspector);
-        if(graph == null) {
-            graph = new MutableMapDependencyGraph();
+            if (graph == null) {
+                graph = new MutableMapDependencyGraph();
+            }
+
+            final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.GOLANG, directory.toString());
+            final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolGroupType.GO_DEP, bomToolType, directory.toString(), externalId, graph).build();
+
+            return new Extraction.Builder().success(detectCodeLocation).build();
+        } catch (final Exception e) {
+            return new Extraction.Builder().exception(e).build();
         }
-        final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.GOLANG, directory.toString());
-        final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolGroupType.GO_DEP, directory.toString(), externalId, graph).build();
-
-        return new Extraction.Builder().success(detectCodeLocation).build();
-
     }
 
 }

@@ -1,15 +1,29 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.search;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.blackducksoftware.integration.hub.detect.Application;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
+import com.blackducksoftware.integration.hub.detect.search.BomToolFinder;
+import com.blackducksoftware.integration.util.ResourceUtil;
+
 @Ignore
 @ContextConfiguration(classes = { Application.class })
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -22,7 +36,7 @@ public class BomToolTreeWalkerTest {
     private File sourceDirectoryWithNestedNPM;
 
     private File sourceDirectoryWithNestedNPMInsideNodeModules;
-    /*
+
     @Autowired
     private Set<BomTool> nestedBomTools;
 
@@ -57,7 +71,7 @@ public class BomToolTreeWalkerTest {
         Files.write(nodeModulesNpmPackageLock.toPath(), npmPackageLockContent.getBytes(StandardCharsets.UTF_8));
     }
 
-    private List<String> getDefaults(){
+    private List<String> getDefaults() {
         return getDefaults(null);
     }
 
@@ -69,7 +83,6 @@ public class BomToolTreeWalkerTest {
             final String fileContent = ResourceUtil.getResourceAsString(BomToolFinder.class, "/excludedDirectoriesBomToolSearch.txt", StandardCharsets.UTF_8);
             existing.addAll(Arrays.asList(fileContent.split("\n")));
         } catch (final IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -78,86 +91,81 @@ public class BomToolTreeWalkerTest {
 
     @Test
     public void testSearchBomToolSearchYarnNoDepth() throws Exception {
-
-        final BomToolFinderOptions options = new BomToolFinderOptions(getDefaults(), false, 0);
-        final BomToolFinder bomToolTreeWalker = new BomToolFinder();
-
-        final List<BomToolApplicableResult> results = bomToolTreeWalker.findApplicableBomTools(nestedBomTools, sourceDirectoryWithMultipleYarn, options);
-
-        assertEquals(0, results.size());
+        // TODO: Re-implement this test
+        // final BomToolFinderOptions options = new BomToolFinderOptions(getDefaults(), false, 0); final BomToolFinder bomToolTreeWalker = new BomToolFinder();
+        //
+        // final List<BomToolApplicableResult> results = bomToolTreeWalker.findApplicableBomTools(nestedBomTools, sourceDirectoryWithMultipleYarn, options);
+        //
+        // assertEquals(0, results.size());
     }
 
     @Test
     public void testSearchBomToolSearchYarnDepth1() throws Exception {
-
-        final BomToolFinderOptions options = new BomToolFinderOptions(getDefaults(), false, 1);
-        final BomToolFinder bomToolTreeWalker = new BomToolFinder();
-
-        final List<BomToolApplicableResult> results = bomToolTreeWalker.findApplicableBomTools(nestedBomTools, sourceDirectoryWithMultipleYarn, options);
-
-        assertEquals(1, results.size());
+        // TODO: Re-implement this test
+        // final BomToolFinderOptions options = new BomToolFinderOptions(getDefaults(), false, 1);
+        // final BomToolFinder bomToolTreeWalker = new BomToolFinder();
+        //
+        // final List<BomToolApplicableResult> results = bomToolTreeWalker.findApplicableBomTools(nestedBomTools, sourceDirectoryWithMultipleYarn, options);
+        //
+        // assertEquals(1, results.size());
     }
 
     @Test
     public void testSearchBomToolSearchYarnDepth2() throws Exception {
-
-        final BomToolFinderOptions options = new BomToolFinderOptions(getDefaults(), false, 2);
-        final BomToolFinder bomToolTreeWalker = new BomToolFinder();
-
-        final List<BomToolApplicableResult> results = bomToolTreeWalker.findApplicableBomTools(nestedBomTools, sourceDirectoryWithMultipleYarn, options);
-        // Should have only found one because the yarn projects are nested
-        assertEquals(1, results.size());
+        // TODO: Re-implement this test
+        // final BomToolFinderOptions options = new BomToolFinderOptions(getDefaults(), false, 2); final BomToolFinder bomToolTreeWalker = new BomToolFinder();
+        //
+        // final List<BomToolApplicableResult> results = bomToolTreeWalker.findApplicableBomTools(nestedBomTools, sourceDirectoryWithMultipleYarn, options); // Should have only found one because the yarn projects are nested assertEquals(1,
+        // results.size());
     }
 
     @Test
     public void testSearchBomToolSearchYarnDepth2Forced() throws Exception {
-
-        final BomToolFinderOptions options = new BomToolFinderOptions(getDefaults(), false, 2);
-        final BomToolFinder bomToolTreeWalker = new BomToolFinder();
-
-        final List<BomToolApplicableResult> results = bomToolTreeWalker.findApplicableBomTools(nestedBomTools, sourceDirectoryWithMultipleYarn, options);
-
-        assertEquals(2, results.size());
+        // TODO: Re-implement this test
+        // final BomToolFinderOptions options = new BomToolFinderOptions(getDefaults(), false, 2);
+        // final BomToolFinder bomToolTreeWalker = new BomToolFinder();
+        //
+        // final List<BomToolApplicableResult> results = bomToolTreeWalker.findApplicableBomTools(nestedBomTools, sourceDirectoryWithMultipleYarn, options);
+        //
+        // assertEquals(2, results.size());
     }
 
     @Test
     public void testSearchBomToolSearchNpm() throws Exception {
-
-        final BomToolFinderOptions options = new BomToolFinderOptions(getDefaults(), false, 2);
-        BomToolFinder bomToolTreeWalker = new BomToolFinder();
-
-        List<BomToolApplicableResult> results = bomToolTreeWalker.findApplicableBomTools(nestedBomTools, sourceDirectoryWithNestedNPM, options);
-        // Should not have found anything because the Npm project is deeper than 2 directories down
-        assertEquals(0, results.size());
-
-        final BomToolFinderOptions options3 = new BomToolFinderOptions(getDefaults(), false, 3);
-        bomToolTreeWalker = new BomToolFinder();
-        results = bomToolTreeWalker.findApplicableBomTools(nestedBomTools, sourceDirectoryWithNestedNPM, options3);
-        assertEquals(1, results.size());
+        // TODO: Re-implement this test
+        // final BomToolFinderOptions options = new BomToolFinderOptions(getDefaults(), false, 2);
+        // BomToolFinder bomToolTreeWalker = new BomToolFinder();
+        //
+        // List<BomToolApplicableResult> results = bomToolTreeWalker.findApplicableBomTools(nestedBomTools, sourceDirectoryWithNestedNPM, options);
+        // // Should not have found anything because the Npm project is deeper than 2 directories down
+        // assertEquals(0, results.size());
+        //
+        // final BomToolFinderOptions options3 = new BomToolFinderOptions(getDefaults(), false, 3);
+        // bomToolTreeWalker = new BomToolFinder();
+        // results = bomToolTreeWalker.findApplicableBomTools(nestedBomTools, sourceDirectoryWithNestedNPM, options3);
+        // assertEquals(1, results.size());
     }
 
     @Test
     public void testSearchBomToolSearchNpmWithinNodeModules() throws Exception {
-
-        BomToolFinder bomToolTreeWalker = new BomToolFinder();
-        final BomToolFinderOptions options = new BomToolFinderOptions(getDefaults(), false, 2);
-
-        List<BomToolApplicableResult> results = bomToolTreeWalker.findApplicableBomTools(nestedBomTools, sourceDirectoryWithNestedNPMInsideNodeModules, options);
-        // Should not have found the Npm project because it is in a node_modules directory
-        assertEquals(0, results.size());
-
-        bomToolTreeWalker = new BomToolFinder();
-
-        results = bomToolTreeWalker.findApplicableBomTools(nestedBomTools, sourceDirectoryWithNestedNPMInsideNodeModules, options);
-        // Should  have found the Npm project because we are continuing and we are not excluding any directories
-        assertEquals(1, results.size());
-
-        final BomToolFinderOptions optionsExcl = new BomToolFinderOptions(Arrays.asList("node_modules"), false, 2);
-        bomToolTreeWalker = new BomToolFinder();
-
-        results = bomToolTreeWalker.findApplicableBomTools(nestedBomTools, sourceDirectoryWithNestedNPMInsideNodeModules, optionsExcl);
-        // Should  have found the Npm project because we are continuing and we are not excluding any directories
-        assertEquals(0, results.size());
+        // TODO: Re-implement this test
+        // BomToolFinder bomToolTreeWalker = new BomToolFinder(); final BomToolFinderOptions options = new BomToolFinderOptions(getDefaults(), false, 2);
+        //
+        // List<BomToolResult> results = bomToolTreeWalker.findApplicableBomTools(nestedBomTools, sourceDirectoryWithNestedNPMInsideNodeModules, options);
+        // // Should not have found the Npm project because it is in a node_modules directory
+        // assertEquals(0, results.size());
+        //
+        // bomToolTreeWalker = new BomToolFinder();
+        //
+        // results = bomToolTreeWalker.findApplicableBomTools(nestedBomTools, sourceDirectoryWithNestedNPMInsideNodeModules, options);
+        // // Should have found the Npm project because we are continuing and we are not excluding any directories
+        // assertEquals(1, results.size());
+        //
+        // final BomToolFinderOptions optionsExcl = new BomToolFinderOptions(Arrays.asList("node_modules"), false, 2); bomToolTreeWalker = new BomToolFinder();
+        //
+        // results = bomToolTreeWalker.findApplicableBomTools(nestedBomTools, sourceDirectoryWithNestedNPMInsideNodeModules, optionsExcl);
+        // // Should have found the Npm project because we are continuing and we are not excluding any
+        // directories assertEquals(0, results.size());
     }
-     */
+
 }

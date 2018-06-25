@@ -23,10 +23,10 @@
  */
 package com.blackducksoftware.integration.hub.detect.summary;
 
-import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 
 public class BomToolSummaryResult extends DetectSummaryResult {
-    public BomToolSummaryResult(final BomToolGroupType bomToolType, final Result result) {
+    public BomToolSummaryResult(final BomToolType bomToolType, final Result result) {
         super(bomToolType.toString(), result);
     }
 

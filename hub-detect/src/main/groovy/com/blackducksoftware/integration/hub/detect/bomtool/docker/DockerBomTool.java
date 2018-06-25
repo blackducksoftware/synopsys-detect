@@ -103,7 +103,7 @@ public class DockerBomTool extends BomTool {
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
-        return dockerExtractor.extract(environment.getDirectory(), extractionId, bashExe, dockerExe, image, tar, dockerInspectorInfo);
+        return dockerExtractor.extract(this.getBomToolType(), environment.getDirectory(), extractionId, bashExe, dockerExe, image, tar, dockerInspectorInfo);
     }
 
 }

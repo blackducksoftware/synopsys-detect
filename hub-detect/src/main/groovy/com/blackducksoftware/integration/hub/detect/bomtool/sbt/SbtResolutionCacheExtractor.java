@@ -34,6 +34,7 @@ import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtDependencyModule;
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtProject;
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.parse.SbtPackager;
@@ -59,7 +60,7 @@ public class SbtResolutionCacheExtractor {
     @Autowired
     ExternalIdFactory externalIdFactory;
 
-    public Extraction extract(final File directory) {
+    public Extraction extract(final BomToolType bomToolType, final File directory) {
         try {
             final String included = detectConfiguration.getSbtIncludedConfigurationNames();
             final String excluded = detectConfiguration.getSbtExcludedConfigurationNames();
@@ -74,7 +75,7 @@ public class SbtResolutionCacheExtractor {
             String projectName = null;
             String projectVersion = null;
             for (final SbtDependencyModule module : project.modules) {
-                final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolGroupType.SBT, module.name, project.projectExternalId, module.graph).build();
+                final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolGroupType.SBT, bomToolType, module.name, project.projectExternalId, module.graph).build();
                 if (projectName == null) {
                     projectName = project.projectName;
                     projectVersion = project.projectVersion;

@@ -33,6 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.hex.parse.Rebar3TreeParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.hex.parse.RebarParseResult;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
@@ -56,7 +57,7 @@ public class RebarExtractor {
     @Autowired
     Rebar3TreeParser rebarTreeParser;
 
-    public Extraction extract(final File directory, final File rebarExe) {
+    public Extraction extract(final BomToolType bomToolType, final File directory, final File rebarExe) {
         try {
             final List<DetectCodeLocation> codeLocations = new ArrayList<>();
 
@@ -68,7 +69,7 @@ public class RebarExtractor {
 
             final Executable rebar3TreeExe = new Executable(directory, envVars, rebarExe.toString(), arguments);
             final List<String> output = executableRunner.execute(rebar3TreeExe).getStandardOutputAsList();
-            final RebarParseResult parseResult = rebarTreeParser.parseRebarTreeOutput(output, directory.toString());
+            final RebarParseResult parseResult = rebarTreeParser.parseRebarTreeOutput(bomToolType, output, directory.toString());
 
             codeLocations.add(parseResult.codeLocation);
 

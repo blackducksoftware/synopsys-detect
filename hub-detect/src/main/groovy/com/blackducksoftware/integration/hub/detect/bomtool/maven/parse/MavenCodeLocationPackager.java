@@ -40,6 +40,7 @@ import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGrap
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
@@ -63,7 +64,7 @@ public class MavenCodeLocationPackager {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public List<MavenParseResult> extractCodeLocations(final String sourcePath, final String mavenOutputText, final String excludedModules, final String includedModules) {
+    public List<MavenParseResult> extractCodeLocations(final BomToolType bomToolType, final String sourcePath, final String mavenOutputText, final String excludedModules, final String includedModules) {
         final ExcludedIncludedFilter filter = new ExcludedIncludedFilter(excludedModules, includedModules);
         codeLocations = new ArrayList<>();
         currentMavenProject = null;
@@ -95,7 +96,7 @@ public class MavenCodeLocationPackager {
             if (parsingProjectSection && currentMavenProject == null) {
                 // this is the first line of a new code location, the following lines will be the tree of dependencies for this code location
                 currentGraph = new MutableMapDependencyGraph();
-                final MavenParseResult mavenProject = createMavenParseResult(sourcePath, line, currentGraph);
+                final MavenParseResult mavenProject = createMavenParseResult(bomToolType, sourcePath, line, currentGraph);
                 if (null != mavenProject && filter.shouldInclude(mavenProject.projectName)) {
                     this.currentMavenProject = mavenProject;
                     codeLocations.add(mavenProject);
@@ -133,7 +134,7 @@ public class MavenCodeLocationPackager {
                 } else {
                     // level should be greater than 1
                     if (level == previousLevel) {
-                        //a sibling of the previous dependency
+                        // a sibling of the previous dependency
                         dependencyParentStack.pop();
                         currentGraph.addParentWithChild(dependencyParentStack.peek(), dependency);
                         dependencyParentStack.push(dependency);
@@ -156,14 +157,14 @@ public class MavenCodeLocationPackager {
         return codeLocations;
     }
 
-    private MavenParseResult createMavenParseResult(final String sourcePath, final String line, final DependencyGraph graph) {
+    private MavenParseResult createMavenParseResult(final BomToolType bomToolType, final String sourcePath, final String line, final DependencyGraph graph) {
         final Dependency dependency = textToProject(line);
         if (null != dependency) {
             String codeLocationSourcePath = sourcePath;
             if (!sourcePath.endsWith(dependency.name)) {
                 codeLocationSourcePath += "/" + dependency.name;
             }
-            final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolGroupType.MAVEN, codeLocationSourcePath, dependency.externalId, graph).build();
+            final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolGroupType.MAVEN, bomToolType, codeLocationSourcePath, dependency.externalId, graph).build();
             return new MavenParseResult(dependency.name, dependency.version, codeLocation);
         }
         return null;

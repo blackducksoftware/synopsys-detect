@@ -120,7 +120,7 @@ public class NugetProjectBomTool extends BomTool {
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
-        return nugetInspectorExtractor.extract(environment.getDirectory(), inspectorExe, extractionId);
+        return nugetInspectorExtractor.extract(this.getBomToolType(), environment.getDirectory(), inspectorExe, extractionId);
     }
 
 }

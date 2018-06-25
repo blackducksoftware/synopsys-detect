@@ -78,7 +78,7 @@ public class CondaCliBomTool extends BomTool {
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
-        return condaExtractor.extract(environment.getDirectory(), condaExe);
+        return condaExtractor.extract(this.getBomToolType(), environment.getDirectory(), condaExe);
     }
 
 }

@@ -34,6 +34,7 @@ import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.go.parse.GoGodepsParser;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
@@ -49,20 +50,20 @@ public class GoDepsExtractor {
     @Autowired
     ExternalIdFactory externalIdFactory;
 
-    public Extraction extract(final File directory, final File goDepsDirectory) {
+    public Extraction extract(final BomToolType bomToolType, final File directory, final File goDepsDirectory) {
         try {
             final File goDepsFile = new File(goDepsDirectory, "Godeps.json");
 
-            final String text =FileUtils.readFileToString(goDepsFile, StandardCharsets.UTF_8);
+            final String text = FileUtils.readFileToString(goDepsFile, StandardCharsets.UTF_8);
 
             final GoGodepsParser goDepParser = new GoGodepsParser(gson, externalIdFactory);
             final DependencyGraph dependencyGraph = goDepParser.extractProjectDependencies(text);
 
             final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.GOLANG, directory.toString());
 
-            final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolGroupType.GO_GODEP, directory.toString(), externalId, dependencyGraph).build();
+            final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolGroupType.GO_GODEP, bomToolType, directory.toString(), externalId, dependencyGraph).build();
             return new Extraction.Builder().success(codeLocation).build();
-        }catch (final Exception e) {
+        } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
     }

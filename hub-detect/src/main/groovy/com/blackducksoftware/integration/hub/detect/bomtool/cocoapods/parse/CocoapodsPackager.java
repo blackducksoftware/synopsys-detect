@@ -38,7 +38,6 @@ import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency;
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode;
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer;
 import com.blackducksoftware.integration.hub.detect.nameversion.NodeMetadata;
@@ -54,30 +53,27 @@ public class CocoapodsPackager {
     @Autowired
     private NameVersionNodeTransformer nameVersionNodeTransformer;
 
-    @Autowired
-    private DetectConfiguration detectConfiguration;
-
     public DependencyGraph extractDependencyGraph(final String podLockText) throws IOException {
-        YAMLMapper mapper = new YAMLMapper();
-        PodfileLock podfileLock = mapper.readValue(podLockText, PodfileLock.class);
+        final YAMLMapper mapper = new YAMLMapper();
+        final PodfileLock podfileLock = mapper.readValue(podLockText, PodfileLock.class);
 
-        NameVersionNode root = new NameVersionNode();
+        final NameVersionNode root = new NameVersionNode();
         root.setName(String.format("detectRootNode - %s", UUID.randomUUID()));
         final SubcomponentNodeBuilder builder = new SubcomponentNodeBuilder(root);
 
-        for (Pod pod : podfileLock.getPods()) {
+        for (final Pod pod : podfileLock.getPods()) {
             buildNameVersionNode(builder, pod);
         }
 
-        for (Pod dependency : podfileLock.getDependencies()) {
-            NameVersionNode child = new NameVersionNode();
+        for (final Pod dependency : podfileLock.getDependencies()) {
+            final NameVersionNode child = new NameVersionNode();
             child.setName(cleanPodName(dependency.getName()));
             builder.addChildNodeToParent(child, root);
         }
 
         if (null != podfileLock.getExternalSources() && !podfileLock.getExternalSources().getSources().isEmpty()) {
-            for (PodSource podSource : podfileLock.getExternalSources().getSources()) {
-                NodeMetadata nodeMetadata = createMetadata(builder, podSource.getName());
+            for (final PodSource podSource : podfileLock.getExternalSources().getSources()) {
+                final NodeMetadata nodeMetadata = createMetadata(builder, podSource.getName());
                 if (null != podSource.getGit() && podSource.getGit().contains("github")) {
                     // Change the forge to GitHub when there is better KB support
                     nodeMetadata.setForge(Forge.COCOAPODS);
@@ -87,10 +83,10 @@ public class CocoapodsPackager {
             }
         }
 
-        MutableDependencyGraph graph = new MutableMapDependencyGraph();
+        final MutableDependencyGraph graph = new MutableMapDependencyGraph();
 
-        for (NameVersionNode nameVersionNode : builder.build().getChildren()) {
-            Dependency childDependency = nameVersionNodeTransformer.addNameVersionNodeToDependencyGraph(graph, Forge.COCOAPODS, nameVersionNode);
+        for (final NameVersionNode nameVersionNode : builder.build().getChildren()) {
+            final Dependency childDependency = nameVersionNodeTransformer.addNameVersionNodeToDependencyGraph(graph, Forge.COCOAPODS, nameVersionNode);
             graph.addChildToRoot(childDependency);
         }
 
@@ -98,10 +94,10 @@ public class CocoapodsPackager {
     }
 
     private NameVersionNode buildNameVersionNode(final SubcomponentNodeBuilder builder, final Pod pod) {
-        NameVersionNode nameVersionNode = new NameVersionNode();
+        final NameVersionNode nameVersionNode = new NameVersionNode();
         nameVersionNode.setName(cleanPodName(pod.getName()));
         pod.setCleanName(nameVersionNode.getName());
-        String[] segments = pod.getName().split(" ");
+        final String[] segments = pod.getName().split(" ");
         if (segments.length > 1) {
             String version = segments[1];
             version = version.replace("(", "").replace(")", "").trim();
@@ -109,7 +105,7 @@ public class CocoapodsPackager {
                 nameVersionNode.setVersion(version);
             }
         }
-        for (String dependency : pod.getDependencies()) {
+        for (final String dependency : pod.getDependencies()) {
             builder.addChildNodeToParent(buildNameVersionNode(builder, new Pod(dependency)), nameVersionNode);
         }
 
@@ -118,14 +114,14 @@ public class CocoapodsPackager {
         }
 
         if (nameVersionNode.getName().contains("/")) {
-            String superNodeName = nameVersionNode.getName().split("/")[0].trim();
+            final String superNodeName = nameVersionNode.getName().split("/")[0].trim();
             NameVersionNode superNode = new NameVersionNode();
             superNode.setName(superNodeName);
             superNode = builder.addToCache(superNode);
-            SubcomponentMetadata superNodeMetadata = createMetadata(builder, superNode.getName());
+            final SubcomponentMetadata superNodeMetadata = createMetadata(builder, superNode.getName());
             superNodeMetadata.getSubcomponents().add(nameVersionNode);
 
-            SubcomponentMetadata subcomponentMetadata = createMetadata(builder, nameVersionNode.getName());
+            final SubcomponentMetadata subcomponentMetadata = createMetadata(builder, nameVersionNode.getName());
             subcomponentMetadata.setLinkNode(superNode);
 
             builder.getSuperComponents().add(superNode);
@@ -145,7 +141,7 @@ public class CocoapodsPackager {
     }
 
     private boolean isVersionFuzzy(final String versionName) {
-        for (String identifier : fuzzyVersionIdentifiers) {
+        for (final String identifier : fuzzyVersionIdentifiers) {
             if (versionName.contains(identifier)) {
                 return true;
             }

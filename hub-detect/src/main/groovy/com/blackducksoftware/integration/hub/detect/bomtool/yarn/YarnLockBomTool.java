@@ -88,7 +88,7 @@ public class YarnLockBomTool extends BomTool {
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
-        return yarnLockExtractor.extract(environment.getDirectory(), yarnlock, yarnExe);
+        return yarnLockExtractor.extract(this.getBomToolType(), environment.getDirectory(), yarnlock, yarnExe);
     }
 
 }

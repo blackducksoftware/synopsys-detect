@@ -42,7 +42,7 @@ public class PackratLockBomTool extends BomTool {
     private final DetectFileFinder fileFinder;
     private final PackratLockExtractor packratLockExtractor;
 
-    File packratlock;
+    private File packratlock;
 
     public PackratLockBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final PackratLockExtractor packratLockExtractor) {
         super(environment, "Packrat Lock", BomToolGroupType.CRAN, BomToolType.PACKRAT_LOCK);
@@ -67,7 +67,7 @@ public class PackratLockBomTool extends BomTool {
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
-        return packratLockExtractor.extract(environment.getDirectory(), packratlock);
+        return packratLockExtractor.extract(this.getBomToolType(), environment.getDirectory(), packratlock);
     }
 
 }

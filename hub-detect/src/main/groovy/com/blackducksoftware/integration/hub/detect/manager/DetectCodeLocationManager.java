@@ -43,9 +43,9 @@ import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphCombiner;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph;
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.manager.result.codelocation.DetectCodeLocationResult;
 import com.blackducksoftware.integration.hub.detect.model.BdioCodeLocation;
-import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
 
@@ -60,7 +60,7 @@ public class DetectCodeLocationManager {
     public CodeLocationNameManager codeLocationNameManager;
 
     public DetectCodeLocationResult process(final List<DetectCodeLocation> detectCodeLocations, final String projectName, final String projectVersion) {
-        final Set<BomToolGroupType> failedBomTools = new HashSet<>();
+        final Set<BomToolType> failedBomTools = new HashSet<>();
 
         final String prefix = detectConfiguration.getProjectCodeLocationPrefix();
         final String suffix = detectConfiguration.getProjectCodeLocationSuffix();
@@ -93,7 +93,7 @@ public class DetectCodeLocationManager {
         return result;
     }
 
-    private Set<BomToolGroupType> getBomToolTypes(final List<BdioCodeLocation> bdioCodeLocations) {
+    private Set<BomToolType> getBomToolTypes(final List<BdioCodeLocation> bdioCodeLocations) {
         return bdioCodeLocations.stream()
                 .map(it -> it.codeLocation.getBomToolType())
                 .collect(Collectors.toSet());
@@ -192,7 +192,7 @@ public class DetectCodeLocationManager {
     }
 
     private DetectCodeLocation copyCodeLocation(final DetectCodeLocation codeLocation, final DependencyGraph newGraph) {
-        final DetectCodeLocation.Builder builder = new DetectCodeLocation.Builder(codeLocation.getBomToolType(), codeLocation.getSourcePath(), codeLocation.getExternalId(), newGraph);
+        final DetectCodeLocation.Builder builder = new DetectCodeLocation.Builder(codeLocation.getBomToolGroupType(), codeLocation.getBomToolType(), codeLocation.getSourcePath(), codeLocation.getExternalId(), newGraph);
         builder.dockerImage(codeLocation.getDockerImage());
         final DetectCodeLocation copy = builder.build();
         return copy;

@@ -41,6 +41,7 @@ import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGrap
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 
@@ -64,7 +65,7 @@ public class GradleReportParser {
     @Autowired
     private ExternalIdFactory externalIdFactory;
 
-    public GradleParseResult parseDependencies(final InputStream dependenciesInputStream) throws IOException {
+    public GradleParseResult parseDependencies(final BomToolType bomToolType, final InputStream dependenciesInputStream) throws IOException {
         clearState();
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(dependenciesInputStream, StandardCharsets.UTF_8));) {
@@ -117,7 +118,7 @@ public class GradleReportParser {
         }
 
         final ExternalId id = externalIdFactory.createMavenExternalId(projectGroup, projectName, projectVersionName);
-        final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolGroupType.GRADLE, projectSourcePath, id, graph).build();
+        final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolGroupType.GRADLE, bomToolType, projectSourcePath, id, graph).build();
         return new GradleParseResult(rootProjectName, rootProjectVersionName, detectCodeLocation);
     }
 

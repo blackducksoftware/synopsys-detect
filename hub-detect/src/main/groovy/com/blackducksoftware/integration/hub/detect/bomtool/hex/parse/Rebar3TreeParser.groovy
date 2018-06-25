@@ -34,6 +34,7 @@ import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 
@@ -55,7 +56,7 @@ class Rebar3TreeParser {
     @Autowired
     ExternalIdFactory externalIdFactory;
 
-    public RebarParseResult parseRebarTreeOutput(final List<String> dependencyTreeOutput, final String sourcePath) {
+    public RebarParseResult parseRebarTreeOutput(BomToolType bomToolType, final List<String> dependencyTreeOutput, final String sourcePath) {
         MutableDependencyGraph graph = new MutableMapDependencyGraph();
         String projectName = '';
         String projectVersionName = '';
@@ -104,7 +105,7 @@ class Rebar3TreeParser {
 
         final ExternalId id = externalIdFactory.createNameVersionExternalId(Forge.HEX, projectName, projectVersionName);
 
-        DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolGroupType.HEX, sourcePath, id, graph).build();
+        DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolGroupType.HEX, bomToolType, sourcePath, id, graph).build();
         RebarParseResult result = new RebarParseResult(projectName, projectVersionName, codeLocation);
     }
 

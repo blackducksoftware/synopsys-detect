@@ -35,6 +35,7 @@ import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.parse.CocoapodsPackager;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
@@ -42,14 +43,13 @@ import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 
 @Component
 public class PodlockExtractor {
+    @Autowired
+    private CocoapodsPackager cocoapodsPackager;
 
     @Autowired
-    CocoapodsPackager cocoapodsPackager;
+    private ExternalIdFactory externalIdFactory;
 
-    @Autowired
-    protected ExternalIdFactory externalIdFactory;
-
-    public Extraction extract(final File directory, final File podlock) {
+    public Extraction extract(final BomToolType bomToolType, final File directory, final File podlock) {
         String podLockText;
         try {
             podLockText = FileUtils.readFileToString(podlock, StandardCharsets.UTF_8);
@@ -66,7 +66,7 @@ public class PodlockExtractor {
 
         final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.COCOAPODS, directory.toString());
 
-        final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolGroupType.COCOAPODS, directory.toString(), externalId, dependencyGraph).build();
+        final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolGroupType.COCOAPODS, bomToolType, directory.toString(), externalId, dependencyGraph).build();
 
         return new Extraction.Builder().success(codeLocation).build();
     }

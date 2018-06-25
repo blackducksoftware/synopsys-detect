@@ -67,7 +67,7 @@ public class NpmShrinkwrapBomTool extends BomTool {
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
-        return npmLockfileExtractor.extract(environment.getDirectory(), lockfile);
+        return npmLockfileExtractor.extract(BomToolType.NPM_SHRINKWRAP, environment.getDirectory(), lockfile);
     }
 
 }

@@ -67,7 +67,7 @@ public class GemlockBomTool extends BomTool {
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
-        return gemlockExtractor.extract(environment.getDirectory(), gemlock);
+        return gemlockExtractor.extract(this.getBomToolType(), environment.getDirectory(), gemlock);
     }
 
 }

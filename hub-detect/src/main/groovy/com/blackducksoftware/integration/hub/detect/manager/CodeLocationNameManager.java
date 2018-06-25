@@ -37,7 +37,6 @@ import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 
 @Component
 public class CodeLocationNameManager {
-
     @Autowired
     public DetectConfiguration detectConfiguration;
 
@@ -52,47 +51,27 @@ public class CodeLocationNameManager {
 
     private int givenCodeLocationOverrideCount = 0;
 
-    private boolean useCodeLocationOverride() {
-        if (StringUtils.isNotBlank(detectConfiguration.getCodeLocationNameOverride())) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    private String getNextCodeLocationOverrideName(CodeLocationType codeLocationType) { //returns "override", then "override 2", then "override 3", etc
-        givenCodeLocationOverrideCount++;
-        final String base = detectConfiguration.getCodeLocationNameOverride() + " " + codeLocationType.name();
-        if (givenCodeLocationOverrideCount == 1) {
-            return base;
-        } else {
-            final String codeLocationName = base + " " + Integer.toString(givenCodeLocationOverrideCount);
-            return codeLocationName;
-        }
-    }
-
     public String createAggregateCodeLocationName() {
         if (useCodeLocationOverride()) {
-            //The aggregate is exclusively used for the bdio and not the scans
+            // The aggregate is exclusively used for the bdio and not the scans
             return getNextCodeLocationOverrideName(CodeLocationType.BOM);
         } else {
-            return ""; //it is overridden in bdio creation later.
+            return ""; // it is overridden in bdio creation later.
         }
     }
 
     public String createCodeLocationName(final DetectCodeLocation detectCodeLocation, final String detectSourcePath, final String projectName, final String projectVersionName,
             final String prefix, final String suffix) {
-
         if (useCodeLocationOverride()) {
-            if (BomToolGroupType.DOCKER == detectCodeLocation.getBomToolType()) {
+            if (BomToolGroupType.DOCKER == detectCodeLocation.getBomToolGroupType()) {
                 return getNextCodeLocationOverrideName(CodeLocationType.DOCKER);
             } else {
                 return getNextCodeLocationOverrideName(CodeLocationType.BOM);
             }
-        } else if (BomToolGroupType.DOCKER == detectCodeLocation.getBomToolType()) {
-            return dockerCodeLocationNameService.createCodeLocationName(detectCodeLocation.getSourcePath(), projectName, projectVersionName, detectCodeLocation.getDockerImage(), detectCodeLocation.getBomToolType(), prefix, suffix);
+        } else if (BomToolGroupType.DOCKER == detectCodeLocation.getBomToolGroupType()) {
+            return dockerCodeLocationNameService.createCodeLocationName(detectCodeLocation.getSourcePath(), projectName, projectVersionName, detectCodeLocation.getDockerImage(), detectCodeLocation.getBomToolGroupType(), prefix, suffix);
         } else {
-            return bomCodeLocationNameService.createCodeLocationName(detectSourcePath, detectCodeLocation.getSourcePath(), detectCodeLocation.getExternalId(), detectCodeLocation.getBomToolType(), prefix, suffix);
+            return bomCodeLocationNameService.createCodeLocationName(detectSourcePath, detectCodeLocation.getSourcePath(), detectCodeLocation.getExternalId(), detectCodeLocation.getBomToolGroupType(), prefix, suffix);
         }
     }
 
@@ -101,6 +80,25 @@ public class CodeLocationNameManager {
             return getNextCodeLocationOverrideName(CodeLocationType.SCAN);
         } else {
             return scanCodeLocationNameService.createCodeLocationName(sourcePath, scanTargetPath, projectName, projectVersionName, prefix, suffix);
+        }
+    }
+
+    private boolean useCodeLocationOverride() {
+        if (StringUtils.isNotBlank(detectConfiguration.getCodeLocationNameOverride())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private String getNextCodeLocationOverrideName(final CodeLocationType codeLocationType) { // returns "override", then "override 2", then "override 3", etc
+        givenCodeLocationOverrideCount++;
+        final String base = detectConfiguration.getCodeLocationNameOverride() + " " + codeLocationType.name();
+        if (givenCodeLocationOverrideCount == 1) {
+            return base;
+        } else {
+            final String codeLocationName = base + " " + Integer.toString(givenCodeLocationOverrideCount);
+            return codeLocationName;
         }
     }
 

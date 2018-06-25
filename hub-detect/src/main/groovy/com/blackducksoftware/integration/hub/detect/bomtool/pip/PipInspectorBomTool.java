@@ -99,7 +99,7 @@ public class PipInspectorBomTool extends BomTool {
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
-        return pipInspectorExtractor.extract(environment.getDirectory(), pythonExe, pipInspector, setupFile, requirementFilePath);
+        return pipInspectorExtractor.extract(this.getBomToolType(), environment.getDirectory(), pythonExe, pipInspector, setupFile, requirementFilePath);
     }
 
 }

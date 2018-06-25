@@ -28,8 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -38,6 +36,7 @@ import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.conda.parse.CondaListParser;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
@@ -48,21 +47,19 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 
 @Component
 public class CondaCliExtractor {
-    private final Logger logger = LoggerFactory.getLogger(CondaCliExtractor.class);
+    @Autowired
+    private CondaListParser condaListParser;
 
     @Autowired
-    CondaListParser condaListParser;
+    private ExternalIdFactory externalIdFactory;
 
     @Autowired
-    protected ExternalIdFactory externalIdFactory;
+    private ExecutableRunner executableRunner;
 
     @Autowired
-    protected ExecutableRunner executableRunner;
+    private DetectConfiguration detectConfiguration;
 
-    @Autowired
-    protected DetectConfiguration detectConfiguration;
-
-    public Extraction extract(final File directory, final File condaExe) {
+    public Extraction extract(final BomToolType bomToolType, final File directory, final File condaExe) {
         try {
             final List<String> condaListOptions = new ArrayList<>();
             condaListOptions.add("list");
@@ -81,7 +78,7 @@ public class CondaCliExtractor {
 
             final DependencyGraph dependencyGraph = condaListParser.parse(listJsonText, infoJsonText);
             final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.ANACONDA, directory.toString());
-            final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolGroupType.CONDA, directory.toString(), externalId, dependencyGraph).build();
+            final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolGroupType.CONDA, bomToolType, directory.toString(), externalId, dependencyGraph).build();
 
             return new Extraction.Builder().success(detectCodeLocation).build();
         } catch (final Exception e) {

@@ -68,7 +68,7 @@ public class GoDepsBomTool extends BomTool {
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
-        return goDepsExtractor.extract(environment.getDirectory(), goDepsDirectory);
+        return goDepsExtractor.extract(this.getBomToolType(), environment.getDirectory(), goDepsDirectory);
     }
 
 }

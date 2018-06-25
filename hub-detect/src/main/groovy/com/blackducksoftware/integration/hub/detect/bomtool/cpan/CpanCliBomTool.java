@@ -90,7 +90,7 @@ public class CpanCliBomTool extends BomTool {
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
-        return cpanCliExtractor.extract(environment.getDirectory(), cpanExe, cpanmExe);
+        return cpanCliExtractor.extract(this.getBomToolType(), environment.getDirectory(), cpanExe, cpanmExe);
     }
 
 }

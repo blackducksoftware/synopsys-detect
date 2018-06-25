@@ -34,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.parse.GradleParseResult;
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.parse.GradleReportParser;
@@ -63,7 +64,7 @@ public class GradleInspectorExtractor {
     @Autowired
     GradleReportParser gradleReportParser;
 
-    public Extraction extract(final File directory, final String gradleExe, final String gradleInspector, final ExtractionId extractionId) {
+    public Extraction extract(final BomToolType bomToolType, final File directory, final String gradleExe, final String gradleInspector, final ExtractionId extractionId) {
         try {
             String gradleCommand = detectConfiguration.getGradleBuildCommand();
             gradleCommand = gradleCommand.replaceAll("dependencies", "").trim();
@@ -79,7 +80,7 @@ public class GradleInspectorExtractor {
             arguments.add("dependencies");
             arguments.add(String.format("--init-script=%s", gradleInspector));
 
-            //logger.info("using ${gradleInspectorManager.getInitScriptPath()} as the path for the gradle init script");
+            // logger.info("using ${gradleInspectorManager.getInitScriptPath()} as the path for the gradle init script");
             final Executable executable = new Executable(directory, gradleExe, arguments);
             final ExecutableOutput output = executableRunner.execute(executable);
 
@@ -95,7 +96,7 @@ public class GradleInspectorExtractor {
                 if (codeLocationFiles != null) {
                     for (final File file : codeLocationFiles) {
                         final InputStream stream = new FileInputStream(file);
-                        final GradleParseResult result = gradleReportParser.parseDependencies(stream);
+                        final GradleParseResult result = gradleReportParser.parseDependencies(bomToolType, stream);
                         stream.close();
                         final DetectCodeLocation codeLocation = result.codeLocation;
                         codeLocations.add(codeLocation);

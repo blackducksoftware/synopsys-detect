@@ -33,6 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.parse.PipInspectorTreeParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.parse.PipParseResult;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
@@ -51,14 +52,14 @@ public class PipInspectorExtractor {
     @Autowired
     private PipInspectorTreeParser pipInspectorTreeParser;
 
-    public Extraction extract(final File directory, final String pythonExe, final File pipInspector, final File setupFile, final String requirementFilePath) {
+    public Extraction extract(final BomToolType bomToolType, final File directory, final String pythonExe, final File pipInspector, final File setupFile, final String requirementFilePath) {
         Extraction extractionResult;
         try {
             final String projectName = getProjectName(directory, pythonExe, pipInspector, setupFile, requirementFilePath);
             final PipParseResult result;
 
             final String inspectorOutput = runInspector(directory, pythonExe, pipInspector, projectName, requirementFilePath);
-            result = pipInspectorTreeParser.parse(inspectorOutput, directory.toString());
+            result = pipInspectorTreeParser.parse(bomToolType, inspectorOutput, directory.toString());
 
             if (result == null) {
                 extractionResult = new Extraction.Builder().failure("The Pip Inspector tree parser returned null").build();

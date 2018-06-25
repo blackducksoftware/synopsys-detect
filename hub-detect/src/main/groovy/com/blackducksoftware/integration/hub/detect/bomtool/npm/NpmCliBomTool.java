@@ -82,7 +82,7 @@ public class NpmCliBomTool extends BomTool {
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
-        return npmCliExtractor.extract(environment.getDirectory(), npmExe, extractionId);
+        return npmCliExtractor.extract(this.getBomToolType(), environment.getDirectory(), npmExe, extractionId);
     }
 
 }

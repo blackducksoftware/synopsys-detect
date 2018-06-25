@@ -30,6 +30,7 @@ import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType
 import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
@@ -52,7 +53,7 @@ class NpmLockfilePackager {
     @Autowired
     ExternalIdFactory externalIdFactory
 
-    public NpmParseResult parse(String sourcePath, String lockFileText, boolean includeDevDependencies) {
+    public NpmParseResult parse(BomToolType bomToolType, String sourcePath, String lockFileText, boolean includeDevDependencies) {
         NpmProject npmProject = gson.fromJson(lockFileText, NpmProject.class)
 
         NameVersionNode root = new NameVersionNode([name: npmProject.name, version: npmProject.version])
@@ -72,7 +73,7 @@ class NpmLockfilePackager {
 
         ExternalId projectId = externalIdFactory.createNameVersionExternalId(Forge.NPM, npmProject.name, npmProject.version)
         DependencyGraph graph = nameVersionNodeTransformer.createDependencyGraph(Forge.NPM, builder.build(), false)
-        DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolGroupType.NPM, sourcePath, projectId, graph).build();
+        DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolGroupType.NPM, bomToolType, sourcePath, projectId, graph).build();
         return new NpmParseResult(npmProject.name, npmProject.version, codeLocation);
     }
 }

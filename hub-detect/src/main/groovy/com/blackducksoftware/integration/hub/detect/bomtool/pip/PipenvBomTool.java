@@ -92,7 +92,7 @@ public class PipenvBomTool extends BomTool {
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
-        return pipenvExtractor.extract(environment.getDirectory(), pythonExe, pipenvExe, pipfileDotLock, pipfile, setupFile);
+        return pipenvExtractor.extract(this.getBomToolType(), environment.getDirectory(), pythonExe, pipenvExe, pipfileDotLock, pipfile, setupFile);
     }
 
 }
