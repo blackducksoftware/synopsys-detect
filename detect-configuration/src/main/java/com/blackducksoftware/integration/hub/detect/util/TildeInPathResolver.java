@@ -24,14 +24,16 @@
 package com.blackducksoftware.integration.hub.detect.util;
 
 import java.lang.reflect.Field;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.DetectInfo;
-import com.blackducksoftware.integration.hub.detect.configuration.ValueContainer;
-import com.blackducksoftware.integration.hub.detect.help.HelpGroup;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectPropertyType;
 import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType;
 
 /**
@@ -56,23 +58,33 @@ public class TildeInPathResolver {
         this.detectInfo = detectInfo;
     }
 
-    public void resolveTildeInAllPathFields(final String systemUserHome, final ValueContainer valueContainer) throws IllegalArgumentException, IllegalAccessException {
+    public void resolveTildeInAllPathFields(final String systemUserHome, final DetectConfigWrapper detectConfigWrapper) throws IllegalArgumentException, IllegalAccessException {
         final OperatingSystemType currentOs = detectInfo.getCurrentOs();
-        final Field[] fields = valueContainer.getClass().getDeclaredFields();
+        final Field[] fields = detectConfigWrapper.getClass().getDeclaredFields();
+        Field propertyMapField = null;
+        Map<DetectProperty, Object> propertyMap = null;
         for (final Field field : fields) {
-            if (field.isAnnotationPresent(HelpGroup.class) && field.getType() == String.class) {
-                final boolean wasAccessible = field.isAccessible();
-                field.setAccessible(true);
-                final String providedPath = (String) field.get(valueContainer);
-                if (StringUtils.isNotBlank(providedPath)) {
-                    final String resolvedPath = resolveTildeInPath(currentOs, systemUserHome, providedPath);
-                    if (!resolvedPath.equals(providedPath)) {
-                        field.set(valueContainer, resolvedPath);
-                        logger.warn(String.format("We have resolved %s to %s. If this is not expected, please revise the path provided, or specify --detect.resolve.tilde.in.paths=false.", providedPath, resolvedPath));
+            if (field.getName().equals("propertyMap")) {
+                propertyMapField = field;
+                propertyMapField.setAccessible(true);
+                propertyMap = (Map<DetectProperty, Object>) propertyMapField.get(detectConfigWrapper);
+                break;
+            }
+        }
+        if (null != propertyMapField && null != propertyMap) {
+            for (Map.Entry<DetectProperty, Object> propertyEntry : propertyMap.entrySet()) {
+                if (DetectPropertyType.STRING == propertyEntry.getKey().getPropertyType()) {
+                    String originalString = (String) propertyEntry.getValue();
+                    if (StringUtils.isNotBlank(originalString)) {
+                        String resolvedPath = resolveTildeInPath(currentOs, systemUserHome, originalString);
+                        if (!resolvedPath.equals(originalString)) {
+                            propertyMap.put(propertyEntry.getKey(), resolvedPath);
+                            logger.warn(String.format("We have resolved %s to %s. If this is not expected, please revise the path provided, or specify --detect.resolve.tilde.in.paths=false.", originalString, resolvedPath));
+                        }
                     }
-                    field.setAccessible(wasAccessible);
                 }
             }
+            propertyMapField.set(detectConfigWrapper, propertyMap);
         }
     }
 

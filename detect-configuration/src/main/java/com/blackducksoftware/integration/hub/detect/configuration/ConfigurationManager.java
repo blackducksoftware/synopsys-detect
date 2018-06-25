@@ -49,8 +49,8 @@ public class ConfigurationManager {
     private final Logger logger = LoggerFactory.getLogger(ConfigurationManager.class);
     private final String USER_HOME = System.getProperty("user.home");
 
-    private TildeInPathResolver tildeInPathResolver;
-    private ValueContainer valueContainer;
+    private final TildeInPathResolver tildeInPathResolver;
+    private final DetectConfigWrapper detectConfigWrapper;
 
     private File sourceDirectory;
     private File outputDirectory;
@@ -69,9 +69,9 @@ public class ConfigurationManager {
     private String nugetInspectorAirGapPath;
     // end properties to be updated
 
-    public ConfigurationManager(final TildeInPathResolver tildeInPathResolver, final ValueContainer valueContainer) {
+    public ConfigurationManager(final TildeInPathResolver tildeInPathResolver, final DetectConfigWrapper detectConfigWrapper) {
         this.tildeInPathResolver = tildeInPathResolver;
-        this.valueContainer = valueContainer;
+        this.detectConfigWrapper = detectConfigWrapper;
     }
 
     public void initialize(List<DetectOption> detectOptions) throws DetectUserFriendlyException {
@@ -86,9 +86,9 @@ public class ConfigurationManager {
     }
 
     private void resolveTildeInPaths() throws DetectUserFriendlyException {
-        if (valueContainer.getResolveTildeInPaths()) {
+        if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_RESOLVE_TILDE_IN_PATHS)) {
             try {
-                tildeInPathResolver.resolveTildeInAllPathFields(USER_HOME, valueContainer);
+                tildeInPathResolver.resolveTildeInAllPathFields(USER_HOME, detectConfigWrapper);
             } catch (IllegalAccessException e) {
                 throw new DetectUserFriendlyException(String.format("There was a problem resolving the tilde's in the paths. %s", e.getMessage()), e, ExitCodeType.FAILURE_CONFIGURATION);
             }
@@ -96,7 +96,7 @@ public class ConfigurationManager {
     }
 
     private void resolveTargetAndOutputDirectories() throws DetectUserFriendlyException {
-        if (StringUtils.isBlank(valueContainer.getSourcePath())) {
+        if (StringUtils.isBlank(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH))) {
             sourcePath = System.getProperty("user.dir");
         }
 
@@ -141,13 +141,14 @@ public class ConfigurationManager {
             hubSignatureScannerParallelProcessors = Runtime.getRuntime().availableProcessors();
         }
 
-        if (StringUtils.isNotBlank(valueContainer.getHubSignatureScannerHostUrl()) && StringUtils.isNotBlank(valueContainer.getHubSignatureScannerOfflineLocalPath())) {
+        if (StringUtils.isNotBlank(detectConfigWrapper.getProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_HOST_URL)) &&
+                StringUtils.isNotBlank(detectConfigWrapper.getProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH))) {
             throw new DetectUserFriendlyException(
                     "You have provided both a hub signature scanner url AND a local hub signature scanner path. Only one of these properties can be set at a time. If both are used together, the *correct* source of the signature scanner can not be determined.",
                     ExitCodeType.FAILURE_GENERAL_ERROR);
         }
 
-        if (StringUtils.isNotBlank(valueContainer.getHubSignatureScannerHostUrl())) {
+        if (StringUtils.isNotBlank(detectConfigWrapper.getProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_HOST_URL))) {
             logger.info("A hub signature scanner url was provided, which requires hub offline mode. Setting hub offline mode to true.");
             if (hubOfflineMode == false) {
                 addFieldWarning(detectOptions, "hubSignatureScannerHostUrl", "A hub signature scanner host url was provided but hub offline mode was false. In the future set hub offline mode to true.");
@@ -155,7 +156,7 @@ public class ConfigurationManager {
             }
             hubOfflineMode = true;
         }
-        if (StringUtils.isNotBlank(valueContainer.getHubSignatureScannerOfflineLocalPath())) {
+        if (StringUtils.isNotBlank(detectConfigWrapper.getProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH))) {
             logger.info("A local hub signature scanner path was provided, which requires hub offline mode. Setting hub offline mode to true.");
             if (hubOfflineMode == false) {
                 addFieldWarning(detectOptions, "hubSignatureScannerOfflineLocalPath", "A local hub signature scanner was provided but hub offline mode was false. In the future set hub offline mode to true.");
@@ -167,11 +168,11 @@ public class ConfigurationManager {
 
     private void resolveBomToolSearchProperties() throws DetectUserFriendlyException {
         bomToolSearchDirectoryExclusions = new ArrayList<>();
-        for (final String exclusion : valueContainer.getBomToolSearchExclusion()) {
+        for (final String exclusion : detectConfigWrapper.getStringArrayProperty(DetectProperty.DETECT_BOM_TOOL_SEARCH_EXCLUSION)) {
             bomToolSearchDirectoryExclusions.add(exclusion);
         }
         try {
-            if (valueContainer.getBomToolSearchExclusionDefaults()) {
+            if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_BOM_TOOL_SEARCH_EXCLUSION_DEFAULTS)) {
                 final String fileContent = ResourceUtil.getResourceAsString(ConfigurationManager.class, "/excludedDirectoriesBomToolSearch.txt", StandardCharsets.UTF_8);
                 bomToolSearchDirectoryExclusions.addAll(Arrays.asList(fileContent.split("\r?\n")));
             }
@@ -181,9 +182,9 @@ public class ConfigurationManager {
     }
 
     private void resolveAirGapPaths() {
-        dockerInspectorAirGapPath = getInspectorAirGapPath(valueContainer.getDockerInspectorAirGapPath(), DOCKER);
-        gradleInspectorAirGapPath = getInspectorAirGapPath(valueContainer.getGradleInspectorAirGapPath(), GRADLE);
-        nugetInspectorAirGapPath = getInspectorAirGapPath(valueContainer.getNugetInspectorAirGapPath(), NUGET);
+        dockerInspectorAirGapPath = getInspectorAirGapPath(detectConfigWrapper.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH), DOCKER);
+        gradleInspectorAirGapPath = getInspectorAirGapPath(detectConfigWrapper.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH), GRADLE);
+        nugetInspectorAirGapPath = getInspectorAirGapPath(detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_AIR_GAP_PATH), NUGET);
     }
 
     private void updateDetectOptions(List<DetectOption> detectOptions) {

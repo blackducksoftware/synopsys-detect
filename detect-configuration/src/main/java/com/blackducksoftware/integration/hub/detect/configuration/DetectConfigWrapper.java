@@ -8,32 +8,20 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.core.env.ConfigurableEnvironment;
 
-public class ConfigToBeRenamed {
+public class DetectConfigWrapper {
 
     private final ConfigurableEnvironment configurableEnvironment;
 
     private final Map<DetectProperty, Object> propertyMap = new HashMap<>();
 
-    public ConfigToBeRenamed(final ConfigurableEnvironment configurableEnvironment) {
+    public DetectConfigWrapper(final ConfigurableEnvironment configurableEnvironment) {
         this.configurableEnvironment = configurableEnvironment;
     }
 
     public void init() {
         Arrays.stream(DetectProperty.values()).forEach(detectProperty -> {
             final String stringValue = configurableEnvironment.getProperty(detectProperty.getPropertyName(), detectProperty.getDefaultValue());
-            Object value;
-            if (DetectPropertyType.BOOLEAN == detectProperty.getPropertyType()) {
-                value = convertBoolean(stringValue);
-            } else if (DetectPropertyType.LONG == detectProperty.getPropertyType()) {
-                value = convertLong(stringValue);
-            } else if (DetectPropertyType.INTEGER == detectProperty.getPropertyType()) {
-                value = convertInt(stringValue);
-            } else if (DetectPropertyType.STRING_ARRAY == detectProperty.getPropertyType()) {
-                value = convertStringArray(stringValue);
-            } else {
-                value = stringValue;
-            }
-            propertyMap.put(detectProperty, value);
+            updatePropertyMap(propertyMap, detectProperty, stringValue);
         });
     }
 
@@ -55,6 +43,26 @@ public class ConfigToBeRenamed {
 
     public String getProperty(final DetectProperty detectProperty) {
         return (String) propertyMap.get(detectProperty);
+    }
+
+    protected void setDetectProperty(DetectProperty detectProperty, String stringValue) {
+        updatePropertyMap(propertyMap, detectProperty, stringValue);
+    }
+
+    private void updatePropertyMap(Map<DetectProperty, Object> propertyMap, DetectProperty detectProperty, String stringValue) {
+        Object value;
+        if (DetectPropertyType.BOOLEAN == detectProperty.getPropertyType()) {
+            value = convertBoolean(stringValue);
+        } else if (DetectPropertyType.LONG == detectProperty.getPropertyType()) {
+            value = convertLong(stringValue);
+        } else if (DetectPropertyType.INTEGER == detectProperty.getPropertyType()) {
+            value = convertInt(stringValue);
+        } else if (DetectPropertyType.STRING_ARRAY == detectProperty.getPropertyType()) {
+            value = convertStringArray(stringValue);
+        } else {
+            value = stringValue;
+        }
+        propertyMap.put(detectProperty, value);
     }
 
     private String[] convertStringArray(final String string) {

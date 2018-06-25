@@ -27,6 +27,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.ConfigurableEnvironment;
 
@@ -37,11 +38,8 @@ import com.blackducksoftware.integration.hub.bdio.SimpleBdioFactory;
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.configuration.AdditionalPropertyConfig;
-import com.blackducksoftware.integration.hub.detect.configuration.BomToolConfig;
 import com.blackducksoftware.integration.hub.detect.configuration.ConfigurationManager;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfig;
-import com.blackducksoftware.integration.hub.detect.configuration.HubConfig;
-import com.blackducksoftware.integration.hub.detect.configuration.ValueContainer;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
 import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper;
 import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver;
@@ -53,6 +51,13 @@ import freemarker.template.Configuration;
 
 @org.springframework.context.annotation.Configuration
 public class BeanConfiguration {
+
+    private final ConfigurableEnvironment configurableEnvironment;
+
+    @Autowired
+    public BeanConfiguration(final ConfigurableEnvironment configurableEnvironment) {
+        this.configurableEnvironment = configurableEnvironment;
+    }
 
     @Bean
     public Gson gson() {
@@ -109,8 +114,8 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public ValueContainer valueContainer() {
-        return new ValueContainer();
+    public DetectConfigWrapper detectConfigWrapper() {
+        return new DetectConfigWrapper(configurableEnvironment);
     }
 
     @Bean
@@ -119,33 +124,18 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public BomToolConfig bomToolConfig() {
-        return new BomToolConfig();
-    }
-
-    @Bean
-    public HubConfig hubConfig() {
-        return new HubConfig();
-    }
-
-    @Bean
-    public DetectConfig detectConfig() {
-        return new DetectConfig();
-    }
-
-    @Bean
     public DetectOptionManager detectOptionManager() {
         return new DetectOptionManager(valueContainer());
     }
 
     @Bean
-    public AdditionalPropertyConfig additionalPropertyConfig(ConfigurableEnvironment configurableEnvironment) {
+    public AdditionalPropertyConfig additionalPropertyConfig() {
         return new AdditionalPropertyConfig(configurableEnvironment);
     }
 
     @Bean
     public HubServiceWrapper hubServiceWrapper(AdditionalPropertyConfig additionalPropertyConfig) {
-        return new HubServiceWrapper(hubConfig(), additionalPropertyConfig);
+        return new HubServiceWrapper(detectConfigWrapper(), additionalPropertyConfig);
     }
 
 }

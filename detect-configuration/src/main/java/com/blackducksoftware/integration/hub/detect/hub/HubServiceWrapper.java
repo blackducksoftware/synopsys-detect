@@ -35,7 +35,8 @@ import com.blackducksoftware.integration.hub.api.generated.response.CurrentVersi
 import com.blackducksoftware.integration.hub.configuration.HubServerConfig;
 import com.blackducksoftware.integration.hub.configuration.HubServerConfigBuilder;
 import com.blackducksoftware.integration.hub.detect.configuration.AdditionalPropertyConfig;
-import com.blackducksoftware.integration.hub.detect.configuration.HubConfig;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.service.CodeLocationService;
@@ -54,15 +55,15 @@ import com.blackducksoftware.integration.util.ResourceUtil;
 public class HubServiceWrapper {
     private final Logger logger = LoggerFactory.getLogger(HubServiceWrapper.class);
 
-    private final HubConfig hubConfig;
+    private final DetectConfigWrapper detectConfigWrapper;
     private final AdditionalPropertyConfig additionalPropertyConfig;
 
     private Slf4jIntLogger slf4jIntLogger;
     private HubServerConfig hubServerConfig;
     private HubServicesFactory hubServicesFactory;
 
-    public HubServiceWrapper(final HubConfig hubConfig, final AdditionalPropertyConfig additionalPropertyConfig) {
-        this.hubConfig = hubConfig;
+    public HubServiceWrapper(final DetectConfigWrapper detectConfigWrapper, final AdditionalPropertyConfig additionalPropertyConfig) {
+        this.detectConfigWrapper = detectConfigWrapper;
         this.additionalPropertyConfig = additionalPropertyConfig;
     }
 
@@ -122,11 +123,11 @@ public class HubServiceWrapper {
     }
 
     public ScanStatusService createScanStatusService() {
-        return hubServicesFactory.createScanStatusService(hubConfig.getApiTimeout());
+        return hubServicesFactory.createScanStatusService(detectConfigWrapper.getLongProperty(DetectProperty.DETECT_API_TIMEOUT));
     }
 
     public ReportService createReportService() throws IntegrationException {
-        return hubServicesFactory.createReportService(hubConfig.getApiTimeout());
+        return hubServicesFactory.createReportService(detectConfigWrapper.getLongProperty(DetectProperty.DETECT_API_TIMEOUT));
     }
 
     public SignatureScannerService createSignatureScannerService() {
