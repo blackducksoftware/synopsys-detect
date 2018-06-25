@@ -23,7 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.util;
 
-import java.lang.reflect.Field;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -60,31 +59,21 @@ public class TildeInPathResolver {
 
     public void resolveTildeInAllPathFields(final String systemUserHome, final DetectConfigWrapper detectConfigWrapper) throws IllegalArgumentException, IllegalAccessException {
         final OperatingSystemType currentOs = detectInfo.getCurrentOs();
-        final Field[] fields = detectConfigWrapper.getClass().getDeclaredFields();
-        Field propertyMapField = null;
-        Map<DetectProperty, Object> propertyMap = null;
-        for (final Field field : fields) {
-            if (field.getName().equals("propertyMap")) {
-                propertyMapField = field;
-                propertyMapField.setAccessible(true);
-                propertyMap = (Map<DetectProperty, Object>) propertyMapField.get(detectConfigWrapper);
-                break;
-            }
-        }
-        if (null != propertyMapField && null != propertyMap) {
+
+        Map<DetectProperty, Object> propertyMap = detectConfigWrapper.getPropertyMap();
+        if (null != propertyMap && !propertyMap.isEmpty()) {
             for (Map.Entry<DetectProperty, Object> propertyEntry : propertyMap.entrySet()) {
                 if (DetectPropertyType.STRING == propertyEntry.getKey().getPropertyType()) {
                     String originalString = (String) propertyEntry.getValue();
                     if (StringUtils.isNotBlank(originalString)) {
                         String resolvedPath = resolveTildeInPath(currentOs, systemUserHome, originalString);
                         if (!resolvedPath.equals(originalString)) {
-                            propertyMap.put(propertyEntry.getKey(), resolvedPath);
+                            detectConfigWrapper.setDetectProperty(propertyEntry.getKey(), resolvedPath);
                             logger.warn(String.format("We have resolved %s to %s. If this is not expected, please revise the path provided, or specify --detect.resolve.tilde.in.paths=false.", originalString, resolvedPath));
                         }
                     }
                 }
             }
-            propertyMapField.set(detectConfigWrapper, propertyMap);
         }
     }
 

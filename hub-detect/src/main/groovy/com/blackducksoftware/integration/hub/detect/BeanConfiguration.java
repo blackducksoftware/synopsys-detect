@@ -120,12 +120,12 @@ public class BeanConfiguration {
 
     @Bean
     public ConfigurationManager configurationManager() {
-        return new ConfigurationManager(tildeInPathResolver(), valueContainer());
+        return new ConfigurationManager(tildeInPathResolver(), detectConfigWrapper());
     }
 
     @Bean
     public DetectOptionManager detectOptionManager() {
-        return new DetectOptionManager(valueContainer());
+        return new DetectOptionManager(detectConfigWrapper());
     }
 
     @Bean

@@ -42,8 +42,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.search.report.ExtractionSummaryReporter;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfig;
-import com.blackducksoftware.integration.hub.detect.configuration.HubConfig;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
@@ -73,20 +73,18 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     private final DetectBdioManager bdioManager;
     private final ExtractionSummaryReporter extractionSummaryReporter;
     private final BomToolProjectInfoDecider bomToolProjectInfoDecider;
-    private final HubConfig hubConfig;
-    private final DetectConfig detectConfig;
+    private final DetectConfigWrapper detectConfigWrapper;
 
     @Autowired
     public DetectProjectManager(final SearchManager searchManager, final ExtractionManager extractionManager, final DetectCodeLocationManager codeLocationManager, final DetectBdioManager bdioManager,
-            final ExtractionSummaryReporter extractionSummaryReporter, final BomToolProjectInfoDecider bomToolProjectInfoDecider, final HubConfig hubConfig, final DetectConfig detectConfig) {
+            final ExtractionSummaryReporter extractionSummaryReporter, final BomToolProjectInfoDecider bomToolProjectInfoDecider, final DetectConfigWrapper detectConfigWrapper) {
         this.searchManager = searchManager;
         this.extractionManager = extractionManager;
         this.codeLocationManager = codeLocationManager;
         this.bdioManager = bdioManager;
         this.extractionSummaryReporter = extractionSummaryReporter;
         this.bomToolProjectInfoDecider = bomToolProjectInfoDecider;
-        this.hubConfig = hubConfig;
-        this.detectConfig = detectConfig;
+        this.detectConfigWrapper = detectConfigWrapper;
     }
 
     public DetectProject createDetectProject() throws DetectUserFriendlyException {
@@ -102,7 +100,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         final List<DetectCodeLocation> codeLocations = extractionResult.getDetectCodeLocations();
 
         final List<File> bdioFiles = new ArrayList<>();
-        if (StringUtils.isBlank(detectConfig.getAggregateBomName())) {
+        if (StringUtils.isBlank(detectConfigWrapper.getProperty(DetectProperty.DETECT_BOM_AGGREGATE_NAME))) {
             final DetectCodeLocationResult codeLocationResult = codeLocationManager.process(codeLocations, projectName, projectVersion);
             applyFailedBomToolStatus(codeLocationResult.getFailedBomToolTypes());
 
@@ -157,30 +155,30 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     private NameVersion getProjectNameVersion(final List<BomToolEvaluation> bomToolEvaluations) {
         final Optional<NameVersion> bomToolSuggestedNameVersion = findBomToolProjectNameAndVersion(bomToolEvaluations);
 
-        String projectName = hubConfig.getProjectName();
+        String projectName = detectConfigWrapper.getProperty(DetectProperty.DETECT_PROJECT_NAME);
         if (StringUtils.isBlank(projectName) && bomToolSuggestedNameVersion.isPresent()) {
             projectName = bomToolSuggestedNameVersion.get().getName();
         }
 
         if (StringUtils.isBlank(projectName)) {
             logger.info("A project name could not be decided. Using the name of the source path.");
-            projectName = detectConfig.getSourceDirectory().getName();
+            projectName = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)).getName();
         }
 
-        String projectVersionName = hubConfig.getProjectVersionName();
+        String projectVersionName = detectConfigWrapper.getProperty(DetectProperty.DETECT_PROJECT_VERSION_NAME);
         if (StringUtils.isBlank(projectVersionName) && bomToolSuggestedNameVersion.isPresent()) {
             projectVersionName = bomToolSuggestedNameVersion.get().getVersion();
         }
 
         if (StringUtils.isBlank(projectVersionName)) {
-            if ("timestamp".equals(detectConfig.getDefaultProjectVersionScheme())) {
+            if ("timestamp".equals(detectConfigWrapper.getProperty(DetectProperty.DETECT_DEFAULT_PROJECT_VERSION_SCHEME))) {
                 logger.info("A project version name could not be decided. Using the current timestamp.");
-                final String timeformat = detectConfig.getDefaultProjectVersionTimeformat();
+                final String timeformat = detectConfigWrapper.getProperty(DetectProperty.DETECT_DEFAULT_PROJECT_VERSION_TIMEFORMAT);
                 final String timeString = DateTimeFormatter.ofPattern(timeformat).withZone(ZoneOffset.UTC).format(Instant.now().atZone(ZoneOffset.UTC));
                 projectVersionName = timeString;
             } else {
                 logger.info("A project version name could not be decided. Using the default version text.");
-                projectVersionName = detectConfig.getDefaultProjectVersionText();
+                projectVersionName = detectConfigWrapper.getProperty(DetectProperty.DETECT_DEFAULT_PROJECT_VERSION_TEXT);
             }
         }
 
@@ -188,7 +186,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     }
 
     private Optional<NameVersion> findBomToolProjectNameAndVersion(final List<BomToolEvaluation> bomToolEvaluations) {
-        final String projectBomTool = detectConfig.getDetectProjectBomTool();
+        final String projectBomTool = detectConfigWrapper.getProperty(DetectProperty.DETECT_PROJECT_BOM_TOOL);
         Optional<BomToolGroupType> preferredBomToolType = Optional.empty();
         if (StringUtils.isNotBlank(projectBomTool)) {
             final String projectBomToolFixed = projectBomTool.toUpperCase();

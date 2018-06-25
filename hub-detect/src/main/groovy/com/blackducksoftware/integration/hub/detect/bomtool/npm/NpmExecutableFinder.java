@@ -82,7 +82,7 @@ public class NpmExecutableFinder {
     }
 
     String findNpm() {
-        final String npm = executableManager.getExecutablePathOrOverride(ExecutableType.NPM, true, detectConfig.getSourcePath(), bomToolConfig.getNpmPath());
+        final String npm = executableManager.getExecutablePathOrOverride(ExecutableType.NPM, true, detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH), bomToolConfig.getNpmPath());
         if (validateNpm(null, npm)) {
             return npm;
         }

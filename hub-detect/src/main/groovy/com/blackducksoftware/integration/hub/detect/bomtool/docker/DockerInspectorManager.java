@@ -93,7 +93,7 @@ public class DockerInspectorManager {
         hasResolvedInspector = true;
 
         final DockerInspectorInfo info = resolveShellScript();
-        final String bashExecutablePath = executableManager.getExecutablePathOrOverride(ExecutableType.BASH, true, detectConfig.getSourceDirectory(), bomToolConfig.getBashPath());
+        final String bashExecutablePath = executableManager.getExecutablePathOrOverride(ExecutableType.BASH, true, new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)), bomToolConfig.getBashPath());
         info.version = resolveInspectorVersion(bashExecutablePath, info.dockerInspectorScript);
 
         if (info.isOffline) {

@@ -28,11 +28,13 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+
 public class DetectListOption extends DetectOption {
 
-    public DetectListOption(String key, String fieldName, Class<?> valueType, boolean strictAcceptableValues, boolean caseSensitiveAcceptableValues, List<String> acceptableValues,
-            DetectOptionHelp detectOptionHelp, String defaultValue, String resolvedValue) {
-        super(key, fieldName, valueType, strictAcceptableValues, caseSensitiveAcceptableValues, acceptableValues, detectOptionHelp, defaultValue, resolvedValue);
+    public DetectListOption(final DetectProperty detectProperty, final boolean strictAcceptableValues, final boolean caseSensitiveAcceptableValues, final List<String> acceptableValues,
+            final DetectOptionHelp detectOptionHelp, final String resolvedValue) {
+        super(detectProperty, strictAcceptableValues, caseSensitiveAcceptableValues, acceptableValues, detectOptionHelp, resolvedValue);
     }
 
     public OptionValidationResult isAcceptableValue(final String value) {

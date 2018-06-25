@@ -75,7 +75,7 @@ public class StandardExecutableFinder {
             throw new BomToolException("Unknown executable type: " + executableType.toString());
         }
 
-        final String exe = executableManager.getExecutablePathOrOverride(info.detectExecutableType, true, detectConfig.getSourceDirectory(), info.override);
+        final String exe = executableManager.getExecutablePathOrOverride(info.detectExecutableType, true, new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)), info.override);
         File exeFile = null;
         if (exe != null) {
             exeFile = new File(exe);

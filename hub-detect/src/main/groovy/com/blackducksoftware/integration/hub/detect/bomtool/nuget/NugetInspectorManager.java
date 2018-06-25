@@ -86,7 +86,7 @@ public class NugetInspectorManager {
     }
 
     public void install() throws DetectUserFriendlyException, ExecutableRunnerException, IOException {
-        final String nugetExecutable = executableManager.getExecutablePathOrOverride(ExecutableType.NUGET, true, detectConfig.getSourceDirectory(), bomToolConfig.getNugetPath());
+        final String nugetExecutable = executableManager.getExecutablePathOrOverride(ExecutableType.NUGET, true, new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)), bomToolConfig.getNugetPath());
         resolvedInspectorVersion = resolveInspectorVersion(nugetExecutable);
         if (resolvedInspectorVersion != null) {
             resolvedNugetInspectorExecutable = installInspector(nugetExecutable, detectFileManager.getSharedDirectory("nuget"), resolvedInspectorVersion);
@@ -141,7 +141,7 @@ public class NugetInspectorManager {
             nugetOptions.add(bomToolConfig.getNugetConfigPath());
         }
 
-        final Executable getInspectorVersionExecutable = new Executable(detectConfig.getSourceDirectory(), nugetExecutablePath, nugetOptions);
+        final Executable getInspectorVersionExecutable = new Executable(new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)), nugetExecutablePath, nugetOptions);
 
         final List<String> output = executableRunner.execute(getInspectorVersionExecutable).getStandardOutputAsList();
         for (final String line : output) {
@@ -206,7 +206,7 @@ public class NugetInspectorManager {
             nugetOptions.add(bomToolConfig.getNugetConfigPath());
         }
 
-        final Executable installInspectorExecutable = new Executable(detectConfig.getSourceDirectory(), nugetExecutablePath, nugetOptions);
+        final Executable installInspectorExecutable = new Executable(new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)), nugetExecutablePath, nugetOptions);
         final ExecutableOutput result = executableRunner.execute(installInspectorExecutable);
 
         if (result.getReturnCode() == 0 && result.getErrorOutputAsList().size() == 0) {

@@ -48,9 +48,8 @@ import com.blackducksoftware.integration.hub.api.generated.view.ProjectVersionVi
 import com.blackducksoftware.integration.hub.configuration.HubScanConfig;
 import com.blackducksoftware.integration.hub.configuration.HubScanConfigBuilder;
 import com.blackducksoftware.integration.hub.configuration.HubServerConfig;
-import com.blackducksoftware.integration.hub.detect.configuration.BomToolConfig;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfig;
-import com.blackducksoftware.integration.hub.detect.configuration.HubConfig;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
@@ -77,20 +76,16 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
     private final DetectFileFinder detectFileFinder;
     private final OfflineScanner offlineScanner;
     private final CodeLocationNameManager codeLocationNameManager;
-    private final BomToolConfig bomToolConfig;
-    private final DetectConfig detectConfig;
-    private final HubConfig hubConfig;
+    private final DetectConfigWrapper detectConfigWrapper;
 
     @Autowired
     public HubSignatureScanner(final DetectFileManager detectFileManager, final DetectFileFinder detectFileFinder, final OfflineScanner offlineScanner, final CodeLocationNameManager codeLocationNameManager,
-            final BomToolConfig bomToolConfig, final DetectConfig detectConfig, final HubConfig hubConfig) {
+            final DetectConfigWrapper detectConfigWrapper) {
         this.detectFileManager = detectFileManager;
         this.detectFileFinder = detectFileFinder;
         this.offlineScanner = offlineScanner;
         this.codeLocationNameManager = codeLocationNameManager;
-        this.bomToolConfig = bomToolConfig;
-        this.detectConfig = detectConfig;
-        this.hubConfig = hubConfig;
+        this.detectConfigWrapper = detectConfigWrapper;
     }
 
     public ProjectVersionView scanPaths(final HubServerConfig hubServerConfig, final SignatureScannerService signatureScannerService, final DetectProject detectProject)
@@ -108,7 +103,7 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
             scanPathCallables.add(scanPathCallable);
         }
 
-        final ExecutorService pool = Executors.newFixedThreadPool(bomToolConfig.getHubSignatureScannerParallelProcessors());
+        final ExecutorService pool = Executors.newFixedThreadPool(detectConfigWrapper.getIntegerProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_PARALLEL_PROCESSORS));
         try {
             final List<Future<ProjectVersionWrapper>> submittedScanPathCallables = new ArrayList<>();
             for (final ScanPathCallable scanPathCallable : scanPathCallables) {
@@ -132,6 +127,7 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
 
     public void scanPathsOffline(final DetectProject detectProject) throws IOException, IntegrationException {
         determinePathsAndExclusions(detectProject);
+        
         if (null != detectProject.getProjectName() && null != detectProject.getProjectVersion() && null != bomToolConfig.getHubSignatureScannerPaths() && bomToolConfig.getHubSignatureScannerPaths().length > 0) {
             for (final String path : bomToolConfig.getHubSignatureScannerPaths()) {
                 scanPathOffline(new File(path).getCanonicalPath(), detectProject);
@@ -204,7 +200,7 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
         } else if (StringUtils.isNotBlank(dockerTarFilePath)) {
             addScanTarget(dockerTarFilePath, hubSignatureScannerExclusionNamePatterns, providedExclusionPatterns);
         } else {
-            final String sourcePath = detectConfig.getSourcePath();
+            final String sourcePath = detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH);
             if (userProvidedScanTargets) {
                 logger.warn(String.format("No Project name or version found. Skipping User provided scan targets - registering the source path %s to scan", sourcePath));
             } else {
@@ -255,9 +251,9 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
 
         final String projectName = detectProject.getProjectName();
         final String projectVersionName = detectProject.getProjectVersion();
-        final String sourcePath = detectConfig.getSourcePath();
-        final String prefix = hubConfig.getProjectCodeLocationPrefix();
-        final String suffix = hubConfig.getProjectCodeLocationSuffix();
+        final String sourcePath = detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH);
+        final String prefix = detectConfigWrapper.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_PREFIX);
+        final String suffix = detectConfigWrapper.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_SUFFIX);
         final String codeLocationName = codeLocationNameManager.createScanCodeLocationName(sourcePath, canonicalPath, projectName, projectVersionName, prefix, suffix);
         hubScanConfigBuilder.setCodeLocationAlias(codeLocationName);
 

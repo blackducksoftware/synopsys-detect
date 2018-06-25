@@ -32,26 +32,24 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 
-import com.blackducksoftware.integration.hub.detect.configuration.ValueContainer;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.interactive.InteractiveOption;
-import com.blackducksoftware.integration.hub.detect.util.SpringValueUtils;
 
 public class DetectOptionManager {
     private final Logger logger = LoggerFactory.getLogger(DetectOptionManager.class);
 
-    public final ValueContainer valueContainer;
+    public final DetectConfigWrapper detectConfigWrapper;
 
     private List<DetectOption> detectOptions;
     private List<String> detectGroups;
 
-    public DetectOptionManager(final ValueContainer valueContainer) {
-        this.valueContainer = valueContainer;
+    public DetectOptionManager(final DetectConfigWrapper detectConfigWrapper) {
+        this.detectConfigWrapper = detectConfigWrapper;
     }
 
     public List<DetectOption> getDetectOptions() {
@@ -63,20 +61,17 @@ public class DetectOptionManager {
     }
 
     public void init() {
-        final Map<String, DetectOption> detectOptionsMap = new HashMap<>();
+        final Map<DetectProperty, DetectOption> detectOptionsMap = new HashMap<>();
 
-        for (final Field field : valueContainer.getClass().getDeclaredFields()) {
-            try {
-                if (field.isAnnotationPresent(Value.class)) {
-                    final DetectOption option = processField(valueContainer, valueContainer.getClass(), field);
-                    if (option != null) {
-                        if (!detectOptionsMap.containsKey(option.getKey())) {
-                            detectOptionsMap.put(option.getKey(), option);
-                        }
+        Map<DetectProperty, Object> propertyMap = detectConfigWrapper.getPropertyMap();
+        if (null != propertyMap && !propertyMap.isEmpty()) {
+            for (Map.Entry<DetectProperty, Object> propertyEntry : propertyMap.entrySet()) {
+                final DetectOption option = processField(propertyEntry.getKey(), propertyMap, detectConfigWrapper);
+                if (option != null) {
+                    if (!detectOptionsMap.containsKey(propertyEntry.getKey())) {
+                        detectOptionsMap.put(propertyEntry.getKey(), option);
                     }
                 }
-            } catch (IllegalArgumentException | IllegalAccessException e) {
-                logger.error(String.format("Could not resolve field %s: %s", field.getName(), e.getMessage()));
             }
         }
 
@@ -91,11 +86,13 @@ public class DetectOptionManager {
                 .collect(Collectors.toList());
     }
 
-    public void postInit() throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
+    public void postInit() throws IllegalArgumentException, SecurityException {
+        Map<DetectProperty, Object> propertyMap = detectConfigWrapper.getPropertyMap();
         for (final DetectOption option : detectOptions) {
             String fieldValue = option.getPostInitValue();
             if (StringUtils.isBlank(fieldValue)) {
-                fieldValue = getCurrentValue(valueContainer, option);
+                Object object = propertyMap.get(option.getDetectProperty());
+                fieldValue = object.toString();
             }
             if (!option.getResolvedValue().equals(fieldValue)) {
                 if (option.getInteractiveValue() != null) {
@@ -108,7 +105,7 @@ public class DetectOptionManager {
                     option.setFinalValue(fieldValue, DetectOption.FinalValueType.OVERRIDE);
                 }
             } else {
-                if (fieldValue.equals(option.getDefaultValue())) {
+                if (fieldValue.equals(option.getDetectProperty().getDefaultValue())) {
                     option.setFinalValue(fieldValue, DetectOption.FinalValueType.DEFAULT);
                 } else {
                     option.setFinalValue(fieldValue, DetectOption.FinalValueType.SUPPLIED);
@@ -124,14 +121,6 @@ public class DetectOptionManager {
         }
     }
 
-    public String getCurrentValue(final ValueContainer valueContainer, final DetectOption detectOption) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
-        final Field field = valueContainer.getClass().getDeclaredField(detectOption.getFieldName());
-        field.setAccessible(true);
-        final String fieldValue = getStringValue(valueContainer, field);
-        field.setAccessible(false);
-        return fieldValue;
-    }
-
     private String getStringValue(final Object obj, final Field field) throws IllegalAccessException {
         final Object rawFieldValue = field.get(obj);
         String fieldValue = "";
@@ -145,52 +134,51 @@ public class DetectOptionManager {
         return fieldValue;
     }
 
-    private DetectOption processField(final Object obj, final Class<?> objClz, final Field field) throws IllegalArgumentException, IllegalAccessException {
-        final String fieldName = field.getName();
-        final Class<?> valueType = field.getType();
+    private DetectOption processField(final DetectProperty detectProperty, Map<DetectProperty, Object> propertyMap, DetectConfigWrapper detectConfigWrapper) {
+        try {
+            Field field = DetectProperty.class.getField(detectProperty.name());
 
-        final Value valueAnnotation = field.getAnnotation(Value.class);
-        final String key = SpringValueUtils.springKeyFromValueAnnotation(valueAnnotation.value());
+            String defaultValue = detectProperty.getDefaultValue();
 
-        String defaultValue = "";
-        final DefaultValue defaultValueAnnotation = field.getAnnotation(DefaultValue.class);
-        if (defaultValueAnnotation != null) {
-            defaultValue = defaultValueAnnotation.value();
+            List<String> acceptableValues = new ArrayList<>();
+            boolean isCommaSeparatedList = false;
+            boolean strictAcceptableValue = false;
+            boolean caseSensitiveAcceptableValues = false;
+            final AcceptableValues acceptableValueAnnotation = field.getAnnotation(AcceptableValues.class);
+            if (acceptableValueAnnotation != null) {
+                acceptableValues = Arrays.asList(acceptableValueAnnotation.value());
+                strictAcceptableValue = acceptableValueAnnotation.strict();
+                caseSensitiveAcceptableValues = acceptableValueAnnotation.caseSensitive();
+                isCommaSeparatedList = acceptableValueAnnotation.isCommaSeparatedList();
+            }
+
+            String resolvedValue = defaultValue;
+            field.setAccessible(true);
+
+            Object currentValue = propertyMap.get(detectProperty);
+
+            final boolean hasValue = null != currentValue;
+            if (defaultValue != null && !defaultValue.trim().isEmpty() && !hasValue) {
+                resolvedValue = defaultValue;
+                detectConfigWrapper.setDetectProperty(detectProperty, resolvedValue);
+            } else if (hasValue) {
+                resolvedValue = currentValue.toString();
+            }
+
+            final DetectOptionHelp help = processFieldHelp(field);
+
+            DetectOption detectOption;
+            if (isCommaSeparatedList) {
+                detectOption = new DetectListOption(detectProperty, strictAcceptableValue, caseSensitiveAcceptableValues, acceptableValues, help, resolvedValue);
+            } else {
+                detectOption = new DetectSingleOption(detectProperty, strictAcceptableValue, caseSensitiveAcceptableValues, acceptableValues, help, resolvedValue);
+            }
+
+            return detectOption;
+        } catch (IllegalArgumentException | NoSuchFieldException e) {
+            logger.error(String.format("Could not resolve field %s: %s", detectProperty.name(), e.getMessage()));
         }
-
-        List<String> acceptableValues = new ArrayList<>();
-        boolean isCommaSeparatedList = false;
-        boolean strictAcceptableValue = false;
-        boolean caseSensitiveAcceptableValues = false;
-        final AcceptableValues acceptableValueAnnotation = field.getAnnotation(AcceptableValues.class);
-        if (acceptableValueAnnotation != null) {
-            acceptableValues = Arrays.asList(acceptableValueAnnotation.value());
-            strictAcceptableValue = acceptableValueAnnotation.strict();
-            caseSensitiveAcceptableValues = acceptableValueAnnotation.caseSensitive();
-            isCommaSeparatedList = acceptableValueAnnotation.isCommaSeparatedList();
-        }
-
-        String resolvedValue = defaultValue;
-        field.setAccessible(true);
-
-        final boolean hasValue = !isValueNull(field, obj);
-        if (defaultValue != null && !defaultValue.trim().isEmpty() && !hasValue) {
-            resolvedValue = defaultValue;
-            setValue(field, obj, defaultValue);
-        } else if (hasValue) {
-            resolvedValue = getStringValue(obj, field);
-        }
-
-        final DetectOptionHelp help = processFieldHelp(field);
-
-        DetectOption detectOption;
-        if (isCommaSeparatedList) {
-            detectOption = new DetectListOption(key, fieldName, valueType, strictAcceptableValue, caseSensitiveAcceptableValues, acceptableValues, help, defaultValue, resolvedValue);
-        } else {
-            detectOption = new DetectSingleOption(key, fieldName, valueType, strictAcceptableValue, caseSensitiveAcceptableValues, acceptableValues, help, defaultValue, resolvedValue);
-        }
-
-        return detectOption;
+        return null;
     }
 
     private DetectOptionHelp processFieldHelp(final Field field) {
@@ -241,69 +229,13 @@ public class DetectOptionManager {
     public void applyInteractiveOptions(final List<InteractiveOption> interactiveOptions) {
         for (final InteractiveOption interactiveOption : interactiveOptions) {
             for (final DetectOption detectOption : detectOptions) {
-                if (detectOption.getFieldName().equals(interactiveOption.getFieldName())) {
+                if (detectOption.getDetectProperty().equals(interactiveOption.getDetectProperty())) {
                     detectOption.setInteractiveValue(interactiveOption.getInteractiveValue());
+                    detectConfigWrapper.setDetectProperty(detectOption.getDetectProperty(), interactiveOption.getInteractiveValue());
+                    break;
                 }
             }
-
-            final Field field;
-            try {
-                field = valueContainer.getClass().getDeclaredField(interactiveOption.getFieldName());
-            } catch (NoSuchFieldException | SecurityException e) {
-                throw new RuntimeException(e);
-            }
-            field.setAccessible(true);
-            setValue(field, valueContainer, interactiveOption.getInteractiveValue());
         }
     }
 
-    public Object setValue(final Field field, final Object obj, final String value) {
-        final Class<?> type = field.getType();
-        try {
-            Object objectValue = null;
-            if (String.class == type) {
-                objectValue = value;
-            } else if (Integer.class == type) {
-                objectValue = NumberUtils.toInt(value);
-            } else if (Long.class == type) {
-                objectValue = NumberUtils.toLong(value);
-            } else if (Boolean.class == type) {
-                objectValue = Boolean.parseBoolean(value);
-            } else if (String[].class == type) {
-                objectValue = value.split(",");
-            }
-            field.set(obj, objectValue);
-            return objectValue;
-        } catch (IllegalArgumentException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public boolean isValueNull(final Field field, final Object obj) {
-        final Class<?> type = field.getType();
-        final Object fieldValue;
-        try {
-            fieldValue = field.get(obj);
-        } catch (IllegalArgumentException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-        if (String.class == type && fieldValue.toString().trim().length() == 0) {
-            return true;
-        } else if (Integer.class == type && fieldValue == null) {
-            return true;
-        } else if (Long.class == type && fieldValue == null) {
-            return true;
-        } else if (Boolean.class == type && fieldValue == null) {
-            return true;
-        } else if (String[].class == type) {
-            if (fieldValue == null) {
-                return true;
-            }
-            final String[] realValue = (String[]) fieldValue;
-            return realValue.length <= 0;
-        } else {
-            return false;
-        }
-
-    }
 }

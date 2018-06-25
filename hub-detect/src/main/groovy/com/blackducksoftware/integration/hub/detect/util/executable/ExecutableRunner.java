@@ -87,17 +87,17 @@ public class ExecutableRunner {
     }
 
     public void runExeToFile(final String exePath, final File outputFile, final File errorFile, final String... args) throws ExecutableRunnerException {
-        final Executable exe = new Executable(new File(detectConfig.getSourcePath()), exePath, Arrays.asList(args));
+        final Executable exe = new Executable(new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)), exePath, Arrays.asList(args));
         executeToFile(exe, outputFile, errorFile);
     }
 
     public ExecutableOutput runExe(final String exePath, final String... args) throws ExecutableRunnerException {
-        final Executable exe = new Executable(detectConfig.getSourceDirectory(), exePath, Arrays.asList(args));
+        final Executable exe = new Executable(new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)), exePath, Arrays.asList(args));
         return execute(exe);
     }
 
     public ExecutableOutput runExe(final File exePath, final String... args) throws ExecutableRunnerException {
-        final Executable exe = new Executable(detectConfig.getSourceDirectory(), exePath, Arrays.asList(args));
+        final Executable exe = new Executable(new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)), exePath, Arrays.asList(args));
         return execute(exe);
     }
 }

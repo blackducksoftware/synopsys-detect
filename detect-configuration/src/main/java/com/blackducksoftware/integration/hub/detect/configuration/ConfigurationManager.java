@@ -52,8 +52,6 @@ public class ConfigurationManager {
     private final TildeInPathResolver tildeInPathResolver;
     private final DetectConfigWrapper detectConfigWrapper;
 
-    private File sourceDirectory;
-    private File outputDirectory;
     private List<String> bomToolSearchDirectoryExclusions;
 
     // properties to be updated
@@ -82,7 +80,7 @@ public class ConfigurationManager {
         resolveBomToolSearchProperties();
         resolveAirGapPaths();
 
-        updateDetectOptions(detectOptions);
+        updateDetectProperties(detectOptions);
     }
 
     private void resolveTildeInPaths() throws DetectUserFriendlyException {
@@ -96,11 +94,16 @@ public class ConfigurationManager {
     }
 
     private void resolveTargetAndOutputDirectories() throws DetectUserFriendlyException {
-        if (StringUtils.isBlank(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH))) {
+        String sourcePath = detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH);
+        if (StringUtils.isBlank(sourcePath)) {
             sourcePath = System.getProperty("user.dir");
         }
 
-        sourceDirectory = new File(sourcePath);
+        String outputDirectoryPath = detectConfigWrapper.getProperty(DetectProperty.DETECT_OUTPUT_PATH);
+        String bdioOutputDirectoryPath = detectConfigWrapper.getProperty(DetectProperty.DETECT_BDIO_OUTPUT_PATH);
+        String scanOutputDirectoryPath = detectConfigWrapper.getProperty(DetectProperty.DETECT_SCAN_OUTPUT_PATH);
+
+        File sourceDirectory = new File(sourcePath);
 
         // make sure the path is absolute
         try {
@@ -115,10 +118,14 @@ public class ConfigurationManager {
         ensureDirectoryExists(bdioOutputDirectoryPath, "By default, the directory 'bdio' will be created in the outputDirectory, but the directory must exist.");
         ensureDirectoryExists(scanOutputDirectoryPath, "By default, the directory 'scan' will be created in the outputDirectory, but the directory must exist.");
 
-        outputDirectory = new File(outputDirectoryPath);
+        this.sourcePath = sourcePath;
+        this.outputDirectoryPath = outputDirectoryPath;
+        this.bdioOutputDirectoryPath = bdioOutputDirectoryPath;
+        this.scanOutputDirectoryPath = scanOutputDirectoryPath;
     }
 
     private void resolvePolicyProperties() {
+        String policyCheckFailOnSeverities = detectConfigWrapper.getProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES);
         final boolean atLeastOnePolicySeverity = StringUtils.isNotBlank(policyCheckFailOnSeverities);
         if (atLeastOnePolicySeverity) {
             boolean allSeverities = false;
@@ -131,15 +138,17 @@ public class ConfigurationManager {
             }
             if (allSeverities) {
                 final List<String> allPolicyTypes = Arrays.stream(PolicySeverityType.values()).filter(type -> type != PolicySeverityType.UNSPECIFIED).map(type -> type.toString()).collect(Collectors.toList());
-                policyCheckFailOnSeverities = StringUtils.join(allPolicyTypes, ",");
+                this.policyCheckFailOnSeverities = StringUtils.join(allPolicyTypes, ",");
             }
         }
     }
 
     private void resolveSignatureScannerProperties(List<DetectOption> detectOptions) throws DetectUserFriendlyException {
+        int hubSignatureScannerParallelProcessors = detectConfigWrapper.getIntegerProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_PARALLEL_PROCESSORS);
         if (hubSignatureScannerParallelProcessors == -1) {
             hubSignatureScannerParallelProcessors = Runtime.getRuntime().availableProcessors();
         }
+        this.hubSignatureScannerParallelProcessors = hubSignatureScannerParallelProcessors;
 
         if (StringUtils.isNotBlank(detectConfigWrapper.getProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_HOST_URL)) &&
                 StringUtils.isNotBlank(detectConfigWrapper.getProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH))) {
@@ -151,16 +160,16 @@ public class ConfigurationManager {
         if (StringUtils.isNotBlank(detectConfigWrapper.getProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_HOST_URL))) {
             logger.info("A hub signature scanner url was provided, which requires hub offline mode. Setting hub offline mode to true.");
             if (hubOfflineMode == false) {
-                addFieldWarning(detectOptions, "hubSignatureScannerHostUrl", "A hub signature scanner host url was provided but hub offline mode was false. In the future set hub offline mode to true.");
-                addFieldWarning(detectOptions, "hubOfflineMode", "A signature scanner url was provided, so hub offline mode was forced to true.");
+                addFieldWarning(detectOptions, DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_HOST_URL, "A hub signature scanner host url was provided but hub offline mode was false. In the future set hub offline mode to true.");
+                addFieldWarning(detectOptions, DetectProperty.BLACKDUCK_HUB_OFFLINE_MODE, "A signature scanner url was provided, so hub offline mode was forced to true.");
             }
             hubOfflineMode = true;
         }
         if (StringUtils.isNotBlank(detectConfigWrapper.getProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH))) {
             logger.info("A local hub signature scanner path was provided, which requires hub offline mode. Setting hub offline mode to true.");
             if (hubOfflineMode == false) {
-                addFieldWarning(detectOptions, "hubSignatureScannerOfflineLocalPath", "A local hub signature scanner was provided but hub offline mode was false. In the future set hub offline mode to true.");
-                addFieldWarning(detectOptions, "hubOfflineMode", "A signature scanner path was provided, so hub offline mode was forced to true.");
+                addFieldWarning(detectOptions, DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH, "A local hub signature scanner was provided but hub offline mode was false. In the future set hub offline mode to true.");
+                addFieldWarning(detectOptions, DetectProperty.BLACKDUCK_HUB_OFFLINE_MODE, "A signature scanner path was provided, so hub offline mode was forced to true.");
             }
             hubOfflineMode = true;
         }
@@ -187,38 +196,60 @@ public class ConfigurationManager {
         nugetInspectorAirGapPath = getInspectorAirGapPath(detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_AIR_GAP_PATH), NUGET);
     }
 
-    private void updateDetectOptions(List<DetectOption> detectOptions) {
-        updateOptionValue(detectOptions, "sourcePath", sourcePath);
-        updateOptionValue(detectOptions, "outputDirectoryPath", outputDirectoryPath);
-        updateOptionValue(detectOptions, "bdioOutputDirectoryPath", bdioOutputDirectoryPath);
-        updateOptionValue(detectOptions, "scanOutputDirectoryPath", scanOutputDirectoryPath);
-        updateOptionValue(detectOptions, "policyCheckFailOnSeverities", policyCheckFailOnSeverities);
-        updateOptionValue(detectOptions, "hubSignatureScannerParallelProcessors", String.valueOf(hubSignatureScannerParallelProcessors));
-        updateOptionValue(detectOptions, "hubOfflineMode", String.valueOf(hubOfflineMode));
-        updateOptionValue(detectOptions, "dockerInspectorAirGapPath", dockerInspectorAirGapPath);
-        updateOptionValue(detectOptions, "gradleInspectorAirGapPath", gradleInspectorAirGapPath);
-        updateOptionValue(detectOptions, "nugetInspectorAirGapPath", nugetInspectorAirGapPath);
+    private void updateDetectProperties(List<DetectOption> detectOptions) {
+        updateOptionValue(detectOptions, DetectProperty.DETECT_SOURCE_PATH, sourcePath);
+        detectConfigWrapper.setDetectProperty(DetectProperty.DETECT_SOURCE_PATH, sourcePath);
+
+        updateOptionValue(detectOptions, DetectProperty.DETECT_OUTPUT_PATH, outputDirectoryPath);
+        detectConfigWrapper.setDetectProperty(DetectProperty.DETECT_OUTPUT_PATH, outputDirectoryPath);
+
+        updateOptionValue(detectOptions, DetectProperty.DETECT_BDIO_OUTPUT_PATH, bdioOutputDirectoryPath);
+        detectConfigWrapper.setDetectProperty(DetectProperty.DETECT_BDIO_OUTPUT_PATH, bdioOutputDirectoryPath);
+
+        updateOptionValue(detectOptions, DetectProperty.DETECT_SCAN_OUTPUT_PATH, scanOutputDirectoryPath);
+        detectConfigWrapper.setDetectProperty(DetectProperty.DETECT_SCAN_OUTPUT_PATH, scanOutputDirectoryPath);
+
+        updateOptionValue(detectOptions, DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES, policyCheckFailOnSeverities);
+        detectConfigWrapper.setDetectProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES, policyCheckFailOnSeverities);
+
+        updateOptionValue(detectOptions, DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_PARALLEL_PROCESSORS, String.valueOf(hubSignatureScannerParallelProcessors));
+        detectConfigWrapper.setDetectProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_PARALLEL_PROCESSORS, String.valueOf(hubSignatureScannerParallelProcessors));
+
+        updateOptionValue(detectOptions, DetectProperty.BLACKDUCK_HUB_OFFLINE_MODE, String.valueOf(hubOfflineMode));
+        detectConfigWrapper.setDetectProperty(DetectProperty.BLACKDUCK_HUB_OFFLINE_MODE, String.valueOf(hubOfflineMode));
+
+        updateOptionValue(detectOptions, DetectProperty.DETECT_BOM_TOOL_SEARCH_EXCLUSION, StringUtils.join(bomToolSearchDirectoryExclusions, ","));
+        detectConfigWrapper.setDetectProperty(DetectProperty.DETECT_BOM_TOOL_SEARCH_EXCLUSION, StringUtils.join(bomToolSearchDirectoryExclusions, ","));
+
+        updateOptionValue(detectOptions, DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH, dockerInspectorAirGapPath);
+        detectConfigWrapper.setDetectProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH, dockerInspectorAirGapPath);
+
+        updateOptionValue(detectOptions, DetectProperty.DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH, gradleInspectorAirGapPath);
+        detectConfigWrapper.setDetectProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH, gradleInspectorAirGapPath);
+
+        updateOptionValue(detectOptions, DetectProperty.DETECT_NUGET_INSPECTOR_AIR_GAP_PATH, nugetInspectorAirGapPath);
+        detectConfigWrapper.setDetectProperty(DetectProperty.DETECT_NUGET_INSPECTOR_AIR_GAP_PATH, nugetInspectorAirGapPath);
     }
 
-    private void updateOptionValue(List<DetectOption> detectOptions, final String key, final String value) {
+    private void updateOptionValue(List<DetectOption> detectOptions, final DetectProperty detectProperty, final String value) {
         detectOptions.stream().forEach(option -> {
-            if (option.getKey().equals(key)) {
+            if (option.getDetectProperty() == detectProperty) {
                 option.setPostInitValue(value);
             }
         });
     }
 
-    private void addFieldWarning(List<DetectOption> detectOptions, final String key, final String warning) {
+    private void addFieldWarning(List<DetectOption> detectOptions, final DetectProperty detectProperty, final String warning) {
         detectOptions.stream().forEach(option -> {
-            if (option.getKey().equals(key)) {
+            if (option.getDetectProperty() == detectProperty) {
                 option.getWarnings().add(warning);
             }
         });
     }
 
-    private void requestDeprecation(List<DetectOption> detectOptions, final String key) {
+    private void requestDeprecation(List<DetectOption> detectOptions, final DetectProperty detectProperty) {
         detectOptions.stream().forEach(option -> {
-            if (option.getKey().equals(key)) {
+            if (option.getDetectProperty() == detectProperty) {
                 option.requestDeprecation();
             }
         });
@@ -267,57 +298,5 @@ public class ConfigurationManager {
             }
         }
         return inspectorLocationProperty;
-    }
-
-    public File getSourceDirectory() {
-        return sourceDirectory;
-    }
-
-    public File getOutputDirectory() {
-        return outputDirectory;
-    }
-
-    public List<String> getBomToolSearchDirectoryExclusions() {
-        return bomToolSearchDirectoryExclusions;
-    }
-
-    public String getSourcePath() {
-        return sourcePath;
-    }
-
-    public String getOutputDirectoryPath() {
-        return outputDirectoryPath;
-    }
-
-    public String getBdioOutputDirectoryPath() {
-        return bdioOutputDirectoryPath;
-    }
-
-    public String getScanOutputDirectoryPath() {
-        return scanOutputDirectoryPath;
-    }
-
-    public String getPolicyCheckFailOnSeverities() {
-        return policyCheckFailOnSeverities;
-    }
-
-    public int getHubSignatureScannerParallelProcessors() {
-        return hubSignatureScannerParallelProcessors;
-    }
-
-    public boolean isHubOfflineMode() {
-        return hubOfflineMode;
-    }
-
-    public String getDockerInspectorAirGapPath() {
-        return dockerInspectorAirGapPath;
-    }
-
-    public String getGradleInspectorAirGapPath() {
-        return gradleInspectorAirGapPath;
-    }
-
-    public String getNugetInspectorAirGapPath() {
-        return nugetInspectorAirGapPath;
     }
 }

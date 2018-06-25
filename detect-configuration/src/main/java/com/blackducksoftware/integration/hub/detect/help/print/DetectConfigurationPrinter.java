@@ -42,23 +42,23 @@ public class DetectConfigurationPrinter {
         printStream.println(StringUtils.repeat("-", 60));
 
         final List<DetectOption> sortedOptions = detectOptions.stream()
-                .sorted((o1, o2) -> o1.getKey().compareTo(o2.getKey()))
+                .sorted((o1, o2) -> o1.getDetectProperty().getPropertyName().compareTo(o2.getDetectProperty().getPropertyName()))
                 .collect(Collectors.toList());
 
         final List<DetectOption> deprecatedInUse = new ArrayList<>();
 
         for (final DetectOption option : sortedOptions) {
-            final String fieldName = option.getFieldName();
+            final String key = option.getDetectProperty().getPropertyName();
             String fieldValue = option.getFinalValue();
             final DetectOption.FinalValueType fieldType = option.getFinalValueType();
-            if (!StringUtils.isEmpty(fieldName) && !StringUtils.isEmpty(fieldValue) && "metaClass" != fieldName) {
-                final boolean containsPassword = fieldName.toLowerCase().contains("password") || fieldName.toLowerCase().contains("apitoken");
+            if (!StringUtils.isEmpty(key) && !StringUtils.isEmpty(fieldValue) && "metaClass" != key) {
+                final boolean containsPassword = key.toLowerCase().contains("password") || key.toLowerCase().contains("api.token");
                 if (containsPassword) {
                     fieldValue = StringUtils.repeat("*", fieldValue.length());
                 }
 
                 String text = "";
-                final String displayName = option.getKey();
+                final String displayName = option.getDetectProperty().getPropertyName();
                 if (fieldType == DetectOption.FinalValueType.SUPPLIED || fieldType == DetectOption.FinalValueType.DEFAULT || containsPassword) {
                     if (fieldValue.trim().length() > 0) {
                         text = displayName + " = " + fieldValue;
@@ -98,7 +98,7 @@ public class DetectConfigurationPrinter {
             }
             for (final DetectOption option : allWarnings) {
                 for (final String warning : option.getWarnings()) {
-                    printStream.println(option.getKey() + ": " + warning);
+                    printStream.println(option.getDetectProperty().getPropertyName() + ": " + warning);
                 }
             }
             printStream.println(StringUtils.repeat("*", 60));

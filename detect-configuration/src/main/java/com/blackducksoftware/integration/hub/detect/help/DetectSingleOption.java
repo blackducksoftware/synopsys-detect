@@ -25,11 +25,13 @@ package com.blackducksoftware.integration.hub.detect.help;
 
 import java.util.List;
 
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+
 public class DetectSingleOption extends DetectOption {
 
-    public DetectSingleOption(String key, String fieldName, Class<?> valueType, boolean strictAcceptableValues, boolean caseSensitiveAcceptableValues, List<String> acceptableValues,
-            DetectOptionHelp detectOptionHelp, String defaultValue, String resolvedValue) {
-        super(key, fieldName, valueType, strictAcceptableValues, caseSensitiveAcceptableValues, acceptableValues, detectOptionHelp, defaultValue, resolvedValue);
+    public DetectSingleOption(final DetectProperty detectProperty, final boolean strictAcceptableValues, final boolean caseSensitiveAcceptableValues, final List<String> acceptableValues,
+            final DetectOptionHelp detectOptionHelp, final String resolvedValue) {
+        super(detectProperty, strictAcceptableValues, caseSensitiveAcceptableValues, acceptableValues, detectOptionHelp, resolvedValue);
     }
 
     public OptionValidationResult isAcceptableValue(final String value) {

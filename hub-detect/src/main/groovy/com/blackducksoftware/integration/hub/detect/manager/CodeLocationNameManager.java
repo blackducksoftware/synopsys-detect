@@ -31,7 +31,8 @@ import com.blackducksoftware.integration.hub.detect.codelocation.BomCodeLocation
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationType;
 import com.blackducksoftware.integration.hub.detect.codelocation.DockerCodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.codelocation.ScanCodeLocationNameService;
-import com.blackducksoftware.integration.hub.detect.configuration.HubConfig;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 
@@ -40,21 +41,21 @@ public class CodeLocationNameManager {
     private final BomCodeLocationNameService bomCodeLocationNameService;
     private final DockerCodeLocationNameService dockerCodeLocationNameService;
     private final ScanCodeLocationNameService scanCodeLocationNameService;
-    private final HubConfig hubConfig;
+    private final DetectConfigWrapper detectConfigWrapper;
 
     private int givenCodeLocationOverrideCount = 0;
 
     @Autowired
     public CodeLocationNameManager(final BomCodeLocationNameService bomCodeLocationNameService, final DockerCodeLocationNameService dockerCodeLocationNameService,
-            final ScanCodeLocationNameService scanCodeLocationNameService, final HubConfig hubConfig) {
+            final ScanCodeLocationNameService scanCodeLocationNameService, final DetectConfigWrapper detectConfigWrapper) {
         this.bomCodeLocationNameService = bomCodeLocationNameService;
         this.dockerCodeLocationNameService = dockerCodeLocationNameService;
         this.scanCodeLocationNameService = scanCodeLocationNameService;
-        this.hubConfig = hubConfig;
+        this.detectConfigWrapper = detectConfigWrapper;
     }
 
     private boolean useCodeLocationOverride() {
-        if (StringUtils.isNotBlank(hubConfig.getCodeLocationNameOverride())) {
+        if (StringUtils.isNotBlank(detectConfigWrapper.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME))) {
             return true;
         } else {
             return false;
@@ -63,7 +64,7 @@ public class CodeLocationNameManager {
 
     private String getNextCodeLocationOverrideName(CodeLocationType codeLocationType) { //returns "override", then "override 2", then "override 3", etc
         givenCodeLocationOverrideCount++;
-        final String base = hubConfig.getCodeLocationNameOverride() + " " + codeLocationType.name();
+        final String base = detectConfigWrapper.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME) + " " + codeLocationType.name();
         if (givenCodeLocationOverrideCount == 1) {
             return base;
         } else {

@@ -84,11 +84,11 @@ public class GoInspectorManager {
             if (goDep.exists()) {
                 goDepPath = goDep.getAbsolutePath();
             } else {
-                goDepPath = executableManager.getExecutablePath(ExecutableType.GO_DEP, true, detectConfig.getSourcePath());
+                goDepPath = executableManager.getExecutablePath(ExecutableType.GO_DEP, true, detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH));
             }
         }
         if (StringUtils.isBlank(goDepPath)) {
-            final String goExecutable = executableManager.getExecutablePath(ExecutableType.GO, true, detectConfig.getSourcePath());
+            final String goExecutable = executableManager.getExecutablePath(ExecutableType.GO, true, detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH));
             goDepPath = installGoDep(goExecutable);
         }
         return goDepPath;

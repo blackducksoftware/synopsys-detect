@@ -29,7 +29,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,15 +36,13 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
 
-import com.blackducksoftware.integration.hub.detect.configuration.ValueContainer;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.interactive.InteractiveOption;
 import com.blackducksoftware.integration.hub.detect.interactive.reader.InteractiveReader;
-import com.blackducksoftware.integration.hub.detect.util.SpringValueUtils;
 
 public abstract class InteractiveMode {
-    private final Map<String, InteractiveOption> propertyToOptionMap = new HashMap<>();
+    private final Map<DetectProperty, InteractiveOption> propertyToOptionMap = new HashMap<>();
     private PrintStream printStream;
     private InteractiveReader interactiveReader;
     private String profileName = null;
@@ -67,25 +64,24 @@ public abstract class InteractiveMode {
         return interactiveReader.readPassword().toString();
     }
 
-    public void setPropertyFromQuestion(final String propertyName, final String question) {
+    public void setPropertyFromQuestion(final DetectProperty detectProperty, final String question) {
         final String value = askQuestion(question);
-        setProperty(propertyName, value);
+        setProperty(detectProperty, value);
     }
 
-    public void setPropertyFromSecretQuestion(final String propertyName, final String question) {
+    public void setPropertyFromSecretQuestion(final DetectProperty detectProperty, final String question) {
         final String value = askSecretQuestion(question);
-        setProperty(propertyName, value);
+        setProperty(detectProperty, value);
     }
 
-    public void setProperty(final String propertyName, final String value) {
+    public void setProperty(final DetectProperty detectProperty, final String value) {
         final InteractiveOption option;
-        if (!propertyToOptionMap.containsKey(propertyName)) {
+        if (!propertyToOptionMap.containsKey(detectProperty)) {
             option = new InteractiveOption();
-            option.setFieldName(propertyName);
-            option.setSpringKey(springKeyFromFieldName(propertyName));
-            propertyToOptionMap.put(propertyName, option);
+            option.setDetectProperty(detectProperty);
+            propertyToOptionMap.put(detectProperty, option);
         } else {
-            option = propertyToOptionMap.get(propertyName);
+            option = propertyToOptionMap.get(detectProperty);
         }
         option.setInteractiveValue(value);
     }
@@ -116,33 +112,10 @@ public abstract class InteractiveMode {
         return null;
     }
 
-    private String springKeyFromFieldName(final String fieldName) {
-        try {
-            final Field field = ValueContainer.class.getDeclaredField(fieldName);
-
-            final Value valueAnnotation = field.getAnnotation(Value.class);
-            final String key = SpringValueUtils.springKeyFromValueAnnotation(valueAnnotation.value());
-            return key;
-        } catch (final NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        } catch (final SecurityException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public Map<String, String> optionsToSpringKeys() {
-        final Map<String, String> springKeyMap = new HashMap<>();
-        for (final InteractiveOption interactiveOption : propertyToOptionMap.values()) {
-            springKeyMap.put(interactiveOption.getSpringKey(), interactiveOption.getInteractiveValue());
-        }
-
-        return springKeyMap;
-    }
-
     public Properties optionsToProperties() {
         final Properties properties = new Properties();
         for (final InteractiveOption interactiveOption : propertyToOptionMap.values()) {
-            properties.put(interactiveOption.getSpringKey(), interactiveOption.getInteractiveValue());
+            properties.put(interactiveOption.getDetectProperty().getPropertyName(), interactiveOption.getInteractiveValue());
         }
 
         return properties;
@@ -196,13 +169,14 @@ public abstract class InteractiveMode {
     public void printOptions() {
         for (final InteractiveOption interactiveOption : propertyToOptionMap.values()) {
             String fieldValue = interactiveOption.getInteractiveValue();
-            if (interactiveOption.getFieldName().toLowerCase().contains("password")) {
+            String propertyName = interactiveOption.getDetectProperty().getPropertyName().toLowerCase();
+            if (propertyName.contains("password") || propertyName.contains("api.token")) {
                 fieldValue = "";
                 for (int i = 0; i < interactiveOption.getInteractiveValue().length(); i++) {
                     fieldValue += "*";
                 }
             }
-            printStream.println("--" + interactiveOption.getSpringKey() + "=" + fieldValue);
+            printStream.println("--" + interactiveOption.getDetectProperty().getPropertyName() + "=" + fieldValue);
         }
     }
 

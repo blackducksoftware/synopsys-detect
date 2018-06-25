@@ -40,11 +40,9 @@ import org.springframework.context.annotation.Import;
 
 import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.api.generated.view.ProjectVersionView;
-import com.blackducksoftware.integration.hub.detect.configuration.BomToolConfig;
 import com.blackducksoftware.integration.hub.detect.configuration.ConfigurationManager;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfig;
-import com.blackducksoftware.integration.hub.detect.configuration.HubConfig;
-import com.blackducksoftware.integration.hub.detect.configuration.ValueContainer;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
@@ -78,11 +76,8 @@ public class Application implements ApplicationRunner {
 
     private final DetectOptionManager detectOptionManager;
     private final DetectInfo detectInfo;
-    private final ValueContainer valueContainer;
+    private final DetectConfigWrapper detectConfigWrapper;
     private final ConfigurationManager configurationManager;
-    private final HubConfig hubConfig;
-    private final BomToolConfig bomToolConfig;
-    private final DetectConfig detectConfig;
     private final DetectProjectManager detectProjectManager;
     private final HelpPrinter helpPrinter;
     private final HelpHtmlWriter helpHtmlWriter;
@@ -99,17 +94,14 @@ public class Application implements ApplicationRunner {
     private ExitCodeType exitCodeType = ExitCodeType.SUCCESS;
 
     @Autowired
-    public Application(final DetectOptionManager detectOptionManager, final DetectInfo detectInfo, final ValueContainer valueContainer, final ConfigurationManager configurationManager, final HubConfig hubConfig,
-            final BomToolConfig bomToolConfig, final DetectConfig detectConfig, final DetectProjectManager detectProjectManager, final HelpPrinter helpPrinter, final HelpHtmlWriter helpHtmlWriter, final HubManager hubManager,
-            final HubServiceWrapper hubServiceWrapper, final HubSignatureScanner hubSignatureScanner, final DetectSummary detectSummary, final InteractiveManager interactiveManager, final DetectFileManager detectFileManager,
+    public Application(final DetectOptionManager detectOptionManager, final DetectInfo detectInfo, final DetectConfigWrapper detectConfigWrapper, final ConfigurationManager configurationManager,
+            final DetectProjectManager detectProjectManager, final HelpPrinter helpPrinter, final HelpHtmlWriter helpHtmlWriter, final HubManager hubManager, final HubServiceWrapper hubServiceWrapper,
+            final HubSignatureScanner hubSignatureScanner, final DetectSummary detectSummary, final InteractiveManager interactiveManager, final DetectFileManager detectFileManager,
             final List<ExitCodeReporter> exitCodeReporters, final DetectPhoneHomeManager detectPhoneHomeManager, final ArgumentStateParser argumentStateParser) {
         this.detectOptionManager = detectOptionManager;
         this.detectInfo = detectInfo;
-        this.valueContainer = valueContainer;
+        this.detectConfigWrapper = detectConfigWrapper;
         this.configurationManager = configurationManager;
-        this.hubConfig = hubConfig;
-        this.bomToolConfig = bomToolConfig;
-        this.detectConfig = detectConfig;
         this.detectProjectManager = detectProjectManager;
         this.helpPrinter = helpPrinter;
         this.helpHtmlWriter = helpHtmlWriter;
@@ -134,6 +126,7 @@ public class Application implements ApplicationRunner {
 
         try {
             detectInfo.init();
+            detectConfigWrapper.init();
             detectOptionManager.init();
 
             final List<DetectOption> options = detectOptionManager.getDetectOptions();
@@ -158,17 +151,11 @@ public class Application implements ApplicationRunner {
             }
 
             configurationManager.initialize(options);
-
-            hubConfig.initialize(valueContainer);
-            detectConfig.initialize(valueContainer, configurationManager.getSourceDirectory(), configurationManager.getOutputDirectory());
-            bomToolConfig.initialize(valueContainer, configurationManager.getDockerInspectorAirGapPath(), configurationManager.getGradleInspectorAirGapPath(), configurationManager.getNugetInspectorAirGapPath(),
-                    configurationManager.getBomToolSearchDirectoryExclusions());
-
             detectOptionManager.postInit();
 
             logger.info("Configuration processed completely.");
 
-            if (!detectConfig.getSuppressConfigurationOutput()) {
+            if (!detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_CONFIGURATION_OUTPUT)) {
                 final DetectInfoPrinter infoPrinter = new DetectInfoPrinter();
                 final DetectConfigurationPrinter detectConfigurationPrinter = new DetectConfigurationPrinter();
 
@@ -176,7 +163,7 @@ public class Application implements ApplicationRunner {
                 detectConfigurationPrinter.print(System.out, options);
             }
 
-            if (detectConfig.getFailOnConfigWarning()) {
+            if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_FAIL_CONFIG_WARNING)) {
                 final boolean foundConfigWarning = options.stream().anyMatch(option -> option.getWarnings().size() > 0);
                 if (foundConfigWarning) {
                     throw new DetectUserFriendlyException("Failing because the configuration had warnings.", ExitCodeType.FAILURE_CONFIGURATION);
@@ -187,18 +174,18 @@ public class Application implements ApplicationRunner {
             if (unacceptableDetectOtions.size() > 0) {
                 final DetectOption firstUnacceptableDetectOption = unacceptableDetectOtions.get(0);
                 final String msg = String.format("%s: Unknown value '%s', acceptable values are %s",
-                        firstUnacceptableDetectOption.getKey(),
+                        firstUnacceptableDetectOption.getDetectProperty().getPropertyName(),
                         firstUnacceptableDetectOption.getResolvedValue(),
                         firstUnacceptableDetectOption.getAcceptableValues().stream().collect(Collectors.joining(",")));
                 throw new DetectUserFriendlyException(msg, ExitCodeType.FAILURE_GENERAL_ERROR);
             }
 
-            if (hubConfig.getTestConnection()) {
+            if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_TEST_CONNECTION)) {
                 hubServiceWrapper.assertHubConnection(new SilentLogger());
                 return;
             }
 
-            if (hubConfig.getDisableWithoutHub()) {
+            if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_DISABLE_WITHOUT_HUB)) {
                 try {
                     logger.info("Testing Hub connection to see if Detect should run");
                     hubServiceWrapper.assertHubConnection(new SilentLogger());
@@ -210,7 +197,7 @@ public class Application implements ApplicationRunner {
                 }
             }
 
-            if (hubConfig.getHubOfflineMode()) {
+            if (detectConfigWrapper.getBooleanProperty(DetectProperty.BLACKDUCK_HUB_OFFLINE_MODE)) {
                 detectPhoneHomeManager.initOffline();
             } else {
                 hubServiceWrapper.init();
@@ -221,10 +208,10 @@ public class Application implements ApplicationRunner {
             final DetectProject detectProject = detectProjectManager.createDetectProject();
             logger.info("Project Name: " + detectProject.getProjectName());
             logger.info("Project Version Name: " + detectProject.getProjectVersion());
-            if (!hubConfig.getHubOfflineMode()) {
+            if (!detectConfigWrapper.getBooleanProperty(DetectProperty.BLACKDUCK_HUB_OFFLINE_MODE)) {
                 final ProjectVersionView projectVersionView = hubManager.updateHubProjectVersion(detectProject);
                 hubManager.performPostHubActions(detectProject, projectVersionView);
-            } else if (!bomToolConfig.getHubSignatureScannerDisabled()) {
+            } else if (!detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_DISABLED)) {
                 hubSignatureScanner.scanPathsOffline(detectProject);
             }
 
@@ -245,7 +232,7 @@ public class Application implements ApplicationRunner {
                 logger.debug(String.format("Error trying to end the phone home task: %s", e.getMessage()));
             }
 
-            if (!detectConfig.getSuppressResultsOutput()) {
+            if (!detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_RESULTS_OUTPUT)) {
                 detectSummary.logResults(new Slf4jIntLogger(logger), exitCodeType);
             }
 
@@ -254,7 +241,7 @@ public class Application implements ApplicationRunner {
 
         final long end = System.currentTimeMillis();
         logger.info(String.format("Hub-Detect run duration: %s", DurationFormatUtils.formatPeriod(start, end, "HH'h' mm'm' ss's' SSS'ms'")));
-        if (detectConfig.getForceSuccess() && exitCodeType.getExitCode() != 0)
+        if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_FORCE_SUCCESS) && exitCodeType.getExitCode() != 0)
 
         {
             logger.warn(String.format("Forcing success: Exiting with 0. Desired exit code was %s.", exitCodeType.getExitCode()));

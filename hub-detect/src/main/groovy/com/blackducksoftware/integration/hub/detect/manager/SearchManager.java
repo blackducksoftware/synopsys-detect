@@ -25,6 +25,7 @@ package com.blackducksoftware.integration.hub.detect.manager;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -36,8 +37,8 @@ import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.report.SearchSummaryReporter;
-import com.blackducksoftware.integration.hub.detect.configuration.BomToolConfig;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfig;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.extraction.model.BomToolEvaluation;
@@ -54,25 +55,23 @@ public class SearchManager {
     private final Logger logger = LoggerFactory.getLogger(SearchManager.class);
 
     private final SearchSummaryReporter searchSummaryReporter;
-    private final DetectConfig detectConfig;
-    private final BomToolConfig bomToolConfig;
+    private final DetectConfigWrapper detectConfigWrapper;
     private final DetectPhoneHomeManager detectPhoneHomeManager;
     private final BomToolFactory bomToolFactory;
 
     @Autowired
-    public SearchManager(final SearchSummaryReporter searchSummaryReporter, final DetectConfig detectConfig, final BomToolConfig bomToolConfig, final DetectPhoneHomeManager detectPhoneHomeManager, final BomToolFactory bomToolFactory) {
+    public SearchManager(final SearchSummaryReporter searchSummaryReporter, final DetectConfigWrapper detectConfigWrapper, final DetectPhoneHomeManager detectPhoneHomeManager, final BomToolFactory bomToolFactory) {
         this.searchSummaryReporter = searchSummaryReporter;
         this.bomToolFactory = bomToolFactory;
-        this.detectConfig = detectConfig;
-        this.bomToolConfig = bomToolConfig;
+        this.detectConfigWrapper = detectConfigWrapper;
         this.detectPhoneHomeManager = detectPhoneHomeManager;
     }
 
     private List<BomToolEvaluation> findApplicableBomTools(final File directory) throws BomToolException, DetectUserFriendlyException {
-        final List<String> excludedDirectories = bomToolConfig.getBomToolSearchDirectoryExclusions();
-        final Boolean forceNestedSearch = detectConfig.getBomToolContinueSearch();
-        final int maxDepth = detectConfig.getBomToolSearchDepth();
-        final ExcludedIncludedFilter bomToolFilter = new ExcludedIncludedFilter(detectConfig.getExcludedBomToolTypes(), detectConfig.getIncludedBomToolTypes());
+        final List<String> excludedDirectories = Arrays.asList(detectConfigWrapper.getStringArrayProperty(DetectProperty.DETECT_BOM_TOOL_SEARCH_EXCLUSION));
+        final Boolean forceNestedSearch = detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_BOM_TOOL_SEARCH_CONTINUE);
+        final int maxDepth = detectConfigWrapper.getIntegerProperty(DetectProperty.DETECT_BOM_TOOL_SEARCH_DEPTH);
+        final ExcludedIncludedFilter bomToolFilter = new ExcludedIncludedFilter(detectConfigWrapper.getProperty(DetectProperty.DETECT_EXCLUDED_BOM_TOOL_TYPES), detectConfigWrapper.getProperty(DetectProperty.DETECT_INCLUDED_BOM_TOOL_TYPES));
 
         final BomToolFinderOptions findOptions = new BomToolFinderOptions(excludedDirectories, forceNestedSearch, maxDepth, bomToolFilter);
 
@@ -84,7 +83,7 @@ public class SearchManager {
     public SearchResult performSearch() throws DetectUserFriendlyException {
         List<BomToolEvaluation> sourcePathResults = new ArrayList<>();
         try {
-            sourcePathResults = findApplicableBomTools(new File(detectConfig.getSourcePath()));
+            sourcePathResults = findApplicableBomTools(new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)));
         } catch (final BomToolException e) {
             return new SearchResultBomToolFailed(e);
         }

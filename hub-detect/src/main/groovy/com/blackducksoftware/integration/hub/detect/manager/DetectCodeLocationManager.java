@@ -42,8 +42,8 @@ import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphCombiner;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfig;
-import com.blackducksoftware.integration.hub.detect.configuration.HubConfig;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.manager.result.codelocation.DetectCodeLocationResult;
 import com.blackducksoftware.integration.hub.detect.model.BdioCodeLocation;
 import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
@@ -55,27 +55,26 @@ public class DetectCodeLocationManager {
     private final Logger logger = LoggerFactory.getLogger(DetectCodeLocationManager.class);
 
     private final CodeLocationNameManager codeLocationNameManager;
-    private final DetectConfig detectConfig;
-    private final HubConfig hubConfig;
+    private final DetectConfigWrapper detectConfigWrapper;
 
     @Autowired
-    public DetectCodeLocationManager(final CodeLocationNameManager codeLocationNameManager, final DetectConfig detectConfig, final HubConfig hubConfig) {
+    public DetectCodeLocationManager(final CodeLocationNameManager codeLocationNameManager, final DetectConfigWrapper detectConfigWrapper) {
         this.codeLocationNameManager = codeLocationNameManager;
-        this.detectConfig = detectConfig;
-        this.hubConfig = hubConfig;
+        this.detectConfigWrapper = detectConfigWrapper;
     }
 
     public DetectCodeLocationResult process(final List<DetectCodeLocation> detectCodeLocations, final String projectName, final String projectVersion) {
         final Set<BomToolGroupType> failedBomTools = new HashSet<>();
 
-        final String prefix = hubConfig.getProjectCodeLocationPrefix();
-        final String suffix = hubConfig.getProjectCodeLocationSuffix();
+        final String prefix = detectConfigWrapper.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_PREFIX);
+        final String suffix = detectConfigWrapper.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_SUFFIX);
 
         final List<DetectCodeLocation> validDetectCodeLocations = findValidCodeLocations(detectCodeLocations);
-        final Map<DetectCodeLocation, String> codeLocationsAndNames = createCodeLocationNameMap(validDetectCodeLocations, detectConfig.getSourcePath(), projectName, projectVersion, prefix, suffix);
+        final Map<DetectCodeLocation, String> codeLocationsAndNames = createCodeLocationNameMap(validDetectCodeLocations, detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH), projectName, projectVersion, prefix, suffix);
         final Map<String, List<DetectCodeLocation>> codeLocationsByName = seperateCodeLocationsByName(codeLocationsAndNames);
 
-        final List<BdioCodeLocation> bdioCodeLocations = createBdioCodeLocations(codeLocationsByName, detectConfig.getSourceDirectory(), detectConfig.getCombineCodeLocations());
+        // We can create a DetectProperty to combine duplicate code location names in the future if users want that
+        final List<BdioCodeLocation> bdioCodeLocations = createBdioCodeLocations(codeLocationsByName, new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)), false);
 
         // Sanity check that code location names are unique (they should be)
         final Map<String, List<BdioCodeLocation>> bdioByCodeLocationName = groupByCodeLocationNames(bdioCodeLocations);

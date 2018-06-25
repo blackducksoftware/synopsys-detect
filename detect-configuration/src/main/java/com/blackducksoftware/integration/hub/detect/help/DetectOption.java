@@ -29,18 +29,16 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.help.html.HelpHtmlOption;
 import com.blackducksoftware.integration.hub.detect.help.print.HelpTextWriter;
 
 public abstract class DetectOption {
-    private final String key;
-    private final String fieldName;
-    private final Class<?> valueType;
+    private final DetectProperty detectProperty;
     private final boolean strictAcceptableValues;
     private final boolean caseSensitiveAcceptableValues;
     private final List<String> acceptableValues;
     private final DetectOptionHelp detectOptionHelp;
-    private final String defaultValue;
     private final String resolvedValue;
     private String postInitValue;
     private List<String> warnings = new ArrayList<>();
@@ -49,17 +47,18 @@ public abstract class DetectOption {
     private String finalValue = null;
     private FinalValueType finalValueType = FinalValueType.DEFAULT;
 
-    public DetectOption(final String key, final String fieldName, final Class<?> valueType, final boolean strictAcceptableValues, final boolean caseSensitiveAcceptableValues, final List<String> acceptableValues,
-            final DetectOptionHelp detectOptionHelp, final String defaultValue, final String resolvedValue) {
-        this.key = key;
-        this.fieldName = fieldName;
-        this.valueType = valueType;
+    public DetectOption(final DetectProperty detectProperty, final boolean strictAcceptableValues, final boolean caseSensitiveAcceptableValues, final List<String> acceptableValues,
+            final DetectOptionHelp detectOptionHelp, final String resolvedValue) {
+        this.detectProperty = detectProperty;
         this.strictAcceptableValues = strictAcceptableValues;
         this.caseSensitiveAcceptableValues = caseSensitiveAcceptableValues;
         this.acceptableValues = acceptableValues;
         this.detectOptionHelp = detectOptionHelp;
-        this.defaultValue = defaultValue;
         this.resolvedValue = resolvedValue;
+    }
+
+    public DetectProperty getDetectProperty() {
+        return detectProperty;
     }
 
     public void requestDeprecation() {
@@ -86,18 +85,6 @@ public abstract class DetectOption {
         this.finalValueType = finalValueType;
     }
 
-    public String getKey() {
-        return key;
-    }
-
-    public String getFieldName() {
-        return fieldName;
-    }
-
-    public Class<?> getValueType() {
-        return valueType;
-    }
-
     public DetectOptionHelp getDetectOptionHelp() {
         return detectOptionHelp;
     }
@@ -116,10 +103,6 @@ public abstract class DetectOption {
 
     public boolean getCaseSensistiveAcceptableValues() {
         return caseSensitiveAcceptableValues;
-    }
-
-    public String getDefaultValue() {
-        return defaultValue;
     }
 
     public String getResolvedValue() {
@@ -165,19 +148,19 @@ public abstract class DetectOption {
         if (getAcceptableValues().size() > 0) {
             description += " (" + getAcceptableValues().stream().collect(Collectors.joining("|")) + ")";
         }
-        writer.printColumns("--" + getKey(), getDefaultValue(), description);
+        writer.printColumns("--" + detectProperty.getPropertyName(), detectProperty.getDefaultValue(), description);
     }
 
     public void printDetailedOption(final HelpTextWriter writer) {
         writer.println("");
-        writer.println("Detailed information for " + getKey());
+        writer.println("Detailed information for " + detectProperty.getPropertyName());
         writer.println("");
         if (getDetectOptionHelp().isDeprecated) {
             writer.println("Deprecated: will be removed in version " + getDetectOptionHelp().deprecationVersion);
             writer.println("");
         }
         writer.println("Property description: " + getDetectOptionHelp().description);
-        writer.println("Property default value: " + getDefaultValue());
+        writer.println("Property default value: " + detectProperty.getDefaultValue());
         if (getAcceptableValues().size() > 0) {
             writer.println("Property acceptable values: " + getAcceptableValues().stream().collect(Collectors.joining(", ")));
         }
@@ -201,7 +184,7 @@ public abstract class DetectOption {
         if (getDetectOptionHelp().isDeprecated) {
             deprecationNotice = "Will be removed in version " + getDetectOptionHelp().deprecationVersion + ". " + getDetectOptionHelp().deprecation;
         }
-        final HelpHtmlOption htmlOption = new HelpHtmlOption(getKey(), getDefaultValue(), description, acceptableValues, getDetectOptionHelp().detailedHelp, deprecationNotice);
+        final HelpHtmlOption htmlOption = new HelpHtmlOption(detectProperty.getPropertyName(), detectProperty.getDefaultValue(), description, acceptableValues, getDetectOptionHelp().detailedHelp, deprecationNotice);
         return htmlOption;
     }
 

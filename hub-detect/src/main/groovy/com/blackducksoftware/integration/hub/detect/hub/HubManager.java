@@ -103,7 +103,7 @@ public class HubManager implements ExitCodeReporter {
             logger.debug("Did not create any bdio files.");
         }
 
-        if (!bomToolConfig.getHubSignatureScannerDisabled()) {
+        if (!detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_DISABLED)) {
             final HubServerConfig hubServerConfig = hubServiceWrapper.getHubServerConfig();
             final SignatureScannerService signatureScannerService = hubServiceWrapper.createSignatureScannerService();
             final ProjectVersionView scanProject = hubSignatureScanner.scanPaths(hubServerConfig, signatureScannerService, detectProject);
@@ -147,7 +147,7 @@ public class HubManager implements ExitCodeReporter {
                 }
             }
 
-            if ((null != detectProject.getBdioFiles() && !detectProject.getBdioFiles().isEmpty()) || !bomToolConfig.getHubSignatureScannerDisabled()) {
+            if ((null != detectProject.getBdioFiles() && !detectProject.getBdioFiles().isEmpty()) || !detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_DISABLED)) {
                 // only log BOM URL if we have updated it in some way
                 final ProjectService projectService = hubServiceWrapper.createProjectService();
                 final HubService hubService = hubServiceWrapper.createHubService();
