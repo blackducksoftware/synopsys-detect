@@ -126,7 +126,9 @@ public class PodlockParser {
             for (final String child : pod.getDependencies()) {
                 final Optional<DependencyId> childId = parseDependencyId(child);
                 if (childId.isPresent()) {
-                    lazyBuilder.addParentWithChild(dependencyId, childId.get());
+                    if (!dependencyId.equals(childId.get())) {
+                        lazyBuilder.addParentWithChild(dependencyId, childId.get());
+                    }
                 }
             }
 
@@ -140,7 +142,9 @@ public class PodlockParser {
                 lazyBuilder.setDependencyName(superDependencyId, name);
                 lazyBuilder.setDependencyVersion(superDependencyId, version);
 
-                lazyBuilder.addParentWithChild(superDependencyId, dependencyId);
+                if (!dependencyId.equals(superDependencyId)) {
+                    lazyBuilder.addParentWithChild(superDependencyId, dependencyId);
+                }
             }
         }
 
