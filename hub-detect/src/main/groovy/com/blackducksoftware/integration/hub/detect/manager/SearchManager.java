@@ -35,7 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolFactory;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolSearchProvider;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.report.SearchSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
@@ -56,7 +56,7 @@ public class SearchManager {
     private SearchSummaryReporter searchSummaryReporter;
 
     @Autowired
-    private BomToolFactory bomToolFactory;
+    private BomToolSearchProvider bomToolSearchProvider;
 
     @Autowired
     private DetectConfiguration detectConfiguration;
@@ -73,7 +73,7 @@ public class SearchManager {
 
         logger.info("Starting search for bom tools.");
         final BomToolFinder bomToolTreeWalker = new BomToolFinder();
-        return bomToolTreeWalker.findApplicableBomTools(bomToolFactory, directory, findOptions);
+        return bomToolTreeWalker.findApplicableBomTools(bomToolSearchProvider, directory, findOptions);
     }
 
     public SearchResult performSearch() throws DetectUserFriendlyException {

@@ -39,7 +39,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolFactory;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolSearchProvider;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolSearchRuleSet;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.evaluation.BomToolEnvironment;
@@ -52,13 +52,13 @@ import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
 public class BomToolFinder {
     private final Logger logger = LoggerFactory.getLogger(BomToolFinder.class);
 
-    public List<BomToolEvaluation> findApplicableBomTools(final BomToolFactory bomToolFactory, final File initialDirectory, final BomToolFinderOptions options) throws BomToolException, DetectUserFriendlyException {
+    public List<BomToolEvaluation> findApplicableBomTools(final BomToolSearchProvider bomToolSearchProvider, final File initialDirectory, final BomToolFinderOptions options) throws BomToolException, DetectUserFriendlyException {
         final List<File> subDirectories = new ArrayList<>();
         subDirectories.add(initialDirectory);
-        return findApplicableBomTools(bomToolFactory, subDirectories, new HashSet<BomToolType>(), 0, options);
+        return findApplicableBomTools(bomToolSearchProvider, subDirectories, new HashSet<BomToolType>(), 0, options);
     }
 
-    private List<BomToolEvaluation> findApplicableBomTools(final BomToolFactory bomToolFactory, final List<File> directoriesToSearch, final Set<BomToolType> appliedBefore, final int depth, final BomToolFinderOptions options)
+    private List<BomToolEvaluation> findApplicableBomTools(final BomToolSearchProvider bomToolSearchProvider, final List<File> directoriesToSearch, final Set<BomToolType> appliedBefore, final int depth, final BomToolFinderOptions options)
             throws BomToolException, DetectUserFriendlyException {
 
         final List<BomToolEvaluation> results = new ArrayList<>();
@@ -81,16 +81,16 @@ public class BomToolFinder {
 
             final Set<BomToolGroupType> applicableTypes = new HashSet<>();
             final Set<BomToolType> applied = new HashSet<>();
-            final List<BomToolEvaluation> evaluations = processDirectory(bomToolFactory, directory, appliedBefore, depth, options);
+            final List<BomToolEvaluation> evaluations = processDirectory(bomToolSearchProvider, directory, appliedBefore, depth, options);
             results.addAll(evaluations);
             applied.addAll(evaluations.stream().map(it -> it.bomTool.getBomToolType()).collect(Collectors.toList()));
 
-            //TODO: Used to have a remaining strategies and would bail early here, not sure how to go about that?
+            // TODO: Used to have a remaining strategies and would bail early here, not sure how to go about that?
             final Set<BomToolType> everApplied = new HashSet<>();
             everApplied.addAll(applied);
             everApplied.addAll(appliedBefore);
             final List<File> subdirectories = getSubDirectories(directory, options.getExcludedDirectories());
-            final List<BomToolEvaluation> recursiveResults = findApplicableBomTools(bomToolFactory, subdirectories, everApplied, depth + 1, options);
+            final List<BomToolEvaluation> recursiveResults = findApplicableBomTools(bomToolSearchProvider, subdirectories, everApplied, depth + 1, options);
             results.addAll(recursiveResults);
 
             logger.debug(directory + ": " + applicableTypes.stream().map(it -> it.toString()).collect(Collectors.joining(", ")));
@@ -99,9 +99,9 @@ public class BomToolFinder {
         return results;
     }
 
-    private List<BomToolEvaluation> processDirectory(final BomToolFactory bomToolFactory, final File directory, final Set<BomToolType> appliedBefore, final int depth, final BomToolFinderOptions options) {
+    private List<BomToolEvaluation> processDirectory(final BomToolSearchProvider bomToolSearchProvider, final File directory, final Set<BomToolType> appliedBefore, final int depth, final BomToolFinderOptions options) {
         final BomToolEnvironment environment = new BomToolEnvironment(directory, appliedBefore, depth, options.getBomToolFilter(), options.getForceNestedSearch());
-        final BomToolSearchRuleSet bomToolSet = bomToolFactory.createStrategies(environment);
+        final BomToolSearchRuleSet bomToolSet = bomToolSearchProvider.createStrategies(environment);
         final List<BomToolEvaluation> evaluations = bomToolSet.evaluate();
         return evaluations;
     }
