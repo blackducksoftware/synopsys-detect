@@ -12,7 +12,7 @@ public class BomToolSearchProvider {
     @Autowired
     BomToolFactory bomToolFactory;
 
-    public BomToolSearchRuleSet createStrategies(final BomToolEnvironment environment) {
+    public BomToolSearchRuleSet createBomTools(final BomToolEnvironment environment) {
         final BomToolSearchRuleSetBuilder searchRuleSet = new BomToolSearchRuleSetBuilder(environment);
 
         searchRuleSet.addBomTool(bomToolFactory.createCocoapodsBomTool(environment)).defaultNotNested();
