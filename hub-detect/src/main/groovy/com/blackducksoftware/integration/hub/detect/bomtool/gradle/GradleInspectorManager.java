@@ -44,8 +44,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.blackducksoftware.integration.hub.detect.configuration.BomToolConfig;
-import com.blackducksoftware.integration.hub.detect.configuration.HubConfig;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.evaluation.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.evaluation.BomToolException;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
@@ -72,8 +72,7 @@ public class GradleInspectorManager {
     private final ExecutableRunner executableRunner;
     private final Configuration configuration;
     private final DocumentBuilder xmlDocumentBuilder;
-    private final BomToolConfig bomToolConfig;
-    private final HubConfig hubConfig;
+    private final DetectConfigWrapper detectConfigWrapper;
 
     private String resolvedInitScript = null;
     private String resolvedVersion = null;
@@ -81,14 +80,13 @@ public class GradleInspectorManager {
 
     @Autowired
     public GradleInspectorManager(final DetectFileManager detectFileManager, final ExecutableManager executableManager, final ExecutableRunner executableRunner, final Configuration configuration, final DocumentBuilder xmlDocumentBuilder,
-            final BomToolConfig bomToolConfig, final HubConfig hubConfig) {
+            final DetectConfigWrapper detectConfigWrapper) {
         this.detectFileManager = detectFileManager;
         this.executableManager = executableManager;
         this.executableRunner = executableRunner;
         this.configuration = configuration;
         this.xmlDocumentBuilder = xmlDocumentBuilder;
-        this.bomToolConfig = bomToolConfig;
-        this.hubConfig = hubConfig;
+        this.detectConfigWrapper = detectConfigWrapper;
     }
 
     public String getGradleInspector(final BomToolEnvironment environment) throws BomToolException {
@@ -105,10 +103,11 @@ public class GradleInspectorManager {
     }
 
     private String resolveInspectorVersion() {
-        if ("latest".equalsIgnoreCase(bomToolConfig.getGradleInspectorVersion())) {
+        String gradleInspectorVersion = detectConfigWrapper.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_VERSION);
+        if ("latest".equalsIgnoreCase(gradleInspectorVersion)) {
             try {
                 Document xmlDocument = null;
-                final File airGapMavenMetadataFile = new File(bomToolConfig.getGradleInspectorAirGapPath(), "maven-metadata.xml");
+                final File airGapMavenMetadataFile = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH), "maven-metadata.xml");
                 if (airGapMavenMetadataFile.exists()) {
                     final InputStream inputStream = new FileInputStream(airGapMavenMetadataFile);
                     xmlDocument = xmlDocumentBuilder.parse(inputStream);
@@ -116,7 +115,7 @@ public class GradleInspectorManager {
                     final String mavenMetadataUrl = "http://repo2.maven.org/maven2/com/blackducksoftware/integration/integration-gradle-inspector/maven-metadata.xml";
                     final Request request = new Request.Builder().uri(mavenMetadataUrl).build();
                     Response response = null;
-                    try (UnauthenticatedRestConnection restConnection = hubConfig.createUnauthenticatedRestConnection(mavenMetadataUrl)) {
+                    try (UnauthenticatedRestConnection restConnection = detectConfigWrapper.createUnauthenticatedRestConnection(mavenMetadataUrl)) {
                         response = restConnection.executeRequest(request);
                         final InputStream inputStream = response.getContent();
                         xmlDocument = xmlDocumentBuilder.parse(inputStream);
@@ -132,10 +131,10 @@ public class GradleInspectorManager {
             } catch (final Exception e) {
                 logger.debug("Exception encountered when resolving latest version of Gradle Inspector, skipping resolution.");
                 logger.debug(e.getMessage());
-                return bomToolConfig.getGradleInspectorVersion();
+                return gradleInspectorVersion;
             }
         } else {
-            return bomToolConfig.getGradleInspectorVersion();
+            return gradleInspectorVersion;
         }
     }
 
@@ -143,13 +142,13 @@ public class GradleInspectorManager {
         final File initScriptFile = detectFileManager.createSharedFile("gradle", "init-detect.gradle");
         final Map<String, String> model = new HashMap<>();
         model.put("gradleInspectorVersion", version);
-        model.put("excludedProjectNames", bomToolConfig.getGradleExcludedProjectNames());
-        model.put("includedProjectNames", bomToolConfig.getGradleIncludedProjectNames());
-        model.put("excludedConfigurationNames", bomToolConfig.getGradleExcludedConfigurationNames());
-        model.put("includedConfigurationNames", bomToolConfig.getGradleIncludedConfigurationNames());
+        model.put("excludedProjectNames", detectConfigWrapper.getProperty(DetectProperty.DETECT_GRADLE_EXCLUDED_PROJECTS));
+        model.put("includedProjectNames", detectConfigWrapper.getProperty(DetectProperty.DETECT_GRADLE_INCLUDED_PROJECTS));
+        model.put("excludedConfigurationNames", detectConfigWrapper.getProperty(DetectProperty.DETECT_GRADLE_EXCLUDED_CONFIGURATIONS));
+        model.put("includedConfigurationNames", detectConfigWrapper.getProperty(DetectProperty.DETECT_GRADLE_INCLUDED_CONFIGURATIONS));
 
         try {
-            final File gradleInspectorAirGapDirectory = new File(bomToolConfig.getGradleInspectorAirGapPath());
+            final File gradleInspectorAirGapDirectory = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH));
             if (gradleInspectorAirGapDirectory.exists()) {
                 model.put("airGapLibsPath", StringEscapeUtils.escapeJava(gradleInspectorAirGapDirectory.getCanonicalPath()));
             }
@@ -158,8 +157,9 @@ public class GradleInspectorManager {
             logger.debug(e.getMessage());
         }
 
-        if (StringUtils.isNotBlank(bomToolConfig.getGradleInspectorRepositoryUrl())) {
-            model.put("customRepositoryUrl", bomToolConfig.getGradleInspectorRepositoryUrl());
+        String gradleInspectorRepositoryUrl = detectConfigWrapper.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_REPOSITORY_URL);
+        if (StringUtils.isNotBlank(gradleInspectorRepositoryUrl)) {
+            model.put("customRepositoryUrl", gradleInspectorRepositoryUrl);
         }
         final Template initScriptTemplate = configuration.getTemplate("init-script-gradle.ftl");
 

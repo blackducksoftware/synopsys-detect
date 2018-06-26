@@ -35,8 +35,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.configuration.BomToolConfig;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfig;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.evaluation.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
@@ -55,21 +55,19 @@ public class NugetInspectorManager {
     private final DetectFileManager detectFileManager;
     private final ExecutableManager executableManager;
     private final ExecutableRunner executableRunner;
-    private final BomToolConfig bomToolConfig;
-    private final DetectConfig detectConfig;
+    private final DetectConfigWrapper detectConfigWrapper;
 
     private boolean hasResolvedInspector;
     private String resolvedNugetInspectorExecutable;
     private String resolvedInspectorVersion;
 
     @Autowired
-    public NugetInspectorManager(final DetectFileManager detectFileManager, final ExecutableManager executableManager, final ExecutableRunner executableRunner, final BomToolConfig bomToolConfig,
-            final DetectConfig detectConfig) {
+    public NugetInspectorManager(final DetectFileManager detectFileManager, final ExecutableManager executableManager, final ExecutableRunner executableRunner,
+            final DetectConfigWrapper detectConfigWrapper) {
         this.detectFileManager = detectFileManager;
         this.executableManager = executableManager;
         this.executableRunner = executableRunner;
-        this.bomToolConfig = bomToolConfig;
-        this.detectConfig = detectConfig;
+        this.detectConfigWrapper = detectConfigWrapper;
     }
 
     public String findNugetInspector() throws BomToolException {
@@ -86,7 +84,8 @@ public class NugetInspectorManager {
     }
 
     public void install() throws DetectUserFriendlyException, ExecutableRunnerException, IOException {
-        final String nugetExecutable = executableManager.getExecutablePathOrOverride(ExecutableType.NUGET, true, new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)), bomToolConfig.getNugetPath());
+        final String nugetExecutable = executableManager
+                .getExecutablePathOrOverride(ExecutableType.NUGET, true, new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)), detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_PATH));
         resolvedInspectorVersion = resolveInspectorVersion(nugetExecutable);
         if (resolvedInspectorVersion != null) {
             resolvedNugetInspectorExecutable = installInspector(nugetExecutable, detectFileManager.getSharedDirectory("nuget"), resolvedInspectorVersion);
@@ -99,13 +98,14 @@ public class NugetInspectorManager {
     }
 
     private String resolveInspectorVersion(final String nugetExecutablePath) throws ExecutableRunnerException {
-        if ("latest".equalsIgnoreCase(bomToolConfig.getNugetInspectorPackageVersion())) {
+        String nugetInspectorPackageVersion = detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_VERSION);
+        if ("latest".equalsIgnoreCase(nugetInspectorPackageVersion)) {
             if (shouldUseAirGap()) {
                 logger.debug("Running in airgap mode. Resolving version from local path");
-                return resolveVersionFromSource(bomToolConfig.getNugetInspectorAirGapPath(), nugetExecutablePath);
+                return resolveVersionFromSource(detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_AIR_GAP_PATH), nugetExecutablePath);
             } else {
                 logger.debug("Running online. Resolving version through nuget");
-                for (final String source : bomToolConfig.getNugetPackagesRepoUrl()) {
+                for (final String source : detectConfigWrapper.getStringArrayProperty(DetectProperty.DETECT_NUGET_PACKAGES_REPO_URL)) {
                     logger.debug("Attempting source: " + source);
                     final String inspectorVersion = resolveVersionFromSource(source, nugetExecutablePath);
                     if (inspectorVersion != null) {
@@ -114,13 +114,13 @@ public class NugetInspectorManager {
                 }
             }
         } else {
-            return bomToolConfig.getNugetInspectorPackageVersion();
+            return nugetInspectorPackageVersion;
         }
         return null;
     }
 
     private boolean shouldUseAirGap() {
-        final File airGapNugetInspectorDirectory = new File(bomToolConfig.getNugetInspectorAirGapPath());
+        final File airGapNugetInspectorDirectory = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_AIR_GAP_PATH));
         return airGapNugetInspectorDirectory.exists();
     }
 
@@ -131,14 +131,15 @@ public class NugetInspectorManager {
 
         nugetOptions.addAll(Arrays.asList(
                 "list",
-                bomToolConfig.getNugetInspectorPackageName(),
+                detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_NAME),
                 "-Source",
                 source
         ));
 
-        if (StringUtils.isNotBlank(bomToolConfig.getNugetConfigPath())) {
+        String nugetConfigPath = detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_CONFIG_PATH);
+        if (StringUtils.isNotBlank(nugetConfigPath)) {
             nugetOptions.add("-ConfigFile");
-            nugetOptions.add(bomToolConfig.getNugetConfigPath());
+            nugetOptions.add(nugetConfigPath);
         }
 
         final Executable getInspectorVersionExecutable = new Executable(new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)), nugetExecutablePath, nugetOptions);
@@ -146,7 +147,7 @@ public class NugetInspectorManager {
         final List<String> output = executableRunner.execute(getInspectorVersionExecutable).getStandardOutputAsList();
         for (final String line : output) {
             final String[] lineChunks = line.split(" ");
-            if (bomToolConfig.getNugetInspectorPackageName().equalsIgnoreCase(lineChunks[0])) {
+            if (detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_NAME).equalsIgnoreCase(lineChunks[0])) {
                 version = lineChunks[1];
             }
         }
@@ -157,30 +158,31 @@ public class NugetInspectorManager {
 
     private String installInspector(final String nugetExecutablePath, final File outputDirectory, final String inspectorVersion) throws IOException, ExecutableRunnerException {
         final File toolsDirectory;
+        String nugetInspectorName = detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_NAME);
 
-        final File airGapNugetInspectorDirectory = new File(bomToolConfig.getNugetInspectorAirGapPath());
+        final File airGapNugetInspectorDirectory = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_AIR_GAP_PATH));
         if (airGapNugetInspectorDirectory.exists()) {
             logger.debug("Running in airgap mode. Resolving from local path");
             toolsDirectory = new File(airGapNugetInspectorDirectory, "tools");
         } else {
             logger.debug("Running online. Resolving through nuget");
 
-            for (final String source : bomToolConfig.getNugetPackagesRepoUrl()) {
+            for (final String source : detectConfigWrapper.getStringArrayProperty(DetectProperty.DETECT_NUGET_PACKAGES_REPO_URL)) {
                 logger.debug("Attempting source: " + source);
                 final boolean success = attemptInstallInspectorFromSource(source, nugetExecutablePath, outputDirectory);
                 if (success) {
                     break;
                 }
             }
-            final String inspectorDirectoryName = bomToolConfig.getNugetInspectorPackageName() + "." + inspectorVersion;
+            final String inspectorDirectoryName = nugetInspectorName + "." + inspectorVersion;
             final File inspectorVersionDirectory = new File(outputDirectory, inspectorDirectoryName);
             toolsDirectory = new File(inspectorVersionDirectory, "tools");
         }
-        final String exeName = bomToolConfig.getNugetInspectorPackageName() + ".exe";
+        final String exeName = nugetInspectorName + ".exe";
         final File inspectorExe = new File(toolsDirectory, exeName);
 
         if (!inspectorExe.exists()) {
-            logger.warn(String.format("Could not find the %s version: %s even after an install attempt.", bomToolConfig.getNugetInspectorPackageName(), inspectorVersion));
+            logger.warn(String.format("Could not find the %s version: %s even after an install attempt.", nugetInspectorName, inspectorVersion));
             return null;
         }
 
@@ -192,7 +194,7 @@ public class NugetInspectorManager {
 
         nugetOptions.addAll(Arrays.asList(
                 "install",
-                bomToolConfig.getNugetInspectorPackageName(),
+                detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_NAME),
                 "-OutputDirectory",
                 outputDirectory.getCanonicalPath(),
                 "-Source",
@@ -200,10 +202,10 @@ public class NugetInspectorManager {
                 "-Version",
                 resolvedInspectorVersion
         ));
-
-        if (StringUtils.isNotBlank(bomToolConfig.getNugetConfigPath())) {
+        String nugetConfigPath = detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_CONFIG_PATH);
+        if (StringUtils.isNotBlank(nugetConfigPath)) {
             nugetOptions.add("-ConfigFile");
-            nugetOptions.add(bomToolConfig.getNugetConfigPath());
+            nugetOptions.add(nugetConfigPath);
         }
 
         final Executable installInspectorExecutable = new Executable(new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)), nugetExecutablePath, nugetOptions);

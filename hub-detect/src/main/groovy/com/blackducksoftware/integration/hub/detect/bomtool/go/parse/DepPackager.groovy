@@ -25,7 +25,8 @@ package com.blackducksoftware.integration.hub.detect.bomtool.go.parse
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.configuration.BomToolConfig
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException
@@ -45,14 +46,14 @@ class DepPackager {
     private final ExecutableRunner executableRunner
     private final Gson gson
     private final ExternalIdFactory externalIdFactory
-    private final BomToolConfig bomToolConfig
+    private final DetectConfigWrapper detectConfigWrapper
 
     @Autowired
-    DepPackager(final ExecutableRunner executableRunner, final Gson gson, final ExternalIdFactory externalIdFactory, final BomToolConfig bomToolConfig) {
+    DepPackager(final ExecutableRunner executableRunner, final Gson gson, final ExternalIdFactory externalIdFactory, final DetectConfigWrapper detectConfigWrapper) {
         this.executableRunner = executableRunner
         this.gson = gson
         this.externalIdFactory = externalIdFactory
-        this.bomToolConfig = bomToolConfig
+        this.detectConfigWrapper = detectConfigWrapper
     }
 
     public DependencyGraph makeDependencyGraph(final String sourcePath, String goDepExecutable) {
@@ -71,7 +72,7 @@ class DepPackager {
         }
 
         //by default, we won't run 'init' and 'ensure' anymore so just return an empty string
-        if (!bomToolConfig.goRunDepInit) {
+        if (!detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_GO_RUN_DEP_INIT)) {
             logger.info("Skipping Dep commands 'init' and 'ensure'")
             return ''
         }

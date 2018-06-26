@@ -43,7 +43,8 @@ import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.parse.NugetInspectorPackager;
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.parse.NugetParseResult;
-import com.blackducksoftware.integration.hub.detect.configuration.BomToolConfig;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
@@ -60,16 +61,16 @@ public class NugetInspectorExtractor {
     private final NugetInspectorPackager nugetInspectorPackager;
     private final ExecutableRunner executableRunner;
     private final DetectFileFinder detectFileFinder;
-    private final BomToolConfig bomToolConfig;
+    private final DetectConfigWrapper detectConfigWrapper;
 
     @Autowired
     public NugetInspectorExtractor(final DetectFileManager detectFileManager, final NugetInspectorPackager nugetInspectorPackager, final ExecutableRunner executableRunner, final DetectFileFinder detectFileFinder,
-            final BomToolConfig bomToolConfig) {
+            final DetectConfigWrapper detectConfigWrapper) {
         this.detectFileManager = detectFileManager;
         this.nugetInspectorPackager = nugetInspectorPackager;
         this.executableRunner = executableRunner;
         this.detectFileFinder = detectFileFinder;
-        this.bomToolConfig = bomToolConfig;
+        this.detectConfigWrapper = detectConfigWrapper;
     }
 
     public Extraction extract(final File directory, final String inspectorExe, final ExtractionId extractionId) {
@@ -80,21 +81,25 @@ public class NugetInspectorExtractor {
             final List<String> options = new ArrayList<>(Arrays.asList(
                     "--target_path=" + directory.toString(),
                     "--output_directory=" + outputDirectory.getCanonicalPath(),
-                    "--ignore_failure=" + bomToolConfig.getNugetInspectorIgnoreFailure()
+                    "--ignore_failure=" + detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_NUGET_IGNORE_FAILURE)
             ));
 
-            if (bomToolConfig.getNugetInspectorExcludedModules() != null) {
-                options.add("--excluded_modules=" + bomToolConfig.getNugetInspectorExcludedModules());
+            String nugetExcludedModules = detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_EXCLUDED_MODULES);
+            if (StringUtils.isNotBlank(nugetExcludedModules)) {
+                options.add("--excluded_modules=" + nugetExcludedModules);
             }
-            if (bomToolConfig.getNugetInspectorIncludedModules() != null) {
-                options.add("--included_modules=" + bomToolConfig.getNugetInspectorIncludedModules());
+            String nugetIncludedModules = detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_INCLUDED_MODULES);
+            if (StringUtils.isNotBlank(nugetIncludedModules)) {
+                options.add("--included_modules=" + nugetIncludedModules);
             }
-            if (bomToolConfig.getNugetPackagesRepoUrl() != null) {
-                final String packagesRepos = Arrays.asList(bomToolConfig.getNugetPackagesRepoUrl()).stream().collect(Collectors.joining(","));
+            String nugetPackagesRepo = detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_PACKAGES_REPO_URL);
+            if (StringUtils.isNotBlank(nugetPackagesRepo)) {
+                final String packagesRepos = Arrays.asList(nugetPackagesRepo).stream().collect(Collectors.joining(","));
                 options.add("--packages_repo_url=" + packagesRepos);
             }
-            if (StringUtils.isNotBlank(bomToolConfig.getNugetConfigPath())) {
-                options.add("--nuget_config_path=" + bomToolConfig.getNugetConfigPath());
+            String nugetConfigPath = detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_CONFIG_PATH);
+            if (StringUtils.isNotBlank(nugetConfigPath)) {
+                options.add("--nuget_config_path=" + nugetConfigPath);
             }
             if (logger.isTraceEnabled()) {
                 options.add("-v");

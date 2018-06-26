@@ -32,17 +32,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfig;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 
 @Component
 public class ExecutableRunner {
     private final Logger logger = LoggerFactory.getLogger(ExecutableRunner.class);
 
-    private final DetectConfig detectConfig;
+    private final DetectConfigWrapper detectConfigWrapper;
 
     @Autowired
-    public ExecutableRunner(final DetectConfig detectConfig) {
-        this.detectConfig = detectConfig;
+    public ExecutableRunner(final DetectConfigWrapper detectConfigWrapper) {
+        this.detectConfigWrapper = detectConfigWrapper;
     }
 
     public ExecutableOutput execute(final Executable executable) throws ExecutableRunnerException {

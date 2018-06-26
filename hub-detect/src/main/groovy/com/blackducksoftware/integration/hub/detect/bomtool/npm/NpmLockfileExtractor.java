@@ -33,18 +33,19 @@ import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.parse.NpmLockfilePackager;
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.parse.NpmParseResult;
-import com.blackducksoftware.integration.hub.detect.configuration.BomToolConfig;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 
 @Component
 public class NpmLockfileExtractor {
     private final NpmLockfilePackager npmLockfilePackager;
-    private final BomToolConfig bomToolConfig;
+    private final DetectConfigWrapper detectConfigWrapper;
 
     @Autowired
-    public NpmLockfileExtractor(final NpmLockfilePackager npmLockfilePackager, final BomToolConfig bomToolConfig) {
+    public NpmLockfileExtractor(final NpmLockfilePackager npmLockfilePackager, final DetectConfigWrapper detectConfigWrapper) {
         this.npmLockfilePackager = npmLockfilePackager;
-        this.bomToolConfig = bomToolConfig;
+        this.detectConfigWrapper = detectConfigWrapper;
     }
 
     public Extraction extract(final File directory, final File lockfile) {
@@ -56,8 +57,8 @@ public class NpmLockfileExtractor {
         }
 
         try {
-            final boolean includeDev = bomToolConfig.getNpmIncludeDevDependencies();
-            final NpmParseResult result = npmLockfilePackager.parse(directory.getCanonicalPath(), lockText, includeDev);
+            final boolean includeDevDeps = detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_NPM_INCLUDE_DEV_DEPENDENCIES);
+            final NpmParseResult result = npmLockfilePackager.parse(directory.getCanonicalPath(), lockText, includeDevDeps);
             return new Extraction.Builder().success(result.codeLocation).projectName(result.projectName).projectVersion(result.projectVersion).build();
         } catch (final IOException e) {
             return new Extraction.Builder().exception(e).build();

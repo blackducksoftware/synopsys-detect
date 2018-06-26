@@ -34,9 +34,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.configuration.BomToolConfig;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfig;
-import com.blackducksoftware.integration.hub.detect.configuration.HubConfig;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.evaluation.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
@@ -60,19 +59,15 @@ public class DockerInspectorManager {
     private final DetectFileManager detectFileManager;
     private final ExecutableManager executableManager;
     private final ExecutableRunner executableRunner;
-    private final DetectConfig detectConfig;
-    private final BomToolConfig bomToolConfig;
-    private final HubConfig hubConfig;
+    private final DetectConfigWrapper detectConfigWrapper;
 
     @Autowired
-    public DockerInspectorManager(final DetectFileManager detectFileManager, final ExecutableManager executableManager, final ExecutableRunner executableRunner, final DetectConfig detectConfig, final BomToolConfig bomToolConfig,
-            final HubConfig hubConfig) {
+    public DockerInspectorManager(final DetectFileManager detectFileManager, final ExecutableManager executableManager, final ExecutableRunner executableRunner,
+            final DetectConfigWrapper detectConfigWrapper) {
         this.detectFileManager = detectFileManager;
         this.executableManager = executableManager;
         this.executableRunner = executableRunner;
-        this.detectConfig = detectConfig;
-        this.bomToolConfig = bomToolConfig;
-        this.hubConfig = hubConfig;
+        this.detectConfigWrapper = detectConfigWrapper;
     }
 
     private boolean hasResolvedInspector;
@@ -93,13 +88,15 @@ public class DockerInspectorManager {
         hasResolvedInspector = true;
 
         final DockerInspectorInfo info = resolveShellScript();
-        final String bashExecutablePath = executableManager.getExecutablePathOrOverride(ExecutableType.BASH, true, new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)), bomToolConfig.getBashPath());
+        final String bashExecutablePath = executableManager
+                .getExecutablePathOrOverride(ExecutableType.BASH, true, new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)), detectConfigWrapper.getProperty(DetectProperty.DETECT_BASH_PATH));
         info.version = resolveInspectorVersion(bashExecutablePath, info.dockerInspectorScript);
 
         if (info.isOffline) {
-            info.offlineDockerInspectorJar = new File(bomToolConfig.getDockerInspectorAirGapPath(), "hub-docker-inspector-" + info.version + ".jar");
+            String dockerInspectorAirGapPath = detectConfigWrapper.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH);
+            info.offlineDockerInspectorJar = new File(dockerInspectorAirGapPath, "hub-docker-inspector-" + info.version + ".jar");
             for (final String os : Arrays.asList("ubuntu", "alpine", "centos")) {
-                final File osImage = new File(bomToolConfig.getDockerInspectorAirGapPath(), "hub-docker-inspector-" + os + ".tar");
+                final File osImage = new File(dockerInspectorAirGapPath, "hub-docker-inspector-" + os + ".tar");
                 info.offlineTars.add(osImage);
             }
         }
@@ -109,7 +106,8 @@ public class DockerInspectorManager {
 
     private String resolveInspectorVersion(final String bashExecutablePath, final File dockerInspectorShellScript) throws DetectUserFriendlyException {
         try {
-            if ("latest".equalsIgnoreCase(bomToolConfig.getDockerInspectorVersion())) {
+            String dockerInspectorVersion = detectConfigWrapper.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_VERSION);
+            if ("latest".equalsIgnoreCase(dockerInspectorVersion)) {
                 final File inspectorDirectory = detectFileManager.getSharedDirectory(dockerSharedDirectoryName);
                 final List<String> bashArguments = new ArrayList<>();
                 bashArguments.add("-c");
@@ -120,7 +118,7 @@ public class DockerInspectorManager {
                 logger.info(String.format("Resolved docker inspector version from latest to: %s", inspectorVersion));
                 return inspectorVersion;
             } else {
-                return bomToolConfig.getDockerInspectorVersion();
+                return dockerInspectorVersion;
             }
         } catch (final Exception e) {
             throw new DetectUserFriendlyException("Unable to find docker inspector version.", e, ExitCodeType.FAILURE_CONFIGURATION);
@@ -129,21 +127,23 @@ public class DockerInspectorManager {
 
     private DockerInspectorInfo resolveShellScript() throws DetectUserFriendlyException {
         try {
-            final String suppliedDockerVersion = bomToolConfig.getDockerInspectorVersion();
+            final String suppliedDockerVersion = detectConfigWrapper.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_VERSION);
             final File shellScriptFile;
-            final File airGapHubDockerInspectorShellScript = new File(bomToolConfig.getDockerInspectorAirGapPath(), "hub-docker-inspector.sh");
+            final File airGapHubDockerInspectorShellScript = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH), "hub-docker-inspector.sh");
             boolean isOffline = false;
             logger.debug(String.format("Verifying air gap shell script present at %s", airGapHubDockerInspectorShellScript.getCanonicalPath()));
 
-            if (StringUtils.isNotBlank(bomToolConfig.getDockerInspectorPath())) {
-                shellScriptFile = new File(bomToolConfig.getDockerInspectorPath());
+            String dockerInspectorPath = detectConfigWrapper.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_PATH);
+            if (StringUtils.isNotBlank(dockerInspectorPath)) {
+                shellScriptFile = new File(dockerInspectorPath);
             } else if (airGapHubDockerInspectorShellScript.exists()) {
                 shellScriptFile = airGapHubDockerInspectorShellScript;
                 isOffline = true;
             } else {
+                String dockerInspectorVersion = detectConfigWrapper.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_VERSION);
                 String hubDockerInspectorShellScriptUrl = LATEST_URL;
-                if (!"latest".equals(bomToolConfig.getDockerInspectorVersion())) {
-                    hubDockerInspectorShellScriptUrl = String.format("https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector-%s.sh", bomToolConfig.getDockerInspectorVersion());
+                if (!"latest".equals(dockerInspectorVersion)) {
+                    hubDockerInspectorShellScriptUrl = String.format("https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector-%s.sh", dockerInspectorVersion);
                 }
                 logger.info(String.format("Getting the Docker inspector shell script from %s", hubDockerInspectorShellScriptUrl));
 
@@ -151,7 +151,7 @@ public class DockerInspectorManager {
                 String shellScriptContents;
                 Response response = null;
 
-                try (UnauthenticatedRestConnection restConnection = hubConfig.createUnauthenticatedRestConnection(hubDockerInspectorShellScriptUrl)) {
+                try (UnauthenticatedRestConnection restConnection = detectConfigWrapper.createUnauthenticatedRestConnection(hubDockerInspectorShellScriptUrl)) {
                     response = restConnection.executeRequest(request);
                     shellScriptContents = response.getContentString();
                 } finally {

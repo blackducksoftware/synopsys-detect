@@ -34,7 +34,8 @@ import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.parse.PipInspectorTreeParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.parse.PipParseResult;
-import com.blackducksoftware.integration.hub.detect.configuration.BomToolConfig;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
@@ -44,18 +45,18 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 public class PipInspectorExtractor {
     private final ExecutableRunner executableRunner;
     private final PipInspectorTreeParser pipInspectorTreeParser;
-    private final BomToolConfig bomToolConfig;
+    private final DetectConfigWrapper detectConfigWrapper;
 
     @Autowired
-    public PipInspectorExtractor(final ExecutableRunner executableRunner, final PipInspectorTreeParser pipInspectorTreeParser, final BomToolConfig bomToolConfig) {
+    public PipInspectorExtractor(final ExecutableRunner executableRunner, final PipInspectorTreeParser pipInspectorTreeParser, final DetectConfigWrapper detectConfigWrapper) {
         this.executableRunner = executableRunner;
         this.pipInspectorTreeParser = pipInspectorTreeParser;
-        this.bomToolConfig = bomToolConfig;
+        this.detectConfigWrapper = detectConfigWrapper;
     }
 
     public Extraction extract(final File directory, final String pythonExe, final File pipInspector, final File setupFile, final String requirementFilePath) {
         try {
-            final String projectName = getProjectName(directory, pythonExe, pipInspector, setupFile, requirementFilePath);
+            final String projectName = getProjectName(directory, pythonExe, setupFile);
             final PipParseResult result;
 
             final String inspectorOutput = runInspector(directory, pythonExe, pipInspector, projectName, requirementFilePath);
@@ -84,8 +85,8 @@ public class PipInspectorExtractor {
         return executableRunner.execute(pipInspector).getStandardOutput();
     }
 
-    private String getProjectName(final File directory, final String pythonExe, final File pipInspector, final File setupFile, final String requirementFilePath) throws ExecutableRunnerException {
-        String projectName = bomToolConfig.getPipProjectName();
+    private String getProjectName(final File directory, final String pythonExe, final File setupFile) throws ExecutableRunnerException {
+        String projectName = detectConfigWrapper.getProperty(DetectProperty.DETECT_PIP_PROJECT_NAME);
 
         if (setupFile != null && setupFile.exists() && StringUtils.isBlank(projectName)) {
             final Executable findProjectNameExecutable = new Executable(directory, pythonExe, Arrays.asList(

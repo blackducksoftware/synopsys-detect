@@ -50,9 +50,9 @@ public class PipInspectorBomTool extends BomTool {
     private final PipInspectorExtractor pipInspectorExtractor;
     private final String requirementFilePath;
 
-    String pythonExe;
-    File pipInspector;
-    File setupFile;
+    private String pythonExe;
+    private File pipInspector;
+    private File setupFile;
 
     public PipInspectorBomTool(final BomToolEnvironment environment, final String requirementFilePath, final DetectFileFinder fileFinder, final PythonExecutableFinder pythonExecutableFinder, final PipInspectorManager pipInspectorManager,
             final PipInspectorExtractor pipInspectorExtractor) {

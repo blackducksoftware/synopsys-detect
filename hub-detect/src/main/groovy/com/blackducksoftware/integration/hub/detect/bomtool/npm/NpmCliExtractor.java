@@ -38,7 +38,8 @@ import org.springframework.stereotype.Component;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.parse.NpmCliDependencyFinder;
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.parse.NpmParseResult;
-import com.blackducksoftware.integration.hub.detect.configuration.BomToolConfig;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
@@ -54,14 +55,14 @@ public class NpmCliExtractor {
     private final ExecutableRunner executableRunner;
     private final DetectFileManager detectFileManager;
     private final NpmCliDependencyFinder npmCliDependencyFinder;
-    private final BomToolConfig bomToolConfig;
+    private final DetectConfigWrapper detectConfigWrapper;
 
     @Autowired
-    public NpmCliExtractor(final ExecutableRunner executableRunner, final DetectFileManager detectFileManager, final NpmCliDependencyFinder npmCliDependencyFinder, final BomToolConfig bomToolConfig) {
+    public NpmCliExtractor(final ExecutableRunner executableRunner, final DetectFileManager detectFileManager, final NpmCliDependencyFinder npmCliDependencyFinder, final DetectConfigWrapper detectConfigWrapper) {
         this.executableRunner = executableRunner;
         this.detectFileManager = detectFileManager;
         this.npmCliDependencyFinder = npmCliDependencyFinder;
-        this.bomToolConfig = bomToolConfig;
+        this.detectConfigWrapper = detectConfigWrapper;
     }
 
     public Extraction extract(final File directory, final String npmExe, final ExtractionId extractionId) {
@@ -69,7 +70,7 @@ public class NpmCliExtractor {
         final File npmLsOutputFile = detectFileManager.getOutputFile(extractionId, NpmCliExtractor.OUTPUT_FILE);
         final File npmLsErrorFile = detectFileManager.getOutputFile(extractionId, NpmCliExtractor.ERROR_FILE);
 
-        final boolean includeDevDeps = bomToolConfig.getNpmIncludeDevDependencies();
+        final boolean includeDevDeps = detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_NPM_INCLUDE_DEV_DEPENDENCIES);
         final List<String> exeArgs = Arrays.asList("ls", "-json");
         if (!includeDevDeps) {
             exeArgs.add("-prod");

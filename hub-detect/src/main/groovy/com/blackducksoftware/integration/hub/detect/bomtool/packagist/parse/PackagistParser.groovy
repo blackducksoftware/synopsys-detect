@@ -29,7 +29,8 @@ import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.configuration.BomToolConfig
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty
 import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.google.gson.JsonArray
@@ -47,12 +48,12 @@ class PackagistParser {
     private final Logger logger = LoggerFactory.getLogger(PackagistParser.class)
 
     private final ExternalIdFactory externalIdFactory
-    private final BomToolConfig bomToolConfig
+    private final DetectConfigWrapper detectConfigWrapper
 
     @Autowired
-    PackagistParser(final ExternalIdFactory externalIdFactory, final BomToolConfig bomToolConfig) {
+    PackagistParser(final ExternalIdFactory externalIdFactory, final DetectConfigWrapper detectConfigWrapper) {
         this.externalIdFactory = externalIdFactory
-        this.bomToolConfig = bomToolConfig
+        this.detectConfigWrapper = detectConfigWrapper
     }
 
     public PackagistParseResult getDependencyGraphFromProject(String sourcePath, String composerJsonText, String composerLockText) {
@@ -66,7 +67,7 @@ class PackagistParser {
         JsonArray packagistPackages = composerLockObject.get('packages')?.getAsJsonArray()
         List<String> startingPackages = getStartingPackages(composerJsonObject, false)
 
-        if (bomToolConfig.getPackagistIncludeDevDependencies()) {
+        if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_PACKAGIST_INCLUDE_DEV_DEPENDENCIES)) {
             JsonArray packagistDevPackages = composerLockObject.get('packages-dev')?.getAsJsonArray()
             packagistPackages.addAll(packagistDevPackages)
             List<String> startingDevPackages = getStartingPackages(composerJsonObject, true)

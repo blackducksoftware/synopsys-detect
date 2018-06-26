@@ -27,7 +27,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.configuration.BomToolConfig;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.evaluation.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
@@ -39,27 +40,28 @@ public class GradleExecutableFinder {
     private final DetectFileManager detectFileManager;
     private final ExecutableManager executableManager;
     private final ExecutableRunner executableRunner;
-    private final BomToolConfig bomToolConfig;
+    private final DetectConfigWrapper detectConfigWrapper;
 
     private String systemGradle = null;
     private boolean hasLookedForSystemGradle = false;
 
     @Autowired
-    public GradleExecutableFinder(final DetectFileManager detectFileManager, final ExecutableManager executableManager, final ExecutableRunner executableRunner, final BomToolConfig bomToolConfig) {
+    public GradleExecutableFinder(final DetectFileManager detectFileManager, final ExecutableManager executableManager, final ExecutableRunner executableRunner, final DetectConfigWrapper detectConfigWrapper) {
         this.detectFileManager = detectFileManager;
         this.executableManager = executableManager;
         this.executableRunner = executableRunner;
-        this.bomToolConfig = bomToolConfig;
+        this.detectConfigWrapper = detectConfigWrapper;
     }
 
     public String findGradle(final BomToolEnvironment environment) {
         String resolvedGradle = null;
-        final String gradlePath = executableManager.getExecutablePathOrOverride(ExecutableType.GRADLEW, false, environment.getDirectory(), bomToolConfig.getGradlePath());
+        String userProvidedGradlePath = detectConfigWrapper.getProperty(DetectProperty.DETECT_GRADLE_PATH);
+        final String gradlePath = executableManager.getExecutablePathOrOverride(ExecutableType.GRADLEW, false, environment.getDirectory(), userProvidedGradlePath);
         if (StringUtils.isNotBlank(gradlePath)) {
             resolvedGradle = gradlePath;
         } else {
             if (!hasLookedForSystemGradle) {
-                systemGradle = executableManager.getExecutablePathOrOverride(ExecutableType.GRADLE, true, environment.getDirectory(), bomToolConfig.getGradlePath());
+                systemGradle = executableManager.getExecutablePathOrOverride(ExecutableType.GRADLE, true, environment.getDirectory(), userProvidedGradlePath);
                 hasLookedForSystemGradle = true;
             }
             resolvedGradle = systemGradle;

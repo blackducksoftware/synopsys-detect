@@ -81,7 +81,8 @@ import com.blackducksoftware.integration.hub.detect.bomtool.sbt.SbtResolutionCac
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.SbtResolutionCacheExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnLockBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnLockExtractor;
-import com.blackducksoftware.integration.hub.detect.configuration.BomToolConfig;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.evaluation.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.extraction.model.StandardExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
@@ -120,7 +121,7 @@ public class BomToolFactory {
     private final GradleInspectorManager gradleInspectorManager;
     private final MavenExecutableFinder mavenExecutableFinder;
     private final NpmExecutableFinder npmExecutableFinder;
-    private final BomToolConfig bomToolConfig;
+    private final DetectConfigWrapper detectConfigWrapper;
 
     @Autowired
     public BomToolFactory(final PodlockExtractor podlockExtractor, final CondaCliExtractor condaCliExtractor, final CpanCliExtractor cpanCliExtractor, final PackratLockExtractor packratLockExtractor,
@@ -131,7 +132,7 @@ public class BomToolFactory {
             final YarnLockExtractor yarnLockExtractor, final DetectFileFinder detectFileFinder, final StandardExecutableFinder standardExecutableFinder, final DockerInspectorManager dockerInspectorManager,
             final PipInspectorManager pipInspectorManager, final GoInspectorManager goInspectorManager, final NugetInspectorManager nugetInspectorManager, final PythonExecutableFinder pythonExecutableFinder,
             final GradleExecutableFinder gradleFinder, final GradleInspectorManager gradleInspectorManager, final MavenExecutableFinder mavenExecutableFinder, final NpmExecutableFinder npmExecutableFinder,
-            final BomToolConfig bomToolConfig) {
+            final DetectConfigWrapper detectConfigWrapper) {
         this.podlockExtractor = podlockExtractor;
         this.condaCliExtractor = condaCliExtractor;
         this.cpanCliExtractor = cpanCliExtractor;
@@ -164,7 +165,7 @@ public class BomToolFactory {
         this.gradleInspectorManager = gradleInspectorManager;
         this.mavenExecutableFinder = mavenExecutableFinder;
         this.npmExecutableFinder = npmExecutableFinder;
-        this.bomToolConfig = bomToolConfig;
+        this.detectConfigWrapper = detectConfigWrapper;
     }
 
     public BomToolSearchRuleSet createStrategies(final BomToolEnvironment environment) {
@@ -245,9 +246,9 @@ public class BomToolFactory {
     }
 
     private DockerBomTool createDockerBomTool(final BomToolEnvironment environment) {
-        final String tar = bomToolConfig.getDockerTar();
-        final String image = bomToolConfig.getDockerImage();
-        final boolean dockerRequired = bomToolConfig.getDockerPathRequired();
+        final String tar = detectConfigWrapper.getProperty(DetectProperty.DETECT_DOCKER_TAR);
+        final String image = detectConfigWrapper.getProperty(DetectProperty.DETECT_DOCKER_IMAGE);
+        final boolean dockerRequired = detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_DOCKER_PATH_REQUIRED);
 
         final DockerBomTool bomTool = new DockerBomTool(environment, dockerInspectorManager, standardExecutableFinder, dockerRequired, image, tar, dockerExtractor);
         return bomTool;
@@ -334,7 +335,7 @@ public class BomToolFactory {
     }
 
     private PipInspectorBomTool createPipInspectorBomTool(final BomToolEnvironment environment) {
-        final String requirementsFile = bomToolConfig.getRequirementsFilePath();
+        final String requirementsFile = detectConfigWrapper.getProperty(DetectProperty.DETECT_PIP_REQUIREMENTS_PATH);
         final PipInspectorBomTool bomTool = new PipInspectorBomTool(environment, requirementsFile, detectFileFinder, pythonExecutableFinder, pipInspectorManager, pipInspectorExtractor);
         return bomTool;
     }
@@ -350,7 +351,7 @@ public class BomToolFactory {
     }
 
     private YarnLockBomTool createYarnLockBomTool(final BomToolEnvironment environment) {
-        final boolean productionDependenciesOnly = bomToolConfig.getYarnProductionDependenciesOnly();
+        final boolean productionDependenciesOnly = detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_YARN_PROD_ONLY);
         final YarnLockBomTool bomTool = new YarnLockBomTool(environment, productionDependenciesOnly, detectFileFinder, standardExecutableFinder, yarnLockExtractor);
         return bomTool;
     }

@@ -38,7 +38,8 @@ import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.conda.parse.CondaListParser;
-import com.blackducksoftware.integration.hub.detect.configuration.BomToolConfig;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
@@ -53,23 +54,24 @@ public class CondaCliExtractor {
     private final CondaListParser condaListParser;
     private final ExternalIdFactory externalIdFactory;
     private final ExecutableRunner executableRunner;
-    private final BomToolConfig bomToolConfig;
+    private final DetectConfigWrapper detectConfigWrapper;
 
     @Autowired
-    public CondaCliExtractor(final CondaListParser condaListParser, final ExternalIdFactory externalIdFactory, final ExecutableRunner executableRunner, final BomToolConfig bomToolConfig) {
+    public CondaCliExtractor(final CondaListParser condaListParser, final ExternalIdFactory externalIdFactory, final ExecutableRunner executableRunner, final DetectConfigWrapper detectConfigWrapper) {
         this.condaListParser = condaListParser;
         this.externalIdFactory = externalIdFactory;
         this.executableRunner = executableRunner;
-        this.bomToolConfig = bomToolConfig;
+        this.detectConfigWrapper = detectConfigWrapper;
     }
 
     public Extraction extract(final File directory, final File condaExe) {
         try {
             final List<String> condaListOptions = new ArrayList<>();
             condaListOptions.add("list");
-            if (StringUtils.isNotBlank(bomToolConfig.getCondaEnvironmentName())) {
+            String condaEnvironmentName = detectConfigWrapper.getProperty(DetectProperty.DETECT_CONDA_ENVIRONMENT_NAME);
+            if (StringUtils.isNotBlank(condaEnvironmentName)) {
                 condaListOptions.add("-n");
-                condaListOptions.add(bomToolConfig.getCondaEnvironmentName());
+                condaListOptions.add(condaEnvironmentName);
             }
             condaListOptions.add("--json");
             final Executable condaListExecutable = new Executable(directory, condaExe, condaListOptions);

@@ -34,31 +34,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.configuration.AdditionalPropertyConfig;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfig;
-import com.blackducksoftware.integration.hub.detect.configuration.HubConfig;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 
 @Component
 public class DockerProperties {
-    private final DetectConfig detectConfig;
-    private final HubConfig hubConfig;
+    private final DetectConfigWrapper detectConfigWrapper;
     private final AdditionalPropertyConfig additionalPropertyConfig;
 
     @Autowired
-    public DockerProperties(final DetectConfig detectConfig, final HubConfig hubConfig, final AdditionalPropertyConfig additionalPropertyConfig) {
-        this.detectConfig = detectConfig;
-        this.hubConfig = hubConfig;
+    public DockerProperties(final DetectConfigWrapper detectConfigWrapper, final AdditionalPropertyConfig additionalPropertyConfig) {
+        this.detectConfigWrapper = detectConfigWrapper;
         this.additionalPropertyConfig = additionalPropertyConfig;
     }
 
     public void populatePropertiesFile(final File dockerPropertiesFile, final File outputDirectory) throws IOException {
         final Properties dockerProperties = new Properties();
 
-        dockerProperties.setProperty("logging.level.com.blackducksoftware", detectConfig.getLoggingLevel());
+        dockerProperties.setProperty("logging.level.com.blackducksoftware", detectConfigWrapper.getProperty(DetectProperty.LOGGING_LEVEL_COM_BLACKDUCKSOFTWARE_INTEGRATION));
         dockerProperties.setProperty("upload.bdio", "false");
         dockerProperties.setProperty("no.prompt", "true");
         dockerProperties.setProperty("output.path", outputDirectory.getAbsolutePath());
         dockerProperties.setProperty("output.include.containerfilesystem", "true");
-        dockerProperties.setProperty("logging.level.com.blackducksoftware", detectConfig.getLoggingLevel());
+        dockerProperties.setProperty("logging.level.com.blackducksoftware", detectConfigWrapper.getProperty(DetectProperty.LOGGING_LEVEL_COM_BLACKDUCKSOFTWARE_INTEGRATION));
         dockerProperties.setProperty("phone.home", "false");
 
         for (final String additionalProperty : additionalPropertyConfig.getAdditionalDockerPropertyNames()) {
@@ -85,13 +83,13 @@ public class DockerProperties {
             environmentVariables.put("DOCKER_INSPECTOR_CURL_OPTS", detectCurlOpts);
         }
 
-        environmentVariables.put("BLACKDUCK_HUB_PROXY_HOST", hubConfig.getHubProxyHost());
-        environmentVariables.put("BLACKDUCK_HUB_PROXY_PORT", hubConfig.getHubProxyPort());
-        environmentVariables.put("BLACKDUCK_HUB_PROXY_USERNAME", hubConfig.getHubProxyUsername());
-        environmentVariables.put("BLACKDUCK_HUB_PROXY_PASSWORD", hubConfig.getHubProxyPassword());
-        environmentVariables.put("BLACKDUCK_HUB_PROXY_IGNORED_HOSTS", hubConfig.getHubProxyIgnoredHosts());
-        environmentVariables.put("BLACKDUCK_HUB_PROXY_NTLM_DOMAIN", hubConfig.getHubProxyNtlmDomain());
-        environmentVariables.put("BLACKDUCK_HUB_PROXY_NTLM_WORKSTATION", hubConfig.getHubProxyNtlmWorkstation());
+        environmentVariables.put("BLACKDUCK_HUB_PROXY_HOST", detectConfigWrapper.getProperty(DetectProperty.BLACKDUCK_HUB_PROXY_HOST));
+        environmentVariables.put("BLACKDUCK_HUB_PROXY_PORT", String.valueOf(detectConfigWrapper.getIntegerProperty(DetectProperty.BLACKDUCK_HUB_PROXY_PORT)));
+        environmentVariables.put("BLACKDUCK_HUB_PROXY_USERNAME", detectConfigWrapper.getProperty(DetectProperty.BLACKDUCK_HUB_PROXY_USERNAME));
+        environmentVariables.put("BLACKDUCK_HUB_PROXY_PASSWORD", detectConfigWrapper.getProperty(DetectProperty.BLACKDUCK_HUB_PROXY_PASSWORD));
+        environmentVariables.put("BLACKDUCK_HUB_PROXY_IGNORED_HOSTS", detectConfigWrapper.getProperty(DetectProperty.BLACKDUCK_HUB_PROXY_IGNORED_HOSTS));
+        environmentVariables.put("BLACKDUCK_HUB_PROXY_NTLM_DOMAIN", detectConfigWrapper.getProperty(DetectProperty.BLACKDUCK_HUB_PROXY_NTLM_DOMAIN));
+        environmentVariables.put("BLACKDUCK_HUB_PROXY_NTLM_WORKSTATION", detectConfigWrapper.getProperty(DetectProperty.BLACKDUCK_HUB_PROXY_NTLM_WORKSTATION));
 
         for (final Map.Entry<String, String> environmentProperty : System.getenv().entrySet()) {
             final String key = environmentProperty.getKey();

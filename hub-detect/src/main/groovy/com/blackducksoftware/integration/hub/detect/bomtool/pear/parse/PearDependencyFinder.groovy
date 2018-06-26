@@ -29,7 +29,8 @@ import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGrap
 import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.configuration.BomToolConfig
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput
 import groovy.transform.TypeChecked
 import groovy.util.slurpersupport.GPathResult
@@ -44,12 +45,12 @@ class PearDependencyFinder {
     private final Logger logger = LoggerFactory.getLogger(PearDependencyFinder.class)
 
     private final ExternalIdFactory externalIdFactory
-    private final BomToolConfig bomToolConfig
+    private final DetectConfigWrapper detectConfigWrapper
 
     @Autowired
-    PearDependencyFinder(final ExternalIdFactory externalIdFactory, final BomToolConfig bomToolConfig) {
+    PearDependencyFinder(final ExternalIdFactory externalIdFactory, final DetectConfigWrapper detectConfigWrapper) {
         this.externalIdFactory = externalIdFactory
-        this.bomToolConfig = bomToolConfig
+        this.detectConfigWrapper = detectConfigWrapper
     }
 
     public PearParseResult parse(File packageFile, ExecutableOutput pearListing, ExecutableOutput pearDependencies) {
@@ -92,7 +93,7 @@ class PearDependencyFinder {
                 String dependencyRequired = dependencyInfo[0].trim()
 
                 if (dependencyName) {
-                    if (!bomToolConfig.getPearOnlyRequiredDependencies()) {
+                    if (!detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_PEAR_ONLY_REQUIRED_DEPS)) {
                         nameList.add(dependencyName.split('/')[-1])
                     } else {
                         if (BooleanUtils.toBoolean(dependencyRequired)) {

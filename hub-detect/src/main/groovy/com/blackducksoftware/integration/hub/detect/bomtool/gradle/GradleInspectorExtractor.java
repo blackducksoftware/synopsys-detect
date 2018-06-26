@@ -36,7 +36,8 @@ import org.springframework.stereotype.Component;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.parse.GradleParseResult;
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.parse.GradleReportParser;
-import com.blackducksoftware.integration.hub.detect.configuration.BomToolConfig;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
@@ -51,25 +52,25 @@ public class GradleInspectorExtractor {
     private final DetectFileFinder detectFileFinder;
     private final DetectFileManager detectFileManager;
     private final GradleReportParser gradleReportParser;
-    private final BomToolConfig bomToolConfig;
+    private final DetectConfigWrapper detectConfigWrapper;
 
     @Autowired
     public GradleInspectorExtractor(final ExecutableRunner executableRunner, final DetectFileFinder detectFileFinder, final DetectFileManager detectFileManager,
-            final GradleReportParser gradleReportParser, final BomToolConfig bomToolConfig) {
+            final GradleReportParser gradleReportParser, final DetectConfigWrapper detectConfigWrapper) {
         this.executableRunner = executableRunner;
         this.detectFileFinder = detectFileFinder;
         this.detectFileManager = detectFileManager;
         this.gradleReportParser = gradleReportParser;
-        this.bomToolConfig = bomToolConfig;
+        this.detectConfigWrapper = detectConfigWrapper;
     }
 
     public Extraction extract(final File directory, final String gradleExe, final String gradleInspector, final ExtractionId extractionId) {
         try {
-            String gradleCommand = bomToolConfig.getGradleBuildCommand();
-            gradleCommand = gradleCommand.replaceAll("dependencies", "").trim();
+            String gradleCommand = detectConfigWrapper.getProperty(DetectProperty.DETECT_GRADLE_BUILD_COMMAND);
 
             final List<String> arguments = new ArrayList<>();
             if (StringUtils.isNotBlank(gradleCommand)) {
+                gradleCommand = gradleCommand.replaceAll("dependencies", "").trim();
                 for (final String arg : gradleCommand.split(" ")) {
                     if (StringUtils.isNotBlank(arg)) {
                         arguments.add(arg);

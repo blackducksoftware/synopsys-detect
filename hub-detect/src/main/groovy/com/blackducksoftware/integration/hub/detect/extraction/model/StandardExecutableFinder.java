@@ -30,8 +30,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.configuration.BomToolConfig;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfig;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.evaluation.BomToolException;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
@@ -53,17 +53,15 @@ public class StandardExecutableFinder {
 
     private final DetectFileManager detectFileManager;
     private final ExecutableManager executableManager;
-    private final DetectConfig detectConfig;
-    private final BomToolConfig bomToolConfig;
+    private final DetectConfigWrapper detectConfigWrapper;
 
     private final Map<StandardExecutableType, File> alreadyFound = new HashMap<>();
 
     @Autowired
-    public StandardExecutableFinder(final DetectFileManager detectFileManager, final ExecutableManager executableManager, final DetectConfig detectConfig, final BomToolConfig bomToolConfig) {
+    public StandardExecutableFinder(final DetectFileManager detectFileManager, final ExecutableManager executableManager, final DetectConfigWrapper detectConfigWrapper) {
         this.detectFileManager = detectFileManager;
         this.executableManager = executableManager;
-        this.detectConfig = detectConfig;
-        this.bomToolConfig = bomToolConfig;
+        this.detectConfigWrapper = detectConfigWrapper;
     }
 
     public File getExecutable(final StandardExecutableType executableType) throws BomToolException {
@@ -87,23 +85,23 @@ public class StandardExecutableFinder {
     public StandardExecutableInfo createInfo(final StandardExecutableType type) {
         switch (type) {
         case CONDA:
-            return new StandardExecutableInfo(ExecutableType.CONDA, bomToolConfig.getCondaPath());
+            return new StandardExecutableInfo(ExecutableType.CONDA, detectConfigWrapper.getProperty(DetectProperty.DETECT_CONDA_PATH));
         case CPAN:
-            return new StandardExecutableInfo(ExecutableType.CPAN, bomToolConfig.getCpanPath());
+            return new StandardExecutableInfo(ExecutableType.CPAN, detectConfigWrapper.getProperty(DetectProperty.DETECT_CPAN_PATH));
         case CPANM:
-            return new StandardExecutableInfo(ExecutableType.CPANM, bomToolConfig.getCpanmPath());
+            return new StandardExecutableInfo(ExecutableType.CPANM, detectConfigWrapper.getProperty(DetectProperty.DETECT_CPANM_PATH));
         case DOCKER:
-            return new StandardExecutableInfo(ExecutableType.DOCKER, bomToolConfig.getDockerPath());
+            return new StandardExecutableInfo(ExecutableType.DOCKER, detectConfigWrapper.getProperty(DetectProperty.DETECT_DOCKER_PATH));
         case BASH:
-            return new StandardExecutableInfo(ExecutableType.BASH, bomToolConfig.getBashPath());
+            return new StandardExecutableInfo(ExecutableType.BASH, detectConfigWrapper.getProperty(DetectProperty.DETECT_BASH_PATH));
         case GO:
             return new StandardExecutableInfo(ExecutableType.GO, null);
         case REBAR3:
-            return new StandardExecutableInfo(ExecutableType.REBAR3, bomToolConfig.getHexRebar3Path());
+            return new StandardExecutableInfo(ExecutableType.REBAR3, detectConfigWrapper.getProperty(DetectProperty.DETECT_HEX_REBAR3_PATH));
         case PEAR:
-            return new StandardExecutableInfo(ExecutableType.PEAR, bomToolConfig.getPearPath());
+            return new StandardExecutableInfo(ExecutableType.PEAR, detectConfigWrapper.getProperty(DetectProperty.DETECT_PEAR_PATH));
         case YARN:
-            return new StandardExecutableInfo(ExecutableType.YARN, bomToolConfig.getYarnPath());
+            return new StandardExecutableInfo(ExecutableType.YARN, detectConfigWrapper.getProperty(DetectProperty.DETECT_YARN_PATH));
         }
         return null;
     }

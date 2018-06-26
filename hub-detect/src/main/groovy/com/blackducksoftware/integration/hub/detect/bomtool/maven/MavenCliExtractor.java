@@ -36,7 +36,8 @@ import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.maven.parse.MavenCodeLocationPackager;
 import com.blackducksoftware.integration.hub.detect.bomtool.maven.parse.MavenParseResult;
-import com.blackducksoftware.integration.hub.detect.configuration.BomToolConfig;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
@@ -49,19 +50,19 @@ public class MavenCliExtractor {
     private final ExecutableRunner executableRunner;
     private final DetectFileFinder detectFileFinder;
     private final MavenCodeLocationPackager mavenCodeLocationPackager;
-    private final BomToolConfig bomToolConfig;
+    private final DetectConfigWrapper detectConfigWrapper;
 
     @Autowired
-    public MavenCliExtractor(final ExecutableRunner executableRunner, final DetectFileFinder detectFileFinder, final MavenCodeLocationPackager mavenCodeLocationPackager, final BomToolConfig bomToolConfig) {
+    public MavenCliExtractor(final ExecutableRunner executableRunner, final DetectFileFinder detectFileFinder, final MavenCodeLocationPackager mavenCodeLocationPackager, final DetectConfigWrapper detectConfigWrapper) {
         this.executableRunner = executableRunner;
         this.detectFileFinder = detectFileFinder;
         this.mavenCodeLocationPackager = mavenCodeLocationPackager;
-        this.bomToolConfig = bomToolConfig;
+        this.detectConfigWrapper = detectConfigWrapper;
     }
 
     public Extraction extract(final File directory, final String mavenExe) {
         try {
-            String mavenCommand = bomToolConfig.getMavenBuildCommand();
+            String mavenCommand = detectConfigWrapper.getProperty(DetectProperty.DETECT_MAVEN_BUILD_COMMAND);
             if (StringUtils.isNotBlank(mavenCommand)) {
                 mavenCommand = mavenCommand.replace("dependency:tree", "");
                 if (StringUtils.isNotBlank(mavenCommand)) {
@@ -73,8 +74,9 @@ public class MavenCliExtractor {
             if (StringUtils.isNotBlank(mavenCommand)) {
                 arguments.addAll(Arrays.asList(mavenCommand.split(" ")));
             }
-            if (StringUtils.isNotBlank(bomToolConfig.getMavenScope())) {
-                arguments.add(String.format("-Dscope=%s", bomToolConfig.getMavenScope()));
+            String mavenScope = detectConfigWrapper.getProperty(DetectProperty.DETECT_MAVEN_SCOPE);
+            if (StringUtils.isNotBlank(mavenScope)) {
+                arguments.add(String.format("-Dscope=%s", mavenScope));
             }
             arguments.add("dependency:tree");
 
@@ -83,8 +85,8 @@ public class MavenCliExtractor {
 
             if (mvnOutput.getReturnCode() == 0) {
 
-                final String excludedModules = bomToolConfig.getMavenExcludedModuleNames();
-                final String includedModules = bomToolConfig.getMavenIncludedModuleNames();
+                final String excludedModules = detectConfigWrapper.getProperty(DetectProperty.DETECT_MAVEN_EXCLUDED_MODULES);
+                final String includedModules = detectConfigWrapper.getProperty(DetectProperty.DETECT_MAVEN_INCLUDED_MODULES);
                 final List<MavenParseResult> mavenResults = mavenCodeLocationPackager.extractCodeLocations(directory.toString(), mvnOutput.getStandardOutput(), excludedModules, includedModules);
 
                 final List<DetectCodeLocation> codeLocations = mavenResults.stream()

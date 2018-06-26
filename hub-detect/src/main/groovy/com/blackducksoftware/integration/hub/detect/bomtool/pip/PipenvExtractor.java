@@ -33,7 +33,8 @@ import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.parse.PipParseResult;
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.parse.PipenvGraphParser;
-import com.blackducksoftware.integration.hub.detect.configuration.BomToolConfig;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
@@ -46,21 +47,21 @@ public class PipenvExtractor {
 
     private final ExecutableRunner executableRunner;
     private final PipenvGraphParser pipenvTreeParser;
-    private final BomToolConfig bomToolConfig;
+    private final DetectConfigWrapper detectConfigWrapper;
 
     @Autowired
-    public PipenvExtractor(final ExecutableRunner executableRunner, final PipenvGraphParser pipenvTreeParser, final BomToolConfig bomToolConfig) {
+    public PipenvExtractor(final ExecutableRunner executableRunner, final PipenvGraphParser pipenvTreeParser, final DetectConfigWrapper detectConfigWrapper) {
         this.executableRunner = executableRunner;
         this.pipenvTreeParser = pipenvTreeParser;
-        this.bomToolConfig = bomToolConfig;
+        this.detectConfigWrapper = detectConfigWrapper;
     }
 
-    public Extraction extract(final File directory, final String pythonExe, final String pipenvExe, final File pipfileDotLock, final File pipfile, final File setupFile) {
+    public Extraction extract(final File directory, final String pythonExe, final String pipenvExe, final File setupFile) {
         Extraction extraction;
 
         try {
-            final String projectName = getProjectName(directory, pythonExe, pipenvExe, pipfileDotLock, pipfile, setupFile);
-            final String projectVersionName = getProjectVersionName(directory, pythonExe, pipenvExe, pipfileDotLock, pipfile, setupFile);
+            final String projectName = getProjectName(directory, pythonExe, setupFile);
+            final String projectVersionName = getProjectVersionName(directory, pythonExe, setupFile);
             final PipParseResult result;
 
             final Executable pipenvRunPipFreeze = new Executable(directory, pipenvExe, Arrays.asList("run", "pip", "freeze"));
@@ -83,8 +84,8 @@ public class PipenvExtractor {
         return extraction;
     }
 
-    private String getProjectName(final File directory, final String pythonExe, final String pipenvExe, final File pipfileDotLock, final File pipfile, final File setupFile) throws ExecutableRunnerException {
-        String projectName = bomToolConfig.getPipProjectName();
+    private String getProjectName(final File directory, final String pythonExe, final File setupFile) throws ExecutableRunnerException {
+        String projectName = detectConfigWrapper.getProperty(DetectProperty.DETECT_PIP_PROJECT_NAME);
 
         if (StringUtils.isBlank(projectName) && setupFile != null && setupFile.exists()) {
             final Executable findProjectNameExecutable = new Executable(directory, pythonExe, Arrays.asList(
@@ -97,8 +98,8 @@ public class PipenvExtractor {
         return projectName;
     }
 
-    private String getProjectVersionName(final File directory, final String pythonExe, final String pipenvExe, final File pipfileDotLock, final File pipfile, final File setupFile) throws ExecutableRunnerException {
-        String projectVersionName = bomToolConfig.getPipProjectVersionName();
+    private String getProjectVersionName(final File directory, final String pythonExe, final File setupFile) throws ExecutableRunnerException {
+        String projectVersionName = detectConfigWrapper.getProperty(DetectProperty.DETECT_PIP_PROJECT_VERSION_NAME);
 
         if (StringUtils.isBlank(projectVersionName) && setupFile != null && setupFile.exists()) {
             final Executable findProjectNameExecutable = new Executable(directory, pythonExe, Arrays.asList(

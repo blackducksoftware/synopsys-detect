@@ -32,8 +32,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.configuration.BomToolConfig;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfig;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.evaluation.BomToolException;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
@@ -49,20 +49,18 @@ public class GoInspectorManager {
     private final DetectFileManager detectFileManager;
     private final ExecutableManager executableManager;
     private final ExecutableRunner executableRunner;
-    private final BomToolConfig bomToolConfig;
-    private final DetectConfig detectConfig;
+    private final DetectConfigWrapper detectConfigWrapper;
 
     private boolean hasResolvedInspector;
     private String resolvedGoDep;
 
     @Autowired
-    public GoInspectorManager(final DetectFileManager detectFileManager, final ExecutableManager executableManager, final ExecutableRunner executableRunner, final BomToolConfig bomToolConfig,
-            final DetectConfig detectConfig) {
+    public GoInspectorManager(final DetectFileManager detectFileManager, final ExecutableManager executableManager, final ExecutableRunner executableRunner,
+            final DetectConfigWrapper detectConfigWrapper) {
         this.detectFileManager = detectFileManager;
         this.executableManager = executableManager;
         this.executableRunner = executableRunner;
-        this.bomToolConfig = bomToolConfig;
-        this.detectConfig = detectConfig;
+        this.detectConfigWrapper = detectConfigWrapper;
     }
 
     public String evaluate() throws BomToolException {
@@ -78,7 +76,7 @@ public class GoInspectorManager {
     }
 
     public String install() throws ExecutableRunnerException {
-        String goDepPath = bomToolConfig.getGoDepPath();
+        String goDepPath = detectConfigWrapper.getProperty(DetectProperty.DETECT_GO_DEP_PATH);
         if (StringUtils.isBlank(goDepPath)) {
             final File goDep = getGoDepInstallLocation();
             if (goDep.exists()) {

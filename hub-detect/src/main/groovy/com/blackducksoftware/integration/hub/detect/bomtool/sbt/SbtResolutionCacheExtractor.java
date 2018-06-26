@@ -36,8 +36,8 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFac
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtDependencyModule;
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtProject;
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.parse.SbtPackager;
-import com.blackducksoftware.integration.hub.detect.configuration.BomToolConfig;
-import com.blackducksoftware.integration.hub.detect.configuration.DetectConfig;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
@@ -51,25 +51,23 @@ public class SbtResolutionCacheExtractor {
     private final DetectFileManager detectFileManager;
     private final DetectFileFinder detectFileFinder;
     private final ExternalIdFactory externalIdFactory;
-    private final BomToolConfig bomToolConfig;
-    private final DetectConfig detectConfig;
+    private final DetectConfigWrapper detectConfigWrapper;
 
     @Autowired
-    public SbtResolutionCacheExtractor(final DetectFileManager detectFileManager, final DetectFileFinder detectFileFinder, final ExternalIdFactory externalIdFactory, final BomToolConfig bomToolConfig,
-            final DetectConfig detectConfig) {
+    public SbtResolutionCacheExtractor(final DetectFileManager detectFileManager, final DetectFileFinder detectFileFinder, final ExternalIdFactory externalIdFactory,
+            final DetectConfigWrapper detectConfigWrapper) {
         this.detectFileManager = detectFileManager;
         this.detectFileFinder = detectFileFinder;
         this.externalIdFactory = externalIdFactory;
-        this.bomToolConfig = bomToolConfig;
-        this.detectConfig = detectConfig;
+        this.detectConfigWrapper = detectConfigWrapper;
     }
 
     public Extraction extract(final File directory) {
         try {
-            final String included = bomToolConfig.getSbtIncludedConfigurationNames();
-            final String excluded = bomToolConfig.getSbtExcludedConfigurationNames();
+            final String included = detectConfigWrapper.getProperty(DetectProperty.DETECT_SBT_INCLUDED_CONFIGURATIONS);
+            final String excluded = detectConfigWrapper.getProperty(DetectProperty.DETECT_SBT_EXCLUDED_CONFIGURATIONS);
 
-            final int depth = detectConfig.getSearchDepth();
+            final int depth = detectConfigWrapper.getIntegerProperty(DetectProperty.DETECT_SEARCH_DEPTH);
 
             final SbtPackager packager = new SbtPackager(externalIdFactory, detectFileFinder);
             final SbtProject project = packager.extractProject(directory.toString(), depth, included, excluded);
