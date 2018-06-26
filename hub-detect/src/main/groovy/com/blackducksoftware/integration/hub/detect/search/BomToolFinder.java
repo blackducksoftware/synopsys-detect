@@ -101,7 +101,7 @@ public class BomToolFinder {
 
     private List<BomToolEvaluation> processDirectory(final BomToolSearchProvider bomToolSearchProvider, final File directory, final Set<BomToolType> appliedBefore, final int depth, final BomToolFinderOptions options) {
         final BomToolEnvironment environment = new BomToolEnvironment(directory, appliedBefore, depth, options.getBomToolFilter(), options.getForceNestedSearch());
-        final BomToolSearchRuleSet bomToolSet = bomToolSearchProvider.createStrategies(environment);
+        final BomToolSearchRuleSet bomToolSet = bomToolSearchProvider.createBomTools(environment);
         final List<BomToolEvaluation> evaluations = bomToolSet.evaluate();
         return evaluations;
     }
