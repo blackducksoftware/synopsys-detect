@@ -85,8 +85,9 @@ public class PodlockParser {
      */
     private Map<DependencyId, Forge> createForgeOverrideMap(final PodfileLock podfileLock) {
         final Map<DependencyId, Forge> forgeOverrideMap = new HashMap<>();
-        if (null != podfileLock.getExternalSources() && !podfileLock.getExternalSources().getSources().isEmpty()) {
-            for (final PodSource podSource : podfileLock.getExternalSources().getSources()) {
+        if (null != podfileLock.getExternalSources()) {
+            final List<PodSource> podSources = podfileLock.getExternalSources().getSources();
+            for (final PodSource podSource : podSources) {
                 final Optional<DependencyId> dependencyId = parseDependencyId(podSource.getName());
                 if (dependencyId.isPresent()) {
                     if (null != podSource.getGit() && podSource.getGit().contains("github")) {
@@ -146,7 +147,7 @@ public class PodlockParser {
     }
 
     private Optional<String> parseCorrectPodName(final String podText) {
-        // due to the way the KB deals with subspecs we should use the super name if it exists
+        // due to the way the KB deals with subspecs we should use the super name if it exists as this pod's name.
         final Optional<String> podName = parseRawPodName(podText);
         if (podName.isPresent()) {
             final Optional<String> superPodName = parseSuperPodName(podName.get());
