@@ -21,12 +21,12 @@ import org.junit.Before
 import org.junit.Test
 
 public class CocoapodsPackagerTest {
-    private final TestUtil testUtil= new TestUtil()
-    private final CocoapodsPackager cocoapodsPackager = new CocoapodsPackager()
+    private final TestUtil testUtil = new TestUtil()
+    private CocoapodsPackager cocoapodsPackager
 
     @Before
     void init() {
-        cocoapodsPackager.nameVersionNodeTransformer = new NameVersionNodeTransformer(new ExternalIdFactory())
+        cocoapodsPackager = new CocoapodsPackager(new NameVersionNodeTransformer(new ExternalIdFactory()))
     }
 
     @Test
