@@ -27,13 +27,8 @@ configure(subprojects) { project ->
         header rootProject.file('LICENSE')
     }
 
-    //TODO remove this when hub-common 34.0.0 is released
-    repositories {
-        mavenLocal()
-    }
-
     dependencies {
-        compile 'com.blackducksoftware.integration:hub-common:34.0.0-SNAPSHOT'
+        compile 'com.blackducksoftware.integration:hub-common:34.0.0'
         compile 'org.springframework:spring-core:5.0.4.RELEASE'
         compile 'org.springframework:spring-context:5.0.4.RELEASE'
     }
