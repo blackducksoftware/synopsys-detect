@@ -132,7 +132,6 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
     private void handleScanTargetOutput(final ScanTargetOutput scanTargetOutput) {
         final Result result = scanTargetOutput.getResult();
         scanSummaryResults.put(scanTargetOutput.getScanTarget(), result);
-        logger.info(String.format("%s was scanned by the BlackDuck CLI. Result: %s", scanTargetOutput.getScanTarget(), result.name()));
         if (Result.FAILURE == result) {
             logger.error(String.format("Scanning target %s failed: %s", scanTargetOutput.getScanTarget(), scanTargetOutput.getErrorMessage()));
             if (null != scanTargetOutput.getException()) {
