@@ -1,4 +1,4 @@
-/*
+/**
  * hub-detect
  *
  * Copyright (C) 2018 Black Duck Software, Inc.
@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.extraction.bomtool.packagist.parse;
+package com.blackducksoftware.integration.hub.detect.bomtool.packagist.parse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,9 +37,10 @@ import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.dependencyid.NameDependencyId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.extraction.bomtool.packagist.parse.model.PackagistPackage;
-import com.blackducksoftware.integration.hub.detect.model.BomToolType;
+import com.blackducksoftware.integration.hub.detect.bomtool.packagist.parse.model.PackagistPackage;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.util.NameVersion;
 import com.google.gson.JsonElement;
@@ -50,11 +51,14 @@ import com.google.gson.JsonParser;
 public class PackagistParser {
     private final Logger logger = LoggerFactory.getLogger(PackagistParser.class);
 
-    @Autowired
-    private DetectConfiguration detectConfiguration;
+    private final ExternalIdFactory externalIdFactory;
+    private final DetectConfigWrapper detectConfigWrapper;
 
     @Autowired
-    private ExternalIdFactory externalIdFactory;
+    public PackagistParser(final ExternalIdFactory externalIdFactory, final DetectConfigWrapper detectConfigWrapper) {
+        this.externalIdFactory = externalIdFactory;
+        this.detectConfigWrapper = detectConfigWrapper;
+    }
 
     public PackagistParseResult getDependencyGraphFromProject(final String sourcePath, final String composerJsonText, final String composerLockText) {
         final LazyExternalIdDependencyGraphBuilder builder = new LazyExternalIdDependencyGraphBuilder();
@@ -63,8 +67,8 @@ public class PackagistParser {
         final NameVersion projectNameVersion = parseNameVersionFromJson(composerJsonObject);
 
         final JsonObject composerLockObject = new JsonParser().parse(composerLockText).getAsJsonObject();
-        final List<PackagistPackage> models = convertJsonToModel(composerLockObject, detectConfiguration.getPackagistIncludeDevDependencies());
-        final List<NameVersion> rootPackages = parseDependencies(composerJsonObject, detectConfiguration.getPackagistIncludeDevDependencies());
+        final List<PackagistPackage> models = convertJsonToModel(composerLockObject, detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_PACKAGIST_INCLUDE_DEV_DEPENDENCIES));
+        final List<NameVersion> rootPackages = parseDependencies(composerJsonObject, detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_PACKAGIST_INCLUDE_DEV_DEPENDENCIES));
 
         models.forEach(it -> {
             final ExternalId id = externalIdFactory.createNameVersionExternalId(Forge.PACKAGIST, it.getNameVersion().getName(), it.getNameVersion().getVersion());
@@ -91,7 +95,7 @@ public class PackagistParser {
         }
 
         final DependencyGraph graph = builder.build();
-        final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolType.PACKAGIST, sourcePath, projectExternalId, graph).build();
+        final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolGroupType.PACKAGIST, sourcePath, projectExternalId, graph).build();
 
         return new PackagistParseResult(projectNameVersion.getName(), projectNameVersion.getVersion(), codeLocation);
     }
