@@ -94,14 +94,13 @@ public class OfflineScanner {
                 cliInstalledOkay = checkCliInstall(cliLocation, intLogger);
             }
 
+            List<ScanTargetOutput> scanTargetOutputs = Collections.emptyList();
             if (!cliInstalledOkay && StringUtils.isNotBlank(hubSignatureScannerOfflineLocalPath)) {
                 logger.warn(String.format("The signature scanner is not correctly installed at %s", hubSignatureScannerOfflineLocalPath));
-                return Collections.emptyList();
             } else if (!cliInstalledOkay) {
                 logger.warn(String.format("The signature scanner is not correctly installed at %s", hubScanConfig.getCommonScanConfig().getToolsDir()));
-                return Collections.emptyList();
             } else {
-                final List<ScanTargetOutput> scanTargetOutputs = parallelSimpleScanner.executeScans(hubServerConfig, hubScanConfig, projectRequestBuilder.build(), cliLocation);
+                scanTargetOutputs = parallelSimpleScanner.executeScans(hubServerConfig, hubScanConfig, projectRequestBuilder.build(), cliLocation);
                 if (null != scanTargetOutputs && !scanTargetOutputs.isEmpty()) {
                     for (final ScanTargetOutput scanTargetOutput : scanTargetOutputs) {
                         if (null != scanTargetOutput && null != scanTargetOutput.getDryRunFile() && scanTargetOutput.getDryRunFile().isFile()) {
@@ -109,8 +108,8 @@ public class OfflineScanner {
                         }
                     }
                 }
-                return scanTargetOutputs;
             }
+            return scanTargetOutputs;
         } finally {
             executorService.shutdownNow();
         }
