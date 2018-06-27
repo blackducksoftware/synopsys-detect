@@ -25,6 +25,8 @@ package com.blackducksoftware.integration.hub.detect.interactive.mode;
 
 import org.springframework.stereotype.Component;
 
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+
 @Component
 public class OfflineInteractiveMode extends InteractiveMode {
     @Override
@@ -33,7 +35,7 @@ public class OfflineInteractiveMode extends InteractiveMode {
 
         final Boolean scan = askYesOrNo("Would you like run a CLI scan?");
         if (!scan) {
-            setProperty("hubSignatureScannerDisabled", "true");
+            setProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_DISABLED, "true");
         }
 
         if (scan) {
@@ -41,9 +43,9 @@ public class OfflineInteractiveMode extends InteractiveMode {
             if (customScanner) {
                 final Boolean downloadCustomScanner = askYesOrNo("Would you like to download the custom scanner?");
                 if (downloadCustomScanner) {
-                    setPropertyFromQuestion("hubSignatureScannerHostUrl", "What is the scanner host url?");
+                    setPropertyFromQuestion(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_HOST_URL, "What is the scanner host url?");
                 } else {
-                    setPropertyFromQuestion("hubSignatureScannerOfflineLocalPath", "What is the location of your offline scanner?");
+                    setPropertyFromQuestion(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH, "What is the location of your offline scanner?");
                 }
             }
         }

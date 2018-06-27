@@ -32,13 +32,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.bomtool.result.ExceptionBomToolResult;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.report.ExtractionReporter;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.report.ExtractionSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.report.PreparationSummaryReporter;
-import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.extraction.model.BomToolEvaluation;
 import com.blackducksoftware.integration.hub.detect.manager.result.extraction.ExtractionResult;
 import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
@@ -48,14 +46,17 @@ import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 public class ExtractionManager {
     private final Logger logger = LoggerFactory.getLogger(DetectProjectManager.class);
 
-    @Autowired
-    private PreparationSummaryReporter preparationSummaryReporter;
+    private final PreparationSummaryReporter preparationSummaryReporter;
+    private final ExtractionSummaryReporter extractionSummaryReporter;
+    private final ExtractionReporter extractionReporter;
 
     @Autowired
-    private ExtractionSummaryReporter extractionSummaryReporter;
-
-    @Autowired
-    private ExtractionReporter extractionReporter;
+    public ExtractionManager(final PreparationSummaryReporter preparationSummaryReporter, final ExtractionSummaryReporter extractionSummaryReporter,
+            final ExtractionReporter extractionReporter) {
+        this.preparationSummaryReporter = preparationSummaryReporter;
+        this.extractionSummaryReporter = extractionSummaryReporter;
+        this.extractionReporter = extractionReporter;
+    }
 
     private int extractions = 0;
 
@@ -63,7 +64,7 @@ public class ExtractionManager {
         final List<BomToolEvaluation> extractable = results.stream().filter(result -> result.isExtractable()).collect(Collectors.toList());
 
         for (int i = 0; i < extractable.size(); i++) {
-            logger.info("Extracting " + Integer.toString(i + 1) + " of " + Integer.toString(extractable.size()) + " (" + Integer.toString((int)Math.floor((i * 100.0f) / extractable.size())) + "%)");
+            logger.info("Extracting " + Integer.toString(i + 1) + " of " + Integer.toString(extractable.size()) + " (" + Integer.toString((int) Math.floor((i * 100.0f) / extractable.size())) + "%)");
             extract(extractable.get(i));
         }
     }
@@ -95,8 +96,7 @@ public class ExtractionManager {
 
     }
 
-    public ExtractionResult performExtractions(final List<BomToolEvaluation> bomToolEvaluations) throws IntegrationException, DetectUserFriendlyException {
-
+    public ExtractionResult performExtractions(final List<BomToolEvaluation> bomToolEvaluations) {
         prepare(bomToolEvaluations);
 
         preparationSummaryReporter.print(bomToolEvaluations);

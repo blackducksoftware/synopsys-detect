@@ -27,19 +27,19 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.codelocation.BomCodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.codelocation.CodeLocationType;
 import com.blackducksoftware.integration.hub.detect.codelocation.DockerCodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.codelocation.DockerScanCodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.codelocation.ScanCodeLocationNameService;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 
 @Component
 public class CodeLocationNameManager {
-
-    public final DetectConfiguration detectConfiguration;
+    private final DetectConfigWrapper detectConfigWrapper;
     private final BomCodeLocationNameService bomCodeLocationNameService;
     private final DockerCodeLocationNameService dockerCodeLocationNameService;
     private final ScanCodeLocationNameService scanCodeLocationNameService;
@@ -48,18 +48,19 @@ public class CodeLocationNameManager {
     private int givenCodeLocationOverrideCount = 0;
 
     @Autowired
-    public CodeLocationNameManager(final DetectConfiguration detectConfiguration, final BomCodeLocationNameService bomCodeLocationNameService,
+    public CodeLocationNameManager(final DetectConfigWrapper detectConfigWrapper, final BomCodeLocationNameService bomCodeLocationNameService,
             final DockerCodeLocationNameService dockerCodeLocationNameService, final ScanCodeLocationNameService scanCodeLocationNameService,
             final DockerScanCodeLocationNameService dockerScanCodeLocationNameService) {
-        this.detectConfiguration = detectConfiguration;
+        this.detectConfigWrapper = detectConfigWrapper;
         this.bomCodeLocationNameService = bomCodeLocationNameService;
         this.dockerCodeLocationNameService = dockerCodeLocationNameService;
         this.scanCodeLocationNameService = scanCodeLocationNameService;
         this.dockerScanCodeLocationNameService = dockerScanCodeLocationNameService;
+
     }
 
     private boolean useCodeLocationOverride() {
-        if (StringUtils.isNotBlank(detectConfiguration.getCodeLocationNameOverride())) {
+        if (StringUtils.isNotBlank(detectConfigWrapper.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME))) {
             return true;
         } else {
             return false;
@@ -68,7 +69,7 @@ public class CodeLocationNameManager {
 
     private String getNextCodeLocationOverrideName(CodeLocationType codeLocationType) { //returns "override", then "override 2", then "override 3", etc
         givenCodeLocationOverrideCount++;
-        final String base = detectConfiguration.getCodeLocationNameOverride() + " " + codeLocationType.name();
+        final String base = detectConfigWrapper.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME) + " " + codeLocationType.name();
         if (givenCodeLocationOverrideCount == 1) {
             return base;
         } else {

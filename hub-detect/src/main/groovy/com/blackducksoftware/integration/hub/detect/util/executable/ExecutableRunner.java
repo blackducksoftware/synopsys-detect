@@ -32,14 +32,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 
 @Component
 public class ExecutableRunner {
     private final Logger logger = LoggerFactory.getLogger(ExecutableRunner.class);
 
+    private final DetectConfigWrapper detectConfigWrapper;
+
     @Autowired
-    DetectConfiguration detectConfiguration;
+    public ExecutableRunner(final DetectConfigWrapper detectConfigWrapper) {
+        this.detectConfigWrapper = detectConfigWrapper;
+    }
 
     public ExecutableOutput execute(final Executable executable) throws ExecutableRunnerException {
         logger.info(String.format("Running executable >%s", executable.getMaskedExecutableDescription()));
@@ -83,17 +88,17 @@ public class ExecutableRunner {
     }
 
     public void runExeToFile(final String exePath, final File outputFile, final File errorFile, final String... args) throws ExecutableRunnerException {
-        final Executable exe = new Executable(new File(detectConfiguration.getSourcePath()), exePath, Arrays.asList(args));
+        final Executable exe = new Executable(new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)), exePath, Arrays.asList(args));
         executeToFile(exe, outputFile, errorFile);
     }
 
     public ExecutableOutput runExe(final String exePath, final String... args) throws ExecutableRunnerException {
-        final Executable exe = new Executable(detectConfiguration.getSourceDirectory(), exePath, Arrays.asList(args));
+        final Executable exe = new Executable(new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)), exePath, Arrays.asList(args));
         return execute(exe);
     }
 
     public ExecutableOutput runExe(final File exePath, final String... args) throws ExecutableRunnerException {
-        final Executable exe = new Executable(detectConfiguration.getSourceDirectory(), exePath, Arrays.asList(args));
+        final Executable exe = new Executable(new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)), exePath, Arrays.asList(args));
         return execute(exe);
     }
 }

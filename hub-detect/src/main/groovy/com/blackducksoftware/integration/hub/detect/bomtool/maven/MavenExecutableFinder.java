@@ -27,7 +27,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.evaluation.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
@@ -36,30 +37,31 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 
 @Component
 public class MavenExecutableFinder {
-
-    @Autowired
-    public DetectFileManager detectFileManager;
-
-    @Autowired
-    public DetectConfiguration detectConfiguration;
-
-    @Autowired
-    public ExecutableManager executableManager;
-
-    @Autowired
-    public ExecutableRunner executableRunner;
+    private final DetectFileManager detectFileManager;
+    private final ExecutableManager executableManager;
+    private final ExecutableRunner executableRunner;
+    private final DetectConfigWrapper detectConfigWrapper;
 
     private String systemMaven = null;
     private boolean hasLookedForSystemMaven = false;
 
+    @Autowired
+    public MavenExecutableFinder(final DetectFileManager detectFileManager, final ExecutableManager executableManager, final ExecutableRunner executableRunner, final DetectConfigWrapper detectConfigWrapper) {
+        this.detectFileManager = detectFileManager;
+        this.executableManager = executableManager;
+        this.executableRunner = executableRunner;
+        this.detectConfigWrapper = detectConfigWrapper;
+    }
+
     public String findMaven(final BomToolEnvironment environment) {
         String resolvedMaven = null;
-        final String gradlePath = executableManager.getExecutablePathOrOverride(ExecutableType.MVNW, false, environment.getDirectory(), detectConfiguration.getMavenPath());
-        if (StringUtils.isNotBlank(gradlePath)) {
-            resolvedMaven = gradlePath;
-        }else {
+        String providedMavenPath = detectConfigWrapper.getProperty(DetectProperty.DETECT_MAVEN_PATH);
+        final String mavenPath = executableManager.getExecutablePathOrOverride(ExecutableType.MVNW, false, environment.getDirectory(), providedMavenPath);
+        if (StringUtils.isNotBlank(mavenPath)) {
+            resolvedMaven = mavenPath;
+        } else {
             if (!hasLookedForSystemMaven) {
-                systemMaven = executableManager.getExecutablePathOrOverride(ExecutableType.MVN, true, environment.getDirectory(), detectConfiguration.getMavenPath());
+                systemMaven = executableManager.getExecutablePathOrOverride(ExecutableType.MVN, true, environment.getDirectory(), providedMavenPath);
                 hasLookedForSystemMaven = true;
             }
             resolvedMaven = systemMaven;

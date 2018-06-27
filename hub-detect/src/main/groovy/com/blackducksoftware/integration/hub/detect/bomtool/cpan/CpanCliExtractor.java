@@ -35,7 +35,6 @@ import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.bomtool.cpan.parse.CpanPackager;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
@@ -47,17 +46,16 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 public class CpanCliExtractor {
     private final Logger logger = LoggerFactory.getLogger(CpanCliExtractor.class);
 
-    @Autowired
-    CpanPackager cpanPackager;
+    private final CpanPackager cpanPackager;
+    private final ExternalIdFactory externalIdFactory;
+    private final ExecutableRunner executableRunner;
 
     @Autowired
-    protected ExternalIdFactory externalIdFactory;
-
-    @Autowired
-    protected ExecutableRunner executableRunner;
-
-    @Autowired
-    protected DetectConfiguration detectConfiguration;
+    public CpanCliExtractor(final CpanPackager cpanPackager, final ExternalIdFactory externalIdFactory, final ExecutableRunner executableRunner) {
+        this.cpanPackager = cpanPackager;
+        this.externalIdFactory = externalIdFactory;
+        this.executableRunner = executableRunner;
+    }
 
     public Extraction extract(final File directory, final File cpanExe, final File cpanmExe) {
         try {

@@ -37,8 +37,12 @@ import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 @Component
 public class ComposerLockExtractor {
 
+    private final PackagistParser packagistParser;
+
     @Autowired
-    PackagistParser packagistParser;
+    public ComposerLockExtractor(final PackagistParser packagistParser) {
+        this.packagistParser = packagistParser;
+    }
 
     public Extraction extract(final File directory, final File composerJson, final File composerLock) {
         try {

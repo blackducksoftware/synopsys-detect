@@ -1,5 +1,5 @@
 /**
- * detect-configuration
+ * hub-detect
  *
  * Copyright (C) 2018 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
@@ -21,28 +21,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.interactive;
+package com.blackducksoftware.integration.hub.detect.bomtool.packagist.parse.model;
 
-import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import java.util.List;
 
-public class InteractiveOption {
-    private DetectProperty detectProperty;
-    private String interactiveValue;
+import com.blackducksoftware.integration.util.NameVersion;
 
-    public DetectProperty getDetectProperty() {
-        return detectProperty;
+public class PackagistPackage {
+    private final NameVersion nameVersion;
+    private final List<NameVersion> dependencies;
+
+    public PackagistPackage(final NameVersion nameVersion, final List<NameVersion> dependencies) {
+        this.nameVersion = nameVersion;
+        this.dependencies = dependencies;
     }
 
-    public void setDetectProperty(final DetectProperty detectProperty) {
-        this.detectProperty = detectProperty;
+    public NameVersion getNameVersion() {
+        return nameVersion;
     }
 
-    public String getInteractiveValue() {
-        return interactiveValue;
-    }
-
-    public void setInteractiveValue(final String interactiveValue) {
-        this.interactiveValue = interactiveValue;
+    public List<NameVersion> getDependencies() {
+        return dependencies;
     }
 
 }

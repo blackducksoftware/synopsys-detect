@@ -21,28 +21,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.interactive;
+package com.blackducksoftware.integration.hub.detect.configuration;
 
-import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+public enum DetectPropertyType {
+    BOOLEAN("Boolean"), STRING("String"), STRING_ARRAY("String[]"), INTEGER("Integer"), LONG("Long");
 
-public class InteractiveOption {
-    private DetectProperty detectProperty;
-    private String interactiveValue;
+    private final String displayName;
 
-    public DetectProperty getDetectProperty() {
-        return detectProperty;
+    DetectPropertyType(final String displayName) {
+        this.displayName = displayName;
     }
 
-    public void setDetectProperty(final DetectProperty detectProperty) {
-        this.detectProperty = detectProperty;
+    public String getDisplayName() {
+        return displayName;
     }
-
-    public String getInteractiveValue() {
-        return interactiveValue;
-    }
-
-    public void setInteractiveValue(final String interactiveValue) {
-        this.interactiveValue = interactiveValue;
-    }
-
 }

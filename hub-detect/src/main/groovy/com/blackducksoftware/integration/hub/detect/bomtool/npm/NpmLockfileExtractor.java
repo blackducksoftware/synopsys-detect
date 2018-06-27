@@ -31,19 +31,22 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.parse.NpmLockfilePackager;
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.parse.NpmParseResult;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 
 @Component
 public class NpmLockfileExtractor {
+    private final NpmLockfilePackager npmLockfilePackager;
+    private final DetectConfigWrapper detectConfigWrapper;
 
     @Autowired
-    private NpmLockfilePackager npmLockfilePackager;
-
-    @Autowired
-    protected DetectConfiguration detectConfiguration;
+    public NpmLockfileExtractor(final NpmLockfilePackager npmLockfilePackager, final DetectConfigWrapper detectConfigWrapper) {
+        this.npmLockfilePackager = npmLockfilePackager;
+        this.detectConfigWrapper = detectConfigWrapper;
+    }
 
     public Extraction extract(final File directory, final File lockfile) {
         String lockText;
@@ -54,8 +57,8 @@ public class NpmLockfileExtractor {
         }
 
         try {
-            final boolean includeDev = detectConfiguration.getNpmIncludeDevDependencies();
-            final NpmParseResult result = npmLockfilePackager.parse(directory.getCanonicalPath(), lockText, includeDev);
+            final boolean includeDevDeps = detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_NPM_INCLUDE_DEV_DEPENDENCIES);
+            final NpmParseResult result = npmLockfilePackager.parse(directory.getCanonicalPath(), lockText, includeDevDeps);
             return new Extraction.Builder().success(result.codeLocation).projectName(result.projectName).projectVersion(result.projectVersion).build();
         } catch (final IOException e) {
             return new Extraction.Builder().exception(e).build();

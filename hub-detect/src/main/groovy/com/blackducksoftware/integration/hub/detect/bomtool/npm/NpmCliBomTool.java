@@ -44,14 +44,15 @@ public class NpmCliBomTool extends BomTool {
     public static final String PACKAGE_JSON = "package.json";
 
     private final DetectFileFinder fileFinder;
-    private NpmExecutableFinder npmExecutableFinder;
+    private final NpmExecutableFinder npmExecutableFinder;
     private final NpmCliExtractor npmCliExtractor;
 
     private String npmExe;
 
-    public NpmCliBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final NpmCliExtractor npmCliExtractor) {
+    public NpmCliBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final NpmExecutableFinder npmExecutableFinder, final NpmCliExtractor npmCliExtractor) {
         super(environment, "Npm Cli", BomToolGroupType.NPM, BomToolType.NPM_CLI);
         this.fileFinder = fileFinder;
+        this.npmExecutableFinder = npmExecutableFinder;
         this.npmCliExtractor = npmCliExtractor;
     }
 
