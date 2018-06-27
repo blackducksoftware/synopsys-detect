@@ -46,12 +46,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.exception.IntegrationException;
-import com.blackducksoftware.integration.hub.bdio.BdioTransformer;
 import com.blackducksoftware.integration.hub.bdio.SimpleBdioFactory;
-import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
-import com.blackducksoftware.integration.hub.bdio.model.SimpleBdioDocument;
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
@@ -77,65 +74,42 @@ public class CLangExtractor {
     private List<PkgMgr> pkgMgrs;
 
     @Autowired
-    BdioTransformer bdioTransformer;
+    private ExternalIdFactory externalIdFactory;
 
     @Autowired
-    ExternalIdFactory externalIdFactory;
+    private Executor executor;
 
     @Autowired
-    Executor executor;
+    private DependencyFileManager dependencyFileManager;
 
     @Autowired
-    DependencyFileManager dependencyFileManager;
+    private DetectFileManager detectFileManager;
 
-    @Autowired
-    DetectFileManager detectFileManager;
-
-    // TODO: Could skip the creation of SimpleBdioDocument; maybe next 2 methods should be combined
     public Extraction extract(final File sourceDir, final ExtractionId extractionId, final File jsonCompilationDatabaseFile) {
         try {
             logger.info(String.format("Analyzing %s", jsonCompilationDatabaseFile.getAbsolutePath()));
             final File outputDirectory = detectFileManager.getOutputDirectory(extractionId);
-            final ExtractorResults results = extract(sourceDir, executor, dependencyFileManager, jsonCompilationDatabaseFile, outputDirectory);
-            final SimpleBdioDocument simpleBdioDocument = results.getBdioDocument();
-
-            final DependencyGraph dependencyGraph = bdioTransformer.transformToDependencyGraph(simpleBdioDocument.project, simpleBdioDocument.components);
-            final Forge forgeFromName = Forge.FORGE_NAME_TO_FORGE.get(simpleBdioDocument.project.bdioExternalIdentifier.forge);
-            final ExternalId externalId = externalIdFactory.createPathExternalId(forgeFromName, sourceDir.toString());
+            logger.debug(String.format("extract() called; compileCommandsJsonFilePath: %s", jsonCompilationDatabaseFile.getAbsolutePath()));
+            final Set<File> filesForIScan = ConcurrentHashMap.newKeySet(64);
+            final PkgMgr pkgMgr = selectPkgMgr(executor);
+            final List<CompileCommand> compileCommands = parseCompileCommandsFile(jsonCompilationDatabaseFile);
+            final List<Dependency> bdioComponents = compileCommands.parallelStream()
+                    .map(geConvertCompileCommandToDependencyFilePathsFunction(executor, dependencyFileManager, outputDirectory))
+                    .reduce(ConcurrentHashMap.newKeySet(), getStringsAccumulator()).parallelStream() // TODO: flatMap seems ok here
+                    .filter((final String path) -> !StringUtils.isBlank(path))
+                    .map((final String path) -> new File(path))
+                    .filter(getFileIsNewPredicate())
+                    .map(getConvertFileToPackagesFunction(sourceDir, executor, filesForIScan, pkgMgr))
+                    .reduce(ConcurrentHashMap.newKeySet(), getPackageAccumulator()).parallelStream() // TODO: flatMap totally breaks it here
+                    .map(getConvertPackageToDependenciesFunction(pkgMgr))
+                    .reduce(new ArrayList<Dependency>(), getDependenciesAccumulator()); // TODO: Collector
+            final MutableDependencyGraph dependencyGraph = populateGraph(bdioComponents);
+            final ExternalId externalId = externalIdFactory.createPathExternalId(pkgMgr.getDefaultForge(), sourceDir.toString());
             final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolGroupType.CLANG, sourceDir.toString(), externalId, dependencyGraph).build();
             return new Extraction.Builder().success(detectCodeLocation).build();
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
-    }
-
-    ExtractorResults extract(final File sourceDir, final Executor executor, final DependencyFileManager dependencyFileManager, final File compileCommandsJsonFile, final File workingDir)
-            throws IOException, ExecutableRunnerException, IntegrationException {
-        logger.debug(String.format("extract() called; compileCommandsJsonFilePath: %s", compileCommandsJsonFile.getAbsolutePath()));
-        final Set<File> filesForIScan = ConcurrentHashMap.newKeySet(64);
-        final PkgMgr pkgMgr = selectPkgMgr(executor);
-        final ExternalId projectExternalId = new SimpleBdioFactory().createNameVersionExternalId(pkgMgr.getDefaultForge(), null, null);
-        final SimpleBdioDocument bdioDocument = new SimpleBdioFactory().createSimpleBdioDocument(null, null, null, projectExternalId);
-        final MutableDependencyGraph dependencyGraph = new SimpleBdioFactory().createMutableDependencyGraph();
-        final List<CompileCommand> compileCommands = parseCompileCommandsFile(compileCommandsJsonFile);
-
-        final List<Dependency> bdioComponents = compileCommands.parallelStream()
-                .map(geConvertCompileCommandToDependencyFilePathsFunction(executor, dependencyFileManager, workingDir))
-                .reduce(new HashSet<>(), getStringsAccumulator()).parallelStream() // TODO: flatMap seems ok here
-                .filter((final String path) -> !StringUtils.isBlank(path))
-                .map((final String path) -> new File(path))
-                .filter(getFileIsNewPredicate())
-                .map(getConvertFileToPackagesFunction(sourceDir, executor, filesForIScan, pkgMgr))
-                .reduce(new HashSet<>(), getPackageAccumulator()).parallelStream() // TODO: flatMap totally breaks it here
-                .map(getConvertPackageToDependenciesFunction(pkgMgr))
-                .reduce(new ArrayList<Dependency>(), getDependenciesAccumulator()); // TODO: Collector
-        for (final Dependency bdioComponent : bdioComponents) {
-            logger.debug(String.format("bdioComponent: %s", bdioComponent.externalId));
-        }
-
-        populateGraph(dependencyGraph, bdioComponents);
-        new SimpleBdioFactory().populateComponents(bdioDocument, projectExternalId, dependencyGraph);
-        return new ExtractorResults(bdioDocument, filesForIScan);
     }
 
     private BinaryOperator<List<Dependency>> getDependenciesAccumulator() {
@@ -212,10 +186,12 @@ public class CLangExtractor {
         return convertCompileCommandToDependencyFilePaths;
     }
 
-    private void populateGraph(final MutableDependencyGraph graph, final List<Dependency> bdioComponents) {
+    private MutableDependencyGraph populateGraph(final List<Dependency> bdioComponents) {
+        final MutableDependencyGraph dependencyGraph = new SimpleBdioFactory().createMutableDependencyGraph();
         for (final Dependency bdioComponent : bdioComponents) {
-            graph.addChildToRoot(bdioComponent);
+            dependencyGraph.addChildToRoot(bdioComponent);
         }
+        return dependencyGraph;
     }
 
     private List<Dependency> getBdioComponents(final PkgMgr pkgMgr, final String name, final String version, final String arch) {

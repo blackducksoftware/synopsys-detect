@@ -24,17 +24,52 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.clang;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-// TODO combine this with DependencyFile?
 @Component
-public interface DependencyFileManager {
+public class DependencyFileManager {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    List<String> parse(Optional<File> depsMkFile);
+    public List<String> parse(final Optional<File> depsMkFile) {
+        if (!depsMkFile.isPresent()) {
+            return new ArrayList<>(0);
+        }
+        List<String> dependencyFilePaths;
+        try {
+            final String depsDecl = FileUtils.readFileToString(depsMkFile.get(), StandardCharsets.UTF_8);
+            final String[] depsDeclParts = depsDecl.split(": ");
+            String depsListString = depsDeclParts[1];
+            logger.trace(String.format("dependencies: %s", depsListString));
 
-    void remove(Optional<File> depsMkFile);
+            depsListString = depsListString.replaceAll("\n", " ");
+            logger.trace(String.format("dependencies, newlines removed: %s", depsListString));
 
+            depsListString = depsListString.replaceAll("\\\\", " ");
+            logger.trace(String.format("dependencies, backslashes removed: %s", depsListString));
+
+            final String[] deps = depsListString.split("\\s+");
+            for (final String includeFile : deps) {
+                logger.trace(String.format("\t%s", includeFile));
+            }
+            dependencyFilePaths = Arrays.asList(deps);
+        } catch (final IOException e) {
+            logger.warn(String.format("Error getting dependency file paths from '%s': %s", depsMkFile.get().getAbsolutePath(), e.getMessage()));
+            return new ArrayList<>(0);
+        }
+        return dependencyFilePaths;
+    }
+
+    public void remove(final Optional<File> depsMkFile) {
+        depsMkFile.ifPresent(f -> f.delete());
+    }
 }
