@@ -1,6 +1,7 @@
 package com.blackducksoftware.integration.hub.detect.extraction.bomtool.packagist.parse.model;
 
 import java.util.List;
+
 import com.blackducksoftware.integration.util.NameVersion;
 
 public class PackagistPackage {
@@ -19,4 +20,5 @@ public class PackagistPackage {
     public List<NameVersion> getDependencies() {
         return dependencies;
     }
+
 }
