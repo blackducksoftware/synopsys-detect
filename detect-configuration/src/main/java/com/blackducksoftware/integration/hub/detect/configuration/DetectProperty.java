@@ -214,7 +214,7 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
     @HelpDescription("An override for the Project level matches.")
-    DETECT_PROJECT_LEVEL_ADJUSTMENTS("detect.project.level.adjustments", DetectPropertyType.STRING, "true"),
+    DETECT_PROJECT_LEVEL_ADJUSTMENTS("detect.project.level.adjustments", DetectPropertyType.BOOLEAN, "true"),
 
     @HelpGroup(primary = GROUP_PROJECT_INFO, additional = { SEARCH_GROUP_PROJECT })
     @HelpDescription("An override for the Project Version phase.")
@@ -538,7 +538,7 @@ public enum DetectProperty {
 
     @HelpDescription("Set this to true to only scan production dependencies")
     @HelpGroup(primary = GROUP_YARN)
-    DETECT_YARN_PROD_ONLY("detect.yarn.prod.only", DetectPropertyType.STRING, "false");
+    DETECT_YARN_PROD_ONLY("detect.yarn.prod.only", DetectPropertyType.BOOLEAN, "false");
 
     // stop insert
 

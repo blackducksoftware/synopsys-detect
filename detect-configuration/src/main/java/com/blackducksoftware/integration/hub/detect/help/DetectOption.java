@@ -148,7 +148,15 @@ public abstract class DetectOption {
         if (getAcceptableValues().size() > 0) {
             description += " (" + getAcceptableValues().stream().collect(Collectors.joining("|")) + ")";
         }
-        writer.printColumns("--" + detectProperty.getPropertyName(), detectProperty.getDefaultValue(), description);
+        String propertyName = "";
+        String defaultValue = "";
+        if (StringUtils.isNotBlank(detectProperty.getPropertyName())) {
+            propertyName = detectProperty.getPropertyName();
+        }
+        if (StringUtils.isNotBlank(detectProperty.getDefaultValue())) {
+            defaultValue = detectProperty.getDefaultValue();
+        }
+        writer.printColumns("--" + propertyName, defaultValue, description);
     }
 
     public void printDetailedOption(final HelpTextWriter writer) {

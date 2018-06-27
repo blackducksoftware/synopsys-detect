@@ -242,7 +242,7 @@ public class ConfigurationManager {
     private void addFieldWarning(List<DetectOption> detectOptions, final DetectProperty detectProperty, final String warning) {
         detectOptions.stream().forEach(option -> {
             if (option.getDetectProperty() == detectProperty) {
-                option.getWarnings().add(warning);
+                option.addWarning(warning);
             }
         });
     }

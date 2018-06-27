@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,15 +89,27 @@ public class DetectConfigWrapper {
     }
 
     public boolean getBooleanProperty(final DetectProperty detectProperty) {
-        return (boolean) propertyMap.get(detectProperty);
+        Object value = propertyMap.get(detectProperty);
+        if (null == value) {
+            return false;
+        }
+        return (boolean) value;
     }
 
-    public long getLongProperty(final DetectProperty detectProperty) {
-        return (long) propertyMap.get(detectProperty);
+    public Long getLongProperty(final DetectProperty detectProperty) {
+        Object value = propertyMap.get(detectProperty);
+        if (null == value) {
+            return null;
+        }
+        return (long) value;
     }
 
-    public int getIntegerProperty(final DetectProperty detectProperty) {
-        return (int) propertyMap.get(detectProperty);
+    public Integer getIntegerProperty(final DetectProperty detectProperty) {
+        Object value = propertyMap.get(detectProperty);
+        if (null == value) {
+            return null;
+        }
+        return (int) value;
     }
 
     public String[] getStringArrayProperty(final DetectProperty detectProperty) {
@@ -105,6 +118,19 @@ public class DetectConfigWrapper {
 
     public String getProperty(final DetectProperty detectProperty) {
         return (String) propertyMap.get(detectProperty);
+    }
+
+    public String getPropertyValueAsString(final DetectProperty detectProperty) {
+        Object objectValue = propertyMap.get(detectProperty);
+        String displayValue = "";
+        if (DetectPropertyType.STRING == detectProperty.getPropertyType()) {
+            displayValue = (String) objectValue;
+        } else if (DetectPropertyType.STRING_ARRAY == detectProperty.getPropertyType()) {
+            displayValue = StringUtils.join((String[]) objectValue, ",");
+        } else if (null != objectValue) {
+            displayValue = objectValue.toString();
+        }
+        return displayValue;
     }
 
     /**
@@ -132,26 +158,33 @@ public class DetectConfigWrapper {
         } else if (DetectPropertyType.STRING_ARRAY == detectProperty.getPropertyType()) {
             value = convertStringArray(stringValue);
         } else {
-            value = stringValue;
+            if (null == stringValue) {
+                value = "";
+            } else {
+                value = stringValue;
+            }
         }
         propertyMap.put(detectProperty, value);
     }
 
     private String[] convertStringArray(final String string) {
         if (null == string) {
-            return null;
+            return new String[0];
         } else {
             return string.split(",");
         }
     }
 
-    private int convertInt(final String integerString) {
+    private Integer convertInt(final String integerString) {
+        if (null == integerString) {
+            return null;
+        }
         return NumberUtils.toInt(integerString);
     }
 
-    private long convertLong(final String longString) {
+    private Long convertLong(final String longString) {
         if (null == longString) {
-            return 0L;
+            return null;
         }
         try {
             return Long.valueOf(longString);
@@ -160,7 +193,10 @@ public class DetectConfigWrapper {
         }
     }
 
-    private boolean convertBoolean(final String booleanString) {
+    private Boolean convertBoolean(final String booleanString) {
+        if (null == booleanString) {
+            return null;
+        }
         return BooleanUtils.toBoolean(booleanString);
     }
 }

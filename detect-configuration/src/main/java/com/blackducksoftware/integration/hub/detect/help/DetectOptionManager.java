@@ -66,7 +66,7 @@ public class DetectOptionManager {
         Map<DetectProperty, Object> propertyMap = detectConfigWrapper.getPropertyMap();
         if (null != propertyMap && !propertyMap.isEmpty()) {
             for (Map.Entry<DetectProperty, Object> propertyEntry : propertyMap.entrySet()) {
-                final DetectOption option = processField(propertyEntry.getKey(), propertyMap, detectConfigWrapper);
+                final DetectOption option = processField(propertyEntry.getKey(), detectConfigWrapper.getPropertyValueAsString(propertyEntry.getKey()));
                 if (option != null) {
                     if (!detectOptionsMap.containsKey(propertyEntry.getKey())) {
                         detectOptionsMap.put(propertyEntry.getKey(), option);
@@ -91,8 +91,7 @@ public class DetectOptionManager {
         for (final DetectOption option : detectOptions) {
             String fieldValue = option.getPostInitValue();
             if (StringUtils.isBlank(fieldValue)) {
-                Object object = propertyMap.get(option.getDetectProperty());
-                fieldValue = object.toString();
+                fieldValue = detectConfigWrapper.getPropertyValueAsString(option.getDetectProperty());
             }
             if (!option.getResolvedValue().equals(fieldValue)) {
                 if (option.getInteractiveValue() != null) {
@@ -115,7 +114,7 @@ public class DetectOptionManager {
                 }
             }
 
-            if (option.isRequestedDeprecation()) {
+            if (StringUtils.isNotBlank(fieldValue) && option.isRequestedDeprecation()) {
                 option.addWarning("As of version " + option.getDetectOptionHelp().deprecationVersion + " this property will be removed: " + option.getDetectOptionHelp().deprecation);
             }
         }
@@ -134,7 +133,7 @@ public class DetectOptionManager {
         return fieldValue;
     }
 
-    private DetectOption processField(final DetectProperty detectProperty, Map<DetectProperty, Object> propertyMap, DetectConfigWrapper detectConfigWrapper) {
+    private DetectOption processField(final DetectProperty detectProperty, String currentValue) {
         try {
             Field field = DetectProperty.class.getField(detectProperty.name());
 
@@ -155,14 +154,12 @@ public class DetectOptionManager {
             String resolvedValue = defaultValue;
             field.setAccessible(true);
 
-            Object currentValue = propertyMap.get(detectProperty);
-
             final boolean hasValue = null != currentValue;
             if (defaultValue != null && !defaultValue.trim().isEmpty() && !hasValue) {
                 resolvedValue = defaultValue;
                 detectConfigWrapper.setDetectProperty(detectProperty, resolvedValue);
             } else if (hasValue) {
-                resolvedValue = currentValue.toString();
+                resolvedValue = currentValue;
             }
 
             final DetectOptionHelp help = processFieldHelp(field);

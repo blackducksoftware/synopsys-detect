@@ -40,6 +40,7 @@ import org.springframework.context.annotation.Import;
 
 import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.api.generated.view.ProjectVersionView;
+import com.blackducksoftware.integration.hub.detect.configuration.AdditionalPropertyConfig;
 import com.blackducksoftware.integration.hub.detect.configuration.ConfigurationManager;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
@@ -76,6 +77,7 @@ public class Application implements ApplicationRunner {
 
     private final DetectOptionManager detectOptionManager;
     private final DetectInfo detectInfo;
+    private final AdditionalPropertyConfig additionalPropertyConfig;
     private final DetectConfigWrapper detectConfigWrapper;
     private final ConfigurationManager configurationManager;
     private final DetectProjectManager detectProjectManager;
@@ -94,12 +96,13 @@ public class Application implements ApplicationRunner {
     private ExitCodeType exitCodeType = ExitCodeType.SUCCESS;
 
     @Autowired
-    public Application(final DetectOptionManager detectOptionManager, final DetectInfo detectInfo, final DetectConfigWrapper detectConfigWrapper, final ConfigurationManager configurationManager,
-            final DetectProjectManager detectProjectManager, final HelpPrinter helpPrinter, final HelpHtmlWriter helpHtmlWriter, final HubManager hubManager, final HubServiceWrapper hubServiceWrapper,
-            final HubSignatureScanner hubSignatureScanner, final DetectSummary detectSummary, final InteractiveManager interactiveManager, final DetectFileManager detectFileManager,
+    public Application(final DetectOptionManager detectOptionManager, final DetectInfo detectInfo, final AdditionalPropertyConfig additionalPropertyConfig, final DetectConfigWrapper detectConfigWrapper,
+            final ConfigurationManager configurationManager, final DetectProjectManager detectProjectManager, final HelpPrinter helpPrinter, final HelpHtmlWriter helpHtmlWriter, final HubManager hubManager,
+            final HubServiceWrapper hubServiceWrapper, final HubSignatureScanner hubSignatureScanner, final DetectSummary detectSummary, final InteractiveManager interactiveManager, final DetectFileManager detectFileManager,
             final List<ExitCodeReporter> exitCodeReporters, final DetectPhoneHomeManager detectPhoneHomeManager, final ArgumentStateParser argumentStateParser) {
         this.detectOptionManager = detectOptionManager;
         this.detectInfo = detectInfo;
+        this.additionalPropertyConfig = additionalPropertyConfig;
         this.detectConfigWrapper = detectConfigWrapper;
         this.configurationManager = configurationManager;
         this.detectProjectManager = detectProjectManager;
@@ -126,6 +129,7 @@ public class Application implements ApplicationRunner {
 
         try {
             detectInfo.init();
+            additionalPropertyConfig.init();
             detectConfigWrapper.init();
             detectOptionManager.init();
 
