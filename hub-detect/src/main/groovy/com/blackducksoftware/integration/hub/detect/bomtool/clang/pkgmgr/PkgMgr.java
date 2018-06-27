@@ -34,12 +34,12 @@ import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.DependencyFile;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.PackageDetails;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.executor.Executor;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.executor.CommandStringExecutor;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
 public interface PkgMgr {
 
-    default boolean applies(final Executor executor) {
+    default boolean applies(final CommandStringExecutor executor) {
         try {
             final String versionOutput = executor.execute(new File("."), new HashMap<String, String>(), getCheckPresenceCommand());
             getLogger().debug(String.format("packageStatusOutput: %s", versionOutput));
@@ -61,7 +61,7 @@ public interface PkgMgr {
 
     List<Forge> getForges();
 
-    List<PackageDetails> getDependencyDetails(Executor executor, Set<File> filesForIScan, DependencyFile dependencyFile);
+    List<PackageDetails> getDependencyDetails(CommandStringExecutor executor, Set<File> filesForIScan, DependencyFile dependencyFile);
 
     String getCheckPresenceCommand();
 

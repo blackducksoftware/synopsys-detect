@@ -38,7 +38,7 @@ import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.DependencyFile;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.PackageDetails;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.executor.Executor;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.executor.CommandStringExecutor;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
 @Component
@@ -84,7 +84,7 @@ public class Dpkg implements PkgMgr {
     }
 
     @Override
-    public List<PackageDetails> getDependencyDetails(final Executor executor, final Set<File> filesForIScan, final DependencyFile dependencyFile) {
+    public List<PackageDetails> getDependencyDetails(final CommandStringExecutor executor, final Set<File> filesForIScan, final DependencyFile dependencyFile) {
         final List<PackageDetails> dependencyDetailsList = new ArrayList<>(3);
         final String getPackageCommand = String.format(QUERY_DEPENDENCY_FILE_COMMAND_PATTERN, dependencyFile.getFile().getAbsolutePath());
         try {
@@ -103,7 +103,7 @@ public class Dpkg implements PkgMgr {
         return dependencyDetailsList;
     }
 
-    private void addToPackageList(final Executor executor, final List<PackageDetails> dependencyDetailsList, final String queryPackageOutput) {
+    private void addToPackageList(final CommandStringExecutor executor, final List<PackageDetails> dependencyDetailsList, final String queryPackageOutput) {
         final String[] packageLines = queryPackageOutput.split("\n");
         for (final String packageLine : packageLines) {
             if (!valid(packageLine)) {
@@ -128,7 +128,7 @@ public class Dpkg implements PkgMgr {
         return false;
     }
 
-    private Optional<String> getPackageVersion(final Executor executor, final String packageName) {
+    private Optional<String> getPackageVersion(final CommandStringExecutor executor, final String packageName) {
 
         final String getPackageVersionCommand = String.format("dpkg -s %s", packageName);
         try {

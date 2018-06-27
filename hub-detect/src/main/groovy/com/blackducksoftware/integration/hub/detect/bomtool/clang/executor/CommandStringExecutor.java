@@ -41,17 +41,15 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOu
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
-// TODO should be able to eliminate this class
-
 @Component
-public class SimpleExecutor implements Executor {
-    private static final Logger logger = LoggerFactory.getLogger(SimpleExecutor.class);
+public class CommandStringExecutor {
+    private static final Logger logger = LoggerFactory.getLogger(CommandStringExecutor.class);
 
-    @Override
     public String execute(final File workingDir, Map<String, String> environmentVariables, final String cmd) throws ExecutableRunnerException, IntegrationException {
         logger.debug(String.format("Executing %s in %s", cmd, workingDir));
 
-        // TODO this is stupid. Have caller pass in the parts
+        // TODO: this is stupid. In some cases caller could easily pass in the parts
+        // TODO: For compiler command: string might make sense
         // Or: might be a better detect class to use
         final String[] cmdParts = cmd.split("\\s+");
         final List<String> argsOrig = Arrays.asList(cmdParts);
@@ -60,7 +58,7 @@ public class SimpleExecutor implements Executor {
         args.remove(0);
         //////////////////////
 
-        // TODO revisit this
+        // TODO this can probably be simplified; see how docker bomtool does it
         final String newPath = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin";
         if (environmentVariables == null) {
             environmentVariables = new HashMap<>();

@@ -53,7 +53,7 @@ import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.executor.Executor;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.executor.CommandStringExecutor;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.pkgmgr.PkgMgr;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
@@ -77,7 +77,7 @@ public class CLangExtractor {
     private ExternalIdFactory externalIdFactory;
 
     @Autowired
-    private Executor executor;
+    private CommandStringExecutor executor;
 
     @Autowired
     private DependencyFileManager dependencyFileManager;
@@ -91,18 +91,21 @@ public class CLangExtractor {
             final File outputDirectory = detectFileManager.getOutputDirectory(extractionId);
             logger.debug(String.format("extract() called; compileCommandsJsonFilePath: %s", jsonCompilationDatabaseFile.getAbsolutePath()));
             final Set<File> filesForIScan = ConcurrentHashMap.newKeySet(64);
-            final PkgMgr pkgMgr = selectPkgMgr(executor);
+            final PkgMgr pkgMgr = selectPkgMgr();
             final List<CompileCommand> compileCommands = parseCompileCommandsFile(jsonCompilationDatabaseFile);
             final List<Dependency> bdioComponents = compileCommands.parallelStream()
-                    .map(geConvertCompileCommandToDependencyFilePathsFunction(executor, dependencyFileManager, outputDirectory))
-                    .reduce(ConcurrentHashMap.newKeySet(), getStringsAccumulator()).parallelStream() // TODO: flatMap seems ok here
+                    .map(compileCommandToDependencyFilePathsConverter(outputDirectory))
+                    // TODO: flatMap seemed ok here
+                    .reduce(ConcurrentHashMap.newKeySet(), pathsAccumulator()).parallelStream()
                     .filter((final String path) -> !StringUtils.isBlank(path))
                     .map((final String path) -> new File(path))
-                    .filter(getFileIsNewPredicate())
-                    .map(getConvertFileToPackagesFunction(sourceDir, executor, filesForIScan, pkgMgr))
-                    .reduce(ConcurrentHashMap.newKeySet(), getPackageAccumulator()).parallelStream() // TODO: flatMap totally breaks it here
-                    .map(getConvertPackageToDependenciesFunction(pkgMgr))
-                    .reduce(new ArrayList<Dependency>(), getDependenciesAccumulator()); // TODO: Collector
+                    .filter(fileIsNewPredicate())
+                    .map(fileToPackagesConverter(sourceDir, filesForIScan, pkgMgr))
+                    // TODO: flatMap totally broke it when used here
+                    .reduce(ConcurrentHashMap.newKeySet(), packageAccumulator()).parallelStream()
+                    .map(packageToDependenciesConverter(pkgMgr))
+                    // TODO: Collector: Haven't found one that combines a stream of list into a list
+                    .reduce(new ArrayList<Dependency>(), dependenciesAccumulator());
             final MutableDependencyGraph dependencyGraph = populateGraph(bdioComponents);
             final ExternalId externalId = externalIdFactory.createPathExternalId(pkgMgr.getDefaultForge(), sourceDir.toString());
             final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolGroupType.CLANG, sourceDir.toString(), externalId, dependencyGraph).build();
@@ -112,7 +115,7 @@ public class CLangExtractor {
         }
     }
 
-    private BinaryOperator<List<Dependency>> getDependenciesAccumulator() {
+    private BinaryOperator<List<Dependency>> dependenciesAccumulator() {
         final BinaryOperator<List<Dependency>> accumulateNewDependencies = (dependenciesAccumulator, newlyDiscoveredDependencies) -> {
             dependenciesAccumulator.addAll(newlyDiscoveredDependencies);
             return dependenciesAccumulator;
@@ -120,7 +123,7 @@ public class CLangExtractor {
         return accumulateNewDependencies;
     }
 
-    private Function<PackageDetails, List<Dependency>> getConvertPackageToDependenciesFunction(final PkgMgr pkgMgr) {
+    private Function<PackageDetails, List<Dependency>> packageToDependenciesConverter(final PkgMgr pkgMgr) {
         final Function<PackageDetails, List<Dependency>> convertPackageToDependencies = (final PackageDetails pkg) -> {
             final List<Dependency> dependencies = new ArrayList<>();
             logger.debug(String.format("Package name//arch//version: %s//%s//%s", pkg.getPackageName().orElse("<missing>"), pkg.getPackageArch().orElse("<missing>"),
@@ -135,15 +138,15 @@ public class CLangExtractor {
         return convertPackageToDependencies;
     }
 
-    private BinaryOperator<Set<PackageDetails>> getPackageAccumulator() {
-        final BinaryOperator<Set<PackageDetails>> accumulateNewPackages = (packagesAccumulator, newlyDiscoveredPackages) -> {
-            packagesAccumulator.addAll(newlyDiscoveredPackages);
-            return packagesAccumulator;
+    private BinaryOperator<Set<PackageDetails>> packageAccumulator() {
+        final BinaryOperator<Set<PackageDetails>> accumulateNewPackages = (allPackages, newPackages) -> {
+            allPackages.addAll(newPackages);
+            return allPackages;
         };
         return accumulateNewPackages;
     }
 
-    private Function<File, Set<PackageDetails>> getConvertFileToPackagesFunction(final File sourceDir, final Executor executor, final Set<File> filesForIScan, final PkgMgr pkgMgr) {
+    private Function<File, Set<PackageDetails>> fileToPackagesConverter(final File sourceDir, final Set<File> filesForIScan, final PkgMgr pkgMgr) {
         final Function<File, Set<PackageDetails>> convertFileToPackages = (final File f) -> {
             final DependencyFile dependencyFileWrapper = new DependencyFile(isUnder(sourceDir, f) ? true : false, f);
             return new HashSet<>(pkgMgr.getDependencyDetails(executor, filesForIScan, dependencyFileWrapper));
@@ -151,7 +154,7 @@ public class CLangExtractor {
         return convertFileToPackages;
     }
 
-    private Predicate<File> getFileIsNewPredicate() {
+    private Predicate<File> fileIsNewPredicate() {
         final Predicate<File> fileIsNew = (final File dependencyFile) -> {
             if (dependencyFileAlreadyProcessed(dependencyFile)) {
                 logger.trace(String.format("Dependency file %s has already been processed; excluding it", dependencyFile.getAbsolutePath()));
@@ -167,18 +170,18 @@ public class CLangExtractor {
         return fileIsNew;
     }
 
-    private BinaryOperator<Set<String>> getStringsAccumulator() {
-        final BinaryOperator<Set<String>> accumulateNewPaths = (pathsAccumulator, newlyDiscoveredPaths) -> {
-            pathsAccumulator.addAll(newlyDiscoveredPaths);
-            return pathsAccumulator;
+    private BinaryOperator<Set<String>> pathsAccumulator() {
+        final BinaryOperator<Set<String>> accumulateNewPaths = (allPaths, newPaths) -> {
+            allPaths.addAll(newPaths);
+            return allPaths;
         };
         return accumulateNewPaths;
     }
 
-    private Function<CompileCommand, Set<String>> geConvertCompileCommandToDependencyFilePathsFunction(final Executor executor, final DependencyFileManager dependencyFileManager, final File workingDir) {
+    private Function<CompileCommand, Set<String>> compileCommandToDependencyFilePathsConverter(final File workingDir) {
         final Function<CompileCommand, Set<String>> convertCompileCommandToDependencyFilePaths = (final CompileCommand compileCommand) -> {
             final Set<String> dependencyFilePaths = new HashSet<>();
-            final Optional<File> depsMkFile = generateDependencyFileByCompiling(executor, workingDir, compileCommand);
+            final Optional<File> depsMkFile = generateDependencyFileByCompiling(workingDir, compileCommand);
             dependencyFilePaths.addAll(dependencyFileManager.parse(depsMkFile));
             dependencyFileManager.remove(depsMkFile);
             return dependencyFilePaths;
@@ -214,7 +217,7 @@ public class CLangExtractor {
         return Arrays.asList(compileCommands);
     }
 
-    private PkgMgr selectPkgMgr(final Executor executor) throws IntegrationException {
+    private PkgMgr selectPkgMgr() throws IntegrationException {
         PkgMgr pkgMgr = null;
         for (final PkgMgr pkgMgrCandidate : pkgMgrs) {
             if (pkgMgrCandidate.applies(executor)) {
@@ -228,7 +231,7 @@ public class CLangExtractor {
         return pkgMgr;
     }
 
-    private Optional<File> generateDependencyFileByCompiling(final Executor executor, final File workingDir,
+    private Optional<File> generateDependencyFileByCompiling(final File workingDir,
             final CompileCommand compileCommand) {
 
         final int randomInt = (int) (Math.random() * 1000);

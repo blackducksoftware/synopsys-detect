@@ -39,7 +39,7 @@ import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.DependencyFile;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.PackageDetails;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.executor.Executor;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.executor.CommandStringExecutor;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
 @Component
@@ -71,7 +71,7 @@ public class Apk implements PkgMgr {
     }
 
     @Override
-    public List<PackageDetails> getDependencyDetails(final Executor executor, final Set<File> filesForIScan, final DependencyFile dependencyFile) {
+    public List<PackageDetails> getDependencyDetails(final CommandStringExecutor executor, final Set<File> filesForIScan, final DependencyFile dependencyFile) {
         final List<PackageDetails> dependencyDetailsList = new ArrayList<>(3);
         final String getPackageCommand = String.format(QUERY_DEPENDENCY_FILE_COMMAND_PATTERN, dependencyFile.getFile().getAbsolutePath());
         try {
