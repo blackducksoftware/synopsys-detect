@@ -49,8 +49,8 @@ import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
 
 @Component
-public class DetectBdioManager {
-    private final Logger logger = LoggerFactory.getLogger(DetectBdioManager.class);
+public class BdioManager {
+    private final Logger logger = LoggerFactory.getLogger(BdioManager.class);
 
     @Autowired
     private DetectInfo detectInfo;

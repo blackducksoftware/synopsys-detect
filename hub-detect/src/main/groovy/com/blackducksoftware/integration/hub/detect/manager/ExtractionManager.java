@@ -85,14 +85,13 @@ public class ExtractionManager {
             extractions++;
             final ExtractionId extractionId = new ExtractionId(Integer.toString(extractions));
             extractionReporter.startedExtraction(result.getBomTool(), extractionId);
-            result.extraction = result.getBomTool().extract(extractionId);
-            extractionReporter.endedExtraction(result.extraction);
+            result.setExtraction(result.getBomTool().extract(extractionId));
+            extractionReporter.endedExtraction(result.getExtraction());
         }
 
     }
 
     public ExtractionResult performExtractions(final List<BomToolEvaluation> bomToolEvaluations) throws IntegrationException, DetectUserFriendlyException {
-
         prepare(bomToolEvaluations);
 
         preparationSummaryReporter.print(bomToolEvaluations);
@@ -114,7 +113,7 @@ public class ExtractionManager {
 
         final List<DetectCodeLocation> codeLocations = bomToolEvaluations.stream()
                 .filter(it -> it.wasExtractionSuccessful())
-                .flatMap(it -> it.extraction.codeLocations.stream())
+                .flatMap(it -> it.getExtraction().codeLocations.stream())
                 .collect(Collectors.toList());
 
         final ExtractionResult result = new ExtractionResult(codeLocations, succesfulBomToolGroups, failedBomToolGroups);

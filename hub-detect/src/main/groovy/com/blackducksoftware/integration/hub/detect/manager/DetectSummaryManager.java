@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.summary;
+package com.blackducksoftware.integration.hub.detect.manager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,6 +32,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
+import com.blackducksoftware.integration.hub.detect.manager.result.summary.SummaryResult;
+import com.blackducksoftware.integration.hub.detect.manager.result.summary.SummaryResultProvider;
 import com.blackducksoftware.integration.hub.detect.util.DetectLoggingUtils;
 import com.blackducksoftware.integration.log.IntLogger;
 import com.blackducksoftware.integration.log.LogLevel;
@@ -40,20 +42,20 @@ import groovy.transform.TypeChecked;
 
 @Component
 @TypeChecked
-public class DetectSummary {
+public class DetectSummaryManager {
     @Autowired
-    private List<SummaryResultReporter> summaryResultReporters;
+    private List<SummaryResultProvider> summaryResultProviders;
 
     public void logResults(final IntLogger logger, final ExitCodeType exitCodeType) {
-        final List<DetectSummaryResult> detectSummaryResults = new ArrayList<>();
-        for (final SummaryResultReporter summaryResultReporter : summaryResultReporters) {
-            detectSummaryResults.addAll(summaryResultReporter.getDetectSummaryResults());
+        final List<SummaryResult> detectSummaryResults = new ArrayList<>();
+        for (final SummaryResultProvider summaryResultProvider : summaryResultProviders) {
+            detectSummaryResults.addAll(summaryResultProvider.getDetectSummaryResults());
         }
 
         // sort by type, and within type, sort by description
-        Collections.sort(detectSummaryResults, new Comparator<DetectSummaryResult>() {
+        Collections.sort(detectSummaryResults, new Comparator<SummaryResult>() {
             @Override
-            public int compare(final DetectSummaryResult left, final DetectSummaryResult right) {
+            public int compare(final SummaryResult left, final SummaryResult right) {
                 if (left.getClass() == right.getClass()) {
                     return left.getDescriptionKey().compareTo(right.getDescriptionKey());
                 } else {
@@ -64,13 +66,13 @@ public class DetectSummary {
         logger.info("");
         logger.info("");
         logger.info("======== Detect Results ========");
-        Class<? extends DetectSummaryResult> previousResultClass = null;
-        for (final DetectSummaryResult detectSummaryResult : detectSummaryResults) {
+        Class<? extends SummaryResult> previousResultClass = null;
+        for (final SummaryResult detectSummaryResult : detectSummaryResults) {
             if (previousResultClass != null && !previousResultClass.equals(detectSummaryResult.getClass())) {
                 logger.info("");
             }
             final LogLevel detectSummaryLogLevel = detectSummaryResult.getLogLevel();
-            final String detectSummaryResultString = String.format("%s: %s", detectSummaryResult.getDescriptionKey(), detectSummaryResult.getResult().toString());
+            final String detectSummaryResultString = String.format("%s: %s", detectSummaryResult.getDescriptionKey(), detectSummaryResult.getStatus().toString());
 
             DetectLoggingUtils.logAtLevel(logger, detectSummaryLogLevel, detectSummaryResultString);
 

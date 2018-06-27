@@ -21,10 +21,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.summary;
+package com.blackducksoftware.integration.hub.detect.manager.result.summary;
 
-public enum Result {
-    SUCCESS,
-    FAILURE;
+public class ScanSummaryResult extends SummaryResult {
+    public ScanSummaryResult(final String scanTargetPath, final SummaryStatus result) {
+        super("Scan Target " + scanTargetPath, result);
+    }
 
 }

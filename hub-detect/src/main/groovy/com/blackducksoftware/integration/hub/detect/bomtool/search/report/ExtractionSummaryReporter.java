@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.extraction.model.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction.ExtractionResultType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 
@@ -73,17 +74,18 @@ public class ExtractionSummaryReporter {
                 if (result.isExtractable()) {
                     data.extractable++;
 
-                    if (result.extraction != null) {
-                        data.codeLocationsExtracted += result.extraction.codeLocations.size();
-                        result.extraction.codeLocations.stream().forEach(it -> {
+                    if (result.getExtraction() != null) {
+                        final Extraction extraction = result.getExtraction();
+                        data.codeLocationsExtracted += extraction.codeLocations.size();
+                        extraction.codeLocations.stream().forEach(it -> {
                             final String name = codeLocationNameMap.get(it);
                             data.codeLocationNames.add(name);
                         });
-                        if (result.extraction.result == ExtractionResultType.Success) {
+                        if (extraction.result == ExtractionResultType.Success) {
                             data.success.add(result);
-                        } else if (result.extraction.result == ExtractionResultType.Failure) {
+                        } else if (extraction.result == ExtractionResultType.Failure) {
                             data.failed.add(result);
-                        } else if (result.extraction.result == ExtractionResultType.Exception) {
+                        } else if (extraction.result == ExtractionResultType.Exception) {
                             data.exception.add(result);
                         }
                     } else {

@@ -58,10 +58,10 @@ import com.blackducksoftware.integration.hub.detect.interactive.InteractiveManag
 import com.blackducksoftware.integration.hub.detect.interactive.reader.ConsoleInteractiveReader;
 import com.blackducksoftware.integration.hub.detect.interactive.reader.InteractiveReader;
 import com.blackducksoftware.integration.hub.detect.interactive.reader.ScannerInteractiveReader;
-import com.blackducksoftware.integration.hub.detect.manager.DetectPhoneHomeManager;
+import com.blackducksoftware.integration.hub.detect.manager.PhoneHomeManager;
+import com.blackducksoftware.integration.hub.detect.manager.DetectSummaryManager;
 import com.blackducksoftware.integration.hub.detect.manager.DetectProjectManager;
 import com.blackducksoftware.integration.hub.detect.model.DetectProject;
-import com.blackducksoftware.integration.hub.detect.summary.DetectSummary;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.log.SilentLogger;
 import com.blackducksoftware.integration.log.Slf4jIntLogger;
@@ -99,7 +99,7 @@ public class Application implements ApplicationRunner {
     private HubSignatureScanner hubSignatureScanner;
 
     @Autowired
-    private DetectSummary detectSummary;
+    private DetectSummaryManager detectSummary;
 
     @Autowired
     private InteractiveManager interactiveManager;
@@ -111,7 +111,7 @@ public class Application implements ApplicationRunner {
     private List<ExitCodeReporter> exitCodeReporters;
 
     @Autowired
-    private DetectPhoneHomeManager detectPhoneHomeManager;
+    private PhoneHomeManager detectPhoneHomeManager;
 
     @Autowired
     private ArgumentStateParser argumentStateParser;

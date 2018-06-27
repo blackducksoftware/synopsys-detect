@@ -21,22 +21,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.summary;
+package com.blackducksoftware.integration.hub.detect.manager.result.summary;
 
 import com.blackducksoftware.integration.log.LogLevel;
 
-public class DetectSummaryResult {
+public class SummaryResult {
     private final String descriptionKey;
-    private final Result result;
+    private final SummaryStatus status;
     private final LogLevel logLevel;
 
-    public DetectSummaryResult(final String descriptionKey, final Result result) {
-        this(descriptionKey, result, Result.FAILURE.equals(result) ? LogLevel.ERROR : LogLevel.INFO);
+    public SummaryResult(final String descriptionKey, final SummaryStatus status) {
+        this(descriptionKey, status, SummaryStatus.FAILURE.equals(status) ? LogLevel.ERROR : LogLevel.INFO);
     }
 
-    public DetectSummaryResult(final String descriptionKey, final Result result, final LogLevel logLevel) {
+    public SummaryResult(final String descriptionKey, final SummaryStatus status, final LogLevel logLevel) {
         this.descriptionKey = descriptionKey;
-        this.result = result;
+        this.status = status;
         this.logLevel = logLevel;
     }
 
@@ -44,8 +44,8 @@ public class DetectSummaryResult {
         return descriptionKey;
     }
 
-    public Result getResult() {
-        return result;
+    public SummaryStatus getStatus() {
+        return status;
     }
 
     public LogLevel getLogLevel() {

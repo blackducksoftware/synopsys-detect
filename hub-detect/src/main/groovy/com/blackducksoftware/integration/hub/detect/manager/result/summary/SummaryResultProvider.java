@@ -21,14 +21,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.summary;
+package com.blackducksoftware.integration.hub.detect.manager.result.summary;
 
-import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
-import com.blackducksoftware.integration.log.LogLevel;
+import java.util.List;
 
-public class BomToolGroupSummaryResult extends DetectSummaryResult {
-    public BomToolGroupSummaryResult(final BomToolGroupType bomToolGroupType, final Result result) {
-        super(bomToolGroupType.toString(), result, bomToolGroupType.isDeprecated() ? LogLevel.WARN : LogLevel.INFO);
-    }
-
+public interface SummaryResultProvider {
+    public List<? extends SummaryResult> getDetectSummaryResults();
 }

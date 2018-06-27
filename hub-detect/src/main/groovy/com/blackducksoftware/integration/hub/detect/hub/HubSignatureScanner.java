@@ -53,10 +53,10 @@ import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendly
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.manager.CodeLocationNameManager;
+import com.blackducksoftware.integration.hub.detect.manager.result.summary.SummaryResultProvider;
+import com.blackducksoftware.integration.hub.detect.manager.result.summary.SummaryStatus;
+import com.blackducksoftware.integration.hub.detect.manager.result.summary.ScanSummaryResult;
 import com.blackducksoftware.integration.hub.detect.model.DetectProject;
-import com.blackducksoftware.integration.hub.detect.summary.Result;
-import com.blackducksoftware.integration.hub.detect.summary.ScanSummaryResult;
-import com.blackducksoftware.integration.hub.detect.summary.SummaryResultReporter;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.service.SignatureScannerService;
@@ -64,11 +64,11 @@ import com.blackducksoftware.integration.hub.service.model.ProjectRequestBuilder
 import com.blackducksoftware.integration.hub.service.model.ProjectVersionWrapper;
 
 @Component
-public class HubSignatureScanner implements SummaryResultReporter, ExitCodeReporter {
+public class HubSignatureScanner implements SummaryResultProvider, ExitCodeReporter {
     private final Logger logger = LoggerFactory.getLogger(HubSignatureScanner.class);
     private final Set<String> scanPaths = new HashSet<>();
     private final Map<String, Set<String>> scanPathExclusionPatterns = new HashMap<>();
-    private final Map<String, Result> scanSummaryResults = new HashMap<>();
+    private final Map<String, SummaryStatus> scanSummaryResults = new HashMap<>();
     private String dockerTarFilePath;
     private String dockerTarFilename;
 
@@ -141,7 +141,7 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
     @Override
     public List<ScanSummaryResult> getDetectSummaryResults() {
         final List<ScanSummaryResult> detectSummaryResults = new ArrayList<>();
-        for (final Map.Entry<String, Result> entry : scanSummaryResults.entrySet()) {
+        for (final Map.Entry<String, SummaryStatus> entry : scanSummaryResults.entrySet()) {
             detectSummaryResults.add(new ScanSummaryResult(entry.getKey(), entry.getValue()));
         }
         return detectSummaryResults;
@@ -149,8 +149,8 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
 
     @Override
     public ExitCodeType getExitCodeType() {
-        for (final Map.Entry<String, Result> entry : scanSummaryResults.entrySet()) {
-            if (Result.FAILURE == entry.getValue()) {
+        for (final Map.Entry<String, SummaryStatus> entry : scanSummaryResults.entrySet()) {
+            if (SummaryStatus.FAILURE == entry.getValue()) {
                 return ExitCodeType.FAILURE_SCAN;
             }
         }
@@ -183,7 +183,7 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
             final HubScanConfig hubScanConfig = hubScanConfigBuilder.build();
             final boolean pathWasScanned = offlineScanner.offlineScan(detectProject, hubScanConfig, detectConfiguration.getHubSignatureScannerOfflineLocalPath());
             if (pathWasScanned) {
-                scanSummaryResults.put(canonicalPath, Result.SUCCESS);
+                scanSummaryResults.put(canonicalPath, SummaryStatus.SUCCESS);
                 logger.info(String.format("%s was successfully scanned by the BlackDuck CLI.", canonicalPath));
             }
         } catch (final Exception e) {
@@ -219,7 +219,7 @@ public class HubSignatureScanner implements SummaryResultReporter, ExitCodeRepor
             final String targetPath = target.getCanonicalPath();
             scanPaths.add(targetPath);
             // Add the path as a FAILURE until it completes successfully
-            scanSummaryResults.put(targetPath, Result.FAILURE);
+            scanSummaryResults.put(targetPath, SummaryStatus.FAILURE);
             final ExclusionPatternDetector exclusionPatternDetector = new ExclusionPatternDetector(detectFileFinder, target);
             final Set<String> scanExclusionPatterns = exclusionPatternDetector.determineExclusionPatterns(hubSignatureScannerExclusionNamePatterns);
             if (null != providedExclusionPatterns) {

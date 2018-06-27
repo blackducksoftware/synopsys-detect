@@ -40,11 +40,19 @@ public class BomToolEvaluation {
     private BomToolResult applicable;
     private BomToolResult extractable;
 
-    public Extraction extraction;
+    private Extraction extraction;
 
     public BomToolEvaluation(final BomTool bomTool, final BomToolEnvironment environment) {
         this.bomTool = bomTool;
         this.environment = environment;
+    }
+
+    public void setExtraction(final Extraction extraction) {
+        this.extraction = extraction;
+    }
+
+    public Extraction getExtraction() {
+        return extraction;
     }
 
     public boolean wasExtractionSuccessful() {

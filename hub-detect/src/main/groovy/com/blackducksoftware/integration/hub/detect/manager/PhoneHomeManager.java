@@ -47,8 +47,8 @@ import com.blackducksoftware.integration.util.IntEnvironmentVariables;
 import com.google.gson.Gson;
 
 @Component
-public class DetectPhoneHomeManager {
-    private final Logger logger = LoggerFactory.getLogger(DetectPhoneHomeManager.class);
+public class PhoneHomeManager {
+    private final Logger logger = LoggerFactory.getLogger(PhoneHomeManager.class);
 
     @Autowired
     private DetectInfo detectInfo;
