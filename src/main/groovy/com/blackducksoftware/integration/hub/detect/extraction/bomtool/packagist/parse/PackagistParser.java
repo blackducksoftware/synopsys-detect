@@ -72,11 +72,11 @@ public class PackagistParser {
             ExternalId id = externalIdFactory.createNameVersionExternalId(Forge.PACKAGIST, it.getNameVersion().getName(), it.getNameVersion().getVersion());
             NameDependencyId dependencyId = new NameDependencyId(it.getNameVersion().getName());
 			builder.setDependencyInfo(dependencyId, it.getNameVersion().getName(), it.getNameVersion().getVersion(), id);
-            if (isRootPackage(rootPackages, it.getNameVersion())) {
+            if (isRootPackage(it.getNameVersion(), rootPackages)) {
                 builder.addChildToRoot(dependencyId);
             }
             it.getDependencies().forEach (child -> {
-                if (existsInPackages(models, child)) {
+                if (existsInPackages(child, models)) {
                     NameDependencyId childId = new NameDependencyId(child.getName());
                     builder.addChildWithParent(childId, dependencyId);
                 } else {
@@ -93,9 +93,8 @@ public class PackagistParser {
         }
 
         DependencyGraph graph = builder.build();
-
         DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolType.PACKAGIST, sourcePath, projectExternalId, graph).build();
-
+        
         return new PackagistParseResult(projectNameVersion.getName(), projectNameVersion.getVersion(), codeLocation);
     }
 
@@ -116,11 +115,11 @@ public class PackagistParser {
         return new NameVersion(name, version);
     }
     
-    private boolean isRootPackage(List<NameVersion> rootPackages, NameVersion nameVersion) {
+    private boolean isRootPackage(NameVersion nameVersion, List<NameVersion> rootPackages) {
         return rootPackages.stream().anyMatch(it -> it.getName().equals(nameVersion.getName()));
     }
 
-    private boolean existsInPackages(List<PackagistPackage> models, NameVersion nameVersion) {
+    private boolean existsInPackages(NameVersion nameVersion, List<PackagistPackage> models) {
         return models.stream().anyMatch( it -> it.getNameVersion().getName().equals(nameVersion.getName()));
     }
 
@@ -140,14 +139,14 @@ public class PackagistParser {
     private List<NameVersion> parseDependencies(JsonObject packageJson, boolean checkDev){
     	List<NameVersion> dependencies = new ArrayList<>();
     	
-    	JsonElement require = packageJson.get("require").getAsJsonObject();
-    	if (require != null) {
+    	JsonElement require = packageJson.get("require");
+    	if (require != null && require.isJsonObject()) {
     		dependencies.addAll(parseDependenciesFromRequire(require.getAsJsonObject()));
     	}
 		
         if (checkDev) {
             JsonElement devRequire = packageJson.get("require-dev");
-    		if (devRequire != null) {
+    		if (devRequire != null && devRequire.isJsonObject()) {
     			dependencies.addAll(parseDependenciesFromRequire(devRequire.getAsJsonObject()));
     		}
 			
