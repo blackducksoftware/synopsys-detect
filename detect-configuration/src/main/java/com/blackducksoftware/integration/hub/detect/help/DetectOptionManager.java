@@ -104,7 +104,7 @@ public class DetectOptionManager {
                     option.setFinalValue(fieldValue, DetectOption.FinalValueType.OVERRIDE);
                 }
             } else {
-                if (fieldValue.equals(option.getDetectProperty().getDefaultValue())) {
+                if (option.getDetectProperty().isEqualToDefault(fieldValue)) {
                     option.setFinalValue(fieldValue, DetectOption.FinalValueType.DEFAULT);
                 } else {
                     option.setFinalValue(fieldValue, DetectOption.FinalValueType.SUPPLIED);
@@ -114,7 +114,7 @@ public class DetectOptionManager {
                 }
             }
 
-            if (StringUtils.isNotBlank(fieldValue) && option.isRequestedDeprecation()) {
+            if (option.isRequestedDeprecation()) {
                 option.addWarning("As of version " + option.getDetectOptionHelp().deprecationVersion + " this property will be removed: " + option.getDetectOptionHelp().deprecation);
             }
         }
@@ -137,7 +137,10 @@ public class DetectOptionManager {
         try {
             Field field = DetectProperty.class.getField(detectProperty.name());
 
-            String defaultValue = detectProperty.getDefaultValue();
+            String defaultValue = "";
+            if (null != detectProperty.getDefaultValue()) {
+                defaultValue = detectProperty.getDefaultValue();
+            }
 
             List<String> acceptableValues = new ArrayList<>();
             boolean isCommaSeparatedList = false;

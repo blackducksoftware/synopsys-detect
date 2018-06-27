@@ -192,7 +192,16 @@ public abstract class DetectOption {
         if (getDetectOptionHelp().isDeprecated) {
             deprecationNotice = "Will be removed in version " + getDetectOptionHelp().deprecationVersion + ". " + getDetectOptionHelp().deprecation;
         }
-        final HelpHtmlOption htmlOption = new HelpHtmlOption(detectProperty.getPropertyName(), detectProperty.getDefaultValue(), description, acceptableValues, getDetectOptionHelp().detailedHelp, deprecationNotice);
+        String propertyName = "";
+        String defaultValue = "";
+        if (StringUtils.isNotBlank(detectProperty.getPropertyName())) {
+            propertyName = detectProperty.getPropertyName();
+        }
+        if (StringUtils.isNotBlank(detectProperty.getDefaultValue())) {
+            defaultValue = detectProperty.getDefaultValue();
+        }
+
+        final HelpHtmlOption htmlOption = new HelpHtmlOption(propertyName, defaultValue, description, acceptableValues, getDetectOptionHelp().detailedHelp, deprecationNotice);
         return htmlOption;
     }
 

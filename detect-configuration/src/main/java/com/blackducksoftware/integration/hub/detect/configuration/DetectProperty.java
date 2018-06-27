@@ -570,6 +570,14 @@ public enum DetectProperty {
         return defaultValue;
     }
 
+    public Boolean isEqualToDefault(String value) {
+        String defaultValue = "";
+        if (null != getDefaultValue()) {
+            defaultValue = getDefaultValue();
+        }
+        return value.equals(defaultValue);
+    }
+
     public final class PropertyConstants {
         public static final String GROUP_HUB_CONFIGURATION = "hub configuration";
         public static final String GROUP_GENERAL = "general";
