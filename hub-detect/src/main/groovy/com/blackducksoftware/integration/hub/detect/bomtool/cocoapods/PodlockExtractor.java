@@ -42,8 +42,8 @@ import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 
 @Component
 public class PodlockExtractor {
-    PodlockParser podlockParser;
-    ExternalIdFactory externalIdFactory;
+    private final PodlockParser podlockParser;
+    private final ExternalIdFactory externalIdFactory;
 
     @Autowired
     public PodlockExtractor(final PodlockParser podlockParser, final ExternalIdFactory externalIdFactory) {

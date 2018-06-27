@@ -131,23 +131,7 @@ public class PodlockParser {
                     }
                 }
             }
-
-            final Optional<String> superName = parseSuperPodName(podText);
-            if (superName.isPresent()) {
-                final DependencyId superDependencyId = new NameDependencyId(superName.get());
-                final Forge superForge = getForge(superDependencyId, forgeOverrides);
-                final ExternalId superExternalId = externalIdFactory.createNameVersionExternalId(superForge, superName.get(), version);
-
-                lazyBuilder.setDependencyExternalId(superDependencyId, superExternalId);
-                lazyBuilder.setDependencyName(superDependencyId, name);
-                lazyBuilder.setDependencyVersion(superDependencyId, version);
-
-                if (!dependencyId.equals(superDependencyId)) {
-                    lazyBuilder.addParentWithChild(superDependencyId, dependencyId);
-                }
-            }
         }
-
     }
 
     private Optional<String> parseCorrectPodName(final String podText) {
