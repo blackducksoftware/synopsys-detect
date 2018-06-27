@@ -60,6 +60,7 @@ public class SimpleExecutor implements Executor {
         args.remove(0);
         //////////////////////
 
+        // TODO revisit this
         final String newPath = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin";
         if (environmentVariables == null) {
             environmentVariables = new HashMap<>();

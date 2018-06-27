@@ -95,16 +95,11 @@ public class CLangExtractor {
         try {
             logger.info(String.format("Analyzing %s", jsonCompilationDatabaseFile.getAbsolutePath()));
             final File outputDirectory = detectFileManager.getOutputDirectory(extractionId);
-            // TODO pass json file as file?
-            final ExtractorResults results = extract(sourceDir, executor, dependencyFileManager, jsonCompilationDatabaseFile, outputDirectory, "TEMP CLang codeLocationName",
-                    "TEMP CLang projectName",
-                    "TEMP CLang projectVersion");
+            final ExtractorResults results = extract(sourceDir, executor, dependencyFileManager, jsonCompilationDatabaseFile, outputDirectory);
             final SimpleBdioDocument simpleBdioDocument = results.getBdioDocument();
 
             final DependencyGraph dependencyGraph = bdioTransformer.transformToDependencyGraph(simpleBdioDocument.project, simpleBdioDocument.components);
-            // final Forge derivedForge = new Forge(ExternalId.BDIO_ID_SEPARATOR, ExternalId.BDIO_ID_SEPARATOR, simpleBdioDocument.project.bdioExternalIdentifier.forge);
             final Forge forgeFromName = Forge.FORGE_NAME_TO_FORGE.get(simpleBdioDocument.project.bdioExternalIdentifier.forge);
-            // final String externalIdPath = simpleBdioDocument.project.bdioExternalIdentifier.externalId;
             final ExternalId externalId = externalIdFactory.createPathExternalId(forgeFromName, sourceDir.toString());
             final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolGroupType.CLANG, sourceDir.toString(), externalId, dependencyGraph).build();
             return new Extraction.Builder().success(detectCodeLocation).build();
@@ -113,15 +108,17 @@ public class CLangExtractor {
         }
     }
 
-    ExtractorResults extract(final File sourceDir, final Executor executor, final DependencyFileManager dependencyFileManager, final File compileCommandsJsonFile, final File workingDir, final String codeLocationName,
-            final String projectName,
-            final String projectVersion)
+    ExtractorResults extract(final File sourceDir, final Executor executor, final DependencyFileManager dependencyFileManager, final File compileCommandsJsonFile, final File workingDir)
             throws IOException, ExecutableRunnerException, IntegrationException {
         logger.debug(String.format("extract() called; compileCommandsJsonFilePath: %s", compileCommandsJsonFile.getAbsolutePath()));
         final Set<File> filesForIScan = ConcurrentHashMap.newKeySet(64);
         final PkgMgr pkgMgr = selectPkgMgr(executor);
-        final ExternalId projectExternalId = new SimpleBdioFactory().createNameVersionExternalId(pkgMgr.getDefaultForge(), projectName, projectVersion);
-        final SimpleBdioDocument bdioDocument = new SimpleBdioFactory().createSimpleBdioDocument(codeLocationName, projectName, projectVersion, projectExternalId);
+        // TODO can I get away with these nulls?
+        // final ExternalId projectExternalId = new SimpleBdioFactory().createNameVersionExternalId(pkgMgr.getDefaultForge(), projectName, projectVersion);
+        // final SimpleBdioDocument bdioDocument = new SimpleBdioFactory().createSimpleBdioDocument(codeLocationName, projectName, projectVersion, projectExternalId);
+        final ExternalId projectExternalId = new SimpleBdioFactory().createNameVersionExternalId(pkgMgr.getDefaultForge(), null, null);
+        final SimpleBdioDocument bdioDocument = new SimpleBdioFactory().createSimpleBdioDocument(null, null, null, projectExternalId);
+        ///////////
         final MutableDependencyGraph dependencyGraph = new SimpleBdioFactory().createMutableDependencyGraph();
         final List<CompileCommand> compileCommands = parseCompileCommandsFile(compileCommandsJsonFile);
 
