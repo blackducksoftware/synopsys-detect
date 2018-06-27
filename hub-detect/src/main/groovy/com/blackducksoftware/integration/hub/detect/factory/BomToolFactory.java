@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool;
+package com.blackducksoftware.integration.hub.detect.factory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -187,84 +187,27 @@ public class BomToolFactory {
     @Autowired
     DetectConfiguration detectConfiguration;
 
-    public BomToolSearchRuleSet createStrategies(final BomToolEnvironment environment) {
-        final BomToolSearchRuleSetBuilder searchRuleSet = new BomToolSearchRuleSetBuilder(environment);
-
-        searchRuleSet.addBomTool(createCocoapodsBomTool(environment)).defaultNotNested();
-        searchRuleSet.addBomTool(createCondaBomTool(environment)).defaultNotNested();
-        searchRuleSet.addBomTool(createCpanCliBomTool(environment)).defaultNotNested();
-        searchRuleSet.addBomTool(createPackratLockBomTool(environment)).defaultNotNested();
-        searchRuleSet.addBomTool(createDockerBomTool(environment)).nestable(false).maxDepth(0);
-
-        searchRuleSet.addBomTool(createGoCliBomTool(environment)).defaultNotNested();
-        searchRuleSet.addBomTool(createGoDepsBomTool(environment)).defaultNotNested();
-        searchRuleSet.addBomTool(createGoLockBomTool(environment)).defaultNotNested();
-        searchRuleSet.addBomTool(createGoVndrBomTool(environment)).defaultNotNested();
-
-        searchRuleSet.yield(BomToolType.GO_CLI).to(BomToolType.GO_DEPS);
-        searchRuleSet.yield(BomToolType.GO_CLI).to(BomToolType.GO_LOCK);
-        searchRuleSet.yield(BomToolType.GO_CLI).to(BomToolType.GO_VNDR);
-
-        searchRuleSet.addBomTool(createGradleInspectorBomTool(environment)).defaultNotNested();
-        searchRuleSet.addBomTool(createRebarBomTool(environment)).defaultNotNested();
-
-        searchRuleSet.addBomTool(createMavenPomBomTool(environment)).defaultNotNested();
-        searchRuleSet.addBomTool(createMavenPomWrapperBomTool(environment)).defaultNotNested();
-
-        searchRuleSet.addBomTool(createYarnLockBomTool(environment)).defaultNested();
-
-        searchRuleSet.addBomTool(createNpmPackageLockBomTool(environment)).defaultNested();
-        searchRuleSet.addBomTool(createNpmShrinkwrapBomTool(environment)).defaultNested();
-        searchRuleSet.addBomTool(createNpmCliBomTool(environment)).defaultNested();
-
-        searchRuleSet.yield(BomToolType.NPM_SHRINKWRAP).to(BomToolType.NPM_PACKAGELOCK);
-        searchRuleSet.yield(BomToolType.NPM_CLI).to(BomToolType.NPM_PACKAGELOCK);
-        searchRuleSet.yield(BomToolType.NPM_CLI).to(BomToolType.NPM_SHRINKWRAP);
-
-        searchRuleSet.yield(BomToolType.NPM_CLI).to(BomToolType.YARN_LOCK);
-        searchRuleSet.yield(BomToolType.NPM_PACKAGELOCK).to(BomToolType.YARN_LOCK);
-        searchRuleSet.yield(BomToolType.NPM_SHRINKWRAP).to(BomToolType.YARN_LOCK);
-
-        searchRuleSet.addBomTool(createNugetSolutionBomTool(environment)).defaultNested();
-        searchRuleSet.addBomTool(createNugetProjectBomTool(environment)).defaultNotNested();
-
-        searchRuleSet.yield(BomToolType.NUGET_PROJECT_INSPECTOR).to(BomToolType.NUGET_SOLUTION_INSPECTOR);
-
-        searchRuleSet.addBomTool(createComposerLockBomTool(environment)).defaultNotNested();
-
-        searchRuleSet.addBomTool(createPipenvBomTool(environment)).defaultNotNested();
-        searchRuleSet.addBomTool(createPipInspectorBomTool(environment)).defaultNotNested();
-
-        searchRuleSet.yield(BomToolType.PIP_INSPECTOR).to(BomToolType.PIP_ENV);
-
-        searchRuleSet.addBomTool(createGemlockBomTool(environment)).defaultNotNested();
-        searchRuleSet.addBomTool(createSbtResolutionCacheBomTool(environment)).defaultNotNested();
-        searchRuleSet.addBomTool(createPearCliBomTool(environment)).defaultNotNested();
-
-        return searchRuleSet.build();
-    }
-
-    private PodlockBomTool createCocoapodsBomTool(final BomToolEnvironment environment) {
+    public PodlockBomTool createCocoapodsBomTool(final BomToolEnvironment environment) {
         final PodlockBomTool bomTool = new PodlockBomTool(environment, detectFileFinder, podlockExtractor);
         return bomTool;
     }
 
-    private CondaCliBomTool createCondaBomTool(final BomToolEnvironment environment) {
+    public CondaCliBomTool createCondaBomTool(final BomToolEnvironment environment) {
         final CondaCliBomTool bomTool = new CondaCliBomTool(environment, detectFileFinder, standardExecutableFinder, condaCliExtractor);
         return bomTool;
     }
 
-    private CpanCliBomTool createCpanCliBomTool(final BomToolEnvironment environment) {
+    public CpanCliBomTool createCpanCliBomTool(final BomToolEnvironment environment) {
         final CpanCliBomTool bomTool = new CpanCliBomTool(environment, detectFileFinder, standardExecutableFinder, cpanCliExtractor);
         return bomTool;
     }
 
-    private PackratLockBomTool createPackratLockBomTool(final BomToolEnvironment environment) {
+    public PackratLockBomTool createPackratLockBomTool(final BomToolEnvironment environment) {
         final PackratLockBomTool bomTool = new PackratLockBomTool(environment, detectFileFinder, packratLockExtractor);
         return bomTool;
     }
 
-    private DockerBomTool createDockerBomTool(final BomToolEnvironment environment) {
+    public DockerBomTool createDockerBomTool(final BomToolEnvironment environment) {
         final String tar = detectConfiguration.getDockerTar();
         final String image = detectConfiguration.getDockerImage();
         final boolean dockerRequired = detectConfiguration.getDockerPathRequired();
@@ -273,103 +216,103 @@ public class BomToolFactory {
         return bomTool;
     }
 
-    private GoCliBomTool createGoCliBomTool(final BomToolEnvironment environment) {
+    public GoCliBomTool createGoCliBomTool(final BomToolEnvironment environment) {
         final GoCliBomTool bomTool = new GoCliBomTool(environment, detectFileFinder, standardExecutableFinder, goInspectorManager, goDepExtractor);
         return bomTool;
     }
 
-    private GoDepsBomTool createGoDepsBomTool(final BomToolEnvironment environment) {
+    public GoDepsBomTool createGoDepsBomTool(final BomToolEnvironment environment) {
         final GoDepsBomTool bomTool = new GoDepsBomTool(environment, detectFileFinder, goDepsExtractor);
         return bomTool;
     }
 
-    private GoLockBomTool createGoLockBomTool(final BomToolEnvironment environment) {
+    public GoLockBomTool createGoLockBomTool(final BomToolEnvironment environment) {
         final GoLockBomTool bomTool = new GoLockBomTool(environment, detectFileFinder, standardExecutableFinder, goInspectorManager, goDepExtractor);
         return bomTool;
     }
 
-    private GoVndrBomTool createGoVndrBomTool(final BomToolEnvironment environment) {
+    public GoVndrBomTool createGoVndrBomTool(final BomToolEnvironment environment) {
         final GoVndrBomTool bomTool = new GoVndrBomTool(environment, detectFileFinder, goVndrExtractor);
         return bomTool;
     }
 
-    private GradleInspectorBomTool createGradleInspectorBomTool(final BomToolEnvironment environment) {
+    public GradleInspectorBomTool createGradleInspectorBomTool(final BomToolEnvironment environment) {
         final GradleInspectorBomTool bomTool = new GradleInspectorBomTool(environment, detectFileFinder, gradleFinder, gradleInspectorManager, gradleInspectorExtractor);
         return bomTool;
     }
 
-    private RebarBomTool createRebarBomTool(final BomToolEnvironment environment) {
+    public RebarBomTool createRebarBomTool(final BomToolEnvironment environment) {
         final RebarBomTool bomTool = new RebarBomTool(environment, detectFileFinder, standardExecutableFinder, rebarExtractor);
         return bomTool;
     }
 
-    private MavenPomBomTool createMavenPomBomTool(final BomToolEnvironment environment) {
+    public MavenPomBomTool createMavenPomBomTool(final BomToolEnvironment environment) {
         final MavenPomBomTool bomTool = new MavenPomBomTool(environment, detectFileFinder, mavenExecutableFinder, mavenCliExtractor);
         return bomTool;
     }
 
-    private MavenPomWrapperBomTool createMavenPomWrapperBomTool(final BomToolEnvironment environment) {
+    public MavenPomWrapperBomTool createMavenPomWrapperBomTool(final BomToolEnvironment environment) {
         final MavenPomWrapperBomTool bomTool = new MavenPomWrapperBomTool(environment, detectFileFinder, mavenExecutableFinder, mavenCliExtractor);
         return bomTool;
     }
 
-    private NpmCliBomTool createNpmCliBomTool(final BomToolEnvironment environment) {
+    public NpmCliBomTool createNpmCliBomTool(final BomToolEnvironment environment) {
         final NpmCliBomTool bomTool = new NpmCliBomTool(environment, detectFileFinder, npmCliExtractor);
         return bomTool;
     }
 
-    private NpmPackageLockBomTool createNpmPackageLockBomTool(final BomToolEnvironment environment) {
+    public NpmPackageLockBomTool createNpmPackageLockBomTool(final BomToolEnvironment environment) {
         final NpmPackageLockBomTool bomTool = new NpmPackageLockBomTool(environment, detectFileFinder, npmLockfileExtractor);
         return bomTool;
     }
 
-    private NpmShrinkwrapBomTool createNpmShrinkwrapBomTool(final BomToolEnvironment environment) {
+    public NpmShrinkwrapBomTool createNpmShrinkwrapBomTool(final BomToolEnvironment environment) {
         final NpmShrinkwrapBomTool bomTool = new NpmShrinkwrapBomTool(environment, detectFileFinder, npmLockfileExtractor);
         return bomTool;
     }
 
-    private NugetSolutionBomTool createNugetSolutionBomTool(final BomToolEnvironment environment) {
+    public NugetSolutionBomTool createNugetSolutionBomTool(final BomToolEnvironment environment) {
         final NugetSolutionBomTool bomTool = new NugetSolutionBomTool(environment, detectFileFinder, nugetInspectorManager, nugetInspectorExtractor);
         return bomTool;
     }
 
-    private NugetProjectBomTool createNugetProjectBomTool(final BomToolEnvironment environment) {
+    public NugetProjectBomTool createNugetProjectBomTool(final BomToolEnvironment environment) {
         final NugetProjectBomTool bomTool = new NugetProjectBomTool(environment, detectFileFinder, nugetInspectorManager, nugetInspectorExtractor);
         return bomTool;
     }
 
-    private ComposerLockBomTool createComposerLockBomTool(final BomToolEnvironment environment) {
+    public ComposerLockBomTool createComposerLockBomTool(final BomToolEnvironment environment) {
         final ComposerLockBomTool bomTool = new ComposerLockBomTool(environment, detectFileFinder, composerLockExtractor);
         return bomTool;
     }
 
-    private PearCliBomTool createPearCliBomTool(final BomToolEnvironment environment) {
+    public PearCliBomTool createPearCliBomTool(final BomToolEnvironment environment) {
         final PearCliBomTool bomTool = new PearCliBomTool(environment, detectFileFinder, standardExecutableFinder, pearCliExtractor);
         return bomTool;
     }
 
-    private PipenvBomTool createPipenvBomTool(final BomToolEnvironment environment) {
+    public PipenvBomTool createPipenvBomTool(final BomToolEnvironment environment) {
         final PipenvBomTool bomTool = new PipenvBomTool(environment, detectFileFinder, pythonExecutableFinder, pipenvExtractor);
         return bomTool;
     }
 
-    private PipInspectorBomTool createPipInspectorBomTool(final BomToolEnvironment environment) {
+    public PipInspectorBomTool createPipInspectorBomTool(final BomToolEnvironment environment) {
         final String requirementsFile = detectConfiguration.getRequirementsFilePath();
         final PipInspectorBomTool bomTool = new PipInspectorBomTool(environment, requirementsFile, detectFileFinder, pythonExecutableFinder, pipInspectorManager, pipInspectorExtractor);
         return bomTool;
     }
 
-    private GemlockBomTool createGemlockBomTool(final BomToolEnvironment environment) {
+    public GemlockBomTool createGemlockBomTool(final BomToolEnvironment environment) {
         final GemlockBomTool bomTool = new GemlockBomTool(environment, detectFileFinder, gemlockExtractor);
         return bomTool;
     }
 
-    private SbtResolutionCacheBomTool createSbtResolutionCacheBomTool(final BomToolEnvironment environment) {
+    public SbtResolutionCacheBomTool createSbtResolutionCacheBomTool(final BomToolEnvironment environment) {
         final SbtResolutionCacheBomTool bomTool = new SbtResolutionCacheBomTool(environment, detectFileFinder, sbtResolutionCacheExtractor);
         return bomTool;
     }
 
-    private YarnLockBomTool createYarnLockBomTool(final BomToolEnvironment environment) {
+    public YarnLockBomTool createYarnLockBomTool(final BomToolEnvironment environment) {
         final boolean productionDependenciesOnly = detectConfiguration.getYarnProductionDependenciesOnly();
         final YarnLockBomTool bomTool = new YarnLockBomTool(environment, productionDependenciesOnly, detectFileFinder, standardExecutableFinder, yarnLockExtractor);
         return bomTool;

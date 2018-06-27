@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.FileUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
@@ -36,18 +35,20 @@ import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
-import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.parse.CocoapodsPackager;
+import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.parse.PodlockParser;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 
 @Component
 public class PodlockExtractor {
-    @Autowired
-    private CocoapodsPackager cocoapodsPackager;
+    private final PodlockParser podlockParser;
+    private final ExternalIdFactory externalIdFactory;
 
-    @Autowired
-    private ExternalIdFactory externalIdFactory;
+    public PodlockExtractor(final PodlockParser podlockParser, final ExternalIdFactory externalIdFactory) {
+        this.podlockParser = podlockParser;
+        this.externalIdFactory = externalIdFactory;
+    }
 
     public Extraction extract(final BomToolType bomToolType, final File directory, final File podlock) {
         String podLockText;
@@ -59,7 +60,7 @@ public class PodlockExtractor {
 
         DependencyGraph dependencyGraph;
         try {
-            dependencyGraph = cocoapodsPackager.extractDependencyGraph(podLockText);
+            dependencyGraph = podlockParser.extractDependencyGraph(podLockText);
         } catch (final IOException e) {
             return new Extraction.Builder().exception(e).build();
         }
