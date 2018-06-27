@@ -43,7 +43,6 @@ import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.report.ExtractionSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
@@ -57,7 +56,7 @@ import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.model.DetectProject;
 import com.blackducksoftware.integration.hub.detect.project.BomToolProjectInfo;
 import com.blackducksoftware.integration.hub.detect.project.BomToolProjectInfoDecider;
-import com.blackducksoftware.integration.hub.detect.summary.BomToolSummaryResult;
+import com.blackducksoftware.integration.hub.detect.summary.BomToolGroupSummaryResult;
 import com.blackducksoftware.integration.hub.detect.summary.Result;
 import com.blackducksoftware.integration.hub.detect.summary.SummaryResultReporter;
 import com.blackducksoftware.integration.util.NameVersion;
@@ -66,7 +65,7 @@ import com.blackducksoftware.integration.util.NameVersion;
 public class DetectProjectManager implements SummaryResultReporter, ExitCodeReporter {
     private final Logger logger = LoggerFactory.getLogger(DetectProjectManager.class);
 
-    private final Map<BomToolType, Result> bomToolSummaryResults = new HashMap<>();
+    private final Map<BomToolGroupType, Result> bomToolGroupSummaryResults = new HashMap<>();
     private ExitCodeType bomToolSearchExitCodeType;
 
     @Autowired
@@ -94,7 +93,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         final SearchResult searchResult = searchManager.performSearch();
 
         final ExtractionResult extractionResult = extractionManager.performExtractions(searchResult.getBomToolEvaluations());
-        applyBomToolStatus(extractionResult.getSuccessfulBomToolTypes(), extractionResult.getFailedBomToolTypes());
+        applyBomToolGroupStatus(extractionResult.getSuccessfulBomToolTypes(), extractionResult.getFailedBomToolTypes());
 
         final NameVersion nameVersion = getProjectNameVersion(searchResult.getBomToolEvaluations());
         final String projectName = nameVersion.getName();
@@ -105,7 +104,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         final List<File> bdioFiles = new ArrayList<>();
         if (StringUtils.isBlank(detectConfiguration.getAggregateBomName())) {
             final DetectCodeLocationResult codeLocationResult = codeLocationManager.process(codeLocations, projectName, projectVersion);
-            applyFailedBomToolStatus(codeLocationResult.getFailedBomToolTypes());
+            applyFailedBomToolGroupStatus(codeLocationResult.getFailedBomToolGroupTypes());
 
             final List<File> createdBdioFiles = bdioManager.createBdioFiles(codeLocationResult.getBdioCodeLocations(), projectName, projectVersion);
             bdioFiles.addAll(createdBdioFiles);
@@ -122,17 +121,17 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     }
 
     @Override
-    public List<BomToolSummaryResult> getDetectSummaryResults() {
-        final List<BomToolSummaryResult> detectSummaryResults = new ArrayList<>();
-        for (final Map.Entry<BomToolType, Result> entry : bomToolSummaryResults.entrySet()) {
-            detectSummaryResults.add(new BomToolSummaryResult(entry.getKey(), entry.getValue()));
+    public List<BomToolGroupSummaryResult> getDetectSummaryResults() {
+        final List<BomToolGroupSummaryResult> detectSummaryResults = new ArrayList<>();
+        for (final Map.Entry<BomToolGroupType, Result> entry : bomToolGroupSummaryResults.entrySet()) {
+            detectSummaryResults.add(new BomToolGroupSummaryResult(entry.getKey(), entry.getValue()));
         }
         return detectSummaryResults;
     }
 
     @Override
     public ExitCodeType getExitCodeType() {
-        for (final Map.Entry<BomToolType, Result> entry : bomToolSummaryResults.entrySet()) {
+        for (final Map.Entry<BomToolGroupType, Result> entry : bomToolGroupSummaryResults.entrySet()) {
             if (Result.FAILURE == entry.getValue()) {
                 return ExitCodeType.FAILURE_BOM_TOOL;
             }
@@ -143,17 +142,17 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         return ExitCodeType.SUCCESS;
     }
 
-    private void applyFailedBomToolStatus(final Set<BomToolType> failedBomToolTypes) {
-        for (final BomToolType type : failedBomToolTypes) {
-            bomToolSummaryResults.put(type, Result.FAILURE);
+    private void applyFailedBomToolGroupStatus(final Set<BomToolGroupType> failedBomToolGroupTypes) {
+        for (final BomToolGroupType type : failedBomToolGroupTypes) {
+            bomToolGroupSummaryResults.put(type, Result.FAILURE);
         }
     }
 
-    private void applyBomToolStatus(final Set<BomToolType> successBomToolTypes, final Set<BomToolType> failedBomToolTypes) {
-        applyFailedBomToolStatus(failedBomToolTypes);
-        for (final BomToolType type : successBomToolTypes) {
-            if (!bomToolSummaryResults.containsKey(type)) {
-                bomToolSummaryResults.put(type, Result.SUCCESS);
+    private void applyBomToolGroupStatus(final Set<BomToolGroupType> succeededBomToolGroupTypes, final Set<BomToolGroupType> failedBomToolGroupTypes) {
+        applyFailedBomToolGroupStatus(failedBomToolGroupTypes);
+        for (final BomToolGroupType type : succeededBomToolGroupTypes) {
+            if (!bomToolGroupSummaryResults.containsKey(type)) {
+                bomToolGroupSummaryResults.put(type, Result.SUCCESS);
             }
         }
     }
@@ -209,11 +208,11 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
 
     private List<BomToolProjectInfo> createBomToolProjectInfo(final List<BomToolEvaluation> bomToolEvaluations) {
         return bomToolEvaluations.stream()
-                .filter(it -> it.isExtractionSuccess())
+                .filter(it -> it.wasExtractionSuccessful())
                 .filter(it -> it.extraction.projectName != null)
                 .map(it -> {
                     final NameVersion nameVersion = new NameVersion(it.extraction.projectName, it.extraction.projectVersion);
-                    final BomToolProjectInfo possibility = new BomToolProjectInfo(it.bomTool.getBomToolGroupType(), it.environment.getDepth(), nameVersion);
+                    final BomToolProjectInfo possibility = new BomToolProjectInfo(it.getBomTool().getBomToolGroupType(), it.getEnvironment().getDepth(), nameVersion);
                     return possibility;
                 })
                 .collect(Collectors.toList());

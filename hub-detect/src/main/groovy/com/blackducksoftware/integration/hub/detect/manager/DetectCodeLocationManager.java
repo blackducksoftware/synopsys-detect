@@ -43,9 +43,9 @@ import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphCombiner;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph;
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.manager.result.codelocation.DetectCodeLocationResult;
 import com.blackducksoftware.integration.hub.detect.model.BdioCodeLocation;
+import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
 
@@ -54,13 +54,13 @@ public class DetectCodeLocationManager {
     private final Logger logger = LoggerFactory.getLogger(DetectCodeLocationManager.class);
 
     @Autowired
-    public DetectConfiguration detectConfiguration;
+    private DetectConfiguration detectConfiguration;
 
     @Autowired
-    public CodeLocationNameManager codeLocationNameManager;
+    private CodeLocationNameManager codeLocationNameManager;
 
     public DetectCodeLocationResult process(final List<DetectCodeLocation> detectCodeLocations, final String projectName, final String projectVersion) {
-        final Set<BomToolType> failedBomTools = new HashSet<>();
+        final Set<BomToolGroupType> failedBomToolGroups = new HashSet<>();
 
         final String prefix = detectConfiguration.getProjectCodeLocationPrefix();
         final String suffix = detectConfiguration.getProjectCodeLocationSuffix();
@@ -76,7 +76,7 @@ public class DetectCodeLocationManager {
         for (final String name : bdioByCodeLocationName.keySet()) {
             if (bdioByCodeLocationName.get(name).size() > 1) {
                 logger.error("Multiple code locations were generated with the name: " + name);
-                failedBomTools.addAll(getBomToolTypes(bdioByCodeLocationName.get(name)));
+                failedBomToolGroups.addAll(getBomToolGroupTypes(bdioByCodeLocationName.get(name)));
             }
         }
 
@@ -85,17 +85,17 @@ public class DetectCodeLocationManager {
         for (final String name : bdioByBdioName.keySet()) {
             if (bdioByBdioName.get(name).size() > 1) {
                 logger.error("Multiple bdio names were generated with the name: " + name);
-                failedBomTools.addAll(getBomToolTypes(bdioByBdioName.get(name)));
+                failedBomToolGroups.addAll(getBomToolGroupTypes(bdioByBdioName.get(name)));
             }
         }
 
-        final DetectCodeLocationResult result = new DetectCodeLocationResult(bdioCodeLocations, failedBomTools, codeLocationsAndNames);
+        final DetectCodeLocationResult result = new DetectCodeLocationResult(bdioCodeLocations, failedBomToolGroups, codeLocationsAndNames);
         return result;
     }
 
-    private Set<BomToolType> getBomToolTypes(final List<BdioCodeLocation> bdioCodeLocations) {
+    private Set<BomToolGroupType> getBomToolGroupTypes(final List<BdioCodeLocation> bdioCodeLocations) {
         return bdioCodeLocations.stream()
-                .map(it -> it.codeLocation.getBomToolType())
+                .map(it -> it.codeLocation.getBomToolGroupType())
                 .collect(Collectors.toSet());
     }
 

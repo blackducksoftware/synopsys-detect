@@ -41,7 +41,7 @@ public class PreparationSummaryReporter {
 
     public void print(final List<BomToolEvaluation> results) {
         final Map<File, List<BomToolEvaluation>> byDirectory = results.stream()
-                .collect(Collectors.groupingBy(item -> item.environment.getDirectory()));
+                .collect(Collectors.groupingBy(item -> item.getEnvironment().getDirectory()));
 
         printDirectories(byDirectory);
 
@@ -60,12 +60,11 @@ public class PreparationSummaryReporter {
             final List<String> failed = new ArrayList<>();
 
             for (final BomToolEvaluation result : results) {
-                final String bomToolName = result.bomTool.getBomToolGroupType() + " - " + result.bomTool.getName();
                 if (result.isApplicable()) {
-                    if (result.extractable.getPassed()) {
-                        ready.add(bomToolName);
+                    if (result.isExtractable()) {
+                        ready.add(result.getBomTool().getDescriptiveName());
                     } else {
-                        failed.add("FAILED: " + bomToolName + " - " + result.extractable.toDescription());
+                        failed.add("FAILED: " + result.getBomTool().getDescriptiveName() + " - " + result.getExtractabilityMessage());
                     }
                 }
             }

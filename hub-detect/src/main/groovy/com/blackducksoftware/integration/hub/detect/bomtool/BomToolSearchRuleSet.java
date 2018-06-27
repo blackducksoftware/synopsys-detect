@@ -56,9 +56,9 @@ public class BomToolSearchRuleSet {
         for (final BomToolSearchRule searchRules : orderedBomToolRules) {
             final BomToolEvaluation evaluation = new BomToolEvaluation(searchRules.getBomTool(), environment);
             evaluations.add(evaluation);
-            evaluation.searchable = searchable(searchRules, appliedSoFar);
+            evaluation.setSearchable(searchable(searchRules, appliedSoFar));
             if (evaluation.isSearchable()) {
-                evaluation.applicable = evaluation.bomTool.applicable();
+                evaluation.setApplicable(evaluation.getBomTool().applicable());
                 if (evaluation.isApplicable()) {
                     appliedSoFar.add(searchRules.getBomTool());
                 }

@@ -44,7 +44,7 @@ public class ExtractionSummaryReporter {
 
     public void print(final List<BomToolEvaluation> results, final Map<DetectCodeLocation, String> codeLocationNameMap) {
         final Map<File, List<BomToolEvaluation>> byDirectory = results.stream()
-                .collect(Collectors.groupingBy(item -> item.environment.getDirectory()));
+                .collect(Collectors.groupingBy(item -> item.getEnvironment().getDirectory()));
 
         final List<ExtractionSummaryData> data = createData(byDirectory, codeLocationNameMap);
 
@@ -123,13 +123,13 @@ public class ExtractionSummaryReporter {
                 logger.info("\tCode locations: " + it.codeLocationsExtracted);
                 it.codeLocationNames.stream().forEach(name -> logger.info("\t\t" + name));
                 if (it.success.size() > 0) {
-                    logger.info("\tSuccess: " + it.success.stream().map(success -> success.bomTool.getDescriptiveName()).collect(Collectors.joining(", ")));
+                    logger.info("\tSuccess: " + it.success.stream().map(success -> success.getBomTool().getDescriptiveName()).collect(Collectors.joining(", ")));
                 }
                 if (it.failed.size() > 0) {
-                    logger.error("\tFailure: " + it.failed.stream().map(failed -> failed.bomTool.getDescriptiveName()).collect(Collectors.joining(", ")));
+                    logger.error("\tFailure: " + it.failed.stream().map(failed -> failed.getBomTool().getDescriptiveName()).collect(Collectors.joining(", ")));
                 }
                 if (it.exception.size() > 0) {
-                    logger.error("\tException: " + it.exception.stream().map(exception -> exception.bomTool.getDescriptiveName()).collect(Collectors.joining(", ")));
+                    logger.error("\tException: " + it.exception.stream().map(exception -> exception.getBomTool().getDescriptiveName()).collect(Collectors.joining(", ")));
                 }
             }
         });

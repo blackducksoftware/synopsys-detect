@@ -26,17 +26,17 @@ package com.blackducksoftware.integration.hub.detect.manager.result.extraction;
 import java.util.HashSet;
 import java.util.List;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
+import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 
 public class ExtractionResult {
-    private final HashSet<BomToolType> failedBomTools;
-    private final HashSet<BomToolType> successfulBomTools;
+    private final HashSet<BomToolGroupType> failedBomToolGroups;
+    private final HashSet<BomToolGroupType> successfulBomToolGroups;
     private final List<DetectCodeLocation> detectCodeLocations;
 
-    public ExtractionResult(final List<DetectCodeLocation> detectCodeLocations, final HashSet<BomToolType> successfulBomTools, final HashSet<BomToolType> failedBomTools) {
-        this.failedBomTools = failedBomTools;
-        this.successfulBomTools = successfulBomTools;
+    public ExtractionResult(final List<DetectCodeLocation> detectCodeLocations, final HashSet<BomToolGroupType> successfulBomToolGroups, final HashSet<BomToolGroupType> failedBomToolGroups) {
+        this.failedBomToolGroups = failedBomToolGroups;
+        this.successfulBomToolGroups = successfulBomToolGroups;
         this.detectCodeLocations = detectCodeLocations;
     }
 
@@ -48,11 +48,11 @@ public class ExtractionResult {
         return detectCodeLocations;
     }
 
-    public HashSet<BomToolType> getSuccessfulBomToolTypes() {
-        return successfulBomTools;
+    public HashSet<BomToolGroupType> getSuccessfulBomToolTypes() {
+        return successfulBomToolGroups;
     }
 
-    public HashSet<BomToolType> getFailedBomToolTypes() {
-        return failedBomTools;
+    public HashSet<BomToolGroupType> getFailedBomToolTypes() {
+        return failedBomToolGroups;
     }
 }

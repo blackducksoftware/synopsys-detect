@@ -27,18 +27,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.model.BdioCodeLocation;
+import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 
 public class DetectCodeLocationResult {
-    List<BdioCodeLocation> bdioCodeLocations;
-    Map<DetectCodeLocation, String> codeLocationNames;
-    Set<BomToolType> failedBomTools;
+    private final List<BdioCodeLocation> bdioCodeLocations;
+    private final Map<DetectCodeLocation, String> codeLocationNames;
+    private final Set<BomToolGroupType> failedBomToolGroups;
 
-    public DetectCodeLocationResult(final List<BdioCodeLocation> bdioCodeLocations, final Set<BomToolType> failedBomTools, final Map<DetectCodeLocation, String> codeLocationNames) {
+    public DetectCodeLocationResult(final List<BdioCodeLocation> bdioCodeLocations, final Set<BomToolGroupType> failedBomToolGroups, final Map<DetectCodeLocation, String> codeLocationNames) {
         this.bdioCodeLocations = bdioCodeLocations;
-        this.failedBomTools = failedBomTools;
+        this.failedBomToolGroups = failedBomToolGroups;
         this.codeLocationNames = codeLocationNames;
     }
 
@@ -50,7 +50,7 @@ public class DetectCodeLocationResult {
         return bdioCodeLocations;
     }
 
-    public Set<BomToolType> getFailedBomToolTypes() {
-        return failedBomTools;
+    public Set<BomToolGroupType> getFailedBomToolGroupTypes() {
+        return failedBomToolGroups;
     }
 }

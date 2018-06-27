@@ -32,7 +32,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
+import com.blackducksoftware.integration.hub.detect.util.DetectLoggingUtils;
 import com.blackducksoftware.integration.log.IntLogger;
+import com.blackducksoftware.integration.log.LogLevel;
 
 import groovy.transform.TypeChecked;
 
@@ -67,7 +69,11 @@ public class DetectSummary {
             if (previousResultClass != null && !previousResultClass.equals(detectSummaryResult.getClass())) {
                 logger.info("");
             }
-            logger.info(String.format("%s: %s", detectSummaryResult.getDescriptionKey(), detectSummaryResult.getResult().toString()));
+            final LogLevel detectSummaryLogLevel = detectSummaryResult.getLogLevel();
+            final String detectSummaryResultString = String.format("%s: %s", detectSummaryResult.getDescriptionKey(), detectSummaryResult.getResult().toString());
+
+            DetectLoggingUtils.logAtLevel(logger, detectSummaryLogLevel, detectSummaryResultString);
+
             previousResultClass = detectSummaryResult.getClass();
         }
 

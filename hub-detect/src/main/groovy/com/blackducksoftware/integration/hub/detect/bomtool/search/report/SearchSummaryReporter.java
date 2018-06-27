@@ -40,9 +40,8 @@ public class SearchSummaryReporter {
     private final Logger logger = LoggerFactory.getLogger(SearchSummaryReporter.class);
 
     public void print(final List<BomToolEvaluation> results) {
-
         final Map<File, List<BomToolEvaluation>> byDirectory = results.stream()
-                .collect(Collectors.groupingBy(item -> item.environment.getDirectory()));
+                .collect(Collectors.groupingBy(item -> item.getEnvironment().getDirectory()));
 
         printDirectoriesInfo(byDirectory);
         printDirectoriesDebug(byDirectory);
@@ -50,7 +49,6 @@ public class SearchSummaryReporter {
     }
 
     private void printDirectoriesInfo(final Map<File, List<BomToolEvaluation>> byDirectory) {
-
         logger.info("");
         logger.info("");
         logger.info(ReportConstants.HEADING);
@@ -60,8 +58,8 @@ public class SearchSummaryReporter {
             final List<BomToolEvaluation> results = byDirectory.get(file);
 
             final List<String> applied = results.stream()
-                    .filter(it -> it.isApplicable())
-                    .map(it -> it.bomTool.getDescriptiveName())
+                    .filter(result -> result.isApplicable())
+                    .map(result -> result.getBomTool().getDescriptiveName())
                     .collect(Collectors.toList());
 
             if (applied.size() > 0) {
@@ -80,16 +78,15 @@ public class SearchSummaryReporter {
             final List<String> toPrint = new ArrayList<>();
 
             for (final BomToolEvaluation result : results) {
-                final String bomToolName = result.bomTool.getDescriptiveName();
+                final String bomToolName = result.getBomTool().getDescriptiveName();
                 if (result.isApplicable()) {
-                    toPrint.add("      APPLIED: " + bomToolName + " - Search: " + result.searchable.toDescription() + " Applicable: " + result.applicable.toDescription());
+                    toPrint.add("      APPLIED: " + bomToolName + " - Search: " + result.getSearchabilityMessage() + " Applicable: " + result.getApplicabilityMessage());
                 } else {
-                    if (result.applicable != null) {
-                        toPrint.add("DID NOT APPLY: " + bomToolName + " - " + result.applicable.toDescription());
-                    } else if (result.searchable != null) {
-                        toPrint.add("DID NOT APPLY: " + bomToolName + " - "  + result.searchable.toDescription());
+                    final String didNotApplyPrefix = "DID NOT APPLY: " + bomToolName + " - ";
+                    if (BomToolEvaluation.NO_MESSAGE.equals(result.getApplicabilityMessage())) {
+                        toPrint.add(didNotApplyPrefix + result.getSearchabilityMessage());
                     } else {
-                        toPrint.add("DID NOT APPLY: " + bomToolName + " - Unknown");
+                        toPrint.add(didNotApplyPrefix + result.getApplicabilityMessage());
                     }
                 }
             }

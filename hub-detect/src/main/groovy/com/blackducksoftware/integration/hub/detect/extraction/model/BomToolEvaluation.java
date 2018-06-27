@@ -23,18 +23,22 @@
  */
 package com.blackducksoftware.integration.hub.detect.extraction.model;
 
+import java.util.Optional;
+
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.result.BomToolResult;
 import com.blackducksoftware.integration.hub.detect.evaluation.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction.ExtractionResultType;
 
 public class BomToolEvaluation {
-    public BomTool bomTool;
-    public BomToolEnvironment environment;
+    public static final String NO_MESSAGE = "Unknown";
 
-    public BomToolResult searchable;
-    public BomToolResult applicable;
-    public BomToolResult extractable;
+    private final BomTool bomTool;
+    private final BomToolEnvironment environment;
+
+    private BomToolResult searchable;
+    private BomToolResult applicable;
+    private BomToolResult extractable;
 
     public Extraction extraction;
 
@@ -43,39 +47,62 @@ public class BomToolEvaluation {
         this.environment = environment;
     }
 
+    public boolean wasExtractionSuccessful() {
+        return isExtractable() && this.extraction != null && this.extraction.result == ExtractionResultType.Success;
+    }
+
+    public BomTool getBomTool() {
+        return bomTool;
+    }
+
+    public BomToolEnvironment getEnvironment() {
+        return environment;
+    }
+
+    public void setSearchable(final BomToolResult searchable) {
+        this.searchable = searchable;
+    }
+
     public boolean isSearchable() {
-        if (this.searchable != null) {
-            return this.searchable.getPassed();
-        }else {
-            return false;
-        }
+        return this.searchable != null && this.searchable.getPassed();
+    }
+
+    public String getSearchabilityMessage() {
+        return getBomToolResultDescription(searchable).orElse(NO_MESSAGE);
+    }
+
+    public void setApplicable(final BomToolResult applicable) {
+        this.applicable = applicable;
     }
 
     public boolean isApplicable() {
-        if (isSearchable()) {
-            if (this.applicable != null) {
-                return this.applicable.getPassed();
-            }
-        }
-        return false;
+        return isSearchable() && this.applicable != null && this.applicable.getPassed();
+    }
+
+    public String getApplicabilityMessage() {
+        return getBomToolResultDescription(applicable).orElse(NO_MESSAGE);
+    }
+
+    public void setExtractable(final BomToolResult extractable) {
+        this.extractable = extractable;
     }
 
     public boolean isExtractable() {
-        if (isApplicable()) {
-            if (this.extractable != null) {
-                return this.extractable.getPassed();
-            }
-        }
-        return false;
+        return isApplicable() && this.extractable != null && this.extractable.getPassed();
     }
 
-    public boolean isExtractionSuccess() {
-        if (isExtractable()) {
-            if (this.extraction != null) {
-                return this.extraction.result == ExtractionResultType.Success;
-            }
+    public String getExtractabilityMessage() {
+        return getBomToolResultDescription(extractable).orElse(NO_MESSAGE);
+    }
+
+    private Optional<String> getBomToolResultDescription(final BomToolResult bomToolResult) {
+        String description = null;
+
+        if (bomToolResult != null) {
+            description = bomToolResult.toDescription();
         }
-        return false;
+
+        return Optional.ofNullable(description);
     }
 
 }

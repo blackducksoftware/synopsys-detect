@@ -21,32 +21,26 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool;
+package com.blackducksoftware.integration.hub.detect.util;
 
-public enum BomToolType {
-    PODLOCK,
-    CONDA_CLI,
-    CPAN_CLI,
-    PACKRAT_LOCK,
-    DOCKER,
-    GO_CLI,
-    GO_LOCK,
-    GO_DEPS,
-    GO_VNDR,
-    GRADLE_INSPECTOR,
-    REBAR,
-    MAVEN_POM_CLI,
-    MAVEN_POM_WRAPPER_CLI,
-    NPM_CLI,
-    NPM_PACKAGELOCK,
-    NPM_SHRINKWRAP,
-    NUGET_PROJECT_INSPECTOR,
-    NUGET_SOLUTION_INSPECTOR,
-    COMPOSER_LOCK,
-    PEAR_CLI,
-    PIP_ENV,
-    PIP_INSPECTOR,
-    GEMLOCK,
-    SBT_RESOLUTION_CACHE,
-    YARN_LOCK;
+import com.blackducksoftware.integration.log.IntLogger;
+import com.blackducksoftware.integration.log.LogLevel;
+
+public class DetectLoggingUtils {
+    public static void logAtLevel(final IntLogger logger, final LogLevel logLevel, final String message) {
+        if (LogLevel.TRACE.equals(logLevel)) {
+            logger.trace(message);
+        } else if (LogLevel.DEBUG.equals(logLevel)) {
+            logger.debug(message);
+        } else if (LogLevel.INFO.equals(logLevel)) {
+            logger.info(message);
+        } else if (LogLevel.WARN.equals(logLevel)) {
+            logger.warn(message);
+        } else if (LogLevel.ERROR.equals(logLevel)) {
+            logger.error(message);
+        } else {
+            // LogLevel.OFF or invalid logLevel
+        }
+    }
+
 }

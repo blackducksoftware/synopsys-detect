@@ -69,20 +69,8 @@ public abstract class BomTool {
         return bomToolType;
     }
 
-    public boolean isDeprecated() {
-        return bomToolType.isDeprecated();
-    }
-
     public String getDescriptiveName() {
-        final String group = getBomToolGroupType().toString();
-        final String name = getName();
-        String deprecationWarning = "";
-
-        if (isDeprecated()) {
-            deprecationWarning = "[DEPRECATED]";
-        }
-
-        return String.format("%s-%s %s", group, name, deprecationWarning);
+        return String.format("%s-%s", getBomToolGroupType().toString(), getName());
     }
 
 }

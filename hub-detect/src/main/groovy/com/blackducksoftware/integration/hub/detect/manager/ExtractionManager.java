@@ -33,7 +33,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.exception.IntegrationException;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.bomtool.result.ExceptionBomToolResult;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.report.ExtractionReporter;
@@ -41,6 +40,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.search.report.Prepar
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.extraction.model.BomToolEvaluation;
 import com.blackducksoftware.integration.hub.detect.manager.result.extraction.ExtractionResult;
+import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 
 @Component
@@ -73,9 +73,9 @@ public class ExtractionManager {
     private void prepare(final BomToolEvaluation result) {
         if (result.isApplicable()) {
             try {
-                result.extractable = result.bomTool.extractable();
+                result.setExtractable(result.getBomTool().extractable());
             } catch (final Exception e) {
-                result.extractable = new ExceptionBomToolResult(e);
+                result.setExtractable(new ExceptionBomToolResult(e));
             }
         }
     }
@@ -84,8 +84,8 @@ public class ExtractionManager {
         if (result.isExtractable()) {
             extractions++;
             final ExtractionId extractionId = new ExtractionId(Integer.toString(extractions));
-            extractionReporter.startedExtraction(result.bomTool, extractionId);
-            result.extraction = result.bomTool.extract(extractionId);
+            extractionReporter.startedExtraction(result.getBomTool(), extractionId);
+            result.extraction = result.getBomTool().extract(extractionId);
             extractionReporter.endedExtraction(result.extraction);
         }
 
@@ -99,25 +99,25 @@ public class ExtractionManager {
 
         extract(bomToolEvaluations);
 
-        final HashSet<BomToolType> succesfulBomTools = new HashSet<>();
-        final HashSet<BomToolType> failedBomTools = new HashSet<>();
+        final HashSet<BomToolGroupType> succesfulBomToolGroups = new HashSet<>();
+        final HashSet<BomToolGroupType> failedBomToolGroups = new HashSet<>();
         for (final BomToolEvaluation evaluation : bomToolEvaluations) {
-            final BomToolType type = evaluation.bomTool.getBomToolType();
+            final BomToolGroupType type = evaluation.getBomTool().getBomToolGroupType();
             if (evaluation.isApplicable()) {
-                if (evaluation.isExtractable() && evaluation.isExtractionSuccess()) {
-                    succesfulBomTools.add(type);
+                if (evaluation.isExtractable() && evaluation.wasExtractionSuccessful()) {
+                    succesfulBomToolGroups.add(type);
                 } else {
-                    failedBomTools.add(type);
+                    failedBomToolGroups.add(type);
                 }
             }
         }
 
         final List<DetectCodeLocation> codeLocations = bomToolEvaluations.stream()
-                .filter(it -> it.isExtractionSuccess())
+                .filter(it -> it.wasExtractionSuccessful())
                 .flatMap(it -> it.extraction.codeLocations.stream())
                 .collect(Collectors.toList());
 
-        final ExtractionResult result = new ExtractionResult(codeLocations, succesfulBomTools, failedBomTools);
+        final ExtractionResult result = new ExtractionResult(codeLocations, succesfulBomToolGroups, failedBomToolGroups);
         return result;
     }
 

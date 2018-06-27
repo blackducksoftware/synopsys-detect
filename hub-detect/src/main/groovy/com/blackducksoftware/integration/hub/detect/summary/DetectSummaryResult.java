@@ -23,13 +23,21 @@
  */
 package com.blackducksoftware.integration.hub.detect.summary;
 
+import com.blackducksoftware.integration.log.LogLevel;
+
 public class DetectSummaryResult {
     private final String descriptionKey;
     private final Result result;
+    private final LogLevel logLevel;
 
     public DetectSummaryResult(final String descriptionKey, final Result result) {
+        this(descriptionKey, result, Result.FAILURE.equals(result) ? LogLevel.ERROR : LogLevel.INFO);
+    }
+
+    public DetectSummaryResult(final String descriptionKey, final Result result, final LogLevel logLevel) {
         this.descriptionKey = descriptionKey;
         this.result = result;
+        this.logLevel = logLevel;
     }
 
     public String getDescriptionKey() {
@@ -38,6 +46,10 @@ public class DetectSummaryResult {
 
     public Result getResult() {
         return result;
+    }
+
+    public LogLevel getLogLevel() {
+        return logLevel;
     }
 
 }

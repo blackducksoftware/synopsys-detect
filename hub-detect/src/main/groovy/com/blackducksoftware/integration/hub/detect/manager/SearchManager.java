@@ -88,7 +88,7 @@ public class SearchManager {
 
         final Set<BomToolGroupType> applicableBomTools = sourcePathResults.stream()
                 .filter(it -> it.isApplicable())
-                .map(it -> it.bomTool.getBomToolGroupType())
+                .map(it -> it.getBomTool().getBomToolGroupType())
                 .collect(Collectors.toSet());
 
         // we've gone through all applicable bom tools so we now have the complete metadata to phone home
