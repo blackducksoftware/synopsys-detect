@@ -25,10 +25,12 @@ package com.blackducksoftware.integration.hub.detect.extraction.bomtool.packagis
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
@@ -49,31 +51,31 @@ public class PackagistParser {
     private final Logger logger = LoggerFactory.getLogger(PackagistParser.class);
 
     @Autowired
-    DetectConfiguration detectConfiguration;
+    private DetectConfiguration detectConfiguration;
 
     @Autowired
-    ExternalIdFactory externalIdFactory;
+    private ExternalIdFactory externalIdFactory;
 
-    public PackagistParseResult getDependencyGraphFromProject(String sourcePath, String composerJsonText, String composerLockText) {
-        LazyExternalIdDependencyGraphBuilder builder = new LazyExternalIdDependencyGraphBuilder();
+    public PackagistParseResult getDependencyGraphFromProject(final String sourcePath, final String composerJsonText, final String composerLockText) {
+        final LazyExternalIdDependencyGraphBuilder builder = new LazyExternalIdDependencyGraphBuilder();
 
-        JsonObject composerJsonObject = new JsonParser().parse(composerJsonText).getAsJsonObject();
-        NameVersion projectNameVersion = parseNameVersionFromJson(composerJsonObject);
-        
-        JsonObject composerLockObject = new JsonParser().parse(composerLockText).getAsJsonObject();
-        List<PackagistPackage> models = convertJsonToModel(composerLockObject, detectConfiguration.getPackagistIncludeDevDependencies());
-        List<NameVersion> rootPackages = parseDependencies(composerJsonObject, detectConfiguration.getPackagistIncludeDevDependencies());
+        final JsonObject composerJsonObject = new JsonParser().parse(composerJsonText).getAsJsonObject();
+        final NameVersion projectNameVersion = parseNameVersionFromJson(composerJsonObject);
+
+        final JsonObject composerLockObject = new JsonParser().parse(composerLockText).getAsJsonObject();
+        final List<PackagistPackage> models = convertJsonToModel(composerLockObject, detectConfiguration.getPackagistIncludeDevDependencies());
+        final List<NameVersion> rootPackages = parseDependencies(composerJsonObject, detectConfiguration.getPackagistIncludeDevDependencies());
 
         models.forEach(it -> {
-            ExternalId id = externalIdFactory.createNameVersionExternalId(Forge.PACKAGIST, it.getNameVersion().getName(), it.getNameVersion().getVersion());
-            NameDependencyId dependencyId = new NameDependencyId(it.getNameVersion().getName());
-			builder.setDependencyInfo(dependencyId, it.getNameVersion().getName(), it.getNameVersion().getVersion(), id);
+            final ExternalId id = externalIdFactory.createNameVersionExternalId(Forge.PACKAGIST, it.getNameVersion().getName(), it.getNameVersion().getVersion());
+            final NameDependencyId dependencyId = new NameDependencyId(it.getNameVersion().getName());
+            builder.setDependencyInfo(dependencyId, it.getNameVersion().getName(), it.getNameVersion().getVersion(), id);
             if (isRootPackage(it.getNameVersion(), rootPackages)) {
                 builder.addChildToRoot(dependencyId);
             }
-            it.getDependencies().forEach (child -> {
+            it.getDependencies().forEach(child -> {
                 if (existsInPackages(child, models)) {
-                    NameDependencyId childId = new NameDependencyId(child.getName());
+                    final NameDependencyId childId = new NameDependencyId(child.getName());
                     builder.addChildWithParent(childId, dependencyId);
                 } else {
                     logger.warn("Dependency was not found in packages list but found a require that used it: " + child.getName());
@@ -88,77 +90,78 @@ public class PackagistParser {
             projectExternalId = externalIdFactory.createNameVersionExternalId(Forge.PACKAGIST, projectNameVersion.getName(), projectNameVersion.getVersion());
         }
 
-        DependencyGraph graph = builder.build();
-        DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolType.PACKAGIST, sourcePath, projectExternalId, graph).build();
-        
+        final DependencyGraph graph = builder.build();
+        final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolType.PACKAGIST, sourcePath, projectExternalId, graph).build();
+
         return new PackagistParseResult(projectNameVersion.getName(), projectNameVersion.getVersion(), codeLocation);
     }
 
-    private NameVersion parseNameVersionFromJson(JsonObject json) {
-    	JsonElement nameElement = json.get("name");
-    	JsonElement versionElement = json.get("version");
-    	
+    private NameVersion parseNameVersionFromJson(final JsonObject json) {
+        final JsonElement nameElement = json.get("name");
+        final JsonElement versionElement = json.get("version");
+
         String name = null;
         String version = null;
 
         if (nameElement != null) {
-        	name = nameElement.toString().replace("\"", "");
+            name = nameElement.toString().replace("\"", "");
         }
         if (versionElement != null) {
-        	version = versionElement.toString().replace("\"", "");
+            version = versionElement.toString().replace("\"", "");
         }
-        
+
         return new NameVersion(name, version);
     }
-    
-    private boolean isRootPackage(NameVersion nameVersion, List<NameVersion> rootPackages) {
+
+    private boolean isRootPackage(final NameVersion nameVersion, final List<NameVersion> rootPackages) {
         return rootPackages.stream().anyMatch(it -> it.getName().equals(nameVersion.getName()));
     }
 
-    private boolean existsInPackages(NameVersion nameVersion, List<PackagistPackage> models) {
-        return models.stream().anyMatch( it -> it.getNameVersion().getName().equals(nameVersion.getName()));
+    private boolean existsInPackages(final NameVersion nameVersion, final List<PackagistPackage> models) {
+        return models.stream().anyMatch(it -> it.getNameVersion().getName().equals(nameVersion.getName()));
     }
 
-    private List<PackagistPackage> convertJsonToModel(JsonObject lockfile, boolean checkDev) {
-        List<PackagistPackage> packages = new ArrayList<>();
+    private List<PackagistPackage> convertJsonToModel(final JsonObject lockfile, final boolean checkDev) {
+        final List<PackagistPackage> packages = new ArrayList<>();
         lockfile.get("packages").getAsJsonArray().forEach(it -> {
-        	if (it.isJsonObject()) {
-            	JsonObject itObject = it.getAsJsonObject();
-            	NameVersion nameVersion = parseNameVersionFromJson(itObject);
-	            List<NameVersion> dependencies = parseDependencies(itObject, checkDev);
-	            packages.add(new PackagistPackage(nameVersion, dependencies));
-        	}
+            if (it.isJsonObject()) {
+                final JsonObject itObject = it.getAsJsonObject();
+                final NameVersion nameVersion = parseNameVersionFromJson(itObject);
+                final List<NameVersion> dependencies = parseDependencies(itObject, checkDev);
+                packages.add(new PackagistPackage(nameVersion, dependencies));
+            }
         });
         return packages;
     }
 
-    private List<NameVersion> parseDependencies(JsonObject packageJson, boolean checkDev){
-    	List<NameVersion> dependencies = new ArrayList<>();
-    	
-    	JsonElement require = packageJson.get("require");
-    	if (require != null && require.isJsonObject()) {
-    		dependencies.addAll(parseDependenciesFromRequire(require.getAsJsonObject()));
-    	}
-		
+    private List<NameVersion> parseDependencies(final JsonObject packageJson, final boolean checkDev) {
+        final List<NameVersion> dependencies = new ArrayList<>();
+
+        final JsonElement require = packageJson.get("require");
+        if (require != null && require.isJsonObject()) {
+            dependencies.addAll(parseDependenciesFromRequire(require.getAsJsonObject()));
+        }
+
         if (checkDev) {
-            JsonElement devRequire = packageJson.get("require-dev");
-    		if (devRequire != null && devRequire.isJsonObject()) {
-    			dependencies.addAll(parseDependenciesFromRequire(devRequire.getAsJsonObject()));
-    		}
-			
+            final JsonElement devRequire = packageJson.get("require-dev");
+            if (devRequire != null && devRequire.isJsonObject()) {
+                dependencies.addAll(parseDependenciesFromRequire(devRequire.getAsJsonObject()));
+            }
+
         }
 
         return dependencies;
     }
-	
-	private List<NameVersion> parseDependenciesFromRequire(JsonObject requireObject){
-		List<NameVersion> dependencies = new ArrayList<>();
-		requireObject.entrySet().forEach(it -> {
-			if (!it.getKey().equalsIgnoreCase("php")) {
-				NameVersion nameVersion = new NameVersion(it.getKey().toString(), it.getValue().toString());
-				dependencies.add(nameVersion);
-			}
-		});
-		return dependencies;
-	}
+
+    private List<NameVersion> parseDependenciesFromRequire(final JsonObject requireObject) {
+        final List<NameVersion> dependencies = new ArrayList<>();
+        requireObject.entrySet().forEach(it -> {
+            if (!it.getKey().equalsIgnoreCase("php")) {
+                final NameVersion nameVersion = new NameVersion(it.getKey().toString(), it.getValue().toString());
+                dependencies.add(nameVersion);
+            }
+        });
+        return dependencies;
+    }
+
 }
