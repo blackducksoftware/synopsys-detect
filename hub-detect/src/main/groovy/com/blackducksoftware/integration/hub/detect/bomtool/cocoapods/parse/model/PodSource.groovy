@@ -21,21 +21,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.parse
+package com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.parse.model
 
-import com.fasterxml.jackson.annotation.JsonAnySetter
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonProperty
 
 import groovy.transform.ToString
 import groovy.transform.TypeChecked
 
 @TypeChecked
-@ToString(includePackage=false, includeFields=true)
-class ExternalSources {
-    List<PodSource> sources = []
+@ToString(includePackage=false, includeFields=true, ignoreNulls=true)
+@JsonIgnoreProperties(ignoreUnknown = true)
+class PodSource {
+    @JsonIgnore
+    String name
 
-    @JsonAnySetter
-    public void setDynamicProperty(String name, PodSource podSource) {
-        podSource.name = name
-        sources.add(podSource)
-    }
+    @JsonProperty(':git')
+    String git
+
+    @JsonProperty(':path')
+    String path
 }
