@@ -29,38 +29,36 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.help.html.HelpHtmlOption;
 import com.blackducksoftware.integration.hub.detect.help.print.HelpTextWriter;
 
 public abstract class DetectOption {
-    private final String key;
-    private final String fieldName;
-    private final Class<?> valueType;
+    private final DetectProperty detectProperty;
     private final boolean strictAcceptableValues;
     private final boolean caseSensitiveAcceptableValues;
     private final List<String> acceptableValues;
     private final DetectOptionHelp detectOptionHelp;
-    private final String originalValue;
-    private final String defaultValue;
     private final String resolvedValue;
+    private String postInitValue;
     private List<String> warnings = new ArrayList<>();
     private boolean requestedDeprecation = false;
     private String interactiveValue = null;
     private String finalValue = null;
     private FinalValueType finalValueType = FinalValueType.DEFAULT;
 
-    public DetectOption(final String key, final String fieldName, final Class<?> valueType, final boolean strictAcceptableValues, final boolean caseSensitiveAcceptableValues, final List<String> acceptableValues,
-            final DetectOptionHelp detectOptionHelp, final String originalValue, final String defaultValue, final String resolvedValue) {
-        this.key = key;
-        this.fieldName = fieldName;
-        this.valueType = valueType;
+    public DetectOption(final DetectProperty detectProperty, final boolean strictAcceptableValues, final boolean caseSensitiveAcceptableValues, final List<String> acceptableValues,
+            final DetectOptionHelp detectOptionHelp, final String resolvedValue) {
+        this.detectProperty = detectProperty;
         this.strictAcceptableValues = strictAcceptableValues;
         this.caseSensitiveAcceptableValues = caseSensitiveAcceptableValues;
         this.acceptableValues = acceptableValues;
         this.detectOptionHelp = detectOptionHelp;
-        this.originalValue = originalValue;
-        this.defaultValue = defaultValue;
         this.resolvedValue = resolvedValue;
+    }
+
+    public DetectProperty getDetectProperty() {
+        return detectProperty;
     }
 
     public void requestDeprecation() {
@@ -87,18 +85,6 @@ public abstract class DetectOption {
         this.finalValueType = finalValueType;
     }
 
-    public String getKey() {
-        return key;
-    }
-
-    public String getFieldName() {
-        return fieldName;
-    }
-
-    public Class<?> getValueType() {
-        return valueType;
-    }
-
     public DetectOptionHelp getDetectOptionHelp() {
         return detectOptionHelp;
     }
@@ -119,14 +105,6 @@ public abstract class DetectOption {
         return caseSensitiveAcceptableValues;
     }
 
-    public String getOriginalValue() {
-        return originalValue;
-    }
-
-    public String getDefaultValue() {
-        return defaultValue;
-    }
-
     public String getResolvedValue() {
         return resolvedValue;
     }
@@ -137,6 +115,14 @@ public abstract class DetectOption {
 
     public void setInteractiveValue(final String interactiveValue) {
         this.interactiveValue = interactiveValue;
+    }
+
+    public String getPostInitValue() {
+        return postInitValue;
+    }
+
+    public void setPostInitValue(final String postInitValue) {
+        this.postInitValue = postInitValue;
     }
 
     public String getFinalValue() {
@@ -162,19 +148,27 @@ public abstract class DetectOption {
         if (getAcceptableValues().size() > 0) {
             description += " (" + getAcceptableValues().stream().collect(Collectors.joining("|")) + ")";
         }
-        writer.printColumns("--" + getKey(), getDefaultValue(), description);
+        String propertyName = "";
+        String defaultValue = "";
+        if (StringUtils.isNotBlank(detectProperty.getPropertyName())) {
+            propertyName = detectProperty.getPropertyName();
+        }
+        if (StringUtils.isNotBlank(detectProperty.getDefaultValue())) {
+            defaultValue = detectProperty.getDefaultValue();
+        }
+        writer.printColumns("--" + propertyName, defaultValue, description);
     }
 
     public void printDetailedOption(final HelpTextWriter writer) {
         writer.println("");
-        writer.println("Detailed information for " + getKey());
+        writer.println("Detailed information for " + detectProperty.getPropertyName());
         writer.println("");
         if (getDetectOptionHelp().isDeprecated) {
             writer.println("Deprecated: will be removed in version " + getDetectOptionHelp().deprecationVersion);
             writer.println("");
         }
         writer.println("Property description: " + getDetectOptionHelp().description);
-        writer.println("Property default value: " + getDefaultValue());
+        writer.println("Property default value: " + detectProperty.getDefaultValue());
         if (getAcceptableValues().size() > 0) {
             writer.println("Property acceptable values: " + getAcceptableValues().stream().collect(Collectors.joining(", ")));
         }
@@ -198,7 +192,16 @@ public abstract class DetectOption {
         if (getDetectOptionHelp().isDeprecated) {
             deprecationNotice = "Will be removed in version " + getDetectOptionHelp().deprecationVersion + ". " + getDetectOptionHelp().deprecation;
         }
-        final HelpHtmlOption htmlOption = new HelpHtmlOption(getKey(), getDefaultValue(), description, acceptableValues, getDetectOptionHelp().detailedHelp, deprecationNotice);
+        String propertyName = "";
+        String defaultValue = "";
+        if (StringUtils.isNotBlank(detectProperty.getPropertyName())) {
+            propertyName = detectProperty.getPropertyName();
+        }
+        if (StringUtils.isNotBlank(detectProperty.getDefaultValue())) {
+            defaultValue = detectProperty.getDefaultValue();
+        }
+
+        final HelpHtmlOption htmlOption = new HelpHtmlOption(propertyName, defaultValue, description, acceptableValues, getDetectOptionHelp().detailedHelp, deprecationNotice);
         return htmlOption;
     }
 

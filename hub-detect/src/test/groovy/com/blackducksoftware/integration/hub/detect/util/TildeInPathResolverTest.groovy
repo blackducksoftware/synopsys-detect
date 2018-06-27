@@ -1,49 +1,53 @@
 package com.blackducksoftware.integration.hub.detect.util
 
+import com.blackducksoftware.integration.hub.detect.DetectInfo
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty
+import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType
 import org.junit.Assert
 import org.junit.Test
-
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration
-import com.blackducksoftware.integration.hub.detect.DetectInfo
-import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType
 
 class TildeInPathResolverTest {
     @Test
     void testResolvingTilde() {
-        DetectConfiguration detectConfiguration = new DetectConfiguration()
-        detectConfiguration.sourcePath = '~/Documents/source/integration/hub-detect'
+        DetectConfigWrapper detectConfigWrapper = new DetectConfigWrapper(null)
+        detectConfigWrapper.setDetectProperty(DetectProperty.DETECT_SOURCE_PATH, '~/Documents/source/integration/hub-detect')
 
-        TildeInPathResolver resolver = new TildeInPathResolver()
-        resolver.detectInfo = [getCurrentOs: {OperatingSystemType.LINUX}] as DetectInfo
+        DetectInfo detectInfo = new DetectInfo(null)
+        detectInfo.currentOs = OperatingSystemType.LINUX
+        TildeInPathResolver resolver = new TildeInPathResolver(detectInfo)
 
-        resolver.resolveTildeInAllPathFields('/Users/ekerwin', detectConfiguration)
+        resolver.resolveTildeInAllPathFields('/Users/ekerwin', detectConfigWrapper)
 
-        Assert.assertEquals('/Users/ekerwin/Documents/source/integration/hub-detect', detectConfiguration.sourcePath)
+        Assert.assertEquals('/Users/ekerwin/Documents/source/integration/hub-detect', detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH))
     }
 
     @Test
     void testResolvingTildeInWindows() {
-        DetectConfiguration detectConfiguration = new DetectConfiguration()
-        detectConfiguration.sourcePath = '~/Documents/source/integration/hub-detect'
+        DetectConfigWrapper detectConfigWrapper = new DetectConfigWrapper(null)
+        detectConfigWrapper.setDetectProperty(DetectProperty.DETECT_SOURCE_PATH, '~/Documents/source/integration/hub-detect')
 
-        TildeInPathResolver resolver = new TildeInPathResolver()
-        resolver.detectInfo = [getCurrentOs: {OperatingSystemType.WINDOWS}] as DetectInfo
+        DetectInfo detectInfo = new DetectInfo(null)
+        detectInfo.currentOs = OperatingSystemType.WINDOWS
+        println detectInfo.getCurrentOs()
+        TildeInPathResolver resolver = new TildeInPathResolver(detectInfo)
 
-        resolver.resolveTildeInAllPathFields('/Users/ekerwin', detectConfiguration)
+        resolver.resolveTildeInAllPathFields('/Users/ekerwin', detectConfigWrapper)
 
-        Assert.assertEquals('~/Documents/source/integration/hub-detect', detectConfiguration.sourcePath)
+        Assert.assertEquals('~/Documents/source/integration/hub-detect', detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH))
     }
 
     @Test
     void testResolvingTildeInTheMiddleOfAPath() {
-        DetectConfiguration detectConfiguration = new DetectConfiguration()
-        detectConfiguration.sourcePath = '/Documents/~source/~/integration/hub-detect'
+        DetectConfigWrapper detectConfigWrapper = new DetectConfigWrapper(null)
+        detectConfigWrapper.setDetectProperty(DetectProperty.DETECT_SOURCE_PATH, '/Documents/~source/~/integration/hub-detect')
 
-        TildeInPathResolver resolver = new TildeInPathResolver()
-        resolver.detectInfo = [getCurrentOs: {OperatingSystemType.LINUX}] as DetectInfo
+        DetectInfo detectInfo = new DetectInfo(null)
+        detectInfo.currentOs = OperatingSystemType.LINUX
+        TildeInPathResolver resolver = new TildeInPathResolver(detectInfo)
 
-        resolver.resolveTildeInAllPathFields('/Users/ekerwin', detectConfiguration)
+        resolver.resolveTildeInAllPathFields('/Users/ekerwin', detectConfigWrapper)
 
-        Assert.assertEquals('/Documents/~source/~/integration/hub-detect', detectConfiguration.sourcePath)
+        Assert.assertEquals('/Documents/~source/~/integration/hub-detect', detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH))
     }
 }

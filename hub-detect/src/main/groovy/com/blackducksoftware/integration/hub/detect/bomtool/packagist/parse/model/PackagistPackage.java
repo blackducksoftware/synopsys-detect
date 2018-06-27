@@ -21,27 +21,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.clang;
+package com.blackducksoftware.integration.hub.detect.bomtool.packagist.parse.model;
 
-import java.io.File;
-import java.util.Set;
+import java.util.List;
 
-import com.blackducksoftware.integration.hub.bdio.model.SimpleBdioDocument;
+import com.blackducksoftware.integration.util.NameVersion;
 
-public class ExtractorResults {
-    private final SimpleBdioDocument bdioDocument;
-    private final Set<File> filesForIScan;
+public class PackagistPackage {
+    private final NameVersion nameVersion;
+    private final List<NameVersion> dependencies;
 
-    public ExtractorResults(final SimpleBdioDocument bdioDocument, final Set<File> filesForIScan) {
-        this.bdioDocument = bdioDocument;
-        this.filesForIScan = filesForIScan;
+    public PackagistPackage(final NameVersion nameVersion, final List<NameVersion> dependencies) {
+        this.nameVersion = nameVersion;
+        this.dependencies = dependencies;
     }
 
-    public SimpleBdioDocument getBdioDocument() {
-        return bdioDocument;
+    public NameVersion getNameVersion() {
+        return nameVersion;
     }
 
-    public Set<File> getFilesForIScan() {
-        return filesForIScan;
+    public List<NameVersion> getDependencies() {
+        return dependencies;
     }
+
 }

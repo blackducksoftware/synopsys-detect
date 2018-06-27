@@ -23,6 +23,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.summary;
 
+import com.blackducksoftware.integration.hub.summary.Result;
+
 public class DetectSummaryResult {
     private final String descriptionKey;
     private final Result result;

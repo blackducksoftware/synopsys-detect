@@ -41,9 +41,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.exception.IntegrationException;
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.report.ExtractionSummaryReporter;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
@@ -57,8 +57,8 @@ import com.blackducksoftware.integration.hub.detect.model.DetectProject;
 import com.blackducksoftware.integration.hub.detect.project.BomToolProjectInfo;
 import com.blackducksoftware.integration.hub.detect.project.BomToolProjectInfoDecider;
 import com.blackducksoftware.integration.hub.detect.summary.BomToolSummaryResult;
-import com.blackducksoftware.integration.hub.detect.summary.Result;
 import com.blackducksoftware.integration.hub.detect.summary.SummaryResultReporter;
+import com.blackducksoftware.integration.hub.summary.Result;
 import com.blackducksoftware.integration.util.NameVersion;
 
 @Component
@@ -66,30 +66,28 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     private final Logger logger = LoggerFactory.getLogger(DetectProjectManager.class);
 
     private final Map<BomToolGroupType, Result> bomToolSummaryResults = new HashMap<>();
-    private ExitCodeType bomToolSearchExitCodeType;
+
+    private final SearchManager searchManager;
+    private final ExtractionManager extractionManager;
+    private final DetectCodeLocationManager codeLocationManager;
+    private final DetectBdioManager bdioManager;
+    private final ExtractionSummaryReporter extractionSummaryReporter;
+    private final BomToolProjectInfoDecider bomToolProjectInfoDecider;
+    private final DetectConfigWrapper detectConfigWrapper;
 
     @Autowired
-    private DetectConfiguration detectConfiguration;
+    public DetectProjectManager(final SearchManager searchManager, final ExtractionManager extractionManager, final DetectCodeLocationManager codeLocationManager, final DetectBdioManager bdioManager,
+            final ExtractionSummaryReporter extractionSummaryReporter, final BomToolProjectInfoDecider bomToolProjectInfoDecider, final DetectConfigWrapper detectConfigWrapper) {
+        this.searchManager = searchManager;
+        this.extractionManager = extractionManager;
+        this.codeLocationManager = codeLocationManager;
+        this.bdioManager = bdioManager;
+        this.extractionSummaryReporter = extractionSummaryReporter;
+        this.bomToolProjectInfoDecider = bomToolProjectInfoDecider;
+        this.detectConfigWrapper = detectConfigWrapper;
+    }
 
-    @Autowired
-    private SearchManager searchManager;
-
-    @Autowired
-    private ExtractionManager extractionManager;
-
-    @Autowired
-    private DetectCodeLocationManager codeLocationManager;
-
-    @Autowired
-    private DetectBdioManager bdioManager;
-
-    @Autowired
-    private ExtractionSummaryReporter extractionSummaryReporter;
-
-    @Autowired
-    private BomToolProjectInfoDecider bomToolProjectInfoDecider;
-
-    public DetectProject createDetectProject() throws DetectUserFriendlyException, IntegrationException {
+    public DetectProject createDetectProject() throws DetectUserFriendlyException {
         final SearchResult searchResult = searchManager.performSearch();
 
         final ExtractionResult extractionResult = extractionManager.performExtractions(searchResult.getBomToolEvaluations());
@@ -102,7 +100,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
         final List<DetectCodeLocation> codeLocations = extractionResult.getDetectCodeLocations();
 
         final List<File> bdioFiles = new ArrayList<>();
-        if (StringUtils.isBlank(detectConfiguration.getAggregateBomName())) {
+        if (StringUtils.isBlank(detectConfigWrapper.getProperty(DetectProperty.DETECT_BOM_AGGREGATE_NAME))) {
             final DetectCodeLocationResult codeLocationResult = codeLocationManager.process(codeLocations, projectName, projectVersion);
             applyFailedBomToolStatus(codeLocationResult.getFailedBomToolTypes());
 
@@ -136,9 +134,6 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
                 return ExitCodeType.FAILURE_BOM_TOOL;
             }
         }
-        if (null != bomToolSearchExitCodeType) {
-            return bomToolSearchExitCodeType;
-        }
         return ExitCodeType.SUCCESS;
     }
 
@@ -160,30 +155,30 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     private NameVersion getProjectNameVersion(final List<BomToolEvaluation> bomToolEvaluations) {
         final Optional<NameVersion> bomToolSuggestedNameVersion = findBomToolProjectNameAndVersion(bomToolEvaluations);
 
-        String projectName = detectConfiguration.getProjectName();
+        String projectName = detectConfigWrapper.getProperty(DetectProperty.DETECT_PROJECT_NAME);
         if (StringUtils.isBlank(projectName) && bomToolSuggestedNameVersion.isPresent()) {
             projectName = bomToolSuggestedNameVersion.get().getName();
         }
 
         if (StringUtils.isBlank(projectName)) {
             logger.info("A project name could not be decided. Using the name of the source path.");
-            projectName = detectConfiguration.getSourceDirectory().getName();
+            projectName = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)).getName();
         }
 
-        String projectVersionName = detectConfiguration.getProjectVersionName();
+        String projectVersionName = detectConfigWrapper.getProperty(DetectProperty.DETECT_PROJECT_VERSION_NAME);
         if (StringUtils.isBlank(projectVersionName) && bomToolSuggestedNameVersion.isPresent()) {
             projectVersionName = bomToolSuggestedNameVersion.get().getVersion();
         }
 
         if (StringUtils.isBlank(projectVersionName)) {
-            if ("timestamp".equals(detectConfiguration.getDefaultProjectVersionScheme())) {
+            if ("timestamp".equals(detectConfigWrapper.getProperty(DetectProperty.DETECT_DEFAULT_PROJECT_VERSION_SCHEME))) {
                 logger.info("A project version name could not be decided. Using the current timestamp.");
-                final String timeformat = detectConfiguration.getDefaultProjectVersionTimeformat();
+                final String timeformat = detectConfigWrapper.getProperty(DetectProperty.DETECT_DEFAULT_PROJECT_VERSION_TIMEFORMAT);
                 final String timeString = DateTimeFormatter.ofPattern(timeformat).withZone(ZoneOffset.UTC).format(Instant.now().atZone(ZoneOffset.UTC));
                 projectVersionName = timeString;
             } else {
                 logger.info("A project version name could not be decided. Using the default version text.");
-                projectVersionName = detectConfiguration.getDefaultProjectVersionText();
+                projectVersionName = detectConfigWrapper.getProperty(DetectProperty.DETECT_DEFAULT_PROJECT_VERSION_TEXT);
             }
         }
 
@@ -191,7 +186,7 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     }
 
     private Optional<NameVersion> findBomToolProjectNameAndVersion(final List<BomToolEvaluation> bomToolEvaluations) {
-        final String projectBomTool = detectConfiguration.getDetectProjectBomTool();
+        final String projectBomTool = detectConfigWrapper.getProperty(DetectProperty.DETECT_PROJECT_BOM_TOOL);
         Optional<BomToolGroupType> preferredBomToolType = Optional.empty();
         if (StringUtils.isNotBlank(projectBomTool)) {
             final String projectBomToolFixed = projectBomTool.toUpperCase();

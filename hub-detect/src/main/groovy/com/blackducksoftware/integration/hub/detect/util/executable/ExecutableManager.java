@@ -44,10 +44,15 @@ import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 public class ExecutableManager {
     private final Logger logger = LoggerFactory.getLogger(ExecutableManager.class);
     private final Map<String, File> cachedSystemExecutables = new HashMap<>();
+
+    private final DetectFileFinder detectFileFinder;
+    private final DetectInfo detectInfo;
+
     @Autowired
-    private DetectFileFinder detectFileFinder;
-    @Autowired
-    private DetectInfo detectInfo;
+    public ExecutableManager(final DetectFileFinder detectFileFinder, final DetectInfo detectInfo) {
+        this.detectFileFinder = detectFileFinder;
+        this.detectInfo = detectInfo;
+    }
 
     public String getExecutableName(final ExecutableType executableType) {
         return executableType.getExecutable();

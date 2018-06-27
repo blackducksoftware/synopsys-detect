@@ -21,26 +21,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.rubygems.parse
+package com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.parse.model
 
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
+import com.fasterxml.jackson.annotation.JsonAnySetter
 
-import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
-
+import groovy.transform.ToString
 import groovy.transform.TypeChecked
 
-@Component
 @TypeChecked
-public class RubygemsNodePackager {
-    @Autowired
-    NameVersionNodeTransformer nameVersionNodeTransformer
+@ToString(includePackage=false, includeFields=true)
+class Pod {
+    String name
+    String cleanName
+    List<String> dependencies = []
 
-    public DependencyGraph extractProjectDependencies(final List<String> gemlock) {
-        def gemlockNodeParser = new GemlockNodeParser()
-        DependencyGraph graph = gemlockNodeParser.parseProjectDependencies(nameVersionNodeTransformer, gemlock)
+    public Pod() {
+    }
 
-        graph
+    public Pod(String name) {
+        this.name = name
+    }
+
+    @JsonAnySetter
+    public void setDynamicProperty(String name, List<String> dependencies) {
+        this.name = name
+        this.dependencies = dependencies
     }
 }

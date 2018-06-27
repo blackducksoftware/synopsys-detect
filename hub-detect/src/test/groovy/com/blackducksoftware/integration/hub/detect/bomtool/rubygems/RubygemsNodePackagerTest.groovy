@@ -11,19 +11,20 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.rubygems
 
-import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.bomtool.rubygems.parse.RubygemsNodePackager
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
-import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
+import java.nio.charset.StandardCharsets
+
 import org.apache.commons.io.IOUtils
 import org.json.JSONException
 import org.junit.Assert
 import org.junit.Test
 
-import java.nio.charset.StandardCharsets
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.detect.bomtool.rubygems.parse.GemlockParser
+import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
+import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 
 class RubygemsNodePackagerTest {
     Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create()
@@ -35,9 +36,8 @@ class RubygemsNodePackagerTest {
                 StandardCharsets.UTF_8)
         final List<String> actualText = IOUtils.toString(getClass().getResourceAsStream("/rubygems/Gemfile.lock"),
                 StandardCharsets.UTF_8).split("\n").toList()
-        final RubygemsNodePackager rubygemsNodePackager = new RubygemsNodePackager()
-        rubygemsNodePackager.nameVersionNodeTransformer = nameVersionNodeTransformer
-        final DependencyGraph projects = rubygemsNodePackager.extractProjectDependencies(actualText)
+        final GemlockParser rubygemsNodePackager = new GemlockParser(new ExternalIdFactory());
+        final DependencyGraph projects = rubygemsNodePackager.parseProjectDependencies(actualText);
         Assert.assertEquals(8, projects.getRootDependencies().size())
 
         DependencyGraphResourceTestUtil.assertGraph('/rubygems/expectedPackager_graph.json', projects)

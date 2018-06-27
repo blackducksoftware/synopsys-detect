@@ -28,9 +28,8 @@ configure(subprojects) { project ->
     }
 
     dependencies {
-        compile 'com.blackducksoftware.integration:hub-common:33.2.0'
+        compile 'com.blackducksoftware.integration:hub-common:34.0.0'
         compile 'org.springframework:spring-core:5.0.4.RELEASE'
         compile 'org.springframework:spring-context:5.0.4.RELEASE'
     }
 }
-

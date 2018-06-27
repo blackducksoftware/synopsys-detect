@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.help.ArgumentState;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 
@@ -69,7 +69,7 @@ public class HelpPrinter {
     private void printVerboseOptions(final HelpTextWriter writer, final List<DetectOption> options, final String notes) {
         final List<DetectOption> sorted = options.stream().sorted((o1, o2) -> {
             if (o1.getDetectOptionHelp().primaryGroup.equals(o2.getDetectOptionHelp().primaryGroup)) {
-                return o1.getKey().compareTo(o2.getKey());
+                return o1.getDetectProperty().getPropertyName().compareTo(o2.getDetectProperty().getPropertyName());
             } else {
                 return o1.getDetectOptionHelp().primaryGroup.compareTo(o2.getDetectOptionHelp().primaryGroup);
             }
@@ -79,7 +79,7 @@ public class HelpPrinter {
 
     private void printDetailedHelp(final HelpTextWriter writer, final List<DetectOption> options, final String optionName) {
         final DetectOption option = options.stream()
-                .filter(it -> it.getKey().equals(optionName))
+                .filter(it -> it.getDetectProperty().getPropertyName().equals(optionName))
                 .findFirst().orElse(null);
 
         if (option == null) {
@@ -90,7 +90,7 @@ public class HelpPrinter {
     }
 
     private void printDefaultHelp(final HelpTextWriter writer, final List<DetectOption> options) {
-        printHelpFilteredByPrintGroup(writer, options, DetectConfiguration.PRINT_GROUP_DEFAULT);
+        printHelpFilteredByPrintGroup(writer, options, DetectProperty.PropertyConstants.PRINT_GROUP_DEFAULT);
     }
 
     private void printHelpFilteredByPrintGroup(final HelpTextWriter writer, final List<DetectOption> options, final String filterGroup) {
@@ -98,7 +98,7 @@ public class HelpPrinter {
 
         final List<DetectOption> filteredOptions = options.stream()
                 .filter(it -> it.getDetectOptionHelp().groups.stream().anyMatch(printGroup -> printGroup.equalsIgnoreCase(filterGroup)))
-                .sorted((o1, o2) -> o1.getKey().compareTo(o2.getKey()))
+                .sorted((o1, o2) -> o1.getDetectProperty().getPropertyName().compareTo(o2.getDetectProperty().getPropertyName()))
                 .collect(Collectors.toList());
 
         printOptions(writer, filteredOptions, notes);
@@ -108,7 +108,7 @@ public class HelpPrinter {
         final String notes = "Showing help only for fields that contain: " + searchTerm;
 
         final List<DetectOption> filteredOptions = options.stream()
-                .filter(it -> it.getKey().contains(searchTerm))
+                .filter(it -> it.getDetectProperty().getPropertyName().contains(searchTerm))
                 .collect(Collectors.toList());
 
         printOptions(writer, filteredOptions, notes);
@@ -120,7 +120,7 @@ public class HelpPrinter {
 
     private boolean isProperty(final List<DetectOption> allOptions, final String filterTerm) {
         return allOptions.stream()
-                .map(it -> it.getKey())
+                .map(it -> it.getDetectProperty().getPropertyName())
                 .anyMatch(it -> it.equals(filterTerm));
     }
 

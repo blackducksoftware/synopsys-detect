@@ -23,6 +23,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.summary;
 
+import com.blackducksoftware.integration.hub.summary.Result;
+
 public class ScanSummaryResult extends DetectSummaryResult {
     public ScanSummaryResult(final String scanTargetPath, final Result result) {
         super("Scan Target " + scanTargetPath, result);

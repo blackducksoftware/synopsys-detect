@@ -23,17 +23,16 @@
  */
 package com.blackducksoftware.integration.hub.detect.util;
 
-import java.lang.reflect.Field;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.DetectInfo;
-import com.blackducksoftware.integration.hub.detect.help.HelpGroup;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectPropertyType;
 import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType;
 
 /**
@@ -49,28 +48,30 @@ import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType;
  * --detect.resolve.tilde.in.paths=false to turn it off.
  * // @formatter:on
  */
-@Component
 public class TildeInPathResolver {
     private final Logger logger = LoggerFactory.getLogger(TildeInPathResolver.class);
 
-    @Autowired
-    private DetectInfo detectInfo;
+    private final DetectInfo detectInfo;
 
-    public void resolveTildeInAllPathFields(final String systemUserHome, final DetectConfiguration detectConfiguration) throws IllegalArgumentException, IllegalAccessException {
+    public TildeInPathResolver(final DetectInfo detectInfo) {
+        this.detectInfo = detectInfo;
+    }
+
+    public void resolveTildeInAllPathFields(final String systemUserHome, final DetectConfigWrapper detectConfigWrapper) throws IllegalArgumentException, IllegalAccessException {
         final OperatingSystemType currentOs = detectInfo.getCurrentOs();
-        final Field[] fields = DetectConfiguration.class.getDeclaredFields();
-        for (final Field field : fields) {
-            if (field.isAnnotationPresent(HelpGroup.class) && field.getType() == String.class) {
-                final boolean wasAccessible = field.isAccessible();
-                field.setAccessible(true);
-                final String providedPath = (String) field.get(detectConfiguration);
-                if (StringUtils.isNotBlank(providedPath)) {
-                    final String resolvedPath = resolveTildeInPath(currentOs, systemUserHome, providedPath);
-                    if (!resolvedPath.equals(providedPath)) {
-                        field.set(detectConfiguration, resolvedPath);
-                        logger.warn(String.format("We have resolved %s to %s. If this is not expected, please revise the path provided, or specify --detect.resolve.tilde.in.paths=false.", providedPath, resolvedPath));
+
+        Map<DetectProperty, Object> propertyMap = detectConfigWrapper.getPropertyMap();
+        if (null != propertyMap && !propertyMap.isEmpty()) {
+            for (Map.Entry<DetectProperty, Object> propertyEntry : propertyMap.entrySet()) {
+                if (DetectPropertyType.STRING == propertyEntry.getKey().getPropertyType()) {
+                    String originalString = (String) propertyEntry.getValue();
+                    if (StringUtils.isNotBlank(originalString)) {
+                        String resolvedPath = resolveTildeInPath(currentOs, systemUserHome, originalString);
+                        if (!resolvedPath.equals(originalString)) {
+                            detectConfigWrapper.setDetectProperty(propertyEntry.getKey(), resolvedPath);
+                            logger.warn(String.format("We have resolved %s to %s. If this is not expected, please revise the path provided, or specify --detect.resolve.tilde.in.paths=false.", originalString, resolvedPath));
+                        }
                     }
-                    field.setAccessible(wasAccessible);
                 }
             }
         }

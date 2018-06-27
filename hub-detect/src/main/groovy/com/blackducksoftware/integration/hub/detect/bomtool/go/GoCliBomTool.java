@@ -80,7 +80,7 @@ public class GoCliBomTool extends BomTool {
             return new ExecutableNotFoundBomToolResult("go");
         }
 
-        goDepInspector = goInspectorManager.evaluate(environment);
+        goDepInspector = goInspectorManager.evaluate();
         if (goDepInspector == null) {
             return new InspectorNotFoundBomToolResult("go");
         }
@@ -92,5 +92,4 @@ public class GoCliBomTool extends BomTool {
     public Extraction extract(final ExtractionId extractionId) {
         return goDepExtractor.extract(environment.getDirectory(), goExe, goDepInspector);
     }
-
 }

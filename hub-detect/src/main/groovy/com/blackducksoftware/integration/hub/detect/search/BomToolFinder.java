@@ -85,7 +85,7 @@ public class BomToolFinder {
             results.addAll(evaluations);
             applied.addAll(evaluations.stream().map(it -> it.bomTool.getBomToolType()).collect(Collectors.toList()));
 
-            // TODO: Used to have a remaining strategies and would bail early here, not sure how to go about that?
+            // TODO: Used to have a remaining bom tools and would bail early here, not sure how to go about that?
             final Set<BomToolType> everApplied = new HashSet<>();
             everApplied.addAll(applied);
             everApplied.addAll(appliedBefore);

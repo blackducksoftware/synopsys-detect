@@ -39,7 +39,7 @@ public class ExecutableStreamThread extends Thread {
     private String executableOutput;
 
     public ExecutableStreamThread(final InputStream executableStream, final Consumer<String> outputLoggingMethod, final Consumer<String> traceLoggingMethod) {
-        super("Executable Stream Thread");
+        super(Thread.currentThread().getName() + "-Executable_Stream_Thread");
         this.outputLoggingMethod = outputLoggingMethod;
         this.traceLoggingMethod = traceLoggingMethod;
         final InputStreamReader reader = new InputStreamReader(executableStream, StandardCharsets.UTF_8);

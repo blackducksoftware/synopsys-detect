@@ -45,6 +45,6 @@ public class YieldedBomToolResult extends FailedBomToolResult {
     @Override
     public String toDescription() {
         final String yielded = yieldedTo.stream().map(it -> it.getDescriptiveName()).collect(Collectors.joining(", "));
-        return "Yielded to strategies: " + yielded;
+        return "Yielded to bom tools: " + yielded;
     }
 }

@@ -1,5 +1,5 @@
-/*
- * hub-detect
+/**
+ * detect-configuration
  *
  * Copyright (C) 2018 Black Duck Software, Inc.
  * http://www.blackducksoftware.com/
@@ -21,22 +21,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.parse
+package com.blackducksoftware.integration.hub.detect.configuration;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.fasterxml.jackson.annotation.JsonProperty
+public enum DetectPropertyType {
+    BOOLEAN("Boolean"), STRING("String"), STRING_ARRAY("String[]"), INTEGER("Integer"), LONG("Long");
 
-import groovy.transform.TypeChecked
+    private final String displayName;
 
-@TypeChecked
-@JsonIgnoreProperties(ignoreUnknown = true)
-class PodfileLock {
-    @JsonProperty('PODS')
-    List<Pod> pods
+    DetectPropertyType(final String displayName) {
+        this.displayName = displayName;
+    }
 
-    @JsonProperty('DEPENDENCIES')
-    List<Pod> dependencies
-
-    @JsonProperty('EXTERNAL SOURCES')
-    ExternalSources externalSources
+    public String getDisplayName() {
+        return displayName;
+    }
 }
