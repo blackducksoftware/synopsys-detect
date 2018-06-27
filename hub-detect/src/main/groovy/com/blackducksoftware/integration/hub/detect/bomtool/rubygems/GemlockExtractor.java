@@ -35,7 +35,7 @@ import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
-import com.blackducksoftware.integration.hub.detect.bomtool.rubygems.parse.RubygemsNodePackager;
+import com.blackducksoftware.integration.hub.detect.bomtool.rubygems.parse.GemlockParser;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
@@ -44,16 +44,14 @@ import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 public class GemlockExtractor {
 
     @Autowired
-    RubygemsNodePackager rubygemsNodePackager;
-
-    @Autowired
     ExternalIdFactory externalIdFactory;
 
     public Extraction extract(final File directory, final File gemlock) {
         try {
             final List<String> gemlockText = Files.readAllLines(gemlock.toPath(), StandardCharsets.UTF_8);
 
-            final DependencyGraph dependencyGraph = rubygemsNodePackager.extractProjectDependencies(gemlockText);
+            final GemlockParser gemlockParser = new GemlockParser(externalIdFactory);
+            final DependencyGraph dependencyGraph = gemlockParser.parseProjectDependencies(gemlockText);
             final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.RUBYGEMS, directory.toString());
 
             final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolGroupType.RUBYGEMS, directory.toString(), externalId, dependencyGraph).build();
