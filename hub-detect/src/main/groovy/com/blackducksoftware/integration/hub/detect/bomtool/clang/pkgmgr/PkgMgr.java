@@ -38,7 +38,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.clang.executor.Comma
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
 public interface PkgMgr {
-
+    // TODO Should not use CommandStringExecutor here; each pkg mgr could easily build the list of args
     default boolean applies(final CommandStringExecutor executor) {
         try {
             final String versionOutput = executor.execute(new File("."), new HashMap<String, String>(), getCheckPresenceCommand());
@@ -61,6 +61,7 @@ public interface PkgMgr {
 
     List<Forge> getForges();
 
+    // TODO Should not use CommandStringExecutor here; each pkg mgr could easily build the list of args
     List<PackageDetails> getDependencyDetails(CommandStringExecutor executor, Set<File> filesForIScan, DependencyFile dependencyFile);
 
     String getCheckPresenceCommand();

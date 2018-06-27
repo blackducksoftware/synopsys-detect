@@ -148,8 +148,8 @@ public class CLangExtractor {
 
     private Function<File, Set<PackageDetails>> fileToPackagesConverter(final File sourceDir, final Set<File> filesForIScan, final PkgMgr pkgMgr) {
         final Function<File, Set<PackageDetails>> convertFileToPackages = (final File f) -> {
-            final DependencyFile dependencyFileWrapper = new DependencyFile(isUnder(sourceDir, f) ? true : false, f);
-            return new HashSet<>(pkgMgr.getDependencyDetails(executor, filesForIScan, dependencyFileWrapper));
+            final DependencyFile dependencyFileWithMetaData = new DependencyFile(isUnder(sourceDir, f) ? true : false, f);
+            return new HashSet<>(pkgMgr.getDependencyDetails(executor, filesForIScan, dependencyFileWithMetaData));
         };
         return convertFileToPackages;
     }
