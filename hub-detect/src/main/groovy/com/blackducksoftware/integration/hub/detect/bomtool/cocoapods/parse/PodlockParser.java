@@ -119,9 +119,7 @@ public class PodlockParser {
             final Forge forge = getForge(dependencyId, forgeOverrides);
             final ExternalId externalId = externalIdFactory.createNameVersionExternalId(forge, name, version);
 
-            lazyBuilder.setDependencyExternalId(dependencyId, externalId);
-            lazyBuilder.setDependencyName(dependencyId, name);
-            lazyBuilder.setDependencyVersion(dependencyId, version);
+            lazyBuilder.setDependencyInfo(dependencyId, name, version, externalId);
 
             for (final String child : pod.getDependencies()) {
                 final Optional<DependencyId> childId = parseDependencyId(child);
