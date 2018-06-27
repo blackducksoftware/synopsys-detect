@@ -82,10 +82,7 @@ public class GemlockParser {
                 previousLineWasBundledWith = true;
             } else if (previousLineWasBundledWith) {
                 previousLineWasBundledWith = false;
-                final String name = "bundler";
-                final String version = line.trim();
-                final DependencyId bundlerId = new NameDependencyId(name);
-                lazyBuilder.setDependencyInfo(bundlerId, name, version, externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, name, version));
+                addBundlerDependency(line);
             }
 
             if (!inSpecsSection && !inDependenciesSection) {
@@ -105,6 +102,14 @@ public class GemlockParser {
         });
 
         return lazyBuilder.build();
+    }
+
+    private void addBundlerDependency(final String line) {
+        final String name = "bundler";
+        final String version = line.trim();
+        final DependencyId bundlerId = new NameDependencyId(name);
+        final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, name, version);
+        lazyBuilder.setDependencyInfo(bundlerId, name, version, externalId);
     }
 
     private void parseSpecsSectionLine(final String line) {
@@ -177,5 +182,4 @@ public class GemlockParser {
         final boolean containsFuzzyIndicator = version.indexOf("=") > 0 || version.indexOf("~") >= 0 || version.indexOf(">") >= 0 || version.indexOf("<") >= 0;
         return !containsFuzzyIndicator;
     }
-
 }
