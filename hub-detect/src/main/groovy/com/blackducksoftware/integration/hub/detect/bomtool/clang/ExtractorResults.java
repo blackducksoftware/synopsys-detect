@@ -21,34 +21,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.model;
+package com.blackducksoftware.integration.hub.detect.bomtool.clang;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.io.File;
+import java.util.Set;
 
-public enum BomToolGroupType {
-    CARTHAGE,
-    COCOAPODS,
-    CONDA,
-    CPAN,
-    CRAN,
-    DOCKER,
-    GO_DEP,
-    GO_GODEP,
-    GO_VNDR,
-    GRADLE,
-    HEX,
-    MAVEN,
-    NPM,
-    NUGET,
-    PACKAGIST,
-    PEAR,
-    PIP,
-    RUBYGEMS,
-    SBT,
-    YARN,
-    CLANG;
+import com.blackducksoftware.integration.hub.bdio.model.SimpleBdioDocument;
 
-    public static List<String> POSSIBLE_NAMES = Arrays.stream(BomToolGroupType.values()).map(BomToolGroupType::name).collect(Collectors.toList());
+public class ExtractorResults {
+    private final SimpleBdioDocument bdioDocument;
+    private final Set<File> filesForIScan;
+
+    public ExtractorResults(final SimpleBdioDocument bdioDocument, final Set<File> filesForIScan) {
+        this.bdioDocument = bdioDocument;
+        this.filesForIScan = filesForIScan;
+    }
+
+    public SimpleBdioDocument getBdioDocument() {
+        return bdioDocument;
+    }
+
+    public Set<File> getFilesForIScan() {
+        return filesForIScan;
+    }
 }

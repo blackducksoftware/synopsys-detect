@@ -21,34 +21,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.model;
+package com.blackducksoftware.integration.hub.detect.bomtool.clang.executor;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.io.File;
+import java.util.Map;
 
-public enum BomToolGroupType {
-    CARTHAGE,
-    COCOAPODS,
-    CONDA,
-    CPAN,
-    CRAN,
-    DOCKER,
-    GO_DEP,
-    GO_GODEP,
-    GO_VNDR,
-    GRADLE,
-    HEX,
-    MAVEN,
-    NPM,
-    NUGET,
-    PACKAGIST,
-    PEAR,
-    PIP,
-    RUBYGEMS,
-    SBT,
-    YARN,
-    CLANG;
+import com.blackducksoftware.integration.exception.IntegrationException;
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
-    public static List<String> POSSIBLE_NAMES = Arrays.stream(BomToolGroupType.values()).map(BomToolGroupType::name).collect(Collectors.toList());
+public interface Executor {
+
+    String execute(File workingDir, Map<String, String> environmentVariables, String cmd) throws ExecutableRunnerException, IntegrationException;
+
 }

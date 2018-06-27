@@ -21,34 +21,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.model;
+package com.blackducksoftware.integration.hub.detect.bomtool.clang;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.io.File;
 
-public enum BomToolGroupType {
-    CARTHAGE,
-    COCOAPODS,
-    CONDA,
-    CPAN,
-    CRAN,
-    DOCKER,
-    GO_DEP,
-    GO_GODEP,
-    GO_VNDR,
-    GRADLE,
-    HEX,
-    MAVEN,
-    NPM,
-    NUGET,
-    PACKAGIST,
-    PEAR,
-    PIP,
-    RUBYGEMS,
-    SBT,
-    YARN,
-    CLANG;
+public class DependencyFile {
+    private final boolean inBuildDir;
+    private final File file;
 
-    public static List<String> POSSIBLE_NAMES = Arrays.stream(BomToolGroupType.values()).map(BomToolGroupType::name).collect(Collectors.toList());
+    public DependencyFile(final boolean inBuildDir, final File file) {
+        this.inBuildDir = inBuildDir;
+        this.file = file;
+    }
+
+    public boolean isInBuildDir() {
+        return inBuildDir;
+    }
+
+    public File getFile() {
+        return file;
+    }
 }

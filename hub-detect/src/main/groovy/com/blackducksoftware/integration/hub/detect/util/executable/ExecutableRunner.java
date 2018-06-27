@@ -26,6 +26,7 @@ package com.blackducksoftware.integration.hub.detect.util.executable;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,19 +44,29 @@ public class ExecutableRunner {
 
     public ExecutableOutput execute(final Executable executable) throws ExecutableRunnerException {
         logger.info(String.format("Running executable >%s", executable.getMaskedExecutableDescription()));
+        return execute(executable, s -> logger.info(s), s -> logger.trace(s));
+    }
+
+    public ExecutableOutput executeQuietly(final Executable executable) throws ExecutableRunnerException {
+        logger.debug(String.format("Running executable >%s", executable.getMaskedExecutableDescription()));
+        return execute(executable, s -> logger.debug(s), s -> logger.trace(s));
+    }
+
+    private ExecutableOutput execute(final Executable executable, final Consumer<String> standardLoggingMethod, final Consumer<String> traceLoggingMethod) throws ExecutableRunnerException {
+        standardLoggingMethod.accept(String.format("Running executable >%s", executable.getMaskedExecutableDescription()));
         try {
             final ProcessBuilder processBuilder = executable.createProcessBuilder();
             final Process process = processBuilder.start();
 
             try (InputStream standardOutputStream = process.getInputStream(); InputStream standardErrorStream = process.getErrorStream()) {
-                final ExecutableStreamThread standardOutputThread = new ExecutableStreamThread(standardOutputStream, logger);
+                final ExecutableStreamThread standardOutputThread = new ExecutableStreamThread(standardOutputStream, standardLoggingMethod, traceLoggingMethod);
                 standardOutputThread.start();
 
-                final ExecutableStreamThread errorOutputThread = new ExecutableStreamThread(standardErrorStream, logger);
+                final ExecutableStreamThread errorOutputThread = new ExecutableStreamThread(standardErrorStream, standardLoggingMethod, traceLoggingMethod);
                 errorOutputThread.start();
 
                 final int returnCode = process.waitFor();
-                logger.info("Executable finished: " + returnCode);
+                standardLoggingMethod.accept("Executable finished: " + returnCode);
 
                 standardOutputThread.join();
                 errorOutputThread.join();

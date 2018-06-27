@@ -27,6 +27,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.CLangBomTool;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.CLangExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.PodlockBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.PodlockExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.conda.CondaCliBomTool;
@@ -150,6 +152,9 @@ public class BomToolFactory {
 
     @Autowired
     YarnLockExtractor yarnLockExtractor;
+
+    @Autowired
+    CLangExtractor cLangExtractor;
 
     @Autowired
     DetectFileFinder detectFileFinder;
@@ -315,6 +320,11 @@ public class BomToolFactory {
     public YarnLockBomTool createYarnLockBomTool(final BomToolEnvironment environment) {
         final boolean productionDependenciesOnly = detectConfiguration.getYarnProductionDependenciesOnly();
         final YarnLockBomTool bomTool = new YarnLockBomTool(environment, productionDependenciesOnly, detectFileFinder, standardExecutableFinder, yarnLockExtractor);
+        return bomTool;
+    }
+
+    public CLangBomTool createCLangBomTool(final BomToolEnvironment environment) {
+        final CLangBomTool bomTool = new CLangBomTool(environment, detectFileFinder, cLangExtractor);
         return bomTool;
     }
 }

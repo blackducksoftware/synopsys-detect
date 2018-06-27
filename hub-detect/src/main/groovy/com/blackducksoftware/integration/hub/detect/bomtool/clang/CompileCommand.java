@@ -21,34 +21,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.model;
+package com.blackducksoftware.integration.hub.detect.bomtool.clang;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import org.apache.commons.lang3.builder.RecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
-public enum BomToolGroupType {
-    CARTHAGE,
-    COCOAPODS,
-    CONDA,
-    CPAN,
-    CRAN,
-    DOCKER,
-    GO_DEP,
-    GO_GODEP,
-    GO_VNDR,
-    GRADLE,
-    HEX,
-    MAVEN,
-    NPM,
-    NUGET,
-    PACKAGIST,
-    PEAR,
-    PIP,
-    RUBYGEMS,
-    SBT,
-    YARN,
-    CLANG;
+public class CompileCommand {
+    public String directory;
+    public String command;
+    public String file;
 
-    public static List<String> POSSIBLE_NAMES = Arrays.stream(BomToolGroupType.values()).map(BomToolGroupType::name).collect(Collectors.toList());
+    @Override
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this, RecursiveToStringStyle.JSON_STYLE);
+    }
 }
