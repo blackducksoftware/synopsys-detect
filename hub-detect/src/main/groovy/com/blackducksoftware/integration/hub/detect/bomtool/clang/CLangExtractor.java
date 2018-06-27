@@ -91,6 +91,7 @@ public class CLangExtractor {
     @Autowired
     DetectFileManager detectFileManager;
 
+    // TODO: Could skip the creation of SimpleBdioDocument; maybe next 2 methods should be combined
     public Extraction extract(final File sourceDir, final ExtractionId extractionId, final File jsonCompilationDatabaseFile) {
         try {
             logger.info(String.format("Analyzing %s", jsonCompilationDatabaseFile.getAbsolutePath()));
@@ -113,12 +114,8 @@ public class CLangExtractor {
         logger.debug(String.format("extract() called; compileCommandsJsonFilePath: %s", compileCommandsJsonFile.getAbsolutePath()));
         final Set<File> filesForIScan = ConcurrentHashMap.newKeySet(64);
         final PkgMgr pkgMgr = selectPkgMgr(executor);
-        // TODO can I get away with these nulls?
-        // final ExternalId projectExternalId = new SimpleBdioFactory().createNameVersionExternalId(pkgMgr.getDefaultForge(), projectName, projectVersion);
-        // final SimpleBdioDocument bdioDocument = new SimpleBdioFactory().createSimpleBdioDocument(codeLocationName, projectName, projectVersion, projectExternalId);
         final ExternalId projectExternalId = new SimpleBdioFactory().createNameVersionExternalId(pkgMgr.getDefaultForge(), null, null);
         final SimpleBdioDocument bdioDocument = new SimpleBdioFactory().createSimpleBdioDocument(null, null, null, projectExternalId);
-        ///////////
         final MutableDependencyGraph dependencyGraph = new SimpleBdioFactory().createMutableDependencyGraph();
         final List<CompileCommand> compileCommands = parseCompileCommandsFile(compileCommandsJsonFile);
 
