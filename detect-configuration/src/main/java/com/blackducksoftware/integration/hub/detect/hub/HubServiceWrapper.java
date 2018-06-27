@@ -24,6 +24,7 @@
 package com.blackducksoftware.integration.hub.detect.hub;
 
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -130,8 +131,8 @@ public class HubServiceWrapper {
         return hubServicesFactory.createReportService(detectConfigWrapper.getLongProperty(DetectProperty.DETECT_API_TIMEOUT));
     }
 
-    public SignatureScannerService createSignatureScannerService() {
-        return hubServicesFactory.createSignatureScannerService(120000L);
+    public SignatureScannerService createSignatureScannerService(final ExecutorService executorService) {
+        return hubServicesFactory.createSignatureScannerService(executorService);
     }
 
     private HubServicesFactory createHubServicesFactory(final IntLogger slf4jIntLogger, final HubServerConfig hubServerConfig) throws IntegrationException {

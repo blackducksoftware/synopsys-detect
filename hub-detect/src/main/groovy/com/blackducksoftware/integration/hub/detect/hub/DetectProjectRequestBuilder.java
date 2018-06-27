@@ -40,5 +40,6 @@ public class DetectProjectRequestBuilder extends ProjectRequestBuilder {
         setProjectTier(detectConfigWrapper.getIntegerProperty(DetectProperty.DETECT_PROJECT_TIER));
         setDescription(detectConfigWrapper.getProperty(DetectProperty.DETECT_PROJECT_DESCRIPTION));
         setReleaseComments(detectConfigWrapper.getProperty(DetectProperty.DETECT_PROJECT_VERSION_NOTES));
+
     }
 }

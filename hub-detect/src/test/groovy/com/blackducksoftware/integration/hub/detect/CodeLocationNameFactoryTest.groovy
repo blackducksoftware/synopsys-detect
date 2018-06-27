@@ -11,16 +11,16 @@
  */
 package com.blackducksoftware.integration.hub.detect
 
-import static org.junit.Assert.*
-
-import org.junit.Test
-
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.codelocation.BomCodeLocationNameService
+import com.blackducksoftware.integration.hub.detect.codelocation.DockerScanCodeLocationNameService
 import com.blackducksoftware.integration.hub.detect.codelocation.ScanCodeLocationNameService
 import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder
+import org.junit.Test
+
+import static org.junit.Assert.assertEquals
 
 class CodeLocationNameFactoryTest {
     @Test
@@ -43,9 +43,28 @@ class CodeLocationNameFactoryTest {
     }
 
     @Test
+    public void testDockerScanCodeLocationNameFactory() {
+        String expected = 'dockerTar.tar.gz/hub-common-rest/2.5.1-SNAPSHOT scan'
+
+        DetectFileFinder detectFileManager = [extractFinalPieceFromPath: { 'hub-common-rest' }] as DetectFileFinder
+        DockerScanCodeLocationNameService dockerScanCodeLocationNameService = new DockerScanCodeLocationNameService()
+        dockerScanCodeLocationNameService.detectFileFinder = detectFileManager
+
+        String dockerTarFileName = 'dockerTar.tar.gz'
+        String projectName = 'hub-common-rest'
+        String projectVersionName = '2.5.1-SNAPSHOT'
+        String prefix = ''
+        String suffix = ''
+        String actual = dockerScanCodeLocationNameService.createCodeLocationName(dockerTarFileName, projectName, projectVersionName, prefix, suffix)
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
     public void testBomCodeLocationNameFactory() {
 
-        String expected = 'hub-common-rest/child/group/name/version npm/bom' //= path/externalId tool/type
+        String expected = 'hub-common-rest/child/group/name/version npm/bom'
+        //= path/externalId tool/type
 
         ExternalIdFactory factory = new ExternalIdFactory();
         ExternalId externalId = factory.createMavenExternalId("group", "name", "version");

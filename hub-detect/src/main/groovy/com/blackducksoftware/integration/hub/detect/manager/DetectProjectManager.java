@@ -57,8 +57,8 @@ import com.blackducksoftware.integration.hub.detect.model.DetectProject;
 import com.blackducksoftware.integration.hub.detect.project.BomToolProjectInfo;
 import com.blackducksoftware.integration.hub.detect.project.BomToolProjectInfoDecider;
 import com.blackducksoftware.integration.hub.detect.summary.BomToolSummaryResult;
-import com.blackducksoftware.integration.hub.detect.summary.Result;
 import com.blackducksoftware.integration.hub.detect.summary.SummaryResultReporter;
+import com.blackducksoftware.integration.hub.summary.Result;
 import com.blackducksoftware.integration.util.NameVersion;
 
 @Component

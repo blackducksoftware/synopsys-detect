@@ -23,57 +23,18 @@
  */
 package com.blackducksoftware.integration.hub.detect.codelocation;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ScanCodeLocationNameService extends CodeLocationNameService {
+public class ScanCodeLocationNameService extends FileCodeLocationNameService {
     public String createCodeLocationName(final String sourcePath, final String scanTargetPath, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
-        final String cleanedTargetPath = cleanScanTargetPath(scanTargetPath, sourcePath);
+        String pathPiece = cleanScanTargetPath(scanTargetPath, sourcePath);
+
         final String codeLocationTypeString = CodeLocationType.SCAN.toString().toLowerCase();
 
-        String codeLocationName = createCommonName(cleanedTargetPath, projectName, projectVersionName, prefix, suffix, codeLocationTypeString);
-
-        if (codeLocationName.length() > 250) {
-            codeLocationName = shortenCodeLocationName(cleanedTargetPath, projectName, projectVersionName, prefix, suffix, codeLocationTypeString);
-        }
+        String codeLocationName = shortenIfNeeded(pathPiece, projectName, projectVersionName, prefix, suffix, codeLocationTypeString);
 
         return codeLocationName;
-    }
-
-    private String createCommonName(final String pathPiece, final String projectName, final String projectVersionName, final String prefix, final String suffix, final String codeLocationType) {
-        String name = String.format("%s/%s/%s", pathPiece, projectName, projectVersionName);
-        if (StringUtils.isNotBlank(prefix)) {
-            name = String.format("%s/%s", prefix, name);
-        }
-        if (StringUtils.isNotBlank(suffix)) {
-            name = String.format("%s/%s", name, suffix);
-        }
-
-        final String endPiece = codeLocationType;
-
-        name = String.format("%s %s", name, endPiece);
-        return name;
-    }
-
-    private String shortenCodeLocationName(final String pathPiece, final String projectName, final String projectVersionName, final String prefix, final String suffix, final String codeLocationType) {
-        final String shortenedPathPiece = shortenPiece(pathPiece);
-        final String shortenedProjectName = shortenPiece(projectName);
-        final String shortenedProjectVersionName = shortenPiece(projectVersionName);
-        final String shortenedPrefix = shortenPiece(prefix);
-        final String shortenedSuffix = shortenPiece(suffix);
-
-        return createCommonName(shortenedPathPiece, shortenedProjectName, shortenedProjectVersionName, shortenedPrefix, shortenedSuffix, codeLocationType);
-    }
-
-    private String cleanScanTargetPath(final String scanTargetPath, final String sourcePath) {
-        final String finalSourcePathPiece = detectFileFinder.extractFinalPieceFromPath(sourcePath);
-        String cleanedTargetPath = "";
-        if (StringUtils.isNotBlank(scanTargetPath) && StringUtils.isNotBlank(finalSourcePathPiece)) {
-            cleanedTargetPath = scanTargetPath.replace(sourcePath, finalSourcePathPiece);
-        }
-
-        return cleanedTargetPath;
     }
 
 }

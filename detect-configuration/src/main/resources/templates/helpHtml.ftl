@@ -66,6 +66,7 @@
 	        </tr>
 	        <#list group.options as option>
 		        <tr>
+		            <td>--${option.key}</td>
 		            <td>${option.defaultValue}</td>
 		            <td>${option.acceptableValues}</td>
 		            <td>${option.description}</td>

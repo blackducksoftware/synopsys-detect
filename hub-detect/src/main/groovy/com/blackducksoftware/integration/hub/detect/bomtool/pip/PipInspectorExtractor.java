@@ -55,6 +55,7 @@ public class PipInspectorExtractor {
     }
 
     public Extraction extract(final File directory, final String pythonExe, final File pipInspector, final File setupFile, final String requirementFilePath) {
+        Extraction extractionResult;
         try {
             final String projectName = getProjectName(directory, pythonExe, setupFile);
             final PipParseResult result;
@@ -62,10 +63,16 @@ public class PipInspectorExtractor {
             final String inspectorOutput = runInspector(directory, pythonExe, pipInspector, projectName, requirementFilePath);
             result = pipInspectorTreeParser.parse(inspectorOutput, directory.toString());
 
-            return new Extraction.Builder().success(result.codeLocation).projectName(result.projectName).projectVersion(result.projectVersion).build();
+            if (result == null) {
+                extractionResult = new Extraction.Builder().failure("The Pip Inspector tree parser returned null").build();
+            } else {
+                extractionResult = new Extraction.Builder().success(result.codeLocation).projectName(result.projectName).projectVersion(result.projectVersion).build();
+            }
         } catch (final Exception e) {
-            return new Extraction.Builder().exception(e).build();
+            extractionResult = new Extraction.Builder().exception(e).build();
         }
+
+        return extractionResult;
     }
 
     private String runInspector(final File sourceDirectory, final String pythonPath, final File inspectorScript, final String projectName, final String requirementsFilePath) throws ExecutableRunnerException {

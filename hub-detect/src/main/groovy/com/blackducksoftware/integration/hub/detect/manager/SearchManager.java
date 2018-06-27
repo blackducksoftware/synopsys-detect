@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolFactory;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolSearchProvider;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.report.SearchSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
@@ -55,16 +55,17 @@ public class SearchManager {
     private final Logger logger = LoggerFactory.getLogger(SearchManager.class);
 
     private final SearchSummaryReporter searchSummaryReporter;
-    private final DetectConfigWrapper detectConfigWrapper;
+    private final BomToolSearchProvider bomToolSearchProvider;
     private final DetectPhoneHomeManager detectPhoneHomeManager;
-    private final BomToolFactory bomToolFactory;
+    private final DetectConfigWrapper detectConfigWrapper;
 
     @Autowired
-    public SearchManager(final SearchSummaryReporter searchSummaryReporter, final DetectConfigWrapper detectConfigWrapper, final DetectPhoneHomeManager detectPhoneHomeManager, final BomToolFactory bomToolFactory) {
+    public SearchManager(final SearchSummaryReporter searchSummaryReporter, final BomToolSearchProvider bomToolSearchProvider, final DetectPhoneHomeManager detectPhoneHomeManager,
+            final DetectConfigWrapper detectConfigWrapper) {
         this.searchSummaryReporter = searchSummaryReporter;
-        this.bomToolFactory = bomToolFactory;
-        this.detectConfigWrapper = detectConfigWrapper;
+        this.bomToolSearchProvider = bomToolSearchProvider;
         this.detectPhoneHomeManager = detectPhoneHomeManager;
+        this.detectConfigWrapper = detectConfigWrapper;
     }
 
     private List<BomToolEvaluation> findApplicableBomTools(final File directory) throws BomToolException, DetectUserFriendlyException {
@@ -77,7 +78,7 @@ public class SearchManager {
 
         logger.info("Starting search for bom tools.");
         final BomToolFinder bomToolTreeWalker = new BomToolFinder();
-        return bomToolTreeWalker.findApplicableBomTools(bomToolFactory, directory, findOptions);
+        return bomToolTreeWalker.findApplicableBomTools(bomToolSearchProvider, directory, findOptions);
     }
 
     public SearchResult performSearch() throws DetectUserFriendlyException {

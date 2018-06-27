@@ -1,4 +1,4 @@
-/**
+/*
  * hub-detect
  *
  * Copyright (C) 2018 Black Duck Software, Inc.
@@ -21,10 +21,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.summary;
+package com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.parse.model
 
-public enum Result {
-    SUCCESS,
-    FAILURE;
+import com.fasterxml.jackson.annotation.JsonAnySetter
 
+import groovy.transform.ToString
+import groovy.transform.TypeChecked
+
+@TypeChecked
+@ToString(includePackage=false, includeFields=true)
+class Pod {
+    String name
+    String cleanName
+    List<String> dependencies = []
+
+    public Pod() {
+    }
+
+    public Pod(String name) {
+        this.name = name
+    }
+
+    @JsonAnySetter
+    public void setDynamicProperty(String name, List<String> dependencies) {
+        this.name = name
+        this.dependencies = dependencies
+    }
 }

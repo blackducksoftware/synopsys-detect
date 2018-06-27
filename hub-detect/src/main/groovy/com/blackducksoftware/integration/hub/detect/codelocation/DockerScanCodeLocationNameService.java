@@ -1,4 +1,4 @@
-/*
+/**
  * hub-detect
  *
  * Copyright (C) 2018 Black Duck Software, Inc.
@@ -21,21 +21,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.parse
+package com.blackducksoftware.integration.hub.detect.codelocation;
 
-import com.fasterxml.jackson.annotation.JsonAnySetter
+import org.springframework.stereotype.Component;
 
-import groovy.transform.ToString
-import groovy.transform.TypeChecked
+@Component
+public class DockerScanCodeLocationNameService extends FileCodeLocationNameService {
+    public String createCodeLocationName(String dockerTarFilename, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
+        String pathPiece = dockerTarFilename;
 
-@TypeChecked
-@ToString(includePackage=false, includeFields=true)
-class ExternalSources {
-    List<PodSource> sources = []
+        final String codeLocationTypeString = CodeLocationType.SCAN.toString().toLowerCase();
 
-    @JsonAnySetter
-    public void setDynamicProperty(String name, PodSource podSource) {
-        podSource.name = name
-        sources.add(podSource)
+        String codeLocationName = shortenIfNeeded(pathPiece, projectName, projectVersionName, prefix, suffix, codeLocationTypeString);
+
+        return codeLocationName;
     }
+
 }

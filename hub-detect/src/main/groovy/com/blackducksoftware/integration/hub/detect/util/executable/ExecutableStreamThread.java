@@ -39,7 +39,7 @@ public class ExecutableStreamThread extends Thread {
     private String executableOutput;
 
     public ExecutableStreamThread(final InputStream executableStream, final Logger logger) {
-        super("Executable Stream Thread");
+        super(Thread.currentThread().getName() + "-Executable_Stream_Thread");
         this.logger = logger;
         final InputStreamReader reader = new InputStreamReader(executableStream, StandardCharsets.UTF_8);
         this.bufferedReader = new BufferedReader(reader);
@@ -63,7 +63,7 @@ public class ExecutableStreamThread extends Thread {
     }
 
     public String getExecutableOutput() {
-    		return executableOutput;
+        return executableOutput;
     }
 
 }

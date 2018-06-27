@@ -181,14 +181,14 @@ public class DockerExtractor {
 
         final File producedTarFile = detectFileFinder.findFile(outputDirectory, TAR_FILENAME_PATTERN);
         if (null != producedTarFile && producedTarFile.isFile()) {
-            hubSignatureScanner.setDockerTarFilePath(producedTarFile.getCanonicalPath());
+            hubSignatureScanner.setDockerTarFile(producedTarFile);
         } else {
             logger.debug(String.format("No files found matching pattern [%s]. Expected docker-inspector to produce file in %s", TAR_FILENAME_PATTERN, outputDirectory.getCanonicalPath()));
             if (StringUtils.isNotBlank(dockerTarFilePath)) {
                 final File dockerTarFile = new File(dockerTarFilePath);
                 if (dockerTarFile.isFile()) {
                     logger.debug(String.format("Will scan the provided Docker tar file %s", dockerTarFile.getCanonicalPath()));
-                    hubSignatureScanner.setDockerTarFilePath(dockerTarFile.getCanonicalPath());
+                    hubSignatureScanner.setDockerTarFile(dockerTarFile);
                 }
             }
         }
