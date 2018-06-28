@@ -84,7 +84,7 @@ public class DockerProperties {
         }
 
         environmentVariables.put("BLACKDUCK_HUB_PROXY_HOST", detectConfigWrapper.getProperty(DetectProperty.BLACKDUCK_HUB_PROXY_HOST));
-        environmentVariables.put("BLACKDUCK_HUB_PROXY_PORT", String.valueOf(detectConfigWrapper.getIntegerProperty(DetectProperty.BLACKDUCK_HUB_PROXY_PORT)));
+        environmentVariables.put("BLACKDUCK_HUB_PROXY_PORT", detectConfigWrapper.getProperty(DetectProperty.BLACKDUCK_HUB_PROXY_PORT));
         environmentVariables.put("BLACKDUCK_HUB_PROXY_USERNAME", detectConfigWrapper.getProperty(DetectProperty.BLACKDUCK_HUB_PROXY_USERNAME));
         environmentVariables.put("BLACKDUCK_HUB_PROXY_PASSWORD", detectConfigWrapper.getProperty(DetectProperty.BLACKDUCK_HUB_PROXY_PASSWORD));
         environmentVariables.put("BLACKDUCK_HUB_PROXY_IGNORED_HOSTS", detectConfigWrapper.getProperty(DetectProperty.BLACKDUCK_HUB_PROXY_IGNORED_HOSTS));

@@ -28,19 +28,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-
-import org.slf4j.Logger;
+import java.util.function.Consumer;
 
 public class ExecutableStreamThread extends Thread {
     private final BufferedReader bufferedReader;
     private final StringBuilder stringBuilder;
-    private final Logger logger;
+    private final Consumer<String> outputLoggingMethod;
+    private final Consumer<String> traceLoggingMethod;
 
     private String executableOutput;
 
-    public ExecutableStreamThread(final InputStream executableStream, final Logger logger) {
+    public ExecutableStreamThread(final InputStream executableStream, final Consumer<String> outputLoggingMethod, final Consumer<String> traceLoggingMethod) {
         super(Thread.currentThread().getName() + "-Executable_Stream_Thread");
-        this.logger = logger;
+        this.outputLoggingMethod = outputLoggingMethod;
+        this.traceLoggingMethod = traceLoggingMethod;
         final InputStreamReader reader = new InputStreamReader(executableStream, StandardCharsets.UTF_8);
         this.bufferedReader = new BufferedReader(reader);
         this.stringBuilder = new StringBuilder();
@@ -53,11 +54,11 @@ public class ExecutableStreamThread extends Thread {
             final String separator = System.lineSeparator();
             while ((line = bufferedReader.readLine()) != null) {
                 stringBuilder.append(line + separator);
-                logger.info(line);
+                outputLoggingMethod.accept(line);
             }
         } catch (final IOException e) {
             // Ignore
-            logger.trace(e.toString());
+            traceLoggingMethod.accept(e.toString());
         }
         this.executableOutput = stringBuilder.toString();
     }

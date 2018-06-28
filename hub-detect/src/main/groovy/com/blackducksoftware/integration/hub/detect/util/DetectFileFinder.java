@@ -127,12 +127,7 @@ public class DetectFileFinder {
         if (!sourceDirectory.isDirectory()) {
             return null;
         }
-        final File[] foundFiles = sourceDirectory.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(final File directoryContainingTheFile, final String filename) {
-                return FilenameUtils.wildcardMatchOnSystem(filename, filenamePattern);
-            }
-        });
+        final File[] foundFiles = sourceDirectory.listFiles((FilenameFilter) (directoryContainingTheFile, filename) -> FilenameUtils.wildcardMatchOnSystem(filename, filenamePattern));
         if (foundFiles == null || foundFiles.length == 0) {
             return null;
         }
@@ -144,30 +139,29 @@ public class DetectFileFinder {
     }
 
     /**
-     * Will recursively look for files/directories matching these name patterns within the source directory.
-     * It will not look for matching files/directories within a directory that matched one of the patterns.
+     * Will recursively look for files/directories matching these name patterns within the source directory. It will not look for matching files/directories within a directory that matched one of the patterns.
      */
     public List<File> findAllFilesToMaxDepth(final File sourceDirectory, final String... filenamePatterns) {
         return findFilesRecursive(sourceDirectory, 0, Integer.MAX_VALUE, false, filenamePatterns);
     }
 
-    private List<File> findFilesRecursive(final File sourceDirectory, final int currentDepth, final int maxDepth, Boolean recurseIntoDirectoryMatch, final String... filenamePatterns) {
+    private List<File> findFilesRecursive(final File sourceDirectory, final int currentDepth, final int maxDepth, final Boolean recurseIntoDirectoryMatch, final String... filenamePatterns) {
         final List<File> files = new ArrayList<>();
         if (currentDepth > maxDepth || !sourceDirectory.isDirectory() || null == filenamePatterns || filenamePatterns.length < 1) {
             return files;
         }
-        File[] children = sourceDirectory.listFiles();
+        final File[] children = sourceDirectory.listFiles();
         if (null != children && children.length > 0) {
             for (final File file : children) {
                 boolean matchFound = false;
-                for (String filenamePattern : filenamePatterns) {
+                for (final String filenamePattern : filenamePatterns) {
                     if (FilenameUtils.wildcardMatchOnSystem(file.getName(), filenamePattern)) {
                         files.add(file);
                         matchFound = true;
                     }
                 }
                 if (file.isDirectory()) {
-                    if (!matchFound || (matchFound && recurseIntoDirectoryMatch)) {
+                    if (!matchFound || matchFound && recurseIntoDirectoryMatch) {
                         // only go into the directory if it is not a match OR it is a match and the flag is set to go into matching directories
                         files.addAll(findFilesRecursive(file, currentDepth + 1, maxDepth, recurseIntoDirectoryMatch, filenamePatterns));
                     }

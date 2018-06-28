@@ -26,6 +26,8 @@ package com.blackducksoftware.integration.hub.detect.factory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.CLangBomTool;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.CLangExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.PodlockBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.PodlockExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.conda.CondaCliBomTool;
@@ -121,6 +123,7 @@ public class BomToolFactory {
     private final GradleInspectorManager gradleInspectorManager;
     private final MavenExecutableFinder mavenExecutableFinder;
     private final NpmExecutableFinder npmExecutableFinder;
+    private final CLangExtractor cLangExtractor;
     private final DetectConfigWrapper detectConfigWrapper;
 
     @Autowired
@@ -132,6 +135,7 @@ public class BomToolFactory {
             final YarnLockExtractor yarnLockExtractor, final DetectFileFinder detectFileFinder, final StandardExecutableFinder standardExecutableFinder, final DockerInspectorManager dockerInspectorManager,
             final PipInspectorManager pipInspectorManager, final GoInspectorManager goInspectorManager, final NugetInspectorManager nugetInspectorManager, final PythonExecutableFinder pythonExecutableFinder,
             final GradleExecutableFinder gradleFinder, final GradleInspectorManager gradleInspectorManager, final MavenExecutableFinder mavenExecutableFinder, final NpmExecutableFinder npmExecutableFinder,
+            final CLangExtractor cLangExtractor,
             final DetectConfigWrapper detectConfigWrapper) {
         this.podlockExtractor = podlockExtractor;
         this.condaCliExtractor = condaCliExtractor;
@@ -165,6 +169,7 @@ public class BomToolFactory {
         this.gradleInspectorManager = gradleInspectorManager;
         this.mavenExecutableFinder = mavenExecutableFinder;
         this.npmExecutableFinder = npmExecutableFinder;
+        this.cLangExtractor = cLangExtractor;
         this.detectConfigWrapper = detectConfigWrapper;
     }
 
@@ -297,6 +302,11 @@ public class BomToolFactory {
         final boolean productionDependenciesOnly = detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_YARN_PROD_ONLY);
 
         final YarnLockBomTool bomTool = new YarnLockBomTool(environment, productionDependenciesOnly, detectFileFinder, standardExecutableFinder, yarnLockExtractor);
+        return bomTool;
+    }
+
+    public CLangBomTool createCLangBomTool(final BomToolEnvironment environment) {
+        final CLangBomTool bomTool = new CLangBomTool(environment, detectFileFinder, cLangExtractor);
         return bomTool;
     }
 }

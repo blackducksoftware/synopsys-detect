@@ -48,5 +48,6 @@ public enum BomToolType {
     PIP_INSPECTOR,
     GEMLOCK,
     SBT_RESOLUTION_CACHE,
-    YARN_LOCK
+    YARN_LOCK,
+    CLANG
 }
