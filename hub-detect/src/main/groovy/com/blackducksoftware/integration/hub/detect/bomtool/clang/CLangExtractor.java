@@ -148,8 +148,11 @@ public class CLangExtractor {
 
     private Function<File, Set<PackageDetails>> fileToPackagesConverter(final File sourceDir, final Set<File> filesForIScan, final PkgMgr pkgMgr) {
         final Function<File, Set<PackageDetails>> convertFileToPackages = (final File f) -> {
+            logger.trace(String.format("Querying package manager for %s", f.getAbsolutePath()));
             final DependencyFile dependencyFileWithMetaData = new DependencyFile(isUnder(sourceDir, f) ? true : false, f);
-            return new HashSet<>(pkgMgr.getDependencyDetails(executor, filesForIScan, dependencyFileWithMetaData));
+            final Set<PackageDetails> packages = new HashSet<>(pkgMgr.getDependencyDetails(executor, filesForIScan, dependencyFileWithMetaData));
+            logger.debug(String.format("Found %d packages for %s", packages.size(), f.getAbsolutePath()));
+            return packages;
         };
         return convertFileToPackages;
     }
@@ -180,6 +183,7 @@ public class CLangExtractor {
 
     private Function<CompileCommand, Set<String>> compileCommandToDependencyFilePathsConverter(final File workingDir) {
         final Function<CompileCommand, Set<String>> convertCompileCommandToDependencyFilePaths = (final CompileCommand compileCommand) -> {
+            logger.info(String.format("Analyzing source file: %s", compileCommand.file));
             final Set<String> dependencyFilePaths = new HashSet<>();
             final Optional<File> depsMkFile = generateDependencyFileByCompiling(workingDir, compileCommand);
             dependencyFilePaths.addAll(dependencyFileManager.parse(depsMkFile));
