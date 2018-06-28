@@ -24,7 +24,6 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.clang;
 
 import java.io.File;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,14 +55,11 @@ public class CLangBomTool extends BomTool {
 
     @Override
     public BomToolResult applicable() {
-        final List<File> jsonCompilationDatabaseFiles = fileFinder.findFilesToDepth(environment.getDirectory(), JSON_COMPILATION_DATABASE_FILENAME, 4);
-        if (jsonCompilationDatabaseFiles.size() == 0) {
+        final File jsonCompilationDatabaseFile = fileFinder.findFile(environment.getDirectory(), JSON_COMPILATION_DATABASE_FILENAME);
+        if (jsonCompilationDatabaseFile == null) {
             return new FileNotFoundBomToolResult(JSON_COMPILATION_DATABASE_FILENAME);
         }
-        if (jsonCompilationDatabaseFiles.size() > 1) {
-            logger.warn(String.format("Expected one %s file, but found %d. Using %s", JSON_COMPILATION_DATABASE_FILENAME, jsonCompilationDatabaseFiles.size(), jsonCompilationDatabaseFiles.get(0)));
-        }
-        this.jsonCompilationDatabaseFile = jsonCompilationDatabaseFiles.get(0);
+        this.jsonCompilationDatabaseFile = jsonCompilationDatabaseFile;
         return new PassedBomToolResult();
     }
 
