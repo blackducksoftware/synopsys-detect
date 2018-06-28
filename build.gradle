@@ -17,7 +17,7 @@ version = sharedVersion
 
 
 configure(subprojects) { project ->
-
+    group = 'com.blackducksoftware.integration'
     version = sharedVersion
 
     apply plugin: 'com.blackducksoftware.integration.solution'
