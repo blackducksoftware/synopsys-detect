@@ -85,9 +85,10 @@ public class CLangExtractor {
     @Autowired
     private DetectFileManager detectFileManager;
 
-    public Extraction extract(final File sourceDir, final ExtractionId extractionId, final File jsonCompilationDatabaseFile) {
+    public Extraction extract(final File givenDir, final int depth, final ExtractionId extractionId, final File jsonCompilationDatabaseFile) {
         try {
             logger.info(String.format("Analyzing %s", jsonCompilationDatabaseFile.getAbsolutePath()));
+            final File rootDir = getRootDir(givenDir, depth);
             final File outputDirectory = detectFileManager.getOutputDirectory(extractionId);
             logger.debug(String.format("extract() called; compileCommandsJsonFilePath: %s", jsonCompilationDatabaseFile.getAbsolutePath()));
             final Set<File> filesForIScan = ConcurrentHashMap.newKeySet(64);
@@ -100,18 +101,28 @@ public class CLangExtractor {
                     .filter((final String path) -> !StringUtils.isBlank(path))
                     .map((final String path) -> new File(path))
                     .filter(fileIsNewPredicate())
-                    .map(fileToPackagesConverter(sourceDir, filesForIScan, pkgMgr))
+                    .map(fileToPackagesConverter(rootDir, filesForIScan, pkgMgr))
                     // TODO: flatMap totally broke it when used here
                     .reduce(ConcurrentHashMap.newKeySet(), packageAccumulator()).parallelStream()
                     .map(packageToDependenciesConverter(pkgMgr))
                     // TODO: Collector: Haven't found one that combines a stream of list into a list
                     .reduce(new ArrayList<Dependency>(), dependenciesAccumulator());
             final MutableDependencyGraph dependencyGraph = populateGraph(bdioComponents);
-            final ExternalId externalId = externalIdFactory.createPathExternalId(pkgMgr.getDefaultForge(), sourceDir.toString());
-            final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolGroupType.CLANG, sourceDir.toString(), externalId, dependencyGraph).build();
+            final ExternalId externalId = externalIdFactory.createPathExternalId(pkgMgr.getDefaultForge(), rootDir.toString());
+            final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolGroupType.CLANG, rootDir.toString(), externalId, dependencyGraph).build();
+            logFilesForIScan(filesForIScan);
             return new Extraction.Builder().success(detectCodeLocation).build();
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
+        }
+    }
+
+    private void logFilesForIScan(final Set<File> filesForIScan) {
+        logger.info(String.format("Number of dependency files not recognized by the package manager: %d", filesForIScan.size()));
+        if (logger.isDebugEnabled()) {
+            for (final File unMatchedDependencyFile : filesForIScan) {
+                logger.info(String.format("\tDependency file not recognized by the package manager: %s", unMatchedDependencyFile.getAbsolutePath()));
+            }
         }
     }
 
@@ -264,6 +275,17 @@ public class CLangExtractor {
         return filename.substring(0, dotIndex);
     }
 
+    // TODO move to some file utils class or something
+    private File getRootDir(final File givenDir, int depth) {
+        logger.debug(String.format("givenDir: %s; depth: %d", givenDir, depth));
+        File rootDir = givenDir;
+        for (; depth > 0; depth--) {
+            rootDir = rootDir.getParentFile();
+        }
+        logger.debug(String.format("rootDir: %s", rootDir));
+        return rootDir;
+    }
+
     private boolean isUnder(final File dir, final File file) {
         logger.trace(String.format("Checking to see if file %s is under dir %s", file.getAbsolutePath(), dir.getAbsolutePath()));
         try {
@@ -271,10 +293,10 @@ public class CLangExtractor {
             final String filePath = file.getCanonicalPath();
             logger.trace(String.format("\tactually comparing file path %s with dir path %s", filePath, dirPath));
             if (filePath.equals(dirPath) || filePath.startsWith(dirPath)) {
-                logger.trace("it is");
+                logger.trace(String.format("\t%s is under %s", file.getAbsolutePath(), dir.getAbsolutePath()));
                 return true;
             }
-            logger.trace("it is not");
+            logger.trace(String.format("\t%s is not under %s", file.getAbsolutePath(), dir.getAbsolutePath()));
             return false;
         } catch (final IOException e) {
             logger.warn(String.format("Error getting canonical path for either %s or %s", dir.getAbsolutePath(), file.getAbsolutePath()));
