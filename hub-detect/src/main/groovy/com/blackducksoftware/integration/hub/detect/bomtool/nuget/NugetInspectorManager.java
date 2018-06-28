@@ -36,8 +36,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.evaluation.BomToolEnvironment;
-import com.blackducksoftware.integration.hub.detect.evaluation.BomToolException;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
+import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
@@ -129,8 +129,7 @@ public class NugetInspectorManager {
                 "list",
                 detectConfiguration.getNugetInspectorPackageName(),
                 "-Source",
-                source
-                ));
+                source));
 
         if (StringUtils.isNotBlank(detectConfiguration.getNugetConfigPath())) {
             nugetOptions.add("-ConfigFile");
@@ -176,7 +175,7 @@ public class NugetInspectorManager {
         final File inspectorExe = new File(toolsDirectory, exeName);
 
         if (!inspectorExe.exists()) {
-            logger.warn(String.format("Could not find the %s version: %s even after an install attempt.",detectConfiguration.getNugetInspectorPackageName(), inspectorVersion));
+            logger.warn(String.format("Could not find the %s version: %s even after an install attempt.", detectConfiguration.getNugetInspectorPackageName(), inspectorVersion));
             return null;
         }
 
@@ -194,8 +193,7 @@ public class NugetInspectorManager {
                 "-Source",
                 source,
                 "-Version",
-                resolvedInspectorVersion
-                ));
+                resolvedInspectorVersion));
 
         if (StringUtils.isNotBlank(detectConfiguration.getNugetConfigPath())) {
             nugetOptions.add("-ConfigFile");

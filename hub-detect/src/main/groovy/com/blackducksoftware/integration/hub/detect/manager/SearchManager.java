@@ -35,17 +35,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolSearchProvider;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.report.SearchSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
-import com.blackducksoftware.integration.hub.detect.extraction.model.BomToolEvaluation;
-import com.blackducksoftware.integration.hub.detect.manager.result.search.SearchResult;
-import com.blackducksoftware.integration.hub.detect.manager.result.search.SearchResultBomToolFailed;
-import com.blackducksoftware.integration.hub.detect.manager.result.search.SearchResultSuccess;
-import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
-import com.blackducksoftware.integration.hub.detect.search.BomToolFinder;
-import com.blackducksoftware.integration.hub.detect.search.BomToolFinderOptions;
+import com.blackducksoftware.integration.hub.detect.manager.extraction.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.manager.search.BomToolFinder;
+import com.blackducksoftware.integration.hub.detect.manager.search.BomToolFinderOptions;
+import com.blackducksoftware.integration.hub.detect.manager.search.result.SearchResult;
+import com.blackducksoftware.integration.hub.detect.manager.search.result.SearchResultBomToolFailed;
+import com.blackducksoftware.integration.hub.detect.manager.search.result.SearchResultSuccess;
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
 
 @Component

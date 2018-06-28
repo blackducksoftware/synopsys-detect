@@ -28,12 +28,24 @@ import com.blackducksoftware.integration.exception.IntegrationException;
 public class BomToolException extends IntegrationException {
     private static final long serialVersionUID = 1L;
 
+    public BomToolException() {
+        super();
+    }
+
+    public BomToolException(final String message, final Throwable cause, final boolean enableSuppression, final boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
+    }
+
+    public BomToolException(final String message, final Throwable cause) {
+        super(message, cause);
+    }
+
     public BomToolException(final String message) {
         super(message);
     }
 
-    public BomToolException(final String message, final Exception e) {
-        super(message, e);
+    public BomToolException(final Throwable cause) {
+        super(cause);
     }
 
 }

@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.PodlockBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.PodlockExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.conda.CondaCliBomTool;
@@ -82,8 +83,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.sbt.SbtResolutionCac
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.SbtResolutionCacheExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnLockBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnLockExtractor;
-import com.blackducksoftware.integration.hub.detect.evaluation.BomToolEnvironment;
-import com.blackducksoftware.integration.hub.detect.extraction.model.StandardExecutableFinder;
+import com.blackducksoftware.integration.hub.detect.manager.extraction.StandardExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
 @Component

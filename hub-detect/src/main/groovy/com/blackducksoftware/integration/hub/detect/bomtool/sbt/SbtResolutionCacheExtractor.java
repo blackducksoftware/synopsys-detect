@@ -34,12 +34,12 @@ import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtDependencyModule;
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtProject;
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.parse.SbtPackager;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
-import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
+import com.blackducksoftware.integration.hub.detect.manager.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;

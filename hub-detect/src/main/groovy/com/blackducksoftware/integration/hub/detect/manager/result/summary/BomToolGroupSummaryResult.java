@@ -23,7 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.manager.result.summary;
 
-import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.log.LogLevel;
 
 public class BomToolGroupSummaryResult extends SummaryResult {

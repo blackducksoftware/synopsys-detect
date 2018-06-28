@@ -34,9 +34,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.extraction.model.BomToolEvaluation;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction.ExtractionResultType;
+import com.blackducksoftware.integration.hub.detect.manager.extraction.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.manager.extraction.Extraction;
+import com.blackducksoftware.integration.hub.detect.manager.extraction.Extraction.ExtractionResultType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 
 @Component

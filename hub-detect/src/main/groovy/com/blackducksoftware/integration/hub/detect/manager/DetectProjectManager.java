@@ -43,22 +43,22 @@ import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.report.ExtractionSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
-import com.blackducksoftware.integration.hub.detect.extraction.model.BomToolEvaluation;
-import com.blackducksoftware.integration.hub.detect.manager.result.codelocation.DetectCodeLocationResult;
-import com.blackducksoftware.integration.hub.detect.manager.result.extraction.ExtractionResult;
-import com.blackducksoftware.integration.hub.detect.manager.result.search.SearchResult;
+import com.blackducksoftware.integration.hub.detect.manager.codelocation.DetectCodeLocationResult;
+import com.blackducksoftware.integration.hub.detect.manager.extraction.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.manager.extraction.ExtractionResult;
+import com.blackducksoftware.integration.hub.detect.manager.project.BomToolProjectInfo;
+import com.blackducksoftware.integration.hub.detect.manager.project.BomToolProjectInfoDecider;
 import com.blackducksoftware.integration.hub.detect.manager.result.summary.BomToolGroupSummaryResult;
 import com.blackducksoftware.integration.hub.detect.manager.result.summary.SummaryResultProvider;
 import com.blackducksoftware.integration.hub.detect.manager.result.summary.SummaryStatus;
-import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
+import com.blackducksoftware.integration.hub.detect.manager.search.result.SearchResult;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.model.DetectProject;
-import com.blackducksoftware.integration.hub.detect.project.BomToolProjectInfo;
-import com.blackducksoftware.integration.hub.detect.project.BomToolProjectInfoDecider;
 import com.blackducksoftware.integration.util.NameVersion;
 
 @Component

@@ -28,10 +28,10 @@ import org.slf4j.LoggerFactory
 
 import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtDependencyModule
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtProject
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.reports.parse.SbtReportParser
-import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter
 

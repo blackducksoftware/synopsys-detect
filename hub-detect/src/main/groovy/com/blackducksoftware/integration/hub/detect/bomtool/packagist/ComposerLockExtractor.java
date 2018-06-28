@@ -33,7 +33,7 @@ import org.springframework.stereotype.Component;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.packagist.parse.PackagistParseResult;
 import com.blackducksoftware.integration.hub.detect.bomtool.packagist.parse.PackagistParser;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
+import com.blackducksoftware.integration.hub.detect.manager.extraction.Extraction;
 
 @Component
 public class ComposerLockExtractor {

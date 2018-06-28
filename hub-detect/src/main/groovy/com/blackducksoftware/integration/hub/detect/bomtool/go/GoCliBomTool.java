@@ -27,6 +27,8 @@ import java.io.File;
 import java.util.List;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.bomtool.go.extraction.GoDepExtractor;
@@ -36,12 +38,10 @@ import com.blackducksoftware.integration.hub.detect.bomtool.result.ExecutableNot
 import com.blackducksoftware.integration.hub.detect.bomtool.result.FileNotFoundBomToolResult;
 import com.blackducksoftware.integration.hub.detect.bomtool.result.InspectorNotFoundBomToolResult;
 import com.blackducksoftware.integration.hub.detect.bomtool.result.PassedBomToolResult;
-import com.blackducksoftware.integration.hub.detect.evaluation.BomToolEnvironment;
-import com.blackducksoftware.integration.hub.detect.evaluation.BomToolException;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
-import com.blackducksoftware.integration.hub.detect.extraction.model.StandardExecutableFinder;
-import com.blackducksoftware.integration.hub.detect.extraction.model.StandardExecutableFinder.StandardExecutableType;
-import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
+import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
+import com.blackducksoftware.integration.hub.detect.manager.extraction.Extraction;
+import com.blackducksoftware.integration.hub.detect.manager.extraction.StandardExecutableFinder;
+import com.blackducksoftware.integration.hub.detect.manager.extraction.StandardExecutableFinder.StandardExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
 public class GoCliBomTool extends BomTool {

@@ -7,8 +7,10 @@ import java.util.Optional;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
-import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
+import com.blackducksoftware.integration.hub.detect.manager.project.BomToolProjectInfo;
+import com.blackducksoftware.integration.hub.detect.manager.project.BomToolProjectInfoDecider;
 import com.blackducksoftware.integration.util.NameVersion;
 
 public class ProjectNameDeciderTests {

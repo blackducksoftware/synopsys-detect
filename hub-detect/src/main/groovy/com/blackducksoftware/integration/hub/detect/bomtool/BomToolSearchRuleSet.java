@@ -36,9 +36,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.result.NotNestableBo
 import com.blackducksoftware.integration.hub.detect.bomtool.result.NotSelfNestableBomToolResult;
 import com.blackducksoftware.integration.hub.detect.bomtool.result.PassedBomToolResult;
 import com.blackducksoftware.integration.hub.detect.bomtool.result.YieldedBomToolResult;
-import com.blackducksoftware.integration.hub.detect.evaluation.BomToolEnvironment;
-import com.blackducksoftware.integration.hub.detect.extraction.model.BomToolEvaluation;
-import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
+import com.blackducksoftware.integration.hub.detect.manager.extraction.BomToolEvaluation;
 
 public class BomToolSearchRuleSet {
 

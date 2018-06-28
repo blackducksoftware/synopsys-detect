@@ -34,8 +34,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
-import com.blackducksoftware.integration.hub.detect.evaluation.BomToolEnvironment;
-import com.blackducksoftware.integration.hub.detect.evaluation.BomToolException;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
+import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
@@ -70,7 +70,7 @@ public class GoInspectorManager {
             }
 
             return resolvedGoDep;
-        }catch (final Exception e) {
+        } catch (final Exception e) {
             throw new BomToolException(e);
         }
     }
@@ -103,15 +103,13 @@ public class GoInspectorManager {
                 "-u",
                 "-v",
                 "-d",
-                "github.com/golang/dep/cmd/dep"
-                ));
+                "github.com/golang/dep/cmd/dep"));
         executableRunner.execute(getGoDep);
 
         logger.debug("Building the Go Dep tool in ${goOutputDirectory}");
         final Executable buildGoDep = new Executable(installDirectory, goExecutable, Arrays.asList(
                 "build",
-                "github.com/golang/dep/cmd/dep"
-                ));
+                "github.com/golang/dep/cmd/dep"));
         executableRunner.execute(buildGoDep);
 
         return goDep.getAbsolutePath();

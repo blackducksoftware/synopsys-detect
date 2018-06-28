@@ -24,7 +24,7 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.sbt.models
 
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType
 
 import groovy.transform.TypeChecked
 

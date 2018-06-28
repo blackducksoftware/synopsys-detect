@@ -26,7 +26,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.evaluation.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.factory.BomToolFactory;
 
 @Component

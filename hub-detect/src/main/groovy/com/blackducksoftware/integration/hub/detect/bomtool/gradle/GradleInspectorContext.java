@@ -23,7 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.gradle;
 
-import com.blackducksoftware.integration.hub.detect.extraction.model.ExtractionContext;
+import com.blackducksoftware.integration.hub.detect.manager.extraction.ExtractionContext;
 
 public class GradleInspectorContext extends ExtractionContext  {
     public String gradleExe;

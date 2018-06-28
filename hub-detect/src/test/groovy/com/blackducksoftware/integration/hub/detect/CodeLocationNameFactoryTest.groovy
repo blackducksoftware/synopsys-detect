@@ -13,10 +13,10 @@ package com.blackducksoftware.integration.hub.detect
 
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.codelocation.BomCodeLocationNameService
-import com.blackducksoftware.integration.hub.detect.codelocation.DockerScanCodeLocationNameService
-import com.blackducksoftware.integration.hub.detect.codelocation.ScanCodeLocationNameService
-import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType
+import com.blackducksoftware.integration.hub.detect.manager.codelocation.BomCodeLocationNameService
+import com.blackducksoftware.integration.hub.detect.manager.codelocation.DockerScanCodeLocationNameService
+import com.blackducksoftware.integration.hub.detect.manager.codelocation.ScanCodeLocationNameService
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder
 import org.junit.Test
 

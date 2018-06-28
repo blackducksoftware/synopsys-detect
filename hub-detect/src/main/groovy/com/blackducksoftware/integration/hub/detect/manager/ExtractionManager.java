@@ -33,14 +33,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.exception.IntegrationException;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.bomtool.result.ExceptionBomToolResult;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.report.ExtractionReporter;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.report.PreparationSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
-import com.blackducksoftware.integration.hub.detect.extraction.model.BomToolEvaluation;
-import com.blackducksoftware.integration.hub.detect.manager.result.extraction.ExtractionResult;
-import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
+import com.blackducksoftware.integration.hub.detect.manager.extraction.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.manager.extraction.ExtractionResult;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 
 @Component

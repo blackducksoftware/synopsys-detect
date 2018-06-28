@@ -28,8 +28,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.blackducksoftware.integration.hub.detect.evaluation.BomToolEnvironment;
-
 public class BomToolSearchRuleSetBuilder {
     private final List<BomTool> desiredBomToolOrder = new ArrayList<>();
     private final Map<BomTool, BomToolSearchRuleBuilder> builderMap = new HashMap<>();
