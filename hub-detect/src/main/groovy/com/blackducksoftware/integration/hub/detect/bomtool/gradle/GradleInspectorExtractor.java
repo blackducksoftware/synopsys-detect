@@ -66,6 +66,8 @@ public class GradleInspectorExtractor {
 
     public Extraction extract(final File directory, final String gradleExe, final String gradleInspector, final ExtractionId extractionId) {
         try {
+            File outputDirectory = detectFileManager.getOutputDirectory("Gradle", extractionId);
+
             String gradleCommand = detectConfigWrapper.getProperty(DetectProperty.DETECT_GRADLE_BUILD_COMMAND);
 
             final List<String> arguments = new ArrayList<>();
@@ -79,6 +81,8 @@ public class GradleInspectorExtractor {
             }
             arguments.add("dependencies");
             arguments.add(String.format("--init-script=%s", gradleInspector));
+            arguments.add(String.format("-DGRADLEEXTRACTIONDIR=%s", outputDirectory.getCanonicalPath()));
+            arguments.add("--info");
 
             //logger.info("using ${gradleInspectorManager.getInitScriptPath()} as the path for the gradle init script");
             final Executable executable = new Executable(directory, gradleExe, arguments);
@@ -88,7 +92,7 @@ public class GradleInspectorExtractor {
                 final File buildDirectory = new File(directory, "build");
                 final File blackduckDirectory = new File(buildDirectory, "blackduck");
 
-                final List<File> codeLocationFiles = detectFileFinder.findFiles(blackduckDirectory, "*_dependencyGraph.txt");
+                final List<File> codeLocationFiles = detectFileFinder.findFiles(outputDirectory, "*_dependencyGraph.txt");
 
                 final List<DetectCodeLocation> codeLocations = new ArrayList<>();
                 String projectName = null;
@@ -106,7 +110,6 @@ public class GradleInspectorExtractor {
                         }
                     }
                 }
-                detectFileManager.cleanupOutputFile(extractionId, blackduckDirectory);
                 return new Extraction.Builder().success(codeLocations).projectName(projectName).projectVersion(projectVersion).build();
             } else {
                 return new Extraction.Builder().failure("The gradle inspector returned a non-zero exit code: " + output.getReturnCode()).build();

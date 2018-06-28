@@ -144,10 +144,10 @@ public class DockerExtractor {
 
     private Extraction executeDocker(final ExtractionId extractionId, final String imageArgument, final String imagePiece, final String dockerTarFilePath, final File directory, final File dockerExe, final File bashExe,
             final DockerInspectorInfo dockerInspectorInfo)
-                    throws FileNotFoundException, IOException, ExecutableRunnerException {
+            throws FileNotFoundException, IOException, ExecutableRunnerException {
 
-        final File outputDirectory = detectFileManager.getOutputDirectory(extractionId);
-        final File dockerPropertiesFile = detectFileManager.getOutputFile(extractionId, "application.properties");
+        final File outputDirectory = detectFileManager.getOutputDirectory("Docker", extractionId);
+        final File dockerPropertiesFile = detectFileManager.getOutputFile(outputDirectory, "application.properties");
         dockerProperties.populatePropertiesFile(dockerPropertiesFile, outputDirectory);
 
         String dockerInspectorVersion = "";
