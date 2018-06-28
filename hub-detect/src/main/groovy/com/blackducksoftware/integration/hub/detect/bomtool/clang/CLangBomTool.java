@@ -70,7 +70,7 @@ public class CLangBomTool extends BomTool {
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
-        return cLangExtractor.extract(environment.getDirectory(), extractionId, jsonCompilationDatabaseFile);
+        return cLangExtractor.extract(environment.getDirectory(), environment.getDepth(), extractionId, jsonCompilationDatabaseFile);
     }
 
 }
