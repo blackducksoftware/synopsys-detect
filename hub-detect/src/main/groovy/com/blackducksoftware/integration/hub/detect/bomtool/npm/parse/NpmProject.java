@@ -21,20 +21,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.npm.parse
+package com.blackducksoftware.integration.hub.detect.bomtool.npm.parse;
 
-import com.google.gson.annotations.SerializedName
+import java.util.Map;
 
-import groovy.transform.TypeChecked
+import com.google.gson.annotations.SerializedName;
 
-@TypeChecked
-class NpmDependency {
-    @SerializedName('version')
-    String version
+public class NpmProject {
+    @SerializedName("name")
+    String name;
 
-    @SerializedName('dev')
-    Boolean dev;
+    @SerializedName("version")
+    String version;
 
-    @SerializedName('requires')
-    Map<String, String> requires
+    @SerializedName("dependencies")
+    Map<String, NpmDependency> dependencies;
 }
