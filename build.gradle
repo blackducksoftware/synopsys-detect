@@ -1,4 +1,7 @@
 buildscript {
+    ext {
+        springBootVersion = '2.0.3.RELEASE'
+    }
     repositories {
         jcenter()
         mavenCentral()
@@ -7,10 +10,9 @@ buildscript {
 
     dependencies {
         classpath 'com.blackducksoftware.integration:common-gradle-plugin:0.0.+'
-        classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.0.0.RELEASE'
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
     }
 }
-
 
 String sharedVersion = '4.1.0-SNAPSHOT'
 version = sharedVersion
@@ -28,10 +30,14 @@ configure(subprojects) { project ->
     license {
         header rootProject.file('LICENSE')
     }
+    dependencyManagement {
+        imports {
+            mavenBom("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
+        }
+    }
 
     dependencies {
         compile 'com.blackducksoftware.integration:hub-common:35.0.0'
-        compile 'org.springframework:spring-core:5.0.4.RELEASE'
-        compile 'org.springframework:spring-context:5.0.4.RELEASE'
+
     }
 }
