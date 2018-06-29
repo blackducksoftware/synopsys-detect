@@ -66,9 +66,9 @@ public class NpmCliExtractor {
     }
 
     public Extraction extract(final File directory, final String npmExe, final ExtractionId extractionId) {
-
-        final File npmLsOutputFile = detectFileManager.getOutputFile(extractionId, NpmCliExtractor.OUTPUT_FILE);
-        final File npmLsErrorFile = detectFileManager.getOutputFile(extractionId, NpmCliExtractor.ERROR_FILE);
+        final File outputDirectory = detectFileManager.getOutputDirectory("Npm", extractionId);
+        final File npmLsOutputFile = detectFileManager.getOutputFile(outputDirectory, NpmCliExtractor.OUTPUT_FILE);
+        final File npmLsErrorFile = detectFileManager.getOutputFile(outputDirectory, NpmCliExtractor.ERROR_FILE);
 
         final boolean includeDevDeps = detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_NPM_INCLUDE_DEV_DEPENDENCIES);
         final List<String> exeArgs = Arrays.asList("ls", "-json");

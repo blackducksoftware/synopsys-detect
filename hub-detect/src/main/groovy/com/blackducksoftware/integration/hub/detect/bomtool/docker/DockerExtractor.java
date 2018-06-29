@@ -146,8 +146,8 @@ public class DockerExtractor {
             final DockerInspectorInfo dockerInspectorInfo)
             throws FileNotFoundException, IOException, ExecutableRunnerException {
 
-        final File outputDirectory = detectFileManager.getOutputDirectory(extractionId);
-        final File dockerPropertiesFile = detectFileManager.getOutputFile(extractionId, "application.properties");
+        final File outputDirectory = detectFileManager.getOutputDirectory("Docker", extractionId);
+        final File dockerPropertiesFile = detectFileManager.getOutputFile(outputDirectory, "application.properties");
         dockerProperties.populatePropertiesFile(dockerPropertiesFile, outputDirectory);
 
         String dockerInspectorVersion = "";
