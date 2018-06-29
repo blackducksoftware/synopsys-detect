@@ -29,8 +29,6 @@ import java.io.IOException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
@@ -39,15 +37,16 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
-@Component
 public class HelpHtmlWriter {
     private final Logger logger = LoggerFactory.getLogger(HelpHtmlWriter.class);
 
-    @Autowired
-    DetectOptionManager detectOptionManager;
+    private final DetectOptionManager detectOptionManager;
+    private final Configuration configuration;
 
-    @Autowired
-    Configuration configuration;
+    public HelpHtmlWriter(final DetectOptionManager detectOptionManager, final Configuration configuration) {
+        this.detectOptionManager = detectOptionManager;
+        this.configuration = configuration;
+    }
 
     public void writeHelpMessage(final String filename) {
         final HelpHtmlDataBuilder builder = new HelpHtmlDataBuilder();
