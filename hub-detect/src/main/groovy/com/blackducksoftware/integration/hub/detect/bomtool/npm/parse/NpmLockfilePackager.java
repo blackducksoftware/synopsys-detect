@@ -23,9 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.npm.parse;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.codehaus.plexus.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -35,6 +32,7 @@ import com.blackducksoftware.integration.hub.bdio.graph.builder.LazyExternalIdDe
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.dependencyid.DependencyId;
 import com.blackducksoftware.integration.hub.bdio.model.dependencyid.NameDependencyId;
+import com.blackducksoftware.integration.hub.bdio.model.dependencyid.NameVersionDependencyId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
@@ -50,22 +48,19 @@ public class NpmLockfilePackager {
     ExternalIdFactory externalIdFactory;
 
     public NpmParseResult parse(final String sourcePath, final String lockFileText, final boolean includeDevDependencies) {
-        final NpmProject npmProject = gson.fromJson(lockFileText, NpmProject.class);
-
         final LazyExternalIdDependencyGraphBuilder lazyBuilder = new LazyExternalIdDependencyGraphBuilder();
 
-        final List<DependencyId> alreadySetNames = new ArrayList<>();
+        final NpmProject npmProject = gson.fromJson(lockFileText, NpmProject.class);
         npmProject.dependencies.forEach((name, npmDependency) -> {
             if (shouldInclude(npmDependency, includeDevDependencies)) {
-                setDependencyInfoIfVersionExists(name, npmDependency.version, alreadySetNames, lazyBuilder);
                 final DependencyId dependency = createDependencyId(name, npmDependency.version);
+                setDependencyInfo(dependency, name, npmDependency.version, lazyBuilder);
                 lazyBuilder.addChildToRoot(dependency);
-
                 if (npmDependency.requires != null) {
                     npmDependency.requires.forEach((childName, childVersion) -> {
-                        setDependencyInfoIfVersionExists(childName, childVersion, alreadySetNames, lazyBuilder);
-                        final DependencyId child = createDependencyId(childName, childVersion);
-                        lazyBuilder.addChildWithParent(child, dependency);
+                        final DependencyId childId = createDependencyId(childName, childVersion);
+                        setDependencyInfo(childId, childName, childVersion, lazyBuilder);
+                        lazyBuilder.addChildWithParent(childId, dependency);
                     });
                 }
             }
@@ -89,21 +84,15 @@ public class NpmLockfilePackager {
     }
 
     private DependencyId createDependencyId(final String name, final String version) {
-        return new NameDependencyId(name);
-        /*
-         * if (StringUtils.isNotBlank(version)) { return new NameVersionDependencyId(name, version); } else { return new NameDependencyId(name); }
-         */
+        if (StringUtils.isNotBlank(version)) {
+            return new NameVersionDependencyId(name, version);
+        } else {
+            return new NameDependencyId(name);
+        }
     }
 
-    private void setDependencyInfoIfVersionExists(final String name, final String version, final List<DependencyId> alreadySetNames, final LazyExternalIdDependencyGraphBuilder lazyBuilder) {
-        final DependencyId nameDependencyId = new NameDependencyId(name);
-        if (StringUtils.isNotBlank(version)) {
-            final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NPM, name, version);
-            // lazyBuilder.setDependencyInfo(createDependencyId(name, version), name, version, externalId);
-            if (!alreadySetNames.contains(nameDependencyId)) {
-                lazyBuilder.setDependencyInfo(nameDependencyId, name, version, externalId);
-                alreadySetNames.add(nameDependencyId);
-            }
-        }
+    private void setDependencyInfo(final DependencyId dependencyId, final String name, final String version, final LazyExternalIdDependencyGraphBuilder lazyBuilder) {
+        final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NPM, name, version);
+        lazyBuilder.setDependencyInfo(dependencyId, name, version, externalId);
     }
 }
