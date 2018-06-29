@@ -89,7 +89,7 @@ public class CLangExtractor {
         try {
             logger.info(String.format("Analyzing %s", jsonCompilationDatabaseFile.getAbsolutePath()));
             final File rootDir = getRootDir(givenDir, depth);
-            final File outputDirectory = detectFileManager.getOutputDirectory(extractionId);
+            final File outputDirectory = detectFileManager.getOutputDirectory("CLang", extractionId);
             logger.debug(String.format("extract() called; compileCommandsJsonFilePath: %s", jsonCompilationDatabaseFile.getAbsolutePath()));
             final Set<File> filesForIScan = ConcurrentHashMap.newKeySet(64);
             final PkgMgr pkgMgr = selectPkgMgr();
