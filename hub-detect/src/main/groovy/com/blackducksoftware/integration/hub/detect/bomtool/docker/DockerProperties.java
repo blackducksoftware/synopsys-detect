@@ -53,10 +53,8 @@ public class DockerProperties {
 
         dockerProperties.setProperty("logging.level.com.blackducksoftware", detectConfigWrapper.getProperty(DetectProperty.LOGGING_LEVEL_COM_BLACKDUCKSOFTWARE_INTEGRATION));
         dockerProperties.setProperty("upload.bdio", "false");
-        dockerProperties.setProperty("no.prompt", "true");
         dockerProperties.setProperty("output.path", outputDirectory.getAbsolutePath());
         dockerProperties.setProperty("output.include.containerfilesystem", "true");
-        dockerProperties.setProperty("logging.level.com.blackducksoftware", detectConfigWrapper.getProperty(DetectProperty.LOGGING_LEVEL_COM_BLACKDUCKSOFTWARE_INTEGRATION));
         dockerProperties.setProperty("phone.home", "false");
 
         for (final String additionalProperty : additionalPropertyConfig.getAdditionalDockerPropertyNames()) {
