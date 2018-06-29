@@ -40,8 +40,12 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFac
 import com.blackducksoftware.integration.hub.detect.configuration.AdditionalPropertyConfig;
 import com.blackducksoftware.integration.hub.detect.configuration.ConfigurationManager;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.help.ArgumentStateParser;
 import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
+import com.blackducksoftware.integration.hub.detect.help.html.HelpHtmlWriter;
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper;
+import com.blackducksoftware.integration.hub.detect.interactive.InteractiveManager;
+import com.blackducksoftware.integration.hub.detect.interactive.mode.DefaultInteractiveMode;
 import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver;
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
 import com.google.gson.Gson;
@@ -129,13 +133,33 @@ public class BeanConfiguration {
     }
 
     @Bean
+    public HelpHtmlWriter helpHtmlWriter() {
+        return new HelpHtmlWriter(detectOptionManager(), configuration());
+    }
+
+    @Bean
+    public ArgumentStateParser argumentStateParser() {
+        return new ArgumentStateParser();
+    }
+
+    @Bean
+    public DefaultInteractiveMode defaultInteractiveMode() {
+        return new DefaultInteractiveMode(hubServiceWrapper(), detectOptionManager());
+    }
+
+    @Bean
+    public InteractiveManager interactiveManager() {
+        return new InteractiveManager(detectOptionManager(), defaultInteractiveMode());
+    }
+
+    @Bean
     public AdditionalPropertyConfig additionalPropertyConfig() {
         return new AdditionalPropertyConfig(configurableEnvironment);
     }
 
     @Bean
-    public HubServiceWrapper hubServiceWrapper(AdditionalPropertyConfig additionalPropertyConfig) {
-        return new HubServiceWrapper(detectConfigWrapper(), additionalPropertyConfig);
+    public HubServiceWrapper hubServiceWrapper() {
+        return new HubServiceWrapper(detectConfigWrapper(), additionalPropertyConfig());
     }
 
 }
