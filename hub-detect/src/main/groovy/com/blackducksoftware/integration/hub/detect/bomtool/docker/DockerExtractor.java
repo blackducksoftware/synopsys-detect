@@ -102,7 +102,7 @@ public class DockerExtractor {
             String imagePiece = null;
             if (StringUtils.isNotBlank(tar)) {
                 final File dockerTarFile = new File(tar);
-                imageArgument = String.format("--docker.tar=%s", dockerTarFile.getCanonicalPath());
+                imageArgument = String.format("--docker.tar=\"%s\"", dockerTarFile.getCanonicalPath());
                 imagePiece = detectFileFinder.extractFinalPieceFromPath(dockerTarFile.getCanonicalPath());
             } else if (StringUtils.isNotBlank(image)) {
                 imagePiece = image;

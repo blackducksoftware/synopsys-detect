@@ -14,9 +14,9 @@ buildscript {
     }
 }
 
+
 String sharedVersion = '4.1.0-SNAPSHOT'
 version = sharedVersion
-
 
 configure(subprojects) { project ->
     group = 'com.blackducksoftware.integration'
