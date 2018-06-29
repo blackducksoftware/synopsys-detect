@@ -65,12 +65,12 @@ public class PodlockParser {
 
         final Map<DependencyId, Forge> forgeOverrides = createForgeOverrideMap(podfileLock);
 
-        for (final Pod pod : podfileLock.getPods()) {
+        for (final Pod pod : podfileLock.pods) {
             processPod(pod, forgeOverrides, lazyBuilder);
         }
 
-        for (final Pod dependency : podfileLock.getDependencies()) {
-            final String podText = dependency.getName();
+        for (final Pod dependency : podfileLock.dependencies) {
+            final String podText = dependency.name;
             final Optional<DependencyId> dependencyId = parseDependencyId(podText);
             if (dependencyId.isPresent()) {
                 lazyBuilder.addChildToRoot(dependencyId.get());
@@ -85,14 +85,14 @@ public class PodlockParser {
      */
     private Map<DependencyId, Forge> createForgeOverrideMap(final PodfileLock podfileLock) {
         final Map<DependencyId, Forge> forgeOverrideMap = new HashMap<>();
-        if (null != podfileLock.getExternalSources()) {
-            final List<PodSource> podSources = podfileLock.getExternalSources().getSources();
+        if (null != podfileLock.externalSources) {
+            final List<PodSource> podSources = podfileLock.externalSources.sources;
             for (final PodSource podSource : podSources) {
-                final Optional<DependencyId> dependencyId = parseDependencyId(podSource.getName());
+                final Optional<DependencyId> dependencyId = parseDependencyId(podSource.name);
                 if (dependencyId.isPresent()) {
-                    if (null != podSource.getGit() && podSource.getGit().contains("github")) {
+                    if (null != podSource.git && podSource.git.contains("github")) {
                         forgeOverrideMap.put(dependencyId.get(), Forge.COCOAPODS);
-                    } else if (null != podSource.getPath() && podSource.getPath().contains("node_modules")) {
+                    } else if (null != podSource.path && podSource.path.contains("node_modules")) {
                         forgeOverrideMap.put(dependencyId.get(), Forge.NPM);
                     }
                 }
@@ -109,7 +109,7 @@ public class PodlockParser {
     }
 
     private void processPod(final Pod pod, final Map<DependencyId, Forge> forgeOverrides, final LazyExternalIdDependencyGraphBuilder lazyBuilder) {
-        final String podText = pod.getName();
+        final String podText = pod.name;
         final Optional<DependencyId> dependencyIdMaybe = parseDependencyId(podText);
         final String name = parseCorrectPodName(podText).orElse(null);
         final String version = parseVersion(podText).orElse(null);
@@ -121,7 +121,7 @@ public class PodlockParser {
 
             lazyBuilder.setDependencyInfo(dependencyId, name, version, externalId);
 
-            for (final String child : pod.getDependencies()) {
+            for (final String child : pod.dependencies) {
                 final Optional<DependencyId> childId = parseDependencyId(child);
                 if (childId.isPresent()) {
                     if (!dependencyId.equals(childId.get())) {

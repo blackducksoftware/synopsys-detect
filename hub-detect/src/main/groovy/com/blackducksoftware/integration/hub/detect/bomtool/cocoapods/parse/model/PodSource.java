@@ -21,22 +21,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.parse.model
+package com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.parse.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import groovy.transform.TypeChecked
-
-@TypeChecked
 @JsonIgnoreProperties(ignoreUnknown = true)
-class PodfileLock {
-    @JsonProperty('PODS')
-    List<Pod> pods
+public class PodSource {
+    @JsonIgnore
+    public String name;
 
-    @JsonProperty('DEPENDENCIES')
-    List<Pod> dependencies
+    @JsonProperty(":git")
+    public String git;
 
-    @JsonProperty('EXTERNAL SOURCES')
-    ExternalSources externalSources
+    @JsonProperty(":path")
+    public String path;
 }
