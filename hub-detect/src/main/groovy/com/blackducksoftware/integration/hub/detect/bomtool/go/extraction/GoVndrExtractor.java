@@ -44,7 +44,6 @@ import com.google.gson.Gson;
 
 @Component
 public class GoVndrExtractor {
-
     @Autowired
     Gson gson;
 

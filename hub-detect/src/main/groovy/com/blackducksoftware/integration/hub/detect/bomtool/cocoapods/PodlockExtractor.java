@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.FileUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
@@ -45,6 +46,7 @@ public class PodlockExtractor {
     private final PodlockParser podlockParser;
     private final ExternalIdFactory externalIdFactory;
 
+    @Autowired
     public PodlockExtractor(final PodlockParser podlockParser, final ExternalIdFactory externalIdFactory) {
         this.podlockParser = podlockParser;
         this.externalIdFactory = externalIdFactory;

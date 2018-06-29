@@ -43,7 +43,6 @@ import com.google.gson.Gson;
 
 @Component
 public class GoDepsExtractor {
-
     @Autowired
     Gson gson;
 
