@@ -1871,6 +1871,7 @@
     "http:npm/private/0_1_7": [],
     "http:npm/content_type/1_0_2": [],
     "http:npm/babel_register/6_22_0": [
+      "http:npm/babel_core/6_22_1",
       "http:npm/babel_runtime/6_22_0",
       "http:npm/source_map_support/0_4_11",
       "http:npm/home_or_tmp/2_0_0",

@@ -27,7 +27,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.env.ConfigurableEnvironment;
 
 import com.blackducksoftware.integration.hub.bdio.BdioNodeFactory;
 import com.blackducksoftware.integration.hub.bdio.BdioPropertyHelper;
@@ -35,6 +37,12 @@ import com.blackducksoftware.integration.hub.bdio.BdioTransformer;
 import com.blackducksoftware.integration.hub.bdio.SimpleBdioFactory;
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import com.blackducksoftware.integration.hub.detect.configuration.AdditionalPropertyConfig;
+import com.blackducksoftware.integration.hub.detect.configuration.ConfigurationManager;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
+import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper;
+import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver;
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -43,6 +51,13 @@ import freemarker.template.Configuration;
 
 @org.springframework.context.annotation.Configuration
 public class BeanConfiguration {
+
+    private final ConfigurableEnvironment configurableEnvironment;
+
+    @Autowired
+    public BeanConfiguration(final ConfigurableEnvironment configurableEnvironment) {
+        this.configurableEnvironment = configurableEnvironment;
+    }
 
     @Bean
     public Gson gson() {
@@ -86,6 +101,41 @@ public class BeanConfiguration {
     public DocumentBuilder xmlDocumentBuilder() throws ParserConfigurationException {
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         return factory.newDocumentBuilder();
+    }
+
+    @Bean
+    public DetectInfo detectInfo() {
+        return new DetectInfo(gson());
+    }
+
+    @Bean
+    public TildeInPathResolver tildeInPathResolver() {
+        return new TildeInPathResolver(detectInfo());
+    }
+
+    @Bean
+    public DetectConfigWrapper detectConfigWrapper() {
+        return new DetectConfigWrapper(configurableEnvironment);
+    }
+
+    @Bean
+    public ConfigurationManager configurationManager() {
+        return new ConfigurationManager(tildeInPathResolver(), detectConfigWrapper());
+    }
+
+    @Bean
+    public DetectOptionManager detectOptionManager() {
+        return new DetectOptionManager(detectConfigWrapper());
+    }
+
+    @Bean
+    public AdditionalPropertyConfig additionalPropertyConfig() {
+        return new AdditionalPropertyConfig(configurableEnvironment);
+    }
+
+    @Bean
+    public HubServiceWrapper hubServiceWrapper(AdditionalPropertyConfig additionalPropertyConfig) {
+        return new HubServiceWrapper(detectConfigWrapper(), additionalPropertyConfig);
     }
 
 }

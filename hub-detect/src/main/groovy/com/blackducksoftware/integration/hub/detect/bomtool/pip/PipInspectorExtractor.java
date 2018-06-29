@@ -32,10 +32,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.parse.PipInspectorTreeParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.parse.PipParseResult;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
@@ -43,19 +44,21 @@ import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extracti
 
 @Component
 public class PipInspectorExtractor {
-    @Autowired
-    private DetectConfiguration detectConfiguration;
+    private final ExecutableRunner executableRunner;
+    private final PipInspectorTreeParser pipInspectorTreeParser;
+    private final DetectConfigWrapper detectConfigWrapper;
 
     @Autowired
-    private ExecutableRunner executableRunner;
-
-    @Autowired
-    private PipInspectorTreeParser pipInspectorTreeParser;
+    public PipInspectorExtractor(final ExecutableRunner executableRunner, final PipInspectorTreeParser pipInspectorTreeParser, final DetectConfigWrapper detectConfigWrapper) {
+        this.executableRunner = executableRunner;
+        this.pipInspectorTreeParser = pipInspectorTreeParser;
+        this.detectConfigWrapper = detectConfigWrapper;
+    }
 
     public Extraction extract(final BomToolType bomToolType, final File directory, final String pythonExe, final File pipInspector, final File setupFile, final String requirementFilePath) {
         Extraction extractionResult;
         try {
-            final String projectName = getProjectName(directory, pythonExe, pipInspector, setupFile, requirementFilePath);
+            final String projectName = getProjectName(directory, pythonExe, setupFile);
             final PipParseResult result;
 
             final String inspectorOutput = runInspector(directory, pythonExe, pipInspector, projectName, requirementFilePath);
@@ -90,16 +93,15 @@ public class PipInspectorExtractor {
         return executableRunner.execute(pipInspector).getStandardOutput();
     }
 
-    private String getProjectName(final File directory, final String pythonExe, final File pipInspector, final File setupFile, final String requirementFilePath) throws ExecutableRunnerException {
-        String projectName = detectConfiguration.getPipProjectName();
-        if (setupFile != null && setupFile.exists()) {
-            if (StringUtils.isBlank(projectName)) {
-                final Executable findProjectNameExecutable = new Executable(directory, pythonExe, Arrays.asList(
-                        setupFile.getAbsolutePath(),
-                        "--name"));
-                final List<String> output = executableRunner.execute(findProjectNameExecutable).getStandardOutputAsList();
-                projectName = output.get(output.size() - 1).replace('_', '-').trim();
-            }
+    private String getProjectName(final File directory, final String pythonExe, final File setupFile) throws ExecutableRunnerException {
+        String projectName = detectConfigWrapper.getProperty(DetectProperty.DETECT_PIP_PROJECT_NAME);
+
+        if (setupFile != null && setupFile.exists() && StringUtils.isBlank(projectName)) {
+            final Executable findProjectNameExecutable = new Executable(directory, pythonExe, Arrays.asList(
+                    setupFile.getAbsolutePath(),
+                    "--name"));
+            final List<String> output = executableRunner.execute(findProjectNameExecutable).getStandardOutputAsList();
+            projectName = output.get(output.size() - 1).replace('_', '-').trim();
         }
 
         return projectName;

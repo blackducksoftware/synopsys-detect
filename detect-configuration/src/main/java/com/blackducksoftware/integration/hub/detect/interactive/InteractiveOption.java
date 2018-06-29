@@ -23,25 +23,18 @@
  */
 package com.blackducksoftware.integration.hub.detect.interactive;
 
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+
 public class InteractiveOption {
-    private String fieldName;
-    private String springKey;
+    private DetectProperty detectProperty;
     private String interactiveValue;
 
-    public String getFieldName() {
-        return fieldName;
+    public DetectProperty getDetectProperty() {
+        return detectProperty;
     }
 
-    public void setFieldName(final String fieldName) {
-        this.fieldName = fieldName;
-    }
-
-    public String getSpringKey() {
-        return springKey;
-    }
-
-    public void setSpringKey(final String springKey) {
-        this.springKey = springKey;
+    public void setDetectProperty(final DetectProperty detectProperty) {
+        this.detectProperty = detectProperty;
     }
 
     public String getInteractiveValue() {

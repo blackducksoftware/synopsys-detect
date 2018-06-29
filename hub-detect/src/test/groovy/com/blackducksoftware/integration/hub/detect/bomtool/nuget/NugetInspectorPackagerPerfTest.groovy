@@ -1,9 +1,5 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.nuget
 
-import static org.junit.Assert.assertEquals
-
-import org.junit.Test
-
 import com.blackducksoftware.integration.hub.bdio.BdioNodeFactory
 import com.blackducksoftware.integration.hub.bdio.BdioPropertyHelper
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer
@@ -16,6 +12,9 @@ import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeT
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import org.junit.Test
+
+import static org.junit.Assert.assertEquals
 
 public class NugetInspectorPackagerPerfTest {
     public Gson gson = new GsonBuilder().setPrettyPrinting().create()
@@ -25,11 +24,8 @@ public class NugetInspectorPackagerPerfTest {
     public void performanceTestNuget() throws IOException {
         def dependencyGraphFile = new File(getClass().getResource("/nuget/dwCheckApi_inspection.json").getFile())
 
-        def packager = new NugetInspectorPackager()
-
-        packager.gson = new Gson()
-        packager.nameVersionNodeTransformer = new NameVersionNodeTransformer(new ExternalIdFactory())
-        packager.externalIdFactory = new ExternalIdFactory()
+        def nameVersionNodeTransformer = new NameVersionNodeTransformer(new ExternalIdFactory())
+        def packager = new NugetInspectorPackager(null, null, gson, nameVersionNodeTransformer, nameVersionNodeTransformer.externalIdFactory)
 
         NugetParseResult result = packager.createDetectCodeLocation(BomToolType.NUGET_SOLUTION_INSPECTOR, dependencyGraphFile)
         DetectCodeLocation codeLocation = result.codeLocations[0]

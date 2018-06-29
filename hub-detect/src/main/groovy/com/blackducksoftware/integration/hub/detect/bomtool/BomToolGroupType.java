@@ -47,7 +47,8 @@ public enum BomToolGroupType {
     PIP,
     RUBYGEMS,
     SBT,
-    YARN;
+    YARN,
+    CLANG;
 
     public static List<String> POSSIBLE_NAMES = Arrays.stream(BomToolGroupType.values()).map(BomToolGroupType::name).collect(Collectors.toList());
 

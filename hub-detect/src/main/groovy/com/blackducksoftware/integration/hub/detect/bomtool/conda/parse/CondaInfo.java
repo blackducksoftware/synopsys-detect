@@ -21,26 +21,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.rubygems.parse
+package com.blackducksoftware.integration.hub.detect.bomtool.conda.parse;
 
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
+import com.google.gson.annotations.SerializedName;
 
-import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
-
-import groovy.transform.TypeChecked
-
-@Component
-@TypeChecked
-public class RubygemsNodePackager {
-    @Autowired
-    NameVersionNodeTransformer nameVersionNodeTransformer
-
-    public DependencyGraph extractProjectDependencies(final List<String> gemlock) {
-        def gemlockNodeParser = new GemlockNodeParser()
-        DependencyGraph graph = gemlockNodeParser.parseProjectDependencies(nameVersionNodeTransformer, gemlock)
-
-        graph
-    }
+public class CondaInfo {
+    @SerializedName("platform")
+    String platform;
 }

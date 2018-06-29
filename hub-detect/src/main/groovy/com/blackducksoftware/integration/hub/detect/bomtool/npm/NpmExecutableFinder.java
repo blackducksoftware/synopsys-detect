@@ -35,8 +35,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
@@ -49,20 +50,22 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 public class NpmExecutableFinder {
     private final Logger logger = LoggerFactory.getLogger(NpmExecutableFinder.class);
 
-    @Autowired
-    public DetectFileManager detectFileManager;
-
-    @Autowired
-    public DetectConfiguration detectConfiguration;
-
-    @Autowired
-    public ExecutableManager executableManager;
-
-    @Autowired
-    public ExecutableRunner executableRunner;
+    private final DetectFileManager detectFileManager;
+    private final ExecutableManager executableManager;
+    private final ExecutableRunner executableRunner;
+    private final DetectConfigWrapper detectConfigWrapper;
 
     private String foundNpm = null;
     private boolean hasLookedForNpm = false;
+
+    @Autowired
+    public NpmExecutableFinder(final DetectFileManager detectFileManager, final ExecutableManager executableManager, final ExecutableRunner executableRunner,
+            final DetectConfigWrapper detectConfigWrapper) {
+        this.detectFileManager = detectFileManager;
+        this.executableManager = executableManager;
+        this.executableRunner = executableRunner;
+        this.detectConfigWrapper = detectConfigWrapper;
+    }
 
     public String findNpm(final BomToolEnvironment environment) throws BomToolException {
         try {
@@ -77,7 +80,7 @@ public class NpmExecutableFinder {
     }
 
     String findNpm() {
-        final String npm = executableManager.getExecutablePathOrOverride(ExecutableType.NPM, true, detectConfiguration.getSourcePath(), detectConfiguration.getNpmPath());
+        final String npm = executableManager.getExecutablePathOrOverride(ExecutableType.NPM, true, detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH), detectConfigWrapper.getProperty(DetectProperty.DETECT_NPM_PATH));
         if (validateNpm(null, npm)) {
             return npm;
         }
@@ -90,7 +93,7 @@ public class NpmExecutableFinder {
             final List<String> arguments = new ArrayList<>();
             arguments.add("-version");
 
-            String npmNodePath = detectConfiguration.getNpmNodePath();
+            String npmNodePath = detectConfigWrapper.getProperty(DetectProperty.DETECT_NPM_NODE_PATH);
             if (StringUtils.isNotBlank(npmNodePath)) {
                 final int lastSlashIndex = npmNodePath.lastIndexOf("/");
                 if (lastSlashIndex >= 0) {

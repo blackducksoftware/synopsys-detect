@@ -35,4 +35,5 @@ public class PackagistParseResult {
         this.projectVersion = projectVersion;
         this.codeLocation = codeLocation;
     }
+
 }

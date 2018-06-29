@@ -1,4 +1,4 @@
-/*
+/**
  * hub-detect
  *
  * Copyright (C) 2018 Black Duck Software, Inc.
@@ -21,20 +21,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.conda.parse
+package com.blackducksoftware.integration.hub.detect.bomtool.npm.parse;
 
-import com.google.gson.annotations.SerializedName
+import java.util.Map;
 
-import groovy.transform.TypeChecked
+import com.google.gson.annotations.SerializedName;
 
-@TypeChecked
-class CondaListElement {
-    @SerializedName("name")
-    String name
-
+class NpmDependency {
     @SerializedName("version")
-    String version
+    String version;
 
-    @SerializedName("build_string")
-    String buildString
+    @SerializedName("dev")
+    Boolean dev;
+
+    @SerializedName("requires")
+    Map<String, String> requires;
 }

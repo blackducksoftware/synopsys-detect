@@ -49,14 +49,15 @@ public class CondaListParser {
     private ExternalIdFactory externalIdFactory;
 
     public DependencyGraph parse(final String listJsonText, final String infoJsonText) {
-        final Type listType = new TypeToken<ArrayList<CondaListElement>>() {}.getType();
+        final Type listType = new TypeToken<ArrayList<CondaListElement>>() {
+        }.getType();
         final List<CondaListElement> condaList = gson.fromJson(listJsonText, listType);
         final CondaInfo condaInfo = gson.fromJson(infoJsonText, CondaInfo.class);
-        final String platform = condaInfo.getPlatform();
+        final String platform = condaInfo.platform;
 
-        MutableDependencyGraph graph = new MutableMapDependencyGraph();
+        final MutableDependencyGraph graph = new MutableMapDependencyGraph();
 
-        for (CondaListElement condaListElement : condaList) {
+        for (final CondaListElement condaListElement : condaList) {
             graph.addChildToRoot(condaListElementToDependency(platform, condaListElement));
         }
 
@@ -64,9 +65,9 @@ public class CondaListParser {
     }
 
     public Dependency condaListElementToDependency(final String platform, final CondaListElement element) {
-        String name = element.getName();
-        String version = String.format("%s-%s-%s", element.getVersion(), element.getBuildString(), platform);
-        ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.ANACONDA, name, version);
+        final String name = element.name;
+        final String version = String.format("%s-%s-%s", element.version, element.buildString, platform);
+        final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.ANACONDA, name, version);
 
         return new Dependency(name, version, externalId);
     }

@@ -40,11 +40,15 @@ import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 public class PipInspectorManager {
     public static final String INSPECTOR_NAME = "pip-inspector.py";
 
-    @Autowired
-    private DetectFileManager detectFileManager;
+    private final DetectFileManager detectFileManager;
 
     private File resolvedInspector = null;
     private boolean hasResolvedInspector = false;
+
+    @Autowired
+    public PipInspectorManager(final DetectFileManager detectFileManager) {
+        this.detectFileManager = detectFileManager;
+    }
 
     public File findPipInspector(final BomToolEnvironment environment) throws BomToolException {
         try {

@@ -47,11 +47,11 @@ public class PipenvBomTool extends BomTool {
     private final PythonExecutableFinder pythonExecutableFinder;
     private final PipenvExtractor pipenvExtractor;
 
-    String pythonExe;
-    String pipenvExe;
-    File pipfileDotLock;
-    File pipfile;
-    File setupFile;
+    private String pythonExe;
+    private String pipenvExe;
+    private File pipfileDotLock;
+    private File pipfile;
+    private File setupFile;
 
     public PipenvBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final PythonExecutableFinder pythonExecutableFinder, final PipenvExtractor pipenvExtractor) {
         super(environment, "Pipenv Graph", BomToolGroupType.PIP, BomToolType.PIP_ENV);
@@ -92,7 +92,7 @@ public class PipenvBomTool extends BomTool {
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
-        return pipenvExtractor.extract(this.getBomToolType(), environment.getDirectory(), pythonExe, pipenvExe, pipfileDotLock, pipfile, setupFile);
+        return pipenvExtractor.extract(this.getBomToolType(), environment.getDirectory(), pythonExe, pipenvExe, setupFile);
     }
 
 }

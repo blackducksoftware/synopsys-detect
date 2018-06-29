@@ -43,20 +43,20 @@ import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extracti
 
 @Component
 public class PearCliExtractor {
+    private static final String PACKAGE_XML_FILENAME = "package.xml";
 
-    static final String PACKAGE_XML_FILENAME = "package.xml";
-
-    @Autowired
-    protected DetectFileFinder detectFileFinder;
-
-    @Autowired
-    protected ExternalIdFactory externalIdFactory;
+    private final DetectFileFinder detectFileFinder;
+    private final ExternalIdFactory externalIdFactory;
+    private final PearDependencyFinder pearDependencyFinder;
+    private final ExecutableRunner executableRunner;
 
     @Autowired
-    PearDependencyFinder pearDependencyFinder;
-
-    @Autowired
-    protected ExecutableRunner executableRunner;
+    public PearCliExtractor(final DetectFileFinder detectFileFinder, final ExternalIdFactory externalIdFactory, final PearDependencyFinder pearDependencyFinder, final ExecutableRunner executableRunner) {
+        this.detectFileFinder = detectFileFinder;
+        this.externalIdFactory = externalIdFactory;
+        this.pearDependencyFinder = pearDependencyFinder;
+        this.executableRunner = executableRunner;
+    }
 
     public Extraction extract(final BomToolType bomToolType, final File directory, final File pearExe) {
         try {

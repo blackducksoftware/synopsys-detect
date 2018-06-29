@@ -35,29 +35,31 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
-
-import groovy.transform.TypeChecked;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 
 @Component
-@TypeChecked
 public class DetectFileManager {
     private final Logger logger = LoggerFactory.getLogger(DetectFileManager.class);
 
-    @Autowired
-    private DetectConfiguration detectConfiguration;
+    private final DetectConfigWrapper detectConfigWrapper;
 
     private final String sharedUUID = "shared";
     private File sharedDirectory = null;
     private final Map<ExtractionId, File> outputDirectories = new HashMap<>();
     //private final Map<ExtractionContext, File> outputDirectories = new HashMap<>();
 
-    public File getOutputDirectory(final ExtractionId extractionId) {
+    @Autowired
+    public DetectFileManager(final DetectConfigWrapper detectConfigWrapper) {
+        this.detectConfigWrapper = detectConfigWrapper;
+    }
+
+    public File getOutputDirectory(final String name, final ExtractionId extractionId) {
         if (outputDirectories.containsKey(extractionId)) {
             return outputDirectories.get(extractionId);
-        }else {
-            final String directoryName = extractionId.getClass().getSimpleName() + "-" + extractionId.toUniqueString();
+        } else {
+            final String directoryName = name + "-" + extractionId.toUniqueString();
 
             final File newDirectory = new File(getExtractionFile(), directoryName);
             newDirectory.mkdir();
@@ -67,26 +69,27 @@ public class DetectFileManager {
     }
 
     private File getExtractionFile() {
-        final File newDirectory = new File(detectConfiguration.getOutputDirectory(), "extractions");
+        final File newDirectory = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_OUTPUT_PATH), "extractions");
         newDirectory.mkdir();
         return newDirectory;
     }
 
-    public File getOutputFile(final ExtractionId extractionId, final String name) {
-        final File directory = getOutputDirectory(extractionId);
-        return new File(directory, name);
+    public File getOutputFile(final File outputDirectory, final String name) {
+        return new File(outputDirectory, name);
     }
 
-    public File getSharedDirectory(final String name) { //shared across this invocation of detect.
+    public File getSharedDirectory(String name) { //shared across this invocation of detect.
         if (sharedDirectory == null) {
-            sharedDirectory = new File(detectConfiguration.getOutputDirectory(), sharedUUID);
+            sharedDirectory = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_OUTPUT_PATH), sharedUUID);
             sharedDirectory.mkdir();
         }
-        return sharedDirectory;
+        File newSharedFile = new File(sharedDirectory, name);
+        newSharedFile.mkdir();
+        return newSharedFile;
     }
 
     public File getPermanentDirectory() { //shared across all invocations of detect
-        final File newDirectory = new File(detectConfiguration.getOutputDirectory(), "tools");
+        final File newDirectory = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_OUTPUT_PATH), "tools");
         newDirectory.mkdir();
         return newDirectory;
     }
@@ -95,21 +98,19 @@ public class DetectFileManager {
         return writeToFile(file, contents, true);
     }
 
-
     public File createSharedFile(final String directory, final String filename) {
         return new File(getSharedDirectory(directory), filename);
     }
 
     //This file will be immediately cleaned up and is associated to a specific context. The current implementation is to actually move it to the context's output and allow cleanup at the end of the detect run (in case of diagnostics).
-    public void cleanupOutputFile(final ExtractionId extractionId, final File file) {
+    public void cleanupOutputFile(final File outputDirectory, final File file) {
         try {
             if (file.isFile()) {
-                final File out = getOutputDirectory(extractionId);
-                final File dest = new File(out, file.getName());
+                final File dest = new File(outputDirectory, file.getName());
                 FileUtils.moveFile(file, dest);
-            }else if (file.isDirectory()) {
-                final File out = getOutputDirectory(extractionId);
-                final File dest = new File(out, file.getName());
+
+            } else if (file.isDirectory()) {
+                final File dest = new File(outputDirectory, file.getName());
                 FileUtils.moveDirectory(file, dest);
             }
         } catch (final Exception e) {
@@ -119,7 +120,7 @@ public class DetectFileManager {
     }
 
     public void cleanupDirectories() {
-        if (detectConfiguration.getCleanupDetectFiles()) {
+        if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_CLEANUP)) {
             for (final File file : outputDirectories.values()) {
                 try {
                     FileUtils.deleteDirectory(file);
@@ -130,7 +131,6 @@ public class DetectFileManager {
             }
         }
     }
-
 
     private File writeToFile(final File file, final String contents, final boolean overwrite) throws IOException {
         if (file == null) {

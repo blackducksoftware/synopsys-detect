@@ -24,10 +24,11 @@
 package com.blackducksoftware.integration.hub.detect.workflow.summary;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
+import com.blackducksoftware.integration.hub.summary.Result;
 
 public class BomToolGroupStatusSummary extends StatusSummary {
-    public BomToolGroupStatusSummary(final BomToolGroupType bomToolGroupType, final Status status) {
-        super(bomToolGroupType.toString(), status);
+    public BomToolGroupStatusSummary(final BomToolGroupType bomToolGroupType, final Result result) {
+        super(bomToolGroupType.toString(), result);
     }
 
 }

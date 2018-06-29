@@ -25,22 +25,24 @@ package com.blackducksoftware.integration.hub.detect.help;
 
 import java.util.List;
 
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
+
 public class DetectSingleOption extends DetectOption {
 
-    public DetectSingleOption(String key, String fieldName, Class<?> valueType, boolean strictAcceptableValues, boolean caseSensitiveAcceptableValues, List<String> acceptableValues,
-            DetectOptionHelp detectOptionHelp, String originalValue, String defaultValue, String resolvedValue) {
-        super(key, fieldName, valueType, strictAcceptableValues, caseSensitiveAcceptableValues, acceptableValues, detectOptionHelp, originalValue, defaultValue, resolvedValue);
+    public DetectSingleOption(final DetectProperty detectProperty, final boolean strictAcceptableValues, final boolean caseSensitiveAcceptableValues, final List<String> acceptableValues,
+            final DetectOptionHelp detectOptionHelp, final String resolvedValue) {
+        super(detectProperty, strictAcceptableValues, caseSensitiveAcceptableValues, acceptableValues, detectOptionHelp, resolvedValue);
     }
 
     public OptionValidationResult isAcceptableValue(final String value) {
         Boolean isValueAcceptable = getAcceptableValues().stream()
-                                            .anyMatch(it -> {
-                                                if (getCaseSensistiveAcceptableValues()) {
-                                                    return it.equals(value);
-                                                } else {
-                                                    return it.equalsIgnoreCase(value);
-                                                }
-                                            });
+                .anyMatch(it -> {
+                    if (getCaseSensistiveAcceptableValues()) {
+                        return it.equals(value);
+                    } else {
+                        return it.equalsIgnoreCase(value);
+                    }
+                });
         OptionValidationResult result;
         if (isValueAcceptable) {
             result = new OptionValidationResult(true, "");

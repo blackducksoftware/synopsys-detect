@@ -36,7 +36,7 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
-import com.blackducksoftware.integration.hub.detect.bomtool.go.parse.GoGodepsParser;
+import com.blackducksoftware.integration.hub.detect.bomtool.go.parse.GodepsParser;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.google.gson.Gson;
@@ -54,7 +54,7 @@ public class GoDepsExtractor {
         try {
             final String text = FileUtils.readFileToString(goDepsFile, StandardCharsets.UTF_8);
 
-            final GoGodepsParser goDepParser = new GoGodepsParser(gson, externalIdFactory);
+            final GodepsParser goDepParser = new GodepsParser(gson, externalIdFactory);
             final DependencyGraph dependencyGraph = goDepParser.extractProjectDependencies(text);
 
             final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.GOLANG, directory.toString());

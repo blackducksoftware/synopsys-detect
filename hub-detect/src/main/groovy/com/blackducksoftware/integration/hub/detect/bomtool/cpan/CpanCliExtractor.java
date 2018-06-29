@@ -26,7 +26,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.cpan;
 import java.io.File;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
@@ -43,14 +42,15 @@ import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extracti
 
 @Component
 public class CpanCliExtractor {
-    @Autowired
-    private CpanPackager cpanPackager;
+    private final CpanPackager cpanPackager;
+    private final ExternalIdFactory externalIdFactory;
+    private final ExecutableRunner executableRunner;
 
-    @Autowired
-    private ExternalIdFactory externalIdFactory;
-
-    @Autowired
-    private ExecutableRunner executableRunner;
+    public CpanCliExtractor(final CpanPackager cpanPackager, final ExternalIdFactory externalIdFactory, final ExecutableRunner executableRunner) {
+        this.cpanPackager = cpanPackager;
+        this.externalIdFactory = externalIdFactory;
+        this.executableRunner = executableRunner;
+    }
 
     public Extraction extract(final BomToolType bomToolType, final File directory, final File cpanExe, final File cpanmExe) {
         try {

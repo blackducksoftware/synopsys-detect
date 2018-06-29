@@ -64,7 +64,7 @@ public class NugetSolutionBomTool extends BomTool {
 
     @Override
     public BomToolResult extractable() throws BomToolException {
-        inspectorExe = nugetInspectorManager.findNugetInspector(environment);
+        inspectorExe = nugetInspectorManager.findNugetInspector();
 
         if (inspectorExe == null) {
             return new InspectorNotFoundBomToolResult("nuget");

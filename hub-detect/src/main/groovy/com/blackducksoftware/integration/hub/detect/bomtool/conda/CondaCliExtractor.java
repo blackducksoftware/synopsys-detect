@@ -28,17 +28,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.conda.parse.CondaListParser;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
@@ -47,25 +47,26 @@ import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extracti
 
 @Component
 public class CondaCliExtractor {
-    @Autowired
-    private CondaListParser condaListParser;
+    private final CondaListParser condaListParser;
+    private final ExternalIdFactory externalIdFactory;
+    private final ExecutableRunner executableRunner;
+    private final DetectConfigWrapper detectConfigWrapper;
 
-    @Autowired
-    private ExternalIdFactory externalIdFactory;
-
-    @Autowired
-    private ExecutableRunner executableRunner;
-
-    @Autowired
-    private DetectConfiguration detectConfiguration;
+    public CondaCliExtractor(final CondaListParser condaListParser, final ExternalIdFactory externalIdFactory, final ExecutableRunner executableRunner, final DetectConfigWrapper detectConfigWrapper) {
+        this.condaListParser = condaListParser;
+        this.externalIdFactory = externalIdFactory;
+        this.executableRunner = executableRunner;
+        this.detectConfigWrapper = detectConfigWrapper;
+    }
 
     public Extraction extract(final BomToolType bomToolType, final File directory, final File condaExe) {
         try {
             final List<String> condaListOptions = new ArrayList<>();
             condaListOptions.add("list");
-            if (StringUtils.isNotBlank(detectConfiguration.getCondaEnvironmentName())) {
+            final String condaEnvironmentName = detectConfigWrapper.getProperty(DetectProperty.DETECT_CONDA_ENVIRONMENT_NAME);
+            if (StringUtils.isNotBlank(condaEnvironmentName)) {
                 condaListOptions.add("-n");
-                condaListOptions.add(detectConfiguration.getCondaEnvironmentName());
+                condaListOptions.add(condaEnvironmentName);
             }
             condaListOptions.add("--json");
             final Executable condaListExecutable = new Executable(directory, condaExe, condaListOptions);

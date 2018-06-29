@@ -23,9 +23,11 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.summary;
 
+import com.blackducksoftware.integration.hub.summary.Result;
+
 public class ScanStatusSummary extends StatusSummary {
-    public ScanStatusSummary(final String scanTargetPath, final Status status) {
-        super("Scan Target " + scanTargetPath, status);
+    public ScanStatusSummary(final String scanTargetPath, final Result result) {
+        super("Scan Target " + scanTargetPath, result);
     }
 
 }

@@ -44,11 +44,17 @@ import com.blackducksoftware.integration.hub.detect.workflow.codelocation.Detect
 public class ExtractionManager {
     private final Logger logger = LoggerFactory.getLogger(DetectProjectManager.class);
 
-    @Autowired
-    private PreparationSummaryReporter preparationSummaryReporter;
+    private final PreparationSummaryReporter preparationSummaryReporter;
+    private final ExtractionSummaryReporter extractionSummaryReporter;
+    private final ExtractionReporter extractionReporter;
 
     @Autowired
-    private ExtractionReporter extractionReporter;
+    public ExtractionManager(final PreparationSummaryReporter preparationSummaryReporter, final ExtractionSummaryReporter extractionSummaryReporter,
+            final ExtractionReporter extractionReporter) {
+        this.preparationSummaryReporter = preparationSummaryReporter;
+        this.extractionSummaryReporter = extractionSummaryReporter;
+        this.extractionReporter = extractionReporter;
+    }
 
     private int extractions = 0;
 

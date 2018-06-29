@@ -8,7 +8,6 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFac
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.parse.NpmLockfilePackager
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.parse.NpmParseResult
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 import com.google.gson.GsonBuilder
@@ -26,7 +25,6 @@ class NpmLockfilePackagerTest {
         npmLockfilePackager = new NpmLockfilePackager()
         npmLockfilePackager.externalIdFactory = externalIdFactory
         npmLockfilePackager.gson = new GsonBuilder().setPrettyPrinting().create()
-        npmLockfilePackager.nameVersionNodeTransformer = new NameVersionNodeTransformer(externalIdFactory)
     }
 
     @Test

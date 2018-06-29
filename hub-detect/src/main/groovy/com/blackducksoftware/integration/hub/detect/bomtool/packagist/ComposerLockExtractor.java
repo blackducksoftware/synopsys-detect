@@ -38,8 +38,12 @@ import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extracti
 @Component
 public class ComposerLockExtractor {
 
+    private final PackagistParser packagistParser;
+
     @Autowired
-    PackagistParser packagistParser;
+    public ComposerLockExtractor(final PackagistParser packagistParser) {
+        this.packagistParser = packagistParser;
+    }
 
     public Extraction extract(final BomToolType bomToolType, final File directory, final File composerJson, final File composerLock) {
         try {

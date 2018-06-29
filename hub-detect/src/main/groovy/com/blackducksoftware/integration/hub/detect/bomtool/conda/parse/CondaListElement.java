@@ -1,4 +1,4 @@
-/**
+/*
  * hub-detect
  *
  * Copyright (C) 2018 Black Duck Software, Inc.
@@ -21,10 +21,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.workflow.summary;
+package com.blackducksoftware.integration.hub.detect.bomtool.conda.parse;
 
-public enum Status {
-    SUCCESS,
-    FAILURE;
+import com.google.gson.annotations.SerializedName;
 
+public class CondaListElement {
+    @SerializedName("name")
+    String name;
+
+    @SerializedName("version")
+    String version;
+
+    @SerializedName("build_string")
+    String buildString;
 }

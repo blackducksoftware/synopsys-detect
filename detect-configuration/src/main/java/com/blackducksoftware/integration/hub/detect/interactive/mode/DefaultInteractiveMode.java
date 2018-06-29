@@ -26,17 +26,21 @@ package com.blackducksoftware.integration.hub.detect.interactive.mode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper;
 import com.blackducksoftware.integration.log.SilentLogger;
 
 @Component
 public class DefaultInteractiveMode extends InteractiveMode {
-    @Autowired
-    private HubServiceWrapper hubServiceWrapper;
+    private final HubServiceWrapper hubServiceWrapper;
+    private final DetectOptionManager detectOptionManager;
 
     @Autowired
-    private DetectOptionManager detectOptionManager;
+    public DefaultInteractiveMode(final HubServiceWrapper hubServiceWrapper, final DetectOptionManager detectOptionManager) {
+        this.hubServiceWrapper = hubServiceWrapper;
+        this.detectOptionManager = detectOptionManager;
+    }
 
     @Override
     public void interact() {
@@ -47,42 +51,42 @@ public class DefaultInteractiveMode extends InteractiveMode {
             boolean connected = false;
             boolean skipConnectionTest = false;
             while (!connected && !skipConnectionTest) {
-                setPropertyFromQuestion("hubUrl", "What is the hub instance url?");
+                setPropertyFromQuestion(DetectProperty.BLACKDUCK_HUB_URL, "What is the hub instance url?");
 
                 print("You can now configure the hub with either an API token -OR- a username and password. The API token must already exist on the hub, but it is the preferred approach to configure your connection.");
                 final Boolean useApiToken = askYesOrNo("Would you like to use an existing API token?");
                 if (useApiToken) {
-                    setPropertyFromQuestion("hubApiToken", "What is the hub API token?");
+                    setPropertyFromQuestion(DetectProperty.BLACKDUCK_HUB_API_TOKEN, "What is the hub API token?");
                 } else {
-                    setPropertyFromQuestion("hubUsername", "What is the hub username?");
+                    setPropertyFromQuestion(DetectProperty.BLACKDUCK_HUB_USERNAME, "What is the hub username?");
 
                     final Boolean setHubPassword = askYesOrNoWithMessage("Would you like to set the hub password?",
                             "WARNING: If you choose to save the settings, this password will be stored in plain text. You can set this password as an environment variable BLACKDUCK_HUB_PASSWORD.");
                     if (setHubPassword) {
-                        setPropertyFromSecretQuestion("hubPassword", "What is the hub password?");
+                        setPropertyFromSecretQuestion(DetectProperty.BLACKDUCK_HUB_PASSWORD, "What is the hub password?");
                     }
                 }
 
                 final Boolean useProxy = askYesOrNo("Would you like to configure a proxy for the hub?");
                 if (useProxy) {
-                    setPropertyFromQuestion("hubProxyHost", "What is the hub proxy host?");
-                    setPropertyFromQuestion("hubProxyPort", "What is the hub proxy port?");
-                    setPropertyFromQuestion("hubProxyUsername", "What is the hub proxy username?");
+                    setPropertyFromQuestion(DetectProperty.BLACKDUCK_HUB_PROXY_HOST, "What is the hub proxy host?");
+                    setPropertyFromQuestion(DetectProperty.BLACKDUCK_HUB_PROXY_PORT, "What is the hub proxy port?");
+                    setPropertyFromQuestion(DetectProperty.BLACKDUCK_HUB_PROXY_USERNAME, "What is the hub proxy username?");
                     final Boolean setHubPassword = askYesOrNoWithMessage("Would you like to set the hub proxy password?",
                             "WARNING: If you choose to save the settings, this password will be stored in plain text. You can set this password as an environment variable BLACKDUCK_HUB_PROXY_PASSWORD.");
                     if (setHubPassword) {
-                        setPropertyFromSecretQuestion("hubProxyPassword", "What is the hub proxy password?");
+                        setPropertyFromSecretQuestion(DetectProperty.BLACKDUCK_HUB_PROXY_PASSWORD, "What is the hub proxy password?");
                     }
                     final Boolean useNtlmProxy = askYesOrNo("Do you use a ntlm proxy?");
                     if (useNtlmProxy) {
-                        setPropertyFromQuestion("hubProxyNtlmDomain", "What is the ntlm proxy domain?");
-                        setPropertyFromQuestion("hubProxyNtlmWorkstation", "What is the ntlm proxy workstation?");
+                        setPropertyFromQuestion(DetectProperty.BLACKDUCK_HUB_PROXY_NTLM_DOMAIN, "What is the ntlm proxy domain?");
+                        setPropertyFromQuestion(DetectProperty.BLACKDUCK_HUB_PROXY_NTLM_WORKSTATION, "What is the ntlm proxy workstation?");
                     }
                 }
 
                 final Boolean trustCert = askYesOrNo("Would you like to automatically trust the hub certificate?");
                 if (trustCert) {
-                    setProperty("hubTrustCertificate", "true");
+                    setProperty(DetectProperty.BLACKDUCK_HUB_TRUST_CERT, "true");
                 }
 
                 final Boolean testHub = askYesOrNo("Would you like to test the hub connection now?");
@@ -108,20 +112,20 @@ public class DefaultInteractiveMode extends InteractiveMode {
 
             final Boolean customDetails = askYesOrNo("Would you like to provide a project name and version to use on the hub?");
             if (customDetails) {
-                setPropertyFromQuestion("projectName", "What is the hub project name?");
-                setPropertyFromQuestion("projectVersionName", "What is the hub project version?");
+                setPropertyFromQuestion(DetectProperty.DETECT_PROJECT_NAME, "What is the hub project name?");
+                setPropertyFromQuestion(DetectProperty.DETECT_PROJECT_VERSION_NAME, "What is the hub project version?");
             }
         } else {
-            setProperty("hubOfflineMode", "true");
+            setProperty(DetectProperty.BLACKDUCK_HUB_OFFLINE_MODE, "true");
         }
 
         final Boolean scan = askYesOrNo("Would you like run a CLI scan?");
         if (!scan) {
-            setProperty("hubSignatureScannerDisabled", "true");
+            setProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_DISABLED, "true");
         } else if (scan && connectToHub) {
             final Boolean upload = askYesOrNo("Would you like to upload CLI scan results to the hub?");
             if (!upload) {
-                setProperty("hubSignatureScannerDryRun", "true");
+                setProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_DRY_RUN, "true");
             }
         }
 
@@ -130,9 +134,9 @@ public class DefaultInteractiveMode extends InteractiveMode {
             if (customScanner) {
                 final Boolean downloadCustomScanner = askYesOrNo("Would you like to download the custom scanner?");
                 if (downloadCustomScanner) {
-                    setPropertyFromQuestion("hubSignatureScannerHostUrl", "What is the scanner host url?");
+                    setPropertyFromQuestion(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_HOST_URL, "What is the scanner host url?");
                 } else {
-                    setPropertyFromQuestion("hubSignatureScannerOfflineLocalPath", "What is the location of your offline scanner?");
+                    setPropertyFromQuestion(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH, "What is the location of your offline scanner?");
                 }
             }
         }

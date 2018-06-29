@@ -93,7 +93,7 @@ public class DockerBomTool extends BomTool {
             }
         }
 
-        dockerInspectorInfo = dockerInspectorManager.getDockerInspector(environment);
+        dockerInspectorInfo = dockerInspectorManager.getDockerInspector();
         if (dockerInspectorInfo == null) {
             return new InspectorNotFoundBomToolResult("docker");
         }
@@ -105,5 +105,5 @@ public class DockerBomTool extends BomTool {
     public Extraction extract(final ExtractionId extractionId) {
         return dockerExtractor.extract(this.getBomToolType(), environment.getDirectory(), extractionId, bashExe, dockerExe, image, tar, dockerInspectorInfo);
     }
-
+    
 }

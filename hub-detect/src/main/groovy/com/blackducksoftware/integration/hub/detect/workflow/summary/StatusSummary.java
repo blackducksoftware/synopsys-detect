@@ -23,21 +23,23 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.summary;
 
+import com.blackducksoftware.integration.hub.summary.Result;
+
 public class StatusSummary {
     private final String descriptionKey;
-    private final Status status;
+    private final Result result;
 
-    public StatusSummary(final String descriptionKey, final Status status) {
+    public StatusSummary(final String descriptionKey, final Result result) {
         this.descriptionKey = descriptionKey;
-        this.status = status;
+        this.result = result;
     }
 
     public String getDescriptionKey() {
         return descriptionKey;
     }
 
-    public Status getStatus() {
-        return status;
+    public Result getStatus() {
+        return result;
     }
 
 }

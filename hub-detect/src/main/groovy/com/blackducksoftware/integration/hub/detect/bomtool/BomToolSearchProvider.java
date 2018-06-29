@@ -88,6 +88,8 @@ public class BomToolSearchProvider {
         searchRuleSet.addBomTool(bomToolFactory.createSbtResolutionCacheBomTool(environment)).defaultNotNested();
         searchRuleSet.addBomTool(bomToolFactory.createPearCliBomTool(environment)).defaultNotNested();
 
+        searchRuleSet.addBomTool(bomToolFactory.createCLangBomTool(environment)).defaultNested();
+
         return searchRuleSet.build();
     }
 }

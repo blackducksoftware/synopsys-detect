@@ -1,4 +1,4 @@
-/*
+/**
  * hub-detect
  *
  * Copyright (C) 2018 Black Duck Software, Inc.
@@ -21,20 +21,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.npm.parse
+package com.blackducksoftware.integration.hub.detect.bomtool.packagist.parse.model;
 
-import com.google.gson.annotations.SerializedName
+import java.util.List;
 
-import groovy.transform.TypeChecked
+import com.blackducksoftware.integration.util.NameVersion;
 
-@TypeChecked
-class NpmDependency {
-    @SerializedName('version')
-    String version
+public class PackagistPackage {
+    private final NameVersion nameVersion;
+    private final List<NameVersion> dependencies;
 
-    @SerializedName('dev')
-    Boolean dev;
+    public PackagistPackage(final NameVersion nameVersion, final List<NameVersion> dependencies) {
+        this.nameVersion = nameVersion;
+        this.dependencies = dependencies;
+    }
 
-    @SerializedName('requires')
-    Map<String, String> requires
+    public NameVersion getNameVersion() {
+        return nameVersion;
+    }
+
+    public List<NameVersion> getDependencies() {
+        return dependencies;
+    }
+
 }

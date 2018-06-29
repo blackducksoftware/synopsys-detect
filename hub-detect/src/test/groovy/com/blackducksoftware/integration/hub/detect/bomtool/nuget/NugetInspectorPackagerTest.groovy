@@ -52,16 +52,13 @@ public class NugetInspectorPackagerTest {
         createCodeLocation(dependencyNodeFile, expectedOutputFiles)
     }
 
-    @Test(timeout=5000L)
+    @Test(timeout = 5000L)
     public void createCodeLocationDWService() throws IOException {
         def dependencyNodeFile = new File(getClass().getResource("/nuget/dwCheckApi_inspection_martin.json").getFile())
-        NameVersionNodeTransformer nameVersionNodeTransformer = new NameVersionNodeTransformer()
-        nameVersionNodeTransformer.externalIdFactory = new ExternalIdFactory()
-        def packager = new NugetInspectorPackager()
-        packager.gson = new Gson()
-        packager.nameVersionNodeTransformer = nameVersionNodeTransformer
-        packager.externalIdFactory = nameVersionNodeTransformer.externalIdFactory
-        NugetParseResult result = packager.createDetectCodeLocation(BomToolType.NUGET_SOLUTION_INSPECTOR, dependencyNodeFile)
+        NameVersionNodeTransformer nameVersionNodeTransformer = new NameVersionNodeTransformer(new ExternalIdFactory())
+
+        def packager = new NugetInspectorPackager(null, null, gson, nameVersionNodeTransformer, nameVersionNodeTransformer.externalIdFactory)
+        NugetParseResult result = packager.createDetectCodeLocation(dependencyNodeFile)
 
         for (DetectCodeLocation codeLocation : result.codeLocations) {
             BdioPropertyHelper bdioPropertyHelper = new BdioPropertyHelper()
@@ -82,13 +79,8 @@ public class NugetInspectorPackagerTest {
     }
 
     private void createCodeLocation(File dependencyNodeFile, List<String> expectedOutputFiles) throws IOException {
-        NameVersionNodeTransformer nameVersionNodeTransformer = new NameVersionNodeTransformer()
-        nameVersionNodeTransformer.externalIdFactory = new ExternalIdFactory()
-        def packager = new NugetInspectorPackager()
-
-        packager.gson = new Gson()
-        packager.nameVersionNodeTransformer = nameVersionNodeTransformer
-        packager.externalIdFactory = nameVersionNodeTransformer.externalIdFactory
+        NameVersionNodeTransformer nameVersionNodeTransformer = new NameVersionNodeTransformer(new ExternalIdFactory())
+        def packager = new NugetInspectorPackager(null, null, gson, nameVersionNodeTransformer, nameVersionNodeTransformer.externalIdFactory)
 
         NugetParseResult result = packager.createDetectCodeLocation(BomToolType.NUGET_SOLUTION_INSPECTOR, dependencyNodeFile)
 

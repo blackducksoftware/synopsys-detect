@@ -35,16 +35,16 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphCombiner;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.parse.NugetInspectorPackager;
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.parse.NugetParseResult;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
@@ -59,42 +59,46 @@ public class NugetInspectorExtractor {
 
     private final Logger logger = LoggerFactory.getLogger(NugetInspectorExtractor.class);
 
-    @Autowired
-    private DetectFileManager detectFileManager;
+    private final DetectFileManager detectFileManager;
+    private final NugetInspectorPackager nugetInspectorPackager;
+    private final ExecutableRunner executableRunner;
+    private final DetectFileFinder detectFileFinder;
+    private final DetectConfigWrapper detectConfigWrapper;
 
-    @Autowired
-    private NugetInspectorPackager nugetInspectorPackager;
-
-    @Autowired
-    private DetectConfiguration detectConfiguration;
-
-    @Autowired
-    private ExecutableRunner executableRunner;
-
-    @Autowired
-    private DetectFileFinder detectFileFinder;
+    public NugetInspectorExtractor(final DetectFileManager detectFileManager, final NugetInspectorPackager nugetInspectorPackager, final ExecutableRunner executableRunner, final DetectFileFinder detectFileFinder,
+            final DetectConfigWrapper detectConfigWrapper) {
+        this.detectFileManager = detectFileManager;
+        this.nugetInspectorPackager = nugetInspectorPackager;
+        this.executableRunner = executableRunner;
+        this.detectFileFinder = detectFileFinder;
+        this.detectConfigWrapper = detectConfigWrapper;
+    }
 
     public Extraction extract(final BomToolType bomToolType, final File directory, final String inspectorExe, final ExtractionId extractionId) {
         try {
-            final File outputDirectory = detectFileManager.getOutputDirectory(extractionId);
+            final File outputDirectory = detectFileManager.getOutputDirectory("Nuget", extractionId);
 
             final List<String> options = new ArrayList<>(Arrays.asList(
                     "--target_path=" + directory.toString(),
                     "--output_directory=" + outputDirectory.getCanonicalPath(),
-                    "--ignore_failure=" + detectConfiguration.getNugetInspectorIgnoreFailure()));
+                    "--ignore_failure=" + detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_NUGET_IGNORE_FAILURE)));
 
-            if (detectConfiguration.getNugetInspectorExcludedModules() != null) {
-                options.add("--excluded_modules=" + detectConfiguration.getNugetInspectorExcludedModules());
+            final String nugetExcludedModules = detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_EXCLUDED_MODULES);
+            if (StringUtils.isNotBlank(nugetExcludedModules)) {
+                options.add("--excluded_modules=" + nugetExcludedModules);
             }
-            if (detectConfiguration.getNugetInspectorIncludedModules() != null) {
-                options.add("--included_modules=" + detectConfiguration.getNugetInspectorIncludedModules());
+            final String nugetIncludedModules = detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_INCLUDED_MODULES);
+            if (StringUtils.isNotBlank(nugetIncludedModules)) {
+                options.add("--included_modules=" + nugetIncludedModules);
             }
-            if (detectConfiguration.getNugetPackagesRepoUrl() != null) {
-                final String packagesRepos = Arrays.asList(detectConfiguration.getNugetPackagesRepoUrl()).stream().collect(Collectors.joining(","));
+            final String nugetPackagesRepo = detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_PACKAGES_REPO_URL);
+            if (StringUtils.isNotBlank(nugetPackagesRepo)) {
+                final String packagesRepos = Arrays.asList(nugetPackagesRepo).stream().collect(Collectors.joining(","));
                 options.add("--packages_repo_url=" + packagesRepos);
             }
-            if (StringUtils.isNotBlank(detectConfiguration.getNugetConfigPath())) {
-                options.add("--nuget_config_path=" + detectConfiguration.getNugetConfigPath());
+            final String nugetConfigPath = detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_CONFIG_PATH);
+            if (StringUtils.isNotBlank(nugetConfigPath)) {
+                options.add("--nuget_config_path=" + nugetConfigPath);
             }
             if (logger.isTraceEnabled()) {
                 options.add("-v");

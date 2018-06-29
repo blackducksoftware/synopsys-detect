@@ -24,11 +24,10 @@
 package com.blackducksoftware.integration.hub.detect.hub;
 
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.exception.EncryptionException;
 import com.blackducksoftware.integration.exception.IntegrationException;
@@ -36,7 +35,9 @@ import com.blackducksoftware.integration.hub.api.generated.discovery.ApiDiscover
 import com.blackducksoftware.integration.hub.api.generated.response.CurrentVersionView;
 import com.blackducksoftware.integration.hub.configuration.HubServerConfig;
 import com.blackducksoftware.integration.hub.configuration.HubServerConfigBuilder;
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
+import com.blackducksoftware.integration.hub.detect.configuration.AdditionalPropertyConfig;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.service.CodeLocationService;
@@ -52,16 +53,20 @@ import com.blackducksoftware.integration.log.Slf4jIntLogger;
 import com.blackducksoftware.integration.rest.connection.RestConnection;
 import com.blackducksoftware.integration.util.ResourceUtil;
 
-@Component
 public class HubServiceWrapper {
     private final Logger logger = LoggerFactory.getLogger(HubServiceWrapper.class);
 
-    @Autowired
-    private DetectConfiguration detectConfiguration;
+    private final DetectConfigWrapper detectConfigWrapper;
+    private final AdditionalPropertyConfig additionalPropertyConfig;
 
     private Slf4jIntLogger slf4jIntLogger;
     private HubServerConfig hubServerConfig;
     private HubServicesFactory hubServicesFactory;
+
+    public HubServiceWrapper(final DetectConfigWrapper detectConfigWrapper, final AdditionalPropertyConfig additionalPropertyConfig) {
+        this.detectConfigWrapper = detectConfigWrapper;
+        this.additionalPropertyConfig = additionalPropertyConfig;
+    }
 
     public void init() throws IntegrationException, DetectUserFriendlyException {
         try {
@@ -119,15 +124,15 @@ public class HubServiceWrapper {
     }
 
     public ScanStatusService createScanStatusService() {
-        return hubServicesFactory.createScanStatusService(detectConfiguration.getApiTimeout());
+        return hubServicesFactory.createScanStatusService(detectConfigWrapper.getLongProperty(DetectProperty.DETECT_API_TIMEOUT));
     }
 
     public ReportService createReportService() throws IntegrationException {
-        return hubServicesFactory.createReportService(detectConfiguration.getApiTimeout());
+        return hubServicesFactory.createReportService(detectConfigWrapper.getLongProperty(DetectProperty.DETECT_API_TIMEOUT));
     }
 
-    public SignatureScannerService createSignatureScannerService() {
-        return hubServicesFactory.createSignatureScannerService(120000L);
+    public SignatureScannerService createSignatureScannerService(final ExecutorService executorService) {
+        return hubServicesFactory.createSignatureScannerService(executorService);
     }
 
     private HubServicesFactory createHubServicesFactory(final IntLogger slf4jIntLogger, final HubServerConfig hubServerConfig) throws IntegrationException {
@@ -140,7 +145,7 @@ public class HubServiceWrapper {
         final HubServerConfigBuilder hubServerConfigBuilder = new HubServerConfigBuilder();
         hubServerConfigBuilder.setLogger(slf4jIntLogger);
 
-        final Map<String, String> blackduckHubProperties = detectConfiguration.getBlackduckHubProperties();
+        final Map<String, String> blackduckHubProperties = additionalPropertyConfig.getBlackduckHubProperties();
         hubServerConfigBuilder.setFromProperties(blackduckHubProperties);
 
         return hubServerConfigBuilder.build();

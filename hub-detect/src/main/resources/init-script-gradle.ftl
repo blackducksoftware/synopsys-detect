@@ -56,7 +56,8 @@ addListener(
                 executed = true
             }
 
-            File outputDirectory = new File(task.project.buildDir, 'blackduck')
+            String outputDirectoryPath = System.getProperty('GRADLEEXTRACTIONDIR')
+            File outputDirectory = new File(outputDirectoryPath)
             outputDirectory.mkdirs()
 
             def dependencyGatherer = new DependencyGatherer()

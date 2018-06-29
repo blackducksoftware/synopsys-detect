@@ -1,4 +1,4 @@
-/*
+/**
  * hub-detect
  *
  * Copyright (C) 2018 Black Duck Software, Inc.
@@ -21,14 +21,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.conda.parse
+package com.blackducksoftware.integration.hub.detect.bomtool.clang;
 
-import com.google.gson.annotations.SerializedName
+import java.io.File;
 
-import groovy.transform.TypeChecked
+public class DependencyFile {
+    private final boolean inBuildDir;
+    private final File file;
 
-@TypeChecked
-class CondaInfo {
-    @SerializedName("platform")
-    String platform
+    public DependencyFile(final boolean inBuildDir, final File file) {
+        this.inBuildDir = inBuildDir;
+        this.file = file;
+    }
+
+    public boolean isInBuildDir() {
+        return inBuildDir;
+    }
+
+    public File getFile() {
+        return file;
+    }
 }

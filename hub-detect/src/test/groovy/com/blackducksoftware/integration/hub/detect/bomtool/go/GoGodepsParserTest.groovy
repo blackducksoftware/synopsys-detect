@@ -19,9 +19,10 @@ import org.apache.commons.io.IOUtils
 import org.junit.Test
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.bomtool.go.parse.GoGodepsParser
+import com.blackducksoftware.integration.hub.detect.bomtool.go.parse.GodepsParser
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -32,7 +33,7 @@ public class GoGodepsParserTest {
 
     @Test
     public void goDepParserTest() throws IOException {
-        final GoGodepsParser goDepParser = new GoGodepsParser(gson, new ExternalIdFactory())
+        final GodepsParser goDepParser = new GodepsParser(gson, new ExternalIdFactory())
         final String goDepOutput = IOUtils.toString(getClass().getResourceAsStream("/go/Go_Godeps.json"), StandardCharsets.UTF_8)
         final DependencyGraph dependencyGraph = goDepParser.extractProjectDependencies(goDepOutput)
 
@@ -41,59 +42,17 @@ public class GoGodepsParserTest {
 
     private void fixVersion(final Dependency node, final String newVersion) {
         node.version = newVersion
-        node.externalId = externalIdFactory.createNameVersionExternalId(GoDepBomTool.GOLANG, node.name, newVersion)
-    }
-
-    @Test
-    public void testShouldVersionBeCorrected() throws IOException {
-        final GoGodepsParser goDepParser = new GoGodepsParser(null, null)
-
-        boolean shouldBeTrimmed = goDepParser.shouldVersionBeCorrected("v1.5")
-        assertFalse(shouldBeTrimmed)
-
-        shouldBeTrimmed = goDepParser.shouldVersionBeCorrected("test")
-        assertFalse(shouldBeTrimmed)
-
-        shouldBeTrimmed = goDepParser.shouldVersionBeCorrected("stuff-things")
-        assertFalse(shouldBeTrimmed)
-
-        shouldBeTrimmed = goDepParser.shouldVersionBeCorrected("stuff-things-other")
-        assertFalse(shouldBeTrimmed)
-
-        shouldBeTrimmed = goDepParser.shouldVersionBeCorrected("stuff-things-gotcha")
-        assertFalse(shouldBeTrimmed)
-
-        shouldBeTrimmed = goDepParser.shouldVersionBeCorrected("stuff-things-gotcha")
-        assertFalse(shouldBeTrimmed)
-
-        shouldBeTrimmed = goDepParser.shouldVersionBeCorrected("v1.5-10-gae3452")
-        assertTrue(shouldBeTrimmed)
-
-        shouldBeTrimmed = goDepParser.shouldVersionBeCorrected("v1.5-10-g23423")
-        assertTrue(shouldBeTrimmed)
-
-        shouldBeTrimmed = goDepParser.shouldVersionBeCorrected("v1.5-gae3452")
-        assertFalse(shouldBeTrimmed)
-
-        shouldBeTrimmed = goDepParser.shouldVersionBeCorrected("v1.5-10-gamma5")
-        assertFalse(shouldBeTrimmed)
-
-        shouldBeTrimmed = goDepParser.shouldVersionBeCorrected("v1.5-10-gamma")
-        assertFalse(shouldBeTrimmed)
-
-        shouldBeTrimmed = goDepParser.shouldVersionBeCorrected("v1.5-10-3452")
-        assertFalse(shouldBeTrimmed)
-
+        node.externalId = externalIdFactory.createNameVersionExternalId(Forge.GOLANG, node.name, newVersion)
     }
 
     @Test
     public void testGetCorrectedVersion() throws IOException {
-        final GoGodepsParser goDepParser = new GoGodepsParser(null, null)
+        final GodepsParser goDepParser = new GodepsParser(null, null)
 
-        String correctedVersion = goDepParser.getCorrectedVersion("v1.5-10-gae3452");
+        String correctedVersion = goDepParser.correctVersion("v1.5-10-gae3452");
         assertEquals("v1.5", correctedVersion)
 
-        correctedVersion = goDepParser.getCorrectedVersion("v1.5-10-g23423");
+        correctedVersion = goDepParser.correctVersion("v1.5-10-g23423");
         assertEquals("v1.5", correctedVersion)
     }
 }

@@ -1,4 +1,4 @@
-/*
+/**
  * hub-detect
  *
  * Copyright (C) 2018 Black Duck Software, Inc.
@@ -21,20 +21,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.npm.parse
+package com.blackducksoftware.integration.hub.detect.bomtool.clang;
 
-import com.google.gson.annotations.SerializedName
+import org.apache.commons.lang3.builder.RecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
-import groovy.transform.TypeChecked
+public class CompileCommand {
+    public String directory;
+    public String command;
+    public String file;
 
-@TypeChecked
-class NpmProject {
-    @SerializedName('name')
-    String name
-
-    @SerializedName('version')
-    String version
-
-    @SerializedName('dependencies')
-    Map<String, NpmDependency> dependencies
+    @Override
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this, RecursiveToStringStyle.JSON_STYLE);
+    }
 }

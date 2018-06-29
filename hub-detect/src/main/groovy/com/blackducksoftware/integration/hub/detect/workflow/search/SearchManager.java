@@ -25,6 +25,7 @@ package com.blackducksoftware.integration.hub.detect.workflow.search;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -34,9 +35,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolSearchProvider;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
+import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
@@ -48,22 +50,24 @@ import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
 public class SearchManager {
     private final Logger logger = LoggerFactory.getLogger(SearchManager.class);
 
-    @Autowired
-    private SearchSummaryReporter searchSummaryReporter;
+    private final SearchSummaryReporter searchSummaryReporter;
+    private final BomToolSearchProvider bomToolSearchProvider;
+    private final PhoneHomeManager phoneHomeManager;
+    private final DetectConfigWrapper detectConfigWrapper;
 
     @Autowired
-    private BomToolSearchProvider bomToolSearchProvider;
-
-    @Autowired
-    private DetectConfiguration detectConfiguration;
-
-    @Autowired
-    private PhoneHomeManager detectPhoneHomeManager;
+    public SearchManager(final SearchSummaryReporter searchSummaryReporter, final BomToolSearchProvider bomToolSearchProvider, final PhoneHomeManager phoneHomeManager,
+            final DetectConfigWrapper detectConfigWrapper) {
+        this.searchSummaryReporter = searchSummaryReporter;
+        this.bomToolSearchProvider = bomToolSearchProvider;
+        this.phoneHomeManager = phoneHomeManager;
+        this.detectConfigWrapper = detectConfigWrapper;
+    }
 
     public SearchResult performSearch() throws DetectUserFriendlyException {
         List<BomToolEvaluation> sourcePathResults = new ArrayList<>();
         try {
-            sourcePathResults = findApplicableBomTools(new File(detectConfiguration.getSourcePath()));
+            sourcePathResults = findApplicableBomTools(new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)));
         } catch (final BomToolException e) {
             return new SearchResultBomToolFailed(e);
         }
@@ -76,16 +80,17 @@ public class SearchManager {
                 .collect(Collectors.toSet());
 
         // we've gone through all applicable bom tools so we now have the complete metadata to phone home
-        detectPhoneHomeManager.startPhoneHome(applicableBomTools);
+        phoneHomeManager.startPhoneHome(applicableBomTools);
 
         return new SearchResultSuccess(sourcePathResults);
     }
 
     private List<BomToolEvaluation> findApplicableBomTools(final File directory) throws BomToolException, DetectUserFriendlyException {
-        final List<String> excludedDirectories = detectConfiguration.getBomToolSearchDirectoryExclusions();
-        final Boolean forceNestedSearch = detectConfiguration.getBomToolContinueSearch();
-        final int maxDepth = detectConfiguration.getBomToolSearchDepth();
-        final ExcludedIncludedFilter bomToolFilter = new ExcludedIncludedFilter(detectConfiguration.getExcludedBomToolTypes(), detectConfiguration.getIncludedBomToolTypes());
+        final List<String> excludedDirectories = Arrays.asList(detectConfigWrapper.getStringArrayProperty(DetectProperty.DETECT_BOM_TOOL_SEARCH_EXCLUSION));
+        final Boolean forceNestedSearch = detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_BOM_TOOL_SEARCH_CONTINUE);
+        final int maxDepth = detectConfigWrapper.getIntegerProperty(DetectProperty.DETECT_BOM_TOOL_SEARCH_DEPTH);
+        final ExcludedIncludedFilter bomToolFilter = new ExcludedIncludedFilter(detectConfigWrapper.getProperty(DetectProperty.DETECT_EXCLUDED_BOM_TOOL_TYPES), detectConfigWrapper.getProperty(DetectProperty.DETECT_INCLUDED_BOM_TOOL_TYPES));
+
         final BomToolFinderOptions findOptions = new BomToolFinderOptions(excludedDirectories, forceNestedSearch, maxDepth, bomToolFilter);
 
         logger.info("Starting search for bom tools.");

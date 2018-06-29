@@ -147,8 +147,8 @@ public class DockerExtractor {
             final DockerInspectorInfo dockerInspectorInfo)
             throws FileNotFoundException, IOException, ExecutableRunnerException {
 
-        final File outputDirectory = detectFileManager.getOutputDirectory(extractionId);
-        final File dockerPropertiesFile = detectFileManager.getOutputFile(extractionId, "application.properties");
+        final File outputDirectory = detectFileManager.getOutputDirectory("Docker", extractionId);
+        final File dockerPropertiesFile = detectFileManager.getOutputFile(outputDirectory, "application.properties");
         dockerProperties.populatePropertiesFile(dockerPropertiesFile, outputDirectory);
 
         String dockerInspectorVersion = "";
@@ -168,9 +168,7 @@ public class DockerExtractor {
         bashArguments.addArgument(imageArgument);
 
         if (dockerInspectorInfo.isOffline) {
-            bashArguments.insertArgumentPair(2, "--dry.run", "true");
-            bashArguments.insertArgumentPair(3, "--no.prompt", "true");
-            bashArguments.insertArgumentPair(4, "--jar.path", dockerInspectorInfo.offlineDockerInspectorJar.getCanonicalPath(), true);
+            bashArguments.insertArgumentPair(2, "--jar.path", dockerInspectorInfo.offlineDockerInspectorJar.getCanonicalPath(), true);
             importTars(dockerInspectorInfo.offlineDockerInspectorJar, dockerInspectorInfo.offlineTars, outputDirectory, environmentVariables, bashExe);
         }
 
