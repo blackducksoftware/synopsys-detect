@@ -34,8 +34,8 @@ import com.blackducksoftware.integration.hub.detect.bomtool.result.BomToolResult
 import com.blackducksoftware.integration.hub.detect.bomtool.result.ExecutableNotFoundBomToolResult;
 import com.blackducksoftware.integration.hub.detect.bomtool.result.FileNotFoundBomToolResult;
 import com.blackducksoftware.integration.hub.detect.bomtool.result.PassedBomToolResult;
-import com.blackducksoftware.integration.hub.detect.manager.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
 public class MavenPomWrapperBomTool extends BomTool {
     public static final String POM_FILENAME = "pom.xml";

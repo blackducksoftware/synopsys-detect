@@ -25,7 +25,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool.yarn;
 
 import java.io.File;
 
-import com.blackducksoftware.integration.hub.detect.manager.extraction.ExtractionContext;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionContext;
 
 public class YarnLockContext extends ExtractionContext {
     File yarnlock;

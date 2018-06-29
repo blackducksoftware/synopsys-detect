@@ -4,12 +4,12 @@ import com.blackducksoftware.integration.hub.bdio.BdioNodeFactory
 import com.blackducksoftware.integration.hub.bdio.BdioPropertyHelper
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.parse.NpmCliDependencyFinder
-import com.blackducksoftware.integration.hub.detect.manager.DetectProjectManager
-import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
-import com.blackducksoftware.integration.hub.detect.model.DetectProject
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable
+import com.blackducksoftware.integration.hub.detect.workflow.DetectProjectManager
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation
+import com.blackducksoftware.integration.hub.detect.workflow.project.DetectProject
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil
 import com.google.gson.GsonBuilder
 

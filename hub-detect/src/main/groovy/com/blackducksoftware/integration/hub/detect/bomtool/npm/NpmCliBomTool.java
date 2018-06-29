@@ -36,8 +36,8 @@ import com.blackducksoftware.integration.hub.detect.bomtool.result.FileNotFoundB
 import com.blackducksoftware.integration.hub.detect.bomtool.result.NpmRunInstallBomToolResult;
 import com.blackducksoftware.integration.hub.detect.bomtool.result.PassedBomToolResult;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
-import com.blackducksoftware.integration.hub.detect.manager.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
 public class NpmCliBomTool extends BomTool {
     public static final String NODE_MODULES = "node_modules";

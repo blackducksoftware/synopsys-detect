@@ -35,7 +35,7 @@ import com.blackducksoftware.integration.hub.detect.DetectConfiguration;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.parse.NpmLockfilePackager;
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.parse.NpmParseResult;
-import com.blackducksoftware.integration.hub.detect.manager.extraction.Extraction;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
 @Component
 public class NpmLockfileExtractor {

@@ -39,10 +39,10 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtDependencyModule;
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtProject;
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.parse.SbtPackager;
-import com.blackducksoftware.integration.hub.detect.manager.extraction.Extraction;
-import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
 @Component
 public class SbtResolutionCacheExtractor {

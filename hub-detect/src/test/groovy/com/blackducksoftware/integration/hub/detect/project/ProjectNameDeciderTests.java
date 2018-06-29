@@ -9,8 +9,8 @@ import org.junit.Test;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
-import com.blackducksoftware.integration.hub.detect.manager.project.BomToolProjectInfo;
-import com.blackducksoftware.integration.hub.detect.manager.project.BomToolProjectInfoDecider;
+import com.blackducksoftware.integration.hub.detect.workflow.project.BomToolProjectInfo;
+import com.blackducksoftware.integration.hub.detect.workflow.project.BomToolNameVersionDecider;
 import com.blackducksoftware.integration.util.NameVersion;
 
 public class ProjectNameDeciderTests {
@@ -113,16 +113,16 @@ public class ProjectNameDeciderTests {
     }
 
     private void assertProject(final String projectName, final Optional<BomToolGroupType> preferred, final List<BomToolProjectInfo> possibilities) throws DetectUserFriendlyException {
-        final BomToolProjectInfoDecider decider = new BomToolProjectInfoDecider();
-        final Optional<NameVersion> chosen = decider.decideProjectInfo(possibilities, preferred);
+        final BomToolNameVersionDecider decider = new BomToolNameVersionDecider();
+        final Optional<NameVersion> chosen = decider.decideProjectNameVersion(possibilities, preferred);
 
         Assert.assertTrue(chosen.isPresent());
         Assert.assertEquals(chosen.get().getName(), projectName);
     }
 
     private void assertNoProject(final Optional<BomToolGroupType> preferred, final List<BomToolProjectInfo> possibilities) throws DetectUserFriendlyException {
-        final BomToolProjectInfoDecider decider = new BomToolProjectInfoDecider();
-        final Optional<NameVersion> chosen = decider.decideProjectInfo(possibilities, preferred);
+        final BomToolNameVersionDecider decider = new BomToolNameVersionDecider();
+        final Optional<NameVersion> chosen = decider.decideProjectNameVersion(possibilities, preferred);
 
         Assert.assertFalse(chosen.isPresent());
     }

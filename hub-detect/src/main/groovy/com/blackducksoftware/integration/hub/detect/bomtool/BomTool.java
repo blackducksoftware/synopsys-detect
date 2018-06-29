@@ -25,7 +25,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.result.BomToolResult;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
-import com.blackducksoftware.integration.hub.detect.manager.extraction.Extraction;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
 public abstract class BomTool {
     protected BomToolEnvironment environment;

@@ -33,8 +33,8 @@ import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.bomtool.result.BomToolResult;
 import com.blackducksoftware.integration.hub.detect.bomtool.result.FileNotFoundBomToolResult;
 import com.blackducksoftware.integration.hub.detect.bomtool.result.PassedBomToolResult;
-import com.blackducksoftware.integration.hub.detect.manager.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
 public class ComposerLockBomTool extends BomTool {
     public static final String COMPOSER_LOCK = "composer.lock";

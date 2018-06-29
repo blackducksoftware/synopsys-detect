@@ -34,8 +34,8 @@ import com.blackducksoftware.integration.hub.detect.bomtool.go.extraction.GoDeps
 import com.blackducksoftware.integration.hub.detect.bomtool.result.BomToolResult;
 import com.blackducksoftware.integration.hub.detect.bomtool.result.FileNotFoundBomToolResult;
 import com.blackducksoftware.integration.hub.detect.bomtool.result.PassedBomToolResult;
-import com.blackducksoftware.integration.hub.detect.manager.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
 @Deprecated
 public class GoDepsBomTool extends BomTool {

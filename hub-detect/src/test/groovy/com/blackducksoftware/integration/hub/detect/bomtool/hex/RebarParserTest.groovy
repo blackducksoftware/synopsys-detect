@@ -16,8 +16,8 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFac
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType
 import com.blackducksoftware.integration.hub.detect.bomtool.hex.parse.Rebar3TreeParser
 import com.blackducksoftware.integration.hub.detect.bomtool.hex.parse.RebarParseResult
-import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation
 
 class RebarParserTest {
 

@@ -35,8 +35,8 @@ import com.blackducksoftware.integration.hub.detect.bomtool.result.ExecutableNot
 import com.blackducksoftware.integration.hub.detect.bomtool.result.FilesNotFoundBomToolResult;
 import com.blackducksoftware.integration.hub.detect.bomtool.result.PassedBomToolResult;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
-import com.blackducksoftware.integration.hub.detect.manager.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
 public class PipenvBomTool extends BomTool {
     public static final String SETUPTOOLS_DEFAULT_FILE_NAME = "setup.py";

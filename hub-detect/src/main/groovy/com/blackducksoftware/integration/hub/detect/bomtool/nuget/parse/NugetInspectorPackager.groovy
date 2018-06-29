@@ -38,10 +38,10 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.model.NugetContainer
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.model.NugetContainerType
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.model.NugetInspection
-import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation
 import com.google.gson.Gson
 
 import groovy.transform.TypeChecked

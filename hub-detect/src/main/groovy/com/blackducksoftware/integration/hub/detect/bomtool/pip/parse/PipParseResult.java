@@ -23,7 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.pip.parse;
 
-import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 
 public class PipParseResult {
     public String projectName;

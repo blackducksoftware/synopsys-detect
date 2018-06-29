@@ -26,7 +26,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool.nuget.parse;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 
 public class NugetParseResult {
     public String projectName;

@@ -23,8 +23,8 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.parse.GradleParseResult
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.parse.GradleReportLine
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.parse.GradleReportParser
-import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation
 import com.google.gson.GsonBuilder
 
 class GradleReportParserTest {

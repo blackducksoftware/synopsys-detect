@@ -38,8 +38,8 @@ import com.blackducksoftware.integration.hub.detect.bomtool.result.FileNotFoundB
 import com.blackducksoftware.integration.hub.detect.bomtool.result.InspectorNotFoundBomToolResult;
 import com.blackducksoftware.integration.hub.detect.bomtool.result.PassedBomToolResult;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
-import com.blackducksoftware.integration.hub.detect.manager.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
 public class PipInspectorBomTool extends BomTool {
     public static final String SETUPTOOLS_DEFAULT_FILE_NAME = "setup.py";

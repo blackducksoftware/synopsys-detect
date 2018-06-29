@@ -56,13 +56,13 @@ import com.blackducksoftware.integration.hub.detect.interactive.InteractiveManag
 import com.blackducksoftware.integration.hub.detect.interactive.reader.ConsoleInteractiveReader;
 import com.blackducksoftware.integration.hub.detect.interactive.reader.InteractiveReader;
 import com.blackducksoftware.integration.hub.detect.interactive.reader.ScannerInteractiveReader;
-import com.blackducksoftware.integration.hub.detect.manager.PhoneHomeManager;
-import com.blackducksoftware.integration.hub.detect.manager.hub.HubSignatureScanner;
-import com.blackducksoftware.integration.hub.detect.manager.DetectSummaryManager;
-import com.blackducksoftware.integration.hub.detect.manager.HubManager;
-import com.blackducksoftware.integration.hub.detect.manager.DetectProjectManager;
-import com.blackducksoftware.integration.hub.detect.model.DetectProject;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.hub.detect.workflow.DetectProjectManager;
+import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
+import com.blackducksoftware.integration.hub.detect.workflow.hub.HubManager;
+import com.blackducksoftware.integration.hub.detect.workflow.hub.HubSignatureScanner;
+import com.blackducksoftware.integration.hub.detect.workflow.project.DetectProject;
+import com.blackducksoftware.integration.hub.detect.workflow.summary.DetectSummaryManager;
 import com.blackducksoftware.integration.log.SilentLogger;
 import com.blackducksoftware.integration.log.Slf4jIntLogger;
 
@@ -229,7 +229,7 @@ public class Application implements ApplicationRunner {
             }
 
             if (!detectConfiguration.getSuppressResultsOutput()) {
-                detectSummary.logResults(new Slf4jIntLogger(logger), exitCodeType);
+                detectSummary.logDetectResults(new Slf4jIntLogger(logger), exitCodeType);
             }
 
             detectFileManager.cleanupDirectories();

@@ -83,8 +83,8 @@ import com.blackducksoftware.integration.hub.detect.bomtool.sbt.SbtResolutionCac
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.SbtResolutionCacheExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnLockBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnLockExtractor;
-import com.blackducksoftware.integration.hub.detect.manager.extraction.StandardExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder;
 
 @Component
 public class BomToolFactory {

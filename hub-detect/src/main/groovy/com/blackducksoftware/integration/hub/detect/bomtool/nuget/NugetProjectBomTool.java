@@ -33,8 +33,8 @@ import com.blackducksoftware.integration.hub.detect.bomtool.result.FilesNotFound
 import com.blackducksoftware.integration.hub.detect.bomtool.result.InspectorNotFoundBomToolResult;
 import com.blackducksoftware.integration.hub.detect.bomtool.result.PassedBomToolResult;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
-import com.blackducksoftware.integration.hub.detect.manager.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
 public class NugetProjectBomTool extends BomTool {
     static final String[] SUPPORTED_PROJECT_PATTERNS = new String[] {

@@ -9,8 +9,8 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFac
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType
 import com.blackducksoftware.integration.hub.detect.bomtool.maven.parse.MavenCodeLocationPackager
 import com.blackducksoftware.integration.hub.detect.bomtool.maven.parse.MavenParseResult
-import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation
 
 class MavenCodeLocationPackagerTest {
     private TestUtil testUtil = new TestUtil()

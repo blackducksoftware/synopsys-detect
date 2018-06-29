@@ -23,8 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool;
 
-import static com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType.Constants.DEPRECATED;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,7 +35,7 @@ public enum BomToolGroupType {
     CRAN,
     DOCKER,
     GO_DEP,
-    GO_GODEP(DEPRECATED),
+    GO_GODEP,
     GO_VNDR,
     GRADLE,
     HEX,
@@ -52,28 +50,5 @@ public enum BomToolGroupType {
     YARN;
 
     public static List<String> POSSIBLE_NAMES = Arrays.stream(BomToolGroupType.values()).map(BomToolGroupType::name).collect(Collectors.toList());
-
-    private Boolean isDeprecated;
-
-    private BomToolGroupType() {
-        isDeprecated = false;
-    }
-
-    private BomToolGroupType(final Boolean deprecated) {
-        isDeprecated = deprecated;
-    }
-
-    public boolean isDeprecated() {
-        return isDeprecated;
-    }
-
-    @Override
-    public String toString() {
-        return isDeprecated ? super.toString() + " [DEPRECATED]" : super.toString();
-    }
-
-    public static class Constants {
-        public static final Boolean DEPRECATED = true;
-    }
 
 }

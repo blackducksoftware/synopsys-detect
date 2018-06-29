@@ -23,7 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.npm.parse;
 
-import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 
 public class NpmParseResult {
     public String projectName;
