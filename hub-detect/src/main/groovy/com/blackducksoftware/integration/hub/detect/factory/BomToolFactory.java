@@ -172,10 +172,6 @@ public class BomToolFactory {
         return new CLangBomTool(environment, detectFileFinder, cLangExtractor);
     }
 
-    public PodlockBomTool createCocoapodsBomTool(final BomToolEnvironment environment) {
-        return new PodlockBomTool(environment, detectFileFinder, podlockExtractor);
-    }
-
     public ComposerLockBomTool createComposerLockBomTool(final BomToolEnvironment environment) {
         return new ComposerLockBomTool(environment, detectFileFinder, composerLockExtractor);
     }
@@ -259,6 +255,10 @@ public class BomToolFactory {
     public PipInspectorBomTool createPipInspectorBomTool(final BomToolEnvironment environment) {
         final String requirementsFile = detectConfigWrapper.getProperty(DetectProperty.DETECT_PIP_REQUIREMENTS_PATH);
         return new PipInspectorBomTool(environment, requirementsFile, detectFileFinder, pythonExecutableFinder, pipInspectorManager, pipInspectorExtractor);
+    }
+
+    public PodlockBomTool createPodLockBomTool(final BomToolEnvironment environment) {
+        return new PodlockBomTool(environment, detectFileFinder, podlockExtractor);
     }
 
     public RebarBomTool createRebarBomTool(final BomToolEnvironment environment) {

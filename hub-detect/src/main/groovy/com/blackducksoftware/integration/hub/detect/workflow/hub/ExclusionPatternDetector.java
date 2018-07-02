@@ -41,32 +41,32 @@ public class ExclusionPatternDetector {
     private final DetectFileFinder detectFileFinder;
     private final File scanTarget;
 
-    public ExclusionPatternDetector(DetectFileFinder detectFileFinder, File scanTarget) {
+    public ExclusionPatternDetector(final DetectFileFinder detectFileFinder, final File scanTarget) {
         this.detectFileFinder = detectFileFinder;
         this.scanTarget = scanTarget;
     }
 
-    public Set<String> determineExclusionPatterns(String... hubSignatureScannerExclusionNamePatterns) {
+    public Set<String> determineExclusionPatterns(final String... hubSignatureScannerExclusionNamePatterns) {
         if (null == hubSignatureScannerExclusionNamePatterns || hubSignatureScannerExclusionNamePatterns.length < 1 && scanTarget.isDirectory()) {
             return Collections.emptySet();
         }
-        Set<String> scanExclusionPatterns = new HashSet<>();
+        final Set<String> scanExclusionPatterns = new HashSet<>();
         try {
-            String scanTargetPath = scanTarget.getCanonicalPath();
-            List<File> matchingFiles = detectFileFinder.findAllFilesToMaxDepth(scanTarget, hubSignatureScannerExclusionNamePatterns);
-            for (File matchingFile : matchingFiles) {
-                String matchingFilePath = matchingFile.getCanonicalPath();
-                String scanExclusionPattern = createExclusionPatternFromPaths(scanTargetPath, matchingFilePath);
+            final String scanTargetPath = scanTarget.getCanonicalPath();
+            final List<File> matchingFiles = detectFileFinder.findAllFilesToMaxDepth(scanTarget, hubSignatureScannerExclusionNamePatterns);
+            for (final File matchingFile : matchingFiles) {
+                final String matchingFilePath = matchingFile.getCanonicalPath();
+                final String scanExclusionPattern = createExclusionPatternFromPaths(scanTargetPath, matchingFilePath);
                 scanExclusionPatterns.add(scanExclusionPattern);
             }
-        } catch (IOException e) {
+        } catch (final IOException e) {
             logger.warn("Problem encountered finding the exclusion patterns for the scanner. " + e.getMessage());
             logger.debug(e.getMessage(), e);
         }
         return scanExclusionPatterns;
     }
 
-    private String createExclusionPatternFromPaths(String rootPath, String targetPath) {
+    private String createExclusionPatternFromPaths(final String rootPath, final String targetPath) {
         String scanExclusionPattern = targetPath.replace(rootPath, "/");
         if (scanExclusionPattern.contains("\\\\")) {
             scanExclusionPattern = scanExclusionPattern.replace("\\\\", "/");
