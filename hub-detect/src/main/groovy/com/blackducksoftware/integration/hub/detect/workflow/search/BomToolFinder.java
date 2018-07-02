@@ -46,6 +46,8 @@ import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchProvider;
+import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchRuleSet;
 
 public class BomToolFinder {
     private final Logger logger = LoggerFactory.getLogger(BomToolFinder.class);
@@ -105,7 +107,7 @@ public class BomToolFinder {
 
     private List<BomToolEvaluation> processDirectory(final BomToolSearchProvider bomToolSearchProvider, final File directory, final Set<BomToolType> appliedBefore, final int depth, final BomToolFinderOptions options) {
         final BomToolEnvironment environment = new BomToolEnvironment(directory, appliedBefore, depth, options.getBomToolFilter(), options.getForceNestedSearch());
-        final BomToolSearchRuleSet bomToolSet = bomToolSearchProvider.createBomTools(environment);
+        final BomToolSearchRuleSet bomToolSet = bomToolSearchProvider.createBomToolSearchRuleSet(environment);
         final List<BomToolEvaluation> evaluations = bomToolSet.evaluate();
         return evaluations;
     }

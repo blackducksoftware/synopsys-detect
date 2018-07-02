@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.workflow.search;
+package com.blackducksoftware.integration.hub.detect.workflow.search.rules;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -32,11 +32,10 @@ import com.blackducksoftware.integration.hub.detect.factory.BomToolFactory;
 
 @Component
 public class BomToolSearchProvider {
-
     @Autowired
-    BomToolFactory bomToolFactory;
+    private BomToolFactory bomToolFactory;
 
-    public BomToolSearchRuleSet createBomTools(final BomToolEnvironment environment) {
+    public BomToolSearchRuleSet createBomToolSearchRuleSet(final BomToolEnvironment environment) {
         final BomToolSearchRuleSetBuilder searchRuleSet = new BomToolSearchRuleSetBuilder(environment);
 
         searchRuleSet.addBomTool(bomToolFactory.createCocoapodsBomTool(environment)).defaultNotNested();
