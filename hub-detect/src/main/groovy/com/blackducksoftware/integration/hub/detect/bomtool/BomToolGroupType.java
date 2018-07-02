@@ -49,6 +49,6 @@ public enum BomToolGroupType {
     YARN,
     CLANG;
 
-    public static List<String> POSSIBLE_NAMES = Arrays.stream(BomToolGroupType.values()).map(BomToolGroupType::name).collect(Collectors.toList());
+    public static final List<String> POSSIBLE_NAMES = Arrays.stream(BomToolGroupType.values()).map(BomToolGroupType::name).collect(Collectors.toList());
 
 }

@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.sbt.reports.parse
+package com.blackducksoftware.integration.hub.detect.bomtool.sbt.parse
 
 import groovy.util.slurpersupport.GPathResult
 

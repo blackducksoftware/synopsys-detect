@@ -84,8 +84,13 @@ public class BomToolNameVersionDecider {
 
             if (singleInstanceLowestDepthBomTools.size() == 1) {
                 final BomToolGroupType type = singleInstanceLowestDepthBomTools.get(0);
-                final BomToolProjectInfo chosen = lowestDepthPossibilities.stream().filter(it -> it.getBomToolType() == type).findFirst().get();
-                decision = new UniqueBomToolDecision(chosen);
+                final Optional<BomToolProjectInfo> chosen = lowestDepthPossibilities.stream().filter(it -> it.getBomToolType() == type).findFirst();
+
+                if (chosen.isPresent()) {
+                    decision = new UniqueBomToolDecision(chosen.get());
+                } else {
+                    decision = new UniqueBomToolNotFoundDecision();
+                }
             } else if (singleInstanceLowestDepthBomTools.size() > 1) {
                 decision = decideProjectNameVersionArbitrarily(lowestDepthPossibilities, singleInstanceLowestDepthBomTools);
             } else {

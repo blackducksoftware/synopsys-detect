@@ -27,7 +27,6 @@ import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph
 import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.bomtool.sbt.reports.parse.SbtReport
 
 import groovy.transform.TypeChecked
 

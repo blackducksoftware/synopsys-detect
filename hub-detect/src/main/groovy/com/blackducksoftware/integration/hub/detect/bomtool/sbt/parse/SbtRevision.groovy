@@ -21,15 +21,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.sbt.reports.parse
+package com.blackducksoftware.integration.hub.detect.bomtool.sbt.parse
 
 import groovy.transform.TypeChecked
 
 @TypeChecked
-public class SbtModule {
-    String organisation
-
+public class SbtRevision {
     String name
 
-    List<SbtRevision> revisions
+    List<SbtCaller> callers
 }

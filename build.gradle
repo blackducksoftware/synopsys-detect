@@ -6,6 +6,7 @@ buildscript {
         jcenter()
         mavenCentral()
         maven { url 'https://plugins.gradle.org/m2/' }
+        mavenLocal()
     }
 
     dependencies {
@@ -38,6 +39,5 @@ configure(subprojects) { project ->
 
     dependencies {
         compile 'com.blackducksoftware.integration:hub-common:35.0.0'
-
     }
 }

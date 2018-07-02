@@ -23,6 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.cpan;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,18 +31,52 @@ import java.util.Map;
 import org.codehaus.plexus.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode;
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
+import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
+import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph;
+import com.blackducksoftware.integration.hub.bdio.model.Forge;
+import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency;
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 
 @Component
 public class CpanListParser {
     private final Logger logger = LoggerFactory.getLogger(CpanListParser.class);
 
-    public Map<String, NameVersionNode> parse(final List<String> listText) {
-        Map<String, NameVersionNode> moduleMap = new HashMap<>();
+    private final ExternalIdFactory externalIdFactory;
 
-        for (String line : listText) {
+    @Autowired
+    public CpanListParser(final ExternalIdFactory externalIdFactory) {
+        this.externalIdFactory = externalIdFactory;
+    }
+
+    public DependencyGraph parse(final List<String> cpanListText, final List<String> directDependenciesText) {
+        final Map<String, String> nameVersionMap = createNameVersionMap(cpanListText);
+        final List<String> directModuleNames = getDirectModuleNames(directDependenciesText);
+
+        final MutableDependencyGraph graph = new MutableMapDependencyGraph();
+        for (final String moduleName : directModuleNames) {
+            final String version = nameVersionMap.get(moduleName);
+            if (null != version) {
+                final String name = moduleName.replace("::", "-");
+                final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.CPAN, name, version);
+                final Dependency dependency = new Dependency(name, version, externalId);
+                graph.addChildToRoot(dependency);
+            } else {
+                logger.warn(String.format("Could node find resolved version for module: %s", moduleName));
+            }
+        }
+
+        return graph;
+    }
+
+    private Map<String, String> createNameVersionMap(final List<String> listText) {
+        final Map<String, String> nameVersionMap = new HashMap<>();
+
+        for (final String line : listText) {
             if (StringUtils.isBlank(line)) {
                 continue;
             }
@@ -51,17 +86,31 @@ public class CpanListParser {
             }
 
             try {
-                String[] module = line.trim().split("\t");
-                NameVersionNode nameVersionNode = new NameVersionNode();
-                nameVersionNode.setName(module[0].trim());
-                nameVersionNode.setVersion(module[1].trim());
-                moduleMap.put(nameVersionNode.getName(), nameVersionNode);
-            } catch (IndexOutOfBoundsException indexOutOfBoundsException) {
+                final String[] module = line.trim().split("\t");
+                final String name = module[0].trim();
+                final String version = module[1].trim();
+                nameVersionMap.put(name, version);
+            } catch (final IndexOutOfBoundsException indexOutOfBoundsException) {
                 logger.debug(String.format("Failed to handle the following line:%s", line));
             }
         }
 
-        return moduleMap;
+        return nameVersionMap;
+    }
+
+    private List<String> getDirectModuleNames(final List<String> directDependenciesText) {
+        final List<String> modules = new ArrayList<>();
+        for (final String line : directDependenciesText) {
+            if (StringUtils.isBlank(line)) {
+                continue;
+            }
+            if (line.contains("-->") || ((line.contains(" ... ") && line.contains("Configuring")))) {
+                continue;
+            }
+            modules.add(line.split("~")[0].trim());
+        }
+
+        return modules;
     }
 
 }

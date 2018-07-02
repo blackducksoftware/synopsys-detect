@@ -42,13 +42,13 @@ import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extracti
 
 @Component
 public class CpanCliExtractor {
-    private final CpanPackager cpanPackager;
+    private final CpanListParser cpanListParser;
     private final ExternalIdFactory externalIdFactory;
     private final ExecutableRunner executableRunner;
 
     @Autowired
-    public CpanCliExtractor(final CpanPackager cpanPackager, final ExternalIdFactory externalIdFactory, final ExecutableRunner executableRunner) {
-        this.cpanPackager = cpanPackager;
+    public CpanCliExtractor(final CpanListParser cpanListParser, final ExternalIdFactory externalIdFactory, final ExecutableRunner executableRunner) {
+        this.cpanListParser = cpanListParser;
         this.externalIdFactory = externalIdFactory;
         this.executableRunner = executableRunner;
     }
@@ -61,7 +61,7 @@ public class CpanCliExtractor {
             final ExecutableOutput showdepsOutput = executableRunner.runExe(cpanmExe, "--showdeps", ".");
             final List<String> showdeps = showdepsOutput.getStandardOutputAsList();
 
-            final DependencyGraph dependencyGraph = cpanPackager.makeDependencyGraph(listText, showdeps);
+            final DependencyGraph dependencyGraph = cpanListParser.parse(listText, showdeps);
             final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.CPAN, directory.toString());
             final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolGroupType.CPAN, bomToolType, directory.toString(), externalId, dependencyGraph).build();
             return new Extraction.Builder().success(detectCodeLocation).build();
