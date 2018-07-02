@@ -64,16 +64,12 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public Gson gson() {
-        return new GsonBuilder().setPrettyPrinting().create();
-    }
-
-    @Bean
     public SimpleBdioFactory simpleBdioFactory() {
         final BdioPropertyHelper bdioPropertyHelper = new BdioPropertyHelper();
         final BdioNodeFactory bdioNodeFactory = new BdioNodeFactory(bdioPropertyHelper);
         final DependencyGraphTransformer dependencyGraphTransformer = new DependencyGraphTransformer(bdioPropertyHelper, bdioNodeFactory);
-        return new SimpleBdioFactory(bdioPropertyHelper, bdioNodeFactory, dependencyGraphTransformer, externalIdFactory(), gson());
+        final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        return new SimpleBdioFactory(bdioPropertyHelper, bdioNodeFactory, dependencyGraphTransformer, externalIdFactory(), gson);
     }
 
     @Bean
@@ -109,7 +105,7 @@ public class BeanConfiguration {
 
     @Bean
     public DetectInfo detectInfo() {
-        return new DetectInfo(gson());
+        return new DetectInfo();
     }
 
     @Bean
