@@ -173,28 +173,23 @@ public class BomToolFactory {
     }
 
     public CLangBomTool createCLangBomTool(final BomToolEnvironment environment) {
-        final CLangBomTool bomTool = new CLangBomTool(environment, detectFileFinder, cLangExtractor);
-        return bomTool;
+        return new CLangBomTool(environment, detectFileFinder, cLangExtractor);
     }
 
     public PodlockBomTool createCocoapodsBomTool(final BomToolEnvironment environment) {
-        final PodlockBomTool bomTool = new PodlockBomTool(environment, detectFileFinder, podlockExtractor);
-        return bomTool;
+        return new PodlockBomTool(environment, detectFileFinder, podlockExtractor);
     }
 
     public ComposerLockBomTool createComposerLockBomTool(final BomToolEnvironment environment) {
-        final ComposerLockBomTool bomTool = new ComposerLockBomTool(environment, detectFileFinder, composerLockExtractor);
-        return bomTool;
+        return new ComposerLockBomTool(environment, detectFileFinder, composerLockExtractor);
     }
 
     public CondaCliBomTool createCondaBomTool(final BomToolEnvironment environment) {
-        final CondaCliBomTool bomTool = new CondaCliBomTool(environment, detectFileFinder, standardExecutableFinder, condaCliExtractor);
-        return bomTool;
+        return new CondaCliBomTool(environment, detectFileFinder, standardExecutableFinder, condaCliExtractor);
     }
 
     public CpanCliBomTool createCpanCliBomTool(final BomToolEnvironment environment) {
-        final CpanCliBomTool bomTool = new CpanCliBomTool(environment, detectFileFinder, standardExecutableFinder, cpanCliExtractor);
-        return bomTool;
+        return new CpanCliBomTool(environment, detectFileFinder, standardExecutableFinder, cpanCliExtractor);
     }
 
     public DockerBomTool createDockerBomTool(final BomToolEnvironment environment) {
@@ -202,111 +197,89 @@ public class BomToolFactory {
         final String image = detectConfigWrapper.getProperty(DetectProperty.DETECT_DOCKER_IMAGE);
         final boolean dockerRequired = detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_DOCKER_PATH_REQUIRED);
 
-        final DockerBomTool bomTool = new DockerBomTool(environment, dockerInspectorManager, standardExecutableFinder, dockerRequired, image, tar, dockerExtractor);
-        return bomTool;
+        return new DockerBomTool(environment, dockerInspectorManager, standardExecutableFinder, dockerRequired, image, tar, dockerExtractor);
     }
 
     public GemlockBomTool createGemlockBomTool(final BomToolEnvironment environment) {
-        final GemlockBomTool bomTool = new GemlockBomTool(environment, detectFileFinder, gemlockExtractor);
-        return bomTool;
+        return new GemlockBomTool(environment, detectFileFinder, gemlockExtractor);
     }
 
     public GoCliBomTool createGoCliBomTool(final BomToolEnvironment environment) {
-        final GoCliBomTool bomTool = new GoCliBomTool(environment, detectFileFinder, standardExecutableFinder, goInspectorManager, goDepExtractor);
-        return bomTool;
+        return new GoCliBomTool(environment, detectFileFinder, standardExecutableFinder, goInspectorManager, goDepExtractor);
     }
 
     public GoDepsBomTool createGoDepsBomTool(final BomToolEnvironment environment) {
-        final GoDepsBomTool bomTool = new GoDepsBomTool(environment, detectFileFinder, goDepsExtractor);
-        return bomTool;
+        return new GoDepsBomTool(environment, detectFileFinder, goDepsExtractor);
     }
 
     public GoLockBomTool createGoLockBomTool(final BomToolEnvironment environment) {
-        final GoLockBomTool bomTool = new GoLockBomTool(environment, detectFileFinder, standardExecutableFinder, goInspectorManager, goDepExtractor);
-        return bomTool;
+        return new GoLockBomTool(environment, detectFileFinder, standardExecutableFinder, goInspectorManager, goDepExtractor);
     }
 
     public GoVndrBomTool createGoVndrBomTool(final BomToolEnvironment environment) {
-        final GoVndrBomTool bomTool = new GoVndrBomTool(environment, detectFileFinder, goVndrExtractor);
-        return bomTool;
+        return new GoVndrBomTool(environment, detectFileFinder, goVndrExtractor);
     }
 
     public GradleInspectorBomTool createGradleInspectorBomTool(final BomToolEnvironment environment) {
-        final GradleInspectorBomTool bomTool = new GradleInspectorBomTool(environment, detectFileFinder, gradleFinder, gradleInspectorManager, gradleInspectorExtractor);
-        return bomTool;
+        return new GradleInspectorBomTool(environment, detectFileFinder, gradleFinder, gradleInspectorManager, gradleInspectorExtractor);
     }
 
     public MavenPomBomTool createMavenPomBomTool(final BomToolEnvironment environment) {
-        final MavenPomBomTool bomTool = new MavenPomBomTool(environment, detectFileFinder, mavenExecutableFinder, mavenCliExtractor);
-        return bomTool;
+        return new MavenPomBomTool(environment, detectFileFinder, mavenExecutableFinder, mavenCliExtractor);
     }
 
     public MavenPomWrapperBomTool createMavenPomWrapperBomTool(final BomToolEnvironment environment) {
-        final MavenPomWrapperBomTool bomTool = new MavenPomWrapperBomTool(environment, detectFileFinder, mavenExecutableFinder, mavenCliExtractor);
-        return bomTool;
+        return new MavenPomWrapperBomTool(environment, detectFileFinder, mavenExecutableFinder, mavenCliExtractor);
     }
 
     public NpmCliBomTool createNpmCliBomTool(final BomToolEnvironment environment) {
-        final NpmCliBomTool bomTool = new NpmCliBomTool(environment, detectFileFinder, npmExecutableFinder, npmCliExtractor);
-        return bomTool;
+        return new NpmCliBomTool(environment, detectFileFinder, npmExecutableFinder, npmCliExtractor);
     }
 
     public NpmPackageLockBomTool createNpmPackageLockBomTool(final BomToolEnvironment environment) {
-        final NpmPackageLockBomTool bomTool = new NpmPackageLockBomTool(environment, detectFileFinder, npmLockfileExtractor);
-        return bomTool;
+        return new NpmPackageLockBomTool(environment, detectFileFinder, npmLockfileExtractor);
     }
 
     public NugetProjectBomTool createNugetProjectBomTool(final BomToolEnvironment environment) {
-        final NugetProjectBomTool bomTool = new NugetProjectBomTool(environment, detectFileFinder, nugetInspectorManager, nugetInspectorExtractor);
-        return bomTool;
+        return new NugetProjectBomTool(environment, detectFileFinder, nugetInspectorManager, nugetInspectorExtractor);
     }
 
     public NpmShrinkwrapBomTool createNpmShrinkwrapBomTool(final BomToolEnvironment environment) {
-        final NpmShrinkwrapBomTool bomTool = new NpmShrinkwrapBomTool(environment, detectFileFinder, npmLockfileExtractor);
-        return bomTool;
+        return new NpmShrinkwrapBomTool(environment, detectFileFinder, npmLockfileExtractor);
     }
 
     public NugetSolutionBomTool createNugetSolutionBomTool(final BomToolEnvironment environment) {
-        final NugetSolutionBomTool bomTool = new NugetSolutionBomTool(environment, detectFileFinder, nugetInspectorManager, nugetInspectorExtractor);
-        return bomTool;
+        return new NugetSolutionBomTool(environment, detectFileFinder, nugetInspectorManager, nugetInspectorExtractor);
     }
 
     public PackratLockBomTool createPackratLockBomTool(final BomToolEnvironment environment) {
-        final PackratLockBomTool bomTool = new PackratLockBomTool(environment, detectFileFinder, packratLockExtractor);
-        return bomTool;
+        return new PackratLockBomTool(environment, detectFileFinder, packratLockExtractor);
     }
 
     public PearCliBomTool createPearCliBomTool(final BomToolEnvironment environment) {
-        final PearCliBomTool bomTool = new PearCliBomTool(environment, detectFileFinder, standardExecutableFinder, pearCliExtractor);
-        return bomTool;
+        return new PearCliBomTool(environment, detectFileFinder, standardExecutableFinder, pearCliExtractor);
     }
 
     public PipenvBomTool createPipenvBomTool(final BomToolEnvironment environment) {
-        final PipenvBomTool bomTool = new PipenvBomTool(environment, detectFileFinder, pythonExecutableFinder, pipenvExtractor);
-        return bomTool;
+        return new PipenvBomTool(environment, detectFileFinder, pythonExecutableFinder, pipenvExtractor);
     }
 
     public PipInspectorBomTool createPipInspectorBomTool(final BomToolEnvironment environment) {
         final String requirementsFile = detectConfigWrapper.getProperty(DetectProperty.DETECT_PIP_REQUIREMENTS_PATH);
-        final PipInspectorBomTool bomTool = new PipInspectorBomTool(environment, requirementsFile, detectFileFinder, pythonExecutableFinder, pipInspectorManager, pipInspectorExtractor);
-        return bomTool;
+        return new PipInspectorBomTool(environment, requirementsFile, detectFileFinder, pythonExecutableFinder, pipInspectorManager, pipInspectorExtractor);
     }
 
     public RebarBomTool createRebarBomTool(final BomToolEnvironment environment) {
-        final RebarBomTool bomTool = new RebarBomTool(environment, detectFileFinder, standardExecutableFinder, rebarExtractor);
-        return bomTool;
+        return new RebarBomTool(environment, detectFileFinder, standardExecutableFinder, rebarExtractor);
     }
 
     public SbtResolutionCacheBomTool createSbtResolutionCacheBomTool(final BomToolEnvironment environment) {
-        final SbtResolutionCacheBomTool bomTool = new SbtResolutionCacheBomTool(environment, detectFileFinder, sbtResolutionCacheExtractor);
-        return bomTool;
+        return new SbtResolutionCacheBomTool(environment, detectFileFinder, sbtResolutionCacheExtractor);
     }
 
     public YarnLockBomTool createYarnLockBomTool(final BomToolEnvironment environment) {
         final boolean productionDependenciesOnly = detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_YARN_PROD_ONLY);
-
-        final YarnLockBomTool bomTool = new YarnLockBomTool(environment, productionDependenciesOnly, detectFileFinder, standardExecutableFinder, yarnLockExtractor);
-        return bomTool;
+        return new YarnLockBomTool(environment, productionDependenciesOnly, detectFileFinder, standardExecutableFinder, yarnLockExtractor);
     }
 
 }
