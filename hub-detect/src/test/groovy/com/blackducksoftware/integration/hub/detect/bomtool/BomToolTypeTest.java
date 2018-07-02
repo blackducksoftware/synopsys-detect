@@ -1,4 +1,4 @@
-package com.blackducksoftware.integration.hub.detect.model;
+package com.blackducksoftware.integration.hub.detect.bomtool;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

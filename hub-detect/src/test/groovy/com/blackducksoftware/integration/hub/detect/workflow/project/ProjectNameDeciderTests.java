@@ -1,4 +1,4 @@
-package com.blackducksoftware.integration.hub.detect.project;
+package com.blackducksoftware.integration.hub.detect.workflow.project;
 
 import java.util.ArrayList;
 import java.util.List;
