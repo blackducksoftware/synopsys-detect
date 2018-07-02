@@ -58,7 +58,7 @@ public class NugetInspectorPackagerTest {
         NameVersionNodeTransformer nameVersionNodeTransformer = new NameVersionNodeTransformer(new ExternalIdFactory())
 
         def packager = new NugetInspectorPackager(null, null, gson, nameVersionNodeTransformer, nameVersionNodeTransformer.externalIdFactory)
-        NugetParseResult result = packager.createDetectCodeLocation(dependencyNodeFile)
+        NugetParseResult result = packager.createDetectCodeLocation(BomToolType.NUGET_SOLUTION_INSPECTOR, dependencyNodeFile)
 
         for (DetectCodeLocation codeLocation : result.codeLocations) {
             BdioPropertyHelper bdioPropertyHelper = new BdioPropertyHelper()

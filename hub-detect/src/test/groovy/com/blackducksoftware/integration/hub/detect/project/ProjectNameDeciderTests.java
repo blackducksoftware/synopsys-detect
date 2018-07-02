@@ -9,8 +9,8 @@ import org.junit.Test;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
-import com.blackducksoftware.integration.hub.detect.workflow.project.BomToolProjectInfo;
 import com.blackducksoftware.integration.hub.detect.workflow.project.BomToolNameVersionDecider;
+import com.blackducksoftware.integration.hub.detect.workflow.project.BomToolProjectInfo;
 import com.blackducksoftware.integration.util.NameVersion;
 
 public class ProjectNameDeciderTests {
@@ -25,7 +25,7 @@ public class ProjectNameDeciderTests {
         add(BomToolGroupType.GRADLE, lowestDepth + 2, "npm1", "npm0v", possibilities);
         add(BomToolGroupType.NPM, lowestDepth + 1, "npm2", "npm0v", possibilities);
 
-        assertProject("npm0", Optional.empty(), possibilities);
+        assertProject("npm0", null, possibilities);
     }
 
     @Test
@@ -37,7 +37,7 @@ public class ProjectNameDeciderTests {
         add(BomToolGroupType.NPM, lowestDepth, "npm2", "0", possibilities);
         add(BomToolGroupType.GRADLE, lowestDepth, "gradle", "0", possibilities);
 
-        assertProject("gradle", Optional.empty(), possibilities);
+        assertProject("gradle", null, possibilities);
     }
 
     @Test
@@ -49,7 +49,7 @@ public class ProjectNameDeciderTests {
         add(BomToolGroupType.NPM, lowestDepth, "a", "0", possibilities);
         add(BomToolGroupType.MAVEN, lowestDepth, "b", "0", possibilities);
 
-        assertProject("a", Optional.empty(), possibilities);
+        assertProject("a", null, possibilities);
     }
 
     @Test
@@ -61,7 +61,7 @@ public class ProjectNameDeciderTests {
         add(BomToolGroupType.NPM, lowestDepth, "a-npm", "0", possibilities);
         add(BomToolGroupType.NPM, lowestDepth, "b-npm", "0", possibilities);
 
-        assertNoProject(Optional.empty(), possibilities);
+        assertNoProject(null, possibilities);
     }
 
     @Test
@@ -72,7 +72,7 @@ public class ProjectNameDeciderTests {
         add(BomToolGroupType.NPM, lowestDepth, "npm", "0", possibilities);
         add(BomToolGroupType.GRADLE, lowestDepth + 1, "gradle", "0", possibilities);
 
-        assertProject("gradle", Optional.of(BomToolGroupType.GRADLE), possibilities);
+        assertProject("gradle", BomToolGroupType.GRADLE, possibilities);
     }
 
     @Test
@@ -86,7 +86,7 @@ public class ProjectNameDeciderTests {
         add(BomToolGroupType.GRADLE, lowestDepth + 1, "a-gradle2", "0", possibilities);
         add(BomToolGroupType.GRADLE, lowestDepth + 1, "b-gradle3", "0", possibilities);
 
-        assertProject("c-gradle1", Optional.of(BomToolGroupType.GRADLE), possibilities);
+        assertProject("c-gradle1", BomToolGroupType.GRADLE, possibilities);
     }
 
     @Test
@@ -97,7 +97,7 @@ public class ProjectNameDeciderTests {
         add(BomToolGroupType.NPM, lowestDepth, "a", "0", possibilities);
         add(BomToolGroupType.GRADLE, lowestDepth, "b", "0", possibilities);
 
-        assertNoProject(Optional.of(BomToolGroupType.MAVEN), possibilities);
+        assertNoProject(BomToolGroupType.MAVEN, possibilities);
     }
 
     @Test
@@ -109,10 +109,10 @@ public class ProjectNameDeciderTests {
         add(BomToolGroupType.GRADLE, lowestDepth, "b", "0", possibilities);
         add(BomToolGroupType.GRADLE, lowestDepth, "b", "0", possibilities);
 
-        assertNoProject(Optional.of(BomToolGroupType.GRADLE), possibilities);
+        assertNoProject(BomToolGroupType.GRADLE, possibilities);
     }
 
-    private void assertProject(final String projectName, final Optional<BomToolGroupType> preferred, final List<BomToolProjectInfo> possibilities) throws DetectUserFriendlyException {
+    private void assertProject(final String projectName, final BomToolGroupType preferred, final List<BomToolProjectInfo> possibilities) throws DetectUserFriendlyException {
         final BomToolNameVersionDecider decider = new BomToolNameVersionDecider();
         final Optional<NameVersion> chosen = decider.decideProjectNameVersion(possibilities, preferred);
 
@@ -120,7 +120,7 @@ public class ProjectNameDeciderTests {
         Assert.assertEquals(chosen.get().getName(), projectName);
     }
 
-    private void assertNoProject(final Optional<BomToolGroupType> preferred, final List<BomToolProjectInfo> possibilities) throws DetectUserFriendlyException {
+    private void assertNoProject(final BomToolGroupType preferred, final List<BomToolProjectInfo> possibilities) throws DetectUserFriendlyException {
         final BomToolNameVersionDecider decider = new BomToolNameVersionDecider();
         final Optional<NameVersion> chosen = decider.decideProjectNameVersion(possibilities, preferred);
 

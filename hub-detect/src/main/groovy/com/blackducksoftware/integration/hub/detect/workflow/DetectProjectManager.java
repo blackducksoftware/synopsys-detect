@@ -196,13 +196,13 @@ public class DetectProjectManager implements StatusSummaryProvider, ExitCodeRepo
 
     private Optional<NameVersion> findBomToolProjectNameAndVersion(final List<BomToolEvaluation> bomToolEvaluations) {
         final String projectBomTool = detectConfigWrapper.getProperty(DetectProperty.DETECT_PROJECT_BOM_TOOL);
-        Optional<BomToolGroupType> preferredBomToolType = Optional.empty();
+        BomToolGroupType preferredBomToolType = null;
         if (StringUtils.isNotBlank(projectBomTool)) {
             final String projectBomToolFixed = projectBomTool.toUpperCase();
             if (!BomToolGroupType.POSSIBLE_NAMES.contains(projectBomToolFixed)) {
                 logger.info("A valid preferred bom tool type was not provided, deciding project name automatically.");
             } else {
-                preferredBomToolType = Optional.of(BomToolGroupType.valueOf(projectBomToolFixed));
+                preferredBomToolType = BomToolGroupType.valueOf(projectBomToolFixed);
             }
         }
 

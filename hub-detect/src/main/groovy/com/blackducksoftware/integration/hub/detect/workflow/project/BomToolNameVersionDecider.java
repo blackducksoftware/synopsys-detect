@@ -48,28 +48,28 @@ import com.blackducksoftware.integration.util.NameVersion;
 public class BomToolNameVersionDecider {
     private final Logger logger = LoggerFactory.getLogger(BomToolNameVersionDecider.class);
 
-    public Optional<NameVersion> decideProjectNameVersion(final List<BomToolProjectInfo> projectNamePossibilities, final Optional<BomToolGroupType> preferredBomToolType) {
+    public Optional<NameVersion> decideProjectNameVersion(final List<BomToolProjectInfo> projectNamePossibilities, final BomToolGroupType preferredBomToolType) {
         final NameVersionDecision nameVersionDecision = decideProjectNameVersionFromBomTool(projectNamePossibilities, preferredBomToolType);
         nameVersionDecision.printDescription(logger);
         return nameVersionDecision.getChosenNameVersion();
     }
 
-    private NameVersionDecision decideProjectNameVersionFromBomTool(final List<BomToolProjectInfo> projectNamePossibilities, final Optional<BomToolGroupType> preferredBomToolType) {
+    private NameVersionDecision decideProjectNameVersionFromBomTool(final List<BomToolProjectInfo> projectNamePossibilities, final BomToolGroupType preferredBomToolType) {
         final NameVersionDecision decision;
 
-        if (preferredBomToolType.isPresent()) {
+        if (preferredBomToolType != null) {
             final List<BomToolProjectInfo> possiblePreferred = projectNamePossibilities.stream()
-                    .filter(it -> it.getBomToolType() == preferredBomToolType.get())
+                    .filter(it -> it.getBomToolType() == preferredBomToolType)
                     .collect(Collectors.toList());
 
             final List<BomToolProjectInfo> lowestDepthPossibilities = projectNamesAtLowestDepth(possiblePreferred);
 
             if (lowestDepthPossibilities.size() == 0) {
-                decision = new PreferredBomToolNotFoundDecision(preferredBomToolType.get());
+                decision = new PreferredBomToolNotFoundDecision(preferredBomToolType);
             } else if (lowestDepthPossibilities.size() == 1) {
                 decision = new PreferredBomToolDecision(lowestDepthPossibilities.get(0));
             } else {
-                decision = new TooManyPreferredBomToolsFoundDecision(preferredBomToolType.get());
+                decision = new TooManyPreferredBomToolsFoundDecision(preferredBomToolType);
             }
         } else {
             final List<BomToolProjectInfo> lowestDepthPossibilities = projectNamesAtLowestDepth(projectNamePossibilities);
@@ -114,7 +114,7 @@ public class BomToolNameVersionDecider {
 
     private List<BomToolProjectInfo> projectNamesAtLowestDepth(final List<BomToolProjectInfo> projectNamePossibilities) {
         List<BomToolProjectInfo> lowestDepthPossibilities = new ArrayList<>();
-        final Optional<BomToolProjectInfo> bomToolProjectInfoAtLowestDepth = projectNamePossibilities.stream().max(Comparator.comparingInt(BomToolProjectInfo::getDepth));
+        final Optional<BomToolProjectInfo> bomToolProjectInfoAtLowestDepth = projectNamePossibilities.stream().min(Comparator.comparingInt(BomToolProjectInfo::getDepth));
 
         if (bomToolProjectInfoAtLowestDepth.isPresent()) {
             lowestDepthPossibilities = projectNamePossibilities.stream()
