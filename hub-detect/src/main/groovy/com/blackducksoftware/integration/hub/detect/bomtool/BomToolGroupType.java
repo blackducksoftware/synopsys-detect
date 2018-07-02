@@ -35,7 +35,6 @@ public enum BomToolGroupType {
     CRAN,
     DOCKER,
     GO_DEP,
-    GO_GODEP,
     GO_VNDR,
     GRADLE,
     HEX,

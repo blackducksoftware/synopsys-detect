@@ -29,7 +29,6 @@ import com.blackducksoftware.integration.hub.detect.bomtool.cpan.CpanCliExtracto
 import com.blackducksoftware.integration.hub.detect.bomtool.cran.PackratLockExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.go.extraction.GoDepExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.go.extraction.GoDepsExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.go.extraction.GoVndrExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleInspectorExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.hex.RebarExtractor;
@@ -68,10 +67,6 @@ public class ExtractorFactory {
     }
 
     public GoVndrExtractor createGoVndrExtractor() {
-        return null;
-    }
-
-    public GoDepsExtractor createGoDepsExtractor() {
         return null;
     }
 

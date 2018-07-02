@@ -41,11 +41,9 @@ import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerBomTool
 import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerInspectorManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.go.GoCliBomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.go.GoDepsBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.go.GoLockBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.go.GoVndrBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.go.extraction.GoDepExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.go.extraction.GoDepsExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.go.extraction.GoInspectorManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.go.extraction.GoVndrExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleExecutableFinder;
@@ -103,7 +101,6 @@ public class BomToolFactory {
     private final DockerInspectorManager dockerInspectorManager;
     private final GemlockExtractor gemlockExtractor;
     private final GoDepExtractor goDepExtractor;
-    private final GoDepsExtractor goDepsExtractor;
     private final GoInspectorManager goInspectorManager;
     private final GoVndrExtractor goVndrExtractor;
     private final GradleExecutableFinder gradleFinder;
@@ -130,7 +127,7 @@ public class BomToolFactory {
     @Autowired
     public BomToolFactory(final DetectConfigWrapper detectConfigWrapper, final DetectFileFinder detectFileFinder, final StandardExecutableFinder standardExecutableFinder, final CLangExtractor cLangExtractor,
             final ComposerLockExtractor composerLockExtractor, final CondaCliExtractor condaCliExtractor, final CpanCliExtractor cpanCliExtractor, final DockerExtractor dockerExtractor,
-            final DockerInspectorManager dockerInspectorManager, final GemlockExtractor gemlockExtractor, final GoDepExtractor goDepExtractor, final GoDepsExtractor goDepsExtractor, final GoInspectorManager goInspectorManager,
+            final DockerInspectorManager dockerInspectorManager, final GemlockExtractor gemlockExtractor, final GoDepExtractor goDepExtractor, final GoInspectorManager goInspectorManager,
             final GoVndrExtractor goVndrExtractor, final GradleExecutableFinder gradleFinder, final GradleInspectorExtractor gradleInspectorExtractor, final GradleInspectorManager gradleInspectorManager,
             final MavenCliExtractor mavenCliExtractor, final MavenExecutableFinder mavenExecutableFinder, final NpmCliExtractor npmCliExtractor, final NpmExecutableFinder npmExecutableFinder,
             final NpmLockfileExtractor npmLockfileExtractor, final NugetInspectorExtractor nugetInspectorExtractor, final NugetInspectorManager nugetInspectorManager, final PackratLockExtractor packratLockExtractor,
@@ -147,7 +144,6 @@ public class BomToolFactory {
         this.dockerInspectorManager = dockerInspectorManager;
         this.gemlockExtractor = gemlockExtractor;
         this.goDepExtractor = goDepExtractor;
-        this.goDepsExtractor = goDepsExtractor;
         this.goInspectorManager = goInspectorManager;
         this.goVndrExtractor = goVndrExtractor;
         this.gradleFinder = gradleFinder;
@@ -206,10 +202,6 @@ public class BomToolFactory {
 
     public GoCliBomTool createGoCliBomTool(final BomToolEnvironment environment) {
         return new GoCliBomTool(environment, detectFileFinder, standardExecutableFinder, goInspectorManager, goDepExtractor);
-    }
-
-    public GoDepsBomTool createGoDepsBomTool(final BomToolEnvironment environment) {
-        return new GoDepsBomTool(environment, detectFileFinder, goDepsExtractor);
     }
 
     public GoLockBomTool createGoLockBomTool(final BomToolEnvironment environment) {

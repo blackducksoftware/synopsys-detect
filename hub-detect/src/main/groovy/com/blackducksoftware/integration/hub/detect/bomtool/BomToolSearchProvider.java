@@ -44,11 +44,9 @@ public class BomToolSearchProvider {
         searchRuleSet.addBomTool(bomToolFactory.createDockerBomTool(environment)).nestable(false).maxDepth(0);
 
         searchRuleSet.addBomTool(bomToolFactory.createGoCliBomTool(environment)).defaultNotNested();
-        searchRuleSet.addBomTool(bomToolFactory.createGoDepsBomTool(environment)).defaultNotNested();
         searchRuleSet.addBomTool(bomToolFactory.createGoLockBomTool(environment)).defaultNotNested();
         searchRuleSet.addBomTool(bomToolFactory.createGoVndrBomTool(environment)).defaultNotNested();
 
-        searchRuleSet.yield(BomToolType.GO_CLI).to(BomToolType.GO_DEPS);
         searchRuleSet.yield(BomToolType.GO_CLI).to(BomToolType.GO_LOCK);
         searchRuleSet.yield(BomToolType.GO_CLI).to(BomToolType.GO_VNDR);
 
