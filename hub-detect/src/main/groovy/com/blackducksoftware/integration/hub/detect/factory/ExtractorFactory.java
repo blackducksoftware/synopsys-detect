@@ -28,8 +28,8 @@ import com.blackducksoftware.integration.hub.detect.bomtool.conda.CondaCliExtrac
 import com.blackducksoftware.integration.hub.detect.bomtool.cpan.CpanCliExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.cran.PackratLockExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.go.extraction.GoDepExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.go.extraction.GoVndrExtractor;
+import com.blackducksoftware.integration.hub.detect.bomtool.go.GoDepExtractor;
+import com.blackducksoftware.integration.hub.detect.bomtool.go.GoVndrExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleInspectorExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.hex.RebarExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.maven.MavenCliExtractor;

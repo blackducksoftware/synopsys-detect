@@ -29,8 +29,6 @@ import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGrap
 import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.bomtool.nuget.model.NugetPackageId
-import com.blackducksoftware.integration.hub.detect.bomtool.nuget.model.NugetPackageSet
 
 import groovy.transform.TypeChecked
 

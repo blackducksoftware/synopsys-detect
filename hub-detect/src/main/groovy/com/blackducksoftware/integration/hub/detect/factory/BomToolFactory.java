@@ -41,11 +41,11 @@ import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerBomTool
 import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerInspectorManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.go.GoCliBomTool;
+import com.blackducksoftware.integration.hub.detect.bomtool.go.GoDepExtractor;
+import com.blackducksoftware.integration.hub.detect.bomtool.go.GoInspectorManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.go.GoLockBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.go.GoVndrBomTool;
-import com.blackducksoftware.integration.hub.detect.bomtool.go.extraction.GoDepExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.go.extraction.GoInspectorManager;
-import com.blackducksoftware.integration.hub.detect.bomtool.go.extraction.GoVndrExtractor;
+import com.blackducksoftware.integration.hub.detect.bomtool.go.GoVndrExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleInspectorBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleInspectorExtractor;

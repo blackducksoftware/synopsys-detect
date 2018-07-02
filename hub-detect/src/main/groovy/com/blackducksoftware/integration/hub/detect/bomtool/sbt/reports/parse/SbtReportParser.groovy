@@ -23,11 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.sbt.reports.parse
 
-import com.blackducksoftware.integration.hub.detect.bomtool.sbt.reports.model.SbtCaller
-import com.blackducksoftware.integration.hub.detect.bomtool.sbt.reports.model.SbtModule
-import com.blackducksoftware.integration.hub.detect.bomtool.sbt.reports.model.SbtReport
-import com.blackducksoftware.integration.hub.detect.bomtool.sbt.reports.model.SbtRevision
-
 import groovy.util.slurpersupport.GPathResult
 
 public class SbtReportParser {

@@ -32,8 +32,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
-import com.blackducksoftware.integration.hub.detect.bomtool.pip.parse.PipParseResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.pip.parse.PipenvGraphParser;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;

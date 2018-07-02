@@ -33,8 +33,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
-import com.blackducksoftware.integration.hub.detect.bomtool.hex.parse.Rebar3TreeParser;
-import com.blackducksoftware.integration.hub.detect.bomtool.hex.parse.RebarParseResult;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;

@@ -31,8 +31,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
-import com.blackducksoftware.integration.hub.detect.bomtool.packagist.parse.PackagistParseResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.packagist.parse.PackagistParser;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
 @Component

@@ -29,8 +29,6 @@ import org.slf4j.LoggerFactory
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphCombiner
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph
 import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph
-import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtAggregate
-import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtDependencyModule
 
 import groovy.transform.TypeChecked
 

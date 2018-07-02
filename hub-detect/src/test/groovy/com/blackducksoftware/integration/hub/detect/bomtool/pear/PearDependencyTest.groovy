@@ -12,7 +12,6 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.pear
 
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.bomtool.pear.parse.PearDependencyFinder
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil

@@ -99,15 +99,15 @@ public class NpmCliExtractor {
                 return new Extraction.Builder().exception(e).build();
             }
 
-        } else if (npmLsErrorFile.length() > 0) {
-            logger.error("Error when running npm ls -json command");
-            printFileToDebug(npmLsErrorFile);
-            return new Extraction.Builder().failure("Npm returned error after running npm ls.").build();
         } else {
-            logger.warn("Nothing returned from npm ls -json command");
-            return new Extraction.Builder().failure("Npm returned nothing after running npm ls").build();
+            if (npmLsErrorFile.length() > 0) {
+                logger.error("Error when running npm ls -json command");
+                printFileToDebug(npmLsErrorFile);
+            } else {
+                logger.warn("Nothing returned from npm ls -json command");
+            }
+            return new Extraction.Builder().failure("Npm returned error after running npm ls.").build();
         }
-
     }
 
     void printFileToDebug(final File errorFile) {

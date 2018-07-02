@@ -35,8 +35,6 @@ import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
-import com.blackducksoftware.integration.hub.detect.bomtool.gradle.parse.GradleParseResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.gradle.parse.GradleReportParser;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;

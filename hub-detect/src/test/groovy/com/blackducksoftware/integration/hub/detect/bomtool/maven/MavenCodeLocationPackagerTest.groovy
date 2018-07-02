@@ -7,8 +7,6 @@ import org.junit.Test
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType
-import com.blackducksoftware.integration.hub.detect.bomtool.maven.parse.MavenCodeLocationPackager
-import com.blackducksoftware.integration.hub.detect.bomtool.maven.parse.MavenParseResult
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation
 

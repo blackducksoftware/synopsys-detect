@@ -30,7 +30,6 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
-import com.blackducksoftware.integration.hub.detect.bomtool.go.extraction.GoVndrExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.result.BomToolResult;
 import com.blackducksoftware.integration.hub.detect.bomtool.result.FileNotFoundBomToolResult;
 import com.blackducksoftware.integration.hub.detect.bomtool.result.PassedBomToolResult;

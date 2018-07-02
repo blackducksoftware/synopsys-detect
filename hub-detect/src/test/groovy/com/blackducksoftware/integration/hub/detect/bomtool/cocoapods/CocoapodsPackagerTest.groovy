@@ -13,7 +13,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.cocoapods
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.parse.PodlockParser
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 import org.junit.Test
