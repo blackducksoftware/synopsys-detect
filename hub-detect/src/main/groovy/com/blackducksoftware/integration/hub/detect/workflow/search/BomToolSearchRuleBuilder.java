@@ -21,10 +21,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool;
+package com.blackducksoftware.integration.hub.detect.workflow.search;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 
 public class BomToolSearchRuleBuilder {
     private final BomTool bomTool;

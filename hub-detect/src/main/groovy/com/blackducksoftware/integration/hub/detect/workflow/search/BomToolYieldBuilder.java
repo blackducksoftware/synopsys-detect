@@ -21,36 +21,29 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool;
+package com.blackducksoftware.integration.hub.detect.workflow.search;
 
-import java.util.List;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 
-public class BomToolSearchRule {
-    private final BomTool bomTool;
-    private final int maxDepth;
-    private final boolean nestable;
-    private final List<BomToolType> yieldsTo;
+public class BomToolYieldBuilder {
 
-    public BomToolSearchRule(final BomTool bomTool, final int maxDepth, final boolean nestable, final List<BomToolType> yieldsTo) {
-        this.bomTool = bomTool;
-        this.maxDepth = maxDepth;
-        this.nestable = nestable;
-        this.yieldsTo = yieldsTo;
+    private final BomToolType yieldingBomToolType;
+    private BomToolType yieldingToBomToolType;
+
+    public BomToolYieldBuilder(final BomToolType yieldingBomToolType) {
+        this.yieldingBomToolType = yieldingBomToolType;
     }
 
-    public BomTool getBomTool() {
-        return bomTool;
+    public BomToolYieldBuilder to(final BomToolType bomToolType) {
+        this.yieldingToBomToolType = bomToolType;
+        return this;
     }
 
-    public int getMaxDepth() {
-        return maxDepth;
+    public BomToolType getYieldingBomToolType() {
+        return yieldingBomToolType;
     }
 
-    public boolean isNestable() {
-        return nestable;
-    }
-
-    public List<BomToolType> getYieldsTo() {
-        return yieldsTo;
+    public BomToolType getYieldingToBomToolType() {
+        return yieldingToBomToolType;
     }
 }

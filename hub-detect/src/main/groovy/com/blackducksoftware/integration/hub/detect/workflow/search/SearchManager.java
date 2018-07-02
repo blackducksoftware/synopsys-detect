@@ -36,13 +36,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolSearchProvider;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.BomToolEvaluation;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.SearchSummaryReporter;
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
 
 @Component

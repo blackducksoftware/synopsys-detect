@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.workflow.extraction;
+package com.blackducksoftware.integration.hub.detect.workflow.search;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,6 +32,9 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.ReportConstants;
 
 @Component
 public class SearchSummaryReporter {
