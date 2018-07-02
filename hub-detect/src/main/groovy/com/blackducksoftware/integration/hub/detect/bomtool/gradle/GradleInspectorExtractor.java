@@ -85,14 +85,11 @@ public class GradleInspectorExtractor {
             arguments.add(String.format("-DGRADLEEXTRACTIONDIR=%s", outputDirectory.getCanonicalPath()));
             arguments.add("--info");
 
-            // logger.info("using ${gradleInspectorManager.getInitScriptPath()} as the path for the gradle init script");
+            // logger.info("using " + gradleInspectorManager.getInitScriptPath() + " as the path for the gradle init script");
             final Executable executable = new Executable(directory, gradleExe, arguments);
             final ExecutableOutput output = executableRunner.execute(executable);
 
             if (output.getReturnCode() == 0) {
-                final File buildDirectory = new File(directory, "build");
-                final File blackduckDirectory = new File(buildDirectory, "blackduck");
-
                 final List<File> codeLocationFiles = detectFileFinder.findFiles(outputDirectory, "*_dependencyGraph.txt");
 
                 final List<DetectCodeLocation> codeLocations = new ArrayList<>();

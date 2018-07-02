@@ -43,7 +43,6 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.yarn.parse.YarnListParser;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
@@ -57,16 +56,13 @@ public class YarnLockExtractor {
 
     private final ExternalIdFactory externalIdFactory;
     private final YarnListParser yarnListParser;
-    private final DetectFileManager detectFileManager;
     private final ExecutableRunner executableRunner;
     private final DetectConfigWrapper detectConfigWrapper;
 
     @Autowired
-    public YarnLockExtractor(final ExternalIdFactory externalIdFactory, final YarnListParser yarnListParser, final DetectFileManager detectFileManager, final ExecutableRunner executableRunner,
-            final DetectConfigWrapper detectConfigWrapper) {
+    public YarnLockExtractor(final ExternalIdFactory externalIdFactory, final YarnListParser yarnListParser, final ExecutableRunner executableRunner, final DetectConfigWrapper detectConfigWrapper) {
         this.externalIdFactory = externalIdFactory;
         this.yarnListParser = yarnListParser;
-        this.detectFileManager = detectFileManager;
         this.executableRunner = executableRunner;
         this.detectConfigWrapper = detectConfigWrapper;
     }

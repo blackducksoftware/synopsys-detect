@@ -45,7 +45,6 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWr
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.BdioCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameManager;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
@@ -58,17 +57,14 @@ public class BdioManager {
     private final DetectInfo detectInfo;
     private final SimpleBdioFactory simpleBdioFactory;
     private final IntegrationEscapeUtil integrationEscapeUtil;
-    private final DetectFileFinder detectFileFinder;
     private final CodeLocationNameManager codeLocationNameManager;
     private final DetectConfigWrapper detectConfigWrapper;
 
     @Autowired
-    public BdioManager(final DetectInfo detectInfo, final SimpleBdioFactory simpleBdioFactory, final IntegrationEscapeUtil integrationEscapeUtil, final DetectFileFinder detectFileFinder,
-            final CodeLocationNameManager codeLocationNameManager, final DetectConfigWrapper detectConfigWrapper) {
+    public BdioManager(final DetectInfo detectInfo, final SimpleBdioFactory simpleBdioFactory, final IntegrationEscapeUtil integrationEscapeUtil, final CodeLocationNameManager codeLocationNameManager, final DetectConfigWrapper detectConfigWrapper) {
         this.detectInfo = detectInfo;
         this.simpleBdioFactory = simpleBdioFactory;
         this.integrationEscapeUtil = integrationEscapeUtil;
-        this.detectFileFinder = detectFileFinder;
         this.codeLocationNameManager = codeLocationNameManager;
         this.detectConfigWrapper = detectConfigWrapper;
     }

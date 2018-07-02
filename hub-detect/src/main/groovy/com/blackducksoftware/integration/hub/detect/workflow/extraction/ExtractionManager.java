@@ -45,14 +45,11 @@ public class ExtractionManager {
     private final Logger logger = LoggerFactory.getLogger(DetectProjectManager.class);
 
     private final PreparationSummaryReporter preparationSummaryReporter;
-    private final ExtractionSummaryReporter extractionSummaryReporter;
     private final ExtractionReporter extractionReporter;
 
     @Autowired
-    public ExtractionManager(final PreparationSummaryReporter preparationSummaryReporter, final ExtractionSummaryReporter extractionSummaryReporter,
-            final ExtractionReporter extractionReporter) {
+    public ExtractionManager(final PreparationSummaryReporter preparationSummaryReporter, final ExtractionReporter extractionReporter) {
         this.preparationSummaryReporter = preparationSummaryReporter;
-        this.extractionSummaryReporter = extractionSummaryReporter;
         this.extractionReporter = extractionReporter;
     }
 

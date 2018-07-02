@@ -68,7 +68,7 @@ public abstract class BomTool {
     }
 
     public String getDescriptiveName() {
-        return String.format("%s-%s", getBomToolGroupType().toString(), getName());
+        return String.format("%s - %s", getBomToolGroupType().toString(), getName());
     }
 
 }

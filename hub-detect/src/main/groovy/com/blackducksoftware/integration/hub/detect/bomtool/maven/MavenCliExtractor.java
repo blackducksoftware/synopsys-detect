@@ -39,7 +39,6 @@ import com.blackducksoftware.integration.hub.detect.bomtool.maven.parse.MavenCod
 import com.blackducksoftware.integration.hub.detect.bomtool.maven.parse.MavenParseResult;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
@@ -49,14 +48,12 @@ import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extracti
 @Component
 public class MavenCliExtractor {
     private final ExecutableRunner executableRunner;
-    private final DetectFileFinder detectFileFinder;
     private final MavenCodeLocationPackager mavenCodeLocationPackager;
     private final DetectConfigWrapper detectConfigWrapper;
 
     @Autowired
-    public MavenCliExtractor(final ExecutableRunner executableRunner, final DetectFileFinder detectFileFinder, final MavenCodeLocationPackager mavenCodeLocationPackager, final DetectConfigWrapper detectConfigWrapper) {
+    public MavenCliExtractor(final ExecutableRunner executableRunner, final MavenCodeLocationPackager mavenCodeLocationPackager, final DetectConfigWrapper detectConfigWrapper) {
         this.executableRunner = executableRunner;
-        this.detectFileFinder = detectFileFinder;
         this.mavenCodeLocationPackager = mavenCodeLocationPackager;
         this.detectConfigWrapper = detectConfigWrapper;
     }

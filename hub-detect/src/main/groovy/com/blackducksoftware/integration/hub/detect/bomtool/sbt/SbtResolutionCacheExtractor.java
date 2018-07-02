@@ -41,7 +41,6 @@ import com.blackducksoftware.integration.hub.detect.bomtool.sbt.parse.SbtPackage
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
@@ -49,15 +48,12 @@ import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extracti
 public class SbtResolutionCacheExtractor {
     private final Logger logger = LoggerFactory.getLogger(SbtResolutionCacheExtractor.class);
 
-    private final DetectFileManager detectFileManager;
     private final DetectFileFinder detectFileFinder;
     private final ExternalIdFactory externalIdFactory;
     private final DetectConfigWrapper detectConfigWrapper;
 
     @Autowired
-    public SbtResolutionCacheExtractor(final DetectFileManager detectFileManager, final DetectFileFinder detectFileFinder, final ExternalIdFactory externalIdFactory,
-            final DetectConfigWrapper detectConfigWrapper) {
-        this.detectFileManager = detectFileManager;
+    public SbtResolutionCacheExtractor(final DetectFileFinder detectFileFinder, final ExternalIdFactory externalIdFactory, final DetectConfigWrapper detectConfigWrapper) {
         this.detectFileFinder = detectFileFinder;
         this.externalIdFactory = externalIdFactory;
         this.detectConfigWrapper = detectConfigWrapper;

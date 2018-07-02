@@ -34,7 +34,6 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWr
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 
 @Component
@@ -51,15 +50,13 @@ public class StandardExecutableFinder {
         YARN
     }
 
-    private final DetectFileManager detectFileManager;
     private final ExecutableManager executableManager;
     private final DetectConfigWrapper detectConfigWrapper;
 
     private final Map<StandardExecutableType, File> alreadyFound = new HashMap<>();
 
     @Autowired
-    public StandardExecutableFinder(final DetectFileManager detectFileManager, final ExecutableManager executableManager, final DetectConfigWrapper detectConfigWrapper) {
-        this.detectFileManager = detectFileManager;
+    public StandardExecutableFinder(final ExecutableManager executableManager, final DetectConfigWrapper detectConfigWrapper) {
         this.executableManager = executableManager;
         this.detectConfigWrapper = detectConfigWrapper;
     }

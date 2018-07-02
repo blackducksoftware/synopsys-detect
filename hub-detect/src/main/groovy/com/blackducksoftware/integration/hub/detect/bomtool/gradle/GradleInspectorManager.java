@@ -49,8 +49,6 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWr
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.rest.connection.UnauthenticatedRestConnection;
 import com.blackducksoftware.integration.rest.request.Request;
 import com.blackducksoftware.integration.rest.request.Response;
@@ -68,8 +66,6 @@ public class GradleInspectorManager {
     private final Logger logger = LoggerFactory.getLogger(GradleInspectorManager.class);
 
     private final DetectFileManager detectFileManager;
-    private final ExecutableManager executableManager;
-    private final ExecutableRunner executableRunner;
     private final Configuration configuration;
     private final DocumentBuilder xmlDocumentBuilder;
     private final DetectConfigWrapper detectConfigWrapper;
@@ -79,11 +75,8 @@ public class GradleInspectorManager {
     private boolean hasResolvedInspector = false;
 
     @Autowired
-    public GradleInspectorManager(final DetectFileManager detectFileManager, final ExecutableManager executableManager, final ExecutableRunner executableRunner, final Configuration configuration, final DocumentBuilder xmlDocumentBuilder,
-            final DetectConfigWrapper detectConfigWrapper) {
+    public GradleInspectorManager(final DetectFileManager detectFileManager, final Configuration configuration, final DocumentBuilder xmlDocumentBuilder, final DetectConfigWrapper detectConfigWrapper) {
         this.detectFileManager = detectFileManager;
-        this.executableManager = executableManager;
-        this.executableRunner = executableRunner;
         this.configuration = configuration;
         this.xmlDocumentBuilder = xmlDocumentBuilder;
         this.detectConfigWrapper = detectConfigWrapper;

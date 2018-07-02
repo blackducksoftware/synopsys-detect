@@ -25,9 +25,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.clang;
 
 import java.io.File;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
@@ -41,7 +38,6 @@ import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
 public class CLangBomTool extends BomTool {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final String JSON_COMPILATION_DATABASE_FILENAME = "compile_commands.json";
     private final CLangExtractor cLangExtractor;
     private File jsonCompilationDatabaseFile = null;
