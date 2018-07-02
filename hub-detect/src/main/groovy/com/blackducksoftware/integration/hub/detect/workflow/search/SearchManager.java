@@ -41,7 +41,6 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWr
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
-import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.BomToolEvaluation;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.SearchSummaryReporter;
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter;

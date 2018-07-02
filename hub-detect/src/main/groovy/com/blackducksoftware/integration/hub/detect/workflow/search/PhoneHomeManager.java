@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.workflow;
+package com.blackducksoftware.integration.hub.detect.workflow.search;
 
 import java.util.Set;
 

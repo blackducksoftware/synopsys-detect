@@ -62,10 +62,10 @@ import com.blackducksoftware.integration.hub.detect.interactive.reader.Interacti
 import com.blackducksoftware.integration.hub.detect.interactive.reader.ScannerInteractiveReader;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.workflow.DetectProjectManager;
-import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.HubManager;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.HubSignatureScanner;
 import com.blackducksoftware.integration.hub.detect.workflow.project.DetectProject;
+import com.blackducksoftware.integration.hub.detect.workflow.search.PhoneHomeManager;
 import com.blackducksoftware.integration.hub.detect.workflow.summary.DetectSummaryManager;
 import com.blackducksoftware.integration.log.SilentLogger;
 import com.blackducksoftware.integration.log.Slf4jIntLogger;

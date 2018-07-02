@@ -55,6 +55,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.extraction.BomToolE
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionManager;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionResult;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionSummaryReporter;
+import com.blackducksoftware.integration.hub.detect.workflow.project.BdioManager;
 import com.blackducksoftware.integration.hub.detect.workflow.project.BomToolNameVersionDecider;
 import com.blackducksoftware.integration.hub.detect.workflow.project.BomToolProjectInfo;
 import com.blackducksoftware.integration.hub.detect.workflow.project.DetectProject;
