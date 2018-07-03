@@ -28,6 +28,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -42,6 +44,7 @@ import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 
 @Component
 public class PodlockExtractor {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final PodlockParser podlockParser;
     private final ExternalIdFactory externalIdFactory;
 
@@ -54,14 +57,18 @@ public class PodlockExtractor {
     public Extraction extract(final File directory, final File podlock) {
         String podLockText;
         try {
+            logger.trace(String.format("Reading from the pod lock file %s", podlock.getAbsolutePath()));
             podLockText = FileUtils.readFileToString(podlock, StandardCharsets.UTF_8);
+            logger.trace("Finished reading from the pod lock file.");
         } catch (final IOException e) {
             return new Extraction.Builder().exception(e).build();
         }
 
         DependencyGraph dependencyGraph;
         try {
+            logger.trace("Attempting to create the dependency graph from the pod lock file.");
             dependencyGraph = podlockParser.extractDependencyGraph(podLockText);
+            logger.trace("Finished creating the dependency graph from the pod lock file.");
         } catch (final IOException e) {
             return new Extraction.Builder().exception(e).build();
         }
@@ -69,7 +76,7 @@ public class PodlockExtractor {
         final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.COCOAPODS, directory.toString());
 
         final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolGroupType.COCOAPODS, directory.toString(), externalId, dependencyGraph).build();
-
+        
         return new Extraction.Builder().success(codeLocation).build();
     }
 
