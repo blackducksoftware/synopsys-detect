@@ -27,8 +27,6 @@ import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.api.enumeration.PolicySeverityType;
@@ -40,13 +38,11 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty
 import com.blackducksoftware.integration.hub.service.ProjectService;
 import com.blackducksoftware.integration.hub.service.model.PolicyStatusDescription;
 
-@Component
 public class PolicyChecker {
     private final Logger logger = LoggerFactory.getLogger(PolicyChecker.class);
 
     private final DetectConfigWrapper detectConfigWrapper;
 
-    @Autowired
     public PolicyChecker(final DetectConfigWrapper detectConfigWrapper) {
         this.detectConfigWrapper = detectConfigWrapper;
     }

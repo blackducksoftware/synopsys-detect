@@ -29,27 +29,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.blackducksoftware.integration.hub.detect.bomtool.hex.parse.Rebar3TreeParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.hex.parse.RebarParseResult;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 
-@Component
 public class RebarExtractor {
     private final ExecutableRunner executableRunner;
-    private final DetectFileManager detectFileManager;
     private final Rebar3TreeParser rebarTreeParser;
 
-    @Autowired
-    public RebarExtractor(final ExecutableRunner executableRunner, final DetectFileManager detectFileManager, final Rebar3TreeParser rebarTreeParser) {
+    public RebarExtractor(final ExecutableRunner executableRunner, final Rebar3TreeParser rebarTreeParser) {
         this.executableRunner = executableRunner;
-        this.detectFileManager = detectFileManager;
         this.rebarTreeParser = rebarTreeParser;
     }
 

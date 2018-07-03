@@ -32,13 +32,11 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction.ExtractionResultType;
 import com.blackducksoftware.integration.hub.detect.extraction.model.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction.ExtractionResultType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 
-@Component
 public class ExtractionSummaryReporter {
     private final Logger logger = LoggerFactory.getLogger(ExtractionSummaryReporter.class);
 

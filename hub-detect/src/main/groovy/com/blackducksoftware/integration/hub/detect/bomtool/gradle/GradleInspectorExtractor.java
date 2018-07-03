@@ -30,8 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.parse.GradleParseResult;
@@ -46,7 +44,6 @@ import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 
-@Component
 public class GradleInspectorExtractor {
     private final ExecutableRunner executableRunner;
     private final DetectFileFinder detectFileFinder;
@@ -54,7 +51,6 @@ public class GradleInspectorExtractor {
     private final GradleReportParser gradleReportParser;
     private final DetectConfigWrapper detectConfigWrapper;
 
-    @Autowired
     public GradleInspectorExtractor(final ExecutableRunner executableRunner, final DetectFileFinder detectFileFinder, final DetectFileManager detectFileManager,
             final GradleReportParser gradleReportParser, final DetectConfigWrapper detectConfigWrapper) {
         this.executableRunner = executableRunner;

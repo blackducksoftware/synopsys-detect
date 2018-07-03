@@ -38,8 +38,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -49,8 +47,6 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty
 import com.blackducksoftware.integration.hub.detect.evaluation.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.evaluation.BomToolException;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.rest.connection.UnauthenticatedRestConnection;
 import com.blackducksoftware.integration.rest.request.Request;
 import com.blackducksoftware.integration.rest.request.Response;
@@ -63,13 +59,10 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateNotFoundException;
 
-@Component
 public class GradleInspectorManager {
     private final Logger logger = LoggerFactory.getLogger(GradleInspectorManager.class);
 
     private final DetectFileManager detectFileManager;
-    private final ExecutableManager executableManager;
-    private final ExecutableRunner executableRunner;
     private final Configuration configuration;
     private final DocumentBuilder xmlDocumentBuilder;
     private final DetectConfigWrapper detectConfigWrapper;
@@ -78,12 +71,9 @@ public class GradleInspectorManager {
     private String resolvedVersion = null;
     private boolean hasResolvedInspector = false;
 
-    @Autowired
-    public GradleInspectorManager(final DetectFileManager detectFileManager, final ExecutableManager executableManager, final ExecutableRunner executableRunner, final Configuration configuration, final DocumentBuilder xmlDocumentBuilder,
+    public GradleInspectorManager(final DetectFileManager detectFileManager, final Configuration configuration, final DocumentBuilder xmlDocumentBuilder,
             final DetectConfigWrapper detectConfigWrapper) {
         this.detectFileManager = detectFileManager;
-        this.executableManager = executableManager;
-        this.executableRunner = executableRunner;
         this.configuration = configuration;
         this.xmlDocumentBuilder = xmlDocumentBuilder;
         this.detectConfigWrapper = detectConfigWrapper;

@@ -34,9 +34,7 @@ import java.util.Optional;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
-@Component
 public class DependencyFileManager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 

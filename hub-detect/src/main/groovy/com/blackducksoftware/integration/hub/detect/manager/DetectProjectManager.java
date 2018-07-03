@@ -38,8 +38,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.search.report.ExtractionSummaryReporter;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
@@ -61,7 +59,6 @@ import com.blackducksoftware.integration.hub.detect.summary.SummaryResultReporte
 import com.blackducksoftware.integration.hub.summary.Result;
 import com.blackducksoftware.integration.util.NameVersion;
 
-@Component
 public class DetectProjectManager implements SummaryResultReporter, ExitCodeReporter {
     private final Logger logger = LoggerFactory.getLogger(DetectProjectManager.class);
 
@@ -75,7 +72,6 @@ public class DetectProjectManager implements SummaryResultReporter, ExitCodeRepo
     private final BomToolProjectInfoDecider bomToolProjectInfoDecider;
     private final DetectConfigWrapper detectConfigWrapper;
 
-    @Autowired
     public DetectProjectManager(final SearchManager searchManager, final ExtractionManager extractionManager, final DetectCodeLocationManager codeLocationManager, final DetectBdioManager bdioManager,
             final ExtractionSummaryReporter extractionSummaryReporter, final BomToolProjectInfoDecider bomToolProjectInfoDecider, final DetectConfigWrapper detectConfigWrapper) {
         this.searchManager = searchManager;

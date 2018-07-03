@@ -28,8 +28,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
@@ -47,14 +45,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-@Component
 public class PackagistParser {
     private final Logger logger = LoggerFactory.getLogger(PackagistParser.class);
 
     private final ExternalIdFactory externalIdFactory;
     private final DetectConfigWrapper detectConfigWrapper;
 
-    @Autowired
     public PackagistParser(final ExternalIdFactory externalIdFactory, final DetectConfigWrapper detectConfigWrapper) {
         this.externalIdFactory = externalIdFactory;
         this.detectConfigWrapper = detectConfigWrapper;

@@ -27,8 +27,6 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.FileUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
@@ -40,20 +38,21 @@ import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.google.gson.Gson;
 
-@Component
 public class GoDepsExtractor {
 
-    @Autowired
-    Gson gson;
+    private final Gson gson;
+    private final ExternalIdFactory externalIdFactory;
 
-    @Autowired
-    ExternalIdFactory externalIdFactory;
+    public GoDepsExtractor(final Gson gson, final ExternalIdFactory externalIdFactory) {
+        this.gson = gson;
+        this.externalIdFactory = externalIdFactory;
+    }
 
     public Extraction extract(final File directory, final File goDepsDirectory) {
         try {
             final File goDepsFile = new File(goDepsDirectory, "Godeps.json");
 
-            final String text =FileUtils.readFileToString(goDepsFile, StandardCharsets.UTF_8);
+            final String text = FileUtils.readFileToString(goDepsFile, StandardCharsets.UTF_8);
 
             final GoGodepsParser goDepParser = new GoGodepsParser(gson, externalIdFactory);
             final DependencyGraph dependencyGraph = goDepParser.extractProjectDependencies(text);
@@ -62,7 +61,7 @@ public class GoDepsExtractor {
 
             final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolGroupType.GO_GODEP, directory.toString(), externalId, dependencyGraph).build();
             return new Extraction.Builder().success(codeLocation).build();
-        }catch (final Exception e) {
+        } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
     }

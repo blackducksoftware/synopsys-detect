@@ -23,9 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.factory;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.CLangBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.CLangExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.PodlockBomTool;
@@ -89,7 +86,6 @@ import com.blackducksoftware.integration.hub.detect.evaluation.BomToolEnvironmen
 import com.blackducksoftware.integration.hub.detect.extraction.model.StandardExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
-@Component
 public class BomToolFactory {
     private final PodlockExtractor podlockExtractor;
     private final CondaCliExtractor condaCliExtractor;
@@ -126,7 +122,6 @@ public class BomToolFactory {
     private final CLangExtractor cLangExtractor;
     private final DetectConfigWrapper detectConfigWrapper;
 
-    @Autowired
     public BomToolFactory(final PodlockExtractor podlockExtractor, final CondaCliExtractor condaCliExtractor, final CpanCliExtractor cpanCliExtractor, final PackratLockExtractor packratLockExtractor,
             final DockerExtractor dockerExtractor, final GoVndrExtractor goVndrExtractor, final GoDepsExtractor goDepsExtractor, final GoDepExtractor goDepExtractor,
             final GradleInspectorExtractor gradleInspectorExtractor, final RebarExtractor rebarExtractor, final MavenCliExtractor mavenCliExtractor, final NpmCliExtractor npmCliExtractor,

@@ -29,8 +29,6 @@ import java.util.Arrays;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
@@ -42,7 +40,6 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableMa
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
-@Component
 public class GoInspectorManager {
     private final Logger logger = LoggerFactory.getLogger(GoInspectorManager.class);
 
@@ -54,7 +51,6 @@ public class GoInspectorManager {
     private boolean hasResolvedInspector;
     private String resolvedGoDep;
 
-    @Autowired
     public GoInspectorManager(final DetectFileManager detectFileManager, final ExecutableManager executableManager, final ExecutableRunner executableRunner,
             final DetectConfigWrapper detectConfigWrapper) {
         this.detectFileManager = detectFileManager;

@@ -23,17 +23,16 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.blackducksoftware.integration.hub.detect.evaluation.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.factory.BomToolFactory;
 
-@Component
 public class BomToolSearchProvider {
 
-    @Autowired
-    BomToolFactory bomToolFactory;
+    private final BomToolFactory bomToolFactory;
+
+    public BomToolSearchProvider(final BomToolFactory bomToolFactory) {
+        this.bomToolFactory = bomToolFactory;
+    }
 
     public BomToolSearchRuleSet createBomTools(final BomToolEnvironment environment) {
         final BomToolSearchRuleSetBuilder searchRuleSet = new BomToolSearchRuleSetBuilder(environment);

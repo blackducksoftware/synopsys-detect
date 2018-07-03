@@ -26,15 +26,14 @@ import static org.junit.Assert.assertTrue
 
 class CpanPackagerTest {
     private final TestUtil testUtil = new TestUtil()
-    private final CpanPackager cpanPackager = new CpanPackager()
+    private CpanPackager cpanPackager
 
     private final List<String> cpanListText = testUtil.getResourceAsUTF8String('/cpan/cpanList.txt').split('\n').toList()
     private final List<String> showDepsText = testUtil.getResourceAsUTF8String('/cpan/showDeps.txt').split('\n').toList()
 
     @Before
     public void init() {
-        cpanPackager.cpanListParser = new CpanListParser()
-        cpanPackager.nameVersionNodeTransformer = new NameVersionNodeTransformer(new ExternalIdFactory())
+        cpanPackager = new CpanPackager(new CpanListParser(), new NameVersionNodeTransformer(new ExternalIdFactory()))
     }
 
     @Test
