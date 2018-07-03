@@ -30,9 +30,9 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
-import com.blackducksoftware.integration.hub.detect.bomtool.result.BomToolResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.result.FileNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.result.PassedBomToolResult;
+import com.blackducksoftware.integration.hub.detect.bomtool.workflow.BomToolResult;
+import com.blackducksoftware.integration.hub.detect.bomtool.workflow.FileNotFoundBomToolResult;
+import com.blackducksoftware.integration.hub.detect.bomtool.workflow.PassedBomToolResult;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 

@@ -26,6 +26,8 @@ package com.blackducksoftware.integration.hub.detect.workflow.extraction;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.blackducksoftware.integration.hub.detect.bomtool.workflow.BomToolEvaluation;
+
 public class ExtractionSummaryData {
     public String directory;
 

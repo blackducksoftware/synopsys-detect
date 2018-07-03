@@ -10,8 +10,6 @@ import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransform
 import com.blackducksoftware.integration.hub.bdio.model.BdioComponent
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType
-import com.blackducksoftware.integration.hub.detect.bomtool.nuget.parse.NugetInspectorPackager
-import com.blackducksoftware.integration.hub.detect.bomtool.nuget.parse.NugetParseResult
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder

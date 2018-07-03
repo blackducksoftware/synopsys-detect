@@ -6,8 +6,6 @@ import org.junit.Test
 
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType
-import com.blackducksoftware.integration.hub.detect.bomtool.npm.parse.NpmLockfilePackager
-import com.blackducksoftware.integration.hub.detect.bomtool.npm.parse.NpmParseResult
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 import com.google.gson.GsonBuilder

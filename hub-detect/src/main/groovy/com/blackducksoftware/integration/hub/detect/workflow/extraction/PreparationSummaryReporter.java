@@ -33,6 +33,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import com.blackducksoftware.integration.hub.detect.bomtool.workflow.BomToolEvaluation;
+
 @Component
 public class PreparationSummaryReporter {
     private final Logger logger = LoggerFactory.getLogger(PreparationSummaryReporter.class);

@@ -33,7 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.bomtool.workflow.BomToolEvaluation;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ReportConstants;
 
 @Component

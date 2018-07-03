@@ -32,15 +32,15 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
-import com.blackducksoftware.integration.hub.detect.bomtool.result.BomToolExcludedBomToolResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.result.BomToolResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.result.ForcedNestedPassedBomToolResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.result.MaxDepthExceededBomToolResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.result.NotNestableBomToolResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.result.NotSelfNestableBomToolResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.result.PassedBomToolResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.result.YieldedBomToolResult;
-import com.blackducksoftware.integration.hub.detect.workflow.extraction.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.bomtool.workflow.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.bomtool.workflow.BomToolExcludedBomToolResult;
+import com.blackducksoftware.integration.hub.detect.bomtool.workflow.BomToolResult;
+import com.blackducksoftware.integration.hub.detect.bomtool.workflow.ForcedNestedPassedBomToolResult;
+import com.blackducksoftware.integration.hub.detect.bomtool.workflow.MaxDepthExceededBomToolResult;
+import com.blackducksoftware.integration.hub.detect.bomtool.workflow.NotNestableBomToolResult;
+import com.blackducksoftware.integration.hub.detect.bomtool.workflow.NotSelfNestableBomToolResult;
+import com.blackducksoftware.integration.hub.detect.bomtool.workflow.PassedBomToolResult;
+import com.blackducksoftware.integration.hub.detect.bomtool.workflow.YieldedBomToolResult;
 
 public class BomToolSearchRuleSet {
 
