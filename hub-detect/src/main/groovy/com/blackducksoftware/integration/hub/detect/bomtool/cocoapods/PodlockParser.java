@@ -32,6 +32,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.codehaus.plexus.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -46,6 +48,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 
 @Component
 public class PodlockParser {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     final static List<String> fuzzyVersionIdentifiers = new ArrayList<>(Arrays.asList(">", "<", "~>", "="));
 
     private final ExternalIdFactory externalIdFactory;
@@ -63,18 +66,22 @@ public class PodlockParser {
         final Map<DependencyId, Forge> forgeOverrides = createForgeOverrideMap(podfileLock);
 
         for (final Pod pod : podfileLock.pods) {
+            logger.trace(String.format("Processing pod %s", pod.name));
             processPod(pod, forgeOverrides, lazyBuilder);
         }
 
         for (final Pod dependency : podfileLock.dependencies) {
+            logger.trace(String.format("Processing pod dependency from pod lock file %s", dependency.name));
             final String podText = dependency.name;
             final Optional<DependencyId> dependencyId = parseDependencyId(podText);
             if (dependencyId.isPresent()) {
                 lazyBuilder.addChildToRoot(dependencyId.get());
             }
         }
-
-        return lazyBuilder.build();
+        logger.trace("Attempting to build the dependency graph.");
+        final DependencyGraph dependencyGraph = lazyBuilder.build();
+        logger.trace("Completed the dependency graph.");
+        return dependencyGraph;
     }
 
     /*
@@ -119,6 +126,7 @@ public class PodlockParser {
             lazyBuilder.setDependencyInfo(dependencyId, name, version, externalId);
 
             for (final String child : pod.dependencies) {
+                logger.trace(String.format("Processing pod dependency %s", child));
                 final Optional<DependencyId> childId = parseDependencyId(child);
                 if (childId.isPresent()) {
                     if (!dependencyId.equals(childId.get())) {
