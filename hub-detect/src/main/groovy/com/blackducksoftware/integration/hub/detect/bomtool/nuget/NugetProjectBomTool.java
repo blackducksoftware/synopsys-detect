@@ -28,12 +28,12 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
-import com.blackducksoftware.integration.hub.detect.bomtool.workflow.BomToolResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.workflow.FilesNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.workflow.InspectorNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.workflow.PassedBomToolResult;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.FilesNotFoundBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.InspectorNotFoundBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.PassedBomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
 public class NugetProjectBomTool extends BomTool {

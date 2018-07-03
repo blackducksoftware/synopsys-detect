@@ -21,17 +21,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.workflow;
+package com.blackducksoftware.integration.hub.detect.workflow.bomtool;
 
-public class NpmRunInstallBomToolResult extends FailedBomToolResult {
-    private final String directoryPath;
+public class MaxDepthExceededBomToolResult extends FailedBomToolResult {
+    private final int depth;
+    private final int maxDepth;
 
-    public NpmRunInstallBomToolResult(final String directoryPath) {
-        this.directoryPath = directoryPath;
+    public MaxDepthExceededBomToolResult(final int depth, final int maxDepth) {
+        this.depth = depth;
+        this.maxDepth = maxDepth;
     }
 
     @Override
     public String toDescription() {
-        return String.format("A package.json was located in %s, but the node_modules folder was NOT located. Please run 'npm install' in that location and try again.", directoryPath);
+        return "Max depth of " + maxDepth + " exceeded by " + depth;
     }
 }

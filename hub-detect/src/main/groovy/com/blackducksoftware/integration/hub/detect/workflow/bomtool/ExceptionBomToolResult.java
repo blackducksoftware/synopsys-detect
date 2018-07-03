@@ -21,11 +21,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.workflow;
+package com.blackducksoftware.integration.hub.detect.workflow.bomtool;
 
-public class BomToolExcludedBomToolResult extends FailedBomToolResult {
+public class ExceptionBomToolResult extends FailedBomToolResult {
+    private final Exception exception;
+
+    public ExceptionBomToolResult(final Exception exception) {
+        this.exception = exception;
+    }
+
     @Override
     public String toDescription() {
-        return "Bom tool type was excluded.";
+        return "Exception occured: " + exception.getMessage();
     }
 }

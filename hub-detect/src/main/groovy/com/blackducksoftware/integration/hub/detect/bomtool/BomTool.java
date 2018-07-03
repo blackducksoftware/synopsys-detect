@@ -23,8 +23,8 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.workflow.BomToolResult;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolResult;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
 public abstract class BomTool {

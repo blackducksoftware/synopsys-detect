@@ -21,30 +21,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.workflow;
+package com.blackducksoftware.integration.hub.detect.workflow.bomtool;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
+public class InspectorNotFoundBomToolResult extends FailedBomToolResult {
+    private final String inspectorName;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
-
-
-public class YieldedBomToolResult extends FailedBomToolResult {
-    private final Set<BomTool> yieldedTo;
-
-    public YieldedBomToolResult(final BomTool yielded) {
-        yieldedTo = new HashSet<>();
-        yieldedTo.add(yielded);
-    }
-
-    public YieldedBomToolResult(final Set<BomTool> yieldedTo) {
-        this.yieldedTo = yieldedTo;
+    public InspectorNotFoundBomToolResult(final String inspectorName) {
+        this.inspectorName = inspectorName;
     }
 
     @Override
     public String toDescription() {
-        final String yielded = yieldedTo.stream().map(it -> it.getDescriptiveName()).collect(Collectors.joining(", "));
-        return "Yielded to bom tools: " + yielded;
+        return "No " + inspectorName + " inspector was found.";
     }
 }

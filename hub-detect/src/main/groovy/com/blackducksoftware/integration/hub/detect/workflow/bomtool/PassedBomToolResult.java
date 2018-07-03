@@ -21,11 +21,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.workflow;
+package com.blackducksoftware.integration.hub.detect.workflow.bomtool;
 
-public class PropertyInsufficientBomToolResult extends FailedBomToolResult {
+public class PassedBomToolResult extends BomToolResult {
+    @Override
+    public boolean getPassed() {
+        return true;
+    }
+
     @Override
     public String toDescription() {
-        return "The properties are insufficient to run.";
+        return "Passed.";
     }
 }

@@ -21,18 +21,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.workflow;
+package com.blackducksoftware.integration.hub.detect.workflow.bomtool;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 
 
-public class ExecutableNotFoundBomToolResult extends FailedBomToolResult {
-    private final String executableName;
+public class YieldedBomToolResult extends FailedBomToolResult {
+    private final Set<BomTool> yieldedTo;
 
-    public ExecutableNotFoundBomToolResult(final String executableName) {
-        this.executableName = executableName;
+    public YieldedBomToolResult(final BomTool yielded) {
+        yieldedTo = new HashSet<>();
+        yieldedTo.add(yielded);
+    }
+
+    public YieldedBomToolResult(final Set<BomTool> yieldedTo) {
+        this.yieldedTo = yieldedTo;
     }
 
     @Override
     public String toDescription() {
-        return "No " + executableName + " executable was found.";
+        final String yielded = yieldedTo.stream().map(it -> it.getDescriptiveName()).collect(Collectors.joining(", "));
+        return "Yielded to bom tools: " + yielded;
     }
 }

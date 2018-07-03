@@ -21,17 +21,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.workflow;
+package com.blackducksoftware.integration.hub.detect.workflow.bomtool;
 
-public class InspectorNotFoundBomToolResult extends FailedBomToolResult {
-    private final String inspectorName;
+public class NpmRunInstallBomToolResult extends FailedBomToolResult {
+    private final String directoryPath;
 
-    public InspectorNotFoundBomToolResult(final String inspectorName) {
-        this.inspectorName = inspectorName;
+    public NpmRunInstallBomToolResult(final String directoryPath) {
+        this.directoryPath = directoryPath;
     }
 
     @Override
     public String toDescription() {
-        return "No " + inspectorName + " inspector was found.";
+        return String.format("A package.json was located in %s, but the node_modules folder was NOT located. Please run 'npm install' in that location and try again.", directoryPath);
     }
 }

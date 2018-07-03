@@ -21,16 +21,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.workflow;
+package com.blackducksoftware.integration.hub.detect.workflow.bomtool;
 
-public class FailedBomToolResult extends BomToolResult {
-    @Override
-    public boolean getPassed() {
-        return false;
-    }
-
-    @Override
-    public String toDescription() {
-        return "Passed.";
-    }
+public abstract class BomToolResult {
+    public abstract boolean getPassed();
+    public abstract String toDescription();
 }

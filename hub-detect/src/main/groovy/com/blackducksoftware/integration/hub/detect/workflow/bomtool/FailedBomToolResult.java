@@ -21,19 +21,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.workflow;
+package com.blackducksoftware.integration.hub.detect.workflow.bomtool;
 
-public class MaxDepthExceededBomToolResult extends FailedBomToolResult {
-    private final int depth;
-    private final int maxDepth;
-
-    public MaxDepthExceededBomToolResult(final int depth, final int maxDepth) {
-        this.depth = depth;
-        this.maxDepth = maxDepth;
+public class FailedBomToolResult extends BomToolResult {
+    @Override
+    public boolean getPassed() {
+        return false;
     }
 
     @Override
     public String toDescription() {
-        return "Max depth of " + maxDepth + " exceeded by " + depth;
+        return "Passed.";
     }
 }

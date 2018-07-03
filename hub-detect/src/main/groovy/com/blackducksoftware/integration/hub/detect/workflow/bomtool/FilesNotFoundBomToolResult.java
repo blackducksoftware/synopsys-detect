@@ -21,9 +21,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.workflow;
+package com.blackducksoftware.integration.hub.detect.workflow.bomtool;
 
-public abstract class BomToolResult {
-    public abstract boolean getPassed();
-    public abstract String toDescription();
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
+public class FilesNotFoundBomToolResult extends FailedBomToolResult {
+    private final String[] patterns;
+
+    public FilesNotFoundBomToolResult(final String... patterns) {
+        this.patterns = patterns;
+    }
+
+    @Override
+    public String toDescription() {
+        return "No files were found with any of the patterns: " + Arrays.asList(patterns).stream().collect(Collectors.joining(","));
+    }
 }

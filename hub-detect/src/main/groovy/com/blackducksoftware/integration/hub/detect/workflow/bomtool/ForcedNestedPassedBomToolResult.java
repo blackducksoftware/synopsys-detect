@@ -21,11 +21,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.workflow;
+package com.blackducksoftware.integration.hub.detect.workflow.bomtool;
 
-public class NotSelfNestableBomToolResult extends FailedBomToolResult {
+public class ForcedNestedPassedBomToolResult extends BomToolResult {
+    @Override
+    public boolean getPassed() {
+        return true;
+    }
+
     @Override
     public String toDescription() {
-        return "Nestable but this bom tool already applied in a parent directory.";
+        return "Forced to pass because nested forced by user.";
     }
 }

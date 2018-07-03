@@ -21,16 +21,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.workflow;
+package com.blackducksoftware.integration.hub.detect.workflow.bomtool;
 
-public class PassedBomToolResult extends BomToolResult {
-    @Override
-    public boolean getPassed() {
-        return true;
+
+public class ExecutableNotFoundBomToolResult extends FailedBomToolResult {
+    private final String executableName;
+
+    public ExecutableNotFoundBomToolResult(final String executableName) {
+        this.executableName = executableName;
     }
 
     @Override
     public String toDescription() {
-        return "Passed.";
+        return "No " + executableName + " executable was found.";
     }
 }

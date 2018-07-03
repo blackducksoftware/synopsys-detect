@@ -21,11 +21,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.workflow;
+package com.blackducksoftware.integration.hub.detect.workflow.bomtool;
 
-public class NotNestableBomToolResult extends FailedBomToolResult {
+public class PropertyInsufficientBomToolResult extends FailedBomToolResult {
     @Override
     public String toDescription() {
-        return "Not nestable and a bom tool already applied in parent directory.";
+        return "The properties are insufficient to run.";
     }
 }

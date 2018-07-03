@@ -21,17 +21,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.workflow;
+package com.blackducksoftware.integration.hub.detect.workflow.bomtool;
 
-public class ExceptionBomToolResult extends FailedBomToolResult {
-    private final Exception exception;
-
-    public ExceptionBomToolResult(final Exception exception) {
-        this.exception = exception;
-    }
-
+public class NotNestableBomToolResult extends FailedBomToolResult {
     @Override
     public String toDescription() {
-        return "Exception occured: " + exception.getMessage();
+        return "Not nestable and a bom tool already applied in parent directory.";
     }
 }

@@ -32,15 +32,15 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
-import com.blackducksoftware.integration.hub.detect.bomtool.workflow.BomToolEvaluation;
-import com.blackducksoftware.integration.hub.detect.bomtool.workflow.BomToolExcludedBomToolResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.workflow.BomToolResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.workflow.ForcedNestedPassedBomToolResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.workflow.MaxDepthExceededBomToolResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.workflow.NotNestableBomToolResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.workflow.NotSelfNestableBomToolResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.workflow.PassedBomToolResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.workflow.YieldedBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolExcludedBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.ForcedNestedPassedBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.MaxDepthExceededBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.NotNestableBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.NotSelfNestableBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.PassedBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.YieldedBomToolResult;
 
 public class BomToolSearchRuleSet {
 

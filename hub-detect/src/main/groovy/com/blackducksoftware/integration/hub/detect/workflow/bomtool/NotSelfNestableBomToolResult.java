@@ -21,17 +21,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.workflow;
+package com.blackducksoftware.integration.hub.detect.workflow.bomtool;
 
-public class FileNotFoundBomToolResult extends FailedBomToolResult {
-    private final String pattern;
-
-    public FileNotFoundBomToolResult(final String pattern) {
-        this.pattern = pattern;
-    }
-
+public class NotSelfNestableBomToolResult extends FailedBomToolResult {
     @Override
     public String toDescription() {
-        return "No file was found with pattern: " + pattern;
+        return "Nestable but this bom tool already applied in a parent directory.";
     }
 }
