@@ -76,7 +76,7 @@ public class MavenPomBomTool extends BomTool {
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
-        return mavenCliExtractor.extract(BomToolType.MAVEN_POM_CLI, environment.getDirectory(), mavenExe);
+        return mavenCliExtractor.extract(this.getBomToolType(), environment.getDirectory(), mavenExe);
     }
 
 }

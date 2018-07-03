@@ -55,7 +55,6 @@ import freemarker.template.Configuration;
 
 @org.springframework.context.annotation.Configuration
 public class BeanConfiguration {
-
     private final ConfigurableEnvironment configurableEnvironment;
 
     @Autowired
@@ -64,12 +63,16 @@ public class BeanConfiguration {
     }
 
     @Bean
+    public Gson gson() {
+        return new GsonBuilder().setPrettyPrinting().create();
+    }
+
+    @Bean
     public SimpleBdioFactory simpleBdioFactory() {
         final BdioPropertyHelper bdioPropertyHelper = new BdioPropertyHelper();
         final BdioNodeFactory bdioNodeFactory = new BdioNodeFactory(bdioPropertyHelper);
         final DependencyGraphTransformer dependencyGraphTransformer = new DependencyGraphTransformer(bdioPropertyHelper, bdioNodeFactory);
-        final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        return new SimpleBdioFactory(bdioPropertyHelper, bdioNodeFactory, dependencyGraphTransformer, externalIdFactory(), gson);
+        return new SimpleBdioFactory(bdioPropertyHelper, bdioNodeFactory, dependencyGraphTransformer, externalIdFactory(), gson());
     }
 
     @Bean

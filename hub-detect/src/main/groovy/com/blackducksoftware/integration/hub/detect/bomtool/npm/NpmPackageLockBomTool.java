@@ -67,7 +67,7 @@ public class NpmPackageLockBomTool extends BomTool {
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
-        return npmLockfileExtractor.extract(BomToolType.NPM_PACKAGELOCK, environment.getDirectory(), lockfile);
+        return npmLockfileExtractor.extract(this.getBomToolType(), environment.getDirectory(), lockfile);
     }
 
 }
