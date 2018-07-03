@@ -139,6 +139,8 @@ public class ConfigurationManager {
             if (allSeverities) {
                 final List<String> allPolicyTypes = Arrays.stream(PolicySeverityType.values()).filter(type -> type != PolicySeverityType.UNSPECIFIED).map(type -> type.toString()).collect(Collectors.toList());
                 this.policyCheckFailOnSeverities = StringUtils.join(allPolicyTypes, ",");
+            } else {
+                this.policyCheckFailOnSeverities = StringUtils.join(splitSeverities, ",");
             }
         }
     }
