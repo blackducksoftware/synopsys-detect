@@ -71,7 +71,7 @@ public class CondaCliExtractor {
 
             final String listJsonText = condaListOutput.getStandardOutput();
 
-            final ExecutableOutput condaInfoOutput = executableRunner.runExe(condaExe, "info", "--json");
+            final ExecutableOutput condaInfoOutput = executableRunner.execute(condaExe, "info", "--json");
             final String infoJsonText = condaInfoOutput.getStandardOutput();
 
             final DependencyGraph dependencyGraph = condaListParser.parse(listJsonText, infoJsonText);

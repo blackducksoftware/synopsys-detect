@@ -41,6 +41,17 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFac
 import com.blackducksoftware.integration.util.NameVersion;
 
 public class GemlockParser {
+    public static final String DEPENDENCIES_HEADER = "DEPENDENCIES";
+    public static final String BUNDLED_WITH_HEADER = "BUNDLED WITH";
+    public static final String SPECS_HEADER = "specs:";
+    public static final String SPEC_RELATIONSHIP_PREFIX = "      ";
+    public static final String SPEC_PACKAGE_PREFIX = "    ";
+
+    public static final String VERSION_CHARACTERS = "()<>=~";
+    public static final String FUZZY_VERSION_CHARACTERS = "<>";
+    public static final String VERSION_PREFIX_PATTERN = " \\(";
+    public static final String VERSION_SUFFIX = ")";
+
     private final Logger logger = LoggerFactory.getLogger(GemlockParser.class);
 
     private final ExternalIdFactory externalIdFactory;
@@ -68,21 +79,23 @@ public class GemlockParser {
                 return;
             }
 
-            if (!inSpecsSection && "specs:".equals(line.trim())) {
+            final String trimmedLine = line.trim();
+
+            if (!inSpecsSection && SPECS_HEADER.equals(trimmedLine)) {
                 inSpecsSection = true;
                 return;
             }
 
-            if (!inDependenciesSection && "DEPENDENCIES".equals(line.trim())) {
+            if (!inDependenciesSection && DEPENDENCIES_HEADER.equals(trimmedLine)) {
                 inDependenciesSection = true;
                 return;
             }
 
-            if ("BUNDLED WITH".equals(line.trim())) {
+            if (BUNDLED_WITH_HEADER.equals(trimmedLine)) {
                 previousLineWasBundledWith = true;
             } else if (previousLineWasBundledWith) {
                 previousLineWasBundledWith = false;
-                addBundlerDependency(line);
+                addBundlerDependency(trimmedLine);
             }
 
             if (!inSpecsSection && !inDependenciesSection) {
@@ -93,7 +106,7 @@ public class GemlockParser {
             if (inSpecsSection) {
                 parseSpecsSectionLine(line);
             } else {
-                parseDependencySectionLine(line);
+                parseDependencySectionLine(trimmedLine);
             }
         });
 
@@ -104,58 +117,59 @@ public class GemlockParser {
         return lazyBuilder.build();
     }
 
-    private void addBundlerDependency(final String line) {
+    private void addBundlerDependency(final String trimmedLine) {
         final String name = "bundler";
-        final String version = line.trim();
+        final String version = trimmedLine;
         final DependencyId bundlerId = new NameDependencyId(name);
         final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, name, version);
         lazyBuilder.setDependencyInfo(bundlerId, name, version, externalId);
     }
 
-    private void parseSpecsSectionLine(final String line) {
-        if (line.startsWith("      ")) {
-            parseSpecRelationshipLine(line);
-        } else if (line.startsWith("    ")) {
-            parseSpecPackageLine(line);
+    private void parseSpecsSectionLine(final String untrimmedLine) {
+        if (untrimmedLine.startsWith(SPEC_RELATIONSHIP_PREFIX)) {
+            parseSpecRelationshipLine(untrimmedLine.trim());
+        } else if (untrimmedLine.startsWith(SPEC_PACKAGE_PREFIX)) {
+            parseSpecPackageLine(untrimmedLine.trim());
         } else {
-            logger.error("Line in specs section can't be parsed: " + line);
+            logger.error("Line in specs section can't be parsed: " + untrimmedLine);
         }
     }
 
-    private void parseSpecRelationshipLine(final String line) {
+    private void parseSpecRelationshipLine(final String trimmedLine) {
         if (currentParent == null) {
-            logger.error("Trying to add a child without a parent: " + line);
+            logger.error("Trying to add a child without a parent: " + trimmedLine);
         } else {
-            final NameVersion childNode = parseNameVersion(line);
+            final NameVersion childNode = parseNameVersion(trimmedLine);
             final DependencyId childId = new NameDependencyId(childNode.getName());
             lazyBuilder.addChildWithParent(childId, currentParent);
         }
     }
 
-    private void parseSpecPackageLine(final String line) {
-        final NameVersion parentNameVersion = parseNameVersion(line);
+    private void parseSpecPackageLine(final String trimmedLine) {
+        final NameVersion parentNameVersion = parseNameVersion(trimmedLine);
         if (parentNameVersion.getVersion() != null) {
             currentParent = new NameDependencyId(parentNameVersion.getName());
             final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, parentNameVersion.getName(), parentNameVersion.getVersion());
             lazyBuilder.setDependencyInfo(currentParent, parentNameVersion.getName(), parentNameVersion.getVersion(), externalId);
         } else {
-            logger.error("An installed spec did not have a non-fuzzy version: " + line);
+            logger.error("An installed spec did not have a non-fuzzy version: " + trimmedLine);
         }
     }
 
-    private void parseDependencySectionLine(final String line) {
-        final NameVersion dependencyNameVersionNode = parseNameVersion(line);
+    private void parseDependencySectionLine(final String trimmedLine) {
+        final NameVersion dependencyNameVersionNode = parseNameVersion(trimmedLine);
         if (dependencyNameVersionNode.getName() == null) {
-            logger.error("Line in dependencies section can't be parsed: " + line);
+            logger.error("Line in dependencies section can't be parsed: " + trimmedLine);
         } else {
             lazyBuilder.addChildToRoot(new NameDependencyId(dependencyNameVersionNode.getName()));
         }
     }
 
-    private NameVersion parseNameVersion(final String line) {
-        final String[] pieces = line.trim().split(" ");
+    private NameVersion parseNameVersion(final String trimmedLine) {
+        final String[] pieces = trimmedLine.split(VERSION_PREFIX_PATTERN);
         String name = pieces[0].trim();
         String version = "";
+
         if (pieces.length > 1) {
             final Optional<String> validVersion = parseValidVersion(pieces[1].trim());
             version = validVersion.orElse("");
@@ -164,22 +178,18 @@ public class GemlockParser {
         if (name.endsWith("!")) {
             name = name.substring(0, name.length() - 2);
         }
+
         return new NameVersion(name, version);
     }
 
     // a valid version looks like (###.###.###)
     private Optional<String> parseValidVersion(final String version) {
-        final String firstChar = version.substring(0, 1);
-        final String lastChar = version.substring(version.length() - 1);
-        if (firstChar.equals("(") && lastChar.equals(")") && isNotFuzzy(version)) {
-            return Optional.of(version.substring(1, version.length() - 1));
-        } else {
-            return Optional.empty();
-        }
-    }
+        String validVersion = null;
 
-    private boolean isNotFuzzy(final String version) {
-        final boolean containsFuzzyIndicator = version.indexOf("=") > 0 || version.indexOf("~") >= 0 || version.indexOf(">") >= 0 || version.indexOf("<") >= 0;
-        return !containsFuzzyIndicator;
+        if (version.endsWith(VERSION_SUFFIX) && StringUtils.containsNone(version, FUZZY_VERSION_CHARACTERS)) {
+            validVersion = StringUtils.replaceChars(version, VERSION_CHARACTERS, "").trim();
+        }
+
+        return Optional.ofNullable(validVersion);
     }
 }

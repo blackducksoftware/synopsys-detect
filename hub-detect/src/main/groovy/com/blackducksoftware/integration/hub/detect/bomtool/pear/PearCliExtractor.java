@@ -53,8 +53,8 @@ public class PearCliExtractor {
 
     public Extraction extract(final BomToolType bomToolType, final File directory, final File pearExe) {
         try {
-            final ExecutableOutput pearListing = executableRunner.runExe(pearExe, "list");
-            final ExecutableOutput pearDependencies = executableRunner.runExe(pearExe, "package-dependencies", PACKAGE_XML_FILENAME);
+            final ExecutableOutput pearListing = executableRunner.execute(pearExe, "list");
+            final ExecutableOutput pearDependencies = executableRunner.execute(pearExe, "package-dependencies", PACKAGE_XML_FILENAME);
 
             final File packageFile = detectFileFinder.findFile(directory, PACKAGE_XML_FILENAME);
 
