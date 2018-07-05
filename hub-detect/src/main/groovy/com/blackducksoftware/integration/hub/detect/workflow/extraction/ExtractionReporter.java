@@ -49,9 +49,9 @@ public class ExtractionReporter {
         logger.info(ReportConstants.SEPERATOR);
         logger.info("Finished extraction: " + result.result.toString());
         logger.info("Code locations found: " + result.codeLocations.size());
-        if (result.result == ExtractionResultType.Exception) {
+        if (result.result == ExtractionResultType.EXCEPTION) {
             logger.error("Exception:", result.error);
-        } else if (result.result == ExtractionResultType.Failure) {
+        } else if (result.result == ExtractionResultType.FAILURE) {
             logger.error(result.description);
         }
         logger.info(ReportConstants.SEPERATOR);

@@ -86,16 +86,16 @@ public class Extraction {
             return this;
         }
         public Builder success() {
-            this.result = ExtractionResultType.Success;
+            this.result = ExtractionResultType.SUCCESS;
             return this;
         }
         public Builder failure(final String description) {
-            this.result = ExtractionResultType.Failure;
+            this.result = ExtractionResultType.FAILURE;
             this.description = description;
             return this;
         }
         public Builder exception(final Exception error) {
-            this.result = ExtractionResultType.Exception;
+            this.result = ExtractionResultType.EXCEPTION;
             this.error = error;
             return this;
         }
@@ -106,9 +106,9 @@ public class Extraction {
     }
 
     public enum ExtractionResultType {
-        Success,
-        Failure,
-        Exception
+        SUCCESS,
+        FAILURE,
+        EXCEPTION
     }
 
 }
