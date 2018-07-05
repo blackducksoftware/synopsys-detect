@@ -10,11 +10,11 @@ Hub Detect offers package management level analysis combined with signature scan
 
 Detect Configuration
 
-https://sonarcloud.io/api/project_badges/measure?project=detect%3Adetect-configuration&metric=alert_status
+[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=detect%3Adetect-configuration&metric=alert_status)](https://sonarcloud.io/api/project_badges/measure?project=detect%3Adetect-configuration&metric=alert_status)
 
 Hub Detect
 
-https://sonarcloud.io/api/project_badges/measure?project=detect%3Ahub-detect&metric=alert_status
+[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=detect%3Ahub-detect&metric=alert_status)](https://sonarcloud.io/api/project_badges/measure?project=detect%3Ahub-detect&metric=alert_status)
 
 ## Where can I get the latest release? ##
 Available from GitHub by running:  
