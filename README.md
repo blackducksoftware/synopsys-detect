@@ -8,10 +8,6 @@ Hub Detect offers package management level analysis combined with signature scan
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Black Duck Security Risk](https://copilot.blackducksoftware.com/github/repos/blackducksoftware/hub-detect/branches/master/badge-risk.svg)](https://copilot.blackducksoftware.com/github/repos/blackducksoftware/hub-detect/branches/master)
 
-Detect Common
-
-[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=detect%3Adetect-common&metric=alert_status)](https://sonarcloud.io/api/project_badges/measure?project=detect%3Adetect-common)
-
 Detect Configuration
 
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=detect%3Adetect-configuration&metric=alert_status)](https://sonarcloud.io/api/project_badges/measure?project=detect%3Adetect-configuration)
