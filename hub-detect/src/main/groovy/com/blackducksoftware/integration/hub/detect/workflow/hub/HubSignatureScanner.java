@@ -35,8 +35,6 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.api.generated.component.ProjectRequest;
@@ -60,7 +58,6 @@ import com.blackducksoftware.integration.hub.service.SignatureScannerService;
 import com.blackducksoftware.integration.hub.service.model.ProjectRequestBuilder;
 import com.blackducksoftware.integration.hub.summary.Result;
 
-@Component
 public class HubSignatureScanner implements StatusSummaryProvider, ExitCodeReporter {
     private final Logger logger = LoggerFactory.getLogger(HubSignatureScanner.class);
     private final Set<String> scanPaths = new HashSet<>();
@@ -75,7 +72,6 @@ public class HubSignatureScanner implements StatusSummaryProvider, ExitCodeRepor
     private final CodeLocationNameManager codeLocationNameManager;
     private final DetectConfigWrapper detectConfigWrapper;
 
-    @Autowired
     public HubSignatureScanner(final DetectFileManager detectFileManager, final DetectFileFinder detectFileFinder, final OfflineScanner offlineScanner, final CodeLocationNameManager codeLocationNameManager,
             final DetectConfigWrapper detectConfigWrapper) {
         this.detectFileManager = detectFileManager;

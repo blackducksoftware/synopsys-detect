@@ -32,13 +32,11 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
-@Component
 public class Rpm implements PkgMgr {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final String PKG_MGR_NAME = "rpm";

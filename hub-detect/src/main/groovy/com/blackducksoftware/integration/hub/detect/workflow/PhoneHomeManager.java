@@ -28,8 +28,6 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectInfo;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
@@ -46,7 +44,6 @@ import com.blackducksoftware.integration.phonehome.google.analytics.GoogleAnalyt
 import com.blackducksoftware.integration.util.IntEnvironmentVariables;
 import com.google.gson.Gson;
 
-@Component
 public class PhoneHomeManager {
     private final Logger logger = LoggerFactory.getLogger(PhoneHomeManager.class);
 
@@ -57,7 +54,6 @@ public class PhoneHomeManager {
     private PhoneHomeService phoneHomeService;
     private PhoneHomeResponse phoneHomeResponse;
 
-    @Autowired
     public PhoneHomeManager(final DetectInfo detectInfo, final Gson gson, final AdditionalPropertyConfig additionalPropertyConfig) {
         this.detectInfo = detectInfo;
         this.gson = gson;

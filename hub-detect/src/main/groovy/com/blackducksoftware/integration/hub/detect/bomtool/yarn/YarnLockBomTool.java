@@ -50,8 +50,8 @@ public class YarnLockBomTool extends BomTool {
     private final YarnLockExtractor yarnLockExtractor;
     private final boolean productionDependenciesOnly;
 
-    File yarnlock;
-    String yarnExe;
+    private File yarnlock;
+    private String yarnExe;
 
     public YarnLockBomTool(final BomToolEnvironment environment, final boolean productionDependenciesOnly, final DetectFileFinder fileFinder, final StandardExecutableFinder standardExecutableFinder,
             final YarnLockExtractor yarnLockExtractor) {

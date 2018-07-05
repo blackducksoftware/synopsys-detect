@@ -32,7 +32,6 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.workflow.project.decisions.ArbitraryNameVersionDecision;
@@ -44,7 +43,6 @@ import com.blackducksoftware.integration.hub.detect.workflow.project.decisions.U
 import com.blackducksoftware.integration.hub.detect.workflow.project.decisions.UniqueBomToolNotFoundDecision;
 import com.blackducksoftware.integration.util.NameVersion;
 
-@Component
 public class BomToolNameVersionDecider {
     private final Logger logger = LoggerFactory.getLogger(BomToolNameVersionDecider.class);
 

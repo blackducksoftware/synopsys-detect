@@ -25,9 +25,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.go;
 
 import java.io.File;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
@@ -38,18 +35,18 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
-@Component
 public class GoDepExtractor {
-    @Autowired
-    DepPackager goPackager;
+    private final DepPackager depPackager;
+    private final ExternalIdFactory externalIdFactory;
 
-    @Autowired
-    ExternalIdFactory externalIdFactory;
+    public GoDepExtractor(final DepPackager depPackager, final ExternalIdFactory externalIdFactory) {
+        this.depPackager = depPackager;
+        this.externalIdFactory = externalIdFactory;
+    }
 
     public Extraction extract(final BomToolType bomToolType, final File directory, final File goExe, final String goDepInspector) {
         try {
-            DependencyGraph graph = goPackager.makeDependencyGraph(directory.toString(), goDepInspector);
-
+            DependencyGraph graph = depPackager.makeDependencyGraph(directory.toString(), goDepInspector);
             if (graph == null) {
                 graph = new MutableMapDependencyGraph();
             }

@@ -33,13 +33,11 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
-@Component
 public class Apk implements PkgMgr {
     private static final String PKG_MGR_NAME = "apk";
     private static final String VERSION_COMMAND = "apk --version";

@@ -27,9 +27,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph;
@@ -40,13 +37,14 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFac
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-@Component
 public class CondaListParser {
-    @Autowired
-    private Gson gson;
+    private final Gson gson;
+    private final ExternalIdFactory externalIdFactory;
 
-    @Autowired
-    private ExternalIdFactory externalIdFactory;
+    public CondaListParser(final Gson gson, final ExternalIdFactory externalIdFactory) {
+        this.gson = gson;
+        this.externalIdFactory = externalIdFactory;
+    }
 
     public DependencyGraph parse(final String listJsonText, final String infoJsonText) {
         final Type listType = new TypeToken<ArrayList<CondaListElement>>() {

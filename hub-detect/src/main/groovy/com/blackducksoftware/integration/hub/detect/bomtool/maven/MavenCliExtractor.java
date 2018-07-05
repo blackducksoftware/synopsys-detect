@@ -31,8 +31,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
@@ -43,13 +41,11 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
-@Component
 public class MavenCliExtractor {
     private final ExecutableRunner executableRunner;
     private final MavenCodeLocationPackager mavenCodeLocationPackager;
     private final DetectConfigWrapper detectConfigWrapper;
 
-    @Autowired
     public MavenCliExtractor(final ExecutableRunner executableRunner, final MavenCodeLocationPackager mavenCodeLocationPackager, final DetectConfigWrapper detectConfigWrapper) {
         this.executableRunner = executableRunner;
         this.mavenCodeLocationPackager = mavenCodeLocationPackager;

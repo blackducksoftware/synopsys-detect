@@ -30,8 +30,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.bdio.SimpleBdioFactory;
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
@@ -50,7 +48,6 @@ import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLo
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
 
-@Component
 public class BdioManager {
     private final Logger logger = LoggerFactory.getLogger(BdioManager.class);
 
@@ -60,8 +57,8 @@ public class BdioManager {
     private final CodeLocationNameManager codeLocationNameManager;
     private final DetectConfigWrapper detectConfigWrapper;
 
-    @Autowired
-    public BdioManager(final DetectInfo detectInfo, final SimpleBdioFactory simpleBdioFactory, final IntegrationEscapeUtil integrationEscapeUtil, final CodeLocationNameManager codeLocationNameManager, final DetectConfigWrapper detectConfigWrapper) {
+    public BdioManager(final DetectInfo detectInfo, final SimpleBdioFactory simpleBdioFactory, final IntegrationEscapeUtil integrationEscapeUtil, final CodeLocationNameManager codeLocationNameManager,
+            final DetectConfigWrapper detectConfigWrapper) {
         this.detectInfo = detectInfo;
         this.simpleBdioFactory = simpleBdioFactory;
         this.integrationEscapeUtil = integrationEscapeUtil;

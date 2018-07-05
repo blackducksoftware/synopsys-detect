@@ -1,14 +1,13 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.npm
 
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Test
-
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 import com.google.gson.GsonBuilder
+import org.junit.Assert
+import org.junit.Before
+import org.junit.Test
 
 class NpmLockfilePackagerTest {
     NpmLockfilePackager npmLockfilePackager
@@ -17,12 +16,7 @@ class NpmLockfilePackagerTest {
     @Before
     public void init() {
         testUtil = new TestUtil()
-
-        def externalIdFactory = new ExternalIdFactory()
-
-        npmLockfilePackager = new NpmLockfilePackager()
-        npmLockfilePackager.externalIdFactory = externalIdFactory
-        npmLockfilePackager.gson = new GsonBuilder().setPrettyPrinting().create()
+        npmLockfilePackager = new NpmLockfilePackager(new GsonBuilder().setPrettyPrinting().create(), new ExternalIdFactory())
     }
 
     @Test

@@ -30,7 +30,6 @@ import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
@@ -39,7 +38,6 @@ import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 
-@Component
 public class YarnListParser extends BaseYarnParser {
     private final Logger logger = LoggerFactory.getLogger(YarnListParser.class);
 
@@ -83,7 +81,8 @@ public class YarnListParser extends BaseYarnParser {
                         logger.debug(currentDep.name + "@" + currentDep.version + " is being added as a child of " + parentDep.name + "@" + parentDep.version);
                         graph.addChildWithParent(currentDep, parentDep);
                     } else {
-                        logger.debug(String.format("Problem parsing dependency %s@%s: Depth is %s, but no parent could be found. Treating dependency as root level to avoid missing dependencies.", currentDep.name, currentDep.version, depth));
+                        logger.debug(
+                                String.format("Problem parsing dependency %s@%s: Depth is %s, but no parent could be found. Treating dependency as root level to avoid missing dependencies.", currentDep.name, currentDep.version, depth));
                         graph.addChildToRoot(currentDep);
                     }
                 } else {

@@ -24,18 +24,13 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.gradle;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 
-@Component
 public class GradleExecutableFinder {
     private final ExecutableManager executableManager;
     private final DetectConfigWrapper detectConfigWrapper;
@@ -43,8 +38,7 @@ public class GradleExecutableFinder {
     private String systemGradle = null;
     private boolean hasLookedForSystemGradle = false;
 
-    @Autowired
-    public GradleExecutableFinder(final DetectFileManager detectFileManager, final ExecutableManager executableManager, final ExecutableRunner executableRunner, final DetectConfigWrapper detectConfigWrapper) {
+    public GradleExecutableFinder(final ExecutableManager executableManager, final DetectConfigWrapper detectConfigWrapper) {
         this.executableManager = executableManager;
         this.detectConfigWrapper = detectConfigWrapper;
     }

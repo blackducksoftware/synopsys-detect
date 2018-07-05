@@ -27,16 +27,12 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 
-@Component
 public class StandardExecutableFinder {
     public enum StandardExecutableType {
         CONDA,
@@ -55,7 +51,6 @@ public class StandardExecutableFinder {
 
     private final Map<StandardExecutableType, File> alreadyFound = new HashMap<>();
 
-    @Autowired
     public StandardExecutableFinder(final ExecutableManager executableManager, final DetectConfigWrapper detectConfigWrapper) {
         this.executableManager = executableManager;
         this.detectConfigWrapper = detectConfigWrapper;

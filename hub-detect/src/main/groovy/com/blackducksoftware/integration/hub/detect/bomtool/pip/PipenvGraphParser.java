@@ -32,8 +32,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
@@ -44,7 +42,6 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 
-@Component
 public class PipenvGraphParser {
     final Logger logger = LoggerFactory.getLogger(PipenvGraphParser.class);
 
@@ -55,8 +52,11 @@ public class PipenvGraphParser {
     public static final String DEPENDENCY_VERSION_PREFIX = "installed: ";
     public static final String DEPENDENCY_VERSION_SUFFIX = "]";
 
-    @Autowired
-    ExternalIdFactory externalIdFactory;
+    private final ExternalIdFactory externalIdFactory;
+
+    public PipenvGraphParser(final ExternalIdFactory externalIdFactory) {
+        this.externalIdFactory = externalIdFactory;
+    }
 
     public PipParseResult parse(final BomToolType bomToolType, final String projectName, final String projectVersionName, final List<String> pipFreezeOutput, final List<String> pipenvGraphOutput, final String sourcePath) {
         final MutableMapDependencyGraph dependencyGraph = new MutableMapDependencyGraph();

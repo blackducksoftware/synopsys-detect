@@ -34,8 +34,6 @@ import java.util.Optional;
 import org.codehaus.plexus.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
@@ -46,14 +44,12 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 
-@Component
 public class PodlockParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     final static List<String> fuzzyVersionIdentifiers = new ArrayList<>(Arrays.asList(">", "<", "~>", "="));
 
     private final ExternalIdFactory externalIdFactory;
 
-    @Autowired
     public PodlockParser(final ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }

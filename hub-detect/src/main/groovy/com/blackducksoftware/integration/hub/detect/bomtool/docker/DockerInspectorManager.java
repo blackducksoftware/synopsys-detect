@@ -31,8 +31,6 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
@@ -49,7 +47,6 @@ import com.blackducksoftware.integration.rest.request.Request;
 import com.blackducksoftware.integration.rest.request.Response;
 import com.blackducksoftware.integration.util.ResourceUtil;
 
-@Component
 public class DockerInspectorManager {
     private static final String LATEST_URL = "https://blackducksoftware.github.io/hub-docker-inspector/hub-docker-inspector.sh";
     private final Logger logger = LoggerFactory.getLogger(DockerInspectorManager.class);
@@ -61,7 +58,6 @@ public class DockerInspectorManager {
     private final ExecutableRunner executableRunner;
     private final DetectConfigWrapper detectConfigWrapper;
 
-    @Autowired
     public DockerInspectorManager(final DetectFileManager detectFileManager, final ExecutableManager executableManager, final ExecutableRunner executableRunner,
             final DetectConfigWrapper detectConfigWrapper) {
         this.detectFileManager = detectFileManager;

@@ -32,8 +32,6 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
@@ -45,7 +43,6 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableMa
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
-@Component
 public class NpmExecutableFinder {
     private final Logger logger = LoggerFactory.getLogger(NpmExecutableFinder.class);
 
@@ -56,8 +53,8 @@ public class NpmExecutableFinder {
     private String foundNpm = null;
     private boolean hasLookedForNpm = false;
 
-    @Autowired
-    public NpmExecutableFinder(final ExecutableManager executableManager, final ExecutableRunner executableRunner, final DetectConfigWrapper detectConfigWrapper) {
+    public NpmExecutableFinder(final ExecutableManager executableManager, final ExecutableRunner executableRunner,
+            final DetectConfigWrapper detectConfigWrapper) {
         this.executableManager = executableManager;
         this.executableRunner = executableRunner;
         this.detectConfigWrapper = detectConfigWrapper;

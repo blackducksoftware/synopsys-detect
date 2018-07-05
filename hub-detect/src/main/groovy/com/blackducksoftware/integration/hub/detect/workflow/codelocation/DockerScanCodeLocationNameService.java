@@ -23,10 +23,13 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.codelocation;
 
-import org.springframework.stereotype.Component;
+import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
-@Component
 public class DockerScanCodeLocationNameService extends FileCodeLocationNameService {
+    public DockerScanCodeLocationNameService(final DetectFileFinder detectFileFinder) {
+        super(detectFileFinder);
+    }
+
     public String createCodeLocationName(String dockerTarFilename, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
         String pathPiece = dockerTarFilename;
 

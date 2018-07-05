@@ -33,8 +33,6 @@ import java.util.concurrent.Executors;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.cli.CLIDownloadUtility;
@@ -58,14 +56,12 @@ import com.blackducksoftware.integration.rest.connection.UnauthenticatedRestConn
 import com.blackducksoftware.integration.util.IntEnvironmentVariables;
 import com.google.gson.Gson;
 
-@Component
 public class OfflineScanner {
     private final Logger logger = LoggerFactory.getLogger(OfflineScanner.class);
 
     private final Gson gson;
     private final DetectConfigWrapper detectConfigWrapper;
 
-    @Autowired
     public OfflineScanner(final Gson gson, final DetectConfigWrapper detectConfigWrapper) {
         this.gson = gson;
         this.detectConfigWrapper = detectConfigWrapper;

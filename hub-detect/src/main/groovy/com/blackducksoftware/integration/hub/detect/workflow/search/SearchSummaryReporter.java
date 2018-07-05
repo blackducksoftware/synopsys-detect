@@ -31,12 +31,10 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolEvaluation;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.ReportConstants;
 
-@Component
 public class SearchSummaryReporter {
     private final Logger logger = LoggerFactory.getLogger(SearchSummaryReporter.class);
 
@@ -83,6 +81,7 @@ public class SearchSummaryReporter {
                 if (result.isApplicable()) {
                     toPrint.add("      APPLIED: " + bomToolName + " - Search: " + result.getSearchabilityMessage() + " Applicable: " + result.getApplicabilityMessage());
                 } else {
+
                     final String didNotApplyPrefix = "DID NOT APPLY: " + bomToolName + " - ";
                     if (BomToolEvaluation.NO_MESSAGE.equals(result.getApplicabilityMessage())) {
                         toPrint.add(didNotApplyPrefix + result.getSearchabilityMessage());

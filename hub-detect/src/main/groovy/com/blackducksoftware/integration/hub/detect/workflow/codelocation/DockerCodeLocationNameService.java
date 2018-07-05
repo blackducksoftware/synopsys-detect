@@ -24,14 +24,18 @@
 package com.blackducksoftware.integration.hub.detect.workflow.codelocation;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
+import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
-@Component
 public class DockerCodeLocationNameService extends CodeLocationNameService {
+
+    public DockerCodeLocationNameService(final DetectFileFinder detectFileFinder) {
+        super(detectFileFinder);
+    }
+
     public String createCodeLocationName(final String sourcePath, final String projectName, final String projectVersionName, final String dockerImage, final BomToolGroupType bomToolType, final String prefix, final String suffix) {
-        final String finalSourcePathPiece = detectFileFinder.extractFinalPieceFromPath(sourcePath);
+        final String finalSourcePathPiece = getDetectFileFinder().extractFinalPieceFromPath(sourcePath);
         final String codeLocationTypeString = CodeLocationType.DOCKER.toString().toLowerCase();
         final String bomToolTypeString = bomToolType.toString().toLowerCase();
 

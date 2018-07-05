@@ -24,14 +24,11 @@
 package com.blackducksoftware.integration.hub.detect.workflow.codelocation;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 
-@Component
 public class CodeLocationNameManager {
     private final DetectConfigWrapper detectConfigWrapper;
     private final BomCodeLocationNameService bomCodeLocationNameService;
@@ -41,7 +38,6 @@ public class CodeLocationNameManager {
 
     private int givenCodeLocationOverrideCount = 0;
 
-    @Autowired
     public CodeLocationNameManager(final DetectConfigWrapper detectConfigWrapper, final BomCodeLocationNameService bomCodeLocationNameService,
             final DockerCodeLocationNameService dockerCodeLocationNameService, final ScanCodeLocationNameService scanCodeLocationNameService,
             final DockerScanCodeLocationNameService dockerScanCodeLocationNameService) {

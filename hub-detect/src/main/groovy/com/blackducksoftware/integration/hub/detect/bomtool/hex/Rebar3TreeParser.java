@@ -29,8 +29,6 @@ import java.util.Stack;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph;
@@ -42,8 +40,7 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 
-@Component
-class Rebar3TreeParser {
+public class Rebar3TreeParser {
     private final Logger logger = LoggerFactory.getLogger(Rebar3TreeParser.class);
 
     public static final String LAST_DEPENDENCY_CHARACTER = "\u2514";
@@ -54,8 +51,11 @@ class Rebar3TreeParser {
     public static final String OUTER_LEVEL_PREFIX = "   ";
     public static final String PROJECT_IDENTIFIER = "(project app)";
 
-    @Autowired
-    ExternalIdFactory externalIdFactory;
+    private final ExternalIdFactory externalIdFactory;
+
+    public Rebar3TreeParser(final ExternalIdFactory externalIdFactory) {
+        this.externalIdFactory = externalIdFactory;
+    }
 
     public RebarParseResult parseRebarTreeOutput(final BomToolType bomToolType, final List<String> dependencyTreeOutput, final String sourcePath) {
         final MutableDependencyGraph graph = new MutableMapDependencyGraph();
@@ -112,6 +112,7 @@ class Rebar3TreeParser {
     }
 
     private Dependency createDependencyFromLine(final String line) {
+
         final String nameVersionLine = reduceLineToNameVersion(line);
         final String name = nameVersionLine.substring(0, nameVersionLine.lastIndexOf(HORIZONTAL_SEPARATOR_CHARACTER));
         final String version = nameVersionLine.substring(nameVersionLine.lastIndexOf(HORIZONTAL_SEPARATOR_CHARACTER) + 1);
@@ -121,6 +122,7 @@ class Rebar3TreeParser {
     }
 
     private String reduceLineToNameVersion(String line) {
+
         final List<String> ignoredSpecialCharacters = Arrays.asList(LAST_DEPENDENCY_CHARACTER, NTH_DEPENDENCY_CHARACTER, INNER_LEVEL_CHARACTER);
         for (final String specialCharacter : ignoredSpecialCharacters) {
             line = line.replaceAll(specialCharacter, "");

@@ -28,9 +28,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
@@ -41,16 +38,16 @@ import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
-@Component
 public class PackratLockExtractor {
-    @Autowired
-    private PackratPackager packratPackager;
+    private final PackratPackager packratPackager;
+    private final ExternalIdFactory externalIdFactory;
+    private final DetectFileFinder detectFileFinder;
 
-    @Autowired
-    private ExternalIdFactory externalIdFactory;
-
-    @Autowired
-    private DetectFileFinder detectFileFinder;
+    public PackratLockExtractor(final PackratPackager packratPackager, final ExternalIdFactory externalIdFactory, final DetectFileFinder detectFileFinder) {
+        this.packratPackager = packratPackager;
+        this.externalIdFactory = externalIdFactory;
+        this.detectFileFinder = detectFileFinder;
+    }
 
     public Extraction extract(final BomToolType bomToolType, final File directory, final File packratlock) {
         try {

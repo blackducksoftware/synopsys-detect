@@ -27,18 +27,14 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.FileUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
-@Component
 public class ComposerLockExtractor {
 
     private final PackagistParser packagistParser;
 
-    @Autowired
     public ComposerLockExtractor(final PackagistParser packagistParser) {
         this.packagistParser = packagistParser;
     }

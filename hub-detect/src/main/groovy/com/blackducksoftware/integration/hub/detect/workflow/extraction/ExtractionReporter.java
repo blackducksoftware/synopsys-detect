@@ -25,13 +25,11 @@ package com.blackducksoftware.integration.hub.detect.workflow.extraction;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction.ExtractionResultType;
 
-@Component
 public class ExtractionReporter {
     private final Logger logger = LoggerFactory.getLogger(ExtractionReporter.class);
 

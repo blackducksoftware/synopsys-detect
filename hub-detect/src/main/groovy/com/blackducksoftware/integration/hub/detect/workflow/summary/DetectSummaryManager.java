@@ -28,16 +28,16 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.log.IntLogger;
 
-@Component
 public class DetectSummaryManager {
-    @Autowired
+
     private List<StatusSummaryProvider> statusSummaryProviders;
+
+    public DetectSummaryManager(final List<StatusSummaryProvider> statusSummaryProviders) {
+        this.statusSummaryProviders = statusSummaryProviders;
+    }
 
     public void logDetectResults(final IntLogger logger, final ExitCodeType exitCodeType) {
         final List<StatusSummary> statusSummaries = new ArrayList<>();

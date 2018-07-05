@@ -28,8 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
@@ -45,14 +43,12 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
-@Component
 public class CondaCliExtractor {
     private final CondaListParser condaListParser;
     private final ExternalIdFactory externalIdFactory;
     private final ExecutableRunner executableRunner;
     private final DetectConfigWrapper detectConfigWrapper;
 
-    @Autowired
     public CondaCliExtractor(final CondaListParser condaListParser, final ExternalIdFactory externalIdFactory, final ExecutableRunner executableRunner, final DetectConfigWrapper detectConfigWrapper) {
         this.condaListParser = condaListParser;
         this.externalIdFactory = externalIdFactory;

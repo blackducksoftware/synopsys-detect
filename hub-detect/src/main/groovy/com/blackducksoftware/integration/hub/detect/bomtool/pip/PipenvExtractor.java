@@ -28,8 +28,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
@@ -40,7 +38,6 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
-@Component
 public class PipenvExtractor {
     public static final String PIP_SEPARATOR = "==";
 
@@ -48,7 +45,6 @@ public class PipenvExtractor {
     private final PipenvGraphParser pipenvTreeParser;
     private final DetectConfigWrapper detectConfigWrapper;
 
-    @Autowired
     public PipenvExtractor(final ExecutableRunner executableRunner, final PipenvGraphParser pipenvTreeParser, final DetectConfigWrapper detectConfigWrapper) {
         this.executableRunner = executableRunner;
         this.pipenvTreeParser = pipenvTreeParser;

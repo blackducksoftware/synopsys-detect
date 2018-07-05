@@ -30,8 +30,6 @@ import java.util.Stack;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
@@ -42,7 +40,6 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 
-@Component
 public class PipInspectorTreeParser {
     private final Logger logger = LoggerFactory.getLogger(PipInspectorTreeParser.class);
 
@@ -54,8 +51,11 @@ public class PipInspectorTreeParser {
     public static final String UNKNOWN_PACKAGE_PREFIX = "--";
     public static final String INDENTATION = "    ";
 
-    @Autowired
-    private ExternalIdFactory externalIdFactory;
+    private final ExternalIdFactory externalIdFactory;
+
+    public PipInspectorTreeParser(final ExternalIdFactory externalIdFactory) {
+        this.externalIdFactory = externalIdFactory;
+    }
 
     public PipParseResult parse(final BomToolType bomToolType, final String treeText, final String sourcePath) {
         final List<String> lines = Arrays.asList(treeText.trim().split(System.lineSeparator()));

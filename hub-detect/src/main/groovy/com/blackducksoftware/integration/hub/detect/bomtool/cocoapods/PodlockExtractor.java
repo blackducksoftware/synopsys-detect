@@ -30,8 +30,6 @@ import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
@@ -42,13 +40,11 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
-@Component
 public class PodlockExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final PodlockParser podlockParser;
     private final ExternalIdFactory externalIdFactory;
 
-    @Autowired
     public PodlockExtractor(final PodlockParser podlockParser, final ExternalIdFactory externalIdFactory) {
         this.podlockParser = podlockParser;
         this.externalIdFactory = externalIdFactory;
@@ -76,6 +72,7 @@ public class PodlockExtractor {
         final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.COCOAPODS, directory.toString());
 
         final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolGroupType.COCOAPODS, bomToolType, directory.toString(), externalId, dependencyGraph).build();
+
         return new Extraction.Builder().success(codeLocation).build();
     }
 

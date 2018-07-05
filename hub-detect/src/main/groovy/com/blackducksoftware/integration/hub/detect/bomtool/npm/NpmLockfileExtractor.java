@@ -28,20 +28,16 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.FileUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
-@Component
 public class NpmLockfileExtractor {
     private final NpmLockfilePackager npmLockfilePackager;
     private final DetectConfigWrapper detectConfigWrapper;
 
-    @Autowired
     public NpmLockfileExtractor(final NpmLockfilePackager npmLockfilePackager, final DetectConfigWrapper detectConfigWrapper) {
         this.npmLockfilePackager = npmLockfilePackager;
         this.detectConfigWrapper = detectConfigWrapper;

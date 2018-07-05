@@ -33,8 +33,6 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
@@ -42,12 +40,14 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOu
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
-@Component
 public class CommandStringExecutor {
     private static final Logger logger = LoggerFactory.getLogger(CommandStringExecutor.class);
 
-    @Autowired
-    ExecutableRunner runner;
+    private final ExecutableRunner runner;
+
+    public CommandStringExecutor(final ExecutableRunner runner) {
+        this.runner = runner;
+    }
 
     public String execute(final File workingDir, Map<String, String> environmentVariables, final String cmd) throws ExecutableRunnerException, IntegrationException {
         logger.debug(String.format("Executing %s in %s", cmd, workingDir));

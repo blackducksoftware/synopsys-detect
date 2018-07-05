@@ -26,9 +26,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.cpan;
 import java.io.File;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
@@ -40,13 +37,11 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
-@Component
 public class CpanCliExtractor {
     private final CpanListParser cpanListParser;
     private final ExternalIdFactory externalIdFactory;
     private final ExecutableRunner executableRunner;
 
-    @Autowired
     public CpanCliExtractor(final CpanListParser cpanListParser, final ExternalIdFactory externalIdFactory, final ExecutableRunner executableRunner) {
         this.cpanListParser = cpanListParser;
         this.externalIdFactory = externalIdFactory;

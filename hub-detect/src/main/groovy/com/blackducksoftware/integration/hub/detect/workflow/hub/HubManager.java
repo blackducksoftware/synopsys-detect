@@ -32,8 +32,6 @@ import java.util.concurrent.Executors;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.api.generated.component.ProjectRequest;
@@ -60,10 +58,6 @@ import com.blackducksoftware.integration.hub.service.model.ProjectRequestBuilder
 import com.blackducksoftware.integration.hub.service.model.ProjectVersionWrapper;
 import com.blackducksoftware.integration.rest.exception.IntegrationRestException;
 
-import groovy.transform.TypeChecked;
-
-@Component
-@TypeChecked
 public class HubManager implements ExitCodeReporter {
     private final Logger logger = LoggerFactory.getLogger(HubManager.class);
 
@@ -75,7 +69,6 @@ public class HubManager implements ExitCodeReporter {
 
     private ExitCodeType exitCodeType = ExitCodeType.SUCCESS;
 
-    @Autowired
     public HubManager(final BdioUploader bdioUploader, final HubSignatureScanner hubSignatureScanner, final PolicyChecker policyChecker, final HubServiceWrapper hubServiceWrapper,
             final DetectConfigWrapper detectConfigWrapper) {
         this.bdioUploader = bdioUploader;

@@ -37,17 +37,13 @@ import groovy.util.slurpersupport.GPathResult
 import org.apache.commons.lang3.BooleanUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 
-@Component
 class PearDependencyFinder {
     private final Logger logger = LoggerFactory.getLogger(PearDependencyFinder.class)
 
     private final ExternalIdFactory externalIdFactory
     private final DetectConfigWrapper detectConfigWrapper
 
-    @Autowired
     PearDependencyFinder(final ExternalIdFactory externalIdFactory, final DetectConfigWrapper detectConfigWrapper) {
         this.externalIdFactory = externalIdFactory
         this.detectConfigWrapper = detectConfigWrapper

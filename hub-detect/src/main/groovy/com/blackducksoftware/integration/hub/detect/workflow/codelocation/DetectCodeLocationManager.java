@@ -35,8 +35,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphCombiner;
@@ -47,14 +45,12 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWr
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
 
-@Component
 public class DetectCodeLocationManager {
     private final Logger logger = LoggerFactory.getLogger(DetectCodeLocationManager.class);
 
     private final CodeLocationNameManager codeLocationNameManager;
     private final DetectConfigWrapper detectConfigWrapper;
 
-    @Autowired
     public DetectCodeLocationManager(final CodeLocationNameManager codeLocationNameManager, final DetectConfigWrapper detectConfigWrapper) {
         this.codeLocationNameManager = codeLocationNameManager;
         this.detectConfigWrapper = detectConfigWrapper;

@@ -27,8 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.plexus.util.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
@@ -42,13 +40,14 @@ import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.google.gson.Gson;
 
-@Component
 public class NpmLockfilePackager {
-    @Autowired
-    Gson gson;
+    private final Gson gson;
+    private final ExternalIdFactory externalIdFactory;
 
-    @Autowired
-    ExternalIdFactory externalIdFactory;
+    public NpmLockfilePackager(final Gson gson, final ExternalIdFactory externalIdFactory) {
+        this.gson = gson;
+        this.externalIdFactory = externalIdFactory;
+    }
 
     public NpmParseResult parse(final BomToolType bomToolType, final String sourcePath, final String lockFileText, final boolean includeDevDependencies) {
         final NpmProject npmProject = gson.fromJson(lockFileText, NpmProject.class);

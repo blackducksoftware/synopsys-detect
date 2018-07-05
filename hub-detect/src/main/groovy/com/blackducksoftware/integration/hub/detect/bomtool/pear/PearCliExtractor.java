@@ -25,9 +25,6 @@ package com.blackducksoftware.integration.hub.detect.bomtool.pear;
 
 import java.io.File;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
@@ -39,7 +36,6 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
-@Component
 public class PearCliExtractor {
     private static final String PACKAGE_XML_FILENAME = "package.xml";
 
@@ -48,7 +44,6 @@ public class PearCliExtractor {
     private final PearDependencyFinder pearDependencyFinder;
     private final ExecutableRunner executableRunner;
 
-    @Autowired
     public PearCliExtractor(final DetectFileFinder detectFileFinder, final ExternalIdFactory externalIdFactory, final PearDependencyFinder pearDependencyFinder, final ExecutableRunner executableRunner) {
         this.detectFileFinder = detectFileFinder;
         this.externalIdFactory = externalIdFactory;

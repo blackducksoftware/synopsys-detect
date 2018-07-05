@@ -23,9 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.factory;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.CLangBomTool;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.CLangExtractor;
@@ -87,7 +84,6 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder;
 
-@Component
 public class BomToolFactory {
     private final DetectConfigWrapper detectConfigWrapper;
     private final DetectFileFinder detectFileFinder;
@@ -124,15 +120,15 @@ public class BomToolFactory {
     private final SbtResolutionCacheExtractor sbtResolutionCacheExtractor;
     private final YarnLockExtractor yarnLockExtractor;
 
-    @Autowired
     public BomToolFactory(final DetectConfigWrapper detectConfigWrapper, final DetectFileFinder detectFileFinder, final StandardExecutableFinder standardExecutableFinder, final CLangExtractor cLangExtractor,
             final ComposerLockExtractor composerLockExtractor, final CondaCliExtractor condaCliExtractor, final CpanCliExtractor cpanCliExtractor, final DockerExtractor dockerExtractor,
             final DockerInspectorManager dockerInspectorManager, final GemlockExtractor gemlockExtractor, final GoDepExtractor goDepExtractor, final GoInspectorManager goInspectorManager,
             final GoVndrExtractor goVndrExtractor, final GradleExecutableFinder gradleFinder, final GradleInspectorExtractor gradleInspectorExtractor, final GradleInspectorManager gradleInspectorManager,
             final MavenCliExtractor mavenCliExtractor, final MavenExecutableFinder mavenExecutableFinder, final NpmCliExtractor npmCliExtractor, final NpmExecutableFinder npmExecutableFinder,
-            final NpmLockfileExtractor npmLockfileExtractor, final NugetInspectorExtractor nugetInspectorExtractor, final NugetInspectorManager nugetInspectorManager, final PackratLockExtractor packratLockExtractor,
-            final PearCliExtractor pearCliExtractor, final PipInspectorExtractor pipInspectorExtractor, final PipInspectorManager pipInspectorManager, final PipenvExtractor pipenvExtractor, final PodlockExtractor podlockExtractor,
-            final PythonExecutableFinder pythonExecutableFinder, final RebarExtractor rebarExtractor, final SbtResolutionCacheExtractor sbtResolutionCacheExtractor, final YarnLockExtractor yarnLockExtractor) {
+            final NpmLockfileExtractor npmLockfileExtractor, final NugetInspectorExtractor nugetInspectorExtractor, final NugetInspectorManager nugetInspectorManager,
+            final PackratLockExtractor packratLockExtractor, final PearCliExtractor pearCliExtractor, final PipInspectorExtractor pipInspectorExtractor, final PipInspectorManager pipInspectorManager,
+            final PipenvExtractor pipenvExtractor, final PodlockExtractor podlockExtractor, final PythonExecutableFinder pythonExecutableFinder, final RebarExtractor rebarExtractor,
+            final SbtResolutionCacheExtractor sbtResolutionCacheExtractor, final YarnLockExtractor yarnLockExtractor) {
         this.detectConfigWrapper = detectConfigWrapper;
         this.detectFileFinder = detectFileFinder;
         this.standardExecutableFinder = standardExecutableFinder;

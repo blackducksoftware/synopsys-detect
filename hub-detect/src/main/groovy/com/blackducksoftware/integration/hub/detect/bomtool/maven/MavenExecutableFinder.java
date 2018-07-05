@@ -24,8 +24,6 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.maven;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
@@ -33,7 +31,6 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 
-@Component
 public class MavenExecutableFinder {
     private final ExecutableManager executableManager;
     private final DetectConfigWrapper detectConfigWrapper;
@@ -41,7 +38,6 @@ public class MavenExecutableFinder {
     private String systemMaven = null;
     private boolean hasLookedForSystemMaven = false;
 
-    @Autowired
     public MavenExecutableFinder(final ExecutableManager executableManager, final DetectConfigWrapper detectConfigWrapper) {
         this.executableManager = executableManager;
         this.detectConfigWrapper = detectConfigWrapper;

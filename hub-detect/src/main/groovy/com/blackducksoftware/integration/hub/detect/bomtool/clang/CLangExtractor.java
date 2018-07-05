@@ -42,8 +42,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.bdio.SimpleBdioFactory;
@@ -61,7 +59,6 @@ import com.blackducksoftware.integration.hub.detect.workflow.codelocation.Detect
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.google.gson.Gson;
 
-@Component
 public class CLangExtractor {
     private static final String COMPILE_CMD_PATTERN_WITH_DEPENDENCY_OUTPUT_FILE = "%s -M -MF %s";
     public static final String DEPS_MK_FILENAME_PATTERN = "deps_%s_%d.mk";
@@ -69,20 +66,20 @@ public class CLangExtractor {
     private final Set<File> processedDependencyFiles = new HashSet<>(200);
     private final Set<PackageDetails> processedDependencies = new HashSet<>(40);
 
-    @Autowired
-    private List<PkgMgr> pkgMgrs;
+    private final List<PkgMgr> pkgMgrs;
+    private final ExternalIdFactory externalIdFactory;
+    private final CommandStringExecutor executor;
+    private final DependencyFileManager dependencyFileManager;
+    private final DetectFileManager detectFileManager;
 
-    @Autowired
-    private ExternalIdFactory externalIdFactory;
-
-    @Autowired
-    private CommandStringExecutor executor;
-
-    @Autowired
-    private DependencyFileManager dependencyFileManager;
-
-    @Autowired
-    private DetectFileManager detectFileManager;
+    public CLangExtractor(final List<PkgMgr> pkgMgrs, final ExternalIdFactory externalIdFactory, final CommandStringExecutor executor, final DependencyFileManager dependencyFileManager,
+            final DetectFileManager detectFileManager) {
+        this.pkgMgrs = pkgMgrs;
+        this.externalIdFactory = externalIdFactory;
+        this.executor = executor;
+        this.dependencyFileManager = dependencyFileManager;
+        this.detectFileManager = detectFileManager;
+    }
 
     public Extraction extract(final File givenDir, final int depth, final ExtractionId extractionId, final File jsonCompilationDatabaseFile) {
         try {

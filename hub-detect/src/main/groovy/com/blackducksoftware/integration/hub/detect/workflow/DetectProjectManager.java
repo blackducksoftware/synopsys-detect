@@ -38,8 +38,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
@@ -66,7 +64,6 @@ import com.blackducksoftware.integration.hub.detect.workflow.summary.StatusSumma
 import com.blackducksoftware.integration.hub.summary.Result;
 import com.blackducksoftware.integration.util.NameVersion;
 
-@Component
 public class DetectProjectManager implements StatusSummaryProvider, ExitCodeReporter {
     private final Logger logger = LoggerFactory.getLogger(DetectProjectManager.class);
 
@@ -81,9 +78,9 @@ public class DetectProjectManager implements StatusSummaryProvider, ExitCodeRepo
     private final BomToolNameVersionDecider bomToolNameVersionDecider;
     private final DetectConfigWrapper detectConfigWrapper;
 
-    @Autowired
     public DetectProjectManager(final SearchManager searchManager, final ExtractionManager extractionManager, final DetectCodeLocationManager codeLocationManager, final BdioManager bdioManager,
             final ExtractionSummaryReporter extractionSummaryReporter, final BomToolNameVersionDecider bomToolNameVersionDecider, final DetectConfigWrapper detectConfigWrapper) {
+
         this.searchManager = searchManager;
         this.extractionManager = extractionManager;
         this.codeLocationManager = codeLocationManager;

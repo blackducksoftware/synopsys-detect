@@ -23,13 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.nuget
 
-import java.nio.charset.StandardCharsets
-
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
-
 import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType
@@ -38,10 +31,12 @@ import com.blackducksoftware.integration.hub.detect.util.DetectFileManager
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation
 import com.google.gson.Gson
-
 import groovy.transform.TypeChecked
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
-@Component
+import java.nio.charset.StandardCharsets
+
 @TypeChecked
 class NugetInspectorPackager {
     private final Logger logger = LoggerFactory.getLogger(NugetInspectorPackager.class)
@@ -51,7 +46,7 @@ class NugetInspectorPackager {
     private final Gson gson
     private final ExternalIdFactory externalIdFactory
 
-    @Autowired
+
     NugetInspectorPackager(final DetectFileManager detectFileManager, final ExecutableRunner executableRunner, final Gson gson, final ExternalIdFactory externalIdFactory) {
         this.detectFileManager = detectFileManager
         this.executableRunner = executableRunner

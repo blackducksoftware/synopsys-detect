@@ -29,21 +29,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
-@Component
 public class RebarExtractor {
     private final ExecutableRunner executableRunner;
     private final Rebar3TreeParser rebarTreeParser;
 
-    @Autowired
     public RebarExtractor(final ExecutableRunner executableRunner, final Rebar3TreeParser rebarTreeParser) {
         this.executableRunner = executableRunner;
         this.rebarTreeParser = rebarTreeParser;

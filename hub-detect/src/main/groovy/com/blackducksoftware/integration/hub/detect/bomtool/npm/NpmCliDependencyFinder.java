@@ -32,7 +32,6 @@ import java.util.Set;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph;
@@ -48,7 +47,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 
-@Component
 public class NpmCliDependencyFinder {
     private final Logger logger = LoggerFactory.getLogger(NpmCliDependencyFinder.class);
 
@@ -56,9 +54,9 @@ public class NpmCliDependencyFinder {
     private static final String JSON_VERSION = "version";
     private static final String JSON_DEPENDENCIES = "dependencies";
 
-    public ExternalIdFactory externalIdFactory;
+    public final ExternalIdFactory externalIdFactory;
 
-    NpmCliDependencyFinder(final ExternalIdFactory externalIdFactory) {
+    public NpmCliDependencyFinder(final ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }
 

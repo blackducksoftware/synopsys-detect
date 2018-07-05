@@ -31,8 +31,6 @@ import java.util.Map;
 import org.codehaus.plexus.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
@@ -42,13 +40,11 @@ import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 
-@Component
 public class CpanListParser {
     private final Logger logger = LoggerFactory.getLogger(CpanListParser.class);
 
     private final ExternalIdFactory externalIdFactory;
 
-    @Autowired
     public CpanListParser(final ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }

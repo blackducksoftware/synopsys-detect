@@ -25,14 +25,11 @@ package com.blackducksoftware.integration.hub.detect.bomtool.cran;
 
 import java.util.List;
 
-import org.springframework.stereotype.Component;
-
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 
-@Component
 public class PackratPackager {
-    public ExternalIdFactory externalIdFactory;
+    private final ExternalIdFactory externalIdFactory;
 
     public PackratPackager(final ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
