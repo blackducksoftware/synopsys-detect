@@ -32,7 +32,6 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
@@ -41,7 +40,6 @@ import com.blackducksoftware.integration.hub.detect.bomtool.clang.PackageDetails
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.executor.CommandStringExecutor;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
-@Component
 public class Dpkg implements PkgMgr {
 
     private static final String PKG_MGR_NAME = "dpkg";

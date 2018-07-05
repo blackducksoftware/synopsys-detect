@@ -32,8 +32,6 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolSearchProvider;
 import com.blackducksoftware.integration.hub.detect.bomtool.search.report.SearchSummaryReporter;
@@ -50,7 +48,6 @@ import com.blackducksoftware.integration.hub.detect.search.BomToolFinder;
 import com.blackducksoftware.integration.hub.detect.search.BomToolFinderOptions;
 import com.blackducksoftware.integration.util.ExcludedIncludedFilter;
 
-@Component
 public class SearchManager {
     private final Logger logger = LoggerFactory.getLogger(SearchManager.class);
 
@@ -59,7 +56,6 @@ public class SearchManager {
     private final DetectPhoneHomeManager detectPhoneHomeManager;
     private final DetectConfigWrapper detectConfigWrapper;
 
-    @Autowired
     public SearchManager(final SearchSummaryReporter searchSummaryReporter, final BomToolSearchProvider bomToolSearchProvider, final DetectPhoneHomeManager detectPhoneHomeManager,
             final DetectConfigWrapper detectConfigWrapper) {
         this.searchSummaryReporter = searchSummaryReporter;

@@ -30,11 +30,9 @@ import java.util.Map;
 import org.codehaus.plexus.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode;
 
-@Component
 public class CpanListParser {
     private final Logger logger = LoggerFactory.getLogger(CpanListParser.class);
 

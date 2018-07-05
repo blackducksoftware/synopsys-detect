@@ -23,11 +23,6 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool.hex.parse
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
-
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph
 import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.Forge
@@ -36,10 +31,10 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
-
 import groovy.transform.TypeChecked
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
-@Component
 @TypeChecked
 class Rebar3TreeParser {
     private final Logger logger = LoggerFactory.getLogger(Rebar3TreeParser.class);
@@ -52,8 +47,12 @@ class Rebar3TreeParser {
     public static final String OUTER_LEVEL_PREFIX = ' '.multiply(3);
     public static final String PROJECT_IDENTIFIER = '(project app)';
 
-    @Autowired
-    ExternalIdFactory externalIdFactory;
+
+    private final ExternalIdFactory externalIdFactory;
+
+    public Rebar3TreeParser(final ExternalIdFactory externalIdFactory) {
+        this.externalIdFactory = externalIdFactory
+    }
 
     public RebarParseResult parseRebarTreeOutput(final List<String> dependencyTreeOutput, final String sourcePath) {
         MutableDependencyGraph graph = new MutableMapDependencyGraph();
@@ -64,7 +63,7 @@ class Rebar3TreeParser {
         Dependency previousDependency;
 
         try {
-            for (String line: dependencyTreeOutput) {
+            for (String line : dependencyTreeOutput) {
                 if (line.contains(HORIZONTAL_SEPARATOR_CHARACTER)) {
                     Dependency currentDependency = createDependencyFromLine(line);
 
@@ -82,7 +81,7 @@ class Rebar3TreeParser {
                     }
 
                     if (dependencyStack.size() == 0) {
-                        if ( isProject(line) ) {
+                        if (isProject(line)) {
                             projectName = currentDependency.name;
                             projectVersionName = currentDependency.version;
                         } else {
@@ -112,17 +111,15 @@ class Rebar3TreeParser {
         String nameVersionLine = reduceLineToNameVersion(line);
         String name = nameVersionLine.substring(0, nameVersionLine.lastIndexOf(HORIZONTAL_SEPARATOR_CHARACTER));
         String version = nameVersionLine.substring(nameVersionLine.lastIndexOf(HORIZONTAL_SEPARATOR_CHARACTER) + 1);
-        ExternalId externalId  = externalIdFactory.createNameVersionExternalId(Forge.HEX, name, version);
+        ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.HEX, name, version);
 
         return new Dependency(name, version, externalId);
     }
 
     private String reduceLineToNameVersion(String line) {
-        String[] ignoredSpecialCharacters = [
-            LAST_DEPENDENCY_CHARACTER,
-            NTH_DEPENDENCY_CHARACTER,
-            INNER_LEVEL_CHARACTER
-        ];
+        String[] ignoredSpecialCharacters = [LAST_DEPENDENCY_CHARACTER,
+                                             NTH_DEPENDENCY_CHARACTER,
+                                             INNER_LEVEL_CHARACTER];
         for (final String specialCharacter : ignoredSpecialCharacters) {
             line = line.replaceAll(specialCharacter, '');
         }
@@ -138,7 +135,7 @@ class Rebar3TreeParser {
 
     private int getDependencyLevelFromLine(String line) {
         int level = 0;
-        while(line.startsWith(INNER_LEVEL_PREFIX) || line.startsWith(OUTER_LEVEL_PREFIX)) {
+        while (line.startsWith(INNER_LEVEL_PREFIX) || line.startsWith(OUTER_LEVEL_PREFIX)) {
             line = line.substring(3);
             level++;
         }

@@ -25,7 +25,14 @@ package com.blackducksoftware.integration.hub.detect.codelocation;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
+
 public abstract class FileCodeLocationNameService extends CodeLocationNameService {
+
+    public FileCodeLocationNameService(final DetectFileFinder detectFileFinder) {
+        super(detectFileFinder);
+    }
+
     protected String shortenIfNeeded(final String pathPiece, final String projectName, final String projectVersionName, final String prefix, final String suffix, final String codeLocationType) {
         String codeLocationName = createCommonName(pathPiece, projectName, projectVersionName, prefix, suffix, codeLocationType);
 
@@ -61,7 +68,7 @@ public abstract class FileCodeLocationNameService extends CodeLocationNameServic
     }
 
     protected String cleanScanTargetPath(final String scanTargetPath, final String sourcePath) {
-        final String finalSourcePathPiece = detectFileFinder.extractFinalPieceFromPath(sourcePath);
+        final String finalSourcePathPiece = getDetectFileFinder().extractFinalPieceFromPath(sourcePath);
         String cleanedTargetPath = "";
         if (StringUtils.isNotBlank(scanTargetPath) && StringUtils.isNotBlank(finalSourcePathPiece)) {
             cleanedTargetPath = scanTargetPath.replace(sourcePath, finalSourcePathPiece);

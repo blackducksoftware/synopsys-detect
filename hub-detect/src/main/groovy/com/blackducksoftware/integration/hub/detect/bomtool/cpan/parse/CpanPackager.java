@@ -30,8 +30,6 @@ import java.util.Map;
 import org.codehaus.plexus.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
@@ -41,15 +39,16 @@ import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency;
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode;
 import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer;
 
-@Component
 public class CpanPackager {
     private final Logger logger = LoggerFactory.getLogger(CpanPackager.class);
 
-    @Autowired
-    private CpanListParser cpanListParser;
+    private final CpanListParser cpanListParser;
+    private final NameVersionNodeTransformer nameVersionNodeTransformer;
 
-    @Autowired
-    private NameVersionNodeTransformer nameVersionNodeTransformer;
+    public CpanPackager(final CpanListParser cpanListParser, final NameVersionNodeTransformer nameVersionNodeTransformer) {
+        this.cpanListParser = cpanListParser;
+        this.nameVersionNodeTransformer = nameVersionNodeTransformer;
+    }
 
     public DependencyGraph makeDependencyGraph(final List<String> cpanListText, final List<String> directDependenciesText) {
         Map<String, NameVersionNode> allModules = cpanListParser.parse(cpanListText);

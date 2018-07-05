@@ -33,8 +33,6 @@ import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
@@ -46,12 +44,10 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 
-@Component
 public class YarnLockExtractor {
     private final Logger logger = LoggerFactory.getLogger(YarnLockExtractor.class);
     public static final String OUTPUT_FILE = "detect_yarn_proj_dependencies.txt";
@@ -59,16 +55,13 @@ public class YarnLockExtractor {
 
     private final ExternalIdFactory externalIdFactory;
     private final YarnListParser yarnListParser;
-    private final DetectFileManager detectFileManager;
     private final ExecutableRunner executableRunner;
     private final DetectConfigWrapper detectConfigWrapper;
 
-    @Autowired
-    public YarnLockExtractor(final ExternalIdFactory externalIdFactory, final YarnListParser yarnListParser, final DetectFileManager detectFileManager, final ExecutableRunner executableRunner,
+    public YarnLockExtractor(final ExternalIdFactory externalIdFactory, final YarnListParser yarnListParser, final ExecutableRunner executableRunner,
             final DetectConfigWrapper detectConfigWrapper) {
         this.externalIdFactory = externalIdFactory;
         this.yarnListParser = yarnListParser;
-        this.detectFileManager = detectFileManager;
         this.executableRunner = executableRunner;
         this.detectConfigWrapper = detectConfigWrapper;
     }

@@ -37,8 +37,6 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.bdio.BdioReader;
 import com.blackducksoftware.integration.hub.bdio.BdioTransformer;
@@ -56,45 +54,37 @@ import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableArgumentBuilder;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 import com.blackducksoftware.integration.util.ResourceUtil;
 import com.google.gson.Gson;
 
-@Component
 public class DockerExtractor {
     public static final String TAR_FILENAME_PATTERN = "*.tar.gz";
     public static final String DEPENDENCIES_PATTERN = "*bdio.jsonld";
 
     private final Logger logger = LoggerFactory.getLogger(DockerExtractor.class);
 
-    @Autowired
-    protected DetectFileFinder detectFileFinder;
+    private final DetectFileFinder detectFileFinder;
+    private final DetectFileManager detectFileManager;
+    private final DockerProperties dockerProperties;
+    private final ExecutableRunner executableRunner;
+    private final BdioTransformer bdioTransformer;
+    private final ExternalIdFactory externalIdFactory;
+    private final Gson gson;
+    private final HubSignatureScanner hubSignatureScanner;
 
-    @Autowired
-    protected DetectFileManager detectFileManager;
-
-    @Autowired
-    DockerProperties dockerProperties;
-
-    @Autowired
-    ExecutableManager executableManager;
-
-    @Autowired
-    ExecutableRunner executableRunner;
-
-    @Autowired
-    BdioTransformer bdioTransformer;
-
-    @Autowired
-    ExternalIdFactory externalIdFactory;
-
-    @Autowired
-    Gson gson;
-
-    @Autowired
-    HubSignatureScanner hubSignatureScanner;
+    public DockerExtractor(final DetectFileFinder detectFileFinder, final DetectFileManager detectFileManager, final DockerProperties dockerProperties,
+            final ExecutableRunner executableRunner, final BdioTransformer bdioTransformer, final ExternalIdFactory externalIdFactory, final Gson gson, final HubSignatureScanner hubSignatureScanner) {
+        this.detectFileFinder = detectFileFinder;
+        this.detectFileManager = detectFileManager;
+        this.dockerProperties = dockerProperties;
+        this.executableRunner = executableRunner;
+        this.bdioTransformer = bdioTransformer;
+        this.externalIdFactory = externalIdFactory;
+        this.gson = gson;
+        this.hubSignatureScanner = hubSignatureScanner;
+    }
 
     public Extraction extract(final File directory, final ExtractionId extractionId, final File bashExe, final File dockerExe, final String image, final String tar, final DockerInspectorInfo dockerInspectorInfo) {
         try {

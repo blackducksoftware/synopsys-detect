@@ -29,8 +29,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtDependencyModule;
@@ -42,21 +40,16 @@ import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 
-@Component
 public class SbtResolutionCacheExtractor {
     private final Logger logger = LoggerFactory.getLogger(SbtResolutionCacheExtractor.class);
 
-    private final DetectFileManager detectFileManager;
     private final DetectFileFinder detectFileFinder;
     private final ExternalIdFactory externalIdFactory;
     private final DetectConfigWrapper detectConfigWrapper;
 
-    @Autowired
-    public SbtResolutionCacheExtractor(final DetectFileManager detectFileManager, final DetectFileFinder detectFileFinder, final ExternalIdFactory externalIdFactory,
+    public SbtResolutionCacheExtractor(final DetectFileFinder detectFileFinder, final ExternalIdFactory externalIdFactory,
             final DetectConfigWrapper detectConfigWrapper) {
-        this.detectFileManager = detectFileManager;
         this.detectFileFinder = detectFileFinder;
         this.externalIdFactory = externalIdFactory;
         this.detectConfigWrapper = detectConfigWrapper;

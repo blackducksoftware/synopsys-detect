@@ -35,10 +35,7 @@ import groovy.transform.TypeChecked
 import org.apache.commons.io.FileUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 
-@Component
 @TypeChecked
 class DepPackager {
     private final Logger logger = LoggerFactory.getLogger(DepPackager.class)
@@ -48,7 +45,6 @@ class DepPackager {
     private final ExternalIdFactory externalIdFactory
     private final DetectConfigWrapper detectConfigWrapper
 
-    @Autowired
     DepPackager(final ExecutableRunner executableRunner, final Gson gson, final ExternalIdFactory externalIdFactory, final DetectConfigWrapper detectConfigWrapper) {
         this.executableRunner = executableRunner
         this.gson = gson

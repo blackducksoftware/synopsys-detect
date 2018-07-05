@@ -25,13 +25,12 @@ import org.junit.Test
 import static org.junit.Assert.assertEquals
 
 class CondaListParserTest {
-    private final CondaListParser condaListParser = new CondaListParser()
+    private CondaListParser condaListParser
     private final TestUtil testUtil = new TestUtil()
 
     @Before
     public void init() {
-        condaListParser.gson = new GsonBuilder().setPrettyPrinting().create()
-        condaListParser.externalIdFactory = new ExternalIdFactory()
+        condaListParser = new CondaListParser(new GsonBuilder().setPrettyPrinting().create(), new ExternalIdFactory())
     }
 
     @Test

@@ -37,12 +37,9 @@ import com.google.gson.Gson
 import groovy.transform.TypeChecked
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 
 import java.nio.charset.StandardCharsets
 
-@Component
 @TypeChecked
 class NugetInspectorPackager {
     private final Logger logger = LoggerFactory.getLogger(NugetInspectorPackager.class)
@@ -53,7 +50,6 @@ class NugetInspectorPackager {
     private final NameVersionNodeTransformer nameVersionNodeTransformer
     private final ExternalIdFactory externalIdFactory
 
-    @Autowired
     NugetInspectorPackager(final DetectFileManager detectFileManager, final ExecutableRunner executableRunner, final Gson gson, final NameVersionNodeTransformer nameVersionNodeTransformer, final ExternalIdFactory externalIdFactory) {
         this.detectFileManager = detectFileManager
         this.executableRunner = executableRunner

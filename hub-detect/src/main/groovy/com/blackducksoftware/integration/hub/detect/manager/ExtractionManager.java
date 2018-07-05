@@ -29,8 +29,6 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.bomtool.result.ExceptionBomToolResult;
@@ -42,7 +40,6 @@ import com.blackducksoftware.integration.hub.detect.manager.result.extraction.Ex
 import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 
-@Component
 public class ExtractionManager {
     private final Logger logger = LoggerFactory.getLogger(DetectProjectManager.class);
 
@@ -50,7 +47,6 @@ public class ExtractionManager {
     private final ExtractionSummaryReporter extractionSummaryReporter;
     private final ExtractionReporter extractionReporter;
 
-    @Autowired
     public ExtractionManager(final PreparationSummaryReporter preparationSummaryReporter, final ExtractionSummaryReporter extractionSummaryReporter,
             final ExtractionReporter extractionReporter) {
         this.preparationSummaryReporter = preparationSummaryReporter;

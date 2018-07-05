@@ -32,14 +32,11 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 
-@Component
 public class DetectFileManager {
     private final Logger logger = LoggerFactory.getLogger(DetectFileManager.class);
 
@@ -48,9 +45,7 @@ public class DetectFileManager {
     private final String sharedUUID = "shared";
     private File sharedDirectory = null;
     private final Map<ExtractionId, File> outputDirectories = new HashMap<>();
-    //private final Map<ExtractionContext, File> outputDirectories = new HashMap<>();
 
-    @Autowired
     public DetectFileManager(final DetectConfigWrapper detectConfigWrapper) {
         this.detectConfigWrapper = detectConfigWrapper;
     }

@@ -30,8 +30,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.bdio.SimpleBdioFactory;
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
@@ -47,27 +45,22 @@ import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendly
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.model.BdioCodeLocation;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
 
-@Component
 public class DetectBdioManager {
     private final Logger logger = LoggerFactory.getLogger(DetectBdioManager.class);
 
     private final DetectInfo detectInfo;
     private final SimpleBdioFactory simpleBdioFactory;
     private final IntegrationEscapeUtil integrationEscapeUtil;
-    private final DetectFileFinder detectFileFinder;
     private final CodeLocationNameManager codeLocationNameManager;
     private final DetectConfigWrapper detectConfigWrapper;
 
-    @Autowired
-    public DetectBdioManager(final DetectInfo detectInfo, final SimpleBdioFactory simpleBdioFactory, final IntegrationEscapeUtil integrationEscapeUtil, final DetectFileFinder detectFileFinder,
+    public DetectBdioManager(final DetectInfo detectInfo, final SimpleBdioFactory simpleBdioFactory, final IntegrationEscapeUtil integrationEscapeUtil,
             final CodeLocationNameManager codeLocationNameManager, final DetectConfigWrapper detectConfigWrapper) {
         this.detectInfo = detectInfo;
         this.simpleBdioFactory = simpleBdioFactory;
         this.integrationEscapeUtil = integrationEscapeUtil;
-        this.detectFileFinder = detectFileFinder;
         this.codeLocationNameManager = codeLocationNameManager;
         this.detectConfigWrapper = detectConfigWrapper;
     }

@@ -23,10 +23,13 @@
  */
 package com.blackducksoftware.integration.hub.detect.codelocation;
 
-import org.springframework.stereotype.Component;
+import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
-@Component
 public class ScanCodeLocationNameService extends FileCodeLocationNameService {
+    public ScanCodeLocationNameService(final DetectFileFinder detectFileFinder) {
+        super(detectFileFinder);
+    }
+
     public String createCodeLocationName(final String sourcePath, final String scanTargetPath, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
         String pathPiece = cleanScanTargetPath(scanTargetPath, sourcePath);
 

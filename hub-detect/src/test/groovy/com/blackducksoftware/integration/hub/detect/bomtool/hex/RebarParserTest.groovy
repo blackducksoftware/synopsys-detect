@@ -1,12 +1,5 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.hex
 
-import static com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil.assertGraph
-import static org.junit.Assert.*
-
-import org.junit.BeforeClass
-import org.junit.Test
-import org.springframework.test.util.ReflectionTestUtils
-
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.Forge
@@ -17,6 +10,12 @@ import com.blackducksoftware.integration.hub.detect.bomtool.hex.parse.Rebar3Tree
 import com.blackducksoftware.integration.hub.detect.bomtool.hex.parse.RebarParseResult
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
+import org.junit.BeforeClass
+import org.junit.Test
+import org.springframework.test.util.ReflectionTestUtils
+
+import static com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil.assertGraph
+import static org.junit.Assert.*
 
 class RebarParserTest {
 
@@ -26,9 +25,8 @@ class RebarParserTest {
 
     @BeforeClass
     public static void setup() {
-        rebar3TreeParser = new Rebar3TreeParser()
         externalIdFactory = new ExternalIdFactory()
-        rebar3TreeParser.externalIdFactory = externalIdFactory
+        rebar3TreeParser = new Rebar3TreeParser(externalIdFactory)
         testUtil = new TestUtil()
     }
 
@@ -75,7 +73,7 @@ class RebarParserTest {
     public void testCreateDependencyFromLine() {
         String expectedName = 'cf'
         String expectedVersion = '0.2.2'
-        ExternalId expectedExternalId  = externalIdFactory.createNameVersionExternalId(Forge.HEX, expectedName, expectedVersion)
+        ExternalId expectedExternalId = externalIdFactory.createNameVersionExternalId(Forge.HEX, expectedName, expectedVersion)
 
         Dependency actualDependency = rebar3TreeParser.createDependencyFromLine('   \u2502  \u2502  \u2514\u2500 cf\u25000.2.2 (hex package)')
 

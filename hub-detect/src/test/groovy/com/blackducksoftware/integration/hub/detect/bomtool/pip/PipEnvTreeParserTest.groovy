@@ -1,15 +1,14 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.pip
 
-import static org.junit.Assert.*;
-
-import org.junit.Before
-import org.junit.Test
-
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.parse.PipenvGraphParser
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
+import org.junit.Before
+import org.junit.Test
+
+import static org.junit.Assert.*
 
 class PipEnvTreeParserTest {
     private PipenvGraphParser parser
@@ -25,8 +24,7 @@ class PipEnvTreeParserTest {
 
     @Before
     void init() {
-        parser = new PipenvGraphParser()
-        parser.externalIdFactory = new ExternalIdFactory()
+        parser = new PipenvGraphParser(new ExternalIdFactory())
     }
 
     @Test

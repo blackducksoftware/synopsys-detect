@@ -31,11 +31,9 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.extraction.model.BomToolEvaluation;
 
-@Component
 public class SearchSummaryReporter {
     private final Logger logger = LoggerFactory.getLogger(SearchSummaryReporter.class);
 
@@ -87,7 +85,7 @@ public class SearchSummaryReporter {
                     if (result.applicable != null) {
                         toPrint.add("DID NOT APPLY: " + bomToolName + " - " + result.applicable.toDescription());
                     } else if (result.searchable != null) {
-                        toPrint.add("DID NOT APPLY: " + bomToolName + " - "  + result.searchable.toDescription());
+                        toPrint.add("DID NOT APPLY: " + bomToolName + " - " + result.searchable.toDescription());
                     } else {
                         toPrint.add("DID NOT APPLY: " + bomToolName + " - Unknown");
                     }

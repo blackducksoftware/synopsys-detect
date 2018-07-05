@@ -32,8 +32,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.parse.NpmCliDependencyFinder;
@@ -45,7 +43,6 @@ import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 
-@Component
 public class NpmCliExtractor {
     private final Logger logger = LoggerFactory.getLogger(NpmCliExtractor.class);
 
@@ -57,7 +54,6 @@ public class NpmCliExtractor {
     private final NpmCliDependencyFinder npmCliDependencyFinder;
     private final DetectConfigWrapper detectConfigWrapper;
 
-    @Autowired
     public NpmCliExtractor(final ExecutableRunner executableRunner, final DetectFileManager detectFileManager, final NpmCliDependencyFinder npmCliDependencyFinder, final DetectConfigWrapper detectConfigWrapper) {
         this.executableRunner = executableRunner;
         this.detectFileManager = detectFileManager;

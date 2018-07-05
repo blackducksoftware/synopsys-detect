@@ -33,14 +33,17 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
+import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
-@Component
 public class BomCodeLocationNameService extends CodeLocationNameService {
     private final Logger logger = LoggerFactory.getLogger(BomCodeLocationNameService.class);
+
+    public BomCodeLocationNameService(final DetectFileFinder detectFileFinder) {
+        super(detectFileFinder);
+    }
 
     public String createCodeLocationName(final String detectSourcePath, final String sourcePath, final ExternalId externalId, final BomToolGroupType bomToolType, final String prefix, final String suffix) {
         //path piece

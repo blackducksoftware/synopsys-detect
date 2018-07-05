@@ -31,8 +31,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.maven.parse.MavenCodeLocationPackager;
 import com.blackducksoftware.integration.hub.detect.bomtool.maven.parse.MavenParseResult;
@@ -40,22 +38,17 @@ import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWr
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 
-@Component
 public class MavenCliExtractor {
     private final ExecutableRunner executableRunner;
-    private final DetectFileFinder detectFileFinder;
     private final MavenCodeLocationPackager mavenCodeLocationPackager;
     private final DetectConfigWrapper detectConfigWrapper;
 
-    @Autowired
-    public MavenCliExtractor(final ExecutableRunner executableRunner, final DetectFileFinder detectFileFinder, final MavenCodeLocationPackager mavenCodeLocationPackager, final DetectConfigWrapper detectConfigWrapper) {
+    public MavenCliExtractor(final ExecutableRunner executableRunner, final MavenCodeLocationPackager mavenCodeLocationPackager, final DetectConfigWrapper detectConfigWrapper) {
         this.executableRunner = executableRunner;
-        this.detectFileFinder = detectFileFinder;
         this.mavenCodeLocationPackager = mavenCodeLocationPackager;
         this.detectConfigWrapper = detectConfigWrapper;
     }

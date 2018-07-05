@@ -30,19 +30,15 @@ import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
 
-@Component
 public class ExecutableRunner {
     private final Logger logger = LoggerFactory.getLogger(ExecutableRunner.class);
 
     private final DetectConfigWrapper detectConfigWrapper;
 
-    @Autowired
     public ExecutableRunner(final DetectConfigWrapper detectConfigWrapper) {
         this.detectConfigWrapper = detectConfigWrapper;
     }

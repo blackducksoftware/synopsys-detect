@@ -33,8 +33,6 @@ import java.util.Stack;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph;
@@ -44,7 +42,6 @@ import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFac
 import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 
-@Component
 public class GradleReportParser {
     private final Logger logger = LoggerFactory.getLogger(GradleReportParser.class);
 
@@ -61,8 +58,11 @@ public class GradleReportParser {
     private int previousTreeLevel = 0;
     private GradleReportConfigurationParser gradleReportConfigurationParser;
 
-    @Autowired
-    private ExternalIdFactory externalIdFactory;
+    private final ExternalIdFactory externalIdFactory;
+
+    public GradleReportParser(final ExternalIdFactory externalIdFactory) {
+        this.externalIdFactory = externalIdFactory;
+    }
 
     public GradleParseResult parseDependencies(final InputStream dependenciesInputStream) throws IOException {
         clearState();

@@ -28,19 +28,15 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.log.IntLogger;
 
-import groovy.transform.TypeChecked;
-
-@Component
-@TypeChecked
 public class DetectSummary {
-    @Autowired
-    private List<SummaryResultReporter> summaryResultReporters;
+    private final List<SummaryResultReporter> summaryResultReporters;
+
+    public DetectSummary(final List<SummaryResultReporter> summaryResultReporters) {
+        this.summaryResultReporters = summaryResultReporters;
+    }
 
     public void logResults(final IntLogger logger, final ExitCodeType exitCodeType) {
         final List<DetectSummaryResult> detectSummaryResults = new ArrayList<>();
