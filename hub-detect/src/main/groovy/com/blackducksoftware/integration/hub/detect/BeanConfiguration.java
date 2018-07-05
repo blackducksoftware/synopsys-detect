@@ -397,7 +397,7 @@ public class BeanConfiguration {
 
     @Bean
     public HubManager hubManager() {
-        return new HubManager(bdioUploader(), hubSignatureScanner(), policyChecker(), hubServiceWrapper(), detectConfigWrapper());
+        return new HubManager(bdioUploader(), codeLocationNameManager(), detectConfigWrapper(), hubServiceWrapper(), hubSignatureScanner(), policyChecker());
     }
 
     @Bean
