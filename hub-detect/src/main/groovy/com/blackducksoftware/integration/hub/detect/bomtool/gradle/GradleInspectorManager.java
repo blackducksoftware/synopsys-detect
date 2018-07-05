@@ -42,10 +42,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
-import com.blackducksoftware.integration.hub.detect.evaluation.BomToolEnvironment;
-import com.blackducksoftware.integration.hub.detect.evaluation.BomToolException;
+import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.rest.connection.UnauthenticatedRestConnection;
 import com.blackducksoftware.integration.rest.request.Request;
@@ -93,7 +93,7 @@ public class GradleInspectorManager {
     }
 
     private String resolveInspectorVersion() {
-        String gradleInspectorVersion = detectConfigWrapper.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_VERSION);
+        final String gradleInspectorVersion = detectConfigWrapper.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_VERSION);
         if ("latest".equalsIgnoreCase(gradleInspectorVersion)) {
             try {
                 Document xmlDocument = null;
@@ -147,7 +147,7 @@ public class GradleInspectorManager {
             logger.debug(e.getMessage());
         }
 
-        String gradleInspectorRepositoryUrl = detectConfigWrapper.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_REPOSITORY_URL);
+        final String gradleInspectorRepositoryUrl = detectConfigWrapper.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_REPOSITORY_URL);
         if (StringUtils.isNotBlank(gradleInspectorRepositoryUrl)) {
             model.put("customRepositoryUrl", gradleInspectorRepositoryUrl);
         }

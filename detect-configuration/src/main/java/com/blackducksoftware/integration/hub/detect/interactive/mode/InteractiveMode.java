@@ -121,7 +121,7 @@ public abstract class InteractiveMode {
         return properties;
     }
 
-    public boolean hasValueForField(final String field) {
+    public boolean hasValueForField(final DetectProperty field) {
         return propertyToOptionMap.containsKey(field);
     }
 
@@ -169,7 +169,7 @@ public abstract class InteractiveMode {
     public void printOptions() {
         for (final InteractiveOption interactiveOption : propertyToOptionMap.values()) {
             String fieldValue = interactiveOption.getInteractiveValue();
-            String propertyName = interactiveOption.getDetectProperty().getPropertyName().toLowerCase();
+            final String propertyName = interactiveOption.getDetectProperty().getPropertyName().toLowerCase();
             if (propertyName.contains("password") || propertyName.contains("api.token")) {
                 fieldValue = "";
                 for (int i = 0; i < interactiveOption.getInteractiveValue().length(); i++) {

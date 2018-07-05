@@ -40,103 +40,100 @@ import com.blackducksoftware.integration.hub.bdio.BdioTransformer;
 import com.blackducksoftware.integration.hub.bdio.SimpleBdioFactory;
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolSearchProvider;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.Apk;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.CLangExtractor;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.CommandStringExecutor;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.DependencyFileManager;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.executor.CommandStringExecutor;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.pkgmgr.Apk;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.pkgmgr.Dpkg;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.pkgmgr.PkgMgr;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.pkgmgr.Rpm;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.Dpkg;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.PkgMgr;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.Rpm;
 import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.PodlockExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.parse.PodlockParser;
+import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.PodlockParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.conda.CondaCliExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.conda.parse.CondaListParser;
+import com.blackducksoftware.integration.hub.detect.bomtool.conda.CondaListParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.cpan.CpanCliExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.cpan.parse.CpanListParser;
-import com.blackducksoftware.integration.hub.detect.bomtool.cpan.parse.CpanPackager;
+import com.blackducksoftware.integration.hub.detect.bomtool.cpan.CpanListParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.cran.PackratLockExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.cran.parse.PackratPackager;
+import com.blackducksoftware.integration.hub.detect.bomtool.cran.PackratPackager;
 import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerInspectorManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.docker.DockerProperties;
-import com.blackducksoftware.integration.hub.detect.bomtool.go.extraction.GoDepExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.go.extraction.GoDepsExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.go.extraction.GoInspectorManager;
-import com.blackducksoftware.integration.hub.detect.bomtool.go.extraction.GoVndrExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.go.parse.DepPackager;
+import com.blackducksoftware.integration.hub.detect.bomtool.go.DepPackager;
+import com.blackducksoftware.integration.hub.detect.bomtool.go.GoDepExtractor;
+import com.blackducksoftware.integration.hub.detect.bomtool.go.GoInspectorManager;
+import com.blackducksoftware.integration.hub.detect.bomtool.go.GoVndrExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleInspectorExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleInspectorManager;
-import com.blackducksoftware.integration.hub.detect.bomtool.gradle.parse.GradleReportParser;
+import com.blackducksoftware.integration.hub.detect.bomtool.gradle.GradleReportParser;
+import com.blackducksoftware.integration.hub.detect.bomtool.hex.Rebar3TreeParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.hex.RebarExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.hex.parse.Rebar3TreeParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.maven.MavenCliExtractor;
+import com.blackducksoftware.integration.hub.detect.bomtool.maven.MavenCodeLocationPackager;
 import com.blackducksoftware.integration.hub.detect.bomtool.maven.MavenExecutableFinder;
-import com.blackducksoftware.integration.hub.detect.bomtool.maven.parse.MavenCodeLocationPackager;
+import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmCliDependencyFinder;
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmCliExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmLockfileExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.npm.parse.NpmCliDependencyFinder;
-import com.blackducksoftware.integration.hub.detect.bomtool.npm.parse.NpmLockfilePackager;
+import com.blackducksoftware.integration.hub.detect.bomtool.npm.NpmLockfilePackager;
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorManager;
-import com.blackducksoftware.integration.hub.detect.bomtool.nuget.parse.NugetInspectorPackager;
+import com.blackducksoftware.integration.hub.detect.bomtool.nuget.NugetInspectorPackager;
 import com.blackducksoftware.integration.hub.detect.bomtool.packagist.ComposerLockExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.packagist.parse.PackagistParser;
+import com.blackducksoftware.integration.hub.detect.bomtool.packagist.PackagistParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.pear.PearCliExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.pear.parse.PearDependencyFinder;
+import com.blackducksoftware.integration.hub.detect.bomtool.pear.PearDependencyFinder;
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.PipInspectorExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.PipInspectorManager;
+import com.blackducksoftware.integration.hub.detect.bomtool.pip.PipInspectorTreeParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.PipenvExtractor;
+import com.blackducksoftware.integration.hub.detect.bomtool.pip.PipenvGraphParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.pip.PythonExecutableFinder;
-import com.blackducksoftware.integration.hub.detect.bomtool.pip.parse.PipInspectorTreeParser;
-import com.blackducksoftware.integration.hub.detect.bomtool.pip.parse.PipenvGraphParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.rubygems.GemlockExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.sbt.SbtResolutionCacheExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.search.report.ExtractionReporter;
-import com.blackducksoftware.integration.hub.detect.bomtool.search.report.ExtractionSummaryReporter;
-import com.blackducksoftware.integration.hub.detect.bomtool.search.report.PreparationSummaryReporter;
-import com.blackducksoftware.integration.hub.detect.bomtool.search.report.SearchSummaryReporter;
+import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnListParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.yarn.YarnLockExtractor;
-import com.blackducksoftware.integration.hub.detect.bomtool.yarn.parse.YarnListParser;
-import com.blackducksoftware.integration.hub.detect.codelocation.BomCodeLocationNameService;
-import com.blackducksoftware.integration.hub.detect.codelocation.DockerCodeLocationNameService;
-import com.blackducksoftware.integration.hub.detect.codelocation.DockerScanCodeLocationNameService;
-import com.blackducksoftware.integration.hub.detect.codelocation.ScanCodeLocationNameService;
 import com.blackducksoftware.integration.hub.detect.configuration.AdditionalPropertyConfig;
 import com.blackducksoftware.integration.hub.detect.configuration.ConfigurationManager;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
-import com.blackducksoftware.integration.hub.detect.extraction.model.StandardExecutableFinder;
 import com.blackducksoftware.integration.hub.detect.factory.BomToolFactory;
 import com.blackducksoftware.integration.hub.detect.help.ArgumentStateParser;
 import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
 import com.blackducksoftware.integration.hub.detect.help.html.HelpHtmlWriter;
 import com.blackducksoftware.integration.hub.detect.help.print.HelpPrinter;
-import com.blackducksoftware.integration.hub.detect.hub.BdioUploader;
-import com.blackducksoftware.integration.hub.detect.hub.HubManager;
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper;
-import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner;
-import com.blackducksoftware.integration.hub.detect.hub.OfflineScanner;
-import com.blackducksoftware.integration.hub.detect.hub.PolicyChecker;
 import com.blackducksoftware.integration.hub.detect.interactive.InteractiveManager;
 import com.blackducksoftware.integration.hub.detect.interactive.mode.DefaultInteractiveMode;
-import com.blackducksoftware.integration.hub.detect.manager.CodeLocationNameManager;
-import com.blackducksoftware.integration.hub.detect.manager.DetectBdioManager;
-import com.blackducksoftware.integration.hub.detect.manager.DetectCodeLocationManager;
-import com.blackducksoftware.integration.hub.detect.manager.DetectPhoneHomeManager;
-import com.blackducksoftware.integration.hub.detect.manager.DetectProjectManager;
-import com.blackducksoftware.integration.hub.detect.manager.ExtractionManager;
-import com.blackducksoftware.integration.hub.detect.manager.SearchManager;
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer;
-import com.blackducksoftware.integration.hub.detect.project.BomToolProjectInfoDecider;
-import com.blackducksoftware.integration.hub.detect.summary.DetectSummary;
-import com.blackducksoftware.integration.hub.detect.summary.SummaryResultReporter;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.TildeInPathResolver;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
+import com.blackducksoftware.integration.hub.detect.workflow.DetectProjectManager;
+import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.BomCodeLocationNameService;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameManager;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocationManager;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DockerCodeLocationNameService;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DockerScanCodeLocationNameService;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.ScanCodeLocationNameService;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionManager;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionReporter;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.ExtractionSummaryReporter;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.PreparationSummaryReporter;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder;
+import com.blackducksoftware.integration.hub.detect.workflow.hub.BdioUploader;
+import com.blackducksoftware.integration.hub.detect.workflow.hub.HubManager;
+import com.blackducksoftware.integration.hub.detect.workflow.hub.HubSignatureScanner;
+import com.blackducksoftware.integration.hub.detect.workflow.hub.OfflineScanner;
+import com.blackducksoftware.integration.hub.detect.workflow.hub.PolicyChecker;
+import com.blackducksoftware.integration.hub.detect.workflow.project.BdioManager;
+import com.blackducksoftware.integration.hub.detect.workflow.project.BomToolNameVersionDecider;
+import com.blackducksoftware.integration.hub.detect.workflow.search.SearchManager;
+import com.blackducksoftware.integration.hub.detect.workflow.search.SearchSummaryReporter;
+import com.blackducksoftware.integration.hub.detect.workflow.search.rules.BomToolSearchProvider;
+import com.blackducksoftware.integration.hub.detect.workflow.summary.DetectSummaryManager;
+import com.blackducksoftware.integration.hub.detect.workflow.summary.StatusSummaryProvider;
 import com.blackducksoftware.integration.util.IntegrationEscapeUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -145,7 +142,6 @@ import freemarker.template.Configuration;
 
 @org.springframework.context.annotation.Configuration
 public class BeanConfiguration {
-
     private final ConfigurableEnvironment configurableEnvironment;
 
     @Autowired
@@ -199,7 +195,7 @@ public class BeanConfiguration {
 
     @Bean
     public DetectInfo detectInfo() {
-        return new DetectInfo(gson());
+        return new DetectInfo();
     }
 
     @Bean
@@ -308,16 +304,16 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public DetectPhoneHomeManager detectPhoneHomeManager() {
-        return new DetectPhoneHomeManager(detectInfo(), gson(), additionalPropertyConfig());
+    public PhoneHomeManager phoneHomeManager() {
+        return new PhoneHomeManager(detectInfo(), gson(), additionalPropertyConfig());
     }
 
     @Bean
     public BomToolFactory bomToolFactory() throws ParserConfigurationException {
-        return new BomToolFactory(podlockExtractor(), condaCliExtractor(), cpanCliExtractor(), packratLockExtractor(), dockerExtractor(), goVndrExtractor(), goDepsExtractor(), goDepExtractor(), gradleInspectorExtractor(), rebarExtractor(),
-                mavenCliExtractor(), npmCliExtractor(), npmLockfileExtractor(), nugetInspectorExtractor(), composerLockExtractor(), pearCliExtractor(), pipenvExtractor(), pipInspectorExtractor(), gemlockExtractor(),
-                sbtResolutionCacheExtractor(), yarnLockExtractor(), detectFileFinder(), standardExecutableFinder(), dockerInspectorManager(), pipInspectorManager(), goInspectorManager(), nugetInspectorManager(), pythonExecutableFinder(),
-                gradleExecutableFinder(), gradleInspectorManager(), mavenExecutableFinder(), npmExecutableFinder(), cLangExtractor(), detectConfigWrapper());
+        return new BomToolFactory(detectConfigWrapper(), detectFileFinder(), standardExecutableFinder(), cLangExtractor(), composerLockExtractor(), condaCliExtractor(), cpanCliExtractor(), dockerExtractor(), dockerInspectorManager(),
+                gemlockExtractor(), goDepExtractor(), goInspectorManager(), goVndrExtractor(), gradleExecutableFinder(), gradleInspectorExtractor(), gradleInspectorManager(), mavenCliExtractor(), mavenExecutableFinder(), npmCliExtractor(),
+                npmExecutableFinder(), npmLockfileExtractor(), nugetInspectorExtractor(), nugetInspectorManager(), packratLockExtractor(), pearCliExtractor(), pipInspectorExtractor(), pipInspectorManager(), pipenvExtractor(),
+                podlockExtractor(), pythonExecutableFinder(), rebarExtractor(), sbtResolutionCacheExtractor(), yarnLockExtractor());
     }
 
     @Bean
@@ -327,7 +323,7 @@ public class BeanConfiguration {
 
     @Bean
     public SearchManager searchManager() throws ParserConfigurationException {
-        return new SearchManager(searchSummaryReporter(), bomToolSearchProvider(), detectPhoneHomeManager(), detectConfigWrapper());
+        return new SearchManager(searchSummaryReporter(), bomToolSearchProvider(), phoneHomeManager(), detectConfigWrapper());
     }
 
     @Bean
@@ -347,7 +343,7 @@ public class BeanConfiguration {
 
     @Bean
     public ExtractionManager extractionManager() {
-        return new ExtractionManager(preparationSummaryReporter(), extractionSummaryReporter(), extractionReporter());
+        return new ExtractionManager(preparationSummaryReporter(), extractionReporter());
     }
 
     @Bean
@@ -356,18 +352,18 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public DetectBdioManager detectBdioManager() {
-        return new DetectBdioManager(detectInfo(), simpleBdioFactory(), integrationEscapeUtil(), codeLocationNameManager(), detectConfigWrapper());
+    public BdioManager bdioManager() {
+        return new BdioManager(detectInfo(), simpleBdioFactory(), integrationEscapeUtil(), codeLocationNameManager(), detectConfigWrapper());
     }
 
     @Bean
-    public BomToolProjectInfoDecider bomToolProjectInfoDecider() {
-        return new BomToolProjectInfoDecider();
+    public BomToolNameVersionDecider bomToolNameVersionDecider() {
+        return new BomToolNameVersionDecider();
     }
 
     @Bean
     public DetectProjectManager detectProjectManager() throws ParserConfigurationException {
-        return new DetectProjectManager(searchManager(), extractionManager(), detectCodeLocationManager(), detectBdioManager(), extractionSummaryReporter(), bomToolProjectInfoDecider(), detectConfigWrapper());
+        return new DetectProjectManager(searchManager(), extractionManager(), detectCodeLocationManager(), bdioManager(), extractionSummaryReporter(), bomToolNameVersionDecider(), detectConfigWrapper());
     }
 
     @Bean
@@ -381,17 +377,12 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public DetectSummary detectSummary() throws ParserConfigurationException {
-        final List<SummaryResultReporter> summaryResultReporters = new ArrayList<>();
-        summaryResultReporters.add(detectProjectManager());
-        summaryResultReporters.add(hubSignatureScanner());
+    public DetectSummaryManager statusSummary() throws ParserConfigurationException {
+        final List<StatusSummaryProvider> statusSummaryProviders = new ArrayList<>();
+        statusSummaryProviders.add(detectProjectManager());
+        statusSummaryProviders.add(hubSignatureScanner());
 
-        return new DetectSummary(summaryResultReporters);
-    }
-
-    @Bean
-    public NameVersionNodeTransformer nameVersionNodeTransformer() {
-        return new NameVersionNodeTransformer(externalIdFactory());
+        return new DetectSummaryManager(statusSummaryProviders);
     }
 
     @Bean
@@ -411,7 +402,7 @@ public class BeanConfiguration {
 
     @Bean
     public StandardExecutableFinder standardExecutableFinder() {
-        return new StandardExecutableFinder(detectFileManager(), executableManager(), detectConfigWrapper());
+        return new StandardExecutableFinder(executableManager(), detectConfigWrapper());
     }
 
     @Bean
@@ -471,17 +462,12 @@ public class BeanConfiguration {
 
     @Bean
     public CpanListParser cpanListParser() {
-        return new CpanListParser();
-    }
-
-    @Bean
-    public CpanPackager cpanPackager() {
-        return new CpanPackager(cpanListParser(), nameVersionNodeTransformer());
+        return new CpanListParser(externalIdFactory());
     }
 
     @Bean
     public CpanCliExtractor cpanCliExtractor() {
-        return new CpanCliExtractor(cpanPackager(), externalIdFactory(), executableRunner());
+        return new CpanCliExtractor(cpanListParser(), externalIdFactory(), executableRunner());
     }
 
     @Bean
@@ -510,11 +496,6 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public GoDepsExtractor goDepsExtractor() {
-        return new GoDepsExtractor(gson(), externalIdFactory());
-    }
-
-    @Bean
     public GoDepExtractor goDepExtractor() {
         return new GoDepExtractor(depPackager(), externalIdFactory());
     }
@@ -531,7 +512,7 @@ public class BeanConfiguration {
 
     @Bean
     public DepPackager depPackager() {
-        return new DepPackager(executableRunner(), gson(), externalIdFactory(), detectConfigWrapper());
+        return new DepPackager(executableRunner(), externalIdFactory(), detectConfigWrapper());
     }
 
     @Bean
@@ -606,7 +587,7 @@ public class BeanConfiguration {
 
     @Bean
     public NugetInspectorPackager nugetInspectorPackager() {
-        return new NugetInspectorPackager(detectFileManager(), executableRunner(), gson(), nameVersionNodeTransformer(), externalIdFactory());
+        return new NugetInspectorPackager(detectFileManager(), executableRunner(), gson(), externalIdFactory());
     }
 
     @Bean

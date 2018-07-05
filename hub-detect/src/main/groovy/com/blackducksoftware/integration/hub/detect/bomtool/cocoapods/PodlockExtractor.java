@@ -35,10 +35,10 @@ import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
-import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.parse.PodlockParser;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
-import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
-import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
 public class PodlockExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -50,7 +50,7 @@ public class PodlockExtractor {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public Extraction extract(final File directory, final File podlock) {
+    public Extraction extract(final BomToolType bomToolType, final File directory, final File podlock) {
         String podLockText;
         try {
             logger.trace(String.format("Reading from the pod lock file %s", podlock.getAbsolutePath()));
@@ -71,7 +71,7 @@ public class PodlockExtractor {
 
         final ExternalId externalId = externalIdFactory.createPathExternalId(Forge.COCOAPODS, directory.toString());
 
-        final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolGroupType.COCOAPODS, directory.toString(), externalId, dependencyGraph).build();
+        final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolGroupType.COCOAPODS, bomToolType, directory.toString(), externalId, dependencyGraph).build();
 
         return new Extraction.Builder().success(codeLocation).build();
     }

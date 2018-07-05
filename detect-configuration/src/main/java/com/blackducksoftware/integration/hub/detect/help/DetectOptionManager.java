@@ -63,9 +63,9 @@ public class DetectOptionManager {
     public void init() {
         final Map<DetectProperty, DetectOption> detectOptionsMap = new HashMap<>();
 
-        Map<DetectProperty, Object> propertyMap = detectConfigWrapper.getPropertyMap();
+        final Map<DetectProperty, Object> propertyMap = detectConfigWrapper.getPropertyMap();
         if (null != propertyMap && !propertyMap.isEmpty()) {
-            for (Map.Entry<DetectProperty, Object> propertyEntry : propertyMap.entrySet()) {
+            for (final Map.Entry<DetectProperty, Object> propertyEntry : propertyMap.entrySet()) {
                 final DetectOption option = processField(propertyEntry.getKey(), detectConfigWrapper.getPropertyValueAsString(propertyEntry.getKey()));
                 if (option != null) {
                     if (!detectOptionsMap.containsKey(propertyEntry.getKey())) {
@@ -87,7 +87,6 @@ public class DetectOptionManager {
     }
 
     public void postInit() throws IllegalArgumentException, SecurityException {
-        Map<DetectProperty, Object> propertyMap = detectConfigWrapper.getPropertyMap();
         for (final DetectOption option : detectOptions) {
             String fieldValue = option.getPostInitValue();
             if (StringUtils.isBlank(fieldValue)) {
@@ -120,22 +119,9 @@ public class DetectOptionManager {
         }
     }
 
-    private String getStringValue(final Object obj, final Field field) throws IllegalAccessException {
-        final Object rawFieldValue = field.get(obj);
-        String fieldValue = "";
-        if (field.getType().isArray()) {
-            fieldValue = String.join(", ", (String[]) rawFieldValue);
-        } else {
-            if (rawFieldValue != null) {
-                fieldValue = rawFieldValue.toString();
-            }
-        }
-        return fieldValue;
-    }
-
-    private DetectOption processField(final DetectProperty detectProperty, String currentValue) {
+    private DetectOption processField(final DetectProperty detectProperty, final String currentValue) {
         try {
-            Field field = DetectProperty.class.getField(detectProperty.name());
+            final Field field = DetectProperty.class.getField(detectProperty.name());
 
             String defaultValue = "";
             if (null != detectProperty.getDefaultValue()) {
@@ -217,7 +203,7 @@ public class DetectOptionManager {
         final List<DetectOption> unacceptableDetectOptions = new ArrayList<>();
         for (final DetectOption option : detectOptions) {
             if (option.isStrictAcceptableValues()) {
-                DetectOption.OptionValidationResult validationResult = option.isAcceptableValue(option.getResolvedValue());
+                final DetectOption.OptionValidationResult validationResult = option.isAcceptableValue(option.getResolvedValue());
                 if (!validationResult.isValid()) {
                     unacceptableDetectOptions.add(option);
                 }

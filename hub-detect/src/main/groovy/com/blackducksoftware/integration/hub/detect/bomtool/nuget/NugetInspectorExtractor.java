@@ -38,22 +38,23 @@ import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphCombiner;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
-import com.blackducksoftware.integration.hub.detect.bomtool.nuget.parse.NugetInspectorPackager;
-import com.blackducksoftware.integration.hub.detect.bomtool.nuget.parse.NugetParseResult;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
-import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
 public class NugetInspectorExtractor {
-    private static final String INSPECTOR_OUTPUT_PATTERN = "*_inspection.json";
+    public static final String INSPECTOR_OUTPUT_PATTERN = "*_inspection.json";
+
     private final Logger logger = LoggerFactory.getLogger(NugetInspectorExtractor.class);
+
     private final DetectFileManager detectFileManager;
     private final NugetInspectorPackager nugetInspectorPackager;
     private final ExecutableRunner executableRunner;
@@ -69,31 +70,29 @@ public class NugetInspectorExtractor {
         this.detectConfigWrapper = detectConfigWrapper;
     }
 
-    public Extraction extract(final File directory, final String inspectorExe, final ExtractionId extractionId) {
-
+    public Extraction extract(final BomToolType bomToolType, final File directory, final String inspectorExe, final ExtractionId extractionId) {
         try {
             final File outputDirectory = detectFileManager.getOutputDirectory("Nuget", extractionId);
 
             final List<String> options = new ArrayList<>(Arrays.asList(
                     "--target_path=" + directory.toString(),
                     "--output_directory=" + outputDirectory.getCanonicalPath(),
-                    "--ignore_failure=" + detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_NUGET_IGNORE_FAILURE)
-            ));
+                    "--ignore_failure=" + detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_NUGET_IGNORE_FAILURE)));
 
-            String nugetExcludedModules = detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_EXCLUDED_MODULES);
+            final String nugetExcludedModules = detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_EXCLUDED_MODULES);
             if (StringUtils.isNotBlank(nugetExcludedModules)) {
                 options.add("--excluded_modules=" + nugetExcludedModules);
             }
-            String nugetIncludedModules = detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_INCLUDED_MODULES);
+            final String nugetIncludedModules = detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_INCLUDED_MODULES);
             if (StringUtils.isNotBlank(nugetIncludedModules)) {
                 options.add("--included_modules=" + nugetIncludedModules);
             }
-            String nugetPackagesRepo = detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_PACKAGES_REPO_URL);
+            final String nugetPackagesRepo = detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_PACKAGES_REPO_URL);
             if (StringUtils.isNotBlank(nugetPackagesRepo)) {
                 final String packagesRepos = Arrays.asList(nugetPackagesRepo).stream().collect(Collectors.joining(","));
                 options.add("--packages_repo_url=" + packagesRepos);
             }
-            String nugetConfigPath = detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_CONFIG_PATH);
+            final String nugetConfigPath = detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_CONFIG_PATH);
             if (StringUtils.isNotBlank(nugetConfigPath)) {
                 options.add("--nuget_config_path=" + nugetConfigPath);
             }
@@ -110,7 +109,7 @@ public class NugetInspectorExtractor {
 
             final List<File> dependencyNodeFiles = detectFileFinder.findFiles(outputDirectory, INSPECTOR_OUTPUT_PATTERN);
             final List<NugetParseResult> parseResults = dependencyNodeFiles.stream()
-                    .map(it -> nugetInspectorPackager.createDetectCodeLocation(it))
+                    .map(it -> nugetInspectorPackager.createDetectCodeLocation(bomToolType, it))
                     .collect(Collectors.toList());
 
             final List<DetectCodeLocation> codeLocations = parseResults.stream()

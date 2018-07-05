@@ -1,8 +1,7 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.npm
 
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.bomtool.npm.parse.NpmCliDependencyFinder
-import com.blackducksoftware.integration.hub.detect.bomtool.npm.parse.NpmParseResult
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 import org.junit.Assert
@@ -15,7 +14,7 @@ public class NpmOutputParserTest {
     public void npmCliDependencyFinder() throws IOException {
         def parser = new NpmCliDependencyFinder(new ExternalIdFactory())
         String testIn = testUtil.getResourceAsUTF8String('/npm/packman_proj_dependencies.json')
-        NpmParseResult result = parser.convertNpmJsonFileToCodeLocation("source", testIn)
+        NpmParseResult result = parser.convertNpmJsonFileToCodeLocation(BomToolType.NPM_CLI, "source", testIn)
 
         Assert.assertEquals(result.projectName, "node-js");
         Assert.assertEquals(result.projectVersion, "0.2.0");

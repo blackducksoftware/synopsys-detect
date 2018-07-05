@@ -29,15 +29,14 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.pip.parse.PipParseResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.pip.parse.PipenvGraphParser;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
 public class PipenvExtractor {
     public static final String PIP_SEPARATOR = "==";
@@ -52,7 +51,7 @@ public class PipenvExtractor {
         this.detectConfigWrapper = detectConfigWrapper;
     }
 
-    public Extraction extract(final File directory, final String pythonExe, final String pipenvExe, final File setupFile) {
+    public Extraction extract(final BomToolType bomToolType, final File directory, final String pythonExe, final String pipenvExe, final File setupFile) {
         Extraction extraction;
 
         try {
@@ -66,7 +65,7 @@ public class PipenvExtractor {
             final Executable pipenvGraph = new Executable(directory, pipenvExe, Arrays.asList("graph", "--bare"));
             final ExecutableOutput graphOutput = executableRunner.execute(pipenvGraph);
 
-            result = pipenvTreeParser.parse(projectName, projectVersionName, pipFreezeOutput.getStandardOutputAsList(), graphOutput.getStandardOutputAsList(), directory.toString());
+            result = pipenvTreeParser.parse(bomToolType, projectName, projectVersionName, pipFreezeOutput.getStandardOutputAsList(), graphOutput.getStandardOutputAsList(), directory.toString());
 
             if (result != null) {
                 extraction = new Extraction.Builder().success(result.codeLocation).projectName(result.projectName).projectVersion(result.projectVersion).build();

@@ -26,19 +26,19 @@ package com.blackducksoftware.integration.hub.detect.bomtool.pear;
 import java.io.File;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
-import com.blackducksoftware.integration.hub.detect.bomtool.result.BomToolResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.result.ExecutableNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.result.FileNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.result.PassedBomToolResult;
-import com.blackducksoftware.integration.hub.detect.evaluation.BomToolEnvironment;
-import com.blackducksoftware.integration.hub.detect.evaluation.BomToolException;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
-import com.blackducksoftware.integration.hub.detect.extraction.model.StandardExecutableFinder;
-import com.blackducksoftware.integration.hub.detect.extraction.model.StandardExecutableFinder.StandardExecutableType;
-import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
+import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.ExecutableNotFoundBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.FileNotFoundBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.PassedBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.StandardExecutableFinder.StandardExecutableType;
 
 public class PearCliBomTool extends BomTool {
     public static final String PACKAGE_XML_FILENAME = "package.xml";
@@ -79,7 +79,7 @@ public class PearCliBomTool extends BomTool {
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
-        return pearCliExtractor.extract(environment.getDirectory(), pearExe);
+        return pearCliExtractor.extract(this.getBomToolType(), environment.getDirectory(), pearExe);
     }
 
 }

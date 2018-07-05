@@ -20,7 +20,7 @@ import com.blackducksoftware.integration.hub.bdio.model.BdioComponent
 import com.blackducksoftware.integration.hub.bdio.model.BdioExternalIdentifier
 import com.blackducksoftware.integration.hub.bdio.model.BdioProject
 import com.blackducksoftware.integration.hub.bdio.model.SimpleBdioDocument
-import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 

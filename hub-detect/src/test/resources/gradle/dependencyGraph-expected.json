@@ -1,5 +1,6 @@
 {
-  "bomToolType": "GRADLE",
+  "bomToolGroupType": "GRADLE",
+  "bomToolType": "GRADLE_INSPECTOR",
   "sourcePath": "/Users/ekerwin/Documents/source/integration/hub-detect",
   "externalId": {
     "forge": {

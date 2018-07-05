@@ -23,11 +23,9 @@
  */
 package com.blackducksoftware.integration.hub.detect.bomtool;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.result.BomToolResult;
-import com.blackducksoftware.integration.hub.detect.evaluation.BomToolEnvironment;
-import com.blackducksoftware.integration.hub.detect.evaluation.BomToolException;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
-import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
+import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
 public abstract class BomTool {
     protected BomToolEnvironment environment;
@@ -70,7 +68,7 @@ public abstract class BomTool {
     }
 
     public String getDescriptiveName() {
-        return getBomToolGroupType().toString() + " - " + getName();
+        return String.format("%s - %s", getBomToolGroupType().toString(), getName());
     }
 
 }

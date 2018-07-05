@@ -55,18 +55,18 @@ import com.blackducksoftware.integration.hub.detect.help.html.HelpHtmlWriter;
 import com.blackducksoftware.integration.hub.detect.help.print.DetectConfigurationPrinter;
 import com.blackducksoftware.integration.hub.detect.help.print.DetectInfoPrinter;
 import com.blackducksoftware.integration.hub.detect.help.print.HelpPrinter;
-import com.blackducksoftware.integration.hub.detect.hub.HubManager;
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper;
-import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner;
 import com.blackducksoftware.integration.hub.detect.interactive.InteractiveManager;
 import com.blackducksoftware.integration.hub.detect.interactive.reader.ConsoleInteractiveReader;
 import com.blackducksoftware.integration.hub.detect.interactive.reader.InteractiveReader;
 import com.blackducksoftware.integration.hub.detect.interactive.reader.ScannerInteractiveReader;
-import com.blackducksoftware.integration.hub.detect.manager.DetectPhoneHomeManager;
-import com.blackducksoftware.integration.hub.detect.manager.DetectProjectManager;
-import com.blackducksoftware.integration.hub.detect.model.DetectProject;
-import com.blackducksoftware.integration.hub.detect.summary.DetectSummary;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.hub.detect.workflow.DetectProjectManager;
+import com.blackducksoftware.integration.hub.detect.workflow.PhoneHomeManager;
+import com.blackducksoftware.integration.hub.detect.workflow.hub.HubManager;
+import com.blackducksoftware.integration.hub.detect.workflow.hub.HubSignatureScanner;
+import com.blackducksoftware.integration.hub.detect.workflow.project.DetectProject;
+import com.blackducksoftware.integration.hub.detect.workflow.summary.DetectSummaryManager;
 import com.blackducksoftware.integration.log.SilentLogger;
 import com.blackducksoftware.integration.log.Slf4jIntLogger;
 
@@ -86,11 +86,11 @@ public class Application implements ApplicationRunner {
     private final HubManager hubManager;
     private final HubServiceWrapper hubServiceWrapper;
     private final HubSignatureScanner hubSignatureScanner;
-    private final DetectSummary detectSummary;
+    private final DetectSummaryManager detectSummaryManager;
     private final InteractiveManager interactiveManager;
     private final DetectFileManager detectFileManager;
     private final List<ExitCodeReporter> exitCodeReporters;
-    private final DetectPhoneHomeManager detectPhoneHomeManager;
+    private final PhoneHomeManager phoneHomeManager;
     private final ArgumentStateParser argumentStateParser;
 
     private ExitCodeType exitCodeType = ExitCodeType.SUCCESS;
@@ -98,8 +98,8 @@ public class Application implements ApplicationRunner {
     @Autowired
     public Application(final DetectOptionManager detectOptionManager, final DetectInfo detectInfo, final AdditionalPropertyConfig additionalPropertyConfig, final DetectConfigWrapper detectConfigWrapper,
             final ConfigurationManager configurationManager, final DetectProjectManager detectProjectManager, final HelpPrinter helpPrinter, final HelpHtmlWriter helpHtmlWriter, final HubManager hubManager,
-            final HubServiceWrapper hubServiceWrapper, final HubSignatureScanner hubSignatureScanner, final DetectSummary detectSummary, final InteractiveManager interactiveManager, final DetectFileManager detectFileManager,
-            final List<ExitCodeReporter> exitCodeReporters, final DetectPhoneHomeManager detectPhoneHomeManager, final ArgumentStateParser argumentStateParser) {
+            final HubServiceWrapper hubServiceWrapper, final HubSignatureScanner hubSignatureScanner, final DetectSummaryManager detectSummaryManager, final InteractiveManager interactiveManager, final DetectFileManager detectFileManager,
+            final List<ExitCodeReporter> exitCodeReporters, final PhoneHomeManager phoneHomeManager, final ArgumentStateParser argumentStateParser) {
         this.detectOptionManager = detectOptionManager;
         this.detectInfo = detectInfo;
         this.additionalPropertyConfig = additionalPropertyConfig;
@@ -111,11 +111,11 @@ public class Application implements ApplicationRunner {
         this.hubManager = hubManager;
         this.hubServiceWrapper = hubServiceWrapper;
         this.hubSignatureScanner = hubSignatureScanner;
-        this.detectSummary = detectSummary;
+        this.detectSummaryManager = detectSummaryManager;
         this.interactiveManager = interactiveManager;
         this.detectFileManager = detectFileManager;
         this.exitCodeReporters = exitCodeReporters;
-        this.detectPhoneHomeManager = detectPhoneHomeManager;
+        this.phoneHomeManager = phoneHomeManager;
         this.argumentStateParser = argumentStateParser;
     }
 
@@ -202,11 +202,11 @@ public class Application implements ApplicationRunner {
             }
 
             if (detectConfigWrapper.getBooleanProperty(DetectProperty.BLACKDUCK_HUB_OFFLINE_MODE)) {
-                detectPhoneHomeManager.initOffline();
+                phoneHomeManager.initOffline();
             } else {
                 hubServiceWrapper.init();
-                detectPhoneHomeManager.init(hubServiceWrapper.createPhoneHomeService());
-                detectPhoneHomeManager.startPhoneHome();
+                phoneHomeManager.init(hubServiceWrapper.createPhoneHomeService());
+                phoneHomeManager.startPhoneHome();
             }
 
             final DetectProject detectProject = detectProjectManager.createDetectProject();
@@ -222,8 +222,7 @@ public class Application implements ApplicationRunner {
             for (final ExitCodeReporter exitCodeReporter : exitCodeReporters) {
                 exitCodeType = ExitCodeType.getWinningExitCodeType(exitCodeType, exitCodeReporter.getExitCodeType());
             }
-        } catch (
-                final Exception e)
+        } catch (final Exception e)
 
         {
             populateExitCodeFromExceptionDetails(e);
@@ -231,13 +230,13 @@ public class Application implements ApplicationRunner {
 
         {
             try {
-                detectPhoneHomeManager.endPhoneHome();
+                phoneHomeManager.endPhoneHome();
             } catch (final Exception e) {
                 logger.debug(String.format("Error trying to end the phone home task: %s", e.getMessage()));
             }
 
             if (!detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_RESULTS_OUTPUT)) {
-                detectSummary.logResults(new Slf4jIntLogger(logger), exitCodeType);
+                detectSummaryManager.logDetectResults(new Slf4jIntLogger(logger), exitCodeType);
             }
 
             detectFileManager.cleanupDirectories();

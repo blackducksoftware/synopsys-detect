@@ -1,8 +1,7 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.npm
 
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.bomtool.npm.parse.NpmLockfilePackager
-import com.blackducksoftware.integration.hub.detect.bomtool.npm.parse.NpmParseResult
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 import com.google.gson.GsonBuilder
@@ -23,7 +22,7 @@ class NpmLockfilePackagerTest {
     @Test
     public void parseLockFileTest() {
         String lockFileText = testUtil.getResourceAsUTF8String('/npm/package-lock.json')
-        NpmParseResult result = npmLockfilePackager.parse("source", lockFileText, true)
+        NpmParseResult result = npmLockfilePackager.parse(BomToolType.NPM_PACKAGELOCK, "source", lockFileText, true)
 
         Assert.assertEquals(result.projectName, "knockout-tournament");
         Assert.assertEquals(result.projectVersion, "1.0.0");
@@ -33,7 +32,7 @@ class NpmLockfilePackagerTest {
     @Test
     public void parseShrinkwrapTest() {
         String shrinkwrapText = testUtil.getResourceAsUTF8String('/npm/npm-shrinkwrap.json')
-        NpmParseResult result = npmLockfilePackager.parse("source", shrinkwrapText, true)
+        NpmParseResult result = npmLockfilePackager.parse(BomToolType.NPM_SHRINKWRAP, "source", shrinkwrapText, true)
 
         Assert.assertEquals(result.projectName, "fec-builder");
         Assert.assertEquals(result.projectVersion, "1.3.7");

@@ -6,16 +6,16 @@ import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.bomtool.hex.parse.Rebar3TreeParser
-import com.blackducksoftware.integration.hub.detect.bomtool.hex.parse.RebarParseResult
-import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType
 import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation
 import org.junit.BeforeClass
 import org.junit.Test
 import org.springframework.test.util.ReflectionTestUtils
 
 import static com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil.assertGraph
 import static org.junit.Assert.*
+
 
 class RebarParserTest {
 
@@ -64,7 +64,7 @@ class RebarParserTest {
         List<String> dependencyTreeOutput = testUtil.getResourceAsUTF8String(resource).split(System.lineSeparator)
         Rebar3TreeParser rebarTreeParser = new Rebar3TreeParser()
         ReflectionTestUtils.setField(rebarTreeParser, 'externalIdFactory', externalIdFactory)
-        RebarParseResult result = rebarTreeParser.parseRebarTreeOutput(dependencyTreeOutput, '')
+        RebarParseResult result = rebarTreeParser.parseRebarTreeOutput(BomToolType.REBAR, dependencyTreeOutput, '')
 
         return result.codeLocation;
     }

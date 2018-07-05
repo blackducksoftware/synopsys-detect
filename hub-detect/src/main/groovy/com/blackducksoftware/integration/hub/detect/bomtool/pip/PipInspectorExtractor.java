@@ -30,14 +30,13 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.pip.parse.PipInspectorTreeParser;
-import com.blackducksoftware.integration.hub.detect.bomtool.pip.parse.PipParseResult;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
 public class PipInspectorExtractor {
     private final ExecutableRunner executableRunner;
@@ -50,14 +49,14 @@ public class PipInspectorExtractor {
         this.detectConfigWrapper = detectConfigWrapper;
     }
 
-    public Extraction extract(final File directory, final String pythonExe, final File pipInspector, final File setupFile, final String requirementFilePath) {
+    public Extraction extract(final BomToolType bomToolType, final File directory, final String pythonExe, final File pipInspector, final File setupFile, final String requirementFilePath) {
         Extraction extractionResult;
         try {
             final String projectName = getProjectName(directory, pythonExe, setupFile);
             final PipParseResult result;
 
             final String inspectorOutput = runInspector(directory, pythonExe, pipInspector, projectName, requirementFilePath);
-            result = pipInspectorTreeParser.parse(inspectorOutput, directory.toString());
+            result = pipInspectorTreeParser.parse(bomToolType, inspectorOutput, directory.toString());
 
             if (result == null) {
                 extractionResult = new Extraction.Builder().failure("The Pip Inspector tree parser returned null").build();

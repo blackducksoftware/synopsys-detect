@@ -50,14 +50,13 @@ import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.executor.CommandStringExecutor;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.pkgmgr.PkgMgr;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
-import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
-import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.google.gson.Gson;
 
 public class CLangExtractor {
@@ -106,7 +105,7 @@ public class CLangExtractor {
                     .reduce(new ArrayList<Dependency>(), dependenciesAccumulator());
             final MutableDependencyGraph dependencyGraph = populateGraph(bdioComponents);
             final ExternalId externalId = externalIdFactory.createPathExternalId(pkgMgr.getDefaultForge(), rootDir.toString());
-            final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolGroupType.CLANG, rootDir.toString(), externalId, dependencyGraph).build();
+            final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolGroupType.CLANG, BomToolType.CLANG, rootDir.toString(), externalId, dependencyGraph).build();
             logFilesForIScan(filesForIScan);
             return new Extraction.Builder().success(detectCodeLocation).build();
         } catch (final Exception e) {

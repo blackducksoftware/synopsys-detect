@@ -31,15 +31,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
-import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtDependencyModule;
-import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtProject;
-import com.blackducksoftware.integration.hub.detect.bomtool.sbt.parse.SbtPackager;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
-import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
-import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
 public class SbtResolutionCacheExtractor {
     private final Logger logger = LoggerFactory.getLogger(SbtResolutionCacheExtractor.class);
@@ -55,7 +53,7 @@ public class SbtResolutionCacheExtractor {
         this.detectConfigWrapper = detectConfigWrapper;
     }
 
-    public Extraction extract(final File directory) {
+    public Extraction extract(final BomToolType bomToolType, final File directory) {
         try {
             final String included = detectConfigWrapper.getProperty(DetectProperty.DETECT_SBT_INCLUDED_CONFIGURATIONS);
             final String excluded = detectConfigWrapper.getProperty(DetectProperty.DETECT_SBT_EXCLUDED_CONFIGURATIONS);
@@ -70,7 +68,7 @@ public class SbtResolutionCacheExtractor {
             String projectName = null;
             String projectVersion = null;
             for (final SbtDependencyModule module : project.modules) {
-                final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolGroupType.SBT, module.name, project.projectExternalId, module.graph).build();
+                final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolGroupType.SBT, bomToolType, module.name, project.projectExternalId, module.graph).build();
                 if (projectName == null) {
                     projectName = project.projectName;
                     projectVersion = project.projectVersion;
