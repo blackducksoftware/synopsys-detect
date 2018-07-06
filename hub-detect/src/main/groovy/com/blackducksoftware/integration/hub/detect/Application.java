@@ -190,8 +190,6 @@ public class Application implements ApplicationRunner {
                 }
 
                 interactiveManager.interact(interactiveReader, interactivePrintStream);
-            } catch (final Exception e) {
-                throw e;
             }
         }
 
