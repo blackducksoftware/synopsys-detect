@@ -131,13 +131,13 @@ public class GemlockParser {
         } else if (untrimmedLine.startsWith(SPEC_PACKAGE_PREFIX)) {
             parseSpecPackageLine(untrimmedLine.trim());
         } else {
-            logger.error("Line in specs section can't be parsed: " + untrimmedLine);
+            logger.error(String.format("Line in specs section can't be parsed: %s", untrimmedLine));
         }
     }
 
     private void parseSpecRelationshipLine(final String trimmedLine) {
         if (currentParent == null) {
-            logger.error("Trying to add a child without a parent: " + trimmedLine);
+            logger.error(String.format("Trying to add a child without a parent: %s", trimmedLine));
         } else {
             final NameVersion childNode = parseNameVersion(trimmedLine);
             final DependencyId childId = new NameDependencyId(childNode.getName());
@@ -152,14 +152,14 @@ public class GemlockParser {
             final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, parentNameVersion.getName(), parentNameVersion.getVersion());
             lazyBuilder.setDependencyInfo(currentParent, parentNameVersion.getName(), parentNameVersion.getVersion(), externalId);
         } else {
-            logger.error("An installed spec did not have a non-fuzzy version: " + trimmedLine);
+            logger.error(String.format("An installed spec did not have a non-fuzzy version: %s", trimmedLine));
         }
     }
 
     private void parseDependencySectionLine(final String trimmedLine) {
         final NameVersion dependencyNameVersionNode = parseNameVersion(trimmedLine);
         if (dependencyNameVersionNode.getName() == null) {
-            logger.error("Line in dependencies section can't be parsed: " + trimmedLine);
+            logger.error(String.format("Line in dependencies section can't be parsed: %s", trimmedLine));
         } else {
             lazyBuilder.addChildToRoot(new NameDependencyId(dependencyNameVersionNode.getName()));
         }
