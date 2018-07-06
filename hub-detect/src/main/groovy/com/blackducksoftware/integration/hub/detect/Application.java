@@ -178,18 +178,21 @@ public class Application implements ApplicationRunner {
         }
 
         if (argumentState.isInteractive) {
-            final InteractiveReader interactiveReader;
-            final Console console = System.console();
+            try (final PrintStream interactivePrintStream = new PrintStream(System.out)) {
+                final InteractiveReader interactiveReader;
+                final Console console = System.console();
 
-            if (console != null) {
-                interactiveReader = new ConsoleInteractiveReader(console);
-            } else {
-                logger.warn("It may be insecure to enter passwords because you are running in a virtual console.");
-                interactiveReader = new ScannerInteractiveReader(System.in);
+                if (console != null) {
+                    interactiveReader = new ConsoleInteractiveReader(console);
+                } else {
+                    logger.warn("It may be insecure to enter passwords because you are running in a virtual console.");
+                    interactiveReader = new ScannerInteractiveReader(System.in);
+                }
+
+                interactiveManager.interact(interactiveReader, interactivePrintStream);
+            } catch (final Exception e) {
+                throw e;
             }
-
-            final PrintStream interactivePrintStream = new PrintStream(System.out);
-            interactiveManager.interact(interactiveReader, interactivePrintStream);
         }
 
         configurationManager.initialize(options);
