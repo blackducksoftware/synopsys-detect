@@ -32,16 +32,15 @@ import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.log.IntLogger;
 
 public class DetectSummaryManager {
+    private final List<StatusSummaryProvider<?>> statusSummaryProviders;
 
-    private List<StatusSummaryProvider> statusSummaryProviders;
-
-    public DetectSummaryManager(final List<StatusSummaryProvider> statusSummaryProviders) {
+    public DetectSummaryManager(final List<StatusSummaryProvider<?>> statusSummaryProviders) {
         this.statusSummaryProviders = statusSummaryProviders;
     }
 
     public void logDetectResults(final IntLogger logger, final ExitCodeType exitCodeType) {
         final List<StatusSummary> statusSummaries = new ArrayList<>();
-        for (final StatusSummaryProvider statusSummaryProvider : statusSummaryProviders) {
+        for (final StatusSummaryProvider<?> statusSummaryProvider : statusSummaryProviders) {
             statusSummaries.addAll(statusSummaryProvider.getStatusSummaries());
         }
 

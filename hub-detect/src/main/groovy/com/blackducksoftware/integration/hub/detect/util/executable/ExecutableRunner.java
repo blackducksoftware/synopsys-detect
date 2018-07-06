@@ -54,11 +54,11 @@ public class ExecutableRunner {
     }
 
     public ExecutableOutput execute(final Executable executable) throws ExecutableRunnerException {
-        return runExecutable(executable, s -> logger.info(s), s -> logger.trace(s));
+        return runExecutable(executable, logger::info, logger::trace);
     }
 
     public ExecutableOutput executeQuietly(final Executable executable) throws ExecutableRunnerException {
-        return runExecutable(executable, s -> logger.debug(s), s -> logger.trace(s));
+        return runExecutable(executable, logger::debug, logger::trace);
     }
 
     public void executeToFile(final String executablePath, final File standardOutputFile, final File errorOutputFile, final String... args) throws ExecutableRunnerException {
