@@ -23,6 +23,9 @@
  */
 package com.blackducksoftware.integration.hub.detect.workflow.codelocation;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
@@ -36,6 +39,7 @@ public class CodeLocationNameManager {
     private final ScanCodeLocationNameService scanCodeLocationNameService;
     private final DockerScanCodeLocationNameService dockerScanCodeLocationNameService;
 
+    private final Set<String> codeLocationNames = new HashSet<>();
     private int givenCodeLocationOverrideCount = 0;
 
     public CodeLocationNameManager(final DetectConfigWrapper detectConfigWrapper, final BomCodeLocationNameService bomCodeLocationNameService,
@@ -48,28 +52,31 @@ public class CodeLocationNameManager {
         this.dockerScanCodeLocationNameService = dockerScanCodeLocationNameService;
     }
 
-    public String createAggregateCodeLocationName() {
+    public String createAggregateCodeLocationName(final String projectName, final String projectVersionName) {
+        final String aggregateCodeLocationName;
         if (useCodeLocationOverride()) {
             // The aggregate is exclusively used for the bdio and not the scans
-            return getNextCodeLocationOverrideName(CodeLocationType.BOM);
+            aggregateCodeLocationName = getNextCodeLocationOverrideName(CodeLocationType.BOM);
         } else {
-            return ""; // it is overridden in bdio creation later.
+            aggregateCodeLocationName = String.format("%s/%s Black Duck I/O Export", projectName, projectVersionName);
         }
+        codeLocationNames.add(aggregateCodeLocationName);
+        return aggregateCodeLocationName;
     }
 
     public String createCodeLocationName(final DetectCodeLocation detectCodeLocation, final String detectSourcePath, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
         final String codeLocationName;
-
         if (useCodeLocationOverride() && BomToolGroupType.DOCKER.equals(detectCodeLocation.getBomToolGroupType())) {
             codeLocationName = getNextCodeLocationOverrideName(CodeLocationType.DOCKER);
         } else if (useCodeLocationOverride()) {
             codeLocationName = getNextCodeLocationOverrideName(CodeLocationType.BOM);
         } else if (BomToolGroupType.DOCKER.equals(detectCodeLocation.getBomToolGroupType())) {
-            codeLocationName = dockerCodeLocationNameService.createCodeLocationName(detectCodeLocation.getSourcePath(), projectName, projectVersionName, detectCodeLocation.getDockerImage(), detectCodeLocation.getBomToolGroupType(), prefix, suffix);
+            codeLocationName = dockerCodeLocationNameService
+                    .createCodeLocationName(detectCodeLocation.getSourcePath(), projectName, projectVersionName, detectCodeLocation.getDockerImage(), detectCodeLocation.getBomToolGroupType(), prefix, suffix);
         } else {
             codeLocationName = bomCodeLocationNameService.createCodeLocationName(detectSourcePath, detectCodeLocation.getSourcePath(), detectCodeLocation.getExternalId(), detectCodeLocation.getBomToolGroupType(), prefix, suffix);
         }
-
+        codeLocationNames.add(codeLocationName);
         return codeLocationName;
     }
 
@@ -83,7 +90,7 @@ public class CodeLocationNameManager {
         } else {
             scanCodeLocationName = scanCodeLocationNameService.createCodeLocationName(sourcePath, scanTargetPath, projectName, projectVersionName, prefix, suffix);
         }
-
+        codeLocationNames.add(scanCodeLocationName);
         return scanCodeLocationName;
     }
 
@@ -102,4 +109,7 @@ public class CodeLocationNameManager {
         }
     }
 
+    public Set<String> getCodeLocationNames() {
+        return codeLocationNames;
+    }
 }

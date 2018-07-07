@@ -113,7 +113,7 @@ public class BdioManager {
 
     private SimpleBdioDocument createAggregateSimpleBdioDocument(final String projectName, final String projectVersionName, final DependencyGraph dependencyGraph) {
         final ExternalId projectExternalId = simpleBdioFactory.createNameVersionExternalId(new Forge("/", "/", ""), projectName, projectVersionName);
-        final String codeLocationName = codeLocationNameManager.createAggregateCodeLocationName();
+        final String codeLocationName = codeLocationNameManager.createAggregateCodeLocationName(projectName, projectVersionName);
         return createSimpleBdioDocument(codeLocationName, projectName, projectVersionName, projectExternalId, dependencyGraph);
     }
 
