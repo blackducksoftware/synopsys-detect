@@ -29,14 +29,11 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.IOUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.evaluation.BomToolEnvironment;
-import com.blackducksoftware.integration.hub.detect.evaluation.BomToolException;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
+import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 
-@Component
 public class PipInspectorManager {
     public static final String INSPECTOR_NAME = "pip-inspector.py";
 
@@ -45,7 +42,6 @@ public class PipInspectorManager {
     private File resolvedInspector = null;
     private boolean hasResolvedInspector = false;
 
-    @Autowired
     public PipInspectorManager(final DetectFileManager detectFileManager) {
         this.detectFileManager = detectFileManager;
     }

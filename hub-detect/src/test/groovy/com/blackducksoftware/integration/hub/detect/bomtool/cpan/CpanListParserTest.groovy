@@ -16,11 +16,17 @@ import static org.junit.Assert.*
 
 import org.junit.Test
 
-import com.blackducksoftware.integration.hub.detect.bomtool.cpan.parse.CpanListParser
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNode
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
+import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
+import com.blackducksoftware.integration.hub.detect.testutils.TestUtil
 
 class CpanListParserTest {
-    private CpanListParser cpanListParser = new CpanListParser()
+    private final TestUtil testUtil = new TestUtil()
+    private final CpanListParser cpanListParser = new CpanListParser(new ExternalIdFactory())
+
+    private final List<String> cpanListText = testUtil.getResourceAsUTF8String('/cpan/cpanList.txt').split('\n').toList()
+    private final List<String> showDepsText = testUtil.getResourceAsUTF8String('/cpan/showDeps.txt').split('\n').toList()
 
     @Test
     public void parseTest() {
@@ -31,13 +37,28 @@ This is an invalid line
 This\t1\t1also\t1invalid
 Invalid
 '''
-        Map<String, NameVersionNode> nodeMap = cpanListParser.parse(cpanList.tokenize('\n'))
+        Map<String, String> nodeMap = cpanListParser.createNameVersionMap(cpanList.tokenize('\n'))
         assertEquals(2, nodeMap.size())
         assertNotNull(nodeMap['Test::More'])
         assertNotNull(nodeMap['Test::Less'])
-        assertEquals('Test::More', nodeMap['Test::More'].name)
-        assertEquals('1.2.3', nodeMap['Test::More'].version)
-        assertEquals('Test::Less', nodeMap['Test::Less'].name)
-        assertEquals('1.2.4', nodeMap['Test::Less'].version)
+        assertEquals('1.2.3', nodeMap['Test::More'])
+        assertEquals('1.2.4', nodeMap['Test::Less'])
+    }
+
+    @Test
+    public void getDirectModuleNamesTest() {
+        List<String> names = cpanListParser.getDirectModuleNames(showDepsText)
+        assertEquals(4, names.size())
+        assertTrue(names.contains('ExtUtils::MakeMaker'))
+        assertTrue(names.contains('Test::More'))
+        assertTrue(names.contains('perl'))
+        assertTrue(names.contains('ExtUtils::MakeMaker'))
+    }
+
+    @Test
+    public void makeDependencyNodesTest() {
+        DependencyGraph dependencyGraph = cpanListParser.parse(cpanListText, showDepsText)
+
+        DependencyGraphResourceTestUtil.assertGraph('/cpan/expectedDependencyNodes_graph.json', dependencyGraph)
     }
 }

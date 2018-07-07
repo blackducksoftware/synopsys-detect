@@ -20,8 +20,6 @@ import org.junit.Test
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.bomtool.rubygems.parse.GemlockParser
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -31,7 +29,6 @@ class RubygemsNodePackagerTest {
 
     @Test
     public void packagerTest() throws JSONException, IOException, URISyntaxException {
-        final NameVersionNodeTransformer nameVersionNodeTransformer = new NameVersionNodeTransformer(new ExternalIdFactory())
         final String expected = IOUtils.toString(getClass().getResourceAsStream("/rubygems/expectedPackager.json"),
                 StandardCharsets.UTF_8)
         final List<String> actualText = IOUtils.toString(getClass().getResourceAsStream("/rubygems/Gemfile.lock"),

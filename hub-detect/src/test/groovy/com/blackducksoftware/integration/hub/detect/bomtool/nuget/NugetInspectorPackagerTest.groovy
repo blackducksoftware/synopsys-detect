@@ -1,5 +1,9 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.nuget
 
+import static org.junit.Assert.assertEquals
+
+import org.junit.Test
+
 import com.blackducksoftware.integration.hub.bdio.BdioNodeFactory
 import com.blackducksoftware.integration.hub.bdio.BdioPropertyHelper
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer
@@ -8,16 +12,11 @@ import com.blackducksoftware.integration.hub.bdio.model.BdioProject
 import com.blackducksoftware.integration.hub.bdio.model.Forge
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory
-import com.blackducksoftware.integration.hub.detect.bomtool.nuget.parse.NugetInspectorPackager
-import com.blackducksoftware.integration.hub.detect.bomtool.nuget.parse.NugetParseResult
-import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation
-import com.blackducksoftware.integration.hub.detect.nameversion.NameVersionNodeTransformer
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType
 import com.blackducksoftware.integration.hub.detect.testutils.DependencyGraphResourceTestUtil
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import org.junit.Test
-
-import static org.junit.Assert.assertEquals
 
 public class NugetInspectorPackagerTest {
     public Gson gson = new GsonBuilder().setPrettyPrinting().create()
@@ -53,10 +52,10 @@ public class NugetInspectorPackagerTest {
     @Test(timeout = 5000L)
     public void createCodeLocationDWService() throws IOException {
         def dependencyNodeFile = new File(getClass().getResource("/nuget/dwCheckApi_inspection_martin.json").getFile())
-        NameVersionNodeTransformer nameVersionNodeTransformer = new NameVersionNodeTransformer(new ExternalIdFactory())
+        def externalIdFactory = new ExternalIdFactory();
 
-        def packager = new NugetInspectorPackager(null, null, gson, nameVersionNodeTransformer, nameVersionNodeTransformer.externalIdFactory)
-        NugetParseResult result = packager.createDetectCodeLocation(dependencyNodeFile)
+        def packager = new NugetInspectorPackager(null, null, gson, externalIdFactory)
+        NugetParseResult result = packager.createDetectCodeLocation(BomToolType.NUGET_SOLUTION_INSPECTOR, dependencyNodeFile)
 
         for (DetectCodeLocation codeLocation : result.codeLocations) {
             BdioPropertyHelper bdioPropertyHelper = new BdioPropertyHelper()
@@ -77,10 +76,10 @@ public class NugetInspectorPackagerTest {
     }
 
     private void createCodeLocation(File dependencyNodeFile, List<String> expectedOutputFiles) throws IOException {
-        NameVersionNodeTransformer nameVersionNodeTransformer = new NameVersionNodeTransformer(new ExternalIdFactory())
-        def packager = new NugetInspectorPackager(null, null, gson, nameVersionNodeTransformer, nameVersionNodeTransformer.externalIdFactory)
+        def externalIdFactory = new ExternalIdFactory();
+        def packager = new NugetInspectorPackager(null, null, gson, externalIdFactory)
 
-        NugetParseResult result = packager.createDetectCodeLocation(dependencyNodeFile)
+        NugetParseResult result = packager.createDetectCodeLocation(BomToolType.NUGET_SOLUTION_INSPECTOR, dependencyNodeFile)
 
         for (def i = 0; i < expectedOutputFiles.size(); i++) {
             def codeLocation = result.codeLocations[i];

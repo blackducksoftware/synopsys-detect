@@ -32,15 +32,12 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.DetectInfo;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
 import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 
-@Component
 public class ExecutableManager {
     private final Logger logger = LoggerFactory.getLogger(ExecutableManager.class);
     private final Map<String, File> cachedSystemExecutables = new HashMap<>();
@@ -48,7 +45,6 @@ public class ExecutableManager {
     private final DetectFileFinder detectFileFinder;
     private final DetectInfo detectInfo;
 
-    @Autowired
     public ExecutableManager(final DetectFileFinder detectFileFinder, final DetectInfo detectInfo) {
         this.detectFileFinder = detectFileFinder;
         this.detectInfo = detectInfo;

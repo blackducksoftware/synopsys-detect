@@ -10,8 +10,6 @@ import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.yarn.parse.YarnDependencyMapper;
-
 public class YarnDependencyMapperTest {
 
     private List<String> lines;

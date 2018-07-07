@@ -27,29 +27,24 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.FileUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.packagist.parse.PackagistParseResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.packagist.parse.PackagistParser;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
-@Component
 public class ComposerLockExtractor {
 
     private final PackagistParser packagistParser;
 
-    @Autowired
     public ComposerLockExtractor(final PackagistParser packagistParser) {
         this.packagistParser = packagistParser;
     }
 
-    public Extraction extract(final File directory, final File composerJson, final File composerLock) {
+    public Extraction extract(final BomToolType bomToolType, final File directory, final File composerJson, final File composerLock) {
         try {
             final String composerJsonText = FileUtils.readFileToString(composerJson, StandardCharsets.UTF_8);
             final String composerLockText = FileUtils.readFileToString(composerLock, StandardCharsets.UTF_8);
 
-            final PackagistParseResult result = packagistParser.getDependencyGraphFromProject(directory.toString(), composerJsonText, composerLockText);
+            final PackagistParseResult result = packagistParser.getDependencyGraphFromProject(bomToolType, directory.toString(), composerJsonText, composerLockText);
 
             return new Extraction.Builder().success(result.codeLocation).projectName(result.projectName).projectVersion(result.projectVersion).build();
         } catch (final Exception e) {

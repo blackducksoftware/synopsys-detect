@@ -26,15 +26,15 @@ package com.blackducksoftware.integration.hub.detect.bomtool.cran;
 import java.io.File;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
-import com.blackducksoftware.integration.hub.detect.bomtool.result.BomToolResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.result.FileNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.result.PassedBomToolResult;
-import com.blackducksoftware.integration.hub.detect.evaluation.BomToolEnvironment;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
-import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.FileNotFoundBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.PassedBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
 public class PackratLockBomTool extends BomTool {
     public static final String PACKRATLOCK = "packrat.lock";
@@ -42,7 +42,7 @@ public class PackratLockBomTool extends BomTool {
     private final DetectFileFinder fileFinder;
     private final PackratLockExtractor packratLockExtractor;
 
-    File packratlock;
+    private File packratlock;
 
     public PackratLockBomTool(final BomToolEnvironment environment, final DetectFileFinder fileFinder, final PackratLockExtractor packratLockExtractor) {
         super(environment, "Packrat Lock", BomToolGroupType.CRAN, BomToolType.PACKRAT_LOCK);
@@ -67,7 +67,7 @@ public class PackratLockBomTool extends BomTool {
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
-        return packratLockExtractor.extract(environment.getDirectory(), packratlock);
+        return packratLockExtractor.extract(this.getBomToolType(), environment.getDirectory(), packratlock);
     }
 
 }

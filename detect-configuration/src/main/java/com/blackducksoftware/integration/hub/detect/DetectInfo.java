@@ -32,16 +32,9 @@ import org.slf4j.LoggerFactory;
 
 import com.blackducksoftware.integration.hub.detect.type.OperatingSystemType;
 import com.blackducksoftware.integration.util.ResourceUtil;
-import com.google.gson.Gson;
 
 public class DetectInfo {
     private final Logger logger = LoggerFactory.getLogger(DetectInfo.class);
-
-    private final Gson gson;
-
-    public DetectInfo(final Gson gson) {
-        this.gson = gson;
-    }
 
     private OperatingSystemType currentOs = null;
     private String detectVersion;

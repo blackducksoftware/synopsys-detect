@@ -25,22 +25,17 @@ package com.blackducksoftware.integration.hub.detect.bomtool.pear;
 
 import java.io.File;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
-import com.blackducksoftware.integration.hub.detect.bomtool.pear.parse.PearDependencyFinder;
-import com.blackducksoftware.integration.hub.detect.bomtool.pear.parse.PearParseResult;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
-import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
-import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
-@Component
 public class PearCliExtractor {
     private static final String PACKAGE_XML_FILENAME = "package.xml";
 
@@ -49,7 +44,6 @@ public class PearCliExtractor {
     private final PearDependencyFinder pearDependencyFinder;
     private final ExecutableRunner executableRunner;
 
-    @Autowired
     public PearCliExtractor(final DetectFileFinder detectFileFinder, final ExternalIdFactory externalIdFactory, final PearDependencyFinder pearDependencyFinder, final ExecutableRunner executableRunner) {
         this.detectFileFinder = detectFileFinder;
         this.externalIdFactory = externalIdFactory;
@@ -57,7 +51,7 @@ public class PearCliExtractor {
         this.executableRunner = executableRunner;
     }
 
-    public Extraction extract(final File directory, final File pearExe) {
+    public Extraction extract(final BomToolType bomToolType, final File directory, final File pearExe) {
         try {
             final ExecutableOutput pearListing = executableRunner.runExe(pearExe, "list");
             final ExecutableOutput pearDependencies = executableRunner.runExe(pearExe, "package-dependencies", PACKAGE_XML_FILENAME);
@@ -66,7 +60,7 @@ public class PearCliExtractor {
 
             final PearParseResult result = pearDependencyFinder.parse(packageFile, pearListing, pearDependencies);
             final ExternalId id = externalIdFactory.createNameVersionExternalId(Forge.PEAR, result.name, result.version);
-            final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolGroupType.PEAR, directory.toString(), id, result.dependencyGraph).build();
+            final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolGroupType.PEAR, bomToolType, directory.toString(), id, result.dependencyGraph).build();
 
             return new Extraction.Builder().success(detectCodeLocation).projectName(result.name).projectVersion(result.version).build();
         } catch (final Exception e) {

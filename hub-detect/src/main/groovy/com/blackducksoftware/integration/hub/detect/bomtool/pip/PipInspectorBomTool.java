@@ -28,18 +28,18 @@ import java.io.File;
 import org.apache.commons.lang3.StringUtils;
 
 import com.blackducksoftware.integration.hub.detect.bomtool.BomTool;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolEnvironment;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
-import com.blackducksoftware.integration.hub.detect.bomtool.result.BomToolResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.result.ExecutableNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.result.FileNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.result.InspectorNotFoundBomToolResult;
-import com.blackducksoftware.integration.hub.detect.bomtool.result.PassedBomToolResult;
-import com.blackducksoftware.integration.hub.detect.evaluation.BomToolEnvironment;
-import com.blackducksoftware.integration.hub.detect.evaluation.BomToolException;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
-import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
+import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.BomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.ExecutableNotFoundBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.FileNotFoundBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.InspectorNotFoundBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.bomtool.PassedBomToolResult;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
 public class PipInspectorBomTool extends BomTool {
     public static final String SETUPTOOLS_DEFAULT_FILE_NAME = "setup.py";
@@ -99,7 +99,7 @@ public class PipInspectorBomTool extends BomTool {
 
     @Override
     public Extraction extract(final ExtractionId extractionId) {
-        return pipInspectorExtractor.extract(environment.getDirectory(), pythonExe, pipInspector, setupFile, requirementFilePath);
+        return pipInspectorExtractor.extract(this.getBomToolType(), environment.getDirectory(), pythonExe, pipInspector, setupFile, requirementFilePath);
     }
 
 }

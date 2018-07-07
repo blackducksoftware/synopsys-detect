@@ -32,12 +32,10 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
-import com.blackducksoftware.integration.hub.detect.evaluation.BomToolException;
+import com.blackducksoftware.integration.hub.detect.exception.BomToolException;
 import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendlyException;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.type.ExecutableType;
@@ -48,7 +46,6 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOu
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
-@Component
 public class NugetInspectorManager {
     private final Logger logger = LoggerFactory.getLogger(NugetInspectorManager.class);
 
@@ -61,7 +58,6 @@ public class NugetInspectorManager {
     private String resolvedNugetInspectorExecutable;
     private String resolvedInspectorVersion;
 
-    @Autowired
     public NugetInspectorManager(final DetectFileManager detectFileManager, final ExecutableManager executableManager, final ExecutableRunner executableRunner,
             final DetectConfigWrapper detectConfigWrapper) {
         this.detectFileManager = detectFileManager;
@@ -98,7 +94,7 @@ public class NugetInspectorManager {
     }
 
     private String resolveInspectorVersion(final String nugetExecutablePath) throws ExecutableRunnerException {
-        String nugetInspectorPackageVersion = detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_VERSION);
+        final String nugetInspectorPackageVersion = detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_VERSION);
         if ("latest".equalsIgnoreCase(nugetInspectorPackageVersion)) {
             if (shouldUseAirGap()) {
                 logger.debug("Running in airgap mode. Resolving version from local path");
@@ -133,10 +129,9 @@ public class NugetInspectorManager {
                 "list",
                 detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_NAME),
                 "-Source",
-                source
-        ));
+                source));
 
-        String nugetConfigPath = detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_CONFIG_PATH);
+        final String nugetConfigPath = detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_CONFIG_PATH);
         if (StringUtils.isNotBlank(nugetConfigPath)) {
             nugetOptions.add("-ConfigFile");
             nugetOptions.add(nugetConfigPath);
@@ -158,7 +153,7 @@ public class NugetInspectorManager {
 
     private String installInspector(final String nugetExecutablePath, final File outputDirectory, final String inspectorVersion) throws IOException, ExecutableRunnerException {
         final File toolsDirectory;
-        String nugetInspectorName = detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_NAME);
+        final String nugetInspectorName = detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_NAME);
 
         final File airGapNugetInspectorDirectory = new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_INSPECTOR_AIR_GAP_PATH));
         if (airGapNugetInspectorDirectory.exists()) {
@@ -200,9 +195,8 @@ public class NugetInspectorManager {
                 "-Source",
                 source,
                 "-Version",
-                resolvedInspectorVersion
-        ));
-        String nugetConfigPath = detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_CONFIG_PATH);
+                resolvedInspectorVersion));
+        final String nugetConfigPath = detectConfigWrapper.getProperty(DetectProperty.DETECT_NUGET_CONFIG_PATH);
         if (StringUtils.isNotBlank(nugetConfigPath)) {
             nugetOptions.add("-ConfigFile");
             nugetOptions.add(nugetConfigPath);

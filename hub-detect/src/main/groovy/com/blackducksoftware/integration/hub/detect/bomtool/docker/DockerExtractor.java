@@ -37,8 +37,6 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.bdio.BdioReader;
 import com.blackducksoftware.integration.hub.bdio.BdioTransformer;
@@ -47,62 +45,55 @@ import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.bdio.model.SimpleBdioDocument;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.bomtool.ExtractionId;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
-import com.blackducksoftware.integration.hub.detect.hub.HubSignatureScanner;
-import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
-import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.Executable;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableArgumentBuilder;
-import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableManager;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
+import com.blackducksoftware.integration.hub.detect.workflow.hub.HubSignatureScanner;
 import com.blackducksoftware.integration.util.ResourceUtil;
 import com.google.gson.Gson;
 
-@Component
 public class DockerExtractor {
     public static final String TAR_FILENAME_PATTERN = "*.tar.gz";
     public static final String DEPENDENCIES_PATTERN = "*bdio.jsonld";
 
     private final Logger logger = LoggerFactory.getLogger(DockerExtractor.class);
 
-    @Autowired
-    protected DetectFileFinder detectFileFinder;
+    private final DetectFileFinder detectFileFinder;
+    private final DetectFileManager detectFileManager;
+    private final DockerProperties dockerProperties;
+    private final ExecutableRunner executableRunner;
+    private final BdioTransformer bdioTransformer;
+    private final ExternalIdFactory externalIdFactory;
+    private final Gson gson;
+    private final HubSignatureScanner hubSignatureScanner;
 
-    @Autowired
-    protected DetectFileManager detectFileManager;
+    public DockerExtractor(final DetectFileFinder detectFileFinder, final DetectFileManager detectFileManager, final DockerProperties dockerProperties,
+            final ExecutableRunner executableRunner, final BdioTransformer bdioTransformer, final ExternalIdFactory externalIdFactory, final Gson gson, final HubSignatureScanner hubSignatureScanner) {
+        this.detectFileFinder = detectFileFinder;
+        this.detectFileManager = detectFileManager;
+        this.dockerProperties = dockerProperties;
+        this.executableRunner = executableRunner;
+        this.bdioTransformer = bdioTransformer;
+        this.externalIdFactory = externalIdFactory;
+        this.gson = gson;
+        this.hubSignatureScanner = hubSignatureScanner;
+    }
 
-    @Autowired
-    DockerProperties dockerProperties;
-
-    @Autowired
-    ExecutableManager executableManager;
-
-    @Autowired
-    ExecutableRunner executableRunner;
-
-    @Autowired
-    BdioTransformer bdioTransformer;
-
-    @Autowired
-    ExternalIdFactory externalIdFactory;
-
-    @Autowired
-    Gson gson;
-
-    @Autowired
-    HubSignatureScanner hubSignatureScanner;
-
-    public Extraction extract(final File directory, final ExtractionId extractionId, final File bashExe, final File dockerExe, final String image, final String tar, final DockerInspectorInfo dockerInspectorInfo) {
+    public Extraction extract(final BomToolType bomToolType, final File directory, final ExtractionId extractionId, final File bashExe, final File dockerExe, final String image, final String tar, final DockerInspectorInfo dockerInspectorInfo) {
         try {
             String imageArgument = null;
             String imagePiece = null;
             if (StringUtils.isNotBlank(tar)) {
                 final File dockerTarFile = new File(tar);
-                imageArgument = String.format("--docker.tar=%s", dockerTarFile.getCanonicalPath());
+                imageArgument = String.format("--docker.tar=\"%s\"", dockerTarFile.getCanonicalPath());
                 imagePiece = detectFileFinder.extractFinalPieceFromPath(dockerTarFile.getCanonicalPath());
             } else if (StringUtils.isNotBlank(image)) {
                 imagePiece = image;
@@ -112,7 +103,7 @@ public class DockerExtractor {
             if (StringUtils.isBlank(imageArgument) || StringUtils.isBlank(imagePiece)) {
                 return new Extraction.Builder().failure("No docker image found.").build();
             } else {
-                return executeDocker(extractionId, imageArgument, imagePiece, tar, directory, dockerExe, bashExe, dockerInspectorInfo);
+                return executeDocker(bomToolType, extractionId, imageArgument, imagePiece, tar, directory, dockerExe, bashExe, dockerInspectorInfo);
             }
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
@@ -142,12 +133,12 @@ public class DockerExtractor {
         }
     }
 
-    private Extraction executeDocker(final ExtractionId extractionId, final String imageArgument, final String imagePiece, final String dockerTarFilePath, final File directory, final File dockerExe, final File bashExe,
+    private Extraction executeDocker(final BomToolType bomToolType, final ExtractionId extractionId, final String imageArgument, final String imagePiece, final String dockerTarFilePath, final File directory, final File dockerExe, final File bashExe,
             final DockerInspectorInfo dockerInspectorInfo)
             throws FileNotFoundException, IOException, ExecutableRunnerException {
 
-        final File outputDirectory = detectFileManager.getOutputDirectory(extractionId);
-        final File dockerPropertiesFile = detectFileManager.getOutputFile(extractionId, "application.properties");
+        final File outputDirectory = detectFileManager.getOutputDirectory("Docker", extractionId);
+        final File dockerPropertiesFile = detectFileManager.getOutputFile(outputDirectory, "application.properties");
         dockerProperties.populatePropertiesFile(dockerPropertiesFile, outputDirectory);
 
         String dockerInspectorVersion = "";
@@ -191,10 +182,10 @@ public class DockerExtractor {
             }
         }
 
-        return findCodeLocations(outputDirectory, directory, imagePiece);
+        return findCodeLocations(bomToolType, outputDirectory, directory, imagePiece);
     }
 
-    private Extraction findCodeLocations(final File directoryToSearch, final File directory, final String imageName) {
+    private Extraction findCodeLocations(final BomToolType bomToolType, final File directoryToSearch, final File directory, final String imageName) {
         final File bdioFile = detectFileFinder.findFile(directoryToSearch, DEPENDENCIES_PATTERN);
         if (bdioFile != null) {
             SimpleBdioDocument simpleBdioDocument = null;
@@ -221,7 +212,7 @@ public class DockerExtractor {
                 final String externalIdPath = simpleBdioDocument.project.bdioExternalIdentifier.externalId;
                 final ExternalId projectExternalId = externalIdFactory.createPathExternalId(dockerForge, externalIdPath);
 
-                final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolGroupType.DOCKER, directory.toString(), projectExternalId, dependencyGraph).dockerImage(imageName).build();
+                final DetectCodeLocation detectCodeLocation = new DetectCodeLocation.Builder(BomToolGroupType.DOCKER, bomToolType, directory.toString(), projectExternalId, dependencyGraph).dockerImage(imageName).build();
 
                 return new Extraction.Builder().success(detectCodeLocation).projectName(projectName).projectVersion(projectVersionName).build();
             }

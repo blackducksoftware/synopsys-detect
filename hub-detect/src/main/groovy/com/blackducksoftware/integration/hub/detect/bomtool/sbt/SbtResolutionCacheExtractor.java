@@ -29,40 +29,31 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
-import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtDependencyModule;
-import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtProject;
-import com.blackducksoftware.integration.hub.detect.bomtool.sbt.parse.SbtPackager;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolType;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectConfigWrapper;
 import com.blackducksoftware.integration.hub.detect.configuration.DetectProperty;
-import com.blackducksoftware.integration.hub.detect.extraction.model.Extraction;
-import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
-import com.blackducksoftware.integration.hub.detect.model.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.util.DetectFileFinder;
-import com.blackducksoftware.integration.hub.detect.util.DetectFileManager;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
+import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
-@Component
 public class SbtResolutionCacheExtractor {
     private final Logger logger = LoggerFactory.getLogger(SbtResolutionCacheExtractor.class);
 
-    private final DetectFileManager detectFileManager;
     private final DetectFileFinder detectFileFinder;
     private final ExternalIdFactory externalIdFactory;
     private final DetectConfigWrapper detectConfigWrapper;
 
-    @Autowired
-    public SbtResolutionCacheExtractor(final DetectFileManager detectFileManager, final DetectFileFinder detectFileFinder, final ExternalIdFactory externalIdFactory,
+    public SbtResolutionCacheExtractor(final DetectFileFinder detectFileFinder, final ExternalIdFactory externalIdFactory,
             final DetectConfigWrapper detectConfigWrapper) {
-        this.detectFileManager = detectFileManager;
         this.detectFileFinder = detectFileFinder;
         this.externalIdFactory = externalIdFactory;
         this.detectConfigWrapper = detectConfigWrapper;
     }
 
-    public Extraction extract(final File directory) {
+    public Extraction extract(final BomToolType bomToolType, final File directory) {
         try {
             final String included = detectConfigWrapper.getProperty(DetectProperty.DETECT_SBT_INCLUDED_CONFIGURATIONS);
             final String excluded = detectConfigWrapper.getProperty(DetectProperty.DETECT_SBT_EXCLUDED_CONFIGURATIONS);
@@ -77,7 +68,7 @@ public class SbtResolutionCacheExtractor {
             String projectName = null;
             String projectVersion = null;
             for (final SbtDependencyModule module : project.modules) {
-                final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolGroupType.SBT, module.name, project.projectExternalId, module.graph).build();
+                final DetectCodeLocation codeLocation = new DetectCodeLocation.Builder(BomToolGroupType.SBT, bomToolType, module.name, project.projectExternalId, module.graph).build();
                 if (projectName == null) {
                     projectName = project.projectName;
                     projectVersion = project.projectVersion;
