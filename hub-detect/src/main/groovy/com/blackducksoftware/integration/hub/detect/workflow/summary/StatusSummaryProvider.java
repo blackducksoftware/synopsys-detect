@@ -25,6 +25,6 @@ package com.blackducksoftware.integration.hub.detect.workflow.summary;
 
 import java.util.List;
 
-public interface StatusSummaryProvider {
-    public List<? extends StatusSummary> getStatusSummaries();
+public interface StatusSummaryProvider<T extends StatusSummary> {
+    public List<T> getStatusSummaries();
 }

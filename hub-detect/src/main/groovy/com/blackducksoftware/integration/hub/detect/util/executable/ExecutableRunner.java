@@ -43,17 +43,41 @@ public class ExecutableRunner {
         this.detectConfigWrapper = detectConfigWrapper;
     }
 
+    public ExecutableOutput execute(final String exePath, final String... args) throws ExecutableRunnerException {
+        final Executable exe = new Executable(new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)), exePath, Arrays.asList(args));
+        return execute(exe);
+    }
+
+    public ExecutableOutput execute(final File exePath, final String... args) throws ExecutableRunnerException {
+        final Executable exe = new Executable(new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)), exePath, Arrays.asList(args));
+        return execute(exe);
+    }
+
     public ExecutableOutput execute(final Executable executable) throws ExecutableRunnerException {
-        logger.info(String.format("Running executable >%s", executable.getMaskedExecutableDescription()));
-        return execute(executable, s -> logger.info(s), s -> logger.trace(s));
+        return runExecutable(executable, logger::info, logger::trace);
     }
 
     public ExecutableOutput executeQuietly(final Executable executable) throws ExecutableRunnerException {
-        logger.debug(String.format("Running executable >%s", executable.getMaskedExecutableDescription()));
-        return execute(executable, s -> logger.debug(s), s -> logger.trace(s));
+        return runExecutable(executable, logger::debug, logger::trace);
     }
 
-    private ExecutableOutput execute(final Executable executable, final Consumer<String> standardLoggingMethod, final Consumer<String> traceLoggingMethod) throws ExecutableRunnerException {
+    public void executeToFile(final String executablePath, final File standardOutputFile, final File errorOutputFile, final String... args) throws ExecutableRunnerException {
+        final Executable executable = new Executable(new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)), executablePath, Arrays.asList(args));
+        executeToFile(executable, standardOutputFile, errorOutputFile);
+    }
+
+    public void executeToFile(final Executable executable, final File standardOutputFile, final File errorOutputFile) throws ExecutableRunnerException {
+        logger.debug(String.format("Running executable >%s", executable.getMaskedExecutableDescription()));
+        try {
+            final ProcessBuilder processBuilder = executable.createProcessBuilder().redirectOutput(standardOutputFile).redirectError(errorOutputFile);
+            final Process process = processBuilder.start();
+            process.waitFor();
+        } catch (final Exception e) {
+            throw new ExecutableRunnerException(e);
+        }
+    }
+
+    private ExecutableOutput runExecutable(final Executable executable, final Consumer<String> standardLoggingMethod, final Consumer<String> traceLoggingMethod) throws ExecutableRunnerException {
         standardLoggingMethod.accept(String.format("Running executable >%s", executable.getMaskedExecutableDescription()));
         try {
             final ProcessBuilder processBuilder = executable.createProcessBuilder();
@@ -83,29 +107,4 @@ public class ExecutableRunner {
         }
     }
 
-    public void executeToFile(final Executable executable, final File standardOutput, final File errorOutput) throws ExecutableRunnerException {
-        logger.debug(String.format("Running executable >%s", executable.getMaskedExecutableDescription()));
-        try {
-            final ProcessBuilder processBuilder = executable.createProcessBuilder().redirectOutput(standardOutput).redirectError(errorOutput);
-            final Process process = processBuilder.start();
-            process.waitFor();
-        } catch (final Exception e) {
-            throw new ExecutableRunnerException(e);
-        }
-    }
-
-    public void runExeToFile(final String exePath, final File outputFile, final File errorFile, final String... args) throws ExecutableRunnerException {
-        final Executable exe = new Executable(new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)), exePath, Arrays.asList(args));
-        executeToFile(exe, outputFile, errorFile);
-    }
-
-    public ExecutableOutput runExe(final String exePath, final String... args) throws ExecutableRunnerException {
-        final Executable exe = new Executable(new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)), exePath, Arrays.asList(args));
-        return execute(exe);
-    }
-
-    public ExecutableOutput runExe(final File exePath, final String... args) throws ExecutableRunnerException {
-        final Executable exe = new Executable(new File(detectConfigWrapper.getProperty(DetectProperty.DETECT_SOURCE_PATH)), exePath, Arrays.asList(args));
-        return execute(exe);
-    }
 }

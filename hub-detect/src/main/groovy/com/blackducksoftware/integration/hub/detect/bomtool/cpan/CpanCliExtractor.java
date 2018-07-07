@@ -50,10 +50,10 @@ public class CpanCliExtractor {
 
     public Extraction extract(final BomToolType bomToolType, final File directory, final File cpanExe, final File cpanmExe) {
         try {
-            final ExecutableOutput cpanListOutput = executableRunner.runExe(cpanExe, "-l");
+            final ExecutableOutput cpanListOutput = executableRunner.execute(cpanExe, "-l");
             final List<String> listText = cpanListOutput.getStandardOutputAsList();
 
-            final ExecutableOutput showdepsOutput = executableRunner.runExe(cpanmExe, "--showdeps", ".");
+            final ExecutableOutput showdepsOutput = executableRunner.execute(cpanmExe, "--showdeps", ".");
             final List<String> showdeps = showdepsOutput.getStandardOutputAsList();
 
             final DependencyGraph dependencyGraph = cpanListParser.parse(listText, showdeps);

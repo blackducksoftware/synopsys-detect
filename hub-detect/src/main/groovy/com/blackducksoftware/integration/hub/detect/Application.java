@@ -125,146 +125,127 @@ public class Application implements ApplicationRunner {
 
     @Override
     public void run(final ApplicationArguments applicationArguments) throws Exception {
-        final long start = System.currentTimeMillis();
+        final long startTime = System.currentTimeMillis();
 
         try {
-            detectInfo.init();
-            additionalPropertyConfig.init();
-            detectConfigWrapper.init();
-            detectOptionManager.init();
+            final boolean runDetect = initializeRun(applicationArguments.getSourceArgs());
 
-            final List<DetectOption> options = detectOptionManager.getDetectOptions();
+            if (runDetect) {
+                final DetectProject detectProject = detectProjectManager.createDetectProject();
+                logger.info("Project Name: " + detectProject.getProjectName());
+                logger.info("Project Version Name: " + detectProject.getProjectVersion());
+                if (!detectConfigWrapper.getBooleanProperty(DetectProperty.BLACKDUCK_HUB_OFFLINE_MODE)) {
+                    final ProjectVersionView projectVersionView = hubManager.updateHubProjectVersion(detectProject);
+                    hubManager.performPostHubActions(detectProject, projectVersionView);
+                } else if (!detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_DISABLED)) {
+                    hubSignatureScanner.scanPathsOffline(detectProject);
+                }
 
-            final String[] applicationArgs = applicationArguments.getSourceArgs();
-            final ArgumentState argumentState = argumentStateParser.parseArgs(applicationArgs);
-
-            if (argumentState.isHelp || argumentState.isDeprecatedHelp || argumentState.isVerboseHelp) {
-                helpPrinter.printAppropriateHelpMessage(System.out, options, argumentState);
-                return;
-            }
-
-            if (argumentState.isHelpDocument) {
-                helpHtmlWriter.writeHelpMessage(String.format("hub-detect-%s-help.html", detectInfo.getDetectVersion()));
-                return;
-            }
-
-            if (argumentState.isInteractive) {
-                final InteractiveReader interactiveReader = createInteractiveReader();
-                final PrintStream interactivePrintStream = new PrintStream(System.out);
-                interactiveManager.interact(interactiveReader, interactivePrintStream);
-            }
-
-            configurationManager.initialize(options);
-            detectOptionManager.postInit();
-
-            logger.info("Configuration processed completely.");
-
-            if (!detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_CONFIGURATION_OUTPUT)) {
-                final DetectInfoPrinter infoPrinter = new DetectInfoPrinter();
-                final DetectConfigurationPrinter detectConfigurationPrinter = new DetectConfigurationPrinter();
-
-                infoPrinter.printInfo(System.out, detectInfo);
-                detectConfigurationPrinter.print(System.out, options);
-            }
-
-            if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_FAIL_CONFIG_WARNING)) {
-                final boolean foundConfigWarning = options.stream().anyMatch(option -> option.getWarnings().size() > 0);
-                if (foundConfigWarning) {
-                    throw new DetectUserFriendlyException("Failing because the configuration had warnings.", ExitCodeType.FAILURE_CONFIGURATION);
+                for (final ExitCodeReporter exitCodeReporter : exitCodeReporters) {
+                    exitCodeType = ExitCodeType.getWinningExitCodeType(exitCodeType, exitCodeReporter.getExitCodeType());
                 }
             }
-
-            final List<DetectOption> unacceptableDetectOtions = detectOptionManager.findUnacceptableValues();
-            if (unacceptableDetectOtions.size() > 0) {
-                final DetectOption firstUnacceptableDetectOption = unacceptableDetectOtions.get(0);
-                final String msg = String.format("%s: Unknown value '%s', acceptable values are %s",
-                        firstUnacceptableDetectOption.getDetectProperty().getPropertyName(),
-                        firstUnacceptableDetectOption.getResolvedValue(),
-                        firstUnacceptableDetectOption.getAcceptableValues().stream().collect(Collectors.joining(",")));
-                throw new DetectUserFriendlyException(msg, ExitCodeType.FAILURE_GENERAL_ERROR);
-            }
-
-            if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_TEST_CONNECTION)) {
-                hubServiceWrapper.assertHubConnection(new SilentLogger());
-                return;
-            }
-
-            if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_DISABLE_WITHOUT_HUB)) {
-                try {
-                    logger.info("Testing Hub connection to see if Detect should run");
-                    hubServiceWrapper.assertHubConnection(new SilentLogger());
-                } catch (final IntegrationException e) {
-                    logger.info("Not able to initialize Hub conection: " + e.getMessage());
-                    logger.debug("Stack trace: ", e);
-                    logger.info("Detect will not run");
-                    return;
-                }
-            }
-
-            if (detectConfigWrapper.getBooleanProperty(DetectProperty.BLACKDUCK_HUB_OFFLINE_MODE)) {
-                phoneHomeManager.initOffline();
-            } else {
-                hubServiceWrapper.init();
-                phoneHomeManager.init(hubServiceWrapper.createPhoneHomeService());
-                phoneHomeManager.startPhoneHome();
-            }
-
-            final DetectProject detectProject = detectProjectManager.createDetectProject();
-            logger.info("Project Name: " + detectProject.getProjectName());
-            logger.info("Project Version Name: " + detectProject.getProjectVersion());
-            if (!detectConfigWrapper.getBooleanProperty(DetectProperty.BLACKDUCK_HUB_OFFLINE_MODE)) {
-                final ProjectVersionView projectVersionView = hubManager.updateHubProjectVersion(detectProject);
-                hubManager.performPostHubActions(detectProject, projectVersionView);
-            } else if (!detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_HUB_SIGNATURE_SCANNER_DISABLED)) {
-                hubSignatureScanner.scanPathsOffline(detectProject);
-            }
-
-            for (final ExitCodeReporter exitCodeReporter : exitCodeReporters) {
-                exitCodeType = ExitCodeType.getWinningExitCodeType(exitCodeType, exitCodeReporter.getExitCodeType());
-            }
-        } catch (final Exception e)
-
-        {
+        } catch (final Exception e) {
             populateExitCodeFromExceptionDetails(e);
-        } finally
-
-        {
-            try {
-                phoneHomeManager.endPhoneHome();
-            } catch (final Exception e) {
-                logger.debug(String.format("Error trying to end the phone home task: %s", e.getMessage()));
-            }
-
-            if (!detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_RESULTS_OUTPUT)) {
-                detectSummaryManager.logDetectResults(new Slf4jIntLogger(logger), exitCodeType);
-            }
-
-            detectFileManager.cleanupDirectories();
+        } finally {
+            cleanupRun();
         }
 
-        final long end = System.currentTimeMillis();
-        logger.info(String.format("Hub-Detect run duration: %s", DurationFormatUtils.formatPeriod(start, end, "HH'h' mm'm' ss's' SSS'ms'")));
-        if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_FORCE_SUCCESS) && exitCodeType.getExitCode() != 0)
-
-        {
-            logger.warn(String.format("Forcing success: Exiting with 0. Desired exit code was %s.", exitCodeType.getExitCode()));
-            System.exit(0);
-        } else if (exitCodeType.getExitCode() != 0)
-
-        {
-            logger.error(String.format("Exiting with code %s - %s", exitCodeType.getExitCode(), exitCodeType.toString()));
-        }
-        System.exit(exitCodeType.getExitCode());
+        endRun(startTime);
     }
 
-    private InteractiveReader createInteractiveReader() {
-        final Console console = System.console();
-        if (console != null) {
-            return new ConsoleInteractiveReader(console);
-        } else {
-            logger.warn("It may be insecure to enter passwords because you are running in a virtual console.");
-            return new ScannerInteractiveReader(System.in);
+    private boolean initializeRun(final String[] sourceArgs) throws Exception {
+        final boolean runDetect = true;
+        final boolean exitDetect = false;
+
+        detectInfo.init();
+        additionalPropertyConfig.init();
+        detectConfigWrapper.init();
+        detectOptionManager.init();
+
+        final List<DetectOption> options = detectOptionManager.getDetectOptions();
+
+        final ArgumentState argumentState = argumentStateParser.parseArgs(sourceArgs);
+
+        if (argumentState.isHelp || argumentState.isDeprecatedHelp || argumentState.isVerboseHelp) {
+            helpPrinter.printAppropriateHelpMessage(System.out, options, argumentState);
+            return exitDetect;
         }
+
+        if (argumentState.isHelpDocument) {
+            helpHtmlWriter.writeHelpMessage(String.format("hub-detect-%s-help.html", detectInfo.getDetectVersion()));
+            return exitDetect;
+        }
+
+        if (argumentState.isInteractive) {
+            try (final PrintStream interactivePrintStream = new PrintStream(System.out)) {
+                final InteractiveReader interactiveReader;
+                final Console console = System.console();
+
+                if (console != null) {
+                    interactiveReader = new ConsoleInteractiveReader(console);
+                } else {
+                    logger.warn("It may be insecure to enter passwords because you are running in a virtual console.");
+                    interactiveReader = new ScannerInteractiveReader(System.in);
+                }
+
+                interactiveManager.interact(interactiveReader, interactivePrintStream);
+            }
+        }
+
+        configurationManager.initialize(options);
+        detectOptionManager.postInit();
+
+        logger.info("Configuration processed completely.");
+
+        if (!detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_CONFIGURATION_OUTPUT)) {
+            final DetectInfoPrinter infoPrinter = new DetectInfoPrinter();
+            final DetectConfigurationPrinter detectConfigurationPrinter = new DetectConfigurationPrinter();
+
+            infoPrinter.printInfo(System.out, detectInfo);
+            detectConfigurationPrinter.print(System.out, options);
+        }
+
+        if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_FAIL_CONFIG_WARNING) && options.stream().anyMatch(DetectOption::hasWarnings)) {
+            throw new DetectUserFriendlyException("Failing because the configuration had warnings.", ExitCodeType.FAILURE_CONFIGURATION);
+        }
+
+        final List<DetectOption> unacceptableDetectOtions = detectOptionManager.findUnacceptableValues();
+        if (unacceptableDetectOtions.size() > 0) {
+            final DetectOption firstUnacceptableDetectOption = unacceptableDetectOtions.get(0);
+            final String msg = String.format("%s: Unknown value '%s', acceptable values are %s",
+                    firstUnacceptableDetectOption.getDetectProperty().getPropertyName(),
+                    firstUnacceptableDetectOption.getResolvedValue(),
+                    firstUnacceptableDetectOption.getAcceptableValues().stream().collect(Collectors.joining(",")));
+            throw new DetectUserFriendlyException(msg, ExitCodeType.FAILURE_GENERAL_ERROR);
+        }
+
+        if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_TEST_CONNECTION)) {
+            hubServiceWrapper.assertHubConnection(new SilentLogger());
+            return exitDetect;
+        }
+
+        if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_DISABLE_WITHOUT_HUB)) {
+            try {
+                logger.info("Testing Hub connection to see if Detect should run");
+                hubServiceWrapper.assertHubConnection(new SilentLogger());
+            } catch (final IntegrationException e) {
+                logger.info("Not able to initialize Hub conection: " + e.getMessage());
+                logger.debug("Stack trace: ", e);
+                logger.info("Detect will not run");
+                return exitDetect;
+            }
+        }
+
+        if (detectConfigWrapper.getBooleanProperty(DetectProperty.BLACKDUCK_HUB_OFFLINE_MODE)) {
+            phoneHomeManager.initOffline();
+        } else {
+            hubServiceWrapper.init();
+            phoneHomeManager.init(hubServiceWrapper.createPhoneHomeService());
+            phoneHomeManager.startPhoneHome();
+        }
+
+        return runDetect;
     }
 
     private void populateExitCodeFromExceptionDetails(final Exception e) {
@@ -284,6 +265,32 @@ public class Application implements ApplicationRunner {
             exitCodeType = ExitCodeType.FAILURE_UNKNOWN_ERROR;
         }
         logger.error(e.getMessage());
+    }
+
+    private void cleanupRun() {
+        try {
+            phoneHomeManager.endPhoneHome();
+        } catch (final Exception e) {
+            logger.debug(String.format("Error trying to end the phone home task: %s", e.getMessage()));
+        }
+
+        if (!detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_RESULTS_OUTPUT)) {
+            detectSummaryManager.logDetectResults(new Slf4jIntLogger(logger), exitCodeType);
+        }
+
+        detectFileManager.cleanupDirectories();
+    }
+
+    private void endRun(final long startTime) {
+        final long endTime = System.currentTimeMillis();
+        logger.info(String.format("Hub-Detect run duration: %s", DurationFormatUtils.formatPeriod(startTime, endTime, "HH'h' mm'm' ss's' SSS'ms'")));
+        if (detectConfigWrapper.getBooleanProperty(DetectProperty.DETECT_FORCE_SUCCESS) && exitCodeType.getExitCode() != 0) {
+            logger.warn(String.format("Forcing success: Exiting with 0. Desired exit code was %s.", exitCodeType.getExitCode()));
+            System.exit(0);
+        } else if (exitCodeType.getExitCode() != 0) {
+            logger.error(String.format("Exiting with code %s - %s", exitCodeType.getExitCode(), exitCodeType.toString()));
+        }
+        System.exit(exitCodeType.getExitCode());
     }
 
 }

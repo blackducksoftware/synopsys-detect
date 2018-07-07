@@ -56,7 +56,7 @@ public class BomToolEvaluation {
     }
 
     public boolean wasExtractionSuccessful() {
-        return isExtractable() && this.extraction != null && this.extraction.result == ExtractionResultType.Success;
+        return isExtractable() && this.extraction != null && this.extraction.result == ExtractionResultType.SUCCESS;
     }
 
     public BomTool getBomTool() {

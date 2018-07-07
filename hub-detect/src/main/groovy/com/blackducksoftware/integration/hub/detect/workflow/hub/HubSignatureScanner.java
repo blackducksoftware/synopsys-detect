@@ -58,7 +58,7 @@ import com.blackducksoftware.integration.hub.service.SignatureScannerService;
 import com.blackducksoftware.integration.hub.service.model.ProjectRequestBuilder;
 import com.blackducksoftware.integration.hub.summary.Result;
 
-public class HubSignatureScanner implements StatusSummaryProvider, ExitCodeReporter {
+public class HubSignatureScanner implements StatusSummaryProvider<ScanStatusSummary>, ExitCodeReporter {
     private final Logger logger = LoggerFactory.getLogger(HubSignatureScanner.class);
     private final Set<String> scanPaths = new HashSet<>();
     private final Map<String, Set<String>> scanPathExclusionPatterns = new HashMap<>();

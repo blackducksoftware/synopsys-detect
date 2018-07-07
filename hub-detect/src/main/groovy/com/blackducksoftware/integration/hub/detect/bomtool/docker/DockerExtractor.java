@@ -57,7 +57,6 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 import com.blackducksoftware.integration.hub.detect.workflow.codelocation.DetectCodeLocation;
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 import com.blackducksoftware.integration.hub.detect.workflow.hub.HubSignatureScanner;
-import com.blackducksoftware.integration.util.ResourceUtil;
 import com.google.gson.Gson;
 
 public class DockerExtractor {
@@ -189,17 +188,11 @@ public class DockerExtractor {
         final File bdioFile = detectFileFinder.findFile(directoryToSearch, DEPENDENCIES_PATTERN);
         if (bdioFile != null) {
             SimpleBdioDocument simpleBdioDocument = null;
-            BdioReader bdioReader = null;
-            InputStream dockerOutputInputStream = null;
 
-            try {
-                dockerOutputInputStream = new FileInputStream(bdioFile);
-                bdioReader = new BdioReader(gson, dockerOutputInputStream);
+            try (final InputStream dockerOutputInputStream = new FileInputStream(bdioFile); BdioReader bdioReader = new BdioReader(gson, dockerOutputInputStream)) {
                 simpleBdioDocument = bdioReader.readSimpleBdioDocument();
             } catch (final Exception e) {
-            } finally {
-                ResourceUtil.closeQuietly(bdioReader);
-                ResourceUtil.closeQuietly(dockerOutputInputStream);
+                return new Extraction.Builder().exception(e).build();
             }
 
             if (simpleBdioDocument != null) {

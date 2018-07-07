@@ -35,20 +35,21 @@ import com.blackducksoftware.integration.hub.detect.help.print.HelpTextWriter;
 
 public abstract class DetectOption {
     private final DetectProperty detectProperty;
+    private final List<String> acceptableValues;
     private final boolean strictAcceptableValues;
     private final boolean caseSensitiveAcceptableValues;
-    private final List<String> acceptableValues;
     private final DetectOptionHelp detectOptionHelp;
     private final String resolvedValue;
-    private String postInitValue;
-    private List<String> warnings = new ArrayList<>();
-    private boolean requestedDeprecation = false;
-    private String interactiveValue = null;
-    private String finalValue = null;
-    private FinalValueType finalValueType = FinalValueType.DEFAULT;
 
-    public DetectOption(final DetectProperty detectProperty, final boolean strictAcceptableValues, final boolean caseSensitiveAcceptableValues, final List<String> acceptableValues,
-            final DetectOptionHelp detectOptionHelp, final String resolvedValue) {
+    private final List<String> warnings = new ArrayList<>();
+
+    private FinalValueType finalValueType = FinalValueType.DEFAULT;
+    private String finalValue = null;
+    private String interactiveValue = null;
+    private String postInitValue = null;
+    private boolean requestedDeprecation = false;
+
+    public DetectOption(final DetectProperty detectProperty, final boolean strictAcceptableValues, final boolean caseSensitiveAcceptableValues, final List<String> acceptableValues, final DetectOptionHelp detectOptionHelp, final String resolvedValue) {
         this.detectProperty = detectProperty;
         this.strictAcceptableValues = strictAcceptableValues;
         this.caseSensitiveAcceptableValues = caseSensitiveAcceptableValues;
@@ -70,7 +71,11 @@ public abstract class DetectOption {
     }
 
     public List<String> getWarnings() {
-        return warnings.stream().collect(Collectors.toList());
+        return warnings;
+    }
+
+    public boolean hasWarnings() {
+        return warnings.size() > 0;
     }
 
     public boolean isRequestedDeprecation() {
@@ -206,12 +211,12 @@ public abstract class DetectOption {
     }
 
     public enum FinalValueType {
-        DEFAULT, //the final value is the value in the default attribute
-        INTERACTIVE, //the final value is from the interactive prompt
-        LATEST, //the final value was resolved from latest
-        CALCULATED, //the resolved value was not set and final value was set during init
-        SUPPLIED, //the final value most likely came from spring
-        OVERRIDE //the resolved value was set but during init a new value was set
+        DEFAULT,        // the final value is the value in the default attribute
+        INTERACTIVE,    // the final value is from the interactive prompt
+        LATEST,         // the final value was resolved from latest
+        CALCULATED,     // the resolved value was not set and final value was set during init
+        SUPPLIED,       // the final value most likely came from spring
+        OVERRIDE        // the resolved value was set but during init a new value was set
     }
 
     public class OptionValidationResult {

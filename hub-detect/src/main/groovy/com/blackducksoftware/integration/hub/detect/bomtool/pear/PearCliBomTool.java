@@ -58,8 +58,8 @@ public class PearCliBomTool extends BomTool {
 
     @Override
     public BomToolResult applicable() {
-        final File PEAR = fileFinder.findFile(environment.getDirectory(), PACKAGE_XML_FILENAME);
-        if (PEAR == null) {
+        final File packageDotXml = fileFinder.findFile(environment.getDirectory(), PACKAGE_XML_FILENAME);
+        if (packageDotXml == null) {
             return new FileNotFoundBomToolResult(PACKAGE_XML_FILENAME);
         }
 

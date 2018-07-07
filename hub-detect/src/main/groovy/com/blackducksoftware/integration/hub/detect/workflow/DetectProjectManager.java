@@ -64,7 +64,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.summary.StatusSumma
 import com.blackducksoftware.integration.hub.summary.Result;
 import com.blackducksoftware.integration.util.NameVersion;
 
-public class DetectProjectManager implements StatusSummaryProvider, ExitCodeReporter {
+public class DetectProjectManager implements StatusSummaryProvider<BomToolGroupStatusSummary>, ExitCodeReporter {
     private final Logger logger = LoggerFactory.getLogger(DetectProjectManager.class);
 
     private final Map<BomToolGroupType, Result> bomToolGroupSummaryResults = new HashMap<>();

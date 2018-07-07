@@ -78,11 +78,11 @@ public class ExtractionSummaryReporter {
                             final String name = codeLocationNameMap.get(it);
                             data.codeLocationNames.add(name);
                         });
-                        if (extraction.result == ExtractionResultType.Success) {
+                        if (extraction.result == ExtractionResultType.SUCCESS) {
                             data.success.add(result);
-                        } else if (extraction.result == ExtractionResultType.Failure) {
+                        } else if (extraction.result == ExtractionResultType.FAILURE) {
                             data.failed.add(result);
-                        } else if (extraction.result == ExtractionResultType.Exception) {
+                        } else if (extraction.result == ExtractionResultType.EXCEPTION) {
                             data.exception.add(result);
                         }
                     } else {

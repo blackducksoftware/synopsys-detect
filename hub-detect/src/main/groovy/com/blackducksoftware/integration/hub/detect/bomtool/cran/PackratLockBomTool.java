@@ -37,7 +37,7 @@ import com.blackducksoftware.integration.hub.detect.workflow.bomtool.PassedBomTo
 import com.blackducksoftware.integration.hub.detect.workflow.extraction.Extraction;
 
 public class PackratLockBomTool extends BomTool {
-    public static final String PACKRATLOCK = "packrat.lock";
+    public static final String PACKRATLOCK_FILE_NAME = "packrat.lock";
 
     private final DetectFileFinder fileFinder;
     private final PackratLockExtractor packratLockExtractor;
@@ -52,9 +52,9 @@ public class PackratLockBomTool extends BomTool {
 
     @Override
     public BomToolResult applicable() {
-        packratlock = fileFinder.findFile(environment.getDirectory(), PACKRATLOCK);
+        packratlock = fileFinder.findFile(environment.getDirectory(), PACKRATLOCK_FILE_NAME);
         if (packratlock == null) {
-            return new FileNotFoundBomToolResult(PACKRATLOCK);
+            return new FileNotFoundBomToolResult(PACKRATLOCK_FILE_NAME);
         }
 
         return new PassedBomToolResult();

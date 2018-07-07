@@ -378,7 +378,7 @@ public class BeanConfiguration {
 
     @Bean
     public DetectSummaryManager statusSummary() throws ParserConfigurationException {
-        final List<StatusSummaryProvider> statusSummaryProviders = new ArrayList<>();
+        final List<StatusSummaryProvider<?>> statusSummaryProviders = new ArrayList<>();
         statusSummaryProviders.add(detectProjectManager());
         statusSummaryProviders.add(hubSignatureScanner());
 
