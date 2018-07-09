@@ -21,15 +21,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.sbt.reports.model
+package com.blackducksoftware.integration.hub.detect.bomtool.sbt.reports.model;
 
-import groovy.transform.TypeChecked
+import java.util.List;
 
-@TypeChecked
-public class SbtCaller {
-    String callerOrganisation
+public class SbtReport {
+    public String organisation;
 
-    String callerName
+    public String module;
 
-    String callerRevision
+    public String revision;
+
+    public String configuration;
+
+    public List<SbtModule> dependencies;
 }

@@ -21,18 +21,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.sbt.models
+package com.blackducksoftware.integration.hub.detect.bomtool.sbt.models;
 
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType
+import java.util.List;
 
-import groovy.transform.TypeChecked
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
+import com.blackducksoftware.integration.hub.detect.model.BomToolGroupType;
 
-@TypeChecked
-class SbtProject {
-    public String projectName
-    public String projectVersion
-    public ExternalId projectExternalId
-    public BomToolGroupType bomToolType
-    public List<SbtDependencyModule> modules
+public class SbtProject {
+    public String projectName;
+    public String projectVersion;
+    public ExternalId projectExternalId;
+    public BomToolGroupType bomToolType;
+    public List<SbtDependencyModule> modules;
 }
