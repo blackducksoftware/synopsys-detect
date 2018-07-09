@@ -38,7 +38,7 @@ import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
-public class Apk implements PkgMgr {
+public class Apk extends PkgMgr {
     private static final String PKG_MGR_NAME = "apk";
     private static final String VERSION_COMMAND = "apk --version";
     private static final String EXPECTED_TEXT = "apk-tools ";

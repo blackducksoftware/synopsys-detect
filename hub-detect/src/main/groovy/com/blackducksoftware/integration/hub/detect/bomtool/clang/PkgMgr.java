@@ -34,9 +34,9 @@ import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
-public interface PkgMgr {
+public abstract class PkgMgr {
     // TODO Should not use CommandStringExecutor here; each pkg mgr could easily build the list of args
-    default boolean applies(final CommandStringExecutor executor) {
+    public boolean applies(final CommandStringExecutor executor) {
         try {
             final String versionOutput = executor.execute(new File("."), new HashMap<String, String>(), getCheckPresenceCommand());
             getLogger().debug(String.format("packageStatusOutput: %s", versionOutput));
@@ -52,18 +52,18 @@ public interface PkgMgr {
         return false;
     }
 
-    String getPkgMgrName();
+    public abstract String getPkgMgrName();
 
-    Forge getDefaultForge();
+    public abstract Forge getDefaultForge();
 
-    List<Forge> getForges();
+    public abstract List<Forge> getForges();
 
     // TODO Should not use CommandStringExecutor here; each pkg mgr could easily build the list of args
-    List<PackageDetails> getDependencyDetails(CommandStringExecutor executor, Set<File> filesForIScan, DependencyFile dependencyFile);
+    public abstract List<PackageDetails> getDependencyDetails(CommandStringExecutor executor, Set<File> filesForIScan, DependencyFile dependencyFile);
 
-    String getCheckPresenceCommand();
+    public abstract String getCheckPresenceCommand();
 
-    String getCheckPresenceCommandOutputExpectedText();
+    public abstract String getCheckPresenceCommandOutputExpectedText();
 
-    Logger getLogger();
+    public abstract Logger getLogger();
 }
