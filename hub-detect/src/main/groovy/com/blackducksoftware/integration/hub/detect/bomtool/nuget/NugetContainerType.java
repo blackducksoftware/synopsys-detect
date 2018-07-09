@@ -1,4 +1,4 @@
-/*
+/**
  * hub-detect
  *
  * Copyright (C) 2018 Black Duck Software, Inc.
@@ -21,19 +21,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.sbt
+package com.blackducksoftware.integration.hub.detect.bomtool.nuget;
 
-import groovy.transform.TypeChecked
+import com.google.gson.annotations.SerializedName;
+
+import groovy.transform.TypeChecked;
 
 @TypeChecked
-public class SbtReport {
-    String organisation
-
-    String module
-
-    String revision
-
-    String configuration
-
-    List<SbtModule> dependencies
+public enum NugetContainerType {
+    @SerializedName("Solution")
+    SOLUTION,
+    @SerializedName("Project")
+    PROJECT
 }

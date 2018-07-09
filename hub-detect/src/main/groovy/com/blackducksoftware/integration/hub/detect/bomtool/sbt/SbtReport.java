@@ -1,4 +1,4 @@
-/*
+/**
  * hub-detect
  *
  * Copyright (C) 2018 Black Duck Software, Inc.
@@ -21,18 +21,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.sbt
+package com.blackducksoftware.integration.hub.detect.bomtool.sbt;
 
-import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId
-import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType
+import java.util.List;
 
-import groovy.transform.TypeChecked
+public class SbtReport {
+    public String organisation;
 
-@TypeChecked
-class SbtProject {
-    public String projectName
-    public String projectVersion
-    public ExternalId projectExternalId
-    public BomToolGroupType bomToolType
-    public List<SbtDependencyModule> modules
+    public String module;
+
+    public String revision;
+
+    public String configuration;
+
+    public List<SbtModule> dependencies;
 }

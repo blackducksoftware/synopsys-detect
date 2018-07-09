@@ -1,4 +1,4 @@
-/*
+/**
  * hub-detect
  *
  * Copyright (C) 2018 Black Duck Software, Inc.
@@ -21,13 +21,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.sbt
+package com.blackducksoftware.integration.hub.detect.bomtool.sbt;
 
-import groovy.transform.TypeChecked
+public class SbtCaller {
+    public String callerOrganisation;
 
-@TypeChecked
-public class SbtRevision {
-    String name
+    public String callerName;
 
-    List<SbtCaller> callers
+    public String callerRevision;
 }

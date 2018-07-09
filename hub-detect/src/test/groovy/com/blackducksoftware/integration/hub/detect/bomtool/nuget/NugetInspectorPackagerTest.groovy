@@ -54,7 +54,7 @@ public class NugetInspectorPackagerTest {
         def dependencyNodeFile = new File(getClass().getResource("/nuget/dwCheckApi_inspection_martin.json").getFile())
         def externalIdFactory = new ExternalIdFactory();
 
-        def packager = new NugetInspectorPackager(null, null, gson, externalIdFactory)
+        def packager = new NugetInspectorPackager(gson, externalIdFactory)
         NugetParseResult result = packager.createDetectCodeLocation(BomToolType.NUGET_SOLUTION_INSPECTOR, dependencyNodeFile)
 
         for (DetectCodeLocation codeLocation : result.codeLocations) {
@@ -77,7 +77,7 @@ public class NugetInspectorPackagerTest {
 
     private void createCodeLocation(File dependencyNodeFile, List<String> expectedOutputFiles) throws IOException {
         def externalIdFactory = new ExternalIdFactory();
-        def packager = new NugetInspectorPackager(null, null, gson, externalIdFactory)
+        def packager = new NugetInspectorPackager(gson, externalIdFactory)
 
         NugetParseResult result = packager.createDetectCodeLocation(BomToolType.NUGET_SOLUTION_INSPECTOR, dependencyNodeFile)
 

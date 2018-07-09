@@ -1,4 +1,4 @@
-/*
+/**
  * hub-detect
  *
  * Copyright (C) 2018 Black Duck Software, Inc.
@@ -21,18 +21,29 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.sbt
-import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph
+package com.blackducksoftware.integration.hub.detect.bomtool.sbt;
 
-import groovy.transform.TypeChecked
+import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 
-@TypeChecked
-class SbtGraph {
-    public String sourcePath
-    public DependencyGraph graph
+public class SbtDependencyModule {
+    public String sourcePath;
+    public String name;
+    public String version;
+    public String org;
+    public DependencyGraph graph;
 
-    public SbtModule(DependencyGraph graph, String sourcePath) {
-        this.sourcePath = sourcePath
-        this.graph = graph
+    // if this is from a specific configuration
+    public String configuration = null;
+
+    public SbtDependencyModule() {
+    }
+
+    public SbtDependencyModule(final String name, final String version, final String org, final DependencyGraph graph, final String sourcePath) {
+        this.sourcePath = sourcePath;
+        this.graph = graph;
+
+        this.org = org;
+        this.name = name;
+        this.version = version;
     }
 }

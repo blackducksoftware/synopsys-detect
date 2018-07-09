@@ -1,4 +1,4 @@
-/*
+/**
  * hub-detect
  *
  * Copyright (C) 2018 Black Duck Software, Inc.
@@ -21,25 +21,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.nuget
+package com.blackducksoftware.integration.hub.detect.bomtool.sbt;
 
-import org.apache.commons.lang3.builder.RecursiveToStringStyle
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder
+import java.util.List;
 
-import com.google.gson.annotations.SerializedName
+import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
+import com.blackducksoftware.integration.hub.detect.bomtool.BomToolGroupType;
 
-import groovy.transform.TypeChecked
-
-@TypeChecked
-class NugetPackageSet {
-    @SerializedName('PackageId')
-    NugetPackageId packageId
-
-    @SerializedName('Dependencies')
-    List<NugetPackageId> dependencies
-
-    @Override
-    String toString() {
-        return ReflectionToStringBuilder.toString(this, RecursiveToStringStyle.JSON_STYLE)
-    }
+public class SbtProject {
+    public String projectName;
+    public String projectVersion;
+    public ExternalId projectExternalId;
+    public BomToolGroupType bomToolType;
+    public List<SbtDependencyModule> modules;
 }
