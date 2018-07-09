@@ -21,43 +21,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.nuget
+package com.blackducksoftware.integration.hub.detect.bomtool.nuget;
 
-import org.apache.commons.lang3.builder.RecursiveToStringStyle
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder
+import java.util.List;
 
-import com.google.gson.annotations.SerializedName
+import org.apache.commons.lang3.builder.RecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
-import groovy.transform.TypeChecked
+import com.google.gson.annotations.SerializedName;
 
-@TypeChecked
-class NugetContainer {
-    @SerializedName('Name')
-    String name
+public class NugetPackageSet {
+    @SerializedName("PackageId")
+    public NugetPackageId packageId;
 
-    @SerializedName('Version')
-    String version
-
-    @SerializedName('Type')
-    NugetContainerType type
-
-    @SerializedName('SourcePath')
-    String sourcePath
-
-    @SerializedName('OutputPaths')
-    List<String> outputPaths
-
-    @SerializedName('Packages')
-    List<NugetPackageSet> packages
-
-    @SerializedName('Dependencies')
-    List<NugetPackageId> dependencies
-
-    @SerializedName('Children')
-    List<NugetContainer> children
+    @SerializedName("Dependencies")
+    public List<NugetPackageId> dependencies;
 
     @Override
-    String toString() {
-        return ReflectionToStringBuilder.toString(this, RecursiveToStringStyle.JSON_STYLE)
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this, RecursiveToStringStyle.JSON_STYLE);
     }
 }

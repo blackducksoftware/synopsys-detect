@@ -21,11 +21,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.nuget
+package com.blackducksoftware.integration.hub.detect.bomtool.nuget;
 
-import com.google.gson.annotations.SerializedName
+import com.google.gson.annotations.SerializedName;
 
-import groovy.transform.TypeChecked
+import groovy.transform.TypeChecked;
 
 @TypeChecked
 public enum NugetContainerType {

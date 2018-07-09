@@ -22,7 +22,7 @@ public class NugetInspectorPackagerPerfTest {
     public void performanceTestNuget() throws IOException {
         def dependencyGraphFile = new File(getClass().getResource("/nuget/dwCheckApi_inspection.json").getFile())
 
-        def packager = new NugetInspectorPackager(null, null, gson, externalIdFactory)
+        def packager = new NugetInspectorPackager(gson, externalIdFactory)
 
         NugetParseResult result = packager.createDetectCodeLocation(BomToolType.NUGET_SOLUTION_INSPECTOR, dependencyGraphFile)
         DetectCodeLocation codeLocation = result.codeLocations[0]
