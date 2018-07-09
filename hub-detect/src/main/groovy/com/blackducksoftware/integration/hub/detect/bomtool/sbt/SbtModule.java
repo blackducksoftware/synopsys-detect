@@ -21,12 +21,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.sbt.reports.model;
+package com.blackducksoftware.integration.hub.detect.bomtool.sbt;
 
 import java.util.List;
 
-public class SbtRevision {
+public class SbtModule {
+    public String organisation;
+
     public String name;
 
-    public List<SbtCaller> callers;
+    public List<SbtRevision> revisions;
 }

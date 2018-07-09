@@ -21,16 +21,29 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.sbt.models;
+package com.blackducksoftware.integration.hub.detect.bomtool.sbt;
 
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraph;
 
-public class SbtGraph {
+public class SbtDependencyModule {
     public String sourcePath;
+    public String name;
+    public String version;
+    public String org;
     public DependencyGraph graph;
 
-    public SbtGraph(final DependencyGraph graph, final String sourcePath) {
+    // if this is from a specific configuration
+    public String configuration = null;
+
+    public SbtDependencyModule() {
+    }
+
+    public SbtDependencyModule(final String name, final String version, final String org, final DependencyGraph graph, final String sourcePath) {
         this.sourcePath = sourcePath;
         this.graph = graph;
+
+        this.org = org;
+        this.name = name;
+        this.version = version;
     }
 }

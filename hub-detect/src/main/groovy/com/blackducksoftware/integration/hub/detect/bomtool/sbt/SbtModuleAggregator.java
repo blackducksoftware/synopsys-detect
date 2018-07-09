@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.sbt.parse;
+package com.blackducksoftware.integration.hub.detect.bomtool.sbt;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +33,6 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphCombiner;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph;
-import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtAggregate;
-import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtDependencyModule;
 
 public class SbtModuleAggregator {
     private final Logger logger = LoggerFactory.getLogger(SbtModuleAggregator.class);

@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.sbt.reports.parse;
+package com.blackducksoftware.integration.hub.detect.bomtool.sbt;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,10 +29,6 @@ import java.util.List;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
-import com.blackducksoftware.integration.hub.detect.bomtool.sbt.reports.model.SbtCaller;
-import com.blackducksoftware.integration.hub.detect.bomtool.sbt.reports.model.SbtModule;
-import com.blackducksoftware.integration.hub.detect.bomtool.sbt.reports.model.SbtReport;
-import com.blackducksoftware.integration.hub.detect.bomtool.sbt.reports.model.SbtRevision;
 import com.blackducksoftware.integration.hub.detect.util.XmlUtil;
 
 public class SbtReportParser {

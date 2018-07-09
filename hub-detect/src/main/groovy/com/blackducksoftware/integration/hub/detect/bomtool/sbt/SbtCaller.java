@@ -21,7 +21,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.sbt.reports.model;
+package com.blackducksoftware.integration.hub.detect.bomtool.sbt;
 
 public class SbtCaller {
     public String callerOrganisation;

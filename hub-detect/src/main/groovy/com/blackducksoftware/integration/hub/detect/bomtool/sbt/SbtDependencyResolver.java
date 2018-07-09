@@ -21,15 +21,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.blackducksoftware.integration.hub.detect.bomtool.sbt.parse;
+package com.blackducksoftware.integration.hub.detect.bomtool.sbt;
 
 import com.blackducksoftware.integration.hub.bdio.graph.MutableDependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.graph.MutableMapDependencyGraph;
 import com.blackducksoftware.integration.hub.bdio.model.dependency.Dependency;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalId;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
-import com.blackducksoftware.integration.hub.detect.bomtool.sbt.models.SbtDependencyModule;
-import com.blackducksoftware.integration.hub.detect.bomtool.sbt.reports.model.SbtReport;
 
 public class SbtDependencyResolver {
     public ExternalIdFactory externalIdFactory;
