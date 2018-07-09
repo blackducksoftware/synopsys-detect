@@ -24,29 +24,29 @@
 package com.blackducksoftware.integration.hub.detect.bomtool.clang;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
 import org.slf4j.Logger;
 
-import com.blackducksoftware.integration.exception.IntegrationException;
 import com.blackducksoftware.integration.hub.bdio.model.Forge;
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOutput;
+import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
 public abstract class LinuxPackageManager {
     // TODO Should not use CommandStringExecutor here; each pkg mgr could easily build the list of args
-    public boolean applies(final CommandStringExecutor executor) {
+    public boolean applies(final ExecutableRunner executor) {
         try {
-            final String versionOutput = executor.execute(new File("."), new HashMap<String, String>(), getCheckPresenceCommand());
-            getLogger().debug(String.format("packageStatusOutput: %s", versionOutput));
-            if (versionOutput.contains(getCheckPresenceCommandOutputExpectedText())) {
+            final ExecutableOutput versionOutput = executor.execute(getPkgMgrName(), getCheckPresenceCommandArgs());
+            getLogger().debug(String.format("packageStatusOutput: %s", versionOutput.getStandardOutput()));
+            if (versionOutput.getStandardOutput().contains(getCheckPresenceCommandOutputExpectedText())) {
                 getLogger().info(String.format("Found package manager %s", getPkgMgrName()));
                 return true;
             }
-            getLogger().debug(String.format("Output of %s does not look right; concluding that the dpkg package manager is not present. The output: %s", getCheckPresenceCommand(), versionOutput));
-        } catch (ExecutableRunnerException | IntegrationException e) {
-            getLogger().debug(String.format("Error executing %s; concluding that the dpkg package manager is not present. The error: %s", getCheckPresenceCommand(), e.getMessage()));
+            getLogger().debug(String.format("Output of %s %s does not look right; concluding that the dpkg package manager is not present. The output: %s", getPkgMgrName(), getCheckPresenceCommandArgs(), versionOutput));
+        } catch (final ExecutableRunnerException e) {
+            getLogger().debug(String.format("Error executing %s %s; concluding that the dpkg package manager is not present. The error: %s", getPkgMgrName(), getCheckPresenceCommandArgs(), e.getMessage()));
             return false;
         }
         return false;
@@ -61,7 +61,7 @@ public abstract class LinuxPackageManager {
     // TODO Should not use CommandStringExecutor here; each pkg mgr could easily build the list of args
     public abstract List<PackageDetails> getDependencyDetails(CommandStringExecutor executor, Set<File> filesForIScan, DependencyFile dependencyFile);
 
-    public abstract String getCheckPresenceCommand();
+    public abstract List<String> getCheckPresenceCommandArgs();
 
     public abstract String getCheckPresenceCommandOutputExpectedText();
 

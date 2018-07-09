@@ -39,7 +39,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 
 public class Apk extends LinuxPackageManager {
     private static final String PKG_MGR_NAME = "apk";
-    private static final String VERSION_COMMAND = "apk --version";
+    private static final List<String> VERSION_COMMAND_ARGS = Arrays.asList("apk --version");
     private static final String EXPECTED_TEXT = "apk-tools ";
     private static final String QUERY_ARCH_COMMAND = "apk info --print-arch";
     private static final String QUERY_DEPENDENCY_FILE_COMMAND_PATTERN = "apk info --who-owns %s";
@@ -106,7 +106,7 @@ public class Apk extends LinuxPackageManager {
             }
             final String version = String.format("%s-%s", parts[parts.length - 2], parts[parts.length - 1]);
             logger.trace(String.format("version: %s", version));
-            String component = deriveComponent(parts);
+            final String component = deriveComponent(parts);
             logger.trace(String.format("component: %s", component));
             // if a package starts with a period, we should ignore it because it is a virtual meta package and the version information is missing
             if (!component.startsWith(".")) {
@@ -132,8 +132,8 @@ public class Apk extends LinuxPackageManager {
     }
 
     @Override
-    public String getCheckPresenceCommand() {
-        return VERSION_COMMAND;
+    public List<String> getCheckPresenceCommandArgs() {
+        return VERSION_COMMAND_ARGS;
     }
 
     @Override

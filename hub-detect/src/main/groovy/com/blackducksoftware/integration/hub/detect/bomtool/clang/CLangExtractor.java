@@ -66,29 +66,26 @@ public class CLangExtractor {
     private final Set<File> processedDependencyFiles = new HashSet<>(200);
     private final Set<PackageDetails> processedDependencies = new HashSet<>(40);
 
-    private final List<LinuxPackageManager> pkgMgrs;
     private final ExternalIdFactory externalIdFactory;
     private final CommandStringExecutor executor;
     private final DependencyFileManager dependencyFileManager;
     private final DetectFileManager detectFileManager;
 
-    public CLangExtractor(final List<LinuxPackageManager> pkgMgrs, final ExternalIdFactory externalIdFactory, final CommandStringExecutor executor, final DependencyFileManager dependencyFileManager,
+    public CLangExtractor(final ExternalIdFactory externalIdFactory, final CommandStringExecutor executor, final DependencyFileManager dependencyFileManager,
             final DetectFileManager detectFileManager) {
-        this.pkgMgrs = pkgMgrs;
         this.externalIdFactory = externalIdFactory;
         this.executor = executor;
         this.dependencyFileManager = dependencyFileManager;
         this.detectFileManager = detectFileManager;
     }
 
-    public Extraction extract(final File givenDir, final int depth, final ExtractionId extractionId, final File jsonCompilationDatabaseFile) {
+    public Extraction extract(final LinuxPackageManager pkgMgr, final File givenDir, final int depth, final ExtractionId extractionId, final File jsonCompilationDatabaseFile) {
         try {
             logger.info(String.format("Analyzing %s", jsonCompilationDatabaseFile.getAbsolutePath()));
             final File rootDir = getRootDir(givenDir, depth);
             final File outputDirectory = detectFileManager.getOutputDirectory("CLang", extractionId);
             logger.debug(String.format("extract() called; compileCommandsJsonFilePath: %s", jsonCompilationDatabaseFile.getAbsolutePath()));
             final Set<File> filesForIScan = ConcurrentHashMap.newKeySet(64);
-            final LinuxPackageManager pkgMgr = selectPkgMgr();
             final List<CompileCommand> compileCommands = parseCompileCommandsFile(jsonCompilationDatabaseFile);
             final List<Dependency> bdioComponents = compileCommands.parallelStream()
                     .map(compileCommandToDependencyFilePathsConverter(outputDirectory))
@@ -226,20 +223,6 @@ public class CLangExtractor {
         final Gson gson = new Gson();
         final CompileCommand[] compileCommands = gson.fromJson(compileCommandsJson, CompileCommand[].class);
         return Arrays.asList(compileCommands);
-    }
-
-    private LinuxPackageManager selectPkgMgr() throws IntegrationException {
-        LinuxPackageManager pkgMgr = null;
-        for (final LinuxPackageManager pkgMgrCandidate : pkgMgrs) {
-            if (pkgMgrCandidate.applies(executor)) {
-                pkgMgr = pkgMgrCandidate;
-                break;
-            }
-        }
-        if (pkgMgr == null) {
-            throw new IntegrationException("Unable to execute any supported package manager; Please make sure that one of the supported package managers is on the PATH");
-        }
-        return pkgMgr;
     }
 
     private Optional<File> generateDependencyFileByCompiling(final File workingDir,

@@ -39,7 +39,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 public class Rpm extends LinuxPackageManager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final String PKG_MGR_NAME = "rpm";
-    private static final String VERSION_COMMAND = "rpm --version";
+    private static final List<String> VERSION_COMMAND_ARGS = Arrays.asList("rpm --version");
     private static final String EXPECTED_TEXT = "RPM version";
     private static final String QUERY_DEPENDENCY_FILE_COMMAND_PATTERN = "rpm -qf %s";
 
@@ -101,8 +101,8 @@ public class Rpm extends LinuxPackageManager {
     }
 
     @Override
-    public String getCheckPresenceCommand() {
-        return VERSION_COMMAND;
+    public List<String> getCheckPresenceCommandArgs() {
+        return VERSION_COMMAND_ARGS;
     }
 
     @Override

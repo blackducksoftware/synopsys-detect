@@ -42,6 +42,7 @@ import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransform
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.Apk;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.CLangExtractor;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.CLangPackageManagerFinder;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.CommandStringExecutor;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.DependencyFileManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.Dpkg;
@@ -310,7 +311,8 @@ public class BeanConfiguration {
 
     @Bean
     public BomToolFactory bomToolFactory() throws ParserConfigurationException {
-        return new BomToolFactory(detectConfigWrapper(), detectFileFinder(), standardExecutableFinder(), cLangExtractor(), composerLockExtractor(), condaCliExtractor(), cpanCliExtractor(), dockerExtractor(), dockerInspectorManager(),
+        return new BomToolFactory(detectConfigWrapper(), detectFileFinder(), standardExecutableFinder(), cLangExtractor(), cLangPackageManagerFinder(), composerLockExtractor(), condaCliExtractor(), cpanCliExtractor(), dockerExtractor(),
+                dockerInspectorManager(),
                 gemlockExtractor(), goDepExtractor(), goInspectorManager(), goVndrExtractor(), gradleExecutableFinder(), gradleInspectorExtractor(), gradleInspectorManager(), mavenCliExtractor(), mavenExecutableFinder(), npmCliExtractor(),
                 npmExecutableFinder(), npmLockfileExtractor(), nugetInspectorExtractor(), nugetInspectorManager(), packratLockExtractor(), pearCliExtractor(), pipInspectorExtractor(), pipInspectorManager(), pipenvExtractor(),
                 podlockExtractor(), pythonExecutableFinder(), rebarExtractor(), sbtResolutionCacheExtractor(), yarnLockExtractor());
@@ -432,12 +434,17 @@ public class BeanConfiguration {
 
     @Bean
     public CLangExtractor cLangExtractor() {
+        return new CLangExtractor(externalIdFactory(), commandStringExecutor(), dependencyFileManager(), detectFileManager());
+    }
+
+    @Bean
+    public CLangPackageManagerFinder cLangPackageManagerFinder() {
         final List<LinuxPackageManager> pkgMgrs = new ArrayList<>();
         pkgMgrs.add(apk());
         pkgMgrs.add(dpkg());
         pkgMgrs.add(rpm());
 
-        return new CLangExtractor(pkgMgrs, externalIdFactory(), commandStringExecutor(), dependencyFileManager(), detectFileManager());
+        return new CLangPackageManagerFinder(executableRunner(), pkgMgrs);
     }
 
     @Bean

@@ -40,7 +40,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 public class Dpkg extends LinuxPackageManager {
 
     private static final String PKG_MGR_NAME = "dpkg";
-    private static final String VERSION_COMMAND = "dpkg --version";
+    private static final List<String> VERSION_COMMAND_ARGS = Arrays.asList("--version");
     private static final String EXPECTED_TEXT = "package management program version";
     private static final String QUERY_DEPENDENCY_FILE_COMMAND_PATTERN = "dpkg -S %s";
 
@@ -64,8 +64,8 @@ public class Dpkg extends LinuxPackageManager {
     }
 
     @Override
-    public String getCheckPresenceCommand() {
-        return VERSION_COMMAND;
+    public List<String> getCheckPresenceCommandArgs() {
+        return VERSION_COMMAND_ARGS;
     }
 
     @Override
