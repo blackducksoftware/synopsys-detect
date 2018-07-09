@@ -38,7 +38,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOu
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
-public class Dpkg extends LinuxPackageManager {
+public class DpkgPackageManager extends LinuxPackageManager {
 
     private static final String PKG_MGR_NAME = "dpkg";
     private static final List<String> VERSION_COMMAND_ARGS = Arrays.asList("--version");
@@ -81,7 +81,7 @@ public class Dpkg extends LinuxPackageManager {
     }
 
     @Override
-    public List<PackageDetails> getDependencyDetails(final ExecutableRunner executableRunner, final Set<File> filesForIScan, final DependencyFile dependencyFile) {
+    public List<PackageDetails> getPackages(final ExecutableRunner executableRunner, final Set<File> filesForIScan, final DependencyDetails dependencyFile) {
         final List<PackageDetails> dependencyDetailsList = new ArrayList<>(3);
         try {
             final ExecutableOutput queryPackageOutput = executableRunner.executeQuietly(PKG_MGR_NAME, DPKG_WHO_OWNS_OPTION, dependencyFile.getFile().getAbsolutePath());

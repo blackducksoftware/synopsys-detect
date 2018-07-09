@@ -58,7 +58,7 @@ public abstract class LinuxPackageManager {
 
     public abstract List<Forge> getForges();
 
-    public abstract List<PackageDetails> getDependencyDetails(ExecutableRunner executableRunner, Set<File> filesForIScan, DependencyFile dependencyFile);
+    public abstract List<PackageDetails> getPackages(ExecutableRunner executableRunner, Set<File> filesForIScan, DependencyDetails dependencyFile);
 
     public abstract List<String> getCheckPresenceCommandArgs();
 

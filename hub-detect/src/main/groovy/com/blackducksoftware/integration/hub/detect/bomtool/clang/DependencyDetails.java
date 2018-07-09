@@ -25,11 +25,11 @@ package com.blackducksoftware.integration.hub.detect.bomtool.clang;
 
 import java.io.File;
 
-public class DependencyFile {
+public class DependencyDetails {
     private final boolean inBuildDir;
     private final File file;
 
-    public DependencyFile(final boolean inBuildDir, final File file) {
+    public DependencyDetails(final boolean inBuildDir, final File file) {
         this.inBuildDir = inBuildDir;
         this.file = file;
     }

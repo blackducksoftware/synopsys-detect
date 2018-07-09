@@ -29,7 +29,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,23 +37,14 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableOu
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunner;
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
-public class Apk extends LinuxPackageManager {
-    private static final String PKG_MGR_NAME = "apk";
-    private static final List<String> VERSION_COMMAND_ARGS = Arrays.asList("--version");
-    private static final String APK_INFO_SUBCOMMAND = "info";
-    private static final String APK_WHO_OWNS_OPTION = "--who-owns";
-    private static final String EXPECTED_TEXT = "apk-tools ";
-    private static final List<String> QUERY_ARCH_COMMAND_ARGS = Arrays.asList(APK_INFO_SUBCOMMAND, "--print-arch");
-
+public class RpmPackageManager extends LinuxPackageManager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final String PKG_MGR_NAME = "rpm";
+    private static final List<String> VERSION_COMMAND_ARGS = Arrays.asList("--version");
+    private static final String EXPECTED_TEXT = "RPM version";
+    private static final String RPM_GET_PKG_INFO_OPTION = "-qf";
 
-    private final List<Forge> forges = Arrays.asList(Forge.ALPINE);
-    private String architecture = null;
-
-    @Override
-    public String getPkgMgrName() {
-        return PKG_MGR_NAME;
-    }
+    private final List<Forge> forges = Arrays.asList(Forge.CENTOS, Forge.FEDORA, Forge.REDHAT);
 
     @Override
     public Forge getDefaultForge() {
@@ -67,19 +57,15 @@ public class Apk extends LinuxPackageManager {
     }
 
     @Override
-    public List<PackageDetails> getDependencyDetails(final ExecutableRunner executableRunner, final Set<File> filesForIScan, final DependencyFile dependencyFile) {
+    public List<PackageDetails> getPackages(final ExecutableRunner executableRunner, final Set<File> filesForIScan, final DependencyDetails dependencyFile) {
         final List<PackageDetails> dependencyDetailsList = new ArrayList<>(3);
         try {
-            if (architecture == null) {
-                architecture = executableRunner.executeQuietly(PKG_MGR_NAME, QUERY_ARCH_COMMAND_ARGS).getStandardOutput().trim();
-                logger.debug(String.format("architecture: %s", architecture));
-            }
-            final ExecutableOutput queryPackageOutput = executableRunner.executeQuietly(PKG_MGR_NAME, APK_INFO_SUBCOMMAND, APK_WHO_OWNS_OPTION, dependencyFile.getFile().getAbsolutePath());
+            final ExecutableOutput queryPackageOutput = executableRunner.executeQuietly(PKG_MGR_NAME, RPM_GET_PKG_INFO_OPTION, dependencyFile.getFile().getAbsolutePath());
             logger.debug(String.format("queryPackageOutput: %s", queryPackageOutput));
             addToPackageList(dependencyDetailsList, queryPackageOutput.getStandardOutput());
             return dependencyDetailsList;
         } catch (final ExecutableRunnerException e) {
-            logger.error(String.format("Error executing %s: %s", PKG_MGR_NAME, e.getMessage()));
+            logger.error(String.format("Error executing %s to get package details: %s", PKG_MGR_NAME, e.getMessage()));
             if (!dependencyFile.isInBuildDir()) {
                 logger.info(String.format("%s should be scanned by iScan", dependencyFile.getFile().getAbsolutePath()));
                 filesForIScan.add(dependencyFile.getFile());
@@ -97,39 +83,21 @@ public class Apk extends LinuxPackageManager {
                 logger.debug(String.format("Skipping line: %s", packageLine));
                 continue;
             }
-            final String[] packageLineParts = packageLine.split("\\s+");
-            final String packageNameAndVersion = packageLineParts[4];
-            logger.trace(String.format("packageNameAndVersion: %s", packageNameAndVersion));
-            final String[] parts = packageNameAndVersion.split("-");
-            if (parts.length < 3) {
-                logger.error(String.format("apk info output contains an invalid package: %s", packageNameAndVersion));
-                continue;
-            }
-            final String version = String.format("%s-%s", parts[parts.length - 2], parts[parts.length - 1]);
-            logger.trace(String.format("version: %s", version));
-            final String component = deriveComponent(parts);
-            logger.trace(String.format("component: %s", component));
-            // if a package starts with a period, we should ignore it because it is a virtual meta package and the version information is missing
-            if (!component.startsWith(".")) {
-                final String externalId = String.format("%s/%s/%s", component, version, architecture);
-                logger.debug(String.format("Constructed externalId: %s", externalId));
-                final PackageDetails dependencyDetails = new PackageDetails(component, version, architecture);
-                dependencyDetailsList.add(dependencyDetails);
-            }
+            final int lastDotIndex = packageLine.lastIndexOf('.');
+            final String arch = packageLine.substring(lastDotIndex + 1);
+            final int lastDashIndex = packageLine.lastIndexOf('-');
+            final String nameVersion = packageLine.substring(0, lastDashIndex);
+            final int secondToLastDashIndex = nameVersion.lastIndexOf('-');
+            final String versionRelease = packageLine.substring(secondToLastDashIndex + 1, lastDotIndex);
+            final String artifact = packageLine.substring(0, secondToLastDashIndex);
+            final PackageDetails dependencyDetails = new PackageDetails(artifact, versionRelease, arch);
+            dependencyDetailsList.add(dependencyDetails);
         }
     }
 
-    private String deriveComponent(final String[] parts) {
-        String component = "";
-        for (int i = 0; i < parts.length - 2; i++) {
-            final String part = parts[i];
-            if (StringUtils.isNotBlank(component)) {
-                component += String.format("-%s", part);
-            } else {
-                component = part;
-            }
-        }
-        return component;
+    @Override
+    public String getPkgMgrName() {
+        return PKG_MGR_NAME;
     }
 
     @Override
@@ -148,6 +116,7 @@ public class Apk extends LinuxPackageManager {
     }
 
     private boolean valid(final String packageLine) {
-        return packageLine.contains(" is owned by ");
+        return packageLine.matches(".+-.+-.+\\..*");
     }
+
 }

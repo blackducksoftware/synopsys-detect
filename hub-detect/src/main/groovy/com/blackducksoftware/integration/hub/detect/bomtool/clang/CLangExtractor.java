@@ -68,15 +68,15 @@ public class CLangExtractor {
 
     private final ExternalIdFactory externalIdFactory;
     private final ExecutableRunner executableRunner;
-    private final DependencyFileManager dependencyFileManager;
+    private final CLangDependenciesListFileManager dependencyFileManager;
     private final DetectFileManager detectFileManager;
 
-    public CLangExtractor(final ExternalIdFactory externalIdFactory, final ExecutableRunner executableRunner, final DependencyFileManager dependencyFileManager,
-            final DetectFileManager detectFileManager) {
+    public CLangExtractor(final ExternalIdFactory externalIdFactory, final ExecutableRunner executableRunner,
+            final DetectFileManager detectFileManager, final CLangDependenciesListFileManager dependencyFileManager) {
         this.externalIdFactory = externalIdFactory;
         this.executableRunner = executableRunner;
-        this.dependencyFileManager = dependencyFileManager;
         this.detectFileManager = detectFileManager;
+        this.dependencyFileManager = dependencyFileManager;
     }
 
     public Extraction extract(final LinuxPackageManager pkgMgr, final File givenDir, final int depth, final ExtractionId extractionId, final File jsonCompilationDatabaseFile) {
@@ -150,8 +150,8 @@ public class CLangExtractor {
     private Function<File, Set<PackageDetails>> fileToPackagesConverter(final File sourceDir, final Set<File> filesForIScan, final LinuxPackageManager pkgMgr) {
         final Function<File, Set<PackageDetails>> convertFileToPackages = (final File f) -> {
             logger.trace(String.format("Querying package manager for %s", f.getAbsolutePath()));
-            final DependencyFile dependencyFileWithMetaData = new DependencyFile(isUnder(sourceDir, f) ? true : false, f);
-            final Set<PackageDetails> packages = new HashSet<>(pkgMgr.getDependencyDetails(executableRunner, filesForIScan, dependencyFileWithMetaData));
+            final DependencyDetails dependencyFileWithMetaData = new DependencyDetails(isUnder(sourceDir, f) ? true : false, f);
+            final Set<PackageDetails> packages = new HashSet<>(pkgMgr.getPackages(executableRunner, filesForIScan, dependencyFileWithMetaData));
             logger.debug(String.format("Found %d packages for %s", packages.size(), f.getAbsolutePath()));
             return packages;
         };
@@ -187,8 +187,8 @@ public class CLangExtractor {
             logger.info(String.format("Analyzing source file: %s", compileCommand.file));
             final Set<String> dependencyFilePaths = new HashSet<>();
             final Optional<File> depsMkFile = generateDependencyFileByCompiling(workingDir, compileCommand);
-            dependencyFilePaths.addAll(dependencyFileManager.parse(depsMkFile));
-            dependencyFileManager.remove(depsMkFile);
+            dependencyFilePaths.addAll(dependencyFileManager.parse(depsMkFile.orElse(null)));
+            dependencyFileManager.remove(depsMkFile.orElse(null));
             return dependencyFilePaths;
         };
         return convertCompileCommandToDependencyFilePaths;

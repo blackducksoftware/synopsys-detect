@@ -29,22 +29,21 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DependencyFileManager {
+public class CLangDependenciesListFileManager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public List<String> parse(final Optional<File> depsMkFile) {
-        if (!depsMkFile.isPresent()) {
+    public List<String> parse(final File depsMkFile) {
+        if (depsMkFile == null) {
             return new ArrayList<>(0);
         }
         List<String> dependencyFilePaths;
         try {
-            final String depsDecl = FileUtils.readFileToString(depsMkFile.get(), StandardCharsets.UTF_8);
+            final String depsDecl = FileUtils.readFileToString(depsMkFile, StandardCharsets.UTF_8);
             final String[] depsDeclParts = depsDecl.split(": ");
             String depsListString = depsDeclParts[1];
             logger.trace(String.format("dependencies: %s", depsListString));
@@ -61,13 +60,15 @@ public class DependencyFileManager {
             }
             dependencyFilePaths = Arrays.asList(deps);
         } catch (final IOException e) {
-            logger.warn(String.format("Error getting dependency file paths from '%s': %s", depsMkFile.get().getAbsolutePath(), e.getMessage()));
+            logger.warn(String.format("Error getting dependency file paths from '%s': %s", depsMkFile.getAbsolutePath(), e.getMessage()));
             return new ArrayList<>(0);
         }
         return dependencyFilePaths;
     }
 
-    public void remove(final Optional<File> depsMkFile) {
-        depsMkFile.ifPresent(f -> f.delete());
+    public void remove(final File depsMkFile) {
+        if (depsMkFile != null) {
+            depsMkFile.delete();
+        }
     }
 }

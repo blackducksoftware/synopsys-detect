@@ -40,13 +40,13 @@ import com.blackducksoftware.integration.hub.bdio.BdioTransformer;
 import com.blackducksoftware.integration.hub.bdio.SimpleBdioFactory;
 import com.blackducksoftware.integration.hub.bdio.graph.DependencyGraphTransformer;
 import com.blackducksoftware.integration.hub.bdio.model.externalid.ExternalIdFactory;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.Apk;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.ApkPackageManager;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.CLangDependenciesListFileManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.CLangExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.CLangPackageManagerFinder;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.DependencyFileManager;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.Dpkg;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.DpkgPackageManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.clang.LinuxPackageManager;
-import com.blackducksoftware.integration.hub.detect.bomtool.clang.Rpm;
+import com.blackducksoftware.integration.hub.detect.bomtool.clang.RpmPackageManager;
 import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.PodlockExtractor;
 import com.blackducksoftware.integration.hub.detect.bomtool.cocoapods.PodlockParser;
 import com.blackducksoftware.integration.hub.detect.bomtool.conda.CondaCliExtractor;
@@ -407,37 +407,21 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public DependencyFileManager dependencyFileManager() {
-        return new DependencyFileManager();
-    }
-
-    @Bean
-    public Apk apk() {
-        return new Apk();
-    }
-
-    @Bean
-    public Dpkg dpkg() {
-        return new Dpkg();
-    }
-
-    @Bean
-    public Rpm rpm() {
-        return new Rpm();
+    public CLangDependenciesListFileManager cLangDependenciesListFileManager() {
+        return new CLangDependenciesListFileManager();
     }
 
     @Bean
     public CLangExtractor cLangExtractor() {
-        return new CLangExtractor(externalIdFactory(), executableRunner(), dependencyFileManager(), detectFileManager());
+        return new CLangExtractor(externalIdFactory(), executableRunner(), detectFileManager(), cLangDependenciesListFileManager());
     }
 
     @Bean
     public CLangPackageManagerFinder cLangPackageManagerFinder() {
         final List<LinuxPackageManager> pkgMgrs = new ArrayList<>();
-        pkgMgrs.add(apk());
-        pkgMgrs.add(dpkg());
-        pkgMgrs.add(rpm());
-
+        pkgMgrs.add(new ApkPackageManager());
+        pkgMgrs.add(new DpkgPackageManager());
+        pkgMgrs.add(new RpmPackageManager());
         return new CLangPackageManagerFinder(executableRunner(), pkgMgrs);
     }
 
