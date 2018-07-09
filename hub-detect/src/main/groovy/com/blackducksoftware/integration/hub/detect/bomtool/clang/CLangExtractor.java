@@ -94,7 +94,7 @@ public class CLangExtractor {
                     .map(compileCommandToDependencyFilePathsConverter(outputDirectory))
                     // TODO: flatMap seemed ok here
                     .reduce(ConcurrentHashMap.newKeySet(), pathsAccumulator()).parallelStream()
-                    .filter((final String path) -> !StringUtils.isBlank(path))
+                    .filter((final String path) -> StringUtils.isNotBlank(path))
                     .map((final String path) -> new File(path))
                     .filter(fileIsNewPredicate())
                     .map(fileToPackagesConverter(rootDir, filesForIScan, pkgMgr))

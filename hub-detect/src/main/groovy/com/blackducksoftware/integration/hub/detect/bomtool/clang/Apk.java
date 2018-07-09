@@ -75,40 +75,7 @@ public class Apk extends LinuxPackageManager {
             }
             final String queryPackageOutput = executor.execute(new File("."), null, getPackageCommand);
             logger.debug(String.format("queryPackageOutput: %s", queryPackageOutput));
-            final String[] packageLines = queryPackageOutput.split("\n");
-            for (final String packageLine : packageLines) {
-                if (!valid(packageLine)) {
-                    logger.debug(String.format("Skipping line: %s", packageLine));
-                    continue;
-                }
-                final String[] packageLineParts = packageLine.split("\\s+");
-                final String packageNameAndVersion = packageLineParts[4];
-                logger.trace(String.format("packageNameAndVersion: %s", packageNameAndVersion));
-                final String[] parts = packageNameAndVersion.split("-");
-                if (parts.length < 3) {
-                    logger.error(String.format("apk info output contains an invalid package: %s", packageNameAndVersion));
-                    continue;
-                }
-                final String version = String.format("%s-%s", parts[parts.length - 2], parts[parts.length - 1]);
-                logger.trace(String.format("version: %s", version));
-                String component = "";
-                for (int i = 0; i < parts.length - 2; i++) {
-                    final String part = parts[i];
-                    if (StringUtils.isNotBlank(component)) {
-                        component += String.format("-%s", part);
-                    } else {
-                        component = part;
-                    }
-                }
-                logger.trace(String.format("component: %s", component));
-                // if a package starts with a period, we should ignore it because it is a virtual meta package and the version information is missing
-                if (!component.startsWith(".")) {
-                    final String externalId = String.format("%s/%s/%s", component, version, architecture);
-                    logger.debug(String.format("Constructed externalId: %s", externalId));
-                    final PackageDetails dependencyDetails = new PackageDetails(component, version, architecture);
-                    dependencyDetailsList.add(dependencyDetails);
-                }
-            }
+            addToPackageList(dependencyDetailsList, queryPackageOutput);
             return dependencyDetailsList;
         } catch (ExecutableRunnerException | IntegrationException e) {
             logger.error(String.format("Error executing %s: %s", getPackageCommand, e.getMessage()));
@@ -120,6 +87,48 @@ public class Apk extends LinuxPackageManager {
             }
             return dependencyDetailsList;
         }
+    }
+
+    private void addToPackageList(final List<PackageDetails> dependencyDetailsList, final String queryPackageOutput) {
+        final String[] packageLines = queryPackageOutput.split("\n");
+        for (final String packageLine : packageLines) {
+            if (!valid(packageLine)) {
+                logger.debug(String.format("Skipping line: %s", packageLine));
+                continue;
+            }
+            final String[] packageLineParts = packageLine.split("\\s+");
+            final String packageNameAndVersion = packageLineParts[4];
+            logger.trace(String.format("packageNameAndVersion: %s", packageNameAndVersion));
+            final String[] parts = packageNameAndVersion.split("-");
+            if (parts.length < 3) {
+                logger.error(String.format("apk info output contains an invalid package: %s", packageNameAndVersion));
+                continue;
+            }
+            final String version = String.format("%s-%s", parts[parts.length - 2], parts[parts.length - 1]);
+            logger.trace(String.format("version: %s", version));
+            String component = deriveComponent(parts);
+            logger.trace(String.format("component: %s", component));
+            // if a package starts with a period, we should ignore it because it is a virtual meta package and the version information is missing
+            if (!component.startsWith(".")) {
+                final String externalId = String.format("%s/%s/%s", component, version, architecture);
+                logger.debug(String.format("Constructed externalId: %s", externalId));
+                final PackageDetails dependencyDetails = new PackageDetails(component, version, architecture);
+                dependencyDetailsList.add(dependencyDetails);
+            }
+        }
+    }
+
+    private String deriveComponent(final String[] parts) {
+        String component = "";
+        for (int i = 0; i < parts.length - 2; i++) {
+            final String part = parts[i];
+            if (StringUtils.isNotBlank(component)) {
+                component += String.format("-%s", part);
+            } else {
+                component = part;
+            }
+        }
+        return component;
     }
 
     @Override

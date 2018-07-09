@@ -26,6 +26,7 @@ package com.blackducksoftware.integration.hub.detect.bomtool.clang;
 import org.apache.commons.lang3.builder.RecursiveToStringStyle;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
+// Loaded from json via Gson
 public class CompileCommand {
     public String directory;
     public String command;

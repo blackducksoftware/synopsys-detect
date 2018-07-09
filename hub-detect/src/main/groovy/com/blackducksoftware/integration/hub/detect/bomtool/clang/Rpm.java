@@ -62,22 +62,7 @@ public class Rpm extends LinuxPackageManager {
         try {
             final String queryPackageOutput = executor.execute(new File("."), null, getPackageCommand);
             logger.debug(String.format("queryPackageOutput: %s", queryPackageOutput));
-            final String[] packageLines = queryPackageOutput.split("\n");
-            for (final String packageLine : packageLines) {
-                if (!valid(packageLine)) {
-                    logger.debug(String.format("Skipping line: %s", packageLine));
-                    continue;
-                }
-                final int lastDotIndex = packageLine.lastIndexOf('.');
-                final String arch = packageLine.substring(lastDotIndex + 1);
-                final int lastDashIndex = packageLine.lastIndexOf('-');
-                final String nameVersion = packageLine.substring(0, lastDashIndex);
-                final int secondToLastDashIndex = nameVersion.lastIndexOf('-');
-                final String versionRelease = packageLine.substring(secondToLastDashIndex + 1, lastDotIndex);
-                final String artifact = packageLine.substring(0, secondToLastDashIndex);
-                final PackageDetails dependencyDetails = new PackageDetails(artifact, versionRelease, arch);
-                dependencyDetailsList.add(dependencyDetails);
-            }
+            addToPackageList(dependencyDetailsList, queryPackageOutput);
             return dependencyDetailsList;
         } catch (ExecutableRunnerException | IntegrationException e) {
             logger.error(String.format("Error executing %s: %s", getPackageCommand, e.getMessage()));
@@ -88,6 +73,25 @@ public class Rpm extends LinuxPackageManager {
                 logger.trace(String.format("No point in scanning %s with iScan since it's in the source.dir", dependencyFile.getFile().getAbsolutePath()));
             }
             return dependencyDetailsList;
+        }
+    }
+
+    private void addToPackageList(final List<PackageDetails> dependencyDetailsList, final String queryPackageOutput) {
+        final String[] packageLines = queryPackageOutput.split("\n");
+        for (final String packageLine : packageLines) {
+            if (!valid(packageLine)) {
+                logger.debug(String.format("Skipping line: %s", packageLine));
+                continue;
+            }
+            final int lastDotIndex = packageLine.lastIndexOf('.');
+            final String arch = packageLine.substring(lastDotIndex + 1);
+            final int lastDashIndex = packageLine.lastIndexOf('-');
+            final String nameVersion = packageLine.substring(0, lastDashIndex);
+            final int secondToLastDashIndex = nameVersion.lastIndexOf('-');
+            final String versionRelease = packageLine.substring(secondToLastDashIndex + 1, lastDotIndex);
+            final String artifact = packageLine.substring(0, secondToLastDashIndex);
+            final PackageDetails dependencyDetails = new PackageDetails(artifact, versionRelease, arch);
+            dependencyDetailsList.add(dependencyDetails);
         }
     }
 
