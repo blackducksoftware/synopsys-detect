@@ -108,9 +108,12 @@ public class NugetInspectorExtractor {
             }
 
             final List<File> dependencyNodeFiles = detectFileFinder.findFiles(outputDirectory, INSPECTOR_OUTPUT_PATTERN);
-            final List<NugetParseResult> parseResults = dependencyNodeFiles.stream()
-                    .map(it -> nugetInspectorPackager.createDetectCodeLocation(bomToolType, it))
-                    .collect(Collectors.toList());
+
+            final List<NugetParseResult> parseResults = new ArrayList<>();
+            for (final File dependencyNodeFile : dependencyNodeFiles) {
+                final NugetParseResult result = nugetInspectorPackager.createDetectCodeLocation(bomToolType, dependencyNodeFile);
+                parseResults.add(result);
+            }
 
             final List<DetectCodeLocation> codeLocations = parseResults.stream()
                     .flatMap(it -> it.codeLocations.stream())

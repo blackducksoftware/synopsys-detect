@@ -409,7 +409,7 @@ public class BeanConfiguration {
 
     @Bean
     public HubManager hubManager() {
-        return new HubManager(bdioUploader(), hubSignatureScanner(), policyChecker(), hubServiceWrapper(), detectConfigWrapper());
+        return new HubManager(bdioUploader(), codeLocationNameManager(), detectConfigWrapper(), hubServiceWrapper(), hubSignatureScanner(), policyChecker());
     }
 
     @Bean
@@ -599,7 +599,7 @@ public class BeanConfiguration {
 
     @Bean
     public NugetInspectorPackager nugetInspectorPackager() {
-        return new NugetInspectorPackager(detectFileManager(), executableRunner(), gson(), externalIdFactory());
+        return new NugetInspectorPackager(gson(), externalIdFactory());
     }
 
     @Bean

@@ -45,6 +45,7 @@ import com.blackducksoftware.integration.hub.detect.exception.DetectUserFriendly
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeReporter;
 import com.blackducksoftware.integration.hub.detect.exitcode.ExitCodeType;
 import com.blackducksoftware.integration.hub.detect.hub.HubServiceWrapper;
+import com.blackducksoftware.integration.hub.detect.workflow.codelocation.CodeLocationNameManager;
 import com.blackducksoftware.integration.hub.detect.workflow.project.DetectProject;
 import com.blackducksoftware.integration.hub.exception.HubTimeoutExceededException;
 import com.blackducksoftware.integration.hub.service.CodeLocationService;
@@ -62,20 +63,22 @@ public class HubManager implements ExitCodeReporter {
     private final Logger logger = LoggerFactory.getLogger(HubManager.class);
 
     private final BdioUploader bdioUploader;
+    private final CodeLocationNameManager codeLocationNameManager;
+    private final DetectConfigWrapper detectConfigWrapper;
+    private final HubServiceWrapper hubServiceWrapper;
     private final HubSignatureScanner hubSignatureScanner;
     private final PolicyChecker policyChecker;
-    private final HubServiceWrapper hubServiceWrapper;
-    private final DetectConfigWrapper detectConfigWrapper;
 
     private ExitCodeType exitCodeType = ExitCodeType.SUCCESS;
 
-    public HubManager(final BdioUploader bdioUploader, final HubSignatureScanner hubSignatureScanner, final PolicyChecker policyChecker, final HubServiceWrapper hubServiceWrapper,
-            final DetectConfigWrapper detectConfigWrapper) {
+    public HubManager(final BdioUploader bdioUploader, final CodeLocationNameManager codeLocationNameManager, final DetectConfigWrapper detectConfigWrapper, final HubServiceWrapper hubServiceWrapper,
+            final HubSignatureScanner hubSignatureScanner, final PolicyChecker policyChecker) {
         this.bdioUploader = bdioUploader;
+        this.codeLocationNameManager = codeLocationNameManager;
+        this.detectConfigWrapper = detectConfigWrapper;
+        this.hubServiceWrapper = hubServiceWrapper;
         this.hubSignatureScanner = hubSignatureScanner;
         this.policyChecker = policyChecker;
-        this.hubServiceWrapper = hubServiceWrapper;
-        this.detectConfigWrapper = detectConfigWrapper;
     }
 
     public ProjectVersionView updateHubProjectVersion(final DetectProject detectProject) throws IntegrationException, DetectUserFriendlyException, InterruptedException {
@@ -123,7 +126,7 @@ public class HubManager implements ExitCodeReporter {
                 final ProjectService projectService = hubServiceWrapper.createProjectService();
                 final ScanStatusService scanStatusService = hubServiceWrapper.createScanStatusService();
 
-                waitForBomUpdate(hubServiceWrapper.createHubService(), scanStatusService, projectVersionView);
+                waitForBomUpdate(hubServiceWrapper.createCodeLocationService(), hubServiceWrapper.createHubService(), scanStatusService);
 
                 if (StringUtils.isNotBlank(detectConfigWrapper.getProperty(DetectProperty.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES))) {
                     final PolicyStatusDescription policyStatusDescription = policyChecker.getPolicyStatus(projectService, projectVersionView);
@@ -169,8 +172,12 @@ public class HubManager implements ExitCodeReporter {
         }
     }
 
-    public void waitForBomUpdate(final HubService hubService, final ScanStatusService scanStatusService, final ProjectVersionView version) throws IntegrationException, InterruptedException {
-        final List<CodeLocationView> allCodeLocations = hubService.getAllResponses(version, ProjectVersionView.CODELOCATIONS_LINK_RESPONSE);
+    public void waitForBomUpdate(final CodeLocationService codeLocationService, final HubService hubService, final ScanStatusService scanStatusService) throws IntegrationException, InterruptedException {
+        final List<CodeLocationView> allCodeLocations = new ArrayList<>();
+        for (String codeLocationName : codeLocationNameManager.getCodeLocationNames()) {
+            CodeLocationView codeLocationView = codeLocationService.getCodeLocationByName(codeLocationName);
+            allCodeLocations.add(codeLocationView);
+        }
         final List<ScanSummaryView> scanSummaryViews = new ArrayList<>();
         for (final CodeLocationView codeLocationView : allCodeLocations) {
             final String scansLink = hubService.getFirstLinkSafely(codeLocationView, CodeLocationView.SCANS_LINK);
