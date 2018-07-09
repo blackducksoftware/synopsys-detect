@@ -119,6 +119,27 @@ public class DetectOptionManager {
         }
     }
 
+    public void applyInteractiveOptions(final List<InteractiveOption> interactiveOptions) {
+        for (final InteractiveOption interactiveOption : interactiveOptions) {
+            for (final DetectOption detectOption : detectOptions) {
+                if (detectOption.getDetectProperty().equals(interactiveOption.getDetectProperty())) {
+                    detectOption.setInteractiveValue(interactiveOption.getInteractiveValue());
+                    detectConfigWrapper.setDetectProperty(detectOption.getDetectProperty(), interactiveOption.getInteractiveValue());
+                    break;
+                }
+            }
+        }
+    }
+
+    public List<DetectOption> findUnacceptableValues() throws DetectUserFriendlyException {
+        final List<DetectOption> unacceptableDetectOptions = detectOptions.stream()
+                .filter(DetectOption::isStrictAcceptableValues)
+                .filter(option -> !option.isCurrentValueAcceptable().isValid())
+                .collect(Collectors.toList());
+
+        return unacceptableDetectOptions;
+    }
+
     private DetectOption processField(final DetectProperty detectProperty, final String currentValue) {
         try {
             final Field field = DetectProperty.class.getField(detectProperty.name());
@@ -197,31 +218,6 @@ public class DetectOptionManager {
         }
 
         return help;
-    }
-
-    public List<DetectOption> findUnacceptableValues() throws DetectUserFriendlyException {
-        final List<DetectOption> unacceptableDetectOptions = new ArrayList<>();
-        for (final DetectOption option : detectOptions) {
-            if (option.isStrictAcceptableValues()) {
-                final DetectOption.OptionValidationResult validationResult = option.isAcceptableValue(option.getResolvedValue());
-                if (!validationResult.isValid()) {
-                    unacceptableDetectOptions.add(option);
-                }
-            }
-        }
-        return unacceptableDetectOptions;
-    }
-
-    public void applyInteractiveOptions(final List<InteractiveOption> interactiveOptions) {
-        for (final InteractiveOption interactiveOption : interactiveOptions) {
-            for (final DetectOption detectOption : detectOptions) {
-                if (detectOption.getDetectProperty().equals(interactiveOption.getDetectProperty())) {
-                    detectOption.setInteractiveValue(interactiveOption.getInteractiveValue());
-                    detectConfigWrapper.setDetectProperty(detectOption.getDetectProperty(), interactiveOption.getInteractiveValue());
-                    break;
-                }
-            }
-        }
     }
 
 }

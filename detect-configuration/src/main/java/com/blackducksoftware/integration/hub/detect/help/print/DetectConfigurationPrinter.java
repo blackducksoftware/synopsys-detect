@@ -33,9 +33,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.blackducksoftware.integration.hub.detect.help.DetectOption;
 
 public class DetectConfigurationPrinter {
-
-    public void print(final PrintStream printStream, final List<DetectOption> detectOptions)
-            throws IllegalArgumentException, SecurityException {
+    public void print(final PrintStream printStream, final List<DetectOption> detectOptions) throws IllegalArgumentException, SecurityException {
         printStream.println("");
         printStream.println("Current property values:");
         printStream.println("--property = value [notes]");
@@ -74,7 +72,7 @@ public class DetectConfigurationPrinter {
                 }
 
                 if (option.getAcceptableValues().size() > 0) {
-                    DetectOption.OptionValidationResult validationResult = option.isAcceptableValue(fieldValue);
+                    final DetectOption.OptionValidationResult validationResult = option.isAcceptableValue(fieldValue);
                     if (!validationResult.isValid()) {
                         text += String.format(" [%s]", validationResult.getValidationMessage());
                     }

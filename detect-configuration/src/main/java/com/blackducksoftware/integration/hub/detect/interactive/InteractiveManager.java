@@ -23,6 +23,7 @@
  */
 package com.blackducksoftware.integration.hub.detect.interactive;
 
+import java.io.Console;
 import java.io.PrintStream;
 import java.util.List;
 
@@ -32,7 +33,9 @@ import org.slf4j.LoggerFactory;
 import com.blackducksoftware.integration.hub.detect.help.DetectOptionManager;
 import com.blackducksoftware.integration.hub.detect.interactive.mode.DefaultInteractiveMode;
 import com.blackducksoftware.integration.hub.detect.interactive.mode.InteractiveMode;
+import com.blackducksoftware.integration.hub.detect.interactive.reader.ConsoleInteractiveReader;
 import com.blackducksoftware.integration.hub.detect.interactive.reader.InteractiveReader;
+import com.blackducksoftware.integration.hub.detect.interactive.reader.ScannerInteractiveReader;
 
 public class InteractiveManager {
     private final Logger logger = LoggerFactory.getLogger(InteractiveManager.class);
@@ -45,24 +48,32 @@ public class InteractiveManager {
         this.defaultInteractiveMode = defaultInteractiveMode;
     }
 
-    public void interact(final InteractiveReader interactiveReader, final PrintStream printStream) {
-        final InteractiveMode interactiveMode = defaultInteractiveMode;
+    public void configureInInteractiveMode() {
+        try (final PrintStream interactivePrintStream = new PrintStream(System.out)) {
+            final InteractiveReader interactiveReader;
+            final Console console = System.console();
 
-        interactiveMode.init(printStream, interactiveReader);
+            if (console != null) {
+                interactiveReader = new ConsoleInteractiveReader(console);
+            } else {
+                logger.warn("It may be insecure to enter passwords because you are running in a virtual console.");
+                interactiveReader = new ScannerInteractiveReader(System.in);
+            }
 
-        interactiveMode.println("");
-        interactiveMode.println("Interactive flag found.");
-        interactiveMode.println("Starting default interactive mode.");
-        interactiveMode.println("");
+            final InteractiveMode interactiveMode = defaultInteractiveMode;
+            interactiveMode.init(interactivePrintStream, interactiveReader);
 
-        try {
-            interactiveMode.interact();
+            interactiveMode.println("");
+            interactiveMode.println("Interactive flag found.");
+            interactiveMode.println("Starting default interactive mode.");
+            interactiveMode.println("");
+
+            interactiveMode.configure();
             final List<InteractiveOption> interactiveOptions = interactiveMode.getInteractiveOptions();
             detectOptionManager.applyInteractiveOptions(interactiveOptions);
         } catch (final Exception e) {
-            logger.error(e.toString());
             logger.error("Interactive mode failed. Please retry interactive mode or remove '-i' and '--interactive' from your options.");
-            throw new RuntimeException(e);
+            throw e;
         }
     }
 

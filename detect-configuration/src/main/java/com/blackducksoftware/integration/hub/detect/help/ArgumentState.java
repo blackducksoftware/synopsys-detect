@@ -24,21 +24,45 @@
 package com.blackducksoftware.integration.hub.detect.help;
 
 public class ArgumentState {
-    public final boolean isHelp;
-    public final boolean isHelpDocument;
-    public final boolean isInteractive;
+    private final boolean isHelp;
+    private final boolean isHelpDocument;
+    private final boolean isInteractive;
 
-    public final boolean isVerboseHelp;
-    public final boolean isDeprecatedHelp;
-    public final String parsedValue;
+    private final boolean isVerboseHelp;
+    private final boolean isDeprecatedHelp;
+    private final String parsedValue;
 
-    public ArgumentState(boolean isHelp, boolean isHelpDocument, boolean isInteractive, boolean isVerboseHelp, boolean isDeprecatedHelp, String parsedValue) {
+    public ArgumentState(final boolean isHelp, final boolean isHelpDocument, final boolean isInteractive, final boolean isVerboseHelp, final boolean isDeprecatedHelp, final String parsedValue) {
         this.isHelp = isHelp;
         this.isHelpDocument = isHelpDocument;
         this.isInteractive = isInteractive;
         this.isVerboseHelp = isVerboseHelp;
         this.isDeprecatedHelp = isDeprecatedHelp;
         this.parsedValue = parsedValue;
+    }
+
+    public boolean isHelp() {
+        return isHelp;
+    }
+
+    public boolean isHelpDocument() {
+        return isHelpDocument;
+    }
+
+    public boolean isInteractive() {
+        return isInteractive;
+    }
+
+    public boolean isVerboseHelp() {
+        return isVerboseHelp;
+    }
+
+    public boolean isDeprecatedHelp() {
+        return isDeprecatedHelp;
+    }
+
+    public String getParsedValue() {
+        return parsedValue;
     }
 
 }

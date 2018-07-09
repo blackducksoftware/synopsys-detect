@@ -145,6 +145,10 @@ public abstract class DetectOption {
 
     public abstract OptionValidationResult isAcceptableValue(final String value);
 
+    public OptionValidationResult isCurrentValueAcceptable() {
+        return isAcceptableValue(resolvedValue);
+    }
+
     public void printOption(final HelpTextWriter writer) {
         String description = getDetectOptionHelp().description;
         if (getDetectOptionHelp().isDeprecated) {
@@ -210,13 +214,20 @@ public abstract class DetectOption {
         return htmlOption;
     }
 
+    public String getUnacceptableValueMessage() {
+        return String.format("%s: Unknown value '%s', acceptable values are %s",
+                detectProperty.getPropertyName(),
+                resolvedValue,
+                acceptableValues.stream().collect(Collectors.joining(",")));
+    }
+
     public enum FinalValueType {
-        DEFAULT,        // the final value is the value in the default attribute
-        INTERACTIVE,    // the final value is from the interactive prompt
-        LATEST,         // the final value was resolved from latest
-        CALCULATED,     // the resolved value was not set and final value was set during init
-        SUPPLIED,       // the final value most likely came from spring
-        OVERRIDE        // the resolved value was set but during init a new value was set
+        DEFAULT, // the final value is the value in the default attribute
+        INTERACTIVE, // the final value is from the interactive prompt
+        LATEST, // the final value was resolved from latest
+        CALCULATED, // the resolved value was not set and final value was set during init
+        SUPPLIED, // the final value most likely came from spring
+        OVERRIDE // the resolved value was set but during init a new value was set
     }
 
     public class OptionValidationResult {
