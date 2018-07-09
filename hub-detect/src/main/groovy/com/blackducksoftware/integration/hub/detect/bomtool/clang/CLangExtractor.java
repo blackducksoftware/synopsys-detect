@@ -39,6 +39,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,16 +89,13 @@ public class CLangExtractor {
             final List<CompileCommand> compileCommands = parseCompileCommandsFile(jsonCompilationDatabaseFile);
             final List<Dependency> bdioComponents = compileCommands.parallelStream()
                     .map(compileCommandToDependencyFilePathsConverter(outputDirectory))
-                    // TODO: flatMap seemed ok here
                     .reduce(ConcurrentHashMap.newKeySet(), pathsAccumulator()).parallelStream()
                     .filter((final String path) -> StringUtils.isNotBlank(path))
                     .map((final String path) -> new File(path))
                     .filter(fileIsNewPredicate())
                     .map(fileToPackagesConverter(rootDir, filesForIScan, pkgMgr))
-                    // TODO: flatMap totally broke it when used here
                     .reduce(ConcurrentHashMap.newKeySet(), packageAccumulator()).parallelStream()
                     .map(packageToDependenciesConverter(pkgMgr))
-                    // TODO: Collector: Haven't found one that combines a stream of list into a list
                     .reduce(new ArrayList<Dependency>(), dependenciesAccumulator());
             final MutableDependencyGraph dependencyGraph = populateGraph(bdioComponents);
             final ExternalId externalId = externalIdFactory.createPathExternalId(pkgMgr.getDefaultForge(), rootDir.toString());
@@ -262,19 +260,11 @@ public class CLangExtractor {
         return argList;
     }
 
-    // TODO belongs elsewhere?
-    private String getFilenameBase(final String filePath) {
-        final File f = new File(filePath);
-        final Path p = f.toPath();
-        final String filename = p.getFileName().toString();
-        if (!filename.contains(".")) {
-            return filename;
-        }
-        final int dotIndex = filename.indexOf('.');
-        return filename.substring(0, dotIndex);
+    private String getFilenameBase(final String filePathString) {
+        final Path filePath = new File(filePathString).toPath();
+        return FilenameUtils.removeExtension(filePath.getFileName().toString());
     }
 
-    // TODO move to some file utils class or something
     private File getRootDir(final File givenDir, int depth) {
         logger.debug(String.format("givenDir: %s; depth: %d", givenDir, depth));
         File rootDir = givenDir;

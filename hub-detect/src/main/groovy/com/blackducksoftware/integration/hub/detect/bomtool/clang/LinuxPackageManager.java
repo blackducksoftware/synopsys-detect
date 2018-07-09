@@ -35,7 +35,7 @@ import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRu
 import com.blackducksoftware.integration.hub.detect.util.executable.ExecutableRunnerException;
 
 public abstract class LinuxPackageManager {
-    // TODO Should not use CommandStringExecutor here; each pkg mgr could easily build the list of args
+
     public boolean applies(final ExecutableRunner executor) {
         try {
             final ExecutableOutput versionOutput = executor.execute(getPkgMgrName(), getCheckPresenceCommandArgs());
@@ -58,7 +58,6 @@ public abstract class LinuxPackageManager {
 
     public abstract List<Forge> getForges();
 
-    // TODO Should not use CommandStringExecutor here; each pkg mgr could easily build the list of args
     public abstract List<PackageDetails> getDependencyDetails(ExecutableRunner executableRunner, Set<File> filesForIScan, DependencyFile dependencyFile);
 
     public abstract List<String> getCheckPresenceCommandArgs();
